@@ -266,21 +266,18 @@ grader_rationale: Faithfulness is highest — the full format must stay grounded
 
           <AccordionItem title="What are RAGAS-style metrics?">
             <p className="text-muted-foreground leading-relaxed">
-              RAGAS-style metrics evaluate RAG (Retrieval-Augmented Generation) systems. We provide
-              <strong> two options</strong>:
+              RAGAS-style metrics evaluate RAG (Retrieval-Augmented Generation) systems. We use{' '}
+              <a href="https://promptfoo.dev" className="link">promptfoo</a>&apos;s implementation:
             </p>
             <ul className="list-brutal mt-3 text-muted-foreground">
-              <li>
-                <strong>Built-in graders</strong> — Our own implementations of <code>faithfulness</code>,{' '}
-                <code>answer-relevancy</code>, and <code>context-relevancy</code>. These use your
-                configured LLM provider (Settings) and perform claim extraction + NLI verification.
-              </li>
-              <li>
-                <strong>Promptfoo-backed</strong> — The <code>promptfoo</code> grader type can use
-                assertions like <code>context-faithfulness</code>, <code>answer-relevance</code>,{' '}
-                <code>context-recall</code>. Requires OPENAI_API_KEY in environment.
-              </li>
+              <li><code>context-faithfulness</code> — hallucination detection (claims grounded in context)</li>
+              <li><code>answer-relevance</code> — query alignment</li>
+              <li><code>context-relevance</code> — retrieval quality</li>
+              <li><code>context-recall</code> — ground truth coverage</li>
             </ul>
+            <p className="text-muted-foreground leading-relaxed mt-3">
+              These work with your configured provider (OpenAI, Anthropic, or Ollama) via Settings.
+            </p>
             <p className="text-muted-foreground leading-relaxed mt-3">
               <a href="https://arxiv.org/abs/2309.15217" target="_blank" rel="noopener noreferrer" className="link">
                 RAGAS paper (Es et al., 2023) <ExternalLink className="inline h-3 w-3" />

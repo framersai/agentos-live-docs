@@ -48,6 +48,7 @@ export const datasetsApi = {
       expectedOutput?: string;
       context?: string;
       metadata?: Record<string, unknown>;
+      customFields?: Record<string, string>;
     }>;
   }) =>
     fetchApi<Dataset>(`/datasets/${id}`, {

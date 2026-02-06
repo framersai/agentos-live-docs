@@ -20,6 +20,7 @@ export interface LoadedTestCase {
   expectedOutput: string | null;
   context: string | null;
   metadata: Record<string, unknown> | null;
+  customFields: Record<string, string>;
 }
 
 @Injectable()
@@ -159,6 +160,7 @@ export class DatasetLoaderService implements OnModuleInit {
         expectedOutput?: string;
         context?: string;
         metadata?: Record<string, unknown>;
+        customFields?: Record<string, string>;
       }>;
     },
   ): LoadedDataset {
@@ -170,15 +172,23 @@ export class DatasetLoaderService implements OnModuleInit {
     // Rewrite CSV if testCases provided
     if (data.testCases) {
       const esc = (val: string) => '"' + (val || '').replace(/"/g, '""') + '"';
-      const lines = ['input,expected_output,context,metadata'];
+      const customHeaders = Array.from(
+        new Set(
+          data.testCases.flatMap((tc) => Object.keys(tc.customFields || {})),
+        ),
+      );
+      const headers = ['input', 'expected_output', 'context', 'metadata', ...customHeaders];
+      const lines = [headers.join(',')];
       for (const tc of data.testCases) {
         const metaStr = tc.metadata ? JSON.stringify(tc.metadata) : '';
+        const customValues = customHeaders.map((header) => tc.customFields?.[header] || '');
         lines.push(
           [
             esc(tc.input),
             esc(tc.expectedOutput || ''),
             esc(tc.context || ''),
             esc(metaStr),
+            ...customValues.map((v) => esc(v)),
           ].join(','),
         );
       }
@@ -253,11 +263,21 @@ export class DatasetLoaderService implements OnModuleInit {
     const rows = this.parseRawCsv(content);
     if (rows.length < 2) return []; // Need header + at least 1 data row
 
-    const header = rows[0].map((h) => h.trim().toLowerCase());
-    const inputIdx = header.indexOf('input');
-    const expectedIdx = header.indexOf('expected_output');
-    const contextIdx = header.indexOf('context');
-    const metadataIdx = header.indexOf('metadata');
+    const header = rows[0].map((h) => h.trim());
+    const normalizedHeader = header.map((h) => h.toLowerCase());
+    const inputIdx = normalizedHeader.indexOf('input');
+    const expectedIdx = normalizedHeader.indexOf('expected_output');
+    const contextIdx = normalizedHeader.indexOf('context');
+    const metadataIdx = normalizedHeader.indexOf('metadata');
+    const customColumns = header
+      .map((name, index) => ({ name, index, normalized: normalizedHeader[index] }))
+      .filter(
+        ({ normalized }) =>
+          normalized !== 'input' &&
+          normalized !== 'expected_output' &&
+          normalized !== 'context' &&
+          normalized !== 'metadata',
+      );
 
     if (inputIdx === -1) {
       throw new Error('CSV missing required "input" column');
@@ -273,6 +293,7 @@ export class DatasetLoaderService implements OnModuleInit {
       const expectedRaw = expectedIdx >= 0 ? row[expectedIdx]?.trim() : null;
       const contextRaw = contextIdx >= 0 ? row[contextIdx]?.trim() : null;
       const metadataRaw = metadataIdx >= 0 ? row[metadataIdx]?.trim() : null;
+      const customFields: Record<string, string> = {};
 
       let metadata: Record<string, unknown> | null = null;
       if (metadataRaw) {
@@ -283,6 +304,10 @@ export class DatasetLoaderService implements OnModuleInit {
         }
       }
 
+      for (const { name, index } of customColumns) {
+        customFields[name] = row[index] ?? '';
+      }
+
       testCases.push({
         id: `${datasetId}-${i - 1}`,
         datasetId,
@@ -290,6 +315,7 @@ export class DatasetLoaderService implements OnModuleInit {
         expectedOutput: expectedRaw || null,
         context: contextRaw || null,
         metadata,
+        customFields,
       });
     }
 

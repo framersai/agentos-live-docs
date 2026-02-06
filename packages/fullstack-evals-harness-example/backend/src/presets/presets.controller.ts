@@ -33,6 +33,12 @@ export class PresetsController {
       throw new Error(`Grader preset not found: ${id}`);
     }
 
+    try {
+      return this.gradersService.findOne(id);
+    } catch {
+      // Continue and create from preset if not already present.
+    }
+
     return this.gradersService.create({
       name: preset.name,
       description: preset.description,
@@ -50,17 +56,24 @@ export class PresetsController {
   async seedAll() {
     const results = {
       graders: [] as any[],
+      skipped: [] as string[],
     };
 
     for (const preset of GRADER_PRESETS) {
-      const grader = await this.gradersService.create({
-        name: preset.name,
-        description: preset.description,
-        type: preset.type,
-        rubric: preset.rubric,
-        config: preset.config,
-      });
-      results.graders.push(grader);
+      try {
+        const existing = this.gradersService.findOne(preset.id);
+        results.graders.push(existing);
+        results.skipped.push(preset.id);
+      } catch {
+        const grader = await this.gradersService.create({
+          name: preset.name,
+          description: preset.description,
+          type: preset.type,
+          rubric: preset.rubric,
+          config: preset.config,
+        });
+        results.graders.push(grader);
+      }
     }
 
     return results;

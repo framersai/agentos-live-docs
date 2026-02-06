@@ -38,14 +38,6 @@ const GRADER_TYPES: {
     reference: 'https://arxiv.org/abs/1908.10084',
   },
   {
-    value: 'faithfulness',
-    label: 'Faithfulness',
-    description: 'Checks if output is faithful to provided context',
-    category: 'llm-powered',
-    inspiration: 'RAGAS-style metric (Es et al., 2023). Extracts atomic claims from the output and verifies each is supported by the provided context, measuring hallucination rate.',
-    reference: 'https://arxiv.org/abs/2309.15217',
-  },
-  {
     value: 'contains',
     label: 'Contains',
     description: 'Checks if output contains required substrings',
@@ -66,22 +58,6 @@ const GRADER_TYPES: {
     description: 'Validates output is valid JSON matching a schema',
     category: 'deterministic',
     inspiration: 'Inspired by structured output evaluation in function calling and tool-use benchmarks. Validates both syntactic correctness and schema compliance per JSON Schema (RFC draft).',
-  },
-  {
-    value: 'answer-relevancy',
-    label: 'Answer Relevancy',
-    description: 'Measures if the answer is relevant to the question',
-    category: 'llm-powered',
-    inspiration: 'RAGAS-style metric (Es et al., 2023). Generates hypothetical questions from the answer and measures cosine similarity to the original question. Penalizes vague or off-topic responses.',
-    reference: 'https://arxiv.org/abs/2309.15217',
-  },
-  {
-    value: 'context-relevancy',
-    label: 'Context Relevancy',
-    description: 'Measures if retrieved context is relevant to the question',
-    category: 'llm-powered',
-    inspiration: 'RAGAS-style metric (Es et al., 2023). Evaluates whether retrieved passages contain information needed to answer the question, measuring retrieval quality.',
-    reference: 'https://arxiv.org/abs/2309.15217',
   },
   {
     value: 'promptfoo',
@@ -341,7 +317,7 @@ export default function GradersPage() {
           <p>
             A <strong className="text-foreground">grader</strong> defines how to score a candidate&apos;s output against the expected answer. Each grader has a type that determines its evaluation method.
           </p>
-          <div className="grid gap-2 md:grid-cols-3">
+          <div className="grid gap-2 md:grid-cols-2">
             <div className="border border-border p-3 rounded-md">
               <strong className="text-foreground text-xs uppercase">Deterministic</strong>
               <ul className="mt-1 space-y-0.5 text-xs">
@@ -351,26 +327,18 @@ export default function GradersPage() {
                 <li><strong>JSON Schema</strong> — validates JSON structure</li>
               </ul>
             </div>
-            <div className="border border-border p-3 rounded-md">
-              <strong className="text-foreground text-xs uppercase">LLM-Powered (Built-in)</strong>
-              <ul className="mt-1 space-y-0.5 text-xs">
-                <li><strong>LLM Judge</strong> — evaluates against a rubric (<a href="https://arxiv.org/abs/2306.05685" target="_blank" rel="noopener" className="underline hover:text-foreground">LLM-as-Judge</a>)</li>
-                <li><strong>Semantic Similarity</strong> — embedding cosine distance (<a href="https://arxiv.org/abs/1908.10084" target="_blank" rel="noopener" className="underline hover:text-foreground">Sentence-BERT</a>)</li>
-                <li><strong>Faithfulness</strong> — claims grounded in context (<a href="https://arxiv.org/abs/2309.15217" target="_blank" rel="noopener" className="underline hover:text-foreground">RAGAS-style</a>)</li>
-                <li><strong>Answer/Context Relevancy</strong> — alignment metrics (<a href="https://arxiv.org/abs/2309.15217" target="_blank" rel="noopener" className="underline hover:text-foreground">RAGAS-style</a>)</li>
-              </ul>
-            </div>
             <div className="border border-border p-3 rounded-md bg-blue-500/5">
-              <strong className="text-foreground text-xs uppercase">Promptfoo-Backed</strong>
+              <strong className="text-foreground text-xs uppercase">LLM-Powered (via <a href="https://promptfoo.dev" target="_blank" rel="noopener" className="underline">promptfoo</a>)</strong>
               <ul className="mt-1 space-y-0.5 text-xs">
-                <li><strong>context-faithfulness</strong> — hallucination detection</li>
-                <li><strong>answer-relevance</strong> — query alignment</li>
+                <li><strong>LLM Judge</strong> — evaluates against your rubric</li>
+                <li><strong>Semantic Similarity</strong> — embedding cosine distance</li>
+                <li><strong>context-faithfulness</strong> — hallucination detection (<a href="https://arxiv.org/abs/2309.15217" target="_blank" rel="noopener" className="underline hover:text-foreground">RAGAS</a>)</li>
+                <li><strong>answer-relevance</strong> — query alignment (<a href="https://arxiv.org/abs/2309.15217" target="_blank" rel="noopener" className="underline hover:text-foreground">RAGAS</a>)</li>
+                <li><strong>context-relevance</strong> — retrieval quality (<a href="https://arxiv.org/abs/2309.15217" target="_blank" rel="noopener" className="underline hover:text-foreground">RAGAS</a>)</li>
                 <li><strong>context-recall</strong> — ground truth coverage</li>
-                <li><strong>llm-rubric</strong> — flexible LLM judge</li>
-                <li><strong>similar</strong> — embedding similarity</li>
                 <li className="text-muted-foreground/70">+ 40 more assertion types</li>
               </ul>
-              <a href="https://promptfoo.dev" target="_blank" rel="noopener" className="text-[10px] underline hover:text-foreground mt-1 inline-block">promptfoo.dev</a>
+              <p className="text-[10px] text-muted-foreground mt-2">Supports OpenAI, Anthropic, Ollama via Settings</p>
             </div>
           </div>
           <div className="border-t border-border pt-3 space-y-2">

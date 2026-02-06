@@ -1,5 +1,5 @@
 import { Injectable, Inject, NotFoundException } from '@nestjs/common';
-import { nanoid } from 'nanoid';
+import { randomUUID } from 'crypto';
 import { Subject, Observable } from 'rxjs';
 import { DB_ADAPTER, IDbAdapter } from '../database/db.module';
 import { DatasetsService } from '../datasets/datasets.service';
@@ -93,7 +93,7 @@ export class ExperimentsService {
     }
 
     const experiment = await this.db.insertExperiment({
-      id: nanoid(),
+      id: randomUUID(),
       name: dto.name || `Experiment ${new Date().toISOString().slice(0, 16)}`,
       datasetId: dto.datasetId,
       graderIds: JSON.stringify(dto.graderIds),
@@ -163,17 +163,21 @@ export class ExperimentsService {
               candidateId: candidate.id,
             });
 
-            const metadata = testCase.metadata
+            const metadataFromRow = testCase.metadata
               ? typeof testCase.metadata === 'string'
                 ? JSON.parse(testCase.metadata)
                 : testCase.metadata
               : undefined;
+            const metadata = {
+              ...(metadataFromRow || {}),
+              ...(testCase.customFields || {}),
+            };
 
             const runResult = await this.candidateRunnerService.run(candidate, {
               input: testCase.input,
               expectedOutput: testCase.expectedOutput || undefined,
               context: testCase.context || undefined,
-              metadata,
+              metadata: Object.keys(metadata).length > 0 ? metadata : undefined,
             });
 
             const generatedOutput = runResult.output;
@@ -222,7 +226,7 @@ export class ExperimentsService {
                 const result = await grader.evaluate(evalInput);
 
                 await this.db.insertResult({
-                  id: nanoid(),
+                  id: randomUUID(),
                   experimentId,
                   testCaseId: testCase.id,
                   graderId: graderDef.id,
@@ -252,7 +256,7 @@ export class ExperimentsService {
                 });
               } catch (error) {
                 await this.db.insertResult({
-                  id: nanoid(),
+                  id: randomUUID(),
                   experimentId,
                   testCaseId: testCase.id,
                   graderId: graderDef.id,
@@ -313,7 +317,7 @@ export class ExperimentsService {
               const result = await grader.evaluate(evalInput);
 
               await this.db.insertResult({
-                id: nanoid(),
+                id: randomUUID(),
                 experimentId,
                 testCaseId: testCase.id,
                 graderId: graderDef.id,
@@ -339,7 +343,7 @@ export class ExperimentsService {
               });
             } catch (error) {
               await this.db.insertResult({
-                id: nanoid(),
+                id: randomUUID(),
                 experimentId,
                 testCaseId: testCase.id,
                 graderId: graderDef.id,

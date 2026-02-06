@@ -47,6 +47,7 @@ export class DatasetsService {
         expectedOutput?: string;
         context?: string;
         metadata?: Record<string, unknown>;
+        customFields?: Record<string, string>;
       }>;
     },
   ) {

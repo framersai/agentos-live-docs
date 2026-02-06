@@ -185,19 +185,17 @@ export default function ExperimentsPage() {
             <li>
               <strong className="text-foreground">Load a dataset</strong> — Go to{' '}
               <Link href="/datasets" className="underline hover:text-foreground">Datasets</Link>{' '}
-              and click <strong>Load Preset</strong>. Try <em>Prompt Injection Red Team</em> (8 adversarial test cases)
-              or <em>Research Paper Extraction</em> (5 real AI papers).
+              and choose one of the loaded CSV datasets (or upload your own CSV).
             </li>
             <li>
-              <strong className="text-foreground">Load a grader</strong> — Go to{' '}
+              <strong className="text-foreground">Choose graders</strong> — Go to{' '}
               <Link href="/graders" className="underline hover:text-foreground">Graders</Link>{' '}
-              and click <strong>Load Preset</strong>. For injection testing, load <em>Injection Resistance Judge</em>.
-              For extraction, load <em>Paper Extraction Schema</em> + <em>Extraction Completeness Judge</em>.
+              to create/edit grader definitions, then select one or more graders here.
             </li>
             <li>
-              <strong className="text-foreground">Load a candidate</strong> (optional) — Go to{' '}
+              <strong className="text-foreground">Select candidates</strong> (optional) — Go to{' '}
               <Link href="/candidates" className="underline hover:text-foreground">Candidates</Link>{' '}
-              and load a preset. Each candidate is a prompt configuration — system prompt, template, and model settings.
+              to review prompt files. Each candidate is a prompt configuration (system prompt + template + model settings).
               Without candidates, graders evaluate the expected output directly (useful for testing grader behavior).
             </li>
             <li>
@@ -209,9 +207,9 @@ export default function ExperimentsPage() {
           <div className="border-t border-border pt-3 space-y-2">
             <p className="text-foreground font-medium">Suggested first experiments:</p>
             <ul className="list-disc ml-5 space-y-1 text-xs">
-              <li><strong>Injection testing:</strong> Prompt Injection dataset + Hardened Assistant + Naive Assistant candidates + Injection Resistance Judge grader. Compare how defenses matter.</li>
-              <li><strong>Extraction quality:</strong> Research Paper Extraction dataset + Strict JSON Extractor + Loose JSON Extractor candidates + Paper Extraction Schema + Extraction Completeness Judge graders. Compare grounded vs inferential extraction.</li>
-              <li><strong>Reasoning:</strong> Multi-Step Reasoning dataset + Q&A Basic candidate + Exact Match (Flexible) grader. See how well the LLM handles math and logic.</li>
+              <li><strong>Extraction quality:</strong> Research Paper Extraction dataset + Strict JSON Extractor + Loose JSON Extractor candidates + Paper Extraction Schema + Extraction Completeness Judge graders.</li>
+              <li><strong>Grounding check:</strong> Q&amp;A with Context dataset + analyst-full candidate + Faithfulness (Strict) grader.</li>
+              <li><strong>Prompt comparison:</strong> Same dataset/graders, two candidate prompts. Compare pass rates side-by-side.</li>
             </ul>
           </div>
         </div>

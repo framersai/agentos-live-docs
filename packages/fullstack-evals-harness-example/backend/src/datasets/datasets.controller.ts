@@ -67,6 +67,7 @@ export class DatasetsController {
         expectedOutput?: string;
         context?: string;
         metadata?: Record<string, unknown>;
+        customFields?: Record<string, string>;
       }>;
     },
   ) {
@@ -89,6 +90,7 @@ export class DatasetsController {
         expectedOutput: tc.expectedOutput,
         context: tc.context,
         metadata: tc.metadata,
+        customFields: tc.customFields,
       })),
     };
 
@@ -105,12 +107,18 @@ export class DatasetsController {
   exportCsv(@Param('id') id: string, @Res() res: Response) {
     const dataset = this.datasetsService.findOne(id);
 
-    const headers = ['input', 'expected_output', 'context', 'metadata'];
+    const customHeaders = Array.from(
+      new Set(dataset.testCases.flatMap((tc) => Object.keys(tc.customFields || {}))),
+    );
+    const headers = ['input', 'expected_output', 'context', 'metadata', ...customHeaders];
     const rows = dataset.testCases.map((tc) => [
       `"${(tc.input || '').replace(/"/g, '""')}"`,
       `"${(tc.expectedOutput || '').replace(/"/g, '""')}"`,
       `"${(tc.context || '').replace(/"/g, '""')}"`,
       `"${tc.metadata ? JSON.stringify(tc.metadata).replace(/"/g, '""') : ''}"`,
+      ...customHeaders.map(
+        (header) => `"${(tc.customFields?.[header] || '').replace(/"/g, '""')}"`,
+      ),
     ]);
 
     const csv = [headers.join(','), ...rows.map((row) => row.join(','))].join('\n');

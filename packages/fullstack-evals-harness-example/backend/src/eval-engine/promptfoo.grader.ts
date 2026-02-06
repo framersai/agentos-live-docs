@@ -1,5 +1,12 @@
 import { BaseGrader, EvalInput, GraderResult, GraderConfig } from './base.grader';
-import { evaluate, type Assertion } from 'promptfoo';
+import { LlmService } from '../llm/llm.service';
+
+type PromptfooAssertion = {
+  type: string;
+  threshold?: number;
+  value?: string;
+  provider?: string;
+};
 
 /**
  * Promptfoo-backed grader - uses promptfoo's assertion engine.
@@ -14,29 +21,26 @@ import { evaluate, type Assertion } from 'promptfoo';
  * - factuality (OpenAI factuality)
  * - And 40+ more assertion types
  *
- * Why promptfoo instead of custom implementations?
- * - MIT licensed, actively maintained, used by Shopify/Discord/Microsoft
- * - RAGAS metrics are complex (claim extraction, NLI verification, etc.)
- * - promptfoo's implementations are production-tested
- * - Saves significant development and maintenance effort
+ * Supports multiple providers via Settings:
+ * - OpenAI (gpt-4o, etc.)
+ * - Anthropic (claude-sonnet-4-5, etc.)
+ * - Ollama (llama3, mistral, etc.)
  *
  * Reference: https://promptfoo.dev/docs/configuration/expected-outputs/
  */
 export class PromptfooGrader extends BaseGrader {
   private assertion: string;
   private threshold: number;
-  private provider?: string;
 
   constructor(
     graderConfig: GraderConfig,
-    private openaiApiKey?: string,
+    private llmService: LlmService,
   ) {
     super(graderConfig);
 
     // Get promptfoo assertion type from config
     this.assertion = this.getConfigValue('assertion', 'llm-rubric');
     this.threshold = this.getConfigValue('threshold', 0.7);
-    this.provider = this.getConfigValue('provider', undefined);
   }
 
   get type(): string {
@@ -47,8 +51,13 @@ export class PromptfooGrader extends BaseGrader {
     const { input, output, expected, context } = evalInput;
 
     try {
+      const { evaluate } = await import('promptfoo');
+
       // Build the promptfoo assertion based on type
       const assertion = this.buildAssertion(expected, context);
+
+      // Get provider config from LlmService settings
+      const providerConfig = await this.getProviderConfig();
 
       // Run promptfoo evaluation
       // We use an "echo" provider that just returns the output we already have
@@ -66,10 +75,16 @@ export class PromptfooGrader extends BaseGrader {
             context: context || '',
             expected: expected || '',
           },
-          assert: [assertion],
+          assert: [assertion as any],
         }],
-        // Use environment API key or passed key
-        env: this.openaiApiKey ? { OPENAI_API_KEY: this.openaiApiKey } : undefined,
+        // Pass provider env vars
+        env: providerConfig.env,
+        // Default provider for LLM-based assertions
+        defaultTest: {
+          options: {
+            provider: providerConfig.provider,
+          },
+        },
       });
 
       return this.parsePromptfooResult(result);
@@ -83,11 +98,57 @@ export class PromptfooGrader extends BaseGrader {
   }
 
   /**
+   * Get provider configuration from LlmService settings.
+   */
+  private async getProviderConfig(): Promise<{ provider?: string; env?: Record<string, string> }> {
+    const settings = await this.llmService.getFullSettings();
+    const env: Record<string, string> = {};
+
+    // Map our provider names to promptfoo provider format
+    let provider: string | undefined;
+
+    switch (settings.provider) {
+      case 'openai':
+        provider = settings.model ? `openai:${settings.model}` : 'openai:gpt-4o';
+        if (settings.apiKey) {
+          env.OPENAI_API_KEY = settings.apiKey;
+        } else if (process.env.OPENAI_API_KEY) {
+          env.OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+        }
+        break;
+
+      case 'anthropic':
+        provider = settings.model ? `anthropic:messages:${settings.model}` : 'anthropic:messages:claude-sonnet-4-5-20250929';
+        if (settings.apiKey) {
+          env.ANTHROPIC_API_KEY = settings.apiKey;
+        } else if (process.env.ANTHROPIC_API_KEY) {
+          env.ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
+        }
+        break;
+
+      case 'ollama':
+        const baseUrl = settings.baseUrl || process.env.OLLAMA_BASE_URL || 'http://localhost:11434';
+        provider = settings.model ? `ollama:${settings.model}` : 'ollama:llama3';
+        env.OLLAMA_BASE_URL = baseUrl;
+        break;
+
+      default:
+        // Fallback to OpenAI
+        provider = 'openai:gpt-4o';
+        if (process.env.OPENAI_API_KEY) {
+          env.OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+        }
+    }
+
+    return { provider, env };
+  }
+
+  /**
    * Build a promptfoo assertion based on the configured type.
    */
-  private buildAssertion(expected?: string, context?: string): Assertion {
-    const baseAssertion: Assertion = {
-      type: this.assertion as Assertion['type'],
+  private buildAssertion(expected?: string, context?: string): PromptfooAssertion {
+    const baseAssertion: PromptfooAssertion = {
+      type: this.assertion,
       threshold: this.threshold,
     };
 

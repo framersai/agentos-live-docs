@@ -22,6 +22,7 @@ export interface TestCase {
   expectedOutput?: string;
   context?: string;
   metadata?: Record<string, unknown>;
+  customFields?: Record<string, string>;
   createdAt?: string;
 }
 
@@ -29,12 +30,9 @@ export type GraderType =
   | 'exact-match'
   | 'llm-judge'
   | 'semantic-similarity'
-  | 'faithfulness'
   | 'contains'
   | 'regex'
   | 'json-schema'
-  | 'answer-relevancy'
-  | 'context-relevancy'
   | 'promptfoo';
 
 export interface Grader {

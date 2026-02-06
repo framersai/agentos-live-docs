@@ -140,6 +140,16 @@ describe('DatasetLoaderService', () => {
       expect(result[0].metadata).toBeNull();
     });
 
+    it('parses custom columns into customFields', () => {
+      const csv =
+        'input,expected_output,difficulty,topic\n"q1","a1","hard","math"';
+      const result = service.parseCsv('test', csv);
+      expect(result[0].customFields).toEqual({
+        difficulty: 'hard',
+        topic: 'math',
+      });
+    });
+
     it('throws if input column is missing', () => {
       const csv = 'question,answer\n"q1","a1"';
       expect(() => service.parseCsv('test', csv)).toThrow('missing required "input" column');

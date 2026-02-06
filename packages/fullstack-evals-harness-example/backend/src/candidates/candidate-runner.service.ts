@@ -49,17 +49,18 @@ export class CandidateRunnerService {
    * Interpolates {{input}}, {{context}}, {{metadata.*}} into the template.
    */
   private async runLlmPrompt(candidate: any, testCase: TestCaseInput): Promise<string> {
-    const vars: Record<string, string> = {
+    const vars: Record<string, unknown> = {
       input: testCase.input,
       context: testCase.context || '',
       expected: testCase.expectedOutput || '',
+      metadata: {},
     };
 
-    // Flatten metadata for template substitution
+    // Provide both {{metadata.key}} and {{key}} access for convenience.
     if (testCase.metadata) {
       for (const [key, value] of Object.entries(testCase.metadata)) {
-        vars[`metadata.${key}`] = String(value);
-        vars[key] = String(value); // Also available without prefix
+        (vars.metadata as Record<string, unknown>)[key] = value;
+        vars[key] = value;
       }
     }
 
@@ -104,11 +105,18 @@ export class CandidateRunnerService {
     let body: string | undefined;
     if (method !== 'GET') {
       if (candidate.endpointBodyTemplate) {
-        const vars: Record<string, string> = {
+        const vars: Record<string, unknown> = {
           input: testCase.input,
           context: testCase.context || '',
           expected: testCase.expectedOutput || '',
+          metadata: {},
         };
+        if (testCase.metadata) {
+          for (const [key, value] of Object.entries(testCase.metadata)) {
+            (vars.metadata as Record<string, unknown>)[key] = value;
+            vars[key] = value;
+          }
+        }
         body = renderTemplate(candidate.endpointBodyTemplate, vars);
       } else {
         body = JSON.stringify({

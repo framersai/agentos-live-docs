@@ -19,7 +19,7 @@ Graders (evaluate each output)
     ↓
 Experiments (orchestrate the full run)
     ↓
-Stats (aggregate pass rates, scores, comparisons)
+Experiment analytics (pass rates, weighted scores, comparisons)
 ```
 
 Datasets are **CSV files** in `backend/datasets/` — portable, git-trackable, and editable in any spreadsheet app. Candidates are **markdown files** in `backend/prompts/`. Graders and experiment results live in SQLite.
@@ -30,7 +30,7 @@ Datasets are **CSV files** in `backend/datasets/` — portable, git-trackable, a
 2. A **Candidate** is a markdown prompt file in `backend/prompts/` defining how to produce output (LLM prompt or HTTP endpoint)
 3. A **Grader** defines how to evaluate: exact match, LLM judge, semantic similarity, faithfulness, etc.
 4. An **Experiment** = `dataset × candidates × graders` — runs each test case through each candidate, then grades every output with every grader
-5. **Stats** show pass rates, weighted scores, and deltas per grader and per candidate
+5. **Experiment stats** show pass rates, weighted scores, and deltas per grader and per candidate
 
 ### Weighted Grader Scoring
 
@@ -61,7 +61,7 @@ cd packages/fullstack-evals-harness-example
 
 # Backend
 cd backend && pnpm install && npx nest build
-DATABASE_PATH=./data/evals.sqlite node dist/src/main.js
+DATABASE_PATH=./data/evals.sqlite node dist/main.js
 
 # Frontend (separate terminal)
 cd frontend && pnpm install && npx next build && npx next start -p 3020
@@ -70,7 +70,7 @@ cd frontend && pnpm install && npx next build && npx next start -p 3020
 Or with PM2:
 
 ```bash
-pm2 start dist/src/main.js --name evals-backend --cwd backend
+pm2 start dist/main.js --name evals-backend --cwd backend
 pm2 start "npx next start -p 3020" --name evals-frontend --cwd frontend
 ```
 
@@ -138,7 +138,7 @@ Without a sidecar, the name is derived from the filename (hyphens → spaces, ti
 
 ### Step 3: Create or Load Graders
 
-Go to **Graders** tab. 7 presets available:
+Go to **Graders** tab. Graders are loaded from `backend/graders/*.yaml` (13 included in this repo), and 7 quick-load templates are available under `/api/presets/graders`.
 
 **LLM-powered graders (require configured LLM):**
 - `Faithfulness (Strict)` — RAGAS-inspired, 90%+ claims must be context-supported
@@ -156,7 +156,7 @@ Create your own with any type. For LLM Judge, write a custom rubric describing p
 
 ### Step 4: Prompt Files (Candidates)
 
-Go to **Candidates** tab. Candidates are markdown files in `backend/prompts/` — a read-only view in the UI.
+Go to **Candidates** tab. Candidates are markdown files in `backend/prompts/` — editable from the prompt detail page or directly on disk.
 
 **Prompt file format:**
 ```markdown
@@ -247,15 +247,7 @@ curl "http://localhost:3021/api/experiments/EXPERIMENT_ID/compare?baseline=CANDI
 }
 ```
 
-### Step 7: View Stats
-
-Go to **Stats** tab for aggregate metrics across experiments:
-- Overall pass rate
-- Pass rate by grader
-- Pass rate by candidate
-- Score distributions
-
-### Step 8: Export Results
+### Step 7: Export Results
 
 ```bash
 # JSON export
@@ -310,11 +302,12 @@ Base URL: `http://localhost:3021/api`
 
 Interactive Swagger docs: `http://localhost:3021/api/docs`
 
-### Datasets (read-only — loaded from CSV files)
+### Datasets (file-based — loaded from CSV files, editable via `PUT /datasets/:id`)
 | Method | Path | Description |
 |--------|------|-------------|
 | GET | `/datasets` | List all datasets |
 | GET | `/datasets/:id` | Get dataset with test cases |
+| PUT | `/datasets/:id` | Rewrite dataset rows/metadata to CSV on disk |
 | POST | `/datasets/reload` | Re-read all CSV files from disk |
 | POST | `/datasets/import` | Upload CSV `{filename, csv, name?, description?}` |
 | GET | `/datasets/:id/export/json` | Export as JSON |
@@ -329,11 +322,12 @@ Interactive Swagger docs: `http://localhost:3021/api/docs`
 | PUT | `/graders/:id` | Update grader |
 | DELETE | `/graders/:id` | Delete grader |
 
-### Prompts (Candidates — read-only, file-based)
+### Prompts (Candidates — file-based, editable)
 | Method | Path | Description |
 |--------|------|-------------|
 | GET | `/prompts` | List all loaded prompts |
 | GET | `/prompts/:id` | Get prompt by filename ID |
+| PUT | `/prompts/:id` | Update prompt frontmatter/body on disk |
 | POST | `/prompts/:id/test` | Test with `{input, context?, metadata?}` |
 | POST | `/prompts/reload` | Re-read all .md files from disk |
 

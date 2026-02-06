@@ -296,13 +296,14 @@ graph TD
 
 The UI uses Tailwind CSS with a clean monochromatic design—focus on the data.
 
-Seven tabs:
+Primary navigation tabs:
 - **Datasets**: Inline editing, import/export (JSON/CSV), file paths, linked prompts
 - **Graders**: YAML-based with expandable details, research references, reload from disk
 - **Candidates**: Full detail page with frontmatter editing, save to disk, inline test panel
 - **Experiments**: Run `dataset × candidates × graders`, multi-candidate results table, candidate comparison
-- **Stats**: Aggregate metrics and trends
 - **Settings**: Runtime LLM configuration (provider, model, API key)
+
+Additional page:
 - **About**: Documentation and references
 
 Source data (datasets, prompts, graders) is file-based. Runtime data (experiments, results, settings) persists in SQLite.

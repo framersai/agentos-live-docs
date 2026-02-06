@@ -10,7 +10,7 @@
  */
 export function renderTemplate(
   template: string,
-  variables: Record<string, string>,
+  variables: Record<string, unknown>,
 ): string {
   return template.replace(/\{\{(\w[\w.]*)\}\}/g, (_, key) => {
     const parts = key.split('.');
