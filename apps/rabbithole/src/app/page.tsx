@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import '@/styles/landing.scss';
 import '@/styles/wunderland.scss';
 import RabbitVortex from '@/components/RabbitVortex';
@@ -7,8 +8,28 @@ import LookingGlassCTA from '@/components/LookingGlassCTA';
 import { PricingSection } from '@/components/PricingSection';
 import { RabbitHoleLogo, Footer } from '@/components/brand';
 import { LanternToggle } from '@/components/LanternToggle';
+import { TRIAL_DAYS } from '@/config/pricing';
 
 export default function LandingPage() {
+  const [waitlistEmail, setWaitlistEmail] = useState('');
+  const [waitlistStatus, setWaitlistStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+
+  const handleWaitlist = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!waitlistEmail) return;
+    setWaitlistStatus('loading');
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ type: 'waitlist', email: waitlistEmail }),
+      });
+      setWaitlistStatus(res.ok ? 'success' : 'error');
+    } catch {
+      setWaitlistStatus('error');
+    }
+  };
+
   return (
     <div className="landing">
       {/* Background effects */}
@@ -28,13 +49,14 @@ export default function LandingPage() {
             <a href="#how-it-works" className="nav__link">How It Works</a>
             <a href="#pricing" className="nav__link">Pricing</a>
             <a href="/about" className="nav__link">About</a>
+            <a href="/contact" className="nav__link">Contact</a>
             <a href="https://docs.wunderland.sh" className="nav__link" target="_blank" rel="noopener">Docs</a>
           </div>
 
           <div className="nav__actions">
             <LanternToggle />
             <a href="/login" className="btn btn--ghost">Sign In</a>
-            <a href="/signup" className="btn btn--primary">Get Started</a>
+            <a href="/pricing" className="btn btn--primary">Start Trial</a>
           </div>
         </div>
       </nav>
@@ -58,8 +80,8 @@ export default function LandingPage() {
             </p>
 
             <div className="hero__actions">
-              <a href="/signup" className="btn btn--primary btn--lg">
-                Request Access
+              <a href="/pricing" className="btn btn--primary btn--lg">
+                Start {TRIAL_DAYS}-day free trial
               </a>
               <a href="#how-it-works" className="btn btn--secondary btn--lg">
                 See How It Works
@@ -258,14 +280,34 @@ export default function LandingPage() {
               <p className="cta__subtitle">
                 Join the waitlist for early access to Rabbit Hole
               </p>
-              <form className="cta__form" onSubmit={(e) => e.preventDefault()}>
-                <input
-                  type="email"
-                  placeholder="Enter your email"
-                  className="cta__input"
-                />
-                <button type="submit" className="btn btn--primary">Join Waitlist</button>
-              </form>
+              {waitlistStatus === 'success' ? (
+                <p className="text-holographic" style={{ fontSize: '1.125rem', fontWeight: 600 }}>
+                  You&apos;re on the list! We&apos;ll be in touch soon.
+                </p>
+              ) : (
+                <form className="cta__form" onSubmit={handleWaitlist}>
+                  <input
+                    type="email"
+                    placeholder="Enter your email"
+                    className="cta__input"
+                    value={waitlistEmail}
+                    onChange={(e) => setWaitlistEmail(e.target.value)}
+                    required
+                  />
+                  <button
+                    type="submit"
+                    className="btn btn--primary"
+                    disabled={waitlistStatus === 'loading'}
+                  >
+                    {waitlistStatus === 'loading' ? 'Joining...' : 'Join Waitlist'}
+                  </button>
+                </form>
+              )}
+              {waitlistStatus === 'error' && (
+                <p className="text-label" style={{ color: 'var(--color-error)', marginTop: '0.5rem' }}>
+                  Something went wrong. Please try again.
+                </p>
+              )}
             </div>
           </div>
         </div>
