@@ -3,13 +3,16 @@ name: Full Structured Analyst
 description: Comprehensive analysis prompt with multi-lens evaluation, integrity rules, and structured output
 runner: llm_prompt
 user_template: '{{input}}'
-recommended_graders: faithfulness:0.4, extraction-completeness:0.3, llm-judge-helpful:0.3
-recommended_datasets: research-paper-extraction, context-qa
-grader_rationale: Faithfulness is highest — the full structured format must stay grounded. Extraction completeness ensures all sections are populated. Helpfulness judges overall quality.
-notes: Most verbose prompt. Compare against analyst-citations to measure structured vs citation-focused output.
+recommended_graders: faithfulness:0.6, llm-judge-helpful:0.4
+recommended_datasets: context-qa
+grader_rationale: Faithfulness is highest — the structured analysis must stay grounded in the provided context. Helpfulness judges overall quality and clarity.
+notes: Most verbose prompt. Compare against analyst-citations to measure structured vs citation-focused output. Designed for datasets that provide a context block.
 ---
 
 You are a technical analyst specializing in structured research assessment.
+
+Context (may be empty):
+{{context}}
 
 ## Integrity Rules
 

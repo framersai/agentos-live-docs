@@ -1,7 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
-import { use } from 'react';
+import { useState, useEffect, useCallback, use } from 'react';
 import Link from 'next/link';
 import {
   ArrowLeft,
@@ -16,7 +15,7 @@ import {
 import { useRouter } from 'next/navigation';
 import { gradersApi } from '@/lib/api';
 import { useToast } from '@/components/Toast';
-import type { Grader, GraderType } from '@/lib/types';
+import type { Grader } from '@/lib/types';
 
 const GRADER_TYPE_INFO: Record<
   string,
@@ -49,9 +48,7 @@ function toEditable(g: Grader): EditableGrader {
 
   // Build config JSON excluding threshold (shown separately)
   const configWithoutThreshold = g.config
-    ? Object.fromEntries(
-        Object.entries(g.config).filter(([k]) => k !== 'threshold'),
-      )
+    ? Object.fromEntries(Object.entries(g.config).filter(([k]) => k !== 'threshold'))
     : {};
   const hasExtra = Object.keys(configWithoutThreshold).length > 0;
 
@@ -126,11 +123,7 @@ function buildYamlPreview(grader: Grader, edited: EditableGrader): string {
   return lines.join('\n');
 }
 
-export default function GraderDetailPage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
+export default function GraderDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const router = useRouter();
   const { toast } = useToast();
@@ -264,19 +257,13 @@ export default function GraderDetailPage({
   }
 
   const typeInfo = GRADER_TYPE_INFO[grader.type];
-  const hasRubric =
-    grader.type === 'llm-judge' ||
-    grader.type === 'promptfoo' ||
-    !!grader.rubric;
+  const hasRubric = grader.type === 'llm-judge' || grader.type === 'promptfoo' || !!grader.rubric;
   const hasThreshold =
     grader.type === 'semantic-similarity' ||
     grader.type === 'promptfoo' ||
     grader.type === 'llm-judge' ||
     (grader.config && 'threshold' in grader.config);
-  const hasSchema =
-    grader.type === 'json-schema' &&
-    grader.config &&
-    'schema' in grader.config;
+  const hasSchema = grader.type === 'json-schema' && grader.config && 'schema' in grader.config;
   const assertionType =
     grader.type === 'promptfoo' && grader.config && 'assertion' in grader.config
       ? String(grader.config.assertion)
@@ -287,10 +274,7 @@ export default function GraderDetailPage({
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <Link
-            href="/graders"
-            className="text-muted-foreground hover:text-foreground"
-          >
+          <Link href="/graders" className="text-muted-foreground hover:text-foreground">
             <ArrowLeft className="h-5 w-5" />
           </Link>
           <div>
@@ -312,9 +296,7 @@ export default function GraderDetailPage({
           </div>
         </div>
         <div className="flex items-center gap-2">
-          {isDirty() && (
-            <span className="text-xs text-amber-500">Unsaved changes</span>
-          )}
+          {isDirty() && <span className="text-xs text-amber-500">Unsaved changes</span>}
           <button
             onClick={handleReset}
             disabled={!isDirty() || saving}
@@ -328,11 +310,7 @@ export default function GraderDetailPage({
             disabled={!isDirty() || saving}
             className="btn-primary flex items-center gap-2"
           >
-            {saving ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : (
-              <Save className="h-4 w-4" />
-            )}
+            {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
             Save to Disk
           </button>
           <button
@@ -375,16 +353,12 @@ export default function GraderDetailPage({
                   >
                     {typeInfo?.label || grader.type}
                   </span>
-                  <span className="text-xs text-muted-foreground">
-                    (immutable)
-                  </span>
+                  <span className="text-xs text-muted-foreground">(immutable)</span>
                 </div>
               </div>
             </div>
             <div>
-              <label className="text-xs font-medium block mb-1">
-                Description
-              </label>
+              <label className="text-xs font-medium block mb-1">Description</label>
               <input
                 type="text"
                 value={edited.description}
@@ -423,26 +397,19 @@ export default function GraderDetailPage({
 
             {assertionType && (
               <div>
-                <label className="text-xs font-medium block mb-1">
-                  Assertion Type (promptfoo)
-                </label>
-                <div className="input bg-muted/30 cursor-not-allowed text-sm">
-                  {assertionType}
-                </div>
+                <label className="text-xs font-medium block mb-1">Assertion Type (promptfoo)</label>
+                <div className="input bg-muted/30 cursor-not-allowed text-sm">{assertionType}</div>
               </div>
             )}
 
             {hasThreshold && (
               <div>
                 <label className="text-xs font-medium block mb-1">
-                  Threshold{' '}
-                  <span className="text-muted-foreground font-normal">
-                    (0.0 - 1.0)
-                  </span>
+                  Threshold <span className="text-muted-foreground font-normal">(0.0 - 1.0)</span>
                 </label>
                 <p className="text-[11px] text-muted-foreground mb-1">
-                  Score threshold for pass/fail. Common: 0.7 (moderate), 0.85
-                  (balanced), 0.9+ (strict)
+                  Score threshold for pass/fail. Common: 0.7 (moderate), 0.85 (balanced), 0.9+
+                  (strict)
                 </p>
                 <div className="flex items-center gap-3">
                   <input
@@ -470,19 +437,12 @@ export default function GraderDetailPage({
 
             {hasSchema && (
               <div>
-                <label className="text-xs font-medium block mb-1">
-                  JSON Schema
-                </label>
+                <label className="text-xs font-medium block mb-1">JSON Schema</label>
                 <p className="text-[11px] text-muted-foreground mb-1">
-                  Schema that output JSON must match. Edit in the advanced config
-                  below.
+                  Schema that output JSON must match. Edit in the advanced config below.
                 </p>
                 <pre className="text-xs text-muted-foreground bg-muted/50 p-3 rounded font-mono whitespace-pre-wrap max-h-48 overflow-y-auto">
-                  {JSON.stringify(
-                    (grader.config as Record<string, unknown>)?.schema,
-                    null,
-                    2,
-                  )}
+                  {JSON.stringify((grader.config as Record<string, unknown>)?.schema, null, 2)}
                 </pre>
               </div>
             )}
@@ -501,8 +461,8 @@ export default function GraderDetailPage({
               {showAdvancedConfig && (
                 <div className="mt-2">
                   <p className="text-[11px] text-muted-foreground mb-1">
-                    Raw config JSON (excluding threshold). For json-schema type,
-                    this includes the schema definition.
+                    Raw config JSON (excluding threshold). For json-schema type, this includes the
+                    schema definition.
                   </p>
                   <textarea
                     value={edited.configJson}
@@ -535,13 +495,11 @@ export default function GraderDetailPage({
             </h3>
             <div className="flex items-center gap-2 text-sm">
               <FileText className="h-4 w-4 text-muted-foreground" />
-              <code className="text-xs">
-                {grader.filePath || `graders/${id}.yaml`}
-              </code>
+              <code className="text-xs">{grader.filePath || `graders/${id}.yaml`}</code>
             </div>
             <p className="text-[11px] text-muted-foreground">
-              Edit the <code>.yaml</code> file directly or use this form.
-              Changes are saved to disk immediately.
+              Edit the <code>.yaml</code> file directly or use this form. Changes are saved to disk
+              immediately.
             </p>
           </div>
 
@@ -557,27 +515,25 @@ export default function GraderDetailPage({
               placeholder="Research background, technique description..."
             />
             <div>
-              <label className="text-xs font-medium block mb-1">
-                Reference URL
-              </label>
+              <label className="text-xs font-medium block mb-1">Reference URL</label>
               <input
                 type="text"
                 value={edited.reference}
                 onChange={(e) => updateField('reference', e.target.value)}
-                className="input text-xs"
+                className="input text-xs w-full"
                 placeholder="https://arxiv.org/abs/..."
               />
+              {edited.reference && (
+                <a
+                  href={edited.reference}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-xs text-muted-foreground underline hover:text-foreground inline-flex items-center gap-1 mt-1 break-all"
+                >
+                  {edited.reference} <ExternalLink className="h-3 w-3 flex-shrink-0" />
+                </a>
+              )}
             </div>
-            {edited.reference && (
-              <a
-                href={edited.reference}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-xs text-muted-foreground underline hover:text-foreground inline-flex items-center gap-1"
-              >
-                Open paper <ExternalLink className="h-3 w-3" />
-              </a>
-            )}
           </div>
 
           {/* Raw YAML from disk */}
@@ -610,16 +566,10 @@ export default function GraderDetailPage({
                 ID: <code>{grader.id}</code>
               </div>
               {grader.createdAt && (
-                <div>
-                  Created:{' '}
-                  {new Date(grader.createdAt).toLocaleDateString()}
-                </div>
+                <div>Created: {new Date(grader.createdAt).toLocaleDateString()}</div>
               )}
               {grader.updatedAt && (
-                <div>
-                  Updated:{' '}
-                  {new Date(grader.updatedAt).toLocaleDateString()}
-                </div>
+                <div>Updated: {new Date(grader.updatedAt).toLocaleDateString()}</div>
               )}
             </div>
           </div>
@@ -632,8 +582,7 @@ export default function GraderDetailPage({
           <div className="card p-6 w-full max-w-sm">
             <h2 className="text-lg font-semibold mb-2">Delete Grader?</h2>
             <p className="text-sm text-muted-foreground mb-4">
-              This will permanently delete{' '}
-              <strong>{grader.name}</strong> ({id}.yaml) from disk.
+              This will permanently delete <strong>{grader.name}</strong> ({id}.yaml) from disk.
             </p>
             <div className="flex gap-2 justify-end">
               <button

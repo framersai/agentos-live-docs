@@ -79,6 +79,7 @@ export interface Candidate {
   graderRationale?: string;
   notes?: string;
   source?: 'file';
+  filePath?: string;
   createdAt?: string;
   updatedAt?: string;
 }

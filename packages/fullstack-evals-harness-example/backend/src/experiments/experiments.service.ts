@@ -80,6 +80,18 @@ export class ExperimentsService {
   }
 
   /**
+   * Delete an experiment and its results.
+   */
+  async remove(id: string) {
+    const experiment = await this.db.findExperimentById(id);
+    if (!experiment) {
+      throw new NotFoundException(`Experiment ${id} not found`);
+    }
+    await this.db.deleteExperiment(id);
+    return { deleted: true };
+  }
+
+  /**
    * Create and run a new experiment.
    */
   async create(dto: CreateExperimentDto) {
@@ -103,6 +115,43 @@ export class ExperimentsService {
         createdAt: now,
         updatedAt: now,
       });
+    }
+
+    // Ensure test cases exist in SQLite (file-based datasets only live in memory)
+    for (const tc of dataset.testCases) {
+      const existingTC = await this.db.findTestCaseById(tc.id);
+      if (!existingTC) {
+        await this.db.insertTestCase({
+          id: tc.id,
+          datasetId: dataset.id,
+          input: tc.input,
+          expectedOutput: tc.expectedOutput || null,
+          context: tc.context || null,
+          metadata: tc.metadata
+            ? typeof tc.metadata === 'string'
+              ? tc.metadata
+              : JSON.stringify(tc.metadata)
+            : null,
+          createdAt: new Date(),
+        });
+      }
+    }
+
+    // Ensure graders exist in SQLite (file-based graders are YAML-only)
+    for (const grader of graders) {
+      const existingGrader = await this.db.findGraderById(grader.id);
+      if (!existingGrader) {
+        await this.db.insertGrader({
+          id: grader.id,
+          name: grader.name,
+          description: grader.description || null,
+          type: grader.type,
+          rubric: grader.rubric || null,
+          config: grader.config ? JSON.stringify(grader.config) : null,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        });
+      }
     }
 
     const experiment = await this.db.insertExperiment({
@@ -531,12 +580,12 @@ export class ExperimentsService {
     const challengerResults = results.filter((r) => r.candidateId === challengerId);
 
     // Build lookup by testCaseId+graderId
-    const baselineMap = new Map<string, typeof baselineResults[0]>();
+    const baselineMap = new Map<string, (typeof baselineResults)[0]>();
     for (const r of baselineResults) {
       baselineMap.set(`${r.testCaseId}:${r.graderId}`, r);
     }
 
-    const challengerMap = new Map<string, typeof challengerResults[0]>();
+    const challengerMap = new Map<string, (typeof challengerResults)[0]>();
     for (const r of challengerResults) {
       challengerMap.set(`${r.testCaseId}:${r.graderId}`, r);
     }

@@ -30,7 +30,7 @@ export interface CompletionOptions {
 export class LlmService {
   constructor(
     @Inject(forwardRef(() => SettingsService))
-    private settingsService: SettingsService,
+    private settingsService: SettingsService
   ) {}
 
   /**
@@ -108,7 +108,7 @@ export class LlmService {
   private async completeOpenAI(
     settings: LlmSettings,
     prompt: string,
-    options: { temperature: number; maxTokens: number; systemPrompt?: string },
+    options: { temperature: number; maxTokens: number; systemPrompt?: string }
   ): Promise<string> {
     if (!settings.apiKey) {
       throw new Error('OpenAI API key not configured. Go to Settings to add your API key.');
@@ -127,7 +127,7 @@ export class LlmService {
         Authorization: `Bearer ${settings.apiKey}`,
       },
       body: JSON.stringify({
-        model: settings.model || 'gpt-4.1-mini',
+        model: settings.model || 'gpt-4.1',
         messages,
         temperature: options.temperature,
         // GPT-5.x and o-series models require max_completion_tokens
@@ -176,7 +176,7 @@ export class LlmService {
   private async completeAnthropic(
     settings: LlmSettings,
     prompt: string,
-    options: { temperature: number; maxTokens: number; systemPrompt?: string },
+    options: { temperature: number; maxTokens: number; systemPrompt?: string }
   ): Promise<string> {
     if (!settings.apiKey) {
       throw new Error('Anthropic API key not configured. Go to Settings to add your API key.');
@@ -190,7 +190,7 @@ export class LlmService {
         'anthropic-version': '2023-06-01',
       },
       body: JSON.stringify({
-        model: settings.model || 'claude-haiku-4-5-20251001',
+        model: settings.model || 'claude-sonnet-4-5-20250929',
         max_tokens: options.maxTokens,
         system: options.systemPrompt,
         messages: [{ role: 'user', content: prompt }],
@@ -266,7 +266,7 @@ Text: "${text.substring(0, 500)}"`;
   private async completeOllama(
     settings: LlmSettings,
     prompt: string,
-    options: { temperature: number; maxTokens: number; systemPrompt?: string },
+    options: { temperature: number; maxTokens: number; systemPrompt?: string }
   ): Promise<string> {
     const baseUrl = settings.baseUrl || 'http://localhost:11434';
 

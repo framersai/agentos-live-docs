@@ -1,6 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { drizzle, BetterSQLite3Database } from 'drizzle-orm/better-sqlite3';
-import { eq, inArray, sql } from 'drizzle-orm';
+import { eq, inArray } from 'drizzle-orm';
 import * as BetterSqlite3 from 'better-sqlite3';
 import { existsSync, mkdirSync } from 'fs';
 import { dirname } from 'path';
@@ -30,6 +30,7 @@ const Database = (BetterSqlite3 as any).default || BetterSqlite3;
 
 @Injectable()
 export class SqliteAdapter implements IDbAdapter {
+  private readonly logger = new Logger(SqliteAdapter.name);
   private db: BetterSQLite3Database<typeof schema>;
   private sqlite: any;
   private filePath: string;
@@ -152,7 +153,7 @@ export class SqliteAdapter implements IDbAdapter {
       CREATE INDEX IF NOT EXISTS idx_results_candidate ON experiment_results(candidate_id);
     `);
 
-    console.log('SQLite database initialized at:', this.filePath);
+    this.logger.log(`SQLite database initialized at: ${this.filePath}`);
   }
 
   private migrateColumns() {
@@ -325,10 +326,7 @@ export class SqliteAdapter implements IDbAdapter {
   }
 
   async findCandidateVariants(parentId: string): Promise<Candidate[]> {
-    return this.db
-      .select()
-      .from(schema.candidates)
-      .where(eq(schema.candidates.parentId, parentId));
+    return this.db.select().from(schema.candidates).where(eq(schema.candidates.parentId, parentId));
   }
 
   async insertCandidate(candidate: InsertCandidate): Promise<Candidate> {

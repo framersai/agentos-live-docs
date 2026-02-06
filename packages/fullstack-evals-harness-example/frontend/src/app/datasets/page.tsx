@@ -1,23 +1,12 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { ChevronRight, RefreshCw, Upload, Info, ChevronDown, Wand2 } from 'lucide-react';
+import { ChevronRight, RefreshCw, Upload, ChevronDown, Wand2, Info } from 'lucide-react';
 import Link from 'next/link';
 import { datasetsApi, presetsApi, promptsApi } from '@/lib/api';
 import { useToast } from '@/components/Toast';
+import { Tooltip } from '@/components/Tooltip';
 import type { Dataset, Candidate } from '@/lib/types';
-
-function Tooltip({ text }: { text: string }) {
-  return (
-    <div className="group relative inline-block">
-      <Info className="h-4 w-4 text-muted-foreground cursor-help" />
-      <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-foreground text-background text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-50 max-w-xs text-center">
-        {text}
-        <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-foreground" />
-      </div>
-    </div>
-  );
-}
 
 const SYNTHETIC_STYLES = [
   { value: 'qa', label: 'Q&A', description: 'Question-answer pairs' },
@@ -47,7 +36,10 @@ export default function DatasetsPage() {
 
   useEffect(() => {
     loadDatasets();
-    promptsApi.list().then(setCandidates).catch(() => {});
+    promptsApi
+      .list()
+      .then(setCandidates)
+      .catch(() => {});
   }, []);
 
   async function loadDatasets() {
@@ -196,24 +188,29 @@ export default function DatasetsPage() {
           <Info className="h-4 w-4" />
           How datasets work
         </span>
-        <ChevronDown className={`h-4 w-4 text-muted-foreground transition-transform ${showGuide ? 'rotate-180' : ''}`} />
+        <ChevronDown
+          className={`h-4 w-4 text-muted-foreground transition-transform ${showGuide ? 'rotate-180' : ''}`}
+        />
       </button>
       {showGuide && (
         <div className="card p-5 space-y-3 text-sm text-muted-foreground">
           <p>
-            Datasets are <strong className="text-foreground">CSV files</strong> in <code>backend/datasets/</code>.
-            Each CSV has columns: <code>input</code>, <code>expected_output</code>, <code>context</code>, <code>metadata</code>.
+            Datasets are <strong className="text-foreground">CSV files</strong> in{' '}
+            <code>backend/datasets/</code>. Each CSV has columns: <code>input</code>,{' '}
+            <code>expected_output</code>, <code>context</code>, <code>metadata</code>.
           </p>
           <p>
-            <strong className="text-foreground">To add a dataset:</strong> Place a <code>.csv</code> file in the datasets directory
-            and click &ldquo;Reload from Disk&rdquo;, or use &ldquo;Upload CSV&rdquo; to import directly.
+            <strong className="text-foreground">To add a dataset:</strong> Place a <code>.csv</code>{' '}
+            file in the datasets directory and click &ldquo;Reload from Disk&rdquo;, or use
+            &ldquo;Upload CSV&rdquo; to import directly.
           </p>
           <p>
             An optional <code>.meta.json</code> sidecar provides the dataset name and description.
             Without it, the name is derived from the filename.
           </p>
           <p>
-            <strong className="text-foreground">Generate</strong> uses AI to create test cases and saves them as a new CSV file.
+            <strong className="text-foreground">Generate</strong> uses AI to create test cases and
+            saves them as a new CSV file.
           </p>
         </div>
       )}
@@ -246,20 +243,21 @@ export default function DatasetsPage() {
                 <div>
                   <h3 className="font-medium">{dataset.name}</h3>
                   {dataset.description && (
-                    <p className="text-sm text-muted-foreground mt-0.5">
-                      {dataset.description}
-                    </p>
+                    <p className="text-sm text-muted-foreground mt-0.5">{dataset.description}</p>
                   )}
                   <p className="text-xs text-muted-foreground mt-1">
                     <code className="text-[11px]">{dataset.filePath || `${dataset.id}.csv`}</code>
                     {' · '}
-                    {dataset.testCaseCount || 0} test cases
+                    {dataset.testCaseCount || 0} records (test cases)
                   </p>
                   {datasetCandidateMap.get(dataset.id) && (
                     <p className="text-xs text-muted-foreground mt-1 flex items-center gap-1 flex-wrap">
                       <span className="opacity-60">Used by:</span>
                       {datasetCandidateMap.get(dataset.id)!.map((name) => (
-                        <span key={name} className="inline-block px-1.5 py-0.5 bg-muted rounded text-[11px]">
+                        <span
+                          key={name}
+                          className="inline-block px-1.5 py-0.5 bg-muted rounded text-[11px]"
+                        >
                           {name}
                         </span>
                       ))}
@@ -290,9 +288,7 @@ export default function DatasetsPage() {
                 <input
                   type="text"
                   value={syntheticForm.name}
-                  onChange={(e) =>
-                    setSyntheticForm({ ...syntheticForm, name: e.target.value })
-                  }
+                  onChange={(e) => setSyntheticForm({ ...syntheticForm, name: e.target.value })}
                   placeholder="Physics Questions"
                   className="input"
                   autoFocus
@@ -306,9 +302,7 @@ export default function DatasetsPage() {
                 <input
                   type="text"
                   value={syntheticForm.topic}
-                  onChange={(e) =>
-                    setSyntheticForm({ ...syntheticForm, topic: e.target.value })
-                  }
+                  onChange={(e) => setSyntheticForm({ ...syntheticForm, topic: e.target.value })}
                   placeholder="e.g., Basic arithmetic, Python programming, US History"
                   className="input"
                 />

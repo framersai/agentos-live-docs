@@ -1,8 +1,10 @@
 import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
+import { Logger } from '@nestjs/common';
 
 async function bootstrap() {
+  const logger = new Logger('Bootstrap');
   const app = await NestFactory.create(AppModule);
 
   // Enable CORS for frontend
@@ -17,7 +19,8 @@ async function bootstrap() {
   // Swagger/OpenAPI documentation
   const config = new DocumentBuilder()
     .setTitle('Eval Harness API')
-    .setDescription(`
+    .setDescription(
+      `
 API for the fullstack evaluation harness.
 
 ## Overview
@@ -31,7 +34,8 @@ No authentication required for local development.
 - **Graders**: Evaluation criteria (exact-match, llm-judge, semantic-similarity, faithfulness)
 - **Experiments**: Run graders against datasets to evaluate AI outputs
 - **Settings**: Runtime configuration for LLM providers and models
-    `)
+    `
+    )
     .setVersion('1.0')
     .addTag('datasets', 'Manage test case datasets')
     .addTag('graders', 'Define evaluation criteria')
@@ -56,10 +60,10 @@ No authentication required for local development.
     },
   });
 
-  const port = process.env.PORT || 3021;
+  const port = Number(process.env.PORT) || 3021;
   await app.listen(port);
-  console.log(`Backend running on http://localhost:${port}`);
-  console.log(`API docs available at http://localhost:${port}/api/docs`);
+  logger.log(`Backend running on http://localhost:${port}`);
+  logger.log(`API docs available at http://localhost:${port}/api/docs`);
 }
 
 bootstrap();

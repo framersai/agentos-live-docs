@@ -1,99 +1,62 @@
 import { DatasetLoaderService } from './dataset-loader.service';
+import * as fs from 'fs';
+import * as os from 'os';
+import * as path from 'path';
 
 describe('DatasetLoaderService', () => {
   let service: DatasetLoaderService;
+  let tmpDir: string;
 
   beforeEach(() => {
     service = new DatasetLoaderService();
+    tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'dataset-test-'));
+    // Use an isolated fixtures directory so tests don't depend on repo seed data.
+    (service as any).datasetsDir = tmpDir;
   });
 
-  describe('loadAll', () => {
-    it('loads CSV files from the datasets directory', () => {
-      const result = service.loadAll();
-      expect(result.loaded).toBeGreaterThan(0);
-    });
-
-    it('loads all expected CSV files', () => {
-      service.loadAll();
-      const datasets = service.findAll();
-      expect(datasets.length).toBe(2);
-    });
+  afterEach(() => {
+    fs.rmSync(tmpDir, { recursive: true, force: true });
   });
 
-  describe('findOne', () => {
-    beforeEach(() => {
-      service.loadAll();
-    });
+  it('loads CSV files from datasetsDir (including meta.json + custom columns)', () => {
+    fs.writeFileSync(
+      path.join(tmpDir, 'demo.csv'),
+      [
+        'input,expected_output,context,metadata,difficulty',
+        '"q1","a1","ctx","{""k"":1}","hard"',
+      ].join('\n') + '\n',
+      'utf-8'
+    );
+    fs.writeFileSync(
+      path.join(tmpDir, 'demo.meta.json'),
+      JSON.stringify({ name: 'Demo Dataset', description: 'For tests' }),
+      'utf-8'
+    );
 
-    it('returns a dataset by ID', () => {
-      const dataset = service.findOne('context-qa');
-      expect(dataset.name).toBe('Q&A with Context');
-      expect(dataset.source).toBe('file');
-      expect(dataset.testCaseCount).toBe(3);
-    });
+    const result = service.loadAll();
+    expect(result.loaded).toBe(1);
 
-    it('includes test cases with deterministic IDs', () => {
-      const dataset = service.findOne('context-qa');
-      expect(dataset.testCases[0].id).toBe('context-qa-0');
-      expect(dataset.testCases[1].id).toBe('context-qa-1');
-      expect(dataset.testCases[2].id).toBe('context-qa-2');
-    });
+    const dataset = service.findOne('demo');
+    expect(dataset.name).toBe('Demo Dataset');
+    expect(dataset.description).toBe('For tests');
+    expect(dataset.source).toBe('file');
+    expect(dataset.filePath).toBe('datasets/demo.csv');
+    expect(dataset.metaPath).toBe('datasets/demo.meta.json');
+    expect(dataset.testCaseCount).toBe(1);
 
-    it('parses test case fields correctly', () => {
-      const dataset = service.findOne('context-qa');
-      const tc = dataset.testCases[0];
-      expect(tc.input).toBe('When was the company founded?');
-      expect(tc.expectedOutput).toBe('The company was founded in 2015.');
-      expect(tc.context).toContain('Acme Corp');
-      expect(tc.datasetId).toBe('context-qa');
-    });
-
-    it('throws NotFoundException for unknown ID', () => {
-      expect(() => service.findOne('nonexistent')).toThrow();
-    });
+    const tc = dataset.testCases[0];
+    expect(tc.id).toBe('demo-0');
+    expect(tc.datasetId).toBe('demo');
+    expect(tc.input).toBe('q1');
+    expect(tc.expectedOutput).toBe('a1');
+    expect(tc.context).toBe('ctx');
+    expect(tc.metadata).toEqual({ k: 1 });
+    expect(tc.customFields).toEqual({ difficulty: 'hard' });
   });
 
-  describe('findMany', () => {
-    beforeEach(() => {
-      service.loadAll();
-    });
-
-    it('returns multiple datasets by ID', () => {
-      const datasets = service.findMany(['context-qa', 'research-paper-extraction']);
-      expect(datasets).toHaveLength(2);
-      expect(datasets[0].id).toBe('context-qa');
-      expect(datasets[1].id).toBe('research-paper-extraction');
-    });
-
-    it('throws on any unknown ID', () => {
-      expect(() => service.findMany(['context-qa', 'bogus'])).toThrow();
-    });
-  });
-
-  describe('research-paper-extraction dataset', () => {
-    beforeEach(() => {
-      service.loadAll();
-    });
-
-    it('has 5 test cases', () => {
-      const dataset = service.findOne('research-paper-extraction');
-      expect(dataset.testCaseCount).toBe(5);
-    });
-
-    it('has JSON expected output', () => {
-      const dataset = service.findOne('research-paper-extraction');
-      const tc = dataset.testCases[0];
-      expect(tc.expectedOutput).toBeTruthy();
-      const parsed = JSON.parse(tc.expectedOutput!);
-      expect(parsed.title).toBe('Attention Is All You Need');
-      expect(parsed.authors).toContain('Ashish Vaswani');
-    });
-
-    it('reads meta.json for name and description', () => {
-      const dataset = service.findOne('research-paper-extraction');
-      expect(dataset.name).toBe('Research Paper Extraction');
-      expect(dataset.description).toBe('5 real AI paper abstracts for structured JSON extraction');
-    });
+  it('throws NotFoundException for unknown ID', () => {
+    service.loadAll();
+    expect(() => service.findOne('nonexistent')).toThrow();
   });
 
   describe('CSV parsing', () => {
@@ -129,7 +92,8 @@ describe('DatasetLoaderService', () => {
     });
 
     it('parses metadata JSON', () => {
-      const csv = 'input,expected_output,context,metadata\n"q1","a1","","{""difficulty"":""hard""}"';
+      const csv =
+        'input,expected_output,context,metadata\n"q1","a1","","{""difficulty"":""hard""}"';
       const result = service.parseCsv('test', csv);
       expect(result[0].metadata).toEqual({ difficulty: 'hard' });
     });
@@ -141,8 +105,7 @@ describe('DatasetLoaderService', () => {
     });
 
     it('parses custom columns into customFields', () => {
-      const csv =
-        'input,expected_output,difficulty,topic\n"q1","a1","hard","math"';
+      const csv = 'input,expected_output,difficulty,topic\n"q1","a1","hard","math"';
       const result = service.parseCsv('test', csv);
       expect(result[0].customFields).toEqual({
         difficulty: 'hard',

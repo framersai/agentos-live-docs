@@ -19,7 +19,7 @@ type PromptfooAssertion = {
  * - similar (semantic similarity via embeddings)
  * - llm-rubric (LLM-as-judge)
  * - factuality (OpenAI factuality)
- * - And 40+ more assertion types
+ * - And many more assertion types
  *
  * Supports multiple providers via Settings:
  * - OpenAI (gpt-4o, etc.)
@@ -34,7 +34,7 @@ export class PromptfooGrader extends BaseGrader {
 
   constructor(
     graderConfig: GraderConfig,
-    private llmService: LlmService,
+    private llmService: LlmService
   ) {
     super(graderConfig);
 
@@ -54,7 +54,7 @@ export class PromptfooGrader extends BaseGrader {
       const { evaluate } = await import('promptfoo');
 
       // Build the promptfoo assertion based on type
-      const assertion = this.buildAssertion(expected, context);
+      const assertion = this.buildAssertion(expected);
 
       // Get provider config from LlmService settings
       const providerConfig = await this.getProviderConfig();
@@ -69,14 +69,16 @@ export class PromptfooGrader extends BaseGrader {
             callApi: async () => ({ output }),
           } as any, // Custom echo provider
         ],
-        tests: [{
-          vars: {
-            query: input,
-            context: context || '',
-            expected: expected || '',
+        tests: [
+          {
+            vars: {
+              query: input,
+              context: context || '',
+              expected: expected || '',
+            },
+            assert: [assertion as any],
           },
-          assert: [assertion as any],
-        }],
+        ],
         // Pass provider env vars
         env: providerConfig.env,
         // Default provider for LLM-based assertions
@@ -109,7 +111,7 @@ export class PromptfooGrader extends BaseGrader {
 
     switch (settings.provider) {
       case 'openai':
-        provider = settings.model ? `openai:${settings.model}` : 'openai:gpt-4o';
+        provider = settings.model ? `openai:${settings.model}` : 'openai:gpt-4.1';
         if (settings.apiKey) {
           env.OPENAI_API_KEY = settings.apiKey;
         } else if (process.env.OPENAI_API_KEY) {
@@ -118,7 +120,9 @@ export class PromptfooGrader extends BaseGrader {
         break;
 
       case 'anthropic':
-        provider = settings.model ? `anthropic:messages:${settings.model}` : 'anthropic:messages:claude-sonnet-4-5-20250929';
+        provider = settings.model
+          ? `anthropic:messages:${settings.model}`
+          : 'anthropic:messages:claude-sonnet-4-5-20250929';
         if (settings.apiKey) {
           env.ANTHROPIC_API_KEY = settings.apiKey;
         } else if (process.env.ANTHROPIC_API_KEY) {
@@ -126,15 +130,16 @@ export class PromptfooGrader extends BaseGrader {
         }
         break;
 
-      case 'ollama':
+      case 'ollama': {
         const baseUrl = settings.baseUrl || process.env.OLLAMA_BASE_URL || 'http://localhost:11434';
         provider = settings.model ? `ollama:${settings.model}` : 'ollama:llama3';
         env.OLLAMA_BASE_URL = baseUrl;
         break;
+      }
 
       default:
         // Fallback to OpenAI
-        provider = 'openai:gpt-4o';
+        provider = 'openai:gpt-4.1';
         if (process.env.OPENAI_API_KEY) {
           env.OPENAI_API_KEY = process.env.OPENAI_API_KEY;
         }
@@ -146,7 +151,7 @@ export class PromptfooGrader extends BaseGrader {
   /**
    * Build a promptfoo assertion based on the configured type.
    */
-  private buildAssertion(expected?: string, context?: string): PromptfooAssertion {
+  private buildAssertion(expected?: string): PromptfooAssertion {
     const baseAssertion: PromptfooAssertion = {
       type: this.assertion,
       threshold: this.threshold,
@@ -158,7 +163,8 @@ export class PromptfooGrader extends BaseGrader {
         // Use the grader's rubric for LLM-based evaluation
         return {
           ...baseAssertion,
-          value: this.rubric || 'Evaluate if the response is accurate, helpful, and well-structured.',
+          value:
+            this.rubric || 'Evaluate if the response is accurate, helpful, and well-structured.',
         };
 
       case 'similar':
@@ -235,7 +241,9 @@ export class PromptfooGrader extends BaseGrader {
     return {
       pass: assertionResult.pass,
       score: assertionResult.score ?? (assertionResult.pass ? 1 : 0),
-      reason: reasons.join('. ') || `${this.assertion} evaluation: ${assertionResult.pass ? 'passed' : 'failed'}`,
+      reason:
+        reasons.join('. ') ||
+        `${this.assertion} evaluation: ${assertionResult.pass ? 'passed' : 'failed'}`,
     };
   }
 }

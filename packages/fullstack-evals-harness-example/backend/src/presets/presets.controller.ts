@@ -2,17 +2,14 @@ import { Controller, Get, Post, Param, Body } from '@nestjs/common';
 import { GRADER_PRESETS } from './presets';
 import { GradersService } from '../graders/graders.service';
 import { DatasetsService } from '../datasets/datasets.service';
-import {
-  SyntheticService,
-  SyntheticGenerationRequest,
-} from './synthetic.service';
+import { SyntheticService, SyntheticGenerationRequest } from './synthetic.service';
 
 @Controller('presets')
 export class PresetsController {
   constructor(
     private gradersService: GradersService,
     private datasetsService: DatasetsService,
-    private syntheticService: SyntheticService,
+    private syntheticService: SyntheticService
   ) {}
 
   /**
@@ -40,6 +37,7 @@ export class PresetsController {
     }
 
     return this.gradersService.create({
+      id: preset.id,
       name: preset.name,
       description: preset.description,
       type: preset.type,
@@ -66,6 +64,7 @@ export class PresetsController {
         results.skipped.push(preset.id);
       } catch {
         const grader = await this.gradersService.create({
+          id: preset.id,
           name: preset.name,
           description: preset.description,
           type: preset.type,
@@ -93,22 +92,18 @@ export class PresetsController {
   @Post('synthetic/dataset')
   async generateSyntheticDataset(
     @Body()
-    body: SyntheticGenerationRequest & { name: string; description?: string },
+    body: SyntheticGenerationRequest & { name: string; description?: string }
   ) {
     const testCases = await this.syntheticService.generateTestCases(body);
 
     // Build CSV content
-    const escCsv = (val: string) =>
-      '"' + (val || '').replace(/"/g, '""') + '"';
+    const escCsv = (val: string) => '"' + (val || '').replace(/"/g, '""') + '"';
     const lines = ['input,expected_output,context,metadata'];
     for (const tc of testCases) {
       lines.push(
-        [
-          escCsv(tc.input),
-          escCsv(tc.expectedOutput || ''),
-          escCsv(tc.context || ''),
-          '""',
-        ].join(','),
+        [escCsv(tc.input), escCsv(tc.expectedOutput || ''), escCsv(tc.context || ''), '""'].join(
+          ','
+        )
       );
     }
 
@@ -119,8 +114,7 @@ export class PresetsController {
 
     return this.datasetsService.importCsv(filename, lines.join('\n') + '\n', {
       name: body.name,
-      description:
-        body.description || `Synthetic ${body.style} dataset: ${body.topic}`,
+      description: body.description || `Synthetic ${body.style} dataset: ${body.topic}`,
     });
   }
 }
