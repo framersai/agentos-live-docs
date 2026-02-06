@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { datasetsApi, promptsApi } from '@/lib/api';
+import { useToast } from '@/components/Toast';
 import type { Dataset, TestCase, Candidate } from '@/lib/types';
 
 interface EditableCase {
@@ -67,6 +68,7 @@ export default function DatasetDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = use(params);
+  const { toast } = useToast();
   const [dataset, setDataset] = useState<Dataset | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -147,12 +149,12 @@ export default function DatasetDetailPage({
 
     const reserved = ['input', 'expected_output', 'context', 'metadata'];
     if (reserved.includes(normalizedName.toLowerCase())) {
-      alert(`"${normalizedName}" is reserved. Choose another field name.`);
+      toast(`"${normalizedName}" is reserved. Choose another field name.`, 'warning');
       return;
     }
 
     if (customColumns.includes(normalizedName)) {
-      alert(`"${normalizedName}" already exists.`);
+      toast(`"${normalizedName}" already exists.`, 'warning');
       return;
     }
 
@@ -222,7 +224,7 @@ export default function DatasetDetailPage({
       setOriginalCases(cases);
     } catch (error) {
       console.error('Failed to save:', error);
-      alert('Failed to save dataset. Check the console for details.');
+      toast('Failed to save dataset. Check the console for details.', 'error');
     } finally {
       setSaving(false);
     }

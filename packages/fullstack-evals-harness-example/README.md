@@ -189,6 +189,8 @@ You are a technical analyst...
 
 **To add a new prompt:** Create a `.md` file in `backend/prompts/` and click "Reload from Disk" in the UI. To edit, change the file and reload.
 
+**Prompt variations:** In the Candidates tab, use `+` for a manual variant clone or `AI` to generate multiple variants at once. AI generation accepts per-run config (count/instructions/model params) and defaults to current Settings values when fields are left blank.
+
 **Testing inline:** Each prompt has a "Test" button. Enter sample input, click play, see the output and latency.
 
 ### Step 5: Run an Experiment
@@ -329,6 +331,7 @@ Interactive Swagger docs: `http://localhost:3021/api/docs`
 | GET | `/prompts/:id` | Get prompt by filename ID |
 | PUT | `/prompts/:id` | Update prompt frontmatter/body on disk |
 | POST | `/prompts/:id/test` | Test with `{input, context?, metadata?}` |
+| POST | `/prompts/:id/variants/generate` | AI-generate variants `{count?, customInstructions?, provider?, model?, temperature?, maxTokens?}` |
 | POST | `/prompts/reload` | Re-read all .md files from disk |
 
 ### Experiments

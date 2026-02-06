@@ -5,15 +5,39 @@ import { Settings, Zap, RefreshCw, Check, X, Loader2 } from 'lucide-react';
 import { settingsApi, LlmSettings, ConnectionTestResult } from '@/lib/api';
 
 const PROVIDERS = [
+  { id: 'openai', name: 'OpenAI', description: 'GPT-5.x, GPT-4.1, o3/o4 reasoning models' },
+  { id: 'anthropic', name: 'Anthropic', description: 'Claude Opus 4.6, Sonnet 4.5, Haiku models' },
   { id: 'ollama', name: 'Ollama (Local)', description: 'Run models locally with Ollama' },
-  { id: 'openai', name: 'OpenAI', description: 'GPT-4, GPT-3.5, and embedding models' },
-  { id: 'anthropic', name: 'Anthropic', description: 'Claude models' },
 ] as const;
 
 const DEFAULT_MODELS: Record<string, string[]> = {
-  ollama: ['dolphin-llama3:8b', 'llama3:8b', 'mistral:7b', 'codellama:7b'],
-  openai: ['gpt-4o-mini', 'gpt-4o', 'gpt-3.5-turbo'],
-  anthropic: ['claude-3-haiku-20240307', 'claude-3-sonnet-20240229', 'claude-3-opus-20240229'],
+  openai: ['gpt-5.2', 'gpt-5.1', 'gpt-5', 'gpt-5-mini', 'gpt-5-nano', 'gpt-4.1', 'gpt-4.1-mini', 'gpt-4.1-nano', 'gpt-4o', 'gpt-4o-mini', 'o3', 'o4-mini', 'o3-mini', 'o1'],
+  anthropic: ['claude-opus-4-6', 'claude-opus-4-5-20251101', 'claude-sonnet-4-5-20250929', 'claude-sonnet-4-20250514', 'claude-haiku-4-5-20251001', 'claude-haiku-3-5'],
+  ollama: ['dolphin-llama3:8b', 'llama3.2:3b', 'llama3:8b', 'mistral', 'codellama', 'gemma:7b', 'phi3'],
+};
+
+/** Pricing per 1M tokens: in (input) · out (output) */
+const MODEL_PRICING: Record<string, string> = {
+  'gpt-5.2': 'in: $1.75 · out: $14 /1M tok',
+  'gpt-5.1': 'in: $1.25 · out: $10 /1M tok',
+  'gpt-5': 'in: $1.25 · out: $10 /1M tok',
+  'gpt-5-mini': 'in: $0.25 · out: $2 /1M tok',
+  'gpt-5-nano': 'in: $0.05 · out: $0.40 /1M tok',
+  'gpt-4.1': 'in: $2 · out: $8 /1M tok',
+  'gpt-4.1-mini': 'in: $0.40 · out: $1.60 /1M tok',
+  'gpt-4.1-nano': 'in: $0.10 · out: $0.40 /1M tok',
+  'gpt-4o': 'in: $2.50 · out: $10 /1M tok',
+  'gpt-4o-mini': 'in: $0.15 · out: $0.60 /1M tok',
+  'o3': 'in: $2 · out: $8 /1M tok',
+  'o4-mini': 'in: $1.10 · out: $4.40 /1M tok',
+  'o3-mini': 'in: $0.55 · out: $2.20 /1M tok',
+  'o1': 'in: $15 · out: $60 /1M tok',
+  'claude-opus-4-6': 'in: $5 · out: $25 /1M tok',
+  'claude-opus-4-5-20251101': 'in: $5 · out: $25 /1M tok',
+  'claude-sonnet-4-5-20250929': 'in: $3 · out: $15 /1M tok',
+  'claude-sonnet-4-20250514': 'in: $3 · out: $15 /1M tok',
+  'claude-haiku-4-5-20251001': 'in: $1 · out: $5 /1M tok',
+  'claude-haiku-3-5': 'in: $0.80 · out: $4 /1M tok',
 };
 
 export default function SettingsPage() {
@@ -182,7 +206,7 @@ export default function SettingsPage() {
             >
               {(DEFAULT_MODELS[formData.provider || 'ollama'] || []).map((model) => (
                 <option key={model} value={model}>
-                  {model}
+                  {model}{MODEL_PRICING[model] ? ` (${MODEL_PRICING[model]})` : ''}
                 </option>
               ))}
             </select>

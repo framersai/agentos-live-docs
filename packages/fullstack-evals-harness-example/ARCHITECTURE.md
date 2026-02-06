@@ -199,6 +199,7 @@ POSTs to an external API with an interpolated JSON body template. Parses the res
 ### Variant Lineage
 
 Candidates can reference a `parentId` to form a variant tree, tracking prompt iteration history. `variantLabel` provides a human-readable description of what changed.
+Variants can be created manually or generated in batches via `POST /api/prompts/:id/variants/generate`, with per-request generation config that falls back to runtime Settings defaults.
 
 ### Presets
 
@@ -284,7 +285,7 @@ The backend exposes a REST API with OpenAPI/Swagger documentation available at `
 graph TD
     A["/api/datasets"] --> B[CRUD + reload + import CSV]
     C["/api/graders"] --> D[CRUD + reload from YAML]
-    K["/api/prompts"] --> L[CRUD + test + reload from MD]
+    K["/api/prompts"] --> L[CRUD + test + variant generation + reload from MD]
     E["/api/experiments"] --> F[Run + SSE stream + compare]
     G["/api/settings"] --> H[Runtime LLM config]
     I["/api/presets"] --> J[Grader templates + synthetic generation]

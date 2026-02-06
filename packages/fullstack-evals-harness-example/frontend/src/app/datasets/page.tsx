@@ -3,8 +3,9 @@
 import { useState, useEffect, useRef } from 'react';
 import { ChevronRight, RefreshCw, Upload, Info, ChevronDown, Wand2 } from 'lucide-react';
 import Link from 'next/link';
-import { datasetsApi, presetsApi } from '@/lib/api';
-import type { Dataset } from '@/lib/types';
+import { datasetsApi, presetsApi, promptsApi } from '@/lib/api';
+import { useToast } from '@/components/Toast';
+import type { Dataset, Candidate } from '@/lib/types';
 
 function Tooltip({ text }: { text: string }) {
   return (
@@ -26,7 +27,9 @@ const SYNTHETIC_STYLES = [
 ] as const;
 
 export default function DatasetsPage() {
+  const { toast } = useToast();
   const [datasets, setDatasets] = useState<Dataset[]>([]);
+  const [candidates, setCandidates] = useState<Candidate[]>([]);
   const [loading, setLoading] = useState(true);
   const [reloading, setReloading] = useState(false);
   const [showGuide, setShowGuide] = useState(false);
@@ -44,6 +47,7 @@ export default function DatasetsPage() {
 
   useEffect(() => {
     loadDatasets();
+    promptsApi.list().then(setCandidates).catch(() => {});
   }, []);
 
   async function loadDatasets() {
@@ -57,12 +61,24 @@ export default function DatasetsPage() {
     }
   }
 
+  // Map dataset IDs to candidate names that use them
+  const datasetCandidateMap = new Map<string, string[]>();
+  for (const c of candidates) {
+    if (c.recommendedDatasets) {
+      for (const dsId of c.recommendedDatasets) {
+        const list = datasetCandidateMap.get(dsId) || [];
+        list.push(c.name);
+        datasetCandidateMap.set(dsId, list);
+      }
+    }
+  }
+
   async function reloadFromDisk() {
     setReloading(true);
     try {
       const result = await datasetsApi.reload();
       await loadDatasets();
-      alert(`Reloaded ${result.loaded} datasets from disk`);
+      toast(`Reloaded ${result.loaded} datasets from disk`, 'success');
     } catch (error) {
       console.error('Failed to reload:', error);
     } finally {
@@ -81,7 +97,7 @@ export default function DatasetsPage() {
       await loadDatasets();
     } catch (error) {
       console.error('Failed to import CSV:', error);
-      alert('Failed to import CSV. Check the file format.');
+      toast('Failed to import CSV. Check the file format.', 'error');
     }
 
     if (fileInputRef.current) {
@@ -112,7 +128,7 @@ export default function DatasetsPage() {
       loadDatasets();
     } catch (error) {
       console.error('Failed to generate synthetic dataset:', error);
-      alert('Failed to generate. Check LLM configuration.');
+      toast('Failed to generate. Check LLM configuration.', 'error');
     } finally {
       setGeneratingSynthetic(false);
     }
@@ -239,6 +255,16 @@ export default function DatasetsPage() {
                     {' · '}
                     {dataset.testCaseCount || 0} test cases
                   </p>
+                  {datasetCandidateMap.get(dataset.id) && (
+                    <p className="text-xs text-muted-foreground mt-1 flex items-center gap-1 flex-wrap">
+                      <span className="opacity-60">Used by:</span>
+                      {datasetCandidateMap.get(dataset.id)!.map((name) => (
+                        <span key={name} className="inline-block px-1.5 py-0.5 bg-muted rounded text-[11px]">
+                          {name}
+                        </span>
+                      ))}
+                    </p>
+                  )}
                 </div>
                 <ChevronRight className="h-5 w-5 text-muted-foreground ml-auto" />
               </Link>

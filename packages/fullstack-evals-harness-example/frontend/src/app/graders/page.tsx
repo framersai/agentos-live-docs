@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Plus, Trash2, Edit2, Sparkles, Info, ChevronDown, ExternalLink, RefreshCw } from 'lucide-react';
 import { gradersApi, presetsApi, type GraderPreset } from '@/lib/api';
+import { useToast } from '@/components/Toast';
 import type { Grader, GraderType } from '@/lib/types';
 
 const GRADER_TYPES: {
@@ -82,6 +83,7 @@ function Tooltip({ text }: { text: string }) {
 }
 
 export default function GradersPage() {
+  const { toast } = useToast();
   const [graders, setGraders] = useState<Grader[]>([]);
   const [presets, setPresets] = useState<GraderPreset[]>([]);
   const [loading, setLoading] = useState(true);
@@ -132,7 +134,7 @@ export default function GradersPage() {
     try {
       const result = await gradersApi.reload();
       await loadGraders();
-      alert(`Reloaded ${result.loaded} graders from disk.`);
+      toast(`Reloaded ${result.loaded} graders from disk.`, 'success');
     } catch (error) {
       console.error('Failed to reload graders:', error);
     } finally {

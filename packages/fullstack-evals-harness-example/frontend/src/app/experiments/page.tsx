@@ -4,7 +4,15 @@ import { useState, useEffect, useCallback } from 'react';
 import { Play, Check, X, Loader2, Bot, Info, ChevronDown } from 'lucide-react';
 import Link from 'next/link';
 import { datasetsApi, gradersApi, promptsApi, experimentsApi } from '@/lib/api';
-import type { Dataset, Grader, Candidate, Experiment, ExperimentProgress, ExperimentStats } from '@/lib/types';
+import type {
+  Dataset,
+  Grader,
+  Candidate,
+  Experiment,
+  ExperimentProgress,
+  ExperimentStats,
+  CandidateComparison,
+} from '@/lib/types';
 
 function Tooltip({ text }: { text: string }) {
   return (
@@ -37,6 +45,11 @@ export default function ExperimentsPage() {
   const [activeExperiment, setActiveExperiment] = useState<Experiment | null>(null);
   const [activeDataset, setActiveDataset] = useState<Dataset | null>(null);
   const [activeStats, setActiveStats] = useState<ExperimentStats | null>(null);
+  const [baselineCandidateId, setBaselineCandidateId] = useState<string>('');
+  const [challengerCandidateId, setChallengerCandidateId] = useState<string>('');
+  const [comparison, setComparison] = useState<CandidateComparison | null>(null);
+  const [comparing, setComparing] = useState(false);
+  const [compareError, setCompareError] = useState<string | null>(null);
 
   useEffect(() => {
     loadData();
@@ -53,6 +66,9 @@ export default function ExperimentsPage() {
       setDatasets(datasetsData);
       setGraders(gradersData);
       setCandidates(candidatesData);
+      setSelectedCandidates((prev) =>
+        prev.filter((id) => candidatesData.some((candidate) => candidate.id === id)),
+      );
       setExperiments(experimentsData);
     } catch (error) {
       console.error('Failed to load data:', error);
@@ -75,6 +91,24 @@ export default function ExperimentsPage() {
         ? prev.filter((id) => id !== candidateId)
         : [...prev, candidateId]
     );
+  }, []);
+
+  const selectAllCandidates = useCallback(() => {
+    setSelectedCandidates(candidates.map((candidate) => candidate.id));
+  }, [candidates]);
+
+  const clearCandidateSelection = useCallback(() => {
+    setSelectedCandidates([]);
+  }, []);
+
+  const toggleCandidateFamily = useCallback((familyIds: string[]) => {
+    setSelectedCandidates((prev) => {
+      const allSelected = familyIds.every((id) => prev.includes(id));
+      if (allSelected) {
+        return prev.filter((id) => !familyIds.includes(id));
+      }
+      return Array.from(new Set([...prev, ...familyIds]));
+    });
   }, []);
 
   async function runExperiment() {
@@ -118,6 +152,10 @@ export default function ExperimentsPage() {
       };
 
       eventSource.onerror = () => {
+        // Let EventSource auto-reconnect on transient disconnects.
+        if (eventSource.readyState === 0) {
+          return;
+        }
         eventSource.close();
         setIsRunning(false);
         setProgress(null);
@@ -146,6 +184,129 @@ export default function ExperimentsPage() {
     }
   }
 
+  // Determine if active experiment has candidates
+  const hasCandidates = !!(
+    activeExperiment?.candidateIds && activeExperiment.candidateIds.length > 0
+  );
+  const baseCandidates = candidates.filter((candidate) => !candidate.parentId);
+  const baseIds = new Set(baseCandidates.map((candidate) => candidate.id));
+  const variantsByParent = new Map<string, Candidate[]>();
+
+  for (const candidate of candidates) {
+    if (!candidate.parentId || !baseIds.has(candidate.parentId)) continue;
+    const variants = variantsByParent.get(candidate.parentId) || [];
+    variants.push(candidate);
+    variantsByParent.set(candidate.parentId, variants);
+  }
+
+  const candidateFamilies = baseCandidates.map((base) => {
+    const variants = variantsByParent.get(base.id) || [];
+    return {
+      key: base.id,
+      label: base.name,
+      members: [base, ...variants],
+    };
+  });
+
+  const orphanVariants = candidates.filter(
+    (candidate) => candidate.parentId && !baseIds.has(candidate.parentId),
+  );
+  for (const orphan of orphanVariants) {
+    candidateFamilies.push({
+      key: orphan.id,
+      label: orphan.name,
+      members: [orphan],
+    });
+  }
+
+  const selectedDatasetMeta = datasets.find((dataset) => dataset.id === selectedDataset);
+  const selectedCaseCount = selectedDatasetMeta?.testCaseCount || 0;
+  const candidateRunCount = selectedCandidates.length > 0 ? selectedCandidates.length : 1;
+  const estimatedEvaluations = selectedDatasetMeta
+    ? selectedCaseCount * selectedGraders.length * candidateRunCount
+    : 0;
+
+  const sortedCandidateStats = activeStats?.candidateStats
+    ? [...activeStats.candidateStats].sort(
+        (a, b) =>
+          (b.weightedScore ?? b.avgScore) - (a.weightedScore ?? a.avgScore)
+      )
+    : [];
+  const bestCandidateId = sortedCandidateStats[0]?.candidateId;
+  const activeCandidateIds = activeExperiment?.candidateIds ?? [];
+  const compareCandidateOptions = activeCandidateIds.map((candidateId) => {
+    const candidate = candidates.find((c) => c.id === candidateId);
+    return {
+      id: candidateId,
+      name: candidate?.name || candidateId,
+    };
+  });
+  const testCaseById = new Map((activeDataset?.testCases ?? []).map((tc) => [tc.id, tc]));
+  const rankedCandidateIds = sortedCandidateStats
+    .map((cs) => cs.candidateId)
+    .filter((id) => activeCandidateIds.includes(id));
+  const activeCandidateSignature = activeCandidateIds.join('|');
+  const rankedCandidateSignature = rankedCandidateIds.join('|');
+
+  useEffect(() => {
+    if (!activeExperiment || !hasCandidates || activeCandidateIds.length < 2) {
+      setBaselineCandidateId('');
+      setChallengerCandidateId('');
+      setComparison(null);
+      setCompareError(null);
+      return;
+    }
+
+    const fallbackIds = rankedCandidateIds.length > 0 ? rankedCandidateIds : activeCandidateIds;
+    const nextBaseline = fallbackIds.includes(baselineCandidateId)
+      ? baselineCandidateId
+      : fallbackIds[0];
+    const nextChallenger =
+      fallbackIds.includes(challengerCandidateId) && challengerCandidateId !== nextBaseline
+        ? challengerCandidateId
+        : fallbackIds.find((id) => id !== nextBaseline) ?? '';
+
+    setBaselineCandidateId(nextBaseline);
+    setChallengerCandidateId(nextChallenger);
+    setComparison(null);
+    setCompareError(null);
+  }, [
+    activeExperiment?.id,
+    hasCandidates,
+    activeCandidateSignature,
+    rankedCandidateSignature,
+  ]);
+
+  useEffect(() => {
+    setComparison(null);
+    setCompareError(null);
+  }, [activeExperiment?.id, baselineCandidateId, challengerCandidateId]);
+
+  async function runComparison() {
+    if (!activeExperiment || !baselineCandidateId || !challengerCandidateId) return;
+    if (baselineCandidateId === challengerCandidateId) {
+      setCompareError('Baseline and challenger must be different candidates.');
+      return;
+    }
+
+    setComparing(true);
+    setCompareError(null);
+    try {
+      const data = await experimentsApi.compare(
+        activeExperiment.id,
+        baselineCandidateId,
+        challengerCandidateId,
+      );
+      setComparison(data);
+    } catch (error) {
+      console.error('Failed to compare candidates:', error);
+      setCompareError('Failed to load comparison. Try again.');
+      setComparison(null);
+    } finally {
+      setComparing(false);
+    }
+  }
+
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
@@ -153,10 +314,6 @@ export default function ExperimentsPage() {
       </div>
     );
   }
-
-  // Determine if active experiment has candidates
-  const hasCandidates =
-    activeExperiment?.candidateIds && activeExperiment.candidateIds.length > 0;
 
   return (
     <div className="space-y-6">
@@ -288,26 +445,87 @@ export default function ExperimentsPage() {
               <span className="text-muted-foreground font-normal">(optional)</span>
               <Tooltip text="Select candidates to generate outputs. Without candidates, graders evaluate the expected output directly." />
             </label>
-            <div className="flex flex-wrap gap-2">
-              {candidates.map((candidate) => (
-                <button
-                  key={candidate.id}
-                  onClick={() => toggleCandidate(candidate.id)}
-                  disabled={isRunning}
-                  className={`
-                    px-3 py-1.5 text-sm rounded-md border transition-colors flex items-center gap-1.5
-                    ${
-                      selectedCandidates.includes(candidate.id)
-                        ? 'bg-foreground text-background border-foreground'
-                        : 'border-border hover:border-foreground/50'
-                    }
-                    ${isRunning ? 'opacity-50 cursor-not-allowed' : ''}
-                  `}
-                >
-                  <Bot className="h-3 w-3" />
-                  {candidate.name}
-                </button>
-              ))}
+            <div className="flex items-center gap-2 mb-2">
+              <button
+                onClick={selectAllCandidates}
+                disabled={isRunning || candidates.length === 0}
+                className="btn-secondary px-3 py-1 text-xs"
+              >
+                Select all
+              </button>
+              <button
+                onClick={clearCandidateSelection}
+                disabled={isRunning || selectedCandidates.length === 0}
+                className="btn-secondary px-3 py-1 text-xs"
+              >
+                Clear
+              </button>
+              <span className="text-xs text-muted-foreground">
+                {selectedCandidates.length} selected
+              </span>
+            </div>
+            <div className="space-y-3">
+              {candidateFamilies.map((family) => {
+                const familyIds = family.members.map((member) => member.id);
+                const selectedInFamily = familyIds.filter((id) => selectedCandidates.includes(id)).length;
+                const allFamilySelected = selectedInFamily === familyIds.length;
+                const familyPartiallySelected = selectedInFamily > 0 && !allFamilySelected;
+
+                return (
+                  <div key={family.key} className="border border-border rounded-md p-2">
+                    {family.members.length > 1 && (
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-xs text-muted-foreground">
+                          {family.label} family ({family.members.length})
+                        </span>
+                        <button
+                          onClick={() => toggleCandidateFamily(familyIds)}
+                          disabled={isRunning}
+                          className="btn-secondary px-2 py-1 text-xs"
+                        >
+                          {allFamilySelected
+                            ? 'Deselect family'
+                            : familyPartiallySelected
+                            ? 'Select remaining'
+                            : 'Select family'}
+                        </button>
+                      </div>
+                    )}
+                    <div className="flex flex-wrap gap-2">
+                      {family.members.map((candidate) => {
+                        const isSelected = selectedCandidates.includes(candidate.id);
+                        const isVariant = Boolean(candidate.parentId);
+
+                        return (
+                          <button
+                            key={candidate.id}
+                            onClick={() => toggleCandidate(candidate.id)}
+                            disabled={isRunning}
+                            className={`
+                              px-3 py-1.5 text-sm rounded-md border transition-colors flex items-center gap-1.5
+                              ${
+                                isSelected
+                                  ? 'bg-foreground text-background border-foreground'
+                                  : 'border-border hover:border-foreground/50'
+                              }
+                              ${isRunning ? 'opacity-50 cursor-not-allowed' : ''}
+                            `}
+                            title={candidate.id}
+                          >
+                            <Bot className="h-3 w-3" />
+                            {candidate.name}
+                            {isVariant && (
+                              <span className="text-[10px] opacity-70">
+                                ({candidate.variantLabel || 'variant'})
+                              </span>
+                            )}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                );
+              })}
             </div>
             {selectedCandidates.length === 0 && (
               <p className="text-xs text-muted-foreground mt-1">
@@ -349,6 +567,13 @@ export default function ExperimentsPage() {
             </div>
           )}
         </div>
+        {selectedDatasetMeta && selectedGraders.length > 0 && (
+          <p className="text-xs text-muted-foreground">
+            Estimated evaluations: {estimatedEvaluations} ({selectedCaseCount} cases ×{' '}
+            {selectedCandidates.length > 0 ? `${selectedCandidates.length} candidate(s)` : 'baseline'} ×{' '}
+            {selectedGraders.length} grader(s))
+          </p>
+        )}
       </div>
 
       {/* Results View */}
@@ -365,15 +590,18 @@ export default function ExperimentsPage() {
           </div>
 
           {/* Candidate score summary */}
-          {hasCandidates && activeStats?.candidateStats && activeStats.candidateStats.length > 0 && (
+          {hasCandidates && sortedCandidateStats.length > 0 && (
             <div className="px-4 py-3 border-b border-border bg-muted/30">
               <div className="flex flex-wrap gap-4">
-                {activeStats.candidateStats.map((cs) => {
+                {sortedCandidateStats.map((cs) => {
                   const candidate = candidates.find((c) => c.id === cs.candidateId);
                   const hasWeighted = cs.weightedScore != null && Math.abs((cs.weightedScore ?? 0) - cs.avgScore) > 0.001;
                   return (
                     <div key={cs.candidateId} className="text-sm">
                       <span className="font-medium">{candidate?.name || cs.candidateId}</span>
+                      {cs.candidateId === bestCandidateId && (
+                        <span className="ml-2 badge badge-pass">Best</span>
+                      )}
                       <span className="text-muted-foreground ml-2">
                         Avg: {(cs.avgScore * 100).toFixed(0)}%
                       </span>
@@ -389,6 +617,128 @@ export default function ExperimentsPage() {
                   );
                 })}
               </div>
+            </div>
+          )}
+
+          {/* Candidate comparison */}
+          {hasCandidates && activeCandidateIds.length >= 2 && (
+            <div className="px-4 py-3 border-b border-border space-y-3">
+              <div className="flex flex-wrap items-end gap-3">
+                <div>
+                  <label className="text-xs text-muted-foreground block mb-1">Baseline</label>
+                  <select
+                    value={baselineCandidateId}
+                    onChange={(e) => setBaselineCandidateId(e.target.value)}
+                    className="input text-sm"
+                    disabled={comparing}
+                  >
+                    {compareCandidateOptions.map((candidate) => (
+                      <option key={candidate.id} value={candidate.id}>
+                        {candidate.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="text-xs text-muted-foreground block mb-1">Challenger</label>
+                  <select
+                    value={challengerCandidateId}
+                    onChange={(e) => setChallengerCandidateId(e.target.value)}
+                    className="input text-sm"
+                    disabled={comparing}
+                  >
+                    {compareCandidateOptions.map((candidate) => (
+                      <option key={candidate.id} value={candidate.id}>
+                        {candidate.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <button
+                  onClick={runComparison}
+                  disabled={
+                    comparing ||
+                    !baselineCandidateId ||
+                    !challengerCandidateId ||
+                    baselineCandidateId === challengerCandidateId
+                  }
+                  className="btn-secondary"
+                >
+                  {comparing ? (
+                    <>
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      Comparing...
+                    </>
+                  ) : (
+                    'Compare'
+                  )}
+                </button>
+              </div>
+
+              {compareError && (
+                <p className="text-sm text-red-600">{compareError}</p>
+              )}
+
+              {comparison && (
+                <div className="space-y-3">
+                  <div className="flex flex-wrap gap-4 text-sm">
+                    <span>
+                      Baseline pass rate:{' '}
+                      <strong>{(comparison.summary.baselinePassRate * 100).toFixed(1)}%</strong>
+                    </span>
+                    <span>
+                      Challenger pass rate:{' '}
+                      <strong>{(comparison.summary.challengerPassRate * 100).toFixed(1)}%</strong>
+                    </span>
+                    <span>
+                      Delta:{' '}
+                      <strong className={comparison.summary.deltaPassRate >= 0 ? 'text-green-700' : 'text-red-700'}>
+                        {comparison.summary.deltaPassRate >= 0 ? '+' : ''}
+                        {(comparison.summary.deltaPassRate * 100).toFixed(1)}%
+                      </strong>
+                    </span>
+                    <span className="text-muted-foreground">
+                      Improved: {comparison.summary.improved} · Regressed: {comparison.summary.regressed} · Same: {comparison.summary.same}
+                    </span>
+                  </div>
+
+                  <div className="overflow-x-auto">
+                    <table className="table">
+                      <thead>
+                        <tr>
+                          <th>Test Case</th>
+                          <th>Grader</th>
+                          <th>Baseline</th>
+                          <th>Challenger</th>
+                          <th>Delta</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {comparison.comparisons.map((item) => {
+                          const testCase = testCaseById.get(item.testCaseId);
+                          const grader = graders.find((g) => g.id === item.graderId);
+
+                          return (
+                            <tr key={`${item.testCaseId}-${item.graderId}`}>
+                              <td className="font-mono text-xs max-w-[280px] truncate" title={testCase?.input || item.testCaseId}>
+                                {testCase?.input || item.testCaseId}
+                              </td>
+                              <td>{grader?.name || item.graderId}</td>
+                              <td>{item.baseline.pass ? 'Pass' : 'Fail'}</td>
+                              <td>{item.challenger.pass ? 'Pass' : 'Fail'}</td>
+                              <td>
+                                {item.delta === 'improved' && <span className="badge badge-pass">Improved</span>}
+                                {item.delta === 'regressed' && <span className="badge badge-fail">Regressed</span>}
+                                {item.delta === 'same' && <span className="text-muted-foreground">Same</span>}
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
             </div>
           )}
 

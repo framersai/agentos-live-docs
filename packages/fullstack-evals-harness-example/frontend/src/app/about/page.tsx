@@ -121,12 +121,13 @@ export default function AboutPage() {
             <p className="text-muted-foreground leading-relaxed">
               Markdown files in <code>backend/prompts/</code> that define how to produce output.
               Each file has YAML frontmatter (name, description, runner type, templates, recommended
-              graders with weights, rationale) and a system prompt body.
+              graders with weights, rationale) and a system prompt body. Candidates support{' '}
+              <strong>variants</strong> — clones of a parent prompt with tweaked instructions for A/B testing.
             </p>
             <p className="text-muted-foreground leading-relaxed mt-3">
-              <strong>6 prompts:</strong> Full Structured Analyst, Citation-Focused Analyst,
-              Summarizer, JSON Extractor (Strict), JSON Extractor (Loose), Text Rewriter.
-              Edit the file, click Reload in the UI.
+              <strong>12 prompts (6 base + 6 variants):</strong> Full Structured Analyst, Citation-Focused Analyst,
+              Summarizer (+ concise, verbose, bullets), JSON Extractor (Strict &amp; Loose), Text Rewriter (+ formal, casual, simplify).
+              Create variants from the UI or edit files directly.
             </p>
           </div>
 
@@ -260,7 +261,36 @@ grader_rationale: Faithfulness is highest — the full format must stay grounded
               Create a <code>.md</code> file in <code>backend/prompts/</code> with YAML frontmatter
               (name, description, runner, user_template, recommended_graders with weights,
               grader_rationale). The body is the system prompt. Click &ldquo;Reload from Disk&rdquo;
-              in the Candidates tab.
+              in the Candidates tab, or edit directly in the UI detail page.
+            </p>
+          </AccordionItem>
+
+          <AccordionItem title="What are prompt variants?">
+            <p className="text-muted-foreground leading-relaxed">
+              Variants are clones of a parent prompt with modified instructions. Use them to A/B test
+              different approaches — for example, a &ldquo;formal&rdquo; vs &ldquo;casual&rdquo; rewriter,
+              or a &ldquo;concise&rdquo; vs &ldquo;verbose&rdquo; summarizer.
+            </p>
+            <p className="text-muted-foreground leading-relaxed mt-3">
+              <strong>Creating variants:</strong> Click the <code>+</code> button on any prompt in the
+              Candidates tab. The variant modal pre-fills the parent&apos;s system prompt so you can edit it.
+              A new <code>.md</code> file is saved to disk with <code>parent_prompt</code> and{' '}
+              <code>variant</code> frontmatter fields.
+            </p>
+            <pre className="mt-3 text-xs bg-muted p-3 rounded overflow-x-auto">
+{`# File: prompts/summarizer-concise.md
+---
+name: Concise Summarizer
+parent_prompt: summarizer
+variant: concise
+runner: llm_prompt
+---
+Summarize in one sentence.`}
+            </pre>
+            <p className="text-muted-foreground leading-relaxed mt-3">
+              <strong>Comparing variants:</strong> Select multiple variants as candidates in an experiment.
+              Results appear side-by-side with per-grader scores. The weighted score uses each
+              prompt&apos;s own grader weight configuration.
             </p>
           </AccordionItem>
 

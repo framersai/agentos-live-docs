@@ -142,6 +142,43 @@ export const promptsApi = {
       body: JSON.stringify(data),
     }),
 
+  createVariant: (parentId: string, data: {
+    variantLabel: string;
+    name?: string;
+    description?: string;
+    systemPrompt?: string;
+  }) =>
+    fetchApi<Candidate>(`/prompts/${parentId}/variant`, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
+
+  generateVariants: (parentId: string, data: {
+    count?: number;
+    customInstructions?: string;
+    provider?: 'openai' | 'anthropic' | 'ollama';
+    model?: string;
+    temperature?: number;
+    maxTokens?: number;
+  }) =>
+    fetchApi<{
+      parentId: string;
+      created: Candidate[];
+      skipped: Array<{ requestedLabel: string; reason: string }>;
+      usedConfig: {
+        provider: 'openai' | 'anthropic' | 'ollama';
+        model: string;
+        temperature: number;
+        maxTokens: number;
+      };
+    }>(`/prompts/${parentId}/variants/generate`, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
+
+  delete: (id: string) =>
+    fetchApi<{ deleted: boolean }>(`/prompts/${id}`, { method: 'DELETE' }),
+
   reload: () =>
     fetchApi<{ loaded: number }>('/prompts/reload', { method: 'POST' }),
 };
