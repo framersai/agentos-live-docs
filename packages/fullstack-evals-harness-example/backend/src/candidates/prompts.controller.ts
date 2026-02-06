@@ -1,12 +1,17 @@
-import { Controller, Get, Post, Put, Param, Body } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Param, Body } from '@nestjs/common';
 import { PromptLoaderService } from './prompt-loader.service';
 import { CandidateRunnerService } from './candidate-runner.service';
+import {
+  PromptVariantGeneratorService,
+  GeneratePromptVariantsDto,
+} from './prompt-variant-generator.service';
 
 @Controller('prompts')
 export class PromptsController {
   constructor(
     private promptLoader: PromptLoaderService,
     private runner: CandidateRunnerService,
+    private variantGenerator: PromptVariantGeneratorService,
   ) {}
 
   @Get()
@@ -31,6 +36,36 @@ export class PromptsController {
       metadata: body.metadata,
     });
     return result;
+  }
+
+  /**
+   * Create a variant of an existing prompt.
+   * Clones the parent prompt and writes a new .md file with parent_prompt/variant fields.
+   */
+  @Post(':id/variant')
+  createVariant(
+    @Param('id') id: string,
+    @Body()
+    body: {
+      variantLabel: string;
+      name?: string;
+      description?: string;
+      systemPrompt?: string;
+    },
+  ) {
+    return this.promptLoader.createVariant(id, body);
+  }
+
+  /**
+   * Generate multiple variants of a prompt using the configured LLM.
+   * Generation options are configurable per request and fall back to global settings.
+   */
+  @Post(':id/variants/generate')
+  generateVariants(
+    @Param('id') id: string,
+    @Body() body: GeneratePromptVariantsDto,
+  ) {
+    return this.variantGenerator.generate(id, body);
   }
 
   @Put(':id')
@@ -58,6 +93,14 @@ export class PromptsController {
     },
   ) {
     return this.promptLoader.updatePrompt(id, body);
+  }
+
+  /**
+   * Delete a prompt's .md file from disk.
+   */
+  @Delete(':id')
+  deletePrompt(@Param('id') id: string) {
+    return this.promptLoader.deletePrompt(id);
   }
 
   @Post('reload')

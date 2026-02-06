@@ -182,6 +182,65 @@ export class ExperimentsService {
 
             const generatedOutput = runResult.output;
 
+            if (runResult.error) {
+              const generationError = `Generation error: ${runResult.error}`;
+
+              subject.next({
+                type: 'generation',
+                experimentId,
+                testCaseId: testCase.id,
+                candidateId: candidate.id,
+                error: runResult.error,
+              });
+
+              // Preserve matrix shape by emitting one failed result per grader.
+              for (const graderDef of graders) {
+                current++;
+
+                subject.next({
+                  type: 'progress',
+                  experimentId,
+                  testCaseId: testCase.id,
+                  graderId: graderDef.id,
+                  candidateId: candidate.id,
+                  current,
+                  total: totalEvals,
+                });
+
+                await this.db.insertResult({
+                  id: randomUUID(),
+                  experimentId,
+                  testCaseId: testCase.id,
+                  graderId: graderDef.id,
+                  candidateId: candidate.id,
+                  pass: false,
+                  score: 0,
+                  reason: generationError,
+                  output: testCase.expectedOutput || '',
+                  generatedOutput,
+                  latencyMs: runResult.latencyMs,
+                  createdAt: new Date(),
+                });
+
+                subject.next({
+                  type: 'result',
+                  experimentId,
+                  testCaseId: testCase.id,
+                  graderId: graderDef.id,
+                  candidateId: candidate.id,
+                  current,
+                  total: totalEvals,
+                  result: {
+                    pass: false,
+                    score: 0,
+                    reason: generationError,
+                  },
+                });
+              }
+
+              continue;
+            }
+
             subject.next({
               type: 'generation',
               experimentId,

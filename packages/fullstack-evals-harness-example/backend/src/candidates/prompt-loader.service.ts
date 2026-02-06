@@ -1,4 +1,4 @@
-import { Injectable, Logger, OnModuleInit, NotFoundException } from '@nestjs/common';
+import { Injectable, Logger, OnModuleInit, NotFoundException, ConflictException } from '@nestjs/common';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -84,6 +84,23 @@ export class PromptLoaderService implements OnModuleInit {
 
   findMany(ids: string[]): LoadedPrompt[] {
     return ids.map((id) => this.findOne(id));
+  }
+
+  /**
+   * Normalize a variant label into a safe slug for prompt IDs/files.
+   */
+  normalizeVariantLabel(label: string): string {
+    const normalized = label
+      .trim()
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '')
+      .replace(/-{2,}/g, '-');
+    return normalized || 'variant';
+  }
+
+  buildVariantId(parentId: string, variantLabel: string): string {
+    return `${parentId}-${this.normalizeVariantLabel(variantLabel)}`;
   }
 
   /**
@@ -181,6 +198,82 @@ export class PromptLoaderService implements OnModuleInit {
 
     this.logger.log(`Updated prompt ${id} on disk`);
     return updated;
+  }
+
+  /**
+   * Create a variant of an existing prompt. Clones the parent's system prompt
+   * and config, sets parent_prompt/variant fields, writes a new .md file.
+   */
+  createVariant(
+    parentId: string,
+    data: {
+      variantLabel: string;
+      name?: string;
+      description?: string;
+      systemPrompt?: string;
+    },
+  ): LoadedPrompt {
+    const parent = this.findOne(parentId);
+    const label = this.normalizeVariantLabel(data.variantLabel);
+    const newId = this.buildVariantId(parentId, label);
+
+    if (this.prompts.has(newId)) {
+      throw new ConflictException(`Prompt "${newId}" already exists`);
+    }
+
+    const name = data.name || `${parent.name} (${data.variantLabel})`;
+    const description = data.description || parent.description;
+    const systemPrompt = data.systemPrompt ?? parent.systemPrompt ?? '';
+
+    // Build frontmatter
+    const lines: string[] = [];
+    lines.push(`name: ${name}`);
+    if (description) lines.push(`description: ${description}`);
+    lines.push(`runner: ${parent.runnerType}`);
+    lines.push(`parent_prompt: ${parentId}`);
+    lines.push(`variant: ${label}`);
+    if (parent.userPromptTemplate) lines.push(`user_template: "${parent.userPromptTemplate}"`);
+
+    // Copy model config
+    if (parent.modelConfig?.temperature !== undefined) lines.push(`temperature: ${parent.modelConfig.temperature}`);
+    if (parent.modelConfig?.maxTokens !== undefined) lines.push(`max_tokens: ${parent.modelConfig.maxTokens}`);
+    if (parent.modelConfig?.provider) lines.push(`provider: ${parent.modelConfig.provider}`);
+    if (parent.modelConfig?.model) lines.push(`model: ${parent.modelConfig.model}`);
+
+    // Copy recommendations
+    if (parent.recommendedGraders.length > 0) {
+      const parts = parent.recommendedGraders.map((g) => {
+        const w = parent.graderWeights[g];
+        return w != null && w !== 1 ? `${g}:${w}` : g;
+      });
+      lines.push(`recommended_graders: ${parts.join(', ')}`);
+    }
+    if (parent.recommendedDatasets.length > 0) {
+      lines.push(`recommended_datasets: ${parent.recommendedDatasets.join(', ')}`);
+    }
+    if (parent.graderRationale) lines.push(`grader_rationale: ${parent.graderRationale}`);
+
+    const content = `---\n${lines.join('\n')}\n---\n${systemPrompt}\n`;
+    const filePath = path.join(this.promptsDir, `${newId}.md`);
+    fs.writeFileSync(filePath, content, 'utf-8');
+
+    const created = this.parseMarkdown(`${newId}.md`, content);
+    this.prompts.set(newId, created);
+
+    this.logger.log(`Created variant "${newId}" of "${parentId}"`);
+    return created;
+  }
+
+  /**
+   * Delete a prompt's .md file from disk and remove from memory.
+   */
+  deletePrompt(id: string): { deleted: boolean } {
+    this.findOne(id); // throws if not found
+    const filePath = path.join(this.promptsDir, `${id}.md`);
+    fs.unlinkSync(filePath);
+    this.prompts.delete(id);
+    this.logger.log(`Deleted prompt "${id}"`);
+    return { deleted: true };
   }
 
   /**

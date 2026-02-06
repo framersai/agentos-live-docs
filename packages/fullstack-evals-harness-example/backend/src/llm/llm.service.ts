@@ -127,7 +127,7 @@ export class LlmService {
         Authorization: `Bearer ${settings.apiKey}`,
       },
       body: JSON.stringify({
-        model: settings.model || 'gpt-4o-mini',
+        model: settings.model || 'gpt-4.1-mini',
         messages,
         temperature: options.temperature,
         max_tokens: options.maxTokens,
@@ -187,7 +187,7 @@ export class LlmService {
         'anthropic-version': '2023-06-01',
       },
       body: JSON.stringify({
-        model: settings.model || 'claude-3-haiku-20240307',
+        model: settings.model || 'claude-haiku-4-5-20251001',
         max_tokens: options.maxTokens,
         system: options.systemPrompt,
         messages: [{ role: 'user', content: prompt }],
