@@ -24,6 +24,7 @@ export const PRICING_TIERS: PricingTier[] = [
     description: 'Launch your first managed Wunderbot quickly',
     features: [
       `${TRIAL_DAYS}-day free trial`,
+      'No credit card required',
       '1 managed Wunderbot AI assistant',
       '500 AI messages/mo included',
       'No API key needed to get started',
@@ -42,6 +43,7 @@ export const PRICING_TIERS: PricingTier[] = [
     badge: 'MOST POPULAR',
     features: [
       `${TRIAL_DAYS}-day free trial`,
+      'No credit card required',
       'Up to 5 Wunderbot AI assistants',
       '2,500 AI messages/mo included',
       'No API key needed to get started',

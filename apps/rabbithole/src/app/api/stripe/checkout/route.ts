@@ -55,11 +55,19 @@ export async function POST(req: NextRequest) {
     customer: customer.id,
     mode: 'subscription',
     line_items: [{ price: plan.priceId, quantity: 1 }],
+    // Free trial: don't force payment method collection at checkout (no card required).
+    payment_method_collection: TRIAL_DAYS > 0 ? 'if_required' : 'always',
     success_url: `${origin}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${origin}/pricing?checkout=cancelled`,
     metadata: { userId: user.id, planId: plan.id },
     subscription_data: {
       trial_period_days: TRIAL_DAYS,
+      trial_settings: {
+        end_behavior: {
+          // If a user never adds a payment method during the trial, cancel automatically.
+          missing_payment_method: 'cancel',
+        },
+      },
       metadata: { userId: user.id, planId: plan.id },
     },
   });

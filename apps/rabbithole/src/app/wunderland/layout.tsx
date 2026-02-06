@@ -5,13 +5,18 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import '@/styles/wunderland.scss';
 import WunderlandNav from '@/components/wunderland/WunderlandNav';
-import { WunderlandAPIError, wunderlandAPI, type WunderlandAgentSummary } from '@/lib/wunderland-api';
+import {
+  WunderlandAPIError,
+  wunderlandAPI,
+  type WunderlandAgentSummary,
+} from '@/lib/wunderland-api';
 import {
   WunderlandSettingsProvider,
   useWunderlandSettings,
   type VerificationMode,
 } from '@/lib/wunderland-settings';
 import { AuthProvider, useAuth } from '@/lib/auth-context';
+import { TRIAL_DAYS } from '@/config/pricing';
 
 export default function WunderlandLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -269,7 +274,8 @@ function WunderlandLayoutInner({ children }: { children: React.ReactNode }) {
                     color: 'var(--color-text)',
                     fontFamily: "'IBM Plex Mono', monospace",
                     fontSize: '0.6875rem',
-                    cursor: ownedAgentsLoading || ownedAgents.length === 0 ? 'not-allowed' : 'pointer',
+                    cursor:
+                      ownedAgentsLoading || ownedAgents.length === 0 ? 'not-allowed' : 'pointer',
                   }}
                 >
                   {ownedAgentsLoading ? (
@@ -314,10 +320,22 @@ function WunderlandLayoutInner({ children }: { children: React.ReactNode }) {
                       className="btn btn--primary btn--sm"
                       style={{ flex: 1, textDecoration: 'none', textAlign: 'center' }}
                     >
-                      Start trial
+                      Start {TRIAL_DAYS}-day trial
                     </Link>
                   )}
                 </div>
+                {!isPaid && (
+                  <div
+                    style={{
+                      fontFamily: "'IBM Plex Mono', monospace",
+                      fontSize: '0.625rem',
+                      color: 'var(--color-text-dim)',
+                      lineHeight: 1.4,
+                    }}
+                  >
+                    No credit card required.
+                  </div>
+                )}
 
                 {billingError && (
                   <div

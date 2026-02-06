@@ -4,12 +4,12 @@ Rabbit Hole Inc is a managed Wunderbot platform. Users subscribe monthly to depl
 
 ## Plans
 
-| Plan | Price | Wunderbots | AI Messages/mo |
-|------|-------|-----------|----------------|
-| **Starter** | $19/mo | 1 | 500 |
-| **Pro** | $49/mo | Up to 5 | 2,500 |
+| Plan        | Price  | Wunderbots | AI Messages/mo |
+| ----------- | ------ | ---------- | -------------- |
+| **Starter** | $19/mo | 1          | 500            |
+| **Pro**     | $49/mo | Up to 5    | 2,500          |
 
-All paid plans include a **3-day free trial**. During the trial, subscription status is `trialing` (treated as paid access).
+Starter and Pro include a **3-day free trial** (no credit card required). During the trial, subscription status is `trialing` (treated as paid access). Enterprise is contact-only and does not include a free trial.
 
 ### Why these numbers?
 
@@ -22,27 +22,27 @@ All paid plans include a **3-day free trial**. During the trial, subscription st
 
 ### Feature Comparison
 
-| Feature | Starter | Pro |
-|---------|---------|-----|
-| Managed Wunderbots | 1 | Up to 5 |
-| AI messages/mo included | 500 | 2,500 |
-| No API key needed | Yes | Yes |
-| Tier 1 integrations | Yes | Yes |
-| Premium integrations | — | Yes |
-| Encrypted credential vault | — | Yes |
-| BYO API key for unlimited | — | Yes |
-| Custom agent personalities | — | Yes |
-| Support | Community + AI | Priority 24/7 |
+| Feature                    | Starter        | Pro           |
+| -------------------------- | -------------- | ------------- |
+| Managed Wunderbots         | 1              | Up to 5       |
+| AI messages/mo included    | 500            | 2,500         |
+| No API key needed          | Yes            | Yes           |
+| Tier 1 integrations        | Yes            | Yes           |
+| Premium integrations       | —              | Yes           |
+| Encrypted credential vault | —              | Yes           |
+| BYO API key for unlimited  | —              | Yes           |
+| Custom agent personalities | —              | Yes           |
+| Support                    | Community + AI | Priority 24/7 |
 
 ## Stripe Products
 
-| Field | Starter | Pro |
-|-------|---------|-----|
-| **Product ID** | `prod_TvO3KqXnSEvQFy` | `prod_TvONcWOZfEgQZu` |
-| **Price ID** | `price_1SxXHICBrYnyjAOOnSuDa46N` | `price_1SxXapCBrYnyjAOOrXYY2BQQ` |
-| **Amount** | $19.00 USD/mo | $49.00 USD/mo |
-| **Mode** | Subscription (monthly) | Subscription (monthly) |
-| **Tax Code** | General - Electronically Supplied Services | General - Electronically Supplied Services |
+| Field          | Starter                                    | Pro                                        |
+| -------------- | ------------------------------------------ | ------------------------------------------ |
+| **Product ID** | `prod_TvO3KqXnSEvQFy`                      | `prod_TvONcWOZfEgQZu`                      |
+| **Price ID**   | `price_1SxXHICBrYnyjAOOnSuDa46N`           | `price_1SxXapCBrYnyjAOOrXYY2BQQ`           |
+| **Amount**     | $19.00 USD/mo                              | $49.00 USD/mo                              |
+| **Mode**       | Subscription (monthly)                     | Subscription (monthly)                     |
+| **Tax Code**   | General - Electronically Supplied Services | General - Electronically Supplied Services |
 
 Stripe account: **Manic Agency LLC**
 
@@ -88,7 +88,7 @@ Use the `whsec_` secret it prints as your local `STRIPE_WEBHOOK_SECRET`.
 1. User selects plan on `/pricing`
 2. Frontend calls `POST /api/stripe/checkout` with `{ planId }` + JWT auth
 3. Next.js route validates JWT against backend, creates/retrieves Stripe customer, creates Checkout Session
-4. User redirected to Stripe hosted checkout
+4. User redirected to Stripe hosted checkout (trial starts immediately; payment method is not required at checkout)
 5. On success → Stripe redirects to `/checkout/success?session_id=...`
 6. Success page calls `POST /api/stripe/sync` which:
    - Verifies the session belongs to the authenticated user
@@ -99,12 +99,12 @@ Use the `whsec_` secret it prints as your local `STRIPE_WEBHOOK_SECRET`.
 
 ## API Routes
 
-| Route | Method | Purpose |
-|-------|--------|---------|
-| `/api/stripe/checkout` | POST | Creates Stripe Checkout Session (requires JWT) |
-| `/api/stripe/sync` | POST | Syncs successful checkout to backend + refreshes JWT |
-| `/api/stripe/webhook` | POST | Handles Stripe webhook events |
-| `/api/stripe/portal` | POST | Creates Stripe Customer Portal session |
+| Route                  | Method | Purpose                                              |
+| ---------------------- | ------ | ---------------------------------------------------- |
+| `/api/stripe/checkout` | POST   | Creates Stripe Checkout Session (requires JWT)       |
+| `/api/stripe/sync`     | POST   | Syncs successful checkout to backend + refreshes JWT |
+| `/api/stripe/webhook`  | POST   | Handles Stripe webhook events                        |
+| `/api/stripe/portal`   | POST   | Creates Stripe Customer Portal session               |
 
 ## Code Reference
 
@@ -121,12 +121,12 @@ Use the `whsec_` secret it prints as your local `STRIPE_WEBHOOK_SECRET`.
 
 Generated via `scripts/generate-stripe-product-images.js` (run from monorepo root).
 
-| File | Size | Usage |
-|------|------|-------|
-| `rabbithole-{plan}.png` | 512x512 | Checkout product image |
+| File                              | Size     | Usage                               |
+| --------------------------------- | -------- | ----------------------------------- |
+| `rabbithole-{plan}.png`           | 512x512  | Checkout product image              |
 | `rabbithole-{plan}-card-logo.png` | 1000x200 | Physical card logo (black-on-white) |
-| `rabbithole-{plan}-icon.png` | 256x256 | Branding icon (transparent bg) |
-| `rabbithole-{plan}-banner.png` | 640x200 | Card element banner (dark bg) |
+| `rabbithole-{plan}-icon.png`      | 256x256  | Branding icon (transparent bg)      |
+| `rabbithole-{plan}-banner.png`    | 640x200  | Card element banner (dark bg)       |
 
 Starter = cold silver/gunmetal. Pro = warm gold foil.
 

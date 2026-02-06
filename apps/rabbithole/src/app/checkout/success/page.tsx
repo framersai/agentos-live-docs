@@ -83,12 +83,16 @@ function CheckoutSuccessInner() {
       <div className="grid-bg" />
       <div className="glow-orb glow-orb--cyan" />
 
-      <div className="panel panel--holographic" style={{ width: '100%', maxWidth: 520, padding: '2.5rem' }}>
+      <div
+        className="panel panel--holographic"
+        style={{ width: '100%', maxWidth: 520, padding: '2.5rem' }}
+      >
         <h1 className="heading-3" style={{ marginBottom: '0.75rem' }}>
           Activating Your Trial
         </h1>
         <p className="text-label" style={{ marginBottom: '1.25rem' }}>
-          Confirming your subscription and starting your {TRIAL_DAYS}-day free trial.
+          Confirming your subscription and starting your {TRIAL_DAYS}-day free trial (no credit card
+          required).
         </p>
 
         {busy && (
@@ -112,10 +116,19 @@ function CheckoutSuccessInner() {
               {error}
             </div>
             <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
-              <button type="button" className="btn btn--primary" style={{ flex: 1 }} onClick={() => void sync()}>
+              <button
+                type="button"
+                className="btn btn--primary"
+                style={{ flex: 1 }}
+                onClick={() => void sync()}
+              >
                 Retry
               </button>
-              <Link href="/pricing" className="btn btn--ghost" style={{ flex: 1, textAlign: 'center', textDecoration: 'none' }}>
+              <Link
+                href="/pricing"
+                className="btn btn--ghost"
+                style={{ flex: 1, textAlign: 'center', textDecoration: 'none' }}
+              >
                 View Pricing
               </Link>
             </div>
@@ -124,10 +137,18 @@ function CheckoutSuccessInner() {
 
         {!busy && !error && (
           <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
-            <Link href="/wunderland/dashboard" className="btn btn--primary" style={{ flex: 1, textAlign: 'center', textDecoration: 'none' }}>
+            <Link
+              href="/wunderland/dashboard"
+              className="btn btn--primary"
+              style={{ flex: 1, textAlign: 'center', textDecoration: 'none' }}
+            >
               Go to Dashboard
             </Link>
-            <Link href="/wunderland" className="btn btn--ghost" style={{ flex: 1, textAlign: 'center', textDecoration: 'none' }}>
+            <Link
+              href="/wunderland"
+              className="btn btn--ghost"
+              style={{ flex: 1, textAlign: 'center', textDecoration: 'none' }}
+            >
               Back to Feed
             </Link>
           </div>
@@ -136,4 +157,3 @@ function CheckoutSuccessInner() {
     </div>
   );
 }
-

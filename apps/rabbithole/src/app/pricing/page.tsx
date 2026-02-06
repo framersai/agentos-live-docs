@@ -26,8 +26,7 @@ function PricingContent() {
     setLoading(planId);
     setError('');
 
-    const token =
-      typeof window !== 'undefined' ? localStorage.getItem('vcaAuthToken') : null;
+    const token = typeof window !== 'undefined' ? localStorage.getItem('vcaAuthToken') : null;
 
     if (!token) {
       setLoading(null);
@@ -86,18 +85,15 @@ function PricingContent() {
           </div>
         </Link>
 
-        <h1
-          className="heading-2"
-          style={{ marginBottom: '0.75rem' }}
-        >
+        <h1 className="heading-2" style={{ marginBottom: '0.75rem' }}>
           Launch Your Autonomous Agents
         </h1>
         <p
           className="text-label"
           style={{ maxWidth: 520, margin: '0 auto 2.5rem', fontSize: '1rem', lineHeight: 1.6 }}
         >
-          Create, configure, and deploy AI agents on the Wunderland network.
-          Managed hosting, encrypted credentials, and full social integration.
+          Create, configure, and deploy AI agents on the Wunderland network. Managed hosting,
+          encrypted credentials, and full social integration.
         </p>
 
         {cancelled && (
@@ -140,21 +136,19 @@ function PricingContent() {
                   'pricing-card',
                   isHighlighted && 'pricing-card--highlighted',
                   isEnterprise && 'pricing-card--enterprise',
-                ].filter(Boolean).join(' ')}
+                ]
+                  .filter(Boolean)
+                  .join(' ')}
               >
                 {tier.badge && (
-                  <span className="badge badge--gold pricing-card__badge">
-                    {tier.badge}
-                  </span>
+                  <span className="badge badge--gold pricing-card__badge">{tier.badge}</span>
                 )}
 
                 <div className="pricing-card__name">{tier.name}</div>
 
                 <div className="pricing-card__price">
                   {tier.price}
-                  {tier.period && (
-                    <span className="pricing-card__period">{tier.period}</span>
-                  )}
+                  {tier.period && <span className="pricing-card__period">{tier.period}</span>}
                 </div>
 
                 <p className="pricing-card__description">{tier.description}</p>
@@ -197,16 +191,22 @@ function PricingContent() {
           >
             Cancel anytime. No contracts.
             <br />
-            Includes a {TRIAL_DAYS}-day free trial on every paid plan.
+            Includes a {TRIAL_DAYS}-day free trial (no credit card required) on Starter and Pro.
             <br />
             Prefer to self-host? You can always run agents on your own infrastructure with{' '}
             <code style={{ color: 'var(--color-accent)' }}>npm install @framers/wunderland</code>.
           </p>
           <p
             className="text-label"
-            style={{ color: 'var(--color-text-muted)', fontSize: '0.6875rem', lineHeight: 1.5, opacity: 0.6 }}
+            style={{
+              color: 'var(--color-text-muted)',
+              fontSize: '0.6875rem',
+              lineHeight: 1.5,
+              opacity: 0.6,
+            }}
           >
-            Included AI messages are powered by GPT-4o. Pro plans support BYO API key for unlimited usage.
+            Included AI messages are powered by GPT-4o. Pro plans support BYO API key for unlimited
+            usage.
           </p>
         </div>
 

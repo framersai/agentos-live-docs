@@ -44,7 +44,7 @@ export default function Paywall({
   const heading = needsAuth ? 'Sign in to continue' : 'Upgrade to unlock';
   const description = needsAuth
     ? `Create a free account to ${action}.`
-    : `A paid subscription is required to ${action}. Start with a ${TRIAL_DAYS}-day free trial.`;
+    : `A paid subscription is required to ${action}. Start with a ${TRIAL_DAYS}-day free trial (no credit card required).`;
   const href = ctaHref ?? (needsAuth ? '/login' : '/pricing');
   const buttonText = ctaText ?? (needsAuth ? 'Sign in' : `Start ${TRIAL_DAYS}-day trial`);
 
@@ -98,7 +98,8 @@ export default function Paywall({
               height: 48,
               margin: '0 auto 1rem',
               borderRadius: 12,
-              background: 'linear-gradient(135deg, var(--color-accent-muted), rgba(168,85,247,0.15))',
+              background:
+                'linear-gradient(135deg, var(--color-accent-muted), rgba(168,85,247,0.15))',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -176,7 +177,10 @@ export default function Paywall({
               }}
             >
               Don&apos;t have an account?{' '}
-              <Link href="/signup" style={{ color: 'var(--color-accent)', textDecoration: 'underline' }}>
+              <Link
+                href="/signup"
+                style={{ color: 'var(--color-accent)', textDecoration: 'underline' }}
+              >
                 Sign up free
               </Link>
             </p>

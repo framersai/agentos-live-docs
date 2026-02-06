@@ -141,7 +141,9 @@ export class EmailService {
 
   private welcomeHtml(name?: string): string {
     const greeting = name ? `Hello ${name},` : 'Welcome,';
-    return wrapEmail('Welcome to Rabbit Hole', `
+    return wrapEmail(
+      'Welcome to Rabbit Hole',
+      `
       ${brandHeader('Welcome', "Founder's Club")}
       <tr>
         <td style="padding:40px;">
@@ -152,6 +154,7 @@ export class EmailService {
           <div style="background:#f8f6f2; border:1px solid rgba(201,162,39,0.2); border-radius:8px; padding:20px; margin-bottom:24px;">
             <h3 style="margin:0 0 12px; color:#1a1625; font-size:14px; font-weight:600; font-family:'Tenor Sans',sans-serif;">Next steps:</h3>
             <ol style="margin:0; padding:0 0 0 20px; color:#6b6b7b; font-size:14px; line-height:1.8;">
+              <li>Start a ${TRIAL_DAYS}-day free trial (no credit card required)</li>
               <li>Choose a plan to launch your first Wunderbot</li>
               <li>Configure your agent's personality and integrations</li>
               <li>Deploy and watch it collaborate on the Wunderland network</li>
@@ -166,7 +169,8 @@ export class EmailService {
         </td>
       </tr>
       ${brandFooter()}
-    `);
+    `
+    );
   }
 
   private welcomeText(name?: string): string {
@@ -180,9 +184,10 @@ ${greeting}
 Welcome to Rabbit Hole — the platform where AI agents and humans collaborate. Your account is ready.
 
 NEXT STEPS:
-1. Choose a plan to launch your first Wunderbot
-2. Configure your agent's personality and integrations
-3. Deploy and watch it collaborate on the Wunderland network
+1. Start a ${TRIAL_DAYS}-day free trial (no credit card required)
+2. Choose a plan to launch your first Wunderbot
+3. Configure your agent's personality and integrations
+4. Deploy and watch it collaborate on the Wunderland network
 
 Explore Wunderland: https://rabbithole.inc/wunderland
 View pricing: https://rabbithole.inc/pricing
@@ -220,7 +225,9 @@ Need help? ${SUPPORT_EMAIL}
   }
 
   private subscriptionActivatedHtml(planName: string): string {
-    return wrapEmail(`Your ${planName} trial is active`, `
+    return wrapEmail(
+      `Your ${planName} trial is active`,
+      `
       ${brandHeader('Trial Started')}
       <tr>
         <td style="padding:40px;">
@@ -228,7 +235,10 @@ Need help? ${SUPPORT_EMAIL}
             Your ${planName} plan is ready.
           </h2>
           <p style="margin:0 0 24px; color:#6b6b7b; font-size:15px; line-height:1.7;">
-            Your subscription is active and your ${TRIAL_DAYS}-day free trial has started. You have full access to all ${planName} features, including managed hosting, encrypted credentials, and the Wunderland social network.
+            Your ${TRIAL_DAYS}-day free trial has started (no credit card required). You have full access to all ${planName} features, including managed hosting, encrypted credentials, and the Wunderland social network.
+          </p>
+          <p style="margin:0 0 24px; color:#9090a0; font-size:13px; line-height:1.7;">
+            To keep your agents running after the trial ends, add a payment method any time in the customer portal.
           </p>
           <div style="background:linear-gradient(135deg,rgba(139,105,20,0.08),rgba(201,162,39,0.08)); border:1px solid rgba(201,162,39,0.2); border-radius:8px; padding:20px; text-align:center; margin-bottom:24px;">
             <p style="margin:0 0 4px; color:#8b6914; font-size:12px; text-transform:uppercase; letter-spacing:0.1em;">Your Plan</p>
@@ -243,7 +253,8 @@ Need help? ${SUPPORT_EMAIL}
         </td>
       </tr>
       ${brandFooter()}
-    `);
+    `
+    );
   }
 
   private subscriptionActivatedText(planName: string): string {
@@ -253,7 +264,8 @@ RABBIT HOLE — TRIAL STARTED
 
 You're on the ${planName} plan!
 
-Your subscription is active and your ${TRIAL_DAYS}-day free trial has started. You have full access to all ${planName} features, including managed hosting, encrypted credentials, and the Wunderland social network.
+Your ${TRIAL_DAYS}-day free trial has started (no credit card required). You have full access to all ${planName} features, including managed hosting, encrypted credentials, and the Wunderland social network.
+To keep your agents running after the trial ends, add a payment method any time in the customer portal.
 
 Go to Dashboard: https://rabbithole.inc/wunderland/dashboard
 
@@ -291,7 +303,9 @@ Need help? ${SUPPORT_EMAIL}
   }
 
   private subscriptionCancelledHtml(planName: string): string {
-    return wrapEmail('Subscription Cancelled', `
+    return wrapEmail(
+      'Subscription Cancelled',
+      `
       ${brandHeader('Subscription Update')}
       <tr>
         <td style="padding:40px;">
@@ -318,7 +332,8 @@ Need help? ${SUPPORT_EMAIL}
         </td>
       </tr>
       ${brandFooter()}
-    `);
+    `
+    );
   }
 
   private subscriptionCancelledText(planName: string): string {
@@ -369,7 +384,9 @@ Have feedback? ${SUPPORT_EMAIL}
   }
 
   private enterpriseConfirmationHtml(name: string): string {
-    return wrapEmail('Enterprise Inquiry Received', `
+    return wrapEmail(
+      'Enterprise Inquiry Received',
+      `
       ${brandHeader('Enterprise', 'Custom Deployment')}
       <tr>
         <td style="padding:40px;">
@@ -395,7 +412,8 @@ Have feedback? ${SUPPORT_EMAIL}
         </td>
       </tr>
       ${brandFooter()}
-    `);
+    `
+    );
   }
 
   private enterpriseConfirmationText(name: string): string {
@@ -446,7 +464,9 @@ In the meantime, feel free to reach out directly at ${SUPPORT_EMAIL}
   }
 
   private contactAutoReplyHtml(name: string, _type: string): string {
-    return wrapEmail('Message Received', `
+    return wrapEmail(
+      'Message Received',
+      `
       ${brandHeader('Message Received')}
       <tr>
         <td style="padding:40px;">
@@ -462,7 +482,8 @@ In the meantime, feel free to reach out directly at ${SUPPORT_EMAIL}
         </td>
       </tr>
       ${brandFooter()}
-    `);
+    `
+    );
   }
 
   private contactAutoReplyText(name: string, _type: string): string {
@@ -522,7 +543,7 @@ Need help? ${SUPPORT_EMAIL}
 
   private internalNotificationHtml(
     data: { type: string; name: string; email: string; company?: string; message?: string },
-    typeLabel: string,
+    typeLabel: string
   ): string {
     const rows = [
       `<tr><td style="color:#6b6b7b; font-size:14px; padding:6px 0;">Type</td><td style="color:#1a1625; font-size:14px; text-align:right; font-weight:500;">${typeLabel}</td></tr>`,
@@ -530,10 +551,14 @@ Need help? ${SUPPORT_EMAIL}
       `<tr><td style="color:#6b6b7b; font-size:14px; padding:6px 0;">Email</td><td style="color:#1a1625; font-size:14px; text-align:right; font-weight:500;"><a href="mailto:${data.email}" style="color:#c9a227;">${data.email}</a></td></tr>`,
     ];
     if (data.company) {
-      rows.push(`<tr><td style="color:#6b6b7b; font-size:14px; padding:6px 0;">Company</td><td style="color:#1a1625; font-size:14px; text-align:right; font-weight:500;">${data.company}</td></tr>`);
+      rows.push(
+        `<tr><td style="color:#6b6b7b; font-size:14px; padding:6px 0;">Company</td><td style="color:#1a1625; font-size:14px; text-align:right; font-weight:500;">${data.company}</td></tr>`
+      );
     }
 
-    return wrapEmail(`New ${typeLabel}`, `
+    return wrapEmail(
+      `New ${typeLabel}`,
+      `
       ${brandHeader(typeLabel, 'Team Notification')}
       <tr>
         <td style="padding:40px;">
@@ -543,23 +568,28 @@ Need help? ${SUPPORT_EMAIL}
           <table cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-bottom:24px;">
             ${rows.join('')}
           </table>
-          ${data.message ? `
+          ${
+            data.message
+              ? `
           <div style="background:#f8f6f2; border:1px solid rgba(0,0,0,0.06); border-radius:8px; padding:16px; margin-bottom:16px;">
             <p style="margin:0 0 4px; color:#9090a0; font-size:12px; text-transform:uppercase; letter-spacing:0.05em;">Message</p>
             <p style="margin:0; color:#1a1625; font-size:14px; line-height:1.7; white-space:pre-wrap;">${data.message}</p>
-          </div>` : ''}
+          </div>`
+              : ''
+          }
           <p style="margin:0; color:#9090a0; font-size:12px;">
             Reply directly to this email to respond to ${data.email}
           </p>
         </td>
       </tr>
       ${brandFooter()}
-    `);
+    `
+    );
   }
 
   private internalNotificationText(
     data: { type: string; name: string; email: string; company?: string; message?: string },
-    typeLabel: string,
+    typeLabel: string
   ): string {
     return `
 NEW ${typeLabel.toUpperCase()}

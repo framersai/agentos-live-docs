@@ -73,13 +73,13 @@ apps/rabbithole/
 
 ### Brand Colors
 
-| Name | Hex | CSS Variable |
-|------|-----|--------------|
-| Champagne Gold | `#c9a227` | `--rh-gold` |
-| Gold Light | `#e8d48a` | `--rh-gold-light` |
-| Gold Dark | `#8b6914` | `--rh-gold-dark` |
-| Obsidian | `#1a1625` | `--rh-obsidian` |
-| Cream | `#f8f6f2` | `--rh-cream` |
+| Name           | Hex       | CSS Variable      |
+| -------------- | --------- | ----------------- |
+| Champagne Gold | `#c9a227` | `--rh-gold`       |
+| Gold Light     | `#e8d48a` | `--rh-gold-light` |
+| Gold Dark      | `#8b6914` | `--rh-gold-dark`  |
+| Obsidian       | `#1a1625` | `--rh-obsidian`   |
+| Cream          | `#f8f6f2` | `--rh-cream`      |
 
 ### Typography
 
@@ -110,22 +110,22 @@ import { RabbitHoleLogo, Footer, KeyholeIcon } from '@/components/brand';
 
 Rabbit Hole uses Stripe for subscription billing. Two plans are available:
 
-| Plan | Price | Wunderbots | AI Credits/mo |
-|------|-------|-----------|---------------|
-| Starter | $19/mo | 1 | 500 messages |
-| Pro | $49/mo | Up to 5 | 2,500 messages |
+| Plan    | Price  | Wunderbots | AI Credits/mo  |
+| ------- | ------ | ---------- | -------------- |
+| Starter | $19/mo | 1          | 500 messages   |
+| Pro     | $49/mo | Up to 5    | 2,500 messages |
 
 Both plans include AI messages so users don't need their own API key to get started. Pro users can bring their own key for unlimited usage.
 
-All paid plans include a **3-day free trial**.
+Starter and Pro include a **3-day free trial** (no credit card required). Enterprise is contact-only.
 
 ### Stripe Routes
 
-| Route | Purpose |
-|-------|---------|
+| Route                       | Purpose                                      |
+| --------------------------- | -------------------------------------------- |
 | `POST /api/stripe/checkout` | Creates Checkout Session (requires JWT auth) |
-| `POST /api/stripe/webhook` | Handles Stripe webhook events |
-| `POST /api/stripe/portal` | Creates Customer Portal session |
+| `POST /api/stripe/webhook`  | Handles Stripe webhook events                |
+| `POST /api/stripe/portal`   | Creates Customer Portal session              |
 
 ### Environment Variables
 
@@ -134,6 +134,7 @@ STRIPE_SECRET_KEY=sk_live_xxx          # Stripe secret key
 STRIPE_WEBHOOK_SECRET=whsec_xxx        # Webhook signing secret
 STRIPE_STARTER_PRICE_ID=price_xxx      # Starter plan price ID
 STRIPE_PRO_PRICE_ID=price_xxx          # Pro plan price ID
+INTERNAL_API_SECRET=supersecret        # Shared secret for internal backend billing updates
 ```
 
 Plan config: `src/lib/stripe.ts`. Pricing page: `src/app/pricing/page.tsx`.
