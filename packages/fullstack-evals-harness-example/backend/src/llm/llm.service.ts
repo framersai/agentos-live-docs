@@ -130,7 +130,10 @@ export class LlmService {
         model: settings.model || 'gpt-4.1-mini',
         messages,
         temperature: options.temperature,
-        max_tokens: options.maxTokens,
+        // GPT-5.x and o-series models require max_completion_tokens
+        ...(/^(gpt-5|o[1-9])/.test(settings.model || '')
+          ? { max_completion_tokens: options.maxTokens }
+          : { max_tokens: options.maxTokens }),
       }),
     });
 

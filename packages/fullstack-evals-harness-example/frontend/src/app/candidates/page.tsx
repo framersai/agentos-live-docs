@@ -521,7 +521,8 @@ variant: concise`}</pre>
 }
 
 /**
- * Groups candidates by parent -> variants and renders them hierarchically.
+ * Groups candidates by parent -> variants. Only parent cards are shown;
+ * variants are listed inside an expandable section of each parent card.
  */
 function PromptList({
   candidates,
@@ -554,6 +555,7 @@ function PromptList({
   openVariantModal: (parentId: string) => void;
   openAiVariantModal: (parentId: string) => void;
 }) {
+  const [variantsOpen, setVariantsOpen] = useState<string | null>(null);
   const bases = candidates.filter((c) => !c.parentId);
   const variantMap = new Map<string, Candidate[]>();
   for (const c of candidates) {
@@ -563,9 +565,6 @@ function PromptList({
       variantMap.set(c.parentId, list);
     }
   }
-  const orphans = candidates.filter(
-    (c) => c.parentId && !bases.some((b) => b.id === c.parentId),
-  );
 
   const cardProps = {
     expandedId,
@@ -581,21 +580,19 @@ function PromptList({
     handleDelete,
     openVariantModal,
     openAiVariantModal,
+    variantsOpen,
+    setVariantsOpen,
   };
 
   return (
     <div className="grid gap-4 md:grid-cols-2">
-      {bases.map((base) => {
-        const variants = variantMap.get(base.id) || [];
-        return [
-          <PromptCard key={base.id} candidate={base} variantCount={variants.length} {...cardProps} />,
-          ...variants.map((v) => (
-            <PromptCard key={v.id} candidate={v} parentName={base.name} {...cardProps} />
-          )),
-        ];
-      })}
-      {orphans.map((c) => (
-        <PromptCard key={c.id} candidate={c} parentName={c.parentId || undefined} {...cardProps} />
+      {bases.map((base) => (
+        <PromptCard
+          key={base.id}
+          candidate={base}
+          variants={variantMap.get(base.id) || []}
+          {...cardProps}
+        />
       ))}
     </div>
   );
@@ -603,8 +600,7 @@ function PromptList({
 
 function PromptCard({
   candidate,
-  parentName,
-  variantCount,
+  variants,
   expandedId,
   setExpandedId,
   testingId,
@@ -618,10 +614,11 @@ function PromptCard({
   handleDelete,
   openVariantModal,
   openAiVariantModal,
+  variantsOpen,
+  setVariantsOpen,
 }: {
   candidate: Candidate;
-  parentName?: string;
-  variantCount?: number;
+  variants: Candidate[];
   expandedId: string | null;
   setExpandedId: (id: string | null) => void;
   testingId: string | null;
@@ -635,11 +632,13 @@ function PromptCard({
   handleDelete: (c: Candidate) => void;
   openVariantModal: (parentId: string) => void;
   openAiVariantModal: (parentId: string) => void;
+  variantsOpen: string | null;
+  setVariantsOpen: (id: string | null) => void;
 }) {
-  const isVariant = !!candidate.parentId;
+  const showVariants = variantsOpen === candidate.id;
 
   return (
-    <div className={`card flex flex-col ${isVariant ? 'border-l-2 border-l-muted-foreground/30' : ''}`}>
+    <div className="card flex flex-col">
       {/* Clickable header area */}
       <Link href={`/candidates/${candidate.id}`} className="p-4 pb-3 hover:bg-muted/30 transition-colors block">
         <div className="flex items-start gap-2">
@@ -648,7 +647,7 @@ function PromptCard({
           ) : (
             <Globe className="h-5 w-5 text-muted-foreground shrink-0 mt-0.5" />
           )}
-          <div className="min-w-0">
+          <div className="min-w-0 flex-1">
             <h3 className="text-sm font-medium truncate">{candidate.name}</h3>
             {candidate.description && (
               <p className="text-xs text-muted-foreground mt-0.5 line-clamp-2">{candidate.description}</p>
@@ -666,19 +665,6 @@ function PromptCard({
           <span className="badge bg-muted text-muted-foreground text-[10px]">
             {candidate.runnerType === 'llm_prompt' ? 'LLM Prompt' : 'HTTP Endpoint'}
           </span>
-          {isVariant && (
-            <span className="badge bg-muted text-muted-foreground text-[10px] flex items-center gap-1">
-              <GitBranch className="h-2.5 w-2.5" />
-              {candidate.variantLabel || 'variant'}
-              {parentName && <span className="opacity-60">of {parentName}</span>}
-            </span>
-          )}
-          {!isVariant && variantCount !== undefined && variantCount > 0 && (
-            <span className="badge bg-muted text-muted-foreground text-[10px] flex items-center gap-1">
-              <GitBranch className="h-2.5 w-2.5" />
-              {variantCount} variant{variantCount !== 1 ? 's' : ''}
-            </span>
-          )}
           {candidate.modelConfig?.provider && (
             <span className="badge bg-muted text-muted-foreground text-[10px]">
               {candidate.modelConfig.provider}
@@ -753,28 +739,61 @@ function PromptCard({
             {candidate.userPromptTemplate.length > 100 && '...'}
           </div>
         )}
+
+        {/* Variants section */}
+        {variants.length > 0 && (
+          <div>
+            <button
+              onClick={() => setVariantsOpen(showVariants ? null : candidate.id)}
+              className="text-[10px] text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
+            >
+              <GitBranch className="h-2.5 w-2.5" />
+              <ChevronDown className={`h-2.5 w-2.5 transition-transform ${showVariants ? 'rotate-180' : ''}`} />
+              {variants.length} variant{variants.length !== 1 ? 's' : ''}
+            </button>
+            {showVariants && (
+              <div className="mt-1.5 space-y-1 border-l-2 border-muted-foreground/20 pl-2.5">
+                {variants.map((v) => (
+                  <div key={v.id} className="flex items-center justify-between gap-2">
+                    <Link
+                      href={`/candidates/${v.id}`}
+                      className="text-xs hover:text-foreground text-muted-foreground transition-colors truncate flex items-center gap-1.5"
+                    >
+                      <span className="font-medium text-foreground/80">{v.variantLabel || v.name}</span>
+                      {v.variantLabel && v.name !== v.variantLabel && (
+                        <span className="opacity-50 text-[10px]">{v.name}</span>
+                      )}
+                    </Link>
+                    <button
+                      onClick={() => handleDelete(v)}
+                      className="btn-ghost p-0.5 text-muted-foreground hover:text-red-500 shrink-0"
+                    >
+                      <Trash2 className="h-2.5 w-2.5" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Action bar */}
       <div className="border-t border-border px-3 py-2 flex items-center gap-1">
-        {!isVariant && (
-          <>
-            <button
-              onClick={() => openVariantModal(candidate.id)}
-              className="btn-ghost px-2 py-1 text-xs flex items-center gap-1"
-            >
-              <Plus className="h-3 w-3" />
-              Variant
-            </button>
-            <button
-              onClick={() => openAiVariantModal(candidate.id)}
-              className="btn-ghost px-2 py-1 text-xs flex items-center gap-1"
-            >
-              <GitBranch className="h-3 w-3" />
-              AI Gen
-            </button>
-          </>
-        )}
+        <button
+          onClick={() => openVariantModal(candidate.id)}
+          className="btn-ghost px-2 py-1 text-xs flex items-center gap-1"
+        >
+          <Plus className="h-3 w-3" />
+          Variant
+        </button>
+        <button
+          onClick={() => openAiVariantModal(candidate.id)}
+          className="btn-ghost px-2 py-1 text-xs flex items-center gap-1"
+        >
+          <GitBranch className="h-3 w-3" />
+          AI Gen
+        </button>
         <button
           onClick={() => {
             if (testingId === candidate.id) {
