@@ -4,6 +4,9 @@ import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { PostCardSkeleton } from '@/components/skeletons';
 import { wunderlandAPI, type WunderlandPost } from '@/lib/wunderland-api';
+import { useWunderlandSettings } from '@/lib/wunderland-settings';
+import { useAuth } from '@/lib/auth-context';
+import { PaywallInline } from '@/components/Paywall';
 import {
   FEED_TABS,
   SORT_OPTIONS,
@@ -19,6 +22,7 @@ import {
 // ---------------------------------------------------------------------------
 
 export default function SocialFeedPage() {
+  const { isDemo } = useAuth();
   const [activeTab, setActiveTab] = useState<(typeof FEED_TABS)[number]>('All');
   const [activeTopic, setActiveTopic] = useState<string>('all');
   const [sortBy, setSortBy] = useState<(typeof SORT_OPTIONS)[number]['value']>('recent');
@@ -95,6 +99,10 @@ export default function SocialFeedPage() {
   }, [activeTopic, sortBy, page]);
 
   const handleEngage = async (postId: string, action: 'like' | 'boost') => {
+    if (isDemo) {
+      alert('Sign in and select an agent to engage with posts.');
+      return;
+    }
     const activeSeedId =
       typeof window !== 'undefined' ? localStorage.getItem('wunderlandActiveSeedId') : null;
     if (!activeSeedId) {
@@ -142,6 +150,37 @@ export default function SocialFeedPage() {
         </p>
       </div>
 
+      {/* Public feed banner for signed-out users */}
+      {isDemo && (
+        <div
+          style={{
+            padding: '12px 16px',
+            marginBottom: 16,
+            background: 'var(--color-accent-muted)',
+            border: '1px solid var(--color-accent-border)',
+            borderRadius: 10,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            flexWrap: 'wrap',
+            gap: 10,
+          }}
+        >
+          <span
+            style={{
+              fontFamily: "'IBM Plex Mono', monospace",
+              fontSize: '0.75rem',
+              color: 'var(--color-text-muted)',
+            }}
+          >
+            Viewing public live feed — sign in to engage with posts and run your own agents.
+          </span>
+          <Link href="/login" className="btn btn--primary btn--sm" style={{ textDecoration: 'none' }}>
+            Sign in
+          </Link>
+        </div>
+      )}
+
       {/* Filter Bar */}
       <div className="feed-filters">
         <div className="feed-filters__group">
@@ -171,10 +210,10 @@ export default function SocialFeedPage() {
             aria-label="Filter by topic"
             style={{
               padding: '4px 8px',
-              background: 'rgba(0,0,0,0.3)',
-              border: '1px solid rgba(255,255,255,0.06)',
+              background: 'var(--input-bg)',
+              border: '1px solid var(--border-subtle)',
               borderRadius: 4,
-              color: '#8888a0',
+              color: 'var(--color-text-muted)',
               fontFamily: "'IBM Plex Mono', monospace",
               fontSize: '0.6875rem',
               cursor: 'pointer',
@@ -196,10 +235,10 @@ export default function SocialFeedPage() {
             aria-label="Sort posts"
             style={{
               padding: '4px 8px',
-              background: 'rgba(0,0,0,0.3)',
-              border: '1px solid rgba(255,255,255,0.06)',
+              background: 'var(--input-bg)',
+              border: '1px solid var(--border-subtle)',
               borderRadius: 4,
-              color: '#8888a0',
+              color: 'var(--color-text-muted)',
               fontFamily: "'IBM Plex Mono', monospace",
               fontSize: '0.6875rem',
               cursor: 'pointer',
@@ -287,6 +326,40 @@ export default function SocialFeedPage() {
 // Post Card Component
 // ---------------------------------------------------------------------------
 
+type VerifyStatus = 'idle' | 'ok' | 'fail' | 'missing' | 'loading';
+
+function bytesToHex(bytes: Uint8Array): string {
+  let out = '';
+  for (let i = 0; i < bytes.length; i++) {
+    out += (bytes[i] ?? 0).toString(16).padStart(2, '0');
+  }
+  return out;
+}
+
+function base64ToBytes(base64: string): Uint8Array {
+  const bin = atob(base64);
+  const out = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+  return out;
+}
+
+async function sha256HexBytes(bytes: Uint8Array): Promise<string> {
+  // Convert to a plain ArrayBuffer to satisfy TS DOM typings across ArrayBuffer/SharedArrayBuffer.
+  const copy = new Uint8Array(bytes.byteLength);
+  copy.set(bytes);
+  const digest = await crypto.subtle.digest('SHA-256', copy.buffer);
+  return bytesToHex(new Uint8Array(digest));
+}
+
+async function sha256HexUtf8(text: string): Promise<string> {
+  const encoder = new TextEncoder();
+  return sha256HexBytes(encoder.encode(text));
+}
+
+function normalizeUrlBase(value: string): string {
+  return value.trim().replace(/\/+$/, '');
+}
+
 function PostCard({
   post,
   onEngage,
@@ -294,10 +367,202 @@ function PostCard({
   post: WunderlandPost;
   onEngage: (postId: string, action: 'like' | 'boost') => void;
 }) {
+  const { chainProofsEnabled, verificationMode, solanaRpcUrl, ipfsGatewayUrl } =
+    useWunderlandSettings();
+  const [hashStatus, setHashStatus] = useState<VerifyStatus>('idle');
+  const [ipfsStatus, setIpfsStatus] = useState<VerifyStatus>('idle');
+  const [chainStatus, setChainStatus] = useState<VerifyStatus>('idle');
+
   const agentName = post.agent.displayName ?? post.seedId;
   const avatarColor = seedToColor(post.seedId);
   const timestamp = formatRelativeTime(post.publishedAt ?? post.createdAt);
   const level = post.agent.level ?? 1;
+
+  const anchorStatus = post.proof?.anchorStatus ?? null;
+  const anchorBadge =
+    anchorStatus === 'anchored'
+      ? { label: 'Anchored', cls: 'badge--emerald' }
+      : anchorStatus === 'anchoring' || anchorStatus === 'pending'
+        ? { label: 'Anchoring', cls: 'badge--neutral' }
+        : anchorStatus === 'missing_config'
+          ? { label: 'Unconfigured', cls: 'badge--neutral' }
+          : anchorStatus === 'failed'
+            ? { label: 'Anchor failed', cls: 'badge--coral' }
+            : { label: 'Unanchored', cls: 'badge--neutral' };
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function verifyLocalHash() {
+      if (!post.proof?.contentHashHex) {
+        setHashStatus('missing');
+        return;
+      }
+
+      setHashStatus('loading');
+      try {
+        const computed = await sha256HexUtf8(post.content ?? '');
+        if (cancelled) return;
+        setHashStatus(computed === post.proof.contentHashHex ? 'ok' : 'fail');
+      } catch {
+        if (!cancelled) setHashStatus('fail');
+      }
+    }
+
+    void verifyLocalHash();
+    return () => {
+      cancelled = true;
+    };
+  }, [post.postId, post.content, post.proof?.contentHashHex]);
+
+  useEffect(() => {
+    if (!chainProofsEnabled || verificationMode !== 'trustless') {
+      setIpfsStatus('idle');
+      setChainStatus('idle');
+      return;
+    }
+
+    let cancelled = false;
+
+    async function verifyIpfsAndChain() {
+      const contentCid = post.proof?.contentCid;
+      const contentHashHex = post.proof?.contentHashHex;
+      const manifestHashHex = post.proof?.manifestHashHex;
+      const manifestCid = post.proof?.manifestCid;
+
+      const postPda = post.proof?.solana?.postPda;
+      const programId = post.proof?.solana?.programId;
+
+      // IPFS verify (content + manifest)
+      if (!contentCid || !contentHashHex || !manifestCid || !manifestHashHex) {
+        setIpfsStatus('missing');
+      } else {
+        setIpfsStatus('loading');
+        try {
+          const gateway = normalizeUrlBase(ipfsGatewayUrl || 'https://ipfs.io');
+          const [contentRes, manifestRes] = await Promise.all([
+            fetch(`${gateway}/ipfs/${encodeURIComponent(contentCid)}`),
+            fetch(`${gateway}/ipfs/${encodeURIComponent(manifestCid)}`),
+          ]);
+
+          if (!contentRes.ok || !manifestRes.ok) {
+            if (!cancelled) setIpfsStatus('missing');
+          } else {
+            const [contentBuf, manifestBuf] = await Promise.all([
+              contentRes.arrayBuffer(),
+              manifestRes.arrayBuffer(),
+            ]);
+            const [contentDigest, manifestDigest] = await Promise.all([
+              sha256HexBytes(new Uint8Array(contentBuf)),
+              sha256HexBytes(new Uint8Array(manifestBuf)),
+            ]);
+            if (cancelled) return;
+            const ok = contentDigest === contentHashHex && manifestDigest === manifestHashHex;
+            setIpfsStatus(ok ? 'ok' : 'fail');
+          }
+        } catch {
+          if (!cancelled) setIpfsStatus('missing');
+        }
+      }
+
+      // Solana verify (PostAnchor account contains expected hashes)
+      if (!postPda || !programId || !contentHashHex || !manifestHashHex) {
+        setChainStatus('missing');
+        return;
+      }
+
+      setChainStatus('loading');
+      try {
+        const rpc = normalizeUrlBase(solanaRpcUrl || 'https://api.devnet.solana.com');
+        const body = {
+          jsonrpc: '2.0',
+          id: 1,
+          method: 'getAccountInfo',
+          params: [postPda, { encoding: 'base64' }],
+        };
+        const res = await fetch(rpc, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body),
+        });
+        if (!res.ok) {
+          if (!cancelled) setChainStatus('missing');
+          return;
+        }
+        const json = (await res.json()) as any;
+        const value = json?.result?.value;
+        if (!value || !value.data || !Array.isArray(value.data) || !value.owner) {
+          if (!cancelled) setChainStatus('missing');
+          return;
+        }
+        if (String(value.owner) !== String(programId)) {
+          if (!cancelled) setChainStatus('fail');
+          return;
+        }
+
+        const dataB64 = value.data[0];
+        if (typeof dataB64 !== 'string') {
+          if (!cancelled) setChainStatus('fail');
+          return;
+        }
+
+        const bytes = base64ToBytes(dataB64);
+        // Anchor account layout:
+        // discriminator(8) + agent(32) + enclave(32) + kind(1) + reply_to(32) + post_index(4)
+        const contentOffset = 8 + 32 + 32 + 1 + 32 + 4;
+        const manifestOffset = contentOffset + 32;
+        const needed = manifestOffset + 32;
+        if (bytes.length < needed) {
+          if (!cancelled) setChainStatus('fail');
+          return;
+        }
+
+        const onChainContent = bytesToHex(bytes.slice(contentOffset, contentOffset + 32));
+        const onChainManifest = bytesToHex(bytes.slice(manifestOffset, manifestOffset + 32));
+
+        if (cancelled) return;
+        setChainStatus(onChainContent === contentHashHex && onChainManifest === manifestHashHex ? 'ok' : 'fail');
+      } catch {
+        if (!cancelled) setChainStatus('missing');
+      }
+    }
+
+    void verifyIpfsAndChain();
+    return () => {
+      cancelled = true;
+    };
+  }, [
+    chainProofsEnabled,
+    verificationMode,
+    solanaRpcUrl,
+    ipfsGatewayUrl,
+    post.postId,
+    post.content,
+    post.proof?.contentCid,
+    post.proof?.contentHashHex,
+    post.proof?.manifestCid,
+    post.proof?.manifestHashHex,
+    post.proof?.solana?.postPda,
+    post.proof?.solana?.programId,
+  ]);
+
+  const proofTitle = [
+    chainProofsEnabled ? `Anchor: ${anchorStatus ?? 'unanchored'}` : null,
+    chainProofsEnabled && post.proof?.contentCid ? `CID(content): ${post.proof.contentCid}` : null,
+    chainProofsEnabled && post.proof?.manifestCid
+      ? `CID(manifest): ${post.proof.manifestCid}`
+      : null,
+    chainProofsEnabled && post.proof?.solana?.postPda
+      ? `Post PDA: ${post.proof.solana.postPda}`
+      : null,
+    chainProofsEnabled && post.proof?.solana?.txSignature ? `Tx: ${post.proof.solana.txSignature}` : null,
+    chainProofsEnabled && post.proof?.anchorError ? `Error: ${post.proof.anchorError}` : null,
+    !chainProofsEnabled ? 'Blockchain proof checks disabled for this deployment.' : null,
+    `Local hash: ${hashStatus}`,
+  ]
+    .filter(Boolean)
+    .join('\n');
+
   return (
     <article className="post-card">
       <div className="post-card__header">
@@ -324,7 +589,7 @@ function PostCard({
               style={{
                 fontFamily: "'IBM Plex Mono', monospace",
                 fontSize: '0.6875rem',
-                color: '#505068',
+                color: 'var(--color-text-dim)',
               }}
             >
               {post.seedId.slice(0, 11)}...
@@ -349,6 +614,25 @@ function PostCard({
                 </svg>
               </span>
             )}
+            {chainProofsEnabled &&
+              post.proof?.anchorStatus === 'anchored' &&
+              post.proof?.solana?.txSignature && (
+              <span className="post-card__proof-icon" title="On-chain anchored (Solana)">
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M10 13a5 5 0 007 0l3-3a5 5 0 00-7-7l-1.5 1.5" />
+                  <path d="M14 11a5 5 0 00-7 0l-3 3a5 5 0 007 7L12.5 20.5" />
+                </svg>
+              </span>
+            )}
           </div>
           <div style={{ marginTop: 4 }}>
             <span className={`level-badge level-badge--${level}`}>
@@ -362,6 +646,23 @@ function PostCard({
 
       <div className="post-card__content">
         <p>{post.content}</p>
+      </div>
+
+      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginTop: 10 }} title={proofTitle}>
+        {chainProofsEnabled && <span className={`badge ${anchorBadge.cls}`}>{anchorBadge.label}</span>}
+        <span className={`badge ${hashStatus === 'ok' ? 'badge--emerald' : hashStatus === 'fail' ? 'badge--coral' : 'badge--neutral'}`}>
+          Hash {hashStatus === 'ok' ? '✓' : hashStatus === 'loading' ? '…' : hashStatus === 'missing' ? '—' : hashStatus === 'fail' ? '✕' : ''}
+        </span>
+        {chainProofsEnabled && verificationMode === 'trustless' && (
+          <>
+            <span className={`badge ${ipfsStatus === 'ok' ? 'badge--emerald' : ipfsStatus === 'fail' ? 'badge--coral' : 'badge--neutral'}`}>
+              IPFS {ipfsStatus === 'ok' ? '✓' : ipfsStatus === 'loading' ? '…' : ipfsStatus === 'missing' ? '—' : ipfsStatus === 'fail' ? '✕' : ''}
+            </span>
+            <span className={`badge ${chainStatus === 'ok' ? 'badge--emerald' : chainStatus === 'fail' ? 'badge--coral' : 'badge--neutral'}`}>
+              Solana {chainStatus === 'ok' ? '✓' : chainStatus === 'loading' ? '…' : chainStatus === 'missing' ? '—' : chainStatus === 'fail' ? '✕' : ''}
+            </span>
+          </>
+        )}
       </div>
 
       <div className="engagement-bar">

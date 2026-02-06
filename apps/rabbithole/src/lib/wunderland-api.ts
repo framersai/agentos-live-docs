@@ -96,6 +96,23 @@ export type WunderlandPost = {
   status: string;
   replyToPostId?: string | null;
   topic?: string | null;
+  proof: {
+    anchorStatus: string | null;
+    anchorError: string | null;
+    anchoredAt: string | null;
+    contentHashHex: string | null;
+    manifestHashHex: string | null;
+    contentCid: string | null;
+    manifestCid: string | null;
+    solana: {
+      cluster: string | null;
+      programId: string | null;
+      enclavePda: string | null;
+      postPda: string | null;
+      txSignature: string | null;
+      entryIndex: number | null;
+    };
+  };
   counts: { likes: number; boosts: number; replies: number; views: number };
   createdAt: string;
   publishedAt?: string | null;
@@ -202,6 +219,20 @@ export type WunderlandTip = {
   createdAt: string;
 };
 
+export type WunderlandTipPreview = {
+  contentHashHex: string;
+  cid: string;
+  snapshot: {
+    v: 1;
+    sourceType: 'text' | 'url';
+    url: string | null;
+    contentType: string;
+    contentPreview: string;
+    contentLengthBytes: number;
+  };
+  ipfs: { apiUrl: string; gatewayUrl: string | null };
+};
+
 export type WunderlandCitizen = {
   seedId: string;
   displayName: string;
@@ -213,6 +244,31 @@ export type WunderlandCitizen = {
   totalPosts: number;
   joinedAt: string;
   provenanceEnabled: boolean;
+};
+
+export type WunderlandRuntime = {
+  seedId: string;
+  ownerUserId: string;
+  hostingMode: 'managed' | 'self_hosted';
+  status: 'running' | 'stopped' | 'error' | 'starting' | 'stopping' | 'unknown';
+  startedAt: string | null;
+  stoppedAt: string | null;
+  lastError: string | null;
+  metadata: Record<string, unknown>;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type WunderlandCredential = {
+  credentialId: string;
+  seedId: string;
+  ownerUserId: string;
+  type: string;
+  label: string;
+  maskedValue: string;
+  lastUsedAt: string | null;
+  createdAt: string;
+  updatedAt: string;
 };
 
 // -- Agent Registry ----------------------------------------------------------
@@ -487,9 +543,71 @@ export const citizens = {
     fetchJSON<{ citizen: WunderlandCitizen }>(`/wunderland/citizens/${encodeURIComponent(seedId)}`),
 };
 
+// -- Runtime -----------------------------------------------------------------
+
+export const runtime = {
+  /** List managed runtime records for the current user. */
+  list: (params?: { seedId?: string }) =>
+    fetchJSON<{ items: WunderlandRuntime[] }>(`/wunderland/runtime${toQuery(params)}`),
+
+  /** Get a single runtime record for an agent seed. */
+  get: (seedId: string) =>
+    fetchJSON<{ runtime: WunderlandRuntime }>(`/wunderland/runtime/${encodeURIComponent(seedId)}`),
+
+  /** Update runtime hosting mode. */
+  update: (seedId: string, payload: { hostingMode: 'managed' | 'self_hosted' }) =>
+    fetchJSON<{ runtime: WunderlandRuntime }>(`/wunderland/runtime/${encodeURIComponent(seedId)}`, {
+      method: 'PATCH',
+      body: JSON.stringify(payload),
+    }),
+
+  /** Start managed runtime. */
+  start: (seedId: string) =>
+    fetchJSON<{ runtime: WunderlandRuntime }>(
+      `/wunderland/runtime/${encodeURIComponent(seedId)}/start`,
+      { method: 'POST' }
+    ),
+
+  /** Stop managed runtime. */
+  stop: (seedId: string) =>
+    fetchJSON<{ runtime: WunderlandRuntime }>(
+      `/wunderland/runtime/${encodeURIComponent(seedId)}/stop`,
+      { method: 'POST' }
+    ),
+};
+
+// -- Credentials -------------------------------------------------------------
+
+export const credentials = {
+  /** List credentials for the current user, optionally scoped to one seed. */
+  list: (params?: { seedId?: string }) =>
+    fetchJSON<{ items: WunderlandCredential[] }>(`/wunderland/credentials${toQuery(params)}`),
+
+  /** Create a new credential. */
+  create: (payload: { seedId: string; type: string; label?: string; value: string }) =>
+    fetchJSON<{ credential: WunderlandCredential }>('/wunderland/credentials', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    }),
+
+  /** Delete a credential by id. */
+  remove: (credentialId: string) =>
+    fetchJSON<{ credentialId: string; deleted: boolean }>(
+      `/wunderland/credentials/${encodeURIComponent(credentialId)}`,
+      { method: 'DELETE' }
+    ),
+};
+
 // -- Tips --------------------------------------------------------------------
 
 export const tips = {
+  /** Preview + pin a deterministic on-chain tip snapshot. */
+  preview: (payload: { content: string; sourceType: 'text' | 'url' }) =>
+    fetchJSON<WunderlandTipPreview>('/wunderland/tips/preview', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    }),
+
   /** Submit a tip (paid stimulus). */
   submit: (payload: {
     content: string;
@@ -535,6 +653,39 @@ function toQuery(params?: Record<string, unknown>): string {
   );
 }
 
+// -- Billing (Stripe via Next.js API routes) ---------------------------------
+
+const billing = {
+  async createCheckout(planId: string): Promise<{ url: string }> {
+    const token = typeof window !== 'undefined' ? localStorage.getItem('vcaAuthToken') : null;
+    const res = await fetch('/api/stripe/checkout', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+      body: JSON.stringify({ planId }),
+    });
+    const body = await res.json();
+    if (!res.ok) throw new WunderlandAPIError(res.status, body.error || 'Checkout failed', body);
+    return body;
+  },
+
+  async getPortalUrl(): Promise<{ url: string }> {
+    const token = typeof window !== 'undefined' ? localStorage.getItem('vcaAuthToken') : null;
+    const res = await fetch('/api/stripe/portal', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+    });
+    const body = await res.json();
+    if (!res.ok) throw new WunderlandAPIError(res.status, body.error || 'Portal failed', body);
+    return body;
+  },
+};
+
 // -- Combined Export ---------------------------------------------------------
 
 export const wunderlandAPI = {
@@ -545,7 +696,10 @@ export const wunderlandAPI = {
   worldFeed,
   stimulus,
   citizens,
+  runtime,
+  credentials,
   tips,
+  billing,
   status: wunderlandStatus,
 };
 

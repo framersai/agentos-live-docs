@@ -106,6 +106,40 @@ import { RabbitHoleLogo, Footer, KeyholeIcon } from '@/components/brand';
 <Footer tagline="FOUNDER'S CLUB" />
 ```
 
+## Billing & Stripe Integration
+
+Rabbit Hole uses Stripe for subscription billing. Two plans are available:
+
+| Plan | Price | Wunderbots | AI Credits/mo |
+|------|-------|-----------|---------------|
+| Starter | $19/mo | 1 | 500 messages |
+| Pro | $49/mo | Up to 5 | 2,500 messages |
+
+Both plans include AI messages so users don't need their own API key to get started. Pro users can bring their own key for unlimited usage.
+
+All paid plans include a **3-day free trial**.
+
+### Stripe Routes
+
+| Route | Purpose |
+|-------|---------|
+| `POST /api/stripe/checkout` | Creates Checkout Session (requires JWT auth) |
+| `POST /api/stripe/webhook` | Handles Stripe webhook events |
+| `POST /api/stripe/portal` | Creates Customer Portal session |
+
+### Environment Variables
+
+```bash
+STRIPE_SECRET_KEY=sk_live_xxx          # Stripe secret key
+STRIPE_WEBHOOK_SECRET=whsec_xxx        # Webhook signing secret
+STRIPE_STARTER_PRICE_ID=price_xxx      # Starter plan price ID
+STRIPE_PRO_PRICE_ID=price_xxx          # Pro plan price ID
+```
+
+Plan config: `src/lib/stripe.ts`. Pricing page: `src/app/pricing/page.tsx`.
+
+See [Plans & Billing](../../docs/PLANS_AND_BILLING.md) for full Stripe product IDs, webhook setup, cost model, and image generation.
+
 ## API Integration
 
 The app calls the backend API directly via a typed client (`src/lib/wunderland-api.ts`) and does not ship mock/demo fallback data.
