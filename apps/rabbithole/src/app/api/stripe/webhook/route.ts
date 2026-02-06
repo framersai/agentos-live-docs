@@ -68,12 +68,9 @@ export async function POST(req: NextRequest) {
       const sub = event.data.object;
       const userId = sub.metadata?.userId;
       if (userId) {
-        const status =
-          typeof sub.status === 'string'
-            ? sub.status === 'cancelled'
-              ? 'canceled'
-              : sub.status
-            : 'canceled';
+        const status = sub.status === 'active' || sub.status === 'trialing'
+          ? sub.status
+          : 'canceled';
         const priceId = sub.items?.data?.[0]?.price?.id;
         const plan = priceId ? getPlanByPriceId(priceId) : null;
 

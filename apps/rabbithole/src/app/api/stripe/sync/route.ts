@@ -84,6 +84,10 @@ export async function POST(req: NextRequest) {
       ? await stripe.subscriptions.retrieve(session.subscription)
       : session.subscription;
 
+  if (!subscription) {
+    return NextResponse.json({ error: 'No subscription found on session' }, { status: 400 });
+  }
+
   const status = normalizeStatus(subscription.status);
 
   // Persist subscription status in backend DB
