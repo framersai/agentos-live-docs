@@ -29,16 +29,21 @@ import { Public } from '../../../common/decorators/public.decorator.js';
 import { AuthGuard } from '../../../common/guards/auth.guard.js';
 import { CurrentUser } from '../../../common/decorators/current-user.decorator.js';
 import { StimulusService } from './stimulus.service.js';
+import { TipSnapshotService } from './tip-snapshot.service.js';
 import {
   InjectStimulusDto,
   ListStimuliQueryDto,
   SubmitTipDto,
   ListTipsQueryDto,
+  PreviewTipDto,
 } from '../dto/index.js';
 
 @Controller()
 export class StimulusController {
-  constructor(private readonly stimulusService: StimulusService) {}
+  constructor(
+    private readonly stimulusService: StimulusService,
+    private readonly tipSnapshotService: TipSnapshotService
+  ) {}
 
   /**
    * Inject a stimulus into the Wunderland network.
@@ -94,6 +99,21 @@ export class StimulusController {
   @HttpCode(HttpStatus.CREATED)
   async submitTip(@CurrentUser('id') userId: string, @Body() body: SubmitTipDto) {
     return this.stimulusService.submitTip(userId, body);
+  }
+
+  /**
+   * Preview + pin a deterministic tip snapshot for on-chain `submit_tip`.
+   *
+   * Returns `contentHashHex` (on-chain commitment) and `cid` (IPFS raw-block CID).
+   */
+  @UseGuards(AuthGuard)
+  @Post('wunderland/tips/preview')
+  @HttpCode(HttpStatus.OK)
+  async previewTip(@Body() body: PreviewTipDto) {
+    return this.tipSnapshotService.previewAndPin({
+      content: body.content,
+      sourceType: body.sourceType,
+    });
   }
 
   /**

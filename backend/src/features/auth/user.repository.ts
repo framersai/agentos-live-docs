@@ -12,6 +12,8 @@ export interface AppUser {
   password_hash: string;
   supabase_user_id?: string | null;
   subscription_plan_id?: string | null;
+  stripe_customer_id?: string | null;
+  stripe_subscription_id?: string | null;
   subscription_status: string;
   subscription_tier: string;
   lemon_customer_id?: string | null;
@@ -28,7 +30,9 @@ export interface AppUser {
 
 export const findUserByEmail = async (email: string): Promise<AppUser | null> => {
   const db = getAppDatabase();
-  return (await db.get<AppUser>('SELECT * FROM app_users WHERE email = ? LIMIT 1', [email])) ?? null;
+  return (
+    (await db.get<AppUser>('SELECT * FROM app_users WHERE email = ? LIMIT 1', [email])) ?? null
+  );
 };
 
 export const findUserById = async (id: string): Promise<AppUser | null> => {
@@ -68,7 +72,7 @@ export const createUser = async (data: {
       lemon_subscription_id: data.lemonSubscriptionId ?? null,
       created_at: now,
       updated_at: now,
-      metadata: data.metadata ? JSON.stringify(data.metadata) : null
+      metadata: data.metadata ? JSON.stringify(data.metadata) : null,
     }
   );
 
@@ -78,10 +82,17 @@ export const createUser = async (data: {
 export const findUserBySupabaseId = async (supabaseUserId: string): Promise<AppUser | null> => {
   if (!supabaseUserId) return null;
   const db = getAppDatabase();
-  return (await db.get<AppUser>('SELECT * FROM app_users WHERE supabase_user_id = ? LIMIT 1', [supabaseUserId])) ?? null;
+  return (
+    (await db.get<AppUser>('SELECT * FROM app_users WHERE supabase_user_id = ? LIMIT 1', [
+      supabaseUserId,
+    ])) ?? null
+  );
 };
 
-export const updateUserSupabaseLink = async (userId: string, supabaseUserId: string | null): Promise<void> => {
+export const updateUserSupabaseLink = async (
+  userId: string,
+  supabaseUserId: string | null
+): Promise<void> => {
   const db = getAppDatabase();
   await db.run(
     `
@@ -94,14 +105,17 @@ export const updateUserSupabaseLink = async (userId: string, supabaseUserId: str
   );
 };
 
-export const updateUserProfile = async (userId: string, data: {
-  email?: string;
-  subscriptionStatus?: string | null;
-  subscriptionTier?: string | null;
-  lemonCustomerId?: string | null;
-  lemonSubscriptionId?: string | null;
-  metadata?: Record<string, unknown> | null;
-}): Promise<void> => {
+export const updateUserProfile = async (
+  userId: string,
+  data: {
+    email?: string;
+    subscriptionStatus?: string | null;
+    subscriptionTier?: string | null;
+    lemonCustomerId?: string | null;
+    lemonSubscriptionId?: string | null;
+    metadata?: Record<string, unknown> | null;
+  }
+): Promise<void> => {
   const db = getAppDatabase();
   await db.run(
     `
@@ -123,19 +137,22 @@ export const updateUserProfile = async (userId: string, data: {
       lemon_customer_id: data.lemonCustomerId ?? null,
       lemon_subscription_id: data.lemonSubscriptionId ?? null,
       metadata: data.metadata ? JSON.stringify(data.metadata) : null,
-      updated_at: Date.now()
+      updated_at: Date.now(),
     }
   );
 };
 
-export const updateUserSubscription = async (userId: string, updates: {
-  status?: string;
-  tier?: string;
-  lemonCustomerId?: string | null;
-  lemonSubscriptionId?: string | null;
-  renewsAt?: number | null;
-  expiresAt?: number | null;
-}): Promise<void> => {
+export const updateUserSubscription = async (
+  userId: string,
+  updates: {
+    status?: string;
+    tier?: string;
+    lemonCustomerId?: string | null;
+    lemonSubscriptionId?: string | null;
+    renewsAt?: number | null;
+    expiresAt?: number | null;
+  }
+): Promise<void> => {
   const db = getAppDatabase();
   const now = Date.now();
   await db.run(
@@ -158,12 +175,50 @@ export const updateUserSubscription = async (userId: string, updates: {
       lemonSubscriptionId: updates.lemonSubscriptionId ?? null,
       renewsAt: updates.renewsAt ?? null,
       expiresAt: updates.expiresAt ?? null,
-      updated_at: now
+      updated_at: now,
     }
   );
 };
 
-export const recordLoginEvent = async (data: { userId?: string; mode: string; ip?: string | null; userAgent?: string | null }): Promise<void> => {
+export const updateUserStripeSubscription = async (
+  userId: string,
+  updates: {
+    status: string;
+    planId: string | null;
+    stripeCustomerId: string | null;
+    stripeSubscriptionId: string | null;
+  }
+): Promise<void> => {
+  const db = getAppDatabase();
+  const now = Date.now();
+
+  await db.run(
+    `
+    UPDATE app_users
+       SET subscription_status = @status,
+           subscription_plan_id = @planId,
+           stripe_customer_id = @stripeCustomerId,
+           stripe_subscription_id = @stripeSubscriptionId,
+           updated_at = @updated_at
+     WHERE id = @userId
+  `,
+    {
+      userId,
+      status: updates.status,
+      planId: updates.planId,
+      stripeCustomerId: updates.stripeCustomerId,
+      stripeSubscriptionId: updates.stripeSubscriptionId,
+      updated_at: now,
+    }
+  );
+};
+
+export const recordLoginEvent = async (data: {
+  userId?: string;
+  mode: string;
+  ip?: string | null;
+  userAgent?: string | null;
+}): Promise<void> => {
   const db = getAppDatabase();
   const id = generateId();
   const now = Date.now();
@@ -178,7 +233,7 @@ export const recordLoginEvent = async (data: { userId?: string; mode: string; ip
       mode: data.mode,
       ip_address: data.ip ?? null,
       user_agent: data.userAgent ?? null,
-      created_at: now
+      created_at: now,
     }
   );
 };
@@ -197,12 +252,15 @@ export const updateLastLogin = async (userId: string, ip?: string | null): Promi
       user_id: userId,
       last_login_at: Date.now(),
       last_login_ip: ip ?? null,
-      updated_at: Date.now()
+      updated_at: Date.now(),
     }
   );
 };
 
-export const logGlobalAccess = async (data: { ip?: string | null; userAgent?: string | null }): Promise<void> => {
+export const logGlobalAccess = async (data: {
+  ip?: string | null;
+  userAgent?: string | null;
+}): Promise<void> => {
   const db = getAppDatabase();
   const id = generateId();
   const now = Date.now();
@@ -215,12 +273,15 @@ export const logGlobalAccess = async (data: { ip?: string | null; userAgent?: st
       id,
       ip_address: data.ip ?? null,
       user_agent: data.userAgent ?? null,
-      created_at: now
+      created_at: now,
     }
   );
 };
 
-export const countGlobalAccessAttempts = async (ip: string, sinceEpochMs: number): Promise<number> => {
+export const countGlobalAccessAttempts = async (
+  ip: string,
+  sinceEpochMs: number
+): Promise<number> => {
   if (!ip) return 0;
   const db = getAppDatabase();
   const row = await db.get<{ count: number }>(
@@ -230,7 +291,12 @@ export const countGlobalAccessAttempts = async (ip: string, sinceEpochMs: number
   return row?.count ?? 0;
 };
 
-export const storeLemonSqueezyEvent = async (data: { id: string; eventName: string; payload: string; processed?: boolean }): Promise<void> => {
+export const storeLemonSqueezyEvent = async (data: {
+  id: string;
+  eventName: string;
+  payload: string;
+  processed?: boolean;
+}): Promise<void> => {
   const db = getAppDatabase();
   await db.run(
     `
@@ -242,9 +308,7 @@ export const storeLemonSqueezyEvent = async (data: { id: string; eventName: stri
       event_name: data.eventName,
       payload: data.payload,
       processed_at: data.processed ? Date.now() : null,
-      created_at: Date.now()
+      created_at: Date.now(),
     }
   );
 };
-
-

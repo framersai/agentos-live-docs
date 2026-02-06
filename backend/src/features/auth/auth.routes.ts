@@ -6,7 +6,14 @@
 
 import type { Request, Response } from 'express';
 import { appConfig } from '../../config/appConfig.js';
-import { globalPasswordLogin, standardLogin, registerAccount } from './auth.service.js';
+import {
+  globalPasswordLogin,
+  standardLogin,
+  registerAccount,
+  oauthBridgeLogin,
+  createSessionForUser,
+} from './auth.service.js';
+import { findUserById } from './user.repository.js';
 
 const getClientIp = (req: Request): string | null => {
   const forwarded = req.headers['x-forwarded-for'];
@@ -42,7 +49,6 @@ const mapAuthErrorToStatus = (error: Error): number => {
     case 'USER_NOT_FOUND':
       return 404;
     case 'USER_INACTIVE':
-    case 'SUBSCRIPTION_INACTIVE':
       return 403;
     case 'GLOBAL_LOGIN_RATE_LIMIT':
       return 429;
@@ -57,7 +63,10 @@ const mapAuthErrorToStatus = (error: Error): number => {
 
 export const postGlobalLogin = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { password, rememberMe = false } = req.body as { password?: string; rememberMe?: boolean };
+    const { password, rememberMe = false } = req.body as {
+      password?: string;
+      rememberMe?: boolean;
+    };
 
     if (!password) {
       res.status(400).json({ message: 'Global password is required.', error: 'MISSING_PASSWORD' });
@@ -65,13 +74,21 @@ export const postGlobalLogin = async (req: Request, res: Response): Promise<void
     }
 
     if (!appConfig.auth.globalPassword) {
-      res.status(503).json({ message: 'Global access password not configured.', error: 'GLOBAL_LOGIN_DISABLED' });
+      res
+        .status(503)
+        .json({
+          message: 'Global access password not configured.',
+          error: 'GLOBAL_LOGIN_DISABLED',
+        });
       return;
     }
 
     const ip = getClientIp(req);
     const userAgent = req.headers['user-agent'] ?? null;
-    const result = await globalPasswordLogin(password, { ip, userAgent: typeof userAgent === 'string' ? userAgent : null });
+    const result = await globalPasswordLogin(password, {
+      ip,
+      userAgent: typeof userAgent === 'string' ? userAgent : null,
+    });
 
     setRememberMeCookie(res, result.token, rememberMe);
 
@@ -84,9 +101,10 @@ export const postGlobalLogin = async (req: Request, res: Response): Promise<void
     });
   } catch (error: any) {
     const status = mapAuthErrorToStatus(error);
-    const message = error.message === 'GLOBAL_LOGIN_RATE_LIMIT'
-      ? 'Too many global access attempts. Try again later.'
-      : 'Global access denied.';
+    const message =
+      error.message === 'GLOBAL_LOGIN_RATE_LIMIT'
+        ? 'Too many global access attempts. Try again later.'
+        : 'Global access denied.';
     res.status(status).json({
       message,
       error: error.message,
@@ -99,7 +117,9 @@ export const postRegister = async (req: Request, res: Response): Promise<void> =
     const { email, password } = req.body as { email?: string; password?: string };
 
     if (!email || !password) {
-      res.status(400).json({ message: 'Email and password are required.', error: 'MISSING_CREDENTIALS' });
+      res
+        .status(400)
+        .json({ message: 'Email and password are required.', error: 'MISSING_CREDENTIALS' });
       return;
     }
 
@@ -128,16 +148,25 @@ export const postRegister = async (req: Request, res: Response): Promise<void> =
 
 export const postStandardLogin = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { email, password, rememberMe = false } = req.body as { email?: string; password?: string; rememberMe?: boolean };
+    const {
+      email,
+      password,
+      rememberMe = false,
+    } = req.body as { email?: string; password?: string; rememberMe?: boolean };
 
     if (!email || !password) {
-      res.status(400).json({ message: 'Email and password are required.', error: 'MISSING_CREDENTIALS' });
+      res
+        .status(400)
+        .json({ message: 'Email and password are required.', error: 'MISSING_CREDENTIALS' });
       return;
     }
 
     const ip = getClientIp(req);
     const userAgent = req.headers['user-agent'] ?? null;
-    const result = await standardLogin(email, password, { ip, userAgent: typeof userAgent === 'string' ? userAgent : null });
+    const result = await standardLogin(email, password, {
+      ip,
+      userAgent: typeof userAgent === 'string' ? userAgent : null,
+    });
 
     setRememberMeCookie(res, result.token, rememberMe);
 
@@ -150,13 +179,61 @@ export const postStandardLogin = async (req: Request, res: Response): Promise<vo
     });
   } catch (error: any) {
     const status = mapAuthErrorToStatus(error);
-    const message = error.message === 'SUBSCRIPTION_INACTIVE'
-      ? 'Subscription inactive or expired.'
-      : error.message === 'USER_NOT_FOUND'
-        ? 'Account not found.'
-        : 'Authentication failed.';
+    const message =
+      error.message === 'USER_NOT_FOUND' ? 'Account not found.' : 'Authentication failed.';
     res.status(status).json({
       message,
+      error: error.message,
+    });
+  }
+};
+
+export const postOauthBridge = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const {
+      email,
+      name,
+      provider,
+      providerAccountId,
+      rememberMe = false,
+    } = req.body as {
+      email?: string;
+      name?: string;
+      provider?: string;
+      providerAccountId?: string;
+      rememberMe?: boolean;
+    };
+
+    if (!email) {
+      res.status(400).json({ message: 'Email is required.', error: 'MISSING_CREDENTIALS' });
+      return;
+    }
+
+    const ip = getClientIp(req);
+    const userAgent = req.headers['user-agent'] ?? null;
+    const result = await oauthBridgeLogin(
+      {
+        email,
+        name,
+        provider,
+        providerAccountId,
+      },
+      { ip, userAgent: typeof userAgent === 'string' ? userAgent : null }
+    );
+
+    setRememberMeCookie(res, result.token, rememberMe);
+
+    res.status(200).json({
+      message: 'OAuth bridge authentication successful.',
+      token: result.token,
+      user: result.user,
+      rememberMe,
+      tokenProvider: 'oauth-bridge',
+    });
+  } catch (error: any) {
+    const status = mapAuthErrorToStatus(error);
+    res.status(status).json({
+      message: status === 500 ? 'OAuth bridge authentication failed.' : error.message,
       error: error.message,
     });
   }
@@ -182,4 +259,54 @@ export const deleteSession = async (_req: Request, res: Response): Promise<void>
     sameSite: 'lax',
   });
   res.status(200).json({ message: 'Logout successful.' });
+};
+
+/**
+ * POST /auth/refresh
+ * Re-issues a JWT using the latest subscription status from the database.
+ *
+ * This is critical for flows where billing updates occur out-of-band (webhooks)
+ * while the user still has a valid token in localStorage.
+ */
+export const postRefresh = async (req: Request, res: Response): Promise<void> => {
+  const user = (req as any).user;
+  if (!user?.authenticated) {
+    res.status(401).json({ message: 'Authentication required.' });
+    return;
+  }
+
+  // Global access sessions are not backed by a DB user.
+  if (user.mode === 'global') {
+    res.status(200).json({
+      message: 'Session is already global.',
+      token: user.token ?? null,
+      user,
+      tokenProvider: 'global',
+    });
+    return;
+  }
+
+  const userId = (user.sub ?? user.id) as string | undefined;
+  if (!userId) {
+    res.status(400).json({ message: 'Invalid session user.' });
+    return;
+  }
+
+  const dbUser = await findUserById(String(userId));
+  if (!dbUser) {
+    res.status(404).json({ message: 'User not found.' });
+    return;
+  }
+  if (!dbUser.is_active) {
+    res.status(403).json({ message: 'User inactive.' });
+    return;
+  }
+
+  const session = createSessionForUser(dbUser, { mode: 'standard' });
+  res.status(200).json({
+    message: 'Session refreshed.',
+    token: session.token,
+    user: session.user,
+    tokenProvider: 'refresh',
+  });
 };

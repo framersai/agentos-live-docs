@@ -8,12 +8,21 @@ import {
   IsOptional,
   IsArray,
   IsIn,
-  IsObject,
   MaxLength,
   IsNumber,
   Min,
   Max,
 } from 'class-validator';
+
+/** Request body for POST /wunderland/tips/preview. */
+export class PreviewTipDto {
+  @IsString()
+  @MaxLength(5000)
+  content!: string;
+
+  @IsIn(['text', 'url'])
+  sourceType!: 'text' | 'url';
+}
 
 /** Request body for POST /wunderland/tips. */
 export class SubmitTipDto {

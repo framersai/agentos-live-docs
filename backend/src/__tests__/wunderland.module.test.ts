@@ -7,6 +7,9 @@ import { SocialFeedModule } from '../modules/wunderland/social-feed/social-feed.
 import { WorldFeedModule } from '../modules/wunderland/world-feed/world-feed.module.js';
 import { StimulusModule } from '../modules/wunderland/stimulus/stimulus.module.js';
 import { ApprovalQueueModule } from '../modules/wunderland/approval-queue/approval-queue.module.js';
+import { WunderlandSolModule } from '../modules/wunderland/wunderland-sol/wunderland-sol.module.js';
+import { RuntimeModule } from '../modules/wunderland/runtime/runtime.module.js';
+import { CredentialsModule } from '../modules/wunderland/credentials/credentials.module.js';
 import { CitizensModule } from '../modules/wunderland/citizens/citizens.module.js';
 import { VotingModule } from '../modules/wunderland/voting/voting.module.js';
 import { AgentRegistryController } from '../modules/wunderland/agent-registry/agent-registry.controller.js';
@@ -91,17 +94,20 @@ describe('WunderlandModule.register()', () => {
     assert.equal(WunderlandModule.register().module, WunderlandModule);
   });
 
-  test('when enabled, imports array includes all 7 sub-modules', () => {
+  test('when enabled, imports array includes all 10 sub-modules', () => {
     process.env.WUNDERLAND_ENABLED = 'true';
     const result = WunderlandModule.register();
     const imports = result.imports as any[];
 
-    assert.equal(imports.length, 7);
+    assert.equal(imports.length, 10);
     assert.ok(imports.includes(AgentRegistryModule), 'should include AgentRegistryModule');
     assert.ok(imports.includes(SocialFeedModule), 'should include SocialFeedModule');
     assert.ok(imports.includes(WorldFeedModule), 'should include WorldFeedModule');
     assert.ok(imports.includes(StimulusModule), 'should include StimulusModule');
     assert.ok(imports.includes(ApprovalQueueModule), 'should include ApprovalQueueModule');
+    assert.ok(imports.includes(WunderlandSolModule), 'should include WunderlandSolModule');
+    assert.ok(imports.includes(RuntimeModule), 'should include RuntimeModule');
+    assert.ok(imports.includes(CredentialsModule), 'should include CredentialsModule');
     assert.ok(imports.includes(CitizensModule), 'should include CitizensModule');
     assert.ok(imports.includes(VotingModule), 'should include VotingModule');
   });
@@ -352,22 +358,30 @@ describe('AgentRegistryController', () => {
     const controller = new AgentRegistryController({
       registerAgent: async () => expected,
     } as unknown as AgentRegistryService);
-    const result = await controller.registerAgent('user-1', {
-      seedId: 'seed-1',
-      displayName: 'Seed One',
-      bio: 'Bio',
-      systemPrompt: 'You are a helpful agent.',
-      personality: {
-        honesty: 0.5,
-        emotionality: 0.5,
-        extraversion: 0.5,
-        agreeableness: 0.5,
-        conscientiousness: 0.5,
-        openness: 0.5,
-      },
-      security: { preLlmClassifier: true, dualLlmAuditor: true, outputSigning: false },
-      capabilities: [],
-    } as any);
+    const result = await controller.registerAgent(
+      {
+        mode: 'standard',
+        tier: 'metered',
+        subscriptionStatus: 'active',
+      } as any,
+      'user-1',
+      {
+        seedId: 'seed-1',
+        displayName: 'Seed One',
+        bio: 'Bio',
+        systemPrompt: 'You are a helpful agent.',
+        personality: {
+          honesty: 0.5,
+          emotionality: 0.5,
+          extraversion: 0.5,
+          agreeableness: 0.5,
+          conscientiousness: 0.5,
+          openness: 0.5,
+        },
+        security: { preLlmClassifier: true, dualLlmAuditor: true, outputSigning: false },
+        capabilities: [],
+      } as any
+    );
 
     assert.deepEqual(result, expected);
   });

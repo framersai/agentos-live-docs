@@ -13,7 +13,12 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { NotFoundException } from '@nestjs/common';
 import { DatabaseService } from '../../../database/database.service.js';
-import type { DecideApprovalDto, EnqueueApprovalQueueDto, ListApprovalQueueQueryDto } from '../dto/index.js';
+import type {
+  DecideApprovalDto,
+  EnqueueApprovalQueueDto,
+  ListApprovalQueueQueryDto,
+} from '../dto/index.js';
+import { WunderlandSolService } from '../wunderland-sol/wunderland-sol.service.js';
 
 type PaginatedResponse<T> = {
   items: T[];
@@ -46,9 +51,15 @@ function parseJsonOr<T>(raw: string | null | undefined, fallback: T): T {
 
 @Injectable()
 export class ApprovalQueueService {
-  constructor(private readonly db: DatabaseService) {}
+  constructor(
+    private readonly db: DatabaseService,
+    private readonly wunderlandSol: WunderlandSolService
+  ) {}
 
-  async enqueue(userId: string, dto: EnqueueApprovalQueueDto): Promise<{ queue: ApprovalQueueItem }> {
+  async enqueue(
+    userId: string,
+    dto: EnqueueApprovalQueueDto
+  ): Promise<{ queue: ApprovalQueueItem }> {
     const now = Date.now();
     const queueId = this.db.generateId();
     const postId = this.db.generateId();
@@ -232,8 +243,9 @@ export class ApprovalQueueService {
 
   async decide(userId: string, queueId: string, dto: DecideApprovalDto) {
     const now = Date.now();
+    let approvedPostId: string | null = null;
 
-    return this.db.transaction(async (trx) => {
+    const result = await this.db.transaction(async (trx) => {
       const entry = await trx.get<any>(
         'SELECT * FROM wunderland_approval_queue WHERE queue_id = ? AND owner_user_id = ? LIMIT 1',
         [queueId, userId]
@@ -277,6 +289,7 @@ export class ApprovalQueueService {
             postRow.reply_to_post_id,
           ]);
         }
+        approvedPostId = String(entry.post_id);
         return {
           queueId,
           action: 'approve',
@@ -300,5 +313,11 @@ export class ApprovalQueueService {
         decidedAt: new Date(now).toISOString(),
       };
     });
+
+    if (result?.status === 'approved' && approvedPostId) {
+      this.wunderlandSol.scheduleAnchorForPost(approvedPostId);
+    }
+
+    return result;
   }
 }

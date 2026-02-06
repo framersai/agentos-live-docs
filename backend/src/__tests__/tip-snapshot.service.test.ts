@@ -4,9 +4,10 @@
  * canonicalization, HTML/URL sanitization, SSRF protection, and preview flow.
  */
 
-import test, { describe, beforeEach, afterEach, mock } from 'node:test';
+import test, { describe, afterEach } from 'node:test';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
+import { TipSnapshotService } from '../modules/wunderland/stimulus/tip-snapshot.service.js';
 
 // ── Re-implement pure helper functions for testing ──────────────────────────
 
@@ -240,7 +241,8 @@ describe('HTML sanitization', () => {
   });
 
   test('strips iframes, objects, embeds', () => {
-    const html = '<iframe src="evil.html"></iframe><object data="bad.swf"></object><embed src="bad.swf"/>';
+    const html =
+      '<iframe src="evil.html"></iframe><object data="bad.swf"></object><embed src="bad.swf"/>';
     const result = sanitizeHtml(html);
     assert.ok(!result.includes('<iframe'));
     assert.ok(!result.includes('<object'));
@@ -328,6 +330,143 @@ describe('Snapshot-commit model (end-to-end pure logic)', () => {
   });
 });
 
+// ── IPFS Raw-Block Pinning (service integration, fetch mocked) ──────────────
+
+describe('TipSnapshotService.previewAndPin (IPFS raw blocks)', () => {
+  const originalEnv = {
+    apiUrl: process.env.WUNDERLAND_IPFS_API_URL,
+    auth: process.env.WUNDERLAND_IPFS_API_AUTH,
+    gateway: process.env.WUNDERLAND_IPFS_GATEWAY_URL,
+  };
+
+  const originalFetch = globalThis.fetch;
+
+  afterEach(() => {
+    if (originalEnv.apiUrl === undefined) delete process.env.WUNDERLAND_IPFS_API_URL;
+    else process.env.WUNDERLAND_IPFS_API_URL = originalEnv.apiUrl;
+
+    if (originalEnv.auth === undefined) delete process.env.WUNDERLAND_IPFS_API_AUTH;
+    else process.env.WUNDERLAND_IPFS_API_AUTH = originalEnv.auth;
+
+    if (originalEnv.gateway === undefined) delete process.env.WUNDERLAND_IPFS_GATEWAY_URL;
+    else process.env.WUNDERLAND_IPFS_GATEWAY_URL = originalEnv.gateway;
+
+    globalThis.fetch = originalFetch;
+  });
+
+  test('throws when IPFS API URL is not configured', async () => {
+    delete process.env.WUNDERLAND_IPFS_API_URL;
+
+    const service = new TipSnapshotService();
+
+    await assert.rejects(
+      () => service.previewAndPin({ content: 'hello', sourceType: 'text' }),
+      /IPFS pinning not configured/i
+    );
+  });
+
+  test('pins a deterministic raw block via block/put + pin/add (includes Authorization header when configured)', async () => {
+    process.env.WUNDERLAND_IPFS_API_URL = 'http://ipfs.local:5001';
+    process.env.WUNDERLAND_IPFS_API_AUTH = 'Bearer test-token';
+    process.env.WUNDERLAND_IPFS_GATEWAY_URL = 'https://ipfs.io';
+
+    // Precompute expected CID (must match the service's canonical snapshot hashing).
+    const snapshot = {
+      v: 1,
+      sourceType: 'text' as const,
+      contentType: 'text/plain' as const,
+      content: 'Hello, IPFS!',
+    };
+    const canonical = canonicalizeJson(snapshot);
+    const bytes = Buffer.from(canonical, 'utf8');
+    const contentHashHex = createHash('sha256').update(bytes).digest('hex');
+    const expectedCid = cidFromSha256Hex(contentHashHex);
+
+    const calls: Array<{ url: string; init: RequestInit | undefined }> = [];
+    globalThis.fetch = async (input: any, init?: RequestInit) => {
+      const url = typeof input === 'string' ? input : String(input?.url ?? input);
+      calls.push({ url, init });
+
+      if (url.includes('/api/v0/block/put')) {
+        const auth = (init?.headers as any)?.Authorization;
+        assert.equal(auth, 'Bearer test-token');
+
+        return new Response(JSON.stringify({ Key: expectedCid }), {
+          status: 200,
+          headers: { 'content-type': 'application/json' },
+        });
+      }
+
+      if (url.includes('/api/v0/pin/add')) {
+        return new Response(JSON.stringify({ Pins: [expectedCid] }), {
+          status: 200,
+          headers: { 'content-type': 'application/json' },
+        });
+      }
+
+      throw new Error(`Unexpected fetch URL: ${url}`);
+    };
+
+    const service = new TipSnapshotService();
+    const result = await service.previewAndPin({ content: 'Hello, IPFS!', sourceType: 'text' });
+
+    assert.equal(result.contentHashHex, contentHashHex);
+    assert.equal(result.cid, expectedCid);
+
+    assert.equal(calls.length, 2, 'expected block/put + pin/add');
+    assert.ok(calls[0]?.url.includes('/api/v0/block/put'), 'first call should be block/put');
+    assert.ok(calls[0]?.url.includes('format=raw'), 'block/put should request raw blocks');
+    assert.ok(calls[0]?.url.includes('mhtype=sha2-256'), 'block/put should request sha2-256');
+    assert.ok(calls[0]?.url.includes('pin=true'), 'block/put should request pin=true');
+    assert.ok(calls[1]?.url.includes('/api/v0/pin/add'), 'second call should be pin/add');
+    assert.ok(
+      calls[1]?.url.includes(encodeURIComponent(expectedCid)),
+      'pin/add should reference expected CID'
+    );
+  });
+
+  test('rejects when IPFS returns a CID that does not match the sha256-derived raw CID', async () => {
+    process.env.WUNDERLAND_IPFS_API_URL = 'http://ipfs.local:5001';
+
+    // Precompute expected CID for the snapshot.
+    const snapshot = {
+      v: 1,
+      sourceType: 'text' as const,
+      contentType: 'text/plain' as const,
+      content: 'CID mismatch',
+    };
+    const canonical = canonicalizeJson(snapshot);
+    const bytes = Buffer.from(canonical, 'utf8');
+    const contentHashHex = createHash('sha256').update(bytes).digest('hex');
+    const expectedCid = cidFromSha256Hex(contentHashHex);
+
+    globalThis.fetch = async (input: any) => {
+      const url = typeof input === 'string' ? input : String(input?.url ?? input);
+      if (url.includes('/api/v0/block/put')) {
+        return new Response(
+          JSON.stringify({ Key: 'bafkreibadcidxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx' }),
+          {
+            status: 200,
+            headers: { 'content-type': 'application/json' },
+          }
+        );
+      }
+      if (url.includes('/api/v0/pin/add')) {
+        return new Response('{}', { status: 200, headers: { 'content-type': 'application/json' } });
+      }
+      throw new Error(`Unexpected fetch URL: ${url}`);
+    };
+
+    const service = new TipSnapshotService();
+    await assert.rejects(
+      () => service.previewAndPin({ content: 'CID mismatch', sourceType: 'text' }),
+      /CID mismatch/i
+    );
+
+    assert.ok(expectedCid.startsWith('b'), 'sanity: expected a base32lower CID');
+  });
+});
+
 // ── Pure helper re-implementations for testing ──────────────────────────────
 // These match the service's private functions exactly.
 
@@ -355,7 +494,7 @@ function isBlockedIP(hostname: string): boolean {
   }
 
   if (hostname.startsWith('[') || hostname.includes(':')) {
-    const ipv6 = hostname.replace(/[\[\]]/g, '').toLowerCase();
+    const ipv6 = hostname.replace(/[[\]]/g, '').toLowerCase();
     if (ipv6 === '::1') return true;
     if (ipv6.startsWith('fe80:')) return true;
     if (ipv6.startsWith('fc') || ipv6.startsWith('fd')) return true;

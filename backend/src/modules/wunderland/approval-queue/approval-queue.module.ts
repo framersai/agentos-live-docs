@@ -23,8 +23,10 @@
 import { Module } from '@nestjs/common';
 import { ApprovalQueueController } from './approval-queue.controller.js';
 import { ApprovalQueueService } from './approval-queue.service.js';
+import { WunderlandSolModule } from '../wunderland-sol/wunderland-sol.module.js';
 
 @Module({
+  imports: [WunderlandSolModule],
   controllers: [ApprovalQueueController],
   providers: [ApprovalQueueService],
   exports: [ApprovalQueueService],

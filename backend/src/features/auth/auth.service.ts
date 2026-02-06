@@ -6,7 +6,14 @@
 
 import bcrypt from 'bcryptjs';
 import jwt, { type Secret, type SignOptions } from 'jsonwebtoken';
-import { appConfig, type AuthTokenPayload, type AuthTier, type AuthRole, type AuthModeType } from '../../config/appConfig.js';
+import { randomBytes } from 'node:crypto';
+import {
+  appConfig,
+  type AuthTokenPayload,
+  type AuthTier,
+  type AuthRole,
+  type AuthModeType,
+} from '../../config/appConfig.js';
 import {
   findUserByEmail,
   updateLastLogin,
@@ -50,12 +57,15 @@ const issueToken = (payload: AuthTokenPayload): string => {
 export const verifyToken = (token: string): AuthTokenPayload | null => {
   try {
     return jwt.verify(token, appConfig.auth.jwtSecret) as AuthTokenPayload;
-  } catch (error) {
+  } catch {
     return null;
   }
 };
 
-export const globalPasswordLogin = async (password: string, context: { ip?: string | null; userAgent?: string | null }): Promise<LoginResult> => {
+export const globalPasswordLogin = async (
+  password: string,
+  context: { ip?: string | null; userAgent?: string | null }
+): Promise<LoginResult> => {
   if (!appConfig.auth.globalPassword) {
     throw new Error('GLOBAL_LOGIN_DISABLED');
   }
@@ -83,6 +93,8 @@ export const globalPasswordLogin = async (password: string, context: { ip?: stri
     tier: 'unlimited',
     mode: 'global',
     type: 'session',
+    subscriptionStatus: 'unlimited',
+    subscription_status: 'unlimited',
   });
 
   return {
@@ -101,16 +113,16 @@ const ensureUserIsActive = (user: AppUser): void => {
   if (!user.is_active) {
     throw new Error('USER_INACTIVE');
   }
-  if (user.subscription_status !== 'active' && user.subscription_status !== 'trialing') {
-    throw new Error('SUBSCRIPTION_INACTIVE');
-  }
 };
 
-export const toSessionUserPayload = (user: AppUser, options?: {
-  mode?: AuthModeType;
-  tierOverride?: AuthTier;
-  roleOverride?: AuthRole;
-}) => {
+export const toSessionUserPayload = (
+  user: AppUser,
+  options?: {
+    mode?: AuthModeType;
+    tierOverride?: AuthTier;
+    roleOverride?: AuthRole;
+  }
+) => {
   const tier = options?.tierOverride ?? ((user.subscription_tier as AuthTier) || 'metered');
   const role: AuthRole = options?.roleOverride ?? (tier === 'unlimited' ? 'global' : 'subscriber');
   return {
@@ -123,24 +135,42 @@ export const toSessionUserPayload = (user: AppUser, options?: {
   };
 };
 
-export const standardLogin = async (email: string, password: string, context: { ip?: string | null; userAgent?: string | null }): Promise<LoginResult> => {
+export const standardLogin = async (
+  email: string,
+  password: string,
+  context: { ip?: string | null; userAgent?: string | null }
+): Promise<LoginResult> => {
   const normalizedEmail = email.trim().toLowerCase();
   const user = await findUserByEmail(normalizedEmail);
   if (!user) {
-    await recordLoginEvent({ mode: 'standard-denied', ip: context.ip, userAgent: context.userAgent });
+    await recordLoginEvent({
+      mode: 'standard-denied',
+      ip: context.ip,
+      userAgent: context.userAgent,
+    });
     throw new Error('USER_NOT_FOUND');
   }
 
   const passwordMatches = await verifyPassword(password, user.password_hash);
   if (!passwordMatches) {
-    await recordLoginEvent({ userId: user.id, mode: 'standard-denied', ip: context.ip, userAgent: context.userAgent });
+    await recordLoginEvent({
+      userId: user.id,
+      mode: 'standard-denied',
+      ip: context.ip,
+      userAgent: context.userAgent,
+    });
     throw new Error('INVALID_CREDENTIALS');
   }
 
   ensureUserIsActive(user);
 
   await updateLastLogin(user.id, context.ip);
-  await recordLoginEvent({ userId: user.id, mode: 'standard', ip: context.ip, userAgent: context.userAgent });
+  await recordLoginEvent({
+    userId: user.id,
+    mode: 'standard',
+    ip: context.ip,
+    userAgent: context.userAgent,
+  });
 
   const role: AuthTokenPayload['role'] = 'subscriber';
   const tier = (user.subscription_tier as AuthTokenPayload['tier']) || 'metered';
@@ -148,7 +178,61 @@ export const standardLogin = async (email: string, password: string, context: { 
   return createSessionForUser(user, { mode: 'standard', tierOverride: tier, roleOverride: role });
 };
 
-export const createSessionForUser = (user: AppUser, options?: { mode?: AuthModeType; tierOverride?: AuthTier; roleOverride?: AuthRole }) => {
+export const oauthBridgeLogin = async (
+  data: {
+    email: string;
+    name?: string;
+    provider?: string;
+    providerAccountId?: string;
+  },
+  context: { ip?: string | null; userAgent?: string | null }
+): Promise<LoginResult> => {
+  const normalizedEmail = data.email.trim().toLowerCase();
+  if (!normalizedEmail) {
+    throw new Error('MISSING_CREDENTIALS');
+  }
+
+  let user = await findUserByEmail(normalizedEmail);
+  if (!user) {
+    // OAuth users do not submit a password to RabbitHole; generate a random
+    // internal hash so the account remains compatible with existing auth schema.
+    const generatedPassword = randomBytes(32).toString('hex');
+    const passwordHash = await hashPassword(generatedPassword);
+    user = await createUser({
+      email: normalizedEmail,
+      passwordHash,
+      subscriptionStatus: 'pending',
+      subscriptionTier: 'metered',
+      metadata: {
+        registrationStage: 'oauth-bridge',
+        oauthProvider: data.provider ?? null,
+        oauthProviderAccountId: data.providerAccountId ?? null,
+        displayName: data.name ?? null,
+      },
+    });
+  }
+
+  if (!user.is_active) {
+    throw new Error('USER_INACTIVE');
+  }
+
+  await updateLastLogin(user.id, context.ip);
+  await recordLoginEvent({
+    userId: user.id,
+    mode: `oauth-bridge:${data.provider || 'unknown'}`,
+    ip: context.ip,
+    userAgent: context.userAgent,
+  });
+
+  const tier = (user.subscription_tier as AuthTokenPayload['tier']) || 'metered';
+  const role: AuthTokenPayload['role'] = 'subscriber';
+  return createSessionForUser(user, { mode: 'standard', tierOverride: tier, roleOverride: role });
+};
+
+export const createSessionForUser = (
+  user: AppUser,
+  options?: { mode?: AuthModeType; tierOverride?: AuthTier; roleOverride?: AuthRole }
+) => {
   const sessionUser = toSessionUserPayload(user, options);
   const token = issueToken({
     sub: user.id,
@@ -157,11 +241,16 @@ export const createSessionForUser = (user: AppUser, options?: { mode?: AuthModeT
     mode: sessionUser.mode,
     type: 'session',
     email: user.email,
+    subscriptionStatus: sessionUser.subscriptionStatus,
+    subscription_status: sessionUser.subscriptionStatus,
   });
   return { token, user: sessionUser };
 };
 
-export const registerAccount = async (data: { email: string; password: string }): Promise<LoginResult> => {
+export const registerAccount = async (data: {
+  email: string;
+  password: string;
+}): Promise<LoginResult> => {
   const email = data.email.trim().toLowerCase();
   if (!email || !data.password) {
     throw new Error('MISSING_CREDENTIALS');
@@ -209,7 +298,8 @@ export const upsertUserFromSubscription = async (data: {
   const normalizedEmail = data.email.trim().toLowerCase();
   const existing = await findUserByEmail(normalizedEmail);
   if (!existing) {
-    const passwordHash = data.passwordHash ?? bcrypt.hashSync(Math.random().toString(36), SALT_ROUNDS);
+    const passwordHash =
+      data.passwordHash ?? bcrypt.hashSync(Math.random().toString(36), SALT_ROUNDS);
     const newUser = await createUser({
       email: normalizedEmail,
       passwordHash,
@@ -240,9 +330,3 @@ export const upsertUserFromSubscription = async (data: {
   });
   return (await findUserById(existing.id)) as AppUser;
 };
-
-
-
-
-
-

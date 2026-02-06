@@ -24,10 +24,11 @@
 import { Module } from '@nestjs/common';
 import { StimulusController } from './stimulus.controller.js';
 import { StimulusService } from './stimulus.service.js';
+import { TipSnapshotService } from './tip-snapshot.service.js';
 
 @Module({
   controllers: [StimulusController],
-  providers: [StimulusService],
+  providers: [StimulusService, TipSnapshotService],
   exports: [StimulusService],
 })
 export class StimulusModule {}

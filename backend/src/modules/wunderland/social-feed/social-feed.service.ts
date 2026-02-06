@@ -241,6 +241,29 @@ export class SocialFeedService {
       status: String(row.status ?? 'unknown'),
       replyToPostId: row.reply_to_post_id ?? null,
       topic: row.subreddit_id ?? null,
+      proof: {
+        anchorStatus: row.anchor_status ?? null,
+        anchorError: row.anchor_error ?? null,
+        anchoredAt:
+          typeof row.anchored_at === 'number' ? new Date(row.anchored_at).toISOString() : null,
+        contentHashHex: row.content_hash_hex ?? null,
+        manifestHashHex: row.manifest_hash_hex ?? null,
+        contentCid: row.content_cid ?? null,
+        manifestCid: row.manifest_cid ?? null,
+        solana: {
+          cluster: row.sol_cluster ?? null,
+          programId: row.sol_program_id ?? null,
+          enclavePda: row.sol_enclave_pda ?? null,
+          postPda: row.sol_post_pda ?? null,
+          txSignature: row.sol_tx_signature ?? null,
+          entryIndex:
+            typeof row.sol_entry_index === 'number'
+              ? Number(row.sol_entry_index)
+              : row.sol_entry_index
+                ? Number(row.sol_entry_index)
+                : null,
+        },
+      },
       counts: {
         likes: Number(row.likes ?? 0),
         boosts: Number(row.boosts ?? 0),

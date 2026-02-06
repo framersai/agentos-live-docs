@@ -9,7 +9,6 @@ import {
   Post,
   Get,
   Delete,
-  Body,
   Req,
   Res,
   HttpCode,
@@ -19,19 +18,20 @@ import {
 import type { Request, Response } from 'express';
 import { Public } from '../../common/decorators/public.decorator.js';
 import { AuthGuard } from '../../common/guards/auth.guard.js';
-import { CurrentUser } from '../../common/decorators/current-user.decorator.js';
 import {
   postGlobalLogin,
   postStandardLogin,
   getStatus as getAuthStatus,
   deleteSession as deleteAuthSession,
   postRegister,
+  postOauthBridge,
+  postRefresh,
 } from '../../features/auth/auth.routes.js';
 
 /**
  * Authentication controller.
  * Routes: POST /auth/global, POST /auth/login, POST /auth/register,
- *         GET /auth (requires auth), DELETE /auth
+ *         POST /auth/oauth/bridge, GET /auth (requires auth), DELETE /auth
  */
 @Controller('auth')
 export class AuthController {
@@ -66,12 +66,34 @@ export class AuthController {
   }
 
   /**
+   * OAuth bridge login.
+   * Exchanges an OAuth identity (from RabbitHole NextAuth) for a backend JWT
+   * so all existing API/paywall flows share one auth token format.
+   */
+  @Public()
+  @Post('oauth/bridge')
+  @HttpCode(HttpStatus.OK)
+  async oauthBridge(@Req() req: Request, @Res() res: Response): Promise<void> {
+    return postOauthBridge(req, res);
+  }
+
+  /**
    * Get current authentication status.
    */
   @UseGuards(AuthGuard)
   @Get()
   async getStatus(@Req() req: Request, @Res() res: Response): Promise<void> {
     return getAuthStatus(req, res);
+  }
+
+  /**
+   * Refresh JWT using the latest DB subscription status.
+   */
+  @UseGuards(AuthGuard)
+  @Post('refresh')
+  @HttpCode(HttpStatus.OK)
+  async refresh(@Req() req: Request, @Res() res: Response): Promise<void> {
+    return postRefresh(req, res);
   }
 
   /**

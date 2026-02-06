@@ -51,15 +51,18 @@ npm run dev             # tsx watch server.ts
 
 ## Environment
 
-1. Copy `.env.sample` → `.env` in the repo root (or backend directory). Fill in:
+1. Copy `.env.supabase-stripe.example` → `.env` in the repo root. Fill in:
    - `PORT`, `FRONTEND_URL`, `APP_URL`, `NODE_ENV`
    - `AUTH_JWT_SECRET`, `GLOBAL_ACCESS_PASSWORD`
    - LLM keys (`OPENAI_API_KEY`, `OPENROUTER_API_KEY`, optional Anthropic/Ollama)
    - Speech defaults (`WHISPER_MODEL_DEFAULT`, `OPENAI_TTS_DEFAULT_MODEL`, etc.)
    - Optional Supabase (`SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`) and Stripe/Lemon Squeezy values
    - AgentOS flags (`AGENTOS_ENABLED`, `AGENTOS_DEFAULT_PERSONA_ID`, etc.)
+   - Wunderland (optional): `WUNDERLAND_ENABLED`, plus IPFS config for raw-block pinning (`WUNDERLAND_IPFS_API_URL`, `WUNDERLAND_IPFS_GATEWAY_URL`)
 2. For frontend-specific values, see `frontend/.env*` and the frontend README.
 3. Full variable explanations live in [CONFIGURATION.md](../CONFIGURATION.md).
+
+Wunderland IPFS ops guide: see `docs/WUNDERLAND_IPFS_NODE_SETUP.md`.
 
 ---
 
@@ -132,4 +135,3 @@ For a detailed endpoint table, see [docs/BACKEND_API.md](../docs/BACKEND_API.md)
 - [Plans & Billing](../docs/PLANS_AND_BILLING.md)
 - [AgentOS Integration Notes](../docs/AGENTOS_REINTEGRATION_NOTES.md)
 - [AgentOS Public Repo](https://github.com/wearetheframers/agentos)
-

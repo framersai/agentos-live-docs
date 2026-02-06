@@ -33,6 +33,7 @@ import {
   HttpCode,
   HttpStatus,
   UseGuards,
+  ForbiddenException,
 } from '@nestjs/common';
 import { Public } from '../../../common/decorators/public.decorator.js';
 import { AuthGuard } from '../../../common/guards/auth.guard.js';
@@ -43,6 +44,24 @@ import { RegisterAgentDto, UpdateAgentDto, ListAgentsQueryDto } from '../dto/ind
 @Controller('wunderland/agents')
 export class AgentRegistryController {
   constructor(private readonly agentRegistryService: AgentRegistryService) {}
+
+  private assertPaidAccess(user: any): void {
+    const status =
+      (typeof user?.subscriptionStatus === 'string' && user.subscriptionStatus) ||
+      (typeof user?.subscription_status === 'string' && user.subscription_status) ||
+      '';
+    const tier = typeof user?.tier === 'string' ? user.tier : '';
+    const mode = typeof user?.mode === 'string' ? user.mode : '';
+    const isPaid =
+      mode === 'global' ||
+      tier === 'unlimited' ||
+      status === 'active' ||
+      status === 'trialing' ||
+      status === 'unlimited';
+    if (!isPaid) {
+      throw new ForbiddenException('Active paid subscription required.');
+    }
+  }
 
   /**
    * Register a new AI agent in the Wunderland social network.
@@ -56,7 +75,12 @@ export class AgentRegistryController {
   @UseGuards(AuthGuard)
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  async registerAgent(@CurrentUser('id') userId: string, @Body() body: RegisterAgentDto) {
+  async registerAgent(
+    @CurrentUser() user: any,
+    @CurrentUser('id') userId: string,
+    @Body() body: RegisterAgentDto
+  ) {
+    this.assertPaidAccess(user);
     return this.agentRegistryService.registerAgent(userId, body);
   }
 
@@ -110,10 +134,12 @@ export class AgentRegistryController {
   @UseGuards(AuthGuard)
   @Patch(':seedId')
   async updateAgent(
+    @CurrentUser() user: any,
     @CurrentUser('id') userId: string,
     @Param('seedId') seedId: string,
     @Body() body: UpdateAgentDto
   ) {
+    this.assertPaidAccess(user);
     return this.agentRegistryService.updateAgent(userId, seedId, body);
   }
 
@@ -129,7 +155,12 @@ export class AgentRegistryController {
    */
   @UseGuards(AuthGuard)
   @Delete(':seedId')
-  async archiveAgent(@CurrentUser('id') userId: string, @Param('seedId') seedId: string) {
+  async archiveAgent(
+    @CurrentUser() user: any,
+    @CurrentUser('id') userId: string,
+    @Param('seedId') seedId: string
+  ) {
+    this.assertPaidAccess(user);
     return this.agentRegistryService.archiveAgent(userId, seedId);
   }
 
@@ -162,7 +193,12 @@ export class AgentRegistryController {
    */
   @UseGuards(AuthGuard)
   @Post(':seedId/anchor')
-  async triggerAnchor(@CurrentUser('id') userId: string, @Param('seedId') seedId: string) {
+  async triggerAnchor(
+    @CurrentUser() user: any,
+    @CurrentUser('id') userId: string,
+    @Param('seedId') seedId: string
+  ) {
+    this.assertPaidAccess(user);
     return this.agentRegistryService.triggerAnchor(userId, seedId);
   }
 }
