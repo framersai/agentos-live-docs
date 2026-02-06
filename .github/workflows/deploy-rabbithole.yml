@@ -1,0 +1,56 @@
+name: Deploy RabbitHole (Linode)
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - 'apps/rabbithole/**'
+      - 'backend/**'
+      - 'packages/**'
+      - 'deployment/rabbithole/**'
+      - '.github/workflows/deploy-rabbithole.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.RABBITHOLE_LINODE_HOST }}
+          username: root
+          key: ${{ secrets.RABBITHOLE_SSH_PRIVATE_KEY }}
+          script: |
+            set -euo pipefail
+
+            REPO_DIR="/app/voice-chat-assistant"
+
+            # Clone repo if first deploy, otherwise pull
+            if [ ! -d "$REPO_DIR" ]; then
+              echo "[deploy] First deploy — cloning repo..."
+              git clone --recurse-submodules https://github.com/jddunn/voice-chat-assistant.git "$REPO_DIR"
+            else
+              echo "[deploy] Pulling latest..."
+              cd "$REPO_DIR"
+              git pull --ff-only
+              git submodule update --init --recursive
+            fi
+
+            cd "$REPO_DIR"
+
+            echo "[deploy] Building and starting stack..."
+            docker compose -f deployment/rabbithole/docker-compose.yml up -d --build
+
+            echo "[deploy] Pruning old images..."
+            docker image prune -f
+
+            echo "[deploy] Done."

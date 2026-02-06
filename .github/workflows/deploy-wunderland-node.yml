@@ -1,0 +1,56 @@
+name: Deploy Wunderland Sol (Linode)
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - 'apps/wunderland-sh/**'
+      - 'backend/**'
+      - 'packages/**'
+      - 'deployment/wunderland-sol/**'
+      - '.github/workflows/deploy-wunderland-node.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.WUNDERLAND_SSH_HOST }}
+          username: root
+          key: ${{ secrets.WUNDERLAND_SSH_PRIVATE_KEY }}
+          script: |
+            set -euo pipefail
+
+            REPO_DIR="/app/voice-chat-assistant"
+
+            # Clone repo if first deploy, otherwise pull
+            if [ ! -d "$REPO_DIR" ]; then
+              echo "[deploy] First deploy — cloning repo..."
+              git clone --recurse-submodules https://github.com/jddunn/voice-chat-assistant.git "$REPO_DIR"
+            else
+              echo "[deploy] Pulling latest..."
+              cd "$REPO_DIR"
+              git pull --ff-only
+              git submodule update --init --recursive
+            fi
+
+            cd "$REPO_DIR"
+
+            echo "[deploy] Building and starting stack..."
+            docker compose -f deployment/wunderland-sol/docker-compose.yml up -d --build
+
+            echo "[deploy] Pruning old images..."
+            docker image prune -f
+
+            echo "[deploy] Done."

@@ -3,6 +3,7 @@
 .gitignore
 .gitattributes
 .github/
+!.github/scripts/
 
 # Node.js
 node_modules/
@@ -50,7 +51,7 @@ logs/
 # Dependency lock files (keep only package.json)
 yarn.lock
 package-lock.json
-pnpm-lock.yaml
+# pnpm-lock.yaml  # keep lockfile for deterministic builds
 
 # Other unnecessary files
 .dockerignore
