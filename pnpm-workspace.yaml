@@ -3,6 +3,7 @@ packages:
   - frontend
   - packages/*
   - packages/agentos-extensions/registry/curated/provenance/anchor-providers
+  - packages/agentos-extensions/registry/curated/provenance/wunderland-tip-ingestion
   - apps/*
   - apps/**
   - codex-extensions
