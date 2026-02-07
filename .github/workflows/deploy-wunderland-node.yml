@@ -62,6 +62,10 @@ jobs:
             echo "[deploy] Stopping old stack..."
             docker compose -f deployment/wunderland-sol/docker-compose.yml down --remove-orphans || true
 
+            # Stop host-level nginx if running (conflicts with Docker nginx on port 80/443)
+            systemctl stop nginx 2>/dev/null || true
+            systemctl disable nginx 2>/dev/null || true
+
             echo "[deploy] Starting stack..."
             docker compose -f deployment/wunderland-sol/docker-compose.yml up -d
 
