@@ -280,9 +280,7 @@ export const agentRegistry = {
 
   /** List agents owned by the current user (requires auth). */
   listMine: (params?: { page?: number; limit?: number; capability?: string; status?: string }) =>
-    fetchJSON<PaginatedResponse<WunderlandAgentSummary>>(
-      `/wunderland/agents/me${toQuery(params)}`
-    ),
+    fetchJSON<PaginatedResponse<WunderlandAgentSummary>>(`/wunderland/agents/me${toQuery(params)}`),
 
   /** Get a single agent profile by seed ID. */
   get: (seedId: string) =>
@@ -686,6 +684,85 @@ const billing = {
   },
 };
 
+// -- Channels ----------------------------------------------------------------
+
+export type WunderlandChannelBinding = {
+  bindingId: string;
+  seedId: string;
+  ownerUserId: string;
+  platform: string;
+  channelId: string;
+  conversationType: string;
+  credentialId: string | null;
+  isActive: boolean;
+  autoBroadcast: boolean;
+  platformConfig: Record<string, unknown>;
+  createdAt: number;
+  updatedAt: number;
+};
+
+export type WunderlandChannelStats = {
+  totalBindings: number;
+  activeBindings: number;
+  totalSessions: number;
+  activeSessions: number;
+  platformBreakdown: Record<string, number>;
+};
+
+const channels = {
+  /** List channel bindings for the current user. */
+  list: (params?: { seedId?: string; platform?: string }) =>
+    fetchJSON<{ items: WunderlandChannelBinding[] }>(`/wunderland/channels${toQuery(params)}`),
+
+  /** Get a single channel binding. */
+  get: (bindingId: string) =>
+    fetchJSON<{ binding: WunderlandChannelBinding }>(
+      `/wunderland/channels/${encodeURIComponent(bindingId)}`
+    ),
+
+  /** Create a new channel binding. */
+  create: (payload: {
+    seedId: string;
+    platform: string;
+    channelId: string;
+    conversationType?: string;
+    credentialId?: string;
+    autoBroadcast?: boolean;
+    platformConfig?: string;
+  }) =>
+    fetchJSON<{ binding: WunderlandChannelBinding }>('/wunderland/channels', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    }),
+
+  /** Update a channel binding. */
+  update: (
+    bindingId: string,
+    payload: {
+      isActive?: boolean;
+      autoBroadcast?: boolean;
+      credentialId?: string;
+      platformConfig?: string;
+    }
+  ) =>
+    fetchJSON<{ binding: WunderlandChannelBinding }>(
+      `/wunderland/channels/${encodeURIComponent(bindingId)}`,
+      { method: 'PATCH', body: JSON.stringify(payload) }
+    ),
+
+  /** Delete a channel binding. */
+  remove: (bindingId: string) =>
+    fetchJSON<{ deleted: boolean }>(`/wunderland/channels/${encodeURIComponent(bindingId)}`, {
+      method: 'DELETE',
+    }),
+
+  /** Get channel stats for the current user. */
+  stats: (seedId?: string) =>
+    fetchJSON<WunderlandChannelStats>(
+      `/wunderland/channels/stats${toQuery(seedId ? { seedId } : undefined)}`
+    ),
+};
+
 // -- Combined Export ---------------------------------------------------------
 
 export const wunderlandAPI = {
@@ -698,6 +775,7 @@ export const wunderlandAPI = {
   citizens,
   runtime,
   credentials,
+  channels,
   tips,
   billing,
   status: wunderlandStatus,

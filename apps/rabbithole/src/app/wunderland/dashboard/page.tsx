@@ -2,7 +2,11 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { wunderlandAPI, type WunderlandAgentSummary } from '@/lib/wunderland-api';
+import {
+  wunderlandAPI,
+  type WunderlandAgentSummary,
+  type WunderlandChannelBinding,
+} from '@/lib/wunderland-api';
 import { useRequirePaid } from '@/lib/route-guard';
 import { levelTitle, seedToColor, withAlpha } from '@/lib/wunderland-ui';
 
@@ -12,6 +16,7 @@ export default function DashboardPage() {
   const allowed = useRequirePaid();
   const [agents, setAgents] = useState<WunderlandAgentSummary[]>([]);
   const [runtimeBySeed, setRuntimeBySeed] = useState<Record<string, RuntimeStatus>>({});
+  const [channelCountBySeed, setChannelCountBySeed] = useState<Record<string, number>>({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
@@ -23,9 +28,10 @@ export default function DashboardPage() {
       setLoading(true);
       setError('');
       try {
-        const [agentsResult, runtimeResult] = await Promise.allSettled([
+        const [agentsResult, runtimeResult, channelsResult] = await Promise.allSettled([
           wunderlandAPI.agentRegistry.listMine({ page: 1, limit: 100 }),
           wunderlandAPI.runtime.list(),
+          wunderlandAPI.channels.list(),
         ]);
         if (cancelled) return;
 
@@ -42,6 +48,16 @@ export default function DashboardPage() {
           }
         }
         setRuntimeBySeed(nextRuntimeBySeed);
+
+        const nextChannelCounts: Record<string, number> = {};
+        if (channelsResult.status === 'fulfilled') {
+          const bindings: WunderlandChannelBinding[] =
+            channelsResult.value.items ?? channelsResult.value ?? [];
+          for (const b of bindings) {
+            nextChannelCounts[b.seedId] = (nextChannelCounts[b.seedId] ?? 0) + 1;
+          }
+        }
+        setChannelCountBySeed(nextChannelCounts);
       } catch (err) {
         if (cancelled) return;
         setError(err instanceof Error ? err.message : 'Failed to load agents');
@@ -50,7 +66,9 @@ export default function DashboardPage() {
       }
     }
     void load();
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [allowed]);
 
   if (!allowed) {
@@ -65,14 +83,24 @@ export default function DashboardPage() {
   return (
     <div>
       <div className="wunderland-header">
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            flexWrap: 'wrap',
+            gap: 12,
+          }}
+        >
           <div>
             <h2 className="wunderland-header__title">Agent Dashboard</h2>
-            <p className="wunderland-header__subtitle">
-              Manage your autonomous agents
-            </p>
+            <p className="wunderland-header__subtitle">Manage your autonomous agents</p>
           </div>
-          <Link href="/wunderland/register" className="btn btn--primary" style={{ textDecoration: 'none' }}>
+          <Link
+            href="/wunderland/register"
+            className="btn btn--primary"
+            style={{ textDecoration: 'none' }}
+          >
             + New Agent
           </Link>
         </div>
@@ -94,7 +122,14 @@ export default function DashboardPage() {
       {!loading && !error && agents.length === 0 && (
         <div className="empty-state">
           <div className="empty-state__icon">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+            <svg
+              width="28"
+              height="28"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+            >
               <circle cx="12" cy="12" r="10" />
               <path d="M12 8v4M12 16h.01" />
             </svg>
@@ -103,7 +138,11 @@ export default function DashboardPage() {
           <p className="empty-state__description">
             Create your first autonomous agent to get started.
           </p>
-          <Link href="/wunderland/register" className="btn btn--primary" style={{ marginTop: 16, textDecoration: 'none' }}>
+          <Link
+            href="/wunderland/register"
+            className="btn btn--primary"
+            style={{ marginTop: 16, textDecoration: 'none' }}
+          >
             Register an Agent
           </Link>
         </div>
@@ -141,21 +180,30 @@ export default function DashboardPage() {
                       {agent.displayName.charAt(0)}
                     </div>
                     <div style={{ flex: 1 }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
-                        <span style={{ fontWeight: 700, color: 'var(--color-text)', fontSize: '1rem' }}>
+                      <div
+                        style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}
+                      >
+                        <span
+                          style={{ fontWeight: 700, color: 'var(--color-text)', fontSize: '1rem' }}
+                        >
                           {agent.displayName}
                         </span>
                         <StatusDot status={runtimeStatus} />
-                        <span className={`level-badge level-badge--${level}`} style={{ fontSize: '0.625rem' }}>
+                        <span
+                          className={`level-badge level-badge--${level}`}
+                          style={{ fontSize: '0.625rem' }}
+                        >
                           LVL {level} {levelTitle(level)}
                         </span>
                       </div>
-                      <div style={{
-                        fontFamily: "'IBM Plex Mono', monospace",
-                        fontSize: '0.6875rem',
-                        color: 'var(--color-text-dim)',
-                        marginTop: 4,
-                      }}>
+                      <div
+                        style={{
+                          fontFamily: "'IBM Plex Mono', monospace",
+                          fontSize: '0.6875rem',
+                          color: 'var(--color-text-dim)',
+                          marginTop: 4,
+                        }}
+                      >
                         {agent.seedId}
                       </div>
                     </div>
@@ -165,24 +213,35 @@ export default function DashboardPage() {
                       {agent.provenance.enabled && (
                         <span className="badge badge--emerald">Verified</span>
                       )}
+                      {(channelCountBySeed[agent.seedId] ?? 0) > 0 && (
+                        <span className="badge badge--cyan">
+                          {channelCountBySeed[agent.seedId]} channels
+                        </span>
+                      )}
                     </div>
                   </div>
-                  <div style={{
-                    fontFamily: "'IBM Plex Mono', monospace",
-                    fontSize: '0.8125rem',
-                    color: 'var(--color-text-muted)',
-                    marginTop: 8,
-                    lineHeight: 1.5,
-                  }}>
+                  <div
+                    style={{
+                      fontFamily: "'IBM Plex Mono', monospace",
+                      fontSize: '0.8125rem',
+                      color: 'var(--color-text-muted)',
+                      marginTop: 8,
+                      lineHeight: 1.5,
+                    }}
+                  >
                     {agent.bio || 'No bio set.'}
                   </div>
                   {agent.capabilities.length > 0 && (
                     <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginTop: 10 }}>
                       {agent.capabilities.slice(0, 5).map((cap) => (
-                        <span key={cap} className="badge badge--violet">{cap}</span>
+                        <span key={cap} className="badge badge--violet">
+                          {cap}
+                        </span>
                       ))}
                       {agent.capabilities.length > 5 && (
-                        <span className="badge badge--neutral">+{agent.capabilities.length - 5}</span>
+                        <span className="badge badge--neutral">
+                          +{agent.capabilities.length - 5}
+                        </span>
                       )}
                     </div>
                   )}

@@ -233,7 +233,7 @@ export default function RegisterPage() {
     outputSigning: true,
     provenanceChain: false,
   });
-  const [storagePolicy, setStoragePolicy] = useState('encrypted');
+  const [storagePolicy, setStoragePolicy] = useState('sealed');
 
   // Validation
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -335,7 +335,7 @@ export default function RegisterPage() {
         localStorage.setItem('wunderlandActiveSeedId', payload.seedId);
       }
 
-      router.push(`/wunderland/agents/${encodeURIComponent(payload.seedId)}`);
+      router.push(`/wunderland/dashboard/${encodeURIComponent(payload.seedId)}`);
     } catch (err) {
       if (err instanceof WunderlandAPIError) {
         if (err.status === 401) {
@@ -400,7 +400,11 @@ export default function RegisterPage() {
                     fontSize: '0.5625rem',
                     textTransform: 'uppercase',
                     letterSpacing: '0.08em',
-                    color: isActive ? 'var(--color-accent)' : isCompleted ? 'var(--color-success)' : 'var(--color-text-dim)',
+                    color: isActive
+                      ? 'var(--color-accent)'
+                      : isCompleted
+                        ? 'var(--color-success)'
+                        : 'var(--color-text-dim)',
                   }}
                 >
                   {label}
@@ -581,7 +585,13 @@ export default function RegisterPage() {
                 >
                   {name || 'Agent Name'}
                 </div>
-                <div style={{ fontSize: '0.8125rem', color: 'var(--color-text-muted)', marginTop: '0.125rem' }}>
+                <div
+                  style={{
+                    fontSize: '0.8125rem',
+                    color: 'var(--color-text-muted)',
+                    marginTop: '0.125rem',
+                  }}
+                >
                   {bio ? (bio.length > 80 ? bio.slice(0, 80) + '...' : bio) : 'No bio provided'}
                 </div>
               </div>
@@ -777,7 +787,9 @@ export default function RegisterPage() {
                           width: 20,
                           height: 20,
                           borderRadius: '4px',
-                          border: isSelected ? '2px solid var(--color-accent)' : '2px solid var(--color-surface)',
+                          border: isSelected
+                            ? '2px solid var(--color-accent)'
+                            : '2px solid var(--color-surface)',
                           background: isSelected ? 'var(--color-accent-muted)' : 'transparent',
                           display: 'flex',
                           alignItems: 'center',
@@ -818,6 +830,23 @@ export default function RegisterPage() {
                 })}
               </div>
             </div>
+
+            <div
+              style={{
+                marginTop: '1rem',
+                padding: '12px 16px',
+                background: 'rgba(0,245,255,0.04)',
+                border: '1px solid rgba(0,245,255,0.08)',
+                borderRadius: 10,
+                fontFamily: "'IBM Plex Mono', monospace",
+                fontSize: '0.6875rem',
+                color: 'var(--color-text-muted)',
+                lineHeight: 1.5,
+              }}
+            >
+              Channel integrations (Telegram, Discord, Slack, WhatsApp, WebChat) are configured
+              after registration from your agent&apos;s dashboard.
+            </div>
           </div>
         )}
 
@@ -854,7 +883,9 @@ export default function RegisterPage() {
                     >
                       {opt.label}
                     </div>
-                    <div style={{ fontSize: '0.8125rem', color: 'var(--color-text-muted)' }}>{opt.description}</div>
+                    <div style={{ fontSize: '0.8125rem', color: 'var(--color-text-muted)' }}>
+                      {opt.description}
+                    </div>
                   </div>
                   <button
                     onClick={() => toggleSecurity(opt.key)}
@@ -879,12 +910,16 @@ export default function RegisterPage() {
                         width: 20,
                         height: 20,
                         borderRadius: '50%',
-                        background: security[opt.key] ? 'var(--color-accent)' : 'var(--color-text-dim)',
+                        background: security[opt.key]
+                          ? 'var(--color-accent)'
+                          : 'var(--color-text-dim)',
                         position: 'absolute',
                         top: 2,
                         left: security[opt.key] ? 25 : 3,
                         transition: 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
-                        boxShadow: security[opt.key] ? '0 0 12px color-mix(in srgb, var(--color-accent) 40%, transparent)' : 'none',
+                        boxShadow: security[opt.key]
+                          ? '0 0 12px color-mix(in srgb, var(--color-accent) 40%, transparent)'
+                          : 'none',
                       }}
                     />
                   </button>
@@ -979,7 +1014,9 @@ export default function RegisterPage() {
                     >
                       {seedId ? seedId : 'Seed ID not set'}
                     </div>
-                    <div style={{ fontSize: '0.8125rem', color: 'var(--color-text-muted)' }}>{bio || 'No bio'}</div>
+                    <div style={{ fontSize: '0.8125rem', color: 'var(--color-text-muted)' }}>
+                      {bio || 'No bio'}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1017,7 +1054,9 @@ export default function RegisterPage() {
                       borderBottom: '1px solid var(--border-muted)',
                     }}
                   >
-                    <span style={{ color: 'var(--color-text-muted)', fontSize: '0.875rem' }}>{t.label}</span>
+                    <span style={{ color: 'var(--color-text-muted)', fontSize: '0.875rem' }}>
+                      {t.label}
+                    </span>
                     <span
                       style={{
                         fontWeight: 600,
@@ -1062,7 +1101,9 @@ export default function RegisterPage() {
                     borderBottom: '1px solid var(--border-muted)',
                   }}
                 >
-                  <span style={{ color: 'var(--color-text-muted)', fontSize: '0.875rem' }}>System Prompt</span>
+                  <span style={{ color: 'var(--color-text-muted)', fontSize: '0.875rem' }}>
+                    System Prompt
+                  </span>
                   <span style={{ fontSize: '0.875rem', maxWidth: '60%', textAlign: 'right' }}>
                     {systemPrompt
                       ? systemPrompt.length > 60
@@ -1079,7 +1120,9 @@ export default function RegisterPage() {
                     alignItems: 'flex-start',
                   }}
                 >
-                  <span style={{ color: 'var(--color-text-muted)', fontSize: '0.875rem' }}>Tools</span>
+                  <span style={{ color: 'var(--color-text-muted)', fontSize: '0.875rem' }}>
+                    Tools
+                  </span>
                   <div
                     style={{
                       display: 'flex',
@@ -1095,7 +1138,9 @@ export default function RegisterPage() {
                         </span>
                       ))
                     ) : (
-                      <span style={{ color: 'var(--color-text-dim)', fontSize: '0.875rem' }}>None selected</span>
+                      <span style={{ color: 'var(--color-text-dim)', fontSize: '0.875rem' }}>
+                        None selected
+                      </span>
                     )}
                   </div>
                 </div>
@@ -1134,7 +1179,9 @@ export default function RegisterPage() {
                       borderBottom: '1px solid var(--border-muted)',
                     }}
                   >
-                    <span style={{ color: 'var(--color-text-muted)', fontSize: '0.875rem' }}>{opt.label}</span>
+                    <span style={{ color: 'var(--color-text-muted)', fontSize: '0.875rem' }}>
+                      {opt.label}
+                    </span>
                     <span className={`badge badge--${security[opt.key] ? 'emerald' : 'neutral'}`}>
                       {security[opt.key] ? 'Enabled' : 'Disabled'}
                     </span>
@@ -1147,11 +1194,33 @@ export default function RegisterPage() {
                     padding: '0.375rem 0',
                   }}
                 >
-                  <span style={{ color: 'var(--color-text-muted)', fontSize: '0.875rem' }}>Storage Policy</span>
+                  <span style={{ color: 'var(--color-text-muted)', fontSize: '0.875rem' }}>
+                    Storage Policy
+                  </span>
                   <span className="badge badge--violet">{storagePolicy}</span>
                 </div>
               </div>
             </div>
+
+            {storagePolicy === 'sealed' && (
+              <div
+                style={{
+                  padding: '12px 16px',
+                  marginBottom: '1.5rem',
+                  background: 'rgba(255,215,0,0.06)',
+                  border: '1px solid rgba(255,215,0,0.15)',
+                  borderRadius: 10,
+                  fontFamily: "'IBM Plex Mono', monospace",
+                  fontSize: '0.6875rem',
+                  color: '#e8d48a',
+                  lineHeight: 1.5,
+                }}
+              >
+                Sealed agents are immutable after creation. Core identity fields (name, bio,
+                personality, system prompt, security) cannot be changed. Channel bindings,
+                credentials, and runtime settings remain configurable.
+              </div>
+            )}
 
             {submitError && (
               <div

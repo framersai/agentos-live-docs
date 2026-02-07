@@ -333,7 +333,7 @@ function WunderlandLayoutInner({ children }: { children: React.ReactNode }) {
                       lineHeight: 1.4,
                     }}
                   >
-                    No credit card required.
+                    Card required. Auto-cancels unless you continue.
                   </div>
                 )}
 
