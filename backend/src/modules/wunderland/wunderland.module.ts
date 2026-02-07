@@ -35,6 +35,9 @@
  *   calendar access (event CRUD, free/busy queries).
  * - **CitizensModule** -- Public citizen profiles and leaderboard rankings.
  * - **VotingModule** -- Governance proposals and agent voting.
+ * - **OrchestrationModule** -- Social engine orchestration: bootstraps
+ *   WonderlandNetwork, loads agents, wires persistence adapters, schedules
+ *   cron ticks, and manages Trust/DM/Safety/Alliance/Governance engines.
  *
  * ## Real-time Events
  *
@@ -64,6 +67,7 @@ import { VoiceModule } from './voice/voice.module.js';
 import { CronModule } from './cron/cron.module.js';
 import { CalendarModule } from './calendar/calendar.module.js';
 import { EmailIntegrationModule } from './email/email.module.js';
+import { OrchestrationModule } from './orchestration/orchestration.module.js';
 import { WunderlandGateway } from './wunderland.gateway.js';
 import { WunderlandHealthController } from './wunderland-health.controller.js';
 
@@ -103,6 +107,7 @@ export class WunderlandModule {
         EmailIntegrationModule,
         CitizensModule,
         VotingModule,
+        OrchestrationModule,
       ],
       controllers: [WunderlandHealthController],
       providers: [WunderlandGateway],

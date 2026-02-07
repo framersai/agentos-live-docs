@@ -902,6 +902,163 @@ const runInitialSchema = async (db: StorageAdapter): Promise<void> => {
 
   console.log('[AppDatabase] Wunderland cron jobs table initialized.');
 
+  // ── Wunderland Social Autonomy Tables ─────────────────────────────
+
+  // Browsing sessions — track agent browsing activity across enclaves
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS wunderland_browsing_sessions (
+      session_id TEXT PRIMARY KEY,
+      seed_id TEXT NOT NULL,
+      enclaves_visited TEXT NOT NULL DEFAULT '[]',
+      posts_read INTEGER DEFAULT 0,
+      comments_written INTEGER DEFAULT 0,
+      votes_cast INTEGER DEFAULT 0,
+      started_at INTEGER NOT NULL,
+      finished_at INTEGER NOT NULL
+    );
+  `);
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_wunderland_bs_seed ON wunderland_browsing_sessions(seed_id, finished_at DESC);'
+  );
+
+  // Trust scores — pairwise trust between agents
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS wunderland_trust_scores (
+      from_seed_id TEXT NOT NULL,
+      to_seed_id TEXT NOT NULL,
+      score REAL DEFAULT 0.5,
+      interaction_count INTEGER DEFAULT 0,
+      positive_engagements INTEGER DEFAULT 0,
+      negative_engagements INTEGER DEFAULT 0,
+      last_interaction_at INTEGER,
+      PRIMARY KEY (from_seed_id, to_seed_id)
+    );
+  `);
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_wunderland_ts_to ON wunderland_trust_scores(to_seed_id);'
+  );
+
+  // Global reputations — aggregated reputation per agent
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS wunderland_reputations (
+      seed_id TEXT PRIMARY KEY,
+      global_reputation REAL DEFAULT 0.5,
+      updated_at INTEGER NOT NULL
+    );
+  `);
+
+  // DM threads — private conversations between two agents
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS wunderland_dm_threads (
+      thread_id TEXT PRIMARY KEY,
+      participant_a TEXT NOT NULL,
+      participant_b TEXT NOT NULL,
+      last_message_at INTEGER NOT NULL,
+      message_count INTEGER DEFAULT 0,
+      created_at INTEGER NOT NULL
+    );
+  `);
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_wunderland_dmt_a ON wunderland_dm_threads(participant_a);'
+  );
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_wunderland_dmt_b ON wunderland_dm_threads(participant_b);'
+  );
+
+  // DM messages — individual messages within a DM thread
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS wunderland_dm_messages (
+      message_id TEXT PRIMARY KEY,
+      thread_id TEXT NOT NULL,
+      from_seed_id TEXT NOT NULL,
+      content TEXT NOT NULL,
+      manifest TEXT NOT NULL,
+      reply_to_message_id TEXT,
+      created_at INTEGER NOT NULL
+    );
+  `);
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_wunderland_dmm_thread ON wunderland_dm_messages(thread_id, created_at DESC);'
+  );
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_wunderland_dmm_sender ON wunderland_dm_messages(from_seed_id);'
+  );
+
+  // Alliances — groups of agents with shared interests
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS wunderland_alliances (
+      alliance_id TEXT PRIMARY KEY,
+      name TEXT NOT NULL,
+      description TEXT DEFAULT '',
+      founder_seed_id TEXT NOT NULL,
+      member_seed_ids TEXT NOT NULL DEFAULT '[]',
+      shared_topics TEXT DEFAULT '[]',
+      status TEXT DEFAULT 'forming',
+      created_at INTEGER NOT NULL
+    );
+  `);
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_wunderland_al_founder ON wunderland_alliances(founder_seed_id);'
+  );
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_wunderland_al_status ON wunderland_alliances(status);'
+  );
+
+  // Alliance proposals — invitations to form alliances
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS wunderland_alliance_proposals (
+      alliance_id TEXT PRIMARY KEY,
+      founder_seed_id TEXT NOT NULL,
+      invited_seed_ids TEXT NOT NULL DEFAULT '[]',
+      config TEXT NOT NULL DEFAULT '{}',
+      accepted_by TEXT NOT NULL DEFAULT '[]',
+      status TEXT DEFAULT 'pending',
+      created_at INTEGER NOT NULL
+    );
+  `);
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_wunderland_ap_founder ON wunderland_alliance_proposals(founder_seed_id);'
+  );
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_wunderland_ap_status ON wunderland_alliance_proposals(status);'
+  );
+
+  // Agent safety states — pause/stop/DM controls per agent
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS wunderland_agent_safety (
+      seed_id TEXT PRIMARY KEY,
+      paused INTEGER DEFAULT 0,
+      stopped INTEGER DEFAULT 0,
+      dms_enabled INTEGER DEFAULT 1,
+      reason TEXT DEFAULT '',
+      updated_at INTEGER NOT NULL
+    );
+  `);
+
+  // Content flags — moderation flags on posts, comments, etc.
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS wunderland_content_flags (
+      flag_id TEXT PRIMARY KEY,
+      entity_type TEXT NOT NULL,
+      entity_id TEXT NOT NULL,
+      author_seed_id TEXT NOT NULL,
+      reason TEXT NOT NULL,
+      severity TEXT NOT NULL DEFAULT 'low',
+      flagged_at INTEGER NOT NULL,
+      resolved INTEGER DEFAULT 0,
+      resolved_by TEXT,
+      resolved_at INTEGER
+    );
+  `);
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_wunderland_cf_resolved ON wunderland_content_flags(resolved, severity);'
+  );
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_wunderland_cf_author ON wunderland_content_flags(author_seed_id);'
+  );
+
+  console.log('[AppDatabase] Wunderland social autonomy tables initialized.');
+
   console.log('[AppDatabase] Wunderland tables initialized.');
 };
 
@@ -1170,6 +1327,14 @@ export const initializeAppDatabase = async (): Promise<void> => {
         adapter.kind === 'postgres'
           ? 'ALTER TABLE wunderland_proposals ADD COLUMN metadata TEXT'
           : 'ALTER TABLE wunderland_proposals ADD COLUMN metadata TEXT;'
+      );
+      await ensureColumnExists(
+        adapter,
+        'wunderland_proposals',
+        'execution_status',
+        adapter.kind === 'postgres'
+          ? 'ALTER TABLE wunderland_proposals ADD COLUMN execution_status TEXT'
+          : 'ALTER TABLE wunderland_proposals ADD COLUMN execution_status TEXT;'
       );
       await ensureColumnExists(
         adapter,
