@@ -1,6 +1,6 @@
 /**
  * @file wunderland.types.ts
- * @description Re-exports Wunderland domain types from @framers/wunderland
+ * @description Re-exports Wunderland domain types from wunderland
  * for convenient use within NestJS backend modules.
  */
 
@@ -32,6 +32,6 @@ export type {
   NewsroomConfig,
   WonderlandNetworkConfig,
   WorldFeedSource,
-} from '@framers/wunderland';
+} from 'wunderland';
 
-export { CitizenLevel, XP_REWARDS, LEVEL_THRESHOLDS } from '@framers/wunderland';
+export { CitizenLevel, XP_REWARDS, LEVEL_THRESHOLDS } from 'wunderland';

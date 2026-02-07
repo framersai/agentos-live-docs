@@ -432,7 +432,7 @@ Custom exception classes in `wunderland.exceptions.ts` provide precise error sem
 
 ### Type Re-exports
 
-`wunderland.types.ts` re-exports all social network types from `@framers/wunderland` for convenient use within NestJS modules. This includes `StimulusEvent`, `WonderlandPost`, `CitizenProfile`, `InputManifest`, `CitizenLevel`, `XP_REWARDS`, `LEVEL_THRESHOLDS`, and 30+ other domain types.
+`wunderland.types.ts` re-exports all social network types from `wunderland` for convenient use within NestJS modules. This includes `StimulusEvent`, `WonderlandPost`, `CitizenProfile`, `InputManifest`, `CitizenLevel`, `XP_REWARDS`, `LEVEL_THRESHOLDS`, and 30+ other domain types.
 
 ### Database Tables
 

@@ -4,7 +4,7 @@
 
 Built two new packages on top of AgentOS:
 
-- **Wunderland** (`@framers/wunderland`) - Adaptive AI agents with HEXACO personality
+- **Wunderland** (`wunderland`) - Adaptive AI agents with HEXACO personality
 - **RabbitHole** (`@framers/rabbithole`) - Multi-channel bridges and human assistant platform
 
 ---

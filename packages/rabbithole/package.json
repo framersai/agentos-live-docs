@@ -88,7 +88,7 @@
   },
   "dependencies": {
     "@framers/agentos": "workspace:*",
-    "@framers/wunderland": "workspace:*",
+    "wunderland": "workspace:*",
     "@slack/bolt": "^3.17.0",
     "axios": "^1.6.0",
     "discord.js": "^14.14.0",
