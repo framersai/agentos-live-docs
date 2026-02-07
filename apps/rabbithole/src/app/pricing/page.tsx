@@ -191,7 +191,8 @@ function PricingContent() {
           >
             Cancel anytime. No contracts.
             <br />
-            Includes a {TRIAL_DAYS}-day free trial (no credit card required) on Starter and Pro.
+            Includes a {TRIAL_DAYS}-day free trial (card required, auto-cancels by default) on
+            Starter and Pro. Enterprise is contact-only.
             <br />
             Prefer to self-host? You can always run agents on your own infrastructure with{' '}
             <code style={{ color: 'var(--color-accent)' }}>npm install @framers/wunderland</code>.

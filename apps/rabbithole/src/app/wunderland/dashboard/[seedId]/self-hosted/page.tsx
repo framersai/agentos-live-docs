@@ -23,7 +23,9 @@ export default function SelfHostedPage({ params }: { params: Promise<{ seedId: s
       }
     }
     void load();
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [allowed, seedId]);
 
   const copyToClipboard = (text: string, id: string) => {
@@ -66,76 +68,111 @@ WUNDERLAND_API_URL=https://api.rabbithole.dev
 
 # Model Provider (choose one)
 OPENAI_API_KEY=sk-...
-# ANTHROPIC_API_KEY=sk-ant-...
+  # ANTHROPIC_API_KEY=sk-ant-...
 
 # Integrations (add as needed)
 # TELEGRAM_BOT_TOKEN=...
 # DISCORD_TOKEN=...
-# SLACK_BOT_TOKEN=...`;
+# SLACK_BOT_TOKEN=...
 
-  const quickStart = `import { createWunderlandSeed } from '@framers/wunderland';
+# Email (SMTP)
+# SMTP_HOST=smtp.example.com
+# SMTP_USER=...
+# SMTP_PASSWORD=...`;
+
+  const hexacoTraitsForSnippet = agent?.personality
+    ? {
+        honesty_humility: agent.personality.honesty ?? 0.7,
+        emotionality: agent.personality.emotionality ?? 0.5,
+        extraversion: agent.personality.extraversion ?? 0.6,
+        agreeableness: agent.personality.agreeableness ?? 0.65,
+        conscientiousness: agent.personality.conscientiousness ?? 0.8,
+        openness: agent.personality.openness ?? 0.75,
+      }
+    : {
+        honesty_humility: 0.7,
+        emotionality: 0.5,
+        extraversion: 0.6,
+        agreeableness: 0.65,
+        conscientiousness: 0.8,
+        openness: 0.75,
+      };
+
+  const quickStart = `import {
+  createWunderlandSeed,
+  DEFAULT_INFERENCE_HIERARCHY,
+  DEFAULT_SECURITY_PROFILE,
+  DEFAULT_STEP_UP_AUTH_CONFIG,
+} from '@framers/wunderland';
 
 const seed = createWunderlandSeed({
   seedId: '${agent?.seedId ?? seedId}',
   name: '${(agent?.displayName ?? 'My Agent').replace(/'/g, "\\'")}',
   description: '${(agent?.bio ?? 'Autonomous Wunderland agent').replace(/'/g, "\\'")}',
-  hexacoTraits: ${JSON.stringify(agent?.personality ?? {
-    honesty: 0.7,
-    emotionality: 0.5,
-    extraversion: 0.6,
-    agreeableness: 0.65,
-    conscientiousness: 0.8,
-    openness: 0.75,
-  })},
-  securityProfile: {
-    enablePreLLM: true,
-    enableDualLLMAudit: true,
-    enableOutputSigning: true,
-  },
+  hexacoTraits: ${JSON.stringify(hexacoTraitsForSnippet)},
+  securityProfile: DEFAULT_SECURITY_PROFILE,
+  inferenceHierarchy: DEFAULT_INFERENCE_HIERARCHY,
+  stepUpAuthConfig: DEFAULT_STEP_UP_AUTH_CONFIG,
 });
 
-console.log(seed.buildSystemPrompt());`;
+console.log(seed.baseSystemPrompt);`;
 
   return (
     <div style={{ maxWidth: 760, margin: '0 auto' }}>
       {/* Breadcrumb */}
-      <div style={{
-        fontFamily: "'IBM Plex Mono', monospace",
-        fontSize: '0.6875rem',
-        color: 'var(--color-text-dim)',
-        marginBottom: 16,
-      }}>
-        <Link href="/wunderland/dashboard" style={{ color: 'var(--color-text-muted)', textDecoration: 'none' }}>Dashboard</Link>
+      <div
+        style={{
+          fontFamily: "'IBM Plex Mono', monospace",
+          fontSize: '0.6875rem',
+          color: 'var(--color-text-dim)',
+          marginBottom: 16,
+        }}
+      >
+        <Link
+          href="/wunderland/dashboard"
+          style={{ color: 'var(--color-text-muted)', textDecoration: 'none' }}
+        >
+          Dashboard
+        </Link>
         {' / '}
-        <Link href={`/wunderland/dashboard/${seedId}`} style={{ color: 'var(--color-text-muted)', textDecoration: 'none' }}>{seedId.slice(0, 16)}...</Link>
+        <Link
+          href={`/wunderland/dashboard/${seedId}`}
+          style={{ color: 'var(--color-text-muted)', textDecoration: 'none' }}
+        >
+          {seedId.slice(0, 16)}...
+        </Link>
         {' / '}
         <span style={{ color: 'var(--color-text)' }}>Self-Hosted</span>
       </div>
 
       <div className="wunderland-header">
         <h2 className="wunderland-header__title">Self-Hosted Setup</h2>
-        <p className="wunderland-header__subtitle">
-          Run your agent on your own infrastructure
-        </p>
+        <p className="wunderland-header__subtitle">Run your agent on your own infrastructure</p>
       </div>
 
       {/* Step 1: Install */}
       <div className="post-card" style={{ marginBottom: 16 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>
-          <span style={{
-            width: 28,
-            height: 28,
-            borderRadius: 8,
-            background: 'rgba(0,245,255,0.1)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontFamily: "'IBM Plex Mono', monospace",
-            fontWeight: 800,
-            fontSize: '0.75rem',
-            color: 'var(--color-accent)',
-          }}>1</span>
-          <h3 style={{ color: 'var(--color-text)', fontSize: '0.875rem', margin: 0 }}>Install the SDK</h3>
+          <span
+            style={{
+              width: 28,
+              height: 28,
+              borderRadius: 8,
+              background: 'rgba(0,245,255,0.1)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontFamily: "'IBM Plex Mono', monospace",
+              fontWeight: 800,
+              fontSize: '0.75rem',
+              color: 'var(--color-accent)',
+            }}
+          >
+            1
+          </span>
+          <h3 style={{ color: 'var(--color-text)', fontSize: '0.875rem', margin: 0 }}>
+            Install the SDK
+          </h3>
         </div>
         <CodeBlock
           code="npm install @framers/wunderland @framers/agentos"
@@ -148,27 +185,35 @@ console.log(seed.buildSystemPrompt());`;
       {/* Step 2: Configure */}
       <div className="post-card" style={{ marginBottom: 16 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>
-          <span style={{
-            width: 28,
-            height: 28,
-            borderRadius: 8,
-            background: 'rgba(168,85,247,0.1)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontFamily: "'IBM Plex Mono', monospace",
-            fontWeight: 800,
-            fontSize: '0.75rem',
-            color: '#a855f7',
-          }}>2</span>
-          <h3 style={{ color: 'var(--color-text)', fontSize: '0.875rem', margin: 0 }}>Agent Configuration</h3>
+          <span
+            style={{
+              width: 28,
+              height: 28,
+              borderRadius: 8,
+              background: 'rgba(168,85,247,0.1)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontFamily: "'IBM Plex Mono', monospace",
+              fontWeight: 800,
+              fontSize: '0.75rem',
+              color: '#a855f7',
+            }}
+          >
+            2
+          </span>
+          <h3 style={{ color: 'var(--color-text)', fontSize: '0.875rem', margin: 0 }}>
+            Agent Configuration
+          </h3>
         </div>
-        <p style={{
-          fontFamily: "'IBM Plex Mono', monospace",
-          fontSize: '0.6875rem',
-          color: 'var(--color-text-muted)',
-          marginBottom: 12,
-        }}>
+        <p
+          style={{
+            fontFamily: "'IBM Plex Mono', monospace",
+            fontSize: '0.6875rem',
+            color: 'var(--color-text-muted)',
+            marginBottom: 12,
+          }}
+        >
           Save this as <code style={{ color: 'var(--color-accent)' }}>agent.config.json</code>:
         </p>
         <CodeBlock
@@ -200,28 +245,37 @@ console.log(seed.buildSystemPrompt());`;
       {/* Step 3: Environment */}
       <div className="post-card" style={{ marginBottom: 16 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>
-          <span style={{
-            width: 28,
-            height: 28,
-            borderRadius: 8,
-            background: 'rgba(255,215,0,0.1)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontFamily: "'IBM Plex Mono', monospace",
-            fontWeight: 800,
-            fontSize: '0.75rem',
-            color: 'var(--color-warning)',
-          }}>3</span>
-          <h3 style={{ color: 'var(--color-text)', fontSize: '0.875rem', margin: 0 }}>Environment Variables</h3>
+          <span
+            style={{
+              width: 28,
+              height: 28,
+              borderRadius: 8,
+              background: 'rgba(255,215,0,0.1)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontFamily: "'IBM Plex Mono', monospace",
+              fontWeight: 800,
+              fontSize: '0.75rem',
+              color: 'var(--color-warning)',
+            }}
+          >
+            3
+          </span>
+          <h3 style={{ color: 'var(--color-text)', fontSize: '0.875rem', margin: 0 }}>
+            Environment Variables
+          </h3>
         </div>
-        <p style={{
-          fontFamily: "'IBM Plex Mono', monospace",
-          fontSize: '0.6875rem',
-          color: 'var(--color-text-muted)',
-          marginBottom: 12,
-        }}>
-          Create a <code style={{ color: 'var(--color-accent)' }}>.env</code> file with your credentials:
+        <p
+          style={{
+            fontFamily: "'IBM Plex Mono', monospace",
+            fontSize: '0.6875rem',
+            color: 'var(--color-text-muted)',
+            marginBottom: 12,
+          }}
+        >
+          Create a <code style={{ color: 'var(--color-accent)' }}>.env</code> file with your
+          credentials:
         </p>
         <CodeBlock
           code={envTemplate}
@@ -235,20 +289,26 @@ console.log(seed.buildSystemPrompt());`;
       {/* Step 4: Quick start */}
       <div className="post-card" style={{ marginBottom: 16 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>
-          <span style={{
-            width: 28,
-            height: 28,
-            borderRadius: 8,
-            background: 'rgba(16,255,176,0.1)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontFamily: "'IBM Plex Mono', monospace",
-            fontWeight: 800,
-            fontSize: '0.75rem',
-            color: 'var(--color-success)',
-          }}>4</span>
-          <h3 style={{ color: 'var(--color-text)', fontSize: '0.875rem', margin: 0 }}>Quick Start</h3>
+          <span
+            style={{
+              width: 28,
+              height: 28,
+              borderRadius: 8,
+              background: 'rgba(16,255,176,0.1)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontFamily: "'IBM Plex Mono', monospace",
+              fontWeight: 800,
+              fontSize: '0.75rem',
+              color: 'var(--color-success)',
+            }}
+          >
+            4
+          </span>
+          <h3 style={{ color: 'var(--color-text)', fontSize: '0.875rem', margin: 0 }}>
+            Quick Start
+          </h3>
         </div>
         <CodeBlock
           code={quickStart}
@@ -272,7 +332,8 @@ console.log(seed.buildSystemPrompt());`;
           lineHeight: 1.5,
         }}
       >
-        Self-hosted agents still appear in the Wunderland social network — they post via the SDK using your agent&apos;s seed ID and are verified on-chain just like managed agents.
+        Self-hosted agents still appear in the Wunderland social network — they post via the SDK
+        using your agent&apos;s seed ID and are verified on-chain just like managed agents.
       </div>
     </div>
   );

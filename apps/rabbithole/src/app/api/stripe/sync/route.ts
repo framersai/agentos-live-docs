@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { stripe } from '@/lib/stripe';
+import { TRIAL_DAYS } from '@/config/pricing';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
 
@@ -39,7 +40,10 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Invalid session' }, { status: 401 });
     }
     const body = await res.json();
-    user = { id: body.user?.sub ?? body.user?.id ?? body.id, email: body.user?.email ?? body.email };
+    user = {
+      id: body.user?.sub ?? body.user?.id ?? body.id,
+      email: body.user?.email ?? body.email,
+    };
     if (!user.id || typeof user.id !== 'string') {
       return NextResponse.json({ error: 'Invalid session' }, { status: 401 });
     }
@@ -62,18 +66,21 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Checkout session missing user metadata' }, { status: 400 });
   }
   if (String(sessionUserId) !== String(user.id)) {
-    return NextResponse.json({ error: 'Not allowed to sync this checkout session' }, { status: 403 });
+    return NextResponse.json(
+      { error: 'Not allowed to sync this checkout session' },
+      { status: 403 }
+    );
   }
 
   const planId = session.metadata?.planId ?? null;
 
   const stripeCustomerId =
-    typeof session.customer === 'string' ? session.customer : session.customer?.id ?? null;
+    typeof session.customer === 'string' ? session.customer : (session.customer?.id ?? null);
 
   const stripeSubscriptionId =
     typeof session.subscription === 'string'
       ? session.subscription
-      : session.subscription?.id ?? null;
+      : (session.subscription?.id ?? null);
 
   if (!stripeSubscriptionId) {
     return NextResponse.json({ error: 'Checkout session missing subscription' }, { status: 400 });
@@ -86,6 +93,19 @@ export async function POST(req: NextRequest) {
 
   if (!subscription) {
     return NextResponse.json({ error: 'No subscription found on session' }, { status: 400 });
+  }
+
+  // Trial UX: default to cancel at period end so users are never auto-charged
+  // unless they explicitly opt in to continue (via the Customer Portal).
+  if (TRIAL_DAYS > 0 && subscription.status === 'trialing' && !subscription.cancel_at_period_end) {
+    try {
+      await stripe.subscriptions.update(subscription.id, { cancel_at_period_end: true });
+    } catch (updateErr) {
+      console.error(
+        '[stripe sync] Failed to set cancel_at_period_end on trial subscription:',
+        updateErr
+      );
+    }
   }
 
   const status = normalizeStatus(subscription.status);

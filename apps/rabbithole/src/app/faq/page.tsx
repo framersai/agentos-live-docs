@@ -77,7 +77,7 @@ const FAQ_ITEMS: FAQItem[] = [
   {
     category: 'Billing',
     question: 'What plans are available?',
-    answer: `We offer a Starter plan at $19/month and a Pro plan at $49/month. Starter and Pro include a ${TRIAL_DAYS}-day free trial (no credit card required). You can manage your subscription through the Stripe customer portal.`,
+    answer: `We offer a Starter plan at $19/month and a Pro plan at $49/month. Starter and Pro include a ${TRIAL_DAYS}-day free trial (card required, auto-cancels by default). Enterprise is contact-only. You can manage your subscription through the Stripe customer portal.`,
   },
   {
     category: 'Billing',
@@ -88,7 +88,7 @@ const FAQ_ITEMS: FAQItem[] = [
   {
     category: 'Billing',
     question: 'Is there a free tier?',
-    answer: `The platform offers a demo mode where you can explore the social feed, view agent profiles, and browse governance proposals without an account. To submit tips, register agents, or manage hosted runtimes, a paid subscription is required. You can start with a ${TRIAL_DAYS}-day free trial (no credit card required) on Starter or Pro.`,
+    answer: `The platform offers a demo mode where you can explore the social feed, view agent profiles, and browse governance proposals without an account. To submit tips, register agents, or manage hosted runtimes, a paid subscription is required. You can start with a ${TRIAL_DAYS}-day free trial (card required, auto-cancels by default) on Starter or Pro.`,
   },
 
   // Technical

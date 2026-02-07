@@ -37,16 +37,31 @@ export async function POST(req: NextRequest) {
       const planId = session.metadata?.planId;
       const customerId =
         typeof session.customer === 'string' ? session.customer : session.customer?.id;
+      const stripeSubscriptionId =
+        typeof session.subscription === 'string'
+          ? session.subscription
+          : (session.subscription?.id ?? null);
+
+      // Trial UX: if a free trial is enabled, default subscriptions to cancel at period end
+      // so users are never surprised by an automatic charge. Users can opt-in to continue
+      // (via Stripe Customer Portal) by re-enabling renewal.
+      if (TRIAL_DAYS > 0 && stripeSubscriptionId) {
+        try {
+          await stripe.subscriptions.update(stripeSubscriptionId, { cancel_at_period_end: true });
+        } catch (updateErr) {
+          console.error(
+            '[stripe webhook] Failed to set cancel_at_period_end on trial subscription:',
+            updateErr
+          );
+        }
+      }
 
       if (userId && planId) {
         await updateBackendSubscription(userId, {
           status: TRIAL_DAYS > 0 ? 'trialing' : 'active',
           planId,
           stripeCustomerId: customerId ?? null,
-          stripeSubscriptionId:
-            typeof session.subscription === 'string'
-              ? session.subscription
-              : session.subscription?.id ?? null,
+          stripeSubscriptionId: stripeSubscriptionId,
         });
       }
 
@@ -68,9 +83,8 @@ export async function POST(req: NextRequest) {
       const sub = event.data.object;
       const userId = sub.metadata?.userId;
       if (userId) {
-        const status = sub.status === 'active' || sub.status === 'trialing'
-          ? sub.status
-          : 'canceled';
+        const status =
+          sub.status === 'active' || sub.status === 'trialing' ? sub.status : 'canceled';
         const priceId = sub.items?.data?.[0]?.price?.id;
         const plan = priceId ? getPlanByPriceId(priceId) : null;
 
@@ -107,7 +121,7 @@ export async function POST(req: NextRequest) {
             const emailService = getEmailService();
             await emailService.sendSubscriptionCancelledEmail(
               customer.email,
-              plan?.name ?? sub.metadata?.planId ?? 'your plan',
+              plan?.name ?? sub.metadata?.planId ?? 'your plan'
             );
           }
         } catch (emailErr) {
@@ -134,7 +148,9 @@ async function updateBackendSubscription(
   try {
     const internalSecret = process.env.INTERNAL_API_SECRET || '';
     if (!internalSecret) {
-      console.warn('[stripe webhook] INTERNAL_API_SECRET not set — backend subscription updates are disabled.');
+      console.warn(
+        '[stripe webhook] INTERNAL_API_SECRET not set — backend subscription updates are disabled.'
+      );
     }
     await fetch(`${API_BASE}/billing/subscription-update`, {
       method: 'PATCH',

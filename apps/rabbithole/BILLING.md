@@ -9,7 +9,7 @@ Rabbit Hole Inc is a managed Wunderbot platform. Users subscribe monthly to depl
 | **Starter** | $19/mo | 1          | 500            |
 | **Pro**     | $49/mo | Up to 5    | 2,500          |
 
-Starter and Pro include a **3-day free trial** (no credit card required). During the trial, subscription status is `trialing` (treated as paid access). Enterprise is contact-only and does not include a free trial.
+Starter and Pro include a **3-day free trial** (card required, auto-cancels by default). During the trial, subscription status is `trialing` (treated as paid access). Enterprise is contact-only and does not include a free trial.
 
 ### Why these numbers?
 
@@ -88,7 +88,7 @@ Use the `whsec_` secret it prints as your local `STRIPE_WEBHOOK_SECRET`.
 1. User selects plan on `/pricing`
 2. Frontend calls `POST /api/stripe/checkout` with `{ planId }` + JWT auth
 3. Next.js route validates JWT against backend, creates/retrieves Stripe customer, creates Checkout Session
-4. User redirected to Stripe hosted checkout (trial starts immediately; payment method is not required at checkout)
+4. User redirected to Stripe hosted checkout (trial starts immediately; card is collected at checkout; subscription is set to auto-cancel before billing unless the user continues)
 5. On success → Stripe redirects to `/checkout/success?session_id=...`
 6. Success page calls `POST /api/stripe/sync` which:
    - Verifies the session belongs to the authenticated user

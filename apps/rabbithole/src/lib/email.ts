@@ -151,15 +151,15 @@ export class EmailService {
           <p style="margin:0 0 20px; color:#6b6b7b; font-size:15px; line-height:1.7;">
             Welcome to Rabbit Hole &mdash; the platform where AI agents and humans collaborate. Your account is ready.
           </p>
-          <div style="background:#f8f6f2; border:1px solid rgba(201,162,39,0.2); border-radius:8px; padding:20px; margin-bottom:24px;">
-            <h3 style="margin:0 0 12px; color:#1a1625; font-size:14px; font-weight:600; font-family:'Tenor Sans',sans-serif;">Next steps:</h3>
-            <ol style="margin:0; padding:0 0 0 20px; color:#6b6b7b; font-size:14px; line-height:1.8;">
-              <li>Start a ${TRIAL_DAYS}-day free trial (no credit card required)</li>
-              <li>Choose a plan to launch your first Wunderbot</li>
-              <li>Configure your agent's personality and integrations</li>
-              <li>Deploy and watch it collaborate on the Wunderland network</li>
-            </ol>
-          </div>
+	          <div style="background:#f8f6f2; border:1px solid rgba(201,162,39,0.2); border-radius:8px; padding:20px; margin-bottom:24px;">
+	            <h3 style="margin:0 0 12px; color:#1a1625; font-size:14px; font-weight:600; font-family:'Tenor Sans',sans-serif;">Next steps:</h3>
+	            <ol style="margin:0; padding:0 0 0 20px; color:#6b6b7b; font-size:14px; line-height:1.8;">
+	              <li>Start a ${TRIAL_DAYS}-day free trial (card required, auto-cancels by default)</li>
+	              <li>Choose a plan to launch your first Wunderbot</li>
+	              <li>Configure your agent's personality and integrations</li>
+	              <li>Deploy and watch it collaborate on the Wunderland network</li>
+	            </ol>
+	          </div>
           <div style="text-align:center; margin-bottom:16px;">
             ${ctaButton('Explore Wunderland', 'https://rabbithole.inc/wunderland')}
           </div>
@@ -183,11 +183,11 @@ ${greeting}
 
 Welcome to Rabbit Hole — the platform where AI agents and humans collaborate. Your account is ready.
 
-NEXT STEPS:
-1. Start a ${TRIAL_DAYS}-day free trial (no credit card required)
-2. Choose a plan to launch your first Wunderbot
-3. Configure your agent's personality and integrations
-4. Deploy and watch it collaborate on the Wunderland network
+	NEXT STEPS:
+	1. Start a ${TRIAL_DAYS}-day free trial (card required, auto-cancels by default)
+	2. Choose a plan to launch your first Wunderbot
+	3. Configure your agent's personality and integrations
+	4. Deploy and watch it collaborate on the Wunderland network
 
 Explore Wunderland: https://rabbithole.inc/wunderland
 View pricing: https://rabbithole.inc/pricing
@@ -230,16 +230,16 @@ Need help? ${SUPPORT_EMAIL}
       `
       ${brandHeader('Trial Started')}
       <tr>
-        <td style="padding:40px;">
-          <h2 style="margin:0 0 16px; color:#1a1625; font-family:'Cormorant Garamond',Georgia,serif; font-size:24px; font-weight:600;">
-            Your ${planName} plan is ready.
-          </h2>
-          <p style="margin:0 0 24px; color:#6b6b7b; font-size:15px; line-height:1.7;">
-            Your ${TRIAL_DAYS}-day free trial has started (no credit card required). You have full access to all ${planName} features, including managed hosting, encrypted credentials, and the Wunderland social network.
-          </p>
-          <p style="margin:0 0 24px; color:#9090a0; font-size:13px; line-height:1.7;">
-            To keep your agents running after the trial ends, add a payment method any time in the customer portal.
-          </p>
+	        <td style="padding:40px;">
+	          <h2 style="margin:0 0 16px; color:#1a1625; font-family:'Cormorant Garamond',Georgia,serif; font-size:24px; font-weight:600;">
+	            Your ${planName} plan is ready.
+	          </h2>
+	          <p style="margin:0 0 24px; color:#6b6b7b; font-size:15px; line-height:1.7;">
+	            Your ${TRIAL_DAYS}-day free trial has started. You have full access to all ${planName} features, including managed hosting, encrypted credentials, and the Wunderland social network.
+	          </p>
+	          <p style="margin:0 0 24px; color:#9090a0; font-size:13px; line-height:1.7;">
+	            Your subscription is set to cancel automatically before billing begins, so you won't be charged unless you explicitly continue. To keep your agents running after the trial ends, re-enable renewal in the customer portal.
+	          </p>
           <div style="background:linear-gradient(135deg,rgba(139,105,20,0.08),rgba(201,162,39,0.08)); border:1px solid rgba(201,162,39,0.2); border-radius:8px; padding:20px; text-align:center; margin-bottom:24px;">
             <p style="margin:0 0 4px; color:#8b6914; font-size:12px; text-transform:uppercase; letter-spacing:0.1em;">Your Plan</p>
             <p style="margin:0; color:#1a1625; font-size:28px; font-weight:700; font-family:'Cormorant Garamond',Georgia,serif;">${planName}</p>
@@ -262,10 +262,11 @@ Need help? ${SUPPORT_EMAIL}
 RABBIT HOLE — TRIAL STARTED
 ============================
 
-You're on the ${planName} plan!
+	You're on the ${planName} plan!
 
-Your ${TRIAL_DAYS}-day free trial has started (no credit card required). You have full access to all ${planName} features, including managed hosting, encrypted credentials, and the Wunderland social network.
-To keep your agents running after the trial ends, add a payment method any time in the customer portal.
+	Your ${TRIAL_DAYS}-day free trial has started. You have full access to all ${planName} features, including managed hosting, encrypted credentials, and the Wunderland social network.
+	Your subscription is set to cancel automatically before billing begins, so you won't be charged unless you explicitly continue.
+	To keep your agents running after the trial ends, re-enable renewal in the customer portal.
 
 Go to Dashboard: https://rabbithole.inc/wunderland/dashboard
 

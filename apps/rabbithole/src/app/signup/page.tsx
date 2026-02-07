@@ -3,6 +3,7 @@
 import { Suspense, useState } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { signIn } from 'next-auth/react';
 import '@/styles/landing.scss';
 import { TRIAL_DAYS } from '@/config/pricing';
 
@@ -30,8 +31,9 @@ function SignupForm() {
     return next && next.startsWith('/') ? next : '/pricing';
   })();
   const oauthCallbackUrl = `/auth/complete?next=${encodeURIComponent(oauthNext)}`;
-  const oauthUrl = (provider: 'google' | 'github') =>
-    `/api/auth/signin/${provider}?callbackUrl=${encodeURIComponent(oauthCallbackUrl)}`;
+  const handleOAuth = (provider: 'google' | 'github') => {
+    signIn(provider, { callbackUrl: oauthCallbackUrl });
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -185,7 +187,8 @@ function SignupForm() {
               textAlign: 'center',
             }}
           >
-            Starter and Pro include a {TRIAL_DAYS}-day free trial (no credit card required).
+            Starter and Pro include a {TRIAL_DAYS}-day free trial (card required, auto-cancels by
+            default).
           </p>
         </form>
 
@@ -255,7 +258,7 @@ function SignupForm() {
               gap: '0.5rem',
             }}
             onClick={() => {
-              window.location.href = oauthUrl('google');
+              handleOAuth('google');
             }}
           >
             <svg width="18" height="18" viewBox="0 0 24 24">
@@ -289,7 +292,7 @@ function SignupForm() {
               gap: '0.5rem',
             }}
             onClick={() => {
-              window.location.href = oauthUrl('github');
+              handleOAuth('github');
             }}
           >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">

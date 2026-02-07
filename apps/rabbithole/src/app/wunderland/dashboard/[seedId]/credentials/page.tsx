@@ -15,6 +15,9 @@ const CREDENTIAL_TYPES = [
   { id: 'openai_key', label: 'OpenAI API Key', icon: '🧠' },
   { id: 'anthropic_key', label: 'Anthropic API Key', icon: '🔮' },
   { id: 'slack_bot_token', label: 'Slack Bot Token', icon: '📡' },
+  { id: 'smtp_host', label: 'SMTP Host', icon: '✉️' },
+  { id: 'smtp_user', label: 'SMTP Username', icon: '✉️' },
+  { id: 'smtp_password', label: 'SMTP Password', icon: '✉️' },
   { id: 'custom_webhook', label: 'Custom Webhook', icon: '🔗' },
 ] as const;
 
@@ -86,22 +89,19 @@ export default function CredentialsPage({ params }: { params: Promise<{ seedId: 
     }
   }, [addType, addLabel, addValue, seedId]);
 
-  const handleDelete = useCallback(
-    async (credentialId: string) => {
-      setDeleteBusyId(credentialId);
-      setError('');
-      try {
-        await wunderlandAPI.credentials.remove(credentialId);
-        setCredentials((prev) => prev.filter((c) => c.credentialId !== credentialId));
-        setDeleteConfirm(null);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to delete credential');
-      } finally {
-        setDeleteBusyId(null);
-      }
-    },
-    []
-  );
+  const handleDelete = useCallback(async (credentialId: string) => {
+    setDeleteBusyId(credentialId);
+    setError('');
+    try {
+      await wunderlandAPI.credentials.remove(credentialId);
+      setCredentials((prev) => prev.filter((c) => c.credentialId !== credentialId));
+      setDeleteConfirm(null);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to delete credential');
+    } finally {
+      setDeleteBusyId(null);
+    }
+  }, []);
 
   if (!allowed) {
     return (
@@ -114,21 +114,41 @@ export default function CredentialsPage({ params }: { params: Promise<{ seedId: 
   return (
     <div style={{ maxWidth: 760, margin: '0 auto' }}>
       {/* Breadcrumb */}
-      <div style={{
-        fontFamily: "'IBM Plex Mono', monospace",
-        fontSize: '0.6875rem',
-        color: 'var(--color-text-dim)',
-        marginBottom: 16,
-      }}>
-        <Link href="/wunderland/dashboard" style={{ color: 'var(--color-text-muted)', textDecoration: 'none' }}>Dashboard</Link>
+      <div
+        style={{
+          fontFamily: "'IBM Plex Mono', monospace",
+          fontSize: '0.6875rem',
+          color: 'var(--color-text-dim)',
+          marginBottom: 16,
+        }}
+      >
+        <Link
+          href="/wunderland/dashboard"
+          style={{ color: 'var(--color-text-muted)', textDecoration: 'none' }}
+        >
+          Dashboard
+        </Link>
         {' / '}
-        <Link href={`/wunderland/dashboard/${seedId}`} style={{ color: 'var(--color-text-muted)', textDecoration: 'none' }}>{seedId.slice(0, 16)}...</Link>
+        <Link
+          href={`/wunderland/dashboard/${seedId}`}
+          style={{ color: 'var(--color-text-muted)', textDecoration: 'none' }}
+        >
+          {seedId.slice(0, 16)}...
+        </Link>
         {' / '}
         <span style={{ color: 'var(--color-text)' }}>Credentials</span>
       </div>
 
       <div className="wunderland-header">
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            flexWrap: 'wrap',
+            gap: 12,
+          }}
+        >
           <div>
             <h2 className="wunderland-header__title">Credential Vault</h2>
             <p className="wunderland-header__subtitle">
@@ -155,7 +175,8 @@ export default function CredentialsPage({ params }: { params: Promise<{ seedId: 
           lineHeight: 1.5,
         }}
       >
-        Credentials are encrypted server-side before storage. Only masked values are returned to the dashboard.
+        Credentials are encrypted server-side before storage. Only masked values are returned to the
+        dashboard.
       </div>
 
       {error && (
@@ -175,10 +196,20 @@ export default function CredentialsPage({ params }: { params: Promise<{ seedId: 
       {/* Add form */}
       {showAddForm && (
         <div className="post-card" style={{ marginBottom: 20 }}>
-          <h3 style={{ color: 'var(--color-text)', fontSize: '0.875rem', marginBottom: 16 }}>Add Credential</h3>
+          <h3 style={{ color: 'var(--color-text)', fontSize: '0.875rem', marginBottom: 16 }}>
+            Add Credential
+          </h3>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
             <div>
-              <label style={{ display: 'block', fontFamily: "'IBM Plex Mono', monospace", fontSize: '0.6875rem', color: 'var(--color-text-muted)', marginBottom: 4 }}>
+              <label
+                style={{
+                  display: 'block',
+                  fontFamily: "'IBM Plex Mono', monospace",
+                  fontSize: '0.6875rem',
+                  color: 'var(--color-text-muted)',
+                  marginBottom: 4,
+                }}
+              >
                 Type
               </label>
               <select
@@ -196,12 +227,22 @@ export default function CredentialsPage({ params }: { params: Promise<{ seedId: 
                 }}
               >
                 {CREDENTIAL_TYPES.map((t) => (
-                  <option key={t.id} value={t.id}>{t.icon} {t.label}</option>
+                  <option key={t.id} value={t.id}>
+                    {t.icon} {t.label}
+                  </option>
                 ))}
               </select>
             </div>
             <div>
-              <label style={{ display: 'block', fontFamily: "'IBM Plex Mono', monospace", fontSize: '0.6875rem', color: 'var(--color-text-muted)', marginBottom: 4 }}>
+              <label
+                style={{
+                  display: 'block',
+                  fontFamily: "'IBM Plex Mono', monospace",
+                  fontSize: '0.6875rem',
+                  color: 'var(--color-text-muted)',
+                  marginBottom: 4,
+                }}
+              >
                 Label (optional)
               </label>
               <input
@@ -221,7 +262,15 @@ export default function CredentialsPage({ params }: { params: Promise<{ seedId: 
               />
             </div>
             <div>
-              <label style={{ display: 'block', fontFamily: "'IBM Plex Mono', monospace", fontSize: '0.6875rem', color: 'var(--color-text-muted)', marginBottom: 4 }}>
+              <label
+                style={{
+                  display: 'block',
+                  fontFamily: "'IBM Plex Mono', monospace",
+                  fontSize: '0.6875rem',
+                  color: 'var(--color-text-muted)',
+                  marginBottom: 4,
+                }}
+              >
                 Value
               </label>
               <input
@@ -242,10 +291,18 @@ export default function CredentialsPage({ params }: { params: Promise<{ seedId: 
               />
             </div>
             <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
-              <button className="btn btn--ghost btn--sm" onClick={() => setShowAddForm(false)} disabled={addBusy}>
+              <button
+                className="btn btn--ghost btn--sm"
+                onClick={() => setShowAddForm(false)}
+                disabled={addBusy}
+              >
                 Cancel
               </button>
-              <button className="btn btn--primary btn--sm" onClick={() => void handleAdd()} disabled={addBusy || !addValue.trim()}>
+              <button
+                className="btn btn--primary btn--sm"
+                onClick={() => void handleAdd()}
+                disabled={addBusy || !addValue.trim()}
+              >
                 {addBusy ? 'Encrypting...' : 'Save Credential'}
               </button>
             </div>
@@ -263,7 +320,14 @@ export default function CredentialsPage({ params }: { params: Promise<{ seedId: 
       {!loading && credentials.length === 0 && !showAddForm && (
         <div className="empty-state">
           <div className="empty-state__icon">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+            <svg
+              width="28"
+              height="28"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+            >
               <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
               <path d="M7 11V7a5 5 0 0110 0v4" />
             </svg>
@@ -287,33 +351,43 @@ export default function CredentialsPage({ params }: { params: Promise<{ seedId: 
                 <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                   <span style={{ fontSize: '1.5rem' }}>{typeInfo?.icon ?? '🔑'}</span>
                   <div style={{ flex: 1 }}>
-                    <div style={{ color: 'var(--color-text)', fontSize: '0.875rem', fontWeight: 600 }}>
+                    <div
+                      style={{ color: 'var(--color-text)', fontSize: '0.875rem', fontWeight: 600 }}
+                    >
                       {cred.label}
                     </div>
-                    <div style={{
-                      fontFamily: "'IBM Plex Mono', monospace",
-                      fontSize: '0.6875rem',
-                      color: 'var(--color-text-dim)',
-                      marginTop: 2,
-                    }}>
+                    <div
+                      style={{
+                        fontFamily: "'IBM Plex Mono', monospace",
+                        fontSize: '0.6875rem',
+                        color: 'var(--color-text-dim)',
+                        marginTop: 2,
+                      }}
+                    >
                       {typeInfo?.label ?? cred.type}
                     </div>
                   </div>
-                  <code style={{
-                    fontFamily: "'IBM Plex Mono', monospace",
-                    fontSize: '0.75rem',
-                    color: 'var(--color-text-muted)',
-                    background: 'rgba(0,0,0,0.2)',
-                    padding: '4px 8px',
-                    borderRadius: 6,
-                  }}>
+                  <code
+                    style={{
+                      fontFamily: "'IBM Plex Mono', monospace",
+                      fontSize: '0.75rem',
+                      color: 'var(--color-text-muted)',
+                      background: 'rgba(0,0,0,0.2)',
+                      padding: '4px 8px',
+                      borderRadius: 6,
+                    }}
+                  >
                     {cred.maskedValue}
                   </code>
                   {isConfirming ? (
                     <div style={{ display: 'flex', gap: 4 }}>
                       <button
                         className="btn btn--sm"
-                        style={{ background: 'rgba(255,107,107,0.1)', color: 'var(--color-error)', border: '1px solid rgba(255,107,107,0.25)' }}
+                        style={{
+                          background: 'rgba(255,107,107,0.1)',
+                          color: 'var(--color-error)',
+                          border: '1px solid rgba(255,107,107,0.25)',
+                        }}
                         onClick={() => void handleDelete(cred.credentialId)}
                         disabled={isDeleteBusy}
                       >
@@ -338,12 +412,14 @@ export default function CredentialsPage({ params }: { params: Promise<{ seedId: 
                   )}
                 </div>
                 {cred.lastUsedAt && (
-                  <div style={{
-                    fontFamily: "'IBM Plex Mono', monospace",
-                    fontSize: '0.625rem',
-                    color: 'var(--color-text-dim)',
-                    marginTop: 8,
-                  }}>
+                  <div
+                    style={{
+                      fontFamily: "'IBM Plex Mono', monospace",
+                      fontSize: '0.625rem',
+                      color: 'var(--color-text-dim)',
+                      marginTop: 8,
+                    }}
+                  >
                     Last used: {new Date(cred.lastUsedAt).toLocaleString()}
                   </div>
                 )}
@@ -355,4 +431,3 @@ export default function CredentialsPage({ params }: { params: Promise<{ seedId: 
     </div>
   );
 }
-

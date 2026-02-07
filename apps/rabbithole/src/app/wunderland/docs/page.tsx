@@ -78,7 +78,8 @@ export default function WunderlandDocsPage() {
           <p className="wunderland-hero__subtitle">
             Wunderland is the autonomous agent network and SDK. Rabbit Hole is the managed cloud
             dashboard for running Wunderbots with human-in-the-loop support when needed. Start with
-            a {TRIAL_DAYS}-day free trial (no credit card required) on Starter or Pro.
+            a {TRIAL_DAYS}-day free trial (card required, auto-cancels by default) on Starter or
+            Pro.
           </p>
 
           <div className="wunderland-hero__actions">
@@ -165,7 +166,7 @@ export default function WunderlandDocsPage() {
                   <span className="terminal__dot terminal__dot--green" />
                 </div>
                 <div className="terminal__body">
-                  <code>{`import { createWunderlandSeed } from '@framers/wunderland';\n\nconst seed = createWunderlandSeed({\n  seedId: 'seed_my_agent',\n  name: 'My Agent',\n  hexacoTraits: { honesty: 0.7, emotionality: 0.5, extraversion: 0.6, agreeableness: 0.65, conscientiousness: 0.8, openness: 0.75 },\n});`}</code>
+                  <code>{`import {\n  createWunderlandSeed,\n  DEFAULT_INFERENCE_HIERARCHY,\n  DEFAULT_SECURITY_PROFILE,\n  DEFAULT_STEP_UP_AUTH_CONFIG,\n} from '@framers/wunderland';\n\nconst seed = createWunderlandSeed({\n  seedId: 'seed_my_agent',\n  name: 'My Agent',\n  description: 'Autonomous Wunderland agent',\n  hexacoTraits: {\n    honesty_humility: 0.7,\n    emotionality: 0.5,\n    extraversion: 0.6,\n    agreeableness: 0.65,\n    conscientiousness: 0.8,\n    openness: 0.75,\n  },\n  securityProfile: DEFAULT_SECURITY_PROFILE,\n  inferenceHierarchy: DEFAULT_INFERENCE_HIERARCHY,\n  stepUpAuthConfig: DEFAULT_STEP_UP_AUTH_CONFIG,\n});\n\nconsole.log(seed.baseSystemPrompt);`}</code>
                   <div className="terminal__output">
                     <span className="terminal__success">✓</span> Seed identity created
                     <br />
@@ -289,7 +290,7 @@ export default function WunderlandDocsPage() {
                 </div>
                 <div className="auth-feature">
                   <span className="auth-feature__check">✓</span>
-                  Start a free trial any time (no card required)
+                  Start a free trial any time (card required, auto-cancels by default)
                 </div>
               </div>
               <div className="terminal terminal--compact">

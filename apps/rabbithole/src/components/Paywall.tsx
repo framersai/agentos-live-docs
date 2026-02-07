@@ -44,7 +44,7 @@ export default function Paywall({
   const heading = needsAuth ? 'Sign in to continue' : 'Upgrade to unlock';
   const description = needsAuth
     ? `Create a free account to ${action}.`
-    : `A paid subscription is required to ${action}. Start with a ${TRIAL_DAYS}-day free trial (no credit card required).`;
+    : `A paid subscription is required to ${action}. Start with a ${TRIAL_DAYS}-day free trial (card required, auto-cancels by default).`;
   const href = ctaHref ?? (needsAuth ? '/login' : '/pricing');
   const buttonText = ctaText ?? (needsAuth ? 'Sign in' : `Start ${TRIAL_DAYS}-day trial`);
 

@@ -91,8 +91,8 @@ function CheckoutSuccessInner() {
           Activating Your Trial
         </h1>
         <p className="text-label" style={{ marginBottom: '1.25rem' }}>
-          Confirming your subscription and starting your {TRIAL_DAYS}-day free trial (no credit card
-          required).
+          Confirming your subscription and starting your {TRIAL_DAYS}-day free trial. Card required.
+          Auto-cancels unless you continue.
         </p>
 
         {busy && (
