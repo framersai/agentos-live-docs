@@ -14,8 +14,13 @@ function Hero() {
           'linear-gradient(180deg, var(--ifm-background-color) 0%, var(--ifm-background-surface-color) 100%)',
       }}
     >
+      <img
+        src="/img/logo.svg"
+        alt="AgentOS"
+        style={{ width: 80, height: 80, marginBottom: '1.5rem' }}
+      />
       <h1 style={{ fontSize: '3rem', fontWeight: 800, marginBottom: '1rem' }}>
-        {siteConfig.title} Documentation
+        {siteConfig.title}
       </h1>
       <p
         style={{
@@ -41,19 +46,34 @@ function Hero() {
 
 const features = [
   {
-    title: 'Guides & Architecture',
-    description:
-      'Learn the core concepts, planning engine, agent communication, and memory systems.',
+    title: 'Architecture',
+    description: 'System design, platform support, and core runtime internals.',
     link: '/docs/architecture/system-architecture',
   },
   {
+    title: 'Planning & Orchestration',
+    description: 'Multi-step planning engine, human-in-the-loop approvals, and guardrails.',
+    link: '/docs/features/planning-engine',
+  },
+  {
+    title: 'Memory & Storage',
+    description: 'RAG memory, SQL storage adapters, and client-side persistence.',
+    link: '/docs/features/rag-memory',
+  },
+  {
+    title: 'Agent Communication',
+    description: 'Inter-agent messaging, structured output, and evaluation framework.',
+    link: '/docs/features/agent-communication',
+  },
+  {
     title: 'Extensions',
-    description: 'Plug-and-play tool extensions: web search, Telegram, voice synthesis, and more.',
+    description:
+      'Web search, Telegram, voice synthesis, image search, CLI executor, and more.',
     link: '/docs/extensions/overview',
   },
   {
     title: 'API Reference',
-    description: 'Auto-generated TypeDoc API reference for every class, interface, and function.',
+    description: 'Auto-generated TypeDoc reference for every class, interface, and function.',
     link: '/docs/api/',
   },
 ];

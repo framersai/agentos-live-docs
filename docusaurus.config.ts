@@ -5,7 +5,7 @@ import type * as Preset from '@docusaurus/preset-classic';
 const config: Config = {
   title: 'AgentOS',
   tagline: 'Modular orchestration runtime for adaptive AI systems',
-  favicon: 'img/logo.svg',
+  favicon: 'img/favicon.svg',
   url: 'https://docs.agentos.sh',
   baseUrl: '/',
   organizationName: 'framersai',
@@ -96,7 +96,7 @@ const config: Config = {
   ],
 
   themeConfig: {
-    image: 'img/logo.svg',
+    image: 'img/og-image.png',
     navbar: {
       title: 'AgentOS',
       logo: {
