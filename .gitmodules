@@ -34,3 +34,7 @@
 [submodule "packages/wunderland"]
 	path = packages/wunderland
 	url = https://github.com/jddunn/wunderland.git
+[submodule "apps/rabbithole"]
+	path = apps/rabbithole
+	url = https://github.com/jddunn/rabbithole.git
+	branch = master

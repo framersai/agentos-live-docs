@@ -1,14 +1,15 @@
 name: Deploy Wunderland Sol (Linode)
 
 on:
-  push:
-    branches: [master]
-    paths:
-      - 'apps/wunderland-sh/**'
-      - 'backend/**'
-      - 'packages/**'
-      - 'deployment/wunderland-sol/**'
-      - '.github/workflows/deploy-wunderland-node.yml'
+  # Disabled — wunderland deploys via its own repo (manicinc/wunderland-sol)
+  # push:
+  #   branches: [master]
+  #   paths:
+  #     - 'apps/wunderland-sh/**'
+  #     - 'backend/**'
+  #     - 'packages/**'
+  #     - 'deployment/wunderland-sol/**'
+  #     - '.github/workflows/deploy-wunderland-node.yml'
   workflow_dispatch:
 
 permissions:
