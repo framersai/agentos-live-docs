@@ -8,6 +8,28 @@ A lightweight evaluation harness for testing LLM prompts against datasets with c
 | **Backend**  | `http://localhost:3021`          |
 | **API Docs** | `http://localhost:3021/api/docs` |
 
+### Screenshots
+
+<p align="center">
+  <img src="screenshots/candidates.png" alt="Candidates — browse prompt families, variants, and recommended graders" width="700" />
+</p>
+<p align="center"><em>Candidates — browse prompt families, variants, and recommended graders</em></p>
+
+<p align="center">
+  <img src="screenshots/dataset-detail.png" alt="Dataset detail — inspect test cases with input, expected output, context, and metadata columns" width="700" />
+</p>
+<p align="center"><em>Dataset detail — inspect test cases with input, expected output, context, and metadata</em></p>
+
+<p align="center">
+  <img src="screenshots/experiments.png" alt="Run experiment — select dataset, graders, model, and candidates to evaluate" width="700" />
+</p>
+<p align="center"><em>Run experiment — select dataset, graders, model, and candidates to evaluate</em></p>
+
+<p align="center">
+  <img src="screenshots/experiment-results.png" alt="Experiment results — per-candidate scores with pass/fail breakdown and A/B comparison" width="700" />
+</p>
+<p align="center"><em>Experiment results — per-candidate scores with pass/fail breakdown across graders</em></p>
+
 ---
 
 ## Quick Start

@@ -5,7 +5,7 @@
   "type": "module",
   "sideEffects": false,
   "scripts": {
-    "build": "tsup src/index.ts --format esm,iife --global-name GitPayWidget --minify --dts --treeshake true",
+    "build": "tsup src/index.ts --format esm,iife --global-name GitPayWidget --minify --dts --treeshake",
     "clean": "rimraf dist tsconfig.tsbuildinfo"
   },
   "main": "dist/index.js",

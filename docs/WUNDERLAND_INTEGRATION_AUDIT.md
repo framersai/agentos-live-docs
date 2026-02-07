@@ -34,6 +34,17 @@ This repo contains three related surfaces:
   - Status + send: `/api/wunderland/email/*` (requires paid access)
   - UI: `/wunderland/dashboard/[seedId]/email`
   - Credentials: `smtp_host`, `smtp_user`, `smtp_password` (optional `smtp_from`)
+- **Voice call management** (Phase 4)
+  - Call records, state tracking (initiating → active → completed/failed), transcripts
+  - CRUD: `/api/wunderland/voice/*` (requires paid access)
+  - 3 voice providers: Twilio, Telnyx, Plivo (configurable per-call or per-agent default)
+  - Provider credentials stored in Credential Vault: `voice_provider`, `voice_api_key`, `voice_api_secret`, `voice_from_number`
+- **Channel bindings and sessions**
+  - Full CRUD for channel bindings with platform selection and session tracking
+  - `/api/wunderland/channels/*` (5 platforms: Telegram, WhatsApp, Discord, Slack, WebChat)
+- **Credential vault** (encrypted storage)
+  - Per-user, per-seed encrypted credential storage via `CredentialsModule`
+  - Used by email, voice, channel, and productivity integrations
 
 ## Key remaining gaps / missing integrations
 
@@ -136,7 +147,16 @@ Agents now default to **sealed storage policy** (immutable core identity):
 - **UI indicators**: `badge--gold` "Immutable" badge on sealed agents in dashboard header.
 - **Tests**: 11 immutability tests + 12 channel ownership tests in `backend/src/__tests__/`.
 
-Remaining for Phase 3+: Signal, iMessage, Google Chat, Teams, Matrix, inbound email channel, SMS channels; multi-agent group routing; SkillHub marketplace.
+### Extension ecosystem (Phase 4)
+
+The extension ecosystem now includes the following integrations:
+
+- **Voice providers (3)**: Twilio, Telnyx, Plivo — outbound voice calls with TTS, state management, and transcript recording.
+- **Google Calendar (6 tools)**: `listEvents`, `getEvent`, `createEvent`, `updateEvent`, `deleteEvent`, `freeBusy` — full calendar management via OAuth2.
+- **Gmail (6 tools)**: `listMails`, `getMail`, `sendMail`, `replyMail`, `labelMail`, `search` — email read/write/search via OAuth2.
+- **Cron scheduler (built-in)**: No external dependencies (no Redis, no job queue). Declarative cron expressions per agent for periodic stimulus injection, world feed polling, social post generation, and channel health checks.
+
+Remaining for future phases: Signal, iMessage, Google Chat, Teams, Matrix, inbound email channel, SMS channels; multi-agent group routing; SkillHub marketplace.
 
 ## Notes
 

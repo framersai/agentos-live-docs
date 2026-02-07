@@ -1,22 +1,22 @@
 {
   "version": "1.0.0",
-  "updated": "2025-11-14T00:00:00.000Z",
+  "updated": "2026-02-07T04:56:37.291Z",
   "description": "AgentOS Personas Registry - Curated AI agent personalities",
   "categories": {
     "curated": [
-      "research",
       "coding",
       "creative",
+      "enterprise",
       "productivity",
-      "enterprise"
+      "research"
     ],
     "community": [
-      "research",
       "coding",
       "creative",
-      "productivity",
+      "education",
       "entertainment",
-      "education"
+      "productivity",
+      "research"
     ]
   },
   "personas": {
@@ -29,4 +29,3 @@
     "communityCount": 0
   }
 }
-

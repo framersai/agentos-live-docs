@@ -477,7 +477,18 @@ export class ThemeBuilder {
    * Set spacing
    */
   setSpacing(spacing: Partial<ThemeSpacing>): this {
-    this.theme.spacing = { ...this.theme.spacing, ...spacing };
+    const fallback: ThemeSpacing = structuredClone(
+      DEFAULT_THEMES.light.spacing ?? {
+        unit: 4,
+        scale: [0, 1, 2, 3, 4, 5, 6, 8, 10, 12, 16, 20, 24, 32, 40, 48, 64],
+      }
+    );
+
+    const current = this.theme.spacing ?? fallback;
+    this.theme.spacing = {
+      unit: spacing.unit ?? current.unit,
+      scale: spacing.scale ?? current.scale,
+    };
     return this;
   }
 
@@ -485,7 +496,31 @@ export class ThemeBuilder {
    * Set effects
    */
   setEffects(effects: DeepPartial<ThemeEffects>): this {
-    this.theme.effects = this.deepMerge(this.theme.effects, effects) as ThemeEffects;
+    const fallback: ThemeEffects = structuredClone(
+      DEFAULT_THEMES.light.effects ?? {
+        borderRadius: {
+          none: '0',
+          sm: '0.125rem',
+          md: '0.375rem',
+          lg: '0.5rem',
+          full: '9999px',
+        },
+        shadow: {
+          none: 'none',
+          sm: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+          md: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+          lg: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
+        },
+        transition: {
+          fast: '150ms ease',
+          normal: '200ms ease',
+          slow: '300ms ease',
+        },
+      }
+    );
+
+    const current = this.theme.effects ?? fallback;
+    this.theme.effects = this.deepMerge(current, effects) as ThemeEffects;
     return this;
   }
 
@@ -682,4 +717,3 @@ export function removeTheme(): void {
 
   document.documentElement.removeAttribute('data-theme');
 }
-

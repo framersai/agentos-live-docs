@@ -52,13 +52,20 @@ function createPlanCard(
   return card;
 }
 
+function getAssetBaseUrl(): string | undefined {
+  if (typeof document === 'undefined') return undefined;
+  const current = document.currentScript;
+  if (!current) return undefined;
+  if (!(current instanceof HTMLScriptElement)) return undefined;
+  return current.src || undefined;
+}
+
 async function injectStyles() {
   if (document.getElementById('gpw-widget-styles')) return;
   const style = document.createElement('style');
   style.id = 'gpw-widget-styles';
-  const css = await fetch(new URL('./styles.css', import.meta.url), { cache: 'force-cache' }).then(
-    res => res.text()
-  );
+  const href = new URL('./styles.css', getAssetBaseUrl() ?? window.location.href).toString();
+  const css = await fetch(href, { cache: 'force-cache' }).then(res => res.text());
   style.textContent = css;
   document.head.appendChild(style);
 }

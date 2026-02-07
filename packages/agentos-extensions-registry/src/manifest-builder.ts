@@ -108,6 +108,60 @@ const TOOL_CATALOG: ExtensionInfo[] = [
     defaultPriority: 30,
     available: false,
   },
+
+  // ── Voice Providers ──
+  {
+    packageName: '@framers/agentos-ext-voice-twilio',
+    name: 'voice-twilio',
+    category: 'voice',
+    displayName: 'Twilio Voice',
+    description: 'Phone call integration via Twilio — outbound/inbound calls, TwiML, media streams.',
+    requiredSecrets: ['twilio.accountSid', 'twilio.authToken'],
+    defaultPriority: 50,
+    available: false,
+  },
+  {
+    packageName: '@framers/agentos-ext-voice-telnyx',
+    name: 'voice-telnyx',
+    category: 'voice',
+    displayName: 'Telnyx Voice',
+    description: 'Phone call integration via Telnyx Call Control v2 — SIP, FQDN routing.',
+    requiredSecrets: ['telnyx.apiKey', 'telnyx.connectionId'],
+    defaultPriority: 50,
+    available: false,
+  },
+  {
+    packageName: '@framers/agentos-ext-voice-plivo',
+    name: 'voice-plivo',
+    category: 'voice',
+    displayName: 'Plivo Voice',
+    description: 'Phone call integration via Plivo Voice API — outbound calls, XML responses.',
+    requiredSecrets: ['plivo.authId', 'plivo.authToken'],
+    defaultPriority: 50,
+    available: false,
+  },
+
+  // ── Productivity ──
+  {
+    packageName: '@framers/agentos-ext-calendar-google',
+    name: 'calendar-google',
+    category: 'productivity',
+    displayName: 'Google Calendar',
+    description: 'Google Calendar API — event CRUD, free/busy queries, multi-calendar support.',
+    requiredSecrets: ['google.clientId', 'google.clientSecret', 'google.refreshToken'],
+    defaultPriority: 40,
+    available: false,
+  },
+  {
+    packageName: '@framers/agentos-ext-email-gmail',
+    name: 'email-gmail',
+    category: 'productivity',
+    displayName: 'Gmail',
+    description: 'Gmail API — send, read, search, reply to emails, manage labels.',
+    requiredSecrets: ['google.clientId', 'google.clientSecret', 'google.refreshToken'],
+    defaultPriority: 40,
+    available: false,
+  },
 ];
 
 /**
@@ -181,24 +235,16 @@ export async function createCuratedManifest(options?: RegistryOptions): Promise<
   const logger: RegistryLogger | undefined = options?.logger ?? console;
   const packs: ExtensionPackManifestEntry[] = [];
 
-  // ── Tool Extensions ──
-  const toolFilter = options?.tools ?? 'all';
-  const toolEntries =
-    toolFilter === 'none'
-      ? []
-      : toolFilter === 'all'
-        ? TOOL_CATALOG
-        : TOOL_CATALOG.filter((t) => toolFilter.includes(t.name));
-
-  for (const entry of toolEntries) {
+  // Helper to load and push a catalog entry
+  const loadEntry = async (entry: ExtensionInfo) => {
     const override = options?.overrides?.[entry.name];
-    if (override?.enabled === false) continue;
+    if (override?.enabled === false) return;
 
     const mod = await tryImport(entry.packageName);
-    if (!mod) continue;
+    if (!mod) return;
 
     const factory = mod.createExtensionPack ?? mod.default?.createExtensionPack ?? mod.default;
-    if (typeof factory !== 'function') continue;
+    if (typeof factory !== 'function') return;
 
     packs.push({
       factory: () =>
@@ -214,35 +260,57 @@ export async function createCuratedManifest(options?: RegistryOptions): Promise<
       enabled: true,
       identifier: `registry:${entry.name}`,
     });
+  };
+
+  // Split TOOL_CATALOG by category
+  const toolOnlyEntries = TOOL_CATALOG.filter((t) => t.category === 'tool' || t.category === 'integration');
+  const voiceEntries = TOOL_CATALOG.filter((t) => t.category === 'voice');
+  const productivityEntries = TOOL_CATALOG.filter((t) => t.category === 'productivity');
+
+  // ── Tool Extensions ──
+  const toolFilter = options?.tools ?? 'all';
+  const filteredTools =
+    toolFilter === 'none'
+      ? []
+      : toolFilter === 'all'
+        ? toolOnlyEntries
+        : toolOnlyEntries.filter((t) => toolFilter.includes(t.name));
+
+  for (const entry of filteredTools) {
+    await loadEntry(entry);
+  }
+
+  // ── Voice Provider Extensions ──
+  const voiceFilter = options?.voice ?? 'all';
+  const filteredVoice =
+    voiceFilter === 'none'
+      ? []
+      : voiceFilter === 'all'
+        ? voiceEntries
+        : voiceEntries.filter((t) => voiceFilter.includes(t.name));
+
+  for (const entry of filteredVoice) {
+    await loadEntry(entry);
+  }
+
+  // ── Productivity Extensions ──
+  const prodFilter = options?.productivity ?? 'all';
+  const filteredProd =
+    prodFilter === 'none'
+      ? []
+      : prodFilter === 'all'
+        ? productivityEntries
+        : productivityEntries.filter((t) => prodFilter.includes(t.name));
+
+  for (const entry of filteredProd) {
+    await loadEntry(entry);
   }
 
   // ── Channel Extensions ──
   const channelEntries = getChannelEntries(options?.channels);
 
   for (const entry of channelEntries) {
-    const override = options?.overrides?.[entry.name];
-    if (override?.enabled === false) continue;
-
-    const mod = await tryImport(entry.packageName);
-    if (!mod) continue;
-
-    const factory = mod.createExtensionPack ?? mod.default?.createExtensionPack ?? mod.default;
-    if (typeof factory !== 'function') continue;
-
-    packs.push({
-      factory: () =>
-        factory({
-          options: {
-            ...override?.options,
-            secrets,
-          },
-          getSecret: (secretId: string) => secrets?.[secretId],
-          logger,
-        }),
-      priority: override?.priority ?? basePriority + entry.defaultPriority,
-      enabled: true,
-      identifier: `registry:${entry.name}`,
-    });
+    await loadEntry(entry);
   }
 
   // ── Build Overrides ──

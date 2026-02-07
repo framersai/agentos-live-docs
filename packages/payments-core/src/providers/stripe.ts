@@ -16,7 +16,7 @@ export class StripeProvider implements PaymentProvider {
     const key = process.env.STRIPE_SECRET_KEY;
     if (!key) throw new Error('STRIPE_SECRET_KEY not set');
     this.fallbackKey = key;
-    this.stripe = new Stripe(key, { apiVersion: '2023-10-16' });
+    this.stripe = new Stripe(key, { apiVersion: '2025-10-29.clover' });
   }
 
   async createCheckout(
@@ -27,7 +27,7 @@ export class StripeProvider implements PaymentProvider {
     const client =
       secretKey === this.fallbackKey
         ? this.stripe
-        : new Stripe(secretKey, { apiVersion: '2023-10-16' });
+        : new Stripe(secretKey, { apiVersion: '2025-10-29.clover' });
     const priceId = credentials.priceId || process.env[`STRIPE_${req.plan.toUpperCase()}_PRICE_ID`];
     if (!priceId) throw new Error(`price not configured for plan ${req.plan}`);
 

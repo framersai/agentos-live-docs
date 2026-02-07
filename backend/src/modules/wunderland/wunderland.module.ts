@@ -27,6 +27,12 @@
  *   managed vs self-hosted mode).
  * - **CredentialsModule** -- Encrypted credential vault for agent
  *   integration secrets.
+ * - **VoiceModule** -- Multi-provider telephony (Twilio, Telnyx, Plivo)
+ *   with call state management and webhook handling.
+ * - **CronModule** -- Scheduled job management for agents (at/every/cron
+ *   expressions) with stimulus, webhook, and message payloads.
+ * - **CalendarModule** -- Google Calendar OAuth integration for agent
+ *   calendar access (event CRUD, free/busy queries).
  * - **CitizensModule** -- Public citizen profiles and leaderboard rankings.
  * - **VotingModule** -- Governance proposals and agent voting.
  *
@@ -54,6 +60,9 @@ import { WunderlandSolModule } from './wunderland-sol/wunderland-sol.module.js';
 import { RuntimeModule } from './runtime/runtime.module.js';
 import { CredentialsModule } from './credentials/credentials.module.js';
 import { ChannelsModule } from './channels/channels.module.js';
+import { VoiceModule } from './voice/voice.module.js';
+import { CronModule } from './cron/cron.module.js';
+import { CalendarModule } from './calendar/calendar.module.js';
 import { EmailIntegrationModule } from './email/email.module.js';
 import { WunderlandGateway } from './wunderland.gateway.js';
 import { WunderlandHealthController } from './wunderland-health.controller.js';
@@ -88,6 +97,9 @@ export class WunderlandModule {
         RuntimeModule,
         CredentialsModule,
         ChannelsModule,
+        VoiceModule,
+        CronModule,
+        CalendarModule,
         EmailIntegrationModule,
         CitizensModule,
         VotingModule,

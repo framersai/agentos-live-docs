@@ -679,6 +679,44 @@ const runInitialSchema = async (db: StorageAdapter): Promise<void> => {
     'CREATE INDEX IF NOT EXISTS idx_wunderland_cs_active ON wunderland_channel_sessions(is_active, last_message_at DESC);'
   );
 
+  // ── Wunderland Voice Calls ──────────────────────────────────────────
+
+  // Voice calls — track phone call state and transcripts
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS wunderland_voice_calls (
+      call_id TEXT PRIMARY KEY,
+      seed_id TEXT NOT NULL,
+      owner_user_id TEXT NOT NULL,
+      provider TEXT NOT NULL DEFAULT 'twilio',
+      provider_call_id TEXT,
+      direction TEXT NOT NULL DEFAULT 'outbound',
+      from_number TEXT DEFAULT '',
+      to_number TEXT DEFAULT '',
+      state TEXT NOT NULL DEFAULT 'initiated',
+      mode TEXT NOT NULL DEFAULT 'notify',
+      start_time INTEGER,
+      end_time INTEGER,
+      transcript_json TEXT DEFAULT '[]',
+      metadata TEXT DEFAULT '{}',
+      created_at INTEGER NOT NULL,
+      updated_at INTEGER NOT NULL,
+      FOREIGN KEY (seed_id) REFERENCES wunderland_agents(seed_id) ON DELETE CASCADE,
+      FOREIGN KEY (owner_user_id) REFERENCES app_users(id) ON DELETE CASCADE
+    );
+  `);
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_wunderland_vc_seed ON wunderland_voice_calls(seed_id);'
+  );
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_wunderland_vc_owner ON wunderland_voice_calls(owner_user_id);'
+  );
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_wunderland_vc_provider ON wunderland_voice_calls(provider, provider_call_id);'
+  );
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_wunderland_vc_state ON wunderland_voice_calls(state, created_at DESC);'
+  );
+
   // ── Wunderland Subreddit System Tables ──────────────────────────────
 
   // Subreddits — topic-based communities within Wunderland
@@ -807,6 +845,39 @@ const runInitialSchema = async (db: StorageAdapter): Promise<void> => {
   );
 
   console.log('[AppDatabase] Wunderland subreddit system tables initialized.');
+
+  // ── Wunderland Cron Jobs ────────────────────────────────────────────
+
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS wunderland_cron_jobs (
+      job_id TEXT PRIMARY KEY,
+      seed_id TEXT NOT NULL,
+      owner_user_id TEXT NOT NULL,
+      name TEXT NOT NULL DEFAULT '',
+      description TEXT DEFAULT '',
+      enabled INTEGER NOT NULL DEFAULT 1,
+      schedule_kind TEXT NOT NULL DEFAULT 'every',
+      schedule_config TEXT NOT NULL DEFAULT '{}',
+      payload_kind TEXT NOT NULL DEFAULT 'stimulus',
+      payload_config TEXT NOT NULL DEFAULT '{}',
+      state_json TEXT DEFAULT '{}',
+      created_at INTEGER NOT NULL,
+      updated_at INTEGER NOT NULL,
+      FOREIGN KEY (seed_id) REFERENCES wunderland_agents(seed_id) ON DELETE CASCADE,
+      FOREIGN KEY (owner_user_id) REFERENCES app_users(id) ON DELETE CASCADE
+    );
+  `);
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_wunderland_cron_seed ON wunderland_cron_jobs(seed_id);'
+  );
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_wunderland_cron_owner ON wunderland_cron_jobs(owner_user_id);'
+  );
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_wunderland_cron_enabled ON wunderland_cron_jobs(enabled);'
+  );
+
+  console.log('[AppDatabase] Wunderland cron jobs table initialized.');
 
   console.log('[AppDatabase] Wunderland tables initialized.');
 };

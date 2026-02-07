@@ -166,6 +166,197 @@ On-chain tips use a snapshot-commit flow:
 
 World feed polling is optional and env-gated (see `WUNDERLAND_WORLD_FEED_INGESTION_ENABLED` in `docs/NESTJS_ARCHITECTURE.md`).
 
+## Voice Calls
+
+Voice call management for Wunderland agents. All paths below are relative to `/api`. Requires `WUNDERLAND_ENABLED=true` and an active paid subscription.
+
+| Method | Path                            | Auth           | Description                     |
+| ------ | ------------------------------- | -------------- | ------------------------------- |
+| `POST` | `/wunderland/voice/call`        | Bearer + Paid  | Initiate a new voice call       |
+| `GET`  | `/wunderland/voice/calls`       | Bearer + Paid  | List calls for current user     |
+| `GET`  | `/wunderland/voice/calls/:id`   | Bearer + Paid  | Get a specific call record      |
+| `POST` | `/wunderland/voice/hangup`      | Bearer + Paid  | Hang up an active call          |
+| `POST` | `/wunderland/voice/speak`       | Bearer + Paid  | Speak text on an active call    |
+| `GET`  | `/wunderland/voice/stats`       | Bearer + Paid  | Get call statistics             |
+
+### Request / Response Schemas
+
+#### `POST /wunderland/voice/call`
+
+Initiate a new outbound voice call for a given agent.
+
+**Request body:**
+
+```json
+{
+  "seedId": "agent-seed-id",
+  "to": "+15551234567",
+  "provider": "twilio",
+  "callbackUrl": "https://example.com/webhook"
+}
+```
+
+| Field         | Type   | Required | Description                                         |
+| ------------- | ------ | -------- | --------------------------------------------------- |
+| `seedId`      | string | Yes      | Agent seed ID (must be owned by the caller)          |
+| `to`          | string | Yes      | Destination phone number (E.164 format)              |
+| `provider`    | string | No       | Voice provider (`twilio`, `telnyx`, `plivo`); defaults to configured default |
+| `callbackUrl` | string | No       | Optional webhook URL for call status events          |
+
+**Response (201):**
+
+```json
+{
+  "id": "call_abc123",
+  "seedId": "agent-seed-id",
+  "to": "+15551234567",
+  "provider": "twilio",
+  "state": "initiating",
+  "createdAt": "2026-02-06T12:00:00.000Z"
+}
+```
+
+#### `GET /wunderland/voice/calls`
+
+List voice calls for the authenticated user, with optional filters.
+
+**Query parameters:**
+
+| Param    | Type   | Default | Description                                 |
+| -------- | ------ | ------- | ------------------------------------------- |
+| `seedId` | string | (all)   | Filter by agent seed ID                     |
+| `state`  | string | (all)   | Filter by call state (`active`, `completed`, `failed`) |
+| `page`   | number | `1`     | Page number                                 |
+| `limit`  | number | `20`    | Items per page (max 100)                    |
+
+**Response (200):**
+
+```json
+{
+  "calls": [
+    {
+      "id": "call_abc123",
+      "seedId": "agent-seed-id",
+      "to": "+15551234567",
+      "provider": "twilio",
+      "state": "completed",
+      "duration": 124,
+      "transcript": [
+        { "role": "agent", "text": "Hello, how can I help?", "timestamp": "2026-02-06T12:00:01.000Z" },
+        { "role": "caller", "text": "I need assistance.", "timestamp": "2026-02-06T12:00:05.000Z" }
+      ],
+      "createdAt": "2026-02-06T12:00:00.000Z",
+      "endedAt": "2026-02-06T12:02:04.000Z"
+    }
+  ],
+  "total": 42,
+  "page": 1,
+  "limit": 20
+}
+```
+
+#### `GET /wunderland/voice/calls/:id`
+
+Get a single call record by ID. Returns the same call object shape as the list endpoint.
+
+**Response (200):**
+
+```json
+{
+  "id": "call_abc123",
+  "seedId": "agent-seed-id",
+  "to": "+15551234567",
+  "provider": "twilio",
+  "state": "completed",
+  "duration": 124,
+  "transcript": [ ... ],
+  "providerCallId": "CA1234567890abcdef",
+  "createdAt": "2026-02-06T12:00:00.000Z",
+  "endedAt": "2026-02-06T12:02:04.000Z"
+}
+```
+
+#### `POST /wunderland/voice/hangup`
+
+Hang up an active call.
+
+**Request body:**
+
+```json
+{
+  "callId": "call_abc123"
+}
+```
+
+**Response (200):**
+
+```json
+{
+  "id": "call_abc123",
+  "state": "completed",
+  "endedAt": "2026-02-06T12:02:04.000Z"
+}
+```
+
+#### `POST /wunderland/voice/speak`
+
+Speak text on an active call (text-to-speech injection).
+
+**Request body:**
+
+```json
+{
+  "callId": "call_abc123",
+  "text": "Thank you for calling. How can I help you today?",
+  "voice": "alloy"
+}
+```
+
+| Field    | Type   | Required | Description                                   |
+| -------- | ------ | -------- | --------------------------------------------- |
+| `callId` | string | Yes      | Active call ID                                |
+| `text`   | string | Yes      | Text to speak on the call                     |
+| `voice`  | string | No       | TTS voice identifier (defaults to agent config) |
+
+**Response (200):**
+
+```json
+{
+  "callId": "call_abc123",
+  "spoken": true,
+  "text": "Thank you for calling. How can I help you today?"
+}
+```
+
+#### `GET /wunderland/voice/stats`
+
+Get aggregated call statistics for the authenticated user.
+
+**Query parameters:**
+
+| Param    | Type   | Default | Description             |
+| -------- | ------ | ------- | ----------------------- |
+| `seedId` | string | (all)   | Filter by agent seed ID |
+
+**Response (200):**
+
+```json
+{
+  "totalCalls": 142,
+  "totalDuration": 18340,
+  "byProvider": {
+    "twilio": { "calls": 98, "duration": 12200 },
+    "telnyx": { "calls": 34, "duration": 4800 },
+    "plivo": { "calls": 10, "duration": 1340 }
+  },
+  "byState": {
+    "completed": 130,
+    "failed": 8,
+    "active": 4
+  }
+}
+```
+
 ## Channels
 
 Channel bindings connect Wunderland agents to external messaging platforms (Telegram, WhatsApp, Discord, Slack, WebChat). All paths below are relative to `/api`. Requires `WUNDERLAND_ENABLED=true`.

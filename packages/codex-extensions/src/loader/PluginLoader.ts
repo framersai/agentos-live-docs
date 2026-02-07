@@ -9,7 +9,6 @@ import type {
   PluginManifest,
   PluginLoadResult,
   PluginCompatibilityResult,
-  CompatibilityIssue,
   PluginPriority,
 } from '../types';
 import { CompatibilityChecker } from './CompatibilityChecker';

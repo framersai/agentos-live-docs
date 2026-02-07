@@ -8,7 +8,6 @@ import type {
   Plugin,
   PluginManifest,
   PluginState,
-  PluginStatus,
   PluginManagerConfig,
   PluginLoadResult,
   PluginEvent,
@@ -737,4 +736,3 @@ interface RegistryData {
 
 // Export singleton instance
 export const pluginManager = new PluginManager();
-

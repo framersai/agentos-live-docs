@@ -33,6 +33,22 @@ export interface RegistryOptions {
   tools?: string[] | 'all' | 'none';
 
   /**
+   * Which voice provider extensions to enable.
+   * - Array of provider names (e.g., 'voice-twilio', 'voice-telnyx').
+   * - `'all'`: enable all available voice providers (default).
+   * - `'none'`: disable all voice providers.
+   */
+  voice?: string[] | 'all' | 'none';
+
+  /**
+   * Which productivity extensions to enable.
+   * - Array of names (e.g., 'calendar-google', 'email-gmail').
+   * - `'all'`: enable all available productivity extensions (default).
+   * - `'none'`: disable all productivity extensions.
+   */
+  productivity?: string[] | 'all' | 'none';
+
+  /**
    * Secrets map (API keys, tokens, credentials).
    * Keys match secret IDs from `extension-secrets.json` (e.g., 'telegram.botToken').
    * Falls back to environment variables if not provided here.
@@ -77,7 +93,7 @@ export interface ExtensionInfo {
   /** Short name (e.g., 'telegram'). */
   name: string;
   /** Category (e.g., 'channel', 'tool', 'integration'). */
-  category: 'channel' | 'tool' | 'integration' | 'provenance';
+  category: 'channel' | 'tool' | 'integration' | 'provenance' | 'voice' | 'productivity';
   /** Whether the package's dependencies are installed and importable. */
   available: boolean;
   /** Human-readable display name. */

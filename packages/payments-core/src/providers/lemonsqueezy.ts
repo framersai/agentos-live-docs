@@ -5,7 +5,6 @@ import {
   ProviderCredentials,
   ProviderWebhookEvent,
 } from '../types.js';
-import fetch from 'node-fetch';
 
 export class LemonSqueezyProvider implements PaymentProvider {
   readonly id = 'lemonsqueezy' as const;

@@ -150,25 +150,22 @@ class PluginSandboxInstance {
   // ==========================================================================
 
   private wrapMethod<TArgs extends unknown[], TReturn>(
-    method: ((...args: TArgs) => TReturn) | undefined,
+    method: ((...args: TArgs) => TReturn | Promise<TReturn>) | undefined,
     methodName: string
-  ): (...args: TArgs) => TReturn | Promise<TReturn | undefined> | undefined {
+  ): ((...args: TArgs) => TReturn | Promise<TReturn>) | undefined {
     if (!method) return undefined;
 
-    return async (...args: TArgs): Promise<TReturn | undefined> => {
+    return (...args: TArgs): TReturn | Promise<TReturn> => {
       if (this.disabled) {
         console.warn(`[Sandbox] Plugin ${this.pluginId} is disabled, skipping ${methodName}`);
-        return undefined;
+        return undefined as unknown as TReturn;
       }
 
-      try {
-        // Execute with timeout
-        const result = await this.executeWithTimeout(() => method(...args), methodName);
-        return result;
-      } catch (error) {
+      // Execute with timeout and swallow errors (manager can decide how to handle undefined-ish results).
+      return this.executeWithTimeout(() => method(...args), methodName).catch((error) => {
         this.handleError(error, methodName);
-        return undefined;
-      }
+        return undefined as unknown as TReturn;
+      });
     };
   }
 
@@ -291,6 +288,7 @@ export function createPluginErrorBoundary(
   pluginId: string,
   fallback?: React.ReactNode
 ): React.ComponentType<{ children: React.ReactNode }> {
+  void fallback;
   // This would be implemented as a React component
   // Simplified type definition here
   return class PluginErrorBoundary extends Error {

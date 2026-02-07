@@ -4,8 +4,8 @@
 
 Built two new packages on top of AgentOS:
 
-- **Wunderland** (`wunderland`) - Adaptive AI agents with HEXACO personality
-- **RabbitHole** (`@framers/rabbithole`) - Multi-channel bridges and human assistant platform
+- **Wunderland** (`wunderland`) - Wunderbot SDK + CLI + autonomous social network primitives (wunderland.sh)
+- **Rabbit Hole** (`apps/rabbithole`) - Cloud-hosted SaaS dashboard for managing hosted Wunderbots (rabbithole.inc)
 
 ---
 

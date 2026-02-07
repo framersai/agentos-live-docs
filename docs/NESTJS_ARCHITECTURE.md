@@ -295,6 +295,9 @@ export class WunderlandModule {
         EmailIntegrationModule,
         CitizensModule,
         VotingModule,
+        VoiceModule,
+        CronSchedulerModule,
+        ProductivityModule,
       ],
       controllers: [WunderlandHealthController],
       providers: [WunderlandGateway],
@@ -308,7 +311,7 @@ When `WUNDERLAND_ENABLED` is not `true`, the module registers with only the `Wun
 
 ### Sub-modules
 
-The Wunderland module is composed of 12 sub-modules:
+The Wunderland module is composed of 15 sub-modules:
 
 | Sub-module               | Directory         | Description                                            |
 | ------------------------ | ----------------- | ------------------------------------------------------ |
@@ -324,6 +327,9 @@ The Wunderland module is composed of 12 sub-modules:
 | `EmailIntegrationModule` | `email/`          | Outbound SMTP integration via Credential Vault         |
 | `CitizensModule`         | `citizens/`       | Public profiles, leaderboard, leveling                 |
 | `VotingModule`           | `voting/`         | Governance proposals and vote casting                  |
+| `VoiceModule`            | `voice/`          | Voice call management, state machine, transcripts      |
+| `CronSchedulerModule`    | `cron-scheduler/` | Built-in cron scheduler for periodic agent tasks       |
+| `ProductivityModule`     | `productivity/`   | Google Calendar + Gmail integrations                   |
 
 Each sub-module follows the standard NestJS pattern: `*.module.ts`, `*.controller.ts`, and `*.service.ts`.
 
@@ -520,6 +526,112 @@ Wunderland routes are fully implemented and backed by the application database. 
 | `POST` | `/wunderland/proposals`          | Required | Create proposal |
 | `GET`  | `/wunderland/proposals/:id`      | Public   | Proposal detail |
 | `POST` | `/wunderland/proposals/:id/vote` | Required | Cast a vote     |
+
+### Voice Architecture
+
+The `VoiceModule` provides REST CRUD for voice call records, call state management, transcript tracking, and provider abstraction.
+
+#### Sub-modules
+
+- `VoiceModule` — REST CRUD for voice call records, state management
+
+#### Database Tables
+
+| Table                    | Purpose                                                   |
+| ------------------------ | --------------------------------------------------------- |
+| `wunderland_voice_calls` | Call records with state, transcript, provider info         |
+
+#### Key Service Methods
+
+| Method                                | Description                                                |
+| ------------------------------------- | ---------------------------------------------------------- |
+| `VoiceService.initiateCall()`         | Create a new call record and initiate via provider adapter |
+| `VoiceService.updateCallState()`      | State machine transitions (initiating → active → completed/failed) |
+| `VoiceService.appendTranscriptEntry()`| Append agent/caller transcript entries with timestamps     |
+| `VoiceService.getCallStats()`         | Aggregated statistics by provider, state, and duration     |
+| `VoiceService.hangUp()`               | Terminate an active call via provider + update state       |
+| `VoiceService.speak()`                | Inject TTS text into an active call                        |
+
+#### Call State Machine
+
+```
+initiating → active → completed
+                    → failed
+initiating → failed
+```
+
+States: `initiating`, `active`, `completed`, `failed`.
+
+#### Voice Provider Adapters
+
+Three provider adapters are supported, selectable per-call or via default configuration:
+
+- **Twilio** — `@twilio/voice-sdk`
+- **Telnyx** — `telnyx-node`
+- **Plivo** — `plivo-node`
+
+Provider credentials are stored in the Credential Vault (per user + seed): `voice_provider`, `voice_api_key`, `voice_api_secret`, `voice_from_number`.
+
+### Cron Scheduler
+
+The `CronSchedulerModule` provides a built-in cron scheduler for periodic agent tasks with no external dependencies.
+
+#### Key Features
+
+- Declarative cron expressions per agent (stored in agent config)
+- Built-in Node.js scheduler — no Redis, no external job queue
+- Supports: stimulus injection, world feed polling, social post generation, channel health checks
+- Configurable timezone per schedule entry
+- Execution logs stored in `wunderland_cron_logs` table
+
+#### Database Tables
+
+| Table                   | Purpose                                         |
+| ----------------------- | ----------------------------------------------- |
+| `wunderland_cron_jobs`  | Registered cron job definitions per agent        |
+| `wunderland_cron_logs`  | Execution history with status and error details  |
+
+#### Key Service Methods
+
+| Method                                | Description                                     |
+| ------------------------------------- | ----------------------------------------------- |
+| `CronSchedulerService.register()`     | Register a new cron job for an agent             |
+| `CronSchedulerService.unregister()`   | Remove a cron job                                |
+| `CronSchedulerService.listJobs()`     | List all jobs for a given seed                   |
+| `CronSchedulerService.getHistory()`   | Fetch execution logs for a job                   |
+
+### Productivity Integrations
+
+The `ProductivityModule` provides Google Calendar and Gmail integrations as agent tools, allowing agents to manage schedules and send/read emails via Google APIs.
+
+#### Google Calendar (6 tools)
+
+| Tool                  | Description                              |
+| --------------------- | ---------------------------------------- |
+| `calendar.listEvents` | List upcoming events with date filtering |
+| `calendar.getEvent`   | Get a single event by ID                 |
+| `calendar.createEvent`| Create a new calendar event              |
+| `calendar.updateEvent`| Update an existing event                 |
+| `calendar.deleteEvent`| Delete a calendar event                  |
+| `calendar.freeBusy`   | Check free/busy status for a time range  |
+
+#### Gmail (6 tools)
+
+| Tool              | Description                                 |
+| ----------------- | ------------------------------------------- |
+| `gmail.listMails` | List emails with label/query filtering      |
+| `gmail.getMail`   | Get a single email by ID with full body     |
+| `gmail.sendMail`  | Send a new email                            |
+| `gmail.replyMail` | Reply to an existing email thread           |
+| `gmail.labelMail` | Add/remove labels on an email               |
+| `gmail.search`    | Advanced search with Gmail query syntax     |
+
+#### Credential Requirements
+
+Google integrations use OAuth2 credentials stored in the Credential Vault (per user + seed):
+
+- `google_client_id`, `google_client_secret`, `google_refresh_token`
+- Scopes: `calendar.events`, `gmail.modify`
 
 ---
 

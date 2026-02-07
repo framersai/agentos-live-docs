@@ -8,3 +8,6 @@ export * from './world-feed.dto.js';
 export * from './tips.dto.js';
 export * from './runtime.dto.js';
 export * from './credentials.dto.js';
+export * from './voice.dto.js';
+export * from './cron.dto.js';
+export * from './calendar.dto.js';
