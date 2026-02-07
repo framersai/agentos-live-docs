@@ -4,6 +4,11 @@
  * Single-import package that discovers and loads curated AgentOS skills
  * from the `@framers/agentos-skills` catalog.
  *
+ * `@framers/agentos` is an **optional peer dependency** — the catalog helpers
+ * (re-exported from `./catalog.js`) work without it.  Only the factory
+ * functions that produce a live `SkillRegistry` or `SkillSnapshot` need it,
+ * and they load it lazily via dynamic `import()`.
+ *
  * @module @framers/agentos-skills-registry
  */
 
@@ -11,16 +16,47 @@ import * as path from 'node:path';
 import * as fs from 'node:fs/promises';
 import { createRequire } from 'node:module';
 
-import {
-  SkillRegistry,
-  type SkillSnapshot,
-  type SkillsConfig,
-  type SkillEligibilityContext,
-} from '@framers/agentos/skills';
+// ── Local mirror types (avoid eager import of @framers/agentos) ─────────────
+// These are structurally compatible with the canonical types from
+// `@framers/agentos/skills`.  Consumers who depend on the peer dep can simply
+// cast or use the canonical imports.
 
-export type { SkillSnapshot, SkillsConfig, SkillEligibilityContext };
+/** @see SkillSnapshot in @framers/agentos/skills */
+export interface SkillSnapshot {
+  prompt: string;
+  skills: Array<{ name: string; primaryEnv?: string }>;
+  resolvedSkills?: unknown[];
+  version?: number;
+  createdAt: Date;
+}
 
-// Re-export the programmatic catalog
+/** @see SkillsConfig in @framers/agentos/skills */
+export interface SkillsConfig {
+  allowBundled?: string[];
+  load?: { extraDirs?: string[]; watch?: boolean; watchDebounceMs?: number };
+  install?: { preferBrew: boolean; nodeManager: 'npm' | 'pnpm' | 'yarn' | 'bun' };
+  entries?: Record<
+    string,
+    {
+      enabled?: boolean;
+      apiKey?: string;
+      env?: Record<string, string>;
+      config?: Record<string, unknown>;
+    }
+  >;
+}
+
+/** @see SkillEligibilityContext in @framers/agentos/skills */
+export interface SkillEligibilityContext {
+  platforms: string[];
+  hasBin: (bin: string) => boolean;
+  hasAnyBin: (bins: string[]) => boolean;
+  hasEnv?: (envVar: string) => boolean;
+  note?: string;
+}
+
+// ── Re-export the programmatic catalog (zero heavy deps) ────────────────────
+
 export {
   SKILLS_CATALOG,
   getSkillsByCategory,
@@ -32,40 +68,42 @@ export {
 } from './catalog.js';
 export type { SkillCatalogEntry } from './catalog.js';
 
+// ── Lazy loader for @framers/agentos ────────────────────────────────────────
+
+/** Resolved module cache — loaded at most once per process. */
+let _agentosSkillsMod: {
+  SkillRegistry: new (config?: SkillsConfig) => {
+    loadFromDirs(dirs: string[]): Promise<number>;
+    buildSnapshot(options?: {
+      platform?: string;
+      eligibility?: SkillEligibilityContext;
+      filter?: string[];
+    }): SkillSnapshot;
+  };
+} | null = null;
+
+async function requireAgentOS(): Promise<NonNullable<typeof _agentosSkillsMod>> {
+  if (_agentosSkillsMod) return _agentosSkillsMod;
+
+  try {
+    // Dynamic import — only resolved when a consumer calls a factory function.
+    const mod = await import('@framers/agentos/skills');
+    _agentosSkillsMod = mod as unknown as NonNullable<typeof _agentosSkillsMod>;
+    return _agentosSkillsMod;
+  } catch {
+    throw new Error(
+      '@framers/agentos is required for createCuratedSkillRegistry() and ' +
+        'createCuratedSkillSnapshot().  Install it:\n\n' +
+        '  npm install @framers/agentos\n\n' +
+        'Or use the lightweight catalog helpers (getSkillsByCategory, searchSkills, etc.) ' +
+        'which have no peer-dep requirement.'
+    );
+  }
+}
+
+// ── Path helpers (only depend on @framers/agentos-skills, a real dep) ───────
+
 const require = createRequire(import.meta.url);
-
-export type CuratedSkillsSelection = 'all' | 'none' | string[];
-
-export interface CuratedSkillsOptions {
-  /** Which curated skills to include. Default: 'all'. */
-  skills?: CuratedSkillsSelection;
-  /** Optional skills config (disable entries, env overrides, etc.). */
-  config?: SkillsConfig;
-  /** Platform filter for snapshot building. */
-  platform?: string;
-  /** Eligibility filter for snapshot building. */
-  eligibility?: SkillEligibilityContext;
-}
-
-export interface SkillsCatalogEntry {
-  id: string;
-  name: string;
-  version: string;
-  path: string;
-  description: string;
-  verified: boolean;
-  verifiedAt?: string;
-  keywords?: string[];
-  metadata?: Record<string, unknown>;
-}
-
-export interface SkillsCatalog {
-  version: string;
-  updated: string;
-  categories: { curated: string[]; community: string[] };
-  skills: { curated: SkillsCatalogEntry[]; community: SkillsCatalogEntry[] };
-  stats?: Record<string, unknown>;
-}
 
 function resolveCatalogPath(): string {
   return require.resolve('@framers/agentos-skills/registry.json');
@@ -92,6 +130,45 @@ export function getBundledCommunitySkillsDir(): string {
   return path.join(resolveSkillsPackageDir(), 'registry', 'community');
 }
 
+// ── Options ─────────────────────────────────────────────────────────────────
+
+export type CuratedSkillsSelection = 'all' | 'none' | string[];
+
+export interface CuratedSkillsOptions {
+  /** Which curated skills to include. Default: 'all'. */
+  skills?: CuratedSkillsSelection;
+  /** Optional skills config (disable entries, env overrides, etc.). */
+  config?: SkillsConfig;
+  /** Platform filter for snapshot building. */
+  platform?: string;
+  /** Eligibility filter for snapshot building. */
+  eligibility?: SkillEligibilityContext;
+}
+
+// ── Catalog types ───────────────────────────────────────────────────────────
+
+export interface SkillsCatalogEntry {
+  id: string;
+  name: string;
+  version: string;
+  path: string;
+  description: string;
+  verified: boolean;
+  verifiedAt?: string;
+  keywords?: string[];
+  metadata?: Record<string, unknown>;
+}
+
+export interface SkillsCatalog {
+  version: string;
+  updated: string;
+  categories: { curated: string[]; community: string[] };
+  skills: { curated: SkillsCatalogEntry[]; community: SkillsCatalogEntry[] };
+  stats?: Record<string, unknown>;
+}
+
+// ── Catalog JSON loader ─────────────────────────────────────────────────────
+
 /**
  * Load the `@framers/agentos-skills` catalog JSON.
  */
@@ -109,12 +186,18 @@ export async function getAvailableCuratedSkills(): Promise<SkillsCatalogEntry[]>
   return catalog.skills.curated ?? [];
 }
 
+// ── Factory functions (lazy-load @framers/agentos) ──────────────────────────
+
 /**
  * Create a SkillRegistry loaded with bundled curated skills.
+ *
+ * **Requires** `@framers/agentos` as a peer dependency.
+ * Throws a descriptive error if the peer dep is missing.
  */
 export async function createCuratedSkillRegistry(
   options?: Pick<CuratedSkillsOptions, 'config'>
-): Promise<SkillRegistry> {
+): Promise<InstanceType<Awaited<ReturnType<typeof requireAgentOS>>['SkillRegistry']>> {
+  const { SkillRegistry } = await requireAgentOS();
   const registry = new SkillRegistry(options?.config);
   await registry.loadFromDirs([getBundledCuratedSkillsDir()]);
   return registry;
@@ -122,6 +205,9 @@ export async function createCuratedSkillRegistry(
 
 /**
  * Build a SkillSnapshot from bundled curated skills.
+ *
+ * **Requires** `@framers/agentos` as a peer dependency.
+ * Throws a descriptive error if the peer dep is missing.
  */
 export async function createCuratedSkillSnapshot(
   options?: CuratedSkillsOptions

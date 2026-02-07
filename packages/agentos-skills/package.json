@@ -15,6 +15,7 @@
   "files": [
     "registry",
     "registry.json",
+    "types.d.ts",
     "README.md"
   ],
   "publishConfig": {
