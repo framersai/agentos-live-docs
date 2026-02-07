@@ -67,6 +67,7 @@ const sidebars = {
           collapsed: false,
           items: ['features/recursive-self-building', 'features/agency-collaboration'],
         },
+        'features/skills',
       ],
     },
     {
