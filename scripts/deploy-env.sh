@@ -20,8 +20,8 @@ RABBITHOLE_HOST="50.116.46.22"
 WUNDERLAND_HOST="50.116.46.76"
 
 # Remote paths (where docker-compose.yml expects .env)
-RABBITHOLE_REMOTE_DIR="/app/voice-chat-assistant/deployment/rabbithole"
-WUNDERLAND_REMOTE_DIR="/app/voice-chat-assistant/deployment/wunderland-sol"
+RABBITHOLE_REMOTE_DIR="/app/rabbithole/deployment/rabbithole"
+WUNDERLAND_REMOTE_DIR="/app/wunderland/deployment/wunderland-sol"
 
 # Local .env sources
 BACKEND_ENV="$REPO_ROOT/backend/.env"
