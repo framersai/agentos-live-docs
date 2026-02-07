@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { ChevronRight, RefreshCw, Upload, ChevronDown, Wand2, Info } from 'lucide-react';
+import { ChevronRight, RefreshCw, Upload, ChevronDown, Wand2, Info, Trash2 } from 'lucide-react';
 import Link from 'next/link';
 import { datasetsApi, presetsApi, promptsApi } from '@/lib/api';
 import { useToast } from '@/components/Toast';
@@ -126,6 +126,21 @@ export default function DatasetsPage() {
       toast('Failed to generate. Check LLM configuration.', 'error');
     } finally {
       setGeneratingSynthetic(false);
+    }
+  }
+
+  async function handleDelete(dataset: Dataset) {
+    if (
+      !confirm(`Delete "${dataset.name}"? This removes the folder from disk and cannot be undone.`)
+    )
+      return;
+    try {
+      await datasetsApi.delete(dataset.id);
+      toast(`Deleted "${dataset.name}"`, 'success');
+      await loadDatasets();
+    } catch (error) {
+      console.error('Failed to delete dataset:', error);
+      toast('Failed to delete dataset.', 'error');
     }
   }
 
@@ -275,8 +290,22 @@ export default function DatasetsPage() {
                     </p>
                   )}
                 </div>
-                <ChevronRight className="h-5 w-5 text-muted-foreground ml-auto" />
               </Link>
+              <div className="flex items-center gap-2 ml-2">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDelete(dataset);
+                  }}
+                  className="p-1.5 text-muted-foreground hover:text-red-400 transition-colors"
+                  title="Delete dataset"
+                >
+                  <Trash2 className="h-4 w-4" />
+                </button>
+                <Link href={`/datasets/${dataset.id}`}>
+                  <ChevronRight className="h-5 w-5 text-muted-foreground" />
+                </Link>
+              </div>
             </div>
           ))}
         </div>

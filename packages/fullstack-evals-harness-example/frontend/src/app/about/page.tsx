@@ -218,14 +218,6 @@ You are a technical analyst...`}
                     <td className="py-1.5 pr-3">built-in</td>
                     <td className="py-1.5">optional</td>
                   </tr>
-                  <tr className="border-b border-border/50">
-                    <td className="py-1.5 pr-3 font-medium text-foreground">
-                      Paper Extraction Schema
-                    </td>
-                    <td className="py-1.5 pr-3">json-schema</td>
-                    <td className="py-1.5 pr-3">built-in</td>
-                    <td className="py-1.5">&mdash;</td>
-                  </tr>
                   <tr>
                     <td className="py-1.5 pr-3 font-medium text-foreground">Semantic Similarity</td>
                     <td className="py-1.5 pr-3">semantic-similarity</td>
@@ -457,8 +449,7 @@ You are a technical analyst...`}
                   methodology, keywords, limitations, and citations.
                 </p>
                 <p className="text-xs text-muted-foreground mt-1">
-                  <strong>Graders:</strong> extraction-schema:0.4, extraction-completeness:0.4,
-                  faithfulness:0.2
+                  <strong>Graders:</strong> extraction-completeness:0.5, faithfulness:0.5
                 </p>
               </div>
 
@@ -473,8 +464,7 @@ You are a technical analyst...`}
                   score higher on completeness but lower on faithfulness vs strict mode.
                 </p>
                 <p className="text-xs text-muted-foreground mt-1">
-                  <strong>Graders:</strong> extraction-schema:0.4, extraction-completeness:0.4,
-                  faithfulness:0.2
+                  <strong>Graders:</strong> extraction-completeness:0.6, faithfulness:0.4
                 </p>
               </div>
             </div>
@@ -825,7 +815,8 @@ grader_rationale: Faithfulness is highest — responses must stay grounded in co
       <section>
         <h2 className="section-title">Grader Deep Dive</h2>
         <p className="section-subtitle">
-          How each evaluation technique works, where it comes from, and when to use it.
+          Each grader implements a different evaluation paradigm. Here&apos;s the theory,
+          implementation, and rationale behind each one.
         </p>
 
         <div className="mt-8 space-y-6">
@@ -837,26 +828,26 @@ grader_rationale: Faithfulness is highest — responses must stay grounded in co
               </span>
               <h3 className="font-bold text-lg uppercase tracking-wide">Faithfulness</h3>
             </div>
-            <p className="text-xs text-muted-foreground mb-4">
-              Type: <code>context-faithfulness</code> &middot; Default threshold: 0.8
+            <p className="text-xs text-muted-foreground mb-3">
+              <code>context-faithfulness</code> &middot; Threshold: 0.8
             </p>
             <p className="text-muted-foreground leading-relaxed">
-              <strong>What it measures:</strong> Whether every claim in the output is supported by
-              the provided context. This is the core hallucination detection metric.
+              Detects hallucination by checking whether every claim in the output is supported by
+              the provided context. Based on the RAGAS framework (Es et al., 2023) which decomposes
+              output into <strong>atomic claims</strong> and verifies each via{' '}
+              <strong>Natural Language Inference</strong> &mdash; classifying claims as entailed,
+              contradicted, or neutral. Score = fraction of supported claims.
             </p>
-            <p className="text-muted-foreground leading-relaxed mt-3">
-              <strong>How it works:</strong> The RAGAS framework (Es et al., 2023) breaks the output
-              into atomic claims, then uses an NLI (Natural Language Inference) model to check
-              whether each claim is entailed by the context. The score is the fraction of claims
-              that are supported. A score of 0.8 means 80% of claims are grounded.
+            <p className="text-muted-foreground leading-relaxed mt-2">
+              <strong>Implementation:</strong> <code>PromptfooGrader</code> calls{' '}
+              <code>assertions.runAssertion()</code> with <code>vars.context</code> from the
+              dataset. Promptfoo handles claim extraction and NLI using your configured LLM.
             </p>
-            <p className="text-muted-foreground leading-relaxed mt-3">
-              <strong>When to use:</strong> Any task where the output should be grounded in source
-              material &mdash; Q&amp;A over documents, summarization, RAG pipelines. Essential when
-              factual accuracy matters more than creativity.
+            <p className="text-muted-foreground leading-relaxed mt-2">
+              <strong>Why:</strong> Core failure mode of RAG systems. Promptfoo&apos;s MIT-licensed
+              implementation saves us from building claim extraction + NLI from scratch.
             </p>
-            <p className="text-xs text-muted-foreground mt-3">
-              Origin:{' '}
+            <p className="text-xs text-muted-foreground mt-2">
               <a
                 href="https://arxiv.org/abs/2309.15217"
                 target="_blank"
@@ -865,7 +856,15 @@ grader_rationale: Faithfulness is highest — responses must stay grounded in co
               >
                 RAGAS (Es et al., 2023)
               </a>{' '}
-              &middot; Implementation: promptfoo assertion engine
+              &middot;{' '}
+              <a
+                href="https://promptfoo.dev"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="link"
+              >
+                promptfoo
+              </a>
             </p>
           </div>
 
@@ -877,36 +876,30 @@ grader_rationale: Faithfulness is highest — responses must stay grounded in co
               </span>
               <h3 className="font-bold text-lg uppercase tracking-wide">Semantic Similarity</h3>
             </div>
-            <p className="text-xs text-muted-foreground mb-4">
-              Type: <code>semantic-similarity</code> &middot; Default threshold: 0.8
+            <p className="text-xs text-muted-foreground mb-3">
+              <code>semantic-similarity</code> &middot; Threshold: 0.8 &middot; Metrics: cosine,
+              euclidean, dot product
             </p>
             <p className="text-muted-foreground leading-relaxed">
-              <strong>What it measures:</strong> Whether the output means the same thing as the
-              expected answer, even if worded differently.
+              Measures whether output means the same thing as the expected answer, regardless of
+              wording. Uses provider embedding APIs (OpenAI <code>text-embedding-3-small</code>,
+              Ollama) to produce vector representations where semantic similarity = cosine distance.
+              Same meaning, different words &rarr; vectors point the same direction.
             </p>
-            <p className="text-muted-foreground leading-relaxed mt-3">
-              <strong>How it works:</strong> Both texts are converted into high-dimensional
-              embedding vectors using a model like <code>text-embedding-3-small</code> (OpenAI) or a
-              local Ollama model. The cosine similarity between the two vectors gives a 0-1 score.
-              Unlike string matching, this captures paraphrases, synonyms, and structural
-              rearrangements.
+            <p className="text-muted-foreground leading-relaxed mt-2">
+              <strong>Implementation:</strong> Three-tier fallback: (1) embedding cosine similarity
+              via <code>LlmService.embed()</code> (OpenAI <code>text-embedding-3-small</code> or
+              Ollama), (2) Jaccard + weighted token overlap if embeddings fail, (3) configurable
+              hybrid mode combining both. Also supports euclidean and dot product metrics.
             </p>
-            <p className="text-muted-foreground leading-relaxed mt-3">
-              <strong>When to use:</strong> Tasks with a known &ldquo;right answer&rdquo; where
-              exact wording doesn&apos;t matter &mdash; factual Q&amp;A, translation equivalence, or
-              checking that a rewrite preserves meaning. Not ideal for creative tasks where many
-              valid answers exist.
+            <p className="text-muted-foreground leading-relaxed mt-2">
+              <strong>Why:</strong> Meaning-aware scoring without LLM variability. Deterministic
+              given the same embedding model. Middle ground between brittle string matching and
+              expensive LLM-as-judge.
             </p>
-            <p className="text-xs text-muted-foreground mt-3">
-              Origin:{' '}
-              <a
-                href="https://arxiv.org/abs/1908.10084"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="link"
-              >
-                Sentence-BERT (Reimers &amp; Gurevych, 2019)
-              </a>
+            <p className="text-xs text-muted-foreground mt-2">
+              Embeddings via configured LLM provider (OpenAI, Ollama, or LLM-generated fallback for
+              Anthropic)
             </p>
           </div>
 
@@ -918,35 +911,33 @@ grader_rationale: Faithfulness is highest — responses must stay grounded in co
               </span>
               <h3 className="font-bold text-lg uppercase tracking-wide">LLM-as-Judge</h3>
             </div>
-            <p className="text-xs text-muted-foreground mb-4">
-              Type: <code>llm-judge</code> &middot; Used by: Helpfulness Judge, Extraction
-              Completeness
+            <p className="text-xs text-muted-foreground mb-3">
+              <code>llm-judge</code> &middot; Configurable rubric per grader &middot; Temperature:
+              0.1
             </p>
             <p className="text-muted-foreground leading-relaxed">
-              <strong>What it measures:</strong> Open-ended quality assessment against a
-              human-written rubric. Each grader defines its own criteria &mdash; the Helpfulness
-              Judge checks clarity, accuracy, and relevance; the Extraction Completeness Judge
-              checks completeness, accuracy, grounding, and schema compliance.
+              Open-ended quality assessment against a human-written rubric. Zheng et al. (2023)
+              showed GPT-4-class models achieve &gt;80% agreement with human expert ratings when
+              given structured criteria &mdash; comparable to inter-annotator agreement. Low
+              temperature and explicit pass/fail rubrics reduce position and verbosity bias.
             </p>
-            <p className="text-muted-foreground leading-relaxed mt-3">
-              <strong>How it works:</strong> A capable LLM (your configured provider) receives the
-              input, output, expected output, context, and a rubric. It evaluates the output against
-              the rubric and returns a pass/fail decision with a reason. This is the most flexible
-              grader &mdash; you can evaluate anything you can describe in natural language.
+            <p className="text-muted-foreground leading-relaxed mt-2">
+              <strong>Implementation:</strong> <code>LlmJudgeGrader</code> sends
+              input/output/expected/rubric to the configured LLM, requesting JSON{' '}
+              <code>{`{pass, score, reason}`}</code> at temperature 0.1. Fallback parser handles
+              malformed responses. Optional <code>threshold</code> config for numeric score cutoff.
             </p>
-            <p className="text-muted-foreground leading-relaxed mt-3">
-              <strong>Trade-offs:</strong> Powerful but non-deterministic. Different models or
-              temperatures may give different scores for the same output. Costs an LLM call per
-              evaluation. Best used alongside deterministic graders (similarity, schema) so you have
-              a reliable baseline plus nuanced assessment.
+            <p className="text-muted-foreground leading-relaxed mt-2">
+              <strong>Shipped rubrics:</strong> <em>Helpfulness</em> (accuracy, clarity, relevance)
+              and <em>Extraction Completeness</em> (4-criteria: completeness, accuracy, grounding,
+              structure).
             </p>
-            <p className="text-muted-foreground leading-relaxed mt-3">
-              <strong>When to use:</strong> When you need to evaluate subjective qualities
-              (helpfulness, tone, completeness) or complex criteria that can&apos;t be captured by
-              pattern matching or embeddings.
+            <p className="text-muted-foreground leading-relaxed mt-2">
+              <strong>Why:</strong> Some dimensions (helpfulness, tone, completeness) can&apos;t be
+              captured by pattern matching or embeddings. Trade-off: costs an LLM call per eval,
+              non-deterministic. Mitigated with low temperature and structured output.
             </p>
-            <p className="text-xs text-muted-foreground mt-3">
-              Origin:{' '}
+            <p className="text-xs text-muted-foreground mt-2">
               <a
                 href="https://arxiv.org/abs/2306.05685"
                 target="_blank"
@@ -966,27 +957,50 @@ grader_rationale: Faithfulness is highest — responses must stay grounded in co
               </span>
               <h3 className="font-bold text-lg uppercase tracking-wide">JSON Schema Validation</h3>
             </div>
-            <p className="text-xs text-muted-foreground mb-4">
-              Type: <code>json-schema</code> &middot; Binary pass/fail
+            <p className="text-xs text-muted-foreground mb-3">
+              <code>json-schema</code> &middot; Binary pass/fail &middot; Zero LLM cost
             </p>
             <p className="text-muted-foreground leading-relaxed">
-              <strong>What it measures:</strong> Whether the output is valid JSON that conforms to a
-              defined schema &mdash; required fields present, correct types, valid structure.
+              Validates output against a JSON Schema definition &mdash; required fields, correct
+              types, valid structure. The first-pass gate for extraction tasks: if the model
+              can&apos;t produce structurally valid output, content quality is irrelevant.
             </p>
-            <p className="text-muted-foreground leading-relaxed mt-3">
-              <strong>How it works:</strong> Parses the output as JSON (extracting from markdown
-              code fences if needed), then validates against a JSON Schema definition. Completely
-              deterministic &mdash; no LLM calls, no embeddings. Instant, free, and perfectly
-              reproducible.
+            <p className="text-muted-foreground leading-relaxed mt-2">
+              <strong>Implementation:</strong> <code>JsonSchemaGrader</code> uses{' '}
+              <a
+                href="https://ajv.js.org/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="link"
+              >
+                AJV
+              </a>{' '}
+              (fastest JS JSON Schema validator). Parses output as JSON, validates against schema
+              from YAML config, reports up to 5 specific violations. Deterministic, instant, free.
             </p>
-            <p className="text-muted-foreground leading-relaxed mt-3">
-              <strong>When to use:</strong> Any structured extraction task &mdash; pulling data from
-              documents, function calling outputs, API response generation. Pairs well with an
-              LLM-as-Judge grader: schema validates structure, judge validates content quality.
+            <p className="text-muted-foreground leading-relaxed mt-2">
+              <strong>Usage:</strong> Define a JSON Schema in the grader&apos;s YAML config. The
+              grader validates output structure (required fields, types, arrays) without any LLM
+              calls. Create custom schemas for any extraction task.
             </p>
-            <p className="text-xs text-muted-foreground mt-3">
-              Origin: JSON Schema specification &middot; Common in function-calling and structured
-              output benchmarks
+            <p className="text-xs text-muted-foreground mt-2">
+              <a
+                href="https://json-schema.org/specification"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="link"
+              >
+                JSON Schema spec
+              </a>{' '}
+              &middot;{' '}
+              <a
+                href="https://ajv.js.org/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="link"
+              >
+                AJV
+              </a>
             </p>
           </div>
 
@@ -998,35 +1012,121 @@ grader_rationale: Faithfulness is highest — responses must stay grounded in co
               </span>
               <h3 className="font-bold text-lg uppercase tracking-wide">Deterministic Graders</h3>
             </div>
-            <p className="text-xs text-muted-foreground mb-4">
-              Types: <code>exact-match</code>, <code>contains</code>, <code>regex</code>
+            <p className="text-xs text-muted-foreground mb-3">
+              <code>exact-match</code>, <code>contains</code>, <code>regex</code> &middot; Zero
+              cost, instant, reproducible
             </p>
-            <p className="text-muted-foreground leading-relaxed">
-              Simple pattern matching &mdash; no LLM calls, no embeddings. Zero cost, instant,
-              perfectly reproducible.
-            </p>
-            <ul className="list-brutal mt-4 text-muted-foreground">
+            <ul className="list-brutal text-muted-foreground text-sm">
               <li>
-                <strong>Exact Match</strong> &mdash; Binary string equality between output and
-                expected. From the SQuAD benchmark (Rajpurkar et al., 2016) where it&apos;s paired
-                with F1 score. Good for classification, short-answer, or any task with a single
-                correct answer.
+                <strong>Exact Match</strong> &mdash; String equality with configurable
+                case/whitespace. From{' '}
+                <a
+                  href="https://arxiv.org/abs/1606.05250"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="link"
+                >
+                  SQuAD (Rajpurkar et al., 2016)
+                </a>
+                . Binary 0/1. Best for classification and short-answer.
               </li>
               <li>
-                <strong>Contains</strong> &mdash; Checks whether required substrings appear in the
-                output. Inspired by HELM (Liang et al., 2022). Good for verifying that specific
-                facts, keywords, or phrases are present without constraining the full output.
+                <strong>Contains</strong> &mdash; Substring presence with <code>all</code>/
+                <code>any</code> mode. Proportional scoring (3/5 found = 0.6). Inspired by{' '}
+                <a
+                  href="https://arxiv.org/abs/2211.09110"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="link"
+                >
+                  HELM (Liang et al., 2022)
+                </a>
+                . Best for keyword/fact verification.
               </li>
               <li>
-                <strong>Regex</strong> &mdash; Pattern matching with regular expressions. Good for
-                format validation (dates, IDs, structured patterns) or extracting specific fields
-                from free-text output.
+                <strong>Regex</strong> &mdash; Pattern matching with configurable flags. Binary
+                pass/fail. Best for format validation (dates, IDs, structured patterns).
               </li>
             </ul>
-            <p className="text-muted-foreground leading-relaxed mt-4">
-              <strong>When to use:</strong> As sanity checks alongside LLM-powered graders.
-              Deterministic graders catch obvious failures instantly. If the output doesn&apos;t
-              contain a required keyword, there&apos;s no need to run an expensive LLM judge on it.
+            <p className="text-muted-foreground leading-relaxed mt-3 text-sm">
+              These form the base layer of any grading stack. Run them first &mdash; if the output
+              doesn&apos;t match a format or contain required keywords, skip the expensive LLM
+              graders.
+            </p>
+          </div>
+
+          {/* Promptfoo Engine */}
+          <div className="card p-6">
+            <div className="flex items-center gap-3 mb-2">
+              <span className="bg-foreground text-background px-2 py-0.5 text-xs font-bold">
+                ENGINE
+              </span>
+              <h3 className="font-bold text-lg uppercase tracking-wide">
+                Promptfoo Assertion Engine
+              </h3>
+            </div>
+            <p className="text-xs text-muted-foreground mb-3">
+              <code>promptfoo</code> grader type &middot; 20+ assertions via YAML &middot; MIT
+              licensed
+            </p>
+            <p className="text-muted-foreground leading-relaxed">
+              Pass-through to{' '}
+              <a
+                href="https://promptfoo.dev"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="link"
+              >
+                promptfoo
+              </a>
+              &apos;s assertion engine. Change <code>config.assertion</code> in a YAML file to
+              switch between RAGAS metrics, NLP scores, LLM rubrics, safety checks. No code changes.
+            </p>
+            <div className="mt-3 overflow-x-auto">
+              <table className="w-full text-xs">
+                <thead>
+                  <tr className="text-left text-muted-foreground border-b border-border">
+                    <th className="pb-2 pr-3">Category</th>
+                    <th className="pb-2 pr-3">Assertions</th>
+                    <th className="pb-2">Use case</th>
+                  </tr>
+                </thead>
+                <tbody className="text-muted-foreground">
+                  <tr className="border-b border-border/50">
+                    <td className="py-1.5 pr-3 font-medium text-foreground">RAGAS</td>
+                    <td className="py-1.5 pr-3">
+                      <code>context-faithfulness</code>, <code>answer-relevance</code>,{' '}
+                      <code>context-relevance</code>, <code>context-recall</code>
+                    </td>
+                    <td className="py-1.5">RAG quality &mdash; hallucination, relevance</td>
+                  </tr>
+                  <tr className="border-b border-border/50">
+                    <td className="py-1.5 pr-3 font-medium text-foreground">LLM-as-Judge</td>
+                    <td className="py-1.5 pr-3">
+                      <code>llm-rubric</code>, <code>g-eval</code>, <code>factuality</code>
+                    </td>
+                    <td className="py-1.5">Custom rubrics, chain-of-thought eval</td>
+                  </tr>
+                  <tr className="border-b border-border/50">
+                    <td className="py-1.5 pr-3 font-medium text-foreground">NLP</td>
+                    <td className="py-1.5 pr-3">
+                      <code>rouge-n</code>, <code>bleu</code>, <code>levenshtein</code>
+                    </td>
+                    <td className="py-1.5">Text overlap, edit distance</td>
+                  </tr>
+                  <tr>
+                    <td className="py-1.5 pr-3 font-medium text-foreground">Safety</td>
+                    <td className="py-1.5 pr-3">
+                      <code>is-refusal</code>, <code>guardrails</code>
+                    </td>
+                    <td className="py-1.5">Refusal detection, harmful content</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <p className="text-muted-foreground leading-relaxed mt-3 text-sm">
+              <strong>Why:</strong> One integration gives us the full evaluation landscape. Adding a
+              new metric is a YAML file, not a code change.
             </p>
           </div>
 
@@ -1036,27 +1136,26 @@ grader_rationale: Faithfulness is highest — responses must stay grounded in co
               Choosing the Right Graders
             </h3>
             <p className="text-muted-foreground leading-relaxed">
-              Layer graders from cheap/fast to expensive/nuanced:
+              Layer from cheap/fast to expensive/nuanced:
             </p>
-            <ol className="mt-4 space-y-2 text-muted-foreground text-sm">
+            <ol className="mt-3 space-y-2 text-muted-foreground text-sm">
               <li>
                 <strong>1. Deterministic first.</strong> Exact match, contains, regex, JSON schema.
-                Free, instant, catches structural failures.
+                Free, instant. Catches structural failures.
               </li>
               <li>
-                <strong>2. Embeddings next.</strong> Semantic similarity gives a meaning-aware score
-                without the variability of an LLM judge.
+                <strong>2. Embeddings next.</strong> Semantic similarity &mdash; meaning-aware,
+                deterministic, no LLM variability.
               </li>
               <li>
-                <strong>3. LLM-powered last.</strong> Faithfulness and LLM-as-Judge for nuanced
-                quality assessment. Most powerful but costs an LLM call per evaluation.
+                <strong>3. LLM-powered last.</strong> Faithfulness + LLM-as-Judge. Most powerful but
+                costs an LLM call per eval.
               </li>
             </ol>
-            <p className="text-muted-foreground leading-relaxed mt-4">
-              Each prompt in this harness declares its own grader weights via{' '}
-              <code>recommended_graders</code>, so different candidates can prioritize different
-              metrics. A Q&amp;A prompt might weight faithfulness at 60%; a creative writing prompt
-              might weight helpfulness at 80%.
+            <p className="text-muted-foreground leading-relaxed mt-3 text-sm">
+              Each prompt declares its own grader weights via <code>recommended_graders</code> with
+              a <code>grader_rationale</code>. A Q&amp;A prompt weights faithfulness at 60%; an
+              extractor weights schema + completeness at 40% each; a summarizer balances all three.
             </p>
           </div>
         </div>
@@ -1219,6 +1318,164 @@ grader_rationale: Faithfulness is highest — responses must stay grounded in co
               Backend scaffolding already exists in <code>backend/src/retrieval/</code> (interfaces
               + module stub).
             </p>
+          </div>
+        </div>
+      </section>
+
+      <hr className="divider" />
+
+      {/* Performance Roadmap */}
+      <section>
+        <h2 className="section-title">Roadmap: Parallelization & Performance</h2>
+        <p className="section-subtitle">
+          Today experiments run <strong>sequentially</strong> &mdash; one test case at a time, one
+          candidate at a time, one grader at a time. Since each step is an LLM API call (I/O-bound,
+          not CPU-bound), parallelization is straightforward and the gains are large.
+        </p>
+
+        <div className="mt-8 space-y-6">
+          <div className="card p-6">
+            <h3 className="font-bold text-lg uppercase tracking-wide mb-4">Current Bottleneck</h3>
+            <p className="text-muted-foreground leading-relaxed">
+              The experiment loop in <code>experiments.service.ts</code> runs three nested{' '}
+              <code>for</code> loops: test cases &times; candidates &times; graders. Each iteration
+              makes an LLM API call and <code>await</code>s the response before moving to the next.
+              For an experiment with 6 test cases, 4 candidates, and 3 graders, that &apos;s 6
+              &times; 4 &times; (1 generation + 3 grading) = 96 sequential API calls.
+            </p>
+            <pre className="mt-3 text-xs bg-muted p-3 rounded overflow-x-auto">
+              {`// Current: fully sequential
+for (testCase of testCases)
+  for (candidate of candidates)
+    await generateOutput(candidate, testCase)   // LLM call
+    for (grader of graders)
+      await grader.evaluate(output)             // LLM call`}
+            </pre>
+          </div>
+
+          <div className="card p-6 border-l-4 border-l-foreground">
+            <h3 className="font-bold text-lg uppercase tracking-wide mb-4">
+              Approach 1: Concurrent Promises (Quick Win)
+            </h3>
+            <p className="text-muted-foreground leading-relaxed">
+              Wrap independent calls in <code>Promise.all()</code> with a concurrency limiter (e.g.,{' '}
+              <code>p-limit</code>). Since OpenAI and Anthropic both support high request rates, you
+              can fire multiple API calls simultaneously. Graders for the same output are fully
+              independent and can run in parallel. Test cases across candidates can also run
+              concurrently.
+            </p>
+            <pre className="mt-3 text-xs bg-muted p-3 rounded overflow-x-auto">
+              {`// Planned: parallel grading with concurrency limit
+import pLimit from 'p-limit';
+const limit = pLimit(10); // 10 concurrent API calls
+
+// Grade all graders for one output in parallel
+const results = await Promise.all(
+  graders.map(g => limit(() => g.evaluate(output)))
+);`}
+            </pre>
+            <ul className="list-brutal mt-4 text-muted-foreground text-sm">
+              <li>
+                <strong>Pros:</strong> Simple to implement, works with any LLM provider,
+                fine-grained control over concurrency, real-time SSE progress still works
+                per-result.
+              </li>
+              <li>
+                <strong>Cons:</strong> Still makes N individual API calls (each with HTTP overhead
+                and latency). Rate limits become the bottleneck at high concurrency. Need to tune
+                the concurrency limit per provider.
+              </li>
+              <li>
+                <strong>Expected speedup:</strong> 5&ndash;10x for typical experiments. A 96-call
+                experiment at ~1s per call goes from ~96s to ~10&ndash;20s.
+              </li>
+            </ul>
+          </div>
+
+          <div className="card p-6">
+            <h3 className="font-bold text-lg uppercase tracking-wide mb-4">
+              Approach 2: Batch API Endpoints
+            </h3>
+            <p className="text-muted-foreground leading-relaxed">
+              OpenAI and Anthropic both offer <strong>batch/bulk endpoints</strong> that accept many
+              requests in a single HTTP call and return all results together. This eliminates
+              per-request HTTP overhead and often comes with lower pricing.
+            </p>
+            <ul className="list-brutal mt-4 text-muted-foreground text-sm">
+              <li>
+                <strong>OpenAI Batch API:</strong> Upload a JSONL file of requests, get results back
+                asynchronously (within 24h window). 50% cost discount. Best for large offline
+                evaluations, not real-time.
+              </li>
+              <li>
+                <strong>Anthropic Message Batches:</strong> Submit up to 10,000 requests per batch,
+                results returned asynchronously. Best for bulk evaluation runs.
+              </li>
+              <li>
+                <strong>Pros:</strong> Lower cost per call, no rate limit concerns, providers
+                optimize scheduling internally.
+              </li>
+              <li>
+                <strong>Cons:</strong> Asynchronous &mdash; results aren&apos;t instant, so
+                real-time SSE progress bars don&apos;t work well. Adds complexity (polling for batch
+                completion, handling partial failures). Not supported by Ollama or other local
+                providers.
+              </li>
+              <li>
+                <strong>Best for:</strong> Large-scale evaluation runs (100+ test cases) where you
+                don&apos;t need real-time progress. Run overnight, review results in the morning.
+              </li>
+            </ul>
+          </div>
+
+          <div className="card p-6">
+            <h3 className="font-bold text-lg uppercase tracking-wide mb-4">
+              Approach 3: Worker Threads (In-Process Inference Only)
+            </h3>
+            <p className="text-muted-foreground leading-relaxed">
+              Node.js <code>worker_threads</code> move computation off the main thread. Only useful
+              when running models <strong>inside the Node.js process</strong> &mdash; e.g., ONNX
+              Runtime, transformers.js, or llama.cpp Node bindings where inference blocks the event
+              loop.
+            </p>
+            <p className="text-muted-foreground leading-relaxed mt-3">
+              <strong>Does NOT help with Ollama</strong> (or any external inference server). Ollama
+              runs as a separate HTTP server &mdash; from Node&apos;s perspective, calling Ollama is
+              the same as calling OpenAI (an HTTP request/response). Whether Ollama is GPU-bound or
+              CPU-bound doesn&apos;t matter &mdash; worker threads in Node can&apos;t speed up
+              another process&apos;s work. For Ollama, use concurrent promises (Approach 1) instead.
+            </p>
+            <ul className="list-brutal mt-4 text-muted-foreground text-sm">
+              <li>
+                <strong>Pros:</strong> Keeps the main event loop responsive when running models
+                in-process (ONNX, transformers.js, small embedding models).
+              </li>
+              <li>
+                <strong>Cons:</strong> Adds complexity (message passing, serialization). Does
+                nothing for external APIs or Ollama. Overkill unless doing in-process inference.
+              </li>
+              <li>
+                <strong>Best for:</strong> Running lightweight models directly in Node (embeddings
+                via ONNX, small classifiers via transformers.js).
+              </li>
+            </ul>
+          </div>
+
+          <div className="card p-6 border-l-4 border-l-foreground">
+            <h3 className="font-bold text-lg uppercase tracking-wide mb-4">Recommended Strategy</h3>
+            <p className="text-muted-foreground leading-relaxed">
+              <strong>Start with concurrent promises</strong> (Approach 1). It&apos;s the simplest
+              change, works with all providers, preserves real-time streaming, and delivers the
+              biggest speedup for interactive use. Add batch API support later as an optional mode
+              for large-scale offline evaluations.
+            </p>
+            <pre className="mt-3 text-xs bg-muted p-3 rounded overflow-x-auto">
+              {`// Phased rollout:
+// Phase 1: Parallel grading (graders for same output run concurrently)
+// Phase 2: Parallel candidates (generate + grade across candidates concurrently)
+// Phase 3: Batch API mode (optional, for 100+ test case runs)
+// Phase 4: Worker threads for local model inference`}
+            </pre>
           </div>
         </div>
       </section>
@@ -1454,19 +1711,11 @@ Summarize in one sentence.`}
           </div>
 
           <div className="card p-5">
-            <h3 className="font-bold uppercase">Sentence-BERT</h3>
+            <h3 className="font-bold uppercase">Semantic Similarity</h3>
             <p className="text-muted-foreground mt-2 text-sm">
-              Reimers &amp; Gurevych 2019. Our semantic similarity graders use embedding cosine
-              distance to compare meaning beyond surface-level string matching.
+              Custom implementation using provider embedding APIs (OpenAI text-embedding-3-small,
+              Ollama). Cosine similarity on vectors with Jaccard + weighted token overlap fallback.
             </p>
-            <a
-              href="https://arxiv.org/abs/1908.10084"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="link text-sm mt-2 inline-flex items-center gap-1"
-            >
-              arxiv.org/abs/1908.10084 <ExternalLink className="h-3 w-3" />
-            </a>
           </div>
         </div>
       </section>

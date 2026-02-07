@@ -1,13 +1,4 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Put,
-  Body,
-  Param,
-  Res,
-  Header,
-} from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Param, Res, Header } from '@nestjs/common';
 import { Response } from 'express';
 import { DatasetsService } from './datasets.service';
 
@@ -44,7 +35,7 @@ export class DatasetsController {
       csv: string;
       name?: string;
       description?: string;
-    },
+    }
   ) {
     return this.datasetsService.importCsv(body.filename, body.csv, {
       name: body.name,
@@ -69,9 +60,17 @@ export class DatasetsController {
         metadata?: Record<string, unknown>;
         customFields?: Record<string, string>;
       }>;
-    },
+    }
   ) {
     return this.datasetsService.update(id, body);
+  }
+
+  /**
+   * Delete a dataset: removes its subfolder from disk.
+   */
+  @Delete(':id')
+  delete(@Param('id') id: string) {
+    return this.datasetsService.delete(id);
   }
 
   /**
@@ -108,7 +107,7 @@ export class DatasetsController {
     const dataset = this.datasetsService.findOne(id);
 
     const customHeaders = Array.from(
-      new Set(dataset.testCases.flatMap((tc) => Object.keys(tc.customFields || {}))),
+      new Set(dataset.testCases.flatMap((tc) => Object.keys(tc.customFields || {})))
     );
     const headers = ['input', 'expected_output', 'context', 'metadata', ...customHeaders];
     const rows = dataset.testCases.map((tc) => [
@@ -117,7 +116,7 @@ export class DatasetsController {
       `"${(tc.context || '').replace(/"/g, '""')}"`,
       `"${tc.metadata ? JSON.stringify(tc.metadata).replace(/"/g, '""') : ''}"`,
       ...customHeaders.map(
-        (header) => `"${(tc.customFields?.[header] || '').replace(/"/g, '""')}"`,
+        (header) => `"${(tc.customFields?.[header] || '').replace(/"/g, '""')}"`
       ),
     ]);
 

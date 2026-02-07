@@ -55,6 +55,13 @@ export class DatasetsService {
   }
 
   /**
+   * Delete a dataset from disk and memory.
+   */
+  delete(id: string) {
+    return this.loader.deleteDataset(id);
+  }
+
+  /**
    * Import a CSV file to the datasets directory.
    */
   importCsv(

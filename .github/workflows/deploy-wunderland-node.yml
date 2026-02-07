@@ -18,39 +18,55 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          submodules: recursive
-
       - name: Deploy via SSH
         uses: appleboy/ssh-action@v1
+        env:
+          GH_PAT: ${{ secrets.GH_PAT }}
         with:
           host: ${{ secrets.WUNDERLAND_SSH_HOST }}
           username: root
           key: ${{ secrets.WUNDERLAND_SSH_PRIVATE_KEY }}
+          command_timeout: 30m
+          envs: GH_PAT
           script: |
             set -euo pipefail
 
-            REPO_DIR="/app/voice-chat-assistant"
+            REPO_DIR="/app/wunderland"
+            REPO_URL="https://${GH_PAT}@github.com/manicinc/voice-chat-assistant.git"
 
-            # Clone repo if first deploy, otherwise pull
-            if [ ! -d "$REPO_DIR" ]; then
+            if [ ! -d "$REPO_DIR/.git" ]; then
               echo "[deploy] First deploy — cloning repo..."
-              git clone --recurse-submodules https://github.com/jddunn/voice-chat-assistant.git "$REPO_DIR"
+              git clone --recurse-submodules "$REPO_URL" "$REPO_DIR"
             else
               echo "[deploy] Pulling latest..."
               cd "$REPO_DIR"
-              git pull --ff-only
+              git remote set-url origin "$REPO_URL"
+              git fetch origin
+              git reset --hard origin/master
               git submodule update --init --recursive
             fi
 
             cd "$REPO_DIR"
 
-            echo "[deploy] Building and starting stack..."
-            docker compose -f deployment/wunderland-sol/docker-compose.yml up -d --build
+            echo "[deploy] Building frontend..."
+            docker compose -f deployment/wunderland-sol/docker-compose.yml build frontend
+
+            echo "[deploy] Building backend..."
+            docker compose -f deployment/wunderland-sol/docker-compose.yml build backend
+
+            echo "[deploy] Starting stack..."
+            docker compose -f deployment/wunderland-sol/docker-compose.yml up -d
+            docker compose -f deployment/wunderland-sol/docker-compose.yml restart nginx
 
             echo "[deploy] Pruning old images..."
             docker image prune -f
+
+            sleep 5
+            HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" https://localhost/ -k || echo "000")
+            echo "[deploy] Health check: HTTP $HTTP_CODE"
+            if [ "$HTTP_CODE" != "200" ]; then
+              echo "[deploy] WARNING: Frontend not returning 200"
+              docker compose -f deployment/wunderland-sol/docker-compose.yml logs --tail=20 frontend
+            fi
 
             echo "[deploy] Done."

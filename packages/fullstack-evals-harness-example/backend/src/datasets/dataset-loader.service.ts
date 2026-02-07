@@ -249,6 +249,25 @@ export class DatasetLoaderService implements OnModuleInit {
   }
 
   /**
+   * Delete a dataset: remove its subfolder from disk and from memory.
+   */
+  deleteDataset(id: string): { deleted: boolean } {
+    const existing = this.datasets.get(id);
+    if (!existing) {
+      throw new NotFoundException(`Dataset "${id}" not found`);
+    }
+
+    const subDir = path.join(this.datasetsDir, id);
+    if (fs.existsSync(subDir)) {
+      fs.rmSync(subDir, { recursive: true, force: true });
+    }
+
+    this.datasets.delete(id);
+    this.logger.log(`Deleted dataset "${id}"`);
+    return { deleted: true };
+  }
+
+  /**
    * Load optional meta.yaml sidecar for a dataset.
    */
   private loadMeta(id: string): { name?: string; description?: string; synthetic?: boolean } {

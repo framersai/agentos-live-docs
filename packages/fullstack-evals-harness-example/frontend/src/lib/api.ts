@@ -57,6 +57,8 @@ export const datasetsApi = {
 
   reload: () => fetchApi<{ loaded: number }>('/datasets/reload', { method: 'POST' }),
 
+  delete: (id: string) => fetchApi<{ deleted: boolean }>(`/datasets/${id}`, { method: 'DELETE' }),
+
   importCsv: (data: { filename: string; csv: string; name?: string; description?: string }) =>
     fetchApi<Dataset>('/datasets/import', {
       method: 'POST',
@@ -157,6 +159,12 @@ export const promptsApi = {
     }
   ) =>
     fetchApi<Candidate>(`/prompts/${parentId}/variant`, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
+
+  suggestVariantName: (parentId: string, data: { variantLabel: string; systemPrompt?: string }) =>
+    fetchApi<{ name: string }>(`/prompts/${parentId}/variant/suggest-name`, {
       method: 'POST',
       body: JSON.stringify(data),
     }),

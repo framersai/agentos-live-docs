@@ -1,8 +1,4 @@
-import {
-  BadRequestException,
-  Injectable,
-  InternalServerErrorException,
-} from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { LlmService, LlmProvider } from '../llm/llm.service';
 import { LoadedPrompt, PromptLoaderService } from './prompt-loader.service';
 
@@ -41,18 +37,50 @@ export class PromptVariantGeneratorService {
 
   constructor(
     private promptLoader: PromptLoaderService,
-    private llmService: LlmService,
+    private llmService: LlmService
   ) {}
+
+  /**
+   * Suggest a display name for a variant based on its label and system prompt.
+   */
+  async suggestVariantName(
+    parentId: string,
+    dto: { variantLabel: string; systemPrompt?: string }
+  ): Promise<{ name: string }> {
+    const parent = this.promptLoader.findOne(parentId);
+
+    const prompt = `You generate short, descriptive display names for prompt variants in an evaluation harness.
+
+Parent prompt: "${parent.name}"
+${parent.description ? `Parent description: ${parent.description}` : ''}
+Variant label: "${dto.variantLabel}"
+${dto.systemPrompt ? `Variant system prompt (first 300 chars): "${dto.systemPrompt.substring(0, 300)}"` : ''}
+
+Generate a concise display name (2-5 words) for this variant. The name should:
+- Clearly differentiate it from the parent
+- Reflect its style or strategy
+- Be human-readable (title case)
+
+Respond with ONLY the display name, no quotes or extra text.`;
+
+    const rawName = await this.llmService.complete(prompt, {
+      temperature: 0.3,
+      maxTokens: 30,
+    });
+
+    const name = rawName.replace(/^["']|["']$/g, '').trim();
+    return { name: name || `${parent.name} (${dto.variantLabel})` };
+  }
 
   async generate(
     parentId: string,
-    dto: GeneratePromptVariantsDto,
+    dto: GeneratePromptVariantsDto
   ): Promise<GeneratePromptVariantsResult> {
     const parent = this.promptLoader.findOne(parentId);
 
     if (parent.runnerType !== 'llm_prompt') {
       throw new BadRequestException(
-        'AI variant generation is only supported for llm_prompt candidates',
+        'AI variant generation is only supported for llm_prompt candidates'
       );
     }
 
@@ -95,8 +123,7 @@ export class PromptVariantGeneratorService {
       const uniqueLabel = this.ensureUniqueLabel(parentId, baseLabel, existingIds);
       const systemPrompt = (draft.systemPrompt || '').trim();
       const cleanName = draft.name?.replace(/\s+/g, ' ').trim() || undefined;
-      const cleanDescription =
-        draft.description?.replace(/\s+/g, ' ').trim() || undefined;
+      const cleanDescription = draft.description?.replace(/\s+/g, ' ').trim() || undefined;
 
       if (!systemPrompt) {
         skipped.push({
@@ -124,9 +151,7 @@ export class PromptVariantGeneratorService {
     }
 
     if (created.length === 0) {
-      throw new InternalServerErrorException(
-        'Variant generation returned no usable variants',
-      );
+      throw new InternalServerErrorException('Variant generation returned no usable variants');
     }
 
     return {
@@ -137,11 +162,7 @@ export class PromptVariantGeneratorService {
     };
   }
 
-  private ensureUniqueLabel(
-    parentId: string,
-    baseLabel: string,
-    existingIds: Set<string>,
-  ): string {
+  private ensureUniqueLabel(parentId: string, baseLabel: string, existingIds: Set<string>): string {
     let label = baseLabel;
     let suffix = 2;
     while (existingIds.has(this.promptLoader.buildVariantId(parentId, label))) {
@@ -154,7 +175,7 @@ export class PromptVariantGeneratorService {
   private buildGenerationPrompt(
     parent: LoadedPrompt,
     count: number,
-    customInstructions?: string,
+    customInstructions?: string
   ): string {
     return `You generate high-quality prompt variants for evaluation.
 

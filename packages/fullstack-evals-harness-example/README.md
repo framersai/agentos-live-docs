@@ -2,7 +2,11 @@
 
 A lightweight evaluation harness for testing LLM prompts against datasets with configurable graders. Define prompts as markdown files, load datasets from CSV, grade with YAML-configured graders, run experiments, and compare results.
 
-**Frontend**: http://localhost:3020 | **Backend**: http://localhost:3021 | **API Docs**: http://localhost:3021/api/docs
+| Service      | URL                              |
+| ------------ | -------------------------------- |
+| **Frontend** | `http://localhost:3020`          |
+| **Backend**  | `http://localhost:3021`          |
+| **API Docs** | `http://localhost:3021/api/docs` |
 
 ---
 
@@ -15,16 +19,13 @@ npm install && npm --prefix backend install && npm --prefix frontend install
 # Dev (both services, hot reload)
 npm run dev
 
+# Build
+npm run build-all              # backend + frontend
+npm --prefix backend run build # backend only
+npm --prefix frontend run build # frontend only
+
 # Production
 npm run build-all && npm run start-all
-```
-
-Or with PM2:
-
-```bash
-npm run build-all
-pm2 start dist/src/main.js --name evals-backend --cwd backend
-pm2 start "npx next start -p 3020" --name evals-frontend --cwd frontend
 ```
 
 ### Scripts
@@ -79,7 +80,7 @@ backend/prompts/
 | ----------------- | --------------------- | ------------------------------- | ------------------------- | --------------------------------------------- |
 | `qa-assistant/`   | Q&A Assistant         | —                               | context-qa                | faithfulness:0.4, similarity:0.3, helpful:0.3 |
 | `analyst/`        | Structured Analyst    | `citations`                     | context-qa                | faithfulness:0.6, helpful:0.4                 |
-| `json-extractor/` | Strict JSON Extractor | `loose`                         | research-paper-extraction | schema:0.4, completeness:0.4, faithful:0.2    |
+| `json-extractor/` | Strict JSON Extractor | `loose`                         | research-paper-extraction | completeness:0.5, faithfulness:0.5            |
 | `summarizer/`     | Summarizer            | `concise`, `bullets`, `verbose` | summarization             | helpful:0.4, similarity:0.3, faithful:0.3     |
 | `text-rewriter/`  | Text Rewriter         | `formal`, `casual`              | text-rewriting            | faithfulness:0.6, similarity:0.4              |
 
@@ -106,17 +107,24 @@ Template variables: `{{input}}`, `{{context}}`, `{{expected}}`, `{{metadata.fiel
 
 ### Graders
 
-YAML files in `backend/graders/`. Each grader scores output as pass/fail with a 0-1 score.
+YAML files in `backend/graders/`. Each grader scores LLM output as pass/fail with a 0–1 score. Multiple graders combine at the experiment level via weighted scoring.
 
-| Grader                  | Type                 | Engine    | Threshold |
-| ----------------------- | -------------------- | --------- | --------- |
-| Faithfulness            | context-faithfulness | promptfoo | 0.8       |
-| Helpfulness Judge       | llm-judge            | built-in  | —         |
-| Extraction Completeness | llm-judge            | built-in  | —         |
-| Paper Extraction Schema | json-schema          | built-in  | —         |
-| Semantic Similarity     | semantic-similarity  | built-in  | 0.8       |
+| Grader                      | Type                | Description                                                                                                                    | Config                                            |
+| --------------------------- | ------------------- | ------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------- |
+| **Faithfulness**            | Promptfoo           | Checks that response claims are grounded in provided context. Threshold adjustable (0.7 moderate, 0.85 balanced, 0.9+ strict). | threshold: 0.8, assertion: `context-faithfulness` |
+| **Helpfulness Judge**       | LLM Judge           | LLM evaluates if response is helpful and accurate.                                                                             | rubric                                            |
+| **Extraction Completeness** | LLM Judge           | LLM evaluates extraction quality, completeness, and grounding.                                                                 | rubric                                            |
+| **Semantic Similarity**     | Semantic Similarity | Measures how close the output meaning is to the expected answer. Threshold adjustable (0.7 moderate, 0.85 strict, 0.9+ exact). | threshold: 0.8                                    |
 
-Thresholds adjustable per grader in the UI. The `promptfoo` grader type also supports `answer-relevance`, `context-relevance`, `context-recall`, `llm-rubric`, and `similar`.
+**Faithfulness** — Decomposes output into atomic claims, verifies each against the provided context via NLI. Score = fraction of supported claims. Delegates to [promptfoo](https://promptfoo.dev)'s RAGAS implementation ([Es et al., 2023](https://arxiv.org/abs/2309.15217)) — multiple LLM calls per evaluation.
+
+**Helpfulness / Extraction Completeness** — LLM-as-Judge ([Zheng et al., 2023](https://arxiv.org/abs/2306.05685)). Sends input + output + rubric to the LLM at temperature 0.1, returns `{pass, score, reason}` JSON. Different rubrics — Helpfulness checks accuracy and clarity; Extraction Completeness checks completeness, accuracy, grounding, and JSON structure.
+
+**Semantic Similarity** — Embeds both texts via provider APIs (OpenAI `text-embedding-3-small`, Ollama), computes cosine similarity between vectors. Falls back to Jaccard + weighted token overlap when embeddings are unavailable.
+
+4 additional evaluation types are supported but have no seed graders (task-specific, create from the Graders tab): **exact-match**, **contains**, **regex**, **json-schema**.
+
+Thresholds and rubrics are editable in the UI. Create new graders from the Graders tab or drop YAML files in `backend/graders/`.
 
 ### Experiments
 
@@ -130,7 +138,7 @@ Select dataset + candidates + graders → Run. Results stream via SSE. Each cand
 
 ## API Reference
 
-See [API.md](API.md) for the full endpoint reference. Interactive docs available at `http://localhost:3021/api/docs` (Swagger).
+Full endpoint reference in [API.md](API.md). Interactive Swagger docs at [`localhost:3021/api/docs`](http://localhost:3021/api/docs).
 
 ---
 
@@ -177,3 +185,23 @@ cd backend
 npm test                                      # All tests
 npm test -- --testPathPattern=candidates       # Prompt loader + template utils
 ```
+
+---
+
+## Roadmap
+
+### First-Class RAG Testing
+
+Today you can evaluate RAG systems by including `context` in dataset rows and using the `context-faithfulness` grader. Candidates can also point to external RAG services via the `http_endpoint` runner type — each candidate hits a different endpoint, and the harness grades all responses against the same dataset. This means the harness works for both **prompt variation testing** (same LLM, different prompts) and **RAG pipeline comparison** (different retrieval backends, same graders).
+
+Planned: a `rag_prompt` runner with built-in retrieval config (method, topK, chunking, reranking), dataset-level source indexing (docs/URLs → chunks → vector store), and retrieval trace persistence in experiment results for debugging.
+
+Backend scaffolding exists in `backend/src/retrieval/` (interfaces + module stub).
+
+### Parallelization
+
+Experiments currently run sequentially — one test case × one candidate × one grader at a time. Since each step is an LLM API call (I/O-bound), parallelization is straightforward:
+
+1. **Concurrent promises** (planned first) — `Promise.all()` with a concurrency limiter (`p-limit`). Graders for the same output are independent and can run in parallel. Expected 5–10x speedup for typical experiments.
+2. **Batch API** — OpenAI and Anthropic offer bulk endpoints (submit many requests, get results asynchronously). 50% cost discount on OpenAI. Best for large offline runs (100+ test cases), not real-time.
+3. **Worker threads** — Only useful for in-process inference (ONNX, transformers.js). Does not help with external APIs or Ollama.
