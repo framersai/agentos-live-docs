@@ -23,12 +23,13 @@ import { SystemModule } from './modules/system/system.module.js';
 import { SettingsModule } from './modules/settings/settings.module.js';
 import { AgentOSModule } from './modules/agentos/agentos.module.js';
 import { WunderlandModule } from './modules/wunderland/wunderland.module.js';
+import { SupportModule } from './modules/support/support.module.js';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: ['.env', '../.env'],
+      envFilePath: ['../.env', '.env'],
     }),
     DatabaseModule,
     AuthModule,
@@ -43,6 +44,7 @@ import { WunderlandModule } from './modules/wunderland/wunderland.module.js';
     SettingsModule,
     AgentOSModule,
     WunderlandModule.register(),
+    SupportModule,
   ],
   providers: [
     {

@@ -358,6 +358,24 @@ const runInitialSchema = async (db: StorageAdapter): Promise<void> => {
     'CREATE INDEX IF NOT EXISTS idx_agentos_persona_submissions_persona ON agentos_persona_submissions(persona_id);'
   );
 
+  // ── Usage Daily Ledger (persists credit allocation usage across restarts) ──
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS usage_daily_ledger (
+      id TEXT PRIMARY KEY,
+      user_id TEXT NOT NULL,
+      date_key TEXT NOT NULL,
+      allocation_key TEXT NOT NULL,
+      llm_used_usd REAL NOT NULL DEFAULT 0,
+      speech_used_usd REAL NOT NULL DEFAULT 0,
+      request_count INTEGER NOT NULL DEFAULT 0,
+      last_updated_at INTEGER NOT NULL,
+      UNIQUE(user_id, date_key)
+    );
+  `);
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_usage_ledger_user_date ON usage_daily_ledger(user_id, date_key DESC);'
+  );
+
   // ── Wunderland Agent Social Network Tables ────────────────────────────
 
   // Governance proposals (must be created before wunderland_votes due to FK)
@@ -1060,6 +1078,76 @@ const runInitialSchema = async (db: StorageAdapter): Promise<void> => {
   console.log('[AppDatabase] Wunderland social autonomy tables initialized.');
 
   console.log('[AppDatabase] Wunderland tables initialized.');
+
+  // =========================================================================
+  // Support Ticket System
+  // =========================================================================
+
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS support_tickets (
+      id TEXT PRIMARY KEY,
+      user_id TEXT NOT NULL,
+      anonymous_id TEXT NOT NULL,
+      pii_shared INTEGER DEFAULT 0,
+      subject TEXT NOT NULL,
+      category TEXT NOT NULL,
+      priority TEXT DEFAULT 'normal',
+      status TEXT DEFAULT 'open',
+      description TEXT NOT NULL,
+      attachments TEXT,
+      user_email TEXT,
+      user_name TEXT,
+      user_plan TEXT,
+      assigned_to_email TEXT,
+      created_at INTEGER NOT NULL,
+      updated_at INTEGER,
+      resolved_at INTEGER,
+      closed_at INTEGER,
+      FOREIGN KEY (user_id) REFERENCES app_users(id) ON DELETE CASCADE
+    );
+  `);
+  await db.exec('CREATE INDEX IF NOT EXISTS idx_support_tickets_user ON support_tickets(user_id);');
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_support_tickets_status ON support_tickets(status);'
+  );
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_support_tickets_priority ON support_tickets(priority, created_at DESC);'
+  );
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_support_tickets_assigned ON support_tickets(assigned_to_email);'
+  );
+
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS support_ticket_comments (
+      id TEXT PRIMARY KEY,
+      ticket_id TEXT NOT NULL,
+      author_type TEXT NOT NULL,
+      author_id TEXT,
+      author_display TEXT,
+      content TEXT NOT NULL,
+      attachments TEXT,
+      created_at INTEGER NOT NULL,
+      FOREIGN KEY (ticket_id) REFERENCES support_tickets(id) ON DELETE CASCADE
+    );
+  `);
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_ticket_comments_ticket ON support_ticket_comments(ticket_id, created_at ASC);'
+  );
+
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS support_anonymous_ids (
+      id TEXT PRIMARY KEY,
+      user_id TEXT NOT NULL UNIQUE,
+      anonymous_id TEXT NOT NULL UNIQUE,
+      created_at INTEGER NOT NULL,
+      FOREIGN KEY (user_id) REFERENCES app_users(id) ON DELETE CASCADE
+    );
+  `);
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_anonymous_ids_user ON support_anonymous_ids(user_id);'
+  );
+
+  console.log('[AppDatabase] Support ticket tables initialized.');
 };
 
 const ensureColumnExists = async (

@@ -26,6 +26,10 @@ import {
   type AppUser,
 } from './user.repository.js';
 import { createSupabaseUserAccount, supabaseAuthEnabled } from './supabaseAuth.service.js';
+import { isVaAdmin as checkIsVaAdmin, loadVaAdminCsv } from './va-admin.service.js';
+
+// Ensure VA admin CSV is loaded on module initialization
+loadVaAdminCsv();
 
 const SALT_ROUNDS = 10;
 
@@ -234,17 +238,19 @@ export const createSessionForUser = (
   options?: { mode?: AuthModeType; tierOverride?: AuthTier; roleOverride?: AuthRole }
 ) => {
   const sessionUser = toSessionUserPayload(user, options);
+  const vaAdmin = checkIsVaAdmin(user.email);
   const token = issueToken({
     sub: user.id,
-    role: sessionUser.role,
+    role: vaAdmin ? 'va_admin' : sessionUser.role,
     tier: sessionUser.tier,
     mode: sessionUser.mode,
     type: 'session',
     email: user.email,
+    isVaAdmin: vaAdmin,
     subscriptionStatus: sessionUser.subscriptionStatus,
     subscription_status: sessionUser.subscriptionStatus,
   });
-  return { token, user: sessionUser };
+  return { token, user: { ...sessionUser, isVaAdmin: vaAdmin } };
 };
 
 export const registerAccount = async (data: {
