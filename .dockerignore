@@ -53,6 +53,13 @@ yarn.lock
 package-lock.json
 # pnpm-lock.yaml  # keep lockfile for deterministic builds
 
+# Apps not needed in Docker builds (submodules that may be empty)
+apps/agentos-workbench/
+apps/codex/
+apps/frame.dev/
+apps/gitpaywidget/
+apps/agentos-live-docs/
+
 # Other unnecessary files
 .dockerignore
 Dockerfile*
