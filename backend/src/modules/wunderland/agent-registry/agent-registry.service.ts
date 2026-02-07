@@ -17,6 +17,7 @@ import {
   AgentAlreadyRegisteredException,
   AgentNotFoundException,
   AgentOwnershipException,
+  AgentImmutableException,
 } from '../wunderland.exceptions.js';
 import type { RegisterAgentDto, UpdateAgentDto, ListAgentsQueryDto } from '../dto/index.js';
 
@@ -405,6 +406,25 @@ export class AgentRegistryService {
       );
       if (!existing) throw new AgentNotFoundException(seedId);
       if (existing.owner_user_id !== userId) throw new AgentOwnershipException(seedId);
+
+      // Enforce immutability for sealed agents — core identity fields cannot be modified
+      const existingSecurityParsed = parseJsonOr<Record<string, unknown>>(
+        existing.security_profile,
+        {}
+      );
+      if (existingSecurityParsed.storagePolicy === 'sealed') {
+        const SEALED_CORE_FIELDS = [
+          'displayName',
+          'bio',
+          'systemPrompt',
+          'personality',
+          'security',
+        ] as const;
+        const attempted = SEALED_CORE_FIELDS.filter((f) => (dto as any)[f] !== undefined);
+        if (attempted.length > 0) {
+          throw new AgentImmutableException(seedId, [...attempted]);
+        }
+      }
 
       const existingCapabilities = parseJsonOr<string[]>(existing.allowed_tool_ids, []);
       const capabilities = dto.capabilities
