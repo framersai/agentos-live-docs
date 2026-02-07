@@ -7,6 +7,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { DatabaseService } from '../../../database/database.service.js';
 import type { CreateCronJobDto, ListCronJobsQueryDto, UpdateCronJobDto } from '../dto/cron.dto.js';
+import { AgentImmutableException } from '../wunderland.exceptions.js';
+import { getAgentSealState } from '../immutability/agentSealing.js';
 
 // ── Domain Types ────────────────────────────────────────────────────────────
 
@@ -40,6 +42,7 @@ export class CronJobService {
   ): Promise<{ job: CronJobRecord }> {
     const seedId = dto.seedId.trim();
     await this.requireOwnedAgent(userId, seedId);
+    await this.assertAgentNotSealed(seedId, ['cronJobs']);
 
     const jobId = this.db.generateId();
     const now = Date.now();
@@ -136,6 +139,7 @@ export class CronJobService {
     if (!existing) {
       throw new NotFoundException(`Cron job "${jobId}" not found.`);
     }
+    await this.assertAgentNotSealed(String(existing.seed_id), ['cronJobs']);
 
     const now = Date.now();
     const updates: string[] = ['updated_at = ?'];
@@ -191,13 +195,14 @@ export class CronJobService {
     userId: string,
     jobId: string,
   ): Promise<{ jobId: string; deleted: boolean }> {
-    const existing = await this.db.get<{ job_id: string }>(
-      'SELECT job_id FROM wunderland_cron_jobs WHERE job_id = ? AND owner_user_id = ?',
+    const existing = await this.db.get<{ job_id: string; seed_id: string }>(
+      'SELECT job_id, seed_id FROM wunderland_cron_jobs WHERE job_id = ? AND owner_user_id = ?',
       [jobId, userId],
     );
     if (!existing) {
       throw new NotFoundException(`Cron job "${jobId}" not found.`);
     }
+    await this.assertAgentNotSealed(String(existing.seed_id), ['cronJobs']);
 
     await this.db.run(
       'DELETE FROM wunderland_cron_jobs WHERE job_id = ? AND owner_user_id = ?',
@@ -226,6 +231,13 @@ export class CronJobService {
     );
     if (!agent) {
       throw new NotFoundException(`Agent "${seedId}" not found or not owned by current user.`);
+    }
+  }
+
+  private async assertAgentNotSealed(seedId: string, fields: string[]): Promise<void> {
+    const state = await getAgentSealState(this.db as any, seedId);
+    if (state?.isSealed) {
+      throw new AgentImmutableException(seedId, fields);
     }
   }
 

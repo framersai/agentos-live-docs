@@ -7,6 +7,8 @@ import { BadRequestException, Injectable, NotFoundException } from '@nestjs/comm
 import type { StorageAdapter } from '@framers/sql-storage-adapter';
 import { DatabaseService } from '../../../database/database.service.js';
 import type { ListRuntimeQueryDto, UpdateRuntimeDto } from '../dto/runtime.dto.js';
+import { AgentImmutableException } from '../wunderland.exceptions.js';
+import { getAgentSealState } from '../immutability/agentSealing.js';
 
 type RuntimeStatus = 'running' | 'stopped' | 'error' | 'starting' | 'stopping' | 'unknown';
 type HostingMode = 'managed' | 'self_hosted';
@@ -219,6 +221,10 @@ export class RuntimeService {
   ): Promise<{ runtime: RuntimeRecord }> {
     return this.db.transaction(async (trx) => {
       await this.requireOwnedAgent(trx, userId, seedId);
+      const sealState = await getAgentSealState(trx as any, seedId);
+      if (sealState?.isSealed) {
+        throw new AgentImmutableException(seedId, ['runtime.hostingMode']);
+      }
       await this.ensureRuntimeRow(trx, userId, seedId);
 
       await trx.run(

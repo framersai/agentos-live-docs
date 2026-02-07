@@ -2,8 +2,8 @@
  * Tests for agent immutability enforcement (sealed storage policy).
  *
  * Verifies that the AgentRegistryService.updateAgent() method blocks
- * modifications to core identity fields when storagePolicy is 'sealed',
- * while still allowing mutable fields like capabilities and metadata.
+ * configuration mutations when storagePolicy is 'sealed' AND the agent has been sealed
+ * (sealed_at is set), while still allowing edits during initial setup (sealed_at is null).
  */
 
 import test, { describe } from 'node:test';
@@ -53,6 +53,7 @@ function sealedAgent(seedId: string, ownerId: string) {
     hexaco_traits: JSON.stringify({ honesty: 0.8, openness: 0.7 }),
     security_profile: JSON.stringify({ storagePolicy: 'sealed', preLlmClassifier: true }),
     allowed_tool_ids: JSON.stringify(['web-search']),
+    sealed_at: Date.now(),
     status: 'active',
     avatar_url: null,
     metadata: '{}',
@@ -65,6 +66,7 @@ function unsealedAgent(seedId: string, ownerId: string) {
   return {
     ...sealedAgent(seedId, ownerId),
     security_profile: JSON.stringify({ storagePolicy: 'encrypted', preLlmClassifier: true }),
+    sealed_at: null,
   };
 }
 
@@ -171,23 +173,18 @@ describe('Agent Immutability — sealed storage policy', () => {
     );
   });
 
-  test('allows capabilities update on sealed agent', async () => {
+  test('rejects capabilities update on sealed agent', async () => {
     const db = createMockDb([sealedAgent('agent-1', 'user-1')]);
     const service = new AgentRegistryService(db as any);
 
-    // capabilities are not in SEALED_CORE_FIELDS — should not throw AgentImmutableException.
-    // It may throw due to the mock DB not returning full data for mapAgentProfile,
-    // but it should NOT throw AgentImmutableException.
-    try {
-      await service.updateAgent('user-1', 'agent-1', { capabilities: ['web-search', 'giphy'] });
-      // If it succeeds, great
-    } catch (err: any) {
-      // Acceptable if it fails for reasons other than immutability
-      assert.ok(
-        !(err instanceof AgentImmutableException),
-        'capabilities should NOT trigger AgentImmutableException on sealed agent'
-      );
-    }
+    await assert.rejects(
+      () => service.updateAgent('user-1', 'agent-1', { capabilities: ['web-search', 'giphy'] }),
+      (err: any) => {
+        assert.ok(err instanceof AgentImmutableException);
+        assert.ok(err.message.includes('capabilities'));
+        return true;
+      }
+    );
   });
 
   test('allows all updates on unsealed (encrypted) agent', async () => {

@@ -16,6 +16,7 @@
  * | GET     | /wunderland/agents/me           | Required | List user-owned agents         |
  * | GET     | /wunderland/agents/:seedId      | Public   | Get agent profile              |
  * | PATCH   | /wunderland/agents/:seedId      | Required | Update agent config (owner)    |
+ * | POST    | /wunderland/agents/:seedId/seal | Required | Seal agent (make immutable)    |
  * | DELETE  | /wunderland/agents/:seedId      | Required | Archive agent (owner)          |
  * | GET     | /wunderland/agents/:seedId/verify | Public | Verify provenance chain        |
  * | POST    | /wunderland/agents/:seedId/anchor | Required | Trigger manual anchor        |
@@ -141,6 +142,22 @@ export class AgentRegistryController {
   ) {
     this.assertPaidAccess(user);
     return this.agentRegistryService.updateAgent(userId, seedId, body);
+  }
+
+  /**
+   * Seal an agent after initial configuration setup.
+   *
+   * Once sealed, configuration mutations are blocked by the backend (except explicit secret rotation).
+   */
+  @UseGuards(AuthGuard)
+  @Post(':seedId/seal')
+  async sealAgent(
+    @CurrentUser() user: any,
+    @CurrentUser('id') userId: string,
+    @Param('seedId') seedId: string
+  ) {
+    this.assertPaidAccess(user);
+    return this.agentRegistryService.sealAgent(userId, seedId);
   }
 
   /**

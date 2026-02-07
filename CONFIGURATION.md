@@ -218,6 +218,7 @@ For more operational notes and deployment tips, review [`PRODUCTION_SETUP.md`](P
 | `AGENTOS_PERSONA_PATH`                   | Optional override to load persona definitions from a custom directory.                                |
 | `PERSONA_DEFINITIONS_PATH`               | Path used by the voice UI stack to discover persona JSON files (defaults to `./backend/agentos/...`). |
 | `AGENTOS_PROVENANCE_ENABLED`             | Enable provenance/audit hooks for AgentOS persistence (`true`/`false`). Requires persistence.         |
+| `AGENTOS_PROVENANCE_PROFILE`             | Provenance preset: `mutable-dev` (default), `revisioned-verified`, `sealed-autonomous`, `sealed-auditable`. |
 | `AGENTOS_PROVENANCE_AGENT_ID`            | Signing identity for provenance events (default: `voice-chat-assistant`).                             |
 | `AGENTOS_PROVENANCE_TABLE_PREFIX`        | Prefix for provenance tables (default: `agentos_`).                                                   |
 | `AGENTOS_PROVENANCE_SIGNATURE_MODE`      | `every-event` (default) or `anchor-only`.                                                             |

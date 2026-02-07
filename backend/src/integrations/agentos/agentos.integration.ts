@@ -872,6 +872,16 @@ async function buildEmbeddedAgentOSConfig(): Promise<EmbeddedAgentOSConfigBuildR
       provenanceAgentId,
       provenanceTablePrefix
     );
+
+    // Sealed provenance implies append-only conversation persistence.
+    // Without this, ConversationManager will attempt UPDATE/UPSERT patterns which sealed mode forbids.
+    if (provenanceConfig.storagePolicy.mode === 'sealed') {
+      conversationManagerConfig.appendOnlyPersistence = true;
+      toolOrchestratorConfig.toolRegistrySettings = {
+        ...(toolOrchestratorConfig.toolRegistrySettings ?? {}),
+        allowDynamicRegistration: false,
+      };
+    }
   }
 
   // Build curated manifest with channels + tools via registry bundle.

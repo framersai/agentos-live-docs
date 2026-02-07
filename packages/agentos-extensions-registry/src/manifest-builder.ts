@@ -108,6 +108,16 @@ const TOOL_CATALOG: ExtensionInfo[] = [
     defaultPriority: 30,
     available: false,
   },
+  {
+    packageName: '@framers/agentos-ext-skills',
+    name: 'skills',
+    category: 'tool',
+    displayName: 'Skills Registry',
+    description: 'Discover and enable curated SKILL.md prompt modules.',
+    requiredSecrets: [],
+    defaultPriority: 15,
+    available: false,
+  },
 
   // ── Voice Providers ──
   {

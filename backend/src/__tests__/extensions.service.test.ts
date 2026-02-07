@@ -32,8 +32,8 @@ test('listExtensions includes curated Web Search extension', async () => {
 test('listAvailableTools derives tools from registry entries', async () => {
   const tools = await listAvailableTools();
   assert.ok(Array.isArray(tools));
-  // The curated web-search extension declares "webSearch"
-  const tool = tools.find((t) => t.id === 'webSearch');
-  assert.ok(tool, 'Expected to find webSearch tool');
+  // The curated web-search extension declares "web_search"
+  const tool = tools.find((t) => t.id === 'web_search');
+  assert.ok(tool, 'Expected to find web_search tool');
   assert.equal(tool?.extension, '@framers/agentos-ext-web-search');
 });

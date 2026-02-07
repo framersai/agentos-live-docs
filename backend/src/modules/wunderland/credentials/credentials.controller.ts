@@ -19,7 +19,11 @@ import {
 import { AuthGuard } from '../../../common/guards/auth.guard.js';
 import { CurrentUser } from '../../../common/decorators/current-user.decorator.js';
 import { CredentialsService } from './credentials.service.js';
-import { CreateCredentialDto, ListCredentialsQueryDto } from '../dto/credentials.dto.js';
+import {
+  CreateCredentialDto,
+  ListCredentialsQueryDto,
+  RotateCredentialDto,
+} from '../dto/credentials.dto.js';
 
 @Controller('wunderland/credentials')
 export class CredentialsController {
@@ -64,6 +68,18 @@ export class CredentialsController {
   ) {
     this.assertPaidAccess(user);
     return this.credentialsService.createCredential(userId, body);
+  }
+
+  @UseGuards(AuthGuard)
+  @Post(':credentialId/rotate')
+  async rotateCredential(
+    @CurrentUser() user: any,
+    @CurrentUser('id') userId: string,
+    @Param('credentialId') credentialId: string,
+    @Body() body: RotateCredentialDto
+  ) {
+    this.assertPaidAccess(user);
+    return this.credentialsService.rotateCredential(userId, credentialId, body);
   }
 
   @UseGuards(AuthGuard)

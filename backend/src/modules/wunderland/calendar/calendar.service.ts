@@ -7,6 +7,8 @@
 
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { DatabaseService } from '../../../database/database.service.js';
+import { AgentImmutableException } from '../wunderland.exceptions.js';
+import { getAgentSealState } from '../immutability/agentSealing.js';
 
 // ── Constants ────────────────────────────────────────────────────────────────
 
@@ -34,6 +36,7 @@ export class CalendarService {
     seedId: string,
   ): Promise<{ url: string }> {
     await this.requireOwnedAgent(userId, seedId);
+    await this.assertSealedAllowsRotation(userId, seedId);
 
     const { clientId } = this.getGoogleCredentials();
     const redirectUri = `${this.getBaseUrl()}/wunderland/calendar/callback`;
@@ -62,6 +65,7 @@ export class CalendarService {
     }
 
     await this.requireOwnedAgent(userId, seedId);
+    await this.assertSealedAllowsRotation(userId, seedId);
 
     const { clientId, clientSecret } = this.getGoogleCredentials();
     const redirectUri = `${this.getBaseUrl()}/wunderland/calendar/callback`;
@@ -166,6 +170,10 @@ export class CalendarService {
     seedId: string,
   ): Promise<{ revoked: boolean }> {
     await this.requireOwnedAgent(userId, seedId);
+    const sealState = await getAgentSealState(this.db as any, seedId);
+    if (sealState?.isSealed) {
+      throw new AgentImmutableException(seedId, ['calendarOAuth.revoke']);
+    }
 
     // Attempt to revoke the token at Google (best-effort)
     const tokenRow = await this.db.get<{ encrypted_value: string }>(
@@ -212,6 +220,26 @@ export class CalendarService {
     );
     if (!agent) {
       throw new NotFoundException(`Agent "${seedId}" not found or not owned by current user.`);
+    }
+  }
+
+  private async assertSealedAllowsRotation(userId: string, seedId: string): Promise<void> {
+    const sealState = await getAgentSealState(this.db as any, seedId);
+    if (!sealState?.isSealed) return;
+
+    // In sealed mode, calendar OAuth flows are allowed only if the agent already has
+    // calendar credentials (treat as re-auth / key rotation), not as a new integration.
+    const existing = await this.db.get<{ credential_id: string }>(
+      `SELECT credential_id
+         FROM wunderland_agent_credentials
+        WHERE owner_user_id = ?
+          AND seed_id = ?
+          AND credential_type = ?
+        LIMIT 1`,
+      [userId, seedId, CREDENTIAL_TYPE],
+    );
+    if (!existing) {
+      throw new AgentImmutableException(seedId, ['calendarOAuth']);
     }
   }
 

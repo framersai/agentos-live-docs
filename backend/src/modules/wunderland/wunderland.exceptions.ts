@@ -86,11 +86,11 @@ export class InvalidTipException extends BadRequestException {
   }
 }
 
-/** Thrown when attempting to modify core identity fields on a sealed (immutable) agent. */
+/** Thrown when attempting to modify a sealed (immutable) agent after sealing. */
 export class AgentImmutableException extends ForbiddenException {
   constructor(seedId: string, fields: string[]) {
     super(
-      `Agent "${seedId}" has sealed storage policy. Core identity fields cannot be modified: ${fields.join(', ')}.`
+      `Agent "${seedId}" has sealed storage policy. This mutation is not permitted: ${fields.join(', ')}.`
     );
   }
 }

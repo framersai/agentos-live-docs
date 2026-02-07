@@ -140,12 +140,18 @@ External messaging channel support is now available end-to-end:
 
 ### Agent immutability (Phase 2.5 — implemented)
 
-Agents now default to **sealed storage policy** (immutable core identity):
+Agents support an explicit **seal** step: configure first, then make immutable.
 
-- **Registration**: `storagePolicy` defaults to `'sealed'`; review step shows immutability warning; post-registration redirects to dashboard.
-- **Backend enforcement**: `AgentImmutableException` thrown when PATCH attempts to modify `displayName`, `bio`, `systemPrompt`, `personality`, or `security` on a sealed agent. Capabilities, channel bindings, credentials, and runtime remain fully mutable.
-- **UI indicators**: `badge--gold` "Immutable" badge on sealed agents in dashboard header.
-- **Tests**: 11 immutability tests + 12 channel ownership tests in `backend/src/__tests__/`.
+- **Registration**: `security.storagePolicy` defaults to `'sealed'`, but immutability is only enforced **after sealing** (when `wunderland_agents.sealed_at` is set).
+- **Seal endpoint**: `POST /api/wunderland/agents/:seedId/seal` sets `sealed_at` and locks configuration.
+- **Backend enforcement** (after sealing): `AgentImmutableException` is thrown for any attempted configuration mutation:
+  - Agent profile fields (`displayName`, `bio`, `systemPrompt`, `personality`, `security`, `capabilities`)
+  - Channel bindings CRUD
+  - Cron job CRUD
+  - Runtime hosting mode changes
+  - Credential create/delete
+- **Allowed after sealing**: credential value rotation (no spec changes) and operational runtime controls (start/stop).
+- **Tests**: `backend/src/__tests__/agent-immutability.test.ts` covers sealed update blocking.
 
 ### Extension ecosystem (Phase 4)
 

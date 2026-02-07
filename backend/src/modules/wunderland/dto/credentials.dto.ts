@@ -30,3 +30,9 @@ export class CreateCredentialDto {
   @MaxLength(4096)
   value!: string;
 }
+
+export class RotateCredentialDto {
+  @IsString()
+  @MaxLength(4096)
+  value!: string;
+}

@@ -11,6 +11,8 @@ import type {
   ListChannelBindingsQueryDto,
   ListChannelSessionsQueryDto,
 } from '../dto/channels.dto.js';
+import { AgentImmutableException } from '../wunderland.exceptions.js';
+import { getAgentSealState } from '../immutability/agentSealing.js';
 
 // ── Domain Types ──
 
@@ -96,6 +98,7 @@ export class ChannelsService {
 
     // Verify agent ownership
     await this.requireOwnedAgent(userId, seedId);
+    await this.assertAgentNotSealed(seedId, ['channelBindings']);
 
     // Check for duplicate binding
     const existing = await this.db.get<any>(
@@ -161,6 +164,7 @@ export class ChannelsService {
     if (!existing) {
       throw new NotFoundException(`Channel binding "${bindingId}" not found.`);
     }
+    await this.assertAgentNotSealed(String(existing.seed_id), ['channelBindings']);
 
     const updates: string[] = [];
     const params: Array<string | number | null> = [];
@@ -215,6 +219,7 @@ export class ChannelsService {
     if (!existing) {
       throw new NotFoundException(`Channel binding "${bindingId}" not found.`);
     }
+    await this.assertAgentNotSealed(String(existing.seed_id), ['channelBindings']);
 
     await this.db.run(`DELETE FROM wunderland_channel_bindings WHERE binding_id = ?`, [bindingId]);
 
@@ -333,6 +338,13 @@ export class ChannelsService {
     );
     if (!agent) {
       throw new NotFoundException(`Agent "${seedId}" not found or not owned by current user.`);
+    }
+  }
+
+  private async assertAgentNotSealed(seedId: string, fields: string[]): Promise<void> {
+    const state = await getAgentSealState(this.db as any, seedId);
+    if (state?.isSealed) {
+      throw new AgentImmutableException(seedId, fields);
     }
   }
 

@@ -7,7 +7,13 @@ import { createCipheriv, createDecipheriv, createHash, randomBytes } from 'node:
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { DatabaseService } from '../../../database/database.service.js';
 import { appConfig } from '../../../config/appConfig.js';
-import type { CreateCredentialDto, ListCredentialsQueryDto } from '../dto/credentials.dto.js';
+import type {
+  CreateCredentialDto,
+  ListCredentialsQueryDto,
+  RotateCredentialDto,
+} from '../dto/credentials.dto.js';
+import { AgentImmutableException } from '../wunderland.exceptions.js';
+import { getAgentSealState } from '../immutability/agentSealing.js';
 
 type CredentialRecord = {
   credentialId: string;
@@ -198,6 +204,7 @@ export class CredentialsService {
   ): Promise<{ credential: CredentialRecord }> {
     const seedId = dto.seedId.trim();
     await this.assertOwnedAgent(userId, seedId);
+    await this.assertAgentNotSealed(seedId, ['credentials']);
 
     const type = dto.type.trim();
     const label = dto.label?.trim() || type;
@@ -260,13 +267,17 @@ export class CredentialsService {
     return { credential: this.mapCredential(row) };
   }
 
-  async deleteCredential(
+  async rotateCredential(
     userId: string,
-    credentialId: string
-  ): Promise<{ credentialId: string; deleted: boolean }> {
-    const existing = await this.db.get<{ credential_id: string }>(
+    credentialId: string,
+    dto: RotateCredentialDto
+  ): Promise<{ credential: CredentialRecord }> {
+    const now = Date.now();
+    const value = dto.value.trim();
+
+    const existing = await this.db.get<any>(
       `
-        SELECT credential_id
+        SELECT credential_id, seed_id, owner_user_id
           FROM wunderland_agent_credentials
          WHERE credential_id = ?
            AND owner_user_id = ?
@@ -278,11 +289,79 @@ export class CredentialsService {
       throw new NotFoundException(`Credential "${credentialId}" not found.`);
     }
 
+    const seedId = String(existing.seed_id);
+    await this.assertOwnedAgent(userId, seedId);
+
+    await this.db.run(
+      `
+        UPDATE wunderland_agent_credentials
+           SET encrypted_value = ?,
+               masked_value = ?,
+               updated_at = ?
+         WHERE credential_id = ?
+           AND owner_user_id = ?
+      `,
+      [this.encryptSecret(value), this.maskSecret(value), now, credentialId, userId]
+    );
+
+    const row = await this.db.get<any>(
+      `
+        SELECT
+          credential_id,
+          seed_id,
+          owner_user_id,
+          credential_type,
+          label,
+          masked_value,
+          last_used_at,
+          created_at,
+          updated_at
+        FROM wunderland_agent_credentials
+        WHERE credential_id = ?
+          AND owner_user_id = ?
+        LIMIT 1
+      `,
+      [credentialId, userId]
+    );
+
+    if (!row) {
+      throw new NotFoundException('Credential could not be rotated.');
+    }
+
+    return { credential: this.mapCredential(row) };
+  }
+
+  async deleteCredential(
+    userId: string,
+    credentialId: string
+  ): Promise<{ credentialId: string; deleted: boolean }> {
+    const existing = await this.db.get<{ credential_id: string; seed_id: string }>(
+      `
+        SELECT credential_id, seed_id
+          FROM wunderland_agent_credentials
+         WHERE credential_id = ?
+           AND owner_user_id = ?
+         LIMIT 1
+      `,
+      [credentialId, userId]
+    );
+    if (!existing) {
+      throw new NotFoundException(`Credential "${credentialId}" not found.`);
+    }
+    await this.assertAgentNotSealed(String(existing.seed_id), ['credentials']);
+
     await this.db.run(
       'DELETE FROM wunderland_agent_credentials WHERE credential_id = ? AND owner_user_id = ?',
       [credentialId, userId]
     );
 
     return { credentialId, deleted: true };
+  }
+
+  private async assertAgentNotSealed(seedId: string, fields: string[]): Promise<void> {
+    const state = await getAgentSealState(this.db as any, seedId);
+    if (state?.isSealed) {
+      throw new AgentImmutableException(seedId, fields);
+    }
   }
 }
