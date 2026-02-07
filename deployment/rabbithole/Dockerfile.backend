@@ -38,12 +38,14 @@ RUN pnpm --filter @framers/shared build \
  && pnpm --filter @framers/agentos-ext-image-search build \
  && pnpm --filter @framers/agentos-ext-voice-synthesis build \
  && pnpm --filter @framers/agentos-ext-news-search build \
+ && pnpm --filter @framers/agentos-ext-skills build \
  && pnpm --filter wunderland build \
  && pnpm --filter @wunderland-sol/sdk build \
  && pnpm --filter voice-chat-assistant-backend build
 
 # Create a minimal, deployable folder for runtime.
-RUN pnpm --filter voice-chat-assistant-backend deploy --legacy --prod /out
+# --no-optional: skip unpublished workspace-only packages (e.g. @framers/agentos-skills)
+RUN pnpm --filter voice-chat-assistant-backend deploy --legacy --prod --no-optional /out
 
 # -----------------------------------------------------------------------------
 
