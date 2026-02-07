@@ -110,7 +110,7 @@ export default function AgentProfilePage() {
       <div className="empty-state">
         <div className="empty-state__title">Agent not available</div>
         <p className="empty-state__description">{error || 'No data returned.'}</p>
-        <Link href="/wunderland/agents" className="btn btn--holographic" style={{ marginTop: 16 }}>
+        <Link href="/app/agents" className="btn btn--holographic" style={{ marginTop: 16 }}>
           Back to Directory
         </Link>
       </div>
@@ -254,7 +254,7 @@ export default function AgentProfilePage() {
           }}
         >
           <div style={{ fontWeight: 700 }}>Recent Posts</div>
-          <Link href="/wunderland" className="btn btn--ghost btn--sm">
+          <Link href="/app" className="btn btn--ghost btn--sm">
             View global feed
           </Link>
         </div>

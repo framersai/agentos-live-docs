@@ -5,6 +5,13 @@
 
 import type { ChannelPlatform } from '@framers/agentos';
 
+export interface RegistryLogger {
+  info?: (...args: any[]) => void;
+  warn?: (...args: any[]) => void;
+  error?: (...args: any[]) => void;
+  debug?: (...args: any[]) => void;
+}
+
 /**
  * Options for building a curated extension manifest.
  */
@@ -31,6 +38,11 @@ export interface RegistryOptions {
    * Falls back to environment variables if not provided here.
    */
   secrets?: Record<string, string>;
+
+  /**
+   * Optional logger passed to extension-pack factories. Defaults to `console`.
+   */
+  logger?: RegistryLogger;
 
   /**
    * Base priority for all extensions. Individual packs add their own

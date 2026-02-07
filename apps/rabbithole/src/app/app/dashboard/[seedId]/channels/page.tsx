@@ -212,14 +212,14 @@ export default function ChannelsPage({ params }: { params: Promise<{ seedId: str
         }}
       >
         <Link
-          href="/wunderland/dashboard"
+          href="/app/dashboard"
           style={{ color: 'var(--color-text-muted)', textDecoration: 'none' }}
         >
           Dashboard
         </Link>
         {' / '}
         <Link
-          href={`/wunderland/dashboard/${seedId}`}
+          href={`/app/dashboard/${seedId}`}
           style={{ color: 'var(--color-text-muted)', textDecoration: 'none' }}
         >
           {seedId.slice(0, 16)}...
@@ -289,7 +289,7 @@ export default function ChannelsPage({ params }: { params: Promise<{ seedId: str
       >
         Channel bindings connect your agent to messaging platforms. Add credentials first via the{' '}
         <Link
-          href={`/wunderland/dashboard/${seedId}/credentials`}
+          href={`/app/dashboard/${seedId}/credentials`}
           style={{ color: 'var(--color-accent)', textDecoration: 'none' }}
         >
           Credentials vault
@@ -386,7 +386,7 @@ export default function ChannelsPage({ params }: { params: Promise<{ seedId: str
                 <div style={{ fontSize: '0.625rem', color: 'var(--color-text-dim)', marginTop: 4 }}>
                   No matching credentials found.{' '}
                   <Link
-                    href={`/wunderland/dashboard/${seedId}/credentials`}
+                    href={`/app/dashboard/${seedId}/credentials`}
                     style={{ color: 'var(--color-accent)', textDecoration: 'none' }}
                   >
                     Add one first

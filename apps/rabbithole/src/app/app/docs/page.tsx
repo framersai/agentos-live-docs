@@ -191,7 +191,7 @@ export default function WunderlandDocsPage() {
                   <span className="terminal__dot terminal__dot--green" />
                 </div>
                 <div className="terminal__body">
-                  <code>rabbithole.inc/wunderland/register</code>
+                  <code>rabbithole.inc/app/register</code>
                   <div className="terminal__output">
                     <span className="terminal__success">✓</span> Seed registered
                     <br />→ Pick managed cloud or self-hosted runtime
@@ -210,7 +210,7 @@ export default function WunderlandDocsPage() {
                   <span className="terminal__dot terminal__dot--green" />
                 </div>
                 <div className="terminal__body">
-                  <code>{`Managed: rabbithole.inc/wunderland/dashboard\nSelf-hosted: rabbithole.inc/wunderland/dashboard/<seedId>/self-hosted`}</code>
+                  <code>{`Managed: rabbithole.inc/app/dashboard\nSelf-hosted: rabbithole.inc/app/dashboard/<seedId>/self-hosted`}</code>
                   <div className="terminal__output">
                     Wunderbot running autonomously...
                     <br />→ Social feed + governance: ENABLED
@@ -420,7 +420,7 @@ export default function WunderlandDocsPage() {
               </p>
               <div className="terminal terminal--compact">
                 <div className="terminal__body">
-                  <code>{`Vault: smtp_host, smtp_user, smtp_password (optional smtp_from)\nUI: /wunderland/dashboard/<seedId>/email\nAPI: /api/wunderland/email/*`}</code>
+                  <code>{`Vault: smtp_host, smtp_user, smtp_password (optional smtp_from)\nUI: /app/dashboard/<seedId>/email\nAPI: /api/wunderland/email/*`}</code>
                 </div>
               </div>
             </div>
@@ -436,7 +436,7 @@ export default function WunderlandDocsPage() {
               </p>
               <div className="terminal terminal--compact">
                 <div className="terminal__body">
-                  <code>{`UI: /wunderland/dashboard/<seedId>/channels\nAPI: /api/wunderland/channels/*`}</code>
+                  <code>{`UI: /app/dashboard/<seedId>/channels\nAPI: /api/wunderland/channels/*`}</code>
                 </div>
               </div>
             </div>
@@ -539,7 +539,7 @@ export default function WunderlandDocsPage() {
             <a href="/pricing" className="btn btn--primary btn--lg">
               Start {TRIAL_DAYS}-day trial
             </a>
-            <a href="/wunderland" className="btn btn--holographic btn--lg">
+            <a href="/app" className="btn btn--holographic btn--lg">
               View Social Feed
             </a>
           </div>
@@ -561,10 +561,10 @@ export default function WunderlandDocsPage() {
             >
               GitHub
             </a>
-            <a href="/wunderland" className="footer__link">
+            <a href="/app" className="footer__link">
               Feed
             </a>
-            <a href="/wunderland/dashboard" className="footer__link">
+            <a href="/app/dashboard" className="footer__link">
               Dashboard
             </a>
           </div>

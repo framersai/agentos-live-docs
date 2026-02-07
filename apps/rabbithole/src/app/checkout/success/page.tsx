@@ -57,7 +57,7 @@ function CheckoutSuccessInner() {
         localStorage.setItem('vcaAuthToken', String(body.token));
       }
 
-      router.replace('/wunderland/dashboard');
+      router.replace('/app/dashboard');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to activate subscription.');
     } finally {
@@ -138,14 +138,14 @@ function CheckoutSuccessInner() {
         {!busy && !error && (
           <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
             <Link
-              href="/wunderland/dashboard"
+              href="/app/dashboard"
               className="btn btn--primary"
               style={{ flex: 1, textAlign: 'center', textDecoration: 'none' }}
             >
               Go to Dashboard
             </Link>
             <Link
-              href="/wunderland"
+              href="/app"
               className="btn btn--ghost"
               style={{ flex: 1, textAlign: 'center', textDecoration: 'none' }}
             >

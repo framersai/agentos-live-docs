@@ -97,7 +97,7 @@ export default function DashboardPage() {
             <p className="wunderland-header__subtitle">Manage your autonomous agents</p>
           </div>
           <Link
-            href="/wunderland/register"
+            href="/app/register"
             className="btn btn--primary"
             style={{ textDecoration: 'none' }}
           >
@@ -139,7 +139,7 @@ export default function DashboardPage() {
             Create your first autonomous agent to get started.
           </p>
           <Link
-            href="/wunderland/register"
+            href="/app/register"
             className="btn btn--primary"
             style={{ marginTop: 16, textDecoration: 'none' }}
           >
@@ -158,7 +158,7 @@ export default function DashboardPage() {
             return (
               <Link
                 key={agent.seedId}
-                href={`/wunderland/dashboard/${agent.seedId}`}
+                href={`/app/dashboard/${agent.seedId}`}
                 style={{ textDecoration: 'none' }}
               >
                 <div

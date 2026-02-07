@@ -10,7 +10,7 @@
  */
 
 import type { ExtensionManifest, ExtensionPackManifestEntry } from '@framers/agentos';
-import type { RegistryOptions, ExtensionInfo } from './types.js';
+import type { RegistryOptions, ExtensionInfo, RegistryLogger } from './types.js';
 import { CHANNEL_CATALOG, getChannelEntries } from './channel-registry.js';
 
 /**
@@ -177,6 +177,8 @@ export async function getAvailableChannels(): Promise<ExtensionInfo[]> {
  */
 export async function createCuratedManifest(options?: RegistryOptions): Promise<ExtensionManifest> {
   const basePriority = options?.basePriority ?? 0;
+  const secrets = options?.secrets;
+  const logger: RegistryLogger | undefined = options?.logger ?? console;
   const packs: ExtensionPackManifestEntry[] = [];
 
   // ── Tool Extensions ──
@@ -203,8 +205,10 @@ export async function createCuratedManifest(options?: RegistryOptions): Promise<
         factory({
           options: {
             ...override?.options,
-            secrets: options?.secrets,
+            secrets,
           },
+          getSecret: (secretId: string) => secrets?.[secretId],
+          logger,
         }),
       priority: override?.priority ?? basePriority + entry.defaultPriority,
       enabled: true,
@@ -230,8 +234,10 @@ export async function createCuratedManifest(options?: RegistryOptions): Promise<
         factory({
           options: {
             ...override?.options,
-            secrets: options?.secrets,
+            secrets,
           },
+          getSecret: (secretId: string) => secrets?.[secretId],
+          logger,
         }),
       priority: override?.priority ?? basePriority + entry.defaultPriority,
       enabled: true,

@@ -124,14 +124,14 @@ export default function CredentialsPage({ params }: { params: Promise<{ seedId: 
         }}
       >
         <Link
-          href="/wunderland/dashboard"
+          href="/app/dashboard"
           style={{ color: 'var(--color-text-muted)', textDecoration: 'none' }}
         >
           Dashboard
         </Link>
         {' / '}
         <Link
-          href={`/wunderland/dashboard/${seedId}`}
+          href={`/app/dashboard/${seedId}`}
           style={{ color: 'var(--color-text-muted)', textDecoration: 'none' }}
         >
           {seedId.slice(0, 16)}...

@@ -161,7 +161,7 @@ export class EmailService {
 	            </ol>
 	          </div>
           <div style="text-align:center; margin-bottom:16px;">
-            ${ctaButton('Explore Wunderland', 'https://rabbithole.inc/wunderland')}
+            ${ctaButton('Explore Wunderland', 'https://rabbithole.inc/app')}
           </div>
           <p style="margin:0; color:#9090a0; font-size:13px; text-align:center;">
             Or <a href="https://rabbithole.inc/pricing" style="color:#c9a227; text-decoration:none;">view pricing plans</a> to get started.
@@ -189,7 +189,7 @@ Welcome to Rabbit Hole — the platform where AI agents and humans collaborate. 
 	3. Configure your agent's personality and integrations
 	4. Deploy and watch it collaborate on the Wunderland network
 
-Explore Wunderland: https://rabbithole.inc/wunderland
+Explore Wunderland: https://rabbithole.inc/app
 View pricing: https://rabbithole.inc/pricing
 
 Need help? ${SUPPORT_EMAIL}
@@ -245,10 +245,10 @@ Need help? ${SUPPORT_EMAIL}
             <p style="margin:0; color:#1a1625; font-size:28px; font-weight:700; font-family:'Cormorant Garamond',Georgia,serif;">${planName}</p>
           </div>
           <div style="text-align:center; margin-bottom:16px;">
-            ${ctaButton('Go to Dashboard', 'https://rabbithole.inc/wunderland/dashboard')}
+            ${ctaButton('Go to Dashboard', 'https://rabbithole.inc/app/dashboard')}
           </div>
           <p style="margin:0; color:#9090a0; font-size:13px; text-align:center;">
-            Manage your subscription from your <a href="https://rabbithole.inc/wunderland" style="color:#c9a227; text-decoration:none;">Wunderland sidebar</a>.
+            Manage your subscription from your <a href="https://rabbithole.inc/app" style="color:#c9a227; text-decoration:none;">Wunderland sidebar</a>.
           </p>
         </td>
       </tr>
@@ -268,9 +268,9 @@ RABBIT HOLE — TRIAL STARTED
 	Your subscription is set to cancel automatically before billing begins, so you won't be charged unless you explicitly continue.
 	To keep your agents running after the trial ends, re-enable renewal in the customer portal.
 
-Go to Dashboard: https://rabbithole.inc/wunderland/dashboard
+Go to Dashboard: https://rabbithole.inc/app/dashboard
 
-Manage your subscription: https://rabbithole.inc/wunderland
+Manage your subscription: https://rabbithole.inc/app
 
 Need help? ${SUPPORT_EMAIL}
 

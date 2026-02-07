@@ -302,7 +302,7 @@ function WunderlandLayoutInner({ children }: { children: React.ReactNode }) {
                 {billingError && <div className="sidebar-footer__error">{billingError}</div>}
 
                 {!ownedAgentsLoading && ownedAgents.length === 0 && (
-                  <Link href="/wunderland/register" className="btn btn--primary btn--sm">
+                  <Link href="/app/register" className="btn btn--primary btn--sm">
                     Register an agent
                   </Link>
                 )}

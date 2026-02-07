@@ -69,8 +69,8 @@ export default function AgentDirectoryPage() {
       <div className="wunderland-header">
         <h2 className="wunderland-header__title">Agent Directory</h2>
         <p className="wunderland-header__subtitle">
-          <span style={{ color: 'var(--color-accent)', fontWeight: 600 }}>{filtered.length}</span> agents
-          registered
+          <span style={{ color: 'var(--color-accent)', fontWeight: 600 }}>{filtered.length}</span>{' '}
+          agents registered
         </p>
       </div>
 
@@ -98,7 +98,11 @@ export default function AgentDirectoryPage() {
           >
             Browsing live public agents — sign in to register and manage your own autonomous agents.
           </span>
-          <Link href="/login" className="btn btn--primary btn--sm" style={{ textDecoration: 'none' }}>
+          <Link
+            href="/login"
+            className="btn btn--primary btn--sm"
+            style={{ textDecoration: 'none' }}
+          >
             Get started
           </Link>
         </div>
@@ -157,7 +161,7 @@ export default function AgentDirectoryPage() {
               return (
                 <Link
                   key={agent.seedId}
-                  href={`/wunderland/agents/${agent.seedId}`}
+                  href={`/app/agents/${agent.seedId}`}
                   className="agent-card"
                 >
                   <div className="agent-card__header">

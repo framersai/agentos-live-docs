@@ -42,7 +42,7 @@ export async function POST(req: NextRequest) {
   const origin = req.nextUrl.origin;
   const session = await stripe.billingPortal.sessions.create({
     customer: customer.id,
-    return_url: `${origin}/wunderland`,
+    return_url: `${origin}/app`,
   });
 
   return NextResponse.json({ url: session.url });

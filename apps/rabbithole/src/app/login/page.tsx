@@ -28,7 +28,7 @@ function LoginForm() {
   const searchParams = useSearchParams();
   const oauthNext = (() => {
     const next = searchParams.get('next');
-    return next && next.startsWith('/') ? next : '/wunderland';
+    return next && next.startsWith('/') ? next : '/app';
   })();
   const oauthCallbackUrl = `/auth/complete?next=${encodeURIComponent(oauthNext)}`;
   const handleOAuth = (provider: 'google' | 'github') => {
@@ -72,7 +72,7 @@ function LoginForm() {
       }
 
       const next = searchParams.get('next');
-      const target = next && next.startsWith('/') ? next : '/wunderland';
+      const target = next && next.startsWith('/') ? next : '/app';
       router.push(target);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Authentication failed');
@@ -309,11 +309,7 @@ function LoginForm() {
         </p>
 
         <div style={{ textAlign: 'center', marginTop: '1.5rem' }}>
-          <Link
-            href="/wunderland"
-            className="text-label"
-            style={{ color: 'var(--color-text-muted)' }}
-          >
+          <Link href="/app" className="text-label" style={{ color: 'var(--color-text-muted)' }}>
             Continue without signing in →
           </Link>
         </div>

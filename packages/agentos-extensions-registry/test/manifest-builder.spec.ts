@@ -2,7 +2,7 @@
  * Unit tests for createCuratedManifest and registry helpers.
  */
 
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { createCuratedManifest, getAvailableExtensions, getAvailableChannels } from '../src/index';
 
 describe('createCuratedManifest', () => {
@@ -18,16 +18,24 @@ describe('createCuratedManifest', () => {
   });
 
   it('should attempt to load all channels when channels="all"', async () => {
-    // In test environment, no optional deps are installed, so packs will be empty
     const manifest = await createCuratedManifest({ channels: 'all', tools: 'none' });
-    // tryImport fails for all → packs = []
-    expect(manifest.packs).toEqual([]);
+    // If any channel packs are available, they should all be channel-* identifiers.
+    expect(
+      manifest.packs.every((p) => String(p.identifier || '').startsWith('registry:channel-'))
+    ).toBe(true);
   });
 
   it('should attempt to load all tools when tools="all"', async () => {
     const manifest = await createCuratedManifest({ channels: 'none', tools: 'all' });
-    // tryImport fails for all → packs = []
-    expect(manifest.packs).toEqual([]);
+    const ids = manifest.packs.map((p) => p.identifier).filter(Boolean);
+    expect(ids.length).toBeGreaterThan(0);
+    expect(ids).toContain('registry:web-search');
+    expect(ids).toContain('registry:web-browser');
+    expect(ids).toContain('registry:cli-executor');
+    expect(ids).toContain('registry:giphy');
+    expect(ids).toContain('registry:image-search');
+    expect(ids).toContain('registry:voice-synthesis');
+    expect(ids).toContain('registry:news-search');
   });
 
   it('should filter channels by platform name', async () => {
@@ -35,40 +43,64 @@ describe('createCuratedManifest', () => {
       channels: ['telegram', 'discord'],
       tools: 'none',
     });
-    // Even though packages aren't installed, the filter should work
-    expect(manifest.packs).toEqual([]);
+    const allowed = new Set(['registry:channel-telegram', 'registry:channel-discord']);
+    expect(manifest.packs.every((p) => allowed.has(String(p.identifier)))).toBe(true);
   });
 
   it('should apply priority overrides', async () => {
     const manifest = await createCuratedManifest({
-      channels: ['telegram'],
-      tools: 'none',
-      overrides: { 'channel-telegram': { priority: 999 } },
+      channels: 'none',
+      tools: ['web-search'],
+      overrides: { 'web-search': { priority: 999 } },
     });
-    // Package not available, but override would be applied if it were
-    expect(manifest.packs).toEqual([]);
+    expect(manifest.packs).toHaveLength(1);
+    expect(manifest.packs[0]?.identifier).toBe('registry:web-search');
+    expect(manifest.packs[0]?.priority).toBe(999);
   });
 
   it('should skip disabled extensions via overrides', async () => {
     const manifest = await createCuratedManifest({
-      channels: 'all',
+      channels: 'none',
       tools: 'all',
       overrides: {
-        'channel-telegram': { enabled: false },
-        auth: { enabled: false },
+        'web-search': { enabled: false },
+        'cli-executor': { enabled: false },
       },
     });
-    expect(manifest.packs).toEqual([]);
+    const ids = manifest.packs.map((p) => p.identifier).filter(Boolean);
+    expect(ids).not.toContain('registry:web-search');
+    expect(ids).not.toContain('registry:cli-executor');
+    expect(ids.length).toBeGreaterThan(0);
   });
 
   it('should pass secrets to extension factories', async () => {
     const manifest = await createCuratedManifest({
-      channels: ['telegram'],
-      tools: 'none',
-      secrets: { 'telegram.botToken': 'test-token-123' },
+      channels: 'none',
+      tools: ['web-search'],
+      secrets: { 'serper.apiKey': 'test-serper-key' },
     });
-    // Can't test factory call since package not installed, but structure is correct
-    expect(manifest).toHaveProperty('packs');
+    expect(manifest.packs).toHaveLength(1);
+
+    const pack = await manifest.packs[0]!.factory();
+    const webSearch = pack.descriptors.find((d: any) => d.kind === 'tool' && d.id === 'web_search')
+      ?.payload as any;
+    expect(webSearch?.name).toBe('web_search');
+
+    const fetchSpy = vi.fn(async () => ({ ok: true, json: async () => ({ organic: [] }) }));
+    // @ts-expect-error - test shim
+    globalThis.fetch = fetchSpy;
+
+    await webSearch.execute(
+      { query: 'hello', maxResults: 1 },
+      { gmiId: 'test-gmi', personaId: 'test-persona', userContext: { userId: 'test-user' } }
+    );
+
+    expect(fetchSpy).toHaveBeenCalledWith(
+      'https://google.serper.dev/search',
+      expect.objectContaining({
+        headers: expect.objectContaining({ 'X-API-KEY': 'test-serper-key' }),
+      })
+    );
   });
 
   it('should handle basePriority offset', async () => {

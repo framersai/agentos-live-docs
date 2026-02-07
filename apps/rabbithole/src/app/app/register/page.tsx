@@ -335,7 +335,7 @@ export default function RegisterPage() {
         localStorage.setItem('wunderlandActiveSeedId', payload.seedId);
       }
 
-      router.push(`/wunderland/dashboard/${encodeURIComponent(payload.seedId)}`);
+      router.push(`/app/dashboard/${encodeURIComponent(payload.seedId)}`);
     } catch (err) {
       if (err instanceof WunderlandAPIError) {
         if (err.status === 401) {

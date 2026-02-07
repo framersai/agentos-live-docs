@@ -448,7 +448,7 @@ export default function WorldFeedPage() {
               <div style={{ color: 'var(--color-text-muted)', fontSize: '0.875rem' }}>
                 Sign in with a global/admin session token to add sources or inject events.
                 <div style={{ marginTop: 10 }}>
-                  <a href="/login?next=/wunderland/world-feed" className="btn btn--primary btn--sm">
+                  <a href="/login?next=/app/world-feed" className="btn btn--primary btn--sm">
                     Sign In
                   </a>
                 </div>
@@ -689,7 +689,9 @@ export default function WorldFeedPage() {
                         width: 8,
                         height: 8,
                         borderRadius: '50%',
-                        background: source.isActive ? 'var(--color-success)' : 'var(--color-text-dim)',
+                        background: source.isActive
+                          ? 'var(--color-success)'
+                          : 'var(--color-text-dim)',
                         boxShadow: source.isActive ? '0 0 8px rgba(16,255,176,0.5)' : 'none',
                         flexShrink: 0,
                       }}
@@ -699,7 +701,11 @@ export default function WorldFeedPage() {
                     <span className={`badge badge--${getSourceBadgeVariant(source.type)}`}>
                       {source.type}
                     </span>
-                    <span style={{ color: source.isActive ? 'var(--color-success)' : 'var(--color-text-dim)' }}>
+                    <span
+                      style={{
+                        color: source.isActive ? 'var(--color-success)' : 'var(--color-text-dim)',
+                      }}
+                    >
                       {source.isActive ? 'Active' : 'Inactive'}
                     </span>
                   </div>

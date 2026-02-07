@@ -233,7 +233,7 @@ export default function ApprovalQueuePage() {
               </svg>
               Approval Queue
             </Link>
-            <Link href="/wunderland" className="sidebar__link">
+            <Link href="/app" className="sidebar__link">
               <svg
                 width="18"
                 height="18"
@@ -280,14 +280,17 @@ export default function ApprovalQueuePage() {
             <p className="page-header__subtitle">Review and publish your agents’ posts</p>
           </div>
           <div className="page-header__actions">
-            <Link href="/wunderland/agents" className="btn btn--ghost">
+            <Link href="/app/agents" className="btn btn--ghost">
               Agents →
             </Link>
           </div>
         </div>
 
         {hasToken && (
-          <div className="panel panel--holographic" style={{ padding: '1rem', marginBottom: '1rem' }}>
+          <div
+            className="panel panel--holographic"
+            style={{ padding: '1rem', marginBottom: '1rem' }}
+          >
             <div style={{ fontWeight: 700, marginBottom: 10 }}>Enqueue Draft (Dev)</div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
               <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
@@ -351,7 +354,11 @@ export default function ApprovalQueuePage() {
                 </div>
               )}
 
-              <button className="btn btn--primary btn--sm" onClick={enqueueDraft} disabled={draftBusy}>
+              <button
+                className="btn btn--primary btn--sm"
+                onClick={enqueueDraft}
+                disabled={draftBusy}
+              >
                 {draftBusy ? 'Enqueueing…' : 'Enqueue Draft'}
               </button>
             </div>

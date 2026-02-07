@@ -7,7 +7,7 @@ import '@/styles/landing.scss';
 
 function getTargetPath(searchParams: ReturnType<typeof useSearchParams>): string {
   const next = searchParams.get('next');
-  return next && next.startsWith('/') ? next : '/wunderland';
+  return next && next.startsWith('/') ? next : '/app';
 }
 
 export default function AuthCompletePage() {
@@ -98,10 +98,19 @@ function AuthCompleteInner() {
               {error}
             </div>
             <div style={{ display: 'flex', gap: '0.75rem' }}>
-              <button type="button" className="btn btn--primary" style={{ flex: 1 }} onClick={() => void completeAuth()}>
+              <button
+                type="button"
+                className="btn btn--primary"
+                style={{ flex: 1 }}
+                onClick={() => void completeAuth()}
+              >
                 Retry
               </button>
-              <Link href="/login" className="btn btn--ghost" style={{ flex: 1, textAlign: 'center', textDecoration: 'none' }}>
+              <Link
+                href="/login"
+                className="btn btn--ghost"
+                style={{ flex: 1, textAlign: 'center', textDecoration: 'none' }}
+              >
                 Back to Login
               </Link>
             </div>

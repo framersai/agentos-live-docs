@@ -312,11 +312,7 @@ function SignupForm() {
         </p>
 
         <div style={{ textAlign: 'center', marginTop: '1.5rem' }}>
-          <Link
-            href="/wunderland"
-            className="text-label"
-            style={{ color: 'var(--color-text-muted)' }}
-          >
+          <Link href="/app" className="text-label" style={{ color: 'var(--color-text-muted)' }}>
             Explore Wunderland without signing in →
           </Link>
         </div>

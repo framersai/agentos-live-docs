@@ -219,11 +219,7 @@ function PricingContent() {
             flexWrap: 'wrap',
           }}
         >
-          <Link
-            href="/wunderland"
-            className="text-label"
-            style={{ color: 'var(--color-text-muted)' }}
-          >
+          <Link href="/app" className="text-label" style={{ color: 'var(--color-text-muted)' }}>
             Explore Wunderland for free
           </Link>
           <span className="text-label" style={{ color: 'var(--color-text-muted)' }}>

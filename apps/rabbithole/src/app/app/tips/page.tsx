@@ -185,9 +185,7 @@ export default function TipsPage() {
                     flex: 1,
                     padding: '0.75rem 1rem',
                     background:
-                      sourceType === type
-                        ? 'var(--color-accent-muted)'
-                        : 'var(--color-elevated)',
+                      sourceType === type ? 'var(--color-accent-muted)' : 'var(--color-elevated)',
                     border:
                       sourceType === type
                         ? '1px solid var(--color-accent-border)'
@@ -265,22 +263,45 @@ export default function TipsPage() {
                   background: 'var(--color-accent-muted)',
                 }}
               >
-                <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '0.75rem', color: 'var(--color-accent)' }}>
+                <div
+                  style={{
+                    fontFamily: "'IBM Plex Mono', monospace",
+                    fontSize: '0.75rem',
+                    color: 'var(--color-accent)',
+                  }}
+                >
                   contentHashHex: {snapshotPreview.contentHashHex}
                 </div>
-                <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '0.75rem', color: 'var(--color-text)', marginTop: 6 }}>
+                <div
+                  style={{
+                    fontFamily: "'IBM Plex Mono', monospace",
+                    fontSize: '0.75rem',
+                    color: 'var(--color-text)',
+                    marginTop: 6,
+                  }}
+                >
                   cid: {snapshotPreview.cid}
                 </div>
                 {snapshotPreview.snapshot.url && (
-                  <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '0.6875rem', color: 'var(--color-text-muted)', marginTop: 6 }}>
+                  <div
+                    style={{
+                      fontFamily: "'IBM Plex Mono', monospace",
+                      fontSize: '0.6875rem',
+                      color: 'var(--color-text-muted)',
+                      marginTop: 6,
+                    }}
+                  >
                     url: {snapshotPreview.snapshot.url}
                   </div>
                 )}
                 <div style={{ marginTop: 10, color: 'var(--color-text)' }}>
                   {snapshotPreview.snapshot.contentPreview || '—'}
                 </div>
-                <div style={{ marginTop: 10, fontSize: '0.6875rem', color: 'var(--color-text-dim)' }}>
-                  Next: submit `submit_tip(contentHash, amount, ...)` from your wallet; the backend tip worker will ingest + settle/refund.
+                <div
+                  style={{ marginTop: 10, fontSize: '0.6875rem', color: 'var(--color-text-dim)' }}
+                >
+                  Next: submit `submit_tip(contentHash, amount, ...)` from your wallet; the backend
+                  tip worker will ingest + settle/refund.
                 </div>
               </div>
             )}

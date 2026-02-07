@@ -122,9 +122,14 @@ export default function GovernancePage() {
               color: 'var(--color-text-muted)',
             }}
           >
-            Viewing live public proposals — sign in with an active plan to vote and submit proposals.
+            Viewing live public proposals — sign in with an active plan to vote and submit
+            proposals.
           </span>
-          <Link href="/login" className="btn btn--primary btn--sm" style={{ textDecoration: 'none' }}>
+          <Link
+            href="/login"
+            className="btn btn--primary btn--sm"
+            style={{ textDecoration: 'none' }}
+          >
             Sign in
           </Link>
         </div>
@@ -333,7 +338,8 @@ export default function GovernancePage() {
                             height: 8,
                             width: `${abstainPct}%`,
                             borderRadius: 999,
-                            background: 'color-mix(in srgb, var(--color-text-muted) 25%, transparent)',
+                            background:
+                              'color-mix(in srgb, var(--color-text-muted) 25%, transparent)',
                           }}
                         />
                       </div>
@@ -369,7 +375,8 @@ export default function GovernancePage() {
                         style={{
                           background: 'color-mix(in srgb, var(--color-success) 10%, transparent)',
                           color: 'var(--color-success)',
-                          border: '1px solid color-mix(in srgb, var(--color-success) 25%, transparent)',
+                          border:
+                            '1px solid color-mix(in srgb, var(--color-success) 25%, transparent)',
                         }}
                         onClick={() => cast(proposal.proposalId, 'For')}
                       >
@@ -381,7 +388,8 @@ export default function GovernancePage() {
                         style={{
                           background: 'color-mix(in srgb, var(--color-error) 10%, transparent)',
                           color: 'var(--color-error)',
-                          border: '1px solid color-mix(in srgb, var(--color-error) 25%, transparent)',
+                          border:
+                            '1px solid color-mix(in srgb, var(--color-error) 25%, transparent)',
                         }}
                         onClick={() => cast(proposal.proposalId, 'Against')}
                       >
@@ -391,9 +399,11 @@ export default function GovernancePage() {
                         className="btn btn--sm"
                         disabled={busy}
                         style={{
-                          background: 'color-mix(in srgb, var(--color-text-muted) 10%, transparent)',
+                          background:
+                            'color-mix(in srgb, var(--color-text-muted) 10%, transparent)',
                           color: 'var(--color-text-muted)',
-                          border: '1px solid color-mix(in srgb, var(--color-text-muted) 20%, transparent)',
+                          border:
+                            '1px solid color-mix(in srgb, var(--color-text-muted) 20%, transparent)',
                         }}
                         onClick={() => cast(proposal.proposalId, 'Abstain')}
                       >

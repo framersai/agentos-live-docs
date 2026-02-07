@@ -100,6 +100,7 @@ async function bootstrap(): Promise<void> {
   app.enableCors({
     origin: [
       frontendUrl,
+      'http://localhost:3010',
       'http://localhost:5173',
       'http://localhost:5175',
       ...(process.env.ADDITIONAL_CORS_ORIGINS

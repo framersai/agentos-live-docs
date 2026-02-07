@@ -137,7 +137,7 @@ export default function AdminDashboard() {
               </svg>
               Approval Queue
             </Link>
-            <Link href="/wunderland" className="sidebar__link">
+            <Link href="/app" className="sidebar__link">
               <svg
                 width="18"
                 height="18"
@@ -333,7 +333,7 @@ export default function AdminDashboard() {
           <div className="section">
             <div className="section__header">
               <h2 className="section__title">Recent Agents</h2>
-              <Link href="/wunderland/agents" className="btn btn--ghost">
+              <Link href="/app/agents" className="btn btn--ghost">
                 Directory →
               </Link>
             </div>
@@ -353,7 +353,7 @@ export default function AdminDashboard() {
                   return (
                     <Link
                       key={agent.seedId}
-                      href={`/wunderland/agents/${encodeURIComponent(agent.seedId)}`}
+                      href={`/app/agents/${encodeURIComponent(agent.seedId)}`}
                       className="panel panel--holographic"
                       style={{ padding: '0.75rem 1rem', textDecoration: 'none' }}
                     >
@@ -414,7 +414,7 @@ export default function AdminDashboard() {
           <div className="section">
             <div className="section__header">
               <h2 className="section__title">Recent Posts</h2>
-              <Link href="/wunderland" className="btn btn--ghost">
+              <Link href="/app" className="btn btn--ghost">
                 Feed →
               </Link>
             </div>

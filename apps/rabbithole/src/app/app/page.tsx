@@ -175,7 +175,11 @@ export default function SocialFeedPage() {
           >
             Viewing public live feed — sign in to engage with posts and run your own agents.
           </span>
-          <Link href="/login" className="btn btn--primary btn--sm" style={{ textDecoration: 'none' }}>
+          <Link
+            href="/login"
+            className="btn btn--primary btn--sm"
+            style={{ textDecoration: 'none' }}
+          >
             Sign in
           </Link>
         </div>
@@ -521,7 +525,9 @@ function PostCard({
         const onChainManifest = bytesToHex(bytes.slice(manifestOffset, manifestOffset + 32));
 
         if (cancelled) return;
-        setChainStatus(onChainContent === contentHashHex && onChainManifest === manifestHashHex ? 'ok' : 'fail');
+        setChainStatus(
+          onChainContent === contentHashHex && onChainManifest === manifestHashHex ? 'ok' : 'fail'
+        );
       } catch {
         if (!cancelled) setChainStatus('missing');
       }
@@ -555,7 +561,9 @@ function PostCard({
     chainProofsEnabled && post.proof?.solana?.postPda
       ? `Post PDA: ${post.proof.solana.postPda}`
       : null,
-    chainProofsEnabled && post.proof?.solana?.txSignature ? `Tx: ${post.proof.solana.txSignature}` : null,
+    chainProofsEnabled && post.proof?.solana?.txSignature
+      ? `Tx: ${post.proof.solana.txSignature}`
+      : null,
     chainProofsEnabled && post.proof?.anchorError ? `Error: ${post.proof.anchorError}` : null,
     !chainProofsEnabled ? 'Blockchain proof checks disabled for this deployment.' : null,
     `Local hash: ${hashStatus}`,
@@ -567,7 +575,7 @@ function PostCard({
     <article className="post-card">
       <div className="post-card__header">
         {/* Avatar */}
-        <Link href={`/wunderland/agents/${post.seedId}`}>
+        <Link href={`/app/agents/${post.seedId}`}>
           <div
             className="post-card__avatar"
             style={{
@@ -582,7 +590,7 @@ function PostCard({
 
         <div className="post-card__meta">
           <div className="post-card__author">
-            <Link href={`/wunderland/agents/${post.seedId}`} className="post-card__name">
+            <Link href={`/app/agents/${post.seedId}`} className="post-card__name">
               {agentName}
             </Link>
             <span
@@ -617,22 +625,22 @@ function PostCard({
             {chainProofsEnabled &&
               post.proof?.anchorStatus === 'anchored' &&
               post.proof?.solana?.txSignature && (
-              <span className="post-card__proof-icon" title="On-chain anchored (Solana)">
-                <svg
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="M10 13a5 5 0 007 0l3-3a5 5 0 00-7-7l-1.5 1.5" />
-                  <path d="M14 11a5 5 0 00-7 0l-3 3a5 5 0 007 7L12.5 20.5" />
-                </svg>
-              </span>
-            )}
+                <span className="post-card__proof-icon" title="On-chain anchored (Solana)">
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M10 13a5 5 0 007 0l3-3a5 5 0 00-7-7l-1.5 1.5" />
+                    <path d="M14 11a5 5 0 00-7 0l-3 3a5 5 0 007 7L12.5 20.5" />
+                  </svg>
+                </span>
+              )}
           </div>
           <div style={{ marginTop: 4 }}>
             <span className={`level-badge level-badge--${level}`}>
@@ -649,17 +657,52 @@ function PostCard({
       </div>
 
       <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginTop: 10 }} title={proofTitle}>
-        {chainProofsEnabled && <span className={`badge ${anchorBadge.cls}`}>{anchorBadge.label}</span>}
-        <span className={`badge ${hashStatus === 'ok' ? 'badge--emerald' : hashStatus === 'fail' ? 'badge--coral' : 'badge--neutral'}`}>
-          Hash {hashStatus === 'ok' ? '✓' : hashStatus === 'loading' ? '…' : hashStatus === 'missing' ? '—' : hashStatus === 'fail' ? '✕' : ''}
+        {chainProofsEnabled && (
+          <span className={`badge ${anchorBadge.cls}`}>{anchorBadge.label}</span>
+        )}
+        <span
+          className={`badge ${hashStatus === 'ok' ? 'badge--emerald' : hashStatus === 'fail' ? 'badge--coral' : 'badge--neutral'}`}
+        >
+          Hash{' '}
+          {hashStatus === 'ok'
+            ? '✓'
+            : hashStatus === 'loading'
+              ? '…'
+              : hashStatus === 'missing'
+                ? '—'
+                : hashStatus === 'fail'
+                  ? '✕'
+                  : ''}
         </span>
         {chainProofsEnabled && verificationMode === 'trustless' && (
           <>
-            <span className={`badge ${ipfsStatus === 'ok' ? 'badge--emerald' : ipfsStatus === 'fail' ? 'badge--coral' : 'badge--neutral'}`}>
-              IPFS {ipfsStatus === 'ok' ? '✓' : ipfsStatus === 'loading' ? '…' : ipfsStatus === 'missing' ? '—' : ipfsStatus === 'fail' ? '✕' : ''}
+            <span
+              className={`badge ${ipfsStatus === 'ok' ? 'badge--emerald' : ipfsStatus === 'fail' ? 'badge--coral' : 'badge--neutral'}`}
+            >
+              IPFS{' '}
+              {ipfsStatus === 'ok'
+                ? '✓'
+                : ipfsStatus === 'loading'
+                  ? '…'
+                  : ipfsStatus === 'missing'
+                    ? '—'
+                    : ipfsStatus === 'fail'
+                      ? '✕'
+                      : ''}
             </span>
-            <span className={`badge ${chainStatus === 'ok' ? 'badge--emerald' : chainStatus === 'fail' ? 'badge--coral' : 'badge--neutral'}`}>
-              Solana {chainStatus === 'ok' ? '✓' : chainStatus === 'loading' ? '…' : chainStatus === 'missing' ? '—' : chainStatus === 'fail' ? '✕' : ''}
+            <span
+              className={`badge ${chainStatus === 'ok' ? 'badge--emerald' : chainStatus === 'fail' ? 'badge--coral' : 'badge--neutral'}`}
+            >
+              Solana{' '}
+              {chainStatus === 'ok'
+                ? '✓'
+                : chainStatus === 'loading'
+                  ? '…'
+                  : chainStatus === 'missing'
+                    ? '—'
+                    : chainStatus === 'fail'
+                      ? '✕'
+                      : ''}
             </span>
           </>
         )}

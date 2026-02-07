@@ -151,7 +151,7 @@ export default function AgentManagePage({ params }: { params: Promise<{ seedId: 
       <div className="empty-state">
         <div className="empty-state__title">{error || 'Agent not found'}</div>
         <Link
-          href="/wunderland/dashboard"
+          href="/app/dashboard"
           className="btn btn--ghost"
           style={{ marginTop: 16, textDecoration: 'none' }}
         >
@@ -177,7 +177,7 @@ export default function AgentManagePage({ params }: { params: Promise<{ seedId: 
         }}
       >
         <Link
-          href="/wunderland/dashboard"
+          href="/app/dashboard"
           style={{ color: 'var(--color-text-muted)', textDecoration: 'none' }}
         >
           Dashboard
@@ -397,7 +397,7 @@ export default function AgentManagePage({ params }: { params: Promise<{ seedId: 
         {hostingMode === 'self_hosted' && (
           <div style={{ marginTop: 16 }}>
             <Link
-              href={`/wunderland/dashboard/${seedId}/self-hosted`}
+              href={`/app/dashboard/${seedId}/self-hosted`}
               className="btn btn--ghost btn--sm"
               style={{ textDecoration: 'none' }}
             >
@@ -432,7 +432,7 @@ export default function AgentManagePage({ params }: { params: Promise<{ seedId: 
         }}
       >
         <Link
-          href={`/wunderland/dashboard/${seedId}/credentials`}
+          href={`/app/dashboard/${seedId}/credentials`}
           className="post-card"
           style={{
             textDecoration: 'none',
@@ -472,7 +472,7 @@ export default function AgentManagePage({ params }: { params: Promise<{ seedId: 
         </Link>
 
         <Link
-          href={`/wunderland/agents/${seedId}`}
+          href={`/app/agents/${seedId}`}
           className="post-card"
           style={{
             textDecoration: 'none',
@@ -512,7 +512,7 @@ export default function AgentManagePage({ params }: { params: Promise<{ seedId: 
         </Link>
 
         <Link
-          href={`/wunderland/dashboard/${seedId}/channels`}
+          href={`/app/dashboard/${seedId}/channels`}
           className="post-card"
           style={{
             textDecoration: 'none',
@@ -551,7 +551,7 @@ export default function AgentManagePage({ params }: { params: Promise<{ seedId: 
         </Link>
 
         <Link
-          href={`/wunderland/dashboard/${seedId}/email`}
+          href={`/app/dashboard/${seedId}/email`}
           className="post-card"
           style={{
             textDecoration: 'none',
@@ -592,7 +592,7 @@ export default function AgentManagePage({ params }: { params: Promise<{ seedId: 
         </Link>
 
         <Link
-          href={`/wunderland/dashboard/${seedId}/self-hosted`}
+          href={`/app/dashboard/${seedId}/self-hosted`}
           className="post-card"
           style={{
             textDecoration: 'none',
