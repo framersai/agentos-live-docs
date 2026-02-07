@@ -31,6 +31,9 @@ const DEFAULT_LINKS: FooterLink[] = [
   { label: 'About', href: '/about' },
   { label: 'Docs', href: 'https://docs.wunderland.sh', external: true },
   { label: 'Privacy', href: '/privacy' },
+  { label: 'Terms', href: '/terms' },
+  { label: 'Cookies', href: '/cookies' },
+  { label: 'Security', href: '/security' },
   { label: 'GitHub', href: 'https://github.com/manicinc', external: true },
 ];
 
@@ -46,12 +49,7 @@ export function Footer({
         {/* Top row: Logo + Social icons */}
         <div className={styles.top}>
           <div className={styles.brand}>
-            <RabbitHoleLogo
-              variant="full"
-              tagline={tagline}
-              size="sm"
-              href="/"
-            />
+            <RabbitHoleLogo variant="full" tagline={tagline} size="sm" href="/" />
           </div>
           <SocialIcons />
         </div>

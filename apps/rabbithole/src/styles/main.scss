@@ -1263,4 +1263,353 @@ html.light {
     .about-links__desc {
         color: rgba(26, 26, 46, 0.4);
     }
+
+    .cookie-banner {
+        background: #ffffff;
+        border-top: 1px solid rgba(0, 0, 0, 0.08);
+        box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.06);
+
+        &__title {
+            color: #1a1a2e;
+        }
+
+        &__text,
+        &__category-desc {
+            color: rgba(26, 26, 46, 0.6);
+        }
+
+        &__link {
+            color: $rh-gold-dark;
+        }
+
+        &__category {
+            border-color: rgba(0, 0, 0, 0.06);
+        }
+
+        &__category-name {
+            color: #2a2a3e;
+        }
+
+        &__toggle--locked {
+            color: rgba(26, 26, 46, 0.4);
+        }
+
+        &__slider {
+            background: #d0d0d8;
+        }
+
+        &__switch input:checked + &__slider {
+            background: $rh-gold;
+        }
+    }
+}
+
+// ============================================================================
+// COOKIE CONSENT BANNER
+// ============================================================================
+
+.cookie-banner {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 9999;
+    background: $void-elevated;
+    border-top: 1px solid rgba($holo-cyan, 0.08);
+    box-shadow: 0 -4px 32px rgba(0, 0, 0, 0.4);
+    animation: cookieSlideUp 0.4s ease-out;
+
+    &__inner {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: $sp-6 $sp-8;
+
+        @media (max-width: 640px) {
+            padding: $sp-4;
+        }
+    }
+
+    &__content {
+        margin-bottom: $sp-4;
+    }
+
+    &__title {
+        font-family: $font-display;
+        font-size: 1.125rem;
+        font-weight: 600;
+        color: $text-bright;
+        margin-bottom: $sp-2;
+    }
+
+    &__text {
+        font-family: $font-body;
+        font-size: 0.875rem;
+        color: $text-muted;
+        line-height: 1.6;
+    }
+
+    &__link {
+        color: $holo-cyan;
+        text-decoration: underline;
+        text-underline-offset: 2px;
+
+        &:hover {
+            color: $holo-gold;
+        }
+    }
+
+    &__actions {
+        display: flex;
+        align-items: center;
+        gap: $sp-3;
+        flex-wrap: wrap;
+    }
+
+    // --- Customise / detail view ---
+    &__category {
+        padding: $sp-3 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+
+        &:last-of-type {
+            border-bottom: none;
+        }
+    }
+
+    &__category-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: $sp-1;
+    }
+
+    &__category-name {
+        font-family: $font-body;
+        font-weight: 600;
+        font-size: 0.875rem;
+        color: $text-bright;
+    }
+
+    &__category-desc {
+        font-size: 0.8125rem;
+        color: $text-dim;
+        line-height: 1.5;
+    }
+
+    &__toggle--locked {
+        font-family: $font-mono;
+        font-size: 0.75rem;
+        color: $text-dim;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    // Toggle switch
+    &__switch {
+        position: relative;
+        display: inline-block;
+        width: 40px;
+        height: 22px;
+        cursor: pointer;
+
+        input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+    }
+
+    &__slider {
+        position: absolute;
+        inset: 0;
+        background: $void-hover;
+        border-radius: 11px;
+        transition: background 0.2s ease;
+
+        &::before {
+            content: '';
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            left: 3px;
+            bottom: 3px;
+            background: #fff;
+            border-radius: 50%;
+            transition: transform 0.2s ease;
+        }
+    }
+
+    &__switch input:checked + &__slider {
+        background: $holo-cyan;
+
+        &::before {
+            transform: translateX(18px);
+        }
+    }
+}
+
+@keyframes cookieSlideUp {
+    from {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+// Small button variant
+.btn--sm {
+    padding: 0.4rem 1rem;
+    font-size: 0.8125rem;
+}
+
+// ============================================================================
+// LEGAL PAGE STYLES
+// ============================================================================
+
+.legal-content {
+    max-width: 800px;
+    padding-top: $sp-12;
+    padding-bottom: $sp-16;
+
+    &__title {
+        font-family: $font-display;
+        font-size: clamp(2rem, 5vw, 3rem);
+        font-weight: 700;
+        color: $text-pure;
+        margin-bottom: $sp-2;
+    }
+
+    &__updated {
+        font-family: $font-mono;
+        font-size: 0.8125rem;
+        color: $text-dim;
+        margin-bottom: $sp-10;
+    }
+
+    h2 {
+        font-family: $font-display;
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: $text-bright;
+        margin-top: $sp-10;
+        margin-bottom: $sp-4;
+    }
+
+    h3 {
+        font-family: $font-display;
+        font-size: 1.125rem;
+        font-weight: 600;
+        color: $text-bright;
+        margin-top: $sp-6;
+        margin-bottom: $sp-3;
+    }
+
+    p {
+        font-family: $font-body;
+        font-size: 0.9375rem;
+        color: $text-muted;
+        line-height: 1.8;
+        margin-bottom: $sp-4;
+    }
+
+    ul, ol {
+        font-family: $font-body;
+        font-size: 0.9375rem;
+        color: $text-muted;
+        line-height: 1.8;
+        margin-bottom: $sp-4;
+        padding-left: $sp-6;
+    }
+
+    li {
+        margin-bottom: $sp-2;
+    }
+
+    a {
+        color: $holo-cyan;
+        text-decoration: underline;
+        text-underline-offset: 2px;
+
+        &:hover {
+            color: $holo-gold;
+        }
+    }
+
+    strong {
+        color: $text-bright;
+        font-weight: 600;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: $sp-6;
+        font-size: 0.875rem;
+
+        th, td {
+            padding: $sp-3 $sp-4;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        th {
+            font-family: $font-mono;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: $text-dim;
+        }
+
+        td {
+            color: $text-muted;
+        }
+    }
+}
+
+// Light mode legal overrides — inside the existing html.light block at top won't
+// work because of order, so we use a standalone selector
+html.light .legal-content {
+    &__title {
+        color: #1a1a2e;
+    }
+
+    &__updated {
+        color: rgba(26, 26, 46, 0.4);
+    }
+
+    h2, h3 {
+        color: #2a2a3e;
+    }
+
+    p, ul, ol {
+        color: rgba(26, 26, 46, 0.7);
+    }
+
+    a {
+        color: $rh-gold-dark;
+
+        &:hover {
+            color: darken($rh-gold-dark, 10%);
+        }
+    }
+
+    strong {
+        color: #1a1a2e;
+    }
+
+    table {
+        th, td {
+            border-color: rgba(0, 0, 0, 0.06);
+        }
+
+        th {
+            color: rgba(26, 26, 46, 0.4);
+        }
+
+        td {
+            color: rgba(26, 26, 46, 0.7);
+        }
+    }
 }

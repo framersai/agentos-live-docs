@@ -280,7 +280,8 @@
 
     &__title {
         @include brutalist-heading;
-        font-size: clamp(3rem, 9vw, 7rem);
+        font-size: clamp(2.5rem, 7vw, 5.5rem);
+        line-height: 0.95;
         margin-bottom: $sp-8;
 
         .line {
@@ -291,7 +292,23 @@
             }
 
             &--holographic {
-                @include holographic-text;
+                background: linear-gradient(
+                    120deg,
+                    #00f5ff 0%,
+                    #8b5cf6 20%,
+                    #ff00f5 40%,
+                    rgba(255, 255, 255, 0.9) 48%,
+                    rgba(255, 255, 255, 0.95) 50%,
+                    rgba(255, 255, 255, 0.9) 52%,
+                    #00f5ff 60%,
+                    #8b5cf6 80%,
+                    #ff00f5 100%
+                );
+                background-size: 300% 100%;
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+                animation: heroShimmer 4s ease-in-out infinite;
             }
         }
     }
@@ -381,6 +398,11 @@
     50% {
         transform: translateY(-52%) rotate(1deg);
     }
+}
+
+@keyframes heroShimmer {
+    0% { background-position: 100% 50%; }
+    100% { background-position: -100% 50%; }
 }
 
 // ============================================================================
@@ -1308,6 +1330,26 @@ html.light {
 
         &__subtitle {
             color: #3d3d4d;
+        }
+
+        &__title .line--holographic {
+            background: linear-gradient(
+                120deg,
+                #8b6914 0%,
+                #c9a227 20%,
+                #e8d48a 40%,
+                rgba(255, 255, 255, 0.95) 48%,
+                rgba(255, 255, 255, 1) 50%,
+                rgba(255, 255, 255, 0.95) 52%,
+                #8b6914 60%,
+                #c9a227 80%,
+                #e8d48a 100%
+            );
+            background-size: 300% 100%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: heroShimmer 4s ease-in-out infinite;
         }
 
         &__cube {
