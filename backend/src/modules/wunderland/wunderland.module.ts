@@ -54,6 +54,7 @@ import { WunderlandSolModule } from './wunderland-sol/wunderland-sol.module.js';
 import { RuntimeModule } from './runtime/runtime.module.js';
 import { CredentialsModule } from './credentials/credentials.module.js';
 import { ChannelsModule } from './channels/channels.module.js';
+import { EmailIntegrationModule } from './email/email.module.js';
 import { WunderlandGateway } from './wunderland.gateway.js';
 import { WunderlandHealthController } from './wunderland-health.controller.js';
 
@@ -87,6 +88,7 @@ export class WunderlandModule {
         RuntimeModule,
         CredentialsModule,
         ChannelsModule,
+        EmailIntegrationModule,
         CitizensModule,
         VotingModule,
       ],

@@ -3,7 +3,7 @@
  * @description Persistent credential vault for agent integrations.
  */
 
-import { createCipheriv, createHash, randomBytes } from 'node:crypto';
+import { createCipheriv, createDecipheriv, createHash, randomBytes } from 'node:crypto';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { DatabaseService } from '../../../database/database.service.js';
 import { appConfig } from '../../../config/appConfig.js';
@@ -79,6 +79,27 @@ export class CredentialsService {
     ].join('.');
   }
 
+  private decryptSecret(encrypted: string): string | null {
+    try {
+      const parts = encrypted.split('.');
+      if (parts.length !== 4) return null;
+      const [version, ivRaw, tagRaw, ciphertextRaw] = parts;
+      if (version !== 'v1') return null;
+
+      const iv = Buffer.from(ivRaw ?? '', 'base64url');
+      const tag = Buffer.from(tagRaw ?? '', 'base64url');
+      const ciphertext = Buffer.from(ciphertextRaw ?? '', 'base64url');
+      if (iv.length !== 12 || tag.length !== 16 || ciphertext.length === 0) return null;
+
+      const decipher = createDecipheriv('aes-256-gcm', this.encryptionKey, iv);
+      decipher.setAuthTag(tag);
+      const plain = Buffer.concat([decipher.update(ciphertext), decipher.final()]).toString('utf8');
+      return plain;
+    } catch {
+      return null;
+    }
+  }
+
   private mapCredential(row: any): CredentialRecord {
     return {
       credentialId: String(row.credential_id),
@@ -129,6 +150,46 @@ export class CredentialsService {
     return {
       items: rows.map((row) => this.mapCredential(row)),
     };
+  }
+
+  /**
+   * Server-side only: returns decrypted secret values for the most-recent credential
+   * rows matching each requested type. Never exposed through the public credentials API.
+   */
+  async getDecryptedValuesByType(
+    userId: string,
+    seedId: string,
+    types: string[]
+  ): Promise<Record<string, string | null>> {
+    const normalizedSeedId = seedId.trim();
+    await this.assertOwnedAgent(userId, normalizedSeedId);
+
+    const requested = Array.from(new Set(types.map((t) => t.trim()).filter(Boolean)));
+    const out: Record<string, string | null> = {};
+    for (const t of requested) out[t] = null;
+    if (requested.length === 0) return out;
+
+    const placeholders = requested.map(() => '?').join(',');
+    const rows = await this.db.all<{ credential_type: string; encrypted_value: string }>(
+      `
+        SELECT credential_type, encrypted_value
+          FROM wunderland_agent_credentials
+         WHERE owner_user_id = ?
+           AND seed_id = ?
+           AND credential_type IN (${placeholders})
+         ORDER BY created_at DESC
+      `,
+      [userId, normalizedSeedId, ...requested]
+    );
+
+    for (const row of rows) {
+      const type = String(row.credential_type);
+      if (!(type in out)) continue;
+      if (out[type] !== null) continue; // keep most-recent
+      out[type] = this.decryptSecret(String(row.encrypted_value ?? '')) ?? null;
+    }
+
+    return out;
   }
 
   async createCredential(

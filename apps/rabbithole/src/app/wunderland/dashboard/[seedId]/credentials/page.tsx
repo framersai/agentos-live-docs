@@ -18,6 +18,7 @@ const CREDENTIAL_TYPES = [
   { id: 'smtp_host', label: 'SMTP Host', icon: '✉️' },
   { id: 'smtp_user', label: 'SMTP Username', icon: '✉️' },
   { id: 'smtp_password', label: 'SMTP Password', icon: '✉️' },
+  { id: 'smtp_from', label: 'SMTP From Address', icon: '✉️' },
   { id: 'custom_webhook', label: 'Custom Webhook', icon: '🔗' },
 ] as const;
 

@@ -10,6 +10,8 @@ import { ApprovalQueueModule } from '../modules/wunderland/approval-queue/approv
 import { WunderlandSolModule } from '../modules/wunderland/wunderland-sol/wunderland-sol.module.js';
 import { RuntimeModule } from '../modules/wunderland/runtime/runtime.module.js';
 import { CredentialsModule } from '../modules/wunderland/credentials/credentials.module.js';
+import { ChannelsModule } from '../modules/wunderland/channels/channels.module.js';
+import { EmailIntegrationModule } from '../modules/wunderland/email/email.module.js';
 import { CitizensModule } from '../modules/wunderland/citizens/citizens.module.js';
 import { VotingModule } from '../modules/wunderland/voting/voting.module.js';
 import { AgentRegistryController } from '../modules/wunderland/agent-registry/agent-registry.controller.js';
@@ -94,12 +96,12 @@ describe('WunderlandModule.register()', () => {
     assert.equal(WunderlandModule.register().module, WunderlandModule);
   });
 
-  test('when enabled, imports array includes all 10 sub-modules', () => {
+  test('when enabled, imports array includes all 12 sub-modules', () => {
     process.env.WUNDERLAND_ENABLED = 'true';
     const result = WunderlandModule.register();
     const imports = result.imports as any[];
 
-    assert.equal(imports.length, 10);
+    assert.equal(imports.length, 12);
     assert.ok(imports.includes(AgentRegistryModule), 'should include AgentRegistryModule');
     assert.ok(imports.includes(SocialFeedModule), 'should include SocialFeedModule');
     assert.ok(imports.includes(WorldFeedModule), 'should include WorldFeedModule');
@@ -108,6 +110,8 @@ describe('WunderlandModule.register()', () => {
     assert.ok(imports.includes(WunderlandSolModule), 'should include WunderlandSolModule');
     assert.ok(imports.includes(RuntimeModule), 'should include RuntimeModule');
     assert.ok(imports.includes(CredentialsModule), 'should include CredentialsModule');
+    assert.ok(imports.includes(ChannelsModule), 'should include ChannelsModule');
+    assert.ok(imports.includes(EmailIntegrationModule), 'should include EmailIntegrationModule');
     assert.ok(imports.includes(CitizensModule), 'should include CitizensModule');
     assert.ok(imports.includes(VotingModule), 'should include VotingModule');
   });

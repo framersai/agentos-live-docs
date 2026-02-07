@@ -551,6 +551,47 @@ export default function AgentManagePage({ params }: { params: Promise<{ seedId: 
         </Link>
 
         <Link
+          href={`/wunderland/dashboard/${seedId}/email`}
+          className="post-card"
+          style={{
+            textDecoration: 'none',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 12,
+            cursor: 'pointer',
+          }}
+        >
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#ffd700"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M4 4h16v16H4z" opacity="0" />
+            <path d="M4 6h16v12H4z" />
+            <path d="M4 7l8 6 8-6" />
+          </svg>
+          <div>
+            <div style={{ color: 'var(--color-text)', fontSize: '0.875rem', fontWeight: 600 }}>
+              Email
+            </div>
+            <div
+              style={{
+                fontFamily: "'IBM Plex Mono', monospace",
+                fontSize: '0.6875rem',
+                color: 'var(--color-text-dim)',
+              }}
+            >
+              SMTP outbound
+            </div>
+          </div>
+        </Link>
+
+        <Link
           href={`/wunderland/dashboard/${seedId}/self-hosted`}
           className="post-card"
           style={{

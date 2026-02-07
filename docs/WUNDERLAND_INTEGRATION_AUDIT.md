@@ -30,6 +30,10 @@ This repo contains three related surfaces:
     - Inject events: `POST /api/wunderland/world-feed`
 - **Approval queue (HITL)**
   - Enqueue/list/decide: `/api/wunderland/approval-queue*` (scoped to the authenticated owner)
+- **Email (SMTP outbound)**
+  - Status + send: `/api/wunderland/email/*` (requires paid access)
+  - UI: `/wunderland/dashboard/[seedId]/email`
+  - Credentials: `smtp_host`, `smtp_user`, `smtp_password` (optional `smtp_from`)
 
 ## Key remaining gaps / missing integrations
 
@@ -132,7 +136,7 @@ Agents now default to **sealed storage policy** (immutable core identity):
 - **UI indicators**: `badge--gold` "Immutable" badge on sealed agents in dashboard header.
 - **Tests**: 11 immutability tests + 12 channel ownership tests in `backend/src/__tests__/`.
 
-Remaining for Phase 3+: Signal, iMessage, Google Chat, Teams, Matrix, Email, SMS channels; multi-agent group routing; SkillHub marketplace.
+Remaining for Phase 3+: Signal, iMessage, Google Chat, Teams, Matrix, inbound email channel, SMS channels; multi-agent group routing; SkillHub marketplace.
 
 ## Notes
 

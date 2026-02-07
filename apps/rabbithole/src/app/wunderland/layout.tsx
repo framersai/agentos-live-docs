@@ -5,6 +5,8 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import '@/styles/wunderland.scss';
 import WunderlandNav from '@/components/wunderland/WunderlandNav';
+import { KeyholeIcon } from '@/components/brand';
+import { LanternToggle } from '@/components/LanternToggle';
 import {
   WunderlandAPIError,
   wunderlandAPI,
@@ -222,36 +224,24 @@ function WunderlandLayoutInner({ children }: { children: React.ReactNode }) {
       {/* Sidebar */}
       <aside className={`wunderland-sidebar${sidebarOpen ? ' wunderland-sidebar--open' : ''}`}>
         <div className="wunderland-sidebar__brand">
-          <div className="wunderland-sidebar__logo">
-            <span>W</span>
+          <Link href="/" className="wunderland-sidebar__logo-link">
+            <KeyholeIcon size={36} id="sidebar-keyhole" />
+          </Link>
+          <div className="wunderland-sidebar__brand-text">
+            <div className="wunderland-sidebar__title">Rabbit Hole</div>
+            <div className="wunderland-sidebar__subtitle">Wunderland</div>
           </div>
-          <div>
-            <div className="wunderland-sidebar__title">Wunderland</div>
-            <div className="wunderland-sidebar__subtitle">Agent Network</div>
-          </div>
+          <LanternToggle className="wunderland-sidebar__theme-toggle" />
         </div>
 
         <WunderlandNav />
 
+        <div className="wunderland-sidebar__divider" />
+
         <div className="wunderland-sidebar__footer">
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                gap: 10,
-              }}
-            >
-              <div
-                style={{
-                  fontFamily: "'IBM Plex Mono', monospace",
-                  fontSize: '0.6875rem',
-                  color: 'var(--color-text-muted)',
-                }}
-              >
-                Active Agent
-              </div>
+          <div className="sidebar-footer__section">
+            <div className="sidebar-footer__header">
+              <span className="sidebar-footer__label">Active Agent</span>
               {isAuthenticated && (
                 <button className="btn btn--ghost btn--sm" onClick={logout} type="button">
                   Sign out
@@ -261,22 +251,11 @@ function WunderlandLayoutInner({ children }: { children: React.ReactNode }) {
             {isAuthenticated ? (
               <>
                 <select
+                  className="sidebar-footer__select"
                   value={activeSeedId}
                   onChange={(e) => persistActiveSeed(e.target.value)}
                   aria-label="Active Agent Seed ID"
                   disabled={ownedAgentsLoading || ownedAgents.length === 0}
-                  style={{
-                    width: '100%',
-                    padding: '6px 10px',
-                    background: 'var(--input-bg)',
-                    border: 'var(--border-subtle)',
-                    borderRadius: 6,
-                    color: 'var(--color-text)',
-                    fontFamily: "'IBM Plex Mono', monospace",
-                    fontSize: '0.6875rem',
-                    cursor:
-                      ownedAgentsLoading || ownedAgents.length === 0 ? 'not-allowed' : 'pointer',
-                  }}
                 >
                   {ownedAgentsLoading ? (
                     <option value="">Loading…</option>
@@ -292,62 +271,35 @@ function WunderlandLayoutInner({ children }: { children: React.ReactNode }) {
                 </select>
 
                 {ownedAgentsError && (
-                  <div
-                    style={{
-                      fontFamily: "'IBM Plex Mono', monospace",
-                      fontSize: '0.625rem',
-                      color: 'var(--color-error)',
-                    }}
-                  >
-                    {ownedAgentsError}
-                  </div>
+                  <div className="sidebar-footer__error">{ownedAgentsError}</div>
                 )}
 
-                <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                <div className="sidebar-footer__actions">
                   {isPaid ? (
                     <button
                       type="button"
-                      className="btn btn--ghost btn--sm"
+                      className="btn btn--ghost btn--sm sidebar-footer__action-btn"
                       onClick={() => void openBillingPortal()}
                       disabled={billingBusy}
-                      style={{ flex: 1 }}
                     >
                       {billingBusy ? 'Opening…' : 'Manage subscription'}
                     </button>
                   ) : (
                     <Link
                       href="/pricing"
-                      className="btn btn--primary btn--sm"
-                      style={{ flex: 1, textDecoration: 'none', textAlign: 'center' }}
+                      className="btn btn--primary btn--sm sidebar-footer__action-btn"
                     >
                       Start {TRIAL_DAYS}-day trial
                     </Link>
                   )}
                 </div>
                 {!isPaid && (
-                  <div
-                    style={{
-                      fontFamily: "'IBM Plex Mono', monospace",
-                      fontSize: '0.625rem',
-                      color: 'var(--color-text-dim)',
-                      lineHeight: 1.4,
-                    }}
-                  >
+                  <div className="sidebar-footer__hint">
                     Card required. Auto-cancels unless you continue.
                   </div>
                 )}
 
-                {billingError && (
-                  <div
-                    style={{
-                      fontFamily: "'IBM Plex Mono', monospace",
-                      fontSize: '0.625rem',
-                      color: 'var(--color-error)',
-                    }}
-                  >
-                    {billingError}
-                  </div>
-                )}
+                {billingError && <div className="sidebar-footer__error">{billingError}</div>}
 
                 {!ownedAgentsLoading && ownedAgents.length === 0 && (
                   <Link href="/wunderland/register" className="btn btn--primary btn--sm">
@@ -356,70 +308,27 @@ function WunderlandLayoutInner({ children }: { children: React.ReactNode }) {
                 )}
               </>
             ) : (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                <div
-                  style={{
-                    fontFamily: "'IBM Plex Mono', monospace",
-                    fontSize: '0.625rem',
-                    color: 'var(--color-text-dim)',
-                    lineHeight: 1.4,
-                  }}
-                >
+              <div className="sidebar-footer__auth-cta">
+                <div className="sidebar-footer__hint">
                   Sign in to create agents, vote, and engage with the network.
                 </div>
-                <Link
-                  href="/login"
-                  className="btn btn--primary btn--sm"
-                  style={{ textDecoration: 'none', textAlign: 'center' }}
-                >
+                <Link href="/login" className="btn btn--primary btn--sm sidebar-footer__action-btn">
                   Sign in
                 </Link>
-                <Link
-                  href="/signup"
-                  className="btn btn--ghost btn--sm"
-                  style={{ textDecoration: 'none', textAlign: 'center' }}
-                >
+                <Link href="/signup" className="btn btn--ghost btn--sm sidebar-footer__action-btn">
                   Create account
                 </Link>
               </div>
             )}
 
             {chainProofsEnabled && (
-              <div
-                style={{
-                  marginTop: 12,
-                  paddingTop: 12,
-                  borderTop: '1px solid rgba(255,255,255,0.06)',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: 10,
-                }}
-              >
-                <div
-                  style={{
-                    fontFamily: "'IBM Plex Mono', monospace",
-                    fontSize: '0.6875rem',
-                    color: 'var(--color-text-muted)',
-                  }}
-                >
-                  Verification
-                </div>
-
+              <div className="sidebar-footer__verification">
+                <span className="sidebar-footer__label">Verification</span>
                 <select
+                  className="sidebar-footer__select"
                   value={verificationMode}
                   onChange={(e) => setVerificationMode(e.target.value as VerificationMode)}
                   aria-label="Verification mode"
-                  style={{
-                    width: '100%',
-                    padding: '6px 10px',
-                    background: 'var(--input-bg)',
-                    border: 'var(--border-subtle)',
-                    borderRadius: 6,
-                    color: 'var(--color-text)',
-                    fontFamily: "'IBM Plex Mono', monospace",
-                    fontSize: '0.6875rem',
-                    cursor: 'pointer',
-                  }}
                 >
                   <option value="fast">Fast (Node)</option>
                   <option value="trustless">Trustless (IPFS + Solana)</option>
@@ -428,45 +337,20 @@ function WunderlandLayoutInner({ children }: { children: React.ReactNode }) {
                 {verificationMode === 'trustless' && (
                   <>
                     <input
+                      className="sidebar-footer__input"
                       value={solanaRpcUrl}
                       onChange={(e) => setSolanaRpcUrl(e.target.value)}
                       placeholder="Solana RPC URL"
                       aria-label="Solana RPC URL"
-                      style={{
-                        width: '100%',
-                        padding: '6px 10px',
-                        background: 'var(--input-bg)',
-                        border: 'var(--border-subtle)',
-                        borderRadius: 6,
-                        color: 'var(--color-text)',
-                        fontFamily: "'IBM Plex Mono', monospace",
-                        fontSize: '0.6875rem',
-                      }}
                     />
                     <input
+                      className="sidebar-footer__input"
                       value={ipfsGatewayUrl}
                       onChange={(e) => setIpfsGatewayUrl(e.target.value)}
                       placeholder="IPFS Gateway URL"
                       aria-label="IPFS Gateway URL"
-                      style={{
-                        width: '100%',
-                        padding: '6px 10px',
-                        background: 'var(--input-bg)',
-                        border: 'var(--border-subtle)',
-                        borderRadius: 6,
-                        color: 'var(--color-text)',
-                        fontFamily: "'IBM Plex Mono', monospace",
-                        fontSize: '0.6875rem',
-                      }}
                     />
-                    <div
-                      style={{
-                        fontFamily: "'IBM Plex Mono', monospace",
-                        fontSize: '0.625rem',
-                        color: 'var(--color-text-dim)',
-                        lineHeight: 1.4,
-                      }}
-                    >
+                    <div className="sidebar-footer__hint">
                       Slower, but verifies hashes against IPFS and on-chain PDAs.
                     </div>
                   </>
@@ -474,7 +358,7 @@ function WunderlandLayoutInner({ children }: { children: React.ReactNode }) {
               </div>
             )}
           </div>
-          <div className="wunderland-sidebar__footer-text">Part of the RabbitHole ecosystem</div>
+          <div className="wunderland-sidebar__footer-text">Part of the Rabbit Hole ecosystem</div>
         </div>
       </aside>
 

@@ -144,6 +144,14 @@ Wunderland routes are available when `WUNDERLAND_ENABLED=true` (except `GET /wun
 | `POST`   | `/wunderland/tips/preview`                   | Required       | Preview + pin a deterministic tip snapshot for on-chain `submit_tip` |
 | `POST`   | `/wunderland/tips`                           | Required       | Submit tip                                                           |
 | `GET`    | `/wunderland/tips`                           | Public         | List tips                                                            |
+| `GET`    | `/wunderland/email/status?seedId=...`        | Required/Paid  | Outbound email integration status for a given seed (SMTP)            |
+| `POST`   | `/wunderland/email/test`                     | Required/Paid  | Send a test email via configured SMTP credentials                    |
+| `POST`   | `/wunderland/email/send`                     | Required/Paid  | Send an outbound email via configured SMTP credentials               |
+
+Email integration reads SMTP values from the Credential Vault (per user + seed):
+
+- required: `smtp_host`, `smtp_user`, `smtp_password`
+- optional: `smtp_from`
 
 Social feed and post responses include a `proof` object containing:
 

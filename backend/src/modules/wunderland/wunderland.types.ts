@@ -32,10 +32,6 @@ export type {
   NewsroomConfig,
   WonderlandNetworkConfig,
   WorldFeedSource,
-} from '../../../../packages/wunderland/src/social/types.js';
+} from '@framers/wunderland';
 
-export {
-  CitizenLevel,
-  XP_REWARDS,
-  LEVEL_THRESHOLDS,
-} from '../../../../packages/wunderland/src/social/types.js';
+export { CitizenLevel, XP_REWARDS, LEVEL_THRESHOLDS } from '@framers/wunderland';

@@ -74,7 +74,9 @@
     }
 
     &__link {
-        @include mono-text;
+        font-family: $font-body;
+        font-size: 0.8125rem;
+        font-weight: 600;
         color: $text-muted;
         text-transform: uppercase;
         letter-spacing: 0.08em;
@@ -1191,12 +1193,12 @@ html.light {
             box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.06), -1px -1px 4px rgba(255, 255, 255, 0.8);
 
             span {
-                background: #6b6b7b;
+                background: #3d3d4d;
             }
         }
 
         &__link {
-            color: #6b6b7b;
+            color: #3d3d4d;
 
             &:hover {
                 color: #1a1a2e;
@@ -1215,7 +1217,7 @@ html.light {
     }
 
     .nav__mobile-link {
-        color: #6b6b7b;
+        color: #2a2a3e;
 
         &:hover {
             color: #1a1a2e;
@@ -1233,11 +1235,11 @@ html.light {
         }
 
         &__title .line--muted {
-            color: #9090a0;
+            color: #6b6b7b;
         }
 
         &__subtitle {
-            color: #6b6b7b;
+            color: #3d3d4d;
         }
 
         &__cube {
@@ -1268,12 +1270,12 @@ html.light {
         }
 
         &__label {
-            color: #6b6b7b;
+            color: #3d3d4d;
         }
     }
 
     .features__subtitle {
-        color: #6b6b7b;
+        color: #3d3d4d;
     }
 
     .feature-card {
@@ -1287,7 +1289,7 @@ html.light {
         }
 
         &__description {
-            color: #6b6b7b;
+            color: #3d3d4d;
         }
 
         &:hover .feature-card__icon {
@@ -1295,13 +1297,44 @@ html.light {
         }
     }
 
-    // Terminal stays dark in light mode for contrast
+    // Terminal uses warm light background in light mode
     .terminal {
-        background: #1a1a2e;
+        background: #faf8f4;
+        box-shadow: inset 2px 2px 8px rgba(0, 0, 0, 0.06), inset -2px -2px 6px rgba(255, 255, 255, 0.8);
 
         &__header {
-            background: #12101a;
-            border-bottom-color: rgba(255, 255, 255, 0.06);
+            background: #f0ede7;
+            border-bottom-color: rgba(0, 0, 0, 0.08);
+        }
+
+        &__prompt {
+            color: #8b6914;
+        }
+
+        &__command {
+            color: #1a1a2e;
+        }
+
+        &__output {
+            color: #3d3d4d;
+        }
+
+        &__success {
+            color: #16a34a;
+        }
+
+        &__title {
+            color: #5a5a6e;
+        }
+
+        &__body {
+            color: #2a2a3e;
+        }
+
+        &__dot {
+            &--red { background: #ef4444; }
+            &--gold { background: #c9a227; }
+            &--green { background: #16a34a; }
         }
     }
 
@@ -1314,7 +1347,7 @@ html.light {
         }
 
         &__subtitle {
-            color: #6b6b7b;
+            color: #3d3d4d;
         }
 
         &__portal {
@@ -1323,7 +1356,7 @@ html.light {
         }
 
         &__portal-desc {
-            color: #6b6b7b;
+            color: #3d3d4d;
         }
 
         &__input {
@@ -1332,7 +1365,7 @@ html.light {
             color: #1a1a2e;
 
             &::placeholder {
-                color: #9090a0;
+                color: #5a5a6e;
             }
 
             &:focus {
@@ -1346,11 +1379,11 @@ html.light {
         border-top-color: rgba(0, 0, 0, 0.06);
 
         &__copyright {
-            color: #9090a0;
+            color: #5a5a6e;
         }
 
         &__link {
-            color: #9090a0;
+            color: #5a5a6e;
 
             &:hover {
                 color: #8b6914;
@@ -1365,7 +1398,7 @@ html.light {
         }
 
         &__addon-desc {
-            color: #6b6b7b;
+            color: #3d3d4d;
         }
     }
 
@@ -1374,15 +1407,15 @@ html.light {
         box-shadow: 4px 4px 12px rgba(0, 0, 0, 0.06), -2px -2px 8px rgba(255, 255, 255, 0.8);
 
         &__description {
-            color: #6b6b7b;
+            color: #3d3d4d;
         }
 
         &__period {
-            color: #9090a0;
+            color: #5a5a6e;
         }
 
         &__feature {
-            color: #6b6b7b;
+            color: #3d3d4d;
 
             &::before {
                 color: #16a34a;
@@ -1390,7 +1423,7 @@ html.light {
         }
 
         &__note {
-            color: #9090a0;
+            color: #5a5a6e;
         }
     }
 
@@ -1411,7 +1444,7 @@ html.light {
             color: #1a1a2e;
 
             &::placeholder {
-                color: #9090a0;
+                color: #5a5a6e;
             }
 
             &:focus {
@@ -1421,7 +1454,7 @@ html.light {
         }
 
         &__radio-label {
-            color: #6b6b7b;
+            color: #3d3d4d;
 
             input[type='radio'] {
                 accent-color: #8b6914;
@@ -1431,11 +1464,11 @@ html.light {
 
     .about-content {
         &__title .line--muted {
-            color: #9090a0;
+            color: #5a5a6e;
         }
 
         &__body p {
-            color: #6b6b7b;
+            color: #3d3d4d;
         }
     }
 
@@ -1446,6 +1479,6 @@ html.light {
     }
 
     .about-links__desc {
-        color: #9090a0;
+        color: #5a5a6e;
     }
 }

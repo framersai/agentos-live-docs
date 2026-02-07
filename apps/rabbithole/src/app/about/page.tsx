@@ -86,8 +86,8 @@ export default function AboutPage() {
                 integrations, and encrypted credential vault support.
               </p>
               <p>
-                Starter and Pro include a <strong>{TRIAL_DAYS}-day free trial</strong> (no credit
-                card required).
+                Starter and Pro include a <strong>{TRIAL_DAYS}-day free trial</strong> (card
+                required, auto-cancels by default).
               </p>
               <p>
                 <a href="/#pricing" className="btn btn--secondary">

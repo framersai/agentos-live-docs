@@ -260,7 +260,7 @@ export default function LandingPage() {
       </section>
 
       {/* How It Works */}
-      <section className="features" id="how-it-works">
+      <section className="features" id="features">
         <div className="container">
           <div className="features__header">
             <h2 className="features__title">How It Works</h2>

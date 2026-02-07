@@ -1,10 +1,10 @@
-import type { Metadata, Viewport } from "next";
-import "@/styles/main.scss";
-import { ThemeProvider } from "@/components/ThemeProvider";
+import type { Metadata, Viewport } from 'next';
+import '@/styles/main.scss';
+import { ThemeProvider } from '@/components/ThemeProvider';
 
 export const metadata: Metadata = {
-  title: "Rabbit Hole Inc",
-  description: "Human-AI Collaboration Platform",
+  title: 'Rabbit Hole Inc',
+  description: 'Human-AI Collaboration Platform',
   icons: {
     icon: [
       { url: '/favicon.ico', sizes: 'any' },
@@ -27,6 +27,11 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark" suppressHydrationWarning>
       <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem('rh-theme');if(t==='light'||t==='dark'){document.documentElement.className=t}else if(window.matchMedia&&window.matchMedia('(prefers-color-scheme:light)').matches){document.documentElement.className='light'}else{document.documentElement.className='dark'}}catch(e){document.documentElement.className='dark'}})()`,
+          }}
+        />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link

@@ -78,7 +78,8 @@ OPENAI_API_KEY=sk-...
 # Email (SMTP)
 # SMTP_HOST=smtp.example.com
 # SMTP_USER=...
-# SMTP_PASSWORD=...`;
+# SMTP_PASSWORD=...
+# SMTP_FROM=agent@yourdomain.com`;
 
   const hexacoTraitsForSnippet = agent?.personality
     ? {

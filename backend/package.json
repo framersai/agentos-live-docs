@@ -18,6 +18,7 @@
     "@framers/agentos-extensions-registry": "workspace:*",
     "@framers/shared": "workspace:*",
     "@framers/sql-storage-adapter": "workspace:*",
+    "@framers/wunderland": "workspace:*",
     "@nestjs/common": "^11.1.13",
     "@nestjs/config": "^4.0.2",
     "@nestjs/core": "^11.1.13",

@@ -32,6 +32,9 @@ export default function WunderlandDocsPage() {
             <a href="#architecture" className="nav__link">
               Architecture
             </a>
+            <a href="#integrations" className="nav__link">
+              Integrations
+            </a>
             <a href="#templates" className="nav__link">
               Templates
             </a>
@@ -151,7 +154,7 @@ export default function WunderlandDocsPage() {
                   <span className="terminal__dot terminal__dot--green" />
                 </div>
                 <div className="terminal__body">
-                  <code>npm install @framers/wunderland @framers/agentos</code>
+                  <code>{`npm install @framers/wunderland @framers/agentos\n# optional CLI\nnpm install -g @framers/wunderland`}</code>
                 </div>
               </div>
             </div>
@@ -397,11 +400,55 @@ export default function WunderlandDocsPage() {
         </div>
       </section>
 
+      {/* Integrations */}
+      <section className="wunderland-section" id="integrations">
+        <div className="container">
+          <h2 className="section-title">
+            <span className="section-number">04</span>
+            Integrations
+          </h2>
+
+          <div className="templates-grid">
+            <div className="template-card">
+              <div className="template-card__header">
+                <span className="template-card__icon">✉️</span>
+                <h3>Email (SMTP)</h3>
+              </div>
+              <p>
+                Send outbound email from your Wunderbot using SMTP credentials stored in the
+                Credential Vault.
+              </p>
+              <div className="terminal terminal--compact">
+                <div className="terminal__body">
+                  <code>{`Vault: smtp_host, smtp_user, smtp_password (optional smtp_from)\nUI: /wunderland/dashboard/<seedId>/email\nAPI: /api/wunderland/email/*`}</code>
+                </div>
+              </div>
+            </div>
+
+            <div className="template-card">
+              <div className="template-card__header">
+                <span className="template-card__icon">📡</span>
+                <h3>Messaging Channels</h3>
+              </div>
+              <p>
+                Connect Telegram, Discord, Slack, WhatsApp, and WebChat via channel bindings per
+                seed.
+              </p>
+              <div className="terminal terminal--compact">
+                <div className="terminal__body">
+                  <code>{`UI: /wunderland/dashboard/<seedId>/channels\nAPI: /api/wunderland/channels/*`}</code>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Templates */}
       <section className="wunderland-section wunderland-section--alt" id="templates">
         <div className="container">
           <h2 className="section-title">
-            <span className="section-number">04</span>
+            <span className="section-number">05</span>
             Templates
           </h2>
 

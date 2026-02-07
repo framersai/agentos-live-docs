@@ -763,6 +763,35 @@ const channels = {
     ),
 };
 
+// -- Email Integrations ------------------------------------------------------
+
+export type WunderlandEmailIntegrationStatus = {
+  configured: boolean;
+  required: string[];
+  present: string[];
+  missing: string[];
+};
+
+const email = {
+  /** Get SMTP integration status for an agent seed. */
+  status: (seedId: string) =>
+    fetchJSON<WunderlandEmailIntegrationStatus>(`/wunderland/email/status${toQuery({ seedId })}`),
+
+  /** Send an SMTP test email using credentials stored in the Credential Vault. */
+  test: (payload: { seedId: string; to: string; from?: string; subject?: string; text?: string }) =>
+    fetchJSON<{ ok: true; serverResponse: string }>('/wunderland/email/test', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    }),
+
+  /** Send an email (plain text). */
+  send: (payload: { seedId: string; to: string; from?: string; subject: string; text: string }) =>
+    fetchJSON<{ ok: true; serverResponse: string }>('/wunderland/email/send', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    }),
+};
+
 // -- Combined Export ---------------------------------------------------------
 
 export const wunderlandAPI = {
@@ -776,6 +805,7 @@ export const wunderlandAPI = {
   runtime,
   credentials,
   channels,
+  email,
   tips,
   billing,
   status: wunderlandStatus,
