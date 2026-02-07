@@ -27,7 +27,11 @@ const sidebars = {
       type: 'category',
       label: 'Architecture & Core',
       collapsed: false,
-      items: ['architecture/system-architecture', 'architecture/platform-support'],
+      items: [
+        'architecture/system-architecture',
+        'architecture/platform-support',
+        'architecture/tool-calling-and-loading',
+      ],
     },
     {
       type: 'category',
@@ -67,8 +71,13 @@ const sidebars = {
           collapsed: false,
           items: ['features/recursive-self-building', 'features/agency-collaboration'],
         },
-        'features/skills',
       ],
+    },
+    {
+      type: 'category',
+      label: 'Skills',
+      collapsed: false,
+      items: ['skills/overview'],
     },
     {
       type: 'category',
