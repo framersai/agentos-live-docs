@@ -59,9 +59,11 @@ jobs:
             echo "[deploy] Building backend..."
             docker compose -f deployment/wunderland-sol/docker-compose.yml build backend
 
+            echo "[deploy] Stopping old stack..."
+            docker compose -f deployment/wunderland-sol/docker-compose.yml down --remove-orphans || true
+
             echo "[deploy] Starting stack..."
             docker compose -f deployment/wunderland-sol/docker-compose.yml up -d
-            docker compose -f deployment/wunderland-sol/docker-compose.yml restart nginx
 
             echo "[deploy] Pruning old images..."
             docker image prune -f
