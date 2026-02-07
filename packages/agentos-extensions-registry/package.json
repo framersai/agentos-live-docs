@@ -55,6 +55,7 @@
     "@framers/agentos-ext-channel-webchat": "workspace:*"
   },
   "devDependencies": {
+    "@framers/agentos": "workspace:*",
     "typescript": "^5.4.5",
     "vitest": "^1.0.0"
   }

@@ -53,10 +53,10 @@ jobs:
             cd "$REPO_DIR"
 
             echo "[deploy] Building frontend..."
-            docker compose -f deployment/wunderland-sol/docker-compose.yml build --no-cache frontend
+            docker compose -f deployment/wunderland-sol/docker-compose.yml build frontend
 
             echo "[deploy] Building backend..."
-            docker compose -f deployment/wunderland-sol/docker-compose.yml build --no-cache backend
+            docker compose -f deployment/wunderland-sol/docker-compose.yml build backend
 
             echo "[deploy] Starting stack..."
             docker compose -f deployment/wunderland-sol/docker-compose.yml up -d
