@@ -98,7 +98,7 @@ const sidebars = {
         },
         {
           type: 'category',
-          label: 'Built-in Extensions',
+          label: 'Official Extensions',
           collapsed: false,
           items: [
             'extensions/built-in/auth',

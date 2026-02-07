@@ -55,7 +55,7 @@ npm install @framers/agentos
 - [How Extensions Work](/docs/extensions/how-extensions-work) — Loading and configuration
 - [Extension Architecture](/docs/extensions/extension-architecture) — Building custom extensions
 - [Auto-Loading](/docs/extensions/auto-loading) — Automatic extension discovery
-- **Built-in**: [Web Search](/docs/extensions/built-in/web-search), [Telegram](/docs/extensions/built-in/telegram), [Voice Synthesis](/docs/extensions/built-in/voice-synthesis), [CLI Executor](/docs/extensions/built-in/cli-executor), [Image Search](/docs/extensions/built-in/image-search), [News Search](/docs/extensions/built-in/news-search), [Giphy](/docs/extensions/built-in/giphy), [Web Browser](/docs/extensions/built-in/web-browser), [Auth](/docs/extensions/built-in/auth)
+- **Official**: [Web Search](/docs/extensions/built-in/web-search), [Telegram](/docs/extensions/built-in/telegram), [Voice Synthesis](/docs/extensions/built-in/voice-synthesis), [CLI Executor](/docs/extensions/built-in/cli-executor), [Image Search](/docs/extensions/built-in/image-search), [News Search](/docs/extensions/built-in/news-search), [Giphy](/docs/extensions/built-in/giphy), [Web Browser](/docs/extensions/built-in/web-browser), [Auth](/docs/extensions/built-in/auth)
 
 ### API Reference
 
