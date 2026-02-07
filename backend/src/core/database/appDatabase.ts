@@ -263,30 +263,50 @@ const runInitialSchema = async (db: StorageAdapter): Promise<void> => {
   );
 
   await db.exec(`
-    CREATE TABLE IF NOT EXISTS agentos_persona_submissions (
-      id TEXT PRIMARY KEY,
-      persona_id TEXT NOT NULL,
-      label TEXT NOT NULL,
-      prompt TEXT NOT NULL,
-      description TEXT,
-      metadata TEXT,
-      bundle_path TEXT,
-      status TEXT NOT NULL DEFAULT 'pending',
-      submitted_by TEXT,
-      approved_by TEXT,
-      submitted_at INTEGER NOT NULL,
-      approved_at INTEGER,
-      rejection_reason TEXT
-    );
-  `);
+	    CREATE TABLE IF NOT EXISTS agentos_persona_submissions (
+	      id TEXT PRIMARY KEY,
+	      persona_id TEXT NOT NULL,
+	      label TEXT NOT NULL,
+	      prompt TEXT NOT NULL,
+	      description TEXT,
+	      metadata TEXT,
+	      bundle_path TEXT,
+	      status TEXT NOT NULL DEFAULT 'pending',
+	      submitted_by TEXT,
+	      approved_by TEXT,
+	      submitted_at INTEGER NOT NULL,
+	      approved_at INTEGER,
+	      rejection_reason TEXT
+	    );
+	  `);
   await db.exec(
     'CREATE INDEX IF NOT EXISTS idx_agentos_persona_submissions_status ON agentos_persona_submissions(status);'
   );
+  await db.exec(`
+	    CREATE TABLE IF NOT EXISTS agentos_memory_redactions (
+	      redaction_id TEXT PRIMARY KEY,
+	      scope TEXT NOT NULL,
+	      user_id TEXT,
+	      persona_id TEXT,
+	      organization_id TEXT,
+	      memory_hash TEXT NOT NULL,
+	      reason TEXT,
+	      actor_type TEXT NOT NULL DEFAULT 'agent',
+	      actor_id TEXT,
+	      created_at INTEGER NOT NULL
+	    );
+	  `);
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_agentos_memory_redactions_scope ON agentos_memory_redactions(scope);'
+  );
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_agentos_memory_redactions_lookup ON agentos_memory_redactions(scope, user_id, persona_id, organization_id, memory_hash);'
+  );
 
   await db.exec(`
-    CREATE TABLE IF NOT EXISTS agency_executions (
-      agency_id TEXT PRIMARY KEY,
-      user_id TEXT NOT NULL,
+	    CREATE TABLE IF NOT EXISTS agency_executions (
+	      agency_id TEXT PRIMARY KEY,
+	      user_id TEXT NOT NULL,
       conversation_id TEXT NOT NULL,
       goal TEXT NOT NULL,
       workflow_definition_id TEXT,
@@ -369,7 +389,7 @@ const runInitialSchema = async (db: StorageAdapter): Promise<void> => {
   );
 
   // Agent registry — linked to AgentOS provenance (genesis events, Ed25519 keys)
-	  await db.exec(`
+  await db.exec(`
 	    CREATE TABLE IF NOT EXISTS wunderland_agents (
 	      seed_id TEXT PRIMARY KEY,
 	      owner_user_id TEXT NOT NULL,
@@ -379,14 +399,16 @@ const runInitialSchema = async (db: StorageAdapter): Promise<void> => {
 	      hexaco_traits TEXT NOT NULL,
 	      security_profile TEXT NOT NULL,
 	      inference_hierarchy TEXT NOT NULL,
-	      step_up_auth_config TEXT,
-	      base_system_prompt TEXT,
-	      allowed_tool_ids TEXT,
-	      genesis_event_id TEXT,
-	      public_key TEXT,
-	      storage_policy TEXT DEFAULT 'sealed',
-	      sealed_at INTEGER,
-	      provenance_enabled INTEGER DEFAULT 1,
+		      step_up_auth_config TEXT,
+		      base_system_prompt TEXT,
+		      allowed_tool_ids TEXT,
+		      toolset_manifest_json TEXT,
+		      toolset_hash TEXT,
+		      genesis_event_id TEXT,
+		      public_key TEXT,
+		      storage_policy TEXT DEFAULT 'sealed',
+		      sealed_at INTEGER,
+		      provenance_enabled INTEGER DEFAULT 1,
 	      status TEXT DEFAULT 'active',
 	      created_at INTEGER NOT NULL,
 	      updated_at INTEGER NOT NULL,
@@ -973,27 +995,43 @@ export const initializeAppDatabase = async (): Promise<void> => {
           ? 'ALTER TABLE app_users ADD COLUMN stripe_customer_id TEXT'
           : 'ALTER TABLE app_users ADD COLUMN stripe_customer_id TEXT;'
       );
-	      await ensureColumnExists(
-	        adapter,
-	        'app_users',
-	        'stripe_subscription_id',
-	        adapter.kind === 'postgres'
-	          ? 'ALTER TABLE app_users ADD COLUMN stripe_subscription_id TEXT'
-	          : 'ALTER TABLE app_users ADD COLUMN stripe_subscription_id TEXT;'
-	      );
-	      await ensureColumnExists(
-	        adapter,
-	        'wunderland_agents',
-	        'sealed_at',
-	        adapter.kind === 'postgres'
-	          ? 'ALTER TABLE wunderland_agents ADD COLUMN sealed_at INTEGER'
-	          : 'ALTER TABLE wunderland_agents ADD COLUMN sealed_at INTEGER;'
-	      );
-	      await ensureColumnExists(
-	        adapter,
-	        'wunderland_posts',
-	        'subreddit_id',
-	        adapter.kind === 'postgres'
+      await ensureColumnExists(
+        adapter,
+        'app_users',
+        'stripe_subscription_id',
+        adapter.kind === 'postgres'
+          ? 'ALTER TABLE app_users ADD COLUMN stripe_subscription_id TEXT'
+          : 'ALTER TABLE app_users ADD COLUMN stripe_subscription_id TEXT;'
+      );
+      await ensureColumnExists(
+        adapter,
+        'wunderland_agents',
+        'sealed_at',
+        adapter.kind === 'postgres'
+          ? 'ALTER TABLE wunderland_agents ADD COLUMN sealed_at INTEGER'
+          : 'ALTER TABLE wunderland_agents ADD COLUMN sealed_at INTEGER;'
+      );
+      await ensureColumnExists(
+        adapter,
+        'wunderland_agents',
+        'toolset_manifest_json',
+        adapter.kind === 'postgres'
+          ? 'ALTER TABLE wunderland_agents ADD COLUMN toolset_manifest_json TEXT'
+          : 'ALTER TABLE wunderland_agents ADD COLUMN toolset_manifest_json TEXT;'
+      );
+      await ensureColumnExists(
+        adapter,
+        'wunderland_agents',
+        'toolset_hash',
+        adapter.kind === 'postgres'
+          ? 'ALTER TABLE wunderland_agents ADD COLUMN toolset_hash TEXT'
+          : 'ALTER TABLE wunderland_agents ADD COLUMN toolset_hash TEXT;'
+      );
+      await ensureColumnExists(
+        adapter,
+        'wunderland_posts',
+        'subreddit_id',
+        adapter.kind === 'postgres'
           ? 'ALTER TABLE wunderland_posts ADD COLUMN subreddit_id TEXT'
           : 'ALTER TABLE wunderland_posts ADD COLUMN subreddit_id TEXT;'
       );

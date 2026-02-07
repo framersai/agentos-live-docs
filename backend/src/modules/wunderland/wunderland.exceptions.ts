@@ -94,3 +94,13 @@ export class AgentImmutableException extends ForbiddenException {
     );
   }
 }
+
+/** Thrown when an agent attempts to seal with capabilities/tools that cannot be resolved. */
+export class AgentToolsetUnresolvedException extends BadRequestException {
+  constructor(seedId: string, unresolvedCapabilities: string[]) {
+    super({
+      message: `Agent "${seedId}" cannot be sealed because some capabilities/tools are not resolvable.`,
+      unresolvedCapabilities,
+    });
+  }
+}

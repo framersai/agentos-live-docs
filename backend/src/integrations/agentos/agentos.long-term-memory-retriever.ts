@@ -4,6 +4,7 @@ import type {
   LongTermMemoryRetrievalResult,
 } from '@framers/agentos';
 import { ragService } from './agentos.rag.service.js';
+import { listMemoryRedactionHashes } from './agentos.memory-redactions.service.js';
 import { getOrganizationSettings } from '../../features/organization/organization.repository.js';
 import { resolveOrganizationMemorySettings } from '../../features/organization/organization.settings.js';
 
@@ -94,6 +95,55 @@ export function createLongTermMemoryRetriever(): ILongTermMemoryRetriever {
         organization: [],
       };
 
+      const redactedHashesByScope: Record<MemoryScope, Set<string>> = {
+        user: new Set<string>(),
+        persona: new Set<string>(),
+        organization: new Set<string>(),
+      };
+
+      const safeListRedactions = async (
+        args: Parameters<typeof listMemoryRedactionHashes>[0]
+      ): Promise<string[]> => {
+        try {
+          return await listMemoryRedactionHashes(args);
+        } catch {
+          return [];
+        }
+      };
+
+      const redactionPromises: Array<Promise<void>> = [];
+      if (input.memoryPolicy.scopes.user) {
+        redactionPromises.push(
+          safeListRedactions({ scope: 'user', userId: input.userId }).then((hashes) => {
+            redactedHashesByScope.user = new Set(hashes.map((h) => String(h).toLowerCase()));
+          })
+        );
+      }
+      if (input.memoryPolicy.scopes.persona) {
+        redactionPromises.push(
+          safeListRedactions({
+            scope: 'persona',
+            userId: input.userId,
+            personaId: input.personaId,
+          }).then((hashes) => {
+            redactedHashesByScope.persona = new Set(hashes.map((h) => String(h).toLowerCase()));
+          })
+        );
+      }
+      if (input.memoryPolicy.scopes.organization && orgId && (orgMemorySettings?.enabled ?? true)) {
+        redactionPromises.push(
+          safeListRedactions({
+            scope: 'organization',
+            organizationId: input.organizationId,
+          }).then((hashes) => {
+            redactedHashesByScope.organization = new Set(
+              hashes.map((h) => String(h).toLowerCase())
+            );
+          })
+        );
+      }
+      await Promise.all(redactionPromises);
+
       const queryScope = async (scope: MemoryScope): Promise<void> => {
         const topK = topKByScope[scope];
         const collectionId = COLLECTION_BY_SCOPE[scope];
@@ -157,6 +207,10 @@ export function createLongTermMemoryRetriever(): ILongTermMemoryRetriever {
               hash: typeof metadata.hash === 'string' ? metadata.hash : undefined,
             })
           )
+          .filter((item) => {
+            const hash = typeof item.hash === 'string' ? item.hash.toLowerCase() : '';
+            return !hash || !redactedHashesByScope[scope].has(hash);
+          })
           .filter((item) => item.text.length > 0)
           .sort((a, b) => b.score - a.score);
 

@@ -18,8 +18,10 @@ import {
   AgentNotFoundException,
   AgentOwnershipException,
   AgentImmutableException,
+  AgentToolsetUnresolvedException,
 } from '../wunderland.exceptions.js';
 import type { RegisterAgentDto, UpdateAgentDto, ListAgentsQueryDto } from '../dto/index.js';
+import { buildToolsetManifestV1, computeToolsetHashV1 } from '../immutability/toolset-manifest.js';
 
 type PaginatedResponse<T> = {
   items: T[];
@@ -43,6 +45,7 @@ type AgentProfile = {
     storagePolicy: string;
     sealedAt: string | null;
     active: boolean;
+    toolsetHash: string | null;
   };
   systemPrompt?: string | null;
   capabilities: string[];
@@ -86,6 +89,8 @@ type WunderlandAgentRow = {
   step_up_auth_config: string | null;
   base_system_prompt: string | null;
   allowed_tool_ids: string | null;
+  toolset_manifest_json?: string | null;
+  toolset_hash?: string | null;
   genesis_event_id: string | null;
   public_key: string | null;
   storage_policy: string | null;
@@ -153,8 +158,8 @@ export class AgentRegistryService {
           storagePolicy: dto.security?.storagePolicy ?? 'sealed',
         };
 
-	        await trx.run(
-	          `
+        await trx.run(
+          `
 	            INSERT INTO wunderland_agents (
 	              seed_id,
 	              owner_user_id,
@@ -197,28 +202,28 @@ export class AgentRegistryService {
 	              @updated_at
 	            )
 	          `,
-	          {
-	            seed_id: seedId,
-	            owner_user_id: userId,
-	            display_name: dto.displayName,
-	            bio: dto.bio ?? '',
-	            avatar_url: null,
-	            hexaco_traits: JSON.stringify(dto.personality ?? {}),
-	            security_profile: JSON.stringify(securityProfile),
-	            inference_hierarchy: JSON.stringify({ profile: 'default' }),
-	            step_up_auth_config: null,
-	            base_system_prompt: dto.systemPrompt ?? null,
-	            allowed_tool_ids: JSON.stringify(capabilities),
-	            genesis_event_id: null,
-	            public_key: null,
-	            storage_policy: securityProfile.storagePolicy,
-	            sealed_at: null,
-	            provenance_enabled: securityProfile.outputSigning ? 1 : 0,
-	            status: 'active',
-	            created_at: now,
-	            updated_at: now,
-	          }
-	        );
+          {
+            seed_id: seedId,
+            owner_user_id: userId,
+            display_name: dto.displayName,
+            bio: dto.bio ?? '',
+            avatar_url: null,
+            hexaco_traits: JSON.stringify(dto.personality ?? {}),
+            security_profile: JSON.stringify(securityProfile),
+            inference_hierarchy: JSON.stringify({ profile: 'default' }),
+            step_up_auth_config: null,
+            base_system_prompt: dto.systemPrompt ?? null,
+            allowed_tool_ids: JSON.stringify(capabilities),
+            genesis_event_id: null,
+            public_key: null,
+            storage_policy: securityProfile.storagePolicy,
+            sealed_at: null,
+            provenance_enabled: securityProfile.outputSigning ? 1 : 0,
+            status: 'active',
+            created_at: now,
+            updated_at: now,
+          }
+        );
 
         await trx.run(
           `
@@ -414,39 +419,39 @@ export class AgentRegistryService {
         [seedId]
       );
       if (!existing) throw new AgentNotFoundException(seedId);
-	      if (existing.owner_user_id !== userId) throw new AgentOwnershipException(seedId);
+      if (existing.owner_user_id !== userId) throw new AgentOwnershipException(seedId);
 
-	      // Enforce immutability for sealed agents after explicit sealing.
-	      // During setup (sealed_at is null), configuration remains editable.
-	      const existingSecurityParsed = parseJsonOr<Record<string, unknown>>(
-	        existing.security_profile,
-	        {}
-	      );
-	      const storagePolicy =
-	        typeof existingSecurityParsed.storagePolicy === 'string'
-	          ? existingSecurityParsed.storagePolicy
-	          : existing.storage_policy ?? '';
-	      const sealedAt =
-	        typeof existing.sealed_at === 'number' && Number.isFinite(existing.sealed_at)
-	          ? existing.sealed_at
-	          : null;
-	      const isSealed = storagePolicy === 'sealed' && sealedAt !== null;
+      // Enforce immutability for sealed agents after explicit sealing.
+      // During setup (sealed_at is null), configuration remains editable.
+      const existingSecurityParsed = parseJsonOr<Record<string, unknown>>(
+        existing.security_profile,
+        {}
+      );
+      const storagePolicy =
+        typeof existingSecurityParsed.storagePolicy === 'string'
+          ? existingSecurityParsed.storagePolicy
+          : (existing.storage_policy ?? '');
+      const sealedAt =
+        typeof existing.sealed_at === 'number' && Number.isFinite(existing.sealed_at)
+          ? existing.sealed_at
+          : null;
+      const isSealed = storagePolicy === 'sealed' && sealedAt !== null;
 
-	      if (isSealed) {
-	        const SEALED_MUTATION_FIELDS = [
-	          'displayName',
-	          'bio',
-	          'systemPrompt',
-	          'personality',
-	          'security',
-	          'capabilities',
-	          'metadata',
-	        ] as const;
-	        const attempted = SEALED_MUTATION_FIELDS.filter((f) => (dto as any)[f] !== undefined);
-	        if (attempted.length > 0) {
-	          throw new AgentImmutableException(seedId, [...attempted]);
-	        }
-	      }
+      if (isSealed) {
+        const SEALED_MUTATION_FIELDS = [
+          'displayName',
+          'bio',
+          'systemPrompt',
+          'personality',
+          'security',
+          'capabilities',
+          'metadata',
+        ] as const;
+        const attempted = SEALED_MUTATION_FIELDS.filter((f) => (dto as any)[f] !== undefined);
+        if (attempted.length > 0) {
+          throw new AgentImmutableException(seedId, [...attempted]);
+        }
+      }
 
       const existingCapabilities = parseJsonOr<string[]>(existing.allowed_tool_ids, []);
       const capabilities = dto.capabilities
@@ -456,27 +461,27 @@ export class AgentRegistryService {
       const existingPersonality = parseJsonOr<Record<string, number>>(existing.hexaco_traits, {});
       const personality = dto.personality ? (dto.personality as any) : existingPersonality;
 
-	      const existingSecurity = parseJsonOr<Record<string, unknown>>(existing.security_profile, {});
-	      const security = dto.security
-	        ? { ...existingSecurity, ...(dto.security as any) }
-	        : existingSecurity;
+      const existingSecurity = parseJsonOr<Record<string, unknown>>(existing.security_profile, {});
+      const security = dto.security
+        ? { ...existingSecurity, ...(dto.security as any) }
+        : existingSecurity;
 
-	      const nextStoragePolicy =
-	        typeof (security as any).storagePolicy === 'string'
-	          ? String((security as any).storagePolicy)
-	          : typeof existingSecurity.storagePolicy === 'string'
-	            ? String(existingSecurity.storagePolicy)
-	            : existing.storage_policy ?? 'sealed';
-	      const outputSigning = (security as any).outputSigning;
-	      const nextProvenanceEnabled =
-	        typeof outputSigning === 'boolean'
-	          ? outputSigning
-	            ? 1
-	            : 0
-	          : Number(existing.provenance_enabled ?? 0);
+      const nextStoragePolicy =
+        typeof (security as any).storagePolicy === 'string'
+          ? String((security as any).storagePolicy)
+          : typeof existingSecurity.storagePolicy === 'string'
+            ? String(existingSecurity.storagePolicy)
+            : (existing.storage_policy ?? 'sealed');
+      const outputSigning = (security as any).outputSigning;
+      const nextProvenanceEnabled =
+        typeof outputSigning === 'boolean'
+          ? outputSigning
+            ? 1
+            : 0
+          : Number(existing.provenance_enabled ?? 0);
 
-	      await trx.run(
-	        `
+      await trx.run(
+        `
 	          UPDATE wunderland_agents
 	             SET display_name = COALESCE(@display_name, display_name),
 	                 bio = COALESCE(@bio, bio),
@@ -489,76 +494,113 @@ export class AgentRegistryService {
 	                 updated_at = @updated_at
 	           WHERE seed_id = @seed_id
 	        `,
-	        {
-	          seed_id: seedId,
-	          display_name: dto.displayName ?? null,
-	          bio: dto.bio ?? null,
-	          base_system_prompt: dto.systemPrompt ?? null,
-	          hexaco_traits: JSON.stringify(personality ?? {}),
-	          security_profile: JSON.stringify(security ?? {}),
-	          storage_policy: nextStoragePolicy,
-	          provenance_enabled: nextProvenanceEnabled,
-	          allowed_tool_ids: JSON.stringify(capabilities),
-	          updated_at: now,
-	        }
-	      );
-	    });
+        {
+          seed_id: seedId,
+          display_name: dto.displayName ?? null,
+          bio: dto.bio ?? null,
+          base_system_prompt: dto.systemPrompt ?? null,
+          hexaco_traits: JSON.stringify(personality ?? {}),
+          security_profile: JSON.stringify(security ?? {}),
+          storage_policy: nextStoragePolicy,
+          provenance_enabled: nextProvenanceEnabled,
+          allowed_tool_ids: JSON.stringify(capabilities),
+          updated_at: now,
+        }
+      );
+    });
 
-	    const result = await this.getAgentBySeedIdOrThrow(seedId);
-	    return { agent: this.mapAgentProfile(result.agent, result.citizen) };
-	  }
+    const result = await this.getAgentBySeedIdOrThrow(seedId);
+    return { agent: this.mapAgentProfile(result.agent, result.citizen) };
+  }
 
-	  async sealAgent(
-	    userId: string,
-	    seedId: string
-	  ): Promise<{ seedId: string; sealed: boolean; sealedAt: string }> {
-	    const now = Date.now();
+  async sealAgent(
+    userId: string,
+    seedId: string
+  ): Promise<{ seedId: string; sealed: boolean; sealedAt: string }> {
+    const now = Date.now();
 
-	    await this.db.transaction(async (trx: StorageAdapter) => {
-	      const existing = await trx.get<WunderlandAgentRow>(
-	        'SELECT * FROM wunderland_agents WHERE seed_id = ? LIMIT 1',
-	        [seedId]
-	      );
-	      if (!existing) throw new AgentNotFoundException(seedId);
-	      if (existing.owner_user_id !== userId) throw new AgentOwnershipException(seedId);
+    await this.db.transaction(async (trx: StorageAdapter) => {
+      const existing = await trx.get<WunderlandAgentRow>(
+        'SELECT * FROM wunderland_agents WHERE seed_id = ? LIMIT 1',
+        [seedId]
+      );
+      if (!existing) throw new AgentNotFoundException(seedId);
+      if (existing.owner_user_id !== userId) throw new AgentOwnershipException(seedId);
 
-	      const sealedAt =
-	        typeof existing.sealed_at === 'number' && Number.isFinite(existing.sealed_at)
-	          ? existing.sealed_at
-	          : null;
-	      if (sealedAt !== null) {
-	        return;
-	      }
+      const sealedAt =
+        typeof existing.sealed_at === 'number' && Number.isFinite(existing.sealed_at)
+          ? existing.sealed_at
+          : null;
+      const toolsetHashExisting =
+        typeof existing.toolset_hash === 'string' && existing.toolset_hash.trim()
+          ? existing.toolset_hash.trim()
+          : null;
 
-	      const existingSecurity = parseJsonOr<Record<string, unknown>>(existing.security_profile, {});
-	      const nextSecurity = { ...existingSecurity, storagePolicy: 'sealed' };
+      // Always compute toolset hash when sealing for the first time.
+      // For already-sealed agents, this acts as a safe backfill when toolset_hash is still null.
+      const shouldComputeToolset = sealedAt === null || toolsetHashExisting === null;
+      const capabilities = parseJsonOr<string[]>(existing.allowed_tool_ids, []);
+      const toolsetManifest = shouldComputeToolset ? buildToolsetManifestV1(capabilities) : null;
+      const toolsetComputed = toolsetManifest ? computeToolsetHashV1(toolsetManifest) : null;
 
-	      await trx.run(
-	        `
-	          UPDATE wunderland_agents
-	             SET security_profile = @security_profile,
-	                 storage_policy = @storage_policy,
-	                 sealed_at = @sealed_at,
-	                 updated_at = @updated_at
-	           WHERE seed_id = @seed_id
-	        `,
-	        {
-	          seed_id: seedId,
-	          security_profile: JSON.stringify(nextSecurity),
-	          storage_policy: 'sealed',
-	          sealed_at: now,
-	          updated_at: now,
-	        }
-	      );
-	    });
+      if (sealedAt !== null) {
+        if (!toolsetHashExisting && toolsetComputed) {
+          await trx.run(
+            `
+              UPDATE wunderland_agents
+                 SET toolset_manifest_json = @toolset_manifest_json,
+                     toolset_hash = @toolset_hash,
+                     updated_at = @updated_at
+               WHERE seed_id = @seed_id
+            `,
+            {
+              seed_id: seedId,
+              toolset_manifest_json: toolsetComputed.manifestJson,
+              toolset_hash: toolsetComputed.toolsetHash,
+              updated_at: now,
+            }
+          );
+        }
+        return;
+      }
 
-	    const result = await this.getAgentBySeedIdOrThrow(seedId);
-	    const sealedAt =
-	      typeof result.agent.sealed_at === 'number' && Number.isFinite(result.agent.sealed_at)
-	        ? result.agent.sealed_at
-	        : now;
-	    return { seedId, sealed: true, sealedAt: epochToIso(sealedAt) };
-	  }
+      if (toolsetManifest && toolsetManifest.unresolvedCapabilities.length > 0) {
+        throw new AgentToolsetUnresolvedException(seedId, toolsetManifest.unresolvedCapabilities);
+      }
+
+      const existingSecurity = parseJsonOr<Record<string, unknown>>(existing.security_profile, {});
+      const nextSecurity = { ...existingSecurity, storagePolicy: 'sealed' };
+
+      await trx.run(
+        `
+          UPDATE wunderland_agents
+             SET security_profile = @security_profile,
+                 storage_policy = @storage_policy,
+                 sealed_at = @sealed_at,
+                 toolset_manifest_json = @toolset_manifest_json,
+                 toolset_hash = @toolset_hash,
+                 updated_at = @updated_at
+           WHERE seed_id = @seed_id
+        `,
+        {
+          seed_id: seedId,
+          security_profile: JSON.stringify(nextSecurity),
+          storage_policy: 'sealed',
+          sealed_at: now,
+          toolset_manifest_json: toolsetComputed?.manifestJson ?? null,
+          toolset_hash: toolsetComputed?.toolsetHash ?? null,
+          updated_at: now,
+        }
+      );
+    });
+
+    const result = await this.getAgentBySeedIdOrThrow(seedId);
+    const sealedAt =
+      typeof result.agent.sealed_at === 'number' && Number.isFinite(result.agent.sealed_at)
+        ? result.agent.sealed_at
+        : now;
+    return { seedId, sealed: true, sealedAt: epochToIso(sealedAt) };
+  }
 
   async archiveAgent(
     userId: string,
@@ -646,40 +688,45 @@ export class AgentRegistryService {
     return { agent, citizen };
   }
 
-	  private mapAgentProfile(agent: WunderlandAgentRow, citizen: WunderlandCitizenRow): AgentProfile {
-	    const personality = parseJsonOr<Record<string, number>>(agent.hexaco_traits, {});
-	    const security = parseJsonOr<Record<string, unknown>>(agent.security_profile, {});
-	    const capabilities = parseJsonOr<string[]>(agent.allowed_tool_ids, []);
-	    const storagePolicy =
-	      typeof security.storagePolicy === 'string'
-	        ? security.storagePolicy
-	        : agent.storage_policy ?? 'encrypted';
-	    const sealedAt =
-	      typeof agent.sealed_at === 'number' && Number.isFinite(agent.sealed_at)
-	        ? epochToIso(agent.sealed_at)
-	        : null;
+  private mapAgentProfile(agent: WunderlandAgentRow, citizen: WunderlandCitizenRow): AgentProfile {
+    const personality = parseJsonOr<Record<string, number>>(agent.hexaco_traits, {});
+    const security = parseJsonOr<Record<string, unknown>>(agent.security_profile, {});
+    const capabilities = parseJsonOr<string[]>(agent.allowed_tool_ids, []);
+    const storagePolicy =
+      typeof security.storagePolicy === 'string'
+        ? security.storagePolicy
+        : (agent.storage_policy ?? 'encrypted');
+    const sealedAt =
+      typeof agent.sealed_at === 'number' && Number.isFinite(agent.sealed_at)
+        ? epochToIso(agent.sealed_at)
+        : null;
+    const toolsetHash =
+      typeof agent.toolset_hash === 'string' && agent.toolset_hash.trim()
+        ? agent.toolset_hash.trim()
+        : null;
 
-	    return {
-	      seedId: agent.seed_id,
-	      ownerUserId: agent.owner_user_id,
-	      displayName: agent.display_name,
-	      bio: agent.bio ?? '',
-	      avatarUrl: agent.avatar_url,
-	      status: agent.status ?? 'active',
-	      createdAt: epochToIso(agent.created_at),
-	      updatedAt: epochToIso(agent.updated_at),
-	      personality,
-	      security,
-	      immutability: {
-	        storagePolicy,
-	        sealedAt,
-	        active: storagePolicy === 'sealed' && sealedAt !== null,
-	      },
-	      systemPrompt: agent.base_system_prompt,
-	      capabilities,
-	      citizen: {
-	        level: citizen.level ?? 1,
-	        xp: citizen.xp ?? 0,
+    return {
+      seedId: agent.seed_id,
+      ownerUserId: agent.owner_user_id,
+      displayName: agent.display_name,
+      bio: agent.bio ?? '',
+      avatarUrl: agent.avatar_url,
+      status: agent.status ?? 'active',
+      createdAt: epochToIso(agent.created_at),
+      updatedAt: epochToIso(agent.updated_at),
+      personality,
+      security,
+      immutability: {
+        storagePolicy,
+        sealedAt,
+        active: storagePolicy === 'sealed' && sealedAt !== null,
+        toolsetHash,
+      },
+      systemPrompt: agent.base_system_prompt,
+      capabilities,
+      citizen: {
+        level: citizen.level ?? 1,
+        xp: citizen.xp ?? 0,
         totalPosts: citizen.total_posts ?? 0,
         joinedAt: epochToIso(citizen.joined_at),
         isActive: Boolean(citizen.is_active),

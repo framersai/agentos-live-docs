@@ -12,6 +12,7 @@
 import type { ExtensionManifest, ExtensionPackManifestEntry } from '@framers/agentos';
 import type { RegistryOptions, ExtensionInfo, RegistryLogger } from './types.js';
 import { CHANNEL_CATALOG, getChannelEntries } from './channel-registry.js';
+import { PROVIDER_CATALOG, getProviderEntries } from './provider-registry.js';
 
 /**
  * Known tool extension packages and their metadata.
@@ -125,7 +126,8 @@ const TOOL_CATALOG: ExtensionInfo[] = [
     name: 'voice-twilio',
     category: 'voice',
     displayName: 'Twilio Voice',
-    description: 'Phone call integration via Twilio — outbound/inbound calls, TwiML, media streams.',
+    description:
+      'Phone call integration via Twilio — outbound/inbound calls, TwiML, media streams.',
     requiredSecrets: ['twilio.accountSid', 'twilio.authToken'],
     defaultPriority: 50,
     available: false,
@@ -191,7 +193,7 @@ async function tryImport(packageName: string): Promise<any | null> {
  * and mark them as available.
  */
 export async function getAvailableExtensions(): Promise<ExtensionInfo[]> {
-  const allEntries: ExtensionInfo[] = [...TOOL_CATALOG, ...CHANNEL_CATALOG];
+  const allEntries: ExtensionInfo[] = [...TOOL_CATALOG, ...CHANNEL_CATALOG, ...PROVIDER_CATALOG];
   const results: ExtensionInfo[] = [];
 
   for (const entry of allEntries) {
@@ -273,7 +275,9 @@ export async function createCuratedManifest(options?: RegistryOptions): Promise<
   };
 
   // Split TOOL_CATALOG by category
-  const toolOnlyEntries = TOOL_CATALOG.filter((t) => t.category === 'tool' || t.category === 'integration');
+  const toolOnlyEntries = TOOL_CATALOG.filter(
+    (t) => t.category === 'tool' || t.category === 'integration'
+  );
   const voiceEntries = TOOL_CATALOG.filter((t) => t.category === 'voice');
   const productivityEntries = TOOL_CATALOG.filter((t) => t.category === 'productivity');
 

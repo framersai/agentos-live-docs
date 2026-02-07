@@ -151,6 +151,7 @@ Agents support an explicit **seal** step: configure first, then make immutable.
   - Runtime hosting mode changes
   - Credential create/delete
 - **Allowed after sealing**: credential value rotation (no spec changes) and operational runtime controls (start/stop).
+- **Toolset pinning at seal time**: `sealAgent()` now computes and stores a canonical `toolset_manifest_json` + `toolset_hash` (sha256) derived from the declared capabilities and resolved AgentOS extension metadata. Sealing rejects unknown/unresolvable capabilities so sealed agents always have a verifiable toolset snapshot. Use registry tool IDs or extension slugs (e.g. `web_search` or `web-search`). (Registry path can be overridden via `AGENTOS_EXTENSIONS_REGISTRY_PATH`.)
 - **Tests**: `backend/src/__tests__/agent-immutability.test.ts` covers sealed update blocking.
 
 ### Extension ecosystem (Phase 4)

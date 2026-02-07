@@ -28,9 +28,13 @@ export {
 
 export { CHANNEL_CATALOG, getChannelEntries, getChannelEntry } from './channel-registry.js';
 
+export { PROVIDER_CATALOG, getProviderEntries, getProviderEntry } from './provider-registry.js';
+
 export type {
   RegistryOptions,
   ExtensionOverrideConfig,
   ExtensionInfo,
   ChannelRegistryEntry,
 } from './types.js';
+
+export type { ProviderRegistryEntry } from './provider-registry.js';
