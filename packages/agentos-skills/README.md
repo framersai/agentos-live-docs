@@ -73,6 +73,53 @@ const matches = searchSkills('github');
 | **@framers/agentos-skills-registry** | Typed catalog + query helpers + factories |     Yes      | `agentos-skills`, optionally `agentos` |
 | **@framers/agentos**                 | Full cognitive runtime with SkillRegistry |     Yes      | Many                                   |
 
+## Contributing a Skill
+
+1. **Fork** the [agentos-skills](https://github.com/framersai/agentos-skills) repository.
+2. **Create** a `SKILL.md` file in `registry/community/<your-skill>/`.
+3. **Open a PR** against `main`.
+
+See [`CONTRIBUTING.md`](https://github.com/framersai/agentos-skills/blob/main/CONTRIBUTING.md) for the full SKILL.md format spec and submission process.
+
+## Community vs Curated
+
+Skills ship in two tiers, all bundled in this single package:
+
+| Tier          | Namespace    | Maintained By   | Verified |
+| ------------- | ------------ | --------------- | :------: |
+| **Curated**   | `wunderland` | Core staff      |   Yes    |
+| **Community** | `community`  | PR contributors |    No    |
+
+Curated skills live in `registry/curated/` and are maintained and tested by the AgentOS team. Community skills live in `registry/community/` and are submitted via pull request from the community.
+
+## Skill Format Quick Reference
+
+```yaml
+---
+name: my-skill
+description: Short description of what this skill does
+namespace: community # or 'wunderland' for curated
+category: productivity # information | developer-tools | communication | productivity | devops | media | security | creative
+tags: [example, template]
+metadata:
+  openclaw:
+    emoji: "\U0001F4A1"
+    primaryEnv: MY_API_KEY # optional
+    os: [darwin, linux] # optional platform restriction
+    requires:
+      bins: [my-tool] # all must exist
+    install:
+      - id: brew
+        kind: brew
+        formula: my-tool
+        bins: [my-tool]
+        label: 'Install via Homebrew'
+---
+# My Skill
+
+Instructions injected into the agent's system prompt go here.
+```
+
 ## License
 
 MIT

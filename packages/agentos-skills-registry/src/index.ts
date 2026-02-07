@@ -65,6 +65,9 @@ export {
   getCategories,
   getSkillsByTag,
   searchSkills,
+  getCuratedSkills,
+  getCommunitySkills,
+  getAllSkills,
 } from './catalog.js';
 export type { SkillCatalogEntry } from './catalog.js';
 
@@ -74,10 +77,13 @@ export type { SkillCatalogEntry } from './catalog.js';
 let _agentosSkillsMod: {
   SkillRegistry: new (config?: SkillsConfig) => {
     loadFromDirs(dirs: string[]): Promise<number>;
+    loadFromDir?(dir: string, options?: { source?: string }): Promise<number>;
     buildSnapshot(options?: {
       platform?: string;
       eligibility?: SkillEligibilityContext;
       filter?: string[];
+      strict?: boolean;
+      runtimeConfig?: Record<string, unknown>;
     }): SkillSnapshot;
   };
 } | null = null;
@@ -199,7 +205,11 @@ export async function createCuratedSkillRegistry(
 ): Promise<InstanceType<Awaited<ReturnType<typeof requireAgentOS>>['SkillRegistry']>> {
   const { SkillRegistry } = await requireAgentOS();
   const registry = new SkillRegistry(options?.config);
-  await registry.loadFromDirs([getBundledCuratedSkillsDir()]);
+  if (typeof registry.loadFromDir === 'function') {
+    await registry.loadFromDir(getBundledCuratedSkillsDir(), { source: 'bundled' });
+  } else {
+    await registry.loadFromDirs([getBundledCuratedSkillsDir()]);
+  }
   return registry;
 }
 

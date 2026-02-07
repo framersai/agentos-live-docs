@@ -1,6 +1,6 @@
 {
   "name": "@framers/agentos-skills",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Community registry of skills for AgentOS (SKILL.md prompt modules)",
   "type": "module",
   "sideEffects": false,
@@ -18,6 +18,9 @@
     "types.d.ts",
     "README.md"
   ],
+  "scripts": {
+    "validate": "node scripts/validate-skill.mjs"
+  },
   "publishConfig": {
     "access": "public"
   },

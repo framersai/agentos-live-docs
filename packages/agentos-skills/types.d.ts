@@ -46,6 +46,7 @@ export interface SkillCatalogEntry {
   path: string;
   description: string;
   verified: boolean;
+  source?: 'curated' | 'community';
   verifiedAt?: string;
   keywords?: string[];
   metadata?: SkillMetadata;

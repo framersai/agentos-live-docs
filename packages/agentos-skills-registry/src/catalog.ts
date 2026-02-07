@@ -36,6 +36,9 @@ export interface SkillCatalogEntry {
   /** Relative path from the agentos-skills package root to the SKILL.md */
   skillPath: string;
 
+  /** Skill source: curated (staff-maintained) or community-submitted */
+  source?: 'curated' | 'community';
+
   /** All curated skills are in the wunderland namespace */
   namespace: 'wunderland';
 }
@@ -57,6 +60,7 @@ export const SKILLS_CATALOG: SkillCatalogEntry[] = [
     requiredTools: ['web-search'],
     skillPath: 'registry/curated/weather/SKILL.md',
     namespace: 'wunderland',
+    source: 'curated' as const,
   },
   {
     name: 'summarize',
@@ -69,6 +73,7 @@ export const SKILLS_CATALOG: SkillCatalogEntry[] = [
     requiredTools: ['web-search'],
     skillPath: 'registry/curated/summarize/SKILL.md',
     namespace: 'wunderland',
+    source: 'curated' as const,
   },
 
   // ── Developer Tools ───────────────────────────────────────────────────
@@ -83,6 +88,7 @@ export const SKILLS_CATALOG: SkillCatalogEntry[] = [
     requiredTools: [],
     skillPath: 'registry/curated/github/SKILL.md',
     namespace: 'wunderland',
+    source: 'curated' as const,
   },
   {
     name: 'coding-agent',
@@ -95,6 +101,7 @@ export const SKILLS_CATALOG: SkillCatalogEntry[] = [
     requiredTools: ['filesystem'],
     skillPath: 'registry/curated/coding-agent/SKILL.md',
     namespace: 'wunderland',
+    source: 'curated' as const,
   },
 
   // ── Communication ─────────────────────────────────────────────────────
@@ -109,6 +116,7 @@ export const SKILLS_CATALOG: SkillCatalogEntry[] = [
     requiredTools: [],
     skillPath: 'registry/curated/slack-helper/SKILL.md',
     namespace: 'wunderland',
+    source: 'curated' as const,
   },
   {
     name: 'discord-helper',
@@ -120,6 +128,7 @@ export const SKILLS_CATALOG: SkillCatalogEntry[] = [
     requiredTools: [],
     skillPath: 'registry/curated/discord-helper/SKILL.md',
     namespace: 'wunderland',
+    source: 'curated' as const,
   },
 
   // ── Productivity ──────────────────────────────────────────────────────
@@ -134,6 +143,7 @@ export const SKILLS_CATALOG: SkillCatalogEntry[] = [
     requiredTools: [],
     skillPath: 'registry/curated/notion/SKILL.md',
     namespace: 'wunderland',
+    source: 'curated' as const,
   },
   {
     name: 'obsidian',
@@ -146,6 +156,7 @@ export const SKILLS_CATALOG: SkillCatalogEntry[] = [
     requiredTools: ['filesystem'],
     skillPath: 'registry/curated/obsidian/SKILL.md',
     namespace: 'wunderland',
+    source: 'curated' as const,
   },
   {
     name: 'trello',
@@ -158,6 +169,7 @@ export const SKILLS_CATALOG: SkillCatalogEntry[] = [
     requiredTools: [],
     skillPath: 'registry/curated/trello/SKILL.md',
     namespace: 'wunderland',
+    source: 'curated' as const,
   },
   {
     name: 'apple-notes',
@@ -170,6 +182,7 @@ export const SKILLS_CATALOG: SkillCatalogEntry[] = [
     requiredTools: ['filesystem'],
     skillPath: 'registry/curated/apple-notes/SKILL.md',
     namespace: 'wunderland',
+    source: 'curated' as const,
   },
   {
     name: 'apple-reminders',
@@ -182,6 +195,7 @@ export const SKILLS_CATALOG: SkillCatalogEntry[] = [
     requiredTools: ['filesystem'],
     skillPath: 'registry/curated/apple-reminders/SKILL.md',
     namespace: 'wunderland',
+    source: 'curated' as const,
   },
 
   // ── DevOps ────────────────────────────────────────────────────────────
@@ -196,6 +210,7 @@ export const SKILLS_CATALOG: SkillCatalogEntry[] = [
     requiredTools: ['web-search'],
     skillPath: 'registry/curated/healthcheck/SKILL.md',
     namespace: 'wunderland',
+    source: 'curated' as const,
   },
 
   // ── Media ─────────────────────────────────────────────────────────────
@@ -210,6 +225,7 @@ export const SKILLS_CATALOG: SkillCatalogEntry[] = [
     requiredTools: [],
     skillPath: 'registry/curated/spotify-player/SKILL.md',
     namespace: 'wunderland',
+    source: 'curated' as const,
   },
   {
     name: 'whisper-transcribe',
@@ -222,6 +238,7 @@ export const SKILLS_CATALOG: SkillCatalogEntry[] = [
     requiredTools: ['filesystem'],
     skillPath: 'registry/curated/whisper-transcribe/SKILL.md',
     namespace: 'wunderland',
+    source: 'curated' as const,
   },
 
   // ── Security ──────────────────────────────────────────────────────────
@@ -236,6 +253,7 @@ export const SKILLS_CATALOG: SkillCatalogEntry[] = [
     requiredTools: [],
     skillPath: 'registry/curated/1password/SKILL.md',
     namespace: 'wunderland',
+    source: 'curated' as const,
   },
 
   // ── Creative ──────────────────────────────────────────────────────────
@@ -250,6 +268,7 @@ export const SKILLS_CATALOG: SkillCatalogEntry[] = [
     requiredTools: [],
     skillPath: 'registry/curated/image-gen/SKILL.md',
     namespace: 'wunderland',
+    source: 'curated' as const,
   },
 ];
 
@@ -308,4 +327,25 @@ export function searchSkills(query: string): SkillCatalogEntry[] {
       s.description.toLowerCase().includes(lower) ||
       s.tags.some((t) => t.toLowerCase().includes(lower))
   );
+}
+
+/**
+ * Get only staff-curated skills.
+ */
+export function getCuratedSkills(): SkillCatalogEntry[] {
+  return SKILLS_CATALOG.filter((s) => s.source === 'curated');
+}
+
+/**
+ * Get only community-submitted skills.
+ */
+export function getCommunitySkills(): SkillCatalogEntry[] {
+  return SKILLS_CATALOG.filter((s) => s.source === 'community');
+}
+
+/**
+ * Get all skills (curated + community). Alias for SKILLS_CATALOG.
+ */
+export function getAllSkills(): SkillCatalogEntry[] {
+  return SKILLS_CATALOG;
 }

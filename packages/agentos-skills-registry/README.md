@@ -92,6 +92,36 @@ The `@framers/agentos` dependency is loaded **lazily** at runtime via dynamic `i
 - `import { searchSkills } from '@framers/agentos-skills-registry/catalog'` — **zero** peer deps loaded
 - `import { createCuratedSkillRegistry } from '@framers/agentos-skills-registry'` — `@framers/agentos` loaded **only when called**
 
+## Community Skills
+
+The catalog includes both **curated** (staff-maintained) and **community** (PR-submitted) skills. Use the source-aware helpers to filter by origin:
+
+```typescript
+import {
+  getCuratedSkills,
+  getCommunitySkills,
+  getAllSkills,
+} from '@framers/agentos-skills-registry/catalog';
+
+// Only staff-maintained, verified skills
+const curated = getCuratedSkills();
+
+// Only community-contributed skills
+const community = getCommunitySkills();
+
+// Everything (curated + community)
+const all = getAllSkills();
+
+// Combine with existing filters
+import { getSkillsByCategory } from '@framers/agentos-skills-registry/catalog';
+
+const devTools = getSkillsByCategory('developer-tools');
+const curatedDevTools = devTools.filter((s) => s.source === 'curated');
+const communityDevTools = devTools.filter((s) => s.source === 'community');
+```
+
+Each skill entry includes a `source` field (`'curated'` or `'community'`) so you can distinguish provenance at runtime.
+
 ## Relationship to Other Packages
 
 ```

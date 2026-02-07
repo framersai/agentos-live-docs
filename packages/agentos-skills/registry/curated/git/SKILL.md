@@ -1,6 +1,13 @@
 ---
 name: git
+version: '1.0.0'
 description: Work with Git repositories from the command line.
+author: Wunderland
+namespace: wunderland
+category: developer-tools
+tags: [git, version-control, vcs, branching, commits]
+requires_secrets: []
+requires_tools: []
 metadata:
   agentos:
     emoji: '🧰'
