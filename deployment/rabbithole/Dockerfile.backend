@@ -61,6 +61,18 @@ COPY --from=builder /repo/backend/dist ./dist
 COPY --from=builder /repo/backend/package.json ./package.json
 COPY --from=builder /repo/node_modules ./node_modules
 
+# Copy workspace packages that are symlinked from node_modules.
+# pnpm creates symlinks like @framers/shared -> ../../packages/shared
+# These point outside /app, so we need the actual source directories.
+COPY --from=builder /repo/packages/shared ./packages/shared
+COPY --from=builder /repo/packages/agentos-extensions ./packages/agentos-extensions
+COPY --from=builder /repo/packages/agentos-extensions-registry ./packages/agentos-extensions-registry
+COPY --from=builder /repo/packages/agentos-ext-skills ./packages/agentos-ext-skills
+COPY --from=builder /repo/packages/agentos-skills-registry ./packages/agentos-skills-registry
+COPY --from=builder /repo/packages/rabbithole ./packages/rabbithole
+COPY --from=builder /repo/packages/codex-extensions ./packages/codex-extensions
+COPY --from=builder /repo/packages/theme-tokens ./packages/theme-tokens
+
 EXPOSE 3001
 
 CMD ["node", "dist/src/main.js"]
