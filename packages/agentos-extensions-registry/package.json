@@ -1,6 +1,10 @@
 {
   "name": "@framers/agentos-extensions-registry",
-  "version": "0.1.0",
+  "version": "0.1.1",
+  "files": [
+    "dist",
+    "README.md"
+  ],
   "description": "Curated extension registry bundle for AgentOS — single import to register channels, tools, and integrations",
   "type": "module",
   "sideEffects": false,
@@ -35,27 +39,30 @@
     "url": "https://frame.dev"
   },
   "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
   "peerDependencies": {
-    "@framers/agentos": "workspace:*"
+    "@framers/agentos": ">=0.1.0"
+  },
+  "peerDependenciesMeta": {
+    "@framers/agentos": {
+      "optional": false
+    }
   },
   "optionalDependencies": {
-    "@framers/agentos-ext-auth": "workspace:*",
-    "@framers/agentos-ext-web-search": "workspace:*",
-    "@framers/agentos-ext-web-browser": "workspace:*",
-    "@framers/agentos-ext-telegram": "workspace:*",
-    "@framers/agentos-ext-cli-executor": "workspace:*",
-    "@framers/agentos-ext-giphy": "workspace:*",
-    "@framers/agentos-ext-image-search": "workspace:*",
-    "@framers/agentos-ext-voice-synthesis": "workspace:*",
-    "@framers/agentos-ext-news-search": "workspace:*",
-    "@framers/agentos-ext-channel-telegram": "workspace:*",
-    "@framers/agentos-ext-channel-whatsapp": "workspace:*",
-    "@framers/agentos-ext-channel-discord": "workspace:*",
-    "@framers/agentos-ext-channel-slack": "workspace:*",
-    "@framers/agentos-ext-channel-webchat": "workspace:*"
+    "@framers/agentos-ext-auth": "^1.0.0",
+    "@framers/agentos-ext-web-search": "^1.0.0",
+    "@framers/agentos-ext-web-browser": "^1.0.0",
+    "@framers/agentos-ext-telegram": "^1.0.0",
+    "@framers/agentos-ext-cli-executor": "^1.0.0",
+    "@framers/agentos-ext-giphy": "^1.0.0",
+    "@framers/agentos-ext-image-search": "^1.0.0",
+    "@framers/agentos-ext-voice-synthesis": "^1.0.0",
+    "@framers/agentos-ext-news-search": "^1.0.0"
   },
   "devDependencies": {
-    "@framers/agentos": "workspace:*",
+    "@framers/agentos": "^0.1.0",
     "typescript": "^5.4.5",
     "vitest": "^1.0.0"
   }
