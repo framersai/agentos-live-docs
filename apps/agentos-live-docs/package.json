@@ -2,21 +2,49 @@
   "name": "@framersai/agentos-live-docs",
   "version": "1.0.0",
   "private": true,
-  "type": "module",
-  "description": "Live TypeDoc documentation for AgentOS with agentos.sh styling",
   "scripts": {
-    "dev": "npx serve . -l 4002",
-    "wrap": "node scripts/wrap-typedoc.mjs",
-    "convert-md": "node scripts/convert-markdown.mjs",
-    "build": "npm run convert-md && npm run wrap"
+    "pull-docs": "node scripts/pull-docs.mjs",
+    "prebuild": "npm run pull-docs",
+    "docusaurus": "docusaurus",
+    "start": "docusaurus start",
+    "build": "docusaurus build",
+    "swizzle": "docusaurus swizzle",
+    "deploy": "docusaurus deploy",
+    "clear": "docusaurus clear",
+    "serve": "docusaurus serve"
   },
   "dependencies": {
-    "glob": "^10.3.10",
-    "marked": "^12.0.0",
-    "highlight.js": "^11.9.0"
+    "@docusaurus/core": "^3.7.0",
+    "@docusaurus/preset-classic": "^3.7.0",
+    "@docusaurus/plugin-client-redirects": "^3.7.0",
+    "@docusaurus/theme-mermaid": "^3.7.0",
+    "docusaurus-plugin-typedoc": "^1.4.0",
+    "typedoc": "~0.28.0",
+    "typedoc-plugin-markdown": "^4.5.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "clsx": "^2.1.0",
+    "@mdx-js/react": "^3.0.0"
   },
   "devDependencies": {
-    "serve": "^14.2.1"
+    "@docusaurus/module-type-aliases": "^3.7.0",
+    "@docusaurus/types": "^3.7.0",
+    "typescript": "~5.6.0"
+  },
+  "browserslist": {
+    "production": [
+      ">0.5%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 3 chrome version",
+      "last 3 firefox version",
+      "last 5 safari version"
+    ]
+  },
+  "engines": {
+    "node": ">=18.0"
   },
   "repository": {
     "type": "git",
