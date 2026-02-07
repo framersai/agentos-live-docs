@@ -23,12 +23,21 @@ RUN pnpm install --no-frozen-lockfile --shamefully-hoist
 # Clean stale dist artifacts from any prior build / submodule state.
 RUN rm -rf packages/agentos/dist packages/agentos-extensions-registry/dist
 
-# Build leaf deps first, then agentos explicitly (ensures channels types exist),
-# then the backend. Extensions are loaded at runtime and don't need compiling.
+# Build leaf deps first, then agentos, then the tool extensions that wunderland
+# statically imports, then wunderland + SDK, then the backend.
+# NOTE: channel/integration extensions (telegram, discord, etc.) are NOT built
+# here — they have pending type migrations and are loaded lazily at runtime.
 RUN pnpm --filter @framers/shared build \
  && pnpm --filter @framers/sql-storage-adapter build \
  && pnpm --filter @framers/agentos build \
  && pnpm --filter @framers/agentos-extensions-registry build \
+ && pnpm --filter @framers/agentos-ext-cli-executor build \
+ && pnpm --filter @framers/agentos-ext-web-search build \
+ && pnpm --filter @framers/agentos-ext-web-browser build \
+ && pnpm --filter @framers/agentos-ext-giphy build \
+ && pnpm --filter @framers/agentos-ext-image-search build \
+ && pnpm --filter @framers/agentos-ext-voice-synthesis build \
+ && pnpm --filter @framers/agentos-ext-news-search build \
  && pnpm --filter wunderland build \
  && pnpm --filter @wunderland-sol/sdk build \
  && pnpm --filter voice-chat-assistant-backend build
