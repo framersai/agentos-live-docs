@@ -31,6 +31,9 @@ jobs:
           script: |
             set -euo pipefail
 
+            # Use PAT for all github.com HTTPS (needed for private submodules)
+            git config --global url."https://${GH_PAT}@github.com/".insteadOf "https://github.com/"
+
             REPO_DIR="/app/wunderland"
             REPO_URL="https://${GH_PAT}@github.com/manicinc/voice-chat-assistant.git"
 
