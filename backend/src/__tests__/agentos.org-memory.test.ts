@@ -1,6 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { initializeAppDatabase, getAppDatabase } from '../core/database/appDatabase.js';
+import {
+  initializeAppDatabase,
+  closeAppDatabase,
+  getAppDatabase,
+  __setAppDatabaseAdapterResolverForTests,
+} from '../core/database/appDatabase.js';
 import { sqlKnowledgeBaseService } from '../core/knowledge/SqlKnowledgeBaseService.js';
 import { createRollingSummaryMemorySink } from '../integrations/agentos/agentos.rolling-memory-sink.js';
 import {
@@ -9,13 +14,24 @@ import {
   updateOrganizationSettings,
 } from '../features/organization/organization.repository.js';
 
+let initPromise: Promise<void> | null = null;
+
 async function setupDb(): Promise<void> {
-  const resolver = async () => {
-    const { createDatabase } = await import('@framers/sql-storage-adapter');
-    return await createDatabase({ type: 'sqljs' as any });
-  };
-  await initializeAppDatabase(resolver as any);
-  await sqlKnowledgeBaseService.initialize();
+  if (initPromise) return initPromise;
+  initPromise = (async () => {
+    await closeAppDatabase();
+    __setAppDatabaseAdapterResolverForTests(async () => {
+      const { resolveStorageAdapter } = await import('@framers/sql-storage-adapter');
+      return await resolveStorageAdapter({
+        priority: ['sqljs'],
+        // Force in-memory sql.js mode (disable fs-backed persistence).
+        openOptions: { filePath: '' },
+      } as any);
+    });
+    await initializeAppDatabase();
+    await sqlKnowledgeBaseService.initialize();
+  })();
+  return initPromise;
 }
 
 async function seedUsers(userIds: string[]): Promise<void> {

@@ -17,8 +17,12 @@ import {
 async function initInMemoryDb(): Promise<void> {
   await closeAppDatabase();
   __setAppDatabaseAdapterResolverForTests(async () => {
-    const { createDatabase } = await import('@framers/sql-storage-adapter');
-    return await createDatabase({ type: 'sqljs' as any });
+    const { resolveStorageAdapter } = await import('@framers/sql-storage-adapter');
+    return await resolveStorageAdapter({
+      priority: ['sqljs'],
+      // Force in-memory sql.js mode (disable fs-backed persistence).
+      openOptions: { filePath: '' },
+    } as any);
   });
   await initializeAppDatabase();
 }

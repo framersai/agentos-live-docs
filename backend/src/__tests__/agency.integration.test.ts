@@ -10,23 +10,30 @@ import {
   getAgencyExecution,
   listAgencySeats,
 } from '../integrations/agentos/agencyPersistence.service.js';
-import { initializeAppDatabase } from '../core/database/appDatabase.js';
+import {
+  initializeAppDatabase,
+  closeAppDatabase,
+  getAppDatabase,
+  __setAppDatabaseAdapterResolverForTests,
+} from '../core/database/appDatabase.js';
 import type { AdapterKind } from '@framers/sql-storage-adapter';
 
 /**
  * Initialize a test database for agency tests
  */
 async function setupTestDatabase() {
-  const resolver = async (priorities: AdapterKind[]) => {
-    const { createDatabase } = await import('@framers/sql-storage-adapter');
-    return await createDatabase({ type: 'sqljs' as AdapterKind });
-  };
-  await initializeAppDatabase(resolver);
-  
-  // Import getAppDatabase to access the database instance
-  const { getAppDatabase } = await import('../core/database/appDatabase.js');
+  await closeAppDatabase();
+  __setAppDatabaseAdapterResolverForTests(async (): Promise<any> => {
+    const { resolveStorageAdapter } = await import('@framers/sql-storage-adapter');
+    return await resolveStorageAdapter({
+      priority: ['sqljs'],
+      // Force in-memory sql.js mode (disable fs-backed persistence).
+      openOptions: { filePath: '' },
+    } as any);
+  });
+  await initializeAppDatabase();
   const db = getAppDatabase();
-  
+
   // Create a test user to satisfy foreign key constraints
   await db.run(
     `INSERT OR IGNORE INTO app_users (id, email, password_hash, created_at, updated_at)
@@ -113,8 +120,8 @@ test('Agency persistence: track seat progress and retries', async () => {
 
   const seats = await listAgencySeats(agencyId);
   assert.ok(seats.length > 0, 'Should have at least one seat');
-  
-  const seat = seats.find(s => s.id === seatId);
+
+  const seat = seats.find((s) => s.id === seatId);
   assert.ok(seat, 'Seat should exist');
   assert.equal(seat.status, 'completed');
   assert.equal(seat.retry_count, 1);
@@ -139,4 +146,3 @@ test('Agency persistence: emergent metadata storage', async () => {
   assert.ok(execution);
   assert.equal(execution.status, 'running');
 });
-
