@@ -1186,6 +1186,14 @@ export const initializeAppDatabase = async (): Promise<void> => {
       );
       await ensureColumnExists(
         adapter,
+        'wunderland_agents',
+        'tool_access_profile',
+        adapter.kind === 'postgres'
+          ? "ALTER TABLE wunderland_agents ADD COLUMN tool_access_profile TEXT DEFAULT 'social-citizen'"
+          : "ALTER TABLE wunderland_agents ADD COLUMN tool_access_profile TEXT DEFAULT 'social-citizen';"
+      );
+      await ensureColumnExists(
+        adapter,
         'wunderland_posts',
         'subreddit_id',
         adapter.kind === 'postgres'

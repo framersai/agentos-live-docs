@@ -13,6 +13,8 @@
 
 import { Injectable, OnModuleInit, OnModuleDestroy, Logger } from '@nestjs/common';
 import { DatabaseService } from '../../../database/database.service';
+import { callLlm } from '../../../core/llm/llm.factory';
+import { ragService } from '../../../integrations/agentos/agentos.rag.service';
 import {
   WonderlandNetwork,
   TrustEngine,
@@ -25,6 +27,8 @@ import {
   DEFAULT_SECURITY_PROFILE,
   DEFAULT_INFERENCE_HIERARCHY,
   DEFAULT_STEP_UP_AUTH_CONFIG,
+  createWunderlandTools,
+  createMemoryReadTool,
 } from 'wunderland';
 import type {
   WonderlandPost,
@@ -119,6 +123,9 @@ export class OrchestrationService implements OnModuleInit, OnModuleDestroy {
     // 3. Initialize enclave system (loads persisted enclaves, creates defaults)
     await this.network.initializeEnclaveSystem();
 
+    // 3.5 Configure LLM + tools (optional, enables production mode)
+    await this.configureLLMAndTools();
+
     // 4. Create supplementary engines (after enclave system is up)
     this.trustEngine = new TrustEngine();
     this.trustEngine.setPersistenceAdapter(this.trustPersistence);
@@ -190,9 +197,10 @@ export class OrchestrationService implements OnModuleInit, OnModuleDestroy {
       bio: string | null;
       hexaco_traits: string;
       subscribed_topics: string | null;
+      tool_access_profile: string | null;
     }>(
       `SELECT a.seed_id, a.owner_user_id, a.display_name, a.bio, a.hexaco_traits,
-              c.subscribed_topics
+              a.tool_access_profile, c.subscribed_topics
        FROM wunderland_agents a
        LEFT JOIN wunderland_citizens c ON c.seed_id = a.seed_id
        WHERE a.status = 'active' AND (c.is_active = 1 OR c.is_active IS NULL)`
@@ -219,6 +227,9 @@ export class OrchestrationService implements OnModuleInit, OnModuleDestroy {
           securityProfile: DEFAULT_SECURITY_PROFILE,
           inferenceHierarchy: DEFAULT_INFERENCE_HIERARCHY,
           stepUpAuthConfig: DEFAULT_STEP_UP_AUTH_CONFIG,
+          toolAccessProfile:
+            (agent.tool_access_profile as WunderlandSeedConfig['toolAccessProfile']) ||
+            'social-citizen',
         };
 
         const newsroomConfig: NewsroomConfig = {
@@ -245,15 +256,102 @@ export class OrchestrationService implements OnModuleInit, OnModuleDestroy {
     return count;
   }
 
+  private async configureLLMAndTools(): Promise<void> {
+    if (!this.network) return;
+
+    // Tools (web/news/image/etc.) + memory tool
+    try {
+      const tools = await createWunderlandTools();
+
+      tools.push(
+        createMemoryReadTool(async ({ query, topK, context }) => {
+          const seedId = context.gmiId;
+          const collectionId = `wunderland-seed-memory:${seedId}`;
+          const result = await ragService.query({
+            query,
+            collectionIds: [collectionId],
+            topK,
+            includeMetadata: false,
+          });
+
+          const items = (result.chunks ?? []).map((chunk) => ({
+            text: chunk.content,
+            score: chunk.score,
+          }));
+
+          return {
+            items,
+            context: items.map((item, idx) => `(${idx + 1}) ${item.text}`).join('\n'),
+          };
+        })
+      );
+
+      this.network.registerToolsForAll(tools);
+      this.logger.log(`Registered ${tools.length} tools for Wunderland newsrooms.`);
+    } catch (err) {
+      this.logger.warn(
+        `Failed to load/register Wunderland tools; continuing without tools: ${String(
+          (err as any)?.message ?? err
+        )}`
+      );
+    }
+
+    const hasAnyLLM =
+      Boolean(process.env.OPENAI_API_KEY?.trim()) ||
+      Boolean(process.env.OPENROUTER_API_KEY?.trim());
+
+    if (!hasAnyLLM) {
+      this.logger.log(
+        'No LLM API keys detected (OPENAI_API_KEY/OPENROUTER_API_KEY). Newsrooms will run in placeholder mode.'
+      );
+      return;
+    }
+
+    this.network.setLLMCallbackForAll(async (messages, tools, options) => {
+      const resp = await callLlm(messages as any, options?.model, {
+        temperature: options?.temperature,
+        max_tokens: options?.max_tokens,
+        tools: tools as any,
+      });
+
+      const usage = resp.usage
+        ? {
+            prompt_tokens: resp.usage.prompt_tokens ?? 0,
+            completion_tokens: resp.usage.completion_tokens ?? 0,
+            total_tokens: resp.usage.total_tokens ?? 0,
+          }
+        : undefined;
+
+      return {
+        content: resp.text,
+        tool_calls: resp.toolCalls,
+        model: resp.model,
+        usage,
+      };
+    });
+  }
+
   // ── Post Persistence ──────────────────────────────────────────────────────
 
   private async persistPost(post: WonderlandPost): Promise<void> {
     await this.db.run(
-      `INSERT OR REPLACE INTO wunderland_posts (
+      `INSERT INTO wunderland_posts (
         post_id, seed_id, content, manifest, status,
         reply_to_post_id, created_at, published_at,
         likes, boosts, replies, views, agent_level_at_post
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      ON CONFLICT(post_id) DO UPDATE SET
+        seed_id = excluded.seed_id,
+        content = excluded.content,
+        manifest = excluded.manifest,
+        status = excluded.status,
+        reply_to_post_id = excluded.reply_to_post_id,
+        published_at = excluded.published_at,
+        likes = excluded.likes,
+        boosts = excluded.boosts,
+        replies = excluded.replies,
+        views = excluded.views,
+        agent_level_at_post = excluded.agent_level_at_post`,
       [
         post.postId,
         post.seedId,
@@ -270,6 +368,32 @@ export class OrchestrationService implements OnModuleInit, OnModuleDestroy {
         post.agentLevelAtPost,
       ]
     );
+
+    // Ingest the post into the seed's long-term memory collection.
+    try {
+      const collectionId = `wunderland-seed-memory:${post.seedId}`;
+      await ragService.ingestDocument({
+        documentId: `wunderland_post:${post.postId}`,
+        collectionId,
+        category: 'custom',
+        content: post.content,
+        metadata: {
+          agentId: post.seedId,
+          type: 'wunderland_post',
+          postId: post.postId,
+          replyToPostId: post.replyToPostId ?? undefined,
+          createdAt: post.createdAt,
+          publishedAt: post.publishedAt,
+        },
+        chunkingOptions: { chunkSize: 480, chunkOverlap: 80, strategy: 'fixed' },
+      });
+    } catch (err) {
+      this.logger.warn(
+        `Failed to ingest post ${post.postId} into memory store: ${String(
+          (err as any)?.message ?? err
+        )}`
+      );
+    }
   }
 
   // ── Cron Helpers ──────────────────────────────────────────────────────────

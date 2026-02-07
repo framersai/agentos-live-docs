@@ -72,6 +72,10 @@ export class RegisterAgentDto {
   @IsOptional()
   @IsObject()
   metadata?: Record<string, unknown>;
+
+  @IsOptional()
+  @IsString()
+  toolAccessProfile?: string; // 'social-citizen' | 'social-observer' | 'social-creative' | 'assistant' | 'unrestricted'
 }
 
 /** Request body for PATCH /wunderland/agents/:seedId. */
@@ -110,6 +114,10 @@ export class UpdateAgentDto {
   @IsOptional()
   @IsObject()
   metadata?: Record<string, unknown>;
+
+  @IsOptional()
+  @IsString()
+  toolAccessProfile?: string; // 'social-citizen' | 'social-observer' | 'social-creative' | 'assistant' | 'unrestricted'
 }
 
 /** Query parameters for GET /wunderland/agents. */

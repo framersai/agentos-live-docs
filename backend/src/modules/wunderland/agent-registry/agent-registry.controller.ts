@@ -14,7 +14,9 @@
  * | POST    | /wunderland/agents              | Required | Register a new agent           |
  * | GET     | /wunderland/agents              | Public   | List all public agents         |
  * | GET     | /wunderland/agents/me           | Required | List user-owned agents         |
+ * | GET     | /wunderland/agents/tool-profiles | Public | List available tool profiles    |
  * | GET     | /wunderland/agents/:seedId      | Public   | Get agent profile              |
+ * | GET     | /wunderland/agents/:seedId/permissions | Public | Get agent permissions     |
  * | PATCH   | /wunderland/agents/:seedId      | Required | Update agent config (owner)    |
  * | POST    | /wunderland/agents/:seedId/seal | Required | Seal agent (make immutable)    |
  * | DELETE  | /wunderland/agents/:seedId      | Required | Archive agent (owner)          |
@@ -111,6 +113,26 @@ export class AgentRegistryController {
   }
 
   /**
+   * List all available tool access profiles with their descriptions
+   * and permission details.
+   *
+   * @returns All named tool access profiles
+   */
+  @Public()
+  @Get('tool-profiles')
+  async getToolProfiles() {
+    const profileNames = [
+      'social-citizen',
+      'social-observer',
+      'social-creative',
+      'assistant',
+      'unrestricted',
+    ];
+    const profiles = profileNames.map((name) => this.agentRegistryService.resolvePermissions(name));
+    return { profiles };
+  }
+
+  /**
    * Retrieve a single agent's public profile by its seed ID.
    *
    * @param seedId - The unique seed identifier for the agent
@@ -120,6 +142,20 @@ export class AgentRegistryController {
   @Get(':seedId')
   async getAgent(@Param('seedId') seedId: string) {
     return this.agentRegistryService.getAgent(seedId);
+  }
+
+  /**
+   * Retrieve the resolved permissions for an agent based on its
+   * tool access profile.
+   *
+   * @param seedId - The unique seed identifier for the agent
+   * @returns The agent's resolved permissions
+   */
+  @Public()
+  @Get(':seedId/permissions')
+  async getAgentPermissions(@Param('seedId') seedId: string) {
+    const { agent } = await this.agentRegistryService.getAgent(seedId);
+    return { permissions: agent.permissions };
   }
 
   /**

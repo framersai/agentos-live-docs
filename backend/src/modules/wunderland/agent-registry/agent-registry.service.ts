@@ -61,6 +61,20 @@ type AgentProfile = {
     genesisEventId?: string | null;
     publicKey?: string | null;
   };
+  permissions: {
+    profileName: string;
+    displayName: string;
+    description: string;
+    can: string[];
+    cannot: string[];
+    allowedTools: string[];
+    flags: {
+      allowFileSystem: boolean;
+      allowCliExecution: boolean;
+      allowSystemModification: boolean;
+    };
+    maxRiskTier: string;
+  };
 };
 
 type AgentSummary = Pick<
@@ -96,6 +110,7 @@ type WunderlandAgentRow = {
   storage_policy: string | null;
   sealed_at?: number | null;
   provenance_enabled: number;
+  tool_access_profile: string | null;
   status: string | null;
   created_at: number;
   updated_at: number;
@@ -132,9 +147,164 @@ function normalizeStringArray(value: unknown): string[] {
   return value.map((v) => String(v ?? '').trim()).filter((v) => v.length > 0);
 }
 
+type ResolvedPermissions = {
+  profileName: string;
+  displayName: string;
+  description: string;
+  can: string[];
+  cannot: string[];
+  allowedTools: string[];
+  flags: {
+    allowFileSystem: boolean;
+    allowCliExecution: boolean;
+    allowSystemModification: boolean;
+  };
+  maxRiskTier: string;
+};
+
+const TOOL_ACCESS_PROFILE_DEFINITIONS: Record<string, ResolvedPermissions> = {
+  'social-citizen': {
+    profileName: 'social-citizen',
+    displayName: 'Social Citizen',
+    description: 'Full social participation. No file system, CLI, or system access.',
+    can: [
+      'Post, comment, and vote in enclaves',
+      'Search the web and browse feeds',
+      'Use media tools (GIFs, images, voice)',
+    ],
+    cannot: [
+      'Access the file system',
+      'Execute system commands or code',
+      'Install or remove packages',
+      'Send external messages',
+      'Modify files on the system',
+      'Run shell commands',
+    ],
+    allowedTools: [
+      'social_post',
+      'feed_read',
+      'web_search',
+      'news_search',
+      'giphy_search',
+      'image_search',
+      'text_to_speech',
+    ],
+    flags: { allowFileSystem: false, allowCliExecution: false, allowSystemModification: false },
+    maxRiskTier: 'TIER_1_AUTONOMOUS',
+  },
+  'social-observer': {
+    profileName: 'social-observer',
+    displayName: 'Social Observer',
+    description: 'Read-only access: browse feeds and search the web.',
+    can: ['Search the web and browse feeds', 'Use media tools (GIFs, images, voice)'],
+    cannot: [
+      'Post, comment, or vote',
+      'Access the file system',
+      'Execute system commands or code',
+      'Install or remove packages',
+      'Send external messages',
+      'Modify files on the system',
+      'Run shell commands',
+    ],
+    allowedTools: ['web_search', 'news_search', 'giphy_search', 'image_search', 'text_to_speech'],
+    flags: { allowFileSystem: false, allowCliExecution: false, allowSystemModification: false },
+    maxRiskTier: 'TIER_1_AUTONOMOUS',
+  },
+  'social-creative': {
+    profileName: 'social-creative',
+    displayName: 'Social Creative',
+    description: 'Enhanced social participation with creative tools.',
+    can: [
+      'Post, comment, and vote in enclaves',
+      'Search the web and browse feeds',
+      'Use media tools (GIFs, images, voice)',
+      'Read and write agent memory',
+    ],
+    cannot: [
+      'Access the file system',
+      'Execute system commands or code',
+      'Install or remove packages',
+      'Send external messages',
+      'Modify files on the system',
+      'Run shell commands',
+    ],
+    allowedTools: [
+      'social_post',
+      'feed_read',
+      'memory_read',
+      'web_search',
+      'news_search',
+      'giphy_search',
+      'image_search',
+      'text_to_speech',
+    ],
+    flags: { allowFileSystem: false, allowCliExecution: false, allowSystemModification: false },
+    maxRiskTier: 'TIER_1_AUTONOMOUS',
+  },
+  assistant: {
+    profileName: 'assistant',
+    displayName: 'Assistant',
+    description: 'Private assistant mode with read-only file access.',
+    can: [
+      'Search the web and browse feeds',
+      'Use media tools',
+      'Read and write agent memory',
+      'Access the file system',
+      'Use productivity tools',
+    ],
+    cannot: [
+      'Post to social enclaves',
+      'Execute system commands or code',
+      'Install or remove packages',
+      'Run shell commands',
+    ],
+    allowedTools: [
+      'web_search',
+      'news_search',
+      'giphy_search',
+      'image_search',
+      'text_to_speech',
+      'memory_read',
+      'memory_write',
+      'file_search',
+      'file_read',
+      'calendar',
+    ],
+    flags: { allowFileSystem: true, allowCliExecution: false, allowSystemModification: false },
+    maxRiskTier: 'TIER_2_ASYNC_REVIEW',
+  },
+  unrestricted: {
+    profileName: 'unrestricted',
+    displayName: 'Unrestricted',
+    description: 'Full access to all tools. Admin only.',
+    can: ['All tool categories allowed'],
+    cannot: [],
+    allowedTools: ['*'],
+    flags: { allowFileSystem: true, allowCliExecution: true, allowSystemModification: true },
+    maxRiskTier: 'TIER_3_SYNC_HITL',
+  },
+};
+
+function resolveAgentPermissions(profileName: string): ResolvedPermissions {
+  return (
+    TOOL_ACCESS_PROFILE_DEFINITIONS[profileName] ||
+    TOOL_ACCESS_PROFILE_DEFINITIONS['social-citizen']
+  );
+}
+
+const VALID_TOOL_ACCESS_PROFILES = new Set(Object.keys(TOOL_ACCESS_PROFILE_DEFINITIONS));
+
 @Injectable()
 export class AgentRegistryService {
   constructor(private readonly db: DatabaseService) {}
+
+  /**
+   * Resolve the permissions object for a given tool access profile name.
+   * Useful for listing all available profiles in API responses.
+   */
+  resolvePermissions(profileName: string): ResolvedPermissions {
+    return resolveAgentPermissions(profileName);
+  }
 
   async registerAgent(userId: string, dto: RegisterAgentDto): Promise<{ agent: AgentProfile }> {
     const now = Date.now();
@@ -158,6 +328,11 @@ export class AgentRegistryService {
           storagePolicy: dto.security?.storagePolicy ?? 'sealed',
         };
 
+        const toolAccessProfile =
+          dto.toolAccessProfile && VALID_TOOL_ACCESS_PROFILES.has(dto.toolAccessProfile)
+            ? dto.toolAccessProfile
+            : 'social-citizen';
+
         await trx.run(
           `
 	            INSERT INTO wunderland_agents (
@@ -177,6 +352,7 @@ export class AgentRegistryService {
 	              storage_policy,
 	              sealed_at,
 	              provenance_enabled,
+	              tool_access_profile,
 	              status,
 	              created_at,
 	              updated_at
@@ -197,6 +373,7 @@ export class AgentRegistryService {
 	              @storage_policy,
 	              @sealed_at,
 	              @provenance_enabled,
+	              @tool_access_profile,
 	              @status,
 	              @created_at,
 	              @updated_at
@@ -219,6 +396,7 @@ export class AgentRegistryService {
             storage_policy: securityProfile.storagePolicy,
             sealed_at: null,
             provenance_enabled: securityProfile.outputSigning ? 1 : 0,
+            tool_access_profile: toolAccessProfile,
             status: 'active',
             created_at: now,
             updated_at: now,
@@ -480,6 +658,11 @@ export class AgentRegistryService {
             : 0
           : Number(existing.provenance_enabled ?? 0);
 
+      const nextToolAccessProfile =
+        dto.toolAccessProfile && VALID_TOOL_ACCESS_PROFILES.has(dto.toolAccessProfile)
+          ? dto.toolAccessProfile
+          : undefined;
+
       await trx.run(
         `
 	          UPDATE wunderland_agents
@@ -491,6 +674,7 @@ export class AgentRegistryService {
 	                 storage_policy = @storage_policy,
 	                 provenance_enabled = @provenance_enabled,
 	                 allowed_tool_ids = @allowed_tool_ids,
+	                 tool_access_profile = COALESCE(@tool_access_profile, tool_access_profile),
 	                 updated_at = @updated_at
 	           WHERE seed_id = @seed_id
 	        `,
@@ -504,6 +688,7 @@ export class AgentRegistryService {
           storage_policy: nextStoragePolicy,
           provenance_enabled: nextProvenanceEnabled,
           allowed_tool_ids: JSON.stringify(capabilities),
+          tool_access_profile: nextToolAccessProfile ?? null,
           updated_at: now,
         }
       );
@@ -705,6 +890,8 @@ export class AgentRegistryService {
         ? agent.toolset_hash.trim()
         : null;
 
+    const profileName = agent.tool_access_profile || 'social-citizen';
+
     return {
       seedId: agent.seed_id,
       ownerUserId: agent.owner_user_id,
@@ -736,6 +923,7 @@ export class AgentRegistryService {
         genesisEventId: agent.genesis_event_id,
         publicKey: agent.public_key,
       },
+      permissions: resolveAgentPermissions(profileName),
     };
   }
 
