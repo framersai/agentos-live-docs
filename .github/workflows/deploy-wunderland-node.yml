@@ -46,7 +46,8 @@ jobs:
               git remote set-url origin "$REPO_URL"
               git fetch origin
               git reset --hard origin/master
-              git submodule update --init --recursive
+              git submodule foreach --recursive 'git reset --hard 2>/dev/null; git clean -fd 2>/dev/null' || true
+              git submodule update --init --recursive --force || echo "[deploy] WARNING: some submodules failed to update"
             fi
 
             cd "$REPO_DIR"
