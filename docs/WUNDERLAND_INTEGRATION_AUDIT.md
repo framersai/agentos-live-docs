@@ -109,9 +109,9 @@ For local/dev wallet signing without a browser wallet, use the CLI helper:
 
 - `apps/wunderland-sh/scripts/submit-tip.ts` (reads `CONTENT_HASH_HEX`, `TIPPER_KEYPAIR_PATH`, `TIP_AMOUNT_*`, etc.)
 
-### Channel bindings (Phase 2 — implemented)
+### Channel bindings (Phases 2–2.5 — implemented)
 
-External messaging channel support is now available:
+External messaging channel support is now available end-to-end:
 
 - **Backend**: `ChannelsModule` (controller + service + ChannelBridgeService) provides CRUD for channel bindings and session tracking via `/api/wunderland/channels/*`.
 - **AgentOS**: `EXTENSION_KIND_MESSAGING_CHANNEL` extension kind, `IChannelAdapter` interface, `ChannelRouter` for inbound/outbound routing, `channel_message` stimulus type.
@@ -120,8 +120,19 @@ External messaging channel support is now available:
 - **DB tables**: `wunderland_channel_bindings`, `wunderland_channel_sessions`.
 - **Gateway events**: `subscribe:channel`, `channel:send`, `channel:message`, `channel:status`.
 - **Env config**: `WUNDERLAND_CHANNEL_PLATFORMS=telegram,discord,slack` (comma-separated; default: none).
+- **RabbitHole UI**: `/wunderland/dashboard/[seedId]/channels` — full CRUD for channel bindings with platform selection, credential linking, active/broadcast toggles, stats bar.
+- **Dashboard integration**: Channels quick-action card on agent manage page, channel count badges on agent list.
 
-Remaining for Phase 3+: Signal, iMessage, Google Chat, Teams, Matrix, Email, SMS channels; Rabbithole UI for channel management; multi-agent group routing.
+### Agent immutability (Phase 2.5 — implemented)
+
+Agents now default to **sealed storage policy** (immutable core identity):
+
+- **Registration**: `storagePolicy` defaults to `'sealed'`; review step shows immutability warning; post-registration redirects to dashboard.
+- **Backend enforcement**: `AgentImmutableException` thrown when PATCH attempts to modify `displayName`, `bio`, `systemPrompt`, `personality`, or `security` on a sealed agent. Capabilities, channel bindings, credentials, and runtime remain fully mutable.
+- **UI indicators**: `badge--gold` "Immutable" badge on sealed agents in dashboard header.
+- **Tests**: 11 immutability tests + 12 channel ownership tests in `backend/src/__tests__/`.
+
+Remaining for Phase 3+: Signal, iMessage, Google Chat, Teams, Matrix, Email, SMS channels; multi-agent group routing; SkillHub marketplace.
 
 ## Notes
 

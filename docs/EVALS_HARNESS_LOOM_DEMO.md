@@ -2,7 +2,7 @@
 
 > **Duration target:** 6-8 minutes
 > **App URLs:** Frontend `http://localhost:3020` | Backend `http://localhost:3021/api`
-> **Pre-flight:** Both `evals-backend` and `evals-frontend` PM2 processes running, LLM configured in Settings
+> **Pre-flight:** `npm run dev` running, LLM configured in Settings
 
 ---
 
@@ -66,26 +66,30 @@ Before recording:
 
 ---
 
-### ACT 3: Graders Tab (1 min)
+### ACT 3: Graders Tab (1.5 min)
 
 **Narration:**
 
-> "Graders define how we score LLM outputs. We ship 5 graders covering the key evaluation dimensions — but the system supports many more. The promptfoo grader type alone gives you access to 20+ assertion types including all four RAGAS metrics, ROUGE, BLEU, and safety checks. To add one, you just create a YAML file. We ship Faithfulness for hallucination detection, LLM Judge for helpfulness, Semantic Similarity for answer closeness, and two extraction graders for JSON tasks."
+> "Graders define how we score LLM outputs. We ship 5 graders covering the key evaluation dimensions — but the `promptfoo` grader type alone gives you access to 20+ assertion types including all four RAGAS metrics, ROUGE, BLEU, and safety checks. To add one, just create a YAML file."
 
 **UI Steps:**
 
 1. Click **Graders** tab
-2. Point out the grader cards — you should see 5 graders:
-   - **Faithfulness** — promptfoo-backed, checks that outputs are grounded in provided context
-   - **LLM Judge (Helpful)** — built-in LLM judge scoring overall response quality
-   - **Semantic Similarity** — built-in embedding-based similarity to expected output
-   - **Extraction Schema** — built-in JSON schema validation for structured outputs
-   - **Extraction Completeness** — built-in LLM judge checking all fields are populated
-3. Click into one grader (e.g., **Faithfulness**) to show the detail page
-4. Point out: the YAML preview showing the full grader config, the type badge, threshold settings, description, inspiration/reference links
-5. Mention: "Each grader is a YAML file on disk. You can edit thresholds and config here, or edit the YAML directly. Additional graders like Answer Relevance or Context Recall can be added by creating new YAML files with promptfoo assertion types."
+2. Walk through each grader card, explaining what it does and why:
+   - **Faithfulness** — Uses promptfoo's `context-faithfulness` assertion, implementing the RAGAS methodology (Es et al., 2023). Decomposes the LLM output into atomic claims and checks each against the provided context via NLI (Natural Language Inference). Score = fraction of supported claims, threshold 0.8. This is the core hallucination detection metric. Note: this makes additional LLM calls under the hood — one to extract claims from the output, one to run NLI entailment against the context — so it costs more than a single grading call.
+
+   - **LLM Judge (Helpful)** — The only grader where you define evaluation criteria in plain English. Every other grader checks one fixed thing — LLM Judge evaluates whatever rubric you write. Based on Zheng et al. (2023), it sends input, output, and your rubric to the configured LLM at temperature 0.1, requesting structured JSON `{pass, score, reason}`. The shipped rubric evaluates accuracy, relevance, clarity, and structure — but you can swap it for any criteria. Costs one LLM call per evaluation and is non-deterministic, unlike the embedding/schema/string graders.
+
+   - **Semantic Similarity** — Embedding-based grader inspired by Sentence-BERT (Reimers & Gurevych, 2019). Computes cosine similarity between output and expected answer embeddings. Has a 3-tier fallback: embeddings via API, then Jaccard + token overlap, then hybrid blend. Threshold 0.8. Deterministic given the same embedding model, cheaper than LLM-as-judge, and far more meaning-aware than string matching.
+
+   - **Extraction Schema** — JSON Schema validator using AJV. Checks that the output parses as valid JSON and conforms to a declared schema (required fields, types, structure). Binary pass/fail, zero LLM cost, completely deterministic. Acts as a structural gate — if the model can't produce valid JSON, content quality is irrelevant.
+
+   - **Extraction Completeness** — LLM-as-judge with a 4-criteria rubric: completeness (all fields populated), accuracy (values match source), grounding (no hallucinated data), and structure (well-formed output). Pairs with Extraction Schema — schema checks structure, this checks content.
+
+3. Click into **Faithfulness** to show the detail page
+4. Point out: YAML preview, type badge, threshold setting, description, reference link to the RAGAS paper
+5. Mention: "Each grader is a YAML file on disk. The `promptfoo` type is a pass-through to promptfoo's assertion engine — one grader type gives you 20+ evaluation methods. The built-in types (`llm-judge`, `semantic-similarity`, `json-schema`, `exact-match`, `contains`, `regex`) are implemented in TypeScript and can be extended by subclassing `BaseGrader`."
 6. Navigate back to the Graders list
-7. Optionally show "Load Preset" to demonstrate seeding the starter grader set
 
 ---
 
@@ -351,6 +355,8 @@ Understanding this helps if you want to extend or debug. The short version: **co
 
 **The key insight:** The harness doesn't do retrieval itself — it evaluates the _results_ of retrieval. You bring your own retrieved context in the CSV, and the graders score how well the LLM used it. This means you can evaluate any RAG pipeline: just export your pipeline's (question, context, answer) triples into a CSV and run experiments.
 
+---
+
 ### The Grader System: Two Layers
 
 There are **two ways** to add graders, depending on what you need:
@@ -473,6 +479,68 @@ export class PostgresAdapter implements IDbAdapter {
 Then add the `case 'postgres':` branch in `db.module.ts`'s factory and set `DB_TYPE=postgres` + `DATABASE_URL=...` in your `.env`.
 
 **Why this matters:** The entire eval engine, experiment runner, settings service, and all CRUD controllers are database-agnostic. They only depend on `IDbAdapter`. Swapping from SQLite to Postgres (or any other database) requires implementing one file — the adapter — and changing one env variable. No service code changes.
+
+### Performance & Parallelization Roadmap
+
+Today the experiment loop runs **fully sequentially** — nested `for` loops over test cases × candidates × graders, each `await`ing one LLM API call at a time. Since these are I/O-bound (waiting for API responses), parallelization is straightforward and the gains are large.
+
+**Three approaches, in order of priority:**
+
+#### 1. Concurrent Promises with `p-limit` (Quick Win)
+
+Wrap independent API calls in `Promise.all()` with a concurrency limiter. Graders for the same output are fully independent. Test cases across candidates can also run concurrently.
+
+```typescript
+import pLimit from 'p-limit';
+const limit = pLimit(10); // 10 concurrent API calls
+
+// Grade all graders for one output in parallel
+const results = await Promise.all(graders.map((g) => limit(() => g.evaluate(output))));
+```
+
+|                      |                                                                                            |
+| -------------------- | ------------------------------------------------------------------------------------------ |
+| **Pros**             | Simple, works with any provider, preserves SSE streaming, fine-grained concurrency control |
+| **Cons**             | Still N individual HTTP requests, rate limits become the bottleneck at high concurrency    |
+| **Expected speedup** | 5–10x for typical experiments                                                              |
+
+#### 2. Batch API Endpoints (Large-Scale Offline)
+
+OpenAI and Anthropic both offer batch endpoints — submit many requests in one HTTP call, results returned asynchronously.
+
+| Provider                      | Endpoint                                  | Limits           | Pricing          |
+| ----------------------------- | ----------------------------------------- | ---------------- | ---------------- |
+| **OpenAI Batch API**          | JSONL upload → async results (within 24h) | Large batches    | 50% discount     |
+| **Anthropic Message Batches** | Up to 10,000 requests per batch           | Async completion | Standard pricing |
+
+|              |                                                                                                  |
+| ------------ | ------------------------------------------------------------------------------------------------ |
+| **Pros**     | Lower cost, no rate limit concerns, providers optimize scheduling internally                     |
+| **Cons**     | Asynchronous — no real-time SSE progress, adds polling complexity, not supported by Ollama/local |
+| **Best for** | 100+ test case runs, overnight evaluations                                                       |
+
+#### 3. Worker Threads (In-Process Inference Only)
+
+Node.js `worker_threads` move computation off the main thread. Only useful when running models **inside the Node.js process** — e.g., ONNX Runtime, transformers.js, or llama.cpp Node bindings. In that case, inference blocks the event loop and worker threads keep it responsive.
+
+**Important: worker threads do NOT help with Ollama** (or any external inference server). Ollama runs as a separate HTTP server — from Node's perspective it's the same as calling OpenAI (an HTTP request/response). The inference happens in Ollama's own process, not in Node. Whether Ollama is GPU-bound or CPU-bound doesn't matter — worker threads in Node can't speed up another process's work. For Ollama, use concurrent promises (Approach 1) instead — Ollama can pipeline requests internally if it has enough VRAM.
+
+|              |                                                                                                                                        |
+| ------------ | -------------------------------------------------------------------------------------------------------------------------------------- |
+| **Pros**     | Keeps main event loop responsive when running models in-process (ONNX, transformers.js)                                                |
+| **Cons**     | Adds complexity (message passing, serialization). Does nothing for external APIs or Ollama. Overkill unless doing in-process inference |
+| **Best for** | Running lightweight models directly in Node (embeddings via ONNX, small classifiers via transformers.js)                               |
+
+#### Recommended Strategy
+
+**Start with concurrent promises** (Approach 1). Phased rollout:
+
+1. **Phase 1:** Parallel grading — graders for same output run concurrently
+2. **Phase 2:** Parallel candidates — generate + grade across candidates concurrently
+3. **Phase 3:** Batch API mode — optional, for large-scale offline evaluations
+4. **Phase 4:** Worker threads — for local model inference if needed
+
+---
 
 ### Key Files Reference
 
