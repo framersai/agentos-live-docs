@@ -102,7 +102,7 @@ const config: Config = {
       logo: {
         alt: 'AgentOS Logo',
         src: 'img/logo.svg',
-        href: 'https://agentos.sh',
+        href: '/',
       },
       items: [
         {
