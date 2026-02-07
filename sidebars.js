@@ -26,15 +26,18 @@ const sidebars = {
     {
       type: 'category',
       label: 'Architecture & Core',
+      collapsed: false,
       items: ['architecture/system-architecture', 'architecture/platform-support'],
     },
     {
       type: 'category',
       label: 'Features',
+      collapsed: false,
       items: [
         {
           type: 'category',
           label: 'Planning & Orchestration',
+          collapsed: false,
           items: [
             'features/planning-engine',
             'features/human-in-the-loop',
@@ -45,11 +48,13 @@ const sidebars = {
         {
           type: 'category',
           label: 'Memory & Storage',
+          collapsed: false,
           items: ['features/rag-memory', 'features/sql-storage', 'features/client-side-storage'],
         },
         {
           type: 'category',
           label: 'AI & LLM',
+          collapsed: false,
           items: [
             'features/structured-output',
             'features/evaluation-framework',
@@ -59,6 +64,7 @@ const sidebars = {
         {
           type: 'category',
           label: 'Advanced',
+          collapsed: false,
           items: ['features/recursive-self-building', 'features/agency-collaboration'],
         },
       ],
@@ -66,10 +72,12 @@ const sidebars = {
     {
       type: 'category',
       label: 'Extensions',
+      collapsed: false,
       items: [
         {
           type: 'category',
           label: 'Getting Started',
+          collapsed: false,
           items: [
             'extensions/overview',
             'extensions/how-extensions-work',
@@ -91,6 +99,7 @@ const sidebars = {
         {
           type: 'category',
           label: 'Built-in Extensions',
+          collapsed: false,
           items: [
             'extensions/built-in/auth',
             'extensions/built-in/web-search',
