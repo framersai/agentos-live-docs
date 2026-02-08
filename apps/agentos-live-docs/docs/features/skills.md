@@ -14,7 +14,7 @@ The skills system has three layers:
 
 | Layer       | Package                            | Role                                                       |
 | ----------- | ---------------------------------- | ---------------------------------------------------------- |
-| **Data**    | `@framers/agentos-skills`          | 16+ curated SKILL.md files in `registry/curated/`          |
+| **Data**    | `@framers/agentos-skills`          | 18 curated SKILL.md files in `registry/curated/`           |
 | **SDK**     | `@framers/agentos-skills-registry` | Typed catalog, query helpers, snapshot builder             |
 | **Runtime** | `@framers/agentos` (SkillRegistry) | Filesystem discovery, platform filtering, prompt injection |
 
@@ -22,10 +22,12 @@ The skills system has three layers:
 
 | Skill                | Category        | Required Tools | Required Secrets                                                |
 | -------------------- | --------------- | -------------- | --------------------------------------------------------------- |
+| `web-search`         | information     | web-search     | --                                                              |
 | `weather`            | information     | web-search     | --                                                              |
 | `summarize`          | information     | web-search     | --                                                              |
 | `github`             | developer-tools | --             | github.token                                                    |
 | `coding-agent`       | developer-tools | filesystem     | --                                                              |
+| `git`                | developer-tools | --             | --                                                              |
 | `slack-helper`       | communication   | --             | slack.bot_token, slack.app_token                                |
 | `discord-helper`     | communication   | --             | discord.bot_token                                               |
 | `notion`             | productivity    | --             | notion.api_key                                                  |
@@ -155,6 +157,7 @@ node scripts/validate-skill.mjs registry/curated/my-skill/SKILL.md
 
 ## Related
 
-- [Extension Ecosystem](/docs/architecture/extension-ecosystem) -- how skills fit into the extension model
+- [Skills Overview](/docs/skills/overview) -- dedicated skills documentation section
+- [Extensions Overview](/docs/extensions/overview) -- how skills relate to tools/extensions
 - [Guardrails](/docs/features/guardrails) -- security controls for skill execution
 - [Agent Communication](/docs/features/agent-communication) -- inter-agent messaging

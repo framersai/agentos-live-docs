@@ -50,6 +50,19 @@ export interface SkillCatalogEntry {
 export const SKILLS_CATALOG: SkillCatalogEntry[] = [
   // ── Information ───────────────────────────────────────────────────────
   {
+    name: 'web-search',
+    displayName: 'Web Search',
+    description:
+      'Search the web for up-to-date information, news, documentation, and answers to questions.',
+    category: 'information',
+    tags: ['search', 'web', 'research', 'information-retrieval', 'news', 'documentation'],
+    requiredSecrets: [],
+    requiredTools: ['web-search'],
+    skillPath: 'registry/curated/web-search/SKILL.md',
+    namespace: 'wunderland',
+    source: 'curated' as const,
+  },
+  {
     name: 'weather',
     displayName: 'Weather Lookup',
     description:
@@ -100,6 +113,20 @@ export const SKILLS_CATALOG: SkillCatalogEntry[] = [
     requiredSecrets: [],
     requiredTools: ['filesystem'],
     skillPath: 'registry/curated/coding-agent/SKILL.md',
+    namespace: 'wunderland',
+    source: 'curated' as const,
+  },
+
+  {
+    name: 'git',
+    displayName: 'Git',
+    description:
+      'Work with Git repositories from the command line — inspect history, create branches, commit changes, and resolve conflicts.',
+    category: 'developer-tools',
+    tags: ['git', 'version-control', 'vcs', 'branching', 'commits'],
+    requiredSecrets: [],
+    requiredTools: [],
+    skillPath: 'registry/curated/git/SKILL.md',
     namespace: 'wunderland',
     source: 'curated' as const,
   },

@@ -1,8 +1,9 @@
-# @framers/agentos-skills-registry
+---
+title: '@framers/agentos-skills-registry'
+sidebar_position: 5
+---
 
 Curated skills registry bundle for [AgentOS](https://github.com/framersai/agentos) — lazy-loading DI of SKILL.md prompt modules.
-
-[![npm](https://img.shields.io/npm/v/@framers/agentos-skills-registry?logo=npm&color=cb3837)](https://www.npmjs.com/package/@framers/agentos-skills-registry)
 
 ```bash
 npm install @framers/agentos-skills-registry
@@ -63,7 +64,7 @@ import {
 
 // Create a live SkillRegistry loaded with all curated skills
 const registry = await createCuratedSkillRegistry();
-console.log(registry.size); // 18
+console.log(registry.size); // 16+
 
 // Build a prompt snapshot for agent injection
 const snapshot = await createCuratedSkillSnapshot({

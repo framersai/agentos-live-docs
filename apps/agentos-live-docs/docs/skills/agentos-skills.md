@@ -1,8 +1,9 @@
-# @framers/agentos-skills
+---
+title: '@framers/agentos-skills'
+sidebar_position: 4
+---
 
 Curated catalog of **skills** for the [AgentOS](https://github.com/framersai/agentos) ecosystem.
-
-[![npm](https://img.shields.io/npm/v/@framers/agentos-skills?logo=npm&color=cb3837)](https://www.npmjs.com/package/@framers/agentos-skills)
 
 ```bash
 npm install @framers/agentos-skills
