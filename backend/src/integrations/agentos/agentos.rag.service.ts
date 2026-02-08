@@ -2857,6 +2857,7 @@ class SqlRagStore {
     }
 
     this.providerManager = undefined;
+    this.providerManagerInitPromise = null;
     this.embeddingManager = undefined;
     this.embeddingModel = undefined;
     this.rerankerService = undefined;
