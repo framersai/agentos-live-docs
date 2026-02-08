@@ -31,6 +31,7 @@ import {
 import { createHash } from 'node:crypto';
 import { AIModelProviderManager } from '@framers/agentos/core/llm/providers/AIModelProviderManager';
 import type { ProviderConfigEntry } from '@framers/agentos/core/llm/providers/AIModelProviderManager';
+import type { ChatMessage } from '@framers/agentos/core/llm/providers/IProvider';
 import { EmbeddingManager, QdrantVectorStore, SqlVectorStore } from '@framers/agentos/rag';
 import type {
   IVectorStore,
@@ -52,6 +53,8 @@ import type {
   IGraphRAGEngine,
   LocalSearchResult,
 } from '@framers/agentos/rag/graphrag';
+import { audioService } from '../../core/audio/audio.service.js';
+import type { ISttOptions } from '../../core/audio/stt.interfaces.js';
 
 type RagRetrievalPreset = 'fast' | 'balanced' | 'accurate';
 type RagVectorProvider = 'sql' | 'qdrant';
@@ -436,6 +439,7 @@ class SqlRagStore {
   private vectorProvider: RagVectorProvider = 'sql';
 
   // Optional embedding + reranking subsystem (lazy; requires provider access).
+  private providerManagerInitPromise: Promise<void> | null = null;
   private embeddingInitPromise: Promise<void> | null = null;
   private embeddingStatus: 'uninitialized' | 'enabled' | 'disabled' = 'uninitialized';
   private embeddingDisabledReason?: string;
@@ -992,6 +996,32 @@ class SqlRagStore {
     );
   }
 
+  /**
+   * Initializes the provider manager (OpenAI/OpenRouter/Ollama) without enabling embeddings.
+   *
+   * This is used for multimodal ingestion (e.g. image captioning) and other LLM-only workflows
+   * that should continue to work even when vector embeddings are unavailable.
+   */
+  private async ensureProviderManagerInitialized(): Promise<AIModelProviderManager> {
+    if (this.providerManager?.isInitialized) return this.providerManager;
+    if (this.providerManagerInitPromise) {
+      await this.providerManagerInitPromise;
+      return this.providerManager ?? new AIModelProviderManager();
+    }
+
+    const providerManager = this.providerManager ?? new AIModelProviderManager();
+    this.providerManager = providerManager;
+
+    this.providerManagerInitPromise = (async () => {
+      await providerManager.initialize({ providers: this.buildEmbeddingProviderConfigs() });
+    })().finally(() => {
+      this.providerManagerInitPromise = null;
+    });
+
+    await this.providerManagerInitPromise;
+    return providerManager;
+  }
+
   private async ensureEmbeddingsInitialized(adapter: StorageAdapter): Promise<void> {
     if (this.embeddingStatus === 'enabled') return;
     if (this.embeddingStatus === 'disabled') {
@@ -1003,9 +1033,7 @@ class SqlRagStore {
       // Vector store is purely local; embeddings may require network access.
       await this.ensureVectorStoreInitialized(adapter);
 
-      const providerManager = new AIModelProviderManager();
-      await providerManager.initialize({ providers: this.buildEmbeddingProviderConfigs() });
-
+      const providerManager = await this.ensureProviderManagerInitialized();
       const embed = await this.probeEmbeddingModel(providerManager);
       const embeddingConfig: EmbeddingManagerConfig = {
         embeddingModels: [
@@ -1025,7 +1053,6 @@ class SqlRagStore {
       const embeddingManager = new EmbeddingManager();
       await embeddingManager.initialize(embeddingConfig, providerManager);
 
-      this.providerManager = providerManager;
       this.embeddingManager = embeddingManager;
       this.embeddingModel = embed;
 
@@ -1366,6 +1393,62 @@ class SqlRagStore {
   // Document Operations
   // ==========================================================================
 
+  private async upsertDocumentWithChunks(
+    trx: StorageAdapter,
+    input: {
+      documentId: string;
+      collectionId: string;
+      category: string;
+      content: string;
+      metadataJson: string | null;
+      now: number;
+      chunks: string[];
+    }
+  ): Promise<void> {
+    // Insert/replace document row.
+    await trx.run(
+      `INSERT OR REPLACE INTO ${this.tablePrefix}documents 
+       (document_id, collection_id, category, content, metadata_json, created_at, updated_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?)`,
+      [
+        input.documentId,
+        input.collectionId,
+        input.category,
+        input.content,
+        input.metadataJson,
+        input.now,
+        input.now,
+      ]
+    );
+
+    // Delete existing chunks for this document (update semantics).
+    await trx.run(`DELETE FROM ${this.tablePrefix}chunks WHERE document_id = ?`, [
+      input.documentId,
+    ]);
+
+    // Insert chunks.
+    for (let i = 0; i < input.chunks.length; i++) {
+      const chunkId = `${input.documentId}_chunk_${i}`;
+      await trx.run(
+        `INSERT INTO ${this.tablePrefix}chunks 
+         (chunk_id, document_id, collection_id, content, chunk_index, metadata_json, created_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?)`,
+        [
+          chunkId,
+          input.documentId,
+          input.collectionId,
+          input.chunks[i],
+          i,
+          input.metadataJson,
+          input.now,
+        ]
+      );
+    }
+
+    // Update collection counts.
+    await this.updateCollectionCounts(trx, input.collectionId);
+  }
+
   /**
    * Ingest a document into RAG storage.
    */
@@ -1388,46 +1471,15 @@ class SqlRagStore {
 
       // Use transaction for atomicity
       await adapter.transaction(async (trx) => {
-        // Insert document
-        await trx.run(
-          `INSERT OR REPLACE INTO ${this.tablePrefix}documents 
-           (document_id, collection_id, category, content, metadata_json, created_at, updated_at)
-           VALUES (?, ?, ?, ?, ?, ?, ?)`,
-          [
-            documentId,
-            collectionId,
-            category,
-            input.content,
-            input.metadata ? JSON.stringify(input.metadata) : null,
-            now,
-            now,
-          ]
-        );
-
-        // Delete existing chunks for this document (in case of update)
-        await trx.run(`DELETE FROM ${this.tablePrefix}chunks WHERE document_id = ?`, [documentId]);
-
-        // Insert chunks
-        for (let i = 0; i < chunks.length; i++) {
-          const chunkId = `${documentId}_chunk_${i}`;
-          await trx.run(
-            `INSERT INTO ${this.tablePrefix}chunks 
-             (chunk_id, document_id, collection_id, content, chunk_index, metadata_json, created_at)
-             VALUES (?, ?, ?, ?, ?, ?, ?)`,
-            [
-              chunkId,
-              documentId,
-              collectionId,
-              chunks[i],
-              i,
-              input.metadata ? JSON.stringify(input.metadata) : null,
-              now,
-            ]
-          );
-        }
-
-        // Update collection counts
-        await this.updateCollectionCounts(trx, collectionId);
+        await this.upsertDocumentWithChunks(trx, {
+          documentId,
+          collectionId,
+          category,
+          content: input.content,
+          metadataJson: input.metadata ? JSON.stringify(input.metadata) : null,
+          now,
+          chunks,
+        });
       });
 
       // Best-effort: keep the vector index in sync (does not affect canonical SQL writes).
@@ -1490,6 +1542,578 @@ class SqlRagStore {
         error: error.message,
       };
     }
+  }
+
+  // ==========================================================================
+  // Multimodal Asset Operations
+  // ==========================================================================
+
+  private resolveMediaStorePayloadDefault(): boolean {
+    return (
+      parseBooleanEnv(
+        firstNonEmptyEnv(
+          'AGENTOS_RAG_MEDIA_STORE_PAYLOAD',
+          'RAG_MEDIA_STORE_PAYLOAD',
+          'AGENTOS_MULTIMODAL_STORE_PAYLOAD'
+        )
+      ) ?? false
+    );
+  }
+
+  private resolveMediaCollectionId(modality: RagMediaModality, provided?: string): string {
+    const explicit = provided?.trim();
+    if (explicit) return explicit;
+
+    if (modality === 'image') {
+      return (
+        firstNonEmptyEnv(
+          'AGENTOS_RAG_MEDIA_IMAGE_COLLECTION_ID',
+          'AGENTOS_RAG_MEDIA_IMAGE_COLLECTION',
+          'AGENTOS_MULTIMODAL_IMAGE_COLLECTION_ID'
+        )?.trim() || 'media_images'
+      );
+    }
+
+    return (
+      firstNonEmptyEnv(
+        'AGENTOS_RAG_MEDIA_AUDIO_COLLECTION_ID',
+        'AGENTOS_RAG_MEDIA_AUDIO_COLLECTION',
+        'AGENTOS_MULTIMODAL_AUDIO_COLLECTION_ID'
+      )?.trim() || 'media_audio'
+    );
+  }
+
+  private resolveImageCaptionProviderPreference(): {
+    preferredProviderId: string;
+    preferredModelId: string;
+  } {
+    const providerId =
+      firstNonEmptyEnv(
+        'AGENTOS_RAG_MEDIA_IMAGE_LLM_PROVIDER',
+        'AGENTOS_MULTIMODAL_IMAGE_LLM_PROVIDER'
+      )?.trim() || 'openai';
+    const modelId =
+      firstNonEmptyEnv(
+        'AGENTOS_RAG_MEDIA_IMAGE_LLM_MODEL',
+        'AGENTOS_MULTIMODAL_IMAGE_LLM_MODEL'
+      )?.trim() || 'gpt-4o-mini';
+    return { preferredProviderId: providerId, preferredModelId: modelId };
+  }
+
+  private resolveImageCaptionSystemPrompt(): string {
+    return (
+      firstNonEmptyEnv('AGENTOS_RAG_MEDIA_IMAGE_SYSTEM_PROMPT')?.trim() ||
+      [
+        'You are an indexing assistant.',
+        'Create a search-optimized description of the image for retrieval.',
+        'Return ONLY valid JSON with these fields:',
+        '{ "caption": string, "visibleText": string, "entities": string[], "tags": string[] }',
+        'Rules:',
+        '- caption: concise, 1-2 sentences',
+        '- visibleText: verbatim text you can read in the image (or empty string)',
+        '- entities: key people/places/objects (strings)',
+        '- tags: short lowercase tags (snake_case), 3-12 items',
+      ].join('\n')
+    );
+  }
+
+  private normalizeTags(tags: string[] | undefined): string[] | undefined {
+    if (!tags || tags.length === 0) return undefined;
+    const normalized = Array.from(
+      new Set(
+        tags
+          .map((t) =>
+            String(t ?? '')
+              .trim()
+              .toLowerCase()
+          )
+          .filter((t) => t.length > 0)
+      )
+    );
+    return normalized.length > 0 ? normalized : undefined;
+  }
+
+  private extractFirstJsonObject(text: string): any | null {
+    const raw = String(text ?? '').trim();
+    const start = raw.indexOf('{');
+    const end = raw.lastIndexOf('}');
+    if (start === -1 || end === -1 || end <= start) return null;
+    const slice = raw.slice(start, end + 1);
+    try {
+      return JSON.parse(slice);
+    } catch {
+      return null;
+    }
+  }
+
+  private extractTextFromCompletion(response: any): string {
+    const content = response?.choices?.[0]?.message?.content;
+    if (typeof content === 'string') return content;
+    if (Array.isArray(content)) {
+      return content
+        .map((part: any) => (typeof part?.text === 'string' ? part.text : ''))
+        .filter(Boolean)
+        .join('');
+    }
+    if (typeof response?.choices?.[0]?.text === 'string') return response.choices[0].text;
+    return '';
+  }
+
+  private async deriveImageTextRepresentation(input: {
+    mimeType: string;
+    payload?: Buffer;
+    sourceUrl?: string;
+  }): Promise<{ textRepresentation: string; tags?: string[] }> {
+    const providerManager = await this.ensureProviderManagerInitialized();
+    const { preferredProviderId, preferredModelId } = this.resolveImageCaptionProviderPreference();
+
+    const provider =
+      providerManager.getProvider(preferredProviderId) ??
+      providerManager.getProvider('openai') ??
+      providerManager.getProvider('openrouter') ??
+      providerManager.getDefaultProvider();
+    if (!provider) {
+      throw new Error(
+        'No LLM provider is configured for image captioning. Set OPENAI_API_KEY or OPENROUTER_API_KEY (or configure Ollama).'
+      );
+    }
+
+    const imageUrl =
+      input.payload && input.payload.length > 0
+        ? `data:${input.mimeType};base64,${input.payload.toString('base64')}`
+        : input.sourceUrl?.trim();
+    if (!imageUrl) {
+      throw new Error('Image ingestion requires `payload` bytes or a `sourceUrl`.');
+    }
+
+    const messages: ChatMessage[] = [
+      { role: 'system', content: this.resolveImageCaptionSystemPrompt() },
+      {
+        role: 'user',
+        content: [
+          {
+            type: 'text',
+            text: 'Describe this image for retrieval indexing.',
+          },
+          {
+            type: 'image_url',
+            image_url: { url: imageUrl, detail: 'low' },
+          },
+        ],
+      },
+    ];
+
+    const resp = await provider.generateCompletion(preferredModelId, messages, {
+      temperature: 0.2,
+      maxTokens: 450,
+    } as any);
+
+    const raw = this.extractTextFromCompletion(resp).trim();
+    const parsed = this.extractFirstJsonObject(raw);
+
+    const caption =
+      typeof parsed?.caption === 'string' ? parsed.caption.trim() : raw.split('\n')[0]?.trim();
+    const visibleText = typeof parsed?.visibleText === 'string' ? parsed.visibleText.trim() : '';
+    const entities = Array.isArray(parsed?.entities)
+      ? parsed.entities.map((v: any) => String(v ?? '').trim()).filter(Boolean)
+      : [];
+    const modelTags = Array.isArray(parsed?.tags)
+      ? parsed.tags.map((v: any) => String(v ?? '').trim()).filter(Boolean)
+      : [];
+
+    const lines: string[] = ['[Image]'];
+    if (caption) lines.push(`Caption: ${caption}`);
+    if (visibleText) lines.push(`Visible text: ${visibleText}`);
+    if (entities.length > 0) lines.push(`Entities: ${entities.join(', ')}`);
+    const normalizedModelTags = this.normalizeTags(modelTags);
+    if (normalizedModelTags && normalizedModelTags.length > 0) {
+      lines.push(`Tags: ${normalizedModelTags.join(', ')}`);
+    }
+
+    const textRepresentation = lines.join('\n').trim();
+    if (!textRepresentation) {
+      throw new Error('Image captioning produced an empty response.');
+    }
+
+    return { textRepresentation, tags: normalizedModelTags };
+  }
+
+  private async deriveAudioTextRepresentation(input: {
+    payload: Buffer;
+    originalFileName: string;
+    mimeType: string;
+    userId: string;
+  }): Promise<string> {
+    const options: ISttOptions = {
+      model: process.env.WHISPER_MODEL_DEFAULT || 'whisper-1',
+      responseFormat: 'verbose_json',
+      providerSpecificOptions: {
+        mimeType: input.mimeType,
+      },
+    } as any;
+
+    const result = await audioService.transcribeAudio(
+      input.payload,
+      input.originalFileName,
+      options,
+      input.userId
+    );
+
+    const transcript = String(result?.text ?? '').trim();
+    if (!transcript) {
+      throw new Error('Audio transcription produced an empty transcript.');
+    }
+
+    const lines: string[] = ['[Audio]', `Transcript: ${transcript}`];
+    if (typeof result?.language === 'string' && result.language.trim()) {
+      lines.push(`Language: ${result.language.trim()}`);
+    }
+    if (typeof result?.durationSeconds === 'number' && Number.isFinite(result.durationSeconds)) {
+      lines.push(`DurationSeconds: ${result.durationSeconds.toFixed(2)}`);
+    }
+    return lines.join('\n').trim();
+  }
+
+  private rowToMediaAsset(row: MediaAssetRow): RagMediaAsset {
+    return {
+      assetId: row.asset_id,
+      collectionId: row.collection_id,
+      modality: row.modality as RagMediaModality,
+      mimeType: row.mime_type,
+      originalFileName: row.original_filename,
+      sourceUrl: row.source_url,
+      contentHashHex: row.content_hash_hex,
+      metadata: row.metadata_json ? (JSON.parse(row.metadata_json) as any) : null,
+      createdAt: row.created_at,
+      updatedAt: row.updated_at,
+    };
+  }
+
+  /**
+   * Ingest an image into RAG by deriving a text representation (caption + visible text).
+   */
+  async ingestImageAsset(
+    input: Omit<RagMediaAssetInput, 'modality'>
+  ): Promise<RagMediaIngestionResult> {
+    return this.ingestMediaAsset({ ...input, modality: 'image' });
+  }
+
+  /**
+   * Ingest an audio file into RAG by deriving a text representation (transcript).
+   */
+  async ingestAudioAsset(
+    input: Omit<RagMediaAssetInput, 'modality'>
+  ): Promise<RagMediaIngestionResult> {
+    return this.ingestMediaAsset({ ...input, modality: 'audio' });
+  }
+
+  /**
+   * Ingest a multimodal asset into RAG by deriving a text representation and indexing it as a normal document.
+   *
+   * The derived documentId is currently the same as `assetId`, making query grouping deterministic.
+   */
+  async ingestMediaAsset(input: RagMediaAssetInput): Promise<RagMediaIngestionResult> {
+    const adapter = await this.ensureInitialized();
+    const now = Date.now();
+
+    const assetId = input.assetId || `asset_${now}_${Math.random().toString(36).slice(2, 10)}`;
+    const modality = input.modality;
+    const collectionId = this.resolveMediaCollectionId(modality, input.collectionId);
+    const category = input.category || 'knowledge_base';
+
+    const storePayload = input.storePayload ?? this.resolveMediaStorePayloadDefault();
+    const payload = input.payload;
+    const payloadBase64 = storePayload && payload ? payload.toString('base64') : null;
+    const sourceUrl = input.sourceUrl?.trim() || null;
+    const contentHashHex = payload
+      ? createHash('sha256').update(payload).digest('hex')
+      : sourceUrl
+        ? null
+        : null;
+
+    const userId = input.userId || 'system';
+    const agentId = input.agentId;
+
+    try {
+      await this.createCollection(collectionId);
+
+      let derivedTags: string[] | undefined;
+      let textRepresentation = input.textRepresentation?.trim();
+      if (!textRepresentation) {
+        if (modality === 'image') {
+          const derived = await this.deriveImageTextRepresentation({
+            mimeType: input.mimeType,
+            payload,
+            sourceUrl: sourceUrl ?? undefined,
+          });
+          textRepresentation = derived.textRepresentation;
+          derivedTags = derived.tags;
+        } else {
+          if (!payload || payload.length === 0) {
+            throw new Error('Audio ingestion requires `payload` bytes.');
+          }
+          textRepresentation = await this.deriveAudioTextRepresentation({
+            payload,
+            originalFileName:
+              input.originalFileName ||
+              `audio-${Date.now()}.${input.mimeType.split('/')[1] || 'bin'}`,
+            mimeType: input.mimeType,
+            userId,
+          });
+        }
+      }
+
+      if (!textRepresentation) {
+        throw new Error('Derived text representation is empty.');
+      }
+
+      const mergedTags = this.normalizeTags([...(input.tags ?? []), ...(derivedTags ?? [])]);
+      const baseMetadata = {
+        ...(input.metadata ?? {}),
+        kind: 'rag_media_asset',
+        assetId,
+        modality,
+        mimeType: input.mimeType,
+        originalFileName: input.originalFileName,
+        sourceUrl: sourceUrl ?? undefined,
+        contentHashHex: contentHashHex ?? undefined,
+      } as Record<string, unknown>;
+
+      const docMetadata: RagDocumentInput['metadata'] = {
+        ...(baseMetadata as any),
+        ...(agentId ? { agentId } : {}),
+        ...(input.metadata?.agentId ? { agentId: input.metadata.agentId as any } : {}),
+        ...(input.metadata?.userId ? { userId: input.metadata.userId as any } : {}),
+        ...(input.userId ? { userId: input.userId } : {}),
+        type: 'media_asset',
+        tags: mergedTags,
+      };
+
+      const chunkSize = 700;
+      const chunkOverlap = 60;
+      const chunks = this.chunkContent(textRepresentation, chunkSize, chunkOverlap);
+
+      // Atomic write: media asset row + derived document/chunks.
+      await adapter.transaction(async (trx) => {
+        await trx.run(
+          `INSERT OR REPLACE INTO ${this.tablePrefix}media_assets
+           (asset_id, collection_id, modality, mime_type, original_filename, payload_base64, source_url, content_hash_hex, metadata_json, created_at, updated_at)
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+          [
+            assetId,
+            collectionId,
+            modality,
+            input.mimeType,
+            input.originalFileName ?? null,
+            payloadBase64,
+            sourceUrl,
+            contentHashHex,
+            JSON.stringify({
+              ...(input.metadata ?? {}),
+              ...(mergedTags ? { tags: mergedTags } : {}),
+              ...(agentId ? { agentId } : {}),
+              ...(input.userId ? { userId: input.userId } : {}),
+            }),
+            now,
+            now,
+          ]
+        );
+
+        await this.upsertDocumentWithChunks(trx, {
+          documentId: assetId,
+          collectionId,
+          category,
+          content: textRepresentation,
+          metadataJson: docMetadata ? JSON.stringify(docMetadata) : null,
+          now,
+          chunks,
+        });
+      });
+
+      // Best-effort: keep the vector index in sync.
+      try {
+        await this.upsertVectorChunks({
+          adapter,
+          collectionId,
+          documentId: assetId,
+          documentCategory: category,
+          chunks: chunks.map((content, chunkIndex) => ({
+            chunkId: `${assetId}_chunk_${chunkIndex}`,
+            content,
+            chunkIndex,
+          })),
+          metadata: (docMetadata ?? null) as any,
+        });
+      } catch (vectorError: any) {
+        console.warn(
+          `[RAG Service] Vector indexing failed for media asset '${assetId}' (continuing): ${
+            vectorError?.message ?? vectorError
+          }`
+        );
+      }
+
+      // Optional: GraphRAG indexing (best-effort).
+      if (this.shouldIngestGraphRag(category)) {
+        try {
+          await this.ensureGraphRagInitialized(adapter);
+          await this.graphRagEngine?.ingestDocuments([
+            {
+              id: assetId,
+              content: textRepresentation,
+              metadata: sanitizeGraphRagMetadata(docMetadata as any),
+            },
+          ]);
+        } catch (graphError: any) {
+          console.warn(
+            `[RAG Service] GraphRAG indexing failed for media asset '${assetId}' (continuing): ${
+              graphError?.message ?? graphError
+            }`
+          );
+        }
+      }
+
+      return {
+        success: true,
+        assetId,
+        collectionId,
+        modality,
+        documentId: assetId,
+        textRepresentation,
+        chunksCreated: chunks.length,
+      };
+    } catch (error: any) {
+      const message = error?.message ?? String(error);
+      console.error('[RAG Service] Media ingestion failed:', message);
+      return {
+        success: false,
+        assetId,
+        collectionId,
+        modality,
+        documentId: assetId,
+        textRepresentation: input.textRepresentation ?? '',
+        chunksCreated: 0,
+        error: message,
+      };
+    }
+  }
+
+  /**
+   * Fetch stored multimodal asset metadata.
+   */
+  async getMediaAsset(assetId: string): Promise<RagMediaAsset | null> {
+    const adapter = await this.ensureInitialized();
+    const row = await adapter.get<MediaAssetRow>(
+      `SELECT * FROM ${this.tablePrefix}media_assets WHERE asset_id = ?`,
+      [assetId]
+    );
+    return row ? this.rowToMediaAsset(row) : null;
+  }
+
+  /**
+   * Fetch stored multimodal asset raw bytes (if `storePayload` was enabled at ingest time).
+   */
+  async getMediaAssetContent(
+    assetId: string
+  ): Promise<{ mimeType: string; buffer: Buffer } | null> {
+    const adapter = await this.ensureInitialized();
+    const row = await adapter.get<Pick<MediaAssetRow, 'mime_type' | 'payload_base64'>>(
+      `SELECT mime_type, payload_base64 FROM ${this.tablePrefix}media_assets WHERE asset_id = ?`,
+      [assetId]
+    );
+    const payloadBase64 = row?.payload_base64;
+    if (!row || !payloadBase64) return null;
+    return { mimeType: row.mime_type, buffer: Buffer.from(payloadBase64, 'base64') };
+  }
+
+  /**
+   * Delete a multimodal asset and its derived RAG document.
+   */
+  async deleteMediaAsset(assetId: string): Promise<boolean> {
+    const adapter = await this.ensureInitialized();
+    await adapter.run(`DELETE FROM ${this.tablePrefix}media_assets WHERE asset_id = ?`, [assetId]);
+    return this.deleteDocument(assetId);
+  }
+
+  /**
+   * Query multimodal assets by searching their derived text representations.
+   */
+  async queryMediaAssets(options: RagMediaQueryOptions): Promise<RagMediaQueryResult> {
+    const adapter = await this.ensureInitialized();
+    const start = Date.now();
+
+    const modalities =
+      options.modalities && options.modalities.length > 0 ? options.modalities : ['image', 'audio'];
+    const requestedCollections =
+      options.collectionIds && options.collectionIds.length > 0
+        ? options.collectionIds
+        : modalities.map((m) => this.resolveMediaCollectionId(m));
+    const collectionIds = Array.from(
+      new Set(requestedCollections.map((c) => c.trim()).filter(Boolean))
+    );
+
+    const assetTopK = options.topK ?? 5;
+    const chunkTopK = Math.min(200, Math.max(assetTopK * 10, assetTopK));
+
+    const queryResult = await this.query({
+      query: options.query,
+      collectionIds,
+      topK: chunkTopK,
+      includeMetadata: true,
+    });
+
+    const bestByAsset = new Map<string, RagRetrievedChunk>();
+    for (const chunk of queryResult.chunks) {
+      const assetId = chunk.documentId;
+      const existing = bestByAsset.get(assetId);
+      if (!existing || chunk.score > existing.score) {
+        bestByAsset.set(assetId, chunk);
+      }
+    }
+
+    const rankedAssets = Array.from(bestByAsset.entries())
+      .map(([assetId, bestChunk]) => ({ assetId, bestChunk }))
+      .sort((a, b) => b.bestChunk.score - a.bestChunk.score)
+      .slice(0, assetTopK);
+
+    if (rankedAssets.length === 0) {
+      return {
+        success: true,
+        query: options.query,
+        assets: [],
+        totalResults: 0,
+        processingTimeMs: Date.now() - start,
+      };
+    }
+
+    const assetIds = rankedAssets.map((a) => a.assetId);
+    const placeholders = assetIds.map(() => '?').join(', ');
+    const rows = await adapter.all<MediaAssetRow>(
+      `SELECT * FROM ${this.tablePrefix}media_assets WHERE asset_id IN (${placeholders})`,
+      assetIds
+    );
+    const byId = new Map(rows.map((r) => [r.asset_id, this.rowToMediaAsset(r)]));
+
+    const assets = rankedAssets
+      .map((entry) => {
+        const asset = byId.get(entry.assetId);
+        if (!asset) return null;
+        return {
+          asset,
+          bestChunk: {
+            ...entry.bestChunk,
+            metadata: options.includeMetadata ? entry.bestChunk.metadata : undefined,
+          },
+        };
+      })
+      .filter(Boolean) as RagMediaQueryResult['assets'];
+
+    return {
+      success: true,
+      query: options.query,
+      assets,
+      totalResults: assets.length,
+      processingTimeMs: Date.now() - start,
+    };
   }
 
   /**
