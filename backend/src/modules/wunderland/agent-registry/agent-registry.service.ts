@@ -49,6 +49,8 @@ type AgentProfile = {
   };
   systemPrompt?: string | null;
   capabilities: string[];
+  skills: string[];
+  channels: string[];
   citizen: {
     level: number;
     xp: number;
@@ -89,6 +91,8 @@ type AgentSummary = Pick<
   | 'citizen'
   | 'provenance'
   | 'capabilities'
+  | 'skills'
+  | 'channels'
 >;
 
 type WunderlandAgentRow = {
@@ -110,6 +114,8 @@ type WunderlandAgentRow = {
   storage_policy: string | null;
   sealed_at?: number | null;
   provenance_enabled: number;
+  skills_json: string | null;
+  channels_json: string | null;
   tool_access_profile: string | null;
   status: string | null;
   created_at: number;
@@ -321,6 +327,8 @@ export class AgentRegistryService {
         }
 
         const capabilities = normalizeStringArray(dto.capabilities);
+        const skills = normalizeStringArray(dto.skills);
+        const channels = normalizeStringArray(dto.channels);
         const securityProfile = {
           preLlmClassifier: Boolean(dto.security?.preLlmClassifier),
           dualLlmAuditor: Boolean(dto.security?.dualLlmAuditor),
@@ -347,6 +355,8 @@ export class AgentRegistryService {
 	              step_up_auth_config,
 	              base_system_prompt,
 	              allowed_tool_ids,
+	              skills_json,
+	              channels_json,
 	              genesis_event_id,
 	              public_key,
 	              storage_policy,
@@ -368,6 +378,8 @@ export class AgentRegistryService {
 	              @step_up_auth_config,
 	              @base_system_prompt,
 	              @allowed_tool_ids,
+	              @skills_json,
+	              @channels_json,
 	              @genesis_event_id,
 	              @public_key,
 	              @storage_policy,
@@ -391,6 +403,8 @@ export class AgentRegistryService {
             step_up_auth_config: null,
             base_system_prompt: dto.systemPrompt ?? null,
             allowed_tool_ids: JSON.stringify(capabilities),
+            skills_json: JSON.stringify(skills),
+            channels_json: JSON.stringify(channels),
             genesis_event_id: null,
             public_key: null,
             storage_policy: securityProfile.storagePolicy,
@@ -623,6 +637,8 @@ export class AgentRegistryService {
           'personality',
           'security',
           'capabilities',
+          'skills',
+          'channels',
           'metadata',
         ] as const;
         const attempted = SEALED_MUTATION_FIELDS.filter((f) => (dto as any)[f] !== undefined);
@@ -635,6 +651,12 @@ export class AgentRegistryService {
       const capabilities = dto.capabilities
         ? normalizeStringArray(dto.capabilities)
         : existingCapabilities;
+
+      const existingSkills = parseJsonOr<string[]>(existing.skills_json, []);
+      const skills = dto.skills ? normalizeStringArray(dto.skills) : existingSkills;
+
+      const existingChannels = parseJsonOr<string[]>(existing.channels_json, []);
+      const channels = dto.channels ? normalizeStringArray(dto.channels) : existingChannels;
 
       const existingPersonality = parseJsonOr<Record<string, number>>(existing.hexaco_traits, {});
       const personality = dto.personality ? (dto.personality as any) : existingPersonality;
@@ -674,6 +696,8 @@ export class AgentRegistryService {
 	                 storage_policy = @storage_policy,
 	                 provenance_enabled = @provenance_enabled,
 	                 allowed_tool_ids = @allowed_tool_ids,
+	                 skills_json = @skills_json,
+	                 channels_json = @channels_json,
 	                 tool_access_profile = COALESCE(@tool_access_profile, tool_access_profile),
 	                 updated_at = @updated_at
 	           WHERE seed_id = @seed_id
@@ -688,6 +712,8 @@ export class AgentRegistryService {
           storage_policy: nextStoragePolicy,
           provenance_enabled: nextProvenanceEnabled,
           allowed_tool_ids: JSON.stringify(capabilities),
+          skills_json: JSON.stringify(skills),
+          channels_json: JSON.stringify(channels),
           tool_access_profile: nextToolAccessProfile ?? null,
           updated_at: now,
         }
@@ -877,6 +903,8 @@ export class AgentRegistryService {
     const personality = parseJsonOr<Record<string, number>>(agent.hexaco_traits, {});
     const security = parseJsonOr<Record<string, unknown>>(agent.security_profile, {});
     const capabilities = parseJsonOr<string[]>(agent.allowed_tool_ids, []);
+    const skills = parseJsonOr<string[]>(agent.skills_json, []);
+    const channels = parseJsonOr<string[]>(agent.channels_json, []);
     const storagePolicy =
       typeof security.storagePolicy === 'string'
         ? security.storagePolicy
@@ -911,6 +939,8 @@ export class AgentRegistryService {
       },
       systemPrompt: agent.base_system_prompt,
       capabilities,
+      skills,
+      channels,
       citizen: {
         level: citizen.level ?? 1,
         xp: citizen.xp ?? 0,
@@ -940,6 +970,8 @@ export class AgentRegistryService {
       citizen: base.citizen,
       provenance: base.provenance,
       capabilities: base.capabilities,
+      skills: base.skills,
+      channels: base.channels,
     };
     return summary;
   }

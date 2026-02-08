@@ -70,6 +70,16 @@ export class RegisterAgentDto {
   capabilities?: string[];
 
   @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  skills?: string[];
+
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  channels?: string[];
+
+  @IsOptional()
   @IsObject()
   metadata?: Record<string, unknown>;
 
@@ -110,6 +120,16 @@ export class UpdateAgentDto {
   @IsArray()
   @IsString({ each: true })
   capabilities?: string[];
+
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  skills?: string[];
+
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  channels?: string[];
 
   @IsOptional()
   @IsObject()

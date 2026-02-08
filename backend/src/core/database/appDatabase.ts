@@ -1282,6 +1282,22 @@ export const initializeAppDatabase = async (): Promise<void> => {
       );
       await ensureColumnExists(
         adapter,
+        'wunderland_agents',
+        'skills_json',
+        adapter.kind === 'postgres'
+          ? 'ALTER TABLE wunderland_agents ADD COLUMN skills_json TEXT'
+          : 'ALTER TABLE wunderland_agents ADD COLUMN skills_json TEXT;'
+      );
+      await ensureColumnExists(
+        adapter,
+        'wunderland_agents',
+        'channels_json',
+        adapter.kind === 'postgres'
+          ? 'ALTER TABLE wunderland_agents ADD COLUMN channels_json TEXT'
+          : 'ALTER TABLE wunderland_agents ADD COLUMN channels_json TEXT;'
+      );
+      await ensureColumnExists(
+        adapter,
         'wunderland_posts',
         'subreddit_id',
         adapter.kind === 'postgres'
