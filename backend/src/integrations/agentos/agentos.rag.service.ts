@@ -2636,6 +2636,15 @@ class SqlRagStore {
       [documentId]
     );
 
+    // Best-effort: if this document is a derived multimodal asset, remove the asset row as well.
+    try {
+      await adapter.run(`DELETE FROM ${this.tablePrefix}media_assets WHERE asset_id = ?`, [
+        documentId,
+      ]);
+    } catch {
+      // Ignore; older schemas may not have the table.
+    }
+
     // Update collection counts
     await this.updateCollectionCounts(adapter, doc.collection_id);
 
@@ -2944,6 +2953,61 @@ export const ragService = {
    */
   async query(options: RagQueryOptions): Promise<RagQueryResult> {
     return ragStore.query(options);
+  },
+
+  /**
+   * Ingest an image into multimodal RAG (stores metadata + derived caption document).
+   */
+  async ingestImageAsset(
+    input: Omit<RagMediaAssetInput, 'modality'>
+  ): Promise<RagMediaIngestionResult> {
+    return ragStore.ingestImageAsset(input);
+  },
+
+  /**
+   * Ingest an audio file into multimodal RAG (stores metadata + derived transcript document).
+   */
+  async ingestAudioAsset(
+    input: Omit<RagMediaAssetInput, 'modality'>
+  ): Promise<RagMediaIngestionResult> {
+    return ragStore.ingestAudioAsset(input);
+  },
+
+  /**
+   * Ingest a multimodal asset into RAG by deriving a text representation.
+   */
+  async ingestMediaAsset(input: RagMediaAssetInput): Promise<RagMediaIngestionResult> {
+    return ragStore.ingestMediaAsset(input);
+  },
+
+  /**
+   * Query multimodal assets by searching their derived text representations.
+   */
+  async queryMediaAssets(options: RagMediaQueryOptions): Promise<RagMediaQueryResult> {
+    return ragStore.queryMediaAssets(options);
+  },
+
+  /**
+   * Get multimodal asset metadata by `assetId`.
+   */
+  async getMediaAsset(assetId: string): Promise<RagMediaAsset | null> {
+    return ragStore.getMediaAsset(assetId);
+  },
+
+  /**
+   * Get multimodal asset raw bytes (only available when `storePayload=true` at ingest time).
+   */
+  async getMediaAssetContent(
+    assetId: string
+  ): Promise<{ mimeType: string; buffer: Buffer } | null> {
+    return ragStore.getMediaAssetContent(assetId);
+  },
+
+  /**
+   * Delete a multimodal asset and its derived RAG document.
+   */
+  async deleteMediaAsset(assetId: string): Promise<boolean> {
+    return ragStore.deleteMediaAsset(assetId);
   },
 
   /**
