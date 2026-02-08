@@ -29,6 +29,7 @@ import {
   creditAllocationService,
   type CreditContext,
 } from '../../core/cost/creditAllocation.service.js';
+import { creditGateService } from '../../core/cost/creditGate.service.js';
 import { resolveSessionUserId } from '../../utils/session.utils.js';
 import { getModelPrice, MODEL_PRICING } from '../../../config/models.config.js';
 
@@ -521,17 +522,14 @@ export async function POST(req: Request, res: Response): Promise<void> {
         ? Math.min(...currentTurnClientMessages.map((msg) => msg.timestamp || requestTimestamp))
         : requestTimestamp;
 
-    // --- 0. Cost Check & Persona Persistence (always run before AgentOS short-circuit) ---
-    if (
-      !DISABLE_COST_LIMITS_CONFIG &&
-      CostService.isSessionCostThresholdReached(effectiveUserId, SESSION_COST_THRESHOLD_USD)
-    ) {
-      const currentCostDetail = CostService.getSessionCost(effectiveUserId);
-      res.status(403).json({
-        message: `Session cost threshold of $${SESSION_COST_THRESHOLD_USD.toFixed(2)} reached.`,
-        error: 'COST_THRESHOLD_EXCEEDED',
-        currentCost: currentCostDetail.totalCost,
-        threshold: SESSION_COST_THRESHOLD_USD,
+    // --- 0. Credit Gate & Persona Persistence (always run before AgentOS short-circuit) ---
+    const gateResult = creditGateService.checkLlm(effectiveUserId, creditContext);
+    if (!gateResult.allowed) {
+      const { error: gateError } = gateResult;
+      res.status(gateError.status).json({
+        message: gateError.message,
+        error: gateError.code,
+        ...gateError.details,
       });
       return;
     }

@@ -260,6 +260,102 @@ export const createAgentOSRagRouter = (): Router => {
   );
 
   /**
+   * POST /graphrag/local-search
+   * GraphRAG local search (entities + relationships + community context).
+   *
+   * @description Disabled by default. Enable with `AGENTOS_GRAPHRAG_ENABLED=true`.
+   */
+  router.post(
+    '/graphrag/local-search',
+    async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
+      try {
+        if (!agentosChatAdapterEnabled()) {
+          return res.status(503).json({
+            success: false,
+            message: 'AgentOS integration disabled',
+            error: 'AGENTOS_DISABLED',
+          });
+        }
+
+        const body = req.body as { query?: unknown; options?: unknown };
+        const query = typeof body?.query === 'string' ? body.query.trim() : '';
+        if (!query) {
+          return res.status(400).json({
+            success: false,
+            message: 'query is required and must be a non-empty string',
+            error: 'INVALID_PAYLOAD',
+          });
+        }
+
+        const result = await ragService.graphRagLocalSearch(query, body.options as any);
+        return res.status(200).json({ success: true, result });
+      } catch (error) {
+        next(error);
+      }
+    }
+  );
+
+  /**
+   * POST /graphrag/global-search
+   * GraphRAG global search (community summaries).
+   *
+   * @description Disabled by default. Enable with `AGENTOS_GRAPHRAG_ENABLED=true`.
+   */
+  router.post(
+    '/graphrag/global-search',
+    async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
+      try {
+        if (!agentosChatAdapterEnabled()) {
+          return res.status(503).json({
+            success: false,
+            message: 'AgentOS integration disabled',
+            error: 'AGENTOS_DISABLED',
+          });
+        }
+
+        const body = req.body as { query?: unknown; options?: unknown };
+        const query = typeof body?.query === 'string' ? body.query.trim() : '';
+        if (!query) {
+          return res.status(400).json({
+            success: false,
+            message: 'query is required and must be a non-empty string',
+            error: 'INVALID_PAYLOAD',
+          });
+        }
+
+        const result = await ragService.graphRagGlobalSearch(query, body.options as any);
+        return res.status(200).json({ success: true, result });
+      } catch (error) {
+        next(error);
+      }
+    }
+  );
+
+  /**
+   * GET /graphrag/stats
+   * GraphRAG statistics.
+   */
+  router.get(
+    '/graphrag/stats',
+    async (_req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
+      try {
+        if (!agentosChatAdapterEnabled()) {
+          return res.status(503).json({
+            success: false,
+            message: 'AgentOS integration disabled',
+            error: 'AGENTOS_DISABLED',
+          });
+        }
+
+        const stats = await ragService.graphRagStats();
+        return res.status(200).json({ success: true, stats });
+      } catch (error) {
+        next(error);
+      }
+    }
+  );
+
+  /**
    * GET /documents
    * List documents in RAG memory.
    *
@@ -294,7 +390,7 @@ export const createAgentOSRagRouter = (): Router => {
 
         const response = {
           success: true,
-          documents: paginatedDocs.map(doc => ({
+          documents: paginatedDocs.map((doc) => ({
             documentId: doc.documentId,
             collectionId: doc.collectionId,
             chunkCount: doc.chunkCount,
@@ -548,12 +644,29 @@ export const createAgentOSRagRouter = (): Router => {
           }
         }
 
+        const embeddingConfigured = Boolean(
+          process.env.OPENAI_API_KEY?.trim() ||
+            process.env.OPENROUTER_API_KEY?.trim() ||
+            process.env.OLLAMA_BASE_URL?.trim() ||
+            process.env.OLLAMA_HOST?.trim()
+        );
+
+        const graphRagEnabledRaw = String(process.env.AGENTOS_GRAPHRAG_ENABLED || '')
+          .trim()
+          .toLowerCase();
+        const graphRagEnabled =
+          graphRagEnabledRaw === '1' ||
+          graphRagEnabledRaw === 'true' ||
+          graphRagEnabledRaw === 'yes' ||
+          graphRagEnabledRaw === 'on';
+
         return res.status(200).json({
           status: isEnabled && ragAvailable ? 'ready' : isEnabled ? 'initializing' : 'disabled',
           ragServiceInitialized: ragAvailable,
           storageAdapter: adapterKind,
           vectorStoreConnected: ragAvailable,
-          embeddingServiceAvailable: false, // Embeddings not yet integrated (using keyword matching)
+          embeddingServiceAvailable: embeddingConfigured,
+          graphRagEnabled,
           stats: stats
             ? {
                 totalDocuments: stats.totalDocuments,

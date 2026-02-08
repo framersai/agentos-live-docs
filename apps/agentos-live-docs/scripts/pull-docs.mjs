@@ -18,9 +18,16 @@ const DOCS_OUT = resolve(ROOT, 'docs');
 
 // Source directories (relative to monorepo root)
 const MONO_ROOT = resolve(ROOT, '../..');
+const AGENTOS_PKG = resolve(MONO_ROOT, 'packages/agentos');
 const AGENTOS_DOCS = resolve(MONO_ROOT, 'packages/agentos/docs');
 const EXTENSIONS_ROOT = resolve(MONO_ROOT, 'packages/agentos-extensions');
 const CURATED_ROOT = resolve(EXTENSIONS_ROOT, 'registry/curated');
+const SKILLS_PKG = resolve(MONO_ROOT, 'packages/agentos-skills');
+const SKILLS_REGISTRY_PKG = resolve(MONO_ROOT, 'packages/agentos-skills-registry');
+const SKILLS_EXTENSION_PKG = resolve(MONO_ROOT, 'packages/agentos-ext-skills');
+const SQL_STORAGE_ADAPTER_PKG = resolve(MONO_ROOT, 'packages/sql-storage-adapter');
+const REPO_DOCS = resolve(MONO_ROOT, 'docs');
+const EXTENSIONS_GITHUB_REPO = 'https://github.com/framersai/agentos-extensions';
 
 // ── Mapping tables ──────────────────────────────────────────────────
 
@@ -31,6 +38,11 @@ const agentosGuides = [
   { src: 'RELEASING.md', dest: 'getting-started/releasing.md', title: 'Releasing', position: 3 },
   { src: 'ARCHITECTURE.md', dest: 'architecture/system-architecture.md', title: 'System Architecture', position: 1 },
   { src: 'PLATFORM_SUPPORT.md', dest: 'architecture/platform-support.md', title: 'Platform Support', position: 2 },
+  { src: 'OBSERVABILITY.md', dest: 'architecture/observability.md', title: 'Observability (OpenTelemetry)', position: 3 },
+  { src: 'LOGGING.md', dest: 'architecture/logging.md', title: 'Logging (Pino + OpenTelemetry)', position: 4 },
+  { src: 'TOOL_CALLING_AND_LOADING.md', dest: 'architecture/tool-calling-and-loading.md', title: 'Tool Calling & Lazy Loading', position: 5 },
+  { src: 'IMMUTABLE_AGENTS.md', dest: 'features/immutable-agents.md', title: 'Immutable Agents', position: 12 },
+  { src: 'PROVENANCE_IMMUTABILITY.md', dest: 'features/provenance-immutability.md', title: 'Provenance & Immutability', position: 13 },
   { src: 'PLANNING_ENGINE.md', dest: 'features/planning-engine.md', title: 'Planning Engine', position: 1 },
   { src: 'HUMAN_IN_THE_LOOP.md', dest: 'features/human-in-the-loop.md', title: 'Human-in-the-Loop', position: 2 },
   { src: 'AGENT_COMMUNICATION.md', dest: 'features/agent-communication.md', title: 'Agent Communication', position: 3 },
@@ -71,6 +83,29 @@ const builtInExtensions = [
   { dir: 'integrations/telegram', dest: 'extensions/built-in/telegram.md', title: 'Telegram', position: 9 },
   { dir: 'provenance/anchor-providers', dest: 'extensions/built-in/anchor-providers.md', title: 'Anchor Providers', position: 10 },
   { dir: 'provenance/wunderland-tip-ingestion', dest: 'extensions/built-in/tip-ingestion.md', title: 'Tip Ingestion', position: 11 },
+  { dir: 'communications/telegram-bot', dest: 'extensions/built-in/telegram-bot.md', title: 'Telegram Bot (Comms)', position: 12 },
+  { dir: 'channels/telegram', dest: 'extensions/built-in/channel-telegram.md', title: 'Channel: Telegram', position: 13 },
+  { dir: 'channels/whatsapp', dest: 'extensions/built-in/channel-whatsapp.md', title: 'Channel: WhatsApp', position: 14 },
+  { dir: 'channels/discord', dest: 'extensions/built-in/channel-discord.md', title: 'Channel: Discord', position: 15 },
+  { dir: 'channels/slack', dest: 'extensions/built-in/channel-slack.md', title: 'Channel: Slack', position: 16 },
+  { dir: 'channels/webchat', dest: 'extensions/built-in/channel-webchat.md', title: 'Channel: WebChat', position: 17 },
+];
+
+/** @type {{ srcPath: string; dest: string; title: string; position: number }[]} */
+const skillsDocs = [
+  // Keep `docs/skills/overview.md` as the hand-curated landing page.
+  { srcPath: resolve(AGENTOS_DOCS, 'SKILLS.md'), dest: 'skills/skill-format.md', title: 'Skills (SKILL.md)', position: 2 },
+  { srcPath: resolve(SKILLS_EXTENSION_PKG, 'README.md'), dest: 'skills/skills-extension.md', title: 'Skills Extension', position: 3 },
+  { srcPath: resolve(SKILLS_PKG, 'README.md'), dest: 'skills/agentos-skills.md', title: '@framers/agentos-skills', position: 4 },
+  { srcPath: resolve(SKILLS_REGISTRY_PKG, 'README.md'), dest: 'skills/agentos-skills-registry.md', title: '@framers/agentos-skills-registry', position: 5 },
+];
+
+/** @type {{ srcPath: string; dest: string; title: string; position: number }[]} */
+const extraDocs = [
+  { srcPath: resolve(AGENTOS_PKG, 'CHANGELOG.md'), dest: 'getting-started/changelog.md', title: 'Changelog', position: 4 },
+  { srcPath: resolve(REPO_DOCS, 'EMERGENT_AGENCY_SYSTEM.md'), dest: 'architecture/emergent-agency-system.md', title: 'Emergent Agency System', position: 4 },
+  { srcPath: resolve(REPO_DOCS, 'BACKEND_API.md'), dest: 'architecture/backend-api.md', title: 'Backend API', position: 5 },
+  { srcPath: resolve(SQL_STORAGE_ADAPTER_PKG, 'PLATFORM_STRATEGY.md'), dest: 'features/platform-strategy.md', title: 'Platform Strategy', position: 8 },
 ];
 
 // ── Link rewrite rules ──────────────────────────────────────────────
@@ -78,7 +113,13 @@ const builtInExtensions = [
 /** Map old filename references to new Docusaurus paths */
 const linkRewrites = {
   'ARCHITECTURE.md': '/docs/architecture/system-architecture',
+  'EMERGENT_AGENCY_SYSTEM.md': '/docs/architecture/emergent-agency-system',
+  'BACKEND_API.md': '/docs/architecture/backend-api',
+  'MULTI_GMI_IMPLEMENTATION_PLAN.md': '/docs/architecture/multi-gmi-implementation-plan',
+  'OBSERVABILITY.md': '/docs/architecture/observability',
+  'LOGGING.md': '/docs/architecture/logging',
   'PLATFORM_SUPPORT.md': '/docs/architecture/platform-support',
+  'TOOL_CALLING_AND_LOADING.md': '/docs/architecture/tool-calling-and-loading',
   'PLANNING_ENGINE.md': '/docs/features/planning-engine',
   'HUMAN_IN_THE_LOOP.md': '/docs/features/human-in-the-loop',
   'AGENT_COMMUNICATION.md': '/docs/features/agent-communication',
@@ -86,6 +127,9 @@ const linkRewrites = {
   'RAG_MEMORY_CONFIGURATION.md': '/docs/features/rag-memory',
   'SQL_STORAGE_QUICKSTART.md': '/docs/features/sql-storage',
   'CLIENT_SIDE_STORAGE.md': '/docs/features/client-side-storage',
+  'PLATFORM_STRATEGY.md': '/docs/features/platform-strategy',
+  'IMMUTABLE_AGENTS.md': '/docs/features/immutable-agents',
+  'PROVENANCE_IMMUTABILITY.md': '/docs/features/provenance-immutability',
   'STRUCTURED_OUTPUT.md': '/docs/features/structured-output',
   'EVALUATION_FRAMEWORK.md': '/docs/features/evaluation-framework',
   'COST_OPTIMIZATION.md': '/docs/features/cost-optimization',
@@ -93,7 +137,9 @@ const linkRewrites = {
   'RFC_EXTENSION_STANDARDS.md': '/docs/extensions/extension-standards',
   'RELEASING.md': '/docs/getting-started/releasing',
   'ECOSYSTEM.md': '/docs/getting-started/ecosystem',
+  'SKILLS.md': '/docs/skills/skill-format',
   'README.md': '/docs/getting-started/documentation-index',
+  'CHANGELOG.md': '/docs/getting-started/changelog',
   'MIGRATION_TO_STORAGE_ADAPTER.md': '/docs/features/sql-storage',
   'HOW_EXTENSIONS_WORK.md': '/docs/extensions/how-extensions-work',
   'EXTENSION_ARCHITECTURE.md': '/docs/extensions/extension-architecture',
@@ -102,6 +148,23 @@ const linkRewrites = {
   'SELF_HOSTED_REGISTRIES.md': '/docs/extensions/self-hosted-registries',
   'MIGRATION_GUIDE.md': '/docs/extensions/migration-guide',
   'AGENCY_COLLABORATION_EXAMPLE.md': '/docs/features/agency-collaboration',
+};
+
+/** Rewrite curated registry folder links -> docs pages */
+const curatedLinkRewrites = Object.fromEntries(
+  builtInExtensions.map(({ dir, dest }) => {
+    const from = `./registry/curated/${dir}`;
+    const to = `/docs/${dest.replace(/\.md$/, '')}`;
+    return [from, to];
+  }),
+);
+
+/** Exact-path rewrites that don't fit the filename-only table. */
+const exactLinkRewrites = {
+  './api/index.html': '/docs/api/',
+  './docs/api/index.html': '/docs/api/',
+  '../src/core/tools/ITool.ts': '/docs/api/interfaces/ITool',
+  '../src/extensions/ExtensionManager.ts': '/docs/api/classes/ExtensionManager',
 };
 
 // ── Helpers ──────────────────────────────────────────────────────────
@@ -126,15 +189,37 @@ ${withoutH1}`;
 }
 
 function rewriteLinks(content) {
-  // Rewrite markdown links: [text](./FILENAME.md) or [text](FILENAME.md)
-  return content.replace(
-    /\[([^\]]*)\]\(\.?\/?([A-Z_]+\.md)\)/g,
-    (match, text, filename) => {
-      const newPath = linkRewrites[filename];
-      if (newPath) return `[${text}](${newPath})`;
+  return content.replace(/\[([^\]]*)\]\(([^)]+)\)/g, (match, text, hrefRaw) => {
+    const href = String(hrefRaw || '').trim();
+    if (!href) return match;
+
+    // Skip external URLs + anchors
+    if (
+      href.startsWith('http://') ||
+      href.startsWith('https://') ||
+      href.startsWith('#') ||
+      href.startsWith('mailto:')
+    ) {
       return match;
     }
-  );
+
+    const [hrefPathRaw, anchorRaw] = href.split('#');
+    const hrefPath = String(hrefPathRaw || '').trim();
+    const anchor = anchorRaw ? `#${anchorRaw}` : '';
+    const hrefNoTrailing = hrefPath.endsWith('/') ? hrefPath.slice(0, -1) : hrefPath;
+
+    const exact = exactLinkRewrites[hrefPath] || exactLinkRewrites[hrefNoTrailing];
+    if (exact) return `[${text}](${exact}${anchor})`;
+
+    const curated = curatedLinkRewrites[hrefPath] || curatedLinkRewrites[hrefNoTrailing];
+    if (curated) return `[${text}](${curated}${anchor})`;
+
+    const base = basename(hrefPath);
+    const rewritten = linkRewrites[base];
+    if (rewritten) return `[${text}](${rewritten}${anchor})`;
+
+    return match;
+  });
 }
 
 function stripBadgeHtml(content) {
@@ -210,6 +295,44 @@ sidebar_position: ${position}
 Documentation coming soon. See the [extension source](https://github.com/framersai/agentos-extensions/tree/master/registry/curated/${dir}) for usage details.
 `);
     console.warn(`  STUB (no README): ${dir}`);
+    skipped++;
+    continue;
+  }
+
+  let content = readFileSync(srcPath, 'utf8');
+  // Many extension READMEs link to local ./examples/ folders. In docs, those
+  // directories aren't imported as pages, so point to the source repo instead.
+  content = content.replace(/\[([^\]]+)\]\(\.\/examples\/?\)/g, (_m, label) => {
+    const url = `${EXTENSIONS_GITHUB_REPO}/tree/master/registry/curated/${dir}/examples`;
+    return `[${label}](${url})`;
+  });
+  ensureDir(destPath);
+  writeFileSync(destPath, processMarkdown(content, title, position));
+  copied++;
+}
+
+// 4. Copy skills docs (skills are a separate section from extensions)
+for (const { srcPath, dest, title, position } of skillsDocs) {
+  const destPath = resolve(DOCS_OUT, dest);
+
+  if (!existsSync(srcPath)) {
+    console.warn(`  SKIP (not found): ${srcPath}`);
+    skipped++;
+    continue;
+  }
+
+  const content = readFileSync(srcPath, 'utf8');
+  ensureDir(destPath);
+  writeFileSync(destPath, processMarkdown(content, title, position));
+  copied++;
+}
+
+// 5. Copy extra monorepo docs referenced by guides
+for (const { srcPath, dest, title, position } of extraDocs) {
+  const destPath = resolve(DOCS_OUT, dest);
+
+  if (!existsSync(srcPath)) {
+    console.warn(`  SKIP (not found): ${srcPath}`);
     skipped++;
     continue;
   }

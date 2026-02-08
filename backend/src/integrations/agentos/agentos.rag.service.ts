@@ -6,11 +6,11 @@
  *
  * @module AgentOSRagService
  * @version 2.0.0 - Refactored to use sql-storage-adapter properly
- * 
+ *
  * @remarks
  * This service provides document ingestion, retrieval, and memory management
  * using SQL storage with automatic platform detection and fallback.
- * 
+ *
  * Architecture:
  * ```
  * Backend API Routes
@@ -28,6 +28,104 @@ import {
   type StorageAdapter,
   type StorageResolutionOptions,
 } from '@framers/sql-storage-adapter';
+import { AIModelProviderManager } from '@framers/agentos/core/llm/providers/AIModelProviderManager';
+import type { ProviderConfigEntry } from '@framers/agentos/core/llm/providers/AIModelProviderManager';
+import { EmbeddingManager, QdrantVectorStore, SqlVectorStore } from '@framers/agentos/rag';
+import type {
+  IVectorStore,
+  QdrantVectorStoreConfig,
+  SqlVectorStoreConfig,
+} from '@framers/agentos/rag';
+import type { EmbeddingManagerConfig } from '@framers/agentos/config/EmbeddingManagerConfiguration';
+import type { QueryOptions } from '@framers/agentos/rag/IVectorStore';
+import type { RetrievedVectorDocument } from '@framers/agentos/rag/IVectorStore';
+import {
+  CohereReranker,
+  LocalCrossEncoderReranker,
+  RerankerService,
+} from '@framers/agentos/rag/reranking';
+import type { RerankerInput } from '@framers/agentos/rag/reranking';
+import type {
+  GraphRAGSearchOptions,
+  GlobalSearchResult,
+  IGraphRAGEngine,
+  LocalSearchResult,
+} from '@framers/agentos/rag/graphrag';
+
+type RagRetrievalPreset = 'fast' | 'balanced' | 'accurate';
+type RagVectorProvider = 'sql' | 'qdrant';
+
+const firstNonEmptyEnv = (...names: string[]): string | undefined => {
+  for (const name of names) {
+    const value = process.env[name]?.trim();
+    if (value) return value;
+  }
+  return undefined;
+};
+
+const coerceOllamaBaseURL = (value: string | undefined): string | undefined => {
+  if (!value) return undefined;
+  const trimmed = value.trim();
+  if (!trimmed) return undefined;
+  if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) return trimmed;
+  return `http://${trimmed}`;
+};
+
+const parsePositiveIntEnv = (value: string | undefined): number | undefined => {
+  if (!value) return undefined;
+  const parsed = Number.parseInt(value, 10);
+  if (!Number.isFinite(parsed) || parsed <= 0) return undefined;
+  return parsed;
+};
+
+const coerceRagPreset = (value: string | undefined): RagRetrievalPreset | undefined => {
+  const preset = value?.trim().toLowerCase();
+  if (preset === 'fast' || preset === 'balanced' || preset === 'accurate') return preset;
+  return undefined;
+};
+
+const coerceRagVectorProvider = (value: string | undefined): RagVectorProvider | undefined => {
+  const provider = value?.trim().toLowerCase();
+  if (provider === 'sql' || provider === 'qdrant') return provider;
+  return undefined;
+};
+
+const parseBooleanEnv = (value: string | undefined): boolean | undefined => {
+  if (!value) return undefined;
+  const lowered = value.trim().toLowerCase();
+  if (lowered === 'true' || lowered === '1' || lowered === 'yes' || lowered === 'y') return true;
+  if (lowered === 'false' || lowered === '0' || lowered === 'no' || lowered === 'n') return false;
+  return undefined;
+};
+
+const isMetadataScalar = (value: unknown): value is string | number | boolean =>
+  typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean';
+
+const sanitizeGraphRagMetadata = (
+  metadata: Record<string, unknown> | undefined
+): Record<string, any> | undefined => {
+  if (!metadata) return undefined;
+  const out: Record<string, any> = {};
+  for (const [key, raw] of Object.entries(metadata)) {
+    if (raw === null || raw === undefined) continue;
+    if (isMetadataScalar(raw)) {
+      out[key] = raw;
+      continue;
+    }
+    if (Array.isArray(raw)) {
+      const items: Array<string | number | boolean> = [];
+      for (const item of raw) {
+        if (item === null || item === undefined) continue;
+        if (isMetadataScalar(item)) items.push(item);
+        else items.push(JSON.stringify(item));
+      }
+      out[key] = items;
+      continue;
+    }
+    out[key] = JSON.stringify(raw);
+  }
+  return Object.keys(out).length > 0 ? out : undefined;
+};
 
 // ============================================================================
 // Types
@@ -206,6 +304,30 @@ class SqlRagStore {
   private initPromise: Promise<void> | null = null;
   private tablePrefix = 'rag_';
 
+  // Optional vector index (TypeScript-only via AgentOS SqlVectorStore).
+  private vectorStore: IVectorStore | null = null;
+  private vectorStoreInitialized = false;
+  private vectorStoreInitPromise: Promise<void> | null = null;
+  private vectorTablePrefix = 'rag_vec_';
+  private vectorProvider: RagVectorProvider = 'sql';
+
+  // Optional embedding + reranking subsystem (lazy; requires provider access).
+  private embeddingInitPromise: Promise<void> | null = null;
+  private embeddingStatus: 'uninitialized' | 'enabled' | 'disabled' = 'uninitialized';
+  private embeddingDisabledReason?: string;
+  private providerManager?: AIModelProviderManager;
+  private embeddingManager?: EmbeddingManager;
+  private embeddingModel?: { providerId: string; modelId: string; dimension: number };
+  private rerankerService?: RerankerService;
+  private rerankWarningLogged = false;
+
+  // Optional GraphRAG subsystem (disabled by default; enabled via env).
+  private graphRagInitPromise: Promise<void> | null = null;
+  private graphRagStatus: 'uninitialized' | 'enabled' | 'disabled' = 'uninitialized';
+  private graphRagDisabledReason?: string;
+  private graphRagEngine?: IGraphRAGEngine;
+  private graphRagWarningLogged = false;
+
   /**
    * Initialize the storage adapter and create schema.
    */
@@ -236,10 +358,21 @@ class SqlRagStore {
       });
 
       this.adapter = await resolveStorageAdapter(options);
-      
+
       // Create schema
       await this.createSchema();
-      
+
+      // Initialize the optional vector index schema (no embeddings required yet).
+      try {
+        await this.ensureVectorStoreInitialized(this.adapter);
+      } catch (vectorError: any) {
+        console.warn(
+          `[RAG Service] Vector index initialization failed (continuing with keyword-only RAG): ${
+            vectorError?.message ?? vectorError
+          }`
+        );
+      }
+
       this.initialized = true;
       console.log(`[RAG Service] Initialized with adapter: ${this.adapter.kind}`);
     } catch (error) {
@@ -319,10 +452,125 @@ class SqlRagStore {
           content_rowid='rowid'
         );
       `);
+
+      // External content FTS tables require triggers to stay in sync.
+      // If these fail (non-SQLite adapters), we fall back to keyword matching.
+      await this.adapter.exec(`
+        CREATE TRIGGER IF NOT EXISTS ${this.tablePrefix}chunks_ai AFTER INSERT ON ${this.tablePrefix}chunks BEGIN
+          INSERT INTO ${this.tablePrefix}chunks_fts(rowid, chunk_id, content)
+          VALUES (new.rowid, new.chunk_id, new.content);
+        END;
+        CREATE TRIGGER IF NOT EXISTS ${this.tablePrefix}chunks_ad AFTER DELETE ON ${this.tablePrefix}chunks BEGIN
+          INSERT INTO ${this.tablePrefix}chunks_fts(${this.tablePrefix}chunks_fts, rowid, chunk_id, content)
+          VALUES ('delete', old.rowid, old.chunk_id, old.content);
+        END;
+        CREATE TRIGGER IF NOT EXISTS ${this.tablePrefix}chunks_au AFTER UPDATE ON ${this.tablePrefix}chunks BEGIN
+          INSERT INTO ${this.tablePrefix}chunks_fts(${this.tablePrefix}chunks_fts, rowid, chunk_id, content)
+          VALUES ('delete', old.rowid, old.chunk_id, old.content);
+          INSERT INTO ${this.tablePrefix}chunks_fts(rowid, chunk_id, content)
+          VALUES (new.rowid, new.chunk_id, new.content);
+        END;
+      `);
+
+      // If the index is empty but we already have chunks, rebuild once.
+      try {
+        const chunkCount = await this.adapter.get<{ count: number }>(
+          `SELECT COUNT(*) as count FROM ${this.tablePrefix}chunks`
+        );
+        const ftsCount = await this.adapter.get<{ count: number }>(
+          `SELECT COUNT(*) as count FROM ${this.tablePrefix}chunks_fts`
+        );
+        if ((chunkCount?.count ?? 0) > 0 && (ftsCount?.count ?? 0) === 0) {
+          await this.adapter.exec(
+            `INSERT INTO ${this.tablePrefix}chunks_fts(${this.tablePrefix}chunks_fts) VALUES('rebuild');`
+          );
+        }
+      } catch {
+        // Ignore; worst case keyword fallback still works.
+      }
+
       console.log('[RAG Service] FTS5 full-text search enabled');
     } catch {
       console.log('[RAG Service] FTS5 not available, using keyword matching');
     }
+  }
+
+  private resolveVectorTablePrefix(): string {
+    return (
+      firstNonEmptyEnv('AGENTOS_RAG_VECTOR_TABLE_PREFIX', 'RAG_VECTOR_TABLE_PREFIX')?.trim() ||
+      'rag_vec_'
+    );
+  }
+
+  private resolveVectorProvider(): RagVectorProvider {
+    return (
+      coerceRagVectorProvider(
+        firstNonEmptyEnv('AGENTOS_RAG_VECTOR_PROVIDER', 'RAG_VECTOR_PROVIDER')
+      ) || 'sql'
+    );
+  }
+
+  private async ensureVectorStoreInitialized(adapter: StorageAdapter): Promise<void> {
+    if (this.vectorStoreInitialized) return;
+    if (this.vectorStoreInitPromise) return this.vectorStoreInitPromise;
+
+    this.vectorStoreInitPromise = (async () => {
+      this.vectorProvider = this.resolveVectorProvider();
+
+      if (this.vectorProvider === 'qdrant') {
+        const url = firstNonEmptyEnv('AGENTOS_RAG_QDRANT_URL', 'QDRANT_URL');
+        if (!url) {
+          throw new Error(
+            'Qdrant vector provider selected but no URL configured. Set `AGENTOS_RAG_QDRANT_URL` (or `QDRANT_URL`).'
+          );
+        }
+
+        const timeoutMs =
+          parsePositiveIntEnv(
+            firstNonEmptyEnv('AGENTOS_RAG_QDRANT_TIMEOUT_MS', 'QDRANT_TIMEOUT_MS')
+          ) ?? 15_000;
+        const enableBm25 =
+          parseBooleanEnv(firstNonEmptyEnv('AGENTOS_RAG_QDRANT_ENABLE_BM25')) ?? true;
+
+        const store = new QdrantVectorStore();
+        const config: QdrantVectorStoreConfig = {
+          id: 'agentos-rag-vector-qdrant',
+          type: 'qdrant',
+          url,
+          apiKey: firstNonEmptyEnv('AGENTOS_RAG_QDRANT_API_KEY', 'QDRANT_API_KEY'),
+          timeoutMs,
+          enableBm25,
+        };
+
+        await store.initialize(config);
+        this.vectorStore = store;
+        this.vectorStoreInitialized = true;
+        console.log(`[RAG Service] Vector index ready (provider='qdrant' url='${url}').`);
+        return;
+      }
+
+      // Default: SQL vector store (local)
+      this.vectorTablePrefix = this.resolveVectorTablePrefix();
+      const store = new SqlVectorStore();
+      const config: SqlVectorStoreConfig = {
+        id: 'agentos-rag-vector-sql',
+        type: 'sql',
+        adapter,
+        tablePrefix: this.vectorTablePrefix,
+        enableFullTextSearch: true,
+      };
+
+      await store.initialize(config);
+      this.vectorStore = store;
+      this.vectorStoreInitialized = true;
+      console.log(
+        `[RAG Service] Vector index ready (provider='sql' tablePrefix='${this.vectorTablePrefix}').`
+      );
+    })().finally(() => {
+      this.vectorStoreInitPromise = null;
+    });
+
+    return this.vectorStoreInitPromise;
   }
 
   /**
@@ -389,7 +637,7 @@ class SqlRagStore {
       `SELECT * FROM ${this.tablePrefix}collections ORDER BY updated_at DESC`
     );
 
-    return rows.map(row => ({
+    return rows.map((row) => ({
       collectionId: row.collection_id,
       displayName: row.display_name,
       documentCount: row.document_count,
@@ -406,16 +654,14 @@ class SqlRagStore {
     const adapter = await this.ensureInitialized();
 
     // Delete chunks first
-    await adapter.run(
-      `DELETE FROM ${this.tablePrefix}chunks WHERE collection_id = ?`,
-      [collectionId]
-    );
+    await adapter.run(`DELETE FROM ${this.tablePrefix}chunks WHERE collection_id = ?`, [
+      collectionId,
+    ]);
 
     // Delete documents
-    await adapter.run(
-      `DELETE FROM ${this.tablePrefix}documents WHERE collection_id = ?`,
-      [collectionId]
-    );
+    await adapter.run(`DELETE FROM ${this.tablePrefix}documents WHERE collection_id = ?`, [
+      collectionId,
+    ]);
 
     // Delete collection
     const result = await adapter.run(
@@ -423,7 +669,546 @@ class SqlRagStore {
       [collectionId]
     );
 
+    // Best-effort cleanup in the vector index (does not require embeddings).
+    try {
+      await this.ensureVectorStoreInitialized(adapter);
+      await this.vectorStore?.deleteCollection?.(collectionId);
+    } catch {
+      // Ignore; legacy store remains the source of truth.
+    }
+
     return result.changes > 0;
+  }
+
+  private getRetrievalPreset(): RagRetrievalPreset {
+    return coerceRagPreset(firstNonEmptyEnv('AGENTOS_RAG_PRESET', 'RAG_PRESET')) ?? 'balanced';
+  }
+
+  private getHybridAlpha(): number {
+    const raw = Number(firstNonEmptyEnv('AGENTOS_RAG_HYBRID_ALPHA', 'RAG_HYBRID_ALPHA'));
+    return Number.isFinite(raw) ? Math.max(0, Math.min(1, raw)) : 0.7;
+  }
+
+  private buildEmbeddingProviderConfigs(): ProviderConfigEntry[] {
+    const providers: ProviderConfigEntry[] = [];
+
+    const openaiKey = process.env.OPENAI_API_KEY?.trim();
+    const openrouterKey = process.env.OPENROUTER_API_KEY?.trim();
+    const explicitProvider = firstNonEmptyEnv('AGENTOS_RAG_EMBED_PROVIDER', 'RAG_EMBED_PROVIDER')
+      ?.trim()
+      .toLowerCase();
+
+    const ollamaConfiguredBaseURL =
+      coerceOllamaBaseURL(process.env.OLLAMA_BASE_URL) ??
+      coerceOllamaBaseURL(process.env.OLLAMA_HOST);
+    const shouldIncludeOllama = explicitProvider === 'ollama' || Boolean(ollamaConfiguredBaseURL);
+
+    if (shouldIncludeOllama) {
+      const requestTimeout =
+        parsePositiveIntEnv(
+          firstNonEmptyEnv('AGENTOS_RAG_OLLAMA_REQUEST_TIMEOUT_MS', 'RAG_OLLAMA_REQUEST_TIMEOUT_MS')
+        ) ??
+        parsePositiveIntEnv(process.env.OLLAMA_REQUEST_TIMEOUT_MS) ??
+        5_000;
+      providers.push({
+        providerId: 'ollama',
+        enabled: true,
+        isDefault: explicitProvider === 'ollama' || (!openaiKey && !openrouterKey),
+        config: {
+          baseURL: ollamaConfiguredBaseURL ?? 'http://localhost:11434',
+          requestTimeout,
+        },
+      });
+    }
+
+    if (openaiKey) {
+      providers.push({
+        providerId: 'openai',
+        enabled: true,
+        isDefault: explicitProvider === 'openai' || (!explicitProvider && !shouldIncludeOllama),
+        config: { apiKey: openaiKey },
+      });
+    }
+
+    if (openrouterKey) {
+      providers.push({
+        providerId: 'openrouter',
+        enabled: true,
+        isDefault:
+          explicitProvider === 'openrouter' ||
+          (!explicitProvider && !shouldIncludeOllama && !openaiKey),
+        config: { apiKey: openrouterKey },
+      });
+    }
+
+    return providers;
+  }
+
+  private buildEmbeddingCandidates(
+    providerManager: AIModelProviderManager
+  ): Array<{ providerId: string; modelId: string }> {
+    const explicitProvider = firstNonEmptyEnv(
+      'AGENTOS_RAG_EMBED_PROVIDER',
+      'RAG_EMBED_PROVIDER'
+    )?.trim();
+    const explicitModel = firstNonEmptyEnv('AGENTOS_RAG_EMBED_MODEL', 'RAG_EMBED_MODEL')?.trim();
+
+    const candidates: Array<{ providerId: string; modelId: string }> = [];
+
+    if (explicitProvider) {
+      const providerId = explicitProvider.trim().toLowerCase();
+      if (explicitModel) {
+        candidates.push({ providerId, modelId: explicitModel });
+        return candidates;
+      }
+      if (providerId === 'ollama') {
+        candidates.push({
+          providerId,
+          modelId:
+            firstNonEmptyEnv('OLLAMA_EMBED_MODEL', 'OLLAMA_EMBEDDING_MODEL') || 'nomic-embed-text',
+        });
+        return candidates;
+      }
+      if (providerId === 'openai') {
+        candidates.push({ providerId, modelId: 'text-embedding-3-small' });
+        return candidates;
+      }
+      if (providerId === 'openrouter') {
+        candidates.push({ providerId, modelId: 'openai/text-embedding-3-small' });
+        return candidates;
+      }
+
+      candidates.push({ providerId, modelId: explicitModel || 'unknown' });
+      return candidates;
+    }
+
+    if (providerManager.getProvider('ollama')) {
+      candidates.push({
+        providerId: 'ollama',
+        modelId:
+          firstNonEmptyEnv('OLLAMA_EMBED_MODEL', 'OLLAMA_EMBEDDING_MODEL') || 'nomic-embed-text',
+      });
+    }
+    if (providerManager.getProvider('openai')) {
+      candidates.push({ providerId: 'openai', modelId: 'text-embedding-3-small' });
+    }
+    if (providerManager.getProvider('openrouter')) {
+      candidates.push({ providerId: 'openrouter', modelId: 'openai/text-embedding-3-small' });
+    }
+
+    return candidates;
+  }
+
+  private async probeEmbeddingModel(
+    providerManager: AIModelProviderManager
+  ): Promise<{ providerId: string; modelId: string; dimension: number }> {
+    const candidates = this.buildEmbeddingCandidates(providerManager);
+    const probeText = 'dimension probe';
+
+    const errors: string[] = [];
+    for (const candidate of candidates) {
+      const provider = providerManager.getProvider(candidate.providerId);
+      if (!provider) {
+        errors.push(`${candidate.providerId}: provider not initialized`);
+        continue;
+      }
+      if (typeof provider.generateEmbeddings !== 'function') {
+        errors.push(`${candidate.providerId}: embeddings not supported`);
+        continue;
+      }
+
+      try {
+        const resp = await provider.generateEmbeddings(candidate.modelId, [probeText], {});
+        const embedding = resp?.data?.[0]?.embedding;
+        if (!Array.isArray(embedding) || embedding.length === 0) {
+          errors.push(`${candidate.providerId}/${candidate.modelId}: empty embedding`);
+          continue;
+        }
+        return {
+          providerId: candidate.providerId,
+          modelId: candidate.modelId,
+          dimension: embedding.length,
+        };
+      } catch (err: any) {
+        errors.push(`${candidate.providerId}/${candidate.modelId}: ${err?.message ?? String(err)}`);
+      }
+    }
+
+    throw new Error(
+      `No embedding provider/model is available for AgentOS RAG. Configure Ollama or set OPENAI_API_KEY/OPENROUTER_API_KEY. Errors: ${errors.join(
+        '; '
+      )}`
+    );
+  }
+
+  private async ensureEmbeddingsInitialized(adapter: StorageAdapter): Promise<void> {
+    if (this.embeddingStatus === 'enabled') return;
+    if (this.embeddingStatus === 'disabled') {
+      throw new Error(this.embeddingDisabledReason ?? 'AgentOS RAG embeddings are disabled.');
+    }
+    if (this.embeddingInitPromise) return this.embeddingInitPromise;
+
+    this.embeddingInitPromise = (async () => {
+      // Vector store is purely local; embeddings may require network access.
+      await this.ensureVectorStoreInitialized(adapter);
+
+      const providerManager = new AIModelProviderManager();
+      await providerManager.initialize({ providers: this.buildEmbeddingProviderConfigs() });
+
+      const embed = await this.probeEmbeddingModel(providerManager);
+      const embeddingConfig: EmbeddingManagerConfig = {
+        embeddingModels: [
+          {
+            providerId: embed.providerId,
+            modelId: embed.modelId,
+            dimension: embed.dimension,
+            isDefault: true,
+          },
+        ],
+        defaultModelId: embed.modelId,
+        enableCache: true,
+        cacheMaxSize: 50_000,
+        cacheTTLSeconds: 60 * 60,
+      };
+
+      const embeddingManager = new EmbeddingManager();
+      await embeddingManager.initialize(embeddingConfig, providerManager);
+
+      this.providerManager = providerManager;
+      this.embeddingManager = embeddingManager;
+      this.embeddingModel = embed;
+
+      // Optional reranker service (Cohere if available; otherwise local).
+      const cohereKey = process.env.COHERE_API_KEY?.trim();
+      const providers = [
+        { providerId: 'local', defaultModelId: 'cross-encoder/ms-marco-MiniLM-L-6-v2' },
+      ] as any[];
+      if (cohereKey) {
+        providers.push({ providerId: 'cohere', apiKey: cohereKey, defaultModelId: 'rerank-v3.5' });
+      }
+      const reranker = new RerankerService({
+        config: {
+          providers,
+          defaultProviderId: cohereKey ? 'cohere' : 'local',
+        },
+      });
+      reranker.registerProvider(
+        new LocalCrossEncoderReranker({
+          providerId: 'local',
+          defaultModelId: 'cross-encoder/ms-marco-MiniLM-L-6-v2',
+        })
+      );
+      if (cohereKey) {
+        reranker.registerProvider(
+          new CohereReranker({
+            providerId: 'cohere',
+            apiKey: cohereKey,
+            defaultModelId: 'rerank-v3.5',
+          })
+        );
+      }
+      this.rerankerService = reranker;
+
+      this.embeddingStatus = 'enabled';
+      console.log(
+        `[RAG Service] Vector retrieval enabled (provider='${embed.providerId}' model='${embed.modelId}' dim=${embed.dimension}).`
+      );
+    })()
+      .catch((err: any) => {
+        this.embeddingStatus = 'disabled';
+        this.embeddingDisabledReason = err?.message
+          ? String(err.message)
+          : 'Embedding subsystem initialization failed.';
+        console.warn(`[RAG Service] Vector retrieval disabled: ${this.embeddingDisabledReason}`);
+        throw err;
+      })
+      .finally(() => {
+        this.embeddingInitPromise = null;
+      });
+
+    return this.embeddingInitPromise;
+  }
+
+  private isGraphRagEnabled(): boolean {
+    return (
+      parseBooleanEnv(firstNonEmptyEnv('AGENTOS_GRAPHRAG_ENABLED', 'GRAPHRAG_ENABLED')) ?? false
+    );
+  }
+
+  private shouldIngestGraphRag(category: string): boolean {
+    if (!this.isGraphRagEnabled()) return false;
+    const raw = firstNonEmptyEnv('AGENTOS_GRAPHRAG_CATEGORIES')?.trim();
+    const normalizedCategory = String(category || '')
+      .trim()
+      .toLowerCase();
+    if (!normalizedCategory) return false;
+
+    // Default: keep GraphRAG focused on longer-lived knowledge docs (avoid indexing rolling memory by accident).
+    if (!raw) return normalizedCategory === 'knowledge_base';
+
+    const allow = new Set(
+      raw
+        .split(',')
+        .map((v) => v.trim().toLowerCase())
+        .filter(Boolean)
+    );
+    return allow.has(normalizedCategory);
+  }
+
+  private buildGraphRagLlmProvider():
+    | {
+        generateText: (
+          prompt: string,
+          options?: { maxTokens?: number; temperature?: number }
+        ) => Promise<string>;
+      }
+    | undefined {
+    const enabled =
+      parseBooleanEnv(firstNonEmptyEnv('AGENTOS_GRAPHRAG_LLM_ENABLED', 'GRAPHRAG_LLM_ENABLED')) ??
+      false;
+    if (!enabled) return undefined;
+    if (!this.providerManager) {
+      throw new Error('GraphRAG LLM is enabled but the provider manager is not initialized.');
+    }
+
+    const explicitProviderId = firstNonEmptyEnv(
+      'AGENTOS_GRAPHRAG_LLM_PROVIDER',
+      'GRAPHRAG_LLM_PROVIDER'
+    )
+      ?.trim()
+      .toLowerCase();
+    const providerId =
+      explicitProviderId ||
+      (this.providerManager.getProvider('openrouter')
+        ? 'openrouter'
+        : this.providerManager.getProvider('openai')
+          ? 'openai'
+          : this.providerManager.getProvider('ollama')
+            ? 'ollama'
+            : '');
+
+    if (!providerId) {
+      throw new Error(
+        'GraphRAG LLM is enabled but no provider is available. Configure OPENAI_API_KEY / OPENROUTER_API_KEY (or Ollama).'
+      );
+    }
+
+    const provider = this.providerManager.getProvider(providerId);
+    if (!provider) {
+      throw new Error(`GraphRAG LLM provider '${providerId}' is not initialized.`);
+    }
+
+    const explicitModelId = firstNonEmptyEnv(
+      'AGENTOS_GRAPHRAG_LLM_MODEL',
+      'GRAPHRAG_LLM_MODEL'
+    )?.trim();
+    const modelId =
+      explicitModelId ||
+      (providerId === 'openrouter'
+        ? process.env.MODEL_PREF_OPENROUTER_DEFAULT?.trim() || 'openai/gpt-4o-mini'
+        : providerId === 'openai'
+          ? process.env.AGENTOS_DEFAULT_MODEL_ID?.trim() || 'gpt-4o-mini'
+          : process.env.OLLAMA_MODEL?.trim() || 'llama3');
+
+    return {
+      generateText: async (
+        prompt: string,
+        options?: { maxTokens?: number; temperature?: number }
+      ) => {
+        const response = await provider.generateCompletion(
+          modelId,
+          [{ role: 'user', content: prompt }],
+          {
+            maxTokens: options?.maxTokens,
+            temperature: options?.temperature,
+          }
+        );
+
+        const choice = response?.choices?.[0];
+        const content = choice?.message?.content;
+        if (typeof content === 'string') return content;
+        if (Array.isArray(content)) {
+          return content
+            .map((part: any) =>
+              part?.type === 'text' && typeof part?.text === 'string' ? part.text : ''
+            )
+            .join('');
+        }
+        if (typeof choice?.text === 'string') return choice.text;
+        return '';
+      },
+    };
+  }
+
+  private async ensureGraphRagInitialized(adapter: StorageAdapter): Promise<void> {
+    if (!this.isGraphRagEnabled()) return;
+    if (this.graphRagStatus === 'enabled') return;
+    if (this.graphRagStatus === 'disabled') return;
+    if (this.graphRagInitPromise) return this.graphRagInitPromise;
+
+    this.graphRagInitPromise = (async () => {
+      // GraphRAG benefits from the same embedding + vector infrastructure as dense/hybrid RAG.
+      await this.ensureEmbeddingsInitialized(adapter);
+      if (!this.vectorStore || !this.embeddingManager || !this.embeddingModel) {
+        throw new Error('GraphRAG requires an initialized vector store + embedding subsystem.');
+      }
+
+      const rawEngineId =
+        firstNonEmptyEnv('AGENTOS_GRAPHRAG_ENGINE_ID', 'GRAPHRAG_ENGINE_ID')?.trim() ||
+        'agentos-graphrag';
+      const engineId =
+        rawEngineId
+          .toLowerCase()
+          .replace(/[^a-z0-9_-]+/g, '_')
+          .slice(0, 60) || 'agentos-graphrag';
+
+      const tablePrefix =
+        firstNonEmptyEnv('AGENTOS_GRAPHRAG_TABLE_PREFIX', 'GRAPHRAG_TABLE_PREFIX')?.trim() ||
+        'rag_graphrag_';
+      const entityCollectionName =
+        firstNonEmptyEnv(
+          'AGENTOS_GRAPHRAG_ENTITY_COLLECTION',
+          'GRAPHRAG_ENTITY_COLLECTION'
+        )?.trim() || `${engineId}_entities`;
+      const communityCollectionName =
+        firstNonEmptyEnv(
+          'AGENTOS_GRAPHRAG_COMMUNITY_COLLECTION',
+          'GRAPHRAG_COMMUNITY_COLLECTION'
+        )?.trim() || `${engineId}_communities`;
+      const generateEntityEmbeddings =
+        parseBooleanEnv(
+          firstNonEmptyEnv('AGENTOS_GRAPHRAG_ENTITY_EMBEDDINGS', 'GRAPHRAG_ENTITY_EMBEDDINGS')
+        ) ?? true;
+
+      // Dynamic import keeps GraphRAG optional (peer deps like graphology can be missing in some deployments).
+      const { GraphRAGEngine } = await import('@framers/agentos/rag/graphrag');
+
+      const llmProvider = this.buildGraphRagLlmProvider();
+      const engine = new GraphRAGEngine({
+        vectorStore: this.vectorStore,
+        embeddingManager: this.embeddingManager,
+        llmProvider,
+        persistenceAdapter: adapter as any,
+      });
+
+      await engine.initialize({
+        engineId,
+        tablePrefix,
+        generateEntityEmbeddings,
+        embeddingModelId: this.embeddingModel.modelId,
+        embeddingDimension: this.embeddingModel.dimension,
+        entityCollectionName,
+        communityCollectionName,
+      });
+
+      this.graphRagEngine = engine;
+      this.graphRagStatus = 'enabled';
+      console.log(`[RAG Service] GraphRAG enabled (engineId='${engineId}').`);
+    })()
+      .catch((err: any) => {
+        this.graphRagStatus = 'disabled';
+        this.graphRagDisabledReason = err?.message
+          ? String(err.message)
+          : 'GraphRAG initialization failed.';
+        if (!this.graphRagWarningLogged) {
+          this.graphRagWarningLogged = true;
+          console.warn(`[RAG Service] GraphRAG disabled: ${this.graphRagDisabledReason}`);
+        }
+      })
+      .finally(() => {
+        this.graphRagInitPromise = null;
+      });
+
+    return this.graphRagInitPromise;
+  }
+
+  private async requireGraphRagEngine(adapter: StorageAdapter): Promise<IGraphRAGEngine> {
+    if (!this.isGraphRagEnabled()) {
+      throw new Error(
+        'GraphRAG is not enabled. Set `AGENTOS_GRAPHRAG_ENABLED=true` (and optionally `AGENTOS_GRAPHRAG_LLM_ENABLED=true`).'
+      );
+    }
+
+    await this.ensureGraphRagInitialized(adapter);
+    if (this.graphRagEngine) return this.graphRagEngine;
+
+    throw new Error(
+      this.graphRagDisabledReason ?? 'GraphRAG is not available (initialization failed).'
+    );
+  }
+
+  private async ensureVectorCollection(collectionId: string): Promise<void> {
+    if (!this.vectorStore) {
+      throw new Error('Vector store is not initialized.');
+    }
+    if (!this.embeddingModel) {
+      throw new Error('Embedding model is not initialized.');
+    }
+
+    if (this.vectorStore.collectionExists && this.vectorStore.createCollection) {
+      const exists = await this.vectorStore.collectionExists(collectionId);
+      if (!exists) {
+        await this.vectorStore.createCollection(collectionId, this.embeddingModel.dimension, {
+          similarityMetric: 'cosine',
+        });
+      }
+    }
+  }
+
+  private async upsertVectorChunks(input: {
+    adapter: StorageAdapter;
+    collectionId: string;
+    documentId: string;
+    documentCategory: string;
+    chunks: Array<{ chunkId: string; content: string; chunkIndex: number }>;
+    metadata?: Record<string, unknown> | null;
+  }): Promise<void> {
+    if (input.chunks.length === 0) return;
+
+    await this.ensureEmbeddingsInitialized(input.adapter);
+    if (!this.embeddingManager || !this.embeddingModel || !this.vectorStore) {
+      throw new Error('Vector subsystem not initialized.');
+    }
+
+    await this.ensureVectorCollection(input.collectionId);
+
+    const chunkDocs = input.chunks
+      .map((chunk) => ({
+        id: chunk.chunkId,
+        content: chunk.content,
+        metadata: {
+          ...(input.metadata ?? {}),
+          __ragDocumentId: input.documentId,
+          __ragCollectionId: input.collectionId,
+          __ragDocumentCategory: input.documentCategory,
+          __ragChunkIndex: chunk.chunkIndex,
+        },
+      }))
+      .filter((doc) => doc.content.trim().length > 0);
+
+    if (chunkDocs.length === 0) return;
+
+    const embedResp = await this.embeddingManager.generateEmbeddings({
+      texts: chunkDocs.map((c) => c.content),
+      modelId: this.embeddingModel.modelId,
+    });
+
+    if (!Array.isArray(embedResp.embeddings) || embedResp.embeddings.length !== chunkDocs.length) {
+      throw new Error(
+        `Embedding batch size mismatch. Expected ${chunkDocs.length}, got ${embedResp.embeddings?.length ?? 0}.`
+      );
+    }
+
+    await this.vectorStore.upsert(
+      input.collectionId,
+      chunkDocs.map((doc, idx) => ({
+        id: doc.id,
+        embedding: embedResp.embeddings[idx]!,
+        textContent: doc.content,
+        metadata: doc.metadata as any,
+      })),
+      { overwrite: true }
+    );
   }
 
   // ==========================================================================
@@ -469,10 +1254,7 @@ class SqlRagStore {
         );
 
         // Delete existing chunks for this document (in case of update)
-        await trx.run(
-          `DELETE FROM ${this.tablePrefix}chunks WHERE document_id = ?`,
-          [documentId]
-        );
+        await trx.run(`DELETE FROM ${this.tablePrefix}chunks WHERE document_id = ?`, [documentId]);
 
         // Insert chunks
         for (let i = 0; i < chunks.length; i++) {
@@ -497,6 +1279,48 @@ class SqlRagStore {
         await this.updateCollectionCounts(trx, collectionId);
       });
 
+      // Best-effort: keep the vector index in sync (does not affect canonical SQL writes).
+      try {
+        await this.upsertVectorChunks({
+          adapter,
+          collectionId,
+          documentId,
+          documentCategory: category,
+          chunks: chunks.map((content, chunkIndex) => ({
+            chunkId: `${documentId}_chunk_${chunkIndex}`,
+            content,
+            chunkIndex,
+          })),
+          metadata: (input.metadata ?? null) as any,
+        });
+      } catch (vectorError: any) {
+        console.warn(
+          `[RAG Service] Vector indexing failed for document '${documentId}' (continuing): ${
+            vectorError?.message ?? vectorError
+          }`
+        );
+      }
+
+      // Optional: GraphRAG indexing (disabled by default; best-effort).
+      if (this.shouldIngestGraphRag(category)) {
+        try {
+          await this.ensureGraphRagInitialized(adapter);
+          await this.graphRagEngine?.ingestDocuments([
+            {
+              id: documentId,
+              content: input.content,
+              metadata: sanitizeGraphRagMetadata(input.metadata),
+            },
+          ]);
+        } catch (graphError: any) {
+          console.warn(
+            `[RAG Service] GraphRAG indexing failed for document '${documentId}' (continuing): ${
+              graphError?.message ?? graphError
+            }`
+          );
+        }
+      }
+
       console.log(`[RAG Service] Document '${documentId}' ingested with ${chunks.length} chunks`);
 
       return {
@@ -520,12 +1344,15 @@ class SqlRagStore {
   /**
    * Update collection document and chunk counts.
    */
-  private async updateCollectionCounts(adapter: StorageAdapter, collectionId: string): Promise<void> {
+  private async updateCollectionCounts(
+    adapter: StorageAdapter,
+    collectionId: string
+  ): Promise<void> {
     const docCount = await adapter.get<{ count: number }>(
       `SELECT COUNT(*) as count FROM ${this.tablePrefix}documents WHERE collection_id = ?`,
       [collectionId]
     );
-    
+
     const chunkCount = await adapter.get<{ count: number }>(
       `SELECT COUNT(*) as count FROM ${this.tablePrefix}chunks WHERE collection_id = ?`,
       [collectionId]
@@ -542,9 +1369,10 @@ class SqlRagStore {
   /**
    * Query for relevant chunks.
    */
-  async query(options: RagQueryOptions): Promise<RagQueryResult> {
-    const adapter = await this.ensureInitialized();
-    const startTime = Date.now();
+  private async queryKeywordInternal(
+    adapter: StorageAdapter,
+    options: RagQueryOptions
+  ): Promise<{ chunks: RagRetrievedChunk[]; totalResults: number }> {
     const topK = options.topK || 5;
     const threshold = options.similarityThreshold || 0;
 
@@ -552,43 +1380,110 @@ class SqlRagStore {
     const queryTerms = options.query
       .toLowerCase()
       .split(/\s+/)
-      .filter(term => term.length > 2);
+      .filter((term) => term.length > 2);
 
-    // Build base query
-    let sql = `SELECT * FROM ${this.tablePrefix}chunks WHERE 1=1`;
-    const params: any[] = [];
-
-    // Filter by collections
-    if (options.collectionIds && options.collectionIds.length > 0) {
-      const placeholders = options.collectionIds.map(() => '?').join(',');
-      sql += ` AND collection_id IN (${placeholders})`;
-      params.push(...options.collectionIds);
+    if (queryTerms.length === 0) {
+      return { chunks: [], totalResults: 0 };
     }
 
-    const rows = await adapter.all<ChunkRow>(sql, params);
+    const categoryFilter = options.filters?.category;
+    const collectionIds =
+      options.collectionIds && options.collectionIds.length > 0 ? options.collectionIds : undefined;
+
+    // Try FTS5 first (SQLite). Falls back to full scan when unavailable.
+    let rows: ChunkRow[] = [];
+    let usedFts = false;
+    const candidateLimit = Math.min(2_000, Math.max(200, topK * 80));
+
+    try {
+      const sanitizedTerms = queryTerms
+        .map((t) => t.replace(/[^a-z0-9_]+/g, '').trim())
+        .filter(Boolean);
+      const ftsQuery = sanitizedTerms.map((t) => `"${t.replace(/"/g, '""')}"`).join(' OR ');
+      if (!ftsQuery) {
+        return { chunks: [], totalResults: 0 };
+      }
+
+      let sql = `
+        SELECT c.*
+        FROM ${this.tablePrefix}chunks_fts fts
+        JOIN ${this.tablePrefix}chunks c ON c.rowid = fts.rowid
+      `;
+      const params: any[] = [ftsQuery];
+
+      if (categoryFilter) {
+        sql += ` JOIN ${this.tablePrefix}documents d ON d.document_id = c.document_id`;
+      }
+
+      sql += ` WHERE fts MATCH ?`;
+
+      if (categoryFilter) {
+        sql += ` AND d.category = ?`;
+        params.push(categoryFilter);
+      }
+
+      if (collectionIds) {
+        const placeholders = collectionIds.map(() => '?').join(',');
+        sql += ` AND c.collection_id IN (${placeholders})`;
+        params.push(...collectionIds);
+      }
+
+      sql += ` ORDER BY bm25(${this.tablePrefix}chunks_fts) ASC LIMIT ?`;
+      params.push(candidateLimit);
+
+      rows = await adapter.all<ChunkRow>(sql, params);
+      usedFts = true;
+    } catch {
+      // Fall back to scanning chunks (slower, but portable).
+    }
+
+    // Fallback query: full scan with optional collection filter.
+    if (!usedFts) {
+      let sql = `SELECT * FROM ${this.tablePrefix}chunks WHERE 1=1`;
+      const params: any[] = [];
+
+      if (collectionIds) {
+        const placeholders = collectionIds.map(() => '?').join(',');
+        sql += ` AND collection_id IN (${placeholders})`;
+        params.push(...collectionIds);
+      }
+
+      rows = await adapter.all<ChunkRow>(sql, params);
+    }
+
+    // If filtering by document category and we couldn't push it down, prefetch categories once.
+    let categoryByDocumentId: Map<string, string> | null = null;
+    if (categoryFilter && !usedFts) {
+      const docIds = Array.from(new Set(rows.map((r) => r.document_id).filter(Boolean)));
+      if (docIds.length > 0) {
+        const placeholders = docIds.map(() => '?').join(',');
+        const docs = await adapter.all<{ document_id: string; category: string }>(
+          `SELECT document_id, category FROM ${this.tablePrefix}documents WHERE document_id IN (${placeholders})`,
+          docIds
+        );
+        categoryByDocumentId = new Map(docs.map((d) => [d.document_id, d.category]));
+      } else {
+        categoryByDocumentId = new Map();
+      }
+    }
 
     // Score and filter chunks
     const scoredChunks: Array<RagRetrievedChunk & { _score: number }> = [];
 
     for (const row of rows) {
-      // Parse metadata
       const metadata = row.metadata_json ? JSON.parse(row.metadata_json) : {};
 
-      // Apply metadata filters
+      // Apply metadata filters (legacy semantics)
       if (options.filters) {
         if (options.filters.agentId && metadata.agentId !== options.filters.agentId) continue;
         if (options.filters.userId && metadata.userId !== options.filters.userId) continue;
-        if (options.filters.category) {
-          // Get document category
-          const doc = await adapter.get<DocumentRow>(
-            `SELECT category FROM ${this.tablePrefix}documents WHERE document_id = ?`,
-            [row.document_id]
-          );
-          if (doc?.category !== options.filters.category) continue;
+        if (categoryFilter && categoryByDocumentId) {
+          const docCategory = categoryByDocumentId.get(row.document_id);
+          if (docCategory !== categoryFilter) continue;
         }
         if (options.filters.tags && options.filters.tags.length > 0) {
-          const docTags = metadata.tags || [];
-          if (!options.filters.tags.some(tag => docTags.includes(tag))) continue;
+          const docTags = Array.isArray(metadata.tags) ? metadata.tags : [];
+          if (!options.filters.tags.some((tag) => docTags.includes(tag))) continue;
         }
       }
 
@@ -602,7 +1497,6 @@ class SqlRagStore {
       }
       const score = queryTerms.length > 0 ? matchCount / queryTerms.length : 0;
 
-      // Apply threshold
       if (score < threshold) continue;
 
       scoredChunks.push({
@@ -615,17 +1509,326 @@ class SqlRagStore {
       });
     }
 
-    // Sort by score descending and take top K
     scoredChunks.sort((a, b) => b._score - a._score);
     const results = scoredChunks.slice(0, topK).map(({ _score, ...chunk }) => chunk);
 
     return {
-      success: true,
-      query: options.query,
       chunks: results,
       totalResults: scoredChunks.length,
+    };
+  }
+
+  private async queryVectorInternal(
+    adapter: StorageAdapter,
+    options: RagQueryOptions
+  ): Promise<{ chunks: RagRetrievedChunk[]; totalResults: number } | null> {
+    // Vector store tables are local; embeddings may require network access.
+    try {
+      await this.ensureVectorStoreInitialized(adapter);
+      await this.ensureEmbeddingsInitialized(adapter);
+    } catch {
+      return null;
+    }
+
+    if (!this.embeddingManager || !this.embeddingModel || !this.vectorStore) {
+      return null;
+    }
+
+    const queryText = options.query.trim();
+    if (!queryText) {
+      return { chunks: [], totalResults: 0 };
+    }
+
+    const queryEmbeddingResp = await this.embeddingManager.generateEmbeddings({
+      texts: queryText,
+      modelId: this.embeddingModel.modelId,
+    });
+    const queryEmbedding = queryEmbeddingResp.embeddings?.[0];
+    if (!Array.isArray(queryEmbedding) || queryEmbedding.length === 0) {
+      return null;
+    }
+
+    const preset = this.getRetrievalPreset();
+    const hybridAlpha = this.getHybridAlpha();
+    const shouldRerank = preset === 'accurate';
+
+    const topK = options.topK || 5;
+    const threshold =
+      typeof options.similarityThreshold === 'number' ? options.similarityThreshold : 0;
+    const maxPerCollection = Math.min(50, Math.max(topK * 4, topK));
+    const collectionIds =
+      options.collectionIds && options.collectionIds.length > 0
+        ? options.collectionIds
+        : ['default'];
+
+    const vectorFilter: NonNullable<QueryOptions['filter']> = {};
+    if (options.filters?.agentId) vectorFilter.agentId = options.filters.agentId;
+    if (options.filters?.userId) vectorFilter.userId = options.filters.userId;
+    const hasVectorFilter = Object.keys(vectorFilter).length > 0;
+
+    type Candidate = {
+      chunkId: string;
+      documentId: string;
+      content: string;
+      score: number;
+      metadata: any;
+    };
+
+    const candidates: Candidate[] = [];
+
+    for (const collectionId of collectionIds) {
+      try {
+        await this.ensureVectorCollection(collectionId);
+      } catch {
+        continue;
+      }
+
+      try {
+        if (preset === 'fast') {
+          const result = await this.vectorStore.query(collectionId, queryEmbedding, {
+            topK: maxPerCollection,
+            includeTextContent: true,
+            includeMetadata: true,
+            filter: hasVectorFilter ? (vectorFilter as any) : undefined,
+            minSimilarityScore: threshold,
+          });
+          for (const doc of result.documents) {
+            const metadata = (doc.metadata ?? {}) as any;
+            candidates.push({
+              chunkId: doc.id,
+              documentId:
+                typeof metadata.__ragDocumentId === 'string' ? metadata.__ragDocumentId : doc.id,
+              content: typeof doc.textContent === 'string' ? doc.textContent : '',
+              score: typeof doc.similarityScore === 'number' ? doc.similarityScore : 0,
+              metadata,
+            });
+          }
+        } else if (typeof (this.vectorStore as any).hybridSearch === 'function') {
+          const result = await (this.vectorStore as any).hybridSearch(
+            collectionId,
+            queryEmbedding,
+            queryText,
+            {
+              topK: maxPerCollection,
+              includeTextContent: true,
+              includeMetadata: true,
+              filter: hasVectorFilter ? (vectorFilter as any) : undefined,
+              alpha: hybridAlpha,
+              fusion: 'weighted',
+              lexicalTopK: maxPerCollection * 3,
+            }
+          );
+
+          for (const doc of (result.documents ?? []) as RetrievedVectorDocument[]) {
+            const metadata = (doc.metadata ?? {}) as any;
+            candidates.push({
+              chunkId: doc.id,
+              documentId:
+                typeof metadata.__ragDocumentId === 'string' ? metadata.__ragDocumentId : doc.id,
+              content: typeof doc.textContent === 'string' ? doc.textContent : '',
+              score: typeof doc.similarityScore === 'number' ? doc.similarityScore : 0,
+              metadata,
+            });
+          }
+        } else {
+          const result = await this.vectorStore.query(collectionId, queryEmbedding, {
+            topK: maxPerCollection,
+            includeTextContent: true,
+            includeMetadata: true,
+            filter: hasVectorFilter ? (vectorFilter as any) : undefined,
+          });
+          for (const doc of result.documents) {
+            const metadata = (doc.metadata ?? {}) as any;
+            candidates.push({
+              chunkId: doc.id,
+              documentId:
+                typeof metadata.__ragDocumentId === 'string' ? metadata.__ragDocumentId : doc.id,
+              content: typeof doc.textContent === 'string' ? doc.textContent : '',
+              score: typeof doc.similarityScore === 'number' ? doc.similarityScore : 0,
+              metadata,
+            });
+          }
+        }
+      } catch {
+        // Ignore per-collection vector failures; keyword fallback may still cover the request.
+      }
+    }
+
+    // Apply filters that are hard to push down (tags OR, doc category).
+    const filtered = candidates.filter((candidate) => {
+      const metadata = candidate.metadata ?? {};
+      if (options.filters?.agentId && metadata.agentId !== options.filters.agentId) return false;
+      if (options.filters?.userId && metadata.userId !== options.filters.userId) return false;
+      if (options.filters?.category) {
+        const cat = metadata.__ragDocumentCategory;
+        if (typeof cat === 'string' && cat !== options.filters.category) return false;
+      }
+      if (options.filters?.tags && options.filters.tags.length > 0) {
+        const docTags = Array.isArray(metadata.tags) ? metadata.tags : [];
+        if (!options.filters.tags.some((tag) => docTags.includes(tag))) return false;
+      }
+      return true;
+    });
+
+    // Deduplicate by chunkId, keeping the best score.
+    const bestById = new Map<string, Candidate>();
+    for (const item of filtered) {
+      const existing = bestById.get(item.chunkId);
+      if (!existing || item.score > existing.score) {
+        bestById.set(item.chunkId, item);
+      }
+    }
+
+    let ranked = Array.from(bestById.values()).filter((item) => item.score >= threshold);
+    ranked.sort((a, b) => b.score - a.score);
+
+    // Rerank (optional; accuracy over latency).
+    if (shouldRerank && this.rerankerService && ranked.length > 0) {
+      const useCohere = Boolean(process.env.COHERE_API_KEY?.trim());
+      const providerId = useCohere ? 'cohere' : 'local';
+      const modelId = useCohere ? 'rerank-v3.5' : 'cross-encoder/ms-marco-MiniLM-L-6-v2';
+      const maxDocuments = 40;
+      const timeoutMs = 20_000;
+
+      try {
+        const rerankInput: RerankerInput = {
+          query: queryText,
+          documents: ranked.slice(0, maxDocuments).map((c) => ({
+            id: c.chunkId,
+            content: c.content,
+            originalScore: c.score,
+            metadata: c.metadata,
+          })),
+        };
+        const output = await this.rerankerService.rerank(rerankInput, {
+          providerId,
+          modelId,
+          topN: topK,
+          maxDocuments,
+          timeoutMs,
+        });
+
+        const byId = new Map(ranked.map((c) => [c.chunkId, c]));
+        const reranked: Candidate[] = [];
+        for (const res of output.results) {
+          const original = byId.get(res.id);
+          if (!original) continue;
+          reranked.push({
+            ...original,
+            score: res.relevanceScore,
+            metadata: {
+              ...(original.metadata ?? {}),
+              _rerankerOriginalScore: original.score,
+              _rerankerProviderId: providerId,
+            },
+          });
+        }
+
+        // Fill remaining slots with original ranking if reranker returned fewer results.
+        const included = new Set(reranked.map((r) => r.chunkId));
+        for (const original of ranked) {
+          if (reranked.length >= topK) break;
+          if (included.has(original.chunkId)) continue;
+          reranked.push(original);
+        }
+
+        ranked = reranked;
+      } catch (rerankError: any) {
+        if (!this.rerankWarningLogged) {
+          this.rerankWarningLogged = true;
+          const message = rerankError?.message ?? String(rerankError);
+          console.warn(
+            `[RAG Service] Reranking failed; returning results without reranking. ${message}`
+          );
+          if (
+            typeof message === 'string' &&
+            (message.includes('@huggingface/transformers') ||
+              message.includes('@xenova/transformers'))
+          ) {
+            console.warn(
+              `[RAG Service] Local reranking requires installing Transformers.js (optional): '@huggingface/transformers' (preferred) or '@xenova/transformers'.`
+            );
+          }
+        }
+      }
+    }
+
+    const results = ranked.slice(0, topK).map((candidate) => ({
+      chunkId: candidate.chunkId,
+      documentId: candidate.documentId,
+      content: candidate.content,
+      score: candidate.score,
+      metadata: options.includeMetadata ? candidate.metadata : undefined,
+    }));
+
+    return {
+      chunks: results,
+      totalResults: ranked.length,
+    };
+  }
+
+  async query(options: RagQueryOptions): Promise<RagQueryResult> {
+    const adapter = await this.ensureInitialized();
+    const startTime = Date.now();
+    const topK = options.topK || 5;
+
+    const vector = await this.queryVectorInternal(adapter, options);
+    const keyword =
+      vector && vector.chunks.length >= topK
+        ? null
+        : await this.queryKeywordInternal(adapter, options);
+
+    const mergedById = new Map<string, RagRetrievedChunk>();
+    for (const chunk of vector?.chunks ?? []) {
+      mergedById.set(chunk.chunkId, chunk);
+    }
+    if (keyword) {
+      for (const chunk of keyword.chunks) {
+        const existing = mergedById.get(chunk.chunkId);
+        if (!existing || chunk.score > existing.score) {
+          mergedById.set(chunk.chunkId, chunk);
+        }
+      }
+    }
+
+    const merged = Array.from(mergedById.values());
+    merged.sort((a, b) => b.score - a.score);
+
+    return {
+      success: true,
+      query: options.query,
+      chunks: merged.slice(0, topK),
+      totalResults: merged.length,
       processingTimeMs: Date.now() - startTime,
     };
+  }
+
+  async graphRagLocalSearch(
+    query: string,
+    options?: GraphRAGSearchOptions
+  ): Promise<LocalSearchResult> {
+    const adapter = await this.ensureInitialized();
+    const engine = await this.requireGraphRagEngine(adapter);
+    const trimmed = String(query || '').trim();
+    if (!trimmed) throw new Error('GraphRAG localSearch requires a non-empty query.');
+    return engine.localSearch(trimmed, options);
+  }
+
+  async graphRagGlobalSearch(
+    query: string,
+    options?: GraphRAGSearchOptions
+  ): Promise<GlobalSearchResult> {
+    const adapter = await this.ensureInitialized();
+    const engine = await this.requireGraphRagEngine(adapter);
+    const trimmed = String(query || '').trim();
+    if (!trimmed) throw new Error('GraphRAG globalSearch requires a non-empty query.');
+    return engine.globalSearch(trimmed, options);
+  }
+
+  async graphRagStats(): Promise<Awaited<ReturnType<IGraphRAGEngine['getStats']>>> {
+    const adapter = await this.ensureInitialized();
+    const engine = await this.requireGraphRagEngine(adapter);
+    return engine.getStats();
   }
 
   /**
@@ -642,11 +1845,15 @@ class SqlRagStore {
 
     if (!doc) return false;
 
-    // Delete chunks
-    await adapter.run(
-      `DELETE FROM ${this.tablePrefix}chunks WHERE document_id = ?`,
+    // Capture chunk IDs for vector index cleanup before deleting.
+    const chunkRows = await adapter.all<{ chunk_id: string }>(
+      `SELECT chunk_id FROM ${this.tablePrefix}chunks WHERE document_id = ?`,
       [documentId]
     );
+    const chunkIds = chunkRows.map((r) => r.chunk_id).filter(Boolean);
+
+    // Delete chunks
+    await adapter.run(`DELETE FROM ${this.tablePrefix}chunks WHERE document_id = ?`, [documentId]);
 
     // Delete document
     const result = await adapter.run(
@@ -656,6 +1863,16 @@ class SqlRagStore {
 
     // Update collection counts
     await this.updateCollectionCounts(adapter, doc.collection_id);
+
+    // Best-effort: clean up vector index without forcing embeddings init.
+    try {
+      await this.ensureVectorStoreInitialized(adapter);
+      if (chunkIds.length > 0) {
+        await this.vectorStore?.delete(doc.collection_id, chunkIds);
+      }
+    } catch {
+      // Ignore; canonical SQL deletes already happened.
+    }
 
     return result.changes > 0;
   }
@@ -701,7 +1918,7 @@ class SqlRagStore {
 
     // Apply metadata filters in application code
     return rows
-      .map(row => {
+      .map((row) => {
         const metadata = row.metadata_json ? JSON.parse(row.metadata_json) : {};
         return {
           documentId: row.document_id,
@@ -712,7 +1929,7 @@ class SqlRagStore {
           createdAt: row.created_at,
         };
       })
-      .filter(doc => {
+      .filter((doc) => {
         if (filters?.agentId && doc.metadata.agentId !== filters.agentId) return false;
         if (filters?.userId && doc.metadata.userId !== filters.userId) return false;
         return true;
@@ -733,7 +1950,7 @@ class SqlRagStore {
     let totalDocs = 0;
     let totalChunks = 0;
 
-    const collectionStats = collections.map(c => {
+    const collectionStats = collections.map((c) => {
       totalDocs += c.document_count;
       totalChunks += c.chunk_count;
       return {
@@ -745,7 +1962,11 @@ class SqlRagStore {
 
     // If filtering by agent, recompute
     if (agentId) {
-      const agentDocs = await adapter.all<{ collection_id: string; doc_count: number; chunk_count: number }>(
+      const agentDocs = await adapter.all<{
+        collection_id: string;
+        doc_count: number;
+        chunk_count: number;
+      }>(
         `SELECT d.collection_id, 
                 COUNT(DISTINCT d.document_id) as doc_count,
                 (SELECT COUNT(*) FROM ${this.tablePrefix}chunks c WHERE c.document_id = d.document_id) as chunk_count
@@ -771,12 +1992,12 @@ class SqlRagStore {
    */
   private chunkContent(content: string, chunkSize: number, overlap: number): string[] {
     const chunks: string[] = [];
-    
+
     // Split by paragraphs first
     const paragraphs = content.split(/\n\n+/);
-    
+
     let currentChunk = '';
-    
+
     for (const paragraph of paragraphs) {
       const trimmed = paragraph.trim();
       if (!trimmed) continue;
@@ -788,18 +2009,18 @@ class SqlRagStore {
         if (currentChunk) {
           chunks.push(currentChunk);
         }
-        
+
         // If paragraph is larger than chunk size, split by sentences
         if (trimmed.length > chunkSize) {
           const sentences = trimmed.split(/(?<=[.!?])\s+/);
           currentChunk = '';
-          
+
           for (const sentence of sentences) {
             if (currentChunk.length + sentence.length <= chunkSize) {
               currentChunk += (currentChunk ? ' ' : '') + sentence;
             } else {
               if (currentChunk) chunks.push(currentChunk);
-              
+
               // If single sentence is too long, split by words
               if (sentence.length > chunkSize) {
                 const words = sentence.split(/\s+/);
@@ -822,7 +2043,7 @@ class SqlRagStore {
         }
       }
     }
-    
+
     // Don't forget the last chunk
     if (currentChunk.trim()) {
       chunks.push(currentChunk.trim());
@@ -835,13 +2056,47 @@ class SqlRagStore {
    * Shutdown and cleanup.
    */
   async shutdown(): Promise<void> {
+    try {
+      await this.graphRagEngine?.shutdown();
+    } catch {
+      // Ignore.
+    }
+    try {
+      await this.embeddingManager?.shutdown();
+    } catch {
+      // Ignore.
+    }
+    try {
+      await this.vectorStore?.shutdown();
+    } catch {
+      // Ignore.
+    }
+
+    this.providerManager = undefined;
+    this.embeddingManager = undefined;
+    this.embeddingModel = undefined;
+    this.rerankerService = undefined;
+    this.embeddingStatus = 'uninitialized';
+    this.embeddingDisabledReason = undefined;
+    this.embeddingInitPromise = null;
+
+    this.vectorStore = null;
+    this.vectorStoreInitialized = false;
+    this.vectorStoreInitPromise = null;
+
+    this.graphRagEngine = undefined;
+    this.graphRagStatus = 'uninitialized';
+    this.graphRagDisabledReason = undefined;
+    this.graphRagInitPromise = null;
+    this.graphRagWarningLogged = false;
+
     if (this.adapter) {
       await this.adapter.close();
       this.adapter = null;
-      this.initialized = false;
-      this.initPromise = null;
-      console.log('[RAG Service] Shut down');
     }
+    this.initialized = false;
+    this.initPromise = null;
+    console.log('[RAG Service] Shut down');
   }
 }
 
@@ -857,21 +2112,21 @@ const ragStore = new SqlRagStore();
 
 /**
  * RAG Service - Main interface for RAG operations.
- * 
+ *
  * Uses `@framers/sql-storage-adapter` for cross-platform persistent storage
  * with intelligent fallback (better-sqlite3 → IndexedDB → sql.js).
- * 
+ *
  * @example
  * ```typescript
  * // Initialize happens automatically on first use
- * 
+ *
  * // Ingest a document
  * const result = await ragService.ingestDocument({
  *   content: 'Important information...',
  *   collectionId: 'agent-123',
  *   metadata: { agentId: '123', userId: 'user-456' }
  * });
- * 
+ *
  * // Query for relevant context
  * const context = await ragService.query({
  *   query: 'What is the important information?',
@@ -914,6 +2169,35 @@ export const ragService = {
    */
   async query(options: RagQueryOptions): Promise<RagQueryResult> {
     return ragStore.query(options);
+  },
+
+  /**
+   * GraphRAG local search (entity + relationship context).
+   * Disabled by default. Enable with `AGENTOS_GRAPHRAG_ENABLED=true`.
+   */
+  async graphRagLocalSearch(
+    query: string,
+    options?: GraphRAGSearchOptions
+  ): Promise<LocalSearchResult> {
+    return ragStore.graphRagLocalSearch(query, options);
+  },
+
+  /**
+   * GraphRAG global search (community summaries).
+   * Disabled by default. Enable with `AGENTOS_GRAPHRAG_ENABLED=true`.
+   */
+  async graphRagGlobalSearch(
+    query: string,
+    options?: GraphRAGSearchOptions
+  ): Promise<GlobalSearchResult> {
+    return ragStore.graphRagGlobalSearch(query, options);
+  },
+
+  /**
+   * GraphRAG statistics.
+   */
+  async graphRagStats(): Promise<Awaited<ReturnType<IGraphRAGEngine['getStats']>>> {
+    return ragStore.graphRagStats();
   },
 
   /**

@@ -6,26 +6,9 @@
  */
 
 import 'reflect-metadata';
-import { NestFactory } from '@nestjs/core';
-import { ValidationPipe } from '@nestjs/common';
 import type { NestExpressApplication } from '@nestjs/platform-express';
-import cookieParser from 'cookie-parser';
-import { AppModule } from './app.module.js';
-import { HttpExceptionFilter } from './common/filters/http-exception.filter.js';
-import { NotFoundFilter } from './common/filters/not-found.filter.js';
-import { LoggingInterceptor } from './common/interceptors/logging.interceptor.js';
-import { initializeAppDatabase, closeAppDatabase } from './core/database/appDatabase.js';
-import { initializeLlmServices } from './core/llm/llm.factory.js';
-import { NoLlmProviderConfiguredError, LlmConfigService } from './core/llm/llm.config.service.js';
-import {
-  setLlmBootstrapStatus,
-  getLlmBootstrapStatus,
-  mapAvailabilityToStatus,
-} from './core/llm/llm.status.js';
-import { sqliteMemoryAdapter } from './core/memory/SqliteMemoryAdapter.js';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { rateLimiter } from '../middleware/ratelimiter.js';
 import { createLogger, getErrorMessage } from '../utils/logger.js';
+import { shutdownOtel, startOtel } from './observability/otel.js';
 
 const logger = createLogger('NestServer');
 
@@ -33,7 +16,29 @@ const logger = createLogger('NestServer');
  * Bootstrap the NestJS application.
  */
 async function bootstrap(): Promise<void> {
+  await startOtel();
   logger.info('Initializing application services...');
+
+  const { NestFactory } = await import('@nestjs/core');
+  const { ValidationPipe } = await import('@nestjs/common');
+  const cookieParser = (await import('cookie-parser')).default;
+  const { AppModule } = await import('./app.module.js');
+  const { HttpExceptionFilter } = await import('./common/filters/http-exception.filter.js');
+  const { NotFoundFilter } = await import('./common/filters/not-found.filter.js');
+  const { LoggingInterceptor } = await import('./common/interceptors/logging.interceptor.js');
+  const { initializeAppDatabase, closeAppDatabase } = await import(
+    './core/database/appDatabase.js'
+  );
+  const { initializeLlmServices } = await import('./core/llm/llm.factory.js');
+  const { NoLlmProviderConfiguredError, LlmConfigService } = await import(
+    './core/llm/llm.config.service.js'
+  );
+  const { setLlmBootstrapStatus, getLlmBootstrapStatus, mapAvailabilityToStatus } = await import(
+    './core/llm/llm.status.js'
+  );
+  const { sqliteMemoryAdapter } = await import('./core/memory/SqliteMemoryAdapter.js');
+  const { DocumentBuilder, SwaggerModule } = await import('@nestjs/swagger');
+  const { rateLimiter } = await import('../middleware/ratelimiter.js');
 
   // ── Pre-NestJS service initialization ──────────────────────────────────
   setLlmBootstrapStatus({
@@ -63,7 +68,8 @@ async function bootstrap(): Promise<void> {
         code: 'NO_LLM_PROVIDER',
         message: (error as Error).message,
         timestamp: new Date().toISOString(),
-        providers: mapAvailabilityToStatus((error as NoLlmProviderConfiguredError).availability),
+        // `NoLlmProviderConfiguredError` is dynamically imported; avoid treating it as a static TS type.
+        providers: mapAvailabilityToStatus((error as any).availability),
       });
     } else {
       const msg = (error as Error)?.message || 'Failed to initialize LLM services.';
@@ -113,6 +119,9 @@ async function bootstrap(): Promise<void> {
       'X-RateLimit-Remaining-Day-IP',
       'X-RateLimit-Reset-Day-IP',
       'X-RateLimit-Status',
+      'X-RateLimit-Tier',
+      'X-RateLimit-Limit-RPM',
+      'X-RateLimit-Remaining-RPM',
     ],
   });
 
@@ -199,6 +208,11 @@ async function bootstrap(): Promise<void> {
       /* ignore */
     }
     await app.close();
+    try {
+      await shutdownOtel();
+    } catch {
+      /* ignore */
+    }
     logger.info('Graceful shutdown complete.');
     process.exit(0);
   };
@@ -210,6 +224,7 @@ async function bootstrap(): Promise<void> {
 // ── Auto-start ────────────────────────────────────────────────────────────────
 bootstrap().catch((error: unknown) => {
   logger.error('Failed to start server: %s', getErrorMessage(error));
+  void shutdownOtel();
   process.exit(1);
 });
 

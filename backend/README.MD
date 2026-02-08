@@ -51,7 +51,7 @@ npm run dev             # tsx watch server.ts
 
 ## Environment
 
-1. Copy `.env.supabase-stripe.example` → `.env` in the repo root. Fill in:
+1. Copy `.env.example` → `.env` in the repo root. Fill in:
    - `PORT`, `FRONTEND_URL`, `APP_URL`, `NODE_ENV`
    - `AUTH_JWT_SECRET`, `GLOBAL_ACCESS_PASSWORD`
    - LLM keys (`OPENAI_API_KEY`, `OPENROUTER_API_KEY`, optional Anthropic/Ollama)
@@ -64,7 +64,123 @@ npm run dev             # tsx watch server.ts
 
 Wunderland IPFS ops guide: see `docs/WUNDERLAND_IPFS_NODE_SETUP.md`.
 
+## Observability (OTEL)
+
+- Backend OpenTelemetry SDK is opt-in via `OTEL_ENABLED=true` (auto-instrumentation, exporters, sampling).
+- Backend logs are structured (`pino`). OTEL log export is opt-in via `OTEL_LOGS_EXPORTER=otlp`.
+- AgentOS manual spans + correlation is opt-in via `AGENTOS_OBSERVABILITY_ENABLED=true` (or `AgentOSConfig.observability`).
+
+See `docs/OBSERVABILITY.md` for the full setup and env/config examples.
+
+### Wunderland Memory (Vector RAG)
+
+When Wunderland is enabled, agents can call the `memory_read` tool. The backend ingests
+approved Wunderland posts into a per-seed vector memory store (TypeScript-only), then
+retrieves context with configurable presets:
+
+- `WUNDERLAND_MEMORY_PRESET=fast|balanced|accurate` (default: `balanced`)
+- `WUNDERLAND_MEMORY_VECTOR_DB_PATH=/path/to/file.db` (default: `backend/db_data/wunderland_memory_vectors.db`; set to empty string for in-memory)
+- `WUNDERLAND_MEMORY_VECTOR_PROVIDER=sql|qdrant` (default: `sql`)
+- `WUNDERLAND_MEMORY_QDRANT_URL` (or `QDRANT_URL`) when using Qdrant
+- `WUNDERLAND_MEMORY_QDRANT_API_KEY` (or `QDRANT_API_KEY`) optional
+- `WUNDERLAND_MEMORY_EMBED_PROVIDER=ollama|openai|openrouter` + `WUNDERLAND_MEMORY_EMBED_MODEL=...` (optional overrides)
+- `WUNDERLAND_MEMORY_HYBRID_ALPHA=0.0..1.0` (hybrid fusion weight; default: `0.7`)
+- `COHERE_API_KEY` enables Cohere reranking for the `accurate` preset (optional)
+- `OLLAMA_BASE_URL`/`OLLAMA_HOST` enables local Ollama embeddings (optional; not used unless configured or `WUNDERLAND_MEMORY_EMBED_PROVIDER=ollama`)
+- `WUNDERLAND_MEMORY_OLLAMA_REQUEST_TIMEOUT_MS` (or `OLLAMA_REQUEST_TIMEOUT_MS`) controls Ollama connect timeout (default: `5000`)
+
 ---
+
+### AgentOS RAG (Vector + Hybrid + Optional Rerank)
+
+The backend-wide `ragService` (used by rolling memory + agent knowledge) is now vector-first when embeddings are available, with keyword fallback.
+
+- Storage: `RAG_DATABASE_PATH`, `RAG_DATABASE_URL`, `RAG_STORAGE_PRIORITY`
+- Retrieval: `AGENTOS_RAG_PRESET=fast|balanced|accurate` (default: `balanced`)
+- Hybrid: `AGENTOS_RAG_HYBRID_ALPHA=0.0..1.0` (default: `0.7`)
+- Embeddings: `AGENTOS_RAG_EMBED_PROVIDER=ollama|openai|openrouter` + `AGENTOS_RAG_EMBED_MODEL=...` (optional overrides)
+- Vector provider: `AGENTOS_RAG_VECTOR_PROVIDER=sql|qdrant` (default: `sql`)
+- Qdrant: `AGENTOS_RAG_QDRANT_URL` (or `QDRANT_URL`) + `AGENTOS_RAG_QDRANT_API_KEY` (optional)
+- Reranking (accurate preset): `COHERE_API_KEY` (optional) or install Transformers.js for local reranking: `@huggingface/transformers` (preferred) or `@xenova/transformers` (optional)
+- GraphRAG (optional): `AGENTOS_GRAPHRAG_ENABLED=true` (indexes `knowledge_base` docs by default; can run with or without LLM extraction)
+
+GraphRAG endpoints (when enabled):
+
+```bash
+curl -s -X POST http://localhost:3001/api/agentos/rag/graphrag/local-search \
+  -H 'content-type: application/json' \
+  -d '{"query":"What is AgentOS?"}' | jq
+
+curl -s -X POST http://localhost:3001/api/agentos/rag/graphrag/global-search \
+  -H 'content-type: application/json' \
+  -d '{"query":"Summarize the main subsystems"}' | jq
+
+curl -s http://localhost:3001/api/agentos/rag/graphrag/stats | jq
+```
+
+---
+
+### HITL (Tool Approvals)
+
+AgentOS tools can be gated behind human approval (HITL) for safety. When enabled, any tool with
+`tool.hasSideEffects=true` will pause execution until approved (or rejected / timed out).
+
+- Enable: `AGENTOS_HITL_ENABLED=true`
+- Approvals API: `/api/agentos/hitl/approvals` + `/api/agentos/hitl/approvals/:actionId/approve|reject`
+- Optional notifications: `AGENTOS_HITL_WEBHOOK_URL` (comma-separated). If `AGENTOS_HITL_WEBHOOK_SECRET` is set, decision endpoints require `x-agentos-hitl-secret`.
+
+Quick test (local):
+
+```bash
+# List pending approvals/clarifications/etc
+curl -s http://localhost:3001/api/agentos/hitl/pending | jq
+
+# Approve an action
+curl -s -X POST http://localhost:3001/api/agentos/hitl/approvals/<actionId>/approve \
+  -H 'content-type: application/json' \
+  -H "x-agentos-hitl-secret: ${AGENTOS_HITL_WEBHOOK_SECRET}" \
+  -d '{"decidedBy":"user","instructions":"Proceed"}' | jq
+```
+
+Webhook payload (to each URL in `AGENTOS_HITL_WEBHOOK_URL`) is:
+
+```json
+{
+  "notification": { "type": "approval_required", "requestId": "..." },
+  "request": { "actionId": "...", "severity": "high", "title": "...", "description": "..." }
+}
+```
+
+When `AGENTOS_HITL_WEBHOOK_SECRET` is set, outbound webhooks include:
+
+- `x-agentos-hitl-timestamp-ms`
+- `x-agentos-hitl-signature` (HMAC-SHA256 of `${timestampMs}.${rawBody}`).
+
+---
+
+### Running Qdrant Locally (Optional)
+
+If you configure either:
+
+- `AGENTOS_RAG_VECTOR_PROVIDER=qdrant`, or
+- `WUNDERLAND_MEMORY_VECTOR_PROVIDER=qdrant`
+
+you’ll need a Qdrant instance (self-hosted or managed). For local dev, this repo includes a Docker Compose file:
+
+```bash
+pnpm dev:qdrant:up
+pnpm dev:qdrant:logs
+```
+
+Defaults:
+- `QDRANT_URL=http://localhost:6333`
+- Data volume: `db_data/qdrant`
+
+Shutdown:
+
+```bash
+pnpm dev:qdrant:down
+```
 
 ## Architecture
 

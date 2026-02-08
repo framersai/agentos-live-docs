@@ -8,6 +8,7 @@
 // cspell:ignore synchronise postbuild KTOKENS normalise
 
 import { GPT4O_COST_PER_KTOKENS, GPT4O_MINI_COST_PER_KTOKENS } from '@framers/shared/planCatalog';
+import { usagePersistenceService } from './usagePersistence.service.js';
 
 export type CreditServiceCategory = 'llm' | 'speech';
 export type CreditAllocationKey = 'public' | 'metered' | 'unlimited' | 'global';
@@ -29,6 +30,7 @@ export interface CreditContext {
 interface CreditUsage {
   llmUsd: number;
   speechUsd: number;
+  requestCount: number;
 }
 
 interface CreditProfile {
@@ -68,8 +70,12 @@ export interface CreditSnapshot {
 
 const profiles: Map<string, CreditProfile> = new Map();
 
-const DEFAULT_WHISPER_COST_PER_MINUTE = parseFloat(process.env.WHISPER_API_COST_PER_MINUTE || '0.006');
-const DEFAULT_OPENAI_TTS_COST_PER_1M_CHARS = parseFloat(process.env.OPENAI_TTS_COST_PER_1M_CHARS_TTS1 || '15.0');
+const DEFAULT_WHISPER_COST_PER_MINUTE = parseFloat(
+  process.env.WHISPER_API_COST_PER_MINUTE || '0.006'
+);
+const DEFAULT_OPENAI_TTS_COST_PER_1M_CHARS = parseFloat(
+  process.env.OPENAI_TTS_COST_PER_1M_CHARS_TTS1 || '15.0'
+);
 const OPENAI_TTS_COST_PER_1K_CHARS = (DEFAULT_OPENAI_TTS_COST_PER_1M_CHARS / 1_000_000) * 1000;
 
 const DEFAULT_ALLOCATIONS: Record<CreditAllocationKey, CreditAllocationConfig> = {
@@ -109,6 +115,9 @@ const resolveAllocationKey = (context: CreditContext | undefined): CreditAllocat
   return 'metered';
 };
 
+/** Set of userIds for which we've already attempted DB recovery this session. */
+const recoveredUsers: Set<string> = new Set();
+
 const ensureProfile = (userId: string, context?: CreditContext): CreditProfile => {
   const key = resolveAllocationKey(context);
   const dateKey = todayKey();
@@ -118,15 +127,35 @@ const ensureProfile = (userId: string, context?: CreditContext): CreditProfile =
     profile = {
       allocationKey: key,
       lastResetDateKey: dateKey,
-      usage: { llmUsd: 0, speechUsd: 0 },
+      usage: { llmUsd: 0, speechUsd: 0, requestCount: 0 },
     };
     profiles.set(userId, profile);
+
+    // Attempt to recover persisted usage from DB (fire-and-forget, non-blocking)
+    if (!recoveredUsers.has(userId)) {
+      recoveredUsers.add(userId);
+      usagePersistenceService
+        .recoverUsage(userId, dateKey)
+        .then((row) => {
+          if (row && profile) {
+            // Only seed if the profile hasn't already accumulated usage
+            if (profile.usage.llmUsd === 0 && profile.usage.speechUsd === 0) {
+              profile.usage.llmUsd = row.llm_used_usd;
+              profile.usage.speechUsd = row.speech_used_usd;
+              profile.usage.requestCount = row.request_count;
+            }
+          }
+        })
+        .catch(() => {
+          /* graceful degradation */
+        });
+    }
     return profile;
   }
 
   if (profile.allocationKey !== key) {
     profile.allocationKey = key;
-    profile.usage = { llmUsd: 0, speechUsd: 0 };
+    profile.usage = { llmUsd: 0, speechUsd: 0, requestCount: 0 };
     profile.lastResetDateKey = dateKey;
     return profile;
   }
@@ -134,16 +163,19 @@ const ensureProfile = (userId: string, context?: CreditContext): CreditProfile =
   if (profile.lastResetDateKey !== dateKey) {
     profile.usage.llmUsd = 0;
     profile.usage.speechUsd = 0;
+    profile.usage.requestCount = 0;
     profile.lastResetDateKey = dateKey;
   }
 
   return profile;
 };
 
-const getAllocation = (key: CreditAllocationKey): CreditAllocationConfig => DEFAULT_ALLOCATIONS[key];
+const getAllocation = (key: CreditAllocationKey): CreditAllocationConfig =>
+  DEFAULT_ALLOCATIONS[key];
 
 const usdToGpt4oTokens = (usd: number): number => Math.floor((usd / GPT4O_COST_PER_KTOKENS) * 1000);
-const usdToGpt4oMiniTokens = (usd: number): number => Math.floor((usd / GPT4O_MINI_COST_PER_KTOKENS) * 1000);
+const usdToGpt4oMiniTokens = (usd: number): number =>
+  Math.floor((usd / GPT4O_MINI_COST_PER_KTOKENS) * 1000);
 const usdToWhisperMinutes = (usd: number): number => usd / DEFAULT_WHISPER_COST_PER_MINUTE;
 const usdToTtsCharacters = (usd: number): number => (usd / OPENAI_TTS_COST_PER_1K_CHARS) * 1000;
 
@@ -167,9 +199,7 @@ export const creditAllocationService = {
 
     const lowered = serviceType.toLowerCase();
     const category: CreditServiceCategory =
-      lowered.startsWith('stt') ||
-      lowered.startsWith('tts') ||
-      lowered.includes('speech')
+      lowered.startsWith('stt') || lowered.startsWith('tts') || lowered.includes('speech')
         ? 'speech'
         : 'llm';
 
@@ -178,6 +208,7 @@ export const creditAllocationService = {
     } else {
       profile.usage.llmUsd += costUsd;
     }
+    profile.usage.requestCount++;
   },
 
   /**
@@ -203,9 +234,15 @@ export const creditAllocationService = {
       remainingUsd: normaliseValue(llmRemainingUsd),
       isUnlimited: !Number.isFinite(llmTotalUsd),
       approxGpt4oTokensTotal: Number.isFinite(llmTotalUsd) ? usdToGpt4oTokens(llmTotalUsd) : null,
-      approxGpt4oTokensRemaining: Number.isFinite(llmRemainingUsd) ? usdToGpt4oTokens(llmRemainingUsd) : null,
-      approxGpt4oMiniTokensTotal: Number.isFinite(llmTotalUsd) ? usdToGpt4oMiniTokens(llmTotalUsd) : null,
-      approxGpt4oMiniTokensRemaining: Number.isFinite(llmRemainingUsd) ? usdToGpt4oMiniTokens(llmRemainingUsd) : null,
+      approxGpt4oTokensRemaining: Number.isFinite(llmRemainingUsd)
+        ? usdToGpt4oTokens(llmRemainingUsd)
+        : null,
+      approxGpt4oMiniTokensTotal: Number.isFinite(llmTotalUsd)
+        ? usdToGpt4oMiniTokens(llmTotalUsd)
+        : null,
+      approxGpt4oMiniTokensRemaining: Number.isFinite(llmRemainingUsd)
+        ? usdToGpt4oMiniTokens(llmRemainingUsd)
+        : null,
     };
 
     const speechSnapshot = {
@@ -213,10 +250,18 @@ export const creditAllocationService = {
       usedUsd: profile.usage.speechUsd,
       remainingUsd: normaliseValue(speechRemainingUsd),
       isUnlimited: !Number.isFinite(speechTotalUsd),
-      approxWhisperMinutesTotal: Number.isFinite(speechTotalUsd) ? usdToWhisperMinutes(speechTotalUsd) : null,
-      approxWhisperMinutesRemaining: Number.isFinite(speechRemainingUsd) ? usdToWhisperMinutes(speechRemainingUsd) : null,
-      approxTtsCharactersTotal: Number.isFinite(speechTotalUsd) ? usdToTtsCharacters(speechTotalUsd) : null,
-      approxTtsCharactersRemaining: Number.isFinite(speechRemainingUsd) ? usdToTtsCharacters(speechRemainingUsd) : null,
+      approxWhisperMinutesTotal: Number.isFinite(speechTotalUsd)
+        ? usdToWhisperMinutes(speechTotalUsd)
+        : null,
+      approxWhisperMinutesRemaining: Number.isFinite(speechRemainingUsd)
+        ? usdToWhisperMinutes(speechRemainingUsd)
+        : null,
+      approxTtsCharactersTotal: Number.isFinite(speechTotalUsd)
+        ? usdToTtsCharacters(speechTotalUsd)
+        : null,
+      approxTtsCharactersRemaining: Number.isFinite(speechRemainingUsd)
+        ? usdToTtsCharacters(speechRemainingUsd)
+        : null,
     };
 
     return {
@@ -234,6 +279,23 @@ export const creditAllocationService = {
     if (snapshot.speech.isUnlimited) return true;
     const remainingUsd = snapshot.speech.remainingUsd ?? 0;
     return remainingUsd > 0.0005; // Treat very small values as depleted.
+  },
+
+  /**
+   * Returns true when sufficient LLM credits remain.
+   */
+  hasLlmCredits(userId: string, context?: CreditContext): boolean {
+    const snapshot = this.getSnapshot(userId, context);
+    if (snapshot.llm.isUnlimited) return true;
+    const remainingUsd = snapshot.llm.remainingUsd ?? 0;
+    return remainingUsd > 0.0005;
+  },
+
+  /**
+   * Returns the raw profile for persistence purposes.
+   */
+  getProfile(userId: string, context?: CreditContext): CreditProfile {
+    return ensureProfile(userId, context);
   },
 };
 

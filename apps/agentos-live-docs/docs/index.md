@@ -24,6 +24,8 @@ npm install @framers/agentos
 
 - [System Architecture](/docs/architecture/system-architecture) — System design and core internals
 - [Platform Support](/docs/architecture/platform-support) — Supported environments
+- [Observability (OpenTelemetry)](/docs/architecture/observability) — Traces, metrics, and OTEL-compatible logging (opt-in)
+- [Logging (Pino + OpenTelemetry)](/docs/architecture/logging) — Structured logs, trace correlation, and OTEL LogRecord export (opt-in)
 
 ### Planning & Orchestration
 

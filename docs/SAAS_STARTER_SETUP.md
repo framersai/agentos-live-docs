@@ -1,5 +1,5 @@
 ---
-title: "Voice Chat Assistant – SaaS Starter Configuration Guide"
+title: 'Voice Chat Assistant – SaaS Starter Configuration Guide'
 status: draft
 last_updated: 2025-10-16
 owner: manicinc/product
@@ -26,12 +26,12 @@ Use this document alongside:
 
 # 2. Prerequisites
 
-| Tool / Service | Purpose | Notes |
-|----------------|---------|-------|
-| Supabase | Primary auth (email/password + optional OAuth) and persistence. | Free tier is enough for development. |
-| Lemon Squeezy | Billing + subscriptions. | Requires a verified seller account. |
-| GitHub Actions | CI/CD pipeline (optional but recommended). | Update secrets before deployment. |
-| Vercel / Netlify / Your VPS | Frontend hosting. | Repo ships with scripts for a Node/Vite deployment. |
+| Tool / Service              | Purpose                                                         | Notes                                               |
+| --------------------------- | --------------------------------------------------------------- | --------------------------------------------------- |
+| Supabase                    | Primary auth (email/password + optional OAuth) and persistence. | Free tier is enough for development.                |
+| Lemon Squeezy               | Billing + subscriptions.                                        | Requires a verified seller account.                 |
+| GitHub Actions              | CI/CD pipeline (optional but recommended).                      | Update secrets before deployment.                   |
+| Vercel / Netlify / Your VPS | Frontend hosting.                                               | Repo ships with scripts for a Node/Vite deployment. |
 
 You will need:
 
@@ -48,8 +48,8 @@ You will need:
 1. Visit [supabase.com](https://supabase.com) and create an organisation/project.
 2. Enable email/password auth (`Authentication → Providers`).
 3. (Optional) Enable OAuth providers (Google, GitHub) if you want social sign-in.
-4. Add **Allowed Redirect URLs**:  
-   - `http://localhost:3000`  
+4. Add **Allowed Redirect URLs**:
+   - `http://localhost:3000`
    - `https://app.your-saas.com`
 
 ## 3.2 Database Schema
@@ -143,11 +143,7 @@ export const PLAN_CATALOG: Record<PlanId, PlanCatalogEntry> = {
       displayPrice: '$9/mo',
       featured: true,
     },
-    highlights: [
-      '9.5K GPT-4o tokens / day',
-      'Mermaid diagram support',
-      'Priority email support',
-    ],
+    highlights: ['9.5K GPT-4o tokens / day', 'Mermaid diagram support', 'Priority email support'],
   },
   // ...
 };
@@ -177,7 +173,7 @@ Generate an API key (`Settings → API`) and use it for server-side checkout cre
 
 # 5. Environment Variables
 
-Use `.env.sample` as a reference. Required values for production:
+Use `.env.example` (repo root) and `frontend/.env.example` as references. Required values for production:
 
 ```bash
 PORT=3001
@@ -213,23 +209,23 @@ For CI/CD (GitHub Actions), set a multi-line secret called `ENV` containing the 
 
 # 6. Registration Flow Summary
 
-1. **Account form (`/register`)**  
-   - POST `/api/auth/register` with email + password.  
+1. **Account form (`/register`)**
+   - POST `/api/auth/register` with email + password.
    - Backend creates Supabase user + local `app_users` entry + returns a temp JWT.
 
-2. **Plan selection (`/register/plan`)**  
-   - User chooses plan.  
+2. **Plan selection (`/register/plan`)**
+   - User chooses plan.
    - Frontend hits `/api/billing/checkout` which creates `checkout_sessions` record and returns `checkoutUrl`.
 
-3. **Payment (`/register/payment`)**  
-   - Frontend redirects user to Lemon Squeezy checkout.  
+3. **Payment (`/register/payment`)**
+   - Frontend redirects user to Lemon Squeezy checkout.
    - After payment completes, Lemon Squeezy sends webhook to `/api/billing/webhook`.
 
-4. **Webhook**  
+4. **Webhook**
    - Backend verifies signature, updates `checkout_sessions` to `paid`, updates `app_users.subscription_*` columns, and issues a long-lived JWT.
 
-5. **Success Screen (`/register/success`)**  
-   - Poll `/api/billing/status/:checkoutId` until status is `paid`.  
+5. **Success Screen (`/register/success`)**
+   - Poll `/api/billing/status/:checkoutId` until status is `paid`.
    - Once active, show success screen + direct user to `/login`.
 
 > The current implementation includes view scaffolding and state store (`useRegistrationStore`). Hook the components up to the live API endpoints from the implementation plan.
@@ -255,20 +251,20 @@ Token allowances and conversions live in [`docs/PLANS_AND_BILLING.md`](PLANS_AND
 # 8. Testing Checklist
 
 1. **Local**
-   - Run `npm run dev` (root).  
-   - Create a test Supabase user with email/password.  
-   - Hit `/register`, ensure state persists after refresh.  
+   - Run `npm run dev` (root).
+   - Create a test Supabase user with email/password.
+   - Hit `/register`, ensure state persists after refresh.
    - Create checkout in Lemon Squeezy sandbox and confirm webhook logs.
 
 2. **Staging**
-   - Deploy preview environment.  
-   - Use Lemon Squeezy test mode (`Settings → Switch to test`).  
+   - Deploy preview environment.
+   - Use Lemon Squeezy test mode (`Settings → Switch to test`).
    - Validate emails are sent (if you integrated transactional mail).
 
 3. **Production**
-   - Switch Lemon Squeezy to live mode (`Settings → Switch to live`).  
-   - Confirm webhook secret, store id, product ids correspond to live values.  
-   - Create a $0.01 “silent” plan for smoke tests (optional).  
+   - Switch Lemon Squeezy to live mode (`Settings → Switch to live`).
+   - Confirm webhook secret, store id, product ids correspond to live values.
+   - Create a $0.01 “silent” plan for smoke tests (optional).
    - Monitor server logs during first few signups.
 
 ---

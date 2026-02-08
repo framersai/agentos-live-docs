@@ -126,7 +126,7 @@ The IDs are short numeric strings (for example `123456`) and are visible without
 ## Reuse Checklist
 
 1. Edit `shared/planCatalog.ts` when pricing or features change.
-2. Update `.env.sample`, `CONFIGURATION.md`, and this doc with any new env vars.
+2. Update `.env.example`, `frontend/.env.example`, `CONFIGURATION.md`, and this doc with any new env vars.
 3. Re-run marketing copy (About page, Login hints, Settings billing card) which now pull directly from the shared plan catalog.
 4. Copy the same files into any derivative app so pricing stays DRY.
 

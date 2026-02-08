@@ -64,7 +64,7 @@ import {
 
 // Create a live SkillRegistry loaded with all curated skills
 const registry = await createCuratedSkillRegistry();
-console.log(registry.size); // 16+
+console.log(registry.size); // 18
 
 // Build a prompt snapshot for agent injection
 const snapshot = await createCuratedSkillSnapshot({

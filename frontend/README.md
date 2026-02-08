@@ -10,7 +10,7 @@
 
 Multi-agent cockpit UI for Voice Chat Assistant, powered by AgentOS and part of the Frame.dev ecosystem.
 
-*The OS for humans, the codex of humanity.*
+_The OS for humans, the codex of humanity._
 
 [Frame.dev](https://frame.dev) • [AgentOS](https://agentos.sh)
 
@@ -41,15 +41,15 @@ This package contains the Vue 3 + Vite front-end for Voice Chat Assistant. It se
 
 ## Tech Stack
 
-| Layer | Details |
-|-------|---------|
-| Framework | Vue 3 (Composition API) |
-| Tooling | Vite 5, TypeScript, Pinia, Vue Router |
-| Styling | Tailwind, custom Sass mixins (`src/styles`) |
-| State | Pinia stores (`src/store`) + local/session storage helpers |
-| HTTP | Axios wrapper (`src/utils/api.ts`) with auth headers + streaming helpers |
-| i18n | `vue-i18n`, locale packs in `src/i18n/locales` (default `en`) |
-| Voice | Web Speech API, custom STT/TTS managers, OpenAI Whisper fallback |
+| Layer     | Details                                                                  |
+| --------- | ------------------------------------------------------------------------ |
+| Framework | Vue 3 (Composition API)                                                  |
+| Tooling   | Vite 5, TypeScript, Pinia, Vue Router                                    |
+| Styling   | Tailwind, custom Sass mixins (`src/styles`)                              |
+| State     | Pinia stores (`src/store`) + local/session storage helpers               |
+| HTTP      | Axios wrapper (`src/utils/api.ts`) with auth headers + streaming helpers |
+| i18n      | `vue-i18n`, locale packs in `src/i18n/locales` (default `en`)            |
+| Voice     | Web Speech API, custom STT/TTS managers, OpenAI Whisper fallback         |
 
 ---
 
@@ -126,36 +126,36 @@ Key service layers:
 
 ## NPM Scripts
 
-| Command | Description |
-|---------|-------------|
-| `npm run dev` | Launches Vite dev server (`localhost:3000`). |
-| `npm run build` | Production build (outputs to `frontend/dist`). |
+| Command           | Description                                     |
+| ----------------- | ----------------------------------------------- |
+| `npm run dev`     | Launches Vite dev server (`localhost:3000`).    |
+| `npm run build`   | Production build (outputs to `frontend/dist`).  |
 | `npm run preview` | Serves the built assets locally (default 4173). |
 
 The repo root exposes helpful wrappers:
 
-| Root Command | Description |
-|--------------|-------------|
-| `npm run dev` | Runs backend + frontend concurrently. |
-| `npm run start` | Runs built backend (`dist/server.js`) + `frontend` preview server. |
-| `npm run build:frontend` | `npm --prefix frontend run build`. |
+| Root Command             | Description                                                        |
+| ------------------------ | ------------------------------------------------------------------ |
+| `npm run dev`            | Runs backend + frontend concurrently.                              |
+| `npm run start`          | Runs built backend (`dist/server.js`) + `frontend` preview server. |
+| `npm run build:frontend` | `npm --prefix frontend run build`.                                 |
 
 ---
 
 ## Environment Variables
 
-Frontend uses Vite’s `import.meta.env`. Define variables in `frontend/.env`, `.env.local`, or use `.env.supabase-stripe.example` as a template.
+Frontend uses Vite’s `import.meta.env`. Define variables in `frontend/.env` / `frontend/.env.local`, or start from `frontend/.env.example`.
 
-| Variable | Purpose |
-|----------|---------|
-| `VITE_API_BASE_URL` | Base URL for API calls (defaults to `/api`). |
-| `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY` | Optional Supabase client configuration. |
-| `VITE_STRIPE_*` | Stripe price/plan IDs for billing UI. |
-| `VITE_AGENTOS_ENABLED` | Enable UI toggles for AgentOS routing (default `false`). |
-| `VITE_AGENTOS_CLIENT_MODE` | `proxy` (use `/api/chat`) or `direct` (hit `/api/agentos/*`). |
-| `VITE_AGENTOS_CHAT_PATH`, `VITE_AGENTOS_STREAM_PATH` | Override default AgentOS endpoints if needed. |
-| `VITE_FEATURE_FLAG_ENABLE_*` | Frontend feature switches (interview mode, tutor mode, etc.). |
-| `VITE_SHARED_PASSWORD`, `VITE_COST_THRESHOLD`, etc. | Optional global demo parameters. |
+| Variable                                             | Purpose                                                       |
+| ---------------------------------------------------- | ------------------------------------------------------------- |
+| `VITE_API_BASE_URL`                                  | Base URL for API calls (defaults to `/api`).                  |
+| `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`        | Optional Supabase client configuration.                       |
+| `VITE_STRIPE_*`                                      | Stripe price/plan IDs for billing UI.                         |
+| `VITE_AGENTOS_ENABLED`                               | Enable UI toggles for AgentOS routing (default `false`).      |
+| `VITE_AGENTOS_CLIENT_MODE`                           | `proxy` (use `/api/chat`) or `direct` (hit `/api/agentos/*`). |
+| `VITE_AGENTOS_CHAT_PATH`, `VITE_AGENTOS_STREAM_PATH` | Override default AgentOS endpoints if needed.                 |
+| `VITE_FEATURE_FLAG_ENABLE_*`                         | Frontend feature switches (interview mode, tutor mode, etc.). |
+| `VITE_SHARED_PASSWORD`, `VITE_COST_THRESHOLD`, etc.  | Optional global demo parameters.                              |
 
 When `VITE_AGENTOS_ENABLED=true` and `VITE_AGENTOS_CLIENT_MODE=direct`, `chatAPI` sends POST `/api/agentos/chat` and GET `/api/agentos/stream`. Ensure the backend exposes those routes (`AGENTOS_ENABLED=true`).
 
@@ -215,11 +215,11 @@ Defined in `src/services/agent.service.ts`. Each agent entry describes:
 
 ## Voice, TTS, and AgentOS Integration
 
-| Feature | Files / Notes |
-|---------|---------------|
-| STT | `src/services/speech/stt.*`, `api/stt` backend routes. |
-| TTS | `src/services/speech/tts*`, UI toggles in `Settings` view. |
-| VAD/PTT | `MainContentView.vue` + `voice` stores manage push-to-talk vs continuous. |
+| Feature     | Files / Notes                                                                                                                                                                         |
+| ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| STT         | `src/services/speech/stt.*`, `api/stt` backend routes.                                                                                                                                |
+| TTS         | `src/services/speech/tts*`, UI toggles in `Settings` view.                                                                                                                            |
+| VAD/PTT     | `MainContentView.vue` + `voice` stores manage push-to-talk vs continuous.                                                                                                             |
 | AgentOS SSE | `chatAPI.sendMessageStream` handles SSE from `/api/chat` or `/api/agentos/stream`. Build logs may warn about chunk sizes; adjust Vite config or split diagrams to reduce bundle size. |
 
 **Backend prerequisites:** When enabling AgentOS (`AGENTOS_ENABLED=true`), ensure the backend exposes `/api/agentos/chat` and `/api/agentos/stream` and that the AgentOS package is built (`packages/agentos`).
@@ -240,13 +240,13 @@ For AgentOS (backend package), Vitest is configured in `packages/agentos/vitest.
 
 ## Troubleshooting
 
-| Issue | Fix |
-|-------|-----|
-| 500 from `/api/rate-limit/status`, `/api/tts/voices`, `/prompts/*.md` | Backend isn’t running or the route is gated by `AGENTOS_ENABLED`. Start backend (`npm run dev`) or guard zero/500 states in UI. |
-| SSE fetch errors (`ECONNREFUSED`) | Vite proxies `/api/*` to backend on `localhost:3001`. Ensure backend dev server is up. |
-| Chunk size warning | Large diagram bundles (Mermaid, flowchart) exceed Vite’s `chunkSizeWarningLimit`. Consider dynamic imports or Rollup `manualChunks`. |
-| AgentOS import errors | Run `npm run build:backend` from root to build the AgentOS package first. The backend referencing `@framers/agentos` requires `packages/agentos/dist`. |
-| Locale path mismatch | Ensure routes use `/:locale?` and `Router.beforeEach` sets `i18n.global.locale`. See `router/index.ts`. |
+| Issue                                                                 | Fix                                                                                                                                                    |
+| --------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 500 from `/api/rate-limit/status`, `/api/tts/voices`, `/prompts/*.md` | Backend isn’t running or the route is gated by `AGENTOS_ENABLED`. Start backend (`npm run dev`) or guard zero/500 states in UI.                        |
+| SSE fetch errors (`ECONNREFUSED`)                                     | Vite proxies `/api/*` to backend on `localhost:3001`. Ensure backend dev server is up.                                                                 |
+| Chunk size warning                                                    | Large diagram bundles (Mermaid, flowchart) exceed Vite’s `chunkSizeWarningLimit`. Consider dynamic imports or Rollup `manualChunks`.                   |
+| AgentOS import errors                                                 | Run `npm run build:backend` from root to build the AgentOS package first. The backend referencing `@framers/agentos` requires `packages/agentos/dist`. |
+| Locale path mismatch                                                  | Ensure routes use `/:locale?` and `Router.beforeEach` sets `i18n.global.locale`. See `router/index.ts`.                                                |
 
 ---
 
@@ -257,4 +257,3 @@ For AgentOS (backend package), Vitest is configured in `packages/agentos/vitest.
 - For feature flags, prefer the `VITE_FEATURE_FLAG_*` naming convention to keep front-end toggles consistent with documentation.
 
 For the broader integration plan (AgentOS packaging, workspace structure, backend wiring), see `docs/AGENTOS_REINTEGRATION_NOTES.md`.
-

@@ -1,6 +1,6 @@
 # Configuration Guide
 
-This guide summarises all environment variables and runtime options available in Voice Chat Assistant. Use it alongside `.env.sample`, which lists every variable with defaults and inline comments.
+This guide summarises all environment variables and runtime options available in Voice Chat Assistant. Use it alongside `.env.example` (repo root) and `frontend/.env.example` (Vite frontend template).
 
 ## 1. Core Settings
 
@@ -11,6 +11,38 @@ This guide summarises all environment variables and runtime options available in
 | `FRONTEND_URL` | Base URL for the frontend, used in CORS and cookies.                       |
 | `APP_URL`      | Public URL for backend if different from origin (used in emails/webhooks). |
 | `LOG_LEVEL`    | `debug`, `info`, `warn`, or `error`.                                       |
+
+### Observability (OpenTelemetry) (Optional)
+
+OpenTelemetry (OTEL) is **opt-in** in this repo. It supports traces, metrics, and OTEL-compatible logs (via `pino` + optional OTEL LogRecords export).
+
+Full setup guide (recommended): [`docs/OBSERVABILITY.md`](docs/OBSERVABILITY.md).
+
+Backend OTEL SDK bootstrap (NodeSDK + auto-instrumentation):
+
+| Variable                      | Description                                                                                   |
+| ----------------------------- | --------------------------------------------------------------------------------------------- | ---- | ---- | ----- | ------- |
+| `OTEL_ENABLED`                | Master switch for backend OTEL bootstrap (`true`/`false`).                                    |
+| `OTEL_SERVICE_NAME`           | Service name (recommended).                                                                   |
+| `OTEL_TRACES_EXPORTER`        | Exporter (`otlp`, `none`, etc).                                                               |
+| `OTEL_METRICS_EXPORTER`       | Exporter (`otlp`, `none`, etc).                                                               |
+| `OTEL_LOGS_EXPORTER`          | Exporter (`otlp`, `none`, etc). Keep unset/`none` unless you explicitly want OTLP log export. |
+| `OTEL_EXPORTER_OTLP_ENDPOINT` | Collector endpoint (commonly `http://localhost:4318` for OTLP/HTTP).                          |
+| `OTEL_EXPORTER_OTLP_PROTOCOL` | Protocol (commonly `http/protobuf`).                                                          |
+| `OTEL_TRACES_SAMPLER`         | Sampler (e.g. `parentbased_traceidratio`).                                                    |
+| `OTEL_TRACES_SAMPLER_ARG`     | Sampler arg (e.g. `0.1`).                                                                     |
+| `OTEL_DIAG_LOG_LEVEL`         | OTEL SDK diagnostics (`debug                                                                  | info | warn | error | none`). |
+
+AgentOS observability helpers (manual spans/metrics + correlation, exported by the host OTEL SDK):
+
+| Variable                         | Description                                                                 |
+| -------------------------------- | --------------------------------------------------------------------------- |
+| `AGENTOS_OBSERVABILITY_ENABLED`  | Master switch (enables tracing + metrics + log trace correlation defaults). |
+| `AGENTOS_TRACING_ENABLED`        | Enable AgentOS manual spans.                                                |
+| `AGENTOS_METRICS_ENABLED`        | Enable AgentOS metrics.                                                     |
+| `AGENTOS_TRACE_IDS_IN_RESPONSES` | Attach `metadata.trace` to select streamed chunks.                          |
+| `AGENTOS_LOG_TRACE_IDS`          | Add `trace_id`/`span_id` to AgentOS pino logs when an active span exists.   |
+| `AGENTOS_OTEL_LOGS_ENABLED`      | Emit OTEL LogRecords from AgentOS (requires host `OTEL_LOGS_EXPORTER`).     |
 
 ## 2. Authentication
 
@@ -68,7 +100,7 @@ STRIPE_ORG_PRODUCT_ID=
 STRIPE_ORG_PRICE_ID=
 ```
 
-Frontend builds need the matching IDs (prefixed with `VITE_...`) in `frontend/.env` or `frontend/.env.local` so buttons render accurate CTAs. See [.env.sample](.env.sample) for the full list.
+Frontend builds need the matching IDs (prefixed with `VITE_...`) in `frontend/.env` or `frontend/.env.local` so buttons render accurate CTAs. See `.env.example` and `frontend/.env.example` for templates.
 
 When billing is configured, webhooks update `app_users` with subscription state. Creator and Organization plans roll into BYO keys once the daily platform allowance is consumed; the rollover rules live in `shared/planCatalog.ts`. Full rationale lives in [`docs/PLANS_AND_BILLING.md`](docs/PLANS_AND_BILLING.md).
 
@@ -118,14 +150,108 @@ Backend default behavior (Voice Chat Assistant):
 - If authenticated, the backend enables user + persona long-term memory retrieval by default (`scopes.user=true`, `scopes.persona=true`) unless explicitly disabled in `memoryControl.longTermMemory.scopes`.
 - Organization admins can manage org-level memory defaults/kill-switches via `GET/PATCH /api/organizations/:organizationId/settings`.
 
+### AgentOS RAG Retrieval (Backend `ragService`)
+
+When `AGENTOS_ENABLED=true`, AgentOS long-term memory retrieval uses the backend `ragService`. It stores canonical documents/chunks in SQL and maintains an optional vector index (dense + hybrid) with keyword fallback.
+
+| Variable                                         | Description                                                                                                                 |
+| ------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------- |
+| `RAG_DATABASE_PATH`                              | SQLite file path for the RAG store (default: `./data/rag_store.db`).                                                        |
+| `RAG_DATABASE_URL`                               | Postgres connection string for the RAG store (optional).                                                                    |
+| `AGENTOS_RAG_PRESET`                             | `fast` (dense), `balanced` (hybrid), `accurate` (hybrid + rerank). Default: `balanced`.                                     |
+| `AGENTOS_RAG_HYBRID_ALPHA`                       | Hybrid dense weight (0..1). Default: `0.7`.                                                                                 |
+| `AGENTOS_RAG_EMBED_PROVIDER`                     | Force embeddings provider: `ollama`, `openai`, `openrouter` (optional).                                                     |
+| `AGENTOS_RAG_EMBED_MODEL`                        | Force embeddings model ID (optional).                                                                                       |
+| `AGENTOS_RAG_OLLAMA_REQUEST_TIMEOUT_MS`          | Ollama connect timeout (ms). Also accepts `OLLAMA_REQUEST_TIMEOUT_MS`. Default: `5000`.                                     |
+| `COHERE_API_KEY`                                 | Enables Cohere reranking (used by `accurate` preset). Optional.                                                             |
+| `AGENTOS_RAG_VECTOR_PROVIDER`                    | Vector index backend for `ragService`: `sql` (default) or `qdrant` (optional).                                              |
+| `AGENTOS_RAG_QDRANT_URL`                         | Qdrant base URL when `AGENTOS_RAG_VECTOR_PROVIDER=qdrant`. Also accepts `QDRANT_URL`.                                       |
+| `AGENTOS_RAG_QDRANT_API_KEY`                     | Optional Qdrant API key. Also accepts `QDRANT_API_KEY`.                                                                     |
+| `AGENTOS_RAG_QDRANT_TIMEOUT_MS`                  | Qdrant request timeout (ms). Also accepts `QDRANT_TIMEOUT_MS`. Default: `15000`.                                            |
+| `AGENTOS_RAG_QDRANT_ENABLE_BM25`                 | Enable BM25 sparse vectors + hybrid fusion in Qdrant (`true`/`false`). Default: `true`.                                     |
+| `AGENTOS_GRAPHRAG_ENABLED`                       | Enable GraphRAG indexing + search (`true`/`false`). Default: `false`.                                                       |
+| `AGENTOS_GRAPHRAG_CATEGORIES`                    | Comma list of `RagDocumentInput.category` values to index into GraphRAG. Default when unset: `knowledge_base`.              |
+| `AGENTOS_GRAPHRAG_LLM_ENABLED`                   | Use an LLM for entity extraction + community summaries (`true`/`false`). Default: `false` (pattern-based extraction only).  |
+| `AGENTOS_GRAPHRAG_LLM_PROVIDER`                  | LLM provider for GraphRAG (`openai`/`openrouter`/`ollama`). Optional.                                                       |
+| `AGENTOS_GRAPHRAG_LLM_MODEL`                     | LLM model ID for GraphRAG. Optional.                                                                                        |
+| `AGENTOS_HITL_ENABLED`                           | Enable HITL approvals for side-effect tool calls (`true`/`false`). Default: `false`.                                        |
+| `AGENTOS_HITL_TIMEOUT_MS`                        | Default timeout (ms) for HITL requests. Default: `30000`.                                                                   |
+| `AGENTOS_HITL_APPROVAL_TIMEOUT_MS`               | Optional per-tool approval timeout override (ms).                                                                           |
+| `AGENTOS_HITL_DEFAULT_SEVERITY`                  | Default approval severity for side-effect tools: `low`/`medium`/`high`/`critical`. Default: `high`.                         |
+| `AGENTOS_HITL_REQUIRE_APPROVAL_FOR_SIDE_EFFECTS` | If `true`, tools with `tool.hasSideEffects=true` require approval. Default: `true` (when HITL enabled).                     |
+| `AGENTOS_HITL_WEBHOOK_URL`                       | Optional outbound webhook URL(s), comma-separated, notified on new HITL requests.                                           |
+| `AGENTOS_HITL_WEBHOOK_TIMEOUT_MS`                | Webhook request timeout (ms). Default: `5000`.                                                                              |
+| `AGENTOS_HITL_WEBHOOK_SECRET`                    | If set, decision endpoints require `x-agentos-hitl-secret` header and outbound webhooks include `x-agentos-hitl-signature`. |
+
+Local reranking is optional and requires installing Transformers.js: `@huggingface/transformers` (preferred) or `@xenova/transformers`.
+
+#### GraphRAG Usage
+
+GraphRAG is **disabled by default**. When enabled (`AGENTOS_GRAPHRAG_ENABLED=true`), the backend will **best-effort index** ingested RAG documents whose `category` is allowed by `AGENTOS_GRAPHRAG_CATEGORIES` (default when unset: `knowledge_base`).
+
+Search endpoints:
+
+- `POST /api/agentos/rag/graphrag/local-search` with JSON `{ "query": "..." }`
+- `POST /api/agentos/rag/graphrag/global-search` with JSON `{ "query": "..." }`
+- `GET /api/agentos/rag/graphrag/stats`
+
+#### HITL Webhooks
+
+When HITL is enabled (`AGENTOS_HITL_ENABLED=true`), tools with `hasSideEffects=true` will pause for approval.
+
+If `AGENTOS_HITL_WEBHOOK_URL` is set, the backend sends a POST to each URL with JSON:
+
+```json
+{
+  "notification": { "type": "approval_required", "requestId": "..." },
+  "request": { "actionId": "...", "severity": "high", "title": "...", "description": "..." }
+}
+```
+
+If `AGENTOS_HITL_WEBHOOK_SECRET` is set, outbound webhooks include `x-agentos-hitl-signature` (HMAC-SHA256 of `${timestampMs}.${rawBody}`) and decision endpoints require `x-agentos-hitl-secret`.
+
+### Wunderland Vector Memory (Optional)
+
+Wunderland seed-memory uses AgentOS `RetrievalAugmentor` + a configurable vector store. Default is local SQL persistence; Qdrant is optional for scale.
+
+| Variable                                      | Description                                                                                                                                                  |
+| --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `WUNDERLAND_MEMORY_PRESET`                    | `fast` (dense), `balanced` (hybrid), `accurate` (hybrid + rerank). Default: `balanced`.                                                                      |
+| `WUNDERLAND_MEMORY_HYBRID_ALPHA`              | Hybrid dense weight (0..1). Default: `0.7`.                                                                                                                  |
+| `WUNDERLAND_MEMORY_EMBED_PROVIDER`            | Force embeddings provider: `ollama`, `openai`, `openrouter` (optional).                                                                                      |
+| `WUNDERLAND_MEMORY_EMBED_MODEL`               | Force embeddings model ID (optional).                                                                                                                        |
+| `WUNDERLAND_MEMORY_OLLAMA_REQUEST_TIMEOUT_MS` | Ollama connect timeout (ms). Also accepts `OLLAMA_REQUEST_TIMEOUT_MS`. Default: `5000`.                                                                      |
+| `WUNDERLAND_MEMORY_VECTOR_PROVIDER`           | Vector store provider: `sql` (default) or `qdrant` (optional).                                                                                               |
+| `WUNDERLAND_MEMORY_QDRANT_URL`                | Qdrant base URL when `WUNDERLAND_MEMORY_VECTOR_PROVIDER=qdrant`. Also accepts `QDRANT_URL`.                                                                  |
+| `WUNDERLAND_MEMORY_QDRANT_API_KEY`            | Optional Qdrant API key. Also accepts `QDRANT_API_KEY`.                                                                                                      |
+| `WUNDERLAND_MEMORY_QDRANT_TIMEOUT_MS`         | Qdrant request timeout (ms). Also accepts `QDRANT_TIMEOUT_MS`. Default: `15000`.                                                                             |
+| `WUNDERLAND_MEMORY_QDRANT_ENABLE_BM25`        | Enable BM25 sparse vectors + hybrid fusion in Qdrant (`true`/`false`). Default: `true`.                                                                      |
+| `WUNDERLAND_MEMORY_VECTOR_DB_PATH`            | SQL vector DB path for seed-memory when using `sql` provider (default: `./db_data/wunderland_memory_vectors.db`). Set to empty string for in-memory (tests). |
+| `WUNDERLAND_MEMORY_VECTOR_DB_URL`             | Optional Postgres connection string for seed-memory when using `sql` provider.                                                                               |
+
+### Qdrant Local Dev (Optional)
+
+If you set `AGENTOS_RAG_VECTOR_PROVIDER=qdrant` or `WUNDERLAND_MEMORY_VECTOR_PROVIDER=qdrant`, you can run Qdrant locally:
+
+```bash
+pnpm dev:qdrant:up
+pnpm dev:qdrant:logs
+```
+
+Shutdown:
+
+```bash
+pnpm dev:qdrant:down
+```
+
 ## 5. LLM Providers
 
-| Variable             | Description                                            |
-| -------------------- | ------------------------------------------------------ |
-| `OPENAI_API_KEY`     | Required for GPT and Whisper features.                 |
-| `OPENROUTER_API_KEY` | Optional additional model access.                      |
-| `ANTHROPIC_API_KEY`  | Optional Claude support.                               |
-| `MODEL_PREF_*`       | Default model routing per feature (see `.env.sample`). |
+| Variable             | Description                                             |
+| -------------------- | ------------------------------------------------------- |
+| `OPENAI_API_KEY`     | Required for GPT and Whisper features.                  |
+| `OPENROUTER_API_KEY` | Optional additional model access.                       |
+| `ANTHROPIC_API_KEY`  | Optional Claude support.                                |
+| `MODEL_PREF_*`       | Default model routing per feature (see `.env.example`). |
 
 ## 6. Storage & Database
 
@@ -184,7 +310,7 @@ The backend honours:
 
 ## 9. Voice, Audio & Speech
 
-See `.env.sample` for toggles such as `DEFAULT_SPEECH_PREFERENCE_STT`, `DEFAULT_SPEECH_PREFERENCE_TTS_PROVIDER`, and advanced audio processing flags. All defaults are tuned for local development.
+See `.env.example` for toggles such as `DEFAULT_SPEECH_PREFERENCE_STT`, `DEFAULT_SPEECH_PREFERENCE_TTS_PROVIDER`, and advanced audio processing flags. All defaults are tuned for local development.
 
 ### Speech credits & automatic fallbacks
 
@@ -203,32 +329,32 @@ For more operational notes and deployment tips, review [`PRODUCTION_SETUP.md`](P
 
 ## 11. AgentOS Experimental Integration
 
-| Variable                                 | Description                                                                                           |
-| ---------------------------------------- | ----------------------------------------------------------------------------------------------------- |
-| `AGENTOS_ENABLED`                        | Enable the embedded AgentOS router (`/api/agentos/*`). Defaults to `false`.                           |
-| `AGENTOS_ENABLE_PERSISTENCE`             | Persist AgentOS conversations via the shared app database (`true`/`false`).                           |
-| `AGENTOS_DEFAULT_PERSONA_ID`             | Fallback persona ID when the client does not specify one.                                             |
-| `AGENTOS_DEFAULT_MODEL_ID`               | Preferred model ID for AgentOS orchestrations (e.g., `gpt-4o-mini`).                                  |
-| `AGENTOS_API_KEY_ENCRYPTION_KEY_HEX`     | 64-character hex string used by the internal API-key vault stub.                                      |
-| `AGENTOS_DATABASE_URL`                   | SQLite connection string used by the AgentOS persistence stub.                                        |
-| `AGENTOS_MAX_TOOL_CALL_ITERATIONS`       | Safeguard for chained tool invocations per turn.                                                      |
-| `AGENTOS_MAX_CONCURRENT_STREAMS`         | Streaming fan-out limit for SSE responses.                                                            |
-| `AGENTOS_TURN_TIMEOUT_MS`                | Timeout applied to a single AgentOS turn before failover.                                             |
-| `AGENTOS_STREAM_INACTIVITY_TIMEOUT_MS`   | Idle timeout for SSE clients.                                                                         |
-| `AGENTOS_PERSONA_PATH`                   | Optional override to load persona definitions from a custom directory.                                |
-| `PERSONA_DEFINITIONS_PATH`               | Path used by the voice UI stack to discover persona JSON files (defaults to `./backend/agentos/...`). |
-| `AGENTOS_PROVENANCE_ENABLED`             | Enable provenance/audit hooks for AgentOS persistence (`true`/`false`). Requires persistence.         |
+| Variable                                 | Description                                                                                                 |
+| ---------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| `AGENTOS_ENABLED`                        | Enable the embedded AgentOS router (`/api/agentos/*`). Defaults to `false`.                                 |
+| `AGENTOS_ENABLE_PERSISTENCE`             | Persist AgentOS conversations via the shared app database (`true`/`false`).                                 |
+| `AGENTOS_DEFAULT_PERSONA_ID`             | Fallback persona ID when the client does not specify one.                                                   |
+| `AGENTOS_DEFAULT_MODEL_ID`               | Preferred model ID for AgentOS orchestrations (e.g., `gpt-4o-mini`).                                        |
+| `AGENTOS_API_KEY_ENCRYPTION_KEY_HEX`     | 64-character hex string used by the internal API-key vault stub.                                            |
+| `AGENTOS_DATABASE_URL`                   | SQLite connection string used by the AgentOS persistence stub.                                              |
+| `AGENTOS_MAX_TOOL_CALL_ITERATIONS`       | Safeguard for chained tool invocations per turn.                                                            |
+| `AGENTOS_MAX_CONCURRENT_STREAMS`         | Streaming fan-out limit for SSE responses.                                                                  |
+| `AGENTOS_TURN_TIMEOUT_MS`                | Timeout applied to a single AgentOS turn before failover.                                                   |
+| `AGENTOS_STREAM_INACTIVITY_TIMEOUT_MS`   | Idle timeout for SSE clients.                                                                               |
+| `AGENTOS_PERSONA_PATH`                   | Optional override to load persona definitions from a custom directory.                                      |
+| `PERSONA_DEFINITIONS_PATH`               | Path used by the voice UI stack to discover persona JSON files (defaults to `./backend/agentos/...`).       |
+| `AGENTOS_PROVENANCE_ENABLED`             | Enable provenance/audit hooks for AgentOS persistence (`true`/`false`). Requires persistence.               |
 | `AGENTOS_PROVENANCE_PROFILE`             | Provenance preset: `mutable-dev` (default), `revisioned-verified`, `sealed-autonomous`, `sealed-auditable`. |
-| `AGENTOS_PROVENANCE_AGENT_ID`            | Signing identity for provenance events (default: `voice-chat-assistant`).                             |
-| `AGENTOS_PROVENANCE_TABLE_PREFIX`        | Prefix for provenance tables (default: `agentos_`).                                                   |
-| `AGENTOS_PROVENANCE_SIGNATURE_MODE`      | `every-event` (default) or `anchor-only`.                                                             |
-| `AGENTOS_PROVENANCE_PRIVATE_KEY_BASE64`  | Optional Ed25519 private key (base64) for stable signing across restarts.                             |
-| `AGENTOS_PROVENANCE_PUBLIC_KEY_BASE64`   | Optional Ed25519 public key (base64). Required when importing a private key.                          |
-| `AGENTOS_PROVENANCE_ANCHOR_TYPE`         | External anchor target type (`none` default; e.g. `rekor`, `ethereum`, `opentimestamps`).             |
-| `AGENTOS_PROVENANCE_ANCHOR_ENDPOINT`     | Optional endpoint (e.g. Rekor server URL or Ethereum RPC URL).                                        |
-| `AGENTOS_PROVENANCE_ANCHOR_OPTIONS_JSON` | JSON string forwarded to the anchor provider factory as `options`.                                    |
-| `AGENTOS_PROVENANCE_ANCHOR_INTERVAL_MS`  | Anchor interval in ms (default `0` = disabled).                                                       |
-| `AGENTOS_PROVENANCE_ANCHOR_BATCH_SIZE`   | Minimum events per anchor batch (default `50`).                                                       |
+| `AGENTOS_PROVENANCE_AGENT_ID`            | Signing identity for provenance events (default: `voice-chat-assistant`).                                   |
+| `AGENTOS_PROVENANCE_TABLE_PREFIX`        | Prefix for provenance tables (default: `agentos_`).                                                         |
+| `AGENTOS_PROVENANCE_SIGNATURE_MODE`      | `every-event` (default) or `anchor-only`.                                                                   |
+| `AGENTOS_PROVENANCE_PRIVATE_KEY_BASE64`  | Optional Ed25519 private key (base64) for stable signing across restarts.                                   |
+| `AGENTOS_PROVENANCE_PUBLIC_KEY_BASE64`   | Optional Ed25519 public key (base64). Required when importing a private key.                                |
+| `AGENTOS_PROVENANCE_ANCHOR_TYPE`         | External anchor target type (`none` default; e.g. `rekor`, `ethereum`, `opentimestamps`).                   |
+| `AGENTOS_PROVENANCE_ANCHOR_ENDPOINT`     | Optional endpoint (e.g. Rekor server URL or Ethereum RPC URL).                                              |
+| `AGENTOS_PROVENANCE_ANCHOR_OPTIONS_JSON` | JSON string forwarded to the anchor provider factory as `options`.                                          |
+| `AGENTOS_PROVENANCE_ANCHOR_INTERVAL_MS`  | Anchor interval in ms (default `0` = disabled).                                                             |
+| `AGENTOS_PROVENANCE_ANCHOR_BATCH_SIZE`   | Minimum events per anchor batch (default `50`).                                                             |
 
 > AgentOS persistence in this monorepo uses the shared app database (SQLite by default). Enable it with `AGENTOS_ENABLE_PERSISTENCE=true` and ensure the backend calls `initializeAppDatabase()` during startup.
 

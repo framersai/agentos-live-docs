@@ -55,6 +55,7 @@ It also hosts the Frame.dev ecosystem projects so the assistant, marketing surfa
 - **Backend** - Modular Express feature folders, optional Supabase + Lemon Squeezy integration, rate-limited public demo routes.
 - **AgentOS runtime** - Session-aware personas, tool permissioning, guardrail policy hooks, retrieval/memory lifecycle policies, async streaming bridges.
 - **AgentOS surfaces** - `apps/agentos.sh` (marketing) and `apps/agentos-workbench` (developer cockpit) consume the runtime without touching the proprietary voice UI.
+- **Observability (opt-in)** - OpenTelemetry tracing/metrics and OTEL-compatible logging via `pino` (see [`docs/OBSERVABILITY.md`](docs/OBSERVABILITY.md)).
 - **Data flow** - Voice/Text -> `/api/chat` -> AgentOS -> LLM providers with knowledge retrieval and billing-tier enforcement.
 
 ### Frame Codex & Codex Viewer
@@ -101,11 +102,12 @@ npm run dev
    # or npm run install-all  # convenience script that shells into each package
    ```
 2. **Configure environment variables**
-   - Copy `.env.sample` -> `.env` (backend).
-   - Copy `frontend/.env.supabase-stripe.example` -> `frontend/.env.local`.
+   - Copy `.env.example` -> `.env` (backend + Next.js apps like `rabbithole`).
+   - Copy `frontend/.env.example` -> `frontend/.env.local` (Vite frontend).
    - Optional: copy `apps/agentos-workbench/.env.example` -> `apps/agentos-workbench/.env.local` if you need to override the AgentOS proxy paths.
    - Populate values listed in [`CONFIGURATION.md`](CONFIGURATION.md) (ports, JWT secrets, LLM keys, Supabase, Lemon Squeezy, AgentOS flags, etc.).
 3. **Run development servers**
+
    ```bash
    pnpm run dev:workbench    # backend + AgentOS workbench
    ```
@@ -115,6 +117,7 @@ npm run dev
    - Voice UI + backend: `pnpm run dev:vca`
    - Marketing site + backend: `pnpm run dev:landing`
    - Solo marketing site preview: `pnpm run dev:landing:solo`
+
 4. **Build for production**
    ```bash
    npm run build   # builds frontend, backend, and @framers/agentos
@@ -178,4 +181,4 @@ See the [Guardrails Usage Guide](backend/src/integrations/agentos/guardrails/GUA
 
 - **agentos.sh landing** - Next.js marketing site with dual-mode theming, motion, roadmap cards, and launch CTAs.
 - **AgentOS client workbench** - React cockpit for replaying sessions, inspecting streaming telemetry, and iterating on personas/tools without running the full voice UI.
-- Both apps consume the workspace version of `
+- Both apps consume the workspace version of `@framers/agentos` (and local extension packages) directly, so changes in `packages/` are picked up without publishing.

@@ -20,7 +20,7 @@ export class MoodPersistenceService implements IMoodPersistenceAdapter {
       arousal: number;
       dominance: number;
       mood_label: string;
-      updated_at: number;
+      updated_at: string;
     }>(
       `SELECT seed_id, valence, arousal, dominance, mood_label, updated_at
          FROM wunderland_agent_moods
@@ -39,11 +39,17 @@ export class MoodPersistenceService implements IMoodPersistenceAdapter {
   }
 
   async saveMoodSnapshot(seedId: string, state: PADState, label: MoodLabel): Promise<void> {
-    const now = Date.now();
+    const now = new Date().toISOString();
     await this.db.run(
-      `INSERT OR REPLACE INTO wunderland_agent_moods
+      `INSERT INTO wunderland_agent_moods
         (seed_id, valence, arousal, dominance, mood_label, updated_at)
-       VALUES (?, ?, ?, ?, ?, ?)`,
+       VALUES (?, ?, ?, ?, ?, ?)
+       ON CONFLICT(seed_id) DO UPDATE SET
+         valence = excluded.valence,
+         arousal = excluded.arousal,
+         dominance = excluded.dominance,
+         mood_label = excluded.mood_label,
+         updated_at = excluded.updated_at`,
       [seedId, state.valence, state.arousal, state.dominance, label, now]
     );
   }
@@ -54,15 +60,31 @@ export class MoodPersistenceService implements IMoodPersistenceAdapter {
     resultState: PADState,
     label: MoodLabel
   ): Promise<void> {
-    const now = Date.now();
+    const now = new Date().toISOString();
     await this.db.run(
       `INSERT INTO wunderland_agent_mood_history
-        (id, seed_id, source, delta_valence, delta_arousal, delta_dominance, timestamp)
-       VALUES (?, ?, ?, ?, ?, ?, ?)`,
+        (
+          entry_id,
+          seed_id,
+          valence,
+          arousal,
+          dominance,
+          trigger_type,
+          trigger_entity_id,
+          delta_valence,
+          delta_arousal,
+          delta_dominance,
+          created_at
+        )
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         this.db.generateId(),
         seedId,
+        resultState.valence,
+        resultState.arousal,
+        resultState.dominance,
         delta.trigger,
+        null,
         delta.valence,
         delta.arousal,
         delta.dominance,
@@ -73,15 +95,15 @@ export class MoodPersistenceService implements IMoodPersistenceAdapter {
 
   async loadRecentDeltas(seedId: string, limit: number): Promise<MoodDelta[]> {
     const rows = await this.db.all<{
-      source: string;
+      trigger_type: string | null;
       delta_valence: number;
       delta_arousal: number;
       delta_dominance: number;
     }>(
-      `SELECT source, delta_valence, delta_arousal, delta_dominance
+      `SELECT trigger_type, delta_valence, delta_arousal, delta_dominance
          FROM wunderland_agent_mood_history
         WHERE seed_id = ?
-        ORDER BY timestamp DESC
+        ORDER BY created_at DESC
         LIMIT ?`,
       [seedId, limit]
     );
@@ -90,7 +112,7 @@ export class MoodPersistenceService implements IMoodPersistenceAdapter {
       valence: Number(row.delta_valence),
       arousal: Number(row.delta_arousal),
       dominance: Number(row.delta_dominance),
-      trigger: String(row.source),
+      trigger: String(row.trigger_type ?? 'unknown'),
     }));
   }
 }

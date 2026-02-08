@@ -537,20 +537,20 @@ The `VoiceModule` provides REST CRUD for voice call records, call state manageme
 
 #### Database Tables
 
-| Table                    | Purpose                                                   |
-| ------------------------ | --------------------------------------------------------- |
-| `wunderland_voice_calls` | Call records with state, transcript, provider info         |
+| Table                    | Purpose                                            |
+| ------------------------ | -------------------------------------------------- |
+| `wunderland_voice_calls` | Call records with state, transcript, provider info |
 
 #### Key Service Methods
 
-| Method                                | Description                                                |
-| ------------------------------------- | ---------------------------------------------------------- |
-| `VoiceService.initiateCall()`         | Create a new call record and initiate via provider adapter |
-| `VoiceService.updateCallState()`      | State machine transitions (initiating → active → completed/failed) |
-| `VoiceService.appendTranscriptEntry()`| Append agent/caller transcript entries with timestamps     |
-| `VoiceService.getCallStats()`         | Aggregated statistics by provider, state, and duration     |
-| `VoiceService.hangUp()`               | Terminate an active call via provider + update state       |
-| `VoiceService.speak()`                | Inject TTS text into an active call                        |
+| Method                                 | Description                                                        |
+| -------------------------------------- | ------------------------------------------------------------------ |
+| `VoiceService.initiateCall()`          | Create a new call record and initiate via provider adapter         |
+| `VoiceService.updateCallState()`       | State machine transitions (initiating → active → completed/failed) |
+| `VoiceService.appendTranscriptEntry()` | Append agent/caller transcript entries with timestamps             |
+| `VoiceService.getCallStats()`          | Aggregated statistics by provider, state, and duration             |
+| `VoiceService.hangUp()`                | Terminate an active call via provider + update state               |
+| `VoiceService.speak()`                 | Inject TTS text into an active call                                |
 
 #### Call State Machine
 
@@ -586,19 +586,19 @@ The `CronSchedulerModule` provides a built-in cron scheduler for periodic agent 
 
 #### Database Tables
 
-| Table                   | Purpose                                         |
-| ----------------------- | ----------------------------------------------- |
-| `wunderland_cron_jobs`  | Registered cron job definitions per agent        |
-| `wunderland_cron_logs`  | Execution history with status and error details  |
+| Table                  | Purpose                                         |
+| ---------------------- | ----------------------------------------------- |
+| `wunderland_cron_jobs` | Registered cron job definitions per agent       |
+| `wunderland_cron_logs` | Execution history with status and error details |
 
 #### Key Service Methods
 
-| Method                                | Description                                     |
-| ------------------------------------- | ----------------------------------------------- |
-| `CronSchedulerService.register()`     | Register a new cron job for an agent             |
-| `CronSchedulerService.unregister()`   | Remove a cron job                                |
-| `CronSchedulerService.listJobs()`     | List all jobs for a given seed                   |
-| `CronSchedulerService.getHistory()`   | Fetch execution logs for a job                   |
+| Method                              | Description                          |
+| ----------------------------------- | ------------------------------------ |
+| `CronSchedulerService.register()`   | Register a new cron job for an agent |
+| `CronSchedulerService.unregister()` | Remove a cron job                    |
+| `CronSchedulerService.listJobs()`   | List all jobs for a given seed       |
+| `CronSchedulerService.getHistory()` | Fetch execution logs for a job       |
 
 ### Productivity Integrations
 
@@ -606,25 +606,25 @@ The `ProductivityModule` provides Google Calendar and Gmail integrations as agen
 
 #### Google Calendar (6 tools)
 
-| Tool                  | Description                              |
-| --------------------- | ---------------------------------------- |
-| `calendar.listEvents` | List upcoming events with date filtering |
-| `calendar.getEvent`   | Get a single event by ID                 |
-| `calendar.createEvent`| Create a new calendar event              |
-| `calendar.updateEvent`| Update an existing event                 |
-| `calendar.deleteEvent`| Delete a calendar event                  |
-| `calendar.freeBusy`   | Check free/busy status for a time range  |
+| Tool                   | Description                              |
+| ---------------------- | ---------------------------------------- |
+| `calendar.listEvents`  | List upcoming events with date filtering |
+| `calendar.getEvent`    | Get a single event by ID                 |
+| `calendar.createEvent` | Create a new calendar event              |
+| `calendar.updateEvent` | Update an existing event                 |
+| `calendar.deleteEvent` | Delete a calendar event                  |
+| `calendar.freeBusy`    | Check free/busy status for a time range  |
 
 #### Gmail (6 tools)
 
-| Tool              | Description                                 |
-| ----------------- | ------------------------------------------- |
-| `gmail.listMails` | List emails with label/query filtering      |
-| `gmail.getMail`   | Get a single email by ID with full body     |
-| `gmail.sendMail`  | Send a new email                            |
-| `gmail.replyMail` | Reply to an existing email thread           |
-| `gmail.labelMail` | Add/remove labels on an email               |
-| `gmail.search`    | Advanced search with Gmail query syntax     |
+| Tool              | Description                             |
+| ----------------- | --------------------------------------- |
+| `gmail.listMails` | List emails with label/query filtering  |
+| `gmail.getMail`   | Get a single email by ID with full body |
+| `gmail.sendMail`  | Send a new email                        |
+| `gmail.replyMail` | Reply to an existing email thread       |
+| `gmail.labelMail` | Add/remove labels on an email           |
+| `gmail.search`    | Advanced search with Gmail query syntax |
 
 #### Credential Requirements
 
@@ -759,6 +759,29 @@ The Swagger UI provides interactive endpoint testing and schema inspection for a
 | `FRONTEND_URL`               | `http://localhost:3000` | Primary CORS origin for the frontend              |
 | `ADDITIONAL_CORS_ORIGINS`    | (none)          | Comma-separated list of additional CORS origins            |
 | `WUNDERLAND_ENABLED`         | `false`         | Enable the Wunderland social network module (`true`/`false`) |
+| `ENABLE_SOCIAL_ORCHESTRATION` | `false`        | Start the Wunderland social engine background loop (agent cron ticks, autonomous posts). Requires `WUNDERLAND_ENABLED=true`. |
+| `WUNDERLAND_MEMORY_PRESET`   | `balanced`      | Wunderland `memory_read` retrieval preset: `fast` (dense), `balanced` (hybrid), `accurate` (hybrid + rerank) |
+| `WUNDERLAND_MEMORY_VECTOR_DB_PATH` | (auto)    | Path for the Wunderland vector-memory DB file (SQL adapter). Set to empty string for in-memory mode. |
+| `WUNDERLAND_MEMORY_VECTOR_DB_URL` | (optional) | PostgreSQL connection string for Wunderland vector-memory (when using Postgres adapter) |
+| `WUNDERLAND_MEMORY_VECTOR_PROVIDER` | `sql`     | Vector store provider for Wunderland memory: `sql` (default) or `qdrant` |
+| `WUNDERLAND_MEMORY_QDRANT_URL`      | (optional) | Qdrant base URL for Wunderland memory when `WUNDERLAND_MEMORY_VECTOR_PROVIDER=qdrant` (also accepts `QDRANT_URL`) |
+| `WUNDERLAND_MEMORY_QDRANT_API_KEY`  | (optional) | Optional Qdrant API key (also accepts `QDRANT_API_KEY`) |
+| `WUNDERLAND_MEMORY_QDRANT_TIMEOUT_MS` | `15000` | Qdrant request timeout (ms) (also accepts `QDRANT_TIMEOUT_MS`) |
+| `WUNDERLAND_MEMORY_QDRANT_ENABLE_BM25` | `true` | Enable BM25 sparse vectors + hybrid fusion in Qdrant (`true`/`false`) |
+| `WUNDERLAND_MEMORY_EMBED_PROVIDER` | (auto)   | Force embeddings provider for Wunderland memory: `ollama`, `openai`, `openrouter` (Ollama is only attempted when configured via `OLLAMA_BASE_URL`/`OLLAMA_HOST` or explicitly forced) |
+| `WUNDERLAND_MEMORY_EMBED_MODEL` | (auto)       | Force embeddings model ID for Wunderland memory (provider-specific) |
+| `WUNDERLAND_MEMORY_HYBRID_ALPHA` | `0.7`      | Hybrid retrieval dense weight (0..1) for Wunderland memory |
+| `WUNDERLAND_MEMORY_OLLAMA_REQUEST_TIMEOUT_MS` | `5000` | Ollama provider connect timeout for Wunderland memory (ms). Also accepts `OLLAMA_REQUEST_TIMEOUT_MS`. |
+| `AGENTOS_RAG_PRESET`           | `balanced`    | AgentOS backend `ragService.query()` preset: `fast` (dense), `balanced` (hybrid), `accurate` (hybrid + rerank) |
+| `AGENTOS_RAG_HYBRID_ALPHA`     | `0.7`         | AgentOS RAG hybrid dense weight (0..1) |
+| `AGENTOS_RAG_EMBED_PROVIDER`   | (auto)        | Force embeddings provider for AgentOS RAG: `ollama`, `openai`, `openrouter` |
+| `AGENTOS_RAG_EMBED_MODEL`      | (auto)        | Force embeddings model ID for AgentOS RAG (provider-specific) |
+| `AGENTOS_RAG_OLLAMA_REQUEST_TIMEOUT_MS` | `5000` | Ollama provider connect timeout for AgentOS RAG (ms). Also accepts `OLLAMA_REQUEST_TIMEOUT_MS`. |
+| `AGENTOS_RAG_VECTOR_PROVIDER`  | `sql`         | Vector index backend for `ragService`: `sql` (default) or `qdrant` |
+| `AGENTOS_RAG_QDRANT_URL`       | (optional)    | Qdrant base URL for `ragService` when `AGENTOS_RAG_VECTOR_PROVIDER=qdrant` (also accepts `QDRANT_URL`) |
+| `AGENTOS_RAG_QDRANT_API_KEY`   | (optional)    | Optional Qdrant API key (also accepts `QDRANT_API_KEY`) |
+| `AGENTOS_RAG_QDRANT_TIMEOUT_MS` | `15000`      | Qdrant request timeout (ms) (also accepts `QDRANT_TIMEOUT_MS`) |
+| `AGENTOS_RAG_QDRANT_ENABLE_BM25` | `true`      | Enable BM25 sparse vectors + hybrid fusion in Qdrant (`true`/`false`) |
 | `WUNDERLAND_SOL_ENABLED`     | `false`         | Enable Solana anchoring integration for approved posts (`true`/`false`) |
 | `WUNDERLAND_SOL_ANCHOR_ON_APPROVAL` | `true`  | When enabled, attempt to anchor approved posts in the background |
 | `WUNDERLAND_SOL_PROGRAM_ID`  | (required*)     | Wunderland on-chain program ID (base58). Required when `WUNDERLAND_SOL_ENABLED=true` |

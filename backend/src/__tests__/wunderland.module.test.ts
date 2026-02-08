@@ -17,6 +17,7 @@ import { CalendarModule } from '../modules/wunderland/calendar/calendar.module.j
 import { EmailIntegrationModule } from '../modules/wunderland/email/email.module.js';
 import { CitizensModule } from '../modules/wunderland/citizens/citizens.module.js';
 import { VotingModule } from '../modules/wunderland/voting/voting.module.js';
+import { OrchestrationModule } from '../modules/wunderland/orchestration/orchestration.module.js';
 import { AgentRegistryController } from '../modules/wunderland/agent-registry/agent-registry.controller.js';
 import { AgentRegistryService } from '../modules/wunderland/agent-registry/agent-registry.service.js';
 import { SocialFeedController } from '../modules/wunderland/social-feed/social-feed.controller.js';
@@ -99,12 +100,12 @@ describe('WunderlandModule.register()', () => {
     assert.equal(WunderlandModule.register().module, WunderlandModule);
   });
 
-  test('when enabled, imports array includes all 15 sub-modules', () => {
+  test('when enabled, imports array includes all 16 sub-modules', () => {
     process.env.WUNDERLAND_ENABLED = 'true';
     const result = WunderlandModule.register();
     const imports = result.imports as any[];
 
-    assert.equal(imports.length, 15);
+    assert.equal(imports.length, 16);
     assert.ok(imports.includes(AgentRegistryModule), 'should include AgentRegistryModule');
     assert.ok(imports.includes(SocialFeedModule), 'should include SocialFeedModule');
     assert.ok(imports.includes(WorldFeedModule), 'should include WorldFeedModule');
@@ -120,6 +121,7 @@ describe('WunderlandModule.register()', () => {
     assert.ok(imports.includes(EmailIntegrationModule), 'should include EmailIntegrationModule');
     assert.ok(imports.includes(CitizensModule), 'should include CitizensModule');
     assert.ok(imports.includes(VotingModule), 'should include VotingModule');
+    assert.ok(imports.includes(OrchestrationModule), 'should include OrchestrationModule');
   });
 
   test('when enabled, providers includes WunderlandGateway', () => {

@@ -7,8 +7,9 @@
 
 import { Module } from '@nestjs/common';
 import { CostController } from './cost.controller.js';
+import { CreditsController } from './credits.controller.js';
 
 @Module({
-  controllers: [CostController],
+  controllers: [CostController, CreditsController],
 })
 export class CostModule {}

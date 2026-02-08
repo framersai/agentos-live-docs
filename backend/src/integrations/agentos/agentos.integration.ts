@@ -41,6 +41,7 @@ import { reloadDynamicPersonas } from './agentos.persona-registry.js';
 import { createDefaultGuardrailStack } from './guardrails/index.js';
 import { createRollingSummaryMemorySink } from './agentos.rolling-memory-sink.js';
 import { createLongTermMemoryRetriever } from './agentos.long-term-memory-retriever.js';
+import { getHitlManager } from './agentos.hitl.service.js';
 import {
   MultiGMIAgencyExecutor,
   type AgencyExecutionInput,
@@ -905,6 +906,80 @@ async function buildEmbeddedAgentOSConfig(): Promise<EmbeddedAgentOSConfigBuildR
 
   const extensionManifest = curatedManifest.packs.length > 0 ? curatedManifest : undefined;
 
+  const parseBooleanEnv = (value: string | undefined): boolean | undefined => {
+    if (!value) return undefined;
+    const raw = value.trim().toLowerCase();
+    if (!raw) return undefined;
+    if (raw === '1' || raw === 'true' || raw === 'yes' || raw === 'on') return true;
+    if (raw === '0' || raw === 'false' || raw === 'no' || raw === 'off') return false;
+    return undefined;
+  };
+
+  const hitlEnabled = parseBooleanEnv(process.env.AGENTOS_HITL_ENABLED) ?? false;
+  if (hitlEnabled) {
+    const timeoutRaw = process.env.AGENTOS_HITL_APPROVAL_TIMEOUT_MS?.trim();
+    const approvalTimeoutMs =
+      timeoutRaw && Number.isFinite(Number(timeoutRaw))
+        ? Math.max(1_000, Number(timeoutRaw))
+        : undefined;
+    const defaultSeverityRaw = String(process.env.AGENTOS_HITL_DEFAULT_SEVERITY || 'high')
+      .trim()
+      .toLowerCase();
+    const defaultSeverity =
+      defaultSeverityRaw === 'low' ||
+      defaultSeverityRaw === 'medium' ||
+      defaultSeverityRaw === 'high' ||
+      defaultSeverityRaw === 'critical'
+        ? (defaultSeverityRaw as any)
+        : ('high' as any);
+
+    toolOrchestratorConfig.hitl = {
+      enabled: true,
+      requireApprovalForSideEffects:
+        parseBooleanEnv(process.env.AGENTOS_HITL_REQUIRE_APPROVAL_FOR_SIDE_EFFECTS) ?? true,
+      defaultSideEffectsSeverity: defaultSeverity,
+      approvalTimeoutMs,
+      autoApproveWhenNoManager: false,
+    } as any;
+  }
+
+  const observabilityEnabled = parseBooleanEnv(process.env.AGENTOS_OBSERVABILITY_ENABLED);
+  const tracingEnabled = parseBooleanEnv(process.env.AGENTOS_TRACING_ENABLED);
+  const includeTraceInResponses = parseBooleanEnv(process.env.AGENTOS_TRACE_IDS_IN_RESPONSES);
+  const includeTraceIdsInLogs = parseBooleanEnv(process.env.AGENTOS_LOG_TRACE_IDS);
+  const metricsEnabled = parseBooleanEnv(process.env.AGENTOS_METRICS_ENABLED);
+  const exportOtelLogs = parseBooleanEnv(process.env.AGENTOS_OTEL_LOGS_ENABLED);
+  const otelLoggerName =
+    typeof process.env.AGENTOS_OTEL_LOGGER_NAME === 'string' &&
+    process.env.AGENTOS_OTEL_LOGGER_NAME.trim()
+      ? process.env.AGENTOS_OTEL_LOGGER_NAME.trim()
+      : undefined;
+
+  const observability =
+    typeof observabilityEnabled === 'boolean' ||
+    typeof tracingEnabled === 'boolean' ||
+    typeof includeTraceInResponses === 'boolean' ||
+    typeof includeTraceIdsInLogs === 'boolean' ||
+    typeof metricsEnabled === 'boolean' ||
+    typeof exportOtelLogs === 'boolean' ||
+    typeof otelLoggerName === 'string'
+      ? {
+          enabled: observabilityEnabled,
+          tracing: {
+            enabled: tracingEnabled,
+            includeTraceInResponses,
+          },
+          logging: {
+            includeTraceIds: includeTraceIdsInLogs,
+            exportToOtel: exportOtelLogs,
+            otelLoggerName,
+          },
+          metrics: {
+            enabled: metricsEnabled,
+          },
+        }
+      : undefined;
+
   const config: AgentOSConfig = {
     gmiManagerConfig,
     orchestratorConfig,
@@ -912,6 +987,7 @@ async function buildEmbeddedAgentOSConfig(): Promise<EmbeddedAgentOSConfigBuildR
     longTermMemoryRetriever: createLongTermMemoryRetriever(),
     promptEngineConfig,
     toolOrchestratorConfig,
+    hitlManager: hitlEnabled ? getHitlManager() : undefined,
     toolPermissionManagerConfig,
     conversationManagerConfig,
     streamingManagerConfig,
@@ -924,6 +1000,7 @@ async function buildEmbeddedAgentOSConfig(): Promise<EmbeddedAgentOSConfigBuildR
     subscriptionService: createAgentOSSubscriptionAdapter(),
     utilityAIService: undefined,
     guardrailService,
+    observability,
   };
 
   return {

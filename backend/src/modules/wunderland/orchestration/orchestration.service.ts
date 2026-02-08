@@ -15,6 +15,7 @@ import { Injectable, OnModuleInit, OnModuleDestroy, Logger } from '@nestjs/commo
 import { DatabaseService } from '../../../database/database.service';
 import { callLlm } from '../../../core/llm/llm.factory';
 import { ragService } from '../../../integrations/agentos/agentos.rag.service';
+import { WunderlandVectorMemoryService } from './wunderland-vector-memory.service';
 import {
   WonderlandNetwork,
   TrustEngine,
@@ -67,7 +68,8 @@ export class OrchestrationService implements OnModuleInit, OnModuleDestroy {
     private readonly trustPersistence: TrustPersistenceService,
     private readonly dmPersistence: DMPersistenceService,
     private readonly safetyPersistence: SafetyPersistenceService,
-    private readonly alliancePersistence: AlliancePersistenceService
+    private readonly alliancePersistence: AlliancePersistenceService,
+    private readonly vectorMemory: WunderlandVectorMemoryService
   ) {
     this.enabled = process.env.ENABLE_SOCIAL_ORCHESTRATION === 'true';
   }
@@ -266,23 +268,43 @@ export class OrchestrationService implements OnModuleInit, OnModuleDestroy {
       tools.push(
         createMemoryReadTool(async ({ query, topK, context }) => {
           const seedId = context.gmiId;
-          const collectionId = `wunderland-seed-memory:${seedId}`;
-          const result = await ragService.query({
-            query,
-            collectionIds: [collectionId],
-            topK,
-            includeMetadata: false,
-          });
+          try {
+            const result = await this.vectorMemory.querySeedMemory({
+              seedId,
+              query,
+              topK,
+            });
 
-          const items = (result.chunks ?? []).map((chunk) => ({
-            text: chunk.content,
-            score: chunk.score,
-          }));
+            const items = (result.chunks ?? []).map((chunk) => ({
+              text: chunk.content,
+              score: chunk.relevanceScore,
+              metadata: chunk.metadata as any,
+            }));
 
-          return {
-            items,
-            context: items.map((item, idx) => `(${idx + 1}) ${item.text}`).join('\n'),
-          };
+            return {
+              items,
+              context: result.context,
+            };
+          } catch (err) {
+            // Fallback to the legacy keyword RAG store.
+            const collectionId = `wunderland-seed-memory:${seedId}`;
+            const result = await ragService.query({
+              query,
+              collectionIds: [collectionId],
+              topK,
+              includeMetadata: false,
+            });
+
+            const items = (result.chunks ?? []).map((chunk) => ({
+              text: chunk.content,
+              score: chunk.score,
+            }));
+
+            return {
+              items,
+              context: items.map((item, idx) => `(${idx + 1}) ${item.text}`).join('\n'),
+            };
+          }
         })
       );
 
@@ -369,30 +391,42 @@ export class OrchestrationService implements OnModuleInit, OnModuleDestroy {
       ]
     );
 
-    // Ingest the post into the seed's long-term memory collection.
+    // Ingest the post into the seed's long-term memory store (vector-first; keyword fallback).
     try {
-      const collectionId = `wunderland-seed-memory:${post.seedId}`;
-      await ragService.ingestDocument({
-        documentId: `wunderland_post:${post.postId}`,
-        collectionId,
-        category: 'custom',
+      await this.vectorMemory.ingestSeedPost({
+        seedId: post.seedId,
+        postId: post.postId,
         content: post.content,
-        metadata: {
-          agentId: post.seedId,
-          type: 'wunderland_post',
-          postId: post.postId,
-          replyToPostId: post.replyToPostId ?? undefined,
-          createdAt: post.createdAt,
-          publishedAt: post.publishedAt,
-        },
-        chunkingOptions: { chunkSize: 480, chunkOverlap: 80, strategy: 'fixed' },
+        replyToPostId: post.replyToPostId ?? null,
+        createdAt: post.createdAt,
+        publishedAt: post.publishedAt ?? null,
       });
     } catch (err) {
-      this.logger.warn(
-        `Failed to ingest post ${post.postId} into memory store: ${String(
-          (err as any)?.message ?? err
-        )}`
-      );
+      // Fallback to legacy keyword RAG store.
+      try {
+        const collectionId = `wunderland-seed-memory:${post.seedId}`;
+        await ragService.ingestDocument({
+          documentId: `wunderland_post:${post.postId}`,
+          collectionId,
+          category: 'custom',
+          content: post.content,
+          metadata: {
+            agentId: post.seedId,
+            type: 'wunderland_post',
+            postId: post.postId,
+            replyToPostId: post.replyToPostId ?? undefined,
+            createdAt: post.createdAt,
+            publishedAt: post.publishedAt,
+          },
+          chunkingOptions: { chunkSize: 480, chunkOverlap: 80, strategy: 'fixed' },
+        });
+      } catch (fallbackErr) {
+        this.logger.warn(
+          `Failed to ingest post ${post.postId} into memory store: ${String(
+            (fallbackErr as any)?.message ?? fallbackErr
+          )}`
+        );
+      }
     }
   }
 

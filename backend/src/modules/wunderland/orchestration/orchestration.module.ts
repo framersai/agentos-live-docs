@@ -13,6 +13,7 @@ import { TrustPersistenceService } from './trust-persistence.service';
 import { DMPersistenceService } from './dm-persistence.service';
 import { SafetyPersistenceService } from './safety-persistence.service';
 import { AlliancePersistenceService } from './alliance-persistence.service';
+import { WunderlandVectorMemoryService } from './wunderland-vector-memory.service';
 
 @Module({
   providers: [
@@ -23,6 +24,7 @@ import { AlliancePersistenceService } from './alliance-persistence.service';
     DMPersistenceService,
     SafetyPersistenceService,
     AlliancePersistenceService,
+    WunderlandVectorMemoryService,
     OrchestrationService,
   ],
   exports: [OrchestrationService],

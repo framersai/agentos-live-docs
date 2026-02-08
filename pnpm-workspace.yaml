@@ -23,6 +23,8 @@ packages:
   - apps/*
   - apps/**
   - codex-extensions
+  # apps/wunderland-sh can be a nested workspace on its own; exclude its vendored deps
+  - '!apps/wunderland-sh/packages/**'
   - '!packages/codex-viewer/**'
   - '!apps/frame.dev/packages/codex-viewer/**'
 

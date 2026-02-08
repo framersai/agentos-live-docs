@@ -144,26 +144,38 @@ export function createLongTermMemoryRetriever(): ILongTermMemoryRetriever {
       }
       await Promise.all(redactionPromises);
 
-      const queryScope = async (scope: MemoryScope): Promise<void> => {
+      const scopesToQuery: MemoryScope[] = [];
+      if (input.memoryPolicy.scopes.user) scopesToQuery.push('user');
+      if (input.memoryPolicy.scopes.persona) scopesToQuery.push('persona');
+      if (input.memoryPolicy.scopes.organization && orgId && (orgMemorySettings?.enabled ?? true)) {
+        scopesToQuery.push('organization');
+      }
+      if (scopesToQuery.length === 0) return null;
+
+      const collectionIds = scopesToQuery.map((scope) => COLLECTION_BY_SCOPE[scope]);
+      const totalTarget = scopesToQuery.reduce((sum, scope) => sum + topKByScope[scope], 0);
+
+      // Pull extra to allow post-filtering (score==0, wrong tenant, duplicates, redactions, etc.)
+      const raw = await ragService.query({
+        query,
+        collectionIds,
+        topK: Math.min(200, Math.max(20, totalTarget * 6)),
+        includeMetadata: true,
+      });
+
+      const allCandidates = (raw.chunks ?? [])
+        .filter((chunk) => typeof chunk?.score === 'number' && chunk.score > 0)
+        .map((chunk) => ({
+          score: chunk.score,
+          metadata: (chunk.metadata ?? {}) as Record<string, unknown>,
+        }))
+        .filter(({ metadata }) => metadata.kind === 'rolling_memory_item');
+
+      for (const scope of scopesToQuery) {
         const topK = topKByScope[scope];
-        const collectionId = COLLECTION_BY_SCOPE[scope];
 
-        // Pull a few extra to allow post-filtering (score==0, wrong tenant, duplicates, etc.)
-        const raw = await ragService.query({
-          query,
-          collectionIds: [collectionId],
-          topK: Math.min(50, topK * 4),
-          includeMetadata: true,
-        });
-
-        const filtered = (raw.chunks ?? [])
-          .filter((chunk) => typeof chunk?.score === 'number' && chunk.score > 0)
-          .map((chunk) => ({
-            score: chunk.score,
-            metadata: (chunk.metadata ?? {}) as Record<string, unknown>,
-          }))
+        const filtered = allCandidates
           .filter(({ metadata }) => {
-            if (metadata.kind !== 'rolling_memory_item') return false;
             if (
               allowedCategories &&
               typeof metadata.category === 'string' &&
@@ -219,16 +231,7 @@ export function createLongTermMemoryRetriever(): ILongTermMemoryRetriever {
           (item) => item.hash ?? `${item.category ?? 'uncat'}:${item.text.toLowerCase()}`
         );
         scopedResults[scope] = deduped.slice(0, topK);
-      };
-
-      const scopePromises: Array<Promise<void>> = [];
-      if (input.memoryPolicy.scopes.user) scopePromises.push(queryScope('user'));
-      if (input.memoryPolicy.scopes.persona) scopePromises.push(queryScope('persona'));
-      if (input.memoryPolicy.scopes.organization && orgId && (orgMemorySettings?.enabled ?? true)) {
-        scopePromises.push(queryScope('organization'));
       }
-
-      await Promise.all(scopePromises);
 
       const sections: string[] = [];
       const pushSection = (scope: MemoryScope) => {

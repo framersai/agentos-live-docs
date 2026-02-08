@@ -1,10 +1,13 @@
 # Environment variables
-# Note: .env files are tracked for this project
-# Only ignore deployment-specific .env (contains passwords)
-deployment/quarry/.env
-
-# Root .env file (contains API keys)
+# Never commit secrets. Track templates like `.env.example` instead.
 .env
+.env.*
+!.env.example
+!.env.template
+!.env.sample
+*.env.local
+*.env*.local
+deployment/quarry/.env
 
 # Node.js
 node_modules/
