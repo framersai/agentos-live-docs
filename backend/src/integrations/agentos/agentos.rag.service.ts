@@ -28,6 +28,7 @@ import {
   type StorageAdapter,
   type StorageResolutionOptions,
 } from '@framers/sql-storage-adapter';
+import { createHash } from 'node:crypto';
 import { AIModelProviderManager } from '@framers/agentos/core/llm/providers/AIModelProviderManager';
 import type { ProviderConfigEntry } from '@framers/agentos/core/llm/providers/AIModelProviderManager';
 import { EmbeddingManager, QdrantVectorStore, SqlVectorStore } from '@framers/agentos/rag';
@@ -246,6 +247,115 @@ export interface RagCollection {
 }
 
 /**
+ * Supported multimodal asset types for RAG indexing.
+ */
+export type RagMediaModality = 'image' | 'audio';
+
+/**
+ * Input payload for ingesting a multimodal asset (image/audio) into RAG.
+ *
+ * The default implementation indexes assets by deriving a **text representation**
+ * (image caption / OCR text / audio transcript) and storing that text as a normal
+ * RAG document. The raw bytes are optionally persisted for later retrieval.
+ */
+export interface RagMediaAssetInput {
+  /** Stable identifier for the asset (auto-generated if omitted). */
+  assetId?: string;
+  /** Collection/namespace to store the derived RAG document into. */
+  collectionId?: string;
+  /** Asset modality. */
+  modality: RagMediaModality;
+  /** MIME type of the asset (e.g., image/png, audio/webm). */
+  mimeType: string;
+  /** Original file name (best-effort metadata). */
+  originalFileName?: string;
+  /** Raw bytes for the asset. Optional when `sourceUrl` is supplied and `storePayload=false`. */
+  payload?: Buffer;
+  /** Optional pointer (URL) to the asset when not storing payload bytes. */
+  sourceUrl?: string;
+  /** Optional metadata stored alongside the derived RAG document chunks. */
+  metadata?: Record<string, unknown>;
+  /** Optional tag list stored in derived document metadata. */
+  tags?: string[];
+  /** Optional category to store the derived document under. Default: `custom`. */
+  category?: 'conversation_memory' | 'knowledge_base' | 'user_notes' | 'system' | 'custom';
+  /**
+   * Optional precomputed text representation (caption/transcript).
+   * When provided, the service skips captioning/transcription.
+   */
+  textRepresentation?: string;
+  /** If true, stores the raw payload bytes (base64) in the RAG database. Default: env-driven. */
+  storePayload?: boolean;
+  /** User ID for attribution/cost tracking (optional). */
+  userId?: string;
+  /** Agent ID for attribution (optional). */
+  agentId?: string;
+}
+
+/**
+ * Stored multimodal asset record.
+ */
+export interface RagMediaAsset {
+  assetId: string;
+  collectionId: string;
+  modality: RagMediaModality;
+  mimeType: string;
+  originalFileName?: string | null;
+  sourceUrl?: string | null;
+  contentHashHex?: string | null;
+  metadata?: Record<string, unknown> | null;
+  createdAt: number;
+  updatedAt: number;
+}
+
+/**
+ * Result of a multimodal ingestion request.
+ */
+export interface RagMediaIngestionResult {
+  success: boolean;
+  assetId: string;
+  collectionId: string;
+  modality: RagMediaModality;
+  /** The derived RAG documentId (currently equal to `assetId`). */
+  documentId: string;
+  /** Derived text representation used for indexing. */
+  textRepresentation: string;
+  chunksCreated: number;
+  error?: string;
+}
+
+/**
+ * Multimodal query options.
+ */
+export interface RagMediaQueryOptions {
+  /** Text query. */
+  query: string;
+  /** Restrict to specific modalities. Default: both `image` and `audio`. */
+  modalities?: RagMediaModality[];
+  /** Collection(s) to search. When omitted, defaults to modality-specific collections. */
+  collectionIds?: string[];
+  /** Maximum number of assets to return. */
+  topK?: number;
+  /** Include chunk metadata in results. */
+  includeMetadata?: boolean;
+}
+
+/**
+ * Multimodal query response (grouped by asset).
+ */
+export interface RagMediaQueryResult {
+  success: boolean;
+  query: string;
+  assets: Array<{
+    asset: RagMediaAsset;
+    /** Best matching chunk for this asset. */
+    bestChunk: RagRetrievedChunk;
+  }>;
+  totalResults: number;
+  processingTimeMs: number;
+}
+
+/**
  * Document summary.
  */
 export interface RagDocumentSummary {
@@ -288,6 +398,20 @@ interface ChunkRow {
   chunk_index: number;
   metadata_json: string | null;
   created_at: number;
+}
+
+interface MediaAssetRow {
+  asset_id: string;
+  collection_id: string;
+  modality: string;
+  mime_type: string;
+  original_filename: string | null;
+  payload_base64: string | null;
+  source_url: string | null;
+  content_hash_hex: string | null;
+  metadata_json: string | null;
+  created_at: number;
+  updated_at: number;
 }
 
 // ============================================================================
@@ -439,6 +563,33 @@ class SqlRagStore {
       
       CREATE INDEX IF NOT EXISTS idx_${this.tablePrefix}chunks_collection 
         ON ${this.tablePrefix}chunks(collection_id);
+    `);
+
+    // Multimodal assets table (image/audio). The derived caption/transcript is indexed as a normal RAG document.
+    await this.adapter.exec(`
+      CREATE TABLE IF NOT EXISTS ${this.tablePrefix}media_assets (
+        asset_id TEXT PRIMARY KEY,
+        collection_id TEXT NOT NULL,
+        modality TEXT NOT NULL,
+        mime_type TEXT NOT NULL,
+        original_filename TEXT,
+        payload_base64 TEXT,
+        source_url TEXT,
+        content_hash_hex TEXT,
+        metadata_json TEXT,
+        created_at INTEGER NOT NULL,
+        updated_at INTEGER NOT NULL,
+        FOREIGN KEY (collection_id) REFERENCES ${this.tablePrefix}collections(collection_id) ON DELETE CASCADE
+      );
+
+      CREATE INDEX IF NOT EXISTS idx_${this.tablePrefix}media_assets_collection
+        ON ${this.tablePrefix}media_assets(collection_id);
+
+      CREATE INDEX IF NOT EXISTS idx_${this.tablePrefix}media_assets_modality
+        ON ${this.tablePrefix}media_assets(modality);
+
+      CREATE INDEX IF NOT EXISTS idx_${this.tablePrefix}media_assets_hash
+        ON ${this.tablePrefix}media_assets(content_hash_hex);
     `);
 
     // Try to create FTS5 index for full-text search (SQLite only)
