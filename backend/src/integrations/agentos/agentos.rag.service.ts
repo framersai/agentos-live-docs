@@ -32,9 +32,15 @@ import { createHash } from 'node:crypto';
 import { AIModelProviderManager } from '@framers/agentos/core/llm/providers/AIModelProviderManager';
 import type { ProviderConfigEntry } from '@framers/agentos/core/llm/providers/AIModelProviderManager';
 import type { ChatMessage } from '@framers/agentos/core/llm/providers/IProvider';
-import { EmbeddingManager, QdrantVectorStore, SqlVectorStore } from '@framers/agentos/rag';
+import {
+  EmbeddingManager,
+  HnswlibVectorStore,
+  QdrantVectorStore,
+  SqlVectorStore,
+} from '@framers/agentos/rag';
 import type {
   IVectorStore,
+  HnswlibVectorStoreConfig,
   QdrantVectorStoreConfig,
   SqlVectorStoreConfig,
 } from '@framers/agentos/rag';
@@ -57,7 +63,7 @@ import { audioService } from '../../core/audio/audio.service.js';
 import type { ISttOptions } from '../../core/audio/stt.interfaces.js';
 
 type RagRetrievalPreset = 'fast' | 'balanced' | 'accurate';
-type RagVectorProvider = 'sql' | 'qdrant';
+type RagVectorProvider = 'sql' | 'qdrant' | 'hnswlib';
 
 const firstNonEmptyEnv = (...names: string[]): string | undefined => {
   for (const name of names) {
@@ -90,7 +96,8 @@ const coerceRagPreset = (value: string | undefined): RagRetrievalPreset | undefi
 
 const coerceRagVectorProvider = (value: string | undefined): RagVectorProvider | undefined => {
   const provider = value?.trim().toLowerCase();
-  if (provider === 'sql' || provider === 'qdrant') return provider;
+  if (provider === 'sql' || provider === 'qdrant' || provider === 'hnswlib' || provider === 'hnsw')
+    return provider === 'hnsw' ? 'hnswlib' : provider;
   return undefined;
 };
 
@@ -100,6 +107,15 @@ const parseBooleanEnv = (value: string | undefined): boolean | undefined => {
   if (lowered === 'true' || lowered === '1' || lowered === 'yes' || lowered === 'y') return true;
   if (lowered === 'false' || lowered === '0' || lowered === 'no' || lowered === 'n') return false;
   return undefined;
+};
+
+const parseJsonSafe = <T>(value: string | null | undefined, fallback: T): T => {
+  if (!value) return fallback;
+  try {
+    return JSON.parse(value) as T;
+  } catch {
+    return fallback;
+  }
 };
 
 const isMetadataScalar = (value: unknown): value is string | number | boolean =>
@@ -706,6 +722,39 @@ class SqlRagStore {
         return;
       }
 
+      if (this.vectorProvider === 'hnswlib') {
+        const envPersistDirectory =
+          process.env.AGENTOS_RAG_HNSWLIB_PERSIST_DIR ?? process.env.RAG_HNSWLIB_PERSIST_DIR;
+        const persistDirectory =
+          envPersistDirectory !== undefined
+            ? envPersistDirectory.trim() || undefined
+            : './db_data/agentos_rag_hnswlib';
+
+        const store = new HnswlibVectorStore();
+        const config: HnswlibVectorStoreConfig = {
+          id: 'agentos-rag-vector-hnswlib',
+          type: 'hnswlib',
+          persistDirectory,
+          similarityMetric: 'cosine',
+          hnswM: parsePositiveIntEnv(firstNonEmptyEnv('AGENTOS_RAG_HNSWLIB_M')) ?? undefined,
+          hnswEfConstruction:
+            parsePositiveIntEnv(firstNonEmptyEnv('AGENTOS_RAG_HNSWLIB_EF_CONSTRUCTION')) ??
+            undefined,
+          hnswEfSearch:
+            parsePositiveIntEnv(firstNonEmptyEnv('AGENTOS_RAG_HNSWLIB_EF_SEARCH')) ?? undefined,
+        };
+
+        await store.initialize(config);
+        this.vectorStore = store;
+        this.vectorStoreInitialized = true;
+        console.log(
+          `[RAG Service] Vector index ready (provider='hnswlib' persistDirectory='${
+            persistDirectory ?? 'memory'
+          }').`
+        );
+        return;
+      }
+
       // Default: SQL vector store (local)
       this.vectorTablePrefix = this.resolveVectorTablePrefix();
       const store = new SqlVectorStore();
@@ -855,10 +904,14 @@ class SqlRagStore {
       ?.trim()
       .toLowerCase();
 
+    const ollamaEnabled =
+      parseBooleanEnv(
+        firstNonEmptyEnv('AGENTOS_RAG_OLLAMA_ENABLED', 'RAG_OLLAMA_ENABLED', 'OLLAMA_ENABLED')
+      ) ?? false;
     const ollamaConfiguredBaseURL =
       coerceOllamaBaseURL(process.env.OLLAMA_BASE_URL) ??
       coerceOllamaBaseURL(process.env.OLLAMA_HOST);
-    const shouldIncludeOllama = explicitProvider === 'ollama' || Boolean(ollamaConfiguredBaseURL);
+    const shouldIncludeOllama = explicitProvider === 'ollama' || ollamaEnabled;
 
     if (shouldIncludeOllama) {
       const requestTimeout =
@@ -1463,6 +1516,20 @@ class SqlRagStore {
     const category = input.category || 'knowledge_base';
 
     try {
+      const previousDoc = await adapter.get<Pick<DocumentRow, 'collection_id' | 'category'>>(
+        `SELECT collection_id, category FROM ${this.tablePrefix}documents WHERE document_id = ?`,
+        [documentId]
+      );
+
+      const previousCollectionId = previousDoc?.collection_id;
+      const previousCategory = previousDoc?.category;
+
+      const previousChunkRows = await adapter.all<Pick<ChunkRow, 'chunk_id'>>(
+        `SELECT chunk_id FROM ${this.tablePrefix}chunks WHERE document_id = ?`,
+        [documentId]
+      );
+      const previousChunkIds = previousChunkRows.map((r) => r.chunk_id).filter(Boolean);
+
       // Ensure collection exists
       await this.createCollection(collectionId);
 
@@ -1470,6 +1537,10 @@ class SqlRagStore {
       const chunkSize = input.chunkingOptions?.chunkSize || 512;
       const chunkOverlap = input.chunkingOptions?.chunkOverlap || 50;
       const chunks = this.chunkContent(input.content, chunkSize, chunkOverlap);
+      const nextChunkIds = chunks.map(
+        (_content, chunkIndex) => `${documentId}_chunk_${chunkIndex}`
+      );
+      const nextChunkIdSet = new Set(nextChunkIds);
 
       // Use transaction for atomicity
       await adapter.transaction(async (trx) => {
@@ -1506,8 +1577,32 @@ class SqlRagStore {
         );
       }
 
-      // Optional: GraphRAG indexing (disabled by default; best-effort).
-      if (this.shouldIngestGraphRag(category)) {
+      // Best-effort: clean up stale vector chunks (update semantics) without forcing embeddings init.
+      try {
+        await this.ensureVectorStoreInitialized(adapter);
+
+        if (previousCollectionId && previousCollectionId !== collectionId) {
+          // Document moved collections: remove all previous vectors from the old collection.
+          if (previousChunkIds.length > 0) {
+            await this.vectorStore?.delete(previousCollectionId, previousChunkIds);
+          }
+        } else {
+          const staleChunkIds = previousChunkIds.filter((id) => !nextChunkIdSet.has(id));
+          if (staleChunkIds.length > 0) {
+            await this.vectorStore?.delete(collectionId, staleChunkIds);
+          }
+        }
+      } catch {
+        // Ignore; canonical SQL writes already happened.
+      }
+
+      // Optional: GraphRAG sync (disabled by default; best-effort).
+      const shouldIndexGraphNow = this.shouldIngestGraphRag(category);
+      const shouldIndexGraphBefore = previousCategory
+        ? this.shouldIngestGraphRag(previousCategory)
+        : false;
+
+      if (shouldIndexGraphNow) {
         try {
           await this.ensureGraphRagInitialized(adapter);
           await this.graphRagEngine?.ingestDocuments([
@@ -1520,6 +1615,17 @@ class SqlRagStore {
         } catch (graphError: any) {
           console.warn(
             `[RAG Service] GraphRAG indexing failed for document '${documentId}' (continuing): ${
+              graphError?.message ?? graphError
+            }`
+          );
+        }
+      } else if (shouldIndexGraphBefore) {
+        try {
+          await this.ensureGraphRagInitialized(adapter);
+          await this.graphRagEngine?.removeDocuments([documentId]);
+        } catch (graphError: any) {
+          console.warn(
+            `[RAG Service] GraphRAG cleanup failed for document '${documentId}' (continuing): ${
               graphError?.message ?? graphError
             }`
           );
@@ -1837,6 +1943,19 @@ class SqlRagStore {
     const agentId = input.agentId;
 
     try {
+      const previousDoc = await adapter.get<Pick<DocumentRow, 'collection_id' | 'category'>>(
+        `SELECT collection_id, category FROM ${this.tablePrefix}documents WHERE document_id = ?`,
+        [assetId]
+      );
+      const previousCollectionId = previousDoc?.collection_id;
+      const previousCategory = previousDoc?.category;
+
+      const previousChunkRows = await adapter.all<Pick<ChunkRow, 'chunk_id'>>(
+        `SELECT chunk_id FROM ${this.tablePrefix}chunks WHERE document_id = ?`,
+        [assetId]
+      );
+      const previousChunkIds = previousChunkRows.map((r) => r.chunk_id).filter(Boolean);
+
       await this.createCollection(collectionId);
 
       let derivedTags: string[] | undefined;
@@ -1894,6 +2013,9 @@ class SqlRagStore {
       const chunkSize = 700;
       const chunkOverlap = 60;
       const chunks = this.chunkContent(textRepresentation, chunkSize, chunkOverlap);
+      const nextChunkIdSet = new Set(
+        chunks.map((_content, chunkIndex) => `${assetId}_chunk_${chunkIndex}`)
+      );
 
       // Atomic write: media asset row + derived document/chunks.
       await adapter.transaction(async (trx) => {
@@ -1954,8 +2076,31 @@ class SqlRagStore {
         );
       }
 
-      // Optional: GraphRAG indexing (best-effort).
-      if (this.shouldIngestGraphRag(category)) {
+      // Best-effort: clean up stale vector chunks (update semantics) without forcing embeddings init.
+      try {
+        await this.ensureVectorStoreInitialized(adapter);
+
+        if (previousCollectionId && previousCollectionId !== collectionId) {
+          if (previousChunkIds.length > 0) {
+            await this.vectorStore?.delete(previousCollectionId, previousChunkIds);
+          }
+        } else {
+          const staleChunkIds = previousChunkIds.filter((id) => !nextChunkIdSet.has(id));
+          if (staleChunkIds.length > 0) {
+            await this.vectorStore?.delete(collectionId, staleChunkIds);
+          }
+        }
+      } catch {
+        // Ignore; canonical SQL writes already happened.
+      }
+
+      // Optional: GraphRAG sync (best-effort).
+      const shouldIndexGraphNow = this.shouldIngestGraphRag(category);
+      const shouldIndexGraphBefore = previousCategory
+        ? this.shouldIngestGraphRag(previousCategory)
+        : false;
+
+      if (shouldIndexGraphNow) {
         try {
           await this.ensureGraphRagInitialized(adapter);
           await this.graphRagEngine?.ingestDocuments([
@@ -1968,6 +2113,17 @@ class SqlRagStore {
         } catch (graphError: any) {
           console.warn(
             `[RAG Service] GraphRAG indexing failed for media asset '${assetId}' (continuing): ${
+              graphError?.message ?? graphError
+            }`
+          );
+        }
+      } else if (shouldIndexGraphBefore) {
+        try {
+          await this.ensureGraphRagInitialized(adapter);
+          await this.graphRagEngine?.removeDocuments([assetId]);
+        } catch (graphError: any) {
+          console.warn(
+            `[RAG Service] GraphRAG cleanup failed for media asset '${assetId}' (continuing): ${
               graphError?.message ?? graphError
             }`
           );
@@ -2152,7 +2308,6 @@ class SqlRagStore {
     options: RagQueryOptions
   ): Promise<{ chunks: RagRetrievedChunk[]; totalResults: number }> {
     const topK = options.topK || 5;
-    const threshold = options.similarityThreshold || 0;
 
     // Tokenize query for keyword matching
     const queryTerms = options.query
@@ -2163,6 +2318,13 @@ class SqlRagStore {
     if (queryTerms.length === 0) {
       return { chunks: [], totalResults: 0 };
     }
+
+    // Keyword fallback should not return arbitrary 0-score results by default.
+    // Default behavior: require at least one term match unless an explicit threshold was set.
+    const threshold =
+      typeof options.similarityThreshold === 'number'
+        ? Math.max(0, options.similarityThreshold)
+        : 1 / Math.max(1, queryTerms.length);
 
     const categoryFilter = options.filters?.category;
     const collectionIds =
@@ -2432,25 +2594,9 @@ class SqlRagStore {
       }
     }
 
-    // Apply filters that are hard to push down (tags OR, doc category).
-    const filtered = candidates.filter((candidate) => {
-      const metadata = candidate.metadata ?? {};
-      if (options.filters?.agentId && metadata.agentId !== options.filters.agentId) return false;
-      if (options.filters?.userId && metadata.userId !== options.filters.userId) return false;
-      if (options.filters?.category) {
-        const cat = metadata.__ragDocumentCategory;
-        if (typeof cat === 'string' && cat !== options.filters.category) return false;
-      }
-      if (options.filters?.tags && options.filters.tags.length > 0) {
-        const docTags = Array.isArray(metadata.tags) ? metadata.tags : [];
-        if (!options.filters.tags.some((tag) => docTags.includes(tag))) return false;
-      }
-      return true;
-    });
-
     // Deduplicate by chunkId, keeping the best score.
     const bestById = new Map<string, Candidate>();
-    for (const item of filtered) {
+    for (const item of candidates) {
       const existing = bestById.get(item.chunkId);
       if (!existing || item.score > existing.score) {
         bestById.set(item.chunkId, item);
@@ -2459,6 +2605,62 @@ class SqlRagStore {
 
     let ranked = Array.from(bestById.values()).filter((item) => item.score >= threshold);
     ranked.sort((a, b) => b.score - a.score);
+
+    // Hydrate the canonical chunk content/metadata from SQL (vector index is best-effort).
+    if (ranked.length > 0) {
+      const chunkIds = ranked.map((c) => c.chunkId);
+      const chunkRowById = new Map<
+        string,
+        Pick<ChunkRow, 'chunk_id' | 'document_id' | 'content' | 'metadata_json'> &
+          Pick<DocumentRow, 'category'>
+      >();
+
+      // Avoid SQLite parameter limits by chunking IN clauses.
+      const pageSize = 250;
+      for (let i = 0; i < chunkIds.length; i += pageSize) {
+        const page = chunkIds.slice(i, i + pageSize);
+        const placeholders = page.map(() => '?').join(',');
+        const rows = await adapter.all<
+          Pick<ChunkRow, 'chunk_id' | 'document_id' | 'content' | 'metadata_json'> &
+            Pick<DocumentRow, 'category'>
+        >(
+          `SELECT c.chunk_id, c.document_id, c.content, c.metadata_json, d.category
+           FROM ${this.tablePrefix}chunks c
+           JOIN ${this.tablePrefix}documents d ON d.document_id = c.document_id
+           WHERE c.chunk_id IN (${placeholders})`,
+          page
+        );
+        for (const row of rows) {
+          chunkRowById.set(row.chunk_id, row);
+        }
+      }
+
+      const hydrated: Candidate[] = [];
+      for (const candidate of ranked) {
+        const row = chunkRowById.get(candidate.chunkId);
+        if (!row) continue;
+
+        const metadata = parseJsonSafe<Record<string, unknown>>(row.metadata_json, {});
+
+        // Apply filters using canonical SQL metadata/category.
+        if (options.filters?.agentId && metadata.agentId !== options.filters.agentId) continue;
+        if (options.filters?.userId && metadata.userId !== options.filters.userId) continue;
+        if (options.filters?.category && row.category !== options.filters.category) continue;
+        if (options.filters?.tags && options.filters.tags.length > 0) {
+          const docTags = Array.isArray((metadata as any).tags) ? (metadata as any).tags : [];
+          if (!options.filters.tags.some((tag) => docTags.includes(tag))) continue;
+        }
+
+        hydrated.push({
+          ...candidate,
+          documentId: row.document_id,
+          content: row.content,
+          metadata,
+        });
+      }
+
+      ranked = hydrated;
+    }
 
     // Rerank (optional; accuracy over latency).
     if (shouldRerank && this.rerankerService && ranked.length > 0) {
@@ -2616,8 +2818,8 @@ class SqlRagStore {
     const adapter = await this.ensureInitialized();
 
     // Get collection ID for count update
-    const doc = await adapter.get<DocumentRow>(
-      `SELECT collection_id FROM ${this.tablePrefix}documents WHERE document_id = ?`,
+    const doc = await adapter.get<Pick<DocumentRow, 'collection_id' | 'category'>>(
+      `SELECT collection_id, category FROM ${this.tablePrefix}documents WHERE document_id = ?`,
       [documentId]
     );
 
@@ -2659,6 +2861,20 @@ class SqlRagStore {
       }
     } catch {
       // Ignore; canonical SQL deletes already happened.
+    }
+
+    // Best-effort: keep GraphRAG in sync when enabled.
+    if (this.shouldIngestGraphRag(doc.category)) {
+      try {
+        await this.ensureGraphRagInitialized(adapter);
+        await this.graphRagEngine?.removeDocuments([documentId]);
+      } catch (graphError: any) {
+        console.warn(
+          `[RAG Service] GraphRAG cleanup failed for deleted document '${documentId}' (continuing): ${
+            graphError?.message ?? graphError
+          }`
+        );
+      }
     }
 
     return result.changes > 0;

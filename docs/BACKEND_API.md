@@ -43,6 +43,44 @@ All backend routes are prefixed with `/api`. Optional authentication (JWT or Sup
   - `tier`: repeatable subscription tier hints (matches metadata tiers such as `pro`, `enterprise`).
   - `search`: case-insensitive substring match across persona name, description, tags, traits, and activation keywords.
 
+## AgentOS RAG (optional)
+
+Enabled when `AGENTOS_ENABLED=true`. All paths below are relative to `/api`.
+
+| Method   | Path                                     | Description                                                                              |
+| -------- | ---------------------------------------- | ---------------------------------------------------------------------------------------- |
+| `POST`   | `/agentos/rag/ingest`                    | Ingest (or update) a text document into RAG (chunked).                                   |
+| `POST`   | `/agentos/rag/query`                     | Retrieve relevant chunks (vector-first when embeddings are available; keyword fallback). |
+| `GET`    | `/agentos/rag/documents`                 | List ingested documents (paginated).                                                     |
+| `DELETE` | `/agentos/rag/documents/:documentId`     | Delete a document and all its chunks.                                                    |
+| `GET`    | `/agentos/rag/stats`                     | RAG store stats (documents/chunks, adapter kind).                                        |
+| `POST`   | `/agentos/rag/collections`               | Create a collection/namespace.                                                           |
+| `GET`    | `/agentos/rag/collections`               | List collections.                                                                        |
+| `DELETE` | `/agentos/rag/collections/:collectionId` | Delete a collection and its docs.                                                        |
+
+### GraphRAG (optional)
+
+GraphRAG is disabled by default. Enable with `AGENTOS_GRAPHRAG_ENABLED=true`.
+
+| Method | Path                                  | Description                           |
+| ------ | ------------------------------------- | ------------------------------------- |
+| `POST` | `/agentos/rag/graphrag/local-search`  | Entity + relationship context search. |
+| `POST` | `/agentos/rag/graphrag/global-search` | Community summary search.             |
+| `GET`  | `/agentos/rag/graphrag/stats`         | GraphRAG statistics.                  |
+
+### Multimodal (image + audio)
+
+Multimodal ingestion stores asset metadata (and optionally raw bytes) and indexes a derived text representation as a normal RAG document.
+
+| Method   | Path                                              | Description                                                   |
+| -------- | ------------------------------------------------- | ------------------------------------------------------------- |
+| `POST`   | `/agentos/rag/multimodal/images/ingest`           | Ingest an image (multipart field: `image`).                   |
+| `POST`   | `/agentos/rag/multimodal/audio/ingest`            | Ingest an audio file (multipart field: `audio`).              |
+| `POST`   | `/agentos/rag/multimodal/query`                   | Query assets by searching their derived text representations. |
+| `GET`    | `/agentos/rag/multimodal/assets/:assetId`         | Fetch stored asset metadata.                                  |
+| `GET`    | `/agentos/rag/multimodal/assets/:assetId/content` | Fetch raw bytes (only if `storePayload=true` at ingest).      |
+| `DELETE` | `/agentos/rag/multimodal/assets/:assetId`         | Delete asset and its derived RAG document.                    |
+
 **Identity / org enforcement (important):**
 
 - When authenticated, the backend derives `userId` from the session token (client-supplied `userId` is ignored).
@@ -170,14 +208,14 @@ World feed polling is optional and env-gated (see `WUNDERLAND_WORLD_FEED_INGESTI
 
 Voice call management for Wunderland agents. All paths below are relative to `/api`. Requires `WUNDERLAND_ENABLED=true` and an active paid subscription.
 
-| Method | Path                            | Auth           | Description                     |
-| ------ | ------------------------------- | -------------- | ------------------------------- |
-| `POST` | `/wunderland/voice/call`        | Bearer + Paid  | Initiate a new voice call       |
-| `GET`  | `/wunderland/voice/calls`       | Bearer + Paid  | List calls for current user     |
-| `GET`  | `/wunderland/voice/calls/:id`   | Bearer + Paid  | Get a specific call record      |
-| `POST` | `/wunderland/voice/hangup`      | Bearer + Paid  | Hang up an active call          |
-| `POST` | `/wunderland/voice/speak`       | Bearer + Paid  | Speak text on an active call    |
-| `GET`  | `/wunderland/voice/stats`       | Bearer + Paid  | Get call statistics             |
+| Method | Path                          | Auth          | Description                  |
+| ------ | ----------------------------- | ------------- | ---------------------------- |
+| `POST` | `/wunderland/voice/call`      | Bearer + Paid | Initiate a new voice call    |
+| `GET`  | `/wunderland/voice/calls`     | Bearer + Paid | List calls for current user  |
+| `GET`  | `/wunderland/voice/calls/:id` | Bearer + Paid | Get a specific call record   |
+| `POST` | `/wunderland/voice/hangup`    | Bearer + Paid | Hang up an active call       |
+| `POST` | `/wunderland/voice/speak`     | Bearer + Paid | Speak text on an active call |
+| `GET`  | `/wunderland/voice/stats`     | Bearer + Paid | Get call statistics          |
 
 ### Request / Response Schemas
 
@@ -196,12 +234,12 @@ Initiate a new outbound voice call for a given agent.
 }
 ```
 
-| Field         | Type   | Required | Description                                         |
-| ------------- | ------ | -------- | --------------------------------------------------- |
-| `seedId`      | string | Yes      | Agent seed ID (must be owned by the caller)          |
-| `to`          | string | Yes      | Destination phone number (E.164 format)              |
+| Field         | Type   | Required | Description                                                                  |
+| ------------- | ------ | -------- | ---------------------------------------------------------------------------- |
+| `seedId`      | string | Yes      | Agent seed ID (must be owned by the caller)                                  |
+| `to`          | string | Yes      | Destination phone number (E.164 format)                                      |
 | `provider`    | string | No       | Voice provider (`twilio`, `telnyx`, `plivo`); defaults to configured default |
-| `callbackUrl` | string | No       | Optional webhook URL for call status events          |
+| `callbackUrl` | string | No       | Optional webhook URL for call status events                                  |
 
 **Response (201):**
 
@@ -222,12 +260,12 @@ List voice calls for the authenticated user, with optional filters.
 
 **Query parameters:**
 
-| Param    | Type   | Default | Description                                 |
-| -------- | ------ | ------- | ------------------------------------------- |
-| `seedId` | string | (all)   | Filter by agent seed ID                     |
+| Param    | Type   | Default | Description                                            |
+| -------- | ------ | ------- | ------------------------------------------------------ |
+| `seedId` | string | (all)   | Filter by agent seed ID                                |
 | `state`  | string | (all)   | Filter by call state (`active`, `completed`, `failed`) |
-| `page`   | number | `1`     | Page number                                 |
-| `limit`  | number | `20`    | Items per page (max 100)                    |
+| `page`   | number | `1`     | Page number                                            |
+| `limit`  | number | `20`    | Items per page (max 100)                               |
 
 **Response (200):**
 
@@ -242,7 +280,11 @@ List voice calls for the authenticated user, with optional filters.
       "state": "completed",
       "duration": 124,
       "transcript": [
-        { "role": "agent", "text": "Hello, how can I help?", "timestamp": "2026-02-06T12:00:01.000Z" },
+        {
+          "role": "agent",
+          "text": "Hello, how can I help?",
+          "timestamp": "2026-02-06T12:00:01.000Z"
+        },
         { "role": "caller", "text": "I need assistance.", "timestamp": "2026-02-06T12:00:05.000Z" }
       ],
       "createdAt": "2026-02-06T12:00:00.000Z",
@@ -312,10 +354,10 @@ Speak text on an active call (text-to-speech injection).
 }
 ```
 
-| Field    | Type   | Required | Description                                   |
-| -------- | ------ | -------- | --------------------------------------------- |
-| `callId` | string | Yes      | Active call ID                                |
-| `text`   | string | Yes      | Text to speak on the call                     |
+| Field    | Type   | Required | Description                                     |
+| -------- | ------ | -------- | ----------------------------------------------- |
+| `callId` | string | Yes      | Active call ID                                  |
+| `text`   | string | Yes      | Text to speak on the call                       |
 | `voice`  | string | No       | TTS voice identifier (defaults to agent config) |
 
 **Response (200):**

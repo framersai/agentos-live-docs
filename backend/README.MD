@@ -24,7 +24,7 @@
 
 Node.js + Express + TypeScript server powering chat, STT/TTS, diagrams, rate limiting, billing, and the embedded AgentOS adapter.
 
-**Powered by [`@framers/agentos`](https://github.com/wearetheframers/agentos)** � The orchestration runtime for adaptive AI systems.
+**Powered by [`@framers/agentos`](https://github.com/wearetheframers/agentos)** - The orchestration runtime for adaptive AI systems.
 
 ---
 
@@ -86,7 +86,7 @@ retrieves context with configurable presets:
 - `WUNDERLAND_MEMORY_EMBED_PROVIDER=ollama|openai|openrouter` + `WUNDERLAND_MEMORY_EMBED_MODEL=...` (optional overrides)
 - `WUNDERLAND_MEMORY_HYBRID_ALPHA=0.0..1.0` (hybrid fusion weight; default: `0.7`)
 - `COHERE_API_KEY` enables Cohere reranking for the `accurate` preset (optional)
-- `OLLAMA_BASE_URL`/`OLLAMA_HOST` enables local Ollama embeddings (optional; not used unless configured or `WUNDERLAND_MEMORY_EMBED_PROVIDER=ollama`)
+- Ollama embeddings (optional): set `OLLAMA_ENABLED=true` + `OLLAMA_BASE_URL`/`OLLAMA_HOST`, or set `WUNDERLAND_MEMORY_EMBED_PROVIDER=ollama`
 - `WUNDERLAND_MEMORY_OLLAMA_REQUEST_TIMEOUT_MS` (or `OLLAMA_REQUEST_TIMEOUT_MS`) controls Ollama connect timeout (default: `5000`)
 
 ---
@@ -98,9 +98,10 @@ The backend-wide `ragService` (used by rolling memory + agent knowledge) is now 
 - Storage: `RAG_DATABASE_PATH`, `RAG_DATABASE_URL`, `RAG_STORAGE_PRIORITY`
 - Retrieval: `AGENTOS_RAG_PRESET=fast|balanced|accurate` (default: `balanced`)
 - Hybrid: `AGENTOS_RAG_HYBRID_ALPHA=0.0..1.0` (default: `0.7`)
-- Embeddings: `AGENTOS_RAG_EMBED_PROVIDER=ollama|openai|openrouter` + `AGENTOS_RAG_EMBED_MODEL=...` (optional overrides)
-- Vector provider: `AGENTOS_RAG_VECTOR_PROVIDER=sql|qdrant` (default: `sql`)
+- Embeddings: `AGENTOS_RAG_EMBED_PROVIDER=ollama|openai|openrouter` + `AGENTOS_RAG_EMBED_MODEL=...` (optional overrides; Ollama requires `OLLAMA_ENABLED=true` unless explicitly selected)
+- Vector provider: `AGENTOS_RAG_VECTOR_PROVIDER=sql|qdrant|hnswlib` (default: `sql`)
 - Qdrant: `AGENTOS_RAG_QDRANT_URL` (or `QDRANT_URL`) + `AGENTOS_RAG_QDRANT_API_KEY` (optional)
+- In-process HNSW (optional): `AGENTOS_RAG_VECTOR_PROVIDER=hnswlib` + install `hnswlib-node` (optional `AGENTOS_RAG_HNSWLIB_PERSIST_DIR`)
 - Reranking (accurate preset): `COHERE_API_KEY` (optional) or install Transformers.js for local reranking: `@huggingface/transformers` (preferred) or `@xenova/transformers` (optional)
 - GraphRAG (optional): `AGENTOS_GRAPHRAG_ENABLED=true` (indexes `knowledge_base` docs by default; can run with or without LLM extraction)
 

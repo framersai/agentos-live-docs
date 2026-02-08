@@ -10,6 +10,12 @@ test('Multimodal RAG ingests, queries, and serves asset payloads', async () => {
   process.env.RAG_DATABASE_PATH = '';
   process.env.RAG_STORAGE_PRIORITY = 'sqljs';
   process.env.AGENTOS_RAG_VECTOR_PROVIDER = 'sql';
+  // Avoid any real network calls in this unit test (embeddings are best-effort).
+  process.env.OPENAI_API_KEY = '';
+  process.env.OPENROUTER_API_KEY = '';
+  process.env.OLLAMA_ENABLED = 'false';
+  process.env.OLLAMA_BASE_URL = '';
+  process.env.OLLAMA_HOST = '';
 
   const imageAssetId = `test_image_${Date.now()}`;
   const audioAssetId = `test_audio_${Date.now()}`;
@@ -51,6 +57,38 @@ test('Multimodal RAG ingests, queries, and serves asset payloads', async () => {
   });
   assert.equal(imageQuery.success, true);
   assert.ok(imageQuery.assets.some((a) => a.asset.assetId === imageAssetId));
+
+  // Re-ingest the same assetId with different derived text (update semantics).
+  const imageReingest = await ragService.ingestImageAsset({
+    assetId: imageAssetId,
+    mimeType: 'image/png',
+    originalFileName: 'test.png',
+    payload: imageBytes,
+    storePayload: true,
+    textRepresentation: '[Image]\nCaption: a blue circle\nTags: blue, circle',
+    userId: 'test_user',
+    agentId: 'test_agent',
+  });
+  assert.equal(imageReingest.success, true);
+
+  const redAfterUpdate = await ragService.queryMediaAssets({
+    query: 'red square',
+    modalities: ['image'],
+    topK: 5,
+  });
+  assert.equal(redAfterUpdate.success, true);
+  assert.equal(
+    redAfterUpdate.assets.some((a) => a.asset.assetId === imageAssetId),
+    false
+  );
+
+  const blueAfterUpdate = await ragService.queryMediaAssets({
+    query: 'blue circle',
+    modalities: ['image'],
+    topK: 5,
+  });
+  assert.equal(blueAfterUpdate.success, true);
+  assert.ok(blueAfterUpdate.assets.some((a) => a.asset.assetId === imageAssetId));
 
   const audioQuery = await ragService.queryMediaAssets({
     query: 'hello',

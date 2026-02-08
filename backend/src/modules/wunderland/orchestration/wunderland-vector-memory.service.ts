@@ -149,8 +149,10 @@ export class WunderlandVectorMemoryService implements OnModuleDestroy {
       coerceOllamaBaseURL(process.env.OLLAMA_BASE_URL) ??
       coerceOllamaBaseURL(process.env.OLLAMA_HOST);
 
-    // Only include Ollama if explicitly requested or configured via env.
-    const shouldIncludeOllama = explicitProvider === 'ollama' || Boolean(ollamaConfiguredBaseURL);
+    const ollamaEnabled = parseBooleanEnv(process.env.OLLAMA_ENABLED) ?? false;
+
+    // Only include Ollama when explicitly requested or enabled via env.
+    const shouldIncludeOllama = explicitProvider === 'ollama' || ollamaEnabled;
     if (shouldIncludeOllama) {
       const requestTimeout =
         parsePositiveIntEnv(process.env.OLLAMA_REQUEST_TIMEOUT_MS) ??
