@@ -10,6 +10,13 @@ Skills are **modular prompt modules** that extend what an AgentOS-based agent ca
 - YAML frontmatter: metadata, requirements, install specs, invocation policy
 - Markdown body: instructions injected into an agent’s system prompt (or fetched on-demand)
 
+## Skill Docs
+
+- Skill format: [`SKILL.md`](./skill-format)
+- Skills extension (tools): [`@framers/agentos-ext-skills`](./skills-extension)
+- Curated skills bundle: [`@framers/agentos-skills`](./agentos-skills)
+- Typed SDK + factories: [`@framers/agentos-skills-registry`](./agentos-skills-registry)
+
 ## Skills vs Extensions
 
 Skills and extensions solve different problems:

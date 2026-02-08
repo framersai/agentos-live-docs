@@ -32,6 +32,9 @@ const config: Config = {
         entryPoints: ['../../packages/agentos/src/index.ts'],
         tsconfig: '../../packages/agentos/tsconfig.json',
         out: 'docs/api',
+        // Avoid pulling in the package README (it contains links that don't
+        // resolve inside Docusaurus and duplicates the Guides section).
+        readme: 'none',
         sidebar: {
           autoConfiguration: true,
           pretty: true,
