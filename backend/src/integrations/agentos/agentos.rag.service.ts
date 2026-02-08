@@ -470,8 +470,10 @@ class SqlRagStore {
   private async _doInitialize(): Promise<void> {
     try {
       // Resolve storage adapter with intelligent fallback
+      const envFilePath = process.env.RAG_DATABASE_PATH;
       const options: StorageResolutionOptions = {
-        filePath: process.env.RAG_DATABASE_PATH || './data/rag_store.db',
+        // Treat an explicitly-set empty string as "in-memory/no persistence" for sql.js.
+        filePath: envFilePath !== undefined ? envFilePath : './data/rag_store.db',
         priority: process.env.RAG_STORAGE_PRIORITY
           ? (process.env.RAG_STORAGE_PRIORITY.split(',') as any[])
           : undefined,
@@ -2041,8 +2043,9 @@ class SqlRagStore {
     const adapter = await this.ensureInitialized();
     const start = Date.now();
 
-    const modalities =
-      options.modalities && options.modalities.length > 0 ? options.modalities : ['image', 'audio'];
+    const defaultModalities: RagMediaModality[] = ['image', 'audio'];
+    const modalities: RagMediaModality[] =
+      options.modalities && options.modalities.length > 0 ? options.modalities : defaultModalities;
     const requestedCollections =
       options.collectionIds && options.collectionIds.length > 0
         ? options.collectionIds
