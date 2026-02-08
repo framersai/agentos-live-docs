@@ -31,6 +31,8 @@ services:
       - /mnt/storage/postgres:/app/db_data
       # Media uploads
       - /mnt/storage/media:/app/media
+      # VA admin email list
+      - ./va-admins.csv:/app/va-admins.csv:ro
 
   nginx:
     image: nginx:alpine
