@@ -120,6 +120,50 @@ curl -s http://localhost:3001/api/agentos/rag/graphrag/stats | jq
 
 ---
 
+### AgentOS Multimodal RAG (Image + Audio)
+
+Multimodal ingestion stores a small asset record (and optionally the raw bytes), then indexes the asset by writing a derived **text representation** as a normal RAG document:
+
+- Images: caption + visible text (LLM vision) or user-supplied `textRepresentation`
+- Audio: transcript (OpenAI Whisper) or user-supplied `textRepresentation`
+
+Env (optional):
+
+- `AGENTOS_RAG_MEDIA_STORE_PAYLOAD=true|false` (default: `false`)
+- `AGENTOS_RAG_MEDIA_IMAGE_COLLECTION_ID=media_images` (default shown)
+- `AGENTOS_RAG_MEDIA_AUDIO_COLLECTION_ID=media_audio` (default shown)
+- `AGENTOS_RAG_MEDIA_IMAGE_LLM_PROVIDER=openai|openrouter` (default: `openai`)
+- `AGENTOS_RAG_MEDIA_IMAGE_LLM_MODEL=gpt-4o-mini` (default shown)
+
+Endpoints:
+
+```bash
+# Ingest image (multipart/form-data; field name: "image")
+curl -s -X POST http://localhost:3001/api/agentos/rag/multimodal/images/ingest \
+  -F "image=@/path/to/image.png" \
+  -F "storePayload=true" \
+  -F "tags=ui,diagram" \
+  -F "metadata={\"source\":\"upload\"}" | jq
+
+# Ingest audio (multipart/form-data; field name: "audio")
+curl -s -X POST http://localhost:3001/api/agentos/rag/multimodal/audio/ingest \
+  -F "audio=@/path/to/audio.webm" \
+  -F "storePayload=false" | jq
+
+# Query assets (JSON)
+curl -s -X POST http://localhost:3001/api/agentos/rag/multimodal/query \
+  -H 'content-type: application/json' \
+  -d '{"query":"find the diagram about auth flow","modalities":["image"],"topK":5}' | jq
+
+# Fetch metadata
+curl -s http://localhost:3001/api/agentos/rag/multimodal/assets/<assetId> | jq
+
+# Fetch raw bytes (only if storePayload=true at ingest time)
+curl -s http://localhost:3001/api/agentos/rag/multimodal/assets/<assetId>/content > asset.bin
+```
+
+---
+
 ### HITL (Tool Approvals)
 
 AgentOS tools can be gated behind human approval (HITL) for safety. When enabled, any tool with

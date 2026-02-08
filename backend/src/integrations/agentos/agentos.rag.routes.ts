@@ -15,6 +15,7 @@
 import { Router, type Request, type Response, type NextFunction } from 'express';
 import { agentosChatAdapterEnabled } from './agentos.chat-adapter.js';
 import { ragService, type RagMemoryStats } from './agentos.rag.service.js';
+import { createAgentOSRagMultimodalRouter } from './agentos.rag.multimodal.routes.js';
 
 /**
  * Request payload for document ingestion into RAG memory.
@@ -146,6 +147,9 @@ export interface RagStatsResponse {
  */
 export const createAgentOSRagRouter = (): Router => {
   const router = Router();
+
+  // Multimodal (image/audio) endpoints.
+  router.use('/multimodal', createAgentOSRagMultimodalRouter());
 
   /**
    * POST /ingest
