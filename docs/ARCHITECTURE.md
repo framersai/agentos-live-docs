@@ -42,20 +42,22 @@ Each interaction is driven through `AgentOS.processRequest(...)`, which returns 
 
 ## 2. Module map
 
-| Directory | Purpose |
-|-----------|---------|
-| `api/` | Public entry points (`AgentOS`, `AgentOSOrchestrator`) and response/input types. |
-| `cognitive_substrate/` | Generalised Mind Instance (GMI) definitions: personas, working memory, GMI manager. |
-| `config/` | Declarative configuration objects (tool orchestrator, memory lifecycle, embedding manager, etc.). |
-| `core/` | Core runtime building blocks: agents, conversation, streaming, tools, AI providers, audio utilities. |
-| `core/guardrails/` | Guardrail service contract and dispatcher helpers for input/output policy enforcement. |
-| `logging/` | Logger interfaces and default logger factory (pino-backed). |
-| `memory_lifecycle/` | Policies and manager for summarising, archiving, or pruning long-term memory. |
-| `rag/` | Retrieval augmentation interfaces and implementations (embedding manager, vector store, augmentor). |
-| `services/` | Adapters for host-specific services (auth, subscription, user storage). |
-| `stubs/` | Lightweight stubs (e.g. Prisma) for hosts that do not ship the real dependency. |
-| `utils/` | Shared helpers (errors, UUIDs, functional utilities). |
-| `docs/` | Additional package-level design notes and prompts. |
+| Directory              | Purpose                                                                                                                                                                                                                       |
+| ---------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `api/`                 | Public entry points (`AgentOS`, `AgentOSOrchestrator`) and response/input types.                                                                                                                                              |
+| `cognitive_substrate/` | Generalised Mind Instance (GMI) definitions: personas, working memory, GMI manager.                                                                                                                                           |
+| `config/`              | Declarative configuration objects (tool orchestrator, memory lifecycle, embedding manager, etc.).                                                                                                                             |
+| `core/`                | Core runtime building blocks: agents, conversation, streaming, tools, AI providers, audio utilities.                                                                                                                          |
+| `core/guardrails/`     | Guardrail service contract and dispatcher helpers for input/output policy enforcement.                                                                                                                                        |
+| `core/safety/`         | Operational safety primitives: `CircuitBreaker`, `CostGuard`, `StuckDetector`, `ActionDeduplicator`, `ToolExecutionGuard`. See [`packages/agentos/docs/SAFETY_PRIMITIVES.md`](../packages/agentos/docs/SAFETY_PRIMITIVES.md). |
+| `logging/`             | Logger interfaces and default logger factory (pino-backed).                                                                                                                                                                   |
+| `core/observability/`  | OpenTelemetry spans/metrics helpers + trace metadata helpers (opt-in).                                                                                                                                                        |
+| `memory_lifecycle/`    | Policies and manager for summarising, archiving, or pruning long-term memory.                                                                                                                                                 |
+| `rag/`                 | Retrieval augmentation interfaces and implementations (embedding manager, vector store, augmentor).                                                                                                                           |
+| `services/`            | Adapters for host-specific services (auth, subscription, user storage).                                                                                                                                                       |
+| `stubs/`               | Lightweight stubs (e.g. Prisma) for hosts that do not ship the real dependency.                                                                                                                                               |
+| `utils/`               | Shared helpers (errors, UUIDs, functional utilities).                                                                                                                                                                         |
+| `docs/`                | Additional package-level design notes and prompts.                                                                                                                                                                            |
 
 All public exports are defined in `src/index.ts` and surfaced via `dist/` after running `pnpm --filter @framers/agentos build`.
 
@@ -75,37 +77,44 @@ All public exports are defined in `src/index.ts` and surfaced via `dist/` after 
 ## 3. Core concepts
 
 ### 3.1 API facade & orchestration
+
 - **AgentOS class (`api/AgentOS.ts`)**: entry point for hosts. Handles lifecycle (`initialize`, `shutdown`), queueing requests, and delegating to the orchestrator.
 - **AgentOSOrchestrator (`api/AgentOSOrchestrator.ts`)**: coordinates GMIs, conversation context, tool execution, streaming, and error handling per request.
 - **AgentOSTypes**: strongly typed input (`AgentOSInput`, `GMITurnInput`, etc.) and output chunks.
 
 ### 3.2 Cognitive substrate
+
 - **GMIManager**: creates and manages Generalised Mind Instances. Loads persona definitions, configures working memory, and enforces inactivity cleanup.
 - **Personas** (`cognitive_substrate/personas`): declarative persona configs with prompt elements, tool requirements, and labels. Hosts can register new personas or override defaults.
 - **Working memory implementations**: in-memory and pluggable adapters compatible with the conversation manager and memory lifecycle.
 
 ### 3.3 Conversation & memory
+
 - **ConversationManager**: maintains conversation contexts, persists messages, and supports summarisation triggers. Works with the streaming manager to deliver incremental updates.
 - **Memory lifecycle manager** (`memory_lifecycle/`): policy engine for pruning or summarising long-term memory. Supports trigger conditions (age, size, schedule) and actions (`archive`, `delete`, `summarize_and_retain`, etc.).
 - **RAG stack** (`rag/`): embedding manager, vector store abstractions, and retrieval augmentor used to plug in host-provided knowledge bases.
 - **MemoryStoreAdapter (generic SQL-backed persistence)**: the backend now uses a unified `MemoryStoreAdapter` (`backend/src/core/memory/MemoryStoreAdapter.ts`) powered by `@framers/sql-storage-adapter`. It auto-detects the best available driver (`better-sqlite3` first for Node performance, then `sql.js` as a pure JS fallback) and conditionally enables persistence via the `ENABLE_SQLITE_MEMORY` env flag. This replaces the old `SqliteMemoryAdapter` naming�logs and exports now use a backend-agnostic label, and future drivers (Capacitor, Supabase/Postgres) can slot in without further refactors.
-- **Storage adapter bridge** *(workspace integration)*: the voice-chat backend still supplies a Prisma-compatible facade (`backend/src/integrations/agentos/agentos.sql-client.ts`) for other AgentOS modules needing relational access. Conversation persistence for chat flows prefers the MemoryStoreAdapter; the bridge remains for schema-managed tables and external integrations.
+- **Storage adapter bridge** _(workspace integration)_: the voice-chat backend still supplies a Prisma-compatible facade (`backend/src/integrations/agentos/agentos.sql-client.ts`) for other AgentOS modules needing relational access. Conversation persistence for chat flows prefers the MemoryStoreAdapter; the bridge remains for schema-managed tables and external integrations.
 - **Knowledge base providers**: the workspace now prefers the SQL-backed knowledge service (`SqlKnowledgeBaseService`) and gracefully falls back to the legacy JSON file loader when the database is unavailable.
 
 ### 3.4 Tool orchestration
+
 - **ToolOrchestrator** (`core/tools`): registers tools, evaluates permission policies, and executes tool calls. Works with `ToolPermissionManager` to enforce plan- or persona-based restrictions.
 - **Tool executor**: default implementation that calls host-provided tool handlers; replace or extend for custom tool backends.
 
 ### 3.5 AI model routing
+
 - **AIModelProviderManager** (`core/llm/providers`): registry of LLM providers (OpenAI, OpenRouter, Ollama, etc.) with per-provider error classes.
 - **Prompt engine** (`core/llm/PromptEngine.ts`): assembles prompt components, manages token budgets, caches prompts, and integrates with optional utility AI implementations for summarisation or classification.
 - **Utility AI (`core/ai_utilities`)**: optional helpers (LLM-backed, statistical) for tasks like summarisation or keyword extraction.
 
 ### 3.6 Streaming
+
 - **StreamingManager**: manages stream registrations and emits chunks to clients (SSE, WebSocket, or in-memory bridge).
 - **AgentOSResponseChunkType**: set of structured events (`SYSTEM_PROGRESS`, `TEXT_DELTA`, `TOOL_CALL_REQUEST`, `TOOL_RESULT_EMISSION`, `FINAL_RESPONSE`, `ERROR`, `UI_COMMAND`, etc.). Hosts consume these to update UI or trigger tool UIs.
 
 ### 3.7 Guardrails & policy enforcement
+
 - **IGuardrailService (`core/guardrails/IGuardrailService.ts`)**: contract hosts implement to evaluate user input and streamed output with actions (`ALLOW`, `FLAG`, `SANITIZE`, `BLOCK`).
 - **Guardrail dispatcher (`core/guardrails/guardrailDispatcher.ts`)**: now composes multiple stages. Input evaluators sanitize/block prior to orchestration; output stages inspect final chunks, with metadata recorded as arrays under `AgentOSResponse.metadata.guardrail` so downstream systems can audit the full stack of decisions.
 - **ExtensionManager packs**: descriptors for guardrails can be layered. Config-supplied services are still supported, but manifests (`AgentOSConfig.extensionManifest` / `extensionOverrides`) can add or remove policy engines without touching code.
@@ -113,6 +122,7 @@ All public exports are defined in `src/index.ts` and surfaced via `dist/` after 
 - `AgentOSConfig.guardrailService` remains optional; the Vitest harness covers sanitize/block flows end-to-end, and extensions can stack additional stages as needed.
 
 ### 3.8 Services & adapters
+
 - **Auth/Subscription services** (`services/user_auth`): interfaces AgentOS uses to query user identity and entitlements. Host integrations map present-day systems (Supabase, global JWT, internal billing) to these interfaces.
 - **Prisma stub (`stubs/prismaClient.ts`)**: minimal implementation so TypeScript compiles even if the host does not ship the full Prisma runtime.
 - **Error helpers** (`utils/errors.ts`): `GMIError`, `AgentOSServiceError`, and conversion utilities to keep error handling consistent across the stack.
@@ -179,7 +189,7 @@ const config: AgentOSConfig = {
   memoryLifecycleConfig: {/* optional policy set */},
   workflowEngineConfig: { maxConcurrentWorkflows: 32 },
   workflowStore: new InMemoryWorkflowStore(),
-  
+
   // Auth is optional - AgentOS works without it
   authService: /* optional - from @framers/agentos-extensions/auth or custom */,
   subscriptionService: /* optional - from @framers/agentos-extensions/auth or custom */,
@@ -243,16 +253,15 @@ Generated TypeDoc mirrors the exported surface and is the authoritative referenc
 AgentOS is designed to be embedded in multiple surfaces�server-side APIs, desktop apps, or even mobile runtimes with JS engines. Use this document together with the TypeDoc output and integration examples to adapt the runtime to your product�s needs.
 
 ## 10. Extension roadmap & multi-agent workflows
+
 - **Default packs**: upcoming `@framers/agentos-pack-defaults` bundles common tools (web search, fetch, calc) and guardrail integrations so hosts can opt-in without bespoke wiring.
 - **Affective cognition**: mood state tracking (global/user/session) will land in core so empathy packs can rewrite prompts and responses safely.
 - **Actions & automations**: planned workflow APIs will let multiple GMIs coordinate on tasks with role-based permissions, goals, and progress tracking?tying into the extension manager for scheduling and policy enforcement.
 
-
 ## 11. Workflow engine overview
+
 - **Workflow descriptors** now register through the shared extension manager using the new `workflow` kind. Descriptors declare goal schemas, task graphs, role bindings, guardrail policy tags, and metadata so hosts can ship automation packs without touching core.
 - **Workflow engine & store**: the upcoming runtime module (`core/workflows`) loads definitions, manages instances, and persists progress through the pluggable `IWorkflowStore` contract. An in-memory store ships by default, with optional adapters (e.g., Prisma) for durable persistence.
 - **Streaming updates**: workflow progress emits `WORKFLOW_UPDATE` chunks carrying `WorkflowProgressUpdate` payloads, preserving guardrail metadata so hosts can audit multi-stage decisions.
 - **Conversation optionality**: workflows may reference conversation IDs but remain independent. Workflows can be triggered by chat turns, scheduled jobs, or other services. See `docs/WORKFLOWS.md` for authoring guidelines, configuration examples, and storage notes.
-\n## Agency telemetry & marketplace pipeline (optional)\n\n- packages/agentos/src/core/workflows/runtime/WorkflowRuntime.ts now emits both WORKFLOW_UPDATE and AGENCY_UPDATE chunks so clients can stream per-seat progress.\n- ackend/src/features/agents/agencyUsage.service.ts records launches in gency_usage_log, enforces weekly plan limits, and keeps entries for approximately 18 months in the hosted reference app; you can shorten or disable this if you self-host.\n- ackend/src/features/agents/agentBundles.service.ts + gentBundles.routes.ts handle bundle import/export, queue persona submissions in gentos_persona_submissions, and refresh the runtime once approved.\n\n
-
-
+  \n## Agency telemetry & marketplace pipeline (optional)\n\n- packages/agentos/src/core/workflows/runtime/WorkflowRuntime.ts now emits both WORKFLOW_UPDATE and AGENCY_UPDATE chunks so clients can stream per-seat progress.\n- ackend/src/features/agents/agencyUsage.service.ts records launches in gency_usage_log, enforces weekly plan limits, and keeps entries for approximately 18 months in the hosted reference app; you can shorten or disable this if you self-host.\n- ackend/src/features/agents/agentBundles.service.ts + gentBundles.routes.ts handle bundle import/export, queue persona submissions in gentos_persona_submissions, and refresh the runtime once approved.\n\n
