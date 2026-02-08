@@ -76,6 +76,18 @@ COPY --from=builder /repo/packages/rabbithole ./packages/rabbithole
 COPY --from=builder /repo/packages/codex-extensions ./packages/codex-extensions
 COPY --from=builder /repo/packages/theme-tokens ./packages/theme-tokens
 
+# pnpm prune may replace workspace symlinks with npm registry versions.
+# Force node_modules/@framers/* and wunderland to point to our copied workspace packages.
+RUN rm -rf node_modules/@framers/shared node_modules/@framers/agentos \
+      node_modules/@framers/agentos-extensions-registry node_modules/@framers/agentos-ext-skills \
+      node_modules/@framers/sql-storage-adapter node_modules/wunderland \
+  && ln -s ../../packages/shared node_modules/@framers/shared \
+  && ln -s ../../packages/agentos node_modules/@framers/agentos \
+  && ln -s ../../packages/agentos-extensions-registry node_modules/@framers/agentos-extensions-registry \
+  && ln -s ../../packages/agentos-ext-skills node_modules/@framers/agentos-ext-skills \
+  && ln -s ../../packages/sql-storage-adapter node_modules/@framers/sql-storage-adapter \
+  && ln -s ../packages/wunderland node_modules/wunderland
+
 EXPOSE 3001
 
 CMD ["node", "dist/src/main.js"]
