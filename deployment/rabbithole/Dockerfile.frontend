@@ -24,7 +24,9 @@ ENV NEXT_PUBLIC_OAUTH_GITHUB=$NEXT_PUBLIC_OAUTH_GITHUB
 ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
 
 # Build workspace dependencies in dependency order
-RUN pnpm --filter @framers/agentos build \
+RUN pnpm --filter @framers/shared build \
+ && pnpm --filter @framers/sql-storage-adapter build \
+ && pnpm --filter @framers/agentos build \
  && pnpm --filter @framers/agentos-extensions-registry build \
  && pnpm --filter @framers/agentos-skills-registry build \
  && pnpm --filter rabbithole build
