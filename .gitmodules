@@ -38,3 +38,12 @@
 	path = apps/rabbithole
 	url = https://github.com/jddunn/rabbithole.git
 	branch = master
+[submodule "packages/agentos-skills"]
+	path = packages/agentos-skills
+	url = https://github.com/framersai/agentos-skills.git
+[submodule "packages/agentos-skills-registry"]
+	path = packages/agentos-skills-registry
+	url = https://github.com/framersai/agentos-skills-registry.git
+[submodule "packages/agentos-extensions-registry"]
+	path = packages/agentos-extensions-registry
+	url = https://github.com/framersai/agentos-extensions-registry.git
