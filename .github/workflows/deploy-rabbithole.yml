@@ -4,6 +4,7 @@ on:
   push:
     branches: [master]
     paths:
+      - 'apps/rabbithole'
       - 'apps/rabbithole/**'
       - 'backend/**'
       - 'packages/**'
@@ -37,6 +38,7 @@ jobs:
             REPO_DIR="/app/rabbithole"
             REPO_URL="https://${GH_PAT}@github.com/manicinc/voice-chat-assistant.git"
 
+            # ── 1. Pull latest code ──
             if [ ! -d "$REPO_DIR/.git" ]; then
               echo "[deploy] First deploy — cloning repo..."
               git clone --recurse-submodules "$REPO_URL" "$REPO_DIR"
@@ -52,27 +54,49 @@ jobs:
 
             cd "$REPO_DIR"
 
-            echo "[deploy] Building frontend..."
-            docker compose -f deployment/rabbithole/docker-compose.yml build frontend
+            # ── 2. Build frontend Docker image (handles monorepo deps) ──
+            echo "[deploy] Building frontend Docker image..."
+            docker build \
+              -t rabbithole-frontend:latest \
+              -f deployment/rabbithole/Dockerfile.frontend \
+              .
 
-            echo "[deploy] Building backend..."
-            docker compose -f deployment/rabbithole/docker-compose.yml build backend
+            # ── 3. Extract standalone output from Docker image ──
+            echo "[deploy] Extracting standalone build..."
+            docker rm -f rabbithole-extract 2>/dev/null || true
+            docker create --name rabbithole-extract rabbithole-frontend:latest
+            rm -rf /opt/rabbithole-staging
+            mkdir -p /opt/rabbithole-staging
+            docker cp rabbithole-extract:/app/. /opt/rabbithole-staging/
+            docker rm rabbithole-extract
 
-            echo "[deploy] Stopping old stack..."
-            docker compose -f deployment/rabbithole/docker-compose.yml down --remove-orphans || true
+            # ── 4. Swap into live directory + restart ──
+            echo "[deploy] Deploying to /opt/rabbithole..."
+            systemctl stop rabbithole || true
+            rm -rf /opt/rabbithole-old
+            mv /opt/rabbithole /opt/rabbithole-old 2>/dev/null || true
+            mv /opt/rabbithole-staging /opt/rabbithole
+            systemctl start rabbithole
 
-            echo "[deploy] Starting stack..."
-            docker compose -f deployment/rabbithole/docker-compose.yml up -d
+            # ── 5. Update API bridge if server.js changed ──
+            if [ -f "$REPO_DIR/deployment/rabbithole/api-server.js" ]; then
+              echo "[deploy] Updating API bridge..."
+              cp "$REPO_DIR/deployment/rabbithole/api-server.js" /opt/rabbithole-api/server.js
+              systemctl restart rabbithole-api
+            fi
 
-            echo "[deploy] Pruning old images..."
+            # ── 6. Cleanup ──
+            echo "[deploy] Pruning old Docker images..."
             docker image prune -f
+            rm -rf /opt/rabbithole-old
 
+            # ── 7. Health check ──
             sleep 5
-            HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" https://localhost/ -k || echo "000")
+            HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:3000/ || echo "000")
             echo "[deploy] Health check: HTTP $HTTP_CODE"
             if [ "$HTTP_CODE" != "200" ]; then
               echo "[deploy] WARNING: Frontend not returning 200"
-              docker compose -f deployment/rabbithole/docker-compose.yml logs --tail=20 frontend
+              journalctl -u rabbithole --no-pager -n 20
             fi
 
             echo "[deploy] Done."
