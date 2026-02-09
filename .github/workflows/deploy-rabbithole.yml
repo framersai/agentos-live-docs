@@ -64,6 +64,18 @@ jobs:
               export "$key=$val"
             done < /etc/rabbithole/env
 
+            # ── 1c. Ensure critical env vars exist ──
+            if ! grep -q '^AUTH_URL=' /etc/rabbithole/env; then
+              echo "AUTH_URL=https://rabbithole.inc" >> /etc/rabbithole/env
+              export AUTH_URL=https://rabbithole.inc
+              echo "[deploy] WARNING: AUTH_URL was missing — auto-added"
+            fi
+            if ! grep -q '^INTERNAL_API_URL=' /etc/rabbithole/env; then
+              echo "INTERNAL_API_URL=http://localhost:3001/api" >> /etc/rabbithole/env
+              export INTERNAL_API_URL=http://localhost:3001/api
+              echo "[deploy] WARNING: INTERNAL_API_URL was missing — auto-added"
+            fi
+
             # ── 2. Install dependencies ──
             echo "[deploy] Installing dependencies..."
             pnpm install --no-frozen-lockfile
