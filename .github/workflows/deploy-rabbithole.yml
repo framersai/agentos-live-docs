@@ -87,11 +87,14 @@ jobs:
 
             # ── 6. Ensure nginx config is correct ──
             echo "[deploy] Syncing nginx config..."
-            cp "$REPO_DIR/deployment/rabbithole/nginx-rabbithole.conf" /etc/nginx/sites-enabled/rabbithole
+            cp "$REPO_DIR/deployment/rabbithole/nginx-rabbithole.conf" /etc/nginx/sites-available/rabbithole
+            ln -sfn /etc/nginx/sites-available/rabbithole /etc/nginx/sites-enabled/rabbithole
             nginx -t && systemctl reload nginx
 
-            # ── 7. Restart services ──
-            echo "[deploy] Restarting services..."
+            # ── 7. Update systemd service + restart ──
+            echo "[deploy] Updating systemd service..."
+            cp "$REPO_DIR/deployment/rabbithole/rabbithole.service" /etc/systemd/system/rabbithole.service
+            systemctl daemon-reload
             systemctl restart rabbithole
 
             # ── 8. Update API bridge if changed ──
