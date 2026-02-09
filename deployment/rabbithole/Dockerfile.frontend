@@ -14,10 +14,11 @@ RUN corepack enable && corepack prepare pnpm@10.15.1 --activate
 COPY . .
 
 # Configure pnpm to hoist Next.js dependencies for standalone mode
-RUN echo 'public-hoist-pattern[]=*react*' > .npmrc && \
+# Append to existing .npmrc to override settings
+RUN echo 'public-hoist-pattern[]=*react*' >> .npmrc && \
     echo 'public-hoist-pattern[]=*next*' >> .npmrc && \
     echo 'public-hoist-pattern[]=styled-jsx' >> .npmrc && \
-    echo 'shamefully-hoist=true' >> .npmrc
+    sed -i 's/shamefully-hoist=false/shamefully-hoist=true/' .npmrc
 
 RUN pnpm install --no-frozen-lockfile
 
