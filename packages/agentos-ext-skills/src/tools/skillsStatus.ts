@@ -7,7 +7,10 @@ import type {
   ToolExecutionContext,
   ToolExecutionResult,
 } from '@framers/agentos';
-import type { SkillCatalogEntry, SkillsRegistry } from '@framers/agentos-skills';
+import type {
+  SkillRegistryEntry as SkillCatalogEntry,
+  SkillsRegistry,
+} from '@framers/agentos-skills-registry';
 
 import {
   buildInstallCommands,

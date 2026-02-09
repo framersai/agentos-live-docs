@@ -4,7 +4,11 @@ import * as fsSync from 'node:fs';
 import os from 'node:os';
 import { createRequire } from 'node:module';
 
-import type { SkillCatalogEntry, SkillsRegistry, SkillInstallSpec } from '@framers/agentos-skills';
+import type {
+  SkillRegistryEntry as SkillCatalogEntry,
+  SkillsRegistry,
+  SkillInstallSpec,
+} from '@framers/agentos-skills-registry';
 
 const require = createRequire(import.meta.url);
 
@@ -38,12 +42,12 @@ export type SkillCatalogItem = SkillCatalogEntry & {
 };
 
 export function resolveSkillsPackageDir(): string {
-  const pkgJsonPath = require.resolve('@framers/agentos-skills/package.json');
+  const pkgJsonPath = require.resolve('@framers/agentos-skills-registry/package.json');
   return path.dirname(pkgJsonPath);
 }
 
 export function resolveSkillsRegistryPath(): string {
-  return require.resolve('@framers/agentos-skills/registry.json');
+  return require.resolve('@framers/agentos-skills-registry/registry.json');
 }
 
 export async function loadSkillsRegistry(): Promise<SkillsRegistry> {

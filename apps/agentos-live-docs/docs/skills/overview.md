@@ -14,8 +14,7 @@ Skills are **modular prompt modules** that extend what an AgentOS-based agent ca
 
 - Skill format: [`SKILL.md`](./skill-format)
 - Skills extension (tools): [`@framers/agentos-ext-skills`](./skills-extension)
-- Curated skills bundle: [`@framers/agentos-skills`](./agentos-skills)
-- Typed SDK + factories: [`@framers/agentos-skills-registry`](./agentos-skills-registry)
+- Curated skills registry: [`@framers/agentos-skills-registry`](./agentos-skills-registry) (data + typed SDK + factories)
 
 ## Skills vs Extensions
 
@@ -50,12 +49,11 @@ console.log(snapshot.prompt);
 
 ## Curated Skills Packages
 
-The curated catalog is split into a data package and a typed SDK:
+The curated catalog ships as a single package:
 
-- `@framers/agentos-skills`: data-only (`registry/curated/*/SKILL.md` + `registry.json`)
-- `@framers/agentos-skills-registry`: typed catalog + query helpers + factories
+- `@framers/agentos-skills-registry`: SKILL.md files + registry.json + typed catalog + query helpers + factories
 
-`@framers/agentos-skills-registry` supports a lightweight import path:
+It supports a lightweight import path:
 
 ```ts
 import { searchSkills, getSkillsByCategory } from '@framers/agentos-skills-registry/catalog';

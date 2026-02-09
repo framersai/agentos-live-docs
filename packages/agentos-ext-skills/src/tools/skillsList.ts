@@ -4,7 +4,10 @@ import type {
   ToolExecutionContext,
   ToolExecutionResult,
 } from '@framers/agentos';
-import type { SkillCatalogEntry, SkillsRegistry } from '@framers/agentos-skills';
+import type {
+  SkillRegistryEntry as SkillCatalogEntry,
+  SkillsRegistry,
+} from '@framers/agentos-skills-registry';
 
 import {
   buildInstallCommands,
@@ -53,7 +56,7 @@ export class SkillsListTool implements ITool<SkillsListInput, SkillsListOutput> 
   public readonly name = 'skills_list';
   public readonly displayName = 'List Skills';
   public readonly description =
-    'List curated skills from the installed @framers/agentos-skills catalog. Includes basic eligibility checks (OS/bins/env) and suggested install commands.';
+    'List curated skills from the installed @framers/agentos-skills-registry catalog. Includes basic eligibility checks (OS/bins/env) and suggested install commands.';
   public readonly category = 'system';
   public readonly hasSideEffects = false;
 

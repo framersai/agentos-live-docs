@@ -35,7 +35,7 @@ export class SkillsEnableTool implements ITool<SkillsEnableInput, SkillsEnableOu
   public readonly name = 'skills_enable';
   public readonly displayName = 'Enable Skill';
   public readonly description =
-    'Copy a curated skill from @framers/agentos-skills into a local skills directory (e.g. ~/.codex/skills or ./skills). This has side effects and should be human-approved.';
+    'Copy a curated skill from @framers/agentos-skills-registry into a local skills directory (e.g. ~/.codex/skills or ./skills). This has side effects and should be human-approved.';
   public readonly category = 'system';
   public readonly hasSideEffects = true;
 

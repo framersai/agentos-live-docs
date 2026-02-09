@@ -5,7 +5,7 @@ AgentOS extension pack that provides **skills discovery + enablement tools** for
 This extension is intended to be used alongside:
 
 - `@framers/agentos` (core runtime)
-- `@framers/agentos-skills` (curated catalog + bundled `registry/curated/*/SKILL.md`)
+- `@framers/agentos-skills-registry` (curated SKILL.md files + typed catalog)
 
 ## Tools
 

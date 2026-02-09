@@ -12,7 +12,10 @@ import type {
   ToolExecutionContext,
   ToolExecutionResult,
 } from '@framers/agentos';
-import type { SkillCatalogEntry, SkillInstallSpec } from '@framers/agentos-skills';
+import type {
+  SkillRegistryEntry as SkillCatalogEntry,
+  SkillInstallSpec,
+} from '@framers/agentos-skills-registry';
 
 import { findSkillEntry, loadSkillsRegistry } from '../catalog.js';
 

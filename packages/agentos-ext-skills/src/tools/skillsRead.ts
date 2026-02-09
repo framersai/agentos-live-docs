@@ -30,7 +30,7 @@ export class SkillsReadTool implements ITool<SkillsReadInput, SkillsReadOutput> 
   public readonly name = 'skills_read';
   public readonly displayName = 'Read Skill';
   public readonly description =
-    'Read a curated skill’s SKILL.md from the installed @framers/agentos-skills catalog.';
+    'Read a curated skill’s SKILL.md from the installed @framers/agentos-skills-registry catalog.';
   public readonly category = 'system';
   public readonly hasSideEffects = false;
 

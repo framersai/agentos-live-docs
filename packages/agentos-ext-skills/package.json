@@ -39,7 +39,7 @@
     "@framers/agentos": ">=0.1.0"
   },
   "optionalDependencies": {
-    "@framers/agentos-skills": "workspace:*"
+    "@framers/agentos-skills-registry": "workspace:*"
   },
   "devDependencies": {
     "@framers/agentos": "workspace:*",

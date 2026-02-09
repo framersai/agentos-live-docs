@@ -22,7 +22,6 @@ const AGENTOS_PKG = resolve(MONO_ROOT, 'packages/agentos');
 const AGENTOS_DOCS = resolve(MONO_ROOT, 'packages/agentos/docs');
 const EXTENSIONS_ROOT = resolve(MONO_ROOT, 'packages/agentos-extensions');
 const CURATED_ROOT = resolve(EXTENSIONS_ROOT, 'registry/curated');
-const SKILLS_PKG = resolve(MONO_ROOT, 'packages/agentos-skills');
 const SKILLS_REGISTRY_PKG = resolve(MONO_ROOT, 'packages/agentos-skills-registry');
 const SKILLS_EXTENSION_PKG = resolve(MONO_ROOT, 'packages/agentos-ext-skills');
 const SQL_STORAGE_ADAPTER_PKG = resolve(MONO_ROOT, 'packages/sql-storage-adapter');
@@ -41,19 +40,20 @@ const agentosGuides = [
   { src: 'OBSERVABILITY.md', dest: 'architecture/observability.md', title: 'Observability (OpenTelemetry)', position: 3 },
   { src: 'LOGGING.md', dest: 'architecture/logging.md', title: 'Logging (Pino + OpenTelemetry)', position: 4 },
   { src: 'TOOL_CALLING_AND_LOADING.md', dest: 'architecture/tool-calling-and-loading.md', title: 'Tool Calling & Lazy Loading', position: 5 },
-  { src: 'IMMUTABLE_AGENTS.md', dest: 'features/immutable-agents.md', title: 'Immutable Agents', position: 12 },
-  { src: 'PROVENANCE_IMMUTABILITY.md', dest: 'features/provenance-immutability.md', title: 'Provenance & Immutability', position: 13 },
+  { src: 'IMMUTABLE_AGENTS.md', dest: 'features/immutable-agents.md', title: 'Immutable Agents', position: 13 },
+  { src: 'PROVENANCE_IMMUTABILITY.md', dest: 'features/provenance-immutability.md', title: 'Provenance & Immutability', position: 14 },
   { src: 'PLANNING_ENGINE.md', dest: 'features/planning-engine.md', title: 'Planning Engine', position: 1 },
   { src: 'HUMAN_IN_THE_LOOP.md', dest: 'features/human-in-the-loop.md', title: 'Human-in-the-Loop', position: 2 },
   { src: 'AGENT_COMMUNICATION.md', dest: 'features/agent-communication.md', title: 'Agent Communication', position: 3 },
   { src: 'GUARDRAILS_USAGE.md', dest: 'features/guardrails.md', title: 'Guardrails', position: 4 },
   { src: 'RAG_MEMORY_CONFIGURATION.md', dest: 'features/rag-memory.md', title: 'RAG Memory Configuration', position: 5 },
-  { src: 'SQL_STORAGE_QUICKSTART.md', dest: 'features/sql-storage.md', title: 'SQL Storage Quickstart', position: 6 },
-  { src: 'CLIENT_SIDE_STORAGE.md', dest: 'features/client-side-storage.md', title: 'Client-Side Storage', position: 7 },
-  { src: 'STRUCTURED_OUTPUT.md', dest: 'features/structured-output.md', title: 'Structured Output', position: 8 },
-  { src: 'EVALUATION_FRAMEWORK.md', dest: 'features/evaluation-framework.md', title: 'Evaluation Framework', position: 9 },
-  { src: 'COST_OPTIMIZATION.md', dest: 'features/cost-optimization.md', title: 'Cost Optimization', position: 10 },
-  { src: 'RECURSIVE_SELF_BUILDING_AGENTS.md', dest: 'features/recursive-self-building.md', title: 'Recursive Self-Building Agents', position: 11 },
+  { src: 'MULTIMODAL_RAG.md', dest: 'features/multimodal-rag.md', title: 'Multimodal RAG (Image + Audio)', position: 6 },
+  { src: 'SQL_STORAGE_QUICKSTART.md', dest: 'features/sql-storage.md', title: 'SQL Storage Quickstart', position: 7 },
+  { src: 'CLIENT_SIDE_STORAGE.md', dest: 'features/client-side-storage.md', title: 'Client-Side Storage', position: 8 },
+  { src: 'STRUCTURED_OUTPUT.md', dest: 'features/structured-output.md', title: 'Structured Output', position: 9 },
+  { src: 'EVALUATION_FRAMEWORK.md', dest: 'features/evaluation-framework.md', title: 'Evaluation Framework', position: 10 },
+  { src: 'COST_OPTIMIZATION.md', dest: 'features/cost-optimization.md', title: 'Cost Optimization', position: 11 },
+  { src: 'RECURSIVE_SELF_BUILDING_AGENTS.md', dest: 'features/recursive-self-building.md', title: 'Recursive Self-Building Agents', position: 12 },
   { src: 'RFC_EXTENSION_STANDARDS.md', dest: 'extensions/extension-standards.md', title: 'Extension Standards (RFC)', position: 5 },
 ];
 
@@ -96,8 +96,7 @@ const skillsDocs = [
   // Keep `docs/skills/overview.md` as the hand-curated landing page.
   { srcPath: resolve(AGENTOS_DOCS, 'SKILLS.md'), dest: 'skills/skill-format.md', title: 'Skills (SKILL.md)', position: 2 },
   { srcPath: resolve(SKILLS_EXTENSION_PKG, 'README.md'), dest: 'skills/skills-extension.md', title: 'Skills Extension', position: 3 },
-  { srcPath: resolve(SKILLS_PKG, 'README.md'), dest: 'skills/agentos-skills.md', title: '@framers/agentos-skills', position: 4 },
-  { srcPath: resolve(SKILLS_REGISTRY_PKG, 'README.md'), dest: 'skills/agentos-skills-registry.md', title: '@framers/agentos-skills-registry', position: 5 },
+  { srcPath: resolve(SKILLS_REGISTRY_PKG, 'README.md'), dest: 'skills/agentos-skills-registry.md', title: '@framers/agentos-skills-registry', position: 4 },
 ];
 
 /** @type {{ srcPath: string; dest: string; title: string; position: number }[]} */
@@ -125,6 +124,7 @@ const linkRewrites = {
   'AGENT_COMMUNICATION.md': '/docs/features/agent-communication',
   'GUARDRAILS_USAGE.md': '/docs/features/guardrails',
   'RAG_MEMORY_CONFIGURATION.md': '/docs/features/rag-memory',
+  'MULTIMODAL_RAG.md': '/docs/features/multimodal-rag',
   'SQL_STORAGE_QUICKSTART.md': '/docs/features/sql-storage',
   'CLIENT_SIDE_STORAGE.md': '/docs/features/client-side-storage',
   'PLATFORM_STRATEGY.md': '/docs/features/platform-strategy',
