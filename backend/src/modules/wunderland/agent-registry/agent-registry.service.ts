@@ -349,7 +349,10 @@ const HOSTED_BLOCKED_SKILL_NAMES = new Set<string>([
   '1password',
 ]);
 
-function validateCapabilitiesOrThrow(capabilities: string[], opts: { hostedMode: boolean }): void {
+function validateCapabilitiesOrThrow(
+  capabilities: string[],
+  opts: { enforceHostedRestrictions: boolean }
+): void {
   if (capabilities.length === 0) return;
 
   // Fast path: accept known pack names. If anything isn't a pack name, fall back to registry resolution.
@@ -364,7 +367,7 @@ function validateCapabilitiesOrThrow(capabilities: string[], opts: { hostedMode:
     });
   }
 
-  if (!opts.hostedMode) return;
+  if (!opts.enforceHostedRestrictions) return;
 
   const blockedCapabilities = capabilities.filter((cap) => HOSTED_BLOCKED_CAPABILITY_IDS.has(cap));
   if (blockedCapabilities.length > 0) {
@@ -388,7 +391,10 @@ function validateCapabilitiesOrThrow(capabilities: string[], opts: { hostedMode:
   }
 }
 
-function validateSkillsOrThrow(skills: string[], opts: { hostedMode: boolean }): void {
+function validateSkillsOrThrow(
+  skills: string[],
+  opts: { enforceHostedRestrictions: boolean }
+): void {
   if (skills.length === 0) return;
 
   const unknown = skills.filter((name) => !SKILL_BY_NAME.has(name));
@@ -399,7 +405,7 @@ function validateSkillsOrThrow(skills: string[], opts: { hostedMode: boolean }):
     });
   }
 
-  if (!opts.hostedMode) return;
+  if (!opts.enforceHostedRestrictions) return;
 
   const blocked = skills.filter((name) => {
     if (HOSTED_BLOCKED_SKILL_NAMES.has(name)) return true;
@@ -447,7 +453,8 @@ export class AgentRegistryService {
   async registerAgent(userId: string, dto: RegisterAgentDto): Promise<{ agent: AgentProfile }> {
     const now = Date.now();
     const seedId = dto.seedId.trim();
-    const hostedMode = isHostedMode();
+    const hostingMode = dto.hostingMode === 'self_hosted' ? 'self_hosted' : 'managed';
+    const enforceHostedRestrictions = isHostedMode() && hostingMode !== 'self_hosted';
 
     try {
       await this.db.transaction(async (trx: StorageAdapter) => {
@@ -463,8 +470,8 @@ export class AgentRegistryService {
         const skills = normalizeStringArray(dto.skills);
         const channels = normalizeStringArray(dto.channels);
 
-        validateCapabilitiesOrThrow(capabilities, { hostedMode });
-        validateSkillsOrThrow(skills, { hostedMode });
+        validateCapabilitiesOrThrow(capabilities, { enforceHostedRestrictions });
+        validateSkillsOrThrow(skills, { enforceHostedRestrictions });
         validateChannelsOrThrow(channels);
 
         const securityProfile = {
@@ -480,7 +487,7 @@ export class AgentRegistryService {
             : 'social-citizen';
 
         if (
-          hostedMode &&
+          enforceHostedRestrictions &&
           (toolAccessProfile === 'assistant' || toolAccessProfile === 'unrestricted')
         ) {
           throw new BadRequestException({
@@ -612,6 +619,45 @@ export class AgentRegistryService {
             joined_at: now,
           }
         );
+
+        // Create the initial runtime row so hosting mode is unambiguous.
+        // The managed social runtime filters out self-hosted agents.
+        await trx.run(
+          `
+            INSERT INTO wunderland_agent_runtime (
+              seed_id,
+              owner_user_id,
+              hosting_mode,
+              status,
+              started_at,
+              stopped_at,
+              last_error,
+              metadata,
+              created_at,
+              updated_at
+            ) VALUES (
+              @seed_id,
+              @owner_user_id,
+              @hosting_mode,
+              @status,
+              NULL,
+              NULL,
+              NULL,
+              @metadata,
+              @created_at,
+              @updated_at
+            )
+          `,
+          {
+            seed_id: seedId,
+            owner_user_id: userId,
+            hosting_mode: hostingMode,
+            status: 'stopped',
+            metadata: '{}',
+            created_at: now,
+            updated_at: now,
+          }
+        );
       });
     } catch (error) {
       if (error instanceof AgentAlreadyRegisteredException) throw error;
@@ -620,7 +666,9 @@ export class AgentRegistryService {
 
     // Register the agent into the live WonderlandNetwork so it starts
     // receiving stimulus events immediately (no server restart needed).
-    await this.orchestration?.registerAgentAtRuntime(seedId);
+    if (hostingMode === 'managed') {
+      await this.orchestration?.registerAgentAtRuntime(seedId);
+    }
 
     const agent = await this.getAgentBySeedIdOrThrow(seedId);
     return { agent: this.mapAgentProfile(agent.agent, agent.citizen) };
@@ -780,6 +828,13 @@ export class AgentRegistryService {
       if (!existing) throw new AgentNotFoundException(seedId);
       if (existing.owner_user_id !== userId) throw new AgentOwnershipException(seedId);
 
+      const runtime = await trx.get<{ hosting_mode: string }>(
+        'SELECT hosting_mode FROM wunderland_agent_runtime WHERE seed_id = ? LIMIT 1',
+        [seedId]
+      );
+      const hostingMode = runtime?.hosting_mode === 'self_hosted' ? 'self_hosted' : 'managed';
+      const enforceHostedRestrictions = hostedMode && hostingMode !== 'self_hosted';
+
       // Enforce immutability for sealed agents after explicit sealing.
       // During setup (sealed_at is null), configuration remains editable.
       const existingSecurityParsed = parseJsonOr<Record<string, unknown>>(
@@ -825,8 +880,9 @@ export class AgentRegistryService {
       const existingChannels = parseJsonOr<string[]>(existing.channels_json, []);
       const channels = dto.channels ? normalizeStringArray(dto.channels) : existingChannels;
 
-      if (dto.capabilities) validateCapabilitiesOrThrow(capabilities, { hostedMode });
-      if (dto.skills) validateSkillsOrThrow(skills, { hostedMode });
+      if (dto.capabilities)
+        validateCapabilitiesOrThrow(capabilities, { enforceHostedRestrictions });
+      if (dto.skills) validateSkillsOrThrow(skills, { enforceHostedRestrictions });
       if (dto.channels) validateChannelsOrThrow(channels);
 
       const existingPersonality = parseJsonOr<Record<string, number>>(existing.hexaco_traits, {});
@@ -857,7 +913,7 @@ export class AgentRegistryService {
           : undefined;
 
       if (
-        hostedMode &&
+        enforceHostedRestrictions &&
         typeof nextToolAccessProfile === 'string' &&
         (nextToolAccessProfile === 'assistant' || nextToolAccessProfile === 'unrestricted')
       ) {

@@ -100,6 +100,11 @@ export class RegisterAgentDto {
   channels?: string[];
 
   @IsOptional()
+  @IsString()
+  @IsIn(['managed', 'self_hosted'])
+  hostingMode?: 'managed' | 'self_hosted';
+
+  @IsOptional()
   @IsObject()
   metadata?: Record<string, unknown>;
 

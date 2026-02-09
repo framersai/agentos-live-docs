@@ -3,12 +3,13 @@
  * @description Managed runtime state service for Wunderland agents.
  */
 
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException, Optional } from '@nestjs/common';
 import type { StorageAdapter } from '@framers/sql-storage-adapter';
 import { DatabaseService } from '../../../database/database.service.js';
 import type { ListRuntimeQueryDto, UpdateRuntimeDto } from '../dto/runtime.dto.js';
 import { AgentImmutableException } from '../wunderland.exceptions.js';
 import { getAgentSealState } from '../immutability/agentSealing.js';
+import { OrchestrationService } from '../orchestration/orchestration.service.js';
 
 type RuntimeStatus = 'running' | 'stopped' | 'error' | 'starting' | 'stopping' | 'unknown';
 type HostingMode = 'managed' | 'self_hosted';
@@ -50,7 +51,10 @@ function toEpochMs(value: unknown): number | null {
 
 @Injectable()
 export class RuntimeService {
-  constructor(private readonly db: DatabaseService) {}
+  constructor(
+    private readonly db: DatabaseService,
+    @Optional() private readonly orchestration?: OrchestrationService
+  ) {}
 
   private async requireOwnedAgent(
     trx: StorageAdapter,
@@ -219,13 +223,22 @@ export class RuntimeService {
     seedId: string,
     dto: UpdateRuntimeDto
   ): Promise<{ runtime: RuntimeRecord }> {
-    return this.db.transaction(async (trx) => {
+    const result = await this.db.transaction(async (trx) => {
       await this.requireOwnedAgent(trx, userId, seedId);
       const sealState = await getAgentSealState(trx as any, seedId);
       if (sealState?.isSealed) {
         throw new AgentImmutableException(seedId, ['runtime.hostingMode']);
       }
       await this.ensureRuntimeRow(trx, userId, seedId);
+
+      const existing = await trx.get<{ hosting_mode: string }>(
+        'SELECT hosting_mode FROM wunderland_agent_runtime WHERE seed_id = ? LIMIT 1',
+        [seedId]
+      );
+      const previousHostingMode: HostingMode =
+        existing?.hosting_mode === 'self_hosted' ? 'self_hosted' : 'managed';
+      const nextHostingMode: HostingMode =
+        dto.hostingMode === 'self_hosted' ? 'self_hosted' : 'managed';
 
       await trx.run(
         `
@@ -235,7 +248,7 @@ export class RuntimeService {
            WHERE seed_id = ?
              AND owner_user_id = ?
         `,
-        [dto.hostingMode, Date.now(), seedId, userId]
+        [nextHostingMode, Date.now(), seedId, userId]
       );
 
       const row = await this.loadRuntimeRow(trx, userId, seedId);
@@ -243,8 +256,23 @@ export class RuntimeService {
         throw new NotFoundException(`Runtime for "${seedId}" not found.`);
       }
 
-      return { runtime: this.mapRuntime(row) };
+      return {
+        runtime: this.mapRuntime(row),
+        previousHostingMode,
+        nextHostingMode,
+      };
     });
+
+    // Apply the runtime flip to the live managed runtime after the DB commit.
+    if (result.previousHostingMode !== result.nextHostingMode) {
+      if (result.nextHostingMode === 'self_hosted') {
+        await this.orchestration?.unregisterAgentAtRuntime(seedId);
+      } else {
+        await this.orchestration?.registerAgentAtRuntime(seedId);
+      }
+    }
+
+    return { runtime: result.runtime };
   }
 
   async startRuntime(userId: string, seedId: string): Promise<{ runtime: RuntimeRecord }> {

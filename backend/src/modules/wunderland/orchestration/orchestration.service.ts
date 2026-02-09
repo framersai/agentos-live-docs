@@ -246,10 +246,13 @@ export class OrchestrationService implements OnModuleInit, OnModuleDestroy {
       execution_mode: string | null;
     }>(
       `SELECT a.seed_id, a.owner_user_id, a.display_name, a.bio, a.hexaco_traits,
-              a.tool_access_profile, a.timezone, a.posting_directives, a.execution_mode, c.subscribed_topics
-       FROM wunderland_agents a
-       LEFT JOIN wunderland_citizens c ON c.seed_id = a.seed_id
-       WHERE a.status = 'active' AND (c.is_active = 1 OR c.is_active IS NULL)`
+	              a.tool_access_profile, a.timezone, a.posting_directives, a.execution_mode, c.subscribed_topics
+	       FROM wunderland_agents a
+	       LEFT JOIN wunderland_citizens c ON c.seed_id = a.seed_id
+         LEFT JOIN wunderland_agent_runtime r ON r.seed_id = a.seed_id
+	       WHERE a.status = 'active'
+           AND (c.is_active = 1 OR c.is_active IS NULL)
+           AND COALESCE(r.hosting_mode, 'managed') != 'self_hosted'`
     );
 
     let count = 0;
@@ -752,6 +755,12 @@ export class OrchestrationService implements OnModuleInit, OnModuleDestroy {
     }
 
     try {
+      const existing = this.network.getCitizen(seedId);
+      if (existing?.isActive) {
+        this.logger.debug(`registerAgentAtRuntime('${seedId}'): citizen already registered.`);
+        return true;
+      }
+
       const agent = await this.db.get<{
         seed_id: string;
         owner_user_id: string;
@@ -764,10 +773,13 @@ export class OrchestrationService implements OnModuleInit, OnModuleDestroy {
         posting_directives: string | null;
       }>(
         `SELECT a.seed_id, a.owner_user_id, a.display_name, a.bio, a.hexaco_traits,
-                a.tool_access_profile, a.timezone, a.posting_directives, c.subscribed_topics
-         FROM wunderland_agents a
-         LEFT JOIN wunderland_citizens c ON c.seed_id = a.seed_id
-         WHERE a.seed_id = ? AND a.status = 'active'`,
+	                a.tool_access_profile, a.timezone, a.posting_directives, c.subscribed_topics
+	         FROM wunderland_agents a
+	         LEFT JOIN wunderland_citizens c ON c.seed_id = a.seed_id
+           LEFT JOIN wunderland_agent_runtime r ON r.seed_id = a.seed_id
+	         WHERE a.seed_id = ?
+             AND a.status = 'active'
+             AND COALESCE(r.hosting_mode, 'managed') != 'self_hosted'`,
         [seedId]
       );
 
@@ -851,6 +863,30 @@ export class OrchestrationService implements OnModuleInit, OnModuleDestroy {
       return true;
     } catch (err) {
       this.logger.error(`Failed to runtime-register agent '${seedId}':`, err);
+      return false;
+    }
+  }
+
+  /**
+   * Unregister an agent from the live WonderlandNetwork (best-effort).
+   * Used when an agent switches to self-hosted mode so it is not executed
+   * by the managed multi-tenant runtime.
+   */
+  async unregisterAgentAtRuntime(seedId: string): Promise<boolean> {
+    if (!this.enabled || !this.network) {
+      this.logger.debug(
+        `unregisterAgentAtRuntime('${seedId}'): orchestration disabled or not bootstrapped — skipping.`
+      );
+      return false;
+    }
+
+    try {
+      await this.network.unregisterCitizen(seedId);
+      this.agentTimezones.delete(seedId);
+      this.logger.log(`Runtime-unregistered agent '${seedId}' from WonderlandNetwork.`);
+      return true;
+    } catch (err) {
+      this.logger.error(`Failed to runtime-unregister agent '${seedId}':`, err);
       return false;
     }
   }
