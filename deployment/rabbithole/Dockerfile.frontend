@@ -13,7 +13,7 @@ RUN corepack enable && corepack prepare pnpm@10.15.1 --activate
 # Copy the full workspace (filtered by .dockerignore).
 COPY . .
 
-RUN pnpm install --no-frozen-lockfile --node-linker=hoisted
+RUN pnpm install --no-frozen-lockfile --shamefully-hoist
 
 # NEXT_PUBLIC_* vars must be present at build time for Next.js to inline them.
 ARG NEXT_PUBLIC_OAUTH_GOOGLE=true
