@@ -54,6 +54,16 @@ jobs:
 
             cd "$REPO_DIR"
 
+            # ── 1b. Load env vars (NEXT_PUBLIC_* must be present at build time) ──
+            while IFS='=' read -r key val; do
+              # Skip comments and empty lines
+              [[ "$key" =~ ^#.*$ || -z "$key" ]] && continue
+              # Strip surrounding quotes from value
+              val="${val%\"}" && val="${val#\"}"
+              val="${val%\'}" && val="${val#\'}"
+              export "$key=$val"
+            done < /etc/rabbithole/env
+
             # ── 2. Install dependencies ──
             echo "[deploy] Installing dependencies..."
             pnpm install --no-frozen-lockfile
