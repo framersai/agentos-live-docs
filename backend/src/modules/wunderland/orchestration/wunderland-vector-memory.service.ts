@@ -567,4 +567,12 @@ export class WunderlandVectorMemoryService implements OnModuleDestroy {
 
     return { chunks, context };
   }
+
+  /**
+   * Get the underlying RetrievalAugmentor for advanced RAG usage (e.g., JobMemoryService).
+   */
+  public async getRetrievalAugmentor(): Promise<RetrievalAugmentor | undefined> {
+    await this.ensureInitialized();
+    return this.retrievalAugmentor;
+  }
 }

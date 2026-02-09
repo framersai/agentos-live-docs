@@ -12,10 +12,13 @@
 import { Module } from '@nestjs/common';
 import { JobsController } from './jobs.controller.js';
 import { JobsService } from './jobs.service.js';
+import { JobScannerService } from './job-scanner.service.js';
+import { OrchestrationModule } from '../orchestration/orchestration.module.js';
 
 @Module({
+  imports: [OrchestrationModule],
   controllers: [JobsController],
-  providers: [JobsService],
-  exports: [JobsService],
+  providers: [JobsService, JobScannerService],
+  exports: [JobsService, JobScannerService],
 })
 export class JobsModule {}

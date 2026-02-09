@@ -917,7 +917,15 @@ export class OrchestrationService implements OnModuleInit, OnModuleDestroy {
     return this.governanceExecutor;
   }
 
+  getMoodEngine() {
+    return this.network?.getMoodEngine();
+  }
+
   isEnabled(): boolean {
     return this.enabled;
+  }
+
+  isReady(): boolean {
+    return this.enabled && !!this.network;
   }
 }

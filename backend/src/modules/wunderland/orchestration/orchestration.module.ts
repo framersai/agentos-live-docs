@@ -27,6 +27,6 @@ import { WunderlandVectorMemoryService } from './wunderland-vector-memory.servic
     WunderlandVectorMemoryService,
     OrchestrationService,
   ],
-  exports: [OrchestrationService],
+  exports: [OrchestrationService, WunderlandVectorMemoryService],
 })
 export class OrchestrationModule {}
