@@ -64,17 +64,23 @@ jobs:
               export "$key=$val"
             done < /etc/rabbithole/env
 
-            # ── 1c. Ensure critical env vars exist ──
+            # ── 1c. Ensure critical env vars are correct ──
             if ! grep -q '^AUTH_URL=' /etc/rabbithole/env; then
               echo "AUTH_URL=https://rabbithole.inc" >> /etc/rabbithole/env
-              export AUTH_URL=https://rabbithole.inc
               echo "[deploy] WARNING: AUTH_URL was missing — auto-added"
             fi
+            export AUTH_URL=https://rabbithole.inc
+
             if ! grep -q '^INTERNAL_API_URL=' /etc/rabbithole/env; then
               echo "INTERNAL_API_URL=http://localhost:3001/api" >> /etc/rabbithole/env
-              export INTERNAL_API_URL=http://localhost:3001/api
               echo "[deploy] WARNING: INTERNAL_API_URL was missing — auto-added"
             fi
+
+            # NEXT_PUBLIC_API_URL must be /api for production (proxied via nginx).
+            # Override regardless of what's in env file — this is build-time critical.
+            export NEXT_PUBLIC_API_URL=/api
+            export NEXT_PUBLIC_OAUTH_GOOGLE=true
+            export NEXT_PUBLIC_OAUTH_GITHUB=true
 
             # ── 2. Install dependencies ──
             echo "[deploy] Installing dependencies..."
