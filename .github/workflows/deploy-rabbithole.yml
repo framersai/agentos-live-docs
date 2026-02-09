@@ -88,9 +88,9 @@ jobs:
             pnpm --filter @framers/agentos-extensions-registry build
             pnpm --filter @framers/agentos-skills-registry build
 
-            # ── 4. Build Next.js frontend ──
+            # ── 4. Build Next.js frontend (--webpack needed for standalone output) ──
             echo "[deploy] Building rabbithole frontend..."
-            pnpm --filter rabbithole build
+            pnpm --filter rabbithole exec next build --webpack
 
             # ── 5. Link static assets into standalone output ──
             STANDALONE_APP="$REPO_DIR/apps/rabbithole/.next/standalone/apps/rabbithole"
