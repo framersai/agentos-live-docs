@@ -2,16 +2,17 @@
 
 ## Overview
 
-Built two new packages on top of AgentOS:
+Wunderland builds on AgentOS to provide:
 
-- **Wunderland** (`wunderland`) - Wunderbot SDK + CLI + autonomous social network primitives (wunderland.sh)
-- **Rabbit Hole** (`apps/rabbithole`) - Cloud-hosted SaaS dashboard for managing hosted Wunderbots (rabbithole.inc)
+- **Wunderland** (`packages/wunderland`) - SDK + CLI for building agents with personality + security primitives.
+- **Rabbit Hole** (`apps/rabbithole`) - Cloud-hosted control plane dashboard for creating/configuring agents and exporting self-hosted runtime configs (default). Managed runtimes are enterprise-only.
+- **Backend** (`backend`) - NestJS API + SQLite storage that powers the dashboard, registry, credentials, channels, and (for managed/enterprise) orchestration.
 
 ---
 
 ## Wunderland Package
 
-### Core Module
+### Core + Personality
 
 | File                         | Description                                                                         |
 | ---------------------------- | ----------------------------------------------------------------------------------- |
@@ -28,60 +29,39 @@ Built two new packages on top of AgentOS:
 | `src/security/WunderlandSecurityPipeline.ts` | Unified pipeline implementing IGuardrailService            |
 | `src/security/types.ts`                      | Security-related type definitions                          |
 
-### Inference Module
+### CLI
 
-| File                                           | Description                                                                    |
-| ---------------------------------------------- | ------------------------------------------------------------------------------ |
-| `src/inference/HierarchicalInferenceRouter.ts` | Routes between fast router (llama3.2:3b) and primary model (dolphin-llama3:8b) |
-| `src/inference/types.ts`                       | Routing types, complexity analysis                                             |
-
-### Authorization Module
-
-| File                                              | Description                                                    |
-| ------------------------------------------------- | -------------------------------------------------------------- |
-| `src/authorization/StepUpAuthorizationManager.ts` | Tier 1 (autonomous), Tier 2 (async review), Tier 3 (sync HITL) |
-| `src/authorization/types.ts`                      | Authorization types, HITL request/decision interfaces          |
+- Entry point: `bin/wunderland.js` (bootstraps compiled CLI)
+- Commands live in `src/cli/commands/*` (init, start, chat, skills, channels, etc.)
 
 ---
 
 ## RabbitHole Package
 
-### Channel Adapters
+Rabbit Hole is a Next.js dashboard that consumes the backend API.
 
-| File                                       | Description                        |
-| ------------------------------------------ | ---------------------------------- |
-| `src/channels/IChannelAdapter.ts`          | Interface for all channel adapters |
-| `src/channels/BaseChannelAdapter.ts`       | Common adapter functionality       |
-| `src/channels/adapters/SlackAdapter.ts`    | @slack/bolt integration            |
-| `src/channels/adapters/DiscordAdapter.ts`  | discord.js integration             |
-| `src/channels/adapters/TelegramAdapter.ts` | Telegram Bot API with long polling |
-| `src/channels/adapters/WhatsAppAdapter.ts` | WhatsApp Cloud API with webhooks   |
+Key UI entry points:
 
-### Gateway Module
+- Agent builder (voice/text → config): `apps/rabbithole/src/app/app/agent-builder/page.tsx`
+- Getting started: `apps/rabbithole/src/app/app/getting-started/page.tsx`
+- Self-hosted runtime guide: `apps/rabbithole/src/app/app/self-hosted/page.tsx`
+- Per-agent self-hosted setup: `apps/rabbithole/src/app/app/dashboard/[seedId]/self-hosted/page.tsx`
 
-| File                            | Description                                         |
-| ------------------------------- | --------------------------------------------------- |
-| `src/gateway/ChannelGateway.ts` | Multi-tenant message routing with PII redactor hook |
-| `src/gateway/types.ts`          | Gateway types, tenant config, routing rules         |
+Key API route:
 
-### PII Protection Module
-
-| File                                | Description                                                        |
-| ----------------------------------- | ------------------------------------------------------------------ |
-| `src/pii/IPIIRedactor.ts`           | PII redaction interface                                            |
-| `src/pii/PIIRedactionMiddleware.ts` | Pattern-based PII detection (email, phone, SSN, credit card, etc.) |
-| `src/pii/vault/PIIVault.ts`         | Secure encrypted storage for original PII values                   |
-| `src/pii/vault/BreakGlassAccess.ts` | Emergency access with permissions, daily limits, notifications     |
+- Voice config extraction: `apps/rabbithole/src/app/api/voice/extract-config/route.ts`
 
 ---
 
-## AgentOS Updates
+## Backend (Wunderland Modules)
 
-Added exports in `packages/agentos/src/index.ts`:
+Notable backend areas:
 
-- `IPersonaDefinition`
-- `PersonaMoodAdaptationConfig`
-- All guardrail exports (`IGuardrailService`, `GuardrailAction`, etc.)
+- Agent registry + hosting mode: `backend/src/modules/wunderland/agent-registry/*`
+- Runtime state + hosting mode flip: `backend/src/modules/wunderland/runtime/*`
+- Orchestration (managed runtime) filters out `self_hosted` agents: `backend/src/modules/wunderland/orchestration/*`
+- Channels + bindings: `backend/src/modules/wunderland/channels/*`
+- Encrypted credential vault (optional): `backend/src/modules/wunderland/credentials/*`
 
 ---
 
@@ -99,46 +79,24 @@ Added exports in `packages/agentos/src/index.ts`:
 2. **Dual-LLM Auditor** - Uses separate auditor model to verify primary model outputs
 3. **Signed Output Verifier** - HMAC-SHA256 signing with full intent chain for audit trail
 
-### Step-Up Authorization
+### Hosting Modes
 
-- **Tier 1**: Autonomous execution (read-only, logging)
-- **Tier 2**: Execute with async human review
-- **Tier 3**: Require synchronous HITL approval before execution
-- Per-tenant overrides
-- Escalation triggers (high-value threshold, sensitive data, irreversible actions)
-
-### Channel Adapters
-
-- Slack (socket mode, interactive elements)
-- Discord (button interactions, select menus)
-- Telegram (long polling, inline keyboards)
-- WhatsApp (Cloud API webhooks, template messages)
-
-### PII Protection
-
-- Pattern-based detection for common PII types
-- Vault storage with encryption
-- Break-glass access with:
-  - Permission-based access control
-  - Daily access limits
-  - Full audit trail
-  - Data owner notifications
+- `self_hosted` (default): agent is configurable in Rabbit Hole but not executed on shared runtime; you run it on your own VPS.
+- `managed` (enterprise): agent may execute on a managed runtime with restricted toolsets and stronger isolation.
 
 ---
 
 ## What's Next
 
-1. **OAuth Integration** - User authentication for RabbitHole marketplace
-2. **Permission Mapping System** - Capability-based access control
-3. **Approval Workflow Engine** - UI flows for Tier 2/3 approvals
-4. **Marketplace Module** - Human assistant registration, skill matching
-5. **Integration Testing** - End-to-end tests
-6. **Build Scripts** - Add tsconfig.build.json for dist output
+1. **One-command runtime installer** (VPS) + AWS “Launch Stack” template
+2. **Runtime auth** (service tokens) for secure config sync from control plane to runtime
+3. **Prompt injection hardening** at the server/tool-proxy layer (egress allowlists, DLP/redaction)
+4. **Accessibility polish** across the dashboard (keyboard, contrast, reduced motion)
+5. **More tests** covering hosting mode, orchestration, and self-hosted flows
 
 ---
 
 ## Notes
 
-- Channel adapters were written from scratch based on the architecture document
-- No external projects were cloned
-- Both packages compile successfully with TypeScript
+This repo is evolving quickly; some older docs and marketing copy may still reference “managed hosting”
+as the default. Current direction is self-hosted-first with enterprise managed runtimes.

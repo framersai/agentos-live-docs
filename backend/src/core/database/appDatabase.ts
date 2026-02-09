@@ -1192,6 +1192,28 @@ const runInitialSchema = async (db: StorageAdapter): Promise<void> => {
     'CREATE INDEX IF NOT EXISTS idx_wunderland_js_job ON wunderland_job_submissions(job_pda);'
   );
 
+  // Agent job state persistence (for learning and workload tracking)
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS wunderland_agent_job_states (
+      seed_id TEXT PRIMARY KEY,
+      active_job_count INTEGER NOT NULL DEFAULT 0,
+      bandwidth REAL NOT NULL DEFAULT 1.0,
+      min_acceptable_rate_per_hour REAL NOT NULL DEFAULT 0.02,
+      preferred_categories TEXT,
+      recent_outcomes TEXT,
+      risk_tolerance REAL NOT NULL DEFAULT 0.5,
+      total_jobs_evaluated INTEGER NOT NULL DEFAULT 0,
+      total_jobs_bid_on INTEGER NOT NULL DEFAULT 0,
+      total_jobs_completed INTEGER NOT NULL DEFAULT 0,
+      success_rate REAL NOT NULL DEFAULT 0.0,
+      created_at INTEGER NOT NULL,
+      updated_at INTEGER NOT NULL
+    );
+  `);
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_wunderland_ajs_seed ON wunderland_agent_job_states(seed_id);'
+  );
+
   console.log('[AppDatabase] Revenue + Jobs tables initialized.');
 
   console.log('[AppDatabase] Wunderland tables initialized.');
@@ -1604,6 +1626,14 @@ export const initializeAppDatabase = async (): Promise<void> => {
         adapter.kind === 'postgres'
           ? 'ALTER TABLE organizations ADD COLUMN settings_json TEXT'
           : 'ALTER TABLE organizations ADD COLUMN settings_json TEXT;'
+      );
+      await ensureColumnExists(
+        adapter,
+        'wunderland_jobs',
+        'buy_it_now_lamports',
+        adapter.kind === 'postgres'
+          ? 'ALTER TABLE wunderland_jobs ADD COLUMN buy_it_now_lamports INTEGER'
+          : 'ALTER TABLE wunderland_jobs ADD COLUMN buy_it_now_lamports INTEGER;'
       );
       await ensureWorkbenchUser(adapter);
     } catch (error) {
