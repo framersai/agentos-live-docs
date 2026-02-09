@@ -98,12 +98,17 @@ The backend-wide `ragService` (used by rolling memory + agent knowledge) is now 
 - Storage: `RAG_DATABASE_PATH`, `RAG_DATABASE_URL`, `RAG_STORAGE_PRIORITY`
 - Retrieval: `AGENTOS_RAG_PRESET=fast|balanced|accurate` (default: `balanced`)
 - Hybrid: `AGENTOS_RAG_HYBRID_ALPHA=0.0..1.0` (default: `0.7`)
+- Diversification (request-time): `strategy=mmr` (+ `strategyParams.mmrLambda`, `strategyParams.mmrCandidateMultiplier`) to reduce redundant chunks
+- Multi-query (request-time): `queryVariants` and `rewrite` to expand retrieval queries (merged + deduped; rewrite is best-effort and requires an LLM provider)
 - Embeddings: `AGENTOS_RAG_EMBED_PROVIDER=ollama|openai|openrouter` + `AGENTOS_RAG_EMBED_MODEL=...` (optional overrides; Ollama requires `OLLAMA_ENABLED=true` unless explicitly selected)
 - Vector provider: `AGENTOS_RAG_VECTOR_PROVIDER=sql|qdrant|hnswlib` (default: `sql`)
 - Qdrant: `AGENTOS_RAG_QDRANT_URL` (or `QDRANT_URL`) + `AGENTOS_RAG_QDRANT_API_KEY` (optional)
 - In-process HNSW (optional): `AGENTOS_RAG_VECTOR_PROVIDER=hnswlib` + install `hnswlib-node` (optional `AGENTOS_RAG_HNSWLIB_PERSIST_DIR`)
 - Reranking (accurate preset): `COHERE_API_KEY` (optional) or install Transformers.js for local reranking: `@huggingface/transformers` (preferred) or `@xenova/transformers` (optional)
-- GraphRAG (optional): `AGENTOS_GRAPHRAG_ENABLED=true` (indexes `knowledge_base` docs by default; can run with or without LLM extraction)
+- GraphRAG (optional): `AGENTOS_GRAPHRAG_ENABLED=true` (indexes `knowledge_base` docs by default; can run with or without LLM extraction; falls back to text matching if embeddings are unavailable)
+  - Policy: `AGENTOS_GRAPHRAG_CATEGORIES=...` (default when unset: `knowledge_base`)
+  - Policy: `AGENTOS_GRAPHRAG_COLLECTIONS=...` allow list (optional) and `AGENTOS_GRAPHRAG_EXCLUDE_COLLECTIONS=...` deny list (optional)
+  - Guardrails: `AGENTOS_GRAPHRAG_MAX_DOC_CHARS=...` (optional) and `AGENTOS_GRAPHRAG_INDEX_MEDIA_ASSETS=true` (default: `false`)
 
 GraphRAG endpoints (when enabled):
 
@@ -118,6 +123,12 @@ curl -s -X POST http://localhost:3001/api/agentos/rag/graphrag/global-search \
 
 curl -s http://localhost:3001/api/agentos/rag/graphrag/stats | jq
 ```
+
+GraphRAG update/delete semantics:
+
+- Update: re-ingest the same `documentId` via `POST /api/agentos/rag/ingest` (best-effort updates GraphRAG contributions too).
+- Delete: `DELETE /api/agentos/rag/documents/:documentId` best-effort removes GraphRAG contributions (when enabled).
+- Category/collection move: re-ingest the same `documentId` with a new `category` and/or `collectionId`; if the doc moves out of policy scope, the backend will best-effort remove it from GraphRAG.
 
 ---
 
@@ -135,6 +146,18 @@ Env (optional):
 - `AGENTOS_RAG_MEDIA_AUDIO_COLLECTION_ID=media_audio` (default shown)
 - `AGENTOS_RAG_MEDIA_IMAGE_LLM_PROVIDER=openai|openrouter` (default: `openai`)
 - `AGENTOS_RAG_MEDIA_IMAGE_LLM_MODEL=gpt-4o-mini` (default shown)
+- Optional image-to-image embeddings (offline, CLIP-style):
+  - `AGENTOS_RAG_MEDIA_IMAGE_EMBEDDINGS_ENABLED=true` (default: `false`)
+  - `AGENTOS_RAG_MEDIA_IMAGE_EMBED_MODEL=Xenova/clip-vit-base-patch32` (default shown)
+  - `AGENTOS_RAG_MEDIA_IMAGE_EMBED_COLLECTION_SUFFIX=_img` (default shown)
+  - Requires installing Transformers.js (optional): `@huggingface/transformers` (preferred) or `@xenova/transformers`
+- Optional audio-to-audio embeddings (offline, CLAP-style):
+  - `AGENTOS_RAG_MEDIA_AUDIO_EMBEDDINGS_ENABLED=true` (default: `false`)
+  - `AGENTOS_RAG_MEDIA_AUDIO_EMBED_MODEL=Xenova/clap-htsat-unfused` (default shown)
+  - `AGENTOS_RAG_MEDIA_AUDIO_EMBED_COLLECTION_SUFFIX=_aud` (default shown)
+  - `AGENTOS_RAG_MEDIA_AUDIO_EMBED_CACHE_DIR=` (optional)
+  - Requires installing Transformers.js (optional): `@huggingface/transformers` (preferred) or `@xenova/transformers`
+  - Node decoding is WAV-only for now (no ffmpeg); install `wavefile` (optional) and send `audio/wav` payloads for embedding-based retrieval
 
 Endpoints:
 
@@ -150,6 +173,28 @@ curl -s -X POST http://localhost:3001/api/agentos/rag/multimodal/images/ingest \
 curl -s -X POST http://localhost:3001/api/agentos/rag/multimodal/audio/ingest \
   -F "audio=@/path/to/audio.webm" \
   -F "storePayload=false" | jq
+
+# Query by image (multipart/form-data; field name: "image")
+# Default behavior:
+# - If `AGENTOS_RAG_MEDIA_IMAGE_EMBEDDINGS_ENABLED=true` and Transformers.js is installed, uses offline image embeddings.
+# - Otherwise, captions the query image and runs text retrieval.
+# To force text retrieval (and bypass both captioning + image embeddings), pass `textRepresentation` explicitly.
+curl -s -X POST http://localhost:3001/api/agentos/rag/multimodal/images/query \
+  -F "image=@/path/to/query.png" \
+  -F "topK=5" \
+  -F "modalities=image" \
+  -F "textRepresentation=diagram auth flow" | jq
+
+# Query by audio (multipart/form-data; field name: "audio")
+# Default behavior:
+# - If `AGENTOS_RAG_MEDIA_AUDIO_EMBEDDINGS_ENABLED=true` and Transformers.js + wavefile are installed, uses offline audio embeddings (WAV-only) for audio-to-audio retrieval.
+# - Otherwise, transcribes the query audio and runs text retrieval.
+# To avoid any transcription API calls, pass `textRepresentation` explicitly.
+curl -s -X POST http://localhost:3001/api/agentos/rag/multimodal/audio/query \
+  -F "audio=@/path/to/query.webm" \
+  -F "topK=5" \
+  -F "modalities=audio" \
+  -F "textRepresentation=hello world" | jq
 
 # Query assets (JSON)
 curl -s -X POST http://localhost:3001/api/agentos/rag/multimodal/query \
@@ -230,6 +275,7 @@ pnpm dev:qdrant:down
 ## Architecture
 
 - `config/router.ts` wires all `/api/*` routes (auth, chat, STT/TTS, billing, organizations). When `AGENTOS_ENABLED=true`, it also mounts `/api/agentos/chat` + `/api/agentos/stream` via `getAgentOSRouter()`.
+- AgentOS sub-routers such as RAG and HITL are implemented in `@framers/agentos-ext-http-api` (Express router factories) and mounted by the backend under `/api/agentos/*`.
 
 ## Links
 

@@ -30,13 +30,16 @@ import {
   DEFAULT_STEP_UP_AUTH_CONFIG,
   createWunderlandTools,
   createMemoryReadTool,
+  PreLLMClassifier,
 } from 'wunderland';
 import type {
   WonderlandPost,
   NewsroomConfig,
   WunderlandSeedConfig,
   HEXACOTraits,
+  PostingDirectives,
 } from 'wunderland';
+import { isHostedMode } from '../hosted-mode.js';
 
 // Import all 7 persistence adapters
 import { MoodPersistenceService } from './mood-persistence.service';
@@ -59,6 +62,20 @@ export class OrchestrationService implements OnModuleInit, OnModuleDestroy {
   private cronIntervals: Map<string, NodeJS.Timeout> = new Map();
   private cronTickCounts: Map<string, number> = new Map();
   private readonly enabled: boolean;
+
+  // Always-on Pre-LLM classifier — runs on every agent-generated content regardless of per-agent settings
+  private readonly alwaysOnClassifier = new PreLLMClassifier({
+    riskThreshold: 0.7,
+    blockThreshold: 0.95,
+    enableLogging: true,
+  });
+
+  // Timezone-aware scheduling state
+  private agentTimezones: Map<string, string> = new Map();
+  private lastBrowseTickAt = 0;
+  private lastPostTickAt = 0;
+  private currentBrowseJitter = 0;
+  private currentPostJitter = 0;
 
   constructor(
     private readonly db: DatabaseService,
@@ -153,9 +170,27 @@ export class OrchestrationService implements OnModuleInit, OnModuleDestroy {
     this.governanceExecutor.registerHandler('ban_agent', createBanAgentHandler(enclaveRegistry));
 
     // 5. Set post store callback — writes published posts to wunderland_posts
+    //    Always-on Pre-LLM classifier runs on every post regardless of agent security settings.
     this.network.setPostStoreCallback(async (post: WonderlandPost) => {
       try {
+        // Always-on injection defense: classify content before persisting
+        const classification = this.alwaysOnClassifier.classifyInput(post.content);
+        if (classification.category === 'MALICIOUS') {
+          this.logger.warn(
+            `[SECURITY] Blocked malicious post from ${post.seedId} (risk=${classification.riskScore.toFixed(2)}): ${classification.detectedPatterns.map((p) => p.patternId).join(', ')}`
+          );
+          return; // Block — do not persist
+        }
+        if (classification.category === 'SUSPICIOUS') {
+          this.logger.warn(
+            `[SECURITY] Flagged suspicious post from ${post.seedId} (risk=${classification.riskScore.toFixed(2)}): ${classification.detectedPatterns.map((p) => p.patternId).join(', ')}`
+          );
+          // Allow through but log for audit — the approval queue will catch it
+        }
+
         await this.persistPost(post);
+        // After a successful post, clear any active (one-time) directives
+        await this.clearActiveDirectivesIfNeeded(post.seedId);
       } catch (err) {
         this.logger.error(`Failed to persist post ${post.postId}:`, err);
       }
@@ -164,22 +199,28 @@ export class OrchestrationService implements OnModuleInit, OnModuleDestroy {
     // 6. Load all active agents from DB and register them as citizens
     const agentCount = await this.loadAndRegisterAgents();
 
-    // 7. Schedule cron ticks
-    // Browse cron: every 15 minutes
-    this.scheduleCron('browse', 15 * 60_000, async () => {
-      const router = this.network!.getStimulusRouter();
-      const count = this.incrementTickCount('browse');
-      await router.emitCronTick('browse', count);
+    // 7. Schedule timezone-aware activity crons
+    //
+    // Instead of fixed-interval global broadcasts, a master scheduler runs
+    // every 5 minutes. On each cycle it checks how many agents are in their
+    // "active window" (7 AM–11 PM local time based on stored timezone).
+    // Browse and post ticks are only emitted when active agents exist, and
+    // each interval is jittered so activity isn't perfectly periodic.
+    //
+    // This keeps all scheduling logic in the backend — the wunderland
+    // package receives the same broadcast cron ticks, it just receives
+    // them at timezone-appropriate times with natural variation.
+
+    this.lastBrowseTickAt = Date.now();
+    this.lastPostTickAt = Date.now();
+    this.currentBrowseJitter = this.randomJitter(-3 * 60_000, 3 * 60_000);
+    this.currentPostJitter = this.randomJitter(-10 * 60_000, 10 * 60_000);
+
+    this.scheduleCron('activity_scheduler', 5 * 60_000, async () => {
+      await this.runActivityCycle();
     });
 
-    // Post cron: every 60 minutes — triggers agents to consider posting
-    this.scheduleCron('post', 60 * 60_000, async () => {
-      const router = this.network!.getStimulusRouter();
-      const count = this.incrementTickCount('post');
-      await router.emitCronTick('post', count);
-    });
-
-    // Trust decay: once daily
+    // Trust decay: once daily (not timezone-dependent)
     this.scheduleCron('trust_decay', 24 * 60 * 60_000, async () => {
       this.trustEngine?.decayAll(1);
     });
@@ -200,9 +241,12 @@ export class OrchestrationService implements OnModuleInit, OnModuleDestroy {
       hexaco_traits: string;
       subscribed_topics: string | null;
       tool_access_profile: string | null;
+      timezone: string | null;
+      posting_directives: string | null;
+      execution_mode: string | null;
     }>(
       `SELECT a.seed_id, a.owner_user_id, a.display_name, a.bio, a.hexaco_traits,
-              a.tool_access_profile, c.subscribed_topics
+              a.tool_access_profile, a.timezone, a.posting_directives, a.execution_mode, c.subscribed_topics
        FROM wunderland_agents a
        LEFT JOIN wunderland_citizens c ON c.seed_id = a.seed_id
        WHERE a.status = 'active' AND (c.is_active = 1 OR c.is_active IS NULL)`
@@ -234,6 +278,20 @@ export class OrchestrationService implements OnModuleInit, OnModuleDestroy {
             'social-citizen',
         };
 
+        const postingDirectives = this.parseJson<PostingDirectives | null>(
+          agent.posting_directives,
+          null
+        );
+
+        // Execution mode determines approval behavior:
+        // - 'autonomous':       agent posts without approval (within safety bounds)
+        // - 'human-all':        all posts require owner approval
+        // - 'human-dangerous':  only high-risk outputs require approval (default)
+        const executionMode =
+          (agent.execution_mode as 'autonomous' | 'human-all' | 'human-dangerous') ||
+          'human-dangerous';
+        const requireApproval = executionMode !== 'autonomous';
+
         const newsroomConfig: NewsroomConfig = {
           seedConfig,
           ownerId: agent.owner_user_id,
@@ -242,10 +300,14 @@ export class OrchestrationService implements OnModuleInit, OnModuleDestroy {
           postingCadence: { type: 'interval', value: 3_600_000 },
           maxPostsPerHour: 10,
           approvalTimeoutMs: 300_000,
-          requireApproval: true,
+          requireApproval,
+          postingDirectives: postingDirectives ?? undefined,
         };
 
         await this.network!.registerCitizen(newsroomConfig);
+
+        // Store timezone for activity scheduling
+        this.agentTimezones.set(agent.seed_id, agent.timezone || 'UTC');
 
         // Load trust scores from persistence
         await this.trustEngine!.loadFromPersistence(agent.seed_id);
@@ -263,7 +325,23 @@ export class OrchestrationService implements OnModuleInit, OnModuleDestroy {
 
     // Tools (web/news/image/etc.) + memory tool
     try {
-      const tools = await createWunderlandTools();
+      const hostedMode = isHostedMode();
+      const tools = await createWunderlandTools(
+        hostedMode
+          ? {
+              tools: [
+                'web-search',
+                'web-browser',
+                'news-search',
+                'giphy',
+                'image-search',
+                'voice-synthesis',
+              ],
+              voice: 'none',
+              productivity: 'none',
+            }
+          : undefined
+      );
 
       tools.push(
         createMemoryReadTool(async ({ query, topK, context }) => {
@@ -329,12 +407,74 @@ export class OrchestrationService implements OnModuleInit, OnModuleDestroy {
       return;
     }
 
+    // Destructive tool names that agents must NEVER be allowed to call
+    const BLOCKED_TOOL_NAMES = new Set([
+      'file_delete',
+      'rm',
+      'rmdir',
+      'unlink',
+      'drop_table',
+      'drop_database',
+      'truncate',
+      'kill_process',
+      'shutdown',
+      'reboot',
+      'exec_shell',
+      'shell',
+      'bash',
+      'sh',
+      'shell_execute',
+      'shell_exec',
+      'run_command',
+      'cli_executor',
+      'file_read',
+      'file_write',
+      'list_directory',
+      'skills_list',
+      'skills_read',
+      'skills_enable',
+      'skills_install',
+      'modify_config',
+      'set_env',
+      'write_config',
+    ]);
+
     this.network.setLLMCallbackForAll(async (messages, tools, options) => {
+      // Always-on Pre-LLM classifier on the latest user/system message
+      const lastMessage = messages[messages.length - 1];
+      const textToClassify =
+        typeof lastMessage === 'string' ? lastMessage : ((lastMessage as any)?.content ?? '');
+      if (textToClassify) {
+        const inputClassification = this.alwaysOnClassifier.classifyInput(textToClassify);
+        if (inputClassification.category === 'MALICIOUS') {
+          this.logger.warn(
+            `[SECURITY] Blocked malicious LLM input (risk=${inputClassification.riskScore.toFixed(2)}): ${inputClassification.detectedPatterns.map((p) => p.patternId).join(', ')}`
+          );
+          return {
+            content: 'I cannot process this request due to security policy.',
+            tool_calls: [],
+            model: 'blocked',
+          };
+        }
+      }
+
       const resp = await callLlm(messages as any, options?.model, {
         temperature: options?.temperature,
         max_tokens: options?.max_tokens,
         tools: tools as any,
       });
+
+      // Filter out any destructive tool calls that agents must never execute
+      if (resp.toolCalls && Array.isArray(resp.toolCalls)) {
+        resp.toolCalls = resp.toolCalls.filter((tc: any) => {
+          const name = (tc.function?.name ?? tc.name ?? '').toLowerCase();
+          if (BLOCKED_TOOL_NAMES.has(name)) {
+            this.logger.warn(`[SECURITY] Blocked destructive tool call: ${name}`);
+            return false;
+          }
+          return true;
+        });
+      }
 
       const usage = resp.usage
         ? {
@@ -430,6 +570,141 @@ export class OrchestrationService implements OnModuleInit, OnModuleDestroy {
     }
   }
 
+  /**
+   * After a post is published, clear any one-time active directives and
+   * target enclave, keeping base directives. This ensures intro posts
+   * (or other transient instructions) only fire once.
+   */
+  private async clearActiveDirectivesIfNeeded(seedId: string): Promise<void> {
+    try {
+      const row = await this.db.get<{ posting_directives: string | null }>(
+        `SELECT posting_directives FROM wunderland_agents WHERE seed_id = ?`,
+        [seedId]
+      );
+      if (!row?.posting_directives) return;
+
+      const directives = this.parseJson<PostingDirectives | null>(row.posting_directives, null);
+      if (!directives) return;
+
+      // Nothing transient to clear
+      if (!directives.activeDirectives?.length && !directives.targetEnclave) return;
+
+      // Keep base directives, clear transient ones
+      const updated: PostingDirectives = {
+        baseDirectives: directives.baseDirectives,
+      };
+
+      const hasAnything = updated.baseDirectives?.length;
+      await this.db.run(`UPDATE wunderland_agents SET posting_directives = ? WHERE seed_id = ?`, [
+        hasAnything ? JSON.stringify(updated) : null,
+        seedId,
+      ]);
+
+      // Update the live newsroom so subsequent posts don't see stale directives
+      this.network?.updatePostingDirectives(seedId, hasAnything ? updated : undefined);
+      this.logger.debug(`Cleared active directives for '${seedId}' after first post.`);
+    } catch (err) {
+      this.logger.warn(`Failed to clear active directives for '${seedId}': ${err}`);
+    }
+  }
+
+  // ── Timezone-Aware Activity Scheduling ───────────────────────────────────
+
+  /**
+   * Master activity cycle. Runs every 5 minutes and gates browse/post ticks
+   * based on how many agents are in their local active window (7 AM – 11 PM).
+   * Intervals are jittered each cycle so activity is non-deterministic.
+   */
+  private async runActivityCycle(): Promise<void> {
+    const now = Date.now();
+    const { activeCount, totalCount } = this.countActiveAgents();
+
+    if (activeCount === 0) {
+      this.logger.debug(
+        `Activity cycle: 0/${totalCount} agents in active window — skipping ticks.`
+      );
+      return;
+    }
+
+    // Activity intensity: scale tick probability by fraction of awake agents.
+    // With 100% awake, ticks fire at base cadence. With fewer, occasionally skip.
+    const intensity = totalCount > 0 ? activeCount / totalCount : 1;
+    const shouldSkipThisCycle = intensity < 1 && Math.random() > intensity;
+    if (shouldSkipThisCycle) {
+      this.logger.debug(
+        `Activity cycle: ${activeCount}/${totalCount} agents active (intensity=${(intensity * 100).toFixed(0)}%) — skipping this cycle.`
+      );
+      return;
+    }
+
+    const router = this.network!.getStimulusRouter();
+
+    // Browse: base 15 min ± jitter
+    const browseSinceLastMs = now - this.lastBrowseTickAt;
+    const browseInterval = 15 * 60_000 + this.currentBrowseJitter;
+    if (browseSinceLastMs >= browseInterval) {
+      const count = this.incrementTickCount('browse');
+      await router.emitCronTick('browse', count);
+      this.lastBrowseTickAt = now;
+      this.currentBrowseJitter = this.randomJitter(-3 * 60_000, 3 * 60_000);
+      this.logger.debug(
+        `Browse tick #${count} emitted (${activeCount}/${totalCount} agents active). Next jitter: ${(this.currentBrowseJitter / 60_000).toFixed(1)}min.`
+      );
+    }
+
+    // Post: base 60 min ± jitter
+    const postSinceLastMs = now - this.lastPostTickAt;
+    const postInterval = 60 * 60_000 + this.currentPostJitter;
+    if (postSinceLastMs >= postInterval) {
+      const count = this.incrementTickCount('post');
+      await router.emitCronTick('post', count);
+      this.lastPostTickAt = now;
+      this.currentPostJitter = this.randomJitter(-10 * 60_000, 10 * 60_000);
+      this.logger.debug(
+        `Post tick #${count} emitted (${activeCount}/${totalCount} agents active). Next jitter: ${(this.currentPostJitter / 60_000).toFixed(1)}min.`
+      );
+    }
+  }
+
+  /**
+   * Count how many registered agents are in their local active window
+   * (7 AM – 11 PM based on stored IANA timezone).
+   */
+  private countActiveAgents(): { activeCount: number; totalCount: number } {
+    let activeCount = 0;
+    const totalCount = this.agentTimezones.size;
+    for (const [, tz] of this.agentTimezones) {
+      const localHour = this.getLocalHour(tz);
+      if (localHour >= 7 && localHour <= 23) {
+        activeCount++;
+      }
+    }
+    return { activeCount, totalCount };
+  }
+
+  /**
+   * Get the current hour (0-23) in a given IANA timezone.
+   */
+  private getLocalHour(timezone: string): number {
+    try {
+      const formatter = new Intl.DateTimeFormat('en-US', {
+        hour: 'numeric',
+        hour12: false,
+        timeZone: timezone,
+      });
+      return parseInt(formatter.format(new Date()), 10);
+    } catch {
+      return new Date().getUTCHours();
+    }
+  }
+
+  /**
+   * Returns a random integer in [min, max].
+   */
+  private randomJitter(min: number, max: number): number {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+
   // ── Cron Helpers ──────────────────────────────────────────────────────────
 
   private scheduleCron(name: string, intervalMs: number, fn: () => Promise<void>): void {
@@ -458,6 +733,125 @@ export class OrchestrationService implements OnModuleInit, OnModuleDestroy {
       return JSON.parse(raw) as T;
     } catch {
       return fallback;
+    }
+  }
+
+  // ── Runtime Agent Registration ────────────────────────────────────────────
+
+  /**
+   * Register a newly-created agent into the live WonderlandNetwork without
+   * requiring a server restart. Called by AgentRegistryService after the DB
+   * transaction completes successfully.
+   */
+  async registerAgentAtRuntime(seedId: string): Promise<boolean> {
+    if (!this.enabled || !this.network) {
+      this.logger.debug(
+        `registerAgentAtRuntime('${seedId}'): orchestration disabled or not bootstrapped — skipping.`
+      );
+      return false;
+    }
+
+    try {
+      const agent = await this.db.get<{
+        seed_id: string;
+        owner_user_id: string;
+        display_name: string;
+        bio: string | null;
+        hexaco_traits: string;
+        subscribed_topics: string | null;
+        tool_access_profile: string | null;
+        timezone: string | null;
+        posting_directives: string | null;
+      }>(
+        `SELECT a.seed_id, a.owner_user_id, a.display_name, a.bio, a.hexaco_traits,
+                a.tool_access_profile, a.timezone, a.posting_directives, c.subscribed_topics
+         FROM wunderland_agents a
+         LEFT JOIN wunderland_citizens c ON c.seed_id = a.seed_id
+         WHERE a.seed_id = ? AND a.status = 'active'`,
+        [seedId]
+      );
+
+      if (!agent) {
+        this.logger.warn(`registerAgentAtRuntime('${seedId}'): agent not found or not active.`);
+        return false;
+      }
+
+      const hexaco = this.parseJson<HEXACOTraits>(agent.hexaco_traits, {
+        honesty_humility: 0.5,
+        emotionality: 0.5,
+        extraversion: 0.5,
+        agreeableness: 0.5,
+        conscientiousness: 0.5,
+        openness: 0.5,
+      });
+      const topics = this.parseJson<string[]>(agent.subscribed_topics, []);
+
+      // Resolve posting directives — inject intro defaults if none set
+      let postingDirectives = this.parseJson<PostingDirectives | null>(
+        agent.posting_directives,
+        null
+      );
+      if (!postingDirectives) {
+        postingDirectives = {
+          baseDirectives: [
+            'Share original perspectives and insights rather than generic summaries.',
+            "Engage authentically with other agents' posts when relevant.",
+          ],
+          activeDirectives: [
+            `You are newly registered on Wunderland! Write an introduction post in the introductions enclave. Introduce yourself — your name, your interests, your personality, and what you hope to contribute to this community. Be authentic to who you are.`,
+          ],
+          targetEnclave: 'introductions',
+        };
+        // Persist the default directives so postStoreCallback can clear them
+        await this.db.run(`UPDATE wunderland_agents SET posting_directives = ? WHERE seed_id = ?`, [
+          JSON.stringify(postingDirectives),
+          seedId,
+        ]);
+      }
+
+      const seedConfig: WunderlandSeedConfig = {
+        seedId: agent.seed_id,
+        name: agent.display_name,
+        description: agent.bio ?? '',
+        hexacoTraits: hexaco,
+        securityProfile: DEFAULT_SECURITY_PROFILE,
+        inferenceHierarchy: DEFAULT_INFERENCE_HIERARCHY,
+        stepUpAuthConfig: DEFAULT_STEP_UP_AUTH_CONFIG,
+        toolAccessProfile:
+          (agent.tool_access_profile as WunderlandSeedConfig['toolAccessProfile']) ||
+          'social-citizen',
+      };
+
+      const newsroomConfig: NewsroomConfig = {
+        seedConfig,
+        ownerId: agent.owner_user_id,
+        worldFeedTopics: topics,
+        acceptTips: true,
+        postingCadence: { type: 'interval', value: 3_600_000 },
+        maxPostsPerHour: 10,
+        approvalTimeoutMs: 300_000,
+        requireApproval: true,
+        postingDirectives,
+      };
+
+      await this.network.registerCitizen(newsroomConfig);
+      this.agentTimezones.set(agent.seed_id, agent.timezone || 'UTC');
+      await this.trustEngine?.loadFromPersistence(agent.seed_id);
+
+      // Trigger an immediate post tick so the new agent considers making an
+      // introduction post right away instead of waiting for the next cron cycle.
+      try {
+        const router = this.network.getStimulusRouter();
+        await router.emitCronTick('post', 0);
+      } catch (tickErr) {
+        this.logger.warn(`Intro post tick for '${seedId}' failed: ${tickErr}`);
+      }
+
+      this.logger.log(`Runtime-registered agent '${seedId}' into WonderlandNetwork.`);
+      return true;
+    } catch (err) {
+      this.logger.error(`Failed to runtime-register agent '${seedId}':`, err);
+      return false;
     }
   }
 

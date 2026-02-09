@@ -1,18 +1,22 @@
 /**
- * @file agentos.rag.multimodal.routes.ts
+ * @file rag.multimodal.routes.ts
  * @description Multimodal RAG (image/audio) endpoints for AgentOS.
  *
  * This router ingests binary assets (multipart/form-data) and indexes them by
  * deriving a text representation (caption/transcript) which is stored as a normal
  * RAG document for retrieval.
  *
- * Routes are mounted under `/api/agentos/rag/multimodal`.
+ * It also supports query-by-image and query-by-audio:
+ * - Query-by-image prefers offline image embeddings when enabled in the host app.
+ * - Otherwise it derives a text representation for the query asset, then runs the standard
+ *   text retrieval pipeline over previously indexed assets.
+ *
+ * Routes are typically mounted under `/api/agentos/rag/multimodal`.
  */
 
 import { Router, type NextFunction, type Request, type Response } from 'express';
 import multer, { MulterError } from 'multer';
-import { agentosChatAdapterEnabled } from './agentos.chat-adapter.js';
-import { ragService } from './agentos.rag.service.js';
+import type { AgentOSRagRouterDeps } from './rag.types.js';
 
 const MAX_IMAGE_SIZE_BYTES = 15 * 1024 * 1024; // 15MB
 const MAX_AUDIO_SIZE_BYTES = 25 * 1024 * 1024; // Whisper API limit is 25MB
@@ -133,14 +137,181 @@ const runSingleUpload = async (
 /**
  * Creates the Express router for multimodal RAG endpoints.
  */
-export const createAgentOSRagMultimodalRouter = (): Router => {
+export const createAgentOSRagMultimodalRouter = (deps: AgentOSRagRouterDeps): Router => {
   const router = Router();
+
+  router.post(
+    '/images/query',
+    async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
+      try {
+        if (!deps.isEnabled()) {
+          return res.status(503).json({
+            success: false,
+            message: 'AgentOS integration disabled',
+            error: 'AGENTOS_DISABLED',
+          });
+        }
+
+        let file: Express.Multer.File;
+        try {
+          file = await runSingleUpload(imageUpload, 'image', req, res);
+        } catch (err: any) {
+          if (err instanceof MulterError) {
+            if (err.code === 'LIMIT_FILE_SIZE') {
+              return res.status(413).json({
+                success: false,
+                message: `Image file is too large. Max is ${Math.round(MAX_IMAGE_SIZE_BYTES / (1024 * 1024))}MB.`,
+                error: 'FILE_TOO_LARGE',
+              });
+            }
+            return res.status(400).json({
+              success: false,
+              message: `File upload error: ${err.message}`,
+              error: 'FILE_UPLOAD_ERROR',
+            });
+          }
+          return res.status(415).json({
+            success: false,
+            message: err?.message || 'Invalid image file.',
+            error: 'INVALID_IMAGE_FILE',
+          });
+        }
+
+        const body = req.body as Record<string, unknown>;
+        const parsedModalities = Array.isArray(body.modalities)
+          ? (body.modalities
+              .map((v) => String(v ?? '').trim())
+              .filter((v) => v === 'image' || v === 'audio') as Array<'image' | 'audio'>)
+          : undefined;
+        const modalities: Array<'image' | 'audio'> =
+          parsedModalities && parsedModalities.length > 0 ? parsedModalities : ['image'];
+
+        const collectionIds = Array.isArray(body.collectionIds)
+          ? body.collectionIds.map((v) => String(v ?? '').trim()).filter(Boolean)
+          : typeof body.collectionIds === 'string'
+            ? body.collectionIds
+                .split(',')
+                .map((v) => v.trim())
+                .filter(Boolean)
+            : undefined;
+
+        const topK =
+          typeof body.topK === 'number'
+            ? body.topK
+            : typeof body.topK === 'string'
+              ? Number.parseInt(body.topK, 10)
+              : undefined;
+
+        const includeMetadata = parseBooleanField(body.includeMetadata);
+
+        const result = await deps.ragService.queryMediaAssetsByImage({
+          payload: file.buffer,
+          mimeType: file.mimetype,
+          sourceUrl: typeof body.sourceUrl === 'string' ? body.sourceUrl : undefined,
+          textRepresentation:
+            typeof body.textRepresentation === 'string' ? body.textRepresentation : undefined,
+          modalities,
+          collectionIds,
+          topK: Number.isFinite(topK as any) ? (topK as number) : undefined,
+          includeMetadata,
+        });
+
+        return res.status(result.success ? 200 : 500).json(result);
+      } catch (error) {
+        next(error);
+      }
+    }
+  );
+
+  router.post(
+    '/audio/query',
+    async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
+      try {
+        if (!deps.isEnabled()) {
+          return res.status(503).json({
+            success: false,
+            message: 'AgentOS integration disabled',
+            error: 'AGENTOS_DISABLED',
+          });
+        }
+
+        let file: Express.Multer.File;
+        try {
+          file = await runSingleUpload(audioUpload, 'audio', req, res);
+        } catch (err: any) {
+          if (err instanceof MulterError) {
+            if (err.code === 'LIMIT_FILE_SIZE') {
+              return res.status(413).json({
+                success: false,
+                message: `Audio file is too large. Max is ${Math.round(MAX_AUDIO_SIZE_BYTES / (1024 * 1024))}MB.`,
+                error: 'FILE_TOO_LARGE',
+              });
+            }
+            return res.status(400).json({
+              success: false,
+              message: `File upload error: ${err.message}`,
+              error: 'FILE_UPLOAD_ERROR',
+            });
+          }
+          return res.status(415).json({
+            success: false,
+            message: err?.message || 'Invalid audio file.',
+            error: 'INVALID_AUDIO_FILE',
+          });
+        }
+
+        const body = req.body as Record<string, unknown>;
+        const parsedModalities = Array.isArray(body.modalities)
+          ? (body.modalities
+              .map((v) => String(v ?? '').trim())
+              .filter((v) => v === 'image' || v === 'audio') as Array<'image' | 'audio'>)
+          : undefined;
+        const modalities: Array<'image' | 'audio'> =
+          parsedModalities && parsedModalities.length > 0 ? parsedModalities : ['audio'];
+
+        const collectionIds = Array.isArray(body.collectionIds)
+          ? body.collectionIds.map((v) => String(v ?? '').trim()).filter(Boolean)
+          : typeof body.collectionIds === 'string'
+            ? body.collectionIds
+                .split(',')
+                .map((v) => v.trim())
+                .filter(Boolean)
+            : undefined;
+
+        const topK =
+          typeof body.topK === 'number'
+            ? body.topK
+            : typeof body.topK === 'string'
+              ? Number.parseInt(body.topK, 10)
+              : undefined;
+
+        const includeMetadata = parseBooleanField(body.includeMetadata);
+
+        const result = await deps.ragService.queryMediaAssetsByAudio({
+          payload: file.buffer,
+          mimeType: file.mimetype,
+          originalFileName: file.originalname,
+          textRepresentation:
+            typeof body.textRepresentation === 'string' ? body.textRepresentation : undefined,
+          modalities,
+          collectionIds,
+          topK: Number.isFinite(topK as any) ? (topK as number) : undefined,
+          includeMetadata,
+          userId: typeof body.userId === 'string' ? body.userId : undefined,
+        });
+
+        return res.status(result.success ? 200 : 500).json(result);
+      } catch (error) {
+        next(error);
+      }
+    }
+  );
 
   router.post(
     '/images/ingest',
     async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
       try {
-        if (!agentosChatAdapterEnabled()) {
+        if (!deps.isEnabled()) {
           return res.status(503).json({
             success: false,
             message: 'AgentOS integration disabled',
@@ -178,7 +349,7 @@ export const createAgentOSRagMultimodalRouter = (): Router => {
         const tags = parseTagsField(body.tags);
         const storePayload = parseBooleanField(body.storePayload);
 
-        const result = await ragService.ingestImageAsset({
+        const result = await deps.ragService.ingestImageAsset({
           assetId: typeof body.assetId === 'string' ? body.assetId : undefined,
           collectionId: typeof body.collectionId === 'string' ? body.collectionId : undefined,
           mimeType: file.mimetype,
@@ -206,7 +377,7 @@ export const createAgentOSRagMultimodalRouter = (): Router => {
     '/audio/ingest',
     async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
       try {
-        if (!agentosChatAdapterEnabled()) {
+        if (!deps.isEnabled()) {
           return res.status(503).json({
             success: false,
             message: 'AgentOS integration disabled',
@@ -244,7 +415,7 @@ export const createAgentOSRagMultimodalRouter = (): Router => {
         const tags = parseTagsField(body.tags);
         const storePayload = parseBooleanField(body.storePayload);
 
-        const result = await ragService.ingestAudioAsset({
+        const result = await deps.ragService.ingestAudioAsset({
           assetId: typeof body.assetId === 'string' ? body.assetId : undefined,
           collectionId: typeof body.collectionId === 'string' ? body.collectionId : undefined,
           mimeType: file.mimetype,
@@ -272,7 +443,7 @@ export const createAgentOSRagMultimodalRouter = (): Router => {
     '/query',
     async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
       try {
-        if (!agentosChatAdapterEnabled()) {
+        if (!deps.isEnabled()) {
           return res.status(503).json({
             success: false,
             message: 'AgentOS integration disabled',
@@ -309,7 +480,7 @@ export const createAgentOSRagMultimodalRouter = (): Router => {
 
         const includeMetadata = parseBooleanField(body.includeMetadata);
 
-        const result = await ragService.queryMediaAssets({
+        const result = await deps.ragService.queryMediaAssets({
           query,
           modalities,
           collectionIds,
@@ -328,7 +499,7 @@ export const createAgentOSRagMultimodalRouter = (): Router => {
     '/assets/:assetId',
     async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
       try {
-        if (!agentosChatAdapterEnabled()) {
+        if (!deps.isEnabled()) {
           return res.status(503).json({
             success: false,
             message: 'AgentOS integration disabled',
@@ -345,7 +516,7 @@ export const createAgentOSRagMultimodalRouter = (): Router => {
           });
         }
 
-        const asset = await ragService.getMediaAsset(assetId);
+        const asset = await deps.ragService.getMediaAsset(assetId);
         if (!asset) {
           return res.status(404).json({ success: false, message: 'Asset not found' });
         }
@@ -360,7 +531,7 @@ export const createAgentOSRagMultimodalRouter = (): Router => {
     '/assets/:assetId/content',
     async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
       try {
-        if (!agentosChatAdapterEnabled()) {
+        if (!deps.isEnabled()) {
           return res.status(503).json({
             success: false,
             message: 'AgentOS integration disabled',
@@ -377,7 +548,7 @@ export const createAgentOSRagMultimodalRouter = (): Router => {
           });
         }
 
-        const content = await ragService.getMediaAssetContent(assetId);
+        const content = await deps.ragService.getMediaAssetContent(assetId);
         if (!content) {
           return res.status(404).json({
             success: false,
@@ -398,7 +569,7 @@ export const createAgentOSRagMultimodalRouter = (): Router => {
     '/assets/:assetId',
     async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
       try {
-        if (!agentosChatAdapterEnabled()) {
+        if (!deps.isEnabled()) {
           return res.status(503).json({
             success: false,
             message: 'AgentOS integration disabled',
@@ -415,7 +586,7 @@ export const createAgentOSRagMultimodalRouter = (): Router => {
           });
         }
 
-        const deleted = await ragService.deleteMediaAsset(assetId);
+        const deleted = await deps.ragService.deleteMediaAsset(assetId);
         if (!deleted) {
           return res.status(404).json({ success: false, message: 'Asset not found' });
         }
@@ -428,5 +599,3 @@ export const createAgentOSRagMultimodalRouter = (): Router => {
 
   return router;
 };
-
-export default createAgentOSRagMultimodalRouter;

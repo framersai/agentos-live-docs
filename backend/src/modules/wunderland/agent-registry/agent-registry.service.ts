@@ -10,9 +10,12 @@
  * storage adapter) in a future implementation pass.
  */
 
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, Optional } from '@nestjs/common';
 import type { StorageAdapter } from '@framers/sql-storage-adapter';
+import { CHANNEL_CATALOG, TOOL_CATALOG } from '@framers/agentos-extensions-registry';
+import { SKILLS_CATALOG } from '@framers/agentos-skills-registry';
 import { DatabaseService } from '../../../database/database.service.js';
+import { OrchestrationService } from '../orchestration/orchestration.service.js';
 import {
   AgentAlreadyRegisteredException,
   AgentNotFoundException,
@@ -22,6 +25,7 @@ import {
 } from '../wunderland.exceptions.js';
 import type { RegisterAgentDto, UpdateAgentDto, ListAgentsQueryDto } from '../dto/index.js';
 import { buildToolsetManifestV1, computeToolsetHashV1 } from '../immutability/toolset-manifest.js';
+import { isHostedMode } from '../hosted-mode.js';
 
 type PaginatedResponse<T> = {
   items: T[];
@@ -51,6 +55,15 @@ type AgentProfile = {
   capabilities: string[];
   skills: string[];
   channels: string[];
+  timezone: string;
+  postingDirectives: Record<string, unknown> | null;
+  executionMode: 'autonomous' | 'human-all' | 'human-dangerous';
+  voiceConfig: {
+    provider?: string;
+    voiceId?: string;
+    languageCode?: string;
+    customParams?: Record<string, unknown>;
+  } | null;
   citizen: {
     level: number;
     xp: number;
@@ -93,6 +106,7 @@ type AgentSummary = Pick<
   | 'capabilities'
   | 'skills'
   | 'channels'
+  | 'timezone'
 >;
 
 type WunderlandAgentRow = {
@@ -116,7 +130,11 @@ type WunderlandAgentRow = {
   provenance_enabled: number;
   skills_json: string | null;
   channels_json: string | null;
+  timezone: string | null;
   tool_access_profile: string | null;
+  posting_directives: string | null;
+  execution_mode: string | null;
+  voice_config: string | null;
   status: string | null;
   created_at: number;
   updated_at: number;
@@ -300,9 +318,123 @@ function resolveAgentPermissions(profileName: string): ResolvedPermissions {
 
 const VALID_TOOL_ACCESS_PROFILES = new Set(Object.keys(TOOL_ACCESS_PROFILE_DEFINITIONS));
 
+const TOOL_PACK_NAMES = new Set(TOOL_CATALOG.map((t) => t.name));
+const CHANNEL_PLATFORMS = new Set(CHANNEL_CATALOG.map((c) => c.platform));
+const SKILL_BY_NAME = new Map(SKILLS_CATALOG.map((s) => [s.name, s] as const));
+
+const HOSTED_BLOCKED_EXTENSION_PACKAGES = new Set<string>([
+  '@framers/agentos-ext-cli-executor',
+  '@framers/agentos-ext-skills',
+]);
+
+const HOSTED_BLOCKED_CAPABILITY_IDS = new Set<string>([
+  // Extension pack slugs
+  'cli-executor',
+  'skills',
+  // Direct tool IDs (defense-in-depth; these should come from the packs above)
+  'shell_execute',
+  'file_read',
+  'file_write',
+  'list_directory',
+  'skills_list',
+  'skills_read',
+  'skills_enable',
+  'skills_install',
+]);
+
+const HOSTED_BLOCKED_SKILL_NAMES = new Set<string>([
+  // These rely on local CLI access even though requiredTools is empty today.
+  'github',
+  'git',
+  '1password',
+]);
+
+function validateCapabilitiesOrThrow(capabilities: string[], opts: { hostedMode: boolean }): void {
+  if (capabilities.length === 0) return;
+
+  // Fast path: accept known pack names. If anything isn't a pack name, fall back to registry resolution.
+  const hasUnknownPackName = capabilities.some((cap) => !TOOL_PACK_NAMES.has(cap));
+  const toolsetManifest = hasUnknownPackName ? buildToolsetManifestV1(capabilities) : null;
+
+  const unresolved = toolsetManifest?.unresolvedCapabilities ?? [];
+  if (unresolved.length > 0) {
+    throw new BadRequestException({
+      message: 'Some capabilities/tools are not recognized.',
+      unresolvedCapabilities: unresolved,
+    });
+  }
+
+  if (!opts.hostedMode) return;
+
+  const blockedCapabilities = capabilities.filter((cap) => HOSTED_BLOCKED_CAPABILITY_IDS.has(cap));
+  if (blockedCapabilities.length > 0) {
+    throw new BadRequestException({
+      message: 'Some capabilities/tools are not allowed in hosted mode.',
+      blockedCapabilities,
+    });
+  }
+
+  // If capabilities were all pack names, resolve them via the registry snapshot to check packages.
+  const manifest = toolsetManifest ?? buildToolsetManifestV1(capabilities);
+  const blockedExtensions = manifest.resolvedExtensions
+    .filter((ext) => HOSTED_BLOCKED_EXTENSION_PACKAGES.has(ext.package))
+    .map((ext) => ext.package);
+
+  if (blockedExtensions.length > 0) {
+    throw new BadRequestException({
+      message: 'Some capability extensions are not allowed in hosted mode.',
+      blockedExtensions: Array.from(new Set(blockedExtensions)).sort(),
+    });
+  }
+}
+
+function validateSkillsOrThrow(skills: string[], opts: { hostedMode: boolean }): void {
+  if (skills.length === 0) return;
+
+  const unknown = skills.filter((name) => !SKILL_BY_NAME.has(name));
+  if (unknown.length > 0) {
+    throw new BadRequestException({
+      message: 'Some skills are not recognized.',
+      unknownSkills: unknown,
+    });
+  }
+
+  if (!opts.hostedMode) return;
+
+  const blocked = skills.filter((name) => {
+    if (HOSTED_BLOCKED_SKILL_NAMES.has(name)) return true;
+    const entry = SKILL_BY_NAME.get(name);
+    if (!entry) return true;
+    if (entry.requiredTools.includes('filesystem')) return true;
+    if (entry.category === 'developer-tools') return true;
+    return false;
+  });
+
+  if (blocked.length > 0) {
+    throw new BadRequestException({
+      message: 'Some skills are not allowed in hosted mode.',
+      blockedSkills: blocked,
+    });
+  }
+}
+
+function validateChannelsOrThrow(channels: string[]): void {
+  if (channels.length === 0) return;
+  const unknown = channels.filter((platform) => !CHANNEL_PLATFORMS.has(platform));
+  if (unknown.length > 0) {
+    throw new BadRequestException({
+      message: 'Some channels are not recognized.',
+      unknownChannels: unknown,
+    });
+  }
+}
+
 @Injectable()
 export class AgentRegistryService {
-  constructor(private readonly db: DatabaseService) {}
+  constructor(
+    private readonly db: DatabaseService,
+    @Optional() private readonly orchestration?: OrchestrationService
+  ) {}
 
   /**
    * Resolve the permissions object for a given tool access profile name.
@@ -315,6 +447,7 @@ export class AgentRegistryService {
   async registerAgent(userId: string, dto: RegisterAgentDto): Promise<{ agent: AgentProfile }> {
     const now = Date.now();
     const seedId = dto.seedId.trim();
+    const hostedMode = isHostedMode();
 
     try {
       await this.db.transaction(async (trx: StorageAdapter) => {
@@ -329,6 +462,11 @@ export class AgentRegistryService {
         const capabilities = normalizeStringArray(dto.capabilities);
         const skills = normalizeStringArray(dto.skills);
         const channels = normalizeStringArray(dto.channels);
+
+        validateCapabilitiesOrThrow(capabilities, { hostedMode });
+        validateSkillsOrThrow(skills, { hostedMode });
+        validateChannelsOrThrow(channels);
+
         const securityProfile = {
           preLlmClassifier: Boolean(dto.security?.preLlmClassifier),
           dualLlmAuditor: Boolean(dto.security?.dualLlmAuditor),
@@ -340,6 +478,16 @@ export class AgentRegistryService {
           dto.toolAccessProfile && VALID_TOOL_ACCESS_PROFILES.has(dto.toolAccessProfile)
             ? dto.toolAccessProfile
             : 'social-citizen';
+
+        if (
+          hostedMode &&
+          (toolAccessProfile === 'assistant' || toolAccessProfile === 'unrestricted')
+        ) {
+          throw new BadRequestException({
+            message: 'This tool access profile is not allowed in hosted mode.',
+            toolAccessProfile,
+          });
+        }
 
         await trx.run(
           `
@@ -357,12 +505,16 @@ export class AgentRegistryService {
 	              allowed_tool_ids,
 	              skills_json,
 	              channels_json,
+	              timezone,
 	              genesis_event_id,
 	              public_key,
 	              storage_policy,
 	              sealed_at,
 	              provenance_enabled,
 	              tool_access_profile,
+	              posting_directives,
+	              execution_mode,
+	              voice_config,
 	              status,
 	              created_at,
 	              updated_at
@@ -380,12 +532,16 @@ export class AgentRegistryService {
 	              @allowed_tool_ids,
 	              @skills_json,
 	              @channels_json,
+	              @timezone,
 	              @genesis_event_id,
 	              @public_key,
 	              @storage_policy,
 	              @sealed_at,
 	              @provenance_enabled,
 	              @tool_access_profile,
+	              @posting_directives,
+	              @execution_mode,
+	              @voice_config,
 	              @status,
 	              @created_at,
 	              @updated_at
@@ -405,12 +561,18 @@ export class AgentRegistryService {
             allowed_tool_ids: JSON.stringify(capabilities),
             skills_json: JSON.stringify(skills),
             channels_json: JSON.stringify(channels),
+            timezone: dto.timezone?.trim() || 'UTC',
             genesis_event_id: null,
             public_key: null,
             storage_policy: securityProfile.storagePolicy,
             sealed_at: null,
             provenance_enabled: securityProfile.outputSigning ? 1 : 0,
             tool_access_profile: toolAccessProfile,
+            posting_directives: dto.postingDirectives
+              ? JSON.stringify(dto.postingDirectives)
+              : null,
+            execution_mode: dto.executionMode || 'human-dangerous',
+            voice_config: dto.voiceConfig ? JSON.stringify(dto.voiceConfig) : null,
             status: 'active',
             created_at: now,
             updated_at: now,
@@ -455,6 +617,10 @@ export class AgentRegistryService {
       if (error instanceof AgentAlreadyRegisteredException) throw error;
       throw error;
     }
+
+    // Register the agent into the live WonderlandNetwork so it starts
+    // receiving stimulus events immediately (no server restart needed).
+    await this.orchestration?.registerAgentAtRuntime(seedId);
 
     const agent = await this.getAgentBySeedIdOrThrow(seedId);
     return { agent: this.mapAgentProfile(agent.agent, agent.citizen) };
@@ -604,6 +770,7 @@ export class AgentRegistryService {
     dto: UpdateAgentDto
   ): Promise<{ agent: AgentProfile }> {
     const now = Date.now();
+    const hostedMode = isHostedMode();
 
     await this.db.transaction(async (trx) => {
       const existing = await trx.get<WunderlandAgentRow>(
@@ -658,6 +825,10 @@ export class AgentRegistryService {
       const existingChannels = parseJsonOr<string[]>(existing.channels_json, []);
       const channels = dto.channels ? normalizeStringArray(dto.channels) : existingChannels;
 
+      if (dto.capabilities) validateCapabilitiesOrThrow(capabilities, { hostedMode });
+      if (dto.skills) validateSkillsOrThrow(skills, { hostedMode });
+      if (dto.channels) validateChannelsOrThrow(channels);
+
       const existingPersonality = parseJsonOr<Record<string, number>>(existing.hexaco_traits, {});
       const personality = dto.personality ? (dto.personality as any) : existingPersonality;
 
@@ -685,6 +856,17 @@ export class AgentRegistryService {
           ? dto.toolAccessProfile
           : undefined;
 
+      if (
+        hostedMode &&
+        typeof nextToolAccessProfile === 'string' &&
+        (nextToolAccessProfile === 'assistant' || nextToolAccessProfile === 'unrestricted')
+      ) {
+        throw new BadRequestException({
+          message: 'This tool access profile is not allowed in hosted mode.',
+          toolAccessProfile: nextToolAccessProfile,
+        });
+      }
+
       await trx.run(
         `
 	          UPDATE wunderland_agents
@@ -698,7 +880,11 @@ export class AgentRegistryService {
 	                 allowed_tool_ids = @allowed_tool_ids,
 	                 skills_json = @skills_json,
 	                 channels_json = @channels_json,
+	                 timezone = COALESCE(@timezone, timezone),
 	                 tool_access_profile = COALESCE(@tool_access_profile, tool_access_profile),
+	                 posting_directives = COALESCE(@posting_directives, posting_directives),
+	                 execution_mode = COALESCE(@execution_mode, execution_mode),
+	                 voice_config = COALESCE(@voice_config, voice_config),
 	                 updated_at = @updated_at
 	           WHERE seed_id = @seed_id
 	        `,
@@ -714,7 +900,11 @@ export class AgentRegistryService {
           allowed_tool_ids: JSON.stringify(capabilities),
           skills_json: JSON.stringify(skills),
           channels_json: JSON.stringify(channels),
+          timezone: dto.timezone?.trim() || null,
           tool_access_profile: nextToolAccessProfile ?? null,
+          posting_directives: dto.postingDirectives ? JSON.stringify(dto.postingDirectives) : null,
+          execution_mode: dto.executionMode ?? null,
+          voice_config: dto.voiceConfig ? JSON.stringify(dto.voiceConfig) : null,
           updated_at: now,
         }
       );
@@ -941,6 +1131,20 @@ export class AgentRegistryService {
       capabilities,
       skills,
       channels,
+      timezone: agent.timezone || 'UTC',
+      postingDirectives: parseJsonOr<Record<string, unknown> | null>(
+        agent.posting_directives,
+        null
+      ),
+      executionMode:
+        (agent.execution_mode as 'autonomous' | 'human-all' | 'human-dangerous') ||
+        'human-dangerous',
+      voiceConfig: parseJsonOr<{
+        provider?: string;
+        voiceId?: string;
+        languageCode?: string;
+        customParams?: Record<string, unknown>;
+      } | null>(agent.voice_config, null),
       citizen: {
         level: citizen.level ?? 1,
         xp: citizen.xp ?? 0,
@@ -972,6 +1176,7 @@ export class AgentRegistryService {
       capabilities: base.capabilities,
       skills: base.skills,
       channels: base.channels,
+      timezone: base.timezone,
     };
     return summary;
   }

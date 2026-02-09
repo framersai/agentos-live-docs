@@ -198,6 +198,16 @@ export interface RagIngestionResult {
 export interface RagQueryOptions {
   /** Query text */
   query: string;
+  /**
+   * Retrieval preset override for this request.
+   *
+   * - `fast`: vector-only when available; no hybrid; no rerank
+   * - `balanced`: hybrid when available (vector + lexical), otherwise vector-only
+   * - `accurate`: `balanced` + cross-encoder reranking (when configured)
+   *
+   * When omitted, uses `AGENTOS_RAG_PRESET` (default: `balanced`).
+   */
+  preset?: RagRetrievalPreset;
   /** Collections to search */
   collectionIds?: string[];
   /** Maximum chunks to return */
@@ -214,6 +224,37 @@ export interface RagQueryOptions {
   };
   /** Include metadata in results */
   includeMetadata?: boolean;
+  /**
+   * Optional post-retrieval strategy.
+   *
+   * - `similarity` (default): return chunks ordered by similarity score.
+   * - `mmr`: apply Maximal Marginal Relevance (MMR) to diversify results.
+   */
+  strategy?: 'similarity' | 'mmr';
+  /** Strategy-specific parameters. */
+  strategyParams?: {
+    /** MMR lambda in [0,1]. Higher favors relevance over diversity. Default: `0.7`. */
+    mmrLambda?: number;
+    /** Candidate pool multiplier for MMR. Default: `5`. */
+    mmrCandidateMultiplier?: number;
+  };
+  /**
+   * Optional additional query variants to run retrieval against.
+   *
+   * The backend will run retrieval for the base `query` plus these variants,
+   * then merge and de-duplicate results.
+   */
+  queryVariants?: string[];
+  /**
+   * Optional LLM-powered query rewriting to generate additional query variants.
+   *
+   * This is disabled by default and may incur an extra model call when enabled.
+   */
+  rewrite?: {
+    enabled?: boolean;
+    /** Max number of generated variants (in addition to the base `query`). Default: `2`. */
+    maxVariants?: number;
+  };
 }
 
 /**
@@ -372,6 +413,8 @@ export interface RagMediaQueryResult {
   }>;
   totalResults: number;
   processingTimeMs: number;
+  /** Optional error message when `success=false`. */
+  error?: string;
 }
 
 /**
@@ -471,6 +514,26 @@ class SqlRagStore {
   private graphRagDisabledReason?: string;
   private graphRagEngine?: IGraphRAGEngine;
   private graphRagWarningLogged = false;
+
+  // Optional multimodal (image) embedding subsystem (Transformers.js; install-on-demand).
+  private mediaImageEmbedInitPromise: Promise<void> | null = null;
+  private mediaImageEmbedStatus: 'uninitialized' | 'enabled' | 'disabled' = 'uninitialized';
+  private mediaImageEmbedDisabledReason?: string;
+  private mediaImageFeatureExtractor?: any;
+  private mediaImageFeatureExtractorModelId?: string;
+  private mediaImageEmbeddingDimension?: number;
+  private mediaImageEmbedWarningLogged = false;
+
+  // Optional multimodal (audio) embedding subsystem (Transformers.js; install-on-demand).
+  private mediaAudioEmbedInitPromise: Promise<void> | null = null;
+  private mediaAudioEmbedStatus: 'uninitialized' | 'enabled' | 'disabled' = 'uninitialized';
+  private mediaAudioEmbedDisabledReason?: string;
+  private mediaAudioProcessor?: any;
+  private mediaAudioModel?: any;
+  private mediaAudioEmbedModelId?: string;
+  private mediaAudioEmbeddingDimension?: number;
+  private mediaAudioEmbedSampleRate?: number;
+  private mediaAudioEmbedWarningLogged = false;
 
   /**
    * Initialize the storage adapter and create schema.
@@ -730,6 +793,14 @@ class SqlRagStore {
             ? envPersistDirectory.trim() || undefined
             : './db_data/agentos_rag_hnswlib';
 
+        const preset = this.getRetrievalPreset();
+        const presetDefaults =
+          preset === 'fast'
+            ? { efConstruction: 100, efSearch: 64 }
+            : preset === 'accurate'
+              ? { efConstruction: 400, efSearch: 200 }
+              : { efConstruction: 200, efSearch: 100 };
+
         const store = new HnswlibVectorStore();
         const config: HnswlibVectorStoreConfig = {
           id: 'agentos-rag-vector-hnswlib',
@@ -739,9 +810,10 @@ class SqlRagStore {
           hnswM: parsePositiveIntEnv(firstNonEmptyEnv('AGENTOS_RAG_HNSWLIB_M')) ?? undefined,
           hnswEfConstruction:
             parsePositiveIntEnv(firstNonEmptyEnv('AGENTOS_RAG_HNSWLIB_EF_CONSTRUCTION')) ??
-            undefined,
+            presetDefaults.efConstruction,
           hnswEfSearch:
-            parsePositiveIntEnv(firstNonEmptyEnv('AGENTOS_RAG_HNSWLIB_EF_SEARCH')) ?? undefined,
+            parsePositiveIntEnv(firstNonEmptyEnv('AGENTOS_RAG_HNSWLIB_EF_SEARCH')) ??
+            presetDefaults.efSearch,
         };
 
         await store.initialize(config);
@@ -1168,24 +1240,85 @@ class SqlRagStore {
     );
   }
 
-  private shouldIngestGraphRag(category: string): boolean {
-    if (!this.isGraphRagEnabled()) return false;
-    const raw = firstNonEmptyEnv('AGENTOS_GRAPHRAG_CATEGORIES')?.trim();
-    const normalizedCategory = String(category || '')
+  private normalizeGraphRagKey(value: unknown): string {
+    return String(value ?? '')
       .trim()
       .toLowerCase();
+  }
+
+  private parseCsvAllowList(value: string | undefined): Set<string> | null {
+    const raw = value?.trim();
+    if (!raw) return null;
+    const items = raw
+      .split(',')
+      .map((v) => this.normalizeGraphRagKey(v))
+      .filter(Boolean);
+    return items.length > 0 ? new Set(items) : null;
+  }
+
+  private resolveGraphRagCategoryAllowList(): Set<string> | null {
+    return this.parseCsvAllowList(firstNonEmptyEnv('AGENTOS_GRAPHRAG_CATEGORIES'));
+  }
+
+  private resolveGraphRagCollectionAllowList(): Set<string> | null {
+    return this.parseCsvAllowList(firstNonEmptyEnv('AGENTOS_GRAPHRAG_COLLECTIONS'));
+  }
+
+  private resolveGraphRagCollectionDenyList(): Set<string> {
+    return (
+      this.parseCsvAllowList(firstNonEmptyEnv('AGENTOS_GRAPHRAG_EXCLUDE_COLLECTIONS')) ?? new Set()
+    );
+  }
+
+  private isGraphRagIndexMediaAssetsEnabled(): boolean {
+    return (
+      parseBooleanEnv(
+        firstNonEmptyEnv('AGENTOS_GRAPHRAG_INDEX_MEDIA_ASSETS', 'GRAPHRAG_INDEX_MEDIA_ASSETS')
+      ) ?? false
+    );
+  }
+
+  private resolveGraphRagMaxDocChars(): number | null {
+    const parsed = parsePositiveIntEnv(
+      firstNonEmptyEnv('AGENTOS_GRAPHRAG_MAX_DOC_CHARS', 'GRAPHRAG_MAX_DOC_CHARS')
+    );
+    return typeof parsed === 'number' ? parsed : null;
+  }
+
+  private shouldIngestGraphRagDocument(input: {
+    category: string;
+    collectionId: string;
+    isMediaAsset: boolean;
+    content: string;
+  }): boolean {
+    if (!this.isGraphRagEnabled()) return false;
+
+    const normalizedCategory = this.normalizeGraphRagKey(input.category);
     if (!normalizedCategory) return false;
 
     // Default: keep GraphRAG focused on longer-lived knowledge docs (avoid indexing rolling memory by accident).
-    if (!raw) return normalizedCategory === 'knowledge_base';
+    const categoryAllow = this.resolveGraphRagCategoryAllowList();
+    if (!categoryAllow) {
+      if (normalizedCategory !== 'knowledge_base') return false;
+    } else if (!categoryAllow.has(normalizedCategory)) {
+      return false;
+    }
 
-    const allow = new Set(
-      raw
-        .split(',')
-        .map((v) => v.trim().toLowerCase())
-        .filter(Boolean)
-    );
-    return allow.has(normalizedCategory);
+    const normalizedCollection = this.normalizeGraphRagKey(input.collectionId);
+    if (!normalizedCollection) return false;
+
+    const deny = this.resolveGraphRagCollectionDenyList();
+    if (deny.has(normalizedCollection)) return false;
+
+    const allow = this.resolveGraphRagCollectionAllowList();
+    if (allow && !allow.has(normalizedCollection)) return false;
+
+    if (input.isMediaAsset && !this.isGraphRagIndexMediaAssetsEnabled()) return false;
+
+    const maxChars = this.resolveGraphRagMaxDocChars();
+    if (maxChars && String(input.content ?? '').length > maxChars) return false;
+
+    return true;
   }
 
   private buildGraphRagLlmProvider():
@@ -1201,7 +1334,10 @@ class SqlRagStore {
       false;
     if (!enabled) return undefined;
     if (!this.providerManager) {
-      throw new Error('GraphRAG LLM is enabled but the provider manager is not initialized.');
+      console.warn(
+        '[RAG Service] GraphRAG LLM is enabled but provider manager is not initialized; continuing without GraphRAG summaries.'
+      );
+      return undefined;
     }
 
     const explicitProviderId = firstNonEmptyEnv(
@@ -1221,14 +1357,18 @@ class SqlRagStore {
             : '');
 
     if (!providerId) {
-      throw new Error(
-        'GraphRAG LLM is enabled but no provider is available. Configure OPENAI_API_KEY / OPENROUTER_API_KEY (or Ollama).'
+      console.warn(
+        '[RAG Service] GraphRAG LLM is enabled but no provider is available; continuing without GraphRAG summaries.'
       );
+      return undefined;
     }
 
     const provider = this.providerManager.getProvider(providerId);
     if (!provider) {
-      throw new Error(`GraphRAG LLM provider '${providerId}' is not initialized.`);
+      console.warn(
+        `[RAG Service] GraphRAG LLM provider '${providerId}' is not initialized; continuing without GraphRAG summaries.`
+      );
+      return undefined;
     }
 
     const explicitModelId = firstNonEmptyEnv(
@@ -1280,10 +1420,27 @@ class SqlRagStore {
     if (this.graphRagInitPromise) return this.graphRagInitPromise;
 
     this.graphRagInitPromise = (async () => {
-      // GraphRAG benefits from the same embedding + vector infrastructure as dense/hybrid RAG.
-      await this.ensureEmbeddingsInitialized(adapter);
-      if (!this.vectorStore || !this.embeddingManager || !this.embeddingModel) {
-        throw new Error('GraphRAG requires an initialized vector store + embedding subsystem.');
+      // GraphRAG can run in a degraded "text-only" mode when embeddings are unavailable.
+      // Try to initialize vector/embedding subsystems, but never fail GraphRAG solely because
+      // an embedding provider is not configured.
+      try {
+        await this.ensureVectorStoreInitialized(adapter);
+      } catch {
+        // Ignore; GraphRAG can still run without a vector store (text matching fallback).
+      }
+
+      let canUseEmbeddings = false;
+      try {
+        await this.ensureEmbeddingsInitialized(adapter);
+        canUseEmbeddings = Boolean(
+          this.vectorStore && this.embeddingManager && this.embeddingModel
+        );
+      } catch (embedError: any) {
+        canUseEmbeddings = false;
+        const message = embedError?.message ?? String(embedError);
+        console.warn(
+          `[RAG Service] GraphRAG running without embeddings (text-only fallback). Configure embeddings for best results. ${message}`
+        );
       }
 
       const rawEngineId =
@@ -1308,31 +1465,53 @@ class SqlRagStore {
           'AGENTOS_GRAPHRAG_COMMUNITY_COLLECTION',
           'GRAPHRAG_COMMUNITY_COLLECTION'
         )?.trim() || `${engineId}_communities`;
-      const generateEntityEmbeddings =
+      const generateEntityEmbeddingsRequested =
         parseBooleanEnv(
           firstNonEmptyEnv('AGENTOS_GRAPHRAG_ENTITY_EMBEDDINGS', 'GRAPHRAG_ENTITY_EMBEDDINGS')
         ) ?? true;
+      const generateEntityEmbeddings = Boolean(
+        generateEntityEmbeddingsRequested && canUseEmbeddings
+      );
 
       // Dynamic import keeps GraphRAG optional (peer deps like graphology can be missing in some deployments).
       const { GraphRAGEngine } = await import('@framers/agentos/rag/graphrag');
 
+      // Optional: LLM summaries. Best-effort only.
+      const llmEnabled =
+        parseBooleanEnv(firstNonEmptyEnv('AGENTOS_GRAPHRAG_LLM_ENABLED', 'GRAPHRAG_LLM_ENABLED')) ??
+        false;
+      if (llmEnabled) {
+        try {
+          await this.ensureProviderManagerInitialized();
+        } catch (llmInitError: any) {
+          console.warn(
+            `[RAG Service] GraphRAG LLM provider initialization failed; continuing without summaries. ${
+              llmInitError?.message ?? llmInitError
+            }`
+          );
+        }
+      }
       const llmProvider = this.buildGraphRagLlmProvider();
       const engine = new GraphRAGEngine({
-        vectorStore: this.vectorStore,
-        embeddingManager: this.embeddingManager,
+        vectorStore: canUseEmbeddings ? (this.vectorStore ?? undefined) : undefined,
+        embeddingManager: canUseEmbeddings ? (this.embeddingManager ?? undefined) : undefined,
         llmProvider,
         persistenceAdapter: adapter as any,
       });
 
-      await engine.initialize({
+      const initConfig: any = {
         engineId,
         tablePrefix,
         generateEntityEmbeddings,
-        embeddingModelId: this.embeddingModel.modelId,
-        embeddingDimension: this.embeddingModel.dimension,
         entityCollectionName,
         communityCollectionName,
-      });
+      };
+      if (canUseEmbeddings && this.embeddingModel) {
+        initConfig.embeddingModelId = this.embeddingModel.modelId;
+        initConfig.embeddingDimension = this.embeddingModel.dimension;
+      }
+
+      await engine.initialize(initConfig);
 
       this.graphRagEngine = engine;
       this.graphRagStatus = 'enabled';
@@ -1597,10 +1776,21 @@ class SqlRagStore {
       }
 
       // Optional: GraphRAG sync (disabled by default; best-effort).
-      const shouldIndexGraphNow = this.shouldIngestGraphRag(category);
-      const shouldIndexGraphBefore = previousCategory
-        ? this.shouldIngestGraphRag(previousCategory)
-        : false;
+      const shouldIndexGraphNow = this.shouldIngestGraphRagDocument({
+        category,
+        collectionId,
+        isMediaAsset: false,
+        content: input.content,
+      });
+      const shouldIndexGraphBefore =
+        previousCategory && previousCollectionId
+          ? this.shouldIngestGraphRagDocument({
+              category: previousCategory,
+              collectionId: previousCollectionId,
+              isMediaAsset: false,
+              content: '',
+            })
+          : false;
 
       if (shouldIndexGraphNow) {
         try {
@@ -1689,6 +1879,675 @@ class SqlRagStore {
         'AGENTOS_MULTIMODAL_AUDIO_COLLECTION_ID'
       )?.trim() || 'media_audio'
     );
+  }
+
+  private isMediaImageEmbeddingsEnabled(): boolean {
+    return (
+      parseBooleanEnv(
+        firstNonEmptyEnv(
+          'AGENTOS_RAG_MEDIA_IMAGE_EMBEDDINGS_ENABLED',
+          'AGENTOS_MULTIMODAL_IMAGE_EMBEDDINGS_ENABLED'
+        )
+      ) ?? false
+    );
+  }
+
+  private resolveMediaImageEmbeddingModelId(): string {
+    return (
+      firstNonEmptyEnv(
+        'AGENTOS_RAG_MEDIA_IMAGE_EMBED_MODEL',
+        'AGENTOS_MULTIMODAL_IMAGE_EMBED_MODEL'
+      )?.trim() || 'Xenova/clip-vit-base-patch32'
+    );
+  }
+
+  private resolveMediaImageEmbeddingCollectionId(baseCollectionId: string): string {
+    const suffixRaw =
+      firstNonEmptyEnv(
+        'AGENTOS_RAG_MEDIA_IMAGE_EMBED_COLLECTION_SUFFIX',
+        'AGENTOS_MULTIMODAL_IMAGE_EMBED_COLLECTION_SUFFIX'
+      )?.trim() || '_img';
+
+    const suffix = suffixRaw.replace(/[^a-z0-9_-]+/gi, '_') || '_img';
+    const base = (baseCollectionId || '').trim() || 'media_images';
+    const sanitizedBase =
+      base
+        .trim()
+        .toLowerCase()
+        .replace(/[^a-z0-9_-]+/g, '_')
+        .slice(0, 60) || 'media_images';
+
+    return sanitizedBase.endsWith(suffix) ? sanitizedBase : `${sanitizedBase}${suffix}`;
+  }
+
+  private isMediaAudioEmbeddingsEnabled(): boolean {
+    return (
+      parseBooleanEnv(
+        firstNonEmptyEnv(
+          'AGENTOS_RAG_MEDIA_AUDIO_EMBEDDINGS_ENABLED',
+          'AGENTOS_MULTIMODAL_AUDIO_EMBEDDINGS_ENABLED'
+        )
+      ) ?? false
+    );
+  }
+
+  private resolveMediaAudioEmbeddingModelId(): string {
+    return (
+      firstNonEmptyEnv(
+        'AGENTOS_RAG_MEDIA_AUDIO_EMBED_MODEL',
+        'AGENTOS_MULTIMODAL_AUDIO_EMBED_MODEL'
+      )?.trim() || 'Xenova/clap-htsat-unfused'
+    );
+  }
+
+  private resolveMediaAudioEmbeddingCollectionId(baseCollectionId: string): string {
+    const suffixRaw =
+      firstNonEmptyEnv(
+        'AGENTOS_RAG_MEDIA_AUDIO_EMBED_COLLECTION_SUFFIX',
+        'AGENTOS_MULTIMODAL_AUDIO_EMBED_COLLECTION_SUFFIX'
+      )?.trim() || '_aud';
+
+    const suffix = suffixRaw.replace(/[^a-z0-9_-]+/gi, '_') || '_aud';
+    const base = (baseCollectionId || '').trim() || 'media_audio';
+    const sanitizedBase =
+      base
+        .trim()
+        .toLowerCase()
+        .replace(/[^a-z0-9_-]+/g, '_')
+        .slice(0, 60) || 'media_audio';
+
+    return sanitizedBase.endsWith(suffix) ? sanitizedBase : `${sanitizedBase}${suffix}`;
+  }
+
+  private l2NormalizeVector(values: number[]): number[] {
+    let sumSquares = 0;
+    for (const v of values) {
+      const n = typeof v === 'number' && Number.isFinite(v) ? v : 0;
+      sumSquares += n * n;
+    }
+    const norm = Math.sqrt(sumSquares);
+    if (!(norm > 0)) return values.map(() => 0);
+    return values.map((v) => (typeof v === 'number' && Number.isFinite(v) ? v / norm : 0));
+  }
+
+  private cosineSimilarity(a: number[], b: number[]): number {
+    if (!Array.isArray(a) || !Array.isArray(b) || a.length === 0 || b.length === 0) return 0;
+    if (a.length !== b.length) return 0;
+    let dot = 0;
+    let normA = 0;
+    let normB = 0;
+    for (let i = 0; i < a.length; i++) {
+      const av = typeof a[i] === 'number' && Number.isFinite(a[i]) ? a[i] : 0;
+      const bv = typeof b[i] === 'number' && Number.isFinite(b[i]) ? b[i] : 0;
+      dot += av * bv;
+      normA += av * av;
+      normB += bv * bv;
+    }
+    const denom = Math.sqrt(normA) * Math.sqrt(normB);
+    return denom === 0 ? 0 : dot / denom;
+  }
+
+  private applyMMR<T extends { score: number; embedding?: number[] }>(input: {
+    candidates: T[];
+    topK: number;
+    lambda: number;
+    candidateMultiplier: number;
+  }): T[] {
+    const topK = Math.max(1, Math.floor(input.topK || 0));
+    if (topK <= 1) return input.candidates.slice(0, topK);
+    if (input.candidates.length <= 1) return input.candidates.slice(0, topK);
+
+    const lambdaRaw = input.lambda;
+    const lambda = Number.isFinite(lambdaRaw) ? Math.max(0, Math.min(1, lambdaRaw)) : 0.7;
+    const multRaw = input.candidateMultiplier;
+    const mult = Number.isFinite(multRaw) ? Math.max(1, Math.min(50, Math.floor(multRaw))) : 5;
+
+    // Expect candidates sorted by relevance (score desc). Trim pool size to bound O(n^2).
+    const poolSize = Math.min(input.candidates.length, Math.max(topK * mult, topK));
+    const remaining = input.candidates.slice(0, poolSize);
+    const selected: T[] = [];
+
+    // Start from the most relevant candidate.
+    selected.push(remaining.shift()!);
+
+    while (selected.length < topK && remaining.length > 0) {
+      let bestIdx = 0;
+      let bestScore = Number.NEGATIVE_INFINITY;
+
+      for (let i = 0; i < remaining.length; i++) {
+        const candidate = remaining[i];
+        const relevance =
+          typeof candidate.score === 'number' && Number.isFinite(candidate.score)
+            ? candidate.score
+            : 0;
+
+        let maxSim = 0;
+        if (candidate.embedding && candidate.embedding.length > 0) {
+          for (const already of selected) {
+            if (!already.embedding || already.embedding.length === 0) continue;
+            maxSim = Math.max(
+              maxSim,
+              this.cosineSimilarity(candidate.embedding, already.embedding)
+            );
+          }
+        }
+
+        const mmrScore = lambda * relevance - (1 - lambda) * maxSim;
+        if (mmrScore > bestScore) {
+          bestScore = mmrScore;
+          bestIdx = i;
+        }
+      }
+
+      selected.push(remaining.splice(bestIdx, 1)[0]);
+    }
+
+    return selected;
+  }
+
+  private async ensureMediaImageEmbedderInitialized(): Promise<void> {
+    if (!this.isMediaImageEmbeddingsEnabled()) return;
+    if (this.mediaImageEmbedStatus === 'enabled') return;
+    if (this.mediaImageEmbedStatus === 'disabled') {
+      throw new Error(
+        this.mediaImageEmbedDisabledReason ??
+          'Media image embeddings are disabled (previous initialization failed).'
+      );
+    }
+    if (this.mediaImageEmbedInitPromise) return this.mediaImageEmbedInitPromise;
+
+    this.mediaImageEmbedInitPromise = (async () => {
+      const modelId = this.resolveMediaImageEmbeddingModelId();
+      try {
+        // Dynamic import to keep this optional; prefer Transformers.js v3+.
+        const { pipeline, env } = await (async () => {
+          try {
+            return await import('@huggingface/transformers');
+          } catch {
+            return await import('@xenova/transformers');
+          }
+        })();
+
+        const cacheDir =
+          firstNonEmptyEnv(
+            'AGENTOS_RAG_MEDIA_IMAGE_EMBED_CACHE_DIR',
+            'AGENTOS_MULTIMODAL_IMAGE_EMBED_CACHE_DIR'
+          )?.trim() || undefined;
+        if (cacheDir) {
+          env.cacheDir = cacheDir;
+        }
+
+        this.mediaImageFeatureExtractor = await pipeline('image-feature-extraction', modelId, {
+          quantized: true,
+        });
+        this.mediaImageFeatureExtractorModelId = modelId;
+
+        this.mediaImageEmbedStatus = 'enabled';
+      } catch (error: any) {
+        this.mediaImageEmbedStatus = 'disabled';
+        this.mediaImageEmbedDisabledReason = error?.message
+          ? String(error.message)
+          : 'Media image embedder initialization failed.';
+        throw error;
+      } finally {
+        this.mediaImageEmbedInitPromise = null;
+      }
+    })().catch((err: any) => {
+      if (!this.mediaImageEmbedWarningLogged) {
+        this.mediaImageEmbedWarningLogged = true;
+        const message = err?.message ?? String(err);
+        console.warn(`[RAG Service] Media image embeddings disabled: ${message}`);
+        if (typeof message === 'string' && message.includes('Cannot find module')) {
+          console.warn(
+            `[RAG Service] Local image embeddings require installing Transformers.js (optional): '@huggingface/transformers' (preferred) or '@xenova/transformers'.`
+          );
+        }
+      }
+    });
+
+    return this.mediaImageEmbedInitPromise;
+  }
+
+  private resolveMediaAudioEmbeddingSampleRate(processor: any): number {
+    // Try common shapes for feature extractor sampling rate.
+    const candidates = [
+      processor?.feature_extractor?.sampling_rate,
+      processor?.featureExtractor?.sampling_rate,
+      processor?.processor?.feature_extractor?.sampling_rate,
+      processor?.processor?.featureExtractor?.sampling_rate,
+      processor?.config?.sampling_rate,
+      processor?.config?.samplingRate,
+    ];
+    for (const value of candidates) {
+      if (typeof value === 'number' && Number.isFinite(value) && value > 0) {
+        return Math.round(value);
+      }
+    }
+
+    // CLAP models commonly use 48kHz; prefer that when unknown.
+    return 48_000;
+  }
+
+  private async ensureMediaAudioEmbedderInitialized(): Promise<void> {
+    if (!this.isMediaAudioEmbeddingsEnabled()) return;
+    if (this.mediaAudioEmbedStatus === 'enabled') return;
+    if (this.mediaAudioEmbedStatus === 'disabled') {
+      throw new Error(
+        this.mediaAudioEmbedDisabledReason ??
+          'Media audio embeddings are disabled (previous initialization failed).'
+      );
+    }
+    if (this.mediaAudioEmbedInitPromise) return this.mediaAudioEmbedInitPromise;
+
+    this.mediaAudioEmbedInitPromise = (async () => {
+      const modelId = this.resolveMediaAudioEmbeddingModelId();
+      try {
+        const mod: any = await (async () => {
+          try {
+            return await import('@huggingface/transformers');
+          } catch {
+            return await import('@xenova/transformers');
+          }
+        })();
+
+        const cacheDir =
+          firstNonEmptyEnv(
+            'AGENTOS_RAG_MEDIA_AUDIO_EMBED_CACHE_DIR',
+            'AGENTOS_MULTIMODAL_AUDIO_EMBED_CACHE_DIR'
+          )?.trim() || undefined;
+        if (cacheDir && mod?.env) {
+          mod.env.cacheDir = cacheDir;
+        }
+
+        const AutoProcessor = mod?.AutoProcessor;
+        const ClapAudioModelWithProjection = mod?.ClapAudioModelWithProjection;
+        if (!AutoProcessor || !ClapAudioModelWithProjection) {
+          throw new Error(
+            'Transformers.js is installed but CLAP audio exports are missing. Install a recent version of @huggingface/transformers (preferred) or @xenova/transformers.'
+          );
+        }
+
+        this.mediaAudioProcessor = await AutoProcessor.from_pretrained(modelId);
+        this.mediaAudioModel = await ClapAudioModelWithProjection.from_pretrained(modelId);
+        this.mediaAudioEmbedModelId = modelId;
+        this.mediaAudioEmbedSampleRate = this.resolveMediaAudioEmbeddingSampleRate(
+          this.mediaAudioProcessor
+        );
+
+        this.mediaAudioEmbedStatus = 'enabled';
+      } catch (error: any) {
+        this.mediaAudioEmbedStatus = 'disabled';
+        this.mediaAudioEmbedDisabledReason = error?.message
+          ? String(error.message)
+          : 'Media audio embedder initialization failed.';
+        throw error;
+      } finally {
+        this.mediaAudioEmbedInitPromise = null;
+      }
+    })().catch((err: any) => {
+      if (!this.mediaAudioEmbedWarningLogged) {
+        this.mediaAudioEmbedWarningLogged = true;
+        const message = err?.message ?? String(err);
+        console.warn(`[RAG Service] Media audio embeddings disabled: ${message}`);
+        if (typeof message === 'string' && message.includes('Cannot find module')) {
+          console.warn(
+            `[RAG Service] Local audio embeddings require installing Transformers.js (optional): '@huggingface/transformers' (preferred) or '@xenova/transformers'.`
+          );
+        }
+      }
+    });
+
+    return this.mediaAudioEmbedInitPromise;
+  }
+
+  private async decodeWavToMonoFloat32(input: {
+    payload: Buffer;
+    targetSampleRate: number;
+  }): Promise<Float32Array> {
+    // Server-side audio decoding is not built into Node. We support WAV decoding
+    // via the lightweight `wavefile` package (install-on-demand).
+    let wavefileMod: any;
+    try {
+      wavefileMod = await import('wavefile');
+    } catch (error: any) {
+      throw new Error(
+        `Audio embeddings require WAV decoding support. Install 'wavefile' (optional). ${error?.message ?? error}`
+      );
+    }
+
+    const WaveFile =
+      wavefileMod?.WaveFile ??
+      wavefileMod?.default?.WaveFile ??
+      wavefileMod?.default?.default?.WaveFile ??
+      wavefileMod?.default;
+    if (!WaveFile) {
+      throw new Error(
+        "Audio embeddings require the 'wavefile' package (WaveFile export not found)."
+      );
+    }
+
+    const wav = new WaveFile(input.payload);
+
+    try {
+      wav.toBitDepth('32f');
+    } catch {
+      // Ignore; some WAVs may already be float.
+    }
+
+    try {
+      if (input.targetSampleRate) {
+        wav.toSampleRate(input.targetSampleRate);
+      }
+    } catch {
+      // Ignore; if resampling fails we still try to proceed.
+    }
+
+    let samples: any = wav.getSamples();
+    if (Array.isArray(samples)) {
+      if (samples.length === 1) {
+        samples = samples[0];
+      } else if (samples.length > 1) {
+        const channel0 = samples[0] as Float32Array;
+        const out = new Float32Array(channel0.length);
+        for (let i = 0; i < out.length; i++) {
+          let sum = 0;
+          for (const ch of samples) {
+            sum += Number((ch as Float32Array)[i] ?? 0);
+          }
+          out[i] = sum / samples.length;
+        }
+        samples = out;
+      }
+    }
+
+    if (samples instanceof Float32Array) return samples;
+    if (samples && typeof samples.length === 'number') {
+      return Float32Array.from(samples as any);
+    }
+    throw new Error('WAV decoder returned an invalid samples buffer.');
+  }
+
+  private async embedAudioForRetrieval(input: {
+    payload: Buffer;
+    mimeType: string;
+  }): Promise<{ embedding: number[]; modelId: string; dimension: number }> {
+    await this.ensureMediaAudioEmbedderInitialized();
+    if (
+      this.mediaAudioEmbedStatus !== 'enabled' ||
+      !this.mediaAudioProcessor ||
+      !this.mediaAudioModel
+    ) {
+      throw new Error(
+        this.mediaAudioEmbedDisabledReason ?? 'Media audio embeddings are not available.'
+      );
+    }
+
+    // Keep server-side decoding minimal (no ffmpeg). WAV-only for now.
+    if (
+      !String(input.mimeType || '')
+        .toLowerCase()
+        .includes('wav')
+    ) {
+      throw new Error(
+        `Audio embeddings currently require WAV payloads in Node (got mimeType='${input.mimeType}').`
+      );
+    }
+
+    const sampleRate = this.mediaAudioEmbedSampleRate ?? 48_000;
+    const waveform = await this.decodeWavToMonoFloat32({
+      payload: input.payload,
+      targetSampleRate: sampleRate,
+    });
+
+    const audioInputs = await this.mediaAudioProcessor(waveform);
+    const output = await this.mediaAudioModel(audioInputs);
+    const tensor = output?.audio_embeds ?? output?.audioEmbeds ?? output?.embeddings ?? output;
+    const data = (tensor as any)?.data ?? (tensor as any);
+
+    let values: number[] = [];
+    if (data && typeof data.length === 'number') {
+      values = Array.from(data as any).map((v) => Number(v));
+    } else if (typeof (tensor as any)?.tolist === 'function') {
+      const list = (tensor as any).tolist();
+      values = Array.isArray(list) ? (list.flat(Infinity) as any[]).map((v) => Number(v)) : [];
+    }
+
+    const normalized = this.l2NormalizeVector(values);
+    const dimension = normalized.length;
+    if (dimension === 0) {
+      throw new Error('CLAP audio model returned an empty embedding.');
+    }
+
+    this.mediaAudioEmbeddingDimension = this.mediaAudioEmbeddingDimension ?? dimension;
+
+    return {
+      embedding: normalized,
+      modelId: this.mediaAudioEmbedModelId || this.resolveMediaAudioEmbeddingModelId(),
+      dimension,
+    };
+  }
+
+  private async embedImageForRetrieval(input: {
+    payload: Buffer;
+    mimeType: string;
+  }): Promise<{ embedding: number[]; modelId: string; dimension: number }> {
+    await this.ensureMediaImageEmbedderInitialized();
+    if (this.mediaImageEmbedStatus !== 'enabled' || !this.mediaImageFeatureExtractor) {
+      throw new Error(
+        this.mediaImageEmbedDisabledReason ?? 'Media image embeddings are not available.'
+      );
+    }
+
+    // Transformers.js expects a Blob input. Use an ArrayBuffer-backed view to satisfy
+    // TS' BlobPart typing (Node Buffers are typed as ArrayBufferLike).
+    const bytes = new Uint8Array(input.payload);
+    const blob = new Blob([bytes.buffer], {
+      type: input.mimeType || 'image/*',
+    }) as any;
+
+    const output = await this.mediaImageFeatureExtractor(blob);
+    const tensor = Array.isArray(output) ? output[0] : output;
+    const data = (tensor as any)?.data ?? (tensor as any);
+
+    let values: number[] = [];
+    if (data && typeof data.length === 'number') {
+      values = Array.from(data as any).map((v) => Number(v));
+    } else if (typeof (tensor as any)?.tolist === 'function') {
+      const list = (tensor as any).tolist();
+      values = Array.isArray(list) ? (list.flat(Infinity) as any[]).map((v) => Number(v)) : [];
+    }
+
+    const normalized = this.l2NormalizeVector(values);
+    const dimension = normalized.length;
+    if (dimension === 0) {
+      throw new Error('Image feature extractor returned an empty embedding.');
+    }
+
+    this.mediaImageEmbeddingDimension = this.mediaImageEmbeddingDimension ?? dimension;
+
+    return {
+      embedding: normalized,
+      modelId: this.mediaImageFeatureExtractorModelId || this.resolveMediaImageEmbeddingModelId(),
+      dimension,
+    };
+  }
+
+  private async ensureMediaImageEmbeddingCollection(
+    adapter: StorageAdapter,
+    baseCollectionId: string,
+    dimension: number
+  ): Promise<string> {
+    await this.ensureVectorStoreInitialized(adapter);
+    if (!this.vectorStore) {
+      throw new Error('Vector store is not initialized.');
+    }
+
+    const collectionId = this.resolveMediaImageEmbeddingCollectionId(baseCollectionId);
+    if (this.vectorStore.collectionExists && this.vectorStore.createCollection) {
+      const exists = await this.vectorStore.collectionExists(collectionId);
+      if (!exists) {
+        await this.vectorStore.createCollection(collectionId, dimension, {
+          similarityMetric: 'cosine',
+        });
+      }
+    }
+
+    return collectionId;
+  }
+
+  private async ensureMediaAudioEmbeddingCollection(
+    adapter: StorageAdapter,
+    baseCollectionId: string,
+    dimension: number
+  ): Promise<string> {
+    await this.ensureVectorStoreInitialized(adapter);
+    if (!this.vectorStore) {
+      throw new Error('Vector store is not initialized.');
+    }
+
+    const collectionId = this.resolveMediaAudioEmbeddingCollectionId(baseCollectionId);
+    if (this.vectorStore.collectionExists && this.vectorStore.createCollection) {
+      const exists = await this.vectorStore.collectionExists(collectionId);
+      if (!exists) {
+        await this.vectorStore.createCollection(collectionId, dimension, {
+          similarityMetric: 'cosine',
+        });
+      }
+    }
+
+    return collectionId;
+  }
+
+  private async upsertMediaImageEmbeddingVector(input: {
+    adapter: StorageAdapter;
+    assetId: string;
+    baseCollectionId: string;
+    previousBaseCollectionId?: string | null;
+    payload?: Buffer;
+    mimeType: string;
+    metadata?: Record<string, unknown> | null;
+  }): Promise<void> {
+    if (!this.isMediaImageEmbeddingsEnabled()) return;
+    if (!input.payload || input.payload.length === 0) return;
+
+    const embedded = await this.embedImageForRetrieval({
+      payload: input.payload,
+      mimeType: input.mimeType,
+    });
+
+    const collectionId = await this.ensureMediaImageEmbeddingCollection(
+      input.adapter,
+      input.baseCollectionId,
+      embedded.dimension
+    );
+
+    if (!this.vectorStore) return;
+
+    await this.vectorStore.upsert(collectionId, [
+      {
+        id: input.assetId,
+        embedding: embedded.embedding,
+        metadata: {
+          ...(input.metadata ?? {}),
+          __ragMediaAssetId: input.assetId,
+          __ragMediaEmbeddingModelId: embedded.modelId,
+          __ragMediaEmbeddingKind: 'image',
+        } as any,
+      } as any,
+    ]);
+
+    // Best-effort: if the asset moved collections, delete from the previous embedding collection.
+    const prev = input.previousBaseCollectionId?.trim();
+    if (prev && prev !== input.baseCollectionId) {
+      try {
+        const prevCollectionId = this.resolveMediaImageEmbeddingCollectionId(prev);
+        await this.vectorStore.delete(prevCollectionId, [input.assetId]);
+      } catch {
+        // Ignore.
+      }
+    }
+  }
+
+  private async upsertMediaAudioEmbeddingVector(input: {
+    adapter: StorageAdapter;
+    assetId: string;
+    baseCollectionId: string;
+    previousBaseCollectionId?: string | null;
+    payload?: Buffer;
+    mimeType: string;
+    metadata?: Record<string, unknown> | null;
+  }): Promise<void> {
+    if (!this.isMediaAudioEmbeddingsEnabled()) return;
+    if (!input.payload || input.payload.length === 0) return;
+
+    const embedded = await this.embedAudioForRetrieval({
+      payload: input.payload,
+      mimeType: input.mimeType,
+    });
+
+    const collectionId = await this.ensureMediaAudioEmbeddingCollection(
+      input.adapter,
+      input.baseCollectionId,
+      embedded.dimension
+    );
+
+    if (!this.vectorStore) return;
+
+    await this.vectorStore.upsert(collectionId, [
+      {
+        id: input.assetId,
+        embedding: embedded.embedding,
+        metadata: {
+          ...(input.metadata ?? {}),
+          __ragMediaAssetId: input.assetId,
+          __ragMediaEmbeddingModelId: embedded.modelId,
+          __ragMediaEmbeddingKind: 'audio',
+        } as any,
+      } as any,
+    ]);
+
+    // Best-effort: if the asset moved collections, delete from the previous embedding collection.
+    const prev = input.previousBaseCollectionId?.trim();
+    if (prev && prev !== input.baseCollectionId) {
+      try {
+        const prevCollectionId = this.resolveMediaAudioEmbeddingCollectionId(prev);
+        await this.vectorStore.delete(prevCollectionId, [input.assetId]);
+      } catch {
+        // Ignore.
+      }
+    }
+  }
+
+  private async deleteMediaImageEmbeddingVector(input: {
+    adapter: StorageAdapter;
+    assetId: string;
+    baseCollectionId: string;
+  }): Promise<void> {
+    if (!this.isMediaImageEmbeddingsEnabled()) return;
+    try {
+      await this.ensureVectorStoreInitialized(input.adapter);
+      if (!this.vectorStore) return;
+      const collectionId = this.resolveMediaImageEmbeddingCollectionId(input.baseCollectionId);
+      await this.vectorStore.delete(collectionId, [input.assetId]);
+    } catch {
+      // Ignore; canonical SQL deletes already happened.
+    }
+  }
+
+  private async deleteMediaAudioEmbeddingVector(input: {
+    adapter: StorageAdapter;
+    assetId: string;
+    baseCollectionId: string;
+  }): Promise<void> {
+    if (!this.isMediaAudioEmbeddingsEnabled()) return;
+    try {
+      await this.ensureVectorStoreInitialized(input.adapter);
+      if (!this.vectorStore) return;
+      const collectionId = this.resolveMediaAudioEmbeddingCollectionId(input.baseCollectionId);
+      await this.vectorStore.delete(collectionId, [input.assetId]);
+    } catch {
+      // Ignore; canonical SQL deletes already happened.
+    }
   }
 
   private resolveImageCaptionProviderPreference(): {
@@ -1880,6 +2739,510 @@ class SqlRagStore {
       lines.push(`DurationSeconds: ${result.durationSeconds.toFixed(2)}`);
     }
     return lines.join('\n').trim();
+  }
+
+  /**
+   * Derive a text representation for an image (caption/OCR/entities/tags) without ingesting it.
+   *
+   * Used by query-by-image endpoints that convert a binary query into text, then run normal
+   * text-based retrieval over the indexed multimodal assets.
+   */
+  async describeImageForRetrieval(input: {
+    mimeType: string;
+    payload?: Buffer;
+    sourceUrl?: string;
+  }): Promise<{ textRepresentation: string; tags?: string[] }> {
+    return this.deriveImageTextRepresentation(input);
+  }
+
+  /**
+   * Derive a text representation for an audio clip (transcript) without ingesting it.
+   *
+   * Used by query-by-audio endpoints that transcribe a binary query into text, then run normal
+   * text-based retrieval over the indexed multimodal assets.
+   */
+  async transcribeAudioForRetrieval(input: {
+    payload: Buffer;
+    originalFileName: string;
+    mimeType: string;
+    userId?: string;
+  }): Promise<string> {
+    return this.deriveAudioTextRepresentation({
+      payload: input.payload,
+      originalFileName: input.originalFileName,
+      mimeType: input.mimeType,
+      userId: input.userId || 'system',
+    });
+  }
+
+  /**
+   * Query indexed media assets using a binary image query.
+   *
+   * Default behavior:
+   * 1) Caption the query image into a retrieval-optimized text representation.
+   * 2) Run text-based multimodal retrieval over existing indexed assets.
+   *
+   * To avoid any captioning API calls, pass `textRepresentation` explicitly.
+   */
+  async queryMediaAssetsByImage(options: {
+    payload?: Buffer;
+    mimeType?: string;
+    sourceUrl?: string;
+    textRepresentation?: string;
+    modalities?: RagMediaModality[];
+    collectionIds?: string[];
+    topK?: number;
+    includeMetadata?: boolean;
+  }): Promise<RagMediaQueryResult> {
+    const start = Date.now();
+    try {
+      const wantsImageEmbeddingQuery =
+        this.isMediaImageEmbeddingsEnabled() &&
+        !String(options.textRepresentation ?? '').trim() &&
+        !!options.payload &&
+        options.payload.length > 0;
+
+      // Prefer CLIP-style image embeddings when enabled and the caller provides bytes.
+      // This avoids any captioning/model calls and supports true image-to-image retrieval.
+      if (wantsImageEmbeddingQuery) {
+        const adapter = await this.ensureInitialized();
+        const baseCollectionIds =
+          options.collectionIds && options.collectionIds.length > 0
+            ? options.collectionIds
+            : [this.resolveMediaCollectionId('image')];
+
+        try {
+          return await this.queryMediaAssetsByImageEmbeddingInternal({
+            adapter,
+            payload: options.payload!,
+            mimeType: options.mimeType || 'image/*',
+            baseCollectionIds,
+            topK: options.topK ?? 5,
+            includeMetadata: options.includeMetadata,
+          });
+        } catch (embedError: any) {
+          // Fall back to the captioning path when the optional image embedder isn't available.
+          const message = embedError?.message ?? String(embedError);
+          console.warn(
+            `[RAG Service] Image embedding query failed; falling back to caption-based retrieval. ${message}`
+          );
+        }
+      }
+
+      const queryText = (options.textRepresentation ?? '').trim()
+        ? (options.textRepresentation ?? '').trim()
+        : (
+            await this.describeImageForRetrieval({
+              mimeType: options.mimeType || 'image/*',
+              payload: options.payload,
+              sourceUrl: options.sourceUrl,
+            })
+          ).textRepresentation;
+
+      if (!queryText || !queryText.trim()) {
+        return {
+          success: false,
+          query: '',
+          assets: [],
+          totalResults: 0,
+          processingTimeMs: Date.now() - start,
+          error: 'Unable to derive image query textRepresentation (empty).',
+        };
+      }
+
+      const result = await this.queryMediaAssets({
+        query: queryText,
+        modalities: options.modalities ?? ['image'],
+        collectionIds: options.collectionIds,
+        topK: options.topK,
+        includeMetadata: options.includeMetadata,
+      });
+
+      return result;
+    } catch (error: any) {
+      const message = error?.message ?? String(error);
+      return {
+        success: false,
+        query: '',
+        assets: [],
+        totalResults: 0,
+        processingTimeMs: Date.now() - start,
+        error: message,
+      };
+    }
+  }
+
+  private async queryMediaAssetsByImageEmbeddingInternal(input: {
+    adapter: StorageAdapter;
+    payload: Buffer;
+    mimeType: string;
+    baseCollectionIds: string[];
+    topK: number;
+    includeMetadata?: boolean;
+  }): Promise<RagMediaQueryResult> {
+    const start = Date.now();
+
+    await this.ensureVectorStoreInitialized(input.adapter);
+    if (!this.vectorStore) {
+      throw new Error('Vector store is not initialized.');
+    }
+
+    const embedded = await this.embedImageForRetrieval({
+      payload: input.payload,
+      mimeType: input.mimeType,
+    });
+
+    const topK = Math.max(1, input.topK);
+    const perCollectionTopK = Math.min(80, Math.max(topK * 6, topK));
+    const baseCollectionIds = Array.from(
+      new Set((input.baseCollectionIds ?? []).map((c) => String(c ?? '').trim()).filter(Boolean))
+    );
+
+    type Candidate = { assetId: string; score: number; baseCollectionId: string };
+    const candidates: Candidate[] = [];
+
+    for (const baseCollectionId of baseCollectionIds) {
+      const embeddingCollectionId = this.resolveMediaImageEmbeddingCollectionId(baseCollectionId);
+      try {
+        if (this.vectorStore.collectionExists) {
+          const exists = await this.vectorStore.collectionExists(embeddingCollectionId);
+          if (!exists) continue;
+        }
+
+        const result = await this.vectorStore.query(embeddingCollectionId, embedded.embedding, {
+          topK: perCollectionTopK,
+          includeMetadata: true,
+          includeTextContent: false,
+        });
+
+        for (const doc of result.documents ?? []) {
+          const score = typeof doc.similarityScore === 'number' ? doc.similarityScore : 0;
+          if (!(score > 0)) continue;
+          candidates.push({ assetId: doc.id, score, baseCollectionId });
+        }
+      } catch {
+        // Ignore per-collection failures; other collections may still work.
+      }
+    }
+
+    const bestByAssetId = new Map<string, Candidate>();
+    for (const candidate of candidates) {
+      const existing = bestByAssetId.get(candidate.assetId);
+      if (!existing || candidate.score > existing.score) {
+        bestByAssetId.set(candidate.assetId, candidate);
+      }
+    }
+
+    const ranked = Array.from(bestByAssetId.values())
+      .sort((a, b) => b.score - a.score)
+      .slice(0, topK);
+
+    if (ranked.length === 0) {
+      return {
+        success: true,
+        query: `[ImageEmbedding] model=${embedded.modelId}`,
+        assets: [],
+        totalResults: 0,
+        processingTimeMs: Date.now() - start,
+      };
+    }
+
+    const assetIds = ranked.map((c) => c.assetId);
+    const placeholders = assetIds.map(() => '?').join(', ');
+    const assetRows = await input.adapter.all<MediaAssetRow>(
+      `SELECT * FROM ${this.tablePrefix}media_assets WHERE asset_id IN (${placeholders})`,
+      assetIds
+    );
+    const assetById = new Map(assetRows.map((r) => [r.asset_id, r]));
+
+    const assets: RagMediaQueryResult['assets'] = [];
+
+    for (const entry of ranked) {
+      const row = assetById.get(entry.assetId);
+      if (!row) continue;
+      if (String(row.modality) !== 'image') continue;
+
+      // Enforce collection scoping: the asset must belong to one of the requested base collections.
+      if (baseCollectionIds.length > 0 && !baseCollectionIds.includes(row.collection_id)) {
+        continue;
+      }
+
+      const chunkRow = await input.adapter.get<
+        Pick<ChunkRow, 'chunk_id' | 'document_id' | 'content' | 'metadata_json'>
+      >(
+        `SELECT chunk_id, document_id, content, metadata_json
+         FROM ${this.tablePrefix}chunks
+         WHERE document_id = ?
+         ORDER BY chunk_index ASC
+         LIMIT 1`,
+        [row.asset_id]
+      );
+
+      const chunkMetadata = chunkRow?.metadata_json
+        ? parseJsonSafe<Record<string, unknown>>(chunkRow.metadata_json, {})
+        : {};
+
+      const bestChunk: RagRetrievedChunk = {
+        chunkId: chunkRow?.chunk_id ?? `${row.asset_id}_chunk_0`,
+        documentId: row.asset_id,
+        content: chunkRow?.content ?? '',
+        score: entry.score,
+        metadata: input.includeMetadata
+          ? {
+              ...(chunkMetadata ?? {}),
+              _retrievalMethod: 'image_embedding',
+              _imageEmbeddingModelId: embedded.modelId,
+            }
+          : undefined,
+      };
+
+      assets.push({
+        asset: this.rowToMediaAsset(row),
+        bestChunk,
+      });
+    }
+
+    return {
+      success: true,
+      query: `[ImageEmbedding] model=${embedded.modelId}`,
+      assets,
+      totalResults: assets.length,
+      processingTimeMs: Date.now() - start,
+    };
+  }
+
+  private async queryMediaAssetsByAudioEmbeddingInternal(input: {
+    adapter: StorageAdapter;
+    payload: Buffer;
+    mimeType: string;
+    baseCollectionIds: string[];
+    topK: number;
+    includeMetadata?: boolean;
+  }): Promise<RagMediaQueryResult> {
+    const start = Date.now();
+
+    await this.ensureVectorStoreInitialized(input.adapter);
+    if (!this.vectorStore) {
+      throw new Error('Vector store is not initialized.');
+    }
+
+    const embedded = await this.embedAudioForRetrieval({
+      payload: input.payload,
+      mimeType: input.mimeType,
+    });
+
+    const topK = Math.max(1, input.topK);
+    const perCollectionTopK = Math.min(80, Math.max(topK * 6, topK));
+    const baseCollectionIds = Array.from(
+      new Set((input.baseCollectionIds ?? []).map((c) => String(c ?? '').trim()).filter(Boolean))
+    );
+
+    type Candidate = { assetId: string; score: number; baseCollectionId: string };
+    const candidates: Candidate[] = [];
+
+    for (const baseCollectionId of baseCollectionIds) {
+      const embeddingCollectionId = this.resolveMediaAudioEmbeddingCollectionId(baseCollectionId);
+      try {
+        if (this.vectorStore.collectionExists) {
+          const exists = await this.vectorStore.collectionExists(embeddingCollectionId);
+          if (!exists) continue;
+        }
+
+        const result = await this.vectorStore.query(embeddingCollectionId, embedded.embedding, {
+          topK: perCollectionTopK,
+          includeMetadata: true,
+          includeTextContent: false,
+        });
+
+        for (const doc of result.documents ?? []) {
+          const score = typeof doc.similarityScore === 'number' ? doc.similarityScore : 0;
+          if (!(score > 0)) continue;
+          candidates.push({ assetId: doc.id, score, baseCollectionId });
+        }
+      } catch {
+        // Ignore per-collection failures; other collections may still work.
+      }
+    }
+
+    const bestByAssetId = new Map<string, Candidate>();
+    for (const candidate of candidates) {
+      const existing = bestByAssetId.get(candidate.assetId);
+      if (!existing || candidate.score > existing.score) {
+        bestByAssetId.set(candidate.assetId, candidate);
+      }
+    }
+
+    const ranked = Array.from(bestByAssetId.values())
+      .sort((a, b) => b.score - a.score)
+      .slice(0, topK);
+
+    if (ranked.length === 0) {
+      return {
+        success: true,
+        query: `[AudioEmbedding] model=${embedded.modelId}`,
+        assets: [],
+        totalResults: 0,
+        processingTimeMs: Date.now() - start,
+      };
+    }
+
+    const assetIds = ranked.map((c) => c.assetId);
+    const placeholders = assetIds.map(() => '?').join(', ');
+    const assetRows = await input.adapter.all<MediaAssetRow>(
+      `SELECT * FROM ${this.tablePrefix}media_assets WHERE asset_id IN (${placeholders})`,
+      assetIds
+    );
+    const assetById = new Map(assetRows.map((r) => [r.asset_id, r]));
+
+    const assets: RagMediaQueryResult['assets'] = [];
+
+    for (const entry of ranked) {
+      const row = assetById.get(entry.assetId);
+      if (!row) continue;
+      if (String(row.modality) !== 'audio') continue;
+
+      if (baseCollectionIds.length > 0 && !baseCollectionIds.includes(row.collection_id)) {
+        continue;
+      }
+
+      const chunkRow = await input.adapter.get<
+        Pick<ChunkRow, 'chunk_id' | 'document_id' | 'content' | 'metadata_json'>
+      >(
+        `SELECT chunk_id, document_id, content, metadata_json
+         FROM ${this.tablePrefix}chunks
+         WHERE document_id = ?
+         ORDER BY chunk_index ASC
+         LIMIT 1`,
+        [row.asset_id]
+      );
+
+      const chunkMetadata = chunkRow?.metadata_json
+        ? parseJsonSafe<Record<string, unknown>>(chunkRow.metadata_json, {})
+        : {};
+
+      const bestChunk: RagRetrievedChunk = {
+        chunkId: chunkRow?.chunk_id ?? `${row.asset_id}_chunk_0`,
+        documentId: row.asset_id,
+        content: chunkRow?.content ?? '',
+        score: entry.score,
+        metadata: input.includeMetadata
+          ? {
+              ...(chunkMetadata ?? {}),
+              _retrievalMethod: 'audio_embedding',
+              _audioEmbeddingModelId: embedded.modelId,
+            }
+          : undefined,
+      };
+
+      assets.push({
+        asset: this.rowToMediaAsset(row),
+        bestChunk,
+      });
+    }
+
+    return {
+      success: true,
+      query: `[AudioEmbedding] model=${embedded.modelId}`,
+      assets,
+      totalResults: assets.length,
+      processingTimeMs: Date.now() - start,
+    };
+  }
+
+  /**
+   * Query indexed media assets using a binary audio query.
+   *
+   * Default behavior:
+   * 1) Transcribe the query audio into a retrieval-optimized text representation.
+   * 2) Run text-based multimodal retrieval over existing indexed assets.
+   *
+   * To avoid any transcription API calls, pass `textRepresentation` explicitly.
+   */
+  async queryMediaAssetsByAudio(options: {
+    payload?: Buffer;
+    mimeType?: string;
+    originalFileName?: string;
+    textRepresentation?: string;
+    modalities?: RagMediaModality[];
+    collectionIds?: string[];
+    topK?: number;
+    includeMetadata?: boolean;
+    userId?: string;
+  }): Promise<RagMediaQueryResult> {
+    const start = Date.now();
+    try {
+      const wantsAudioEmbeddingQuery =
+        this.isMediaAudioEmbeddingsEnabled() &&
+        !String(options.textRepresentation ?? '').trim() &&
+        !!options.payload &&
+        options.payload.length > 0;
+
+      // Prefer CLAP-style audio embeddings when enabled and the caller provides bytes.
+      // This avoids transcription calls and supports true audio-to-audio retrieval.
+      if (wantsAudioEmbeddingQuery) {
+        const adapter = await this.ensureInitialized();
+        const baseCollectionIds =
+          options.collectionIds && options.collectionIds.length > 0
+            ? options.collectionIds
+            : [this.resolveMediaCollectionId('audio')];
+
+        try {
+          return await this.queryMediaAssetsByAudioEmbeddingInternal({
+            adapter,
+            payload: options.payload!,
+            mimeType: options.mimeType || 'audio/*',
+            baseCollectionIds,
+            topK: options.topK ?? 5,
+            includeMetadata: options.includeMetadata,
+          });
+        } catch (embedError: any) {
+          const message = embedError?.message ?? String(embedError);
+          console.warn(
+            `[RAG Service] Audio embedding query failed; falling back to transcript-based retrieval. ${message}`
+          );
+        }
+      }
+
+      const queryText = (options.textRepresentation ?? '').trim()
+        ? (options.textRepresentation ?? '').trim()
+        : await this.transcribeAudioForRetrieval({
+            payload: options.payload ?? Buffer.alloc(0),
+            originalFileName: options.originalFileName || `query-audio-${Date.now()}.bin`,
+            mimeType: options.mimeType || 'audio/*',
+            userId: options.userId,
+          });
+
+      if (!queryText || !queryText.trim()) {
+        return {
+          success: false,
+          query: '',
+          assets: [],
+          totalResults: 0,
+          processingTimeMs: Date.now() - start,
+          error: 'Unable to derive audio query textRepresentation (empty).',
+        };
+      }
+
+      const result = await this.queryMediaAssets({
+        query: queryText,
+        modalities: options.modalities ?? ['audio'],
+        collectionIds: options.collectionIds,
+        topK: options.topK,
+        includeMetadata: options.includeMetadata,
+      });
+
+      return result;
+    } catch (error: any) {
+      const message = error?.message ?? String(error);
+      return {
+        success: false,
+        query: '',
+        assets: [],
+        totalResults: 0,
+        processingTimeMs: Date.now() - start,
+        error: message,
+      };
+    }
   }
 
   private rowToMediaAsset(row: MediaAssetRow): RagMediaAsset {
@@ -2094,11 +3457,64 @@ class SqlRagStore {
         // Ignore; canonical SQL writes already happened.
       }
 
+      // Best-effort: index raw image embeddings (CLIP-style) for image-to-image retrieval.
+      if (modality === 'image') {
+        try {
+          await this.upsertMediaImageEmbeddingVector({
+            adapter,
+            assetId,
+            baseCollectionId: collectionId,
+            previousBaseCollectionId: previousCollectionId ?? null,
+            payload,
+            mimeType: input.mimeType,
+            metadata: (docMetadata ?? null) as any,
+          });
+        } catch (embedError: any) {
+          console.warn(
+            `[RAG Service] Image embedding indexing failed for media asset '${assetId}' (continuing): ${
+              embedError?.message ?? embedError
+            }`
+          );
+        }
+      }
+
+      // Best-effort: index raw audio embeddings (CLAP-style) for audio-to-audio retrieval.
+      if (modality === 'audio') {
+        try {
+          await this.upsertMediaAudioEmbeddingVector({
+            adapter,
+            assetId,
+            baseCollectionId: collectionId,
+            previousBaseCollectionId: previousCollectionId ?? null,
+            payload,
+            mimeType: input.mimeType,
+            metadata: (docMetadata ?? null) as any,
+          });
+        } catch (embedError: any) {
+          console.warn(
+            `[RAG Service] Audio embedding indexing failed for media asset '${assetId}' (continuing): ${
+              embedError?.message ?? embedError
+            }`
+          );
+        }
+      }
+
       // Optional: GraphRAG sync (best-effort).
-      const shouldIndexGraphNow = this.shouldIngestGraphRag(category);
-      const shouldIndexGraphBefore = previousCategory
-        ? this.shouldIngestGraphRag(previousCategory)
-        : false;
+      const shouldIndexGraphNow = this.shouldIngestGraphRagDocument({
+        category,
+        collectionId,
+        isMediaAsset: true,
+        content: textRepresentation,
+      });
+      const shouldIndexGraphBefore =
+        previousCategory && previousCollectionId
+          ? this.shouldIngestGraphRagDocument({
+              category: previousCategory,
+              collectionId: previousCollectionId,
+              isMediaAsset: true,
+              content: '',
+            })
+          : false;
 
       if (shouldIndexGraphNow) {
         try {
@@ -2188,8 +3604,35 @@ class SqlRagStore {
    */
   async deleteMediaAsset(assetId: string): Promise<boolean> {
     const adapter = await this.ensureInitialized();
-    await adapter.run(`DELETE FROM ${this.tablePrefix}media_assets WHERE asset_id = ?`, [assetId]);
-    return this.deleteDocument(assetId);
+
+    // Prefer deleting the derived document first so we can still inspect the asset row for
+    // best-effort cleanup (image-embedding vectors, GraphRAG, etc.).
+    const deleted = await this.deleteDocument(assetId);
+    if (deleted) return true;
+
+    // Fallback: if the derived document is missing, still clean up the asset row.
+    const row = await adapter.get<Pick<MediaAssetRow, 'collection_id' | 'modality'>>(
+      `SELECT collection_id, modality FROM ${this.tablePrefix}media_assets WHERE asset_id = ?`,
+      [assetId]
+    );
+    if (row?.modality === 'image') {
+      await this.deleteMediaImageEmbeddingVector({
+        adapter,
+        assetId,
+        baseCollectionId: row.collection_id,
+      });
+    } else if (row?.modality === 'audio') {
+      await this.deleteMediaAudioEmbeddingVector({
+        adapter,
+        assetId,
+        baseCollectionId: row.collection_id,
+      });
+    }
+    const result = await adapter.run(
+      `DELETE FROM ${this.tablePrefix}media_assets WHERE asset_id = ?`,
+      [assetId]
+    );
+    return result.changes > 0;
   }
 
   /**
@@ -2309,29 +3752,32 @@ class SqlRagStore {
   ): Promise<{ chunks: RagRetrievedChunk[]; totalResults: number }> {
     const topK = options.topK || 5;
 
-    // Tokenize query for keyword matching
-    const queryTerms = options.query
-      .toLowerCase()
-      .split(/\s+/)
-      .filter((term) => term.length > 2);
+    const tokenize = (text: string): string[] =>
+      String(text || '')
+        .toLowerCase()
+        .split(/[^a-z0-9_]+/g)
+        .filter((t) => t.length > 2);
+
+    // Tokenize query for lexical retrieval (BM25).
+    const queryTerms = tokenize(options.query);
+    const queryTermSet = new Set(queryTerms);
 
     if (queryTerms.length === 0) {
       return { chunks: [], totalResults: 0 };
     }
 
-    // Keyword fallback should not return arbitrary 0-score results by default.
-    // Default behavior: require at least one term match unless an explicit threshold was set.
     const threshold =
       typeof options.similarityThreshold === 'number'
-        ? Math.max(0, options.similarityThreshold)
-        : 1 / Math.max(1, queryTerms.length);
+        ? Math.max(0, Math.min(1, options.similarityThreshold))
+        : null;
 
     const categoryFilter = options.filters?.category;
     const collectionIds =
       options.collectionIds && options.collectionIds.length > 0 ? options.collectionIds : undefined;
 
     // Try FTS5 first (SQLite). Falls back to full scan when unavailable.
-    let rows: ChunkRow[] = [];
+    type KeywordRow = ChunkRow & { bm25_rank?: number };
+    let rows: KeywordRow[] = [];
     let usedFts = false;
     const candidateLimit = Math.min(2_000, Math.max(200, topK * 80));
 
@@ -2345,7 +3791,7 @@ class SqlRagStore {
       }
 
       let sql = `
-        SELECT c.*
+        SELECT c.*, bm25(fts) AS bm25_rank
         FROM ${this.tablePrefix}chunks_fts fts
         JOIN ${this.tablePrefix}chunks c ON c.rowid = fts.rowid
       `;
@@ -2368,10 +3814,10 @@ class SqlRagStore {
         params.push(...collectionIds);
       }
 
-      sql += ` ORDER BY bm25(${this.tablePrefix}chunks_fts) ASC LIMIT ?`;
+      sql += ` ORDER BY bm25(fts) ASC LIMIT ?`;
       params.push(candidateLimit);
 
-      rows = await adapter.all<ChunkRow>(sql, params);
+      rows = await adapter.all<KeywordRow>(sql, params);
       usedFts = true;
     } catch {
       // Fall back to scanning chunks (slower, but portable).
@@ -2407,46 +3853,166 @@ class SqlRagStore {
       }
     }
 
-    // Score and filter chunks
+    // Score and filter chunks (BM25).
     const scoredChunks: Array<RagRetrievedChunk & { _score: number }> = [];
 
-    for (const row of rows) {
-      const metadata = row.metadata_json ? JSON.parse(row.metadata_json) : {};
+    if (usedFts) {
+      for (const row of rows) {
+        const metadata = row.metadata_json ? JSON.parse(row.metadata_json) : {};
 
-      // Apply metadata filters (legacy semantics)
-      if (options.filters) {
-        if (options.filters.agentId && metadata.agentId !== options.filters.agentId) continue;
-        if (options.filters.userId && metadata.userId !== options.filters.userId) continue;
-        if (categoryFilter && categoryByDocumentId) {
-          const docCategory = categoryByDocumentId.get(row.document_id);
-          if (docCategory !== categoryFilter) continue;
+        // Apply metadata filters (legacy semantics)
+        if (options.filters) {
+          if (options.filters.agentId && metadata.agentId !== options.filters.agentId) continue;
+          if (options.filters.userId && metadata.userId !== options.filters.userId) continue;
+          if (categoryFilter && categoryByDocumentId) {
+            const docCategory = categoryByDocumentId.get(row.document_id);
+            if (docCategory !== categoryFilter) continue;
+          }
+          if (options.filters.tags && options.filters.tags.length > 0) {
+            const docTags = Array.isArray(metadata.tags) ? metadata.tags : [];
+            if (!options.filters.tags.some((tag) => docTags.includes(tag))) continue;
+          }
         }
-        if (options.filters.tags && options.filters.tags.length > 0) {
-          const docTags = Array.isArray(metadata.tags) ? metadata.tags : [];
-          if (!options.filters.tags.some((tag) => docTags.includes(tag))) continue;
+
+        const rank =
+          typeof row.bm25_rank === 'number' && Number.isFinite(row.bm25_rank) ? row.bm25_rank : 0;
+        const score = 1 / (1 + Math.max(0, rank));
+
+        if (threshold !== null) {
+          if (score < threshold) continue;
+        } else if (!(score > 0)) {
+          continue;
         }
+
+        scoredChunks.push({
+          chunkId: row.chunk_id,
+          documentId: row.document_id,
+          content: row.content,
+          score,
+          _score: score,
+          metadata: options.includeMetadata ? metadata : undefined,
+        });
+      }
+    } else {
+      type Candidate = {
+        row: ChunkRow;
+        metadata: any;
+        dl: number;
+        tf: Map<string, number>;
+      };
+
+      const candidates: Candidate[] = [];
+      const df = new Map<string, number>();
+      let totalDocLength = 0;
+      let N = 0;
+
+      for (const row of rows) {
+        const metadata = row.metadata_json ? JSON.parse(row.metadata_json) : {};
+
+        // Apply metadata filters (legacy semantics)
+        if (options.filters) {
+          if (options.filters.agentId && metadata.agentId !== options.filters.agentId) continue;
+          if (options.filters.userId && metadata.userId !== options.filters.userId) continue;
+          if (categoryFilter && categoryByDocumentId) {
+            const docCategory = categoryByDocumentId.get(row.document_id);
+            if (docCategory !== categoryFilter) continue;
+          }
+          if (options.filters.tags && options.filters.tags.length > 0) {
+            const docTags = Array.isArray(metadata.tags) ? metadata.tags : [];
+            if (!options.filters.tags.some((tag) => docTags.includes(tag))) continue;
+          }
+        }
+
+        const tokens = tokenize(row.content);
+        const dl = tokens.length;
+        if (dl === 0) continue;
+
+        // Quick reject: if the raw content doesn't contain any query terms, skip token accounting.
+        const contentLower = row.content.toLowerCase();
+        let hasAnyMatch = false;
+        for (const term of queryTermSet) {
+          if (contentLower.includes(term)) {
+            hasAnyMatch = true;
+            break;
+          }
+        }
+        if (!hasAnyMatch) {
+          // Still counts toward corpus size and avgdl for IDF normalization.
+          totalDocLength += dl;
+          N += 1;
+          continue;
+        }
+
+        totalDocLength += dl;
+        N += 1;
+
+        const tf = new Map<string, number>();
+        const present = new Set<string>();
+        for (const token of tokens) {
+          if (!queryTermSet.has(token)) continue;
+          tf.set(token, (tf.get(token) ?? 0) + 1);
+          present.add(token);
+        }
+        for (const term of present) {
+          df.set(term, (df.get(term) ?? 0) + 1);
+        }
+
+        candidates.push({ row, metadata, dl, tf });
       }
 
-      // Compute relevance score using keyword matching
-      const contentLower = row.content.toLowerCase();
-      let matchCount = 0;
-      for (const term of queryTerms) {
-        if (contentLower.includes(term)) {
-          matchCount++;
-        }
+      if (N === 0 || candidates.length === 0) {
+        return { chunks: [], totalResults: 0 };
       }
-      const score = queryTerms.length > 0 ? matchCount / queryTerms.length : 0;
 
-      if (score < threshold) continue;
+      const avgdl = totalDocLength / Math.max(1, N);
+      const k1 = 1.2;
+      const b = 0.75;
 
-      scoredChunks.push({
-        chunkId: row.chunk_id,
-        documentId: row.document_id,
-        content: row.content,
-        score,
-        _score: score,
-        metadata: options.includeMetadata ? metadata : undefined,
-      });
+      const idf = new Map<string, number>();
+      for (const term of queryTermSet) {
+        const termDf = df.get(term) ?? 0;
+        idf.set(term, Math.log(1 + (N - termDf + 0.5) / (termDf + 0.5)));
+      }
+
+      let maxScore = 0;
+      const rawScores = new Map<string, number>();
+
+      for (const candidate of candidates) {
+        let score = 0;
+        for (const term of queryTermSet) {
+          const f = candidate.tf.get(term) ?? 0;
+          if (f === 0) continue;
+          const termIdf = idf.get(term) ?? 0;
+          const denom = f + k1 * (1 - b + b * (candidate.dl / Math.max(1e-9, avgdl)));
+          score += termIdf * ((f * (k1 + 1)) / denom);
+        }
+        rawScores.set(candidate.row.chunk_id, score);
+        if (score > maxScore) maxScore = score;
+      }
+
+      if (!(maxScore > 0)) {
+        return { chunks: [], totalResults: 0 };
+      }
+
+      for (const candidate of candidates) {
+        const raw = rawScores.get(candidate.row.chunk_id) ?? 0;
+        const score = raw / maxScore;
+
+        if (threshold !== null) {
+          if (score < threshold) continue;
+        } else if (!(raw > 0)) {
+          continue;
+        }
+
+        scoredChunks.push({
+          chunkId: candidate.row.chunk_id,
+          documentId: candidate.row.document_id,
+          content: candidate.row.content,
+          score,
+          _score: score,
+          metadata: options.includeMetadata ? candidate.metadata : undefined,
+        });
+      }
     }
 
     scoredChunks.sort((a, b) => b._score - a._score);
@@ -2488,14 +4054,27 @@ class SqlRagStore {
       return null;
     }
 
-    const preset = this.getRetrievalPreset();
+    const preset = coerceRagPreset(options.preset) ?? this.getRetrievalPreset();
     const hybridAlpha = this.getHybridAlpha();
     const shouldRerank = preset === 'accurate';
+
+    const strategy = options.strategy === 'mmr' ? 'mmr' : 'similarity';
+    const mmrEnabled = strategy === 'mmr';
+    const mmrLambdaRaw = options.strategyParams?.mmrLambda;
+    const mmrLambda = Number.isFinite(mmrLambdaRaw)
+      ? Math.max(0, Math.min(1, Number(mmrLambdaRaw)))
+      : 0.7;
+    const mmrCandidateMultiplierRaw = options.strategyParams?.mmrCandidateMultiplier;
+    const mmrCandidateMultiplier = Number.isFinite(mmrCandidateMultiplierRaw)
+      ? Math.max(1, Math.min(50, Math.floor(Number(mmrCandidateMultiplierRaw))))
+      : 5;
 
     const topK = options.topK || 5;
     const threshold =
       typeof options.similarityThreshold === 'number' ? options.similarityThreshold : 0;
-    const maxPerCollection = Math.min(50, Math.max(topK * 4, topK));
+    const maxPerCollection = mmrEnabled
+      ? Math.min(200, Math.max(topK * mmrCandidateMultiplier, topK))
+      : Math.min(50, Math.max(topK * 4, topK));
     const collectionIds =
       options.collectionIds && options.collectionIds.length > 0
         ? options.collectionIds
@@ -2512,6 +4091,7 @@ class SqlRagStore {
       content: string;
       score: number;
       metadata: any;
+      embedding?: number[];
     };
 
     const candidates: Candidate[] = [];
@@ -2527,6 +4107,7 @@ class SqlRagStore {
         if (preset === 'fast') {
           const result = await this.vectorStore.query(collectionId, queryEmbedding, {
             topK: maxPerCollection,
+            includeEmbedding: mmrEnabled,
             includeTextContent: true,
             includeMetadata: true,
             filter: hasVectorFilter ? (vectorFilter as any) : undefined,
@@ -2541,6 +4122,8 @@ class SqlRagStore {
               content: typeof doc.textContent === 'string' ? doc.textContent : '',
               score: typeof doc.similarityScore === 'number' ? doc.similarityScore : 0,
               metadata,
+              embedding:
+                mmrEnabled && doc.embedding && doc.embedding.length > 0 ? doc.embedding : undefined,
             });
           }
         } else if (typeof (this.vectorStore as any).hybridSearch === 'function') {
@@ -2550,6 +4133,7 @@ class SqlRagStore {
             queryText,
             {
               topK: maxPerCollection,
+              includeEmbedding: mmrEnabled,
               includeTextContent: true,
               includeMetadata: true,
               filter: hasVectorFilter ? (vectorFilter as any) : undefined,
@@ -2568,11 +4152,14 @@ class SqlRagStore {
               content: typeof doc.textContent === 'string' ? doc.textContent : '',
               score: typeof doc.similarityScore === 'number' ? doc.similarityScore : 0,
               metadata,
+              embedding:
+                mmrEnabled && doc.embedding && doc.embedding.length > 0 ? doc.embedding : undefined,
             });
           }
         } else {
           const result = await this.vectorStore.query(collectionId, queryEmbedding, {
             topK: maxPerCollection,
+            includeEmbedding: mmrEnabled,
             includeTextContent: true,
             includeMetadata: true,
             filter: hasVectorFilter ? (vectorFilter as any) : undefined,
@@ -2586,6 +4173,8 @@ class SqlRagStore {
               content: typeof doc.textContent === 'string' ? doc.textContent : '',
               score: typeof doc.similarityScore === 'number' ? doc.similarityScore : 0,
               metadata,
+              embedding:
+                mmrEnabled && doc.embedding && doc.embedding.length > 0 ? doc.embedding : undefined,
             });
           }
         }
@@ -2733,6 +4322,19 @@ class SqlRagStore {
       }
     }
 
+    const totalRanked = ranked.length;
+
+    // MMR diversification (optional)
+    if (mmrEnabled && ranked.length > 0) {
+      ranked.sort((a, b) => b.score - a.score);
+      ranked = this.applyMMR({
+        candidates: ranked,
+        topK,
+        lambda: mmrLambda,
+        candidateMultiplier: mmrCandidateMultiplier,
+      });
+    }
+
     const results = ranked.slice(0, topK).map((candidate) => ({
       chunkId: candidate.chunkId,
       documentId: candidate.documentId,
@@ -2743,8 +4345,166 @@ class SqlRagStore {
 
     return {
       chunks: results,
-      totalResults: ranked.length,
+      totalResults: totalRanked,
     };
+  }
+
+  private normalizeQueryKey(text: string): string {
+    return String(text || '')
+      .trim()
+      .toLowerCase()
+      .replace(/\s+/g, ' ');
+  }
+
+  private sanitizeQueryVariants(
+    variants: unknown,
+    baseQuery: string,
+    maxVariants: number
+  ): string[] {
+    const limit = Math.max(0, Math.min(8, Math.floor(maxVariants)));
+    if (limit === 0) return [];
+    const baseKey = this.normalizeQueryKey(baseQuery);
+
+    const out: string[] = [];
+    const seen = new Set<string>([baseKey]);
+
+    const items = Array.isArray(variants) ? variants : [];
+    for (const raw of items) {
+      if (out.length >= limit) break;
+      if (typeof raw !== 'string') continue;
+      const text = raw.trim();
+      if (!text) continue;
+      const key = this.normalizeQueryKey(text);
+      if (!key) continue;
+      if (seen.has(key)) continue;
+      seen.add(key);
+      out.push(text.slice(0, 512));
+    }
+
+    return out;
+  }
+
+  private extractCompletionText(response: any): string {
+    const choice = response?.choices?.[0];
+    const content = choice?.message?.content;
+    if (typeof content === 'string') return content;
+    if (Array.isArray(content)) {
+      return content
+        .map((part: any) =>
+          part?.type === 'text' && typeof part?.text === 'string' ? part.text : ''
+        )
+        .join('');
+    }
+    if (typeof choice?.text === 'string') return choice.text;
+    return '';
+  }
+
+  private parseQueryVariantOutput(text: string): string[] {
+    const raw = String(text || '').trim();
+    if (!raw) return [];
+
+    // Preferred: JSON array of strings.
+    try {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) {
+        return parsed
+          .filter((v) => typeof v === 'string')
+          .map((v) => v.trim())
+          .filter(Boolean);
+      }
+    } catch {
+      // Fall back.
+    }
+
+    // Try extracting a JSON array substring.
+    const firstBracket = raw.indexOf('[');
+    const lastBracket = raw.lastIndexOf(']');
+    if (firstBracket >= 0 && lastBracket > firstBracket) {
+      const slice = raw.slice(firstBracket, lastBracket + 1);
+      try {
+        const parsed = JSON.parse(slice);
+        if (Array.isArray(parsed)) {
+          return parsed
+            .filter((v) => typeof v === 'string')
+            .map((v) => v.trim())
+            .filter(Boolean);
+        }
+      } catch {
+        // Ignore.
+      }
+    }
+
+    // Last resort: parse lines/bullets.
+    return raw
+      .split(/\r?\n+/g)
+      .map((line) => line.replace(/^\s*[-*\\d.)]+\\s*/g, '').trim())
+      .filter(Boolean);
+  }
+
+  private async generateQueryVariantsWithLlm(
+    baseQuery: string,
+    maxVariants: number
+  ): Promise<string[]> {
+    const max = Math.max(0, Math.min(8, Math.floor(maxVariants)));
+    if (max === 0) return [];
+
+    try {
+      const providerManager = await this.ensureProviderManagerInitialized();
+      const providerId = providerManager.getProvider('openrouter')
+        ? 'openrouter'
+        : providerManager.getProvider('openai')
+          ? 'openai'
+          : providerManager.getProvider('ollama')
+            ? 'ollama'
+            : '';
+      if (!providerId) return [];
+
+      const provider = providerManager.getProvider(providerId);
+      if (!provider) return [];
+
+      const modelId =
+        providerId === 'openrouter'
+          ? process.env.MODEL_PREF_OPENROUTER_DEFAULT?.trim() || 'openai/gpt-4o-mini'
+          : providerId === 'openai'
+            ? process.env.AGENTOS_DEFAULT_MODEL_ID?.trim() || 'gpt-4o-mini'
+            : process.env.OLLAMA_MODEL?.trim() || 'llama3';
+
+      const prompt = `You rewrite user queries for retrieval.
+Generate ${max} alternative search queries that preserve the same intent but vary phrasing, synonyms, and acronyms.
+Return ONLY a JSON array of strings (no extra text).
+
+Query: ${JSON.stringify(baseQuery)}`;
+
+      const response = await provider.generateCompletion(
+        modelId,
+        [{ role: 'user', content: prompt }],
+        { maxTokens: 200, temperature: 0.2 }
+      );
+      const text = this.extractCompletionText(response);
+      const parsed = this.parseQueryVariantOutput(text);
+      return this.sanitizeQueryVariants(parsed, baseQuery, max);
+    } catch {
+      return [];
+    }
+  }
+
+  private async resolveQueryVariants(options: RagQueryOptions): Promise<string[]> {
+    const baseQuery = String(options.query || '').trim();
+    if (!baseQuery) return [''];
+
+    const explicit = this.sanitizeQueryVariants(options.queryVariants, baseQuery, 8);
+    if (explicit.length > 0) return [baseQuery, ...explicit];
+
+    const rewriteEnabled = options.rewrite?.enabled === true;
+    if (!rewriteEnabled) return [baseQuery];
+
+    const maxVariantsRaw = options.rewrite?.maxVariants;
+    const maxVariants = Number.isFinite(maxVariantsRaw)
+      ? Math.max(1, Math.min(8, Math.floor(Number(maxVariantsRaw))))
+      : 2;
+
+    const generated = await this.generateQueryVariantsWithLlm(baseQuery, maxVariants);
+    return [baseQuery, ...generated];
   }
 
   async query(options: RagQueryOptions): Promise<RagQueryResult> {
@@ -2752,11 +4512,56 @@ class SqlRagStore {
     const startTime = Date.now();
     const topK = options.topK || 5;
 
-    const vector = await this.queryVectorInternal(adapter, options);
-    const keyword =
-      vector && vector.chunks.length >= topK
-        ? null
-        : await this.queryKeywordInternal(adapter, options);
+    const queries = await this.resolveQueryVariants(options);
+    const [baseQuery, ...variants] = queries;
+
+    let vector: { chunks: RagRetrievedChunk[]; totalResults: number } | null = null;
+    if (variants.length === 0) {
+      vector = await this.queryVectorInternal(adapter, options);
+    } else {
+      const mergedById = new Map<string, RagRetrievedChunk>();
+      const first = await this.queryVectorInternal(adapter, { ...options, query: baseQuery });
+
+      // If embeddings are unavailable, skip extra vector attempts (all will be null anyway).
+      const canUseVector = Boolean(first);
+      if (first) {
+        for (const chunk of first.chunks) mergedById.set(chunk.chunkId, chunk);
+      }
+
+      if (canUseVector) {
+        for (const q of variants) {
+          const result = await this.queryVectorInternal(adapter, { ...options, query: q });
+          if (!result) continue;
+          for (const chunk of result.chunks) {
+            const existing = mergedById.get(chunk.chunkId);
+            if (!existing || chunk.score > existing.score) mergedById.set(chunk.chunkId, chunk);
+          }
+        }
+      }
+
+      const merged = Array.from(mergedById.values());
+      merged.sort((a, b) => b.score - a.score);
+      vector = canUseVector ? { chunks: merged, totalResults: merged.length } : null;
+    }
+
+    const keywordNeeded = !vector || vector.chunks.length < topK;
+    const keyword = keywordNeeded
+      ? variants.length === 0
+        ? await this.queryKeywordInternal(adapter, options)
+        : await (async () => {
+            const mergedById = new Map<string, RagRetrievedChunk>();
+            for (const q of queries) {
+              const result = await this.queryKeywordInternal(adapter, { ...options, query: q });
+              for (const chunk of result.chunks) {
+                const existing = mergedById.get(chunk.chunkId);
+                if (!existing || chunk.score > existing.score) mergedById.set(chunk.chunkId, chunk);
+              }
+            }
+            const merged = Array.from(mergedById.values());
+            merged.sort((a, b) => b.score - a.score);
+            return { chunks: merged, totalResults: merged.length };
+          })()
+      : null;
 
     const mergedById = new Map<string, RagRetrievedChunk>();
     for (const chunk of vector?.chunks ?? []) {
@@ -2825,6 +4630,18 @@ class SqlRagStore {
 
     if (!doc) return false;
 
+    // Best-effort: detect whether this document is a derived multimodal asset.
+    // Capture modality + base collection before deletes for downstream cleanup.
+    let mediaAsset: Pick<MediaAssetRow, 'collection_id' | 'modality'> | null = null;
+    try {
+      mediaAsset = await adapter.get<Pick<MediaAssetRow, 'collection_id' | 'modality'>>(
+        `SELECT collection_id, modality FROM ${this.tablePrefix}media_assets WHERE asset_id = ?`,
+        [documentId]
+      );
+    } catch {
+      mediaAsset = null;
+    }
+
     // Capture chunk IDs for vector index cleanup before deleting.
     const chunkRows = await adapter.all<{ chunk_id: string }>(
       `SELECT chunk_id FROM ${this.tablePrefix}chunks WHERE document_id = ?`,
@@ -2863,8 +4680,23 @@ class SqlRagStore {
       // Ignore; canonical SQL deletes already happened.
     }
 
+    // Best-effort: if this was an image asset, remove the raw image embedding vector as well.
+    if (mediaAsset?.modality === 'image') {
+      await this.deleteMediaImageEmbeddingVector({
+        adapter,
+        assetId: documentId,
+        baseCollectionId: mediaAsset.collection_id || doc.collection_id,
+      });
+    } else if (mediaAsset?.modality === 'audio') {
+      await this.deleteMediaAudioEmbeddingVector({
+        adapter,
+        assetId: documentId,
+        baseCollectionId: mediaAsset.collection_id || doc.collection_id,
+      });
+    }
+
     // Best-effort: keep GraphRAG in sync when enabled.
-    if (this.shouldIngestGraphRag(doc.category)) {
+    if (this.isGraphRagEnabled()) {
       try {
         await this.ensureGraphRagInitialized(adapter);
         await this.graphRagEngine?.removeDocuments([documentId]);
@@ -3205,6 +5037,64 @@ export const ragService = {
    */
   async queryMediaAssets(options: RagMediaQueryOptions): Promise<RagMediaQueryResult> {
     return ragStore.queryMediaAssets(options);
+  },
+
+  /**
+   * Derive a text representation for an image without ingesting it.
+   * Useful for query-by-image flows that run text retrieval.
+   */
+  async describeImageForRetrieval(input: {
+    mimeType: string;
+    payload?: Buffer;
+    sourceUrl?: string;
+  }): Promise<{ textRepresentation: string; tags?: string[] }> {
+    return ragStore.describeImageForRetrieval(input);
+  },
+
+  /**
+   * Derive a text representation for an audio clip without ingesting it.
+   * Useful for query-by-audio flows that run text retrieval.
+   */
+  async transcribeAudioForRetrieval(input: {
+    payload: Buffer;
+    originalFileName: string;
+    mimeType: string;
+    userId?: string;
+  }): Promise<string> {
+    return ragStore.transcribeAudioForRetrieval(input);
+  },
+
+  /**
+   * Query indexed media assets using a binary image query (caption then retrieve).
+   */
+  async queryMediaAssetsByImage(options: {
+    payload?: Buffer;
+    mimeType?: string;
+    sourceUrl?: string;
+    textRepresentation?: string;
+    modalities?: RagMediaModality[];
+    collectionIds?: string[];
+    topK?: number;
+    includeMetadata?: boolean;
+  }): Promise<RagMediaQueryResult> {
+    return ragStore.queryMediaAssetsByImage(options);
+  },
+
+  /**
+   * Query indexed media assets using a binary audio query (transcribe then retrieve).
+   */
+  async queryMediaAssetsByAudio(options: {
+    payload?: Buffer;
+    mimeType?: string;
+    originalFileName?: string;
+    textRepresentation?: string;
+    modalities?: RagMediaModality[];
+    collectionIds?: string[];
+    topK?: number;
+    includeMetadata?: boolean;
+    userId?: string;
+  }): Promise<RagMediaQueryResult> {
+    return ragStore.queryMediaAssetsByAudio(options);
   },
 
   /**

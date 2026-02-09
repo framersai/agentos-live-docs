@@ -62,6 +62,7 @@ const sidebars = {
           collapsed: false,
           items: [
             'features/rag-memory',
+            'features/multimodal-rag',
             'features/sql-storage',
             'features/client-side-storage',
             'features/platform-strategy',

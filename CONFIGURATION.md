@@ -154,46 +154,71 @@ Backend default behavior (Voice Chat Assistant):
 
 When `AGENTOS_ENABLED=true`, AgentOS long-term memory retrieval uses the backend `ragService`. It stores canonical documents/chunks in SQL and maintains an optional vector index (dense + hybrid) with keyword fallback.
 
-| Variable                                         | Description                                                                                                                 |
-| ------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------- |
-| `RAG_DATABASE_PATH`                              | SQLite file path for the RAG store (default: `./data/rag_store.db`).                                                        |
-| `RAG_DATABASE_URL`                               | Postgres connection string for the RAG store (optional).                                                                    |
-| `AGENTOS_RAG_PRESET`                             | `fast` (dense), `balanced` (hybrid), `accurate` (hybrid + rerank). Default: `balanced`.                                     |
-| `AGENTOS_RAG_HYBRID_ALPHA`                       | Hybrid dense weight (0..1). Default: `0.7`.                                                                                 |
-| `AGENTOS_RAG_EMBED_PROVIDER`                     | Force embeddings provider: `ollama`, `openai`, `openrouter` (optional).                                                     |
-| `AGENTOS_RAG_EMBED_MODEL`                        | Force embeddings model ID (optional).                                                                                       |
-| `AGENTOS_RAG_OLLAMA_REQUEST_TIMEOUT_MS`          | Ollama connect timeout (ms). Also accepts `OLLAMA_REQUEST_TIMEOUT_MS`. Default: `5000`.                                     |
-| `COHERE_API_KEY`                                 | Enables Cohere reranking (used by `accurate` preset). Optional.                                                             |
-| `AGENTOS_RAG_VECTOR_PROVIDER`                    | Vector index backend for `ragService`: `sql` (default) or `qdrant` (optional).                                              |
-| `AGENTOS_RAG_QDRANT_URL`                         | Qdrant base URL when `AGENTOS_RAG_VECTOR_PROVIDER=qdrant`. Also accepts `QDRANT_URL`.                                       |
-| `AGENTOS_RAG_QDRANT_API_KEY`                     | Optional Qdrant API key. Also accepts `QDRANT_API_KEY`.                                                                     |
-| `AGENTOS_RAG_QDRANT_TIMEOUT_MS`                  | Qdrant request timeout (ms). Also accepts `QDRANT_TIMEOUT_MS`. Default: `15000`.                                            |
-| `AGENTOS_RAG_QDRANT_ENABLE_BM25`                 | Enable BM25 sparse vectors + hybrid fusion in Qdrant (`true`/`false`). Default: `true`.                                     |
-| `AGENTOS_GRAPHRAG_ENABLED`                       | Enable GraphRAG indexing + search (`true`/`false`). Default: `false`.                                                       |
-| `AGENTOS_GRAPHRAG_CATEGORIES`                    | Comma list of `RagDocumentInput.category` values to index into GraphRAG. Default when unset: `knowledge_base`.              |
-| `AGENTOS_GRAPHRAG_LLM_ENABLED`                   | Use an LLM for entity extraction + community summaries (`true`/`false`). Default: `false` (pattern-based extraction only).  |
-| `AGENTOS_GRAPHRAG_LLM_PROVIDER`                  | LLM provider for GraphRAG (`openai`/`openrouter`/`ollama`). Optional.                                                       |
-| `AGENTOS_GRAPHRAG_LLM_MODEL`                     | LLM model ID for GraphRAG. Optional.                                                                                        |
-| `AGENTOS_HITL_ENABLED`                           | Enable HITL approvals for side-effect tool calls (`true`/`false`). Default: `false`.                                        |
-| `AGENTOS_HITL_TIMEOUT_MS`                        | Default timeout (ms) for HITL requests. Default: `30000`.                                                                   |
-| `AGENTOS_HITL_APPROVAL_TIMEOUT_MS`               | Optional per-tool approval timeout override (ms).                                                                           |
-| `AGENTOS_HITL_DEFAULT_SEVERITY`                  | Default approval severity for side-effect tools: `low`/`medium`/`high`/`critical`. Default: `high`.                         |
-| `AGENTOS_HITL_REQUIRE_APPROVAL_FOR_SIDE_EFFECTS` | If `true`, tools with `tool.hasSideEffects=true` require approval. Default: `true` (when HITL enabled).                     |
-| `AGENTOS_HITL_WEBHOOK_URL`                       | Optional outbound webhook URL(s), comma-separated, notified on new HITL requests.                                           |
-| `AGENTOS_HITL_WEBHOOK_TIMEOUT_MS`                | Webhook request timeout (ms). Default: `5000`.                                                                              |
-| `AGENTOS_HITL_WEBHOOK_SECRET`                    | If set, decision endpoints require `x-agentos-hitl-secret` header and outbound webhooks include `x-agentos-hitl-signature`. |
+| Variable                                         | Description                                                                                                                        |
+| ------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------- |
+| `RAG_DATABASE_PATH`                              | SQLite file path for the RAG store (default: `./data/rag_store.db`).                                                               |
+| `RAG_DATABASE_URL`                               | Postgres connection string for the RAG store (optional).                                                                           |
+| `AGENTOS_RAG_PRESET`                             | `fast` (dense), `balanced` (hybrid), `accurate` (hybrid + rerank). Default: `balanced`.                                            |
+| `AGENTOS_RAG_HYBRID_ALPHA`                       | Hybrid dense weight (0..1). Default: `0.7`.                                                                                        |
+| `AGENTOS_RAG_EMBED_PROVIDER`                     | Force embeddings provider: `ollama`, `openai`, `openrouter` (optional).                                                            |
+| `AGENTOS_RAG_EMBED_MODEL`                        | Force embeddings model ID (optional).                                                                                              |
+| `AGENTOS_RAG_OLLAMA_REQUEST_TIMEOUT_MS`          | Ollama connect timeout (ms). Also accepts `OLLAMA_REQUEST_TIMEOUT_MS`. Default: `5000`.                                            |
+| `COHERE_API_KEY`                                 | Enables Cohere reranking (used by `accurate` preset). Optional.                                                                    |
+| `AGENTOS_RAG_VECTOR_PROVIDER`                    | Vector index backend for `ragService`: `sql` (default), `qdrant`, or `hnswlib` (in-process ANN; optional).                         |
+| `AGENTOS_RAG_QDRANT_URL`                         | Qdrant base URL when `AGENTOS_RAG_VECTOR_PROVIDER=qdrant`. Also accepts `QDRANT_URL`.                                              |
+| `AGENTOS_RAG_QDRANT_API_KEY`                     | Optional Qdrant API key. Also accepts `QDRANT_API_KEY`.                                                                            |
+| `AGENTOS_RAG_QDRANT_TIMEOUT_MS`                  | Qdrant request timeout (ms). Also accepts `QDRANT_TIMEOUT_MS`. Default: `15000`.                                                   |
+| `AGENTOS_RAG_QDRANT_ENABLE_BM25`                 | Enable BM25 sparse vectors + hybrid fusion in Qdrant (`true`/`false`). Default: `true`.                                            |
+| `AGENTOS_RAG_HNSWLIB_PERSIST_DIR`                | Persist directory when `AGENTOS_RAG_VECTOR_PROVIDER=hnswlib` (optional). Requires installing `hnswlib-node`.                       |
+| `AGENTOS_RAG_HNSWLIB_M`                          | HNSW M parameter (optional).                                                                                                       |
+| `AGENTOS_RAG_HNSWLIB_EF_CONSTRUCTION`            | HNSW efConstruction parameter (optional). Default depends on `AGENTOS_RAG_PRESET` (`fast`: 100, `balanced`: 200, `accurate`: 400). |
+| `AGENTOS_RAG_HNSWLIB_EF_SEARCH`                  | HNSW efSearch parameter (optional). Default depends on `AGENTOS_RAG_PRESET` (`fast`: 64, `balanced`: 100, `accurate`: 200).        |
+| `AGENTOS_GRAPHRAG_ENABLED`                       | Enable GraphRAG indexing + search (`true`/`false`). Default: `false`.                                                              |
+| `AGENTOS_GRAPHRAG_CATEGORIES`                    | Comma list of `RagDocumentInput.category` values to index into GraphRAG. Default when unset: `knowledge_base`.                     |
+| `AGENTOS_GRAPHRAG_COLLECTIONS`                   | Optional allow list of collection IDs to index into GraphRAG (comma-separated).                                                    |
+| `AGENTOS_GRAPHRAG_EXCLUDE_COLLECTIONS`           | Optional deny list of collection IDs to exclude from GraphRAG (comma-separated).                                                   |
+| `AGENTOS_GRAPHRAG_INDEX_MEDIA_ASSETS`            | Index derived multimodal assets into GraphRAG (`true`/`false`). Default: `false`.                                                  |
+| `AGENTOS_GRAPHRAG_MAX_DOC_CHARS`                 | Skip GraphRAG indexing for docs larger than this character count (optional).                                                       |
+| `AGENTOS_GRAPHRAG_ENGINE_ID`                     | GraphRAG engine ID (used to derive vector collection names). Default: `agentos-graphrag`.                                          |
+| `AGENTOS_GRAPHRAG_TABLE_PREFIX`                  | GraphRAG SQL table prefix (stored in the same RAG DB). Default: `rag_graphrag_`.                                                   |
+| `AGENTOS_GRAPHRAG_ENTITY_COLLECTION`             | Vector collection name for GraphRAG entity embeddings. Default: `${engineId}_entities`.                                            |
+| `AGENTOS_GRAPHRAG_COMMUNITY_COLLECTION`          | Vector collection name for GraphRAG community embeddings. Default: `${engineId}_communities`.                                      |
+| `AGENTOS_GRAPHRAG_ENTITY_EMBEDDINGS`             | Generate entity/community embeddings when embeddings are available (`true`/`false`). Default: `true`.                              |
+| `AGENTOS_GRAPHRAG_LLM_ENABLED`                   | Use an LLM for entity extraction + community summaries (`true`/`false`). Default: `false` (pattern-based extraction only).         |
+| `AGENTOS_GRAPHRAG_LLM_PROVIDER`                  | LLM provider for GraphRAG (`openai`/`openrouter`/`ollama`). Optional.                                                              |
+| `AGENTOS_GRAPHRAG_LLM_MODEL`                     | LLM model ID for GraphRAG. Optional.                                                                                               |
+| `AGENTOS_HITL_ENABLED`                           | Enable HITL approvals for side-effect tool calls (`true`/`false`). Default: `false`.                                               |
+| `AGENTOS_HITL_TIMEOUT_MS`                        | Default timeout (ms) for HITL requests. Default: `30000`.                                                                          |
+| `AGENTOS_HITL_APPROVAL_TIMEOUT_MS`               | Optional per-tool approval timeout override (ms).                                                                                  |
+| `AGENTOS_HITL_DEFAULT_SEVERITY`                  | Default approval severity for side-effect tools: `low`/`medium`/`high`/`critical`. Default: `high`.                                |
+| `AGENTOS_HITL_REQUIRE_APPROVAL_FOR_SIDE_EFFECTS` | If `true`, tools with `tool.hasSideEffects=true` require approval. Default: `true` (when HITL enabled).                            |
+| `AGENTOS_HITL_WEBHOOK_URL`                       | Optional outbound webhook URL(s), comma-separated, notified on new HITL requests.                                                  |
+| `AGENTOS_HITL_WEBHOOK_TIMEOUT_MS`                | Webhook request timeout (ms). Default: `5000`.                                                                                     |
+| `AGENTOS_HITL_WEBHOOK_SECRET`                    | If set, decision endpoints require `x-agentos-hitl-secret` header and outbound webhooks include `x-agentos-hitl-signature`.        |
 
 Local reranking is optional and requires installing Transformers.js: `@huggingface/transformers` (preferred) or `@xenova/transformers`.
 
 #### GraphRAG Usage
 
 GraphRAG is **disabled by default**. When enabled (`AGENTOS_GRAPHRAG_ENABLED=true`), the backend will **best-effort index** ingested RAG documents whose `category` is allowed by `AGENTOS_GRAPHRAG_CATEGORIES` (default when unset: `knowledge_base`).
+If embeddings are not configured/available, GraphRAG still runs in a degraded text-matching mode (lower quality; no vector search).
+
+Lifecycle semantics (important):
+
+- **Update:** re-ingest the same `documentId` via `POST /api/agentos/rag/ingest`. This updates canonical SQL docs/chunks, best-effort syncs vector chunks, and updates GraphRAG contributions when enabled.
+- **Delete:** `DELETE /api/agentos/rag/documents/:documentId` best-effort removes vector chunks and GraphRAG contributions (when enabled).
+- **Category/collection move:** re-ingest the same `documentId` with a new `category` and/or `collectionId`. If the doc moves out of GraphRAG policy scope, the backend will best-effort call `GraphRAGEngine.removeDocuments([documentId])`.
 
 Search endpoints:
 
 - `POST /api/agentos/rag/graphrag/local-search` with JSON `{ "query": "..." }`
 - `POST /api/agentos/rag/graphrag/global-search` with JSON `{ "query": "..." }`
 - `GET /api/agentos/rag/graphrag/stats`
+
+Troubleshooting updates:
+
+- If you see logs like: `Skipping update for document '...' because previous contribution records are missing`, you upgraded from an older GraphRAG persistence format.
+  - Fix: rebuild the GraphRAG index by clearing GraphRAG tables (prefix `AGENTOS_GRAPHRAG_TABLE_PREFIX`, default `rag_graphrag_`) and re-ingesting documents.
 
 #### HITL Webhooks
 
@@ -209,6 +234,29 @@ If `AGENTOS_HITL_WEBHOOK_URL` is set, the backend sends a POST to each URL with 
 ```
 
 If `AGENTOS_HITL_WEBHOOK_SECRET` is set, outbound webhooks include `x-agentos-hitl-signature` (HMAC-SHA256 of `${timestampMs}.${rawBody}`) and decision endpoints require `x-agentos-hitl-secret`.
+
+#### Multimodal RAG (Image + Audio)
+
+Multimodal ingestion stores asset metadata (and optionally raw bytes) and indexes a derived text representation as a normal RAG document. Query-by-image can either caption the query image (LLM vision) or use offline CLIP-style image embeddings when enabled.
+
+| Variable                                          | Description                                                                            |
+| ------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| `AGENTOS_RAG_MEDIA_STORE_PAYLOAD`                 | Store raw bytes (base64) for ingested assets (`true`/`false`). Default: `false`.       |
+| `AGENTOS_RAG_MEDIA_IMAGE_COLLECTION_ID`           | Collection ID for image assets (default: `media_images`).                              |
+| `AGENTOS_RAG_MEDIA_AUDIO_COLLECTION_ID`           | Collection ID for audio assets (default: `media_audio`).                               |
+| `AGENTOS_RAG_MEDIA_IMAGE_LLM_PROVIDER`            | Provider used for image captioning (`openai`/`openrouter`). Default: `openai`.         |
+| `AGENTOS_RAG_MEDIA_IMAGE_LLM_MODEL`               | Model used for image captioning (default: `gpt-4o-mini`).                              |
+| `AGENTOS_RAG_MEDIA_IMAGE_EMBEDDINGS_ENABLED`      | Enable offline image-to-image retrieval embeddings (`true`/`false`). Default: `false`. |
+| `AGENTOS_RAG_MEDIA_IMAGE_EMBED_MODEL`             | Transformers.js image embedding model ID (default: `Xenova/clip-vit-base-patch32`).    |
+| `AGENTOS_RAG_MEDIA_IMAGE_EMBED_COLLECTION_SUFFIX` | Suffix appended to base image collections for embedding vectors (default: `_img`).     |
+| `AGENTOS_RAG_MEDIA_IMAGE_EMBED_CACHE_DIR`         | Optional Transformers.js cache directory for model files (recommended for servers).    |
+| `AGENTOS_RAG_MEDIA_AUDIO_EMBEDDINGS_ENABLED`      | Enable offline audio-to-audio retrieval embeddings (`true`/`false`). Default: `false`. |
+| `AGENTOS_RAG_MEDIA_AUDIO_EMBED_MODEL`             | Transformers.js audio embedding model ID (default: `Xenova/clap-htsat-unfused`).       |
+| `AGENTOS_RAG_MEDIA_AUDIO_EMBED_COLLECTION_SUFFIX` | Suffix appended to base audio collections for embedding vectors (default: `_aud`).     |
+| `AGENTOS_RAG_MEDIA_AUDIO_EMBED_CACHE_DIR`         | Optional Transformers.js cache directory for model files (recommended for servers).    |
+
+Offline image/audio embeddings require installing Transformers.js (optional): `@huggingface/transformers` (preferred) or `@xenova/transformers`.
+Audio embeddings are WAV-only on Node for now (no ffmpeg); install `wavefile` (optional) and send `audio/wav` payloads for embedding-based retrieval.
 
 ### Wunderland Vector Memory (Optional)
 

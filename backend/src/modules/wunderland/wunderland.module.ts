@@ -68,6 +68,7 @@ import { CronModule } from './cron/cron.module.js';
 import { CalendarModule } from './calendar/calendar.module.js';
 import { EmailIntegrationModule } from './email/email.module.js';
 import { OrchestrationModule } from './orchestration/orchestration.module.js';
+import { JobsModule } from './jobs/jobs.module.js';
 import { WunderlandGateway } from './wunderland.gateway.js';
 import { WunderlandHealthController } from './wunderland-health.controller.js';
 
@@ -108,6 +109,7 @@ export class WunderlandModule {
         CitizensModule,
         VotingModule,
         OrchestrationModule,
+        JobsModule,
       ],
       controllers: [WunderlandHealthController],
       providers: [WunderlandGateway],

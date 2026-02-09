@@ -58,9 +58,56 @@ Enabled when `AGENTOS_ENABLED=true`. All paths below are relative to `/api`.
 | `GET`    | `/agentos/rag/collections`               | List collections.                                                                        |
 | `DELETE` | `/agentos/rag/collections/:collectionId` | Delete a collection and its docs.                                                        |
 
+- `/agentos/rag/query` accepts optional fields:
+  - `preset`: `fast | balanced | accurate` (overrides `AGENTOS_RAG_PRESET`)
+  - `strategy`: `similarity | mmr` (MMR diversifies results to reduce redundancy)
+  - `strategyParams`: `{ mmrLambda?: number, mmrCandidateMultiplier?: number }`
+  - `queryVariants`: `string[]` additional query variants (runs retrieval per variant, then merges/dedupes)
+  - `rewrite`: `{ enabled?: boolean, maxVariants?: number }` generate query variants via LLM (best-effort; may incur an extra model call)
+
+Example (multi-query retrieval + best-effort rewrite):
+
+```bash
+curl -s -X POST http://localhost:3001/api/agentos/rag/query \
+  -H 'content-type: application/json' \
+  -d '{
+    "query":"how do org admins write org memory",
+    "queryVariants":[
+      "organization memory publish admin only",
+      "memoryControl longTermMemory shareWithOrganization"
+    ],
+    "rewrite":{"enabled":true,"maxVariants":2},
+    "preset":"balanced",
+    "topK":8,
+    "includeMetadata":true
+  }' | jq
+```
+
 ### GraphRAG (optional)
 
 GraphRAG is disabled by default. Enable with `AGENTOS_GRAPHRAG_ENABLED=true`.
+GraphRAG indexing is **best-effort** and runs alongside normal RAG ingestion:
+
+- Canonical documents/chunks are written to SQL first.
+- GraphRAG failures never block ingestion or deletes.
+
+If embeddings are not configured/available, GraphRAG still runs in a degraded text-matching mode (lower quality; no vector search).
+
+Policy/guardrails (all optional unless noted):
+
+- `AGENTOS_GRAPHRAG_CATEGORIES=...` (default when unset: `knowledge_base`)
+- `AGENTOS_GRAPHRAG_COLLECTIONS=...` allow list (comma-separated collection IDs)
+- `AGENTOS_GRAPHRAG_EXCLUDE_COLLECTIONS=...` deny list (comma-separated collection IDs)
+- `AGENTOS_GRAPHRAG_INDEX_MEDIA_ASSETS=true|false` (default: `false`)
+- `AGENTOS_GRAPHRAG_MAX_DOC_CHARS=...` (skip GraphRAG indexing for very large docs)
+
+Advanced config (optional):
+
+- `AGENTOS_GRAPHRAG_ENGINE_ID=...` (default: `agentos-graphrag`)
+- `AGENTOS_GRAPHRAG_TABLE_PREFIX=...` (default: `rag_graphrag_`)
+- `AGENTOS_GRAPHRAG_ENTITY_COLLECTION=...` (default: `${engineId}_entities`)
+- `AGENTOS_GRAPHRAG_COMMUNITY_COLLECTION=...` (default: `${engineId}_communities`)
+- `AGENTOS_GRAPHRAG_ENTITY_EMBEDDINGS=true|false` (default: `true`; automatically disabled if embeddings are unavailable)
 
 | Method | Path                                  | Description                           |
 | ------ | ------------------------------------- | ------------------------------------- |
@@ -68,18 +115,88 @@ GraphRAG is disabled by default. Enable with `AGENTOS_GRAPHRAG_ENABLED=true`.
 | `POST` | `/agentos/rag/graphrag/global-search` | Community summary search.             |
 | `GET`  | `/agentos/rag/graphrag/stats`         | GraphRAG statistics.                  |
 
+#### GraphRAG Document Lifecycle (update/delete/move)
+
+GraphRAG stays in sync via the normal RAG document lifecycle:
+
+- **Ingest/update:** `POST /api/agentos/rag/ingest` with a stable `documentId`.
+  - Re-ingesting the same `documentId` updates the canonical SQL doc/chunks.
+  - When GraphRAG is enabled, it also updates that document’s graph contributions.
+  - If the content is unchanged, GraphRAG will skip reprocessing (hash-based), but SQL still updates.
+- **Delete:** `DELETE /api/agentos/rag/documents/:documentId`
+  - Deletes the canonical SQL doc/chunks.
+  - Best-effort cleanup of vector chunks and GraphRAG contributions (when enabled).
+- **Category/collection move:** re-ingest the same `documentId` with a new `category` and/or `collectionId`.
+  - If the doc was previously eligible for GraphRAG but is no longer eligible under current policy, the backend will best-effort call `GraphRAGEngine.removeDocuments([documentId])`.
+
+Examples:
+
+```bash
+# Ingest a knowledge doc (eligible for GraphRAG by default).
+curl -s -X POST http://localhost:3001/api/agentos/rag/ingest \
+  -H 'content-type: application/json' \
+  -d '{
+    "documentId":"kb_agentos_intro",
+    "collectionId":"kb",
+    "category":"knowledge_base",
+    "content":"AgentOS is a TypeScript runtime for adaptive AI systems.",
+    "metadata":{"title":"AgentOS intro","tags":["agentos","rag"]}
+  }' | jq
+
+# Update: same documentId, different content.
+curl -s -X POST http://localhost:3001/api/agentos/rag/ingest \
+  -H 'content-type: application/json' \
+  -d '{
+    "documentId":"kb_agentos_intro",
+    "collectionId":"kb",
+    "category":"knowledge_base",
+    "content":"AgentOS is a TypeScript runtime for adaptive AI systems. It includes RAG and GraphRAG.",
+    "metadata":{"title":"AgentOS intro","tags":["agentos","rag"]}
+  }' | jq
+
+# Move out of GraphRAG policy scope (default policy indexes knowledge_base only):
+# this keeps the document in normal RAG, but removes it from GraphRAG.
+curl -s -X POST http://localhost:3001/api/agentos/rag/ingest \
+  -H 'content-type: application/json' \
+  -d '{
+    "documentId":"kb_agentos_intro",
+    "collectionId":"kb",
+    "category":"user_notes",
+    "content":"Personal notes about AgentOS...",
+    "metadata":{"title":"AgentOS notes"}
+  }' | jq
+
+# Delete: removes canonical chunks + best-effort GraphRAG cleanup.
+curl -s -X DELETE http://localhost:3001/api/agentos/rag/documents/kb_agentos_intro | jq
+```
+
+Troubleshooting updates:
+
+- If you see logs like: `Skipping update for document '...' because previous contribution records are missing`, you upgraded from an older GraphRAG persistence format.
+  - Fix: rebuild the GraphRAG index by clearing GraphRAG tables (prefix `AGENTOS_GRAPHRAG_TABLE_PREFIX`, default `rag_graphrag_`) and re-ingesting documents.
+
 ### Multimodal (image + audio)
 
 Multimodal ingestion stores asset metadata (and optionally raw bytes) and indexes a derived text representation as a normal RAG document.
 
-| Method   | Path                                              | Description                                                   |
-| -------- | ------------------------------------------------- | ------------------------------------------------------------- |
-| `POST`   | `/agentos/rag/multimodal/images/ingest`           | Ingest an image (multipart field: `image`).                   |
-| `POST`   | `/agentos/rag/multimodal/audio/ingest`            | Ingest an audio file (multipart field: `audio`).              |
-| `POST`   | `/agentos/rag/multimodal/query`                   | Query assets by searching their derived text representations. |
-| `GET`    | `/agentos/rag/multimodal/assets/:assetId`         | Fetch stored asset metadata.                                  |
-| `GET`    | `/agentos/rag/multimodal/assets/:assetId/content` | Fetch raw bytes (only if `storePayload=true` at ingest).      |
-| `DELETE` | `/agentos/rag/multimodal/assets/:assetId`         | Delete asset and its derived RAG document.                    |
+See [Multimodal RAG](../packages/agentos/docs/MULTIMODAL_RAG.md) for architecture details, offline embedding configuration, and recommended extension points.
+
+| Method   | Path                                              | Description                                                       |
+| -------- | ------------------------------------------------- | ----------------------------------------------------------------- |
+| `POST`   | `/agentos/rag/multimodal/images/ingest`           | Ingest an image (multipart field: `image`).                       |
+| `POST`   | `/agentos/rag/multimodal/audio/ingest`            | Ingest an audio file (multipart field: `audio`).                  |
+| `POST`   | `/agentos/rag/multimodal/images/query`            | Query assets using a query image (multipart field: `image`).      |
+| `POST`   | `/agentos/rag/multimodal/audio/query`             | Query assets using a query audio clip (multipart field: `audio`). |
+| `POST`   | `/agentos/rag/multimodal/query`                   | Query assets by searching their derived text representations.     |
+| `GET`    | `/agentos/rag/multimodal/assets/:assetId`         | Fetch stored asset metadata.                                      |
+| `GET`    | `/agentos/rag/multimodal/assets/:assetId/content` | Fetch raw bytes (only if `storePayload=true` at ingest).          |
+| `DELETE` | `/agentos/rag/multimodal/assets/:assetId`         | Delete asset and its derived RAG document.                        |
+
+Notes:
+
+- `/agentos/rag/multimodal/images/query` prefers offline image-embedding retrieval when enabled (`AGENTOS_RAG_MEDIA_IMAGE_EMBEDDINGS_ENABLED=true` + Transformers.js installed). Otherwise it captions the query image first, then runs text retrieval.
+- `/agentos/rag/multimodal/audio/query` prefers offline audio-embedding retrieval when enabled (`AGENTOS_RAG_MEDIA_AUDIO_EMBEDDINGS_ENABLED=true` + Transformers.js + `wavefile` installed; WAV-only on Node). Otherwise it transcribes the query audio first, then runs text retrieval over indexed assets.
+- Both endpoints accept an optional `textRepresentation` form field to bypass captioning/transcription (useful for offline tests).
 
 **Identity / org enforcement (important):**
 

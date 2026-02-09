@@ -10,6 +10,10 @@ test('Multimodal RAG ingests, queries, and serves asset payloads', async () => {
   process.env.RAG_DATABASE_PATH = '';
   process.env.RAG_STORAGE_PRIORITY = 'sqljs';
   process.env.AGENTOS_RAG_VECTOR_PROVIDER = 'sql';
+  // Enable offline multimodal embeddings to ensure they degrade gracefully when optional deps
+  // are not installed (indexing is best-effort and should never break ingestion).
+  process.env.AGENTOS_RAG_MEDIA_IMAGE_EMBEDDINGS_ENABLED = 'true';
+  process.env.AGENTOS_RAG_MEDIA_AUDIO_EMBEDDINGS_ENABLED = 'true';
   // Avoid any real network calls in this unit test (embeddings are best-effort).
   process.env.OPENAI_API_KEY = '';
   process.env.OPENROUTER_API_KEY = '';
@@ -58,6 +62,15 @@ test('Multimodal RAG ingests, queries, and serves asset payloads', async () => {
   assert.equal(imageQuery.success, true);
   assert.ok(imageQuery.assets.some((a) => a.asset.assetId === imageAssetId));
 
+  // Query-by-image path (textRepresentation supplied to avoid any captioning network calls).
+  const imageQueryByImage = await ragService.queryMediaAssetsByImage({
+    textRepresentation: 'red square',
+    modalities: ['image'],
+    topK: 5,
+  });
+  assert.equal(imageQueryByImage.success, true);
+  assert.ok(imageQueryByImage.assets.some((a) => a.asset.assetId === imageAssetId));
+
   // Re-ingest the same assetId with different derived text (update semantics).
   const imageReingest = await ragService.ingestImageAsset({
     assetId: imageAssetId,
@@ -97,6 +110,15 @@ test('Multimodal RAG ingests, queries, and serves asset payloads', async () => {
   });
   assert.equal(audioQuery.success, true);
   assert.ok(audioQuery.assets.some((a) => a.asset.assetId === audioAssetId));
+
+  // Query-by-audio path (textRepresentation supplied to avoid any transcription network calls).
+  const audioQueryByAudio = await ragService.queryMediaAssetsByAudio({
+    textRepresentation: 'hello',
+    modalities: ['audio'],
+    topK: 5,
+  });
+  assert.equal(audioQueryByAudio.success, true);
+  assert.ok(audioQueryByAudio.assets.some((a) => a.asset.assetId === audioAssetId));
 
   const assetMeta = await ragService.getMediaAsset(imageAssetId);
   assert.ok(assetMeta, 'expected image asset metadata');

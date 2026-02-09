@@ -3,7 +3,11 @@
  */
 
 import { Router, Request, Response } from 'express';
-import { listExtensions, listAvailableTools, invalidateRegistryCache } from './extensions.service.js';
+import {
+  listExtensions,
+  listAvailableTools,
+  invalidateRegistryCache,
+} from './extensions.service.js';
 import { agentosService } from './agentos.integration.js';
 
 const router: Router = Router();
@@ -15,10 +19,10 @@ const router: Router = Router();
 router.get('/extensions', async (req: Request, res: Response) => {
   try {
     const exts = await listExtensions();
-    res.json(exts);
+    return res.json(exts);
   } catch (error: any) {
     console.error('Error fetching extensions:', error);
-    res.status(500).json({ error: error.message });
+    return res.status(500).json({ error: error.message });
   }
 });
 
@@ -29,10 +33,10 @@ router.get('/extensions', async (req: Request, res: Response) => {
 router.get('/extensions/tools', async (req: Request, res: Response) => {
   try {
     const tools = await listAvailableTools();
-    res.json(tools);
+    return res.json(tools);
   } catch (error: any) {
     console.error('Error fetching tools:', error);
-    res.status(500).json({ error: error.message });
+    return res.status(500).json({ error: error.message });
   }
 });
 
@@ -44,18 +48,18 @@ router.get('/extensions/tools', async (req: Request, res: Response) => {
 router.post('/extensions/install', async (req: Request, res: Response) => {
   try {
     const { package: packageName } = req.body;
-    
+
     if (!packageName) {
       return res.status(400).json({ error: 'Package name required' });
     }
-    
+
     // Placeholder: in the future, resolve and install the package, then reload registry/cache.
     invalidateRegistryCache();
-    
-    res.json({ success: true, message: `Extension ${packageName} installation scheduled` });
+
+    return res.json({ success: true, message: `Extension ${packageName} installation scheduled` });
   } catch (error: any) {
     console.error('Error installing extension:', error);
-    res.status(500).json({ error: error.message });
+    return res.status(500).json({ error: error.message });
   }
 });
 
@@ -66,10 +70,10 @@ router.post('/extensions/install', async (req: Request, res: Response) => {
 router.post('/extensions/reload', async (req: Request, res: Response) => {
   try {
     invalidateRegistryCache();
-    res.json({ success: true, message: 'Extensions cache invalidated' });
+    return res.json({ success: true, message: 'Extensions cache invalidated' });
   } catch (error: any) {
     console.error('Error reloading extensions:', error);
-    res.status(500).json({ error: error.message });
+    return res.status(500).json({ error: error.message });
   }
 });
 
@@ -83,16 +87,17 @@ router.get('/extensions/search', async (req: Request, res: Response) => {
     const exts = await listExtensions();
     const query = (q as string | undefined)?.toLowerCase() ?? '';
     const results = query
-      ? exts.filter(ext =>
-          ext.name.toLowerCase().includes(query) ||
-          ext.package.toLowerCase().includes(query) ||
-          (ext.description ?? '').toLowerCase().includes(query)
+      ? exts.filter(
+          (ext) =>
+            ext.name.toLowerCase().includes(query) ||
+            ext.package.toLowerCase().includes(query) ||
+            (ext.description ?? '').toLowerCase().includes(query)
         )
       : exts;
-    res.json(results);
+    return res.json(results);
   } catch (error: any) {
     console.error('Error searching extensions:', error);
-    res.status(500).json({ error: error.message });
+    return res.status(500).json({ error: error.message });
   }
 });
 
@@ -105,14 +110,14 @@ router.get('/extensions/search', async (req: Request, res: Response) => {
 router.post('/tools/execute', async (req: Request, res: Response) => {
   try {
     const { toolId, input, userId, personaId, personaCapabilities, correlationId } = req.body;
-    
+
     if (!toolId) {
       return res.status(400).json({ error: 'toolId required' });
     }
 
     // Validate tool exists in registry
     const tools = await listAvailableTools();
-    const tool = tools.find(t => t.id === toolId);
+    const tool = tools.find((t) => t.id === toolId);
     if (!tool) {
       return res.status(404).json({ error: `Tool ${toolId} not found in registry` });
     }
@@ -126,10 +131,10 @@ router.post('/tools/execute', async (req: Request, res: Response) => {
       correlationId,
     });
 
-    res.json(result);
+    return res.json(result);
   } catch (error: any) {
     console.error('Error executing tool:', error);
-    res.status(500).json({ error: error.message });
+    return res.status(500).json({ error: error.message });
   }
 });
 

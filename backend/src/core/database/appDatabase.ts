@@ -758,6 +758,27 @@ const runInitialSchema = async (db: StorageAdapter): Promise<void> => {
     'CREATE INDEX IF NOT EXISTS idx_wunderland_vc_state ON wunderland_voice_calls(state, created_at DESC);'
   );
 
+  // ── Wunderland OAuth States ────────────────────────────────────────
+
+  // OAuth state tokens for multi-tenant channel connections (CSRF protection)
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS wunderland_oauth_states (
+      state_id TEXT PRIMARY KEY,
+      owner_user_id TEXT NOT NULL,
+      seed_id TEXT NOT NULL,
+      platform TEXT NOT NULL,
+      redirect_uri TEXT NOT NULL,
+      created_at INTEGER NOT NULL,
+      expires_at INTEGER NOT NULL,
+      consumed INTEGER DEFAULT 0,
+      FOREIGN KEY (owner_user_id) REFERENCES app_users(id) ON DELETE CASCADE,
+      FOREIGN KEY (seed_id) REFERENCES wunderland_agents(seed_id) ON DELETE CASCADE
+    );
+  `);
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_wunderland_oauth_states_expiry ON wunderland_oauth_states(expires_at);'
+  );
+
   // ── Wunderland Subreddit System Tables ──────────────────────────────
 
   // Subreddits — topic-based communities within Wunderland
@@ -1077,6 +1098,102 @@ const runInitialSchema = async (db: StorageAdapter): Promise<void> => {
 
   console.log('[AppDatabase] Wunderland social autonomy tables initialized.');
 
+  // =========================================================================
+  // Revenue Distribution & Creator Earnings
+  // =========================================================================
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS wunderland_revenue_ledger (
+      epoch_id TEXT PRIMARY KEY,
+      enclave_name TEXT NOT NULL,
+      total_amount INTEGER NOT NULL DEFAULT 0,
+      owner_share INTEGER NOT NULL DEFAULT 0,
+      creator_pool INTEGER NOT NULL DEFAULT 0,
+      merkle_root TEXT,
+      status TEXT NOT NULL DEFAULT 'pending',
+      created_at INTEGER NOT NULL
+    );
+  `);
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_wunderland_rl_enclave ON wunderland_revenue_ledger(enclave_name);'
+  );
+
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS wunderland_creator_earnings (
+      id TEXT PRIMARY KEY,
+      epoch_id TEXT NOT NULL,
+      agent_address TEXT NOT NULL,
+      amount INTEGER NOT NULL DEFAULT 0,
+      claimed INTEGER DEFAULT 0,
+      participation_score REAL NOT NULL DEFAULT 0,
+      FOREIGN KEY (epoch_id) REFERENCES wunderland_revenue_ledger(epoch_id)
+    );
+  `);
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_wunderland_ce_epoch ON wunderland_creator_earnings(epoch_id);'
+  );
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_wunderland_ce_agent ON wunderland_creator_earnings(agent_address);'
+  );
+
+  // =========================================================================
+  // Jobs Marketplace
+  // =========================================================================
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS wunderland_jobs (
+      job_pda TEXT PRIMARY KEY,
+      creator_wallet TEXT NOT NULL,
+      title TEXT NOT NULL,
+      description TEXT,
+      budget_lamports INTEGER NOT NULL DEFAULT 0,
+      category TEXT NOT NULL DEFAULT 'other',
+      deadline TEXT,
+      status TEXT NOT NULL DEFAULT 'open',
+      metadata_hash TEXT,
+      assigned_agent TEXT,
+      created_at INTEGER NOT NULL,
+      updated_at INTEGER
+    );
+  `);
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_wunderland_jobs_status ON wunderland_jobs(status);'
+  );
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_wunderland_jobs_creator ON wunderland_jobs(creator_wallet);'
+  );
+
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS wunderland_job_bids (
+      bid_pda TEXT PRIMARY KEY,
+      job_pda TEXT NOT NULL,
+      agent_address TEXT NOT NULL,
+      bid_hash TEXT,
+      amount_lamports INTEGER NOT NULL DEFAULT 0,
+      status TEXT NOT NULL DEFAULT 'pending',
+      created_at INTEGER NOT NULL,
+      FOREIGN KEY (job_pda) REFERENCES wunderland_jobs(job_pda)
+    );
+  `);
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_wunderland_jb_job ON wunderland_job_bids(job_pda);'
+  );
+
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS wunderland_job_submissions (
+      submission_pda TEXT PRIMARY KEY,
+      job_pda TEXT NOT NULL,
+      agent_address TEXT NOT NULL,
+      submission_hash TEXT,
+      status TEXT NOT NULL DEFAULT 'submitted',
+      created_at INTEGER NOT NULL,
+      FOREIGN KEY (job_pda) REFERENCES wunderland_jobs(job_pda)
+    );
+  `);
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_wunderland_js_job ON wunderland_job_submissions(job_pda);'
+  );
+
+  console.log('[AppDatabase] Revenue + Jobs tables initialized.');
+
   console.log('[AppDatabase] Wunderland tables initialized.');
 
   // =========================================================================
@@ -1295,6 +1412,38 @@ export const initializeAppDatabase = async (): Promise<void> => {
         adapter.kind === 'postgres'
           ? 'ALTER TABLE wunderland_agents ADD COLUMN channels_json TEXT'
           : 'ALTER TABLE wunderland_agents ADD COLUMN channels_json TEXT;'
+      );
+      await ensureColumnExists(
+        adapter,
+        'wunderland_agents',
+        'timezone',
+        adapter.kind === 'postgres'
+          ? "ALTER TABLE wunderland_agents ADD COLUMN timezone TEXT DEFAULT 'UTC'"
+          : "ALTER TABLE wunderland_agents ADD COLUMN timezone TEXT DEFAULT 'UTC';"
+      );
+      await ensureColumnExists(
+        adapter,
+        'wunderland_agents',
+        'posting_directives',
+        adapter.kind === 'postgres'
+          ? 'ALTER TABLE wunderland_agents ADD COLUMN posting_directives TEXT'
+          : 'ALTER TABLE wunderland_agents ADD COLUMN posting_directives TEXT;'
+      );
+      await ensureColumnExists(
+        adapter,
+        'wunderland_agents',
+        'execution_mode',
+        adapter.kind === 'postgres'
+          ? "ALTER TABLE wunderland_agents ADD COLUMN execution_mode TEXT DEFAULT 'human-dangerous'"
+          : "ALTER TABLE wunderland_agents ADD COLUMN execution_mode TEXT DEFAULT 'human-dangerous';"
+      );
+      await ensureColumnExists(
+        adapter,
+        'wunderland_agents',
+        'voice_config',
+        adapter.kind === 'postgres'
+          ? 'ALTER TABLE wunderland_agents ADD COLUMN voice_config TEXT'
+          : 'ALTER TABLE wunderland_agents ADD COLUMN voice_config TEXT;'
       );
       await ensureColumnExists(
         adapter,

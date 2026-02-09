@@ -828,12 +828,6 @@ importers:
 
   apps/rabbithole:
     dependencies:
-      '@framers/agentos-extensions-registry':
-        specifier: workspace:*
-        version: link:../../packages/agentos-extensions-registry
-      '@framers/agentos-skills-registry':
-        specifier: workspace:*
-        version: link:../../packages/agentos-skills-registry
       next:
         specifier: 16.1.6
         version: 16.1.6(@opentelemetry/api@1.9.0)(@playwright/test@1.58.1)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(sass@1.97.3)
@@ -883,12 +877,6 @@ importers:
 
   apps/wunderland-sh/app:
     dependencies:
-      '@framers/agentos-extensions-registry':
-        specifier: workspace:*
-        version: link:../../../packages/agentos-extensions-registry
-      '@framers/agentos-skills-registry':
-        specifier: workspace:*
-        version: link:../../../packages/agentos-skills-registry
       '@solana/wallet-adapter-base':
         specifier: ^0.9.27
         version: 0.9.27(@solana/web3.js@1.98.4(bufferutil@4.1.0)(encoding@0.1.13)(typescript@5.6.3)(utf-8-validate@5.0.10))
@@ -1193,9 +1181,15 @@ importers:
       '@framers/agentos':
         specifier: workspace:*
         version: link:../packages/agentos
+      '@framers/agentos-ext-http-api':
+        specifier: workspace:*
+        version: link:../packages/agentos-ext-http-api
       '@framers/agentos-extensions-registry':
         specifier: workspace:*
         version: link:../packages/agentos-extensions-registry
+      '@framers/agentos-skills-registry':
+        specifier: workspace:*
+        version: link:../packages/agentos-skills-registry
       '@framers/shared':
         specifier: workspace:*
         version: link:../packages/shared
@@ -1680,6 +1674,33 @@ importers:
         specifier: ^1.6.0
         version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@24.1.3(bufferutil@4.1.0)(canvas@2.11.2(encoding@0.1.13))(utf-8-validate@5.0.10))(lightningcss@1.30.2)(sass@1.97.3)(terser@5.46.0)
 
+  packages/agentos-ext-http-api:
+    devDependencies:
+      '@framers/agentos':
+        specifier: workspace:*
+        version: link:../agentos
+      '@types/express':
+        specifier: ^4.17.21
+        version: 4.17.25
+      '@types/multer':
+        specifier: ^1.4.10
+        version: 1.4.13
+      '@types/node':
+        specifier: ^20.0.0
+        version: 20.19.23
+      express:
+        specifier: ^4.18.2
+        version: 4.22.1
+      multer:
+        specifier: ^1.4.5-lts.1
+        version: 1.4.5-lts.2
+      typescript:
+        specifier: ^5.4.5
+        version: 5.6.3
+      vitest:
+        specifier: ^1.6.0
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@24.1.3(bufferutil@4.1.0)(canvas@2.11.2(encoding@0.1.13))(utf-8-validate@5.0.10))(lightningcss@1.30.2)(sass@1.97.3)(terser@5.46.0)
+
   packages/agentos-ext-skills:
     devDependencies:
       '@framers/agentos':
@@ -1695,9 +1716,9 @@ importers:
         specifier: ^1.6.0
         version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@24.1.3(bufferutil@4.1.0)(canvas@2.11.2(encoding@0.1.13))(utf-8-validate@5.0.10))(lightningcss@1.30.2)(sass@1.97.3)(terser@5.46.0)
     optionalDependencies:
-      '@framers/agentos-skills':
+      '@framers/agentos-skills-registry':
         specifier: workspace:*
-        version: link:../agentos-skills
+        version: link:../agentos-skills-registry
 
   packages/agentos-extensions:
     devDependencies:
@@ -2160,13 +2181,7 @@ importers:
 
   packages/agentos-personas: {}
 
-  packages/agentos-skills: {}
-
   packages/agentos-skills-registry:
-    dependencies:
-      '@framers/agentos-skills':
-        specifier: ^0.1.0
-        version: 0.1.0
     devDependencies:
       '@framers/agentos':
         specifier: workspace:*
@@ -5193,9 +5208,6 @@ packages:
 
   '@formatjs/intl-localematcher@0.8.1':
     resolution: {integrity: sha512-xwEuwQFdtSq1UKtQnyTZWC+eHdv7Uygoa+H2k/9uzBVQjDyp9r20LNDNKedWXll7FssT3GRHvqsdJGYSUWqYFA==}
-
-  '@framers/agentos-skills@0.1.0':
-    resolution: {integrity: sha512-aQSN+io+CzRefsT7ssYkghzf9/hUs7NUF2bN7S8N+gnpAD8md/sIrsPsY1xyGJ0KcF+1LgNgOejMRbXgnLrVUg==}
 
   '@framers/sql-storage-adapter@0.3.5':
     resolution: {integrity: sha512-aQUMi+EIbfz+TPLpJjsnC1PXVF6B3jAVP97sJkV4kaM66E06TQTUXT5nbMYTSiLc0Cr3MVoGYu7QhZHKYj9B4Q==}
@@ -25851,8 +25863,6 @@ snapshots:
     dependencies:
       '@formatjs/fast-memoize': 3.1.0
       tslib: 2.8.1
-
-  '@framers/agentos-skills@0.1.0': {}
 
   '@framers/sql-storage-adapter@0.3.5(@aws-sdk/client-s3@3.922.0)(@capacitor-community/sqlite@6.0.2(@capacitor/core@8.0.0))(better-sqlite3@12.4.1)':
     dependencies:

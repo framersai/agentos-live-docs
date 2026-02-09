@@ -11,11 +11,14 @@
     "build:strict": "tsc && tsc-alias",
     "build:agentos": "tsc && tsc-alias",
     "postbuild": "node ./scripts/postbuild/copy-js.cjs && node ./scripts/postbuild/flatten-dist.cjs && node ./scripts/postbuild/ensure-esm-extensions.cjs",
-    "test": "node --test --import tsx --experimental-specifier-resolution=node src/__tests__/agency.integration.test.ts src/__tests__/agentos.org-memory.test.ts src/__tests__/agentos.memory-redactions.test.ts src/__tests__/agentos.multimodal-rag.test.ts src/__tests__/agent-toolset-manifest.test.ts src/__tests__/wunderland.immutability.integration.test.ts src/__tests__/appDatabase.test.ts src/__tests__/approval-queue.service.test.ts src/__tests__/common.infrastructure.test.ts src/__tests__/otel-logs.test.ts src/__tests__/extensions.service.test.ts src/__tests__/guardrails.service.test.ts src/__tests__/tip-snapshot.service.test.ts src/__tests__/world-feed-ingestion.test.ts src/__tests__/wunderland.module.test.ts src/__tests__/channels.module.test.ts src/__tests__/agent-immutability.test.ts src/__tests__/channel-ownership.test.ts"
+    "pretest": "pnpm --filter @framers/agentos-ext-http-api build",
+    "test": "node --test --import tsx --experimental-specifier-resolution=node src/__tests__/agency.integration.test.ts src/__tests__/agentos.org-memory.test.ts src/__tests__/agentos.memory-redactions.test.ts src/__tests__/agentos.multimodal-rag.test.ts src/__tests__/agentos.graphrag.update.test.ts src/__tests__/agentos.rag.keyword-bm25.test.ts src/__tests__/agentos.rag.multiquery.test.ts src/__tests__/agentos.rag.http.e2e.test.ts src/__tests__/agent-toolset-manifest.test.ts src/__tests__/wunderland.immutability.integration.test.ts src/__tests__/appDatabase.test.ts src/__tests__/approval-queue.service.test.ts src/__tests__/common.infrastructure.test.ts src/__tests__/otel-logs.test.ts src/__tests__/extensions.service.test.ts src/__tests__/guardrails.service.test.ts src/__tests__/tip-snapshot.service.test.ts src/__tests__/world-feed-ingestion.test.ts src/__tests__/wunderland.module.test.ts src/__tests__/channels.module.test.ts src/__tests__/agent-immutability.test.ts src/__tests__/channel-ownership.test.ts"
   },
   "dependencies": {
     "@framers/agentos": "workspace:*",
+    "@framers/agentos-ext-http-api": "workspace:*",
     "@framers/agentos-extensions-registry": "workspace:*",
+    "@framers/agentos-skills-registry": "workspace:*",
     "@framers/shared": "workspace:*",
     "@framers/sql-storage-adapter": "workspace:*",
     "@nestjs/common": "^11.1.13",

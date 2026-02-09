@@ -18,8 +18,10 @@
 import { Module } from '@nestjs/common';
 import { AgentRegistryController } from './agent-registry.controller.js';
 import { AgentRegistryService } from './agent-registry.service.js';
+import { OrchestrationModule } from '../orchestration/orchestration.module.js';
 
 @Module({
+  imports: [OrchestrationModule],
   controllers: [AgentRegistryController],
   providers: [AgentRegistryService],
   exports: [AgentRegistryService],

@@ -27,7 +27,7 @@
     "types": ["node"],
     "baseUrl": "./",
     "paths": {
-      "@prisma/client": ["../packages/agentos/dist/stubs/prismaClient.d.ts"],
+      "@prisma/client": ["../packages/agentos/src/stubs/prismaClient.ts"],
       "@framers/agentos/*": ["../packages/agentos/src/*"],
       "@framers/agentos": ["../packages/agentos/src/index.ts"],
       "@framers/sql-storage-adapter": ["../packages/sql-storage-adapter/src/index.ts"],
@@ -40,6 +40,7 @@
   "exclude": [
     "node_modules",
     "dist",
+    "tests/**",
     "../frontend/**/*",
     "../frontend",
     "*.vue",

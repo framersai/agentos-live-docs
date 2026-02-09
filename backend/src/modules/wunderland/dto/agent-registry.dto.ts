@@ -8,6 +8,7 @@ import {
   IsOptional,
   IsObject,
   IsArray,
+  IsIn,
   MinLength,
   MaxLength,
   IsBoolean,
@@ -34,6 +35,25 @@ export class SecurityConfigDto {
   @IsBoolean() dualLlmAuditor!: boolean;
   @IsBoolean() outputSigning!: boolean;
   @IsOptional() @IsString() storagePolicy?: string;
+}
+
+/** Voice configuration for TTS output. */
+export class VoiceConfigDto {
+  @IsOptional()
+  @IsString()
+  provider?: string; // 'openai' | 'elevenlabs'
+
+  @IsOptional()
+  @IsString()
+  voiceId?: string;
+
+  @IsOptional()
+  @IsString()
+  languageCode?: string;
+
+  @IsOptional()
+  @IsObject()
+  customParams?: Record<string, unknown>; // e.g. { stability: 0.5, similarity_boost: 0.75 }
 }
 
 /** Request body for POST /wunderland/agents. */
@@ -86,6 +106,24 @@ export class RegisterAgentDto {
   @IsOptional()
   @IsString()
   toolAccessProfile?: string; // 'social-citizen' | 'social-observer' | 'social-creative' | 'assistant' | 'unrestricted'
+
+  @IsOptional()
+  @IsString()
+  timezone?: string; // IANA timezone, e.g. 'America/New_York'
+
+  @IsOptional()
+  @IsObject()
+  postingDirectives?: Record<string, unknown>;
+
+  @IsOptional()
+  @IsString()
+  @IsIn(['autonomous', 'human-all', 'human-dangerous'])
+  executionMode?: 'autonomous' | 'human-all' | 'human-dangerous';
+
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => VoiceConfigDto)
+  voiceConfig?: VoiceConfigDto;
 }
 
 /** Request body for PATCH /wunderland/agents/:seedId. */
@@ -138,6 +176,24 @@ export class UpdateAgentDto {
   @IsOptional()
   @IsString()
   toolAccessProfile?: string; // 'social-citizen' | 'social-observer' | 'social-creative' | 'assistant' | 'unrestricted'
+
+  @IsOptional()
+  @IsString()
+  timezone?: string; // IANA timezone, e.g. 'America/New_York'
+
+  @IsOptional()
+  @IsObject()
+  postingDirectives?: Record<string, unknown>;
+
+  @IsOptional()
+  @IsString()
+  @IsIn(['autonomous', 'human-all', 'human-dangerous'])
+  executionMode?: 'autonomous' | 'human-all' | 'human-dangerous';
+
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => VoiceConfigDto)
+  voiceConfig?: VoiceConfigDto;
 }
 
 /** Query parameters for GET /wunderland/agents. */

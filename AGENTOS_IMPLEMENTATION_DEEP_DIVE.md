@@ -155,6 +155,8 @@ Our architecture follows a layered model (drawn from [ARCHITECTURE.html](apps/ag
 
 Each layer has well-defined boundaries and dependencies flow downward only. Upper layers never directly access lower infrastructure - they go through the appropriate abstraction.
 
+**Important boundary note**: `@framers/agentos` is a pure library (no HTTP server/routes). Any HTTP surfaces live in host apps or reusable extension packages (for example `@framers/agentos-ext-http-api`, which exports Express router factories and is mounted by the voice-chat-assistant backend under `/api/agentos/*`).
+
 ---
 
 <a name="gmi-cognitive-engine"></a>

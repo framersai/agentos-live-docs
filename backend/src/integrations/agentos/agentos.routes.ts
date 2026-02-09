@@ -1,15 +1,14 @@
 import { Router } from 'express';
 import { agentosChatAdapterEnabled, processAgentOSChatRequest } from './agentos.chat-adapter.js';
 import type { Request, Response, NextFunction } from 'express';
+import { createAgentOSHITLRouter, createAgentOSRagRouter } from '@framers/agentos-ext-http-api';
 import { agentosService } from './agentos.integration.js';
 import { agencyUsageService } from '../../features/agents/agencyUsage.service.js';
 import extensionRoutes from './agentos.extensions.routes.js';
 import guardrailRoutes from './agentos.guardrails.routes.js';
 import provenanceRoutes from './agentos.provenance.routes.js';
 import { createAgencyStreamRouter } from './agentos.agency-stream-router.js';
-import { createAgentOSRagRouter } from './agentos.rag.routes.js';
 import planningRoutes from './agentos.planning.routes.js';
-import hitlRoutes from './agentos.hitl.routes.js';
 import { LlmConfigService, LlmProviderId } from '../../core/llm/llm.config.service.js';
 import { MODEL_PRICING } from '../../../config/models.config.js';
 import { resolveSessionUserId } from '../../utils/session.utils.js';
@@ -26,6 +25,8 @@ import {
   listAgencyExecutions,
   listAgencySeats,
 } from './agencyPersistence.service.js';
+import { ragService } from './agentos.rag.service.js';
+import { getHitlManager, hitlAuthRequired } from './agentos.hitl.service.js';
 
 export const createAgentOSRouter = (): Router => {
   const router = Router();
@@ -512,13 +513,13 @@ export const createAgentOSRouter = (): Router => {
   // Provenance / immutability routes
   router.use('/provenance', provenanceRoutes);
   // Add RAG routes
-  router.use('/rag', createAgentOSRagRouter());
+  router.use('/rag', createAgentOSRagRouter({ isEnabled: agentosChatAdapterEnabled, ragService }));
   // Agency streaming routes
   router.use('/agency', createAgencyStreamRouter());
   // Planning engine routes (v1.1.0)
   router.use('/planning', planningRoutes);
   // Human-in-the-Loop (HITL) routes (v1.1.0)
-  router.use('/hitl', hitlRoutes);
+  router.use('/hitl', createAgentOSHITLRouter({ getHitlManager, hitlAuthRequired }));
 
   return router;
 };
