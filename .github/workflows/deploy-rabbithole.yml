@@ -70,18 +70,23 @@ jobs:
             echo "[deploy] Building rabbithole frontend..."
             pnpm --filter rabbithole build
 
-            # ── 5. Restart services ──
+            # ── 5. Link static assets into standalone output ──
+            STANDALONE_APP="$REPO_DIR/apps/rabbithole/.next/standalone/apps/rabbithole"
+            ln -sfn "$REPO_DIR/apps/rabbithole/.next/static" "$STANDALONE_APP/.next/static"
+            ln -sfn "$REPO_DIR/apps/rabbithole/public" "$STANDALONE_APP/public"
+
+            # ── 6. Restart services ──
             echo "[deploy] Restarting services..."
             systemctl restart rabbithole
 
-            # ── 6. Update API bridge if changed ──
+            # ── 7. Update API bridge if changed ──
             if [ -f "$REPO_DIR/deployment/rabbithole/api-server.js" ]; then
               echo "[deploy] Updating API bridge..."
               cp "$REPO_DIR/deployment/rabbithole/api-server.js" /opt/rabbithole-api/server.js
               systemctl restart rabbithole-api
             fi
 
-            # ── 7. Health check ──
+            # ── 8. Health check ──
             sleep 5
             HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:3000/ || echo "000")
             echo "[deploy] Health check: HTTP $HTTP_CODE"
