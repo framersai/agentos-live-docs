@@ -147,7 +147,7 @@ export class JobScannerService implements OnModuleInit, OnModuleDestroy {
       averageRating: 0, // Will be computed from job state
     };
 
-    // Create JobScanner
+    // Create JobScanner with RAG-enhanced evaluation
     const scanner = new JobScanner(
       {
         jobsApiUrl:
@@ -160,7 +160,8 @@ export class JobScannerService implements OnModuleInit, OnModuleDestroy {
         },
       },
       moodEngine,
-      agent.seedId
+      agent.seedId,
+      this.jobMemoryService // Pass RAG for learning from past jobs
     );
 
     // Start scanning
