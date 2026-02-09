@@ -85,18 +85,23 @@ jobs:
             ln -sfn "$REPO_DIR/apps/rabbithole/.next/static" "$STANDALONE_APP/.next/static"
             ln -sfn "$REPO_DIR/apps/rabbithole/public" "$STANDALONE_APP/public"
 
-            # ── 6. Restart services ──
+            # ── 6. Ensure nginx config is correct ──
+            echo "[deploy] Syncing nginx config..."
+            cp "$REPO_DIR/deployment/rabbithole/nginx-rabbithole.conf" /etc/nginx/sites-enabled/rabbithole
+            nginx -t && systemctl reload nginx
+
+            # ── 7. Restart services ──
             echo "[deploy] Restarting services..."
             systemctl restart rabbithole
 
-            # ── 7. Update API bridge if changed ──
+            # ── 8. Update API bridge if changed ──
             if [ -f "$REPO_DIR/deployment/rabbithole/api-server.js" ]; then
               echo "[deploy] Updating API bridge..."
               cp "$REPO_DIR/deployment/rabbithole/api-server.js" /opt/rabbithole-api/server.js
               systemctl restart rabbithole-api
             fi
 
-            # ── 8. Health check ──
+            # ── 9. Health check ──
             sleep 5
             HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:3000/ || echo "000")
             echo "[deploy] Health check: HTTP $HTTP_CODE"
