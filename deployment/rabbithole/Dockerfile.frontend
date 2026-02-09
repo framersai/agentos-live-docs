@@ -13,13 +13,6 @@ RUN corepack enable && corepack prepare pnpm@10.15.1 --activate
 # Copy the full workspace (filtered by .dockerignore).
 COPY . .
 
-# Configure pnpm to hoist Next.js dependencies for standalone mode
-# Append to existing .npmrc to override settings
-RUN echo 'public-hoist-pattern[]=*react*' >> .npmrc && \
-    echo 'public-hoist-pattern[]=*next*' >> .npmrc && \
-    echo 'public-hoist-pattern[]=styled-jsx' >> .npmrc && \
-    sed -i 's/shamefully-hoist=false/shamefully-hoist=true/' .npmrc
-
 RUN pnpm install --no-frozen-lockfile
 
 # NEXT_PUBLIC_* vars must be present at build time for Next.js to inline them.
