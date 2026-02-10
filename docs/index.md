@@ -32,7 +32,11 @@ npm install @framers/agentos
 - [Planning Engine](/docs/features/planning-engine) — Multi-step task planning
 - [Human-in-the-Loop](/docs/features/human-in-the-loop) — Approval workflows
 - [Agent Communication](/docs/features/agent-communication) — Inter-agent messaging
-- [Guardrails](/docs/features/guardrails) — Safety constraints and validation
+
+### Safety & Security
+
+- [Guardrails](/docs/features/guardrails) — Content filtering, PII redaction, and folder-level filesystem permissions
+- [Safety Primitives](/docs/features/safety-primitives) — Circuit breakers, cost guards, stuck detection, and tool execution guards
 
 ### Memory & Storage
 
