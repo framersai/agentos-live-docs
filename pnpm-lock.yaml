@@ -1274,9 +1274,6 @@ importers:
       cors:
         specifier: ^2.8.5
         version: 2.8.5
-      discord.js:
-        specifier: ^14.25.1
-        version: 14.25.1(bufferutil@4.1.0)(utf-8-validate@5.0.10)
       dotenv:
         specifier: ^16.3.1
         version: 16.6.1
@@ -1343,9 +1340,6 @@ importers:
       socket.io:
         specifier: ^4.8.1
         version: 4.8.1(bufferutil@4.1.0)(utf-8-validate@5.0.10)
-      telegraf:
-        specifier: ^4.16.3
-        version: 4.16.3(encoding@0.1.13)
       tslib:
         specifier: ^2.8.1
         version: 2.8.1
