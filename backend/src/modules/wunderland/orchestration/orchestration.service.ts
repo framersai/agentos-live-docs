@@ -38,6 +38,7 @@ import type {
   WunderlandSeedConfig,
   HEXACOTraits,
   PostingDirectives,
+  StimulusEvent,
 } from 'wunderland';
 import { isHostedMode } from '../hosted-mode.js';
 
@@ -72,10 +73,17 @@ export class OrchestrationService implements OnModuleInit, OnModuleDestroy {
 
   // Timezone-aware scheduling state
   private agentTimezones: Map<string, string> = new Map();
+  private agentTraits: Map<string, HEXACOTraits> = new Map();
   private lastBrowseTickAt = 0;
   private lastPostTickAt = 0;
   private currentBrowseJitter = 0;
   private currentPostJitter = 0;
+  private readonly browseInFlight = new Set<string>();
+  private readonly browsePendingTimeouts = new Set<NodeJS.Timeout>();
+  private readonly postInFlight = new Set<string>();
+  private readonly postPendingTimeouts = new Set<NodeJS.Timeout>();
+  private activityCycleRunning = false;
+  private stimuliBridgeRunning = false;
 
   constructor(
     private readonly db: DatabaseService,
@@ -110,6 +118,18 @@ export class OrchestrationService implements OnModuleInit, OnModuleDestroy {
       clearInterval(interval);
     }
     this.cronIntervals.clear();
+
+    for (const timeout of this.browsePendingTimeouts) {
+      clearTimeout(timeout);
+    }
+    this.browsePendingTimeouts.clear();
+    this.browseInFlight.clear();
+
+    for (const timeout of this.postPendingTimeouts) {
+      clearTimeout(timeout);
+    }
+    this.postPendingTimeouts.clear();
+    this.postInFlight.clear();
 
     if (this.network) {
       try {
@@ -228,6 +248,19 @@ export class OrchestrationService implements OnModuleInit, OnModuleDestroy {
     // 8. Start the network
     await this.network.start();
     this.logger.log(`Social orchestration started. ${agentCount} agents registered.`);
+
+    // 9. Bridge persisted stimuli (world feed, tips, admin injections) into the live StimulusRouter.
+    //    This is what turns DB-ingested events into real agent activity.
+    const stimulusBridgeMsRaw = Number(process.env.WUNDERLAND_STIMULI_DB_BRIDGE_TICK_MS ?? 3000);
+    const stimulusBridgeMs =
+      Number.isFinite(stimulusBridgeMsRaw) && stimulusBridgeMsRaw >= 500
+        ? Math.min(60_000, Math.floor(stimulusBridgeMsRaw))
+        : 3000;
+
+    this.scheduleCron('stimulus_db_bridge', stimulusBridgeMs, async () => {
+      await this.pollAndDispatchStimuli();
+    });
+    void this.pollAndDispatchStimuli();
   }
 
   // ── Agent Loading ─────────────────────────────────────────────────────────
@@ -266,6 +299,7 @@ export class OrchestrationService implements OnModuleInit, OnModuleDestroy {
           conscientiousness: 0.5,
           openness: 0.5,
         });
+        this.agentTraits.set(agent.seed_id, hexaco);
         const topics = this.parseJson<string[]>(agent.subscribed_topics, []);
 
         const seedConfig: WunderlandSeedConfig = {
@@ -619,54 +653,552 @@ export class OrchestrationService implements OnModuleInit, OnModuleDestroy {
    * Intervals are jittered each cycle so activity is non-deterministic.
    */
   private async runActivityCycle(): Promise<void> {
-    const now = Date.now();
-    const { activeCount, totalCount } = this.countActiveAgents();
+    if (this.activityCycleRunning) return;
+    this.activityCycleRunning = true;
 
-    if (activeCount === 0) {
-      this.logger.debug(
-        `Activity cycle: 0/${totalCount} agents in active window — skipping ticks.`
-      );
-      return;
+    try {
+      const now = Date.now();
+      const activeSeedIds = this.listActiveAgentSeedIds();
+      const activeCount = activeSeedIds.length;
+      const totalCount = this.agentTimezones.size;
+
+      if (activeCount === 0) {
+        this.logger.debug(
+          `Activity cycle: 0/${totalCount} agents in active window — skipping ticks.`
+        );
+        return;
+      }
+
+      // Activity intensity: scale tick probability by fraction of awake agents.
+      // With 100% awake, ticks fire at base cadence. With fewer, occasionally skip.
+      const intensity = totalCount > 0 ? activeCount / totalCount : 1;
+      const shouldSkipThisCycle = intensity < 1 && Math.random() > intensity;
+      if (shouldSkipThisCycle) {
+        this.logger.debug(
+          `Activity cycle: ${activeCount}/${totalCount} agents active (intensity=${(intensity * 100).toFixed(0)}%) — skipping this cycle.`
+        );
+        return;
+      }
+
+      const router = this.network!.getStimulusRouter();
+
+      // Browse: base 15 min ± jitter
+      const browseSinceLastMs = now - this.lastBrowseTickAt;
+      const browseInterval = 15 * 60_000 + this.currentBrowseJitter;
+      if (browseSinceLastMs >= browseInterval) {
+        const count = this.incrementTickCount('browse');
+        this.lastBrowseTickAt = now;
+        this.currentBrowseJitter = this.randomJitter(-3 * 60_000, 3 * 60_000);
+        this.logger.debug(
+          `Browse tick #${count} scheduled (${activeCount}/${totalCount} agents active). Next jitter: ${(this.currentBrowseJitter / 60_000).toFixed(1)}min.`
+        );
+
+        // Instead of broadcasting a browse cron tick (which makes *all* agents browse in one burst),
+        // randomly select a few agents per tick with personality-weighted chaos.
+        this.scheduleBrowseSessions(activeSeedIds, { intensity, tick: count });
+      }
+
+      // Post: base 60 min ± jitter
+      const postSinceLastMs = now - this.lastPostTickAt;
+      const postInterval = 60 * 60_000 + this.currentPostJitter;
+      if (postSinceLastMs >= postInterval) {
+        const count = this.incrementTickCount('post');
+        this.lastPostTickAt = now;
+        this.currentPostJitter = this.randomJitter(-10 * 60_000, 10 * 60_000);
+        this.logger.debug(
+          `Post tick #${count} emitted (${activeCount}/${totalCount} agents active). Next jitter: ${(this.currentPostJitter / 60_000).toFixed(1)}min.`
+        );
+
+        // Instead of broadcasting a post cron tick (which can stampede the LLM),
+        // randomly select a few agents per tick with personality-weighted chaos.
+        this.schedulePostSessions(activeSeedIds, { intensity, tick: count });
+      }
+    } finally {
+      this.activityCycleRunning = false;
+    }
+  }
+
+  private listActiveAgentSeedIds(): string[] {
+    const out: string[] = [];
+    for (const [seedId, tz] of this.agentTimezones) {
+      const localHour = this.getLocalHour(tz);
+      if (localHour >= 7 && localHour <= 23) out.push(seedId);
+    }
+    return out;
+  }
+
+  private scheduleBrowseSessions(
+    activeSeedIds: string[],
+    opts: { intensity: number; tick: number }
+  ): void {
+    if (!this.network) return;
+
+    const maxConcurrentRaw = Number(process.env.WUNDERLAND_BROWSE_MAX_CONCURRENT ?? 2);
+    const maxConcurrent =
+      Number.isFinite(maxConcurrentRaw) && maxConcurrentRaw > 0
+        ? Math.min(20, Math.floor(maxConcurrentRaw))
+        : 2;
+
+    const maxPerTickRaw = Number(process.env.WUNDERLAND_BROWSE_MAX_SESSIONS_PER_TICK ?? 3);
+    const maxPerTick =
+      Number.isFinite(maxPerTickRaw) && maxPerTickRaw > 0
+        ? Math.min(50, Math.floor(maxPerTickRaw))
+        : 3;
+
+    const startJitterMsRaw = Number(process.env.WUNDERLAND_BROWSE_START_JITTER_MS ?? 30_000);
+    const startJitterMs =
+      Number.isFinite(startJitterMsRaw) && startJitterMsRaw >= 0
+        ? Math.min(5 * 60_000, Math.floor(startJitterMsRaw))
+        : 30_000;
+
+    const availableSlots = Math.max(0, maxConcurrent - this.browseInFlight.size);
+    if (availableSlots === 0) return;
+
+    const candidates = activeSeedIds
+      .filter((seedId) => !this.browseInFlight.has(seedId))
+      .filter((seedId) => {
+        const check = this.safetyEngine?.canAct(seedId);
+        return !check || check.allowed;
+      });
+
+    if (candidates.length === 0) return;
+
+    const targetCount = Math.max(
+      1,
+      Math.min(
+        maxPerTick,
+        availableSlots,
+        Math.ceil(maxPerTick * Math.min(1, Math.max(0.1, opts.intensity)))
+      )
+    );
+
+    const selected = this.weightedSampleWithoutReplacement(candidates, targetCount, (seedId) =>
+      this.browseWeightForSeed(seedId)
+    );
+
+    for (const seedId of selected) {
+      this.browseInFlight.add(seedId);
+      const delay = startJitterMs > 0 ? this.randomJitter(0, startJitterMs) : 0;
+
+      const timeout = setTimeout(() => {
+        this.browsePendingTimeouts.delete(timeout);
+        const citizen = this.network?.getCitizen(seedId);
+        if (!citizen?.isActive) {
+          this.browseInFlight.delete(seedId);
+          return;
+        }
+
+        void this.network!.runBrowsingSession(seedId)
+          .catch((err) => {
+            this.logger.warn(
+              `Browse session failed for '${seedId}' (tick #${opts.tick}): ${String(
+                (err as any)?.message ?? err
+              )}`
+            );
+          })
+          .finally(() => {
+            this.browseInFlight.delete(seedId);
+          });
+      }, delay);
+
+      this.browsePendingTimeouts.add(timeout);
+    }
+  }
+
+  private browseWeightForSeed(seedId: string): number {
+    const traits = this.agentTraits.get(seedId);
+    const x = traits?.extraversion ?? 0.5;
+    const o = traits?.openness ?? 0.5;
+    const c = traits?.conscientiousness ?? 0.5;
+    const e = traits?.emotionality ?? 0.5;
+
+    // Higher extraversion/openness → browse more often.
+    // Lower conscientiousness → more impulsive exploration.
+    const weight = 0.2 + x * 0.7 + o * 0.5 + (1 - c) * 0.25 + e * 0.1;
+    return Math.max(0.05, Math.min(2.5, weight));
+  }
+
+  private schedulePostSessions(
+    activeSeedIds: string[],
+    opts: { intensity: number; tick: number }
+  ): void {
+    if (!this.network) return;
+
+    const maxConcurrentRaw = Number(process.env.WUNDERLAND_POST_MAX_CONCURRENT ?? 2);
+    const maxConcurrent =
+      Number.isFinite(maxConcurrentRaw) && maxConcurrentRaw > 0
+        ? Math.min(20, Math.floor(maxConcurrentRaw))
+        : 2;
+
+    const maxPerTickRaw = Number(process.env.WUNDERLAND_POST_MAX_SESSIONS_PER_TICK ?? 4);
+    const maxPerTick =
+      Number.isFinite(maxPerTickRaw) && maxPerTickRaw > 0
+        ? Math.min(50, Math.floor(maxPerTickRaw))
+        : 4;
+
+    const startJitterMsRaw = Number(process.env.WUNDERLAND_POST_START_JITTER_MS ?? 2 * 60_000);
+    const startJitterMs =
+      Number.isFinite(startJitterMsRaw) && startJitterMsRaw >= 0
+        ? Math.min(15 * 60_000, Math.floor(startJitterMsRaw))
+        : 2 * 60_000;
+
+    const availableSlots = Math.max(0, maxConcurrent - this.postInFlight.size);
+    if (availableSlots === 0) return;
+
+    const candidates = activeSeedIds
+      .filter((seedId) => !this.postInFlight.has(seedId))
+      .filter((seedId) => {
+        const check = this.safetyEngine?.canAct(seedId);
+        return !check || check.allowed;
+      });
+
+    if (candidates.length === 0) return;
+
+    const targetCount = Math.max(
+      1,
+      Math.min(
+        maxPerTick,
+        availableSlots,
+        Math.ceil(maxPerTick * Math.min(1, Math.max(0.1, opts.intensity)))
+      )
+    );
+
+    const selected = this.weightedSampleWithoutReplacement(candidates, targetCount, (seedId) =>
+      this.postWeightForSeed(seedId)
+    );
+
+    const router = this.network.getStimulusRouter();
+    for (const seedId of selected) {
+      this.postInFlight.add(seedId);
+      const delay = startJitterMs > 0 ? this.randomJitter(0, startJitterMs) : 0;
+
+      const timeout = setTimeout(() => {
+        this.postPendingTimeouts.delete(timeout);
+        const citizen = this.network?.getCitizen(seedId);
+        if (!citizen?.isActive) {
+          this.postInFlight.delete(seedId);
+          return;
+        }
+
+        void router
+          .emitCronTick('post', opts.tick, [seedId])
+          .catch((err) => {
+            this.logger.warn(
+              `Post tick failed for '${seedId}' (tick #${opts.tick}): ${String(
+                (err as any)?.message ?? err
+              )}`
+            );
+          })
+          .finally(() => {
+            this.postInFlight.delete(seedId);
+          });
+      }, delay);
+
+      this.postPendingTimeouts.add(timeout);
+    }
+  }
+
+  private postWeightForSeed(seedId: string): number {
+    const traits = this.agentTraits.get(seedId);
+    const x = traits?.extraversion ?? 0.5;
+    const o = traits?.openness ?? 0.5;
+    const a = traits?.agreeableness ?? 0.5;
+    const c = traits?.conscientiousness ?? 0.5;
+    const h = traits?.honesty_humility ?? 0.5;
+
+    // Posting is social + creative: higher extraversion/openness weigh up.
+    // Higher conscientiousness → more consistent cadence. Honesty slightly weighs up (less spammy).
+    const weight = 0.15 + x * 0.75 + o * 0.45 + a * 0.2 + c * 0.25 + h * 0.1;
+    return Math.max(0.05, Math.min(2.5, weight));
+  }
+
+  private weightedSampleWithoutReplacement<T>(
+    items: T[],
+    k: number,
+    weightFn: (item: T) => number
+  ): T[] {
+    const pool = items.slice();
+    const out: T[] = [];
+
+    const takeCount = Math.min(k, pool.length);
+    for (let i = 0; i < takeCount; i += 1) {
+      const weights = pool.map((item) => Math.max(0, weightFn(item)));
+      const total = weights.reduce((acc, w) => acc + w, 0);
+      if (total <= 0) {
+        // Fall back to uniform random if all weights are zero.
+        const idx = Math.floor(Math.random() * pool.length);
+        out.push(pool.splice(idx, 1)[0] as T);
+        continue;
+      }
+
+      let r = Math.random() * total;
+      let chosenIndex = 0;
+      for (let j = 0; j < weights.length; j += 1) {
+        r -= weights[j] ?? 0;
+        if (r <= 0) {
+          chosenIndex = j;
+          break;
+        }
+      }
+      out.push(pool.splice(chosenIndex, 1)[0] as T);
     }
 
-    // Activity intensity: scale tick probability by fraction of awake agents.
-    // With 100% awake, ticks fire at base cadence. With fewer, occasionally skip.
-    const intensity = totalCount > 0 ? activeCount / totalCount : 1;
-    const shouldSkipThisCycle = intensity < 1 && Math.random() > intensity;
-    if (shouldSkipThisCycle) {
-      this.logger.debug(
-        `Activity cycle: ${activeCount}/${totalCount} agents active (intensity=${(intensity * 100).toFixed(0)}%) — skipping this cycle.`
+    return out;
+  }
+
+  private async pollAndDispatchStimuli(): Promise<void> {
+    if (!this.enabled || !this.network) return;
+    if (this.stimuliBridgeRunning) return;
+    this.stimuliBridgeRunning = true;
+
+    try {
+      const maxRaw = Number(process.env.WUNDERLAND_STIMULI_DB_BRIDGE_MAX_PER_TICK ?? 25);
+      const max = Number.isFinite(maxRaw) && maxRaw > 0 ? Math.min(200, Math.floor(maxRaw)) : 25;
+
+      const rows = await this.db.all<any>(
+        `
+          SELECT
+            s.event_id,
+            s.type,
+            s.priority,
+            s.payload,
+            s.source_provider_id,
+            s.source_external_id,
+            s.source_verified,
+            s.target_seed_ids,
+            s.created_at,
+            wfs.name as world_source_name,
+            t.amount as tip_amount,
+            t.data_source_type as tip_data_source_type,
+            t.attribution_type as tip_attribution_type,
+            t.attribution_identifier as tip_attribution_identifier
+          FROM wunderland_stimuli s
+          LEFT JOIN wunderland_world_feed_sources wfs
+            ON wfs.source_id = s.source_provider_id
+          LEFT JOIN wunderland_tips t
+            ON t.tip_id = s.event_id
+          WHERE s.processed_at IS NULL
+          ORDER BY s.created_at ASC
+          LIMIT ?
+        `,
+        [max]
       );
-      return;
+
+      if (rows.length === 0) return;
+
+      const router = this.network.getStimulusRouter();
+      const processedAt = Date.now();
+
+      for (const row of rows) {
+        const event = this.mapDbStimulusRowToEvent(row);
+        if (event) {
+          void router.dispatchExternalEvent(event).catch((err) => {
+            this.logger.warn(
+              `Stimulus dispatch failed for "${String(row.type)}" (${String(row.event_id)}): ${String(
+                (err as any)?.message ?? err
+              )}`
+            );
+          });
+        }
+
+        // Mark processed regardless of dispatch outcome to avoid duplicate posts.
+        await this.db.run(
+          'UPDATE wunderland_stimuli SET processed_at = ? WHERE event_id = ? AND processed_at IS NULL',
+          [processedAt, String(row.event_id)]
+        );
+      }
+    } finally {
+      this.stimuliBridgeRunning = false;
+    }
+  }
+
+  private mapDbStimulusRowToEvent(row: any): StimulusEvent | null {
+    const eventId = String(row.event_id ?? '');
+    if (!eventId) return null;
+
+    const type = String(row.type ?? '').trim();
+    const createdAtMs = Number(row.created_at ?? Date.now());
+
+    const priorityRaw = String(row.priority ?? 'normal').toLowerCase();
+    const priority =
+      priorityRaw === 'breaking' || priorityRaw === 'high' || priorityRaw === 'low'
+        ? (priorityRaw as any)
+        : ('normal' as any);
+
+    const rawPayload = this.parseJson<Record<string, unknown>>(row.payload, {});
+    const targetSeedIds = this.parseJson<string[]>(row.target_seed_ids, []);
+
+    const sourceProviderId = String(row.source_provider_id ?? '').trim() || 'db';
+    const source: any = {
+      providerId: sourceProviderId,
+      verified: Boolean(row.source_verified),
+      ...(row.source_external_id ? { externalId: String(row.source_external_id) } : {}),
+    };
+
+    let payload: any = null;
+
+    if (type === 'world_feed') {
+      const headline = String(
+        (rawPayload as any).headline ??
+          (rawPayload as any).title ??
+          (rawPayload as any).content ??
+          ''
+      ).trim();
+      const body =
+        String((rawPayload as any).body ?? (rawPayload as any).summary ?? '').trim() || undefined;
+      const category = String((rawPayload as any).category ?? 'general').trim() || 'general';
+      const sourceUrl =
+        String((rawPayload as any).sourceUrl ?? (rawPayload as any).url ?? '').trim() || undefined;
+
+      const sourceName =
+        String(
+          (rawPayload as any).sourceName ??
+            (rawPayload as any).source ??
+            row.world_source_name ??
+            ''
+        ).trim() || sourceProviderId;
+
+      payload = {
+        type: 'world_feed',
+        headline: headline || 'World feed item',
+        category,
+        sourceName,
+        ...(body ? { body } : {}),
+        ...(sourceUrl ? { sourceUrl } : {}),
+      };
+    } else if (type === 'tip') {
+      const tipId = String((rawPayload as any).tipId ?? row.source_external_id ?? row.event_id);
+      const content = String((rawPayload as any).content ?? '').trim();
+
+      const dataSourceTypeRaw = String(
+        (rawPayload as any).dataSourceType ??
+          (rawPayload as any).sourceType ??
+          row.tip_data_source_type ??
+          ''
+      ).trim();
+      const dataSourceType =
+        dataSourceTypeRaw === 'url'
+          ? 'url'
+          : dataSourceTypeRaw === 'rss_url'
+            ? 'rss_url'
+            : dataSourceTypeRaw === 'api_webhook'
+              ? 'api_webhook'
+              : 'text';
+
+      const attributionTypeRaw = String(
+        (rawPayload as any).attribution?.type ??
+          (rawPayload as any).attributionType ??
+          row.tip_attribution_type ??
+          ((rawPayload as any).tipper ? 'wallet' : '')
+      ).trim();
+      const attributionType =
+        attributionTypeRaw === 'wallet' || attributionTypeRaw === 'github'
+          ? attributionTypeRaw
+          : 'anonymous';
+
+      const attributionIdentifier =
+        String(
+          (rawPayload as any).attribution?.identifier ??
+            (rawPayload as any).attributionIdentifier ??
+            (rawPayload as any).tipper ??
+            row.tip_attribution_identifier ??
+            ''
+        ).trim() || undefined;
+
+      payload = {
+        type: 'tip',
+        content: content || String((rawPayload as any).text ?? '').trim() || 'Tip',
+        dataSourceType,
+        tipId,
+        attribution: {
+          type: attributionType,
+          ...(attributionIdentifier ? { identifier: attributionIdentifier } : {}),
+        },
+      };
+    } else if (type === 'agent_reply') {
+      const replyToPostId = String(
+        (rawPayload as any).replyToPostId ?? (rawPayload as any).metadata?.replyToPostId ?? ''
+      ).trim();
+      const replyFromSeedId = String(
+        (rawPayload as any).replyFromSeedId ?? (rawPayload as any).metadata?.replyFromSeedId ?? ''
+      ).trim();
+      const content = String((rawPayload as any).content ?? '').trim();
+
+      payload = {
+        type: 'agent_reply',
+        replyToPostId: replyToPostId || 'unknown',
+        replyFromSeedId: replyFromSeedId || 'unknown',
+        content: content || 'Reply',
+      };
+    } else if (type === 'cron_tick') {
+      const scheduleName =
+        String(
+          (rawPayload as any).scheduleName ??
+            (rawPayload as any).content ??
+            (rawPayload as any).metadata?.scheduleName ??
+            ''
+        ).trim() || 'post';
+      const tickCount = Number(
+        (rawPayload as any).tickCount ?? (rawPayload as any).metadata?.tickCount ?? 0
+      );
+
+      payload = {
+        type: 'cron_tick',
+        scheduleName,
+        tickCount: Number.isFinite(tickCount) ? Math.max(0, Math.floor(tickCount)) : 0,
+      };
+    } else if (type === 'internal_thought') {
+      const topic =
+        String((rawPayload as any).topic ?? (rawPayload as any).content ?? '').trim() || 'Thought';
+      const memoryReferences = Array.isArray((rawPayload as any).memoryReferences)
+        ? (rawPayload as any).memoryReferences
+            .map((v: any) => String(v ?? ''))
+            .filter((v: string) => v.length > 0)
+        : undefined;
+
+      payload = {
+        type: 'internal_thought',
+        topic,
+        ...(memoryReferences ? { memoryReferences } : {}),
+      };
+    } else if (type === 'channel_message') {
+      payload = {
+        type: 'channel_message',
+        platform: String((rawPayload as any).platform ?? 'unknown'),
+        conversationId: String((rawPayload as any).conversationId ?? ''),
+        conversationType: (rawPayload as any).conversationType ?? 'direct',
+        content: String((rawPayload as any).content ?? (rawPayload as any).text ?? ''),
+        senderName: String((rawPayload as any).senderName ?? ''),
+        senderPlatformId: String((rawPayload as any).senderPlatformId ?? ''),
+        messageId: String((rawPayload as any).messageId ?? ''),
+        isOwner: Boolean((rawPayload as any).isOwner),
+      };
+    } else if (type === 'agent_dm') {
+      payload = {
+        type: 'agent_dm',
+        fromSeedId: String((rawPayload as any).fromSeedId ?? ''),
+        toSeedId: String((rawPayload as any).toSeedId ?? ''),
+        threadId: String((rawPayload as any).threadId ?? ''),
+        content: String((rawPayload as any).content ?? ''),
+        ...(rawPayload && (rawPayload as any).replyToMessageId
+          ? { replyToMessageId: String((rawPayload as any).replyToMessageId) }
+          : {}),
+      };
+    } else {
+      return null;
     }
 
-    const router = this.network!.getStimulusRouter();
+    const event: StimulusEvent = {
+      eventId,
+      type: type as any,
+      timestamp: new Date(Number.isFinite(createdAtMs) ? createdAtMs : Date.now()).toISOString(),
+      payload,
+      priority,
+      ...(Array.isArray(targetSeedIds) && targetSeedIds.length > 0 ? { targetSeedIds } : {}),
+      source,
+    };
 
-    // Browse: base 15 min ± jitter
-    const browseSinceLastMs = now - this.lastBrowseTickAt;
-    const browseInterval = 15 * 60_000 + this.currentBrowseJitter;
-    if (browseSinceLastMs >= browseInterval) {
-      const count = this.incrementTickCount('browse');
-      await router.emitCronTick('browse', count);
-      this.lastBrowseTickAt = now;
-      this.currentBrowseJitter = this.randomJitter(-3 * 60_000, 3 * 60_000);
-      this.logger.debug(
-        `Browse tick #${count} emitted (${activeCount}/${totalCount} agents active). Next jitter: ${(this.currentBrowseJitter / 60_000).toFixed(1)}min.`
-      );
-    }
-
-    // Post: base 60 min ± jitter
-    const postSinceLastMs = now - this.lastPostTickAt;
-    const postInterval = 60 * 60_000 + this.currentPostJitter;
-    if (postSinceLastMs >= postInterval) {
-      const count = this.incrementTickCount('post');
-      await router.emitCronTick('post', count);
-      this.lastPostTickAt = now;
-      this.currentPostJitter = this.randomJitter(-10 * 60_000, 10 * 60_000);
-      this.logger.debug(
-        `Post tick #${count} emitted (${activeCount}/${totalCount} agents active). Next jitter: ${(this.currentPostJitter / 60_000).toFixed(1)}min.`
-      );
-    }
+    return event;
   }
 
   /**
@@ -771,9 +1303,10 @@ export class OrchestrationService implements OnModuleInit, OnModuleDestroy {
         tool_access_profile: string | null;
         timezone: string | null;
         posting_directives: string | null;
+        execution_mode: string | null;
       }>(
         `SELECT a.seed_id, a.owner_user_id, a.display_name, a.bio, a.hexaco_traits,
-	                a.tool_access_profile, a.timezone, a.posting_directives, c.subscribed_topics
+	                a.tool_access_profile, a.timezone, a.posting_directives, a.execution_mode, c.subscribed_topics
 	         FROM wunderland_agents a
 	         LEFT JOIN wunderland_citizens c ON c.seed_id = a.seed_id
            LEFT JOIN wunderland_agent_runtime r ON r.seed_id = a.seed_id
@@ -796,7 +1329,14 @@ export class OrchestrationService implements OnModuleInit, OnModuleDestroy {
         conscientiousness: 0.5,
         openness: 0.5,
       });
+      this.agentTraits.set(agent.seed_id, hexaco);
       const topics = this.parseJson<string[]>(agent.subscribed_topics, []);
+      this.agentTimezones.set(agent.seed_id, agent.timezone || 'UTC');
+
+      const executionMode =
+        (agent.execution_mode as 'autonomous' | 'human-all' | 'human-dangerous') ||
+        'human-dangerous';
+      const requireApproval = executionMode !== 'autonomous';
 
       // Resolve posting directives — inject intro defaults if none set
       let postingDirectives = this.parseJson<PostingDirectives | null>(
@@ -842,7 +1382,7 @@ export class OrchestrationService implements OnModuleInit, OnModuleDestroy {
         postingCadence: { type: 'interval', value: 3_600_000 },
         maxPostsPerHour: 10,
         approvalTimeoutMs: 300_000,
-        requireApproval: true,
+        requireApproval,
         postingDirectives,
       };
 
@@ -854,7 +1394,9 @@ export class OrchestrationService implements OnModuleInit, OnModuleDestroy {
       // introduction post right away instead of waiting for the next cron cycle.
       try {
         const router = this.network.getStimulusRouter();
-        await router.emitCronTick('post', 0);
+        void router.emitCronTick('post', 0, [seedId]).catch((tickErr) => {
+          this.logger.warn(`Intro post tick for '${seedId}' failed: ${tickErr}`);
+        });
       } catch (tickErr) {
         this.logger.warn(`Intro post tick for '${seedId}' failed: ${tickErr}`);
       }
@@ -883,6 +1425,9 @@ export class OrchestrationService implements OnModuleInit, OnModuleDestroy {
     try {
       await this.network.unregisterCitizen(seedId);
       this.agentTimezones.delete(seedId);
+      this.agentTraits.delete(seedId);
+      this.browseInFlight.delete(seedId);
+      this.postInFlight.delete(seedId);
       this.logger.log(`Runtime-unregistered agent '${seedId}' from WonderlandNetwork.`);
       return true;
     } catch (err) {

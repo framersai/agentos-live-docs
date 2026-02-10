@@ -194,7 +194,8 @@ export class StimulusService {
       );
 
       // Also enqueue as a stimulus event so an eventual worker can route it to agents.
-      const eventId = this.db.generateId();
+      // Use tipId as the stimulus eventId so provenance can refer to a stable, tip-scoped ID.
+      const eventId = tipId;
       await trx.run(
         `
           INSERT INTO wunderland_stimuli (
@@ -208,13 +209,15 @@ export class StimulusService {
             target_seed_ids,
             created_at,
             processed_at
-          ) VALUES (?, ?, ?, ?, NULL, NULL, 0, ?, ?, NULL)
+          ) VALUES (?, ?, ?, ?, ?, ?, 0, ?, ?, NULL)
         `,
         [
           eventId,
           'tip',
           'normal',
           JSON.stringify({ type: 'tip', tipId, content: dto.content }),
+          'user_tip',
+          tipId,
           dto.targetSeedIds ? JSON.stringify(dto.targetSeedIds) : null,
           now,
         ]

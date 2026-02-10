@@ -69,6 +69,10 @@ function sha256HexUtf8(text: string): string {
   return createHash('sha256').update(text, 'utf8').digest('hex');
 }
 
+function sha256BytesUtf8(text: string): Uint8Array {
+  return createHash('sha256').update(text, 'utf8').digest();
+}
+
 function safeString(value: unknown): string {
   if (typeof value === 'string') return value;
   return String(value ?? '');
@@ -481,6 +485,233 @@ export class WunderlandSolService {
       // RPC failures or decode errors: treat as unknown (still allows anchoring attempts).
       this.enclaveExistenceCache.set(opts.enclavePda, { status: 'unknown', checkedAt: now });
       return 'unknown';
+    }
+  }
+
+  /**
+   * Place a job bid on behalf of an agent.
+   *
+   * @returns Bid PDA address if successful, null if failed
+   */
+  async placeJobBid(opts: {
+    seedId: string;
+    jobPdaAddress: string;
+    bidLamports: number;
+    useBuyItNow?: boolean;
+    messageHashHex?: string;
+    bidMessage?: string;
+  }): Promise<{ success: boolean; bidPda?: string; signature?: string; error?: string }> {
+    if (!this.enabled) {
+      return { success: false, error: 'Solana integration disabled' };
+    }
+
+    if (!this.programId || !this.relayerKeypairPath) {
+      return {
+        success: false,
+        error: 'Missing Solana configuration (PROGRAM_ID or RELAYER_KEYPAIR)',
+      };
+    }
+
+    const agentMap = this.loadAgentMap();
+    const agentEntry = agentMap?.agents?.[opts.seedId];
+    if (!agentEntry) {
+      return { success: false, error: `Agent ${opts.seedId} not found in agent map` };
+    }
+
+    try {
+      // Lazy-load SDK + web3
+      const sdk = await import('@wunderland-sol/sdk');
+      const web3 = await import('@solana/web3.js');
+
+      const client = new sdk.WunderlandSolClient({
+        programId: this.programId,
+        rpcUrl: this.rpcUrl || undefined,
+        cluster: (this.cluster as any) || undefined,
+      });
+
+      const payer = this.loadKeypair(web3, this.relayerKeypairPath);
+      const agentSigner = this.loadKeypair(web3, agentEntry.agentSignerKeypairPath);
+      const agentIdentityPda = new web3.PublicKey(agentEntry.agentIdentityPda);
+      const jobPda = new web3.PublicKey(opts.jobPdaAddress);
+
+      // SDK handles ed25519 signing + transaction internally
+      const messageHash = (() => {
+        const hex = typeof opts.messageHashHex === 'string' ? opts.messageHashHex.trim() : '';
+        if (hex && /^[a-f0-9]{64}$/i.test(hex)) {
+          return Uint8Array.from(Buffer.from(hex, 'hex'));
+        }
+
+        const message =
+          typeof opts.bidMessage === 'string' && opts.bidMessage.trim()
+            ? opts.bidMessage
+            : canonicalizeJson({
+                v: 1,
+                type: 'job_bid',
+                seedId: opts.seedId,
+                jobPda: opts.jobPdaAddress,
+                bidLamports: opts.bidLamports,
+                useBuyItNow: Boolean(opts.useBuyItNow),
+              });
+        return sha256BytesUtf8(message);
+      })();
+
+      const result = await client.placeJobBid({
+        jobPda,
+        agentIdentityPda,
+        agentSigner,
+        payer,
+        bidLamports: BigInt(opts.bidLamports),
+        messageHash,
+      });
+
+      this.logger.log(
+        `Job bid placed: agent=${opts.seedId} job=${opts.jobPdaAddress} bid=${opts.bidLamports} lamports (sig: ${result.signature})`
+      );
+
+      return {
+        success: true,
+        bidPda: result.bidPda.toBase58(),
+        signature: result.signature,
+      };
+    } catch (err) {
+      const error = err instanceof Error ? err.message : String(err);
+      this.logger.error(`Failed to place job bid for ${opts.seedId}: ${error}`);
+      return { success: false, error };
+    }
+  }
+
+  /**
+   * Submit job deliverable to Solana (agent submits work).
+   *
+   * @returns Submission PDA address and signature if successful, null if failed
+   */
+  async submitJob(opts: {
+    seedId: string;
+    jobPdaAddress: string;
+    submissionHash: Buffer;
+  }): Promise<{ success: boolean; signature?: string; submissionPda?: string; error?: string }> {
+    if (!this.enabled) {
+      return { success: false, error: 'Solana integration disabled' };
+    }
+
+    if (!this.programId || !this.relayerKeypairPath) {
+      return {
+        success: false,
+        error: 'Missing Solana configuration (PROGRAM_ID or RELAYER_KEYPAIR)',
+      };
+    }
+
+    const agentMap = this.loadAgentMap();
+    const agentEntry = agentMap?.agents?.[opts.seedId];
+    if (!agentEntry) {
+      return { success: false, error: `Agent ${opts.seedId} not found in agent map` };
+    }
+
+    try {
+      // Lazy-load SDK + web3
+      const sdk = await import('@wunderland-sol/sdk');
+      const web3 = await import('@solana/web3.js');
+
+      const client = new sdk.WunderlandSolClient({
+        programId: this.programId,
+        rpcUrl: this.rpcUrl || undefined,
+        cluster: (this.cluster as any) || undefined,
+      });
+
+      const payer = this.loadKeypair(web3, this.relayerKeypairPath);
+      const agentSigner = this.loadKeypair(web3, agentEntry.agentSignerKeypairPath);
+      const agentIdentityPda = new web3.PublicKey(agentEntry.agentIdentityPda);
+      const jobPda = new web3.PublicKey(opts.jobPdaAddress);
+
+      // Ensure submissionHash is Uint8Array (32 bytes)
+      const submissionHash = Uint8Array.from(opts.submissionHash);
+
+      const res = await client.submitJob({
+        jobPda,
+        agentIdentityPda,
+        agentSigner,
+        payer,
+        submissionHash,
+      });
+
+      this.logger.log(
+        `Job submitted: agent=${opts.seedId} job=${opts.jobPdaAddress} (sig: ${res.signature})`
+      );
+
+      return {
+        success: true,
+        signature: res.signature,
+        submissionPda: res.submissionPda.toBase58(),
+      };
+    } catch (err) {
+      const error = err instanceof Error ? err.message : String(err);
+      this.logger.error(`Failed to submit job for ${opts.seedId}: ${error}`);
+      return { success: false, error };
+    }
+  }
+
+  /**
+   * Withdraw a job bid (losing bid cleanup).
+   *
+   * @returns Transaction signature if successful, null if failed
+   */
+  async withdrawJobBid(opts: {
+    seedId: string;
+    jobPdaAddress: string;
+    bidPdaAddress: string;
+  }): Promise<{ success: boolean; signature?: string; error?: string }> {
+    if (!this.enabled) {
+      return { success: false, error: 'Solana integration disabled' };
+    }
+
+    if (!this.programId || !this.relayerKeypairPath) {
+      return {
+        success: false,
+        error: 'Missing Solana configuration (PROGRAM_ID or RELAYER_KEYPAIR)',
+      };
+    }
+
+    const agentMap = this.loadAgentMap();
+    const agentEntry = agentMap?.agents?.[opts.seedId];
+    if (!agentEntry) {
+      return { success: false, error: `Agent ${opts.seedId} not found in agent map` };
+    }
+
+    try {
+      // Lazy-load SDK + web3
+      const sdk = await import('@wunderland-sol/sdk');
+      const web3 = await import('@solana/web3.js');
+
+      const client = new sdk.WunderlandSolClient({
+        programId: this.programId,
+        rpcUrl: this.rpcUrl || undefined,
+        cluster: (this.cluster as any) || undefined,
+      });
+
+      const payer = this.loadKeypair(web3, this.relayerKeypairPath);
+      const agentSigner = this.loadKeypair(web3, agentEntry.agentSignerKeypairPath);
+      const agentIdentityPda = new web3.PublicKey(agentEntry.agentIdentityPda);
+      const jobPda = new web3.PublicKey(opts.jobPdaAddress);
+
+      const signature = await client.withdrawJobBid({
+        jobPda,
+        agentIdentityPda,
+        agentSigner,
+        payer,
+      });
+
+      this.logger.log(
+        `Job bid withdrawn: agent=${opts.seedId} job=${opts.jobPdaAddress} (sig: ${signature})`
+      );
+
+      return {
+        success: true,
+        signature,
+      };
+    } catch (err) {
+      const error = err instanceof Error ? err.message : String(err);
+      this.logger.error(`Failed to withdraw job bid for ${opts.seedId}: ${error}`);
+      return { success: false, error };
     }
   }
 

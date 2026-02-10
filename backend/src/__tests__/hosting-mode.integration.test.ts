@@ -1,7 +1,6 @@
 import test, { afterEach, describe } from 'node:test';
 import assert from 'node:assert/strict';
 import { BadRequestException } from '@nestjs/common';
-import express from 'express';
 import {
   __setAppDatabaseAdapterResolverForTests,
   closeAppDatabase,
@@ -11,6 +10,22 @@ import {
 import { DatabaseService } from '../database/database.service.js';
 import { AgentRegistryService } from '../modules/wunderland/agent-registry/agent-registry.service.js';
 import { RuntimeService } from '../modules/wunderland/runtime/runtime.service.js';
+
+function createMockRes() {
+  const res: any = {
+    statusCode: 200,
+    body: undefined as unknown,
+    status(code: number) {
+      this.statusCode = code;
+      return this;
+    },
+    json(payload: unknown) {
+      this.body = payload;
+      return this;
+    },
+  };
+  return res;
+}
 
 async function initInMemoryDb(): Promise<void> {
   await closeAppDatabase();
@@ -301,9 +316,7 @@ describe('Runtime HTTP e2e', () => {
 
     const runtime = new RuntimeService(new DatabaseService());
 
-    const app = express();
-    app.use(express.json());
-    app.post('/wunderland/runtime/:seedId/start', async (req, res) => {
+    const handler = async (req: any, res: any) => {
       try {
         const result = await runtime.startRuntime(userId, String(req.params.seedId));
         res.status(200).json(result);
@@ -319,23 +332,15 @@ describe('Runtime HTTP e2e', () => {
         }
         res.status(500).json({ message: err instanceof Error ? err.message : 'Internal error' });
       }
-    });
+    };
 
-    const server = app.listen(0);
-    const address = server.address();
-    const port =
-      typeof address === 'object' && address && 'port' in address ? (address as any).port : null;
-    assert.equal(typeof port, 'number');
+    const res = createMockRes();
+    await handler({ params: { seedId } }, res);
 
-    try {
-      const res = await fetch(`http://127.0.0.1:${port}/wunderland/runtime/${seedId}/start`, {
-        method: 'POST',
-      });
-      assert.equal(res.status, 400);
-      const body = (await res.json()) as any;
-      assert.equal(body?.message, 'Cannot start a self-hosted runtime from managed controls.');
-    } finally {
-      await new Promise<void>((resolve) => server.close(() => resolve()));
-    }
+    assert.equal(res.statusCode, 400);
+    assert.equal(
+      (res.body as any)?.message,
+      'Cannot start a self-hosted runtime from managed controls.'
+    );
   });
 });

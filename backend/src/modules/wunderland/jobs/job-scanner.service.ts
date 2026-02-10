@@ -11,6 +11,7 @@
  */
 
 import { Injectable, Logger, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
+import { createHash } from 'node:crypto';
 import { DatabaseService } from '../../../database/database.service';
 import {
   JobScanner,
@@ -24,6 +25,7 @@ import {
 import type { AgentJobState, Job, AgentProfile, JobEvaluationResult } from 'wunderland';
 import { OrchestrationService } from '../orchestration/orchestration.service';
 import { WunderlandVectorMemoryService } from '../orchestration/wunderland-vector-memory.service';
+import { WunderlandSolService } from '../wunderland-sol/wunderland-sol.service';
 
 interface AgentScannerInstance {
   scanner: JobScanner;
@@ -42,7 +44,10 @@ export class JobScannerService implements OnModuleInit, OnModuleDestroy {
   constructor(
     private readonly db: DatabaseService,
     private readonly orchestration: OrchestrationService,
-    private readonly vectorMemory: WunderlandVectorMemoryService
+    private readonly vectorMemory: WunderlandVectorMemoryService,
+    private readonly wunderlandSol: WunderlandSolService,
+    private readonly jobExecution?: any, // JobExecutionService - optional to avoid circular deps
+    private readonly bidLifecycle?: any // BidLifecycleService - optional to avoid circular deps
   ) {
     this.enabled = process.env.ENABLE_JOB_SCANNING === 'true';
   }
@@ -53,29 +58,58 @@ export class JobScannerService implements OnModuleInit, OnModuleDestroy {
       return;
     }
 
-    // Wait for orchestration to be ready (has MoodEngine)
-    if (!this.orchestration.isReady()) {
-      this.logger.warn('Orchestration not ready, job scanning will be limited.');
-    }
+    // Run in background so we don't block NestJS startup
+    this.initInBackground();
+  }
 
-    // Initialize JobMemoryService if RAG is available
-    if (this.vectorMemory.isAvailable()) {
-      const ragAugmentor = await this.vectorMemory.getRetrievalAugmentor();
-      if (ragAugmentor) {
-        this.jobMemoryService = new JobMemoryService(ragAugmentor);
-        this.logger.log('JobMemoryService initialized with RAG.');
+  private initInBackground(): void {
+    (async () => {
+      try {
+        // Wait for orchestration to be ready (has MoodEngine)
+        if (!this.orchestration.isReady()) {
+          this.logger.warn('Orchestration not ready, job scanning will be limited.');
+        }
+
+        // Initialize JobMemoryService if RAG is available
+        if (this.vectorMemory.isAvailable()) {
+          const ragAugmentor = await this.vectorMemory.getRetrievalAugmentor();
+          if (ragAugmentor) {
+            this.jobMemoryService = new JobMemoryService(ragAugmentor);
+            this.logger.log('JobMemoryService initialized with RAG.');
+          }
+        } else {
+          this.logger.warn('Vector memory not available, JobScanner will run without RAG.');
+        }
+
+        // Load active agents and start scanners
+        await this.startScannersForActiveAgents();
+
+        // Start autonomous job execution loops (if enabled)
+        if (process.env.ENABLE_JOB_EXECUTION === 'true' && this.jobExecution && this.bidLifecycle) {
+          this.logger.log('Starting autonomous job execution loops...');
+          for (const [seedId] of this.scanners.entries()) {
+            await this.jobExecution.startExecutionLoopForAgent(seedId);
+            await this.bidLifecycle.startWithdrawalLoopForAgent(seedId);
+          }
+          this.logger.log(`Autonomous execution enabled for ${this.scanners.size} agents.`);
+        }
+
+        this.logger.log(`Job scanning enabled for ${this.scanners.size} agents.`);
+      } catch (err) {
+        this.logger.error('Job scanner initialization failed:', err);
       }
-    } else {
-      this.logger.warn('Vector memory not available, JobScanner will run without RAG.');
-    }
-
-    // Load active agents and start scanners
-    await this.startScannersForActiveAgents();
-
-    this.logger.log(`Job scanning enabled for ${this.scanners.size} agents.`);
+    })();
   }
 
   async onModuleDestroy(): Promise<void> {
+    // Stop execution/withdrawal loops
+    if (this.jobExecution && this.bidLifecycle) {
+      for (const [seedId] of this.scanners.entries()) {
+        this.jobExecution.stopExecutionLoopForAgent?.(seedId);
+        this.bidLifecycle.stopWithdrawalLoopForAgent?.(seedId);
+      }
+    }
+
     // Stop all scanners
     for (const [seedId, instance] of this.scanners.entries()) {
       instance.scanner.stop();
@@ -151,7 +185,8 @@ export class JobScannerService implements OnModuleInit, OnModuleDestroy {
     const scanner = new JobScanner(
       {
         jobsApiUrl:
-          process.env.WUNDERLAND_JOBS_API_URL || 'http://localhost:3100/api/wunderland/jobs',
+          process.env.WUNDERLAND_JOBS_API_URL ||
+          `http://localhost:${process.env.PORT || 3001}/api/wunderland/jobs`,
         baseIntervalMs: 30_000,
         enableAdaptivePolling: true,
         maxActiveBids: 5,
@@ -262,14 +297,62 @@ export class JobScannerService implements OnModuleInit, OnModuleDestroy {
       `Agent ${seedId} decided to bid on job ${job.id}: ${evaluation.recommendedBidAmount} lamports (score: ${evaluation.jobScore.toFixed(2)})`
     );
 
-    // TODO: Implement actual Solana bid submission via wunderland-sol.service
-    // For now, just log the decision
+    const bidMessage = JSON.stringify({
+      v: 1,
+      type: 'job_bid',
+      seedId,
+      jobPda: job.id,
+      bidLamports: evaluation.recommendedBidAmount || 0,
+      useBuyItNow: Boolean(evaluation.useBuyItNow),
+      score: Number(evaluation.jobScore.toFixed(3)),
+      reasoning: evaluation.reasoning,
+    });
+    const bidHashHex = createHash('sha256').update(bidMessage, 'utf8').digest('hex');
 
-    // Update state
-    incrementWorkload(state);
-    await this.saveAgentJobState(seedId, state);
+    // Submit bid to Solana
+    try {
+      const result = await this.wunderlandSol.placeJobBid({
+        seedId,
+        jobPdaAddress: job.id,
+        bidLamports: evaluation.recommendedBidAmount || 0,
+        useBuyItNow: evaluation.useBuyItNow,
+        messageHashHex: bidHashHex,
+      });
 
-    // TODO: Store bid in database for tracking
+      if (!result.success) {
+        this.logger.error(
+          `Failed to submit bid for agent ${seedId} on job ${job.id}: ${result.error}`
+        );
+        return;
+      }
+
+      this.logger.log(
+        `✓ Bid submitted for agent ${seedId} on job ${job.id} — Bid PDA: ${result.bidPda}, Signature: ${result.signature}`
+      );
+
+      // Store bid in database
+      const now = Date.now();
+      await this.db.run(
+        `INSERT INTO wunderland_job_bids (
+          bid_pda, job_pda, agent_address, bid_hash, amount_lamports, status, created_at
+        ) VALUES (?, ?, ?, ?, ?, ?, ?)`,
+        [
+          result.bidPda,
+          job.id,
+          seedId,
+          bidHashHex,
+          evaluation.recommendedBidAmount || 0,
+          evaluation.useBuyItNow ? 'won' : 'active',
+          now,
+        ]
+      );
+
+      // Update state
+      incrementWorkload(state);
+      await this.saveAgentJobState(seedId, state);
+    } catch (err) {
+      this.logger.error(`Exception submitting bid for agent ${seedId} on job ${job.id}: ${err}`);
+    }
   }
 
   /**

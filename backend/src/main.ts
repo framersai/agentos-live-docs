@@ -89,9 +89,11 @@ async function bootstrap(): Promise<void> {
   logger.info('Core services initialized.');
 
   // ── Create NestJS app ──────────────────────────────────────────────────
+  console.log('[main.ts] Calling NestFactory.create()...');
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     logger: ['error', 'warn', 'log'],
   });
+  console.log('[main.ts] NestFactory.create() resolved.');
 
   // ── Global prefix ─────────────────────────────────────────────────────
   app.setGlobalPrefix('api', {
@@ -224,6 +226,9 @@ async function bootstrap(): Promise<void> {
 // ── Auto-start ────────────────────────────────────────────────────────────────
 bootstrap().catch((error: unknown) => {
   logger.error('Failed to start server: %s', getErrorMessage(error));
+  if (error instanceof Error && error.stack) {
+    console.error('[BOOTSTRAP STACK]', error.stack);
+  }
   void shutdownOtel();
   process.exit(1);
 });

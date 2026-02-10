@@ -16,8 +16,51 @@
  */
 
 import { Injectable } from '@nestjs/common';
+import { createHash, createPublicKey, verify as cryptoVerify } from 'node:crypto';
 import { getAppDatabase } from '../../../core/database/appDatabase.js';
 import type { StorageAdapter } from '@framers/sql-storage-adapter';
+import { PublicKey } from '@solana/web3.js';
+
+type StoreConfidentialDetailsSignedParams = {
+  jobPda: string;
+  creatorWallet: string;
+  signatureB64: string;
+  confidentialDetails: string;
+};
+
+const STORE_CONFIDENTIAL_INTENT = 'wunderland_store_confidential_details';
+
+function sha256HexUtf8(text: string): string {
+  return createHash('sha256').update(text, 'utf8').digest('hex');
+}
+
+function buildStoreConfidentialMessage(jobPda: string, detailsHashHex: string): string {
+  return JSON.stringify({
+    v: 1,
+    intent: STORE_CONFIDENTIAL_INTENT,
+    jobPda,
+    detailsHash: detailsHashHex,
+  });
+}
+
+function solanaPublicKeyToSpkiDer(pubkeyBytes: Uint8Array): Buffer {
+  // Ed25519 SPKI DER prefix + raw 32-byte public key.
+  // Prefix = SEQUENCE(42) { SEQUENCE(5) { OID(Ed25519) }, BIT STRING(33) { 0x00, key } }
+  return Buffer.concat([Buffer.from('302a300506032b6570032100', 'hex'), Buffer.from(pubkeyBytes)]);
+}
+
+function verifyWalletSignatureBase64(opts: {
+  wallet: string;
+  message: string;
+  signatureB64: string;
+}): boolean {
+  const walletKey = new PublicKey(opts.wallet);
+  const keyDer = solanaPublicKeyToSpkiDer(walletKey.toBytes());
+  const keyObject = createPublicKey({ key: keyDer, format: 'der', type: 'spki' });
+  const signature = Buffer.from(opts.signatureB64, 'base64');
+  const messageBytes = Buffer.from(opts.message, 'utf8');
+  return cryptoVerify(null, messageBytes, keyObject, signature);
+}
 
 export interface JobRecord {
   jobPda: string;
@@ -88,6 +131,9 @@ export class JobsService {
         job.updatedAt,
       ]
     );
+
+    // If confidential details were stored before this job was indexed, attach them now.
+    await this.applyStoredConfidentialDetails(job.jobPda);
   }
 
   /**
@@ -244,6 +290,228 @@ export class JobsService {
         Date.now(),
         jobPda,
       ]);
+    }
+  }
+
+  /**
+   * Store confidential job details (only revealed to assigned agent).
+   */
+  async storeConfidentialDetails(
+    jobPda: string,
+    confidentialDetails: string
+  ): Promise<{ success: boolean; error?: string }> {
+    try {
+      const db = this.getDb();
+
+      // Verify job exists
+      const job = await db.get('SELECT job_pda FROM wunderland_jobs WHERE job_pda = ?', [jobPda]);
+
+      if (!job) {
+        return { success: false, error: 'Job not found' };
+      }
+
+      // Update confidential details
+      await db.run('UPDATE wunderland_jobs SET confidential_details = ? WHERE job_pda = ?', [
+        confidentialDetails,
+        jobPda,
+      ]);
+
+      return { success: true };
+    } catch (err) {
+      return {
+        success: false,
+        error: err instanceof Error ? err.message : 'Unknown error',
+      };
+    }
+  }
+
+  /**
+   * Store confidential job details with wallet signature verification.
+   *
+   * This is safe to call immediately after on-chain job creation (before the
+   * indexer has materialized the job row locally), because it stores into a
+   * dedicated table and later attaches to `wunderland_jobs.confidential_details`
+   * when the job is indexed.
+   */
+  async storeConfidentialDetailsSigned(
+    body: StoreConfidentialDetailsSignedParams
+  ): Promise<{ success: boolean; error?: string }> {
+    try {
+      const jobPda = new PublicKey(body.jobPda).toBase58();
+      const creatorWallet = new PublicKey(body.creatorWallet).toBase58();
+
+      const confidentialDetails =
+        typeof body.confidentialDetails === 'string' ? body.confidentialDetails.trim() : '';
+      if (!confidentialDetails) {
+        return { success: false, error: 'Missing confidentialDetails' };
+      }
+      if (confidentialDetails.length > 10_000) {
+        return { success: false, error: 'confidentialDetails too long' };
+      }
+
+      const signatureB64 = typeof body.signatureB64 === 'string' ? body.signatureB64.trim() : '';
+      if (!signatureB64) {
+        return { success: false, error: 'Missing signatureB64' };
+      }
+
+      const detailsHashHex = sha256HexUtf8(confidentialDetails);
+      const message = buildStoreConfidentialMessage(jobPda, detailsHashHex);
+
+      let signatureOk = false;
+      try {
+        signatureOk = verifyWalletSignatureBase64({
+          wallet: creatorWallet,
+          message,
+          signatureB64,
+        });
+      } catch {
+        signatureOk = false;
+      }
+      if (!signatureOk) {
+        return { success: false, error: 'Invalid wallet signature' };
+      }
+
+      const creatorOk = await this.verifyJobCreator({
+        jobPda,
+        creatorWallet,
+      });
+      if (!creatorOk.ok) {
+        return { success: false, error: creatorOk.error ?? 'Creator verification failed' };
+      }
+
+      const db = this.getDb();
+      const now = Date.now();
+
+      await db.run(
+        `INSERT INTO wunderland_job_confidential
+          (job_pda, creator_wallet, confidential_details, details_hash_hex, signature_b64, created_at, updated_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?)
+         ON CONFLICT(job_pda) DO UPDATE SET
+           creator_wallet = excluded.creator_wallet,
+           confidential_details = excluded.confidential_details,
+           details_hash_hex = excluded.details_hash_hex,
+           signature_b64 = excluded.signature_b64,
+           updated_at = excluded.updated_at`,
+        [jobPda, creatorWallet, confidentialDetails, detailsHashHex, signatureB64, now, now]
+      );
+
+      // Best-effort attach to indexed jobs table if present already.
+      await db.run('UPDATE wunderland_jobs SET confidential_details = ? WHERE job_pda = ?', [
+        confidentialDetails,
+        jobPda,
+      ]);
+
+      return { success: true };
+    } catch (err) {
+      return {
+        success: false,
+        error: err instanceof Error ? err.message : 'Unknown error',
+      };
+    }
+  }
+
+  private async applyStoredConfidentialDetails(jobPda: string): Promise<void> {
+    const db = this.getDb();
+    const row = await db.get<{ confidential_details: string }>(
+      'SELECT confidential_details FROM wunderland_job_confidential WHERE job_pda = ? LIMIT 1',
+      [jobPda]
+    );
+    if (!row?.confidential_details) return;
+    await db.run('UPDATE wunderland_jobs SET confidential_details = ? WHERE job_pda = ?', [
+      row.confidential_details,
+      jobPda,
+    ]);
+  }
+
+  private async verifyJobCreator(opts: {
+    jobPda: string;
+    creatorWallet: string;
+  }): Promise<{ ok: boolean; error?: string }> {
+    const db = this.getDb();
+    const local = await db.get<{ creator_wallet: string }>(
+      'SELECT creator_wallet FROM wunderland_jobs WHERE job_pda = ? LIMIT 1',
+      [opts.jobPda]
+    );
+    if (local) {
+      return local.creator_wallet === opts.creatorWallet
+        ? { ok: true }
+        : { ok: false, error: 'Creator wallet does not match indexed job' };
+    }
+
+    const rpcUrl = process.env.WUNDERLAND_SOL_RPC_URL ?? '';
+    const programId = process.env.WUNDERLAND_SOL_PROGRAM_ID ?? '';
+    if (!rpcUrl || !programId) {
+      return { ok: false, error: 'Job not indexed yet and Solana RPC not configured' };
+    }
+
+    try {
+      const sdk = await import('@wunderland-sol/sdk');
+      const web3 = await import('@solana/web3.js');
+      const connection = new web3.Connection(rpcUrl, 'confirmed');
+      const accountInfo = await connection.getAccountInfo(
+        new web3.PublicKey(opts.jobPda),
+        'confirmed'
+      );
+      if (!accountInfo) {
+        return { ok: false, error: 'Job account not found on-chain' };
+      }
+      if (accountInfo.owner.toBase58() !== programId) {
+        return { ok: false, error: 'Job account owner mismatch' };
+      }
+      const expectedDisc = createHash('sha256')
+        .update('account:JobPosting')
+        .digest()
+        .subarray(0, 8);
+      const data = Buffer.from(accountInfo.data);
+      if (data.length < 8 || !data.subarray(0, 8).equals(expectedDisc)) {
+        return { ok: false, error: 'Account is not a JobPosting' };
+      }
+      const decoded = sdk.decodeJobPostingAccount(data);
+      const onChainCreator = decoded.creator.toBase58();
+      return onChainCreator === opts.creatorWallet
+        ? { ok: true }
+        : { ok: false, error: 'Creator wallet does not match on-chain job' };
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      return { ok: false, error: `On-chain verification failed: ${message}` };
+    }
+  }
+
+  /**
+   * Get confidential details (only if requester is assigned agent or creator).
+   */
+  async getConfidentialDetails(
+    jobPda: string,
+    requesterWallet: string
+  ): Promise<{ confidentialDetails: string | null; authorized: boolean }> {
+    try {
+      const db = this.getDb();
+
+      const job = await db.get<{
+        creator_wallet: string;
+        assigned_agent: string | null;
+        confidential_details: string | null;
+      }>(
+        `SELECT creator_wallet, assigned_agent, confidential_details
+         FROM wunderland_jobs WHERE job_pda = ?`,
+        [jobPda]
+      );
+
+      if (!job) {
+        return { confidentialDetails: null, authorized: false };
+      }
+
+      // Only creator or assigned agent can see confidential details
+      const isCreator = job.creator_wallet === requesterWallet;
+      const isAssignedAgent = job.assigned_agent === requesterWallet;
+      const authorized = isCreator || isAssignedAgent;
+
+      return {
+        confidentialDetails: authorized ? job.confidential_details : null,
+        authorized,
+      };
+    } catch {
+      return { confidentialDetails: null, authorized: false };
     }
   }
 }

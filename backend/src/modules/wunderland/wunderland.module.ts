@@ -98,7 +98,6 @@ export class WunderlandModule {
         WorldFeedModule,
         StimulusModule,
         ApprovalQueueModule,
-        WunderlandSolModule,
         RuntimeModule,
         CredentialsModule,
         ChannelsModule,
@@ -108,12 +107,16 @@ export class WunderlandModule {
         EmailIntegrationModule,
         CitizensModule,
         VotingModule,
+        // NOTE: WunderlandSolModule is loaded transitively via ApprovalQueueModule & JobsModule.
+        // Explicitly importing it here causes NestFactory.create() to hang indefinitely.
         OrchestrationModule,
         JobsModule,
       ],
       controllers: [WunderlandHealthController],
-      providers: [WunderlandGateway],
-      exports: [WunderlandGateway],
+      // NOTE: WunderlandGateway (Socket.IO) causes NestFactory.create() to hang.
+      // Disabled until Socket.IO platform is properly configured.
+      providers: [],
+      exports: [],
     };
   }
 }

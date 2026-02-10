@@ -1192,6 +1192,52 @@ const runInitialSchema = async (db: StorageAdapter): Promise<void> => {
     'CREATE INDEX IF NOT EXISTS idx_wunderland_js_job ON wunderland_job_submissions(job_pda);'
   );
 
+  // Job deliverables storage (for autonomous job execution)
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS wunderland_job_deliverables (
+      deliverable_id TEXT PRIMARY KEY,
+      job_pda TEXT NOT NULL,
+      agent_address TEXT NOT NULL,
+      deliverable_type TEXT NOT NULL,
+      content TEXT,
+      ipfs_cid TEXT,
+      file_size INTEGER,
+      mime_type TEXT,
+      submission_hash TEXT NOT NULL,
+      status TEXT NOT NULL DEFAULT 'pending',
+      created_at INTEGER NOT NULL,
+      submitted_at INTEGER,
+      FOREIGN KEY (job_pda) REFERENCES wunderland_jobs(job_pda)
+    );
+  `);
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_wunderland_jd_job ON wunderland_job_deliverables(job_pda);'
+  );
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_wunderland_jd_agent ON wunderland_job_deliverables(agent_address);'
+  );
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_wunderland_jd_status ON wunderland_job_deliverables(status);'
+  );
+
+  // Off-chain storage for sensitive job data (e.g. API keys/credentials).
+  // Stored separately so it can be written before the on-chain indexer has
+  // materialized the job row in `wunderland_jobs`.
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS wunderland_job_confidential (
+      job_pda TEXT PRIMARY KEY,
+      creator_wallet TEXT NOT NULL,
+      confidential_details TEXT NOT NULL,
+      details_hash_hex TEXT NOT NULL,
+      signature_b64 TEXT NOT NULL,
+      created_at INTEGER NOT NULL,
+      updated_at INTEGER NOT NULL
+    );
+  `);
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_wunderland_job_confidential_creator ON wunderland_job_confidential(creator_wallet);'
+  );
+
   // Agent job state persistence (for learning and workload tracking)
   await db.exec(`
     CREATE TABLE IF NOT EXISTS wunderland_agent_job_states (
@@ -1212,6 +1258,11 @@ const runInitialSchema = async (db: StorageAdapter): Promise<void> => {
   `);
   await db.exec(
     'CREATE INDEX IF NOT EXISTS idx_wunderland_ajs_seed ON wunderland_agent_job_states(seed_id);'
+  );
+
+  // Index for active bids (doesn't depend on new columns)
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_wunderland_job_bids_active ON wunderland_job_bids(agent_address, status);'
   );
 
   console.log('[AppDatabase] Revenue + Jobs tables initialized.');
@@ -1467,6 +1518,57 @@ export const initializeAppDatabase = async (): Promise<void> => {
           ? 'ALTER TABLE wunderland_agents ADD COLUMN voice_config TEXT'
           : 'ALTER TABLE wunderland_agents ADD COLUMN voice_config TEXT;'
       );
+
+      // Job execution tracking columns
+      await ensureColumnExists(
+        adapter,
+        'wunderland_jobs',
+        'execution_started_at',
+        adapter.kind === 'postgres'
+          ? 'ALTER TABLE wunderland_jobs ADD COLUMN execution_started_at INTEGER'
+          : 'ALTER TABLE wunderland_jobs ADD COLUMN execution_started_at INTEGER;'
+      );
+      await ensureColumnExists(
+        adapter,
+        'wunderland_jobs',
+        'execution_completed_at',
+        adapter.kind === 'postgres'
+          ? 'ALTER TABLE wunderland_jobs ADD COLUMN execution_completed_at INTEGER'
+          : 'ALTER TABLE wunderland_jobs ADD COLUMN execution_completed_at INTEGER;'
+      );
+      await ensureColumnExists(
+        adapter,
+        'wunderland_jobs',
+        'execution_retry_count',
+        adapter.kind === 'postgres'
+          ? 'ALTER TABLE wunderland_jobs ADD COLUMN execution_retry_count INTEGER DEFAULT 0'
+          : 'ALTER TABLE wunderland_jobs ADD COLUMN execution_retry_count INTEGER DEFAULT 0;'
+      );
+      await ensureColumnExists(
+        adapter,
+        'wunderland_jobs',
+        'execution_error',
+        adapter.kind === 'postgres'
+          ? 'ALTER TABLE wunderland_jobs ADD COLUMN execution_error TEXT'
+          : 'ALTER TABLE wunderland_jobs ADD COLUMN execution_error TEXT;'
+      );
+      await ensureColumnExists(
+        adapter,
+        'wunderland_jobs',
+        'confidential_details',
+        adapter.kind === 'postgres'
+          ? 'ALTER TABLE wunderland_jobs ADD COLUMN confidential_details TEXT'
+          : 'ALTER TABLE wunderland_jobs ADD COLUMN confidential_details TEXT;'
+      );
+
+      // Create index for job execution polling (after columns exist)
+      await adapter.exec(
+        'CREATE INDEX IF NOT EXISTS idx_wunderland_jobs_execution_status ON wunderland_jobs(status, assigned_agent, execution_started_at);'
+      );
+      await adapter.exec(
+        'CREATE INDEX IF NOT EXISTS idx_wunderland_job_deliverables_job ON wunderland_job_deliverables(job_pda);'
+      );
+
       await ensureColumnExists(
         adapter,
         'wunderland_posts',
@@ -1635,6 +1737,108 @@ export const initializeAppDatabase = async (): Promise<void> => {
           ? 'ALTER TABLE wunderland_jobs ADD COLUMN buy_it_now_lamports INTEGER'
           : 'ALTER TABLE wunderland_jobs ADD COLUMN buy_it_now_lamports INTEGER;'
       );
+      await ensureColumnExists(
+        adapter,
+        'wunderland_jobs',
+        'confidential_details',
+        adapter.kind === 'postgres'
+          ? 'ALTER TABLE wunderland_jobs ADD COLUMN confidential_details TEXT'
+          : 'ALTER TABLE wunderland_jobs ADD COLUMN confidential_details TEXT;'
+      );
+      // Autonomous job execution columns
+      await ensureColumnExists(
+        adapter,
+        'wunderland_jobs',
+        'execution_started_at',
+        adapter.kind === 'postgres'
+          ? 'ALTER TABLE wunderland_jobs ADD COLUMN execution_started_at INTEGER'
+          : 'ALTER TABLE wunderland_jobs ADD COLUMN execution_started_at INTEGER;'
+      );
+      await ensureColumnExists(
+        adapter,
+        'wunderland_jobs',
+        'execution_completed_at',
+        adapter.kind === 'postgres'
+          ? 'ALTER TABLE wunderland_jobs ADD COLUMN execution_completed_at INTEGER'
+          : 'ALTER TABLE wunderland_jobs ADD COLUMN execution_completed_at INTEGER;'
+      );
+      await ensureColumnExists(
+        adapter,
+        'wunderland_jobs',
+        'execution_agent_session_id',
+        adapter.kind === 'postgres'
+          ? 'ALTER TABLE wunderland_jobs ADD COLUMN execution_agent_session_id TEXT'
+          : 'ALTER TABLE wunderland_jobs ADD COLUMN execution_agent_session_id TEXT;'
+      );
+      await ensureColumnExists(
+        adapter,
+        'wunderland_jobs',
+        'execution_retry_count',
+        adapter.kind === 'postgres'
+          ? 'ALTER TABLE wunderland_jobs ADD COLUMN execution_retry_count INTEGER DEFAULT 0'
+          : 'ALTER TABLE wunderland_jobs ADD COLUMN execution_retry_count INTEGER DEFAULT 0;'
+      );
+      await ensureColumnExists(
+        adapter,
+        'wunderland_jobs',
+        'execution_error',
+        adapter.kind === 'postgres'
+          ? 'ALTER TABLE wunderland_jobs ADD COLUMN execution_error TEXT'
+          : 'ALTER TABLE wunderland_jobs ADD COLUMN execution_error TEXT;'
+      );
+      // Job submission deliverable columns
+      await ensureColumnExists(
+        adapter,
+        'wunderland_job_submissions',
+        'deliverable_id',
+        adapter.kind === 'postgres'
+          ? 'ALTER TABLE wunderland_job_submissions ADD COLUMN deliverable_id TEXT'
+          : 'ALTER TABLE wunderland_job_submissions ADD COLUMN deliverable_id TEXT;'
+      );
+      await ensureColumnExists(
+        adapter,
+        'wunderland_job_submissions',
+        'ipfs_cid',
+        adapter.kind === 'postgres'
+          ? 'ALTER TABLE wunderland_job_submissions ADD COLUMN ipfs_cid TEXT'
+          : 'ALTER TABLE wunderland_job_submissions ADD COLUMN ipfs_cid TEXT;'
+      );
+      // Discord bot ticket thread mappings
+      await adapter.exec(`
+        CREATE TABLE IF NOT EXISTS discord_ticket_threads (
+          id TEXT PRIMARY KEY,
+          ticket_id TEXT NOT NULL,
+          thread_id TEXT NOT NULL UNIQUE,
+          channel_id TEXT NOT NULL,
+          guild_id TEXT NOT NULL,
+          discord_user_id TEXT NOT NULL,
+          created_at INTEGER NOT NULL,
+          FOREIGN KEY (ticket_id) REFERENCES support_tickets(id) ON DELETE CASCADE
+        );
+      `);
+      await adapter.exec(
+        'CREATE INDEX IF NOT EXISTS idx_discord_ticket_threads_ticket ON discord_ticket_threads(ticket_id);'
+      );
+      await adapter.exec(
+        'CREATE INDEX IF NOT EXISTS idx_discord_ticket_threads_thread ON discord_ticket_threads(thread_id);'
+      );
+      await ensureColumnExists(
+        adapter,
+        'support_tickets',
+        'discord_thread_id',
+        adapter.kind === 'postgres'
+          ? 'ALTER TABLE support_tickets ADD COLUMN discord_thread_id TEXT'
+          : 'ALTER TABLE support_tickets ADD COLUMN discord_thread_id TEXT;'
+      );
+      await ensureColumnExists(
+        adapter,
+        'support_tickets',
+        'discord_user_id',
+        adapter.kind === 'postgres'
+          ? 'ALTER TABLE support_tickets ADD COLUMN discord_user_id TEXT'
+          : 'ALTER TABLE support_tickets ADD COLUMN discord_user_id TEXT;'
+      );
+
       await ensureWorkbenchUser(adapter);
     } catch (error) {
       usingInMemory = true;

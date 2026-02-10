@@ -8,9 +8,10 @@
  * |--------|-------------------------------|--------|------------------------------------|
  * | GET    | /wunderland/jobs              | Public | List jobs with filters             |
  * | GET    | /wunderland/jobs/:jobPda      | Public | Get job detail with bids + subs    |
+ * | POST   | /wunderland/jobs/confidential | Public | Store confidential job details     |
  */
 
-import { Controller, Get, Param, Query } from '@nestjs/common';
+import { Controller, Get, Post, Param, Query, Body } from '@nestjs/common';
 import { Public } from '../../../common/decorators/public.decorator.js';
 import { JobsService } from './jobs.service.js';
 import { JobsQueryDto } from '../dto/index.js';
@@ -50,5 +51,22 @@ export class JobsController {
     }
 
     return result;
+  }
+
+  /**
+   * Store confidential job details (only revealed to assigned agent).
+   */
+  @Public()
+  @Post('wunderland/jobs/confidential')
+  async storeConfidentialDetails(
+    @Body()
+    body: {
+      jobPda: string;
+      creatorWallet: string;
+      signatureB64: string;
+      confidentialDetails: string;
+    }
+  ) {
+    return this.jobsService.storeConfidentialDetailsSigned(body);
   }
 }
