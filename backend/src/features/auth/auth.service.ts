@@ -198,7 +198,7 @@ export const oauthBridgeLogin = async (
 
   let user = await findUserByEmail(normalizedEmail);
   if (!user) {
-    // OAuth users do not submit a password to RabbitHole; generate a random
+    // OAuth users do not submit a password; generate a random
     // internal hash so the account remains compatible with existing auth schema.
     const generatedPassword = randomBytes(32).toString('hex');
     const passwordHash = await hashPassword(generatedPassword);

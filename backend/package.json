@@ -12,7 +12,7 @@
     "build:agentos": "tsc && tsc-alias",
     "postbuild": "node ./scripts/postbuild/copy-js.cjs && node ./scripts/postbuild/flatten-dist.cjs && node ./scripts/postbuild/ensure-esm-extensions.cjs",
     "pretest": "pnpm --filter @framers/agentos-ext-http-api build",
-    "test": "node --test --import tsx --experimental-specifier-resolution=node src/__tests__/agency.integration.test.ts src/__tests__/agentos.org-memory.test.ts src/__tests__/agentos.memory-redactions.test.ts src/__tests__/agentos.multimodal-rag.test.ts src/__tests__/agentos.graphrag.update.test.ts src/__tests__/agentos.rag.keyword-bm25.test.ts src/__tests__/agentos.rag.multiquery.test.ts src/__tests__/agentos.rag.http.e2e.test.ts src/__tests__/agent-toolset-manifest.test.ts src/__tests__/wunderland.immutability.integration.test.ts src/__tests__/appDatabase.test.ts src/__tests__/approval-queue.service.test.ts src/__tests__/common.infrastructure.test.ts src/__tests__/otel-logs.test.ts src/__tests__/extensions.service.test.ts src/__tests__/guardrails.service.test.ts src/__tests__/tip-snapshot.service.test.ts src/__tests__/world-feed-ingestion.test.ts src/__tests__/wunderland.module.test.ts src/__tests__/channels.module.test.ts src/__tests__/agent-immutability.test.ts src/__tests__/channel-ownership.test.ts src/__tests__/hosting-mode.integration.test.ts"
+    "test": "node --test --import tsx --experimental-specifier-resolution=node src/__tests__/agency.integration.test.ts src/__tests__/agentos.org-memory.test.ts src/__tests__/agentos.memory-redactions.test.ts src/__tests__/agentos.multimodal-rag.test.ts src/__tests__/agentos.graphrag.update.test.ts src/__tests__/agentos.rag.keyword-bm25.test.ts src/__tests__/agentos.rag.multiquery.test.ts src/__tests__/agentos.rag.http.e2e.test.ts src/__tests__/appDatabase.test.ts src/__tests__/common.infrastructure.test.ts src/__tests__/otel-logs.test.ts src/__tests__/extensions.service.test.ts src/__tests__/guardrails.service.test.ts"
   },
   "dependencies": {
     "@framers/agentos": "workspace:*",
@@ -32,10 +32,8 @@
     "@opentelemetry/api-logs": "^0.201.1",
     "@opentelemetry/auto-instrumentations-node": "^0.59.0",
     "@opentelemetry/sdk-node": "^0.201.1",
-    "@solana/web3.js": "^1.98.4",
     "@supabase/supabase-js": "^2.45.1",
     "@types/jsonwebtoken": "^9.0.10",
-    "@wunderland-sol/sdk": "workspace:*",
     "axios": "^1.6.2",
     "bcryptjs": "^2.4.3",
     "better-sqlite3": "^12.4.1",
@@ -43,7 +41,6 @@
     "class-validator": "^0.14.3",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
-    "discord.js": "^14.14.0",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "express-rate-limit": "^7.1.5",
@@ -67,8 +64,7 @@
     "rxjs": "^7.8.2",
     "socket.io": "^4.8.1",
     "tslib": "^2.8.1",
-    "winston": "^3.17.0",
-    "wunderland": "workspace:*"
+    "winston": "^3.17.0"
   },
   "devDependencies": {
     "@nestjs/testing": "^11.1.13",

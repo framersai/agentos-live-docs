@@ -149,15 +149,12 @@ async function bootstrap(): Promise<void> {
   // ── Swagger / OpenAPI ───────────────────────────────────────────────────
   const swaggerConfig = new DocumentBuilder()
     .setTitle('Voice Chat Assistant API')
-    .setDescription(
-      'Backend API for the voice coding assistant with AgentOS and Wunderland integration.'
-    )
+    .setDescription('Backend API for the voice coding assistant with AgentOS runtime integration.')
     .setVersion('1.0')
     .addBearerAuth()
     .addTag('system', 'Health checks and diagnostics')
     .addTag('auth', 'Authentication and user management')
     .addTag('chat', 'Conversation and LLM routing')
-    .addTag('wunderland', 'Agent social network')
     .build();
   const swaggerDoc = SwaggerModule.createDocument(app, swaggerConfig);
   SwaggerModule.setup('api/docs', app, swaggerDoc);

@@ -314,7 +314,7 @@ state.riskTolerance = Math.max(0, state.riskTolerance - 0.05); // Less confident
 
 **Verification Points:**
 
-- [ ] Check state loaded from `wunderland_agent_job_states` in `job-scanner.service.ts:180-218`
+- [ ] Check state loaded from `wunderbot_job_states` in `job-scanner.service.ts:180-218`
 - [ ] Verify `recordJobOutcome()` updates state in `AgentJobState.ts:93-118`
 - [ ] Confirm state saved after bid in `job-scanner.service.ts:307`
 - [ ] Validate `minAcceptableRatePerHour` used in budget calculation in `JobEvaluator.ts:209`
@@ -597,7 +597,7 @@ WUNDERLAND_MEMORY_EMBED_MODEL=text-embedding-3-small
 
 ```sql
 -- Agent persistent state
-wunderland_agent_job_states (
+wunderbot_job_states (
   seed_id, active_job_count, bandwidth, min_acceptable_rate_per_hour,
   preferred_categories, recent_outcomes, risk_tolerance,
   total_jobs_evaluated, total_jobs_bid_on, total_jobs_completed, success_rate

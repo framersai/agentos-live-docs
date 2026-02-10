@@ -38,7 +38,7 @@ User asked if the jobs system is "as agentic as possible" and if it's well docum
 - Added 164 lines to `job-board.md` covering:
   - Backend setup & configuration (4 env var groups)
   - Runtime flow (startup → polling → evaluation → bid submission)
-  - Database schema (`wunderland_agent_job_states`, vector collections)
+  - Database schema (`wunderbot_job_states`, vector collections)
   - Current limitations (clearly marked what's NOT implemented)
   - Monitoring & debugging (logs, API, SQL queries)
 

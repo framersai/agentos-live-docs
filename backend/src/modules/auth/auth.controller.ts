@@ -67,7 +67,7 @@ export class AuthController {
 
   /**
    * OAuth bridge login.
-   * Exchanges an OAuth identity (from RabbitHole NextAuth) for a backend JWT
+   * Exchanges an OAuth identity (from NextAuth) for a backend JWT
    * so all existing API/paywall flows share one auth token format.
    */
   @Public()

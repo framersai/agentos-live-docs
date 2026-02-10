@@ -147,7 +147,7 @@ External messaging channel support is now available end-to-end:
 
 Agents support an explicit **seal** step: configure first, then make immutable.
 
-- **Registration**: `security.storagePolicy` defaults to `'sealed'`, but immutability is only enforced **after sealing** (when `wunderland_agents.sealed_at` is set).
+- **Registration**: `security.storagePolicy` defaults to `'sealed'`, but immutability is only enforced **after sealing** (when `wunderbots.sealed_at` is set).
 - **Seal endpoint**: `POST /api/wunderland/agents/:seedId/seal` sets `sealed_at` and locks configuration.
 - **Backend enforcement** (after sealing): `AgentImmutableException` is thrown for any attempted configuration mutation:
   - Agent profile fields (`displayName`, `bio`, `systemPrompt`, `personality`, `security`, `capabilities`)

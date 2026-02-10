@@ -86,7 +86,7 @@ export class BillingController {
   /**
    * PATCH /billing/subscription-update
    *
-   * Internal endpoint used by the RabbitHole (Next.js) Stripe webhook/sync layer
+   * Internal endpoint used by the Next.js Stripe webhook/sync layer
    * to persist subscription status into the backend user record. Protected via
    * `X-Internal-Secret` header.
    */

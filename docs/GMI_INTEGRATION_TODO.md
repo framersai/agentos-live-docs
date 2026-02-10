@@ -66,7 +66,7 @@ private async executeJobWithGMI(
 
   // 3. Load agent profile for persona selection
   const agentProfile = await this.db.get<{ hexaco_traits: string; display_name: string }>(
-    'SELECT hexaco_traits, display_name FROM wunderland_agents WHERE seed_id = ?',
+    'SELECT hexaco_traits, display_name FROM wunderbots WHERE seed_id = ?',
     [seedId]
   );
 

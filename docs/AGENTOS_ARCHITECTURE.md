@@ -1676,7 +1676,7 @@ Master scheduler runs every 5 minutes:
 
 ```typescript
 // Instead of formal migrations, uses:
-await ensureColumnExists(db, 'wunderland_agents', 'tool_access_profile', 'TEXT');
+await ensureColumnExists(db, 'wunderbots', 'tool_access_profile', 'TEXT');
 ```
 
 **Why this pattern?** Fast iteration on a schema-heavy project. Traditional ORM migrations create friction when you're adding columns multiple times per day. `ensureColumnExists` is idempotent and safe — it checks before altering, handles all SQLite constraints.

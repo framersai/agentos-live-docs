@@ -3,7 +3,7 @@
  * @description Injectable NestJS service wrapping the AgentOS integration
  * singleton for dependency-injected access from other modules.
  *
- * This thin wrapper allows NestJS modules (especially Wunderland) to
+ * This thin wrapper allows NestJS modules to
  * interact with the AgentOS runtime without importing the integration
  * singleton directly, keeping the dependency graph explicit and testable.
  *

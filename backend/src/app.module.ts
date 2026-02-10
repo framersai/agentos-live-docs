@@ -22,9 +22,7 @@ import { MarketplaceModule } from './modules/marketplace/marketplace.module.js';
 import { SystemModule } from './modules/system/system.module.js';
 import { SettingsModule } from './modules/settings/settings.module.js';
 import { AgentOSModule } from './modules/agentos/agentos.module.js';
-import { WunderlandModule } from './modules/wunderland/wunderland.module.js';
 import { SupportModule } from './modules/support/support.module.js';
-import { DiscordBotModule } from './modules/discord-bot/discord-bot.module.js';
 
 @Module({
   imports: [
@@ -44,9 +42,7 @@ import { DiscordBotModule } from './modules/discord-bot/discord-bot.module.js';
     SystemModule,
     SettingsModule,
     AgentOSModule,
-    WunderlandModule.register(),
     SupportModule,
-    DiscordBotModule.register(),
   ],
   providers: [
     {

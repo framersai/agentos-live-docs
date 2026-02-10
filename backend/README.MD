@@ -58,11 +58,8 @@ npm run dev             # tsx watch server.ts
    - Speech defaults (`WHISPER_MODEL_DEFAULT`, `OPENAI_TTS_DEFAULT_MODEL`, etc.)
    - Optional Supabase (`SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`) and Stripe/Lemon Squeezy values
    - AgentOS flags (`AGENTOS_ENABLED`, `AGENTOS_DEFAULT_PERSONA_ID`, etc.)
-   - Wunderland (optional): `WUNDERLAND_ENABLED`, plus IPFS config for raw-block pinning (`WUNDERLAND_IPFS_API_URL`, `WUNDERLAND_IPFS_GATEWAY_URL`)
 2. For frontend-specific values, see `frontend/.env*` and the frontend README.
 3. Full variable explanations live in [CONFIGURATION.md](../CONFIGURATION.md).
-
-Wunderland IPFS ops guide: see `docs/WUNDERLAND_IPFS_NODE_SETUP.md`.
 
 ## Observability (OTEL)
 
@@ -71,25 +68,6 @@ Wunderland IPFS ops guide: see `docs/WUNDERLAND_IPFS_NODE_SETUP.md`.
 - AgentOS manual spans + correlation is opt-in via `AGENTOS_OBSERVABILITY_ENABLED=true` (or `AgentOSConfig.observability`).
 
 See `docs/OBSERVABILITY.md` for the full setup and env/config examples.
-
-### Wunderland Memory (Vector RAG)
-
-When Wunderland is enabled, agents can call the `memory_read` tool. The backend ingests
-approved Wunderland posts into a per-seed vector memory store (TypeScript-only), then
-retrieves context with configurable presets:
-
-- `WUNDERLAND_MEMORY_PRESET=fast|balanced|accurate` (default: `balanced`)
-- `WUNDERLAND_MEMORY_VECTOR_DB_PATH=/path/to/file.db` (default: `backend/db_data/wunderland_memory_vectors.db`; set to empty string for in-memory)
-- `WUNDERLAND_MEMORY_VECTOR_PROVIDER=sql|qdrant` (default: `sql`)
-- `WUNDERLAND_MEMORY_QDRANT_URL` (or `QDRANT_URL`) when using Qdrant
-- `WUNDERLAND_MEMORY_QDRANT_API_KEY` (or `QDRANT_API_KEY`) optional
-- `WUNDERLAND_MEMORY_EMBED_PROVIDER=ollama|openai|openrouter` + `WUNDERLAND_MEMORY_EMBED_MODEL=...` (optional overrides)
-- `WUNDERLAND_MEMORY_HYBRID_ALPHA=0.0..1.0` (hybrid fusion weight; default: `0.7`)
-- `COHERE_API_KEY` enables Cohere reranking for the `accurate` preset (optional)
-- Ollama embeddings (optional): set `OLLAMA_ENABLED=true` + `OLLAMA_BASE_URL`/`OLLAMA_HOST`, or set `WUNDERLAND_MEMORY_EMBED_PROVIDER=ollama`
-- `WUNDERLAND_MEMORY_OLLAMA_REQUEST_TIMEOUT_MS` (or `OLLAMA_REQUEST_TIMEOUT_MS`) controls Ollama connect timeout (default: `5000`)
-
----
 
 ### AgentOS RAG (Vector + Hybrid + Optional Rerank)
 
@@ -250,10 +228,7 @@ When `AGENTOS_HITL_WEBHOOK_SECRET` is set, outbound webhooks include:
 
 ### Running Qdrant Locally (Optional)
 
-If you configure either:
-
-- `AGENTOS_RAG_VECTOR_PROVIDER=qdrant`, or
-- `WUNDERLAND_MEMORY_VECTOR_PROVIDER=qdrant`
+If you configure `AGENTOS_RAG_VECTOR_PROVIDER=qdrant`
 
 you’ll need a Qdrant instance (self-hosted or managed). For local dev, this repo includes a Docker Compose file:
 
