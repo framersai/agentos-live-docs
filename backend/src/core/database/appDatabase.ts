@@ -445,6 +445,85 @@ const runInitialSchema = async (db: StorageAdapter): Promise<void> => {
   );
 
   console.log('[AppDatabase] Support ticket tables initialized.');
+
+  // ── Agent Metrics & Task Management ────────────────────────────────────────
+
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS agent_llm_usage (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      seed_id TEXT NOT NULL,
+      model TEXT NOT NULL,
+      provider TEXT NOT NULL,
+      input_tokens INTEGER NOT NULL,
+      output_tokens INTEGER NOT NULL,
+      latency_ms INTEGER NOT NULL,
+      estimated_cost_usd REAL,
+      request_type TEXT,
+      created_at TEXT NOT NULL DEFAULT (datetime('now'))
+    );
+  `);
+  await db.exec('CREATE INDEX IF NOT EXISTS idx_llm_usage_seed ON agent_llm_usage(seed_id, created_at);');
+
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS agent_tool_executions (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      seed_id TEXT NOT NULL,
+      tool_id TEXT NOT NULL,
+      tool_name TEXT NOT NULL,
+      status TEXT NOT NULL,
+      duration_ms INTEGER NOT NULL,
+      error_message TEXT,
+      input_summary TEXT,
+      output_summary TEXT,
+      created_at TEXT NOT NULL DEFAULT (datetime('now'))
+    );
+  `);
+  await db.exec('CREATE INDEX IF NOT EXISTS idx_tool_exec_seed ON agent_tool_executions(seed_id, created_at);');
+
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS agent_channel_activity (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      seed_id TEXT NOT NULL,
+      platform TEXT NOT NULL,
+      channel_id TEXT,
+      event_type TEXT NOT NULL,
+      response_time_ms INTEGER,
+      created_at TEXT NOT NULL DEFAULT (datetime('now'))
+    );
+  `);
+  await db.exec('CREATE INDEX IF NOT EXISTS idx_channel_activity_seed ON agent_channel_activity(seed_id, created_at);');
+
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS agent_behavior_events (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      seed_id TEXT NOT NULL,
+      event_type TEXT NOT NULL,
+      event_data TEXT NOT NULL,
+      created_at TEXT NOT NULL DEFAULT (datetime('now'))
+    );
+  `);
+  await db.exec('CREATE INDEX IF NOT EXISTS idx_behavior_seed ON agent_behavior_events(seed_id, created_at);');
+
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS agent_runtime_tasks (
+      id TEXT PRIMARY KEY,
+      seed_id TEXT NOT NULL,
+      task_type TEXT NOT NULL,
+      status TEXT NOT NULL DEFAULT 'queued',
+      title TEXT NOT NULL,
+      description TEXT,
+      progress INTEGER DEFAULT 0,
+      result_summary TEXT,
+      error_message TEXT,
+      started_at TEXT,
+      completed_at TEXT,
+      created_at TEXT NOT NULL DEFAULT (datetime('now'))
+    );
+  `);
+  await db.exec('CREATE INDEX IF NOT EXISTS idx_tasks_seed ON agent_runtime_tasks(seed_id, status);');
+  await db.exec('CREATE INDEX IF NOT EXISTS idx_tasks_status ON agent_runtime_tasks(status, created_at);');
+
+  console.log('[AppDatabase] Agent metrics & task tables initialized.');
 };
 
 const ensureColumnExists = async (
