@@ -6,7 +6,7 @@ After=network.target
 Type=simple
 User=root
 WorkingDirectory=/app/rabbithole
-ExecStart=/usr/bin/node apps/rabbithole/.next/standalone/apps/rabbithole/server.js
+ExecStart=/usr/bin/node apps/rabbithole/.next/standalone/apps/rabbithole/start.js
 Restart=on-failure
 RestartSec=5
 Environment=NODE_ENV=production

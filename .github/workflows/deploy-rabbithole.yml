@@ -98,8 +98,43 @@ jobs:
             echo "[deploy] Building rabbithole frontend..."
             pnpm --filter rabbithole exec next build --webpack
 
-            # ── 5. Link static assets into standalone output ──
+            # ── 5. Compile bot bootstrap (instrumentation.ts bots aren't traced by webpack) ──
             STANDALONE_APP="$REPO_DIR/apps/rabbithole/.next/standalone/apps/rabbithole"
+            echo "[deploy] Compiling bot bootstrap with esbuild..."
+            node_modules/.bin/esbuild apps/rabbithole/src/bots/index.ts \
+              --bundle --platform=node --format=cjs \
+              --outfile="$STANDALONE_APP/boot-bots.js" \
+              --external:discord.js --external:"@discordjs/*" \
+              --external:telegraf --external:openai \
+              --external:zlib-sync --external:bufferutil --external:utf-8-validate
+
+            # Generate start.js wrapper that loads bots + Next.js server
+            cat > "$STANDALONE_APP/start.js" << 'STARTJS'
+            const path = require("path");
+            process.env.NEXT_RUNTIME = "nodejs";
+
+            async function main() {
+              // Start bots if enabled (compiled from src/bots/ by esbuild)
+              try {
+                const bots = require("./boot-bots.js");
+                if (process.env.DISCORD_BOT_ENABLED === "true") {
+                  await bots.startDiscordBot();
+                }
+                if (process.env.TELEGRAM_BOT_ENABLED === "true") {
+                  await bots.startTelegramBot();
+                }
+                console.log("[start.js] Bot bootstrap completed");
+              } catch (e) {
+                console.error("[start.js] Bot bootstrap error:", e.message);
+              }
+
+              // Start Next.js standalone server
+              require("./server.js");
+            }
+            main();
+            STARTJS
+
+            # ── 5b. Link static assets into standalone output ──
             ln -sfn "$REPO_DIR/apps/rabbithole/.next/static" "$STANDALONE_APP/.next/static"
             ln -sfn "$REPO_DIR/apps/rabbithole/public" "$STANDALONE_APP/public"
 
