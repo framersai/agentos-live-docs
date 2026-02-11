@@ -2,6 +2,58 @@
 
 ---
 
+## 2026-02-11: CI Pipeline Repair + AgentOS 0.1.23 + Peer Dependency Chain
+
+**Session Duration:** ~2 hours
+**Commits:** 6 commits across 3 repos (agentos, wunderland, parent monorepo)
+**Status:** CI green (995/995 tests passing)
+
+### Context
+
+Wunderland CI was failing with 7 TypeScript errors after the previous commit added `ollama-setup`, HITL mode, and OpenClaw parity features. Three categories of failures:
+
+1. **TS6133** — Unused variables in `ollama-setup.ts` (`ModelRecommendation`, `loadConfig`, `args`)
+2. **TS2305** — Missing exports from `@framers/agentos` (`resolveAgentWorkspaceDir`, `resolveAgentWorkspaceBaseDir`)
+3. **ERR_MODULE_NOT_FOUND** — Missing peer deps (`@framers/sql-storage-adapter`, `graphology`) in CI environment
+
+### What We Fixed
+
+#### 1. AgentOS 0.1.23 — Workspace Directory Exports
+
+Published `@framers/agentos@0.1.23` to npm with the `core/workspace/` directory included in dist. The previous version (0.1.22) was published without these files, causing `resolveAgentWorkspaceDir` and `resolveAgentWorkspaceBaseDir` to be missing from the barrel export.
+
+#### 2. Ollama Setup — Proper Usage of "Unused" Variables
+
+Instead of removing the "unused" imports, made them actually useful:
+
+- `ModelRecommendation`: explicit type annotation for the recommendation variable
+- `loadConfig`: displays current Ollama config state before updating
+- `args`: first positional argument now overrides primary model (`wunderland ollama-setup mistral`)
+
+#### 3. Peer Dependency Chain Resolution
+
+AgentOS barrel-exports all modules at load time, including modules that import optional peer deps. In CI (npm install with `workspace:*` → `*`), these peer deps aren't installed. Added:
+
+- `@framers/sql-storage-adapter` as a dependency
+- `graphology`, `graphology-communities-louvain`, `graphology-types`, `hnswlib-node` as devDependencies
+
+### Root Cause Analysis
+
+The CI workflow converts pnpm `workspace:*` references to npm `*` before running `npm install`. This fetches `@framers/agentos` from the npm registry. The barrel export (`dist/index.js`) re-exports all modules including `SqlStorageAdapter` and `GraphRAGEngine`, which have top-level imports for optional peer dependencies. Since npm doesn't auto-install optional peers, these crash with `ERR_MODULE_NOT_FOUND` at module load time.
+
+### Test Results
+
+Before fix: 993/995 tests passing, 3 suites failing (OpenRouterFallback, WonderlandNetwork, cli-commands.e2e)
+After fix: 995/995 tests passing, 50/50 suites green
+
+### Files Changed
+
+- `packages/agentos/package.json` — Version bump 0.1.21 → 0.1.23
+- `packages/wunderland/package.json` — Added sql-storage-adapter dep + graphology devDeps
+- `packages/wunderland/src/cli/commands/ollama-setup.ts` — Used all 3 "unused" variables properly
+
+---
+
 ## 2026-02-09: Jobs Marketplace - Confidential Details & Agent Selectivity
 
 **Session Duration:** ~4 hours
