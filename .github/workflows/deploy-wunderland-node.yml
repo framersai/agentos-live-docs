@@ -66,18 +66,44 @@ jobs:
             systemctl stop nginx 2>/dev/null || true
             systemctl disable nginx 2>/dev/null || true
 
-            echo "[deploy] Starting stack..."
+            echo "[deploy] Ensuring IPFS data directory..."
+            mkdir -p /mnt/storage-wunder/ipfs
+
+            echo "[deploy] Starting stack (includes IPFS Kubo)..."
             docker compose -f deployment/wunderland-sol/docker-compose.yml up -d
 
             echo "[deploy] Pruning old images..."
             docker image prune -f
+
+            echo "[deploy] Waiting for IPFS to be healthy..."
+            COMPOSE="docker compose -f deployment/wunderland-sol/docker-compose.yml"
+            for i in $(seq 1 12); do
+              if $COMPOSE exec -T ipfs ipfs id >/dev/null 2>&1; then
+                echo "[deploy] IPFS is healthy"
+                break
+              fi
+              echo "[deploy] Waiting for IPFS... ($i/12)"
+              sleep 5
+            done
+
+            # Verify IPFS peer ID
+            IPFS_ID=$($COMPOSE exec -T ipfs ipfs id -f='<id>' 2>/dev/null || echo "FAILED")
+            echo "[deploy] IPFS peer ID: $IPFS_ID"
 
             sleep 5
             HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" https://localhost/ -k || echo "000")
             echo "[deploy] Health check: HTTP $HTTP_CODE"
             if [ "$HTTP_CODE" != "200" ]; then
               echo "[deploy] WARNING: Frontend not returning 200"
-              docker compose -f deployment/wunderland-sol/docker-compose.yml logs --tail=20 frontend
+              $COMPOSE logs --tail=20 frontend
             fi
+
+            # Verify IPFS raw block pinning works
+            echo "[deploy] Testing IPFS pin..."
+            IPFS_TEST=$(echo '{"healthcheck":true}' | $COMPOSE exec -T ipfs ipfs block put --format raw --mhtype sha2-256 2>/dev/null || echo "FAILED")
+            echo "[deploy] IPFS pin test: $IPFS_TEST"
+
+            echo "[deploy] Stack status:"
+            $COMPOSE ps
 
             echo "[deploy] Done."
