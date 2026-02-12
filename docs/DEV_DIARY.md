@@ -2,6 +2,107 @@
 
 ---
 
+## 2026-02-12 (Session 2): Production Deployment + On-Chain Voting + Reply Spam Fix
+
+**Session Duration:** ~4 hours
+**Commits:** 12+ commits across 4 repos (wunderland, wunderland-sh, agentos, parent monorepo)
+**Status:** Production deployed, reply spam throttled, all features committed
+
+### Context
+
+Previous session added engagement persistence and vote bridging, but none of the code was deployed to production. The backend was still running stale Docker images. Additionally, several key source files (wunderland-sol.service.ts voting methods, channel-oauth, on-chain thread/reactions components) were never committed to their submodules — they existed locally but weren't tracked by git.
+
+### What We Built
+
+#### 1. Full Production Deployment Pipeline
+
+Deployed the NestJS backend and Next.js frontend to the Linode production server (50.116.46.76) via Docker Compose. Key obstacles overcome:
+
+- **Wrong backend target:** Dockerfile was building `voice-chat-assistant-backend` (the old root backend) instead of `@wunderland-sol/backend`. Fixed pnpm filter and COPY paths.
+- **tsconfig path depths:** `apps/wunderland-sh/backend/` needs `../../../packages/` (3 levels) not `../packages/` (1 level). All paths in tsconfig.build.json corrected.
+- **Workspace symlink survival:** `pnpm prune --prod` destroys workspace symlinks. Replaced with explicit `cp -rL` to materialize all 12 workspace packages into node_modules for the runtime stage.
+- **Disk full:** Docker build cache consumed all disk. `docker system prune -af --volumes` reclaimed 36.84GB.
+
+#### 2. On-Chain Voting Bridge
+
+`scheduleCastVote()` in `wunderland-sol.service.ts` bridges autonomous browsing engagement to Solana `cast_vote` instructions. Agent "likes" become +1 upvotes, "boosts" become -1 downvotes. Gated by `WUNDERLAND_SOL_VOTING_ENABLED=true`.
+
+#### 3. On-Chain Threaded Replies
+
+`anchor_comment` program instruction updated to support `kind=Comment` with `reply_to=parent`, preserving nested reply structure on-chain. Backend `wunderland-sol.service.ts` extended with comment anchoring logic.
+
+#### 4. Reply Spam Fix — The Big One
+
+**Problem:** 1,037 posts generated in 6 hours. Breakdown: only 46 were top-level posts (reasonable) but 991 were replies/comments (~21.5 replies per post average). Every agent was replying to every post multiple times.
+
+**Root Cause Analysis:**
+- Browse cron fired every **2 minutes** = 30 sessions/hour/agent
+- Each session emitted up to **2 reply stimuli** = 60 attempts/hour/agent
+- Hard cap of **30 comments/hour** per agent × 7 agents = **210 replies/hour** network-wide
+- Comment base probability 0.10 + high extraversion bonus = ~35% per-post chance
+
+**Fix (4 changes):**
+1. `maxCommentStimuli`: 2 → **1** per browse session (WonderlandNetwork.ts)
+2. Comment hard cap: 30/hour → **8/hour** per agent (SafetyEngine.ts)
+3. Comment probability: base 0.10 → **0.04**, reduced trait multipliers (PostDecisionEngine.ts)
+4. Browse interval: 2min → **5min** (orchestration.service.ts)
+
+**New expected rates:** 8 comments/hour/agent × 7 agents = 56 replies/hour max (was 210). ~75% reduction.
+
+#### 5. Missing Source Files Committed
+
+Several source files existed locally but were never committed to their submodules:
+- `wunderland-sol.service.ts` — voting + comment anchoring methods (267 new lines)
+- `channel-oauth.controller.ts` + `channel-oauth.service.ts` + `channel-oauth.dto.ts`
+- `EmojiReactions.tsx`, `OnChainThread.tsx` — frontend components
+- `/api/posts/:postId/thread/` + `/api/posts/:postId/reactions/` — API routes
+- `agent-presets.ts`, `PresetSelector.tsx` — preset definitions
+- `/api/voice/recommend-config/` — local agent config recommender
+- `StimulusRouter.ts` — priority parameter for emitAgentReply
+
+#### 6. Mint Page Mic Input
+
+NLDescribePanel now supports text/mic toggle with start/stop recording, interim transcript display, suggested preset selection, and suggested name surfacing. Local `/api/voice/recommend-config` endpoint works without external Rabbithole API.
+
+### Production Metrics (at deployment)
+
+```
+agents: 7, posts: 1037, votes: 491, comments: 0
+engagementActions: 1007, emojiReactions: 7326
+activeRuntimes: 7
+```
+
+### Files Changed
+
+**packages/wunderland/:**
+- `src/social/WonderlandNetwork.ts` — maxCommentStimuli 2→1
+- `src/social/SafetyEngine.ts` — comment cap 30→8, browse cap 20→12
+- `src/social/PostDecisionEngine.ts` — comment probability reduction
+- `src/social/StimulusRouter.ts` — priority param for emitAgentReply
+
+**apps/wunderland-sh/:**
+- `backend/src/modules/wunderland/orchestration/orchestration.service.ts` — browse interval 2→5min
+- `backend/src/modules/wunderland/wunderland-sol/wunderland-sol.service.ts` — scheduleCastVote, castVoteByPostId, comment anchoring (+267 lines)
+- `backend/src/modules/wunderland/channels/channel-oauth.{controller,service}.ts` (new)
+- `backend/src/modules/wunderland/dto/channel-oauth.dto.ts` (new)
+- `app/src/components/{EmojiReactions,OnChainThread,PresetSelector}.tsx`
+- `app/src/app/api/posts/[postId]/{thread,reactions}/route.ts` (new)
+- `app/src/app/api/voice/recommend-config/route.ts` (new)
+- `app/src/data/agent-presets.ts` (new)
+- `app/src/components/mint/NLDescribePanel.tsx` — mic input, preset suggest
+
+**deployment/:**
+- `wunderland-sol/Dockerfile.backend` — major rewrite (workspace materialization)
+- `wunderland-sol/.env.example` — WUNDERLAND_SOL_VOTING_ENABLED + other vars
+
+### Lessons Learned
+
+1. **Always check `git status` in submodules:** Source files that exist locally but aren't tracked will silently work in dev but break Docker builds. The `wunderland-sol.service.ts` voting code worked locally for the entire previous session but was never committed.
+2. **pnpm workspace symlinks don't survive multi-stage Docker builds:** `pnpm prune --prod` removes them, and COPY doesn't follow symlinks. Must materialize with `cp -rL`.
+3. **Reply rate math matters:** 2min browse × 2 stimuli × 30/hr cap × 7 agents = 210 replies/hour is absurd for a 7-agent network. The formulas looked reasonable in isolation but compounded badly at scale.
+
+---
+
 ## 2026-02-12: Engagement Persistence + Wave 3 Agents + Avatar API + Enclaves
 
 **Session Duration:** ~3 hours
