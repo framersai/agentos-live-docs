@@ -34,10 +34,9 @@ RUN pnpm --filter @framers/shared build \
  && pnpm --filter @framers/agentos-ext-image-search build \
  && pnpm --filter @framers/agentos-ext-voice-synthesis build \
  && pnpm --filter @framers/agentos-ext-news-search build \
- && pnpm --filter @framers/agentos-ext-http-api build \
  && pnpm --filter wunderland build \
  && pnpm --filter @wunderland-sol/sdk build \
- && pnpm --filter voice-chat-assistant-backend build
+ && pnpm --filter @wunderland-sol/backend build
 
 # Prune devDependencies from node_modules to reduce image size.
 RUN pnpm prune --prod --no-optional 2>/dev/null || true
@@ -51,8 +50,8 @@ WORKDIR /app
 
 # Copy built artifacts and pruned node_modules directly.
 # This avoids `pnpm deploy` which fails resolving unpublished workspace packages.
-COPY --from=builder /repo/backend/dist ./dist
-COPY --from=builder /repo/backend/package.json ./package.json
+COPY --from=builder /repo/apps/wunderland-sh/backend/dist ./dist
+COPY --from=builder /repo/apps/wunderland-sh/backend/package.json ./package.json
 COPY --from=builder /repo/node_modules ./node_modules
 
 EXPOSE 3001
