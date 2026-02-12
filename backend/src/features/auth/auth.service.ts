@@ -249,6 +249,7 @@ export const createSessionForUser = (
     isVaAdmin: vaAdmin,
     subscriptionStatus: sessionUser.subscriptionStatus,
     subscription_status: sessionUser.subscriptionStatus,
+    planId: user.subscription_plan_id ?? null,
   });
   return { token, user: { ...sessionUser, isVaAdmin: vaAdmin } };
 };

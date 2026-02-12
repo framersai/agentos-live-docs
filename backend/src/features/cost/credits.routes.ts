@@ -20,6 +20,9 @@ export async function GET(req: Request, res: Response): Promise<void> {
       isAuthenticated: Boolean(userContext?.authenticated),
       tier: userContext?.tier,
       mode: userContext?.mode,
+      wunderlandPlanId: userContext?.planId ?? null,
+      subscriptionStatus:
+        userContext?.subscriptionStatus ?? userContext?.subscription_status ?? undefined,
     };
 
     creditAllocationService.syncProfile(userId, creditContext);
@@ -31,6 +34,7 @@ export async function GET(req: Request, res: Response): Promise<void> {
     res.status(200).json({
       userId,
       allocationKey: snapshot.allocationKey,
+      planId: userContext?.planId ?? null,
       llm: snapshot.llm,
       speech: snapshot.speech,
       resetAt: endOfDay.toISOString(),

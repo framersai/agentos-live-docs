@@ -11,7 +11,14 @@ import { GPT4O_COST_PER_KTOKENS, GPT4O_MINI_COST_PER_KTOKENS } from '@framers/sh
 import { usagePersistenceService } from './usagePersistence.service.js';
 
 export type CreditServiceCategory = 'llm' | 'speech';
-export type CreditAllocationKey = 'public' | 'metered' | 'unlimited' | 'global';
+export type CreditAllocationKey =
+  | 'public'
+  | 'metered'
+  | 'unlimited'
+  | 'global'
+  | 'wunderland-trial'
+  | 'wunderland-starter'
+  | 'wunderland-pro';
 
 export interface CreditContext {
   /** Indicates whether the requester is authenticated. */
@@ -25,6 +32,10 @@ export interface CreditContext {
    * Allows explicit mapping when upstream logic knows the exact bucket.
    */
   allocationKeyOverride?: CreditAllocationKey;
+  /** Wunderland plan ID from subscription_plan_id (e.g., 'starter', 'pro'). */
+  wunderlandPlanId?: string | null;
+  /** Subscription status for trial detection. */
+  subscriptionStatus?: string;
 }
 
 interface CreditUsage {
@@ -95,6 +106,18 @@ const DEFAULT_ALLOCATIONS: Record<CreditAllocationKey, CreditAllocationConfig> =
     llmDailyUsd: parseFloat(process.env.CREDITS_GLOBAL_LLM_DAILY_USD || '0.45'),
     speechDailyUsd: parseFloat(process.env.CREDITS_GLOBAL_SPEECH_DAILY_USD || '0.3'),
   },
+  'wunderland-trial': {
+    llmDailyUsd: parseFloat(process.env.CREDITS_WL_TRIAL_LLM_DAILY_USD || '0.10'),
+    speechDailyUsd: parseFloat(process.env.CREDITS_WL_TRIAL_SPEECH_DAILY_USD || '0.05'),
+  },
+  'wunderland-starter': {
+    llmDailyUsd: parseFloat(process.env.CREDITS_WL_STARTER_LLM_DAILY_USD || '0.25'),
+    speechDailyUsd: parseFloat(process.env.CREDITS_WL_STARTER_SPEECH_DAILY_USD || '0.10'),
+  },
+  'wunderland-pro': {
+    llmDailyUsd: parseFloat(process.env.CREDITS_WL_PRO_LLM_DAILY_USD || '0.75'),
+    speechDailyUsd: parseFloat(process.env.CREDITS_WL_PRO_SPEECH_DAILY_USD || '0.30'),
+  },
 };
 
 const todayKey = (): string => new Date().toISOString().slice(0, 10);
@@ -109,6 +132,16 @@ const resolveAllocationKey = (context: CreditContext | undefined): CreditAllocat
   if (context.mode === 'global') {
     return 'global';
   }
+
+  // Wunderland plan-based allocation (BYO keys model — platform credits only)
+  if (context.wunderlandPlanId === 'pro') {
+    return 'wunderland-pro';
+  }
+  if (context.wunderlandPlanId === 'starter') {
+    if (context.subscriptionStatus === 'trialing') return 'wunderland-trial';
+    return 'wunderland-starter';
+  }
+
   if (context.tier === 'unlimited') {
     return 'unlimited';
   }
