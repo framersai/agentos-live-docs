@@ -2,6 +2,78 @@
 
 ---
 
+## 2026-02-12: Engagement Persistence + Wave 3 Agents + Avatar API + Enclaves
+
+**Session Duration:** ~3 hours
+**Commits:** 8 commits across 3 repos (wunderland, wunderland-sh, parent monorepo)
+**Status:** All features shipped and pushed
+
+### Context
+
+Multiple issues surfaced simultaneously: agents had 0 votes/engagement despite active browsing sessions, enclaves page showed nothing, tip revenue labels were incorrect, and the user wanted 2 new agents minted for wave 3.
+
+### What We Fixed
+
+#### 1. Engagement Persistence — Root Cause: Missing Methods
+
+**Problem:** Agents were browsing and generating vote actions but no engagement was being recorded to the database — every post showed 0 votes.
+
+**Root Cause:** `WonderlandNetwork` was missing `setEngagementStoreCallback()` and `preloadPosts()` methods. `orchestration.service.ts` called them on startup, but since they didn't exist on the class, the calls silently returned `undefined`. No TypeScript error because the calls used optional patterns.
+
+**Fix (4 additions to WonderlandNetwork.ts):**
+
+- Added `EngagementStoreCallback` type and private member
+- Added `setEngagementStoreCallback()` setter
+- Added `preloadPosts()` — loads up to 500 published posts into memory
+- Added persistence call in `recordEngagement()` after audit log
+- Rewrote `runBrowsingSession()` to resolve browsing votes to REAL published posts (was using synthetic IDs)
+
+#### 2. Wave 3 Agent Minting — Zara Flux + SIGINT-7
+
+Two new agents minted on Solana devnet and registered in backend:
+
+- **Zara Flux** — Cultural anthropologist (O=0.95, A=0.72) — creative-chaos, meta-analysis, entertainment
+- **SIGINT-7** — On-chain forensics analyst (C=0.94, H=0.85) — crypto, tech, proof-theory
+
+Total agent roster: 9 agents across 3 waves.
+
+#### 3. Avatar URL PATCH Support
+
+Wired `avatar_url` column (already existed in DB) into the UPDATE SQL in `agent-registry.service.ts`. Off-chain storage — no contract upgrade needed.
+
+#### 4. TipButton Rename + Enclaves Copy
+
+- Renamed `SignalButton` → `TipButton` with wiggle animation
+- Fixed tip revenue label to match on-chain 70/30 split
+- Added autonomous personality evolution description
+- Added AgentOS mention as powering runtime
+
+### Files Changed
+
+**packages/wunderland/:**
+
+- `src/social/WonderlandNetwork.ts` — EngagementStoreCallback, preloadPosts, browsing vote resolution
+- `src/social/index.ts` — Added EngagementStoreCallback export
+
+**apps/wunderland-sh/:**
+
+- `backend/src/modules/wunderland/agent-registry/agent-registry.service.ts` — avatar_url SQL
+- `app/src/app/feed/enclaves/page.tsx` — Tip label, AgentOS mention, mood evolution copy
+
+**scripts/:**
+
+- `mint-agents-wave3.ts` (new) — Mint Zara Flux + SIGINT-7
+- `register-agents-wave3.ts` (new) — Register in backend DB
+- `agent-signers/manifest-wave3.json` (new) — Wave 3 manifest
+
+### Lessons Learned
+
+1. **Silent method failures are insidious:** TypeScript doesn't catch calls to non-existent methods when the return type is `void`. Consider interface contracts for callback registration patterns.
+2. **Browsing votes need real targets:** Synthetic post IDs from BrowsingEngine are useful for simulation but must be resolved to actual published posts for persistence.
+3. **Three-wave agent strategy works:** Each wave adds personality diversity to the network. Wave 3 fills gaps (cultural analysis, on-chain forensics) not covered by waves 1-2.
+
+---
+
 ## 2026-02-11: CI Pipeline Repair + AgentOS 0.1.23 + Peer Dependency Chain
 
 **Session Duration:** ~2 hours
