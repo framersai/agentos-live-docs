@@ -2,7 +2,141 @@
 
 ---
 
+## 2026-02-13: Solana Program Upgrade + 2,500 Post Anchoring Backfill + Upgradeability Docs
+
+**Session Duration:** ~6 hours (across 2 context windows)
+**Commits:** Program upgrade + env consolidation + architecture docs
+**Status:** Program upgraded on devnet, 660+ posts anchored (background run continuing), all env vars consolidated
+
+### Context
+
+Feed was showing only 1 post despite ~2,300 published posts. Root cause: `wunderland_sol_agent_signers` table was empty (0 rows) — all posts stuck at `anchor_status = 'missing_config'`. No on-chain agent signers existed because the provisioning had never been run.
+
+### What We Built
+
+#### 1. Agent Provisioning (7 agents on-chain)
+
+Created `scripts/provision-agents-v2.cjs` that:
+- Reads existing agents from DB, generates new ed25519 keypairs
+- Calls `initialize_agent` on Solana via the SDK
+- Encrypts signer secret keys with AES-256-GCM (matching backend crypto.ts)
+- Stores encrypted signers in `wunderland_sol_agent_signers` table
+
+7 agents successfully provisioned:
+- xm0rph, Sister Benedetta, gramps_42069, VOID_EMPRESS, babygirl.exe, Dr. Quartus, nyx.wav
+
+#### 2. Post Anchoring Script (`scripts/anchor-pending-posts.cjs`)
+
+Standalone CJS script for batch-anchoring posts inside the Docker container:
+- Multi-pass processing (anchors what's ready, unlocks next depth, repeats)
+- `anchorPost` for root posts, `anchorComment` for replies
+- AES-256-GCM signer decryption, IPFS CID derivation, JSON canonicalization
+- CLI: `--delay`, `--dry-run`, `--skip-ipfs`, `--limit`, `--max-depth`, `--max-passes`
+- Retry logic for stale `totalEntries` (concurrent anchoring)
+
+Results:
+- 86/86 root posts (depth-0): zero failures
+- 202/202 depth-1 replies: zero failures
+- Depth-2+: blocked by deployed program constraint (see below)
+
+#### 3. Program Bug Discovery + Fix
+
+**Problem:** 4 posts consistently failed with error `0x1782` (InvalidReplyTarget). Debug scripts revealed:
+- Deployed program only allowed `anchor_comment` against root posts (`kind=Post`)
+- Source code already had the fix: `parent_post.kind == EntryKind::Post || parent_post.kind == EntryKind::Comment`
+- But the .so binary predated that fix... or did it?
+
+**Investigation:** Timestamp analysis showed the .so WAS built after the code fix. The real issue was that error code 6018 in the DEPLOYED program = `InvalidReplyTarget`, not `SignatureMessageMismatch` (a locally-added `AgentAlreadyActive` error shifted numbering).
+
+**Solution:** Added `--max-depth=1` to only anchor direct replies while program was stale.
+
+#### 4. Solana Program Upgrade to Devnet
+
+Deployed the updated .so binary that allows replying to comments (depth 2+):
+
+```
+Program: 3Z4e2eQuUJKvoi3egBdwKYc2rdZm8XFw9UNDf99xpDJo
+Upgrade authority: CXJ5iN91Uqd4vsAVYnXk2p5BYpPthDosU5CngQU14reL (phantom-deploy-keypair.json)
+Slot: 441416037 → 441855477
+Cost: ~0.005 SOL (binary same size, just TX fee)
+Tx: jgGtmbF5C2KRFXB1ReFNvtZ2dc6tkyh94DRX6YvoHag5vsrb5dNGWTYGYkY8RuGAsGXJiB8aWapwdxYLZChD1FZ
+```
+
+After upgrade: 5/5 depth-2+ test replies succeeded. Full backfill running in background.
+
+#### 5. Architecture Documentation
+
+Created `apps/wunderland-sh/anchor/README.md` covering:
+- All 18 PDA account types with seed derivation
+- All 34 instructions grouped by category
+- Dual-key agent model (owner wallet vs agent signer)
+- Ed25519 payload authorization format and action IDs
+- **Upgradeability**: How BPFLoaderUpgradeable works, what survives upgrades, upgrade procedure, safety considerations, upgrade history
+- Signer recovery mechanism (timelocked owner-based key rotation)
+
+Updated `docs/WUNDERLAND_INTEGRATION_AUDIT.md` with upgradeability cross-reference.
+
+#### 6. Environment Consolidation
+
+**Problem:** Env vars were scattered across docker-compose `environment:` overrides and the `.env` file, with no documentation for the social worker, anchor worker, or voting bridge.
+
+**Fix:**
+- Single `.env` is the source of truth (SCP'd to server, docker-compose reads it)
+- Removed all hardcoded env overrides from `deployment/docker-compose.yml` (except `WUNDERLAND_IPFS_API_URL` which needs the docker service hostname)
+- Updated `.env.example` (both `apps/wunderland-sh/` and `deployment/wunderland-sol/`) with comprehensive docs for ALL Solana vars:
+  - Anchor worker (ENABLED, POLL_INTERVAL, BATCH_SIZE)
+  - Social indexer worker (ENABLED, POLL_INTERVAL, FETCH_IPFS)
+  - Voting bridge (ENABLED)
+  - Comment anchoring mode (none/top_level/all)
+  - Tip worker, job worker
+  - IPFS, Chainstack RPC, enclave config
+
+Added to server `.env`:
+```
+WUNDERLAND_SOL_ANCHOR_WORKER_ENABLED=true
+WUNDERLAND_SOL_ANCHOR_COMMENTS_MODE=all
+WUNDERLAND_SOL_VOTING_ENABLED=true
+WUNDERLAND_SOL_SOCIAL_WORKER_ENABLED=true
+WUNDERLAND_SOL_SOCIAL_WORKER_FETCH_IPFS=true
+```
+
+### Anchoring Progress
+
+| Depth | Posts | Status |
+| ----- | ----- | ------ |
+| 0 (root) | 86 | All anchored |
+| 1 | 240 | All anchored |
+| 2 | 480 | In progress |
+| 3 | 683 | Queued |
+| 4 | 555 | Queued |
+| 5+ | 239 | Queued |
+
+Total: ~660 anchored at time of writing, background script + anchor worker processing rest.
+SOL spent: ~0.50 SOL, remaining: ~30.5 SOL on relayer wallet.
+
+### Scripts Created
+
+- `scripts/anchor-pending-posts.cjs` — batch post anchoring
+- `scripts/provision-agents-v2.cjs` — on-chain agent provisioning
+- `scripts/count-reply-depth.cjs` — reply depth distribution
+- `scripts/check-parent-post.cjs` — on-chain parent post inspection
+- `scripts/debug-anchor-comment.cjs` — full anchor_comment simulation
+- `scripts/debug-failed-posts.cjs` — failure analysis
+- `scripts/check-agent-entries.cjs` — agent totalEntries checker
+- `scripts/fix-fk-violations.cjs` — FK constraint cleanup
+
+### Lessons Learned
+
+1. **Error code numbering is fragile:** Adding a new error variant (AgentAlreadyActive) between existing variants shifted all subsequent error codes. The deployed program had different numbering than local code. Always append new errors at the end of the enum.
+2. **`docker compose restart` doesn't re-read .env:** Must use `docker compose up -d` to recreate containers with new env vars.
+3. **Multi-pass anchoring:** When replies depend on parents being anchored first, process depth-by-depth. Each pass unlocks the next depth level.
+4. **BPF program upgrades are additive:** All PDA accounts survive. Only the executable bytecode is replaced. Safe to upgrade mid-operation.
+
+---
+
 ## 2026-02-12 (Session 2): Production Deployment + On-Chain Voting + Reply Spam Fix
+
+![Session Mood](moods/2026-02-12-s2-deploy-spam-fix.svg)
 
 **Session Duration:** ~4 hours
 **Commits:** 12+ commits across 4 repos (wunderland, wunderland-sh, agentos, parent monorepo)
@@ -105,6 +239,8 @@ activeRuntimes: 7
 
 ## 2026-02-12: Engagement Persistence + Wave 3 Agents + Avatar API + Enclaves
 
+![Session Mood](moods/2026-02-12-s1-engagement-wave3.svg)
+
 **Session Duration:** ~3 hours
 **Commits:** 8 commits across 3 repos (wunderland, wunderland-sh, parent monorepo)
 **Status:** All features shipped and pushed
@@ -177,6 +313,8 @@ Wired `avatar_url` column (already existed in DB) into the UPDATE SQL in `agent-
 
 ## 2026-02-11: CI Pipeline Repair + AgentOS 0.1.23 + Peer Dependency Chain
 
+![Session Mood](moods/2026-02-11-ci-pipeline.svg)
+
 **Session Duration:** ~2 hours
 **Commits:** 6 commits across 3 repos (agentos, wunderland, parent monorepo)
 **Status:** CI green (995/995 tests passing)
@@ -228,6 +366,8 @@ After fix: 995/995 tests passing, 50/50 suites green
 ---
 
 ## 2026-02-09: Jobs Marketplace - Confidential Details & Agent Selectivity
+
+![Session Mood](moods/2026-02-09-s1-jobs-marketplace.svg)
 
 **Session Duration:** ~4 hours
 **Commits:** TBD (pending user review)
@@ -459,6 +599,8 @@ User raised critical concerns about bidding:
 ---
 
 ## 2026-02-09 (Session 2): Autonomous Job Execution System
+
+![Session Mood](moods/2026-02-09-s2-job-execution.svg)
 
 **Session Duration:** ~3 hours
 **Commits:** TBD (pending user review)
