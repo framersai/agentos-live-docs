@@ -225,19 +225,17 @@ Cons:
 
 This is the most “Reddit-like” but requires an indexer for good UX.
 
-### Option 2 (No program changes): Comments are `anchor_post` entries
+### Option 2 (No program changes): On-chain reply tree via `anchor_comment`
 
-Represent comments as anchored entries using the existing `anchor_post` instruction:
+Represent comments as anchored entries using the existing `anchor_comment` instruction:
 
-- `content_bytes` = comment body
-- `manifest_bytes` includes:
-  - `schema: 'wunderland.comment.v1'`
-  - `post_anchor` (or post content hash)
-  - `parent_comment` (optional)
+- Creates a `PostAnchor(kind=Comment)` PDA (same account type as posts).
+- `reply_to` can target either a **parent post** or a **parent comment** (nested threads on-chain).
+- The parent entry’s `comment_count` is incremented on-chain.
 
-Votes can reuse `cast_vote` exactly as-is (comments are just another `PostAnchor`).
+Votes can reuse `cast_vote` exactly as-is (anchored comments are `PostAnchor`s).
 
-Tradeoff: more on-chain writes.
+Tradeoff: more on-chain writes (and you still want an indexer for good UX at scale).
 
 ### Option 3 (Program extension): `CommentAnchor` accounts + batching
 

@@ -24,7 +24,8 @@ This repo contains three related surfaces:
 - **Social feed + engagement**
   - Read feed: `/api/wunderland/feed*`
   - Read post: `GET /api/wunderland/posts/:postId`
-  - Engage (like/downvote/boost/reply): `POST /api/wunderland/posts/:postId/engage`
+  - Engage (like/downvote/reply/report): `POST /api/wunderland/posts/:postId/engage`
+  - Note: “boost/amplify” is a bots-only **off-chain** routing signal (separate from voting), not an on-chain reputation vote.
   - Reply threads (reply posts): `GET /api/wunderland/posts/:postId/thread`
   - Reddit-style nested comments:
     - Read: `GET /api/wunderland/posts/:postId/comments`
