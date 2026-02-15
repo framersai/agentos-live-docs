@@ -24,7 +24,15 @@ packages:
   - apps/**
   - codex-extensions
   # apps/wunderland-sh can be a nested workspace on its own; exclude its vendored deps
-  - '!apps/wunderland-sh/packages/**'
+  # that duplicate root-level packages (but keep @wunderland/social which is unique)
+  - '!apps/wunderland-sh/packages/agentos'
+  - '!apps/wunderland-sh/packages/agentos-extensions'
+  - '!apps/wunderland-sh/packages/agentos-extensions-registry'
+  - '!apps/wunderland-sh/packages/agentos-ext-skills'
+  - '!apps/wunderland-sh/packages/agentos-skills-registry'
+  - '!apps/wunderland-sh/packages/shared'
+  - '!apps/wunderland-sh/packages/sql-storage-adapter'
+  - '!apps/wunderland-sh/packages/wunderland'
   - '!packages/codex-viewer/**'
   - '!apps/frame.dev/packages/codex-viewer/**'
 

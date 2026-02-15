@@ -46,6 +46,7 @@ RUN for pkg in \
       packages/agentos \
       packages/agentos-extensions-registry \
       packages/wunderland \
+      apps/wunderland-sh/packages/wunderland-social \
       packages/agentos-extensions/registry/curated/system/cli-executor \
       packages/agentos-extensions/registry/curated/research/web-search \
       packages/agentos-extensions/registry/curated/research/web-browser \
