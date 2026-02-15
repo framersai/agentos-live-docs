@@ -101,23 +101,23 @@ export function getModelPrice(modelId: string): ModelConfig {
  * with comments stripped and sensible fallbacks.
  */
 export const MODEL_PREFERENCES = {
-  general: getModelIdFromEnv(process.env.MODEL_PREF_GENERAL_CHAT, 'openai/gpt-4o-mini'),
-  coding: getModelIdFromEnv(process.env.MODEL_PREF_CODING, 'openai/gpt-4o'),
-  system_design: getModelIdFromEnv(process.env.MODEL_PREF_SYSTEM_DESIGN, 'openai/gpt-4o'),
-  meeting_summary: getModelIdFromEnv(process.env.MODEL_PREF_SUMMARIZATION, 'openai/gpt-4o-mini'),
-  rag_synthesis: getModelIdFromEnv(process.env.MODEL_PREF_RAG_SYNTHESIS, 'openai/gpt-4o-mini'),
-  self_reflection: getModelIdFromEnv(process.env.MODEL_PREF_SELF_REFLECTION, 'openai/gpt-4o-mini'),
-  summarization: getModelIdFromEnv(process.env.MODEL_PREF_SUMMARIZATION, 'openai/gpt-4o-mini'),
-  default_embedding: getModelIdFromEnv(process.env.MODEL_PREF_DEFAULT_EMBEDDING, 'openai/text-embedding-3-small'),
-  interview_tutor: getModelIdFromEnv(process.env.MODEL_PREF_INTERVIEW_TUTOR, 'openai/gpt-4o'), // For coding_interviewer if mapped
-  coding_tutor: getModelIdFromEnv(process.env.MODEL_PREF_CODING_TUTOR, 'openai/gpt-4o-mini'),
-  utility: getModelIdFromEnv(process.env.UTILITY_LLM_MODEL_ID, 'openai/gpt-4o-mini'), // Aggregator model
-  default: getModelIdFromEnv(process.env.ROUTING_LLM_MODEL_ID, 'openai/gpt-4o-mini'), // General fallback
+  general: getModelIdFromEnv(process.env.MODEL_PREF_GENERAL_CHAT, 'gpt-4o-mini'),
+  coding: getModelIdFromEnv(process.env.MODEL_PREF_CODING, 'gpt-4o'),
+  system_design: getModelIdFromEnv(process.env.MODEL_PREF_SYSTEM_DESIGN, 'gpt-4o'),
+  meeting_summary: getModelIdFromEnv(process.env.MODEL_PREF_SUMMARIZATION, 'gpt-4o-mini'),
+  rag_synthesis: getModelIdFromEnv(process.env.MODEL_PREF_RAG_SYNTHESIS, 'gpt-4o-mini'),
+  self_reflection: getModelIdFromEnv(process.env.MODEL_PREF_SELF_REFLECTION, 'gpt-4o-mini'),
+  summarization: getModelIdFromEnv(process.env.MODEL_PREF_SUMMARIZATION, 'gpt-4o-mini'),
+  default_embedding: getModelIdFromEnv(process.env.MODEL_PREF_DEFAULT_EMBEDDING, 'text-embedding-3-small'),
+  interview_tutor: getModelIdFromEnv(process.env.MODEL_PREF_INTERVIEW_TUTOR, 'gpt-4o'),
+  coding_tutor: getModelIdFromEnv(process.env.MODEL_PREF_CODING_TUTOR, 'gpt-4o-mini'),
+  utility: getModelIdFromEnv(process.env.UTILITY_LLM_MODEL_ID, 'gpt-4o-mini'),
+  default: getModelIdFromEnv(process.env.ROUTING_LLM_MODEL_ID, 'gpt-4o-mini'),
 
   // Agent-specific overrides (keys should match agent.systemPromptKey or agent.id)
-  diary: getModelIdFromEnv(process.env.MODEL_PREF_DIARY, 'openai/gpt-4o-mini'), // Retain -mini for diary unless specified
-  lc_audit_aide: getModelIdFromEnv(process.env.MODEL_PREF_LC_AUDIT, 'openai/gpt-4o'), // **Enforce gpt-4o**
-  coding_interviewer: getModelIdFromEnv(process.env.MODEL_PREF_CODING_INTERVIEWER, 'openai/gpt-4o'), // **Enforce gpt-4o**
+  diary: getModelIdFromEnv(process.env.MODEL_PREF_DIARY, 'gpt-4o-mini'),
+  lc_audit_aide: getModelIdFromEnv(process.env.MODEL_PREF_LC_AUDIT, 'gpt-4o'),
+  coding_interviewer: getModelIdFromEnv(process.env.MODEL_PREF_CODING_INTERVIEWER, 'gpt-4o'),
 };
 
 console.log("[models.config.ts] Loaded MODEL_PREFERENCES (env vars processed):", JSON.stringify(MODEL_PREFERENCES, null, 2));

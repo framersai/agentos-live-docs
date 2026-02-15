@@ -253,7 +253,7 @@ export class LlmConfigService {
         return { providerId: envRoutingProviderId, modelId: modelIdToUse };
       }
     }
-    const preferredOrder: LlmProviderId[] = [ LlmProviderId.OPENROUTER, LlmProviderId.OPENAI, LlmProviderId.ANTHROPIC, LlmProviderId.OLLAMA ];
+    const preferredOrder: LlmProviderId[] = [ LlmProviderId.OPENAI, LlmProviderId.ANTHROPIC, LlmProviderId.OPENROUTER, LlmProviderId.OLLAMA ];
     for (const providerId of preferredOrder) {
       if (this.isProviderAvailable(providerId)) {
         const config = this.providerConfigs.get(providerId)!;
