@@ -59,6 +59,9 @@ import type {
   IGraphRAGEngine,
   LocalSearchResult,
 } from '@framers/agentos/rag/graphrag';
+import { RAGAuditCollector } from '@framers/agentos/rag/audit/RAGAuditCollector';
+import { RAGAuditPersistence } from 'wunderland';
+import type { RagAuditTrailWire } from '@framers/agentos-ext-http-api';
 import { audioService } from '../../core/audio/audio.service.js';
 import type { ISttOptions } from '../../core/audio/stt.interfaces.js';
 
@@ -255,6 +258,8 @@ export interface RagQueryOptions {
     /** Max number of generated variants (in addition to the base `query`). Default: `2`. */
     maxVariants?: number;
   };
+  /** When true, return a detailed audit trail with the response. */
+  includeAudit?: boolean;
 }
 
 /**
@@ -277,6 +282,8 @@ export interface RagQueryResult {
   chunks: RagRetrievedChunk[];
   totalResults: number;
   processingTimeMs: number;
+  /** Present when `includeAudit: true` was requested. */
+  auditTrail?: import('@framers/agentos-ext-http-api').RagAuditTrailWire;
 }
 
 /**
@@ -515,6 +522,9 @@ class SqlRagStore {
   private graphRagEngine?: IGraphRAGEngine;
   private graphRagWarningLogged = false;
 
+  // Audit trail persistence (lazily initialized alongside the adapter).
+  private auditPersistence: RAGAuditPersistence | null = null;
+
   // Optional multimodal (image) embedding subsystem (Transformers.js; install-on-demand).
   private mediaImageEmbedInitPromise: Promise<void> | null = null;
   private mediaImageEmbedStatus: 'uninitialized' | 'enabled' | 'disabled' = 'uninitialized';
@@ -580,6 +590,17 @@ class SqlRagStore {
             vectorError?.message ?? vectorError
           }`
         );
+      }
+
+      // Initialize audit trail persistence.
+      try {
+        this.auditPersistence = new RAGAuditPersistence(this.adapter);
+        await this.auditPersistence.ensureSchema();
+      } catch (auditErr: any) {
+        console.warn(
+          `[RAG Service] Audit persistence init failed (audit trails disabled): ${auditErr?.message ?? auditErr}`
+        );
+        this.auditPersistence = null;
       }
 
       this.initialized = true;
@@ -4512,10 +4533,17 @@ Query: ${JSON.stringify(baseQuery)}`;
     const startTime = Date.now();
     const topK = options.topK || 5;
 
+    // Audit collector (only when requested).
+    const collector = options.includeAudit
+      ? new RAGAuditCollector({ requestId: `rq-${Date.now().toString(36)}`, query: options.query })
+      : null;
+
     const queries = await this.resolveQueryVariants(options);
     const [baseQuery, ...variants] = queries;
 
+    // ── Vector retrieval ──────────────────────────────────────────────
     let vector: { chunks: RagRetrievedChunk[]; totalResults: number } | null = null;
+    const vectorStart = Date.now();
     if (variants.length === 0) {
       vector = await this.queryVectorInternal(adapter, options);
     } else {
@@ -4544,6 +4572,35 @@ Query: ${JSON.stringify(baseQuery)}`;
       vector = canUseVector ? { chunks: merged, totalResults: merged.length } : null;
     }
 
+    // Record vector query audit operation.
+    if (collector && vector) {
+      const vecOp = collector.startOperation('vector_query');
+      vecOp.setRetrievalMethod({
+        strategy: (options.strategy as any) || 'similarity',
+        topK,
+        mmrLambda: options.strategyParams?.mmrLambda,
+      });
+      vecOp.addSources(
+        vector.chunks.map((c) => ({
+          chunkId: c.chunkId,
+          documentId: c.documentId,
+          contentSnippet: c.content.slice(0, 200),
+          relevanceScore: c.score,
+        }))
+      );
+      // Estimate embedding tokens (~4 chars/token).
+      const embTokens = Math.ceil(options.query.length / 4);
+      vecOp.setTokenUsage({
+        embeddingTokens: embTokens,
+        llmPromptTokens: 0,
+        llmCompletionTokens: 0,
+        totalTokens: embTokens,
+      });
+      vecOp.complete(vector.chunks.length, Date.now() - vectorStart);
+    }
+
+    // ── Keyword retrieval ─────────────────────────────────────────────
+    const keywordStart = Date.now();
     const keywordNeeded = !vector || vector.chunks.length < topK;
     const keyword = keywordNeeded
       ? variants.length === 0
@@ -4563,6 +4620,21 @@ Query: ${JSON.stringify(baseQuery)}`;
           })()
       : null;
 
+    // Record keyword query audit operation.
+    if (collector && keyword && keyword.chunks.length > 0) {
+      const kwOp = collector.startOperation('vector_query');
+      kwOp.setRetrievalMethod({ strategy: 'hybrid' as any, topK });
+      kwOp.addSources(
+        keyword.chunks.map((c) => ({
+          chunkId: c.chunkId,
+          documentId: c.documentId,
+          contentSnippet: c.content.slice(0, 200),
+          relevanceScore: c.score,
+        }))
+      );
+      kwOp.complete(keyword.chunks.length, Date.now() - keywordStart);
+    }
+
     const mergedById = new Map<string, RagRetrievedChunk>();
     for (const chunk of vector?.chunks ?? []) {
       mergedById.set(chunk.chunkId, chunk);
@@ -4579,12 +4651,28 @@ Query: ${JSON.stringify(baseQuery)}`;
     const merged = Array.from(mergedById.values());
     merged.sort((a, b) => b.score - a.score);
 
+    // Finalize audit trail.
+    let auditTrail: RagAuditTrailWire | undefined;
+    if (collector) {
+      const trail = collector.finalize();
+      auditTrail = trail as unknown as RagAuditTrailWire;
+      // Persist asynchronously (best effort).
+      if (this.auditPersistence) {
+        this.auditPersistence
+          .store(trail)
+          .catch((err: any) =>
+            console.warn(`[RAG Audit] Failed to persist trail: ${err?.message ?? err}`)
+          );
+      }
+    }
+
     return {
       success: true,
       query: options.query,
       chunks: merged.slice(0, topK),
       totalResults: merged.length,
       processingTimeMs: Date.now() - startTime,
+      auditTrail,
     };
   }
 
@@ -5228,6 +5316,42 @@ export const ragService = {
    */
   async deleteAgentKnowledge(knowledgeId: string): Promise<boolean> {
     return this.deleteDocument(`knowledge_${knowledgeId}`);
+  },
+
+  // ── Audit Trail ──────────────────────────────────────────────────────
+
+  /**
+   * Get audit trails filtered by seedId, sessionId, time range.
+   */
+  async getAuditTrails(opts: {
+    seedId?: string;
+    sessionId?: string;
+    since?: string;
+    limit?: number;
+  }): Promise<RagAuditTrailWire[]> {
+    const persistence = ragStore['auditPersistence'] as RAGAuditPersistence | null;
+    if (!persistence) return [];
+    const trails = await persistence.query(opts);
+    return trails as unknown as RagAuditTrailWire[];
+  },
+
+  /**
+   * Get a single audit trail by ID.
+   */
+  async getAuditTrail(trailId: string): Promise<RagAuditTrailWire | null> {
+    const persistence = ragStore['auditPersistence'] as RAGAuditPersistence | null;
+    if (!persistence) return null;
+    const trail = await persistence.getByTrailId(trailId);
+    return trail as unknown as RagAuditTrailWire | null;
+  },
+
+  /**
+   * Store an audit trail (e.g. from external tools).
+   */
+  async storeAuditTrail(trail: RagAuditTrailWire): Promise<void> {
+    const persistence = ragStore['auditPersistence'] as RAGAuditPersistence | null;
+    if (!persistence) return;
+    await persistence.store(trail as any);
   },
 
   /**
