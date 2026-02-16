@@ -10,7 +10,7 @@ services:
       - .env
     environment:
       - PORT=3010
-      - NEXT_PUBLIC_API_URL=http://backend:3001/api
+      - NEXT_PUBLIC_API_URL=/api
     expose:
       - "3010"
 

@@ -1116,7 +1116,7 @@ importers:
         specifier: ^3.17.0
         version: 3.18.3
       wunderland:
-        specifier: workspace:*
+        specifier: ^0.16.0
         version: link:../../../packages/wunderland
     devDependencies:
       '@nestjs/testing':
@@ -1749,7 +1749,7 @@ importers:
         specifier: workspace:*
         version: link:../../../../packages/agentos
       wunderland:
-        specifier: workspace:*
+        specifier: ^0.16.0
         version: link:../../../../packages/wunderland
     devDependencies:
       '@types/node':

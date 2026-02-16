@@ -303,11 +303,18 @@ pnpm dev:qdrant:down
 
 ## 6. Storage & Database
 
-| Variable               | Description                                                   |
-| ---------------------- | ------------------------------------------------------------- |
-| `DATABASE_URL`         | PostgreSQL connection string (production).                    |
-| `DB_CLIENT`            | `postgresql` or `sqlite`.                                     |
-| `ENABLE_SQLITE_MEMORY` | Set to `true` to run SQLite in memory for ephemeral sessions. |
+### Backend app DB (Rabbit Hole / Wunderland control plane)
+
+| Variable       | Description                                                                                                                     |
+| -------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| `DATABASE_URL` | Postgres connection string for the backend app DB. When unset, the backend defaults to SQLite at `backend/db_data/app.sqlite3`. |
+| `POSTGRES_URL` | Alias for `DATABASE_URL` (useful on platforms that reserve `DATABASE_URL`).                                                     |
+
+### Memory store DB (optional)
+
+| Variable               | Description                                                                                         |
+| ---------------------- | --------------------------------------------------------------------------------------------------- |
+| `ENABLE_SQLITE_MEMORY` | If `true`, enables SQLite-backed memory persistence (creates `backend/db_data/vca_memory.sqlite3`). |
 
 `app_users` now includes a `supabase_user_id` column. Run the provided migration or ensure the column exists before enabling Supabase in production.
 
