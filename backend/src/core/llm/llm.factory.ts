@@ -6,9 +6,14 @@
  * @version 1.2.0 - Propagated tool parameters to LLM services in callLlm.
  */
 
-import { LlmConfigService, LlmProviderId, NoLlmProviderConfiguredError } from './llm.config.service.js';
+import {
+  LlmConfigService,
+  LlmProviderId,
+  NoLlmProviderConfiguredError,
+} from './llm.config.service.js';
 import { OpenAiLlmService } from './openai.llm.service.js';
 import { OpenRouterLlmService } from './openrouter.llm.service.js';
+import { createHash } from 'node:crypto';
 // Import other LLM services (Anthropic, Ollama) as they are implemented
 // import { AnthropicLlmService } from './anthropic.llm.service.js';
 // import { OllamaLlmService } from './ollama.llm.service.js';
@@ -16,14 +21,53 @@ import {
   IChatMessage,
   ILlmResponse,
   ILlmService,
+  ILlmProviderConfig,
   IChatCompletionParams,
-  ILlmTool,
 } from './llm.interfaces.js';
 import { CostService } from '../cost/cost.service.js';
 import { getModelPrice } from '../../../config/models.config.js';
 
 let llmConfigService: LlmConfigService;
 const serviceCache: Map<LlmProviderId | string, ILlmService> = new Map();
+const runtimeServiceCache: Map<string, ILlmService> = new Map();
+
+function stableHash(value: string): string {
+  return createHash('sha256').update(value).digest('hex').slice(0, 12);
+}
+
+function runtimeServiceCacheKey(config: ILlmProviderConfig): string {
+  const providerId = String(config.providerId || '').toLowerCase();
+  const baseUrl = config.baseUrl || '';
+  const keyHash = config.apiKey ? stableHash(config.apiKey) : 'no-key';
+  const headersHash = config.additionalHeaders
+    ? stableHash(JSON.stringify(config.additionalHeaders))
+    : 'no-headers';
+  const model = config.defaultModel || '';
+  return `runtime:${providerId}:${keyHash}:${stableHash(baseUrl)}:${headersHash}:${stableHash(model)}`;
+}
+
+function getRuntimeLlmService(providerConfig: ILlmProviderConfig): ILlmService {
+  const key = runtimeServiceCacheKey(providerConfig);
+  const cached = runtimeServiceCache.get(key);
+  if (cached) return cached;
+
+  let service: ILlmService;
+  switch (String(providerConfig.providerId || '').toLowerCase()) {
+    case LlmProviderId.OPENAI:
+      service = new OpenAiLlmService(providerConfig);
+      break;
+    case LlmProviderId.OPENROUTER:
+      service = new OpenRouterLlmService(providerConfig);
+      break;
+    default:
+      throw new Error(
+        `[LLM Factory] Unsupported runtime provider: ${String(providerConfig.providerId)}`
+      );
+  }
+
+  runtimeServiceCache.set(key, service);
+  return service;
+}
 
 /**
  * Initializes the LLM configuration service. Must be called once at application startup.
@@ -43,10 +87,11 @@ export async function initializeLlmServices(): Promise<void> {
     // For example, initialize the default provider:
     const defaultProvider = llmConfigService.getDefaultProviderAndModel();
     if (defaultProvider?.providerId) {
-        getLlmService(defaultProvider.providerId); // This will cache it
-        console.log(`[LLM Factory] Pre-initialized service for default provider: ${defaultProvider.providerId}`);
+      getLlmService(defaultProvider.providerId); // This will cache it
+      console.log(
+        `[LLM Factory] Pre-initialized service for default provider: ${defaultProvider.providerId}`
+      );
     }
-
   } catch (error) {
     console.error('[LLM Factory] CRITICAL: Failed to initialize LlmConfigService:', error);
     if (error instanceof NoLlmProviderConfiguredError) {
@@ -68,7 +113,9 @@ export async function initializeLlmServices(): Promise<void> {
  */
 export function getLlmService(providerId: LlmProviderId | string): ILlmService {
   if (!llmConfigService) {
-    throw new Error('[LLM Factory] LlmConfigService not initialized. Call initializeLlmServices() first.');
+    throw new Error(
+      '[LLM Factory] LlmConfigService not initialized. Call initializeLlmServices() first.'
+    );
   }
 
   if (serviceCache.has(providerId)) {
@@ -124,14 +171,19 @@ export async function callLlm(
   userIdForCostTracking: string = 'system_user_llm_factory'
 ): Promise<ILlmResponse> {
   if (!llmConfigService) {
-    console.error("[LLM Factory] LlmConfigService not initialized. Call initializeLlmServices() first.");
+    console.error(
+      '[LLM Factory] LlmConfigService not initialized. Call initializeLlmServices() first.'
+    );
     // Attempt to initialize it on the fly if called before explicit init (e.g. in tests or scripts)
     // This is a fallback, proper app startup should call initializeLlmServices.
     await initializeLlmServices();
-    if (!llmConfigService) { // Check again after attempt
-        throw new Error("[LLM Factory] Critical: LlmConfigService failed to initialize on demand.");
+    if (!llmConfigService) {
+      // Check again after attempt
+      throw new Error('[LLM Factory] Critical: LlmConfigService failed to initialize on demand.');
     }
-    console.warn("[LLM Factory] LlmConfigService was initialized on-demand by callLlm. Ensure initializeLlmServices() is part of your application's startup sequence.");
+    console.warn(
+      "[LLM Factory] LlmConfigService was initialized on-demand by callLlm. Ensure initializeLlmServices() is part of your application's startup sequence."
+    );
   }
 
   let effectiveProviderId: LlmProviderId | string;
@@ -139,10 +191,15 @@ export async function callLlm(
 
   if (providerId) {
     effectiveProviderId = providerId;
-    const serviceInstance = getLlmService(effectiveProviderId); // Ensures provider is valid
-    effectiveModelId = modelId || llmConfigService.getProviderConfig(effectiveProviderId as LlmProviderId)?.defaultModel || '';
+    getLlmService(effectiveProviderId); // Ensures provider is valid
+    effectiveModelId =
+      modelId ||
+      llmConfigService.getProviderConfig(effectiveProviderId as LlmProviderId)?.defaultModel ||
+      '';
     if (!effectiveModelId) {
-        throw new Error(`[LLM Factory] No model ID provided and no default model configured for provider: ${effectiveProviderId}`);
+      throw new Error(
+        `[LLM Factory] No model ID provided and no default model configured for provider: ${effectiveProviderId}`
+      );
     }
     // If modelId is prefixed (e.g., "openai/gpt-4o") and providerId is OpenRouter, that's fine.
     // If modelId is prefixed and providerId is specific (e.g., OpenAI), the service should handle stripping the prefix.
@@ -160,9 +217,10 @@ export async function callLlm(
       if (effectiveProviderId === LlmProviderId.OPENROUTER) {
         effectiveModelId = modelId; // Pass the full prefixed model to OpenRouter
       }
-
     } else {
-      console.warn(`[LLM Factory] Provider inferred from modelId "${modelId}" (${inferredProviderId}) is not available. Falling back to default provider.`);
+      console.warn(
+        `[LLM Factory] Provider inferred from modelId "${modelId}" (${inferredProviderId}) is not available. Falling back to default provider.`
+      );
       const defaultChoice = llmConfigService.getDefaultProviderAndModel();
       effectiveProviderId = defaultChoice.providerId;
       effectiveModelId = modelId; // Pass original modelId, let default provider sort it out or fail
@@ -175,17 +233,21 @@ export async function callLlm(
   }
 
   if (!effectiveModelId) {
-    throw new Error(`[LLM Factory] Could not resolve a model ID for provider ${effectiveProviderId}.`);
+    throw new Error(
+      `[LLM Factory] Could not resolve a model ID for provider ${effectiveProviderId}.`
+    );
   }
-  
+
   const service = getLlmService(effectiveProviderId);
-  
+
   // If the service is NOT OpenRouter and the effectiveModelId STILL has a prefix matching this service's providerId,
   // the service's mapToProviderModelId method should handle it.
   // Example: service is OpenAiLlmService, effectiveModelId is "openai/gpt-4o". OpenAiLlmService.mapToProviderModelId will strip "openai/".
   // If service is OpenRouterLlmService, effectiveModelId is "openai/gpt-4o". OpenRouterLlmService.mapToProviderModelId expects this.
 
-  console.log(`[LLM Factory] Calling LLM via provider: "${effectiveProviderId}", model: "${effectiveModelId}"`);
+  console.log(
+    `[LLM Factory] Calling LLM via provider: "${effectiveProviderId}", model: "${effectiveModelId}"`
+  );
 
   try {
     // Propagate tool parameters if they exist in `params`
@@ -195,67 +257,166 @@ export async function callLlm(
       tool_choice: params?.tool_choice,
     };
 
-    const response = await service.generateChatCompletion(messages, effectiveModelId, completionParams);
+    const response = await service.generateChatCompletion(
+      messages,
+      effectiveModelId,
+      completionParams
+    );
 
     // Cost Tracking
     const modelPriceInfo = getModelPrice(response.model || effectiveModelId);
     if (response.usage && modelPriceInfo) {
-      const cost = ( (response.usage.prompt_tokens || 0) / 1000) * modelPriceInfo.inputCostPer1K +
-                   ( (response.usage.completion_tokens || 0) / 1000) * modelPriceInfo.outputCostPer1K;
+      const cost =
+        ((response.usage.prompt_tokens || 0) / 1000) * modelPriceInfo.inputCostPer1K +
+        ((response.usage.completion_tokens || 0) / 1000) * modelPriceInfo.outputCostPer1K;
       CostService.trackCost(
         userIdForCostTracking,
         'llm',
         cost,
         response.model || effectiveModelId,
-        response.usage.prompt_tokens || 0, 'tokens',
-        response.usage.completion_tokens || 0, 'tokens',
-        { provider: effectiveProviderId, stopReason: response.stopReason, hasToolCalls: !!response.toolCalls?.length }
+        response.usage.prompt_tokens || 0,
+        'tokens',
+        response.usage.completion_tokens || 0,
+        'tokens',
+        {
+          provider: effectiveProviderId,
+          stopReason: response.stopReason,
+          hasToolCalls: !!response.toolCalls?.length,
+        }
       );
     } else if (response.usage) {
-        console.warn(`[LLM Factory] Usage reported by LLM for model ${response.model || effectiveModelId}, but no pricing info found. Cost not tracked for this call.`);
+      console.warn(
+        `[LLM Factory] Usage reported by LLM for model ${response.model || effectiveModelId}, but no pricing info found. Cost not tracked for this call.`
+      );
     }
 
     return response;
   } catch (error: any) {
-    console.error(`[LLM Factory] Error during callLlm with provider ${effectiveProviderId}, model ${effectiveModelId}: ${error.message}`, error.stack);
+    console.error(
+      `[LLM Factory] Error during callLlm with provider ${effectiveProviderId}, model ${effectiveModelId}: ${error.message}`,
+      error.stack
+    );
     // Try fallback if configured and error is likely retryable (e.g., not auth error)
     // Basic check, can be more sophisticated:
-    const isRetryableError = !(error.response?.status === 401 || error.response?.status === 403 || error.response?.status === 400);
+    const isRetryableError = !(
+      error.response?.status === 401 ||
+      error.response?.status === 403 ||
+      error.response?.status === 400
+    );
 
     if (isRetryableError) {
-        const fallbackProviderId = llmConfigService.getFallbackProviderId();
-        if (fallbackProviderId && fallbackProviderId !== effectiveProviderId) {
-            console.warn(`[LLM Factory] Attempting fallback to provider: ${fallbackProviderId} due to error with ${effectiveProviderId}.`);
-            try {
-                // Important: Decide if you use the same modelId or a default for the fallback provider
-                const fallbackService = getLlmService(fallbackProviderId);
-                const fallbackModelId = modelId || llmConfigService.getProviderConfig(fallbackProviderId)?.defaultModel || effectiveModelId; // Re-evaluate model for fallback
-                
-                const fallbackResponse = await fallbackService.generateChatCompletion(messages, fallbackModelId, params);
-                
-                // Cost tracking for fallback call
-                const fallbackModelPriceInfo = getModelPrice(fallbackResponse.model || fallbackModelId);
-                if (fallbackResponse.usage && fallbackModelPriceInfo) {
-                    const fallbackCost = ((fallbackResponse.usage.prompt_tokens || 0) / 1000) * fallbackModelPriceInfo.inputCostPer1K +
-                                       ((fallbackResponse.usage.completion_tokens || 0) / 1000) * fallbackModelPriceInfo.outputCostPer1K;
-                    CostService.trackCost(
-                        userIdForCostTracking,
-                        'llm_fallback', // Distinguish fallback cost
-                        fallbackCost,
-                        fallbackResponse.model || fallbackModelId,
-                        fallbackResponse.usage.prompt_tokens || 0, 'tokens',
-                        fallbackResponse.usage.completion_tokens || 0, 'tokens',
-                        { originalProvider: effectiveProviderId, provider: fallbackProviderId, stopReason: fallbackResponse.stopReason, hasToolCalls: !!fallbackResponse.toolCalls?.length }
-                    );
-                }
-                return fallbackResponse;
-            } catch (fallbackError: any) {
-                console.error(`[LLM Factory] Fallback LLM call also failed for provider ${fallbackProviderId}: ${fallbackError.message}`);
-                // Throw original error or a combined error
-                throw error; // Re-throw original error after fallback failure
-            }
+      const fallbackProviderId = llmConfigService.getFallbackProviderId();
+      if (fallbackProviderId && fallbackProviderId !== effectiveProviderId) {
+        console.warn(
+          `[LLM Factory] Attempting fallback to provider: ${fallbackProviderId} due to error with ${effectiveProviderId}.`
+        );
+        try {
+          // Important: Decide if you use the same modelId or a default for the fallback provider
+          const fallbackService = getLlmService(fallbackProviderId);
+          const fallbackModelId =
+            modelId ||
+            llmConfigService.getProviderConfig(fallbackProviderId)?.defaultModel ||
+            effectiveModelId; // Re-evaluate model for fallback
+
+          const fallbackResponse = await fallbackService.generateChatCompletion(
+            messages,
+            fallbackModelId,
+            params
+          );
+
+          // Cost tracking for fallback call
+          const fallbackModelPriceInfo = getModelPrice(fallbackResponse.model || fallbackModelId);
+          if (fallbackResponse.usage && fallbackModelPriceInfo) {
+            const fallbackCost =
+              ((fallbackResponse.usage.prompt_tokens || 0) / 1000) *
+                fallbackModelPriceInfo.inputCostPer1K +
+              ((fallbackResponse.usage.completion_tokens || 0) / 1000) *
+                fallbackModelPriceInfo.outputCostPer1K;
+            CostService.trackCost(
+              userIdForCostTracking,
+              'llm_fallback', // Distinguish fallback cost
+              fallbackCost,
+              fallbackResponse.model || fallbackModelId,
+              fallbackResponse.usage.prompt_tokens || 0,
+              'tokens',
+              fallbackResponse.usage.completion_tokens || 0,
+              'tokens',
+              {
+                originalProvider: effectiveProviderId,
+                provider: fallbackProviderId,
+                stopReason: fallbackResponse.stopReason,
+                hasToolCalls: !!fallbackResponse.toolCalls?.length,
+              }
+            );
+          }
+          return fallbackResponse;
+        } catch (fallbackError: any) {
+          console.error(
+            `[LLM Factory] Fallback LLM call also failed for provider ${fallbackProviderId}: ${fallbackError.message}`
+          );
+          // Throw original error or a combined error
+          throw error; // Re-throw original error after fallback failure
         }
+      }
     }
     throw error; // Re-throw error if not retryable or no fallback
   }
+}
+
+/**
+ * Unified function to make a chat completion request to an LLM using a runtime provider config
+ * (e.g., agent-specific API keys stored in the credential vault).
+ *
+ * NOTE: Does not use the global LlmConfigService providerConfigs; it instantiates/caches
+ * per-config services keyed by a hash of the API key + baseUrl + headers.
+ */
+export async function callLlmWithProviderConfig(
+  messages: IChatMessage[],
+  modelId: string | undefined,
+  params: IChatCompletionParams | undefined,
+  providerConfig: ILlmProviderConfig,
+  userIdForCostTracking: string = 'system_user_llm_factory'
+): Promise<ILlmResponse> {
+  const providerId = String(providerConfig.providerId || '').toLowerCase() as
+    | LlmProviderId
+    | string;
+  const effectiveModelId = modelId || providerConfig.defaultModel;
+  if (!effectiveModelId) {
+    throw new Error(
+      `[LLM Factory] No model ID provided and no default model configured for provider: ${providerId}`
+    );
+  }
+
+  const service = getRuntimeLlmService(providerConfig);
+  const completionParams: IChatCompletionParams = {
+    ...params,
+    tools: params?.tools,
+    tool_choice: params?.tool_choice,
+  };
+
+  const response = await service.generateChatCompletion(
+    messages,
+    effectiveModelId,
+    completionParams
+  );
+
+  const modelPriceInfo = getModelPrice(response.model || effectiveModelId);
+  if (response.usage && modelPriceInfo) {
+    const cost =
+      ((response.usage.prompt_tokens || 0) / 1000) * modelPriceInfo.inputCostPer1K +
+      ((response.usage.completion_tokens || 0) / 1000) * modelPriceInfo.outputCostPer1K;
+    CostService.trackCost(
+      userIdForCostTracking,
+      'llm',
+      cost,
+      response.model || effectiveModelId,
+      response.usage.prompt_tokens || 0,
+      'tokens',
+      response.usage.completion_tokens || 0,
+      'tokens',
+      { provider: providerId, runtimeConfig: true, hasToolCalls: !!response.toolCalls?.length }
+    );
+  }
+
+  return response;
 }

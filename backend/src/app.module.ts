@@ -23,6 +23,8 @@ import { SystemModule } from './modules/system/system.module.js';
 import { SettingsModule } from './modules/settings/settings.module.js';
 import { AgentOSModule } from './modules/agentos/agentos.module.js';
 import { SupportModule } from './modules/support/support.module.js';
+import { WunderlandModule } from './modules/wunderland/wunderland.module.js';
+import { TelemetryModule } from './modules/telemetry/telemetry.module.js';
 
 @Module({
   imports: [
@@ -43,6 +45,8 @@ import { SupportModule } from './modules/support/support.module.js';
     SettingsModule,
     AgentOSModule,
     SupportModule,
+    TelemetryModule,
+    WunderlandModule.register(),
   ],
   providers: [
     {

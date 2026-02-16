@@ -69,12 +69,12 @@ const runInitialSchema = async (db: StorageAdapter): Promise<void> => {
       stripe_subscription_id TEXT,
       lemon_customer_id TEXT,
       lemon_subscription_id TEXT,
-      subscription_renews_at INTEGER,
-      subscription_expires_at INTEGER,
+      subscription_renews_at BIGINT,
+      subscription_expires_at BIGINT,
       is_active INTEGER DEFAULT 1,
-      created_at INTEGER NOT NULL,
-      updated_at INTEGER NOT NULL,
-      last_login_at INTEGER,
+      created_at BIGINT NOT NULL,
+      updated_at BIGINT NOT NULL,
+      last_login_at BIGINT,
       last_login_ip TEXT,
       metadata TEXT
     );
@@ -95,7 +95,7 @@ const runInitialSchema = async (db: StorageAdapter): Promise<void> => {
       mode TEXT NOT NULL,
       ip_address TEXT,
       user_agent TEXT,
-      created_at INTEGER NOT NULL,
+      created_at BIGINT NOT NULL,
       FOREIGN KEY (user_id) REFERENCES app_users(id) ON DELETE SET NULL
     );
   `);
@@ -108,7 +108,7 @@ const runInitialSchema = async (db: StorageAdapter): Promise<void> => {
       id TEXT PRIMARY KEY,
       ip_address TEXT,
       user_agent TEXT,
-      created_at INTEGER NOT NULL
+      created_at BIGINT NOT NULL
     );
   `);
   await db.exec(
@@ -119,9 +119,9 @@ const runInitialSchema = async (db: StorageAdapter): Promise<void> => {
     CREATE TABLE IF NOT EXISTS lemonsqueezy_events (
       id TEXT PRIMARY KEY,
       event_name TEXT NOT NULL,
-      processed_at INTEGER,
+      processed_at BIGINT,
       payload TEXT NOT NULL,
-      created_at INTEGER NOT NULL
+      created_at BIGINT NOT NULL
     );
   `);
 
@@ -134,8 +134,8 @@ const runInitialSchema = async (db: StorageAdapter): Promise<void> => {
       seat_limit INTEGER NOT NULL DEFAULT 5,
       plan_id TEXT NOT NULL DEFAULT 'organization',
       settings_json TEXT,
-      created_at INTEGER NOT NULL,
-      updated_at INTEGER NOT NULL,
+      created_at BIGINT NOT NULL,
+      updated_at BIGINT NOT NULL,
       FOREIGN KEY (owner_user_id) REFERENCES app_users(id) ON DELETE CASCADE
     );
   `);
@@ -152,9 +152,9 @@ const runInitialSchema = async (db: StorageAdapter): Promise<void> => {
       plan_id TEXT,
       status TEXT NOT NULL DEFAULT 'active',
       config TEXT NOT NULL,
-      created_at INTEGER NOT NULL,
-      updated_at INTEGER NOT NULL,
-      archived_at INTEGER,
+      created_at BIGINT NOT NULL,
+      updated_at BIGINT NOT NULL,
+      archived_at BIGINT,
       FOREIGN KEY (user_id) REFERENCES app_users(id) ON DELETE CASCADE
     );
   `);
@@ -166,7 +166,7 @@ const runInitialSchema = async (db: StorageAdapter): Promise<void> => {
       id TEXT PRIMARY KEY,
       user_id TEXT NOT NULL,
       agent_id TEXT,
-      created_at INTEGER NOT NULL,
+      created_at BIGINT NOT NULL,
       FOREIGN KEY (user_id) REFERENCES app_users(id) ON DELETE CASCADE,
       FOREIGN KEY (agent_id) REFERENCES user_agents(id) ON DELETE SET NULL
     );
@@ -184,8 +184,8 @@ const runInitialSchema = async (db: StorageAdapter): Promise<void> => {
       lemon_checkout_id TEXT,
       lemon_subscription_id TEXT,
       lemon_customer_id TEXT,
-      created_at INTEGER NOT NULL,
-      updated_at INTEGER NOT NULL,
+      created_at BIGINT NOT NULL,
+      updated_at BIGINT NOT NULL,
       FOREIGN KEY (user_id) REFERENCES app_users(id) ON DELETE CASCADE
     );
   `);
@@ -205,8 +205,8 @@ const runInitialSchema = async (db: StorageAdapter): Promise<void> => {
       status TEXT NOT NULL DEFAULT 'active',
       seat_units INTEGER NOT NULL DEFAULT 1,
       daily_usage_cap_usd REAL,
-      created_at INTEGER NOT NULL,
-      updated_at INTEGER NOT NULL,
+      created_at BIGINT NOT NULL,
+      updated_at BIGINT NOT NULL,
       FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE,
       FOREIGN KEY (user_id) REFERENCES app_users(id) ON DELETE CASCADE,
       UNIQUE (organization_id, user_id)
@@ -227,11 +227,11 @@ const runInitialSchema = async (db: StorageAdapter): Promise<void> => {
       role TEXT NOT NULL,
       status TEXT NOT NULL DEFAULT 'pending',
       token TEXT NOT NULL UNIQUE,
-      expires_at INTEGER,
+      expires_at BIGINT,
       inviter_user_id TEXT,
-      created_at INTEGER NOT NULL,
-      accepted_at INTEGER,
-      revoked_at INTEGER,
+      created_at BIGINT NOT NULL,
+      accepted_at BIGINT,
+      revoked_at BIGINT,
       FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE,
       FOREIGN KEY (inviter_user_id) REFERENCES app_users(id) ON DELETE SET NULL
     );
@@ -249,8 +249,8 @@ const runInitialSchema = async (db: StorageAdapter): Promise<void> => {
       workflow_definition_id TEXT NOT NULL,
       agency_id TEXT,
       seats INTEGER NOT NULL,
-      launched_at INTEGER NOT NULL,
-      expires_at INTEGER,
+      launched_at BIGINT NOT NULL,
+      expires_at BIGINT,
       metadata TEXT,
       FOREIGN KEY (user_id) REFERENCES app_users(id) ON DELETE CASCADE
     );
@@ -274,8 +274,8 @@ const runInitialSchema = async (db: StorageAdapter): Promise<void> => {
 	      status TEXT NOT NULL DEFAULT 'pending',
 	      submitted_by TEXT,
 	      approved_by TEXT,
-	      submitted_at INTEGER NOT NULL,
-	      approved_at INTEGER,
+	      submitted_at BIGINT NOT NULL,
+	      approved_at BIGINT,
 	      rejection_reason TEXT
 	    );
 	  `);
@@ -293,7 +293,7 @@ const runInitialSchema = async (db: StorageAdapter): Promise<void> => {
 	      reason TEXT,
 	      actor_type TEXT NOT NULL DEFAULT 'agent',
 	      actor_id TEXT,
-	      created_at INTEGER NOT NULL
+	      created_at BIGINT NOT NULL
 	    );
 	  `);
   await db.exec(
@@ -311,8 +311,8 @@ const runInitialSchema = async (db: StorageAdapter): Promise<void> => {
       goal TEXT NOT NULL,
       workflow_definition_id TEXT,
       status TEXT NOT NULL,
-      started_at INTEGER NOT NULL,
-      completed_at INTEGER,
+      started_at BIGINT NOT NULL,
+      completed_at BIGINT,
       duration_ms INTEGER,
       total_cost_usd REAL,
       total_tokens INTEGER,
@@ -339,8 +339,8 @@ const runInitialSchema = async (db: StorageAdapter): Promise<void> => {
       persona_id TEXT NOT NULL,
       gmi_instance_id TEXT,
       status TEXT NOT NULL,
-      started_at INTEGER,
-      completed_at INTEGER,
+      started_at BIGINT,
+      completed_at BIGINT,
       output TEXT,
       error TEXT,
       usage_tokens INTEGER,
@@ -368,7 +368,7 @@ const runInitialSchema = async (db: StorageAdapter): Promise<void> => {
       llm_used_usd REAL NOT NULL DEFAULT 0,
       speech_used_usd REAL NOT NULL DEFAULT 0,
       request_count INTEGER NOT NULL DEFAULT 0,
-      last_updated_at INTEGER NOT NULL,
+      last_updated_at BIGINT NOT NULL,
       UNIQUE(user_id, date_key)
     );
   `);
@@ -396,10 +396,10 @@ const runInitialSchema = async (db: StorageAdapter): Promise<void> => {
       user_name TEXT,
       user_plan TEXT,
       assigned_to_email TEXT,
-      created_at INTEGER NOT NULL,
-      updated_at INTEGER,
-      resolved_at INTEGER,
-      closed_at INTEGER,
+      created_at BIGINT NOT NULL,
+      updated_at BIGINT,
+      resolved_at BIGINT,
+      closed_at BIGINT,
       FOREIGN KEY (user_id) REFERENCES app_users(id) ON DELETE CASCADE
     );
   `);
@@ -423,7 +423,7 @@ const runInitialSchema = async (db: StorageAdapter): Promise<void> => {
       author_display TEXT,
       content TEXT NOT NULL,
       attachments TEXT,
-      created_at INTEGER NOT NULL,
+      created_at BIGINT NOT NULL,
       FOREIGN KEY (ticket_id) REFERENCES support_tickets(id) ON DELETE CASCADE
     );
   `);
@@ -436,7 +436,7 @@ const runInitialSchema = async (db: StorageAdapter): Promise<void> => {
       id TEXT PRIMARY KEY,
       user_id TEXT NOT NULL UNIQUE,
       anonymous_id TEXT NOT NULL UNIQUE,
-      created_at INTEGER NOT NULL,
+      created_at BIGINT NOT NULL,
       FOREIGN KEY (user_id) REFERENCES app_users(id) ON DELETE CASCADE
     );
   `);
@@ -450,8 +450,9 @@ const runInitialSchema = async (db: StorageAdapter): Promise<void> => {
 
   await db.exec(`
     CREATE TABLE IF NOT EXISTS agent_llm_usage (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      id TEXT PRIMARY KEY,
       seed_id TEXT NOT NULL,
+      owner_user_id TEXT,
       model TEXT NOT NULL,
       provider TEXT NOT NULL,
       input_tokens INTEGER NOT NULL,
@@ -459,15 +460,22 @@ const runInitialSchema = async (db: StorageAdapter): Promise<void> => {
       latency_ms INTEGER NOT NULL,
       estimated_cost_usd REAL,
       request_type TEXT,
-      created_at TEXT NOT NULL DEFAULT (datetime('now'))
+      created_at BIGINT NOT NULL,
+      FOREIGN KEY (owner_user_id) REFERENCES app_users(id) ON DELETE SET NULL
     );
   `);
-  await db.exec('CREATE INDEX IF NOT EXISTS idx_llm_usage_seed ON agent_llm_usage(seed_id, created_at);');
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_llm_usage_seed ON agent_llm_usage(seed_id, created_at);'
+  );
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_llm_usage_owner ON agent_llm_usage(owner_user_id, created_at);'
+  );
 
   await db.exec(`
     CREATE TABLE IF NOT EXISTS agent_tool_executions (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      id TEXT PRIMARY KEY,
       seed_id TEXT NOT NULL,
+      owner_user_id TEXT,
       tool_id TEXT NOT NULL,
       tool_name TEXT NOT NULL,
       status TEXT NOT NULL,
@@ -475,39 +483,60 @@ const runInitialSchema = async (db: StorageAdapter): Promise<void> => {
       error_message TEXT,
       input_summary TEXT,
       output_summary TEXT,
-      created_at TEXT NOT NULL DEFAULT (datetime('now'))
+      created_at BIGINT NOT NULL,
+      FOREIGN KEY (owner_user_id) REFERENCES app_users(id) ON DELETE SET NULL
     );
   `);
-  await db.exec('CREATE INDEX IF NOT EXISTS idx_tool_exec_seed ON agent_tool_executions(seed_id, created_at);');
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_tool_exec_seed ON agent_tool_executions(seed_id, created_at);'
+  );
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_tool_exec_owner ON agent_tool_executions(owner_user_id, created_at);'
+  );
 
   await db.exec(`
     CREATE TABLE IF NOT EXISTS agent_channel_activity (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      id TEXT PRIMARY KEY,
       seed_id TEXT NOT NULL,
+      owner_user_id TEXT,
       platform TEXT NOT NULL,
       channel_id TEXT,
       event_type TEXT NOT NULL,
       response_time_ms INTEGER,
-      created_at TEXT NOT NULL DEFAULT (datetime('now'))
+      created_at BIGINT NOT NULL,
+      FOREIGN KEY (owner_user_id) REFERENCES app_users(id) ON DELETE SET NULL
     );
   `);
-  await db.exec('CREATE INDEX IF NOT EXISTS idx_channel_activity_seed ON agent_channel_activity(seed_id, created_at);');
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_channel_activity_seed ON agent_channel_activity(seed_id, created_at);'
+  );
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_channel_activity_owner ON agent_channel_activity(owner_user_id, created_at);'
+  );
 
   await db.exec(`
     CREATE TABLE IF NOT EXISTS agent_behavior_events (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      id TEXT PRIMARY KEY,
       seed_id TEXT NOT NULL,
+      owner_user_id TEXT,
       event_type TEXT NOT NULL,
       event_data TEXT NOT NULL,
-      created_at TEXT NOT NULL DEFAULT (datetime('now'))
+      created_at BIGINT NOT NULL,
+      FOREIGN KEY (owner_user_id) REFERENCES app_users(id) ON DELETE SET NULL
     );
   `);
-  await db.exec('CREATE INDEX IF NOT EXISTS idx_behavior_seed ON agent_behavior_events(seed_id, created_at);');
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_behavior_seed ON agent_behavior_events(seed_id, created_at);'
+  );
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_behavior_owner ON agent_behavior_events(owner_user_id, created_at);'
+  );
 
   await db.exec(`
     CREATE TABLE IF NOT EXISTS agent_runtime_tasks (
       id TEXT PRIMARY KEY,
       seed_id TEXT NOT NULL,
+      owner_user_id TEXT,
       task_type TEXT NOT NULL,
       status TEXT NOT NULL DEFAULT 'queued',
       title TEXT NOT NULL,
@@ -515,15 +544,838 @@ const runInitialSchema = async (db: StorageAdapter): Promise<void> => {
       progress INTEGER DEFAULT 0,
       result_summary TEXT,
       error_message TEXT,
-      started_at TEXT,
-      completed_at TEXT,
-      created_at TEXT NOT NULL DEFAULT (datetime('now'))
+      started_at BIGINT,
+      completed_at BIGINT,
+      created_at BIGINT NOT NULL,
+      updated_at BIGINT,
+      FOREIGN KEY (owner_user_id) REFERENCES app_users(id) ON DELETE SET NULL
     );
   `);
-  await db.exec('CREATE INDEX IF NOT EXISTS idx_tasks_seed ON agent_runtime_tasks(seed_id, status);');
-  await db.exec('CREATE INDEX IF NOT EXISTS idx_tasks_status ON agent_runtime_tasks(status, created_at);');
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_tasks_seed ON agent_runtime_tasks(seed_id, status);'
+  );
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_tasks_status ON agent_runtime_tasks(status, created_at);'
+  );
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_tasks_owner ON agent_runtime_tasks(owner_user_id, created_at);'
+  );
 
   console.log('[AppDatabase] Agent metrics & task tables initialized.');
+
+  // ── Wunderland Agent Social Network Tables ─────────────────────────────────
+
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS wunderbots (
+      seed_id TEXT PRIMARY KEY,
+      owner_user_id TEXT NOT NULL,
+      display_name TEXT NOT NULL,
+      bio TEXT,
+      avatar_url TEXT,
+      hexaco_traits TEXT NOT NULL,
+      security_profile TEXT NOT NULL,
+      inference_hierarchy TEXT NOT NULL,
+      step_up_auth_config TEXT,
+      base_system_prompt TEXT,
+      allowed_tool_ids TEXT,
+      skills_json TEXT,
+      channels_json TEXT,
+      timezone TEXT,
+      genesis_event_id TEXT,
+      public_key TEXT,
+      storage_policy TEXT DEFAULT 'sealed',
+      sealed_at BIGINT,
+      provenance_enabled INTEGER DEFAULT 1,
+      tool_access_profile TEXT,
+      posting_directives TEXT,
+      execution_mode TEXT,
+      voice_config TEXT,
+      toolset_manifest_json TEXT,
+      toolset_hash TEXT,
+      status TEXT DEFAULT 'active',
+      created_at BIGINT NOT NULL,
+      updated_at BIGINT NOT NULL,
+      FOREIGN KEY (owner_user_id) REFERENCES app_users(id) ON DELETE CASCADE
+    );
+  `);
+  await db.exec('CREATE INDEX IF NOT EXISTS idx_wunderbots_owner ON wunderbots(owner_user_id);');
+  await db.exec('CREATE INDEX IF NOT EXISTS idx_wunderbots_status ON wunderbots(status);');
+
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS wunderland_citizens (
+      seed_id TEXT PRIMARY KEY,
+      level INTEGER NOT NULL DEFAULT 1,
+      xp INTEGER NOT NULL DEFAULT 0,
+      total_posts INTEGER NOT NULL DEFAULT 0,
+      post_rate_limit INTEGER DEFAULT 10,
+      subscribed_topics TEXT,
+      is_active INTEGER DEFAULT 1,
+      joined_at BIGINT NOT NULL,
+      FOREIGN KEY (seed_id) REFERENCES wunderbots(seed_id) ON DELETE CASCADE
+    );
+  `);
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_wunderland_citizens_level ON wunderland_citizens(level DESC, xp DESC);'
+  );
+
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS wunderbot_runtime (
+      seed_id TEXT PRIMARY KEY,
+      owner_user_id TEXT NOT NULL,
+      hosting_mode TEXT NOT NULL DEFAULT 'managed',
+      status TEXT NOT NULL DEFAULT 'stopped',
+      started_at BIGINT,
+      stopped_at BIGINT,
+      last_error TEXT,
+      metadata TEXT,
+      created_at BIGINT NOT NULL,
+      updated_at BIGINT NOT NULL,
+      FOREIGN KEY (seed_id) REFERENCES wunderbots(seed_id) ON DELETE CASCADE,
+      FOREIGN KEY (owner_user_id) REFERENCES app_users(id) ON DELETE CASCADE
+    );
+  `);
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_wunderbot_runtime_owner ON wunderbot_runtime(owner_user_id);'
+  );
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_wunderbot_runtime_status ON wunderbot_runtime(status);'
+  );
+
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS wunderbot_credentials (
+      credential_id TEXT PRIMARY KEY,
+      seed_id TEXT NOT NULL,
+      owner_user_id TEXT NOT NULL,
+      credential_type TEXT NOT NULL,
+      label TEXT,
+      encrypted_value TEXT NOT NULL,
+      masked_value TEXT NOT NULL,
+      last_used_at BIGINT,
+      created_at BIGINT NOT NULL,
+      updated_at BIGINT NOT NULL,
+      FOREIGN KEY (seed_id) REFERENCES wunderbots(seed_id) ON DELETE CASCADE,
+      FOREIGN KEY (owner_user_id) REFERENCES app_users(id) ON DELETE CASCADE
+    );
+  `);
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_wunderbot_credentials_owner ON wunderbot_credentials(owner_user_id, seed_id, created_at DESC);'
+  );
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_wunderbot_credentials_lookup ON wunderbot_credentials(owner_user_id, seed_id, credential_type);'
+  );
+
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS wunderland_sol_agent_signers (
+      seed_id TEXT PRIMARY KEY,
+      agent_identity_pda TEXT NOT NULL,
+      owner_wallet TEXT NOT NULL,
+      agent_signer_pubkey TEXT NOT NULL,
+      encrypted_signer_secret_key TEXT NOT NULL,
+      created_at BIGINT NOT NULL,
+      updated_at BIGINT NOT NULL,
+      FOREIGN KEY (seed_id) REFERENCES wunderbots(seed_id) ON DELETE CASCADE
+    );
+  `);
+  await db.exec(
+    'CREATE UNIQUE INDEX IF NOT EXISTS idx_wunderland_sol_agent_signers_pda ON wunderland_sol_agent_signers(agent_identity_pda);'
+  );
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_wunderland_sol_agent_signers_owner ON wunderland_sol_agent_signers(owner_wallet);'
+  );
+
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS wunderland_channel_oauth_states (
+      state_id TEXT PRIMARY KEY,
+      owner_user_id TEXT NOT NULL,
+      seed_id TEXT NOT NULL,
+      platform TEXT NOT NULL,
+      redirect_uri TEXT NOT NULL,
+      created_at BIGINT NOT NULL,
+      expires_at BIGINT NOT NULL,
+      consumed INTEGER DEFAULT 0,
+      FOREIGN KEY (seed_id) REFERENCES wunderbots(seed_id) ON DELETE CASCADE,
+      FOREIGN KEY (owner_user_id) REFERENCES app_users(id) ON DELETE CASCADE
+    );
+  `);
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_wunderland_channel_oauth_states_exp ON wunderland_channel_oauth_states(expires_at, consumed);'
+  );
+
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS wunderland_channel_bindings (
+      binding_id TEXT PRIMARY KEY,
+      seed_id TEXT NOT NULL,
+      owner_user_id TEXT NOT NULL,
+      platform TEXT NOT NULL,
+      channel_id TEXT NOT NULL,
+      conversation_type TEXT NOT NULL DEFAULT 'direct',
+      credential_id TEXT,
+      is_active INTEGER DEFAULT 1,
+      auto_broadcast INTEGER DEFAULT 0,
+      platform_config TEXT,
+      created_at BIGINT NOT NULL,
+      updated_at BIGINT NOT NULL,
+      FOREIGN KEY (seed_id) REFERENCES wunderbots(seed_id) ON DELETE CASCADE,
+      FOREIGN KEY (owner_user_id) REFERENCES app_users(id) ON DELETE CASCADE,
+      FOREIGN KEY (credential_id) REFERENCES wunderbot_credentials(credential_id) ON DELETE SET NULL
+    );
+  `);
+  await db.exec(
+    'CREATE UNIQUE INDEX IF NOT EXISTS idx_wunderland_channel_bindings_unique ON wunderland_channel_bindings(seed_id, platform, channel_id);'
+  );
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_wunderland_channel_bindings_owner ON wunderland_channel_bindings(owner_user_id, seed_id, platform);'
+  );
+
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS wunderland_channel_sessions (
+      session_id TEXT PRIMARY KEY,
+      seed_id TEXT NOT NULL,
+      platform TEXT NOT NULL,
+      conversation_id TEXT NOT NULL,
+      conversation_type TEXT NOT NULL DEFAULT 'direct',
+      remote_user_id TEXT,
+      remote_user_name TEXT,
+      last_message_at BIGINT NOT NULL,
+      message_count INTEGER NOT NULL DEFAULT 0,
+      is_active INTEGER DEFAULT 1,
+      context_json TEXT,
+      created_at BIGINT NOT NULL,
+      updated_at BIGINT NOT NULL,
+      FOREIGN KEY (seed_id) REFERENCES wunderbots(seed_id) ON DELETE CASCADE
+    );
+  `);
+  await db.exec(
+    'CREATE UNIQUE INDEX IF NOT EXISTS idx_wunderland_channel_sessions_unique ON wunderland_channel_sessions(seed_id, platform, conversation_id);'
+  );
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_wunderland_channel_sessions_last ON wunderland_channel_sessions(seed_id, last_message_at DESC);'
+  );
+
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS wunderland_voice_calls (
+      call_id TEXT PRIMARY KEY,
+      seed_id TEXT NOT NULL,
+      owner_user_id TEXT NOT NULL,
+      provider TEXT NOT NULL,
+      provider_call_id TEXT,
+      direction TEXT NOT NULL,
+      from_number TEXT,
+      to_number TEXT,
+      state TEXT NOT NULL,
+      mode TEXT,
+      start_time BIGINT,
+      end_time BIGINT,
+      transcript_json TEXT,
+      metadata TEXT,
+      created_at BIGINT NOT NULL,
+      updated_at BIGINT NOT NULL,
+      FOREIGN KEY (seed_id) REFERENCES wunderbots(seed_id) ON DELETE CASCADE,
+      FOREIGN KEY (owner_user_id) REFERENCES app_users(id) ON DELETE CASCADE
+    );
+  `);
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_wunderland_voice_calls_owner ON wunderland_voice_calls(owner_user_id, created_at DESC);'
+  );
+
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS wunderland_cron_jobs (
+      job_id TEXT PRIMARY KEY,
+      seed_id TEXT NOT NULL,
+      owner_user_id TEXT NOT NULL,
+      name TEXT NOT NULL,
+      description TEXT,
+      enabled INTEGER DEFAULT 1,
+      schedule_kind TEXT NOT NULL,
+      schedule_config TEXT NOT NULL,
+      payload_kind TEXT NOT NULL,
+      payload_config TEXT NOT NULL,
+      state_json TEXT,
+      created_at BIGINT NOT NULL,
+      updated_at BIGINT NOT NULL,
+      FOREIGN KEY (seed_id) REFERENCES wunderbots(seed_id) ON DELETE CASCADE,
+      FOREIGN KEY (owner_user_id) REFERENCES app_users(id) ON DELETE CASCADE
+    );
+  `);
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_wunderland_cron_jobs_owner ON wunderland_cron_jobs(owner_user_id, seed_id, created_at DESC);'
+  );
+
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS wunderland_posts (
+      post_id TEXT PRIMARY KEY,
+      seed_id TEXT NOT NULL,
+      title TEXT,
+      enclave_id TEXT,
+      content TEXT NOT NULL,
+      manifest TEXT NOT NULL,
+      status TEXT NOT NULL DEFAULT 'drafting',
+      reply_to_post_id TEXT,
+      agent_level_at_post INTEGER,
+      stimulus_type TEXT,
+      stimulus_event_id TEXT,
+      stimulus_source_provider_id TEXT,
+      stimulus_timestamp BIGINT,
+      likes INTEGER DEFAULT 0,
+      downvotes INTEGER DEFAULT 0,
+      boosts INTEGER DEFAULT 0,
+      replies INTEGER DEFAULT 0,
+      views INTEGER DEFAULT 0,
+      anchor_status TEXT,
+      anchor_error TEXT,
+      anchored_at BIGINT,
+      content_hash_hex TEXT,
+      manifest_hash_hex TEXT,
+      content_cid TEXT,
+      manifest_cid TEXT,
+      sol_cluster TEXT,
+      sol_program_id TEXT,
+      sol_enclave_pda TEXT,
+      sol_post_pda TEXT,
+      sol_tx_signature TEXT,
+      sol_entry_index INTEGER,
+      created_at BIGINT NOT NULL,
+      published_at BIGINT,
+      FOREIGN KEY (seed_id) REFERENCES wunderbots(seed_id) ON DELETE CASCADE,
+      FOREIGN KEY (reply_to_post_id) REFERENCES wunderland_posts(post_id) ON DELETE SET NULL
+    );
+  `);
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_wunderland_posts_seed ON wunderland_posts(seed_id, created_at DESC);'
+  );
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_wunderland_posts_status ON wunderland_posts(status, published_at DESC);'
+  );
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_wunderland_posts_reply ON wunderland_posts(reply_to_post_id);'
+  );
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_wunderland_posts_enclave ON wunderland_posts(enclave_id, created_at DESC);'
+  );
+
+  // Threaded comments on posts (with optional on-chain anchoring metadata).
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS wunderland_comments (
+      comment_id TEXT PRIMARY KEY,
+      post_id TEXT NOT NULL,
+      parent_comment_id TEXT,
+      seed_id TEXT NOT NULL,
+      content TEXT NOT NULL,
+      manifest TEXT DEFAULT '{}',
+      depth INTEGER DEFAULT 0,
+      path TEXT DEFAULT '',
+      upvotes INTEGER DEFAULT 0,
+      downvotes INTEGER DEFAULT 0,
+      score INTEGER DEFAULT 0,
+      wilson_score REAL DEFAULT 0.0,
+      child_count INTEGER DEFAULT 0,
+      status TEXT DEFAULT 'active',
+      anchor_status TEXT,
+      anchor_error TEXT,
+      anchored_at BIGINT,
+      content_hash_hex TEXT,
+      manifest_hash_hex TEXT,
+      content_cid TEXT,
+      manifest_cid TEXT,
+      sol_cluster TEXT,
+      sol_program_id TEXT,
+      sol_post_pda TEXT,
+      sol_tx_signature TEXT,
+      created_at TEXT DEFAULT (CURRENT_TIMESTAMP),
+      FOREIGN KEY (post_id) REFERENCES wunderland_posts(post_id) ON DELETE CASCADE,
+      FOREIGN KEY (seed_id) REFERENCES wunderbots(seed_id) ON DELETE CASCADE,
+      FOREIGN KEY (parent_comment_id) REFERENCES wunderland_comments(comment_id) ON DELETE SET NULL
+    );
+  `);
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_wunderland_comments_post ON wunderland_comments(post_id, wilson_score DESC);'
+  );
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_wunderland_comments_path ON wunderland_comments(path);'
+  );
+
+  // Canonical content votes (posts and comments) for governance/trust engines.
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS wunderland_content_votes (
+      entity_type TEXT NOT NULL,
+      entity_id TEXT NOT NULL,
+      voter_seed_id TEXT NOT NULL,
+      direction INTEGER NOT NULL,
+      created_at BIGINT NOT NULL,
+      UNIQUE(entity_type, entity_id, voter_seed_id)
+    );
+  `);
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_wunderland_votes_entity ON wunderland_content_votes(entity_type, entity_id);'
+  );
+
+  // Emoji reactions (personality-driven reactions on posts and comments).
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS wunderland_emoji_reactions (
+      entity_type TEXT NOT NULL,
+      entity_id TEXT NOT NULL,
+      reactor_seed_id TEXT NOT NULL,
+      emoji TEXT NOT NULL,
+      created_at BIGINT NOT NULL,
+      UNIQUE(entity_type, entity_id, reactor_seed_id, emoji)
+    );
+  `);
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_wunderland_emoji_reactions_entity ON wunderland_emoji_reactions(entity_type, entity_id);'
+  );
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_wunderland_emoji_reactions_reactor ON wunderland_emoji_reactions(reactor_seed_id);'
+  );
+
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS wunderland_engagement_actions (
+      action_id TEXT PRIMARY KEY,
+      post_id TEXT NOT NULL,
+      actor_seed_id TEXT NOT NULL,
+      type TEXT NOT NULL,
+      payload TEXT,
+      timestamp BIGINT NOT NULL,
+      FOREIGN KEY (post_id) REFERENCES wunderland_posts(post_id) ON DELETE CASCADE
+    );
+  `);
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_wunderland_engagement_post ON wunderland_engagement_actions(post_id, type);'
+  );
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_wunderland_engagement_actor ON wunderland_engagement_actions(actor_seed_id);'
+  );
+
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS wunderland_approval_queue (
+      queue_id TEXT PRIMARY KEY,
+      post_id TEXT NOT NULL,
+      seed_id TEXT NOT NULL,
+      owner_user_id TEXT NOT NULL,
+      content TEXT NOT NULL,
+      manifest TEXT NOT NULL,
+      status TEXT DEFAULT 'pending',
+      timeout_ms INTEGER DEFAULT 300000,
+      queued_at BIGINT NOT NULL,
+      decided_at BIGINT,
+      rejection_reason TEXT,
+      FOREIGN KEY (post_id) REFERENCES wunderland_posts(post_id) ON DELETE CASCADE,
+      FOREIGN KEY (seed_id) REFERENCES wunderbots(seed_id) ON DELETE CASCADE,
+      FOREIGN KEY (owner_user_id) REFERENCES app_users(id) ON DELETE CASCADE
+    );
+  `);
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_wunderland_approval_owner ON wunderland_approval_queue(owner_user_id, status);'
+  );
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_wunderland_approval_status ON wunderland_approval_queue(status, queued_at DESC);'
+  );
+
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS wunderland_stimuli (
+      event_id TEXT PRIMARY KEY,
+      type TEXT NOT NULL,
+      priority TEXT DEFAULT 'normal',
+      payload TEXT NOT NULL,
+      source_provider_id TEXT,
+      source_external_id TEXT,
+      source_verified INTEGER DEFAULT 0,
+      target_seed_ids TEXT,
+      created_at BIGINT NOT NULL,
+      processed_at BIGINT
+    );
+  `);
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_wunderland_stimuli_type ON wunderland_stimuli(type, created_at DESC);'
+  );
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_wunderland_stimuli_processed ON wunderland_stimuli(processed_at);'
+  );
+
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS wunderland_tips (
+      tip_id TEXT PRIMARY KEY,
+      amount REAL NOT NULL DEFAULT 0,
+      data_source_type TEXT NOT NULL,
+      data_source_payload TEXT NOT NULL,
+      attribution_type TEXT,
+      attribution_identifier TEXT,
+      target_seed_ids TEXT,
+      visibility TEXT DEFAULT 'public',
+      status TEXT DEFAULT 'queued',
+      created_at BIGINT NOT NULL
+    );
+  `);
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_wunderland_tips_status ON wunderland_tips(status, created_at DESC);'
+  );
+
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS wunderland_proposals (
+      proposal_id TEXT PRIMARY KEY,
+      proposer_seed_id TEXT NOT NULL,
+      title TEXT NOT NULL,
+      description TEXT NOT NULL,
+      proposal_type TEXT NOT NULL,
+      options_json TEXT,
+      quorum_percentage REAL,
+      metadata TEXT,
+      status TEXT DEFAULT 'open',
+      votes_for INTEGER DEFAULT 0,
+      votes_against INTEGER DEFAULT 0,
+      votes_abstain INTEGER DEFAULT 0,
+      min_level_to_vote INTEGER DEFAULT 3,
+      created_at BIGINT NOT NULL,
+      closes_at BIGINT NOT NULL,
+      decided_at BIGINT
+    );
+  `);
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_wunderland_proposals_status ON wunderland_proposals(status);'
+  );
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_wunderland_proposals_proposer ON wunderland_proposals(proposer_seed_id);'
+  );
+
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS wunderland_votes (
+      vote_id TEXT PRIMARY KEY,
+      proposal_id TEXT NOT NULL,
+      voter_seed_id TEXT NOT NULL,
+      vote TEXT NOT NULL,
+      reasoning TEXT,
+      voter_level INTEGER NOT NULL,
+      voted_at BIGINT NOT NULL,
+      FOREIGN KEY (proposal_id) REFERENCES wunderland_proposals(proposal_id) ON DELETE CASCADE
+    );
+  `);
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_wunderland_votes_proposal ON wunderland_votes(proposal_id);'
+  );
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_wunderland_votes_voter ON wunderland_votes(voter_seed_id);'
+  );
+  await db.exec(
+    'CREATE UNIQUE INDEX IF NOT EXISTS idx_wunderland_votes_unique ON wunderland_votes(proposal_id, voter_seed_id);'
+  );
+
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS wunderland_world_feed_sources (
+      source_id TEXT PRIMARY KEY,
+      name TEXT NOT NULL,
+      type TEXT NOT NULL,
+      url TEXT,
+      poll_interval_ms INTEGER DEFAULT 300000,
+      categories TEXT,
+      is_active INTEGER DEFAULT 1,
+      last_polled_at BIGINT,
+      created_at BIGINT NOT NULL
+    );
+  `);
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_wunderland_wfs_active ON wunderland_world_feed_sources(is_active);'
+  );
+
+  // ── Orchestration persistence (env-gated runtime) ──────────────────────────
+
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS wunderbot_moods (
+      seed_id TEXT PRIMARY KEY,
+      valence REAL NOT NULL,
+      arousal REAL NOT NULL,
+      dominance REAL NOT NULL,
+      curiosity REAL,
+      frustration REAL,
+      mood_label TEXT NOT NULL,
+      updated_at TEXT NOT NULL
+    );
+  `);
+
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS wunderbot_mood_history (
+      entry_id TEXT PRIMARY KEY,
+      seed_id TEXT NOT NULL,
+      valence REAL NOT NULL,
+      arousal REAL NOT NULL,
+      dominance REAL NOT NULL,
+      trigger_type TEXT NOT NULL,
+      trigger_entity_id TEXT,
+      delta_valence REAL NOT NULL,
+      delta_arousal REAL NOT NULL,
+      delta_dominance REAL NOT NULL,
+      created_at TEXT NOT NULL
+    );
+  `);
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_wunderbot_mood_history_seed ON wunderbot_mood_history(seed_id, created_at DESC);'
+  );
+
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS wunderland_trust_scores (
+      from_seed_id TEXT NOT NULL,
+      to_seed_id TEXT NOT NULL,
+      score REAL NOT NULL,
+      interaction_count INTEGER NOT NULL DEFAULT 0,
+      positive_engagements INTEGER NOT NULL DEFAULT 0,
+      negative_engagements INTEGER NOT NULL DEFAULT 0,
+      last_interaction_at BIGINT NOT NULL,
+      PRIMARY KEY (from_seed_id, to_seed_id)
+    );
+  `);
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_wunderland_trust_scores_seed ON wunderland_trust_scores(from_seed_id, last_interaction_at DESC);'
+  );
+
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS wunderland_reputations (
+      seed_id TEXT PRIMARY KEY,
+      global_reputation REAL NOT NULL DEFAULT 0,
+      updated_at BIGINT NOT NULL
+    );
+  `);
+
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS wunderland_dm_threads (
+      thread_id TEXT PRIMARY KEY,
+      participant_a TEXT NOT NULL,
+      participant_b TEXT NOT NULL,
+      last_message_at BIGINT NOT NULL,
+      message_count INTEGER NOT NULL DEFAULT 0,
+      created_at BIGINT NOT NULL
+    );
+  `);
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_wunderland_dm_threads_participants ON wunderland_dm_threads(participant_a, participant_b, last_message_at DESC);'
+  );
+
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS wunderland_dm_messages (
+      message_id TEXT PRIMARY KEY,
+      thread_id TEXT NOT NULL,
+      from_seed_id TEXT NOT NULL,
+      content TEXT NOT NULL,
+      manifest TEXT NOT NULL,
+      reply_to_message_id TEXT,
+      created_at BIGINT NOT NULL,
+      FOREIGN KEY (thread_id) REFERENCES wunderland_dm_threads(thread_id) ON DELETE CASCADE
+    );
+  `);
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_wunderland_dm_messages_thread ON wunderland_dm_messages(thread_id, created_at DESC);'
+  );
+
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS wunderbot_safety (
+      seed_id TEXT PRIMARY KEY,
+      paused INTEGER NOT NULL DEFAULT 0,
+      stopped INTEGER NOT NULL DEFAULT 0,
+      dms_enabled INTEGER NOT NULL DEFAULT 1,
+      reason TEXT,
+      updated_at BIGINT NOT NULL
+    );
+  `);
+
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS wunderland_content_flags (
+      flag_id TEXT PRIMARY KEY,
+      entity_type TEXT NOT NULL,
+      entity_id TEXT NOT NULL,
+      author_seed_id TEXT NOT NULL,
+      reason TEXT NOT NULL,
+      severity TEXT NOT NULL,
+      flagged_at BIGINT NOT NULL,
+      resolved INTEGER NOT NULL DEFAULT 0,
+      resolved_by TEXT,
+      resolved_at BIGINT
+    );
+  `);
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_wunderland_content_flags_entity ON wunderland_content_flags(entity_type, entity_id);'
+  );
+
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS wunderland_alliances (
+      alliance_id TEXT PRIMARY KEY,
+      name TEXT NOT NULL,
+      description TEXT,
+      founder_seed_id TEXT NOT NULL,
+      member_seed_ids TEXT,
+      shared_topics TEXT,
+      status TEXT NOT NULL,
+      created_at BIGINT NOT NULL
+    );
+  `);
+
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS wunderland_alliance_proposals (
+      alliance_id TEXT PRIMARY KEY,
+      founder_seed_id TEXT NOT NULL,
+      invited_seed_ids TEXT,
+      config TEXT,
+      accepted_by TEXT,
+      status TEXT NOT NULL,
+      created_at BIGINT NOT NULL
+    );
+  `);
+
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS wunderland_browsing_sessions (
+      session_id TEXT PRIMARY KEY,
+      seed_id TEXT NOT NULL,
+      enclaves_visited TEXT,
+      posts_read INTEGER NOT NULL DEFAULT 0,
+      comments_written INTEGER NOT NULL DEFAULT 0,
+      votes_cast INTEGER NOT NULL DEFAULT 0,
+      emoji_reactions INTEGER DEFAULT 0,
+      episodic_json TEXT,
+      reasoning_traces_json TEXT,
+      started_at BIGINT NOT NULL,
+      finished_at BIGINT NOT NULL
+    );
+  `);
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_wunderland_browsing_sessions_seed ON wunderland_browsing_sessions(seed_id, finished_at DESC);'
+  );
+
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS wunderland_enclaves (
+      enclave_id TEXT PRIMARY KEY,
+      name TEXT NOT NULL UNIQUE,
+      display_name TEXT NOT NULL,
+      description TEXT DEFAULT '',
+      rules TEXT DEFAULT '[]',
+      topic_tags TEXT DEFAULT '[]',
+      creator_seed_id TEXT NOT NULL,
+      moderator_seed_id TEXT,
+      post_count INTEGER DEFAULT 0,
+      member_count INTEGER DEFAULT 0,
+      min_level_to_post TEXT DEFAULT 'Newcomer',
+      status TEXT DEFAULT 'active',
+      created_at TEXT DEFAULT (CURRENT_TIMESTAMP)
+    );
+  `);
+
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS wunderland_enclave_members (
+      enclave_id TEXT NOT NULL,
+      seed_id TEXT NOT NULL,
+      role TEXT DEFAULT 'member',
+      joined_at TEXT DEFAULT (CURRENT_TIMESTAMP),
+      UNIQUE(enclave_id, seed_id),
+      FOREIGN KEY (enclave_id) REFERENCES wunderland_enclaves(enclave_id) ON DELETE CASCADE
+    );
+  `);
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_wunderland_enclave_members_seed ON wunderland_enclave_members(seed_id);'
+  );
+
+  // ── Jobs / Work marketplace (env-gated runtime) ────────────────────────────
+
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS wunderbot_job_states (
+      seed_id TEXT PRIMARY KEY,
+      active_job_count INTEGER NOT NULL DEFAULT 0,
+      bandwidth REAL NOT NULL DEFAULT 1.0,
+      min_acceptable_rate_per_hour REAL NOT NULL DEFAULT 0,
+      preferred_categories TEXT,
+      recent_outcomes TEXT,
+      risk_tolerance REAL NOT NULL DEFAULT 0.5,
+      total_jobs_evaluated INTEGER NOT NULL DEFAULT 0,
+      total_jobs_bid_on INTEGER NOT NULL DEFAULT 0,
+      total_jobs_completed INTEGER NOT NULL DEFAULT 0,
+      success_rate REAL NOT NULL DEFAULT 0,
+      created_at BIGINT NOT NULL,
+      updated_at BIGINT NOT NULL,
+      FOREIGN KEY (seed_id) REFERENCES wunderbots(seed_id) ON DELETE CASCADE
+    );
+  `);
+
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS wunderland_jobs (
+      job_pda TEXT PRIMARY KEY,
+      creator_wallet TEXT NOT NULL,
+      title TEXT NOT NULL,
+      description TEXT NOT NULL,
+      budget_lamports BIGINT,
+      category TEXT,
+      deadline TEXT,
+      status TEXT NOT NULL,
+      metadata_hash TEXT,
+      assigned_agent TEXT,
+      confidential_details TEXT,
+      created_at BIGINT NOT NULL,
+      updated_at BIGINT NOT NULL
+    );
+  `);
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_wunderland_jobs_status ON wunderland_jobs(status, created_at DESC);'
+  );
+
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS wunderland_job_bids (
+      bid_pda TEXT PRIMARY KEY,
+      job_pda TEXT NOT NULL,
+      agent_address TEXT NOT NULL,
+      bid_hash TEXT,
+      amount_lamports BIGINT,
+      status TEXT NOT NULL,
+      created_at BIGINT NOT NULL,
+      FOREIGN KEY (job_pda) REFERENCES wunderland_jobs(job_pda) ON DELETE CASCADE
+    );
+  `);
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_wunderland_job_bids_job ON wunderland_job_bids(job_pda, created_at ASC);'
+  );
+
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS wunderland_job_submissions (
+      submission_pda TEXT PRIMARY KEY,
+      job_pda TEXT NOT NULL,
+      agent_address TEXT NOT NULL,
+      submission_hash TEXT,
+      status TEXT NOT NULL,
+      created_at BIGINT NOT NULL,
+      FOREIGN KEY (job_pda) REFERENCES wunderland_jobs(job_pda) ON DELETE CASCADE
+    );
+  `);
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_wunderland_job_submissions_job ON wunderland_job_submissions(job_pda, created_at ASC);'
+  );
+
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS wunderland_job_confidential (
+      job_pda TEXT PRIMARY KEY,
+      creator_wallet TEXT NOT NULL,
+      confidential_details TEXT NOT NULL,
+      details_hash_hex TEXT NOT NULL,
+      signature_b64 TEXT NOT NULL,
+      created_at BIGINT NOT NULL,
+      updated_at BIGINT NOT NULL,
+      FOREIGN KEY (job_pda) REFERENCES wunderland_jobs(job_pda) ON DELETE CASCADE
+    );
+  `);
+
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS wunderland_job_deliverables (
+      deliverable_id TEXT PRIMARY KEY,
+      job_pda TEXT NOT NULL,
+      agent_address TEXT NOT NULL,
+      deliverable_type TEXT NOT NULL,
+      content TEXT,
+      ipfs_cid TEXT,
+      file_size BIGINT,
+      mime_type TEXT,
+      submission_hash TEXT NOT NULL,
+      status TEXT NOT NULL DEFAULT 'pending',
+      created_at BIGINT NOT NULL,
+      submitted_at BIGINT,
+      FOREIGN KEY (job_pda) REFERENCES wunderland_jobs(job_pda) ON DELETE CASCADE
+    );
+  `);
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_wunderland_job_deliverables_job ON wunderland_job_deliverables(job_pda, created_at DESC);'
+  );
+
+  console.log('[AppDatabase] Wunderland tables initialized.');
 };
 
 const ensureColumnExists = async (
@@ -547,6 +1399,69 @@ const ensureColumnExists = async (
     await db.exec(alterStatement);
     console.log(`[AppDatabase] Added missing column "${column}" to ${table}.`);
   }
+};
+
+const tableExists = async (db: StorageAdapter, table: string): Promise<boolean> => {
+  if (db.kind === 'postgres') {
+    const row = await db.get<{ exists: boolean }>(
+      `SELECT EXISTS (
+         SELECT 1
+           FROM information_schema.tables
+          WHERE table_schema = current_schema()
+            AND table_name = $1
+       ) AS exists`,
+      [table.toLowerCase()]
+    );
+    return Boolean(row?.exists);
+  }
+
+  const row = await db.get<{ name: string }>(
+    `SELECT name
+       FROM sqlite_master
+      WHERE type = 'table'
+        AND name = ?
+      LIMIT 1`,
+    [table]
+  );
+  return Boolean(row?.name);
+};
+
+const renameTableIfNeeded = async (
+  db: StorageAdapter,
+  oldName: string,
+  newName: string
+): Promise<void> => {
+  const oldExists = await tableExists(db, oldName);
+  const newExists = await tableExists(db, newName);
+
+  if (!oldExists || newExists) {
+    if (oldExists && newExists) {
+      throw new Error(
+        `Both "${oldName}" and "${newName}" exist. Refusing to migrate automatically.`
+      );
+    }
+    return;
+  }
+
+  await db.exec(
+    db.kind === 'postgres'
+      ? `ALTER TABLE "${oldName}" RENAME TO "${newName}"`
+      : `ALTER TABLE "${oldName}" RENAME TO "${newName}";`
+  );
+  console.log(`[AppDatabase] Renamed table "${oldName}" → "${newName}".`);
+};
+
+const migrateLegacyWunderlandTables = async (db: StorageAdapter): Promise<void> => {
+  await renameTableIfNeeded(db, 'wunderland_agents', 'wunderbots');
+  await renameTableIfNeeded(db, 'wunderland_agent_runtime', 'wunderbot_runtime');
+  await renameTableIfNeeded(db, 'wunderland_agent_credentials', 'wunderbot_credentials');
+  await renameTableIfNeeded(db, 'wunderland_oauth_states', 'wunderland_channel_oauth_states');
+  await renameTableIfNeeded(db, 'wunderland_agent_moods', 'wunderbot_moods');
+  await renameTableIfNeeded(db, 'wunderland_agent_mood_history', 'wunderbot_mood_history');
+  await renameTableIfNeeded(db, 'wunderland_agent_safety', 'wunderbot_safety');
+  await renameTableIfNeeded(db, 'wunderland_agent_job_states', 'wunderbot_job_states');
+  await renameTableIfNeeded(db, 'wunderland_subreddits', 'wunderland_enclaves');
+  await renameTableIfNeeded(db, 'wunderland_subreddit_members', 'wunderland_enclave_members');
 };
 
 const ensureWorkbenchUser = async (db: StorageAdapter): Promise<void> => {
@@ -591,6 +1506,7 @@ export const initializeAppDatabase = async (): Promise<void> => {
       console.log(
         `[AppDatabase] Connected using adapter "${adapter.kind}". Persistence=${!usingInMemory}.`
       );
+      await migrateLegacyWunderlandTables(adapter);
       await runInitialSchema(adapter);
       await ensureColumnExists(
         adapter,
@@ -633,6 +1549,80 @@ export const initializeAppDatabase = async (): Promise<void> => {
           : 'ALTER TABLE organizations ADD COLUMN settings_json TEXT;'
       );
 
+      await ensureColumnExists(
+        adapter,
+        'wunderland_posts',
+        'enclave_id',
+        adapter.kind === 'postgres'
+          ? 'ALTER TABLE wunderland_posts ADD COLUMN enclave_id TEXT'
+          : 'ALTER TABLE wunderland_posts ADD COLUMN enclave_id TEXT;'
+      );
+      await ensureColumnExists(
+        adapter,
+        'wunderland_posts',
+        'downvotes',
+        adapter.kind === 'postgres'
+          ? 'ALTER TABLE wunderland_posts ADD COLUMN downvotes INTEGER DEFAULT 0'
+          : 'ALTER TABLE wunderland_posts ADD COLUMN downvotes INTEGER DEFAULT 0;'
+      );
+      await ensureColumnExists(
+        adapter,
+        'wunderland_posts',
+        'stimulus_type',
+        adapter.kind === 'postgres'
+          ? 'ALTER TABLE wunderland_posts ADD COLUMN stimulus_type TEXT'
+          : 'ALTER TABLE wunderland_posts ADD COLUMN stimulus_type TEXT;'
+      );
+      await ensureColumnExists(
+        adapter,
+        'wunderland_posts',
+        'stimulus_event_id',
+        adapter.kind === 'postgres'
+          ? 'ALTER TABLE wunderland_posts ADD COLUMN stimulus_event_id TEXT'
+          : 'ALTER TABLE wunderland_posts ADD COLUMN stimulus_event_id TEXT;'
+      );
+      await ensureColumnExists(
+        adapter,
+        'wunderland_posts',
+        'stimulus_source_provider_id',
+        adapter.kind === 'postgres'
+          ? 'ALTER TABLE wunderland_posts ADD COLUMN stimulus_source_provider_id TEXT'
+          : 'ALTER TABLE wunderland_posts ADD COLUMN stimulus_source_provider_id TEXT;'
+      );
+      await ensureColumnExists(
+        adapter,
+        'wunderland_posts',
+        'stimulus_timestamp',
+        adapter.kind === 'postgres'
+          ? 'ALTER TABLE wunderland_posts ADD COLUMN stimulus_timestamp BIGINT'
+          : 'ALTER TABLE wunderland_posts ADD COLUMN stimulus_timestamp BIGINT;'
+      );
+
+      await ensureColumnExists(
+        adapter,
+        'wunderland_browsing_sessions',
+        'emoji_reactions',
+        adapter.kind === 'postgres'
+          ? 'ALTER TABLE wunderland_browsing_sessions ADD COLUMN emoji_reactions INTEGER DEFAULT 0'
+          : 'ALTER TABLE wunderland_browsing_sessions ADD COLUMN emoji_reactions INTEGER DEFAULT 0;'
+      );
+      await ensureColumnExists(
+        adapter,
+        'wunderland_browsing_sessions',
+        'episodic_json',
+        adapter.kind === 'postgres'
+          ? 'ALTER TABLE wunderland_browsing_sessions ADD COLUMN episodic_json TEXT'
+          : 'ALTER TABLE wunderland_browsing_sessions ADD COLUMN episodic_json TEXT;'
+      );
+      await ensureColumnExists(
+        adapter,
+        'wunderland_browsing_sessions',
+        'reasoning_traces_json',
+        adapter.kind === 'postgres'
+          ? 'ALTER TABLE wunderland_browsing_sessions ADD COLUMN reasoning_traces_json TEXT'
+          : 'ALTER TABLE wunderland_browsing_sessions ADD COLUMN reasoning_traces_json TEXT;'
+      );
+
       await ensureWorkbenchUser(adapter);
     } catch (error) {
       usingInMemory = true;
@@ -644,6 +1634,7 @@ export const initializeAppDatabase = async (): Promise<void> => {
         filePath: DB_PATH,
         priority: ['sqljs'],
       });
+      await migrateLegacyWunderlandTables(adapter);
       await runInitialSchema(adapter);
       await ensureWorkbenchUser(adapter);
     }
