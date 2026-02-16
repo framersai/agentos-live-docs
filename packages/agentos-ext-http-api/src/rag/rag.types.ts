@@ -98,6 +98,8 @@ export interface RagQueryRequest {
     /** Max number of generated variants (in addition to the base `query`). Default: `2`. */
     maxVariants?: number;
   };
+  /** When true, return a detailed audit trail with the response. */
+  includeAudit?: boolean;
 }
 
 /**
@@ -125,6 +127,79 @@ export interface RagQueryResponse {
   chunks: RagRetrievedChunk[];
   totalResults: number;
   processingTimeMs: number;
+  /** Present when `includeAudit: true` was requested. */
+  auditTrail?: RagAuditTrailWire;
+}
+
+/**
+ * Wire-format for RAG audit trail (serializable JSON, no class instances).
+ */
+export interface RagAuditTrailWire {
+  trailId: string;
+  requestId: string;
+  seedId?: string;
+  sessionId?: string;
+  query: string;
+  timestamp: string;
+  operations: Array<{
+    operationId: string;
+    operationType: string;
+    startedAt: string;
+    durationMs: number;
+    retrievalMethod?: {
+      strategy: string;
+      hybridAlpha?: number;
+      topK?: number;
+      mmrLambda?: number;
+    };
+    sources: Array<{
+      chunkId: string;
+      documentId: string;
+      source?: string;
+      contentSnippet: string;
+      relevanceScore: number;
+      dataSourceId?: string;
+      metadata?: Record<string, unknown>;
+    }>;
+    tokenUsage: {
+      embeddingTokens: number;
+      llmPromptTokens: number;
+      llmCompletionTokens: number;
+      totalTokens: number;
+    };
+    costUSD: number;
+    resultsCount: number;
+    relevanceScores?: { min: number; max: number; avg: number };
+    dataSourceIds?: string[];
+    collectionIds?: string[];
+    graphDetails?: {
+      entitiesMatched: number;
+      communitiesSearched: number;
+      traversalTimeMs: number;
+    };
+    rerankDetails?: {
+      providerId: string;
+      modelId: string;
+      documentsReranked: number;
+    };
+  }>;
+  summary: {
+    totalOperations: number;
+    totalLLMCalls: number;
+    totalEmbeddingCalls: number;
+    totalTokens: number;
+    totalPromptTokens: number;
+    totalCompletionTokens: number;
+    totalEmbeddingTokens: number;
+    totalCostUSD: number;
+    totalDurationMs: number;
+    operationTypes: string[];
+    sourceSummary: {
+      uniqueDocuments: number;
+      uniqueCollections: number;
+      uniqueDataSources: number;
+    };
+  };
 }
 
 /**
@@ -266,6 +341,7 @@ export interface AgentOSRagServiceLike {
     totalResults: number;
     processingTimeMs: number;
     error?: string;
+    auditTrail?: RagAuditTrailWire;
   }>;
 
   // GraphRAG (optional; may throw when disabled).
@@ -293,6 +369,16 @@ export interface AgentOSRagServiceLike {
   deleteCollection(collectionId: string): Promise<boolean>;
   isAvailable(): boolean;
   initialize(): Promise<void>;
+
+  // Audit trail operations.
+  getAuditTrails(opts: {
+    seedId?: string;
+    sessionId?: string;
+    since?: string;
+    limit?: number;
+  }): Promise<RagAuditTrailWire[]>;
+  getAuditTrail(trailId: string): Promise<RagAuditTrailWire | null>;
+  storeAuditTrail(trail: RagAuditTrailWire): Promise<void>;
 
   // Multimodal asset operations (image/audio).
   ingestImageAsset(input: RagMediaAssetIngestRequest): Promise<RagMediaIngestionResponse>;

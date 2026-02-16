@@ -7,6 +7,7 @@
 import { Router, type Request, type Response, type NextFunction } from 'express';
 import {
   type AgentOSRagRouterDeps,
+  type RagAuditTrailWire,
   type RagDocumentSummary,
   type RagIngestRequest,
   type RagIngestResponse,
@@ -112,6 +113,7 @@ export const createAgentOSRagRouter = (deps: AgentOSRagRouterDeps): Router => {
           strategyParams: body.strategyParams,
           queryVariants: body.queryVariants,
           rewrite: body.rewrite,
+          includeAudit: body.includeAudit,
         });
 
         const response: RagQueryResponse = {
@@ -120,6 +122,7 @@ export const createAgentOSRagRouter = (deps: AgentOSRagRouterDeps): Router => {
           chunks: result.chunks,
           totalResults: result.totalResults,
           processingTimeMs: result.processingTimeMs,
+          auditTrail: result.auditTrail,
         };
 
         return res.status(200).json(response);
@@ -422,6 +425,58 @@ export const createAgentOSRagRouter = (deps: AgentOSRagRouterDeps): Router => {
           collectionId,
           message: 'Collection deleted successfully',
         });
+      } catch (error) {
+        next(error);
+      }
+    }
+  );
+
+  // ── Audit Trail ──────────────────────────────────────────────────────
+
+  router.get(
+    '/audit',
+    async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
+      try {
+        if (!deps.isEnabled()) {
+          return res.status(503).json({
+            success: false,
+            message: 'AgentOS integration disabled',
+            error: 'AGENTOS_DISABLED',
+          });
+        }
+
+        const { seedId, sessionId, since, limit } = req.query;
+        const trails = await deps.ragService.getAuditTrails({
+          seedId: seedId as string | undefined,
+          sessionId: sessionId as string | undefined,
+          since: since as string | undefined,
+          limit: limit ? Number(limit) : 20,
+        });
+
+        return res.status(200).json({ success: true, trails });
+      } catch (error) {
+        next(error);
+      }
+    }
+  );
+
+  router.get(
+    '/audit/:trailId',
+    async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
+      try {
+        if (!deps.isEnabled()) {
+          return res.status(503).json({
+            success: false,
+            message: 'AgentOS integration disabled',
+            error: 'AGENTOS_DISABLED',
+          });
+        }
+
+        const trail = await deps.ragService.getAuditTrail(req.params.trailId);
+        if (!trail) {
+          return res.status(404).json({ success: false, message: 'Audit trail not found' });
+        }
+        return res.status(200).json({ success: true, trail });
       } catch (error) {
         next(error);
       }
