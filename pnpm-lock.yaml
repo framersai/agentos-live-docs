@@ -728,7 +728,7 @@ importers:
         version: 14.3.1(@types/react@18.3.26)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@testing-library/user-event':
         specifier: ^14.6.1
-        version: 14.6.1(@testing-library/dom@9.3.4)
+        version: 14.6.1(@testing-library/dom@10.4.1)
       '@types/bcrypt':
         specifier: ^5.0.2
         version: 5.0.2
@@ -880,6 +880,12 @@ importers:
         specifier: ^8.18.0
         version: 8.18.3(bufferutil@4.1.0)(utf-8-validate@5.0.10)
     devDependencies:
+      '@testing-library/dom':
+        specifier: ^10.4.1
+        version: 10.4.1
+      '@testing-library/react':
+        specifier: ^16.3.2
+        version: 16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@18.3.7(@types/react@18.3.26))(@types/react@18.3.26)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       '@types/node':
         specifier: ^20
         version: 20.19.23
@@ -1117,7 +1123,7 @@ importers:
         version: 3.18.3
       wunderland:
         specifier: ^0.16.0
-        version: link:../../../packages/wunderland
+        version: 0.16.2(@aws-sdk/client-s3@3.990.0)(@capacitor-community/sqlite@6.0.2(@capacitor/core@8.0.0))(@opentelemetry/core@2.5.1(@opentelemetry/api@1.9.0))(better-sqlite3@12.6.2)(bufferutil@4.1.0)(encoding@0.1.13)(graphology-communities-louvain@2.0.2(graphology-types@0.24.8))(graphology-types@0.24.8)(graphology@0.26.0(graphology-types@0.24.8))(hnswlib-node@3.0.0)(typescript@5.6.3)(utf-8-validate@5.0.10)
     devDependencies:
       '@nestjs/testing':
         specifier: ^11.1.13
@@ -1750,7 +1756,7 @@ importers:
         version: link:../../../../packages/agentos
       wunderland:
         specifier: ^0.16.0
-        version: link:../../../../packages/wunderland
+        version: 0.16.2(@aws-sdk/client-s3@3.990.0)(@capacitor-community/sqlite@6.0.2(@capacitor/core@8.0.0))(@opentelemetry/core@2.5.1(@opentelemetry/api@1.9.0))(better-sqlite3@12.6.2)(bufferutil@4.1.0)(encoding@0.1.13)(graphology-communities-louvain@2.0.2(graphology-types@0.24.8))(graphology-types@0.24.8)(graphology@0.26.0(graphology-types@0.24.8))(hnswlib-node@3.0.0)(typescript@5.6.3)(utf-8-validate@5.0.10)
     devDependencies:
       '@types/node':
         specifier: ^20.10.0
@@ -2383,7 +2389,7 @@ importers:
         version: 14.3.1(@types/react@18.3.26)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@testing-library/user-event':
         specifier: ^14.6.1
-        version: 14.6.1(@testing-library/dom@9.3.4)
+        version: 14.6.1(@testing-library/dom@10.4.1)
       '@types/bcrypt':
         specifier: ^5.0.2
         version: 5.0.2
@@ -2624,6 +2630,12 @@ importers:
         specifier: ^8.18.0
         version: 8.18.3(bufferutil@4.1.0)(utf-8-validate@5.0.10)
     devDependencies:
+      '@testing-library/dom':
+        specifier: ^10.4.1
+        version: 10.4.1
+      '@testing-library/react':
+        specifier: ^16.3.2
+        version: 16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@18.3.7(@types/react@18.3.26))(@types/react@18.3.26)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       '@types/node':
         specifier: ^20
         version: 20.19.23
@@ -7657,10 +7669,6 @@ packages:
     resolution: {integrity: sha512-/OFHhy86aG5Pe8dP5tsp+BuJ25JOAl9yaMU3WZbkeoiFMHFtJ7tu5ili7qEdBXNW9G5lDB19trwyI6V49F/8iQ==}
     engines: {node: '>=20.0.0'}
 
-  '@babel/code-frame@7.27.1':
-    resolution: {integrity: sha512-cjQ7ZlQ0Mv3b47hABuTevyTuYN4i+loJKGeV9flcCgIK37cCXRh+L1bd3iBHlynerhQ7BhCkn2BPbQUL+rGqFg==}
-    engines: {node: '>=6.9.0'}
-
   '@babel/code-frame@7.29.0':
     resolution: {integrity: sha512-9NhCeYjq9+3uxgdtp20LSiJXJvN0FeCtNGpJxuMFZ1Kv3cWUNb6DOhJwUvcVCzKGR66cw4njwM6hrJLqgOwbcw==}
     engines: {node: '>=6.9.0'}
@@ -10466,6 +10474,90 @@ packages:
 
   '@formatjs/intl-localematcher@0.8.1':
     resolution: {integrity: sha512-xwEuwQFdtSq1UKtQnyTZWC+eHdv7Uygoa+H2k/9uzBVQjDyp9r20LNDNKedWXll7FssT3GRHvqsdJGYSUWqYFA==}
+
+  '@framers/agentos-ext-auth@1.1.0':
+    resolution: {integrity: sha512-RdGfW0+/SOCzovFBh1Cv3v93lzta6FXQcIOLsDZdX6dY3NMIaPSjFmu7X2mv1h7/fNoJvHAAxkpn+XyKRNdHrQ==}
+    peerDependencies:
+      '@framers/agentos': ^0.1.0
+
+  '@framers/agentos-ext-cli-executor@1.1.0':
+    resolution: {integrity: sha512-QsXHsB9etpEdS/kwwYvlVF/YuODalvZRL7CddKxSCUX4+Uh03ZIky38RRZYO43/k0a1ClzgydLcfokFcp8C3uw==}
+    peerDependencies:
+      '@framers/agentos': ^0.1.0
+
+  '@framers/agentos-ext-giphy@1.0.0':
+    resolution: {integrity: sha512-IK8nGO8HdCMa/LTvKVENFHEa5A5ne4GdWient0hEoF5PDlmM0y3gk7ZnD7CG7ndzVzAUc1Sb4j+6EvFmqTSayg==}
+    peerDependencies:
+      '@framers/agentos': ^0.1.0
+
+  '@framers/agentos-ext-image-search@1.0.0':
+    resolution: {integrity: sha512-BdU/drBayhB/G4jAZBCfYiKD2sr6sCHA+nSLJJK+v8Ua3yTPzOo2FGJXdesBEmf4jtiLBZsF0eRLkPYul9D0XA==}
+    peerDependencies:
+      '@framers/agentos': ^0.1.0
+
+  '@framers/agentos-ext-news-search@1.0.0':
+    resolution: {integrity: sha512-XuioffHPfetVREXpfDoT/PK4kX7iOnWZQt/3CECUAdJqPxqnqiPzyf3/OzVqNXIbW9zxPruwmrZRUWw4H1FDRQ==}
+    peerDependencies:
+      '@framers/agentos': ^0.1.0
+
+  '@framers/agentos-ext-telegram@1.1.0':
+    resolution: {integrity: sha512-WnrJ9A/8q5gLoNcz6/B1j+8pb+si/Sd1OqStdtKz9Zjie9n8oA40BccQlmt+j3VYxE4zAErxrslZyIfYmODrNQ==}
+    engines: {node: '>=18.0.0'}
+    peerDependencies:
+      '@framers/agentos': ^0.1.0
+
+  '@framers/agentos-ext-voice-synthesis@1.0.0':
+    resolution: {integrity: sha512-vkAPxy+DWVQIdnHTebXv2AdPovKqVl8pqVzkAxlBlgxY5eP51pccref1CvIkQAOIMXzxHTtlkYyHGQf/XbjHsw==}
+    peerDependencies:
+      '@framers/agentos': ^0.1.0
+
+  '@framers/agentos-ext-web-browser@1.1.0':
+    resolution: {integrity: sha512-iVb5KYOPjWlOOFuERBuoIzwFmOz+xCJO8an0cl+UwPqCDDFMTyPYjwxujselhBMQXcRhuOIE7GOyPKTifuQptA==}
+    peerDependencies:
+      '@framers/agentos': ^0.1.0
+
+  '@framers/agentos-ext-web-search@1.1.0':
+    resolution: {integrity: sha512-QfFh8nNgyE2m5NZgVk2/ua8BZetiEqiOIlnAYI6KrbZWfQSKCVko+hM/8hSwgyzrg76ORFWAT31kfgIrOLItjQ==}
+    peerDependencies:
+      '@framers/agentos': ^0.1.0
+
+  '@framers/agentos-extensions-registry@0.1.1':
+    resolution: {integrity: sha512-d38EKXEKQRQAiZHvHSuQrqq0xtzA5Eyb+evG67I/tFyc9LlU4EEpMEfZ//SMyZP27Ifs13Kc9jwbvzm595/LWQ==}
+    peerDependencies:
+      '@framers/agentos': '>=0.1.0'
+
+  '@framers/agentos-skills-registry@0.2.0':
+    resolution: {integrity: sha512-u0RWXJiQ4AiPKt8QqD5ga89mQUoFAbDwmXkb/abPJUR25CrvrtXj/DEyL9pI4v2IFXkpruECE/9fBGj0Pv1o9w==}
+    peerDependencies:
+      '@framers/agentos': '>=0.1.0'
+    peerDependenciesMeta:
+      '@framers/agentos':
+        optional: true
+
+  '@framers/agentos-skills@0.1.0':
+    resolution: {integrity: sha512-aQSN+io+CzRefsT7ssYkghzf9/hUs7NUF2bN7S8N+gnpAD8md/sIrsPsY1xyGJ0KcF+1LgNgOejMRbXgnLrVUg==}
+    deprecated: Merged into @framers/agentos-skills-registry. Use @framers/agentos-skills-registry instead.
+
+  '@framers/agentos@0.1.24':
+    resolution: {integrity: sha512-LKmg5grKeBwMd0vpxkOmJVn5bAjJLMxXVNcv5kt+6XcwUf/v9Fz/WvLFm9zJO+uhYCkc7qoTnAPhIIUTNhWNKA==}
+    peerDependencies:
+      '@framers/sql-storage-adapter': '>=0.4.0'
+      graphology: '>=0.25.0'
+      graphology-communities-louvain: '>=2.0.0'
+      graphology-types: '>=0.24.0'
+      hnswlib-node: '>=3.0.0'
+      typescript: '>=5.0.0'
+    peerDependenciesMeta:
+      '@framers/sql-storage-adapter':
+        optional: true
+      graphology:
+        optional: true
+      graphology-communities-louvain:
+        optional: true
+      graphology-types:
+        optional: true
+      hnswlib-node:
+        optional: true
 
   '@framers/sql-storage-adapter@0.3.5':
     resolution: {integrity: sha512-aQUMi+EIbfz+TPLpJjsnC1PXVF6B3jAVP97sJkV4kaM66E06TQTUXT5nbMYTSiLc0Cr3MVoGYu7QhZHKYj9B4Q==}
@@ -15202,6 +15294,10 @@ packages:
     resolution: {integrity: sha512-0TrIrXs6/b7FLhLVNmfh8Sah6JgjBPH4mZ8JGb7NU6WW+cx00qK5BcAZxw7NCzxj6N8MRAIfHq+oNbPUNG5VAg==}
     hasBin: true
 
+  '@testing-library/dom@10.4.1':
+    resolution: {integrity: sha512-o4PXJQidqJl82ckFaXUeoAW+XysPLauYI43Abki5hABd853iMhitooc6znOnczgbTYmEP6U6/y1ZyKAIsvMKGg==}
+    engines: {node: '>=18'}
+
   '@testing-library/dom@9.3.4':
     resolution: {integrity: sha512-FlS4ZWlp97iiNWig0Muq8p+3rVDjRiYE+YKGbAqXOu9nwJFFOdL00kFpz42M+4huzYi86vAK1sOOfyOG45muIQ==}
     engines: {node: '>=14'}
@@ -15216,6 +15312,21 @@ packages:
     peerDependencies:
       react: ^18.0.0
       react-dom: ^18.0.0
+
+  '@testing-library/react@16.3.2':
+    resolution: {integrity: sha512-XU5/SytQM+ykqMnAnvB2umaJNIOsLF3PVv//1Ew4CTcpz0/BRyy/af40qqrt7SjKpDdT1saBMc42CUok5gaw+g==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      '@testing-library/dom': ^10.0.0
+      '@types/react': ^18.3.12
+      '@types/react-dom': ^18.3.1
+      react: ^18.0.0 || ^19.0.0
+      react-dom: ^18.0.0 || ^19.0.0
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+      '@types/react-dom':
+        optional: true
 
   '@testing-library/user-event@14.6.1':
     resolution: {integrity: sha512-vq7fv0rnt+QTXgPxr5Hjc210p6YKq2kmdziLgnsZGgLJ9e6VAShx1pACLuRjd/AS/sr7phAR58OIIpf0LlmQNw==}
@@ -17059,6 +17170,9 @@ packages:
 
   aria-query@5.1.3:
     resolution: {integrity: sha512-R5iJ5lkuHybztUfuOAznmboyjWq8O6sqNqtK7CLOqdydi54VNbORp49mb14KbWgG1QD3JFO9hJdZ+y4KutfdOQ==}
+
+  aria-query@5.3.0:
+    resolution: {integrity: sha512-b0P0sZPKtyu8HkeRAfCq0IfURZK+SuwMjY1UXGBU27wpAiTwQAIlq56IbIO+ytk/JjS1fMR14ee5WBBfKi5J6A==}
 
   aria-query@5.3.2:
     resolution: {integrity: sha512-COROpnaoap1E2F000S62r6A60uHZnmlvomhfyT2DlTcrY1OrBKn2UhH7qn5wTC9zMvD0AY7csdPSNwKP+7WiQw==}
@@ -28764,6 +28878,11 @@ packages:
     resolution: {integrity: sha512-h3Fbisa2nKGPxCpm89Hk33lBLsnaGBvctQopaBSOW/uIs6FTe1ATyAnKFJrzVs9vpGdsTe73WF3V4lIsk4Gacw==}
     engines: {node: '>=18'}
 
+  wunderland@0.16.2:
+    resolution: {integrity: sha512-YnPuppc8GDZxYYAMYs47uoI63Aww8ufpMq3pX76mhpEFbwgN1YmXzTZrSEGHVaE29CkYxF6wiG97jkyRJJbAyQ==}
+    engines: {node: '>=18.0.0'}
+    hasBin: true
+
   xdg-basedir@5.1.0:
     resolution: {integrity: sha512-GCPAHLvrIH13+c0SuacwvRYj2SxJXQ4kaVTT5xgL3kPrz56XxkF21IGhjSE1+W0aw7gpBWRGXLCPnPby6lSpmQ==}
     engines: {node: '>=12'}
@@ -30548,12 +30667,6 @@ snapshots:
       - supports-color
     optional: true
 
-  '@babel/code-frame@7.27.1':
-    dependencies:
-      '@babel/helper-validator-identifier': 7.28.5
-      js-tokens: 4.0.0
-      picocolors: 1.1.1
-
   '@babel/code-frame@7.29.0':
     dependencies:
       '@babel/helper-validator-identifier': 7.28.5
@@ -30566,7 +30679,7 @@ snapshots:
 
   '@babel/core@7.28.5':
     dependencies:
-      '@babel/code-frame': 7.27.1
+      '@babel/code-frame': 7.29.0
       '@babel/generator': 7.28.5
       '@babel/helper-compilation-targets': 7.27.2
       '@babel/helper-module-transforms': 7.28.3(@babel/core@7.28.5)
@@ -31406,7 +31519,7 @@ snapshots:
 
   '@babel/template@7.27.2':
     dependencies:
-      '@babel/code-frame': 7.27.1
+      '@babel/code-frame': 7.29.0
       '@babel/parser': 7.28.5
       '@babel/types': 7.28.5
 
@@ -31418,7 +31531,7 @@ snapshots:
 
   '@babel/traverse@7.28.5':
     dependencies:
-      '@babel/code-frame': 7.27.1
+      '@babel/code-frame': 7.29.0
       '@babel/generator': 7.28.5
       '@babel/helper-globals': 7.28.0
       '@babel/parser': 7.28.5
@@ -35090,6 +35203,133 @@ snapshots:
     dependencies:
       '@formatjs/fast-memoize': 3.1.0
       tslib: 2.8.1
+
+  '@framers/agentos-ext-auth@1.1.0(@framers/agentos@0.1.24(@framers/sql-storage-adapter@0.3.5(@aws-sdk/client-s3@3.990.0)(@capacitor-community/sqlite@6.0.2(@capacitor/core@8.0.0))(better-sqlite3@12.6.2))(graphology-communities-louvain@2.0.2(graphology-types@0.24.8))(graphology-types@0.24.8)(graphology@0.26.0(graphology-types@0.24.8))(hnswlib-node@3.0.0)(typescript@5.6.3))(encoding@0.1.13)':
+    dependencies:
+      '@framers/agentos': 0.1.24(@framers/sql-storage-adapter@0.3.5(@aws-sdk/client-s3@3.990.0)(@capacitor-community/sqlite@6.0.2(@capacitor/core@8.0.0))(better-sqlite3@12.6.2))(graphology-communities-louvain@2.0.2(graphology-types@0.24.8))(graphology-types@0.24.8)(graphology@0.26.0(graphology-types@0.24.8))(hnswlib-node@3.0.0)(typescript@5.6.3)
+      bcrypt: 5.1.1(encoding@0.1.13)
+      jsonwebtoken: 9.0.3
+    transitivePeerDependencies:
+      - encoding
+      - supports-color
+    optional: true
+
+  '@framers/agentos-ext-cli-executor@1.1.0(@framers/agentos@0.1.24(@framers/sql-storage-adapter@0.3.5(@aws-sdk/client-s3@3.990.0)(@capacitor-community/sqlite@6.0.2(@capacitor/core@8.0.0))(better-sqlite3@12.6.2))(graphology-communities-louvain@2.0.2(graphology-types@0.24.8))(graphology-types@0.24.8)(graphology@0.26.0(graphology-types@0.24.8))(hnswlib-node@3.0.0)(typescript@5.6.3))':
+    dependencies:
+      '@framers/agentos': 0.1.24(@framers/sql-storage-adapter@0.3.5(@aws-sdk/client-s3@3.990.0)(@capacitor-community/sqlite@6.0.2(@capacitor/core@8.0.0))(better-sqlite3@12.6.2))(graphology-communities-louvain@2.0.2(graphology-types@0.24.8))(graphology-types@0.24.8)(graphology@0.26.0(graphology-types@0.24.8))(hnswlib-node@3.0.0)(typescript@5.6.3)
+
+  '@framers/agentos-ext-giphy@1.0.0(@framers/agentos@0.1.24(@framers/sql-storage-adapter@0.3.5(@aws-sdk/client-s3@3.990.0)(@capacitor-community/sqlite@6.0.2(@capacitor/core@8.0.0))(better-sqlite3@12.6.2))(graphology-communities-louvain@2.0.2(graphology-types@0.24.8))(graphology-types@0.24.8)(graphology@0.26.0(graphology-types@0.24.8))(hnswlib-node@3.0.0)(typescript@5.6.3))':
+    dependencies:
+      '@framers/agentos': 0.1.24(@framers/sql-storage-adapter@0.3.5(@aws-sdk/client-s3@3.990.0)(@capacitor-community/sqlite@6.0.2(@capacitor/core@8.0.0))(better-sqlite3@12.6.2))(graphology-communities-louvain@2.0.2(graphology-types@0.24.8))(graphology-types@0.24.8)(graphology@0.26.0(graphology-types@0.24.8))(hnswlib-node@3.0.0)(typescript@5.6.3)
+
+  '@framers/agentos-ext-image-search@1.0.0(@framers/agentos@0.1.24(@framers/sql-storage-adapter@0.3.5(@aws-sdk/client-s3@3.990.0)(@capacitor-community/sqlite@6.0.2(@capacitor/core@8.0.0))(better-sqlite3@12.6.2))(graphology-communities-louvain@2.0.2(graphology-types@0.24.8))(graphology-types@0.24.8)(graphology@0.26.0(graphology-types@0.24.8))(hnswlib-node@3.0.0)(typescript@5.6.3))':
+    dependencies:
+      '@framers/agentos': 0.1.24(@framers/sql-storage-adapter@0.3.5(@aws-sdk/client-s3@3.990.0)(@capacitor-community/sqlite@6.0.2(@capacitor/core@8.0.0))(better-sqlite3@12.6.2))(graphology-communities-louvain@2.0.2(graphology-types@0.24.8))(graphology-types@0.24.8)(graphology@0.26.0(graphology-types@0.24.8))(hnswlib-node@3.0.0)(typescript@5.6.3)
+
+  '@framers/agentos-ext-news-search@1.0.0(@framers/agentos@0.1.24(@framers/sql-storage-adapter@0.3.5(@aws-sdk/client-s3@3.990.0)(@capacitor-community/sqlite@6.0.2(@capacitor/core@8.0.0))(better-sqlite3@12.6.2))(graphology-communities-louvain@2.0.2(graphology-types@0.24.8))(graphology-types@0.24.8)(graphology@0.26.0(graphology-types@0.24.8))(hnswlib-node@3.0.0)(typescript@5.6.3))':
+    dependencies:
+      '@framers/agentos': 0.1.24(@framers/sql-storage-adapter@0.3.5(@aws-sdk/client-s3@3.990.0)(@capacitor-community/sqlite@6.0.2(@capacitor/core@8.0.0))(better-sqlite3@12.6.2))(graphology-communities-louvain@2.0.2(graphology-types@0.24.8))(graphology-types@0.24.8)(graphology@0.26.0(graphology-types@0.24.8))(hnswlib-node@3.0.0)(typescript@5.6.3)
+
+  '@framers/agentos-ext-telegram@1.1.0(@framers/agentos@0.1.24(@framers/sql-storage-adapter@0.3.5(@aws-sdk/client-s3@3.990.0)(@capacitor-community/sqlite@6.0.2(@capacitor/core@8.0.0))(better-sqlite3@12.6.2))(graphology-communities-louvain@2.0.2(graphology-types@0.24.8))(graphology-types@0.24.8)(graphology@0.26.0(graphology-types@0.24.8))(hnswlib-node@3.0.0)(typescript@5.6.3))(encoding@0.1.13)':
+    dependencies:
+      '@framers/agentos': 0.1.24(@framers/sql-storage-adapter@0.3.5(@aws-sdk/client-s3@3.990.0)(@capacitor-community/sqlite@6.0.2(@capacitor/core@8.0.0))(better-sqlite3@12.6.2))(graphology-communities-louvain@2.0.2(graphology-types@0.24.8))(graphology-types@0.24.8)(graphology@0.26.0(graphology-types@0.24.8))(hnswlib-node@3.0.0)(typescript@5.6.3)
+      dotenv: 16.6.1
+      node-telegram-bot-api: 0.64.0(request@2.88.2)
+      telegraf: 4.16.3(encoding@0.1.13)
+    transitivePeerDependencies:
+      - encoding
+      - request
+      - supports-color
+    optional: true
+
+  '@framers/agentos-ext-voice-synthesis@1.0.0(@framers/agentos@0.1.24(@framers/sql-storage-adapter@0.3.5(@aws-sdk/client-s3@3.990.0)(@capacitor-community/sqlite@6.0.2(@capacitor/core@8.0.0))(better-sqlite3@12.6.2))(graphology-communities-louvain@2.0.2(graphology-types@0.24.8))(graphology-types@0.24.8)(graphology@0.26.0(graphology-types@0.24.8))(hnswlib-node@3.0.0)(typescript@5.6.3))':
+    dependencies:
+      '@framers/agentos': 0.1.24(@framers/sql-storage-adapter@0.3.5(@aws-sdk/client-s3@3.990.0)(@capacitor-community/sqlite@6.0.2(@capacitor/core@8.0.0))(better-sqlite3@12.6.2))(graphology-communities-louvain@2.0.2(graphology-types@0.24.8))(graphology-types@0.24.8)(graphology@0.26.0(graphology-types@0.24.8))(hnswlib-node@3.0.0)(typescript@5.6.3)
+
+  '@framers/agentos-ext-web-browser@1.1.0(@framers/agentos@0.1.24(@framers/sql-storage-adapter@0.3.5(@aws-sdk/client-s3@3.990.0)(@capacitor-community/sqlite@6.0.2(@capacitor/core@8.0.0))(better-sqlite3@12.6.2))(graphology-communities-louvain@2.0.2(graphology-types@0.24.8))(graphology-types@0.24.8)(graphology@0.26.0(graphology-types@0.24.8))(hnswlib-node@3.0.0)(typescript@5.6.3))(bufferutil@4.1.0)(utf-8-validate@5.0.10)':
+    dependencies:
+      '@framers/agentos': 0.1.24(@framers/sql-storage-adapter@0.3.5(@aws-sdk/client-s3@3.990.0)(@capacitor-community/sqlite@6.0.2(@capacitor/core@8.0.0))(better-sqlite3@12.6.2))(graphology-communities-louvain@2.0.2(graphology-types@0.24.8))(graphology-types@0.24.8)(graphology@0.26.0(graphology-types@0.24.8))(hnswlib-node@3.0.0)(typescript@5.6.3)
+      cheerio: 1.1.2
+      puppeteer-core: 22.15.0(bufferutil@4.1.0)(utf-8-validate@5.0.10)
+    transitivePeerDependencies:
+      - bare-abort-controller
+      - bare-buffer
+      - bufferutil
+      - react-native-b4a
+      - supports-color
+      - utf-8-validate
+
+  '@framers/agentos-ext-web-search@1.1.0(@framers/agentos@0.1.24(@framers/sql-storage-adapter@0.3.5(@aws-sdk/client-s3@3.990.0)(@capacitor-community/sqlite@6.0.2(@capacitor/core@8.0.0))(better-sqlite3@12.6.2))(graphology-communities-louvain@2.0.2(graphology-types@0.24.8))(graphology-types@0.24.8)(graphology@0.26.0(graphology-types@0.24.8))(hnswlib-node@3.0.0)(typescript@5.6.3))':
+    dependencies:
+      '@framers/agentos': 0.1.24(@framers/sql-storage-adapter@0.3.5(@aws-sdk/client-s3@3.990.0)(@capacitor-community/sqlite@6.0.2(@capacitor/core@8.0.0))(better-sqlite3@12.6.2))(graphology-communities-louvain@2.0.2(graphology-types@0.24.8))(graphology-types@0.24.8)(graphology@0.26.0(graphology-types@0.24.8))(hnswlib-node@3.0.0)(typescript@5.6.3)
+      axios: 1.12.2(debug@4.4.3)
+    transitivePeerDependencies:
+      - debug
+
+  '@framers/agentos-extensions-registry@0.1.1(@framers/agentos@0.1.24(@framers/sql-storage-adapter@0.3.5(@aws-sdk/client-s3@3.990.0)(@capacitor-community/sqlite@6.0.2(@capacitor/core@8.0.0))(better-sqlite3@12.6.2))(graphology-communities-louvain@2.0.2(graphology-types@0.24.8))(graphology-types@0.24.8)(graphology@0.26.0(graphology-types@0.24.8))(hnswlib-node@3.0.0)(typescript@5.6.3))(bufferutil@4.1.0)(encoding@0.1.13)(utf-8-validate@5.0.10)':
+    dependencies:
+      '@framers/agentos': 0.1.24(@framers/sql-storage-adapter@0.3.5(@aws-sdk/client-s3@3.990.0)(@capacitor-community/sqlite@6.0.2(@capacitor/core@8.0.0))(better-sqlite3@12.6.2))(graphology-communities-louvain@2.0.2(graphology-types@0.24.8))(graphology-types@0.24.8)(graphology@0.26.0(graphology-types@0.24.8))(hnswlib-node@3.0.0)(typescript@5.6.3)
+    optionalDependencies:
+      '@framers/agentos-ext-auth': 1.1.0(@framers/agentos@0.1.24(@framers/sql-storage-adapter@0.3.5(@aws-sdk/client-s3@3.990.0)(@capacitor-community/sqlite@6.0.2(@capacitor/core@8.0.0))(better-sqlite3@12.6.2))(graphology-communities-louvain@2.0.2(graphology-types@0.24.8))(graphology-types@0.24.8)(graphology@0.26.0(graphology-types@0.24.8))(hnswlib-node@3.0.0)(typescript@5.6.3))(encoding@0.1.13)
+      '@framers/agentos-ext-cli-executor': 1.1.0(@framers/agentos@0.1.24(@framers/sql-storage-adapter@0.3.5(@aws-sdk/client-s3@3.990.0)(@capacitor-community/sqlite@6.0.2(@capacitor/core@8.0.0))(better-sqlite3@12.6.2))(graphology-communities-louvain@2.0.2(graphology-types@0.24.8))(graphology-types@0.24.8)(graphology@0.26.0(graphology-types@0.24.8))(hnswlib-node@3.0.0)(typescript@5.6.3))
+      '@framers/agentos-ext-giphy': 1.0.0(@framers/agentos@0.1.24(@framers/sql-storage-adapter@0.3.5(@aws-sdk/client-s3@3.990.0)(@capacitor-community/sqlite@6.0.2(@capacitor/core@8.0.0))(better-sqlite3@12.6.2))(graphology-communities-louvain@2.0.2(graphology-types@0.24.8))(graphology-types@0.24.8)(graphology@0.26.0(graphology-types@0.24.8))(hnswlib-node@3.0.0)(typescript@5.6.3))
+      '@framers/agentos-ext-image-search': 1.0.0(@framers/agentos@0.1.24(@framers/sql-storage-adapter@0.3.5(@aws-sdk/client-s3@3.990.0)(@capacitor-community/sqlite@6.0.2(@capacitor/core@8.0.0))(better-sqlite3@12.6.2))(graphology-communities-louvain@2.0.2(graphology-types@0.24.8))(graphology-types@0.24.8)(graphology@0.26.0(graphology-types@0.24.8))(hnswlib-node@3.0.0)(typescript@5.6.3))
+      '@framers/agentos-ext-news-search': 1.0.0(@framers/agentos@0.1.24(@framers/sql-storage-adapter@0.3.5(@aws-sdk/client-s3@3.990.0)(@capacitor-community/sqlite@6.0.2(@capacitor/core@8.0.0))(better-sqlite3@12.6.2))(graphology-communities-louvain@2.0.2(graphology-types@0.24.8))(graphology-types@0.24.8)(graphology@0.26.0(graphology-types@0.24.8))(hnswlib-node@3.0.0)(typescript@5.6.3))
+      '@framers/agentos-ext-telegram': 1.1.0(@framers/agentos@0.1.24(@framers/sql-storage-adapter@0.3.5(@aws-sdk/client-s3@3.990.0)(@capacitor-community/sqlite@6.0.2(@capacitor/core@8.0.0))(better-sqlite3@12.6.2))(graphology-communities-louvain@2.0.2(graphology-types@0.24.8))(graphology-types@0.24.8)(graphology@0.26.0(graphology-types@0.24.8))(hnswlib-node@3.0.0)(typescript@5.6.3))(encoding@0.1.13)
+      '@framers/agentos-ext-voice-synthesis': 1.0.0(@framers/agentos@0.1.24(@framers/sql-storage-adapter@0.3.5(@aws-sdk/client-s3@3.990.0)(@capacitor-community/sqlite@6.0.2(@capacitor/core@8.0.0))(better-sqlite3@12.6.2))(graphology-communities-louvain@2.0.2(graphology-types@0.24.8))(graphology-types@0.24.8)(graphology@0.26.0(graphology-types@0.24.8))(hnswlib-node@3.0.0)(typescript@5.6.3))
+      '@framers/agentos-ext-web-browser': 1.1.0(@framers/agentos@0.1.24(@framers/sql-storage-adapter@0.3.5(@aws-sdk/client-s3@3.990.0)(@capacitor-community/sqlite@6.0.2(@capacitor/core@8.0.0))(better-sqlite3@12.6.2))(graphology-communities-louvain@2.0.2(graphology-types@0.24.8))(graphology-types@0.24.8)(graphology@0.26.0(graphology-types@0.24.8))(hnswlib-node@3.0.0)(typescript@5.6.3))(bufferutil@4.1.0)(utf-8-validate@5.0.10)
+      '@framers/agentos-ext-web-search': 1.1.0(@framers/agentos@0.1.24(@framers/sql-storage-adapter@0.3.5(@aws-sdk/client-s3@3.990.0)(@capacitor-community/sqlite@6.0.2(@capacitor/core@8.0.0))(better-sqlite3@12.6.2))(graphology-communities-louvain@2.0.2(graphology-types@0.24.8))(graphology-types@0.24.8)(graphology@0.26.0(graphology-types@0.24.8))(hnswlib-node@3.0.0)(typescript@5.6.3))
+    transitivePeerDependencies:
+      - bare-abort-controller
+      - bare-buffer
+      - bufferutil
+      - debug
+      - encoding
+      - react-native-b4a
+      - request
+      - supports-color
+      - utf-8-validate
+
+  '@framers/agentos-skills-registry@0.2.0(@framers/agentos@0.1.24(@framers/sql-storage-adapter@0.3.5(@aws-sdk/client-s3@3.990.0)(@capacitor-community/sqlite@6.0.2(@capacitor/core@8.0.0))(better-sqlite3@12.6.2))(graphology-communities-louvain@2.0.2(graphology-types@0.24.8))(graphology-types@0.24.8)(graphology@0.26.0(graphology-types@0.24.8))(hnswlib-node@3.0.0)(typescript@5.6.3))':
+    dependencies:
+      '@framers/agentos-skills': 0.1.0
+    optionalDependencies:
+      '@framers/agentos': 0.1.24(@framers/sql-storage-adapter@0.3.5(@aws-sdk/client-s3@3.990.0)(@capacitor-community/sqlite@6.0.2(@capacitor/core@8.0.0))(better-sqlite3@12.6.2))(graphology-communities-louvain@2.0.2(graphology-types@0.24.8))(graphology-types@0.24.8)(graphology@0.26.0(graphology-types@0.24.8))(hnswlib-node@3.0.0)(typescript@5.6.3)
+    optional: true
+
+  '@framers/agentos-skills@0.1.0':
+    optional: true
+
+  '@framers/agentos@0.1.24(@framers/sql-storage-adapter@0.3.5(@aws-sdk/client-s3@3.990.0)(@capacitor-community/sqlite@6.0.2(@capacitor/core@8.0.0))(better-sqlite3@12.6.2))(graphology-communities-louvain@2.0.2(graphology-types@0.24.8))(graphology-types@0.24.8)(graphology@0.26.0(graphology-types@0.24.8))(hnswlib-node@3.0.0)(typescript@5.6.3)':
+    dependencies:
+      '@opentelemetry/api': 1.9.0
+      '@opentelemetry/api-logs': 0.201.1
+      ajv: 8.17.1
+      ajv-formats: 3.0.1(ajv@8.17.1)
+      axios: 1.12.2(debug@4.4.3)
+      lru-cache: 11.2.6
+      natural: 6.12.0(socks@2.8.7)
+      pino: 9.14.0
+      typescript: 5.6.3
+      uuid: 11.1.0
+      yaml: 2.8.1
+    optionalDependencies:
+      '@framers/sql-storage-adapter': 0.3.5(@aws-sdk/client-s3@3.990.0)(@capacitor-community/sqlite@6.0.2(@capacitor/core@8.0.0))(better-sqlite3@12.6.2)
+      graphology: 0.26.0(graphology-types@0.24.8)
+      graphology-communities-louvain: 2.0.2(graphology-types@0.24.8)
+      graphology-types: 0.24.8
+      hnswlib-node: 3.0.0
+    transitivePeerDependencies:
+      - '@aws-sdk/credential-providers'
+      - '@mongodb-js/zstd'
+      - debug
+      - gcp-metadata
+      - kerberos
+      - mongodb-client-encryption
+      - pg-native
+      - snappy
+      - socks
+      - supports-color
 
   '@framers/sql-storage-adapter@0.3.5(@aws-sdk/client-s3@3.990.0)(@capacitor-community/sqlite@6.0.2(@capacitor/core@8.0.0))(better-sqlite3@12.4.1)':
     dependencies:
@@ -41475,9 +41715,20 @@ snapshots:
       - encoding
       - seedrandom
 
+  '@testing-library/dom@10.4.1':
+    dependencies:
+      '@babel/code-frame': 7.29.0
+      '@babel/runtime': 7.28.4
+      '@types/aria-query': 5.0.4
+      aria-query: 5.3.0
+      dom-accessibility-api: 0.5.16
+      lz-string: 1.5.0
+      picocolors: 1.1.1
+      pretty-format: 27.5.1
+
   '@testing-library/dom@9.3.4':
     dependencies:
-      '@babel/code-frame': 7.27.1
+      '@babel/code-frame': 7.29.0
       '@babel/runtime': 7.28.4
       '@types/aria-query': 5.0.4
       aria-query: 5.1.3
@@ -41505,9 +41756,19 @@ snapshots:
     transitivePeerDependencies:
       - '@types/react'
 
-  '@testing-library/user-event@14.6.1(@testing-library/dom@9.3.4)':
+  '@testing-library/react@16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@18.3.7(@types/react@18.3.26))(@types/react@18.3.26)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)':
     dependencies:
-      '@testing-library/dom': 9.3.4
+      '@babel/runtime': 7.28.4
+      '@testing-library/dom': 10.4.1
+      react: 19.2.3
+      react-dom: 19.2.3(react@19.2.3)
+    optionalDependencies:
+      '@types/react': 18.3.26
+      '@types/react-dom': 18.3.7(@types/react@18.3.26)
+
+  '@testing-library/user-event@14.6.1(@testing-library/dom@10.4.1)':
+    dependencies:
+      '@testing-library/dom': 10.4.1
 
   '@textlint/ast-node-types@12.6.1': {}
 
@@ -44202,6 +44463,10 @@ snapshots:
   aria-query@5.1.3:
     dependencies:
       deep-equal: 2.2.3
+
+  aria-query@5.3.0:
+    dependencies:
+      dequal: 2.0.3
 
   aria-query@5.3.2: {}
 
@@ -53359,7 +53624,7 @@ snapshots:
 
   parse-json@7.1.1:
     dependencies:
-      '@babel/code-frame': 7.27.1
+      '@babel/code-frame': 7.29.0
       error-ex: 1.3.4
       json-parse-even-better-errors: 3.0.2
       lines-and-columns: 2.0.4
@@ -53687,8 +53952,7 @@ snapshots:
 
   playwright-core@1.58.1: {}
 
-  playwright-core@1.58.2:
-    optional: true
+  playwright-core@1.58.2: {}
 
   playwright-extra@4.3.6(playwright-core@1.58.2)(playwright@1.58.2):
     dependencies:
@@ -59685,6 +59949,61 @@ snapshots:
   wsl-utils@0.1.0:
     dependencies:
       is-wsl: 3.1.0
+
+  wunderland@0.16.2(@aws-sdk/client-s3@3.990.0)(@capacitor-community/sqlite@6.0.2(@capacitor/core@8.0.0))(@opentelemetry/core@2.5.1(@opentelemetry/api@1.9.0))(better-sqlite3@12.6.2)(bufferutil@4.1.0)(encoding@0.1.13)(graphology-communities-louvain@2.0.2(graphology-types@0.24.8))(graphology-types@0.24.8)(graphology@0.26.0(graphology-types@0.24.8))(hnswlib-node@3.0.0)(typescript@5.6.3)(utf-8-validate@5.0.10):
+    dependencies:
+      '@clack/prompts': 0.9.1
+      '@framers/agentos': 0.1.24(@framers/sql-storage-adapter@0.3.5(@aws-sdk/client-s3@3.990.0)(@capacitor-community/sqlite@6.0.2(@capacitor/core@8.0.0))(better-sqlite3@12.6.2))(graphology-communities-louvain@2.0.2(graphology-types@0.24.8))(graphology-types@0.24.8)(graphology@0.26.0(graphology-types@0.24.8))(hnswlib-node@3.0.0)(typescript@5.6.3)
+      '@framers/agentos-ext-cli-executor': 1.1.0(@framers/agentos@0.1.24(@framers/sql-storage-adapter@0.3.5(@aws-sdk/client-s3@3.990.0)(@capacitor-community/sqlite@6.0.2(@capacitor/core@8.0.0))(better-sqlite3@12.6.2))(graphology-communities-louvain@2.0.2(graphology-types@0.24.8))(graphology-types@0.24.8)(graphology@0.26.0(graphology-types@0.24.8))(hnswlib-node@3.0.0)(typescript@5.6.3))
+      '@framers/agentos-ext-giphy': 1.0.0(@framers/agentos@0.1.24(@framers/sql-storage-adapter@0.3.5(@aws-sdk/client-s3@3.990.0)(@capacitor-community/sqlite@6.0.2(@capacitor/core@8.0.0))(better-sqlite3@12.6.2))(graphology-communities-louvain@2.0.2(graphology-types@0.24.8))(graphology-types@0.24.8)(graphology@0.26.0(graphology-types@0.24.8))(hnswlib-node@3.0.0)(typescript@5.6.3))
+      '@framers/agentos-ext-image-search': 1.0.0(@framers/agentos@0.1.24(@framers/sql-storage-adapter@0.3.5(@aws-sdk/client-s3@3.990.0)(@capacitor-community/sqlite@6.0.2(@capacitor/core@8.0.0))(better-sqlite3@12.6.2))(graphology-communities-louvain@2.0.2(graphology-types@0.24.8))(graphology-types@0.24.8)(graphology@0.26.0(graphology-types@0.24.8))(hnswlib-node@3.0.0)(typescript@5.6.3))
+      '@framers/agentos-ext-news-search': 1.0.0(@framers/agentos@0.1.24(@framers/sql-storage-adapter@0.3.5(@aws-sdk/client-s3@3.990.0)(@capacitor-community/sqlite@6.0.2(@capacitor/core@8.0.0))(better-sqlite3@12.6.2))(graphology-communities-louvain@2.0.2(graphology-types@0.24.8))(graphology-types@0.24.8)(graphology@0.26.0(graphology-types@0.24.8))(hnswlib-node@3.0.0)(typescript@5.6.3))
+      '@framers/agentos-ext-voice-synthesis': 1.0.0(@framers/agentos@0.1.24(@framers/sql-storage-adapter@0.3.5(@aws-sdk/client-s3@3.990.0)(@capacitor-community/sqlite@6.0.2(@capacitor/core@8.0.0))(better-sqlite3@12.6.2))(graphology-communities-louvain@2.0.2(graphology-types@0.24.8))(graphology-types@0.24.8)(graphology@0.26.0(graphology-types@0.24.8))(hnswlib-node@3.0.0)(typescript@5.6.3))
+      '@framers/agentos-ext-web-browser': 1.1.0(@framers/agentos@0.1.24(@framers/sql-storage-adapter@0.3.5(@aws-sdk/client-s3@3.990.0)(@capacitor-community/sqlite@6.0.2(@capacitor/core@8.0.0))(better-sqlite3@12.6.2))(graphology-communities-louvain@2.0.2(graphology-types@0.24.8))(graphology-types@0.24.8)(graphology@0.26.0(graphology-types@0.24.8))(hnswlib-node@3.0.0)(typescript@5.6.3))(bufferutil@4.1.0)(utf-8-validate@5.0.10)
+      '@framers/agentos-ext-web-search': 1.1.0(@framers/agentos@0.1.24(@framers/sql-storage-adapter@0.3.5(@aws-sdk/client-s3@3.990.0)(@capacitor-community/sqlite@6.0.2(@capacitor/core@8.0.0))(better-sqlite3@12.6.2))(graphology-communities-louvain@2.0.2(graphology-types@0.24.8))(graphology-types@0.24.8)(graphology@0.26.0(graphology-types@0.24.8))(hnswlib-node@3.0.0)(typescript@5.6.3))
+      '@framers/agentos-extensions-registry': 0.1.1(@framers/agentos@0.1.24(@framers/sql-storage-adapter@0.3.5(@aws-sdk/client-s3@3.990.0)(@capacitor-community/sqlite@6.0.2(@capacitor/core@8.0.0))(better-sqlite3@12.6.2))(graphology-communities-louvain@2.0.2(graphology-types@0.24.8))(graphology-types@0.24.8)(graphology@0.26.0(graphology-types@0.24.8))(hnswlib-node@3.0.0)(typescript@5.6.3))(bufferutil@4.1.0)(encoding@0.1.13)(utf-8-validate@5.0.10)
+      '@framers/sql-storage-adapter': 0.3.5(@aws-sdk/client-s3@3.990.0)(@capacitor-community/sqlite@6.0.2(@capacitor/core@8.0.0))(better-sqlite3@12.6.2)
+      '@opentelemetry/api': 1.9.0
+      '@opentelemetry/api-logs': 0.201.1
+      '@opentelemetry/auto-instrumentations-node': 0.59.0(@opentelemetry/api@1.9.0)(@opentelemetry/core@2.5.1(@opentelemetry/api@1.9.0))(encoding@0.1.13)
+      '@opentelemetry/sdk-node': 0.201.1(@opentelemetry/api@1.9.0)
+      boxen: 8.0.1
+      cfonts: 3.3.1
+      chalk: 5.6.2
+      gradient-string: 3.0.0
+      minimatch: 9.0.5
+      nanospinner: 1.2.2
+      playwright-core: 1.58.2
+      uuid: 9.0.1
+    optionalDependencies:
+      '@framers/agentos-skills-registry': 0.2.0(@framers/agentos@0.1.24(@framers/sql-storage-adapter@0.3.5(@aws-sdk/client-s3@3.990.0)(@capacitor-community/sqlite@6.0.2(@capacitor/core@8.0.0))(better-sqlite3@12.6.2))(graphology-communities-louvain@2.0.2(graphology-types@0.24.8))(graphology-types@0.24.8)(graphology@0.26.0(graphology-types@0.24.8))(hnswlib-node@3.0.0)(typescript@5.6.3))
+    transitivePeerDependencies:
+      - '@aws-sdk/client-s3'
+      - '@aws-sdk/credential-providers'
+      - '@capacitor-community/sqlite'
+      - '@mongodb-js/zstd'
+      - '@opentelemetry/core'
+      - bare-abort-controller
+      - bare-buffer
+      - better-sqlite3
+      - bufferutil
+      - debug
+      - encoding
+      - gcp-metadata
+      - graphology
+      - graphology-communities-louvain
+      - graphology-types
+      - hnswlib-node
+      - kerberos
+      - mongodb-client-encryption
+      - pg-native
+      - react-native-b4a
+      - request
+      - snappy
+      - socks
+      - supports-color
+      - typescript
+      - utf-8-validate
 
   xdg-basedir@5.1.0: {}
 
