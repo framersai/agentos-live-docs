@@ -34,7 +34,12 @@ import {
   getCheckoutStatus,
   postLemonWebhook,
 } from '../../features/billing/billing.routes.js';
-import { findUserById, updateUserStripeSubscription } from '../../features/auth/user.repository.js';
+import {
+  findUserByEmail,
+  findUserById,
+  resetUserTrial,
+  updateUserStripeSubscription,
+} from '../../features/auth/user.repository.js';
 
 /**
  * Handles all `/billing` prefixed routes for subscription management.
@@ -155,5 +160,65 @@ export class BillingController {
     });
 
     return { ok: true };
+  }
+
+  /**
+   * PATCH /billing/trial-reset
+   *
+   * Internal endpoint to manually grant a user a new trial window.
+   * Protected via `X-Internal-Secret` header.
+   *
+   * NOTE: This does not touch Stripe/Lemon subscriptions — it only updates the backend user record.
+   */
+  @Public()
+  @Patch('trial-reset')
+  @HttpCode(HttpStatus.OK)
+  async manualTrialReset(
+    @Req() req: Request,
+    @Body()
+    body: {
+      email?: string;
+      days?: number;
+      planId?: string | null;
+      tier?: string | null;
+    }
+  ): Promise<{ ok: true; email: string; expiresAt: string }> {
+    const expectedSecret = process.env.INTERNAL_API_SECRET || '';
+    if (!expectedSecret) {
+      throw new ForbiddenException('Internal API secret is not configured.');
+    }
+
+    const providedSecret = String(req.headers['x-internal-secret'] || '');
+    if (!providedSecret || providedSecret !== expectedSecret) {
+      throw new ForbiddenException('Forbidden.');
+    }
+
+    const emailRaw = body?.email;
+    if (!emailRaw || typeof emailRaw !== 'string') {
+      throw new BadRequestException('email is required.');
+    }
+    const email = emailRaw.trim().toLowerCase();
+    if (!email || !email.includes('@')) {
+      throw new BadRequestException('email must be a valid email address.');
+    }
+
+    const existing = await findUserByEmail(email);
+    if (!existing) {
+      throw new NotFoundException('User not found.');
+    }
+
+    const days = Number.isFinite(Number(body?.days)) ? Number(body.days) : 3;
+    const planId =
+      body?.planId === undefined
+        ? (existing.subscription_plan_id ?? 'starter')
+        : (body.planId ?? null);
+
+    const { expiresAt } = await resetUserTrial(existing.id, {
+      days,
+      planId,
+      tier: body?.tier ?? null,
+    });
+
+    return { ok: true, email, expiresAt: new Date(expiresAt).toISOString() };
   }
 }
