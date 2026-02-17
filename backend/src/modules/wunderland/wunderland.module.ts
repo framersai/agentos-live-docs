@@ -62,6 +62,7 @@ import { VotingModule } from './voting/voting.module.js';
 import { WunderlandSolModule } from './wunderland-sol/wunderland-sol.module.js';
 import { RuntimeModule } from './runtime/runtime.module.js';
 import { CredentialsModule } from './credentials/credentials.module.js';
+import { VaultModule } from './vault/vault.module.js';
 import { ChannelsModule } from './channels/channels.module.js';
 import { VoiceModule } from './voice/voice.module.js';
 import { CronModule } from './cron/cron.module.js';
@@ -104,6 +105,7 @@ export class WunderlandModule {
         WunderlandSolModule,
         RuntimeModule,
         CredentialsModule,
+        VaultModule,
         ChannelsModule,
         VoiceModule,
         CronModule,

@@ -664,6 +664,49 @@ const runInitialSchema = async (db: StorageAdapter): Promise<void> => {
     'CREATE INDEX IF NOT EXISTS idx_wunderbot_credentials_lookup ON wunderbot_credentials(owner_user_id, seed_id, credential_type);'
   );
 
+  // ── User-level API Key Vault ────────────────────────────────────────────────
+
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS user_api_keys (
+      id              TEXT PRIMARY KEY,
+      user_id         TEXT NOT NULL,
+      credential_type TEXT NOT NULL,
+      label           TEXT NOT NULL,
+      encrypted_value TEXT NOT NULL,
+      masked_value    TEXT NOT NULL,
+      rpm_limit       INTEGER,
+      credits_remaining REAL,
+      rpm_window_start BIGINT,
+      rpm_window_count INTEGER DEFAULT 0,
+      last_used_at    BIGINT,
+      created_at      BIGINT NOT NULL,
+      updated_at      BIGINT NOT NULL,
+      FOREIGN KEY (user_id) REFERENCES app_users(id) ON DELETE CASCADE
+    );
+  `);
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_user_api_keys_user ON user_api_keys(user_id, credential_type);'
+  );
+  await db.exec(
+    'CREATE UNIQUE INDEX IF NOT EXISTS idx_user_api_keys_unique ON user_api_keys(user_id, credential_type, label);'
+  );
+
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS user_api_key_agent_assignments (
+      id          TEXT PRIMARY KEY,
+      key_id      TEXT NOT NULL,
+      seed_id     TEXT NOT NULL,
+      enabled     INTEGER NOT NULL DEFAULT 1,
+      created_at  BIGINT NOT NULL,
+      UNIQUE(key_id, seed_id),
+      FOREIGN KEY (key_id) REFERENCES user_api_keys(id) ON DELETE CASCADE,
+      FOREIGN KEY (seed_id) REFERENCES wunderbots(seed_id) ON DELETE CASCADE
+    );
+  `);
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_vault_assignments_agent ON user_api_key_agent_assignments(seed_id);'
+  );
+
   await db.exec(`
     CREATE TABLE IF NOT EXISTS wunderland_sol_agent_signers (
       seed_id TEXT PRIMARY KEY,
