@@ -142,7 +142,7 @@ jobs:
 
             # ── 6. Ensure nginx config is correct ──
             echo "[deploy] Syncing nginx config..."
-            cp "$REPO_DIR/deployment/rabbithole/nginx.conf" /etc/nginx/sites-available/rabbithole
+            cp "$REPO_DIR/deployment/rabbithole/nginx-rabbithole.conf" /etc/nginx/sites-available/rabbithole
             ln -sfn /etc/nginx/sites-available/rabbithole /etc/nginx/sites-enabled/rabbithole
             nginx -t && systemctl reload nginx
 
