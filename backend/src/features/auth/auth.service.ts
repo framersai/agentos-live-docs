@@ -42,6 +42,8 @@ type LoginResult = {
     tier: AuthTokenPayload['tier'];
     mode: AuthModeType;
     subscriptionStatus?: string;
+    planId?: string | null;
+    trialEndsAt?: string | null;
   };
 };
 
@@ -129,6 +131,32 @@ export const toSessionUserPayload = (
 ) => {
   const tier = options?.tierOverride ?? ((user.subscription_tier as AuthTier) || 'metered');
   const role: AuthRole = options?.roleOverride ?? (tier === 'unlimited' ? 'global' : 'subscriber');
+  const planId = typeof user.subscription_plan_id === 'string' ? user.subscription_plan_id : null;
+
+  const trialEndsAt = (() => {
+    const status = String(user.subscription_status || '')
+      .trim()
+      .toLowerCase();
+    if (status !== 'trialing') return null;
+
+    const raw = (user as any).subscription_expires_at as unknown;
+    if (raw === null || raw === undefined) return null;
+
+    const ms =
+      typeof raw === 'number' && Number.isFinite(raw)
+        ? raw
+        : typeof raw === 'string'
+          ? Number(raw)
+          : Number.NaN;
+    if (!Number.isFinite(ms) || ms <= 0) return null;
+
+    try {
+      return new Date(ms).toISOString();
+    } catch {
+      return null;
+    }
+  })();
+
   return {
     id: user.id,
     email: user.email,
@@ -136,6 +164,8 @@ export const toSessionUserPayload = (
     tier,
     mode: options?.mode ?? (role === 'global' ? 'global' : 'standard'),
     subscriptionStatus: user.subscription_status,
+    planId,
+    trialEndsAt,
   };
 };
 
@@ -247,8 +277,11 @@ export const createSessionForUser = (
     type: 'session',
     email: user.email,
     isVaAdmin: vaAdmin,
+    planId: sessionUser.planId ?? null,
     subscriptionStatus: sessionUser.subscriptionStatus,
     subscription_status: sessionUser.subscriptionStatus,
+    trialEndsAt: sessionUser.trialEndsAt ?? null,
+    trial_ends_at: sessionUser.trialEndsAt ?? null,
   });
   return { token, user: { ...sessionUser, isVaAdmin: vaAdmin } };
 };

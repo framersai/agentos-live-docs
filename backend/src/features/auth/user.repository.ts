@@ -213,6 +213,44 @@ export const updateUserStripeSubscription = async (
   );
 };
 
+export const resetUserTrial = async (
+  userId: string,
+  updates: {
+    days: number;
+    planId?: string | null;
+    tier?: string | null;
+  }
+): Promise<{ expiresAt: number }> => {
+  const db = getAppDatabase();
+  const now = Date.now();
+  const dayMs = 24 * 60 * 60 * 1000;
+  const days = Math.min(Math.max(1, Number(updates.days || 0) || 3), 30);
+  const expiresAt = now + days * dayMs;
+
+  await db.run(
+    `
+    UPDATE app_users
+       SET subscription_status = @status,
+           subscription_plan_id = COALESCE(@planId, subscription_plan_id),
+           subscription_tier = COALESCE(@tier, subscription_tier),
+           subscription_renews_at = NULL,
+           subscription_expires_at = @expiresAt,
+           updated_at = @updated_at
+     WHERE id = @userId
+  `,
+    {
+      userId,
+      status: 'trialing',
+      planId: updates.planId ?? null,
+      tier: updates.tier ?? null,
+      expiresAt,
+      updated_at: now,
+    }
+  );
+
+  return { expiresAt };
+};
+
 export const recordLoginEvent = async (data: {
   userId?: string;
   mode: string;
