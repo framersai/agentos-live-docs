@@ -83,8 +83,10 @@ jobs:
             export NEXT_PUBLIC_OAUTH_GITHUB=true
 
             # ── 2. Install dependencies ──
+            # --ignore-scripts: skip prepare/postinstall lifecycle scripts during install
+            # (template packages try to tsc before deps are built; we build explicitly below)
             echo "[deploy] Installing dependencies..."
-            pnpm install --no-frozen-lockfile
+            pnpm install --no-frozen-lockfile --ignore-scripts
 
             # ── 3. Build workspace packages in dependency order ──
             echo "[deploy] Building workspace packages..."
@@ -140,7 +142,7 @@ jobs:
 
             # ── 6. Ensure nginx config is correct ──
             echo "[deploy] Syncing nginx config..."
-            cp "$REPO_DIR/deployment/rabbithole/nginx-rabbithole.conf" /etc/nginx/sites-available/rabbithole
+            cp "$REPO_DIR/deployment/rabbithole/nginx.conf" /etc/nginx/sites-available/rabbithole
             ln -sfn /etc/nginx/sites-available/rabbithole /etc/nginx/sites-enabled/rabbithole
             nginx -t && systemctl reload nginx
 
