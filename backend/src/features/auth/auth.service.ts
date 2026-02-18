@@ -26,7 +26,7 @@ import {
   type AppUser,
 } from './user.repository.js';
 import { createSupabaseUserAccount, supabaseAuthEnabled } from './supabaseAuth.service.js';
-import { isVaAdmin as checkIsVaAdmin, loadVaAdminCsv } from './va-admin.service.js';
+import { isVaAdmin as checkIsVaAdmin, getVaRole, loadVaAdminCsv } from './va-admin.service.js';
 
 // Ensure VA admin CSV is loaded on module initialization
 loadVaAdminCsv();
@@ -287,6 +287,7 @@ export const createSessionForUser = (
 ) => {
   const sessionUser = toSessionUserPayload(user, options);
   const vaAdmin = checkIsVaAdmin(user.email);
+  const vaRole = getVaRole(user.email);
   const token = issueToken({
     sub: user.id,
     role: vaAdmin ? 'va_admin' : sessionUser.role,
@@ -295,6 +296,7 @@ export const createSessionForUser = (
     type: 'session',
     email: user.email,
     isVaAdmin: vaAdmin,
+    vaRole: vaRole,
     planId: sessionUser.planId ?? null,
     subscriptionStatus: sessionUser.subscriptionStatus,
     subscription_status: sessionUser.subscriptionStatus,

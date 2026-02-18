@@ -33,6 +33,7 @@ export interface AuthTokenPayload {
   tier: 'unlimited' | 'metered';
   type: 'session';
   isVaAdmin?: boolean;
+  vaRole?: 'super_admin' | 'va' | null;
   exp?: number;
   iat?: number;
   [key: string]: unknown;

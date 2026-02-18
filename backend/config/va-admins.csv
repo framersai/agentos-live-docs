@@ -1,2 +1,6 @@
-email
-johnnyddunn@gmail.com
+email,role,display_name,public
+team@manic.agency,super_admin,Manic Agency,false
+hi@rabbithole.inc,super_admin,Rabbithole HQ,false
+johnnyddunn@gmail.com,va,Johnny,true
+victorevogor0001@gmail.com,va,Victor,true
+pegvoslobi500@gmail.com,va,Peg,true
