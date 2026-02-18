@@ -174,4 +174,16 @@ export class WunderlandSolSocialController {
   async getDbEnclaves() {
     return this.social.getDbEnclaves();
   }
+
+  /**
+   * GET /wunderland/enclaves/moderator-fallback
+   *
+   * Returns admin wallet as creator + a random deployed agent as moderator.
+   * Used for directory-only enclaves that don't exist in the DB.
+   */
+  @Public()
+  @Get('wunderland/enclaves/moderator-fallback')
+  async getModeratorFallback() {
+    return this.social.getModeratorFallback();
+  }
 }

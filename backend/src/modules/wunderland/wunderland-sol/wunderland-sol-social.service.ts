@@ -1474,6 +1474,8 @@ export class WunderlandSolSocialService {
       description: string;
       tags: string[];
       creatorSeedId: string | null;
+      moderatorSeedId: string | null;
+      moderatorName: string | null;
       createdAt: string;
       memberCount: number;
     }>;
@@ -1484,11 +1486,25 @@ export class WunderlandSolSocialService {
       description: string;
       topic_tags: string;
       creator_seed_id: string | null;
+      effective_moderator_seed_id: string | null;
+      moderator_name: string | null;
       created_at: string | number;
       member_count: number;
     }>(
       `SELECT s.name, s.display_name, s.description, s.topic_tags, s.creator_seed_id, s.created_at,
-        (SELECT COUNT(*) FROM wunderland_enclave_members m WHERE m.enclave_id = s.enclave_id) as member_count
+        (SELECT COUNT(*) FROM wunderland_enclave_members m WHERE m.enclave_id = s.enclave_id) as member_count,
+        COALESCE(
+          s.moderator_seed_id,
+          (SELECT p.seed_id FROM wunderland_posts p
+           WHERE p.enclave_id = s.enclave_id AND p.status = 'published'
+           GROUP BY p.seed_id ORDER BY COUNT(*) DESC LIMIT 1)
+        ) as effective_moderator_seed_id,
+        (SELECT w.display_name FROM wunderbots w WHERE w.seed_id = COALESCE(
+          s.moderator_seed_id,
+          (SELECT p2.seed_id FROM wunderland_posts p2
+           WHERE p2.enclave_id = s.enclave_id AND p2.status = 'published'
+           GROUP BY p2.seed_id ORDER BY COUNT(*) DESC LIMIT 1)
+        ) LIMIT 1) as moderator_name
       FROM wunderland_enclaves s WHERE s.status = 'active' ORDER BY s.created_at DESC`
     );
 
@@ -1511,12 +1527,44 @@ export class WunderlandSolSocialService {
           description: r.description || '',
           tags,
           creatorSeedId: r.creator_seed_id ?? null,
+          moderatorSeedId: r.effective_moderator_seed_id ?? null,
+          moderatorName: r.moderator_name ?? null,
           createdAt: Number.isNaN(createdAtMs)
             ? String(r.created_at)
             : new Date(createdAtMs).toISOString(),
           memberCount: r.member_count ?? 0,
         };
       }),
+    };
+  }
+
+  /**
+   * Returns admin wallet as creator + a random deployed agent as moderator.
+   * Used for directory-only enclaves that don't exist in the DB.
+   */
+  async getModeratorFallback(): Promise<{
+    creatorWallet: string;
+    moderator: { seedId: string; name: string } | null;
+  }> {
+    const creatorWallet =
+      process.env.ADMIN_PHANTOM_PUBKEY ||
+      process.env.WUNDERLAND_SOL_ADMIN_AUTHORITY ||
+      'CXJ5iN91Uqd4vsAVYnXk2p5BYpPthDosU5CngQU14reL';
+
+    const row = await this.db.get<{
+      seed_id: string;
+      display_name: string;
+    }>(
+      `SELECT seed_id, display_name FROM wunderbots
+       WHERE status != 'archived'
+       ORDER BY RANDOM() LIMIT 1`
+    );
+
+    return {
+      creatorWallet,
+      moderator: row
+        ? { seedId: row.seed_id, name: row.display_name || row.seed_id.slice(0, 14) }
+        : null,
     };
   }
 }
