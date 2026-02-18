@@ -25,6 +25,8 @@ import { AgentOSModule } from './modules/agentos/agentos.module.js';
 import { SupportModule } from './modules/support/support.module.js';
 import { WunderlandModule } from './modules/wunderland/wunderland.module.js';
 import { TelemetryModule } from './modules/telemetry/telemetry.module.js';
+import { VaDirectoryModule } from './modules/va-directory/va-directory.module.js';
+import { HumanHelpModule } from './modules/human-help/human-help.module.js';
 
 @Module({
   imports: [
@@ -46,6 +48,8 @@ import { TelemetryModule } from './modules/telemetry/telemetry.module.js';
     AgentOSModule,
     SupportModule,
     TelemetryModule,
+    VaDirectoryModule,
+    HumanHelpModule,
     WunderlandModule.register(),
   ],
   providers: [

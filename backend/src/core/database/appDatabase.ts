@@ -588,6 +588,65 @@ const runInitialSchema = async (db: StorageAdapter): Promise<void> => {
   console.log('[AppDatabase] Admin dashboard tables initialized.');
   console.log('[AppDatabase] Support ticket tables initialized.');
 
+  // ── Human Help: User Hour Allocations ──────────────────────────────────────
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS user_hour_allocations (
+      id TEXT PRIMARY KEY,
+      user_id TEXT NOT NULL,
+      tier TEXT NOT NULL DEFAULT 'free',
+      hours_allocated REAL NOT NULL DEFAULT 0,
+      hours_used REAL NOT NULL DEFAULT 0,
+      period_start BIGINT NOT NULL,
+      period_end BIGINT NOT NULL,
+      created_at BIGINT NOT NULL,
+      updated_at BIGINT NOT NULL,
+      FOREIGN KEY (user_id) REFERENCES app_users(id) ON DELETE CASCADE
+    );
+  `);
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_user_hours_user ON user_hour_allocations(user_id, period_end DESC);'
+  );
+
+  // ── Human Help: Task Queue ─────────────────────────────────────────────────
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS human_help_tasks (
+      id TEXT PRIMARY KEY,
+      user_id TEXT NOT NULL,
+      seed_id TEXT,
+      project_name TEXT,
+      title TEXT NOT NULL,
+      description TEXT NOT NULL,
+      category TEXT NOT NULL DEFAULT 'general',
+      priority TEXT NOT NULL DEFAULT 'normal',
+      status TEXT NOT NULL DEFAULT 'pending',
+      pii_redaction_level TEXT DEFAULT 'partial',
+      redacted_description TEXT,
+      estimated_hours REAL DEFAULT 1,
+      actual_hours REAL,
+      assigned_va_email TEXT,
+      assigned_va_name TEXT,
+      hour_deductions TEXT,
+      rating INTEGER,
+      rating_comment TEXT,
+      created_at BIGINT NOT NULL,
+      updated_at BIGINT NOT NULL,
+      started_at BIGINT,
+      completed_at BIGINT,
+      FOREIGN KEY (user_id) REFERENCES app_users(id) ON DELETE CASCADE
+    );
+  `);
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_human_help_tasks_user ON human_help_tasks(user_id, created_at DESC);'
+  );
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_human_help_tasks_status ON human_help_tasks(status, created_at DESC);'
+  );
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_human_help_tasks_assigned ON human_help_tasks(assigned_va_email);'
+  );
+
+  console.log('[AppDatabase] Human help tables initialized.');
+
   // ── Agent Metrics & Task Management ────────────────────────────────────────
 
   await db.exec(`
