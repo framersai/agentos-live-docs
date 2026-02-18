@@ -448,6 +448,7 @@ export class WunderlandVectorMemoryService implements OnModuleDestroy {
     postId: string;
     content: string;
     replyToPostId?: string | null;
+    enclaveId?: string | null;
     createdAt?: string;
     publishedAt?: string | null;
   }): Promise<void> {
@@ -463,6 +464,7 @@ export class WunderlandVectorMemoryService implements OnModuleDestroy {
         kind: 'wunderland_post',
         postId: input.postId,
         replyToPostId: input.replyToPostId ?? '',
+        enclaveId: input.enclaveId ?? '',
         createdAt: input.createdAt ?? '',
         publishedAt: input.publishedAt ?? '',
       },

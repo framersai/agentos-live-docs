@@ -253,47 +253,92 @@ export class OrchestrationService implements OnModuleInit, OnModuleDestroy {
     // 5c. Set engagement store callback — writes votes/boosts/views to DB
     this.network.setEngagementStoreCallback(async ({ postId, actorSeedId, actionType }) => {
       try {
-        const actionId = `eng-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
-        await this.db.run(
-          `INSERT INTO wunderland_engagement_actions (
-            action_id, post_id, actor_seed_id, type, payload, timestamp
-          ) VALUES (?, ?, ?, ?, NULL, ?)`,
-          [actionId, postId, actorSeedId, actionType, Date.now()]
-        );
-        // Update counters on the post and persist canonical vote record
-        if (actionType === 'like') {
-          await this.db.run('UPDATE wunderland_posts SET likes = likes + 1 WHERE post_id = ?', [
-            postId,
-          ]);
+        const now = Date.now();
+
+        if (actionType === 'like' || actionType === 'downvote') {
+          const desired = actionType === 'like' ? 1 : -1;
+
+          const voteResult = await this.db.transaction(async (trx) => {
+            const existing = await trx.get<{ direction: number }>(
+              `
+                SELECT direction
+                  FROM wunderland_content_votes
+                 WHERE entity_type = ?
+                   AND entity_id = ?
+                   AND voter_seed_id = ?
+                 LIMIT 1
+              `,
+              ['post', postId, actorSeedId]
+            );
+
+            const prevDirection = typeof existing?.direction === 'number' ? existing.direction : 0;
+            if (prevDirection === desired) {
+              return { applied: false, actionId: null as string | null };
+            }
+
+            await trx.run(
+              `
+                INSERT INTO wunderland_content_votes (
+                  entity_type, entity_id, voter_seed_id, direction, created_at
+                ) VALUES (?, ?, ?, ?, datetime('now'))
+                ON CONFLICT(entity_type, entity_id, voter_seed_id)
+                DO UPDATE SET direction = excluded.direction, created_at = datetime('now')
+              `,
+              ['post', postId, actorSeedId, desired]
+            );
+
+            if (prevDirection === 0) {
+              await trx.run(
+                actionType === 'like'
+                  ? 'UPDATE wunderland_posts SET likes = likes + 1 WHERE post_id = ?'
+                  : 'UPDATE wunderland_posts SET downvotes = downvotes + 1 WHERE post_id = ?',
+                [postId]
+              );
+            } else if (prevDirection === -desired) {
+              await trx.run(
+                actionType === 'like'
+                  ? `UPDATE wunderland_posts
+                        SET likes = likes + 1,
+                            downvotes = CASE WHEN downvotes > 0 THEN downvotes - 1 ELSE 0 END
+                      WHERE post_id = ?`
+                  : `UPDATE wunderland_posts
+                        SET downvotes = downvotes + 1,
+                            likes = CASE WHEN likes > 0 THEN likes - 1 ELSE 0 END
+                      WHERE post_id = ?`,
+                [postId]
+              );
+            }
+
+            const actionId = `eng-${now}-${Math.random().toString(36).slice(2, 8)}`;
+            await trx.run(
+              `INSERT INTO wunderland_engagement_actions (
+                action_id, post_id, actor_seed_id, type, payload, timestamp
+              ) VALUES (?, ?, ?, ?, NULL, ?)`,
+              [actionId, postId, actorSeedId, actionType, now]
+            );
+
+            return { applied: true, actionId };
+          });
+
+          if (!voteResult.applied) return;
+        } else {
+          const actionId = `eng-${now}-${Math.random().toString(36).slice(2, 8)}`;
           await this.db.run(
-            `INSERT INTO wunderland_content_votes (entity_type, entity_id, voter_seed_id, direction, created_at)
-                 VALUES (?, ?, ?, ?, ?)
-                 ON CONFLICT(entity_type, entity_id, voter_seed_id) DO UPDATE SET
-                   direction = excluded.direction,
-                   created_at = excluded.created_at`,
-            ['post', postId, actorSeedId, 1, Date.now()]
+            `INSERT INTO wunderland_engagement_actions (
+              action_id, post_id, actor_seed_id, type, payload, timestamp
+            ) VALUES (?, ?, ?, ?, NULL, ?)`,
+            [actionId, postId, actorSeedId, actionType, now]
           );
-        } else if (actionType === 'downvote') {
-          await this.db.run(
-            'UPDATE wunderland_posts SET downvotes = downvotes + 1 WHERE post_id = ?',
-            [postId]
-          );
-          await this.db.run(
-            `INSERT INTO wunderland_content_votes (entity_type, entity_id, voter_seed_id, direction, created_at)
-                 VALUES (?, ?, ?, ?, ?)
-                 ON CONFLICT(entity_type, entity_id, voter_seed_id) DO UPDATE SET
-                   direction = excluded.direction,
-                   created_at = excluded.created_at`,
-            ['post', postId, actorSeedId, -1, Date.now()]
-          );
-        } else if (actionType === 'boost') {
-          await this.db.run('UPDATE wunderland_posts SET boosts = boosts + 1 WHERE post_id = ?', [
-            postId,
-          ]);
-        } else if (actionType === 'view') {
-          await this.db.run('UPDATE wunderland_posts SET views = views + 1 WHERE post_id = ?', [
-            postId,
-          ]);
+
+          if (actionType === 'boost') {
+            await this.db.run('UPDATE wunderland_posts SET boosts = boosts + 1 WHERE post_id = ?', [
+              postId,
+            ]);
+          } else if (actionType === 'view') {
+            await this.db.run('UPDATE wunderland_posts SET views = views + 1 WHERE post_id = ?', [
+              postId,
+            ]);
+          }
         }
 
         // Update TrustEngine from engagement (so routing + DM gating reflects real interactions).
@@ -1612,6 +1657,7 @@ export class OrchestrationService implements OnModuleInit, OnModuleDestroy {
         postId: post.postId,
         content: post.content,
         replyToPostId: post.replyToPostId ?? null,
+        enclaveId,
         createdAt: post.createdAt,
         publishedAt: post.publishedAt ?? null,
       });
@@ -1629,6 +1675,7 @@ export class OrchestrationService implements OnModuleInit, OnModuleDestroy {
             type: 'wunderland_post',
             postId: post.postId,
             replyToPostId: post.replyToPostId ?? undefined,
+            enclaveId: enclaveId ?? undefined,
             createdAt: post.createdAt,
             publishedAt: post.publishedAt,
           },
