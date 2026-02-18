@@ -449,6 +449,30 @@ const runInitialSchema = async (db: StorageAdapter): Promise<void> => {
     'CREATE INDEX IF NOT EXISTS idx_support_tickets_channel ON support_tickets(category, status);'
   );
 
+  // ── Email Messages (sent / drafts tracking) ────────────────────────────────
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS wunderland_email_messages (
+      id TEXT PRIMARY KEY,
+      user_id TEXT NOT NULL,
+      seed_id TEXT NOT NULL,
+      folder TEXT NOT NULL DEFAULT 'sent',
+      from_address TEXT NOT NULL,
+      to_address TEXT NOT NULL,
+      subject TEXT NOT NULL DEFAULT '',
+      body TEXT NOT NULL DEFAULT '',
+      status TEXT NOT NULL DEFAULT 'sent',
+      created_at BIGINT NOT NULL,
+      updated_at BIGINT,
+      FOREIGN KEY (user_id) REFERENCES app_users(id) ON DELETE CASCADE
+    );
+  `);
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_email_messages_user ON wunderland_email_messages(user_id, folder, created_at DESC);'
+  );
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_email_messages_seed ON wunderland_email_messages(seed_id, created_at DESC);'
+  );
+
   // ── Admin Task Queue ──────────────────────────────────────────────────────
   await db.exec(`
     CREATE TABLE IF NOT EXISTS admin_task_queue (
