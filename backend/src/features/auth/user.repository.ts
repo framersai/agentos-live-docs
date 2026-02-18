@@ -20,6 +20,7 @@ export interface AppUser {
   lemon_subscription_id?: string | null;
   subscription_renews_at?: number | null;
   subscription_expires_at?: number | null;
+  trial_used_at?: number | null;
   is_active: number;
   created_at: number;
   updated_at: number;
@@ -192,6 +193,10 @@ export const updateUserStripeSubscription = async (
   const db = getAppDatabase();
   const now = Date.now();
 
+  // Stamp trial_used_at on the first trial activation so we can prevent repeat trials.
+  const setTrialUsed =
+    updates.status === 'trialing' ? ', trial_used_at = COALESCE(trial_used_at, @now)' : '';
+
   await db.run(
     `
     UPDATE app_users
@@ -199,7 +204,7 @@ export const updateUserStripeSubscription = async (
            subscription_plan_id = @planId,
            stripe_customer_id = @stripeCustomerId,
            stripe_subscription_id = @stripeSubscriptionId,
-           updated_at = @updated_at
+           updated_at = @updated_at${setTrialUsed}
      WHERE id = @userId
   `,
     {
@@ -209,6 +214,7 @@ export const updateUserStripeSubscription = async (
       stripeCustomerId: updates.stripeCustomerId,
       stripeSubscriptionId: updates.stripeSubscriptionId,
       updated_at: now,
+      now,
     }
   );
 };

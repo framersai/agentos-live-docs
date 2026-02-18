@@ -1585,6 +1585,14 @@ export const initializeAppDatabase = async (): Promise<void> => {
       );
       await ensureColumnExists(
         adapter,
+        'app_users',
+        'trial_used_at',
+        adapter.kind === 'postgres'
+          ? 'ALTER TABLE app_users ADD COLUMN trial_used_at BIGINT'
+          : 'ALTER TABLE app_users ADD COLUMN trial_used_at BIGINT;'
+      );
+      await ensureColumnExists(
+        adapter,
         'organizations',
         'settings_json',
         adapter.kind === 'postgres'

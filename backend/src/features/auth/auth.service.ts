@@ -157,6 +157,23 @@ export const toSessionUserPayload = (
     }
   })();
 
+  const trialUsedAt = (() => {
+    const raw = (user as any).trial_used_at as unknown;
+    if (raw === null || raw === undefined) return null;
+    const ms =
+      typeof raw === 'number' && Number.isFinite(raw)
+        ? raw
+        : typeof raw === 'string'
+          ? Number(raw)
+          : Number.NaN;
+    if (!Number.isFinite(ms) || ms <= 0) return null;
+    try {
+      return new Date(ms).toISOString();
+    } catch {
+      return null;
+    }
+  })();
+
   return {
     id: user.id,
     email: user.email,
@@ -166,6 +183,7 @@ export const toSessionUserPayload = (
     subscriptionStatus: user.subscription_status,
     planId,
     trialEndsAt,
+    trialUsedAt,
   };
 };
 
@@ -282,6 +300,7 @@ export const createSessionForUser = (
     subscription_status: sessionUser.subscriptionStatus,
     trialEndsAt: sessionUser.trialEndsAt ?? null,
     trial_ends_at: sessionUser.trialEndsAt ?? null,
+    trialUsedAt: sessionUser.trialUsedAt ?? null,
   });
   return { token, user: { ...sessionUser, isVaAdmin: vaAdmin } };
 };
