@@ -444,6 +444,124 @@ const runInitialSchema = async (db: StorageAdapter): Promise<void> => {
     'CREATE INDEX IF NOT EXISTS idx_anonymous_ids_user ON support_anonymous_ids(user_id);'
   );
 
+  // Add Discord/channel integration columns to support_tickets
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_support_tickets_channel ON support_tickets(category, status);'
+  );
+
+  // ── Admin Task Queue ──────────────────────────────────────────────────────
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS admin_task_queue (
+      id TEXT PRIMARY KEY,
+      title TEXT NOT NULL,
+      description TEXT,
+      client_id TEXT,
+      organization_id TEXT,
+      project_id TEXT,
+      status TEXT DEFAULT 'pending',
+      priority TEXT DEFAULT 'normal',
+      risk_score INTEGER DEFAULT 0,
+      estimated_hours REAL DEFAULT 1,
+      actual_hours REAL,
+      pii_redaction_level TEXT DEFAULT 'partial',
+      redacted_description TEXT,
+      assigned_to TEXT,
+      ticket_id TEXT,
+      pii_policy TEXT,
+      attachments TEXT,
+      status_history TEXT,
+      created_by TEXT,
+      created_at BIGINT NOT NULL,
+      updated_at BIGINT NOT NULL,
+      assigned_at BIGINT,
+      due_at BIGINT,
+      completed_at BIGINT
+    );
+  `);
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_admin_task_queue_status ON admin_task_queue(status, created_at DESC);'
+  );
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_admin_task_queue_assigned ON admin_task_queue(assigned_to, status);'
+  );
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_admin_task_queue_client ON admin_task_queue(client_id);'
+  );
+
+  // ── Human Assistants Roster ───────────────────────────────────────────────
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS human_assistants (
+      id TEXT PRIMARY KEY,
+      user_id TEXT,
+      name TEXT NOT NULL,
+      email TEXT,
+      avatar_url TEXT,
+      role TEXT DEFAULT 'assistant',
+      status TEXT DEFAULT 'offline',
+      status_message TEXT,
+      hours_this_week REAL DEFAULT 0,
+      max_hours_per_week REAL DEFAULT 40,
+      max_concurrent_tasks INTEGER DEFAULT 3,
+      skill_tags TEXT,
+      languages TEXT,
+      timezone TEXT DEFAULT 'UTC',
+      tasks_completed INTEGER DEFAULT 0,
+      avg_rating REAL,
+      avg_completion_hours REAL,
+      nda_signed_at BIGINT,
+      created_at BIGINT NOT NULL,
+      updated_at BIGINT NOT NULL,
+      last_active_at BIGINT
+    );
+  `);
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_human_assistants_status ON human_assistants(status);'
+  );
+
+  // ── Ticket Messages (conversation thread) ─────────────────────────────────
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS ticket_messages (
+      id TEXT PRIMARY KEY,
+      ticket_id TEXT NOT NULL,
+      sender_type TEXT NOT NULL,
+      sender_id TEXT,
+      sender_display TEXT,
+      content TEXT NOT NULL,
+      content_redacted TEXT,
+      channel_origin TEXT,
+      created_at BIGINT NOT NULL,
+      FOREIGN KEY (ticket_id) REFERENCES support_tickets(id) ON DELETE CASCADE
+    );
+  `);
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_ticket_messages_ticket ON ticket_messages(ticket_id, created_at ASC);'
+  );
+
+  // ── PII Break-Glass Access Log ────────────────────────────────────────────
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS breakglass_log (
+      id TEXT PRIMARY KEY,
+      requester_id TEXT NOT NULL,
+      task_id TEXT,
+      reason TEXT NOT NULL,
+      approved_by TEXT,
+      decision TEXT,
+      decided_at BIGINT,
+      created_at BIGINT NOT NULL
+    );
+  `);
+  await db.exec('CREATE INDEX IF NOT EXISTS idx_breakglass_log_task ON breakglass_log(task_id);');
+
+  // ── Admin PII Policy Settings ─────────────────────────────────────────────
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS admin_settings (
+      key TEXT PRIMARY KEY,
+      value TEXT NOT NULL,
+      updated_at BIGINT NOT NULL
+    );
+  `);
+
+  console.log('[AppDatabase] Admin dashboard tables initialized.');
   console.log('[AppDatabase] Support ticket tables initialized.');
 
   // ── Agent Metrics & Task Management ────────────────────────────────────────
@@ -1591,6 +1709,40 @@ export const initializeAppDatabase = async (): Promise<void> => {
           ? 'ALTER TABLE app_users ADD COLUMN trial_used_at BIGINT'
           : 'ALTER TABLE app_users ADD COLUMN trial_used_at BIGINT;'
       );
+      // ── Support tickets: Discord/channel integration columns ──
+      await ensureColumnExists(
+        adapter,
+        'support_tickets',
+        'channel',
+        adapter.kind === 'postgres'
+          ? "ALTER TABLE support_tickets ADD COLUMN channel TEXT DEFAULT 'web'"
+          : "ALTER TABLE support_tickets ADD COLUMN channel TEXT DEFAULT 'web';"
+      );
+      await ensureColumnExists(
+        adapter,
+        'support_tickets',
+        'channel_ref',
+        adapter.kind === 'postgres'
+          ? 'ALTER TABLE support_tickets ADD COLUMN channel_ref TEXT'
+          : 'ALTER TABLE support_tickets ADD COLUMN channel_ref TEXT;'
+      );
+      await ensureColumnExists(
+        adapter,
+        'support_tickets',
+        'guild_id',
+        adapter.kind === 'postgres'
+          ? 'ALTER TABLE support_tickets ADD COLUMN guild_id TEXT'
+          : 'ALTER TABLE support_tickets ADD COLUMN guild_id TEXT;'
+      );
+      await ensureColumnExists(
+        adapter,
+        'support_tickets',
+        'nda_signed',
+        adapter.kind === 'postgres'
+          ? 'ALTER TABLE support_tickets ADD COLUMN nda_signed INTEGER DEFAULT 0'
+          : 'ALTER TABLE support_tickets ADD COLUMN nda_signed INTEGER DEFAULT 0;'
+      );
+
       await ensureColumnExists(
         adapter,
         'organizations',
@@ -1598,6 +1750,54 @@ export const initializeAppDatabase = async (): Promise<void> => {
         adapter.kind === 'postgres'
           ? 'ALTER TABLE organizations ADD COLUMN settings_json TEXT'
           : 'ALTER TABLE organizations ADD COLUMN settings_json TEXT;'
+      );
+      await ensureColumnExists(
+        adapter,
+        'wunderbots',
+        'skills_json',
+        adapter.kind === 'postgres'
+          ? 'ALTER TABLE wunderbots ADD COLUMN skills_json TEXT'
+          : 'ALTER TABLE wunderbots ADD COLUMN skills_json TEXT;'
+      );
+      await ensureColumnExists(
+        adapter,
+        'wunderbots',
+        'channels_json',
+        adapter.kind === 'postgres'
+          ? 'ALTER TABLE wunderbots ADD COLUMN channels_json TEXT'
+          : 'ALTER TABLE wunderbots ADD COLUMN channels_json TEXT;'
+      );
+      await ensureColumnExists(
+        adapter,
+        'wunderbots',
+        'timezone',
+        adapter.kind === 'postgres'
+          ? 'ALTER TABLE wunderbots ADD COLUMN timezone TEXT'
+          : 'ALTER TABLE wunderbots ADD COLUMN timezone TEXT;'
+      );
+      await ensureColumnExists(
+        adapter,
+        'wunderbots',
+        'posting_directives',
+        adapter.kind === 'postgres'
+          ? 'ALTER TABLE wunderbots ADD COLUMN posting_directives TEXT'
+          : 'ALTER TABLE wunderbots ADD COLUMN posting_directives TEXT;'
+      );
+      await ensureColumnExists(
+        adapter,
+        'wunderbots',
+        'execution_mode',
+        adapter.kind === 'postgres'
+          ? 'ALTER TABLE wunderbots ADD COLUMN execution_mode TEXT'
+          : 'ALTER TABLE wunderbots ADD COLUMN execution_mode TEXT;'
+      );
+      await ensureColumnExists(
+        adapter,
+        'wunderbots',
+        'voice_config',
+        adapter.kind === 'postgres'
+          ? 'ALTER TABLE wunderbots ADD COLUMN voice_config TEXT'
+          : 'ALTER TABLE wunderbots ADD COLUMN voice_config TEXT;'
       );
 
       await ensureColumnExists(
