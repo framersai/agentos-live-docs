@@ -17,6 +17,7 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import type { Request, Response } from 'express';
+import { Subscription } from 'rxjs';
 import { AuthGuard } from '../../common/guards/auth.guard.js';
 import { VaAdminGuard } from '../../common/guards/va-admin.guard.js';
 import { ProTierGuard } from '../../common/guards/pro-tier.guard.js';
@@ -142,6 +143,62 @@ export class SupportController {
     }
 
     res.json({ ticket });
+  }
+
+  // =========================================================================
+  // SSE stream (real-time ticket updates)
+  // =========================================================================
+
+  @UseGuards(AuthGuard, ProTierGuard)
+  @Get('tickets/:id/stream')
+  async streamTicket(@Req() req: Request, @Res() res: Response): Promise<void> {
+    const user = (req as any).user;
+    const userId = user.sub || user.id;
+    const ticketId = req.params.id;
+
+    // Verify ticket ownership
+    const ticket = await this.supportService.getUserTicket(ticketId, userId);
+    if (!ticket) {
+      res.status(404).json({ message: 'Ticket not found.' });
+      return;
+    }
+
+    // Set SSE headers
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Connection', 'keep-alive');
+    res.setHeader('X-Accel-Buffering', 'no');
+    res.flushHeaders();
+
+    // Send initial connected event
+    res.write(`event: connected\ndata: ${JSON.stringify({ ticketId })}\n\n`);
+
+    // Subscribe to ticket events
+    const sub: Subscription = this.supportService.getTicketStream(ticketId).subscribe({
+      next: (event) => {
+        try {
+          res.write(`event: ${event.type}\ndata: ${JSON.stringify(event.data)}\n\n`);
+        } catch {
+          sub.unsubscribe();
+        }
+      },
+    });
+
+    // Heartbeat every 30s to keep connection alive
+    const heartbeat = setInterval(() => {
+      try {
+        res.write(`:heartbeat\n\n`);
+      } catch {
+        clearInterval(heartbeat);
+        sub.unsubscribe();
+      }
+    }, 30_000);
+
+    // Clean up on client disconnect
+    req.on('close', () => {
+      sub.unsubscribe();
+      clearInterval(heartbeat);
+    });
   }
 
   // =========================================================================

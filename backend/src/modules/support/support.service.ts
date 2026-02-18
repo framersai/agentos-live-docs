@@ -6,8 +6,16 @@
  */
 
 import { Injectable } from '@nestjs/common';
+import { Subject, Observable } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
 import { getAppDatabase, generateId } from '../../core/database/appDatabase.js';
 import { AnonymizationService, type RedactedTicket } from './anonymization.service.js';
+
+export interface TicketEvent {
+  ticketId: string;
+  type: 'comment' | 'status';
+  data: any;
+}
 
 const VALID_CATEGORIES = [
   'bug',
@@ -48,7 +56,18 @@ export interface SupportStats {
 
 @Injectable()
 export class SupportService {
+  private readonly ticketEvents$ = new Subject<TicketEvent>();
+
   constructor(private readonly anonymization: AnonymizationService) {}
+
+  /** Observable stream of events for a specific ticket. */
+  getTicketStream(ticketId: string): Observable<TicketEvent> {
+    return this.ticketEvents$.pipe(filter((e) => e.ticketId === ticketId));
+  }
+
+  private emitEvent(ticketId: string, type: TicketEvent['type'], data: any): void {
+    this.ticketEvents$.next({ ticketId, type, data });
+  }
 
   // ---------------------------------------------------------------------------
   // User operations
@@ -184,7 +203,7 @@ export class SupportService {
     // Update ticket timestamp
     await db.run('UPDATE support_tickets SET updated_at = ? WHERE id = ?', [now, ticketId]);
 
-    return {
+    const comment: TicketComment = {
       id,
       ticketId,
       authorType: 'user',
@@ -194,6 +213,9 @@ export class SupportService {
       attachments: [],
       createdAt: now,
     };
+
+    this.emitEvent(ticketId, 'comment', comment);
+    return comment;
   }
 
   async togglePiiSharing(
@@ -325,6 +347,8 @@ export class SupportService {
 
     await db.run(`UPDATE support_tickets SET ${setClauses} WHERE id = ?`, values);
 
+    this.emitEvent(ticketId, 'status', { status });
+
     const updated = await db.get('SELECT * FROM support_tickets WHERE id = ? LIMIT 1', [ticketId]);
     return this.anonymization.redactForAdmin(updated);
   }
@@ -353,7 +377,7 @@ export class SupportService {
       [now, ticketId]
     );
 
-    return {
+    const comment: TicketComment = {
       id,
       ticketId,
       authorType: 'va_admin',
@@ -363,6 +387,10 @@ export class SupportService {
       attachments: [],
       createdAt: now,
     };
+
+    this.emitEvent(ticketId, 'comment', comment);
+    this.emitEvent(ticketId, 'status', { status: 'waiting_on_user' });
+    return comment;
   }
 
   async getStats(): Promise<SupportStats> {
