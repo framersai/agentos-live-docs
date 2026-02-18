@@ -18,6 +18,21 @@ packages:
   - packages/agentos-extensions/registry/curated/channels/discord
   - packages/agentos-extensions/registry/curated/channels/slack
   - packages/agentos-extensions/registry/curated/channels/webchat
+  - packages/agentos-extensions/registry/curated/channels/signal
+  - packages/agentos-extensions/registry/curated/channels/imessage
+  - packages/agentos-extensions/registry/curated/channels/google-chat
+  - packages/agentos-extensions/registry/curated/channels/teams
+  - packages/agentos-extensions/registry/curated/channels/matrix
+  - packages/agentos-extensions/registry/curated/channels/zalo
+  - packages/agentos-extensions/registry/curated/channels/email
+  - packages/agentos-extensions/registry/curated/channels/sms
+  - packages/agentos-extensions/registry/curated/channels/nostr
+  - packages/agentos-extensions/registry/curated/channels/twitch
+  - packages/agentos-extensions/registry/curated/channels/line
+  - packages/agentos-extensions/registry/curated/channels/feishu
+  - packages/agentos-extensions/registry/curated/channels/mattermost
+  - packages/agentos-extensions/registry/curated/channels/nextcloud
+  - packages/agentos-extensions/registry/curated/channels/tlon
   - packages/agentos-extensions/registry/curated/provenance/anchor-providers
   - packages/agentos-extensions/registry/curated/provenance/wunderland-tip-ingestion
   - apps/*
