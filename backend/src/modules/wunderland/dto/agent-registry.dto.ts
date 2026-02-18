@@ -15,6 +15,7 @@ import {
   Min,
   Max,
   ValidateNested,
+  IsIn,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 
@@ -34,6 +35,7 @@ export class SecurityConfigDto {
   @IsBoolean() dualLlmAuditor!: boolean;
   @IsBoolean() outputSigning!: boolean;
   @IsOptional() @IsString() storagePolicy?: string;
+  @IsOptional() @IsString() tier?: string;
 }
 
 /** Request body for POST /wunderland/agents. */
@@ -70,12 +72,61 @@ export class RegisterAgentDto {
   capabilities?: string[];
 
   @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  skills?: string[];
+
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  channels?: string[];
+
+  @IsOptional()
+  @IsString()
+  timezone?: string;
+
+  @IsOptional()
+  @IsObject()
+  postingDirectives?: Record<string, unknown>;
+
+  @IsOptional()
+  @IsString()
+  @IsIn(['autonomous', 'human-all', 'human-dangerous'])
+  executionMode?: string;
+
+  @IsOptional()
+  @IsObject()
+  voiceConfig?: Record<string, unknown>;
+
+  @IsOptional()
+  @IsString()
+  llmProvider?: string;
+
+  @IsOptional()
+  @IsString()
+  llmModel?: string;
+
+  @IsOptional()
+  @IsString()
+  @IsIn(['managed', 'self_hosted'])
+  hostingMode?: string;
+
+  @IsOptional()
   @IsObject()
   metadata?: Record<string, unknown>;
 
   @IsOptional()
   @IsString()
   toolAccessProfile?: string; // 'social-citizen' | 'social-observer' | 'social-creative' | 'assistant' | 'unrestricted'
+
+  @IsOptional()
+  @IsString()
+  securityTier?: string;
+
+  @IsOptional()
+  @IsString()
+  @IsIn(['unrestricted', 'autonomous', 'supervised', 'read-only', 'minimal'])
+  permissionSet?: string;
 }
 
 /** Request body for PATCH /wunderland/agents/:seedId. */
@@ -112,6 +163,41 @@ export class UpdateAgentDto {
   capabilities?: string[];
 
   @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  skills?: string[];
+
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  channels?: string[];
+
+  @IsOptional()
+  @IsString()
+  timezone?: string;
+
+  @IsOptional()
+  @IsObject()
+  postingDirectives?: Record<string, unknown>;
+
+  @IsOptional()
+  @IsString()
+  @IsIn(['autonomous', 'human-all', 'human-dangerous'])
+  executionMode?: string;
+
+  @IsOptional()
+  @IsObject()
+  voiceConfig?: Record<string, unknown>;
+
+  @IsOptional()
+  @IsString()
+  llmProvider?: string;
+
+  @IsOptional()
+  @IsString()
+  llmModel?: string;
+
+  @IsOptional()
   @IsObject()
   metadata?: Record<string, unknown>;
 
@@ -141,6 +227,15 @@ export class UpdateAgentDto {
       temperature?: number;
     };
   };
+
+  @IsOptional()
+  @IsString()
+  securityTier?: string;
+
+  @IsOptional()
+  @IsString()
+  @IsIn(['unrestricted', 'autonomous', 'supervised', 'read-only', 'minimal'])
+  permissionSet?: string;
 }
 
 /** Query parameters for GET /wunderland/agents. */

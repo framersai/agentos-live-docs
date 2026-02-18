@@ -51,6 +51,18 @@ type AgentProfile = {
   /** Evolved behavioral adaptations from PromptEvolution (agent self-modification, not human-settable). */
   evolvedAdaptations?: string[];
   capabilities: string[];
+  skills: string[];
+  channels: string[];
+  timezone: string | null;
+  postingDirectives: Record<string, unknown> | null;
+  executionMode: string | null;
+  voiceConfig: Record<string, unknown> | null;
+  toolAccessProfile: string;
+  inferenceHierarchy: Record<string, unknown> | null;
+  llmProvider: string | null;
+  llmModel: string | null;
+  securityTier: string | null;
+  permissionSet: string | null;
   citizen: {
     level: number;
     xp: number;
@@ -105,6 +117,9 @@ type WunderlandAgentRow = {
   step_up_auth_config: string | null;
   base_system_prompt: string | null;
   allowed_tool_ids: string | null;
+  skills_json: string | null;
+  channels_json: string | null;
+  timezone: string | null;
   toolset_manifest_json?: string | null;
   toolset_hash?: string | null;
   genesis_event_id: string | null;
@@ -113,6 +128,9 @@ type WunderlandAgentRow = {
   sealed_at?: number | null;
   provenance_enabled: number;
   tool_access_profile: string | null;
+  posting_directives: string | null;
+  execution_mode: string | null;
+  voice_config: string | null;
   evolved_prompt_adaptations?: string | null;
   status: string | null;
   created_at: number;
@@ -324,11 +342,53 @@ export class AgentRegistryService {
         }
 
         const capabilities = normalizeStringArray(dto.capabilities);
+        const skills = normalizeStringArray(dto.skills);
+        const channels = normalizeStringArray(dto.channels);
+
+        const timezone =
+          typeof dto.timezone === 'string' && dto.timezone.trim() ? dto.timezone.trim() : null;
+
+        const postingDirectives =
+          dto.postingDirectives && typeof dto.postingDirectives === 'object'
+            ? dto.postingDirectives
+            : null;
+
+        const executionMode =
+          typeof dto.executionMode === 'string' && dto.executionMode.trim()
+            ? dto.executionMode.trim()
+            : null;
+
+        const voiceConfig =
+          dto.voiceConfig && typeof dto.voiceConfig === 'object' ? dto.voiceConfig : null;
+
+        const inferenceHierarchy: Record<string, unknown> = { profile: 'default' };
+        if (typeof dto.llmProvider === 'string' && dto.llmProvider.trim()) {
+          inferenceHierarchy.llmProvider = dto.llmProvider.trim();
+        }
+        if (typeof dto.llmModel === 'string' && dto.llmModel.trim()) {
+          inferenceHierarchy.llmModel = dto.llmModel.trim();
+        }
+
+        const securityTier =
+          (typeof dto.security?.tier === 'string' && dto.security.tier.trim()
+            ? dto.security.tier.trim()
+            : typeof dto.securityTier === 'string' && dto.securityTier.trim()
+              ? dto.securityTier.trim()
+              : null) ?? null;
+
+        const permissionSet =
+          typeof (dto as any).permissionSet === 'string' &&
+          String((dto as any).permissionSet).trim()
+            ? String((dto as any).permissionSet).trim()
+            : null;
+
         const securityProfile = {
           preLlmClassifier: Boolean(dto.security?.preLlmClassifier),
           dualLlmAuditor: Boolean(dto.security?.dualLlmAuditor),
           outputSigning: Boolean(dto.security?.outputSigning),
           storagePolicy: dto.security?.storagePolicy ?? 'sealed',
+          ...(securityTier ? { tier: securityTier } : {}),
+          ...(permissionSet ? { permissionSet } : {}),
         };
 
         const toolAccessProfile =
@@ -350,12 +410,18 @@ export class AgentRegistryService {
 	              step_up_auth_config,
 	              base_system_prompt,
 	              allowed_tool_ids,
+	              skills_json,
+	              channels_json,
+	              timezone,
 	              genesis_event_id,
 	              public_key,
 	              storage_policy,
 	              sealed_at,
 	              provenance_enabled,
 	              tool_access_profile,
+	              posting_directives,
+	              execution_mode,
+	              voice_config,
 	              status,
 	              created_at,
 	              updated_at
@@ -371,12 +437,18 @@ export class AgentRegistryService {
 	              @step_up_auth_config,
 	              @base_system_prompt,
 	              @allowed_tool_ids,
+	              @skills_json,
+	              @channels_json,
+	              @timezone,
 	              @genesis_event_id,
 	              @public_key,
 	              @storage_policy,
 	              @sealed_at,
 	              @provenance_enabled,
 	              @tool_access_profile,
+	              @posting_directives,
+	              @execution_mode,
+	              @voice_config,
 	              @status,
 	              @created_at,
 	              @updated_at
@@ -390,17 +462,65 @@ export class AgentRegistryService {
             avatar_url: null,
             hexaco_traits: JSON.stringify(dto.personality ?? {}),
             security_profile: JSON.stringify(securityProfile),
-            inference_hierarchy: JSON.stringify({ profile: 'default' }),
+            inference_hierarchy: JSON.stringify(inferenceHierarchy),
             step_up_auth_config: null,
             base_system_prompt: dto.systemPrompt ?? null,
             allowed_tool_ids: JSON.stringify(capabilities),
+            skills_json: JSON.stringify(skills),
+            channels_json: JSON.stringify(channels),
+            timezone,
             genesis_event_id: null,
             public_key: null,
             storage_policy: securityProfile.storagePolicy,
             sealed_at: null,
             provenance_enabled: securityProfile.outputSigning ? 1 : 0,
             tool_access_profile: toolAccessProfile,
+            posting_directives: postingDirectives ? JSON.stringify(postingDirectives) : null,
+            execution_mode: executionMode,
+            voice_config: voiceConfig ? JSON.stringify(voiceConfig) : null,
             status: 'active',
+            created_at: now,
+            updated_at: now,
+          }
+        );
+
+        const hostingMode =
+          typeof dto.hostingMode === 'string' && dto.hostingMode.trim() === 'self_hosted'
+            ? 'self_hosted'
+            : 'managed';
+
+        await trx.run(
+          `
+            INSERT INTO wunderbot_runtime (
+              seed_id,
+              owner_user_id,
+              hosting_mode,
+              status,
+              started_at,
+              stopped_at,
+              last_error,
+              metadata,
+              created_at,
+              updated_at
+            ) VALUES (
+              @seed_id,
+              @owner_user_id,
+              @hosting_mode,
+              @status,
+              NULL,
+              NULL,
+              NULL,
+              @metadata,
+              @created_at,
+              @updated_at
+            )
+          `,
+          {
+            seed_id: seedId,
+            owner_user_id: userId,
+            hosting_mode: hostingMode,
+            status: 'stopped',
+            metadata: '{}',
             created_at: now,
             updated_at: now,
           }
@@ -629,6 +749,7 @@ export class AgentRegistryService {
           'systemPrompt',
           'personality',
           'security',
+          'permissionSet',
           'capabilities',
           'metadata',
         ] as const;
@@ -651,6 +772,13 @@ export class AgentRegistryService {
         ? { ...existingSecurity, ...(dto.security as any) }
         : existingSecurity;
 
+      if (dto.securityTier && typeof dto.securityTier === 'string' && dto.securityTier.trim()) {
+        (security as any).tier = dto.securityTier.trim();
+      }
+      if (dto.permissionSet && typeof dto.permissionSet === 'string' && dto.permissionSet.trim()) {
+        (security as any).permissionSet = dto.permissionSet.trim();
+      }
+
       const nextStoragePolicy =
         typeof (security as any).storagePolicy === 'string'
           ? String((security as any).storagePolicy)
@@ -670,6 +798,61 @@ export class AgentRegistryService {
           ? dto.toolAccessProfile
           : undefined;
 
+      const existingSkills = parseJsonOr<string[]>(existing.skills_json, []);
+      const skills = dto.skills ? normalizeStringArray(dto.skills) : existingSkills;
+
+      const existingChannels = parseJsonOr<string[]>(existing.channels_json, []);
+      const channels = dto.channels ? normalizeStringArray(dto.channels) : existingChannels;
+
+      const timezone =
+        dto.timezone !== undefined
+          ? typeof dto.timezone === 'string' && dto.timezone.trim()
+            ? dto.timezone.trim()
+            : null
+          : (existing.timezone ?? null);
+
+      const existingPostingDirectives = parseJsonOr<Record<string, unknown>>(
+        existing.posting_directives ?? null,
+        {}
+      );
+      const postingDirectives =
+        dto.postingDirectives && typeof dto.postingDirectives === 'object'
+          ? dto.postingDirectives
+          : existingPostingDirectives;
+
+      const executionMode =
+        dto.executionMode !== undefined
+          ? typeof dto.executionMode === 'string' && dto.executionMode.trim()
+            ? dto.executionMode.trim()
+            : null
+          : (existing.execution_mode ?? null);
+
+      const existingVoiceConfig = parseJsonOr<Record<string, unknown>>(existing.voice_config, {});
+      const voiceConfig =
+        dto.voiceConfig && typeof dto.voiceConfig === 'object'
+          ? dto.voiceConfig
+          : existingVoiceConfig;
+
+      const inferenceHierarchyBase = parseJsonOr<Record<string, unknown>>(
+        existing.inference_hierarchy,
+        {
+          profile: 'default',
+        }
+      );
+      let inferenceHierarchy = dto.inferenceHierarchy
+        ? (dto.inferenceHierarchy as any)
+        : inferenceHierarchyBase;
+
+      if (typeof dto.llmProvider === 'string' && dto.llmProvider.trim()) {
+        inferenceHierarchy = {
+          ...(inferenceHierarchy as any),
+          llmProvider: dto.llmProvider.trim(),
+        };
+      }
+      if (typeof dto.llmModel === 'string' && dto.llmModel.trim()) {
+        inferenceHierarchy = { ...(inferenceHierarchy as any), llmModel: dto.llmModel.trim() };
+      }
+
       await trx.run(
         `
 		          UPDATE wunderbots
@@ -681,8 +864,14 @@ export class AgentRegistryService {
 	                 storage_policy = @storage_policy,
 	                 provenance_enabled = @provenance_enabled,
 	                 allowed_tool_ids = @allowed_tool_ids,
+	                 skills_json = @skills_json,
+	                 channels_json = @channels_json,
+	                 timezone = @timezone,
 	                 tool_access_profile = COALESCE(@tool_access_profile, tool_access_profile),
-	                 inference_hierarchy = COALESCE(@inference_hierarchy, inference_hierarchy),
+	                 inference_hierarchy = @inference_hierarchy,
+	                 posting_directives = @posting_directives,
+	                 execution_mode = @execution_mode,
+	                 voice_config = @voice_config,
 	                 avatar_url = COALESCE(@avatar_url, avatar_url),
 	                 updated_at = @updated_at
 	           WHERE seed_id = @seed_id
@@ -697,10 +886,14 @@ export class AgentRegistryService {
           storage_policy: nextStoragePolicy,
           provenance_enabled: nextProvenanceEnabled,
           allowed_tool_ids: JSON.stringify(capabilities),
+          skills_json: JSON.stringify(skills),
+          channels_json: JSON.stringify(channels),
+          timezone,
           tool_access_profile: nextToolAccessProfile ?? null,
-          inference_hierarchy: dto.inferenceHierarchy
-            ? JSON.stringify(dto.inferenceHierarchy)
-            : null,
+          inference_hierarchy: JSON.stringify(inferenceHierarchy ?? { profile: 'default' }),
+          posting_directives: JSON.stringify(postingDirectives ?? {}),
+          execution_mode: executionMode,
+          voice_config: JSON.stringify(voiceConfig ?? {}),
           avatar_url: dto.avatarUrl ?? null,
           updated_at: now,
         }
@@ -890,6 +1083,30 @@ export class AgentRegistryService {
     const personality = parseJsonOr<Record<string, number>>(agent.hexaco_traits, {});
     const security = parseJsonOr<Record<string, unknown>>(agent.security_profile, {});
     const capabilities = parseJsonOr<string[]>(agent.allowed_tool_ids, []);
+    const skills = parseJsonOr<string[]>(agent.skills_json, []);
+    const channels = parseJsonOr<string[]>(agent.channels_json, []);
+    const postingDirectives = parseJsonOr<Record<string, unknown>>(agent.posting_directives, {});
+    const voiceConfig = parseJsonOr<Record<string, unknown>>(agent.voice_config, {});
+    const inferenceHierarchy = parseJsonOr<Record<string, unknown>>(agent.inference_hierarchy, {});
+    const llmProvider =
+      typeof (inferenceHierarchy as any).llmProvider === 'string' &&
+      (inferenceHierarchy as any).llmProvider.trim()
+        ? String((inferenceHierarchy as any).llmProvider).trim()
+        : null;
+    const llmModel =
+      typeof (inferenceHierarchy as any).llmModel === 'string' &&
+      (inferenceHierarchy as any).llmModel.trim()
+        ? String((inferenceHierarchy as any).llmModel).trim()
+        : null;
+    const securityTier =
+      typeof (security as any).tier === 'string' && String((security as any).tier).trim()
+        ? String((security as any).tier).trim()
+        : null;
+    const permissionSet =
+      typeof (security as any).permissionSet === 'string' &&
+      String((security as any).permissionSet).trim()
+        ? String((security as any).permissionSet).trim()
+        : null;
     const storagePolicy =
       typeof security.storagePolicy === 'string'
         ? security.storagePolicy
@@ -925,6 +1142,18 @@ export class AgentRegistryService {
       systemPrompt: agent.base_system_prompt,
       evolvedAdaptations: parseJsonOr<string[]>(agent.evolved_prompt_adaptations ?? null, []),
       capabilities,
+      skills,
+      channels,
+      timezone: agent.timezone ?? null,
+      postingDirectives,
+      executionMode: agent.execution_mode ?? null,
+      voiceConfig,
+      toolAccessProfile: profileName,
+      inferenceHierarchy,
+      llmProvider,
+      llmModel,
+      securityTier,
+      permissionSet,
       citizen: {
         level: citizen.level ?? 1,
         xp: citizen.xp ?? 0,
