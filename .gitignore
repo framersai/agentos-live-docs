@@ -58,6 +58,7 @@ bower_components/
 
 # Optional: Local development files
 .local/
+tmp-*.png
 
 # Repomix
 *repomix*

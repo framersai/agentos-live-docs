@@ -33,6 +33,14 @@ packages:
   - packages/agentos-extensions/registry/curated/channels/mattermost
   - packages/agentos-extensions/registry/curated/channels/nextcloud
   - packages/agentos-extensions/registry/curated/channels/tlon
+  - packages/agentos-extensions/registry/curated/channels/irc
+  - packages/agentos-extensions/registry/curated/channels/zalouser
+  - packages/agentos-extensions/registry/curated/channels/reddit
+  - packages/agentos-extensions/registry/curated/channels/twitter
+  - packages/agentos-extensions/registry/curated/channels/instagram
+  - packages/agentos-extensions/registry/curated/channels/tiktok
+  - packages/agentos-extensions/registry/curated/channels/youtube
+  - packages/agentos-extensions/registry/curated/channels/pinterest
   - packages/agentos-extensions/registry/curated/provenance/anchor-providers
   - packages/agentos-extensions/registry/curated/provenance/wunderland-tip-ingestion
   - apps/*
