@@ -56,8 +56,10 @@ packages:
   - '!apps/wunderland-sh/packages/shared'
   - '!apps/wunderland-sh/packages/sql-storage-adapter'
   - '!apps/wunderland-sh/packages/wunderland'
-  - '!packages/codex-viewer/**'
+  # Exclude deeply nested submodule trees that recursively duplicate the monorepo
+  - '!apps/wunderland-sh/packages/wunderland/**'
   - '!apps/frame.dev/packages/codex-viewer/**'
+  - '!packages/codex-viewer/**'
 
 ignoredBuiltDependencies:
   - '@parcel/watcher'
