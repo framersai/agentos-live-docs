@@ -304,12 +304,24 @@ Channel auto-replies are configured per binding via `wunderland_channel_bindings
 
 ## 5. LLM Providers
 
-| Variable             | Description                                             |
-| -------------------- | ------------------------------------------------------- |
-| `OPENAI_API_KEY`     | Required for GPT and Whisper features.                  |
-| `OPENROUTER_API_KEY` | Optional additional model access.                       |
-| `ANTHROPIC_API_KEY`  | Optional Claude support.                                |
-| `MODEL_PREF_*`       | Default model routing per feature (see `.env.example`). |
+| Variable             | Description                                              |
+| -------------------- | -------------------------------------------------------- |
+| `OPENAI_API_KEY`     | Required for GPT and Whisper features.                   |
+| `OPENROUTER_API_KEY` | Optional additional model access.                        |
+| `ANTHROPIC_API_KEY`  | Optional Claude support.                                 |
+| `OLLAMA_BASE_URL`    | Optional server-side Ollama base URL (self-hosted only). |
+| `MODEL_PREF_*`       | Default model routing per feature (see `.env.example`).  |
+
+### Ollama Tunnel (Hosted Rabbit Hole)
+
+Pro/Enterprise users can connect a local Ollama instance to the hosted Rabbit Hole UI using Cloudflare Tunnel.
+
+| Variable                              | Description                                                                                   |
+| ------------------------------------- | --------------------------------------------------------------------------------------------- |
+| `RABBITHOLE_SITE_URL`                 | Public site origin used to generate the tunnel script links (e.g. `https://rabbithole.inc`).  |
+| `RABBITHOLE_TUNNEL_TTL_MS`            | Heartbeat TTL before a tunnel is considered offline. Default: `90000`.                        |
+| `RABBITHOLE_TUNNEL_ALLOW_ANY_HOST`    | If `true`, allow non-`*.trycloudflare.com` tunnel origins (SSRF risk). Default: `false`.      |
+| `RABBITHOLE_OLLAMA_PROMPT_TIMEOUT_MS` | Timeout for server-side calls to tunnel Ollama (used by select UI helpers). Default: `15000`. |
 
 ## 6. Storage & Database
 

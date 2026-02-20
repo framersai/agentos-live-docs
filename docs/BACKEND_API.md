@@ -254,6 +254,36 @@ Routes require authentication.
 | `GET`  | `/system/llm-status`     | Health check for configured LLM providers.                                          |
 | `GET`  | `/system/storage-status` | Returns active storage adapter kind and capability flags (used for feature gating). |
 
+## Ollama Tunnel (hosted)
+
+Routes require authentication unless noted. These endpoints support the hosted Rabbit Hole UI using a user's local Ollama via a Cloudflare quick tunnel.
+
+| Method   | Path                | Auth     | Description                                                    |
+| -------- | ------------------- | -------- | -------------------------------------------------------------- |
+| `GET`    | `/tunnel/token`     | Required | Get current tunnel token (masked).                             |
+| `POST`   | `/tunnel/token`     | Required | Create a tunnel token (returns plaintext once).                |
+| `PATCH`  | `/tunnel/token`     | Required | Rotate the tunnel token (returns plaintext once).              |
+| `DELETE` | `/tunnel/token`     | Required | Revoke the tunnel token.                                       |
+| `GET`    | `/tunnel/status`    | Required | Get tunnel connection status for current user.                 |
+| `GET`    | `/tunnel/script`    | Required | Download `rabbithole-tunnel.sh` for your account.              |
+| `POST`   | `/tunnel/heartbeat` | Token    | Tunnel heartbeat (script → backend). Header: `X-Tunnel-Token`. |
+
+`POST /tunnel/heartbeat` body:
+
+```json
+{
+  "ollamaUrl": "https://xxxx.trycloudflare.com",
+  "models": ["llama3.1:8b", "nomic-embed-text"],
+  "version": "2.1.0",
+  "disconnecting": false
+}
+```
+
+Notes:
+
+- By default, `ollamaUrl` is accepted only when it is `https://*.trycloudflare.com` (SSRF mitigation). Override with `RABBITHOLE_TUNNEL_ALLOW_ANY_HOST=true`.
+- A tunnel is considered offline when no heartbeat has been received within `RABBITHOLE_TUNNEL_TTL_MS` (default `90000`).
+
 ## Misc
 
 | Method | Path    | Description                                                         |
