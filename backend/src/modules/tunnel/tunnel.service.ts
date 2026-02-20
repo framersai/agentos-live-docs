@@ -29,6 +29,7 @@ export type TunnelTokenResolution = {
 
 const PROVIDER_ID = 'ollama';
 const CREDENTIAL_TYPE = 'tunnel_token';
+const LABEL = 'Ollama Tunnel';
 
 const DEFAULT_TTL_MS = 90_000;
 
@@ -95,6 +96,11 @@ function decodeUserIdFromTunnelToken(token: string): string | null {
   }
 }
 
+function isLabelMatch(label: unknown, expected: string): boolean {
+  if (typeof label !== 'string') return false;
+  return label.trim().toLowerCase() === expected.trim().toLowerCase();
+}
+
 @Injectable()
 export class TunnelService {
   private schemaReady = false;
@@ -124,6 +130,18 @@ export class TunnelService {
       'CREATE INDEX IF NOT EXISTS idx_user_tunnels_heartbeat ON user_tunnels(provider_id, last_heartbeat_at DESC);'
     );
     this.schemaReady = true;
+  }
+
+  /**
+   * Immediately clears any stored tunnel registration for a user. Useful when
+   * rotating/revoking tokens so stale heartbeats aren't treated as connected.
+   */
+  public async disconnectForUser(userId: string): Promise<void> {
+    await this.ensureSchema();
+    await this.db.run(`DELETE FROM user_tunnels WHERE user_id = ? AND provider_id = ?`, [
+      userId,
+      PROVIDER_ID,
+    ]);
   }
 
   public getTtlMs(): number {
@@ -181,19 +199,11 @@ export class TunnelService {
     // New format: rht.<b64(userId)>.<hex>
     const userIdFromToken = decodeUserIdFromTunnelToken(token);
     if (userIdFromToken) {
-      const rows = await this.db.all<any>(
-        `SELECT id, encrypted_value
-           FROM user_api_keys
-          WHERE user_id = ?
-            AND credential_type = ?
-          ORDER BY created_at DESC`,
-        [userIdFromToken, CREDENTIAL_TYPE]
-      );
-      for (const row of rows) {
-        const decrypted = this.vault.decryptSecret(String(row.encrypted_value ?? ''));
-        if (decrypted && decrypted === token) {
-          return { userId: userIdFromToken, keyId: String(row.id) };
-        }
+      const canonical = await this.getCanonicalTunnelKeyForUser(userIdFromToken);
+      if (!canonical) return null;
+      const decrypted = this.vault.decryptSecret(String(canonical.encrypted_value ?? ''));
+      if (decrypted && decrypted === token) {
+        return { userId: userIdFromToken, keyId: String(canonical.id) };
       }
       return null;
     }
@@ -215,10 +225,40 @@ export class TunnelService {
     for (const row of candidates) {
       const decrypted = this.vault.decryptSecret(String(row.encrypted_value ?? ''));
       if (decrypted && decrypted === token) {
-        return { userId: String(row.user_id), keyId: String(row.id) };
+        const userId = String(row.user_id);
+        const canonical = await this.getCanonicalTunnelKeyForUser(userId);
+        if (canonical && String(canonical.id) === String(row.id)) {
+          return { userId, keyId: String(row.id) };
+        }
       }
     }
     return null;
+  }
+
+  private async getCanonicalTunnelKeyForUser(
+    userId: string
+  ): Promise<{ id: string; encrypted_value: string; label: string | null } | null> {
+    const rows = await this.db.all<any>(
+      `SELECT id, encrypted_value, label, created_at
+         FROM user_api_keys
+        WHERE user_id = ?
+          AND credential_type = ?
+        ORDER BY created_at DESC`,
+      [userId, CREDENTIAL_TYPE]
+    );
+    if (!rows.length) return null;
+    const labeled = rows.find((r) => isLabelMatch(r.label, LABEL));
+    const canonical = labeled ?? rows[0];
+    return canonical
+      ? {
+          id: String(canonical.id),
+          encrypted_value: String(canonical.encrypted_value ?? ''),
+          label:
+            canonical.label === null || canonical.label === undefined
+              ? null
+              : String(canonical.label),
+        }
+      : null;
   }
 
   public async upsertHeartbeat(options: {

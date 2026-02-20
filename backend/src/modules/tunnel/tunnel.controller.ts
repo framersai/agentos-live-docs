@@ -23,6 +23,7 @@ import {
   Headers,
   Body,
   UseGuards,
+  ConflictException,
   ForbiddenException,
   NotFoundException,
   HttpException,
@@ -115,6 +116,12 @@ export class TunnelController {
   async createToken(@CurrentUser() user: any, @CurrentUser('id') userId: string) {
     assertProOrEnterprise(user);
 
+    const { items } = await this.vault.listKeys(userId);
+    const existing = items.filter((k) => k.credentialType === CREDENTIAL_TYPE);
+    if (existing.length > 0) {
+      throw new ConflictException('Tunnel token already exists. Use rotate instead.');
+    }
+
     const value = generateTunnelToken(userId);
     const { key } = await this.vault.createKey(userId, {
       credentialType: CREDENTIAL_TYPE,
@@ -139,10 +146,18 @@ export class TunnelController {
     assertProOrEnterprise(user);
 
     const { items } = await this.vault.listKeys(userId);
-    const existing = pickTunnelKey(items);
-    if (existing) {
-      await this.vault.deleteKey(userId, existing.id);
+    const existing = items.filter((k) => k.credentialType === CREDENTIAL_TYPE);
+    for (const k of existing) {
+      try {
+        await this.vault.deleteKey(userId, k.id);
+      } catch {
+        // Ignore concurrent deletes.
+      }
     }
+
+    // Drop any stored tunnel registration so the UI/backend won't consider it connected
+    // until a heartbeat arrives with the new token.
+    await this.tunnelService.disconnectForUser(userId);
 
     const value = generateTunnelToken(userId);
     const { key } = await this.vault.createKey(userId, {
@@ -168,10 +183,19 @@ export class TunnelController {
     assertProOrEnterprise(user);
 
     const { items } = await this.vault.listKeys(userId);
-    const existing = pickTunnelKey(items);
-    if (!existing) throw new NotFoundException('No tunnel token found');
-    await this.vault.deleteKey(userId, existing.id);
-    return { deleted: true };
+    const existing = items.filter((k) => k.credentialType === CREDENTIAL_TYPE);
+    if (!existing.length) throw new NotFoundException('No tunnel token found');
+
+    for (const k of existing) {
+      try {
+        await this.vault.deleteKey(userId, k.id);
+      } catch {
+        // Ignore concurrent deletes.
+      }
+    }
+
+    await this.tunnelService.disconnectForUser(userId);
+    return { deleted: true, count: existing.length };
   }
 
   // ── Status (auth) ─────────────────────────────────────────────────────────
