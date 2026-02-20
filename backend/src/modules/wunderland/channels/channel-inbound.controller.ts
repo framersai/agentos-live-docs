@@ -123,10 +123,20 @@ export class ChannelInboundController {
 
   private assertTelegramWebhookSecret(provided: string | undefined): void {
     const expected = (process.env.WUNDERLAND_TELEGRAM_WEBHOOK_SECRET || '').trim();
-    if (!expected) return; // allow unauthenticated webhook in dev if secret isn't set
-    if (!provided || provided !== expected) {
+    const allowUnauthenticated =
+      String(process.env.WUNDERLAND_TELEGRAM_WEBHOOK_ALLOW_UNAUTHENTICATED || '')
+        .trim()
+        .toLowerCase() === 'true';
+    const nodeEnv = String(process.env.NODE_ENV || '')
+      .trim()
+      .toLowerCase();
+    const isProd = nodeEnv === 'production';
+
+    if (!expected) {
+      if (!isProd || allowUnauthenticated) return;
       throw new ForbiddenException('Forbidden.');
     }
+    if (!provided || provided !== expected) throw new ForbiddenException('Forbidden.');
   }
 
   /**
