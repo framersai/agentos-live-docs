@@ -292,6 +292,16 @@ Shutdown:
 pnpm dev:qdrant:down
 ```
 
+### Wunderland Channels (Optional)
+
+| Variable                             | Description                                                                                 |
+| ------------------------------------ | ------------------------------------------------------------------------------------------- |
+| `WUNDERLAND_ENABLED`                 | Wunderland module toggle. Enabled by default; set `WUNDERLAND_ENABLED=false` to disable it. |
+| `AGENTOS_CHANNEL_PLATFORMS`          | Comma-separated channel adapters to load into AgentOS (e.g. `telegram,discord,slack`).      |
+| `WUNDERLAND_TELEGRAM_WEBHOOK_SECRET` | Optional secret for Telegram webhooks (validates `X-Telegram-Bot-Api-Secret-Token`).        |
+
+Channel auto-replies are configured per binding via `wunderland_channel_bindings.platform_config.autoReply` (e.g. mode `dm` / `mentions` / `all`, cooldown, and `personaEnabled` for HEXACO+mood prompting).
+
 ## 5. LLM Providers
 
 | Variable             | Description                                             |

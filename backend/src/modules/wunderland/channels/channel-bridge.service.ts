@@ -32,6 +32,7 @@ export interface OutboundChannelMessage {
   conversationId: string;
   text: string;
   replyToMessageId?: string;
+  conversationType?: string;
 }
 
 @Injectable()
@@ -72,18 +73,42 @@ export class ChannelBridgeService {
    * Track an outbound agent response for session stats.
    */
   async trackOutboundMessage(msg: OutboundChannelMessage): Promise<void> {
-    await this.upsertSession({
-      seedId: msg.seedId,
-      platform: msg.platform,
-      conversationId: msg.conversationId,
-      conversationType: 'direct',
-      senderName: 'agent',
-      senderPlatformId: msg.seedId,
-      text: msg.text,
-      messageId: `out-${Date.now()}`,
-      timestamp: new Date().toISOString(),
-      isOwner: false,
-    });
+    const existing = await this.db.get<{ session_id: string }>(
+      `SELECT session_id FROM wunderland_channel_sessions
+       WHERE seed_id = ? AND platform = ? AND conversation_id = ?`,
+      [msg.seedId, msg.platform, msg.conversationId]
+    );
+
+    const now = Date.now();
+
+    if (existing?.session_id) {
+      await this.db.run(
+        `UPDATE wunderland_channel_sessions
+         SET last_message_at = ?, message_count = message_count + 1, is_active = 1, updated_at = ?
+         WHERE session_id = ?`,
+        [now, now, existing.session_id]
+      );
+      return;
+    }
+
+    const sessionId = this.db.generateId();
+    await this.db.run(
+      `INSERT INTO wunderland_channel_sessions
+        (session_id, seed_id, platform, conversation_id, conversation_type,
+         remote_user_id, remote_user_name, last_message_at, message_count,
+         is_active, context_json, created_at, updated_at)
+       VALUES (?, ?, ?, ?, ?, NULL, NULL, ?, 1, 1, '{}', ?, ?)`,
+      [
+        sessionId,
+        msg.seedId,
+        msg.platform,
+        msg.conversationId,
+        msg.conversationType ?? 'direct',
+        now,
+        now,
+        now,
+      ]
+    );
   }
 
   // ── Private ──

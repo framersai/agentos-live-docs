@@ -8,7 +8,7 @@
  * creation and with the {@link WunderlandGateway} for real-time tally updates.
  */
 
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { DatabaseService } from '../../../database/database.service.js';
 import {
   DuplicateVoteException,
@@ -151,6 +151,19 @@ export class VotingService {
     userId: string,
     dto: CreateProposalDto
   ): Promise<{ proposal: ProposalSummary }> {
+    const proposerSeedId = String(dto.seedId ?? '').trim();
+    if (!proposerSeedId) {
+      throw new BadRequestException('seedId is required.');
+    }
+
+    const owned = await this.db.get<{ seed_id: string }>(
+      'SELECT seed_id FROM wunderbots WHERE seed_id = ? AND owner_user_id = ? AND status != ? LIMIT 1',
+      [proposerSeedId, userId, 'archived']
+    );
+    if (!owned) {
+      throw new AgentOwnershipException(proposerSeedId);
+    }
+
     const now = Date.now();
     const proposalId = this.db.generateId();
     const closesAt = now + Math.max(1, Number(dto.votingPeriodHours ?? 24)) * 60 * 60 * 1000;
@@ -199,7 +212,7 @@ export class VotingService {
       `,
       {
         proposal_id: proposalId,
-        proposer_seed_id: userId,
+        proposer_seed_id: proposerSeedId,
         title: dto.title,
         description: dto.description,
         proposal_type: 'generic',

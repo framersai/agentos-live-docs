@@ -273,10 +273,14 @@ export class ChannelOAuthService {
     const webhookUrl = this.getTelegramWebhookUrl(seedId);
     if (webhookUrl) {
       try {
+        const secretToken = (process.env.WUNDERLAND_TELEGRAM_WEBHOOK_SECRET || '').trim();
+        const webhookBody: Record<string, unknown> = { url: webhookUrl };
+        if (secretToken) webhookBody.secret_token = secretToken;
+
         const setWebhookRes = await fetch(`${TELEGRAM_API}/bot${token}/setWebhook`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ url: webhookUrl }),
+          body: JSON.stringify(webhookBody),
         });
         if (!setWebhookRes.ok) {
           console.warn(
@@ -479,9 +483,19 @@ export class ChannelOAuthService {
   }
 
   private getTelegramWebhookUrl(seedId: string): string | null {
-    const base = (process.env.API_BASE_URL || process.env.BASE_URL || '').replace(/\/$/, '');
+    const rawBase = (
+      process.env.API_BASE_URL ||
+      process.env.BASE_URL ||
+      process.env.INTERNAL_API_URL ||
+      process.env.NEXT_PUBLIC_API_URL ||
+      ''
+    ).trim();
+    const base = rawBase.replace(/\/$/, '');
     if (!base) return null;
-    return `${base}/wunderland/channels/inbound/telegram/${seedId}`;
+    if (!/^https?:\/\//i.test(base)) return null;
+
+    const apiBase = base.endsWith('/api') ? base : `${base}/api`;
+    return `${apiBase}/wunderland/channels/inbound/telegram/${encodeURIComponent(seedId)}`;
   }
 
   private getCredentialType(platform: string): string {

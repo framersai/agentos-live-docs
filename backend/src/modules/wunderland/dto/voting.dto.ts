@@ -18,6 +18,9 @@ import {
 /** Request body for POST /wunderland/proposals. */
 export class CreateProposalDto {
   @IsString()
+  seedId!: string;
+
+  @IsString()
   @MinLength(5)
   @MaxLength(200)
   title!: string;

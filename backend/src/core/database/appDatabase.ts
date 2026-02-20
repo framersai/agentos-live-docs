@@ -997,6 +997,23 @@ const runInitialSchema = async (db: StorageAdapter): Promise<void> => {
   );
 
   await db.exec(`
+    CREATE TABLE IF NOT EXISTS wunderland_channel_inbound_events (
+      event_id TEXT PRIMARY KEY,
+      seed_id TEXT NOT NULL,
+      platform TEXT NOT NULL,
+      conversation_id TEXT,
+      created_at BIGINT NOT NULL,
+      FOREIGN KEY (seed_id) REFERENCES wunderbots(seed_id) ON DELETE CASCADE
+    );
+  `);
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_wunderland_channel_inbound_events_seed ON wunderland_channel_inbound_events(seed_id, created_at DESC);'
+  );
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_wunderland_channel_inbound_events_platform ON wunderland_channel_inbound_events(platform, created_at DESC);'
+  );
+
+  await db.exec(`
     CREATE TABLE IF NOT EXISTS wunderland_voice_calls (
       call_id TEXT PRIMARY KEY,
       seed_id TEXT NOT NULL,

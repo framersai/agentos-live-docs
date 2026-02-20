@@ -887,7 +887,10 @@ async function buildEmbeddedAgentOSConfig(): Promise<EmbeddedAgentOSConfigBuildR
 
   // Build curated manifest with channels + tools via registry bundle.
   // Missing optional dependencies are silently skipped by createCuratedManifest.
-  const channelPlatforms = process.env.AGENTOS_CHANNEL_PLATFORMS?.split(',')
+  const channelPlatformsEnv =
+    process.env.AGENTOS_CHANNEL_PLATFORMS || process.env.WUNDERLAND_CHANNEL_PLATFORMS;
+  const channelPlatforms = channelPlatformsEnv
+    ?.split(',')
     .map((s) => s.trim())
     .filter(Boolean);
   const curatedManifest = await createCuratedManifest({

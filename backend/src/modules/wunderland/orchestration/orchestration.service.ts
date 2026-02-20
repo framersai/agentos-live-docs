@@ -21,6 +21,7 @@ import { ragService } from '../../../integrations/rag/rag.service.js';
 import { WunderlandVectorMemoryService } from './wunderland-vector-memory.service';
 import { WunderlandSolService } from '../wunderland-sol/wunderland-sol.service.js';
 import { CredentialsService } from '../credentials/credentials.service.js';
+import { CredentialResolverService } from '../credentials/credential-resolver.service.js';
 import {
   DEFAULT_SECURITY_PROFILE,
   DEFAULT_INFERENCE_HIERARCHY,
@@ -46,6 +47,7 @@ import type {
   SocialDynamicsConfig,
   StimulusEvent,
   StimulusSource,
+  ChannelMessagePayload,
   TipPayload,
   WorldFeedPayload,
   ExtendedBrowsingSessionRecord,
@@ -82,6 +84,7 @@ export class OrchestrationService implements OnModuleInit, OnModuleDestroy {
   constructor(
     private readonly db: DatabaseService,
     private readonly credentials: CredentialsService,
+    private readonly credentialResolver: CredentialResolverService,
     private readonly moodPersistence: MoodPersistenceService,
     private readonly enclavePersistence: EnclavePersistenceService,
     private readonly browsingPersistence: BrowsingPersistenceService,
@@ -565,6 +568,11 @@ export class OrchestrationService implements OnModuleInit, OnModuleDestroy {
           agent.inference_hierarchy,
           null as any
         );
+        const llmPref = await this.resolveAgentLlmFromCredentials(
+          agent.owner_user_id,
+          seedId,
+          dbHierarchy
+        );
 
         const seedConfig: WunderlandSeedConfig = {
           seedId,
@@ -582,6 +590,10 @@ export class OrchestrationService implements OnModuleInit, OnModuleDestroy {
             'social-citizen',
         };
 
+        if (llmPref.modelOverride && seedConfig.inferenceHierarchy?.primaryModel) {
+          seedConfig.inferenceHierarchy.primaryModel.modelId = llmPref.modelOverride;
+        }
+
         const newsroomConfig: NewsroomConfig = {
           seedConfig,
           ownerId: agent.owner_user_id,
@@ -594,6 +606,45 @@ export class OrchestrationService implements OnModuleInit, OnModuleDestroy {
         };
 
         await this.network.registerCitizen(newsroomConfig);
+
+        if (llmPref.runtimeProviderConfig) {
+          this.network.setLLMCallbackForCitizen(seedId, async (messages, tools, options) => {
+            const effectiveModel = llmPref.modelOverride || options?.model;
+            const resp = await callLlmWithProviderConfig(
+              messages as any,
+              effectiveModel,
+              {
+                temperature: options?.temperature,
+                max_tokens: options?.max_tokens,
+                tools: tools as any,
+              },
+              llmPref.runtimeProviderConfig!,
+              agent.owner_user_id
+            );
+
+            const usage = resp.usage
+              ? {
+                  prompt_tokens: resp.usage.prompt_tokens ?? 0,
+                  completion_tokens: resp.usage.completion_tokens ?? 0,
+                  total_tokens: resp.usage.total_tokens ?? 0,
+                }
+              : undefined;
+
+            const toolCalls = resp.toolCalls?.length ? (resp.toolCalls as any) : undefined;
+
+            return {
+              content: resp.text,
+              ...(toolCalls ? { tool_calls: toolCalls } : {}),
+              model:
+                resp.model ||
+                effectiveModel ||
+                llmPref.runtimeProviderConfig!.defaultModel ||
+                'unknown',
+              usage,
+            };
+          });
+        }
+
         await this.trustEngine?.loadFromPersistence(seedId);
 
         this.logger.log(
@@ -893,6 +944,45 @@ export class OrchestrationService implements OnModuleInit, OnModuleDestroy {
       };
     }
 
+    if (typeRaw === 'channel_message') {
+      const p = payloadRaw as any;
+      const conversationTypeRaw = String(
+        p.conversationType ?? p.conversation_type ?? 'direct'
+      ).toLowerCase();
+      const conversationType =
+        conversationTypeRaw === 'group' ||
+        conversationTypeRaw === 'channel' ||
+        conversationTypeRaw === 'thread'
+          ? conversationTypeRaw
+          : 'direct';
+
+      const payload: ChannelMessagePayload = {
+        type: 'channel_message',
+        platform: String(p.platform ?? 'unknown'),
+        conversationId: String(p.conversationId ?? p.conversation_id ?? ''),
+        conversationType,
+        content: String(p.content ?? p.text ?? ''),
+        senderName: String(p.senderName ?? p.sender_name ?? ''),
+        senderPlatformId: String(p.senderPlatformId ?? p.sender_platform_id ?? ''),
+        messageId: String(p.messageId ?? p.message_id ?? ''),
+        isOwner: Boolean(p.isOwner ?? p.is_owner ?? false),
+      };
+
+      if (!payload.platform.trim() || !payload.conversationId.trim() || !payload.content.trim()) {
+        return null;
+      }
+
+      return {
+        eventId,
+        type: 'channel_message',
+        timestamp,
+        payload,
+        priority,
+        targetSeedIds,
+        source,
+      };
+    }
+
     // Default to tip-like stimuli (covers on-chain tips and admin-injected text prompts).
     const p = payloadRaw as any;
     const payload: TipPayload = {
@@ -1072,7 +1162,8 @@ export class OrchestrationService implements OnModuleInit, OnModuleDestroy {
 
   private async resolveAgentLlmFromCredentials(
     ownerUserId: string,
-    seedId: string
+    seedId: string,
+    inferenceHierarchy?: unknown
   ): Promise<{
     modelOverride?: string;
     runtimeProviderConfig?: ILlmProviderConfig;
@@ -1084,17 +1175,88 @@ export class OrchestrationService implements OnModuleInit, OnModuleDestroy {
         'LLM_API_KEY_OPENAI',
         'LLM_API_KEY_OPENROUTER',
         'LLM_API_KEY_ANTHROPIC',
+        // Rabbithole dashboard (credential vault / AutoConfigWidget)
+        'openai_key',
+        'openrouter_key',
+        'anthropic_key',
       ]);
 
-      const openAiKey = vals.LLM_API_KEY_OPENAI?.trim() || null;
-      const openRouterKey = vals.LLM_API_KEY_OPENROUTER?.trim() || null;
-      const anthropicKey = vals.LLM_API_KEY_ANTHROPIC?.trim() || null;
+      let openAiKey = (vals.openai_key || vals.LLM_API_KEY_OPENAI)?.trim() || null;
+      let openRouterKey = (vals.openrouter_key || vals.LLM_API_KEY_OPENROUTER)?.trim() || null;
+      let anthropicKey = (vals.anthropic_key || vals.LLM_API_KEY_ANTHROPIC)?.trim() || null;
 
-      const modelPrefRaw = vals.LLM_MODEL;
+      const resolveFirst = async (types: string[]): Promise<string | null> => {
+        for (const type of types) {
+          try {
+            const resolved = await this.credentialResolver.resolve(ownerUserId, seedId, type);
+            const value = resolved?.value?.trim();
+            if (value) return value;
+          } catch {
+            // Ignore and keep trying fallbacks.
+          }
+        }
+        return null;
+      };
+
+      // Fall back to vault keys (or alternate type aliases) if agent creds are missing.
+      if (!openAiKey) {
+        openAiKey =
+          (await resolveFirst([
+            'openai_key',
+            'LLM_API_KEY_OPENAI',
+            'openai.apiKey',
+            'OPENAI_API_KEY',
+          ])) || null;
+      }
+      if (!openRouterKey) {
+        openRouterKey =
+          (await resolveFirst([
+            'openrouter_key',
+            'LLM_API_KEY_OPENROUTER',
+            'openrouter.apiKey',
+            'OPENROUTER_API_KEY',
+          ])) || null;
+      }
+      if (!anthropicKey) {
+        anthropicKey =
+          (await resolveFirst([
+            'anthropic_key',
+            'LLM_API_KEY_ANTHROPIC',
+            'anthropic.apiKey',
+            'ANTHROPIC_API_KEY',
+          ])) || null;
+      }
+
+      const modelPrefRaw = vals.LLM_MODEL ?? null;
       const parsed = this.safeJsonParse<any>(modelPrefRaw);
-      const prefProvider =
+      let prefProvider =
         typeof parsed?.provider === 'string' ? parsed.provider.trim().toLowerCase() : '';
-      const prefModel = typeof parsed?.model === 'string' ? parsed.model.trim() : '';
+      let prefModel = typeof parsed?.model === 'string' ? parsed.model.trim() : '';
+
+      // Prefer explicit preferences in LLM_MODEL, otherwise accept llmProvider/llmModel stored
+      // in the agent's inference_hierarchy JSON (set by Rabbithole Agent Builder).
+      if (
+        (!prefProvider || !prefModel) &&
+        inferenceHierarchy &&
+        typeof inferenceHierarchy === 'object'
+      ) {
+        const hierarchy = inferenceHierarchy as any;
+        const hierarchyProvider =
+          typeof hierarchy.llmProvider === 'string'
+            ? hierarchy.llmProvider.trim().toLowerCase()
+            : typeof hierarchy.primaryModel?.providerId === 'string'
+              ? String(hierarchy.primaryModel.providerId).trim().toLowerCase()
+              : '';
+        const hierarchyModel =
+          typeof hierarchy.llmModel === 'string'
+            ? hierarchy.llmModel.trim()
+            : typeof hierarchy.primaryModel?.modelId === 'string'
+              ? String(hierarchy.primaryModel.modelId).trim()
+              : '';
+
+        if (!prefProvider && hierarchyProvider) prefProvider = hierarchyProvider;
+        if (!prefModel && hierarchyModel) prefModel = hierarchyModel;
+      }
 
       const desiredProvider =
         prefProvider === 'openai'
@@ -1113,6 +1275,13 @@ export class OrchestrationService implements OnModuleInit, OnModuleDestroy {
           desiredProvider === LlmProviderId.OPENROUTER
             ? this.normalizeOpenRouterModel(prefModel)
             : prefModel;
+      }
+
+      if (desiredProvider === LlmProviderId.OLLAMA) {
+        if (process.env.OLLAMA_BASE_URL?.trim()) {
+          out.runtimeProviderConfig = this.buildRuntimeProviderConfig(LlmProviderId.OLLAMA);
+        }
+        return out;
       }
 
       // Runtime key routing (agent-specific API keys)
@@ -1296,7 +1465,8 @@ export class OrchestrationService implements OnModuleInit, OnModuleDestroy {
         );
         const llmPref = await this.resolveAgentLlmFromCredentials(
           agent.owner_user_id,
-          agent.seed_id
+          agent.seed_id,
+          dbHierarchy
         );
 
         const seedConfig: WunderlandSeedConfig = {

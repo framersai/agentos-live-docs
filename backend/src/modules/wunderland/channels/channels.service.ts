@@ -286,16 +286,30 @@ export class ChannelsService {
     activeSessions: number;
     platformBreakdown: Record<string, number>;
   }> {
-    const seedFilter = seedId ? `AND seed_id = '${seedId}'` : '';
+    const trimmedSeedId = seedId?.trim() || undefined;
+
+    const bindingWhere: string[] = ['owner_user_id = ?'];
+    const bindingParams: Array<string> = [userId];
+    if (trimmedSeedId) {
+      bindingWhere.push('seed_id = ?');
+      bindingParams.push(trimmedSeedId);
+    }
 
     const bindingStats = await this.db.get<any>(
       `SELECT
          COUNT(*) as total,
          SUM(CASE WHEN is_active = 1 THEN 1 ELSE 0 END) as active
        FROM wunderland_channel_bindings
-       WHERE owner_user_id = ? ${seedFilter}`,
-      [userId]
+       WHERE ${bindingWhere.join(' AND ')}`,
+      bindingParams
     );
+
+    const sessionWhere: string[] = ['wa.owner_user_id = ?'];
+    const sessionParams: Array<string> = [userId];
+    if (trimmedSeedId) {
+      sessionWhere.push('cs.seed_id = ?');
+      sessionParams.push(trimmedSeedId);
+    }
 
     const sessionStats = await this.db.get<any>(
       `SELECT
@@ -303,16 +317,23 @@ export class ChannelsService {
          SUM(CASE WHEN cs.is_active = 1 THEN 1 ELSE 0 END) as active
        FROM wunderland_channel_sessions cs
        INNER JOIN wunderbots wa ON cs.seed_id = wa.seed_id
-       WHERE wa.owner_user_id = ? ${seedFilter ? `AND cs.seed_id = '${seedId}'` : ''}`,
-      [userId]
+       WHERE ${sessionWhere.join(' AND ')}`,
+      sessionParams
     );
+
+    const platformWhere: string[] = ['owner_user_id = ?', 'is_active = 1'];
+    const platformParams: Array<string> = [userId];
+    if (trimmedSeedId) {
+      platformWhere.push('seed_id = ?');
+      platformParams.push(trimmedSeedId);
+    }
 
     const platformRows = await this.db.all<{ platform: string; count: number }>(
       `SELECT platform, COUNT(*) as count
        FROM wunderland_channel_bindings
-       WHERE owner_user_id = ? AND is_active = 1 ${seedFilter}
+       WHERE ${platformWhere.join(' AND ')}
        GROUP BY platform`,
-      [userId]
+      platformParams
     );
 
     const platformBreakdown: Record<string, number> = {};
