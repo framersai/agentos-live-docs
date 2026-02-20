@@ -30,6 +30,64 @@ type SkillsEnableOutput = {
   copied: boolean;
 };
 
+/**
+ * Validates that a resolved path stays within its expected parent directory.
+ * Prevents Zip Slip and symlink-following path traversal attacks.
+ *
+ * Ported from OpenClaw upstream security fix (OC-22).
+ */
+async function assertPathContainment(
+  resolvedPath: string,
+  allowedParent: string,
+  label: string
+): Promise<void> {
+  // Resolve both to real paths (follows symlinks)
+  let realResolved: string;
+  try {
+    realResolved = await fs.realpath(resolvedPath);
+  } catch {
+    // Path doesn't exist yet — resolve the parent to check containment
+    const parent = path.dirname(resolvedPath);
+    try {
+      const realParent = await fs.realpath(parent);
+      realResolved = path.join(realParent, path.basename(resolvedPath));
+    } catch {
+      // Parent doesn't exist either — will be created, treat resolved as-is
+      realResolved = path.resolve(resolvedPath);
+    }
+  }
+
+  const realParent = path.resolve(allowedParent);
+
+  if (!realResolved.startsWith(realParent + path.sep) && realResolved !== realParent) {
+    throw new Error(
+      `Path containment violation: ${label} "${realResolved}" escapes allowed directory "${realParent}"`
+    );
+  }
+}
+
+/**
+ * Recursively checks a directory tree for symlinks and rejects if any are found.
+ *
+ * Prevents symlink-following attacks in skill packages.
+ */
+async function rejectSymlinks(dir: string): Promise<void> {
+  const entries = await fs.readdir(dir, { withFileTypes: true });
+  for (const entry of entries) {
+    const fullPath = path.join(dir, entry.name);
+    // Use lstat to detect symlinks without following them
+    const stat = await fs.lstat(fullPath);
+    if (stat.isSymbolicLink()) {
+      throw new Error(
+        `Symlink detected in skill package: "${fullPath}". Skill packages must not contain symlinks.`
+      );
+    }
+    if (stat.isDirectory()) {
+      await rejectSymlinks(fullPath);
+    }
+  }
+}
+
 export class SkillsEnableTool implements ITool<SkillsEnableInput, SkillsEnableOutput> {
   public readonly id = 'agentos-skills-enable-v1';
   public readonly name = 'skills_enable';
@@ -101,7 +159,13 @@ export class SkillsEnableTool implements ITool<SkillsEnableInput, SkillsEnableOu
         };
       }
 
+      // Security: reject symlinks in source skill package (Zip Slip / symlink-following prevention)
+      await rejectSymlinks(sourceDir);
+
       await fs.mkdir(targetDir, { recursive: true });
+
+      // Security: verify destDir stays within targetDir (path containment)
+      await assertPathContainment(destDir, targetDir, 'destination');
 
       const exists = await fs
         .stat(destDir)
@@ -119,6 +183,9 @@ export class SkillsEnableTool implements ITool<SkillsEnableInput, SkillsEnableOu
       }
 
       await fs.cp(sourceDir, destDir, { recursive: true, force: overwrite });
+
+      // Security: verify copied files didn't escape containment (post-copy check)
+      await assertPathContainment(destDir, targetDir, 'post-copy destination');
 
       return {
         success: true,
