@@ -12,7 +12,7 @@
     "build:agentos": "node ./node_modules/typescript/bin/tsc && node ./node_modules/tsc-alias/dist/bin/index.js",
     "postbuild": "node ./scripts/postbuild/copy-js.cjs && node ./scripts/postbuild/flatten-dist.cjs && node ./scripts/postbuild/ensure-esm-extensions.cjs",
     "pretest": "pnpm --filter @framers/agentos-ext-http-api build",
-    "test": "node --test --import tsx --experimental-specifier-resolution=node src/__tests__/agency.integration.test.ts src/__tests__/agentos.org-memory.test.ts src/__tests__/agentos.memory-redactions.test.ts src/__tests__/agentos.multimodal-rag.test.ts src/__tests__/agentos.graphrag.update.test.ts src/__tests__/agentos.rag.keyword-bm25.test.ts src/__tests__/agentos.rag.multiquery.test.ts src/__tests__/agentos.rag.http.e2e.test.ts src/__tests__/appDatabase.test.ts src/__tests__/common.infrastructure.test.ts src/__tests__/otel-logs.test.ts src/__tests__/extensions.service.test.ts src/__tests__/guardrails.service.test.ts"
+    "test": "node --test --import tsx --experimental-specifier-resolution=node src/__tests__/agency.integration.test.ts src/__tests__/agentos.org-memory.test.ts src/__tests__/agentos.memory-redactions.test.ts src/__tests__/agentos.multimodal-rag.test.ts src/__tests__/agentos.graphrag.update.test.ts src/__tests__/agentos.rag.keyword-bm25.test.ts src/__tests__/agentos.rag.multiquery.test.ts src/__tests__/agentos.rag.http.e2e.test.ts src/__tests__/appDatabase.test.ts src/__tests__/common.infrastructure.test.ts src/__tests__/otel-logs.test.ts src/__tests__/extensions.service.test.ts src/__tests__/guardrails.service.test.ts src/__tests__/tunnel.service.test.ts src/__tests__/ollama.llm.service.test.ts"
   },
   "dependencies": {
     "@framers/agentos": "workspace:*",

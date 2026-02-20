@@ -22,6 +22,7 @@ import { WunderlandVectorMemoryService } from './wunderland-vector-memory.servic
 import { WunderlandSolService } from '../wunderland-sol/wunderland-sol.service.js';
 import { CredentialsService } from '../credentials/credentials.service.js';
 import { CredentialResolverService } from '../credentials/credential-resolver.service.js';
+import { TunnelService } from '../../tunnel/tunnel.service.js';
 import {
   DEFAULT_SECURITY_PROFILE,
   DEFAULT_INFERENCE_HIERARCHY,
@@ -95,7 +96,8 @@ export class OrchestrationService implements OnModuleInit, OnModuleDestroy {
     private readonly promptEvolutionPersistence: PromptEvolutionPersistenceService,
     private readonly vectorMemory: WunderlandVectorMemoryService,
     private readonly wunderlandSol: WunderlandSolService,
-    private readonly activityFeed: ActivityFeedService
+    private readonly activityFeed: ActivityFeedService,
+    private readonly tunnelService: TunnelService
   ) {
     this.enabled =
       process.env.ENABLE_SOCIAL_ORCHESTRATION === 'true' ||
@@ -607,7 +609,47 @@ export class OrchestrationService implements OnModuleInit, OnModuleDestroy {
 
         await this.network.registerCitizen(newsroomConfig);
 
-        if (llmPref.runtimeProviderConfig) {
+        if (llmPref.desiredProvider === LlmProviderId.OLLAMA) {
+          this.network.setLLMCallbackForCitizen(seedId, async (messages, tools, options) => {
+            const providerConfig = await this.resolveOllamaProviderConfigForUser(
+              agent.owner_user_id
+            );
+            if (!providerConfig) {
+              throw new Error('Ollama tunnel is not connected for this user.');
+            }
+
+            const effectiveModel =
+              llmPref.modelOverride || providerConfig.defaultModel || options?.model;
+            const resp = await callLlmWithProviderConfig(
+              messages as any,
+              effectiveModel,
+              {
+                temperature: options?.temperature,
+                max_tokens: options?.max_tokens,
+                tools: tools as any,
+              },
+              providerConfig,
+              agent.owner_user_id
+            );
+
+            const usage = resp.usage
+              ? {
+                  prompt_tokens: resp.usage.prompt_tokens ?? 0,
+                  completion_tokens: resp.usage.completion_tokens ?? 0,
+                  total_tokens: resp.usage.total_tokens ?? 0,
+                }
+              : undefined;
+
+            const toolCalls = resp.toolCalls?.length ? (resp.toolCalls as any) : undefined;
+
+            return {
+              content: resp.text,
+              ...(toolCalls ? { tool_calls: toolCalls } : {}),
+              model: resp.model || effectiveModel || providerConfig.defaultModel || 'unknown',
+              usage,
+            };
+          });
+        } else if (llmPref.runtimeProviderConfig) {
           this.network.setLLMCallbackForCitizen(seedId, async (messages, tools, options) => {
             const effectiveModel = llmPref.modelOverride || options?.model;
             const resp = await callLlmWithProviderConfig(
@@ -1153,6 +1195,28 @@ export class OrchestrationService implements OnModuleInit, OnModuleDestroy {
     return { providerId, apiKey };
   }
 
+  private buildOllamaProviderConfig(baseUrl: string): ILlmProviderConfig {
+    return {
+      providerId: LlmProviderId.OLLAMA,
+      apiKey: undefined,
+      baseUrl,
+      defaultModel: process.env.MODEL_PREF_OLLAMA_DEFAULT || 'llama3:latest',
+    };
+  }
+
+  private async resolveOllamaProviderConfigForUser(
+    ownerUserId: string
+  ): Promise<ILlmProviderConfig | null> {
+    // Self-hosted server-side Ollama (single base URL for all users)
+    const envBaseUrl = process.env.OLLAMA_BASE_URL?.trim();
+    if (envBaseUrl) return this.buildOllamaProviderConfig(envBaseUrl);
+
+    // Hosted Rabbit Hole: per-user tunnel registration (Cloudflare quick tunnel)
+    const status = await this.tunnelService.getStatusForUser(ownerUserId);
+    if (!status.connected || !status.ollamaUrl) return null;
+    return this.buildOllamaProviderConfig(status.ollamaUrl);
+  }
+
   private normalizeOpenRouterModel(model: string): string {
     const trimmed = model.trim();
     if (!trimmed) return trimmed;
@@ -1165,10 +1229,15 @@ export class OrchestrationService implements OnModuleInit, OnModuleDestroy {
     seedId: string,
     inferenceHierarchy?: unknown
   ): Promise<{
+    desiredProvider?: LlmProviderId;
     modelOverride?: string;
     runtimeProviderConfig?: ILlmProviderConfig;
   }> {
-    const out: { modelOverride?: string; runtimeProviderConfig?: ILlmProviderConfig } = {};
+    const out: {
+      desiredProvider?: LlmProviderId;
+      modelOverride?: string;
+      runtimeProviderConfig?: ILlmProviderConfig;
+    } = {};
     try {
       const vals = await this.credentials.getDecryptedValuesByType(ownerUserId, seedId, [
         'LLM_MODEL',
@@ -1268,6 +1337,8 @@ export class OrchestrationService implements OnModuleInit, OnModuleDestroy {
               : prefProvider === 'ollama'
                 ? LlmProviderId.OLLAMA
                 : null;
+
+      if (desiredProvider) out.desiredProvider = desiredProvider;
 
       // Model override (applies even if we end up using env keys).
       if (desiredProvider && prefModel) {
@@ -1486,9 +1557,9 @@ export class OrchestrationService implements OnModuleInit, OnModuleDestroy {
         };
 
         if (
-          llmPref.runtimeProviderConfig &&
           llmPref.modelOverride &&
-          seedConfig.inferenceHierarchy?.primaryModel
+          seedConfig.inferenceHierarchy?.primaryModel &&
+          (llmPref.runtimeProviderConfig || llmPref.desiredProvider === LlmProviderId.OLLAMA)
         ) {
           seedConfig.inferenceHierarchy.primaryModel.modelId = llmPref.modelOverride;
         }
@@ -1506,7 +1577,48 @@ export class OrchestrationService implements OnModuleInit, OnModuleDestroy {
 
         await this.network!.registerCitizen(newsroomConfig);
 
-        if (llmPref.runtimeProviderConfig) {
+        if (llmPref.desiredProvider === LlmProviderId.OLLAMA) {
+          this.network!.setLLMCallbackForCitizen(
+            agent.seed_id,
+            async (messages, tools, options) => {
+              const providerConfig = await this.resolveOllamaProviderConfigForUser(
+                agent.owner_user_id
+              );
+              if (!providerConfig) {
+                throw new Error('Ollama tunnel is not connected for this user.');
+              }
+
+              const effectiveModel =
+                llmPref.modelOverride || providerConfig.defaultModel || options?.model;
+              const resp = await callLlmWithProviderConfig(
+                messages as any,
+                effectiveModel,
+                {
+                  temperature: options?.temperature,
+                  max_tokens: options?.max_tokens,
+                  tools: tools as any,
+                },
+                providerConfig,
+                agent.owner_user_id
+              );
+
+              const usage = resp.usage
+                ? {
+                    prompt_tokens: resp.usage.prompt_tokens ?? 0,
+                    completion_tokens: resp.usage.completion_tokens ?? 0,
+                    total_tokens: resp.usage.total_tokens ?? 0,
+                  }
+                : undefined;
+
+              return {
+                content: resp.text,
+                tool_calls: resp.toolCalls,
+                model: resp.model || effectiveModel || providerConfig.defaultModel || 'unknown',
+                usage,
+              };
+            }
+          );
+        } else if (llmPref.runtimeProviderConfig) {
           this.network!.setLLMCallbackForCitizen(
             agent.seed_id,
             async (messages, tools, options) => {

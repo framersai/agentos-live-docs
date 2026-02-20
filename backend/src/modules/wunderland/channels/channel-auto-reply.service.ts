@@ -15,6 +15,7 @@ import { CredentialResolverService } from '../credentials/credential-resolver.se
 import { callLlmWithProviderConfig } from '../../../core/llm/llm.factory.js';
 import { LlmProviderId } from '../../../core/llm/llm.config.service.js';
 import type { IChatMessage, ILlmProviderConfig } from '../../../core/llm/llm.interfaces.js';
+import { TunnelService } from '../../tunnel/tunnel.service.js';
 import {
   createWunderlandSeed,
   DEFAULT_INFERENCE_HIERARCHY,
@@ -105,7 +106,8 @@ export class ChannelAutoReplyService {
   constructor(
     private readonly db: DatabaseService,
     private readonly credentials: CredentialsService,
-    private readonly credentialResolver: CredentialResolverService
+    private readonly credentialResolver: CredentialResolverService,
+    private readonly tunnelService: TunnelService
   ) {}
 
   queueTelegramAutoReply(ctx: InboundTelegramContext): { queued: boolean; reason?: string } {
@@ -401,8 +403,22 @@ export class ChannelAutoReplyService {
     }
 
     if (desiredProvider === LlmProviderId.OLLAMA) {
-      if (!process.env.OLLAMA_BASE_URL?.trim()) return null;
-      out.providerConfig = this.buildRuntimeProviderConfig(LlmProviderId.OLLAMA);
+      // Self-hosted server-side Ollama
+      if (process.env.OLLAMA_BASE_URL?.trim()) {
+        out.providerConfig = this.buildRuntimeProviderConfig(LlmProviderId.OLLAMA);
+        return out;
+      }
+
+      // Hosted Rabbit Hole: use per-user tunnel registration (Cloudflare quick tunnel).
+      const status = await this.tunnelService.getStatusForUser(ownerUserId);
+      if (!status.connected || !status.ollamaUrl) return null;
+
+      out.providerConfig = {
+        providerId: LlmProviderId.OLLAMA,
+        apiKey: undefined,
+        baseUrl: status.ollamaUrl,
+        defaultModel: process.env.MODEL_PREF_OLLAMA_DEFAULT || 'llama3:latest',
+      };
       return out;
     }
 

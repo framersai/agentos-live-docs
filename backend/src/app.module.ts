@@ -27,6 +27,7 @@ import { WunderlandModule } from './modules/wunderland/wunderland.module.js';
 import { TelemetryModule } from './modules/telemetry/telemetry.module.js';
 import { VaDirectoryModule } from './modules/va-directory/va-directory.module.js';
 import { HumanHelpModule } from './modules/human-help/human-help.module.js';
+import { TunnelModule } from './modules/tunnel/tunnel.module.js';
 
 @Module({
   imports: [
@@ -50,6 +51,7 @@ import { HumanHelpModule } from './modules/human-help/human-help.module.js';
     TelemetryModule,
     VaDirectoryModule,
     HumanHelpModule,
+    TunnelModule,
     WunderlandModule.register(),
   ],
   providers: [
