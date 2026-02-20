@@ -13,25 +13,27 @@ import type { InitiateCallDto, ListCallsQueryDto } from '../dto/voice.dto.js';
 export interface VoiceCallRecord {
   callId: string;
   seedId: string;
-  ownerUserId: string;
   provider: string;
   providerCallId: string | null;
   direction: string;
-  fromNumber: string;
+  fromNumber: string | null;
   toNumber: string;
   state: string;
   mode: string;
-  startTime: number | null;
-  endTime: number | null;
-  transcriptJson: string;
+  startedAt: string;
+  endedAt: string | null;
+  durationMs: number | null;
+  transcript: Array<{ role: string; text: string; timestamp: number }>;
   metadata: Record<string, unknown>;
-  createdAt: number;
-  updatedAt: number;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface VoiceCallStats {
   totalCalls: number;
   activeCalls: number;
+  totalDurationMs: number;
+  avgDurationMs: number;
   completedCalls: number;
   failedCalls: number;
   providerBreakdown: Record<string, number>;
@@ -273,9 +275,48 @@ export class VoiceService {
       params
     );
 
+    const durationRow = await this.db.get<{
+      total: number | string | null;
+      cnt: number | string | null;
+    }>(
+      `SELECT
+         SUM(CASE
+               WHEN start_time IS NOT NULL AND end_time IS NOT NULL AND end_time >= start_time
+               THEN (end_time - start_time)
+               ELSE 0
+             END) AS total,
+         SUM(CASE
+               WHEN start_time IS NOT NULL AND end_time IS NOT NULL AND end_time >= start_time
+               THEN 1
+               ELSE 0
+             END) AS cnt
+       FROM wunderland_voice_calls
+       WHERE ${whereClause}`,
+      params
+    );
+
+    const totalDurationMs =
+      typeof durationRow?.total === 'number'
+        ? durationRow.total
+        : typeof durationRow?.total === 'string' && durationRow.total.trim()
+          ? Number(durationRow.total)
+          : 0;
+    const durationCount =
+      typeof durationRow?.cnt === 'number'
+        ? durationRow.cnt
+        : typeof durationRow?.cnt === 'string' && durationRow.cnt.trim()
+          ? Number(durationRow.cnt)
+          : 0;
+    const avgDurationMs =
+      Number.isFinite(totalDurationMs) && Number.isFinite(durationCount) && durationCount > 0
+        ? Math.round(totalDurationMs / durationCount)
+        : 0;
+
     return {
       totalCalls: totalRow?.cnt ?? 0,
       activeCalls: activeRow?.cnt ?? 0,
+      totalDurationMs: Number.isFinite(totalDurationMs) ? totalDurationMs : 0,
+      avgDurationMs,
       completedCalls: completedRow?.cnt ?? 0,
       failedCalls: failedRow?.cnt ?? 0,
       providerBreakdown: Object.fromEntries(providerRows.map((r) => [r.provider, r.cnt])),
@@ -302,23 +343,54 @@ export class VoiceService {
       /* ignore */
     }
 
+    let transcript: Array<{ role: string; text: string; timestamp: number }> = [];
+    try {
+      const parsed = JSON.parse(String(row.transcript_json || '[]'));
+      transcript = Array.isArray(parsed) ? (parsed as any) : [];
+    } catch {
+      transcript = [];
+    }
+
+    const createdAtMs = row.created_at ? Number(row.created_at) : Date.now();
+    const updatedAtMs = row.updated_at ? Number(row.updated_at) : createdAtMs;
+    const startMs = row.start_time ? Number(row.start_time) : null;
+    const endMs = row.end_time ? Number(row.end_time) : null;
+    const state = String(row.state);
+
+    const startedAtMs = Number.isFinite(startMs as any) && startMs !== null ? startMs : createdAtMs;
+    const startedAt = new Date(startedAtMs).toISOString();
+    const endedAt = endMs && Number.isFinite(endMs) ? new Date(endMs).toISOString() : null;
+
+    const durationMs =
+      startMs && Number.isFinite(startMs)
+        ? endMs && Number.isFinite(endMs)
+          ? Math.max(0, endMs - startMs)
+          : ACTIVE_STATES.has(state)
+            ? Math.max(0, Date.now() - startMs)
+            : null
+        : null;
+
+    if (metadata.direction === undefined && row.direction) {
+      metadata = { ...metadata, direction: String(row.direction) };
+    }
+
     return {
       callId: String(row.call_id),
       seedId: String(row.seed_id),
-      ownerUserId: String(row.owner_user_id),
       provider: String(row.provider),
       providerCallId: row.provider_call_id ? String(row.provider_call_id) : null,
       direction: String(row.direction),
-      fromNumber: String(row.from_number || ''),
+      fromNumber: row.from_number ? String(row.from_number) : null,
       toNumber: String(row.to_number || ''),
-      state: String(row.state),
+      state,
       mode: String(row.mode || 'notify'),
-      startTime: row.start_time ? Number(row.start_time) : null,
-      endTime: row.end_time ? Number(row.end_time) : null,
-      transcriptJson: String(row.transcript_json || '[]'),
+      startedAt,
+      endedAt,
+      durationMs,
+      transcript,
       metadata,
-      createdAt: Number(row.created_at),
-      updatedAt: Number(row.updated_at),
+      createdAt: new Date(createdAtMs).toISOString(),
+      updatedAt: new Date(updatedAtMs).toISOString(),
     };
   }
 }

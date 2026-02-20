@@ -95,7 +95,8 @@ export class VoiceController {
     @Body() body: HangupCallDto
   ) {
     this.assertPaidAccess(user);
-    return this.voiceService.hangupCall(userId, body.callId);
+    const result = await this.voiceService.hangupCall(userId, body.callId);
+    return { callId: result.call.callId, hungUp: true, call: result.call };
   }
 
   // ── Speak Text ──
@@ -116,7 +117,7 @@ export class VoiceController {
       timestamp: Date.now(),
     });
 
-    return { success: true, callId: body.callId, text: body.text };
+    return { callId: body.callId, spoken: true, text: body.text };
   }
 
   // ── Stats ──
