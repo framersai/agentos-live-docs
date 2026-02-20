@@ -98,10 +98,13 @@ type InboundTelegramContext = {
   replyToMessageId?: string;
 };
 
+type LlmCaller = typeof callLlmWithProviderConfig;
+
 @Injectable()
 export class ChannelAutoReplyService {
   private readonly logger = new Logger(ChannelAutoReplyService.name);
   private readonly queues: Map<string, Promise<void>> = new Map();
+  private llmCaller: LlmCaller = callLlmWithProviderConfig;
 
   constructor(
     private readonly db: DatabaseService,
@@ -638,7 +641,7 @@ export class ChannelAutoReplyService {
       { role: 'user', content: userContent },
     ];
 
-    const resp = await callLlmWithProviderConfig(
+    const resp = await this.llmCaller(
       messages,
       llm.modelOverride,
       { temperature: 0.4, max_tokens: 220 },
