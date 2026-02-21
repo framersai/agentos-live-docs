@@ -43,7 +43,7 @@ let resolvedRouter: any = null;
 /**
  * Middleware that forwards incoming requests to the AgentOS Express router.
  *
- * When AgentOS is disabled (`AGENTOS_ENABLED` is not `true`), the middleware
+ * When AgentOS is explicitly disabled (`AGENTOS_ENABLED=false`), the middleware
  * immediately calls `next()` so the request falls through to NestJS's own
  * 404 handling.
  */

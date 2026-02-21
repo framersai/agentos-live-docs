@@ -15,12 +15,18 @@ class MockAdapter implements StorageAdapter {
   public readonly runCalls: Array<{ statement: string; parameters?: StorageParameters }> = [];
   public readonly allCalls: string[] = [];
   private readonly capabilitySet: ReadonlySet<StorageCapability>;
+  private readonly columnsByTable: Record<string, Set<string>> = {};
 
   public constructor(
     public readonly kind: string,
-    private readonly options: { persistent: boolean; wal?: boolean; columns?: Record<string, string[]> } = {
+    private readonly options: {
+      persistent: boolean;
+      wal?: boolean;
+      columns?: Record<string, string[]>;
+      enforceMissingColumnErrors?: boolean;
+    } = {
       persistent: false,
-    },
+    }
   ) {
     const flags: StorageCapability[] = [];
     if (this.options.persistent) {
@@ -30,6 +36,10 @@ class MockAdapter implements StorageAdapter {
       flags.push('wal' as StorageCapability);
     }
     this.capabilitySet = new Set(flags);
+
+    for (const [table, cols] of Object.entries(this.options.columns ?? {})) {
+      this.columnsByTable[table] = new Set(cols);
+    }
   }
 
   public get capabilities(): ReadonlySet<StorageCapability> {
@@ -58,14 +68,32 @@ class MockAdapter implements StorageAdapter {
     const pragmaMatch = statement.match(/PRAGMA\s+table_info\(([^)]+)\);?/i);
     if (pragmaMatch) {
       const table = pragmaMatch[1];
-      const columns = this.options.columns?.[table] ?? [];
+      const columns = Array.from(this.columnsByTable[table] ?? []);
       return columns.map((name) => ({ name })) as T[];
     }
     return [] as T[];
   }
 
   public async exec(script: string): Promise<void> {
-    this.execCalls.push(script.trim());
+    const trimmed = script.trim();
+
+    // Simulate SQLite errors when indexes reference columns that don't exist yet.
+    if (
+      this.options.enforceMissingColumnErrors &&
+      trimmed.includes('CREATE INDEX IF NOT EXISTS idx_wunderland_posts_enclave') &&
+      !(this.columnsByTable.wunderland_posts?.has('enclave_id') ?? false)
+    ) {
+      throw new Error('SqliteError: no such column: enclave_id');
+    }
+
+    const alterMatch = trimmed.match(/^ALTER TABLE\s+(\w+)\s+ADD COLUMN\s+(\w+)\b/i);
+    if (alterMatch) {
+      const [, table, column] = alterMatch;
+      if (!this.columnsByTable[table]) this.columnsByTable[table] = new Set();
+      this.columnsByTable[table]!.add(column);
+    }
+
+    this.execCalls.push(trimmed);
   }
 
   public async transaction<T>(fn: (trx: StorageAdapter) => Promise<T>): Promise<T> {
@@ -74,7 +102,8 @@ class MockAdapter implements StorageAdapter {
 }
 
 afterEach(async () => {
-  const { closeAppDatabase, __setAppDatabaseAdapterResolverForTests } = await loadAppDatabaseModule();
+  const { closeAppDatabase, __setAppDatabaseAdapterResolverForTests } =
+    await loadAppDatabaseModule();
   await closeAppDatabase();
   __setAppDatabaseAdapterResolverForTests();
 });
@@ -108,9 +137,43 @@ test('initializeAppDatabase uses persistent adapter when resolver succeeds', asy
   assert.equal(isInMemoryAppDatabase(), false);
   assert.equal(getAppDatabase(), adapter);
   assert.ok(
-    adapter.execCalls.some((statement) => statement.includes('CREATE TABLE IF NOT EXISTS app_meta')),
-    'runs bootstrap schema statements',
+    adapter.execCalls.some((statement) =>
+      statement.includes('CREATE TABLE IF NOT EXISTS app_meta')
+    ),
+    'runs bootstrap schema statements'
   );
+});
+
+test('initializeAppDatabase creates enclave index after adding enclave_id column', async () => {
+  const adapter = new MockAdapter('better-sqlite3', {
+    persistent: true,
+    wal: true,
+    enforceMissingColumnErrors: true,
+    columns: {
+      // Existing DB that predates `enclave_id`
+      wunderland_posts: ['post_id', 'seed_id', 'content', 'manifest', 'status', 'created_at'],
+    },
+  });
+
+  const { initializeAppDatabase, isInMemoryAppDatabase, __setAppDatabaseAdapterResolverForTests } =
+    await loadAppDatabaseModule();
+
+  __setAppDatabaseAdapterResolverForTests(async (): Promise<StorageAdapter> => adapter);
+
+  await initializeAppDatabase();
+
+  assert.equal(isInMemoryAppDatabase(), false);
+
+  const alterIdx = adapter.execCalls.findIndex((statement) =>
+    statement.includes('ALTER TABLE wunderland_posts ADD COLUMN enclave_id')
+  );
+  const indexIdx = adapter.execCalls.findIndex((statement) =>
+    statement.includes('CREATE INDEX IF NOT EXISTS idx_wunderland_posts_enclave')
+  );
+
+  assert.ok(alterIdx !== -1, 'expected enclave_id migration');
+  assert.ok(indexIdx !== -1, 'expected enclave index creation');
+  assert.ok(alterIdx < indexIdx, 'expected index creation after column migration');
 });
 
 test('initializeAppDatabase falls back to in-memory adapter when resolver throws', async () => {
@@ -124,14 +187,16 @@ test('initializeAppDatabase falls back to in-memory adapter when resolver throws
     __setAppDatabaseAdapterResolverForTests,
   } = await loadAppDatabaseModule();
 
-  __setAppDatabaseAdapterResolverForTests(async (options?: StorageResolutionOptions): Promise<StorageAdapter> => {
-    callCount += 1;
-    if (callCount === 1) {
-      throw new Error('primary adapter unavailable');
+  __setAppDatabaseAdapterResolverForTests(
+    async (options?: StorageResolutionOptions): Promise<StorageAdapter> => {
+      callCount += 1;
+      if (callCount === 1) {
+        throw new Error('primary adapter unavailable');
+      }
+      assert.deepEqual(options?.priority, ['sqljs']);
+      return fallbackAdapter;
     }
-    assert.deepEqual(options?.priority, ['sqljs']);
-    return fallbackAdapter;
-  });
+  );
 
   await initializeAppDatabase();
 

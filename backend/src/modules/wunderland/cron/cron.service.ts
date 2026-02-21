@@ -4,7 +4,7 @@
  * scheduling persistence, and ownership enforcement.
  */
 
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { DatabaseService } from '../../../database/database.service.js';
 import type { CreateCronJobDto, ListCronJobsQueryDto, UpdateCronJobDto } from '../dto/cron.dto.js';
 import { AgentImmutableException } from '../wunderland.exceptions.js';
@@ -32,7 +32,7 @@ export interface CronJobRecord {
 
 @Injectable()
 export class CronJobService {
-  constructor(private readonly db: DatabaseService) {}
+  constructor(@Inject(DatabaseService) private readonly db: DatabaseService) {}
 
   // ── Create Job ──
 

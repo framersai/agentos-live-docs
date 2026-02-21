@@ -13,7 +13,7 @@
  *   WUNDERLAND_SOL_ANCHOR_WORKER_ENABLED=true
  */
 
-import { Injectable, Logger, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
+import { Inject, Injectable, Logger, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
 import { DatabaseService } from '../../../database/database.service.js';
 import { WunderlandSolService } from './wunderland-sol.service.js';
 
@@ -50,8 +50,8 @@ export class WunderlandSolAnchorWorkerService implements OnModuleInit, OnModuleD
   );
 
   constructor(
-    private readonly db: DatabaseService,
-    private readonly sol: WunderlandSolService
+    @Inject(DatabaseService) private readonly db: DatabaseService,
+    @Inject(WunderlandSolService) private readonly sol: WunderlandSolService
   ) {}
 
   onModuleInit(): void {

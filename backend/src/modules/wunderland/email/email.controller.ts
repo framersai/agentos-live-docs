@@ -1,4 +1,5 @@
 import {
+  Inject,
   Controller,
   Get,
   Post,
@@ -72,7 +73,7 @@ class EmailSendDto {
 
 @Controller('wunderland/email')
 export class EmailIntegrationController {
-  constructor(private readonly email: EmailIntegrationService) {}
+  constructor(@Inject(EmailIntegrationService) private readonly email: EmailIntegrationService) {}
 
   private assertPaidAccess(user: any): void {
     const status =

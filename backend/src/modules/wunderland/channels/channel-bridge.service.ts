@@ -9,7 +9,7 @@
  * - Session tracking updates
  */
 
-import { Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { ChannelsService } from './channels.service.js';
 import { DatabaseService } from '../../../database/database.service.js';
 
@@ -40,8 +40,8 @@ export class ChannelBridgeService {
   private readonly logger = new Logger(ChannelBridgeService.name);
 
   constructor(
-    private readonly channelsService: ChannelsService,
-    private readonly db: DatabaseService
+    @Inject(ChannelsService) private readonly channelsService: ChannelsService,
+    @Inject(DatabaseService) private readonly db: DatabaseService
   ) {}
 
   /**

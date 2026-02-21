@@ -11,7 +11,7 @@
  * - Expose accessor methods for other backend services
  */
 
-import { Injectable, OnModuleInit, OnModuleDestroy, Logger } from '@nestjs/common';
+import { Inject, Injectable, OnModuleInit, OnModuleDestroy, Logger } from '@nestjs/common';
 import { createHash } from 'node:crypto';
 import { DatabaseService } from '../../../database/database.service';
 import { callLlm, callLlmWithProviderConfig } from '../../../core/llm/llm.factory';
@@ -83,21 +83,27 @@ export class OrchestrationService implements OnModuleInit, OnModuleDestroy {
   private readonly routingLastSelectedBySourceAtMs: Map<string, number> = new Map();
 
   constructor(
-    private readonly db: DatabaseService,
-    private readonly credentials: CredentialsService,
+    @Inject(DatabaseService) private readonly db: DatabaseService,
+    @Inject(CredentialsService) private readonly credentials: CredentialsService,
+    @Inject(CredentialResolverService)
     private readonly credentialResolver: CredentialResolverService,
-    private readonly moodPersistence: MoodPersistenceService,
+    @Inject(MoodPersistenceService) private readonly moodPersistence: MoodPersistenceService,
+    @Inject(EnclavePersistenceService)
     private readonly enclavePersistence: EnclavePersistenceService,
+    @Inject(BrowsingPersistenceService)
     private readonly browsingPersistence: BrowsingPersistenceService,
-    private readonly trustPersistence: TrustPersistenceService,
-    private readonly dmPersistence: DMPersistenceService,
-    private readonly safetyPersistence: SafetyPersistenceService,
+    @Inject(TrustPersistenceService) private readonly trustPersistence: TrustPersistenceService,
+    @Inject(DMPersistenceService) private readonly dmPersistence: DMPersistenceService,
+    @Inject(SafetyPersistenceService) private readonly safetyPersistence: SafetyPersistenceService,
+    @Inject(AlliancePersistenceService)
     private readonly alliancePersistence: AlliancePersistenceService,
+    @Inject(PromptEvolutionPersistenceService)
     private readonly promptEvolutionPersistence: PromptEvolutionPersistenceService,
+    @Inject(WunderlandVectorMemoryService)
     private readonly vectorMemory: WunderlandVectorMemoryService,
-    private readonly wunderlandSol: WunderlandSolService,
-    private readonly activityFeed: ActivityFeedService,
-    private readonly tunnelService: TunnelService
+    @Inject(WunderlandSolService) private readonly wunderlandSol: WunderlandSolService,
+    @Inject(ActivityFeedService) private readonly activityFeed: ActivityFeedService,
+    @Inject(TunnelService) private readonly tunnelService: TunnelService
   ) {
     this.enabled =
       process.env.ENABLE_SOCIAL_ORCHESTRATION === 'true' ||
@@ -111,11 +117,14 @@ export class OrchestrationService implements OnModuleInit, OnModuleDestroy {
       this.logger.log('Social orchestration disabled (ENABLE_SOCIAL_ORCHESTRATION != true).');
       return;
     }
-    try {
-      await this.bootstrap();
-    } catch (err) {
-      this.logger.error('Failed to bootstrap social orchestration:', err);
-    }
+    // Bootstrap in background so NestFactory.create() doesn't block
+    this.bootstrapAsync();
+  }
+
+  private bootstrapAsync(): void {
+    this.bootstrap()
+      .then(() => this.logger.log('Social orchestration bootstrapped.'))
+      .catch((err) => this.logger.error('Failed to bootstrap social orchestration:', err));
   }
 
   async onModuleDestroy(): Promise<void> {

@@ -3,7 +3,7 @@
  * @description Managed runtime state service for Wunderland agents.
  */
 
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import type { StorageAdapter } from '@framers/sql-storage-adapter';
 import { DatabaseService } from '../../../database/database.service.js';
 import type { ListRuntimeQueryDto, UpdateRuntimeDto } from '../dto/runtime.dto.js';
@@ -50,7 +50,7 @@ function toEpochMs(value: unknown): number | null {
 
 @Injectable()
 export class RuntimeService {
-  constructor(private readonly db: DatabaseService) {}
+  constructor(@Inject(DatabaseService) private readonly db: DatabaseService) {}
 
   private async requireOwnedAgent(
     trx: StorageAdapter,

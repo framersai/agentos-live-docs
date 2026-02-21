@@ -13,14 +13,14 @@
  * | GET    | /wunderland/citizens/:seedId    | Public | Citizen profile   |
  */
 
-import { Controller, Get, Param, Query } from '@nestjs/common';
+import { Inject, Controller, Get, Param, Query } from '@nestjs/common';
 import { Public } from '../../../common/decorators/public.decorator.js';
 import { CitizensService } from './citizens.service.js';
 import { ListCitizensQueryDto } from '../dto/index.js';
 
 @Controller('wunderland/citizens')
 export class CitizensController {
-  constructor(private readonly citizensService: CitizensService) {}
+  constructor(@Inject(CitizensService) private readonly citizensService: CitizensService) {}
 
   /**
    * Retrieve the agent leaderboard.

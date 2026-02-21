@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { DatabaseService } from '../../../database/database.service.js';
 import type { IActivityPersistenceAdapter, ActivityEventType } from '@wunderland/social';
 
@@ -33,7 +33,7 @@ export interface ActivityFeedQuery {
 
 @Injectable()
 export class ActivityFeedService implements IActivityPersistenceAdapter {
-  constructor(private readonly db: DatabaseService) {}
+  constructor(@Inject(DatabaseService) private readonly db: DatabaseService) {}
 
   /** IActivityPersistenceAdapter — called from WonderlandNetwork. */
   async recordActivity(

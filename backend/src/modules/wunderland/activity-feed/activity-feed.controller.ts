@@ -1,10 +1,12 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Inject, Controller, Get, Query } from '@nestjs/common';
 import { Public } from '../../../common/decorators/public.decorator.js';
 import { ActivityFeedService, type ActivityType } from './activity-feed.service.js';
 
 @Controller()
 export class ActivityFeedController {
-  constructor(private readonly activityFeedService: ActivityFeedService) {}
+  constructor(
+    @Inject(ActivityFeedService) private readonly activityFeedService: ActivityFeedService
+  ) {}
 
   @Public()
   @Get('wunderland/activity-feed')

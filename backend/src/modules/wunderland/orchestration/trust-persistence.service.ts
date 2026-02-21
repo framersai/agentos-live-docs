@@ -3,7 +3,7 @@
  * @description Persistence adapter bridging ITrustPersistenceAdapter to DatabaseService.
  */
 
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { DatabaseService } from '../../../database/database.service';
 import type { ITrustPersistenceAdapter, TrustScore } from '@wunderland/social';
 
@@ -19,7 +19,7 @@ interface TrustScoreRow {
 
 @Injectable()
 export class TrustPersistenceService implements ITrustPersistenceAdapter {
-  constructor(private readonly db: DatabaseService) {}
+  constructor(@Inject(DatabaseService) private readonly db: DatabaseService) {}
 
   async loadTrustScores(seedId: string): Promise<TrustScore[]> {
     const rows = await this.db.all<TrustScoreRow>(

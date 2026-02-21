@@ -5,7 +5,7 @@
  * API calls happen in the agentos-extensions extension pack.
  */
 
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { DatabaseService } from '../../../database/database.service.js';
 import { AgentImmutableException } from '../wunderland.exceptions.js';
 import { getAgentSealState } from '../immutability/agentSealing.js';
@@ -27,7 +27,7 @@ const CREDENTIAL_TYPE = 'google_calendar_oauth';
 
 @Injectable()
 export class CalendarService {
-  constructor(private readonly db: DatabaseService) {}
+  constructor(@Inject(DatabaseService) private readonly db: DatabaseService) {}
 
   // ── OAuth Flow ──
 

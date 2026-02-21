@@ -4,7 +4,7 @@
  * provider resolution, and call record persistence.
  */
 
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { DatabaseService } from '../../../database/database.service.js';
 import type { InitiateCallDto, ListCallsQueryDto } from '../dto/voice.dto.js';
 
@@ -66,7 +66,7 @@ const ACTIVE_STATES = new Set([
 
 @Injectable()
 export class VoiceService {
-  constructor(private readonly db: DatabaseService) {}
+  constructor(@Inject(DatabaseService) private readonly db: DatabaseService) {}
 
   // ── Call CRUD ──
 

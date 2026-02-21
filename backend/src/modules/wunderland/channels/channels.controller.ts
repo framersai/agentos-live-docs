@@ -14,6 +14,7 @@
  */
 
 import {
+  Inject,
   Controller,
   Get,
   Post,
@@ -39,7 +40,7 @@ import {
 
 @Controller('wunderland/channels')
 export class ChannelsController {
-  constructor(private readonly channelsService: ChannelsService) {}
+  constructor(@Inject(ChannelsService) private readonly channelsService: ChannelsService) {}
 
   private assertPaidAccess(user: any): void {
     const status = user?.subscriptionStatus ?? user?.subscription_status;

@@ -7,6 +7,7 @@
  */
 
 import {
+  Inject,
   Controller,
   Get,
   Param,
@@ -24,7 +25,8 @@ import { VectorMemoryBackfillService } from './vector-memory-backfill.service.js
 @UseGuards(AuthGuard)
 export class OrchestrationController {
   constructor(
-    private readonly orchestration: OrchestrationService,
+    @Inject(OrchestrationService) private readonly orchestration: OrchestrationService,
+    @Inject(VectorMemoryBackfillService)
     private readonly vectorBackfill: VectorMemoryBackfillService
   ) {}
 

@@ -12,7 +12,7 @@
  * - Stores the agent signer secret key encrypted at rest (server-side).
  */
 
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { createHash, createPublicKey, randomBytes, verify as cryptoVerify } from 'node:crypto';
 import { clusterApiUrl, Connection, Keypair, PublicKey } from '@solana/web3.js';
 import { DatabaseService } from '../../../database/database.service.js';
@@ -192,7 +192,7 @@ export type OnboardManagedAgentParams = {
 
 @Injectable()
 export class WunderlandSolOnboardingService {
-  constructor(private readonly db: DatabaseService) {}
+  constructor(@Inject(DatabaseService) private readonly db: DatabaseService) {}
 
   async onboardManagedAgent(
     params: OnboardManagedAgentParams,

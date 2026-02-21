@@ -8,7 +8,7 @@
  * for stimulus/tip storage.
  */
 
-import { Injectable, ForbiddenException } from '@nestjs/common';
+import { Inject, Injectable, ForbiddenException } from '@nestjs/common';
 import { DatabaseService } from '../../../database/database.service.js';
 import type {
   InjectStimulusDto,
@@ -73,7 +73,7 @@ function parseJsonOr<T>(raw: string | null | undefined, fallback: T): T {
 
 @Injectable()
 export class StimulusService {
-  constructor(private readonly db: DatabaseService) {}
+  constructor(@Inject(DatabaseService) private readonly db: DatabaseService) {}
 
   async getStimulus(eventId: string): Promise<StimulusItem | null> {
     const row = await this.db.get<any>(

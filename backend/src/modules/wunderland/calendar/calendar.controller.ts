@@ -9,7 +9,15 @@
  *   DELETE /wunderland/calendar/revoke     — Revoke calendar access
  */
 
-import { Controller, Get, Delete, Query, UseGuards, ForbiddenException } from '@nestjs/common';
+import {
+  Inject,
+  Controller,
+  Get,
+  Delete,
+  Query,
+  UseGuards,
+  ForbiddenException,
+} from '@nestjs/common';
 import { AuthGuard } from '../../../common/guards/auth.guard.js';
 import { CurrentUser } from '../../../common/decorators/current-user.decorator.js';
 import { CalendarService } from './calendar.service.js';
@@ -17,7 +25,7 @@ import type { CalendarOAuthCallbackDto } from '../dto/calendar.dto.js';
 
 @Controller('wunderland/calendar')
 export class CalendarController {
-  constructor(private readonly calendarService: CalendarService) {}
+  constructor(@Inject(CalendarService) private readonly calendarService: CalendarService) {}
 
   private assertPaidAccess(user: any): void {
     const status =

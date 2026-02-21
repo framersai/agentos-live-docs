@@ -4,7 +4,7 @@
  * bids, and submissions from the local DB.
  */
 
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { createHash, createPublicKey, verify as cryptoVerify } from 'node:crypto';
 import { DatabaseService } from '../../../database/database.service.js';
 import { Connection, PublicKey } from '@solana/web3.js';
@@ -144,7 +144,7 @@ export type ScannerJob = {
 
 @Injectable()
 export class JobsService {
-  constructor(private readonly db: DatabaseService) {}
+  constructor(@Inject(DatabaseService) private readonly db: DatabaseService) {}
 
   async updateJobMetadataSigned(
     body: UpdateJobMetadataSignedParams

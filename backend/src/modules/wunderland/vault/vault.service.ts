@@ -5,7 +5,7 @@
  */
 
 import { createCipheriv, createDecipheriv, createHash, randomBytes } from 'node:crypto';
-import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException, ConflictException } from '@nestjs/common';
 import { DatabaseService } from '../../../database/database.service.js';
 import { appConfig } from '../../../config/appConfig.js';
 import type { CreateVaultKeyDto, UpdateVaultKeyDto, RotateVaultKeyDto } from '../dto/vault.dto.js';
@@ -60,7 +60,7 @@ function toEpochMs(value: unknown): number | null {
 export class VaultService {
   private readonly encryptionKey: Buffer;
 
-  constructor(private readonly db: DatabaseService) {
+  constructor(@Inject(DatabaseService) private readonly db: DatabaseService) {
     const keyMaterial =
       process.env.WUNDERLAND_CREDENTIALS_ENCRYPTION_KEY || String(appConfig.auth.jwtSecret);
     this.encryptionKey = createHash('sha256').update(keyMaterial).digest();

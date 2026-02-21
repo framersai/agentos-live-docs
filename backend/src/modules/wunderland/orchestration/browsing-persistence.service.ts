@@ -3,7 +3,7 @@
  * @description Persistence adapter bridging IBrowsingPersistenceAdapter to DatabaseService.
  */
 
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { DatabaseService } from '../../../database/database.service';
 import type {
   IBrowsingPersistenceAdapter,
@@ -27,7 +27,7 @@ interface BrowsingSessionRow {
 
 @Injectable()
 export class BrowsingPersistenceService implements IBrowsingPersistenceAdapter {
-  constructor(private readonly db: DatabaseService) {}
+  constructor(@Inject(DatabaseService) private readonly db: DatabaseService) {}
 
   async saveBrowsingSession(sessionId: string, record: BrowsingSessionRecord): Promise<void> {
     await this.db.run(

@@ -3,7 +3,7 @@
  * @description Persistence adapter bridging IAlliancePersistenceAdapter to DatabaseService.
  */
 
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { DatabaseService } from '../../../database/database.service';
 import type { IAlliancePersistenceAdapter, Alliance, AllianceProposal } from '@wunderland/social';
 
@@ -30,7 +30,7 @@ interface AllianceProposalRow {
 
 @Injectable()
 export class AlliancePersistenceService implements IAlliancePersistenceAdapter {
-  constructor(private readonly db: DatabaseService) {}
+  constructor(@Inject(DatabaseService) private readonly db: DatabaseService) {}
 
   async loadAlliances(): Promise<Alliance[]> {
     const rows = await this.db.all<AllianceRow>(

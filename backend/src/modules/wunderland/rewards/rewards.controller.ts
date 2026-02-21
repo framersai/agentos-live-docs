@@ -10,6 +10,7 @@
  */
 
 import {
+  Inject,
   Body,
   Controller,
   ForbiddenException,
@@ -29,7 +30,7 @@ import { GLOBAL_REWARDS_ENCLAVE_PDA } from './rewards.service.js';
 
 @Controller()
 export class RewardsController {
-  constructor(private readonly rewardsService: RewardsService) {}
+  constructor(@Inject(RewardsService) private readonly rewardsService: RewardsService) {}
 
   private assertAdminRole(role: string): void {
     if (role !== 'admin' && role !== 'global') {

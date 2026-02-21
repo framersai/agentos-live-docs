@@ -8,9 +8,10 @@ import { ChannelInboundController } from './channel-inbound.controller.js';
 import { CredentialsModule } from '../credentials/credentials.module.js';
 import { ChannelAutoReplyService } from './channel-auto-reply.service.js';
 import { TunnelModule } from '../../tunnel/tunnel.module.js';
+import { AgentOSModule } from '../../agentos/agentos.module.js';
 
 @Module({
-  imports: [CredentialsModule, TunnelModule],
+  imports: [CredentialsModule, TunnelModule, AgentOSModule],
   controllers: [ChannelsController, ChannelOAuthController, ChannelInboundController],
   providers: [ChannelsService, ChannelBridgeService, ChannelOAuthService, ChannelAutoReplyService],
   exports: [ChannelsService, ChannelBridgeService, ChannelOAuthService, ChannelAutoReplyService],

@@ -20,6 +20,7 @@
  */
 
 import {
+  Inject,
   Controller,
   Get,
   Post,
@@ -39,8 +40,8 @@ import { JobExecutionService } from './job-execution.service.js';
 @Controller()
 export class JobsController {
   constructor(
-    private readonly jobsService: JobsService,
-    private readonly jobExecutionService: JobExecutionService
+    @Inject(JobsService) private readonly jobsService: JobsService,
+    @Inject(JobExecutionService) private readonly jobExecutionService: JobExecutionService
   ) {}
 
   @Public()

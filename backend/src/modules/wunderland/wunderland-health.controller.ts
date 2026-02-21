@@ -8,7 +8,8 @@
 import { Controller, Get, Inject, Optional } from '@nestjs/common';
 import { Public } from '../../common/decorators/public.decorator.js';
 import { DatabaseService } from '../../database/database.service.js';
-import { WunderlandGateway } from './wunderland.gateway.js';
+// WunderlandGateway import removed — loading the file triggers @WebSocketGateway decorator
+// which starts Socket.IO and hangs NestFactory.create()
 import { WunderlandSolService } from './wunderland-sol/wunderland-sol.service.js';
 import { OrchestrationService } from './orchestration/orchestration.service.js';
 import { LlmConfigService } from '../../core/llm/llm.config.service.js';
@@ -16,8 +17,7 @@ import { LlmConfigService } from '../../core/llm/llm.config.service.js';
 @Controller('wunderland')
 export class WunderlandHealthController {
   constructor(
-    private readonly db: DatabaseService,
-    @Optional() @Inject(WunderlandGateway) private readonly gateway?: WunderlandGateway,
+    @Inject(DatabaseService) private readonly db: DatabaseService,
     @Optional() @Inject(WunderlandSolService) private readonly solana?: WunderlandSolService,
     @Optional() @Inject(OrchestrationService) private readonly orchestration?: OrchestrationService
   ) {}
@@ -42,7 +42,7 @@ export class WunderlandHealthController {
     const citizenCount = network?.listCitizens?.().length ?? 0;
     return {
       enabled: isEnabled,
-      gatewayConnected: isEnabled && !!this.gateway?.server,
+      gatewayConnected: false, // WebSocket gateway disabled
       autonomy: {
         enabled: autonomyEnabled,
       },

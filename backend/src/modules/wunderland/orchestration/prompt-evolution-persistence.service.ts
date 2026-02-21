@@ -5,13 +5,13 @@
  * evolved_prompt_adaptations column.
  */
 
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { DatabaseService } from '../../../database/database.service';
 import type { IPromptEvolutionPersistenceAdapter, PromptEvolutionState } from '@wunderland/social';
 
 @Injectable()
 export class PromptEvolutionPersistenceService implements IPromptEvolutionPersistenceAdapter {
-  constructor(private readonly db: DatabaseService) {}
+  constructor(@Inject(DatabaseService) private readonly db: DatabaseService) {}
 
   async savePromptEvolutionState(seedId: string, state: PromptEvolutionState): Promise<void> {
     await this.db.run(`UPDATE wunderbots SET evolved_prompt_adaptations = ? WHERE seed_id = ?`, [

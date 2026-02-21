@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { DatabaseService } from '../../../database/database.service.js';
 
 type SearchSection<T> = { items: T[]; total: number; limit: number };
@@ -119,7 +119,7 @@ function toIsoOrRaw(value: unknown): string {
 
 @Injectable()
 export class SearchService {
-  constructor(private readonly db: DatabaseService) {}
+  constructor(@Inject(DatabaseService) private readonly db: DatabaseService) {}
 
   async search(rawQuery: string, opts?: { limit?: number }): Promise<WunderlandSearchResponse> {
     const startedAt = Date.now();
@@ -157,14 +157,16 @@ export class SearchService {
     // Small sanity check for latency regressions (best-effort log).
     const tookMs = Date.now() - startedAt;
     if (tookMs > 1500) {
-       
       console.warn(`[SearchService] Slow search (${tookMs}ms) for query="${query.slice(0, 80)}"`);
     }
 
     return { query, agents, posts, comments, jobs, stimuli };
   }
 
-  private async searchAgents(pattern: string, limit: number): Promise<SearchSection<AgentSearchHit>> {
+  private async searchAgents(
+    pattern: string,
+    limit: number
+  ): Promise<SearchSection<AgentSearchHit>> {
     const whereSql = `
       WHERE status != 'archived'
         AND (
@@ -177,7 +179,7 @@ export class SearchService {
 
     const totalRow = await this.db.get<{ count: number }>(
       `SELECT COUNT(1) as count FROM wunderbots ${whereSql}`,
-      params,
+      params
     );
     const total = totalRow?.count ?? 0;
 
@@ -196,7 +198,7 @@ export class SearchService {
          ORDER BY updated_at DESC
          LIMIT ?
       `,
-      [...params, limit],
+      [...params, limit]
     );
 
     return {
@@ -227,7 +229,7 @@ export class SearchService {
 
     const totalRow = await this.db.get<{ count: number }>(
       `SELECT COUNT(1) as count FROM wunderland_posts p ${whereSql}`,
-      params,
+      params
     );
     const total = totalRow?.count ?? 0;
 
@@ -251,7 +253,7 @@ export class SearchService {
         ORDER BY p.published_at DESC
         LIMIT ?
       `,
-      [...params, limit],
+      [...params, limit]
     );
 
     return {
@@ -263,7 +265,8 @@ export class SearchService {
         agentDisplayName: r.agent_display_name ? String(r.agent_display_name) : null,
         title: r.title ? String(r.title) : null,
         contentPreview: safePreview(r.content, 220),
-        publishedAt: typeof r.published_at === 'number' ? new Date(r.published_at).toISOString() : null,
+        publishedAt:
+          typeof r.published_at === 'number' ? new Date(r.published_at).toISOString() : null,
         replyToPostId: r.reply_to_post_id ? String(r.reply_to_post_id) : null,
         likes: Number(r.likes ?? 0),
         downvotes: Number(r.downvotes ?? 0),
@@ -273,7 +276,10 @@ export class SearchService {
     };
   }
 
-  private async searchComments(pattern: string, limit: number): Promise<SearchSection<CommentSearchHit>> {
+  private async searchComments(
+    pattern: string,
+    limit: number
+  ): Promise<SearchSection<CommentSearchHit>> {
     const whereSql = `
       WHERE c.status = 'active'
         AND (
@@ -287,7 +293,7 @@ export class SearchService {
 
     const totalRow = await this.db.get<{ count: number }>(
       `SELECT COUNT(1) as count FROM wunderland_comments c ${whereSql}`,
-      params,
+      params
     );
     const total = totalRow?.count ?? 0;
 
@@ -309,7 +315,7 @@ export class SearchService {
         ORDER BY c.created_at DESC
         LIMIT ?
       `,
-      [...params, limit],
+      [...params, limit]
     );
 
     return {
@@ -343,7 +349,7 @@ export class SearchService {
 
     const totalRow = await this.db.get<{ count: number }>(
       `SELECT COUNT(1) as count FROM wunderland_job_postings ${whereSql}`,
-      params,
+      params
     );
     const total = totalRow?.count ?? 0;
 
@@ -363,7 +369,7 @@ export class SearchService {
         ORDER BY created_at DESC
         LIMIT ?
       `,
-      [...params, limit],
+      [...params, limit]
     );
 
     return {
@@ -382,7 +388,10 @@ export class SearchService {
     };
   }
 
-  private async searchStimuli(pattern: string, limit: number): Promise<SearchSection<StimulusSearchHit>> {
+  private async searchStimuli(
+    pattern: string,
+    limit: number
+  ): Promise<SearchSection<StimulusSearchHit>> {
     const whereSql = `
       WHERE (
         lower(event_id) LIKE ?
@@ -396,7 +405,7 @@ export class SearchService {
 
     const totalRow = await this.db.get<{ count: number }>(
       `SELECT COUNT(1) as count FROM wunderland_stimuli ${whereSql}`,
-      params,
+      params
     );
     const total = totalRow?.count ?? 0;
 
@@ -408,7 +417,7 @@ export class SearchService {
          ORDER BY created_at DESC
          LIMIT ?
       `,
-      [...params, limit],
+      [...params, limit]
     );
 
     return {
@@ -420,7 +429,8 @@ export class SearchService {
         priority: String(r.priority ?? 'normal'),
         payloadPreview: safePreview(r.payload, 220),
         createdAt: new Date(Number(r.created_at ?? Date.now())).toISOString(),
-        processedAt: typeof r.processed_at === 'number' ? new Date(r.processed_at).toISOString() : null,
+        processedAt:
+          typeof r.processed_at === 'number' ? new Date(r.processed_at).toISOString() : null,
       })),
     };
   }

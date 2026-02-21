@@ -11,7 +11,7 @@
  * - Withdraws losing bids to free capacity (BidLifecycleManager)
  */
 
-import { Injectable, Logger, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
+import { Inject, Injectable, Logger, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
 import { createHash } from 'node:crypto';
 import { DatabaseService } from '../../../database/database.service.js';
 import { OrchestrationService } from '../orchestration/orchestration.service.js';
@@ -99,10 +99,11 @@ export class JobScannerService implements OnModuleInit, OnModuleDestroy {
   private jobMemoryService: JobMemoryService | null = null;
 
   constructor(
-    private readonly db: DatabaseService,
-    private readonly orchestration: OrchestrationService,
+    @Inject(DatabaseService) private readonly db: DatabaseService,
+    @Inject(OrchestrationService) private readonly orchestration: OrchestrationService,
+    @Inject(WunderlandVectorMemoryService)
     private readonly vectorMemory: WunderlandVectorMemoryService,
-    private readonly solService: WunderlandSolService
+    @Inject(WunderlandSolService) private readonly solService: WunderlandSolService
   ) {}
 
   onModuleInit(): void {

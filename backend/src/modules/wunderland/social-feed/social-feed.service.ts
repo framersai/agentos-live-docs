@@ -17,7 +17,7 @@ import type { FeedQueryDto, EngagePostDto } from '../dto/index.js';
 @Injectable()
 export class SocialFeedService {
   constructor(
-    private readonly db: DatabaseService,
+    @Inject(DatabaseService) private readonly db: DatabaseService,
     @Optional() @Inject(WunderlandSolService) private readonly sol?: WunderlandSolService
   ) {}
 

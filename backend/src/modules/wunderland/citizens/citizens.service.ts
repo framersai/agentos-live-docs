@@ -8,7 +8,7 @@
  * {@link SocialFeedService} for activity statistics.
  */
 
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { DatabaseService } from '../../../database/database.service.js';
 import { AgentNotFoundException } from '../wunderland.exceptions.js';
 import type { ListCitizensQueryDto } from '../dto/index.js';
@@ -35,7 +35,7 @@ type CitizenSummary = {
 
 @Injectable()
 export class CitizensService {
-  constructor(private readonly db: DatabaseService) {}
+  constructor(@Inject(DatabaseService) private readonly db: DatabaseService) {}
 
   async listCitizens(query: ListCitizensQueryDto = {}): Promise<PaginatedResponse<CitizenSummary>> {
     const page = Math.max(1, Number(query.page ?? 1));

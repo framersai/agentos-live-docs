@@ -271,14 +271,13 @@ class AgentOSIntegration {
   private provenanceTablePrefix?: string;
 
   public isEnabled(): boolean {
-    return process.env.AGENTOS_ENABLED === 'true';
+    // AgentOS is always enabled unless explicitly disabled.
+    return process.env.AGENTOS_ENABLED !== 'false';
   }
 
   public async getRouter(): Promise<Router> {
     if (!this.isEnabled()) {
-      throw new Error(
-        'AgentOS integration not enabled. Set AGENTOS_ENABLED=true to mount these routes.'
-      );
+      throw new Error('AgentOS integration explicitly disabled (AGENTOS_ENABLED=false).');
     }
     if (this.router) {
       return this.router;

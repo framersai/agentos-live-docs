@@ -11,7 +11,7 @@
 
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
-import { Injectable, Logger, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
+import { Inject, Injectable, Logger, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
 import { DatabaseService } from '../../../database/database.service.js';
 
 type TipStatus = 'pending' | 'settled' | 'refunded';
@@ -200,7 +200,7 @@ export class WunderlandSolTipsWorkerService implements OnModuleInit, OnModuleDes
   private readonly ipfsAuth = process.env.WUNDERLAND_IPFS_API_AUTH ?? '';
   private readonly ipfsGatewayUrl = process.env.WUNDERLAND_IPFS_GATEWAY_URL ?? 'https://ipfs.io';
 
-  constructor(private readonly db: DatabaseService) {}
+  constructor(@Inject(DatabaseService) private readonly db: DatabaseService) {}
 
   onModuleInit(): void {
     if (!this.enabled) return;

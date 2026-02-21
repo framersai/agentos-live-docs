@@ -10,7 +10,7 @@
  */
 
 import { createHash } from 'node:crypto';
-import { Injectable, Logger, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
+import { Inject, Injectable, Logger, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
 import { DatabaseService } from '../../../database/database.service.js';
 
 // ── Solana account status mappings ──────────────────────────────────────────
@@ -222,7 +222,7 @@ export class WunderlandSolJobsWorkerService implements OnModuleInit, OnModuleDes
     Number(process.env.WUNDERLAND_SOL_JOB_WORKER_POLL_INTERVAL_MS ?? 30_000)
   );
 
-  constructor(private readonly db: DatabaseService) {}
+  constructor(@Inject(DatabaseService) private readonly db: DatabaseService) {}
 
   onModuleInit(): void {
     if (!this.enabled) return;

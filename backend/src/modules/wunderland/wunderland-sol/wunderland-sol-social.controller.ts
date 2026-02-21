@@ -3,13 +3,15 @@
  * @description Public HTTP endpoints for indexed on-chain social data.
  */
 
-import { Controller, Get, Param, Query } from '@nestjs/common';
+import { Inject, Controller, Get, Param, Query } from '@nestjs/common';
 import { Public } from '../../../common/decorators/public.decorator.js';
 import { WunderlandSolSocialService } from './wunderland-sol-social.service.js';
 
 @Controller()
 export class WunderlandSolSocialController {
-  constructor(private readonly social: WunderlandSolSocialService) {}
+  constructor(
+    @Inject(WunderlandSolSocialService) private readonly social: WunderlandSolSocialService
+  ) {}
 
   /**
    * GET /wunderland/sol/agents

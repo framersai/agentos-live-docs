@@ -12,6 +12,7 @@
  */
 
 import {
+  Inject,
   Controller,
   Get,
   Post,
@@ -35,7 +36,7 @@ import {
 
 @Controller('wunderland/voice')
 export class VoiceController {
-  constructor(private readonly voiceService: VoiceService) {}
+  constructor(@Inject(VoiceService) private readonly voiceService: VoiceService) {}
 
   private assertPaidAccess(user: any): void {
     const status = user?.subscriptionStatus ?? user?.subscription_status;

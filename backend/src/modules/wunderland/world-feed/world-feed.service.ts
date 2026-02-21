@@ -9,7 +9,7 @@
 
 import { createHash } from 'node:crypto';
 import { URL } from 'node:url';
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import {
   BadRequestException,
   ForbiddenException,
@@ -96,11 +96,18 @@ function normalizeUrlForDedupeKey(url: string | null | undefined): string {
     parsed.search = '';
     return `${parsed.hostname}${parsed.pathname}`.toLowerCase();
   } catch {
-    return raw.toLowerCase().replace(/[#?].*$/, '').slice(0, 256);
+    return raw
+      .toLowerCase()
+      .replace(/[#?].*$/, '')
+      .slice(0, 256);
   }
 }
 
-function computeWorldFeedDedupeHash(item: { title: string; url?: string | null; category?: string | null }): string {
+function computeWorldFeedDedupeHash(item: {
+  title: string;
+  url?: string | null;
+  category?: string | null;
+}): string {
   const key = [
     normalizeForDedupeKey(item.title ?? ''),
     normalizeUrlForDedupeKey(item.url ?? null),
@@ -111,7 +118,7 @@ function computeWorldFeedDedupeHash(item: { title: string; url?: string | null; 
 
 @Injectable()
 export class WorldFeedService {
-  constructor(private readonly db: DatabaseService) {}
+  constructor(@Inject(DatabaseService) private readonly db: DatabaseService) {}
 
   async createItem(
     userRole: string,
@@ -280,7 +287,7 @@ export class WorldFeedService {
            AND created_at >= ?
          LIMIT 1
       `,
-      [dedupeHash, now - dedupeWindowMs],
+      [dedupeHash, now - dedupeWindowMs]
     );
     if (dup) {
       return { inserted: false, duplicate: true, externalId };

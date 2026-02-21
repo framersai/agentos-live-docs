@@ -18,6 +18,7 @@
  */
 
 import {
+  Inject,
   Controller,
   Get,
   Post,
@@ -42,7 +43,7 @@ import {
 
 @Controller('wunderland/world-feed')
 export class WorldFeedController {
-  constructor(private readonly worldFeedService: WorldFeedService) {}
+  constructor(@Inject(WorldFeedService) private readonly worldFeedService: WorldFeedService) {}
 
   /**
    * Create a new world feed item (manual injection).

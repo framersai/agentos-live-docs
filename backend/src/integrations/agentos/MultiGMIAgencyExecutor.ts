@@ -9,8 +9,16 @@ import { generateUniqueId as uuidv4 } from '../../utils/ids.js';
 import type { AgentOS, AgentOSInput, AgentOSResponse } from '@framers/agentos';
 import { AgentOSResponseChunkType, type AgentOSAgencyUpdateChunk } from '@framers/agentos';
 import type { CostAggregator } from '@framers/agentos/cognitive_substrate/IGMI';
-import { EmergentAgencyCoordinator, type EmergentTask, type EmergentRole } from './EmergentAgencyCoordinator.js';
-import { StaticAgencyCoordinator, type StaticAgencyConfig, type StaticTask } from './StaticAgencyCoordinator.js';
+import {
+  EmergentAgencyCoordinator,
+  type EmergentTask,
+  type EmergentRole,
+} from './EmergentAgencyCoordinator.js';
+import {
+  StaticAgencyCoordinator,
+  type StaticAgencyConfig,
+  type StaticTask,
+} from './StaticAgencyCoordinator.js';
 import {
   createAgencyExecution,
   updateAgencyExecution,
@@ -38,11 +46,11 @@ export interface AgentRoleConfig {
 
 /**
  * Coordination strategy for agency execution.
- * 
+ *
  * - **emergent** (default): LLM analyzes goal, decomposes tasks, spawns roles adaptively.
  *   Best for complex, open-ended goals where optimal structure is unclear.
  *   Higher latency and cost due to planning steps.
- * 
+ *
  * - **static**: Uses exactly the roles/tasks provided, no decomposition or spawning.
  *   Best for production workflows with well-defined structures.
  *   Lower latency and cost, fully deterministic.
@@ -57,6 +65,18 @@ export interface AgencyExecutionInput {
   conversationId: string;
   workflowDefinitionId?: string;
   outputFormat?: 'json' | 'csv' | 'markdown' | 'text';
+  /**
+   * Optional per-turn processing overrides for every seat (e.g. preferred model/provider).
+   *
+   * WARNING: Do not put secrets here — this object may be persisted as part of seat metadata.
+   */
+  processingOptions?: AgentOSInput['options'];
+  /**
+   * Optional API keys for model providers (providerId -> apiKey), applied to every seat.
+   *
+   * NOTE: AgentOS should treat these as ephemeral per-request inputs (do not persist).
+   */
+  userApiKeys?: AgentOSInput['userApiKeys'];
   metadata?: Record<string, unknown>;
   /**
    * Coordination strategy for this agency execution.
@@ -105,7 +125,12 @@ export interface AgencyExecutionResult {
   emergentMetadata?: {
     tasksDecomposed: EmergentTask[];
     rolesSpawned: EmergentRole[];
-    coordinationLog: Array<{ timestamp: string; roleId: string; action: string; details: Record<string, unknown> }>;
+    coordinationLog: Array<{
+      timestamp: string;
+      roleId: string;
+      action: string;
+      details: Record<string, unknown>;
+    }>;
   };
   /** Queue mode execution metadata */
   queueMetadata?: {
@@ -136,7 +161,10 @@ interface SeatSnapshot {
 }
 
 /** Utility function limiting concurrency for async tasks. */
-async function runWithConcurrency<T>(factories: Array<() => Promise<T>>, limit: number): Promise<T[]> {
+async function runWithConcurrency<T>(
+  factories: Array<() => Promise<T>>,
+  limit: number
+): Promise<T[]> {
   const results: T[] = new Array(factories.length);
   let cursor = 0;
 
@@ -157,17 +185,17 @@ async function runWithConcurrency<T>(factories: Array<() => Promise<T>>, limit: 
 
 /**
  * Orchestrates multi-agent agency execution with support for both emergent and static coordination.
- * 
+ *
  * **Emergent Mode** (default):
  * - LLM decomposes goal into tasks
  * - Adaptively spawns roles based on capabilities
  * - Higher latency/cost, more flexible
- * 
+ *
  * **Static Mode**:
  * - Uses predefined roles and tasks
  * - No LLM decomposition
  * - Lower latency/cost, fully deterministic
- * 
+ *
  * @example Emergent execution
  * ```typescript
  * const executor = new MultiGMIAgencyExecutor({ agentOS });
@@ -179,7 +207,7 @@ async function runWithConcurrency<T>(factories: Array<() => Promise<T>>, limit: 
  *   coordinationStrategy: 'emergent' // or omit (default)
  * });
  * ```
- * 
+ *
  * @example Static execution
  * ```typescript
  * const result = await executor.executeAgency({
@@ -218,7 +246,7 @@ export class MultiGMIAgencyExecutor {
   /**
    * Pre-analyzes a workflow to generate an execution plan.
    * Useful for preview, cost estimation, or validation before execution.
-   * 
+   *
    * @param input - Agency execution configuration
    * @returns Workflow analysis with dependency graph and recommendations
    */
@@ -226,9 +254,8 @@ export class MultiGMIAgencyExecutor {
     let tasks: (EmergentTask | StaticTask)[] = [];
 
     // Get tasks based on coordination strategy
-    const strategy: AgencyCoordinationStrategy = 
-      input.coordinationStrategy ?? 
-      (input.enableEmergentBehavior ? 'emergent' : 'emergent');
+    const strategy: AgencyCoordinationStrategy =
+      input.coordinationStrategy ?? (input.enableEmergentBehavior ? 'emergent' : 'emergent');
 
     if (strategy === 'emergent') {
       const emergentResult = await this.emergentCoordinator.transformToEmergentAgency(input);
@@ -237,11 +264,16 @@ export class MultiGMIAgencyExecutor {
       tasks = input.staticTasks;
     } else {
       // No tasks to analyze
-      throw new Error('Cannot analyze workflow: no tasks available. Provide staticTasks or use emergent strategy.');
+      throw new Error(
+        'Cannot analyze workflow: no tasks available. Provide staticTasks or use emergent strategy.'
+      );
     }
 
     const graph = this.dependencyAnalyzer.buildGraph(tasks);
-    const executionPlan = this.dependencyAnalyzer.generateExecutionPlan(graph, input.executionMode?.queueConfig);
+    const executionPlan = this.dependencyAnalyzer.generateExecutionPlan(
+      graph,
+      input.executionMode?.queueConfig
+    );
     const estimatedDuration = this.dependencyAnalyzer.estimateMinimumDuration(graph);
     const maxParallelism = this.dependencyAnalyzer.estimateMaxParallelism(graph);
 
@@ -250,13 +282,19 @@ export class MultiGMIAgencyExecutor {
 
     const recommendations: string[] = [];
     if (maxParallelism > 4) {
-      recommendations.push(`High parallelism (${maxParallelism} tasks). Consider increasing concurrency limit for faster execution.`);
+      recommendations.push(
+        `High parallelism (${maxParallelism} tasks). Consider increasing concurrency limit for faster execution.`
+      );
     }
     if (graph.criticalPath.length > 5) {
-      recommendations.push(`Long critical path (${graph.criticalPath.length} tasks). Consider breaking into smaller workflows.`);
+      recommendations.push(
+        `Long critical path (${graph.criticalPath.length} tasks). Consider breaking into smaller workflows.`
+      );
     }
     if (estimatedCost > 0.1) {
-      recommendations.push(`High estimated cost ($${estimatedCost.toFixed(4)}). Consider using cheaper models or caching.`);
+      recommendations.push(
+        `High estimated cost ($${estimatedCost.toFixed(4)}). Consider using cheaper models or caching.`
+      );
     }
 
     return {
@@ -273,20 +311,21 @@ export class MultiGMIAgencyExecutor {
    * Executes an agency workflow by invoking AgentOS for every seat.
    * Supports both emergent (adaptive) and static (deterministic) coordination strategies.
    * Supports both streaming (real-time) and queue (batch) execution modes.
-   * 
+   *
    * @param input - Agency execution configuration
    * @returns Complete execution result with outputs, costs, and metadata
    */
   public async executeAgency(input: AgencyExecutionInput): Promise<AgencyExecutionResult> {
     const startTime = Date.now();
     const agencyId = `agency_${uuidv4()}`;
-    
-    // Determine coordination strategy (backwards compatible with enableEmergentBehavior)
-    const strategy: AgencyCoordinationStrategy = 
-      input.coordinationStrategy ?? 
-      (input.enableEmergentBehavior ? 'emergent' : 'emergent'); // Default to emergent
 
-    console.log(`[MultiGMIAgencyExecutor] Starting agency ${agencyId} with ${strategy} coordination`);
+    // Determine coordination strategy (backwards compatible with enableEmergentBehavior)
+    const strategy: AgencyCoordinationStrategy =
+      input.coordinationStrategy ?? (input.enableEmergentBehavior ? 'emergent' : 'emergent'); // Default to emergent
+
+    console.log(
+      `[MultiGMIAgencyExecutor] Starting agency ${agencyId} with ${strategy} coordination`
+    );
 
     // Persist initial agency state
     try {
@@ -312,19 +351,23 @@ export class MultiGMIAgencyExecutor {
       const emergentResult = await this.emergentCoordinator.transformToEmergentAgency(input);
       tasks = emergentResult.tasks;
       effectiveRoles = emergentResult.roles;
-      
+
       emergentMetadata = {
         tasksDecomposed: tasks,
         rolesSpawned: emergentResult.roles,
         coordinationLog: emergentResult.context.coordinationLog,
       };
 
-      console.log(`[MultiGMIAgencyExecutor] Decomposed into ${tasks.length} tasks, spawned ${effectiveRoles.length} roles`);
+      console.log(
+        `[MultiGMIAgencyExecutor] Decomposed into ${tasks.length} tasks, spawned ${effectiveRoles.length} roles`
+      );
     } else if (strategy === 'static') {
       console.log(`[MultiGMIAgencyExecutor] Using static coordination for agency ${agencyId}`);
-      
+
       if (!input.staticTasks || input.staticTasks.length === 0) {
-        console.warn(`[MultiGMIAgencyExecutor] Static strategy requested but no staticTasks provided. Using roles as-is.`);
+        console.warn(
+          `[MultiGMIAgencyExecutor] Static strategy requested but no staticTasks provided. Using roles as-is.`
+        );
       } else {
         // Validate static configuration
         const staticConfig = this.staticCoordinator.createStaticConfig({
@@ -332,12 +375,12 @@ export class MultiGMIAgencyExecutor {
           roles: input.roles,
           tasks: input.staticTasks,
         });
-        
+
         const validation = this.staticCoordinator.validate(staticConfig);
         if (!validation.valid) {
           throw new Error(`Static agency configuration invalid: ${validation.errors.join('; ')}`);
         }
-        
+
         console.log(`[MultiGMIAgencyExecutor] Validated ${staticConfig.tasks.length} static tasks`);
       }
     }
@@ -361,10 +404,16 @@ export class MultiGMIAgencyExecutor {
       }
     }
 
-    await this.emitAgencyUpdate(agencyId, input.conversationId, seatMap, { goal: input.goal, status: 'pending' });
+    await this.emitAgencyUpdate(agencyId, input.conversationId, seatMap, {
+      goal: input.goal,
+      status: 'pending',
+    });
 
-    const participants = effectiveRoles.map((role) => ({ roleId: role.roleId, personaId: role.personaId }));
-    
+    const participants = effectiveRoles.map((role) => ({
+      roleId: role.roleId,
+      personaId: role.personaId,
+    }));
+
     // Determine execution mode
     const executionMode: AgencyExecutionMode = input.executionMode?.mode ?? 'streaming';
     let gmiResults: GmiExecutionResult[];
@@ -375,14 +424,12 @@ export class MultiGMIAgencyExecutor {
 
     if (executionMode === 'queue') {
       // QUEUE MODE: Pre-analyze dependencies and execute in optimized batches
-      const analysisResult = tasks.length > 0 
-        ? await this.analyzeWorkflow(input)
-        : undefined;
+      const analysisResult = tasks.length > 0 ? await this.analyzeWorkflow(input) : undefined;
 
       if (analysisResult) {
         workflowAnalysis = analysisResult;
         console.log(`[MultiGMIAgencyExecutor] Workflow Analysis:\n${analysisResult.executionPlan}`);
-        
+
         // Execute in dependency-aware batches
         const batchResults = await this.executeQueueMode({
           tasks,
@@ -403,7 +450,9 @@ export class MultiGMIAgencyExecutor {
         };
       } else {
         // Fallback to streaming if no tasks to analyze
-        console.warn(`[MultiGMIAgencyExecutor] Queue mode requested but no tasks available. Falling back to streaming.`);
+        console.warn(
+          `[MultiGMIAgencyExecutor] Queue mode requested but no tasks available. Falling back to streaming.`
+        );
         gmiResults = await this.executeStreamingMode({
           roles: effectiveRoles,
           agencyId,
@@ -423,7 +472,10 @@ export class MultiGMIAgencyExecutor {
       });
     }
 
-    const consolidatedOutput = this.consolidateOutputs(gmiResults, input.outputFormat ?? 'markdown');
+    const consolidatedOutput = this.consolidateOutputs(
+      gmiResults,
+      input.outputFormat ?? 'markdown'
+    );
     const formattedOutput = this.formatOutput(gmiResults, input.outputFormat ?? 'markdown');
     const totalUsage = this.aggregateUsage(gmiResults);
 
@@ -449,7 +501,10 @@ export class MultiGMIAgencyExecutor {
     try {
       await updateAgencyExecution(result);
     } catch (error) {
-      console.error(`[MultiGMIAgencyExecutor] Failed to persist results for agency ${agencyId}:`, error);
+      console.error(
+        `[MultiGMIAgencyExecutor] Failed to persist results for agency ${agencyId}:`,
+        error
+      );
     }
 
     // Cleanup emergent context if used
@@ -471,6 +526,8 @@ export class MultiGMIAgencyExecutor {
     conversationId: string;
     workflowDefinitionId?: string;
     participants: Array<{ roleId: string; personaId?: string }>;
+    processingOptions?: AgentOSInput['options'];
+    userApiKeys?: AgentOSInput['userApiKeys'];
     metadata?: Record<string, unknown>;
     seatMap: Map<string, SeatSnapshot>;
   }): Promise<GmiExecutionResult> {
@@ -481,7 +538,7 @@ export class MultiGMIAgencyExecutor {
     for (let attempt = 0; attempt <= this.maxRetries; attempt++) {
       try {
         await this.updateSeatStatus(agencyId, conversationId, seatMap, role.roleId, 'running');
-        
+
         // Persist seat status update
         try {
           await updateAgencySeat({
@@ -491,7 +548,10 @@ export class MultiGMIAgencyExecutor {
             retryCount: attempt,
           });
         } catch (error) {
-          console.error(`[MultiGMIAgencyExecutor] Failed to persist seat status for ${seatId}:`, error);
+          console.error(
+            `[MultiGMIAgencyExecutor] Failed to persist seat status for ${seatId}:`,
+            error
+          );
         }
 
         const result = await this.executeSeat({
@@ -502,6 +562,8 @@ export class MultiGMIAgencyExecutor {
           conversationId: params.conversationId,
           workflowDefinitionId: params.workflowDefinitionId,
           participants: params.participants,
+          processingOptions: params.processingOptions,
+          userApiKeys: params.userApiKeys,
           metadata: params.metadata,
         });
 
@@ -513,8 +575,14 @@ export class MultiGMIAgencyExecutor {
           status: result.error ? 'failed' : 'completed',
           metadata: { ...role.metadata, error: result.error, attempts: attempt + 1 },
         });
-        await this.updateSeatStatus(agencyId, conversationId, seatMap, role.roleId, result.error ? 'failed' : 'completed');
-        
+        await this.updateSeatStatus(
+          agencyId,
+          conversationId,
+          seatMap,
+          role.roleId,
+          result.error ? 'failed' : 'completed'
+        );
+
         // Persist seat results
         try {
           await updateAgencySeat({
@@ -529,16 +597,24 @@ export class MultiGMIAgencyExecutor {
             retryCount: attempt,
           });
         } catch (error) {
-          console.error(`[MultiGMIAgencyExecutor] Failed to persist seat results for ${seatId}:`, error);
+          console.error(
+            `[MultiGMIAgencyExecutor] Failed to persist seat results for ${seatId}:`,
+            error
+          );
         }
-        
+
         return result;
       } catch (error) {
         lastError = error instanceof Error ? error : new Error(String(error));
-        console.error(`[MultiGMIAgencyExecutor] Seat ${role.roleId} failed (attempt ${attempt + 1}/${this.maxRetries + 1}):`, lastError.message);
+        console.error(
+          `[MultiGMIAgencyExecutor] Seat ${role.roleId} failed (attempt ${attempt + 1}/${this.maxRetries + 1}):`,
+          lastError.message
+        );
 
         if (attempt < this.maxRetries) {
-          console.log(`[MultiGMIAgencyExecutor] Retrying seat ${role.roleId} after ${this.retryDelayMs}ms...`);
+          console.log(
+            `[MultiGMIAgencyExecutor] Retrying seat ${role.roleId} after ${this.retryDelayMs}ms...`
+          );
           await new Promise((resolve) => setTimeout(resolve, this.retryDelayMs));
         }
       }
@@ -564,7 +640,10 @@ export class MultiGMIAgencyExecutor {
         retryCount: this.maxRetries,
       });
     } catch (error) {
-      console.error(`[MultiGMIAgencyExecutor] Failed to persist seat failure for ${seatId}:`, error);
+      console.error(
+        `[MultiGMIAgencyExecutor] Failed to persist seat failure for ${seatId}:`,
+        error
+      );
     }
 
     return {
@@ -585,6 +664,8 @@ export class MultiGMIAgencyExecutor {
     conversationId: string;
     workflowDefinitionId?: string;
     participants: Array<{ roleId: string; personaId?: string }>;
+    processingOptions?: AgentOSInput['options'];
+    userApiKeys?: AgentOSInput['userApiKeys'];
     metadata?: Record<string, unknown>;
   }): Promise<GmiExecutionResult> {
     const { role, agencyId, goal, userId, conversationId } = params;
@@ -599,7 +680,7 @@ Role (${role.roleId}): ${role.instruction}`;
       conversationId,
       selectedPersonaId: role.personaId,
       textInput: instruction,
-      options: { streamUICommands: true },
+      options: { ...(params.processingOptions ?? {}), streamUICommands: true },
       agencyRequest: {
         agencyId,
         goal,
@@ -614,6 +695,9 @@ Role (${role.roleId}): ${role.instruction}`;
           }
         : undefined,
     };
+    if (params.userApiKeys && Object.keys(params.userApiKeys).length > 0) {
+      agentosInput.userApiKeys = params.userApiKeys;
+    }
 
     let aggregatedText = '';
     let finalResponseText: string | null = null;
@@ -655,7 +739,7 @@ Role (${role.roleId}): ${role.instruction}`;
     conversationId: string,
     seatMap: Map<string, SeatSnapshot>,
     roleId: string,
-    status: SeatSnapshot['status'],
+    status: SeatSnapshot['status']
   ): Promise<void> {
     const snapshot = seatMap.get(roleId);
     if (!snapshot) {
@@ -670,7 +754,7 @@ Role (${role.roleId}): ${role.instruction}`;
     agencyId: string,
     conversationId: string,
     seatMap: Map<string, SeatSnapshot>,
-    metadata?: Record<string, unknown>,
+    metadata?: Record<string, unknown>
   ): Promise<void> {
     if (!this.deps.onChunk) {
       return;
@@ -697,7 +781,10 @@ Role (${role.roleId}): ${role.instruction}`;
       timestamp: new Date().toISOString(),
       agency: {
         agencyId,
-        workflowId: (typeof metadata?.workflowId === 'string' ? (metadata!.workflowId as string) : `workflow:${agencyId}`),
+        workflowId:
+          typeof metadata?.workflowId === 'string'
+            ? (metadata!.workflowId as string)
+            : `workflow:${agencyId}`,
         conversationId,
         seats,
         metadata,
@@ -717,7 +804,10 @@ Role (${role.roleId}): ${role.instruction}`;
     return `# Agency Coordination Results\n\n${sections.join('\n\n---\n\n')}`;
   }
 
-  private formatOutput(results: GmiExecutionResult[], format: 'json' | 'csv' | 'markdown' | 'text') {
+  private formatOutput(
+    results: GmiExecutionResult[],
+    format: 'json' | 'csv' | 'markdown' | 'text'
+  ) {
     switch (format) {
       case 'json':
         return { format: 'json' as const, content: JSON.stringify(results, null, 2) };
@@ -726,7 +816,7 @@ Role (${role.roleId}): ${role.instruction}`;
           (r) =>
             `"${r.roleId.replace(/"/g, '""')}","${r.personaId.replace(/"/g, '""')}","${
               r.error ? 'failed' : 'success'
-            }","${(r.output || r.error || '').replace(/"/g, '""')}"`,
+            }","${(r.output || r.error || '').replace(/"/g, '""')}"`
         );
         return {
           format: 'csv' as const,
@@ -734,7 +824,10 @@ Role (${role.roleId}): ${role.instruction}`;
         };
       }
       case 'markdown':
-        return { format: 'markdown' as const, content: this.consolidateOutputs(results, 'markdown') };
+        return {
+          format: 'markdown' as const,
+          content: this.consolidateOutputs(results, 'markdown'),
+        };
       case 'text':
       default:
         return {
@@ -752,20 +845,20 @@ Role (${role.roleId}): ${role.instruction}`;
         totalTokens: (acc.totalTokens ?? 0) + (result.usage?.totalTokens ?? 0),
         totalCostUSD: (acc.totalCostUSD ?? 0) + (result.usage?.totalCostUSD ?? 0),
       }),
-      { promptTokens: 0, completionTokens: 0, totalTokens: 0, totalCostUSD: 0 },
+      { promptTokens: 0, completionTokens: 0, totalTokens: 0, totalCostUSD: 0 }
     );
   }
 
   /**
    * STREAMING MODE execution: All seats execute in parallel immediately.
    * Results stream back as they complete via SSE.
-   * 
+   *
    * **Characteristics:**
    * - Real-time feedback
    * - Higher resource usage (keeps connections open)
    * - More complex error handling
    * - Best for: Interactive UIs, exploratory work
-   * 
+   *
    * @private
    */
   private async executeStreamingMode(params: {
@@ -775,7 +868,9 @@ Role (${role.roleId}): ${role.instruction}`;
     participants: Array<{ roleId: string; personaId?: string }>;
     seatMap: Map<string, SeatSnapshot>;
   }): Promise<GmiExecutionResult[]> {
-    console.log(`[MultiGMIAgencyExecutor] Starting streaming mode execution for ${params.roles.length} seats`);
+    console.log(
+      `[MultiGMIAgencyExecutor] Starting streaming mode execution for ${params.roles.length} seats`
+    );
 
     const factories = params.roles.map((role) => async () => {
       return await this.executeSeatWithRetry({
@@ -786,6 +881,8 @@ Role (${role.roleId}): ${role.instruction}`;
         conversationId: params.input.conversationId,
         workflowDefinitionId: params.input.workflowDefinitionId,
         participants: params.participants,
+        processingOptions: params.input.processingOptions,
+        userApiKeys: params.input.userApiKeys,
         metadata: params.input.metadata,
         seatMap: params.seatMap,
       });
@@ -798,20 +895,20 @@ Role (${role.roleId}): ${role.instruction}`;
   /**
    * QUEUE MODE execution: Pre-analyze dependencies, execute in optimized batches.
    * Results returned only when all batches complete.
-   * 
+   *
    * **Characteristics:**
    * - Batch processing with maximum parallelism
    * - Lower resource usage (no long-lived connections)
    * - Optimal task ordering based on dependencies
    * - Best for: Background jobs, scheduled workflows
-   * 
+   *
    * **Process:**
    * 1. Build dependency graph
    * 2. Group tasks into batches (by depth)
    * 3. Optimize task order within each batch
    * 4. Execute batches sequentially (tasks within batch run in parallel)
    * 5. Track batch-level metrics
-   * 
+   *
    * @private
    */
   private async executeQueueMode(params: {
@@ -823,7 +920,9 @@ Role (${role.roleId}): ${role.instruction}`;
     seatMap: Map<string, SeatSnapshot>;
     graph: import('./AgencyExecutionModes.js').DependencyGraph;
   }): Promise<{ results: GmiExecutionResult[]; batches: BatchExecutionResult[] }> {
-    console.log(`[MultiGMIAgencyExecutor] Starting queue mode execution: ${params.graph.parallelizableBatches.length} batches`);
+    console.log(
+      `[MultiGMIAgencyExecutor] Starting queue mode execution: ${params.graph.parallelizableBatches.length} batches`
+    );
 
     const queueConfig = params.input.executionMode?.queueConfig ?? {};
     const maxParallelBatches = queueConfig.maxParallelBatches ?? 3;
@@ -848,7 +947,9 @@ Role (${role.roleId}): ${role.instruction}`;
       const batchId = `batch_${params.agencyId}_${batchIndex + 1}`;
       const batchStartTime = Date.now();
 
-      console.log(`[MultiGMIAgencyExecutor] Executing batch ${batchIndex + 1}/${params.graph.parallelizableBatches.length}: ${batch.length} tasks`);
+      console.log(
+        `[MultiGMIAgencyExecutor] Executing batch ${batchIndex + 1}/${params.graph.parallelizableBatches.length}: ${batch.length} tasks`
+      );
 
       // Optimize task order within batch
       const optimizedBatch = this.dependencyAnalyzer.optimizeBatchOrder(
@@ -869,38 +970,46 @@ Role (${role.roleId}): ${role.instruction}`;
       }
 
       // Execute tasks in this batch (in parallel, up to maxParallelBatches limit)
-      const batchFactories = optimizedBatch.slice(0, maxParallelBatches).map((taskId) => async () => {
-        const roleId = taskToRoleMap.get(taskId);
-        if (!roleId) {
-          console.warn(`[MultiGMIAgencyExecutor] Task ${taskId} has no assigned role. Skipping.`);
-          return null;
-        }
+      const batchFactories = optimizedBatch
+        .slice(0, maxParallelBatches)
+        .map((taskId) => async () => {
+          const roleId = taskToRoleMap.get(taskId);
+          if (!roleId) {
+            console.warn(`[MultiGMIAgencyExecutor] Task ${taskId} has no assigned role. Skipping.`);
+            return null;
+          }
 
-        const role = params.roles.find((r) => r.roleId === roleId);
-        if (!role) {
-          console.warn(`[MultiGMIAgencyExecutor] Role ${roleId} not found. Skipping task ${taskId}.`);
-          return null;
-        }
+          const role = params.roles.find((r) => r.roleId === roleId);
+          if (!role) {
+            console.warn(
+              `[MultiGMIAgencyExecutor] Role ${roleId} not found. Skipping task ${taskId}.`
+            );
+            return null;
+          }
 
-        return await this.executeSeatWithRetry({
-          role,
-          agencyId: params.agencyId,
-          goal: params.input.goal,
-          userId: params.input.userId,
-          conversationId: params.input.conversationId,
-          workflowDefinitionId: params.input.workflowDefinitionId,
-          participants: params.participants,
-          metadata: { ...params.input.metadata, taskId },
-          seatMap: params.seatMap,
+          return await this.executeSeatWithRetry({
+            role,
+            agencyId: params.agencyId,
+            goal: params.input.goal,
+            userId: params.input.userId,
+            conversationId: params.input.conversationId,
+            workflowDefinitionId: params.input.workflowDefinitionId,
+            participants: params.participants,
+            processingOptions: params.input.processingOptions,
+            userApiKeys: params.input.userApiKeys,
+            metadata: { ...params.input.metadata, taskId },
+            seatMap: params.seatMap,
+          });
         });
-      });
 
       try {
         const batchGmiResults = await Promise.all(batchFactories.map((f) => f()));
         const validResults = batchGmiResults.filter((r): r is GmiExecutionResult => r !== null);
         allResults.push(...validResults);
 
-        const batchErrors = validResults.filter((r) => r.error).map((r) => ({ taskId: r.roleId, error: r.error! }));
+        const batchErrors = validResults
+          .filter((r) => r.error)
+          .map((r) => ({ taskId: r.roleId, error: r.error! }));
 
         batchResults.push({
           batchId,
@@ -914,11 +1023,15 @@ Role (${role.roleId}): ${role.instruction}`;
           errors: batchErrors,
         });
 
-        console.log(`[MultiGMIAgencyExecutor] Batch ${batchIndex + 1} complete: ${validResults.length} tasks, ${batchErrors.length} errors`);
+        console.log(
+          `[MultiGMIAgencyExecutor] Batch ${batchIndex + 1} complete: ${validResults.length} tasks, ${batchErrors.length} errors`
+        );
 
         // Stop if batch failed and continueOnFailure is false
         if (batchErrors.length > 0 && !continueOnFailure) {
-          console.error(`[MultiGMIAgencyExecutor] Batch ${batchIndex + 1} failed. Aborting remaining batches.`);
+          console.error(
+            `[MultiGMIAgencyExecutor] Batch ${batchIndex + 1} failed. Aborting remaining batches.`
+          );
           break;
         }
 
@@ -928,7 +1041,7 @@ Role (${role.roleId}): ${role.instruction}`;
         }
       } catch (error) {
         console.error(`[MultiGMIAgencyExecutor] Batch ${batchIndex + 1} failed:`, error);
-        
+
         batchResults.push({
           batchId,
           taskIds: optimizedBatch,
@@ -938,7 +1051,9 @@ Role (${role.roleId}): ${role.instruction}`;
           successCount: 0,
           failureCount: optimizedBatch.length,
           totalCost: 0,
-          errors: [{ taskId: 'batch', error: error instanceof Error ? error.message : String(error) }],
+          errors: [
+            { taskId: 'batch', error: error instanceof Error ? error.message : String(error) },
+          ],
         });
 
         if (!continueOnFailure) {
@@ -950,4 +1065,3 @@ Role (${role.roleId}): ${role.instruction}`;
     return { results: allResults, batches: batchResults };
   }
 }
-

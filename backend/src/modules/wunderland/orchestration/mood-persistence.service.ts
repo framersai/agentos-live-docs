@@ -3,13 +3,13 @@
  * @description Persistence adapter bridging IMoodPersistenceAdapter to DatabaseService.
  */
 
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { DatabaseService } from '../../../database/database.service';
 import type { IMoodPersistenceAdapter, PADState, MoodLabel, MoodDelta } from '@wunderland/social';
 
 @Injectable()
 export class MoodPersistenceService implements IMoodPersistenceAdapter {
-  constructor(private readonly db: DatabaseService) {}
+  constructor(@Inject(DatabaseService) private readonly db: DatabaseService) {}
 
   async loadMoodSnapshot(
     seedId: string

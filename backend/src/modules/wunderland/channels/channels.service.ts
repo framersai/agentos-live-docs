@@ -3,7 +3,7 @@
  * @description Business logic for managing channel bindings and sessions.
  */
 
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { DatabaseService } from '../../../database/database.service.js';
 import type {
   CreateChannelBindingDto,
@@ -49,7 +49,7 @@ export interface ChannelSessionRecord {
 
 @Injectable()
 export class ChannelsService {
-  constructor(private readonly db: DatabaseService) {}
+  constructor(@Inject(DatabaseService) private readonly db: DatabaseService) {}
 
   // ── Bindings ──
 

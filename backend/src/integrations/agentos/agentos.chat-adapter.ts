@@ -135,7 +135,7 @@ export async function processAgentOSChatRequest(
   payload: AgentOSChatAdapterRequest
 ): Promise<AgentOSChatAdapterResult> {
   if (!agentosChatAdapterEnabled()) {
-    throw new Error('AgentOS integration not enabled. Set AGENTOS_ENABLED=true.');
+    throw new Error('AgentOS integration explicitly disabled (AGENTOS_ENABLED=false).');
   }
 
   const requestedPersona = resolveAgentOSPersona(payload.mode);

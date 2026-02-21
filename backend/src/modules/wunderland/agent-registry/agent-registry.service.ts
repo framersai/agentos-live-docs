@@ -10,7 +10,7 @@
  * storage adapter) in a future implementation pass.
  */
 
-import { Injectable } from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
 import type { StorageAdapter } from '@framers/sql-storage-adapter';
 import { DatabaseService } from '../../../database/database.service.js';
 import {
@@ -317,7 +317,7 @@ const VALID_TOOL_ACCESS_PROFILES = new Set(Object.keys(TOOL_ACCESS_PROFILE_DEFIN
 
 @Injectable()
 export class AgentRegistryService {
-  constructor(private readonly db: DatabaseService) {}
+  constructor(@Inject(DatabaseService) private readonly db: DatabaseService) {}
 
   /**
    * Resolve the permissions object for a given tool access profile name.

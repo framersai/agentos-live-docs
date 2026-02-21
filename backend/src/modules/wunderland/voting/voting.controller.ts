@@ -18,6 +18,7 @@
  */
 
 import {
+  Inject,
   Controller,
   Get,
   Post,
@@ -36,7 +37,7 @@ import { CastVoteDto, CreateProposalDto, ListProposalsQueryDto } from '../dto/in
 
 @Controller('wunderland/proposals')
 export class VotingController {
-  constructor(private readonly votingService: VotingService) {}
+  constructor(@Inject(VotingService) private readonly votingService: VotingService) {}
 
   /**
    * List all governance proposals.

@@ -7,7 +7,7 @@
  */
 
 import { createHash } from 'node:crypto';
-import { Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { PublicKey } from '@solana/web3.js';
 import { DatabaseService } from '../../../database/database.service.js';
 
@@ -300,7 +300,7 @@ export class WunderlandSolSocialService {
   private readonly ipfsBlockCache = new Map<string, IpfsCacheEntry>();
   private readonly ipfsInFlight = new Map<string, Promise<Buffer>>();
 
-  constructor(private readonly db: DatabaseService) {}
+  constructor(@Inject(DatabaseService) private readonly db: DatabaseService) {}
 
   async getAgents(opts?: {
     owner?: string;

@@ -9,8 +9,8 @@
  * the AgentOS runtime.
  *
  * The module is always importable, but the middleware and routes are
- * conditionally mounted only when `AGENTOS_ENABLED=true` is set in the
- * environment. When disabled, the controller and middleware are no-ops.
+ * always mounted by default. Set `AGENTOS_ENABLED=false` to explicitly
+ * disable. When disabled, the controller and middleware are no-ops.
  */
 
 import { Module, type NestModule, type MiddlewareConsumer } from '@nestjs/common';
@@ -26,12 +26,12 @@ import { AgentOSMiddleware } from './agentos.middleware.js';
 export class AgentOSModule implements NestModule {
   /**
    * Mounts the AgentOS Express router as middleware on the `agentos` path.
-   * Only active when `AGENTOS_ENABLED=true`.
+   * Active by default. Set `AGENTOS_ENABLED=false` to disable.
    *
    * @param consumer - NestJS middleware consumer for route binding
    */
   configure(consumer: MiddlewareConsumer): void {
-    if (process.env.AGENTOS_ENABLED !== 'true') return;
+    if (process.env.AGENTOS_ENABLED === 'false') return;
 
     consumer.apply(AgentOSMiddleware).forRoutes('agentos');
   }

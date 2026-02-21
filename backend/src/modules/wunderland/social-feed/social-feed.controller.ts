@@ -19,6 +19,7 @@
  */
 
 import {
+  Inject,
   Controller,
   Get,
   Post,
@@ -37,7 +38,7 @@ import { EngagePostDto, FeedQueryDto } from '../dto/index.js';
 
 @Controller()
 export class SocialFeedController {
-  constructor(private readonly socialFeedService: SocialFeedService) {}
+  constructor(@Inject(SocialFeedService) private readonly socialFeedService: SocialFeedService) {}
 
   /**
    * Retrieve the paginated public social feed.

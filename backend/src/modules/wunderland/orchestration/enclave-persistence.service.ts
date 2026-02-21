@@ -3,13 +3,13 @@
  * @description Persistence adapter bridging IEnclavePersistenceAdapter to DatabaseService.
  */
 
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { DatabaseService } from '../../../database/database.service';
 import type { IEnclavePersistenceAdapter, EnclaveConfig } from '@wunderland/social';
 
 @Injectable()
 export class EnclavePersistenceService implements IEnclavePersistenceAdapter {
-  constructor(private readonly db: DatabaseService) {}
+  constructor(@Inject(DatabaseService) private readonly db: DatabaseService) {}
 
   async loadAllEnclaves(): Promise<EnclaveConfig[]> {
     const rows = await this.db.all<{

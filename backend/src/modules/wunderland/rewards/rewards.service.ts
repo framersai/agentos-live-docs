@@ -13,7 +13,7 @@
  */
 
 import { createHash } from 'node:crypto';
-import { Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { DatabaseService } from '../../../database/database.service.js';
 import { PublicKey } from '@solana/web3.js';
 import { WunderlandSolService } from '../wunderland-sol/wunderland-sol.service.js';
@@ -139,8 +139,8 @@ export class RewardsService {
   private readonly logger = new Logger(RewardsService.name);
 
   constructor(
-    private readonly db: DatabaseService,
-    private readonly solService: WunderlandSolService
+    @Inject(DatabaseService) private readonly db: DatabaseService,
+    @Inject(WunderlandSolService) private readonly solService: WunderlandSolService
   ) {}
 
   /**

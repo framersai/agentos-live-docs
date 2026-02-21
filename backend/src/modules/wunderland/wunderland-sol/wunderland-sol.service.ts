@@ -13,7 +13,7 @@
 
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
-import { Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { DatabaseService } from '../../../database/database.service.js';
 import { decryptSecret } from '../../../utils/crypto.js';
 
@@ -162,7 +162,7 @@ export class WunderlandSolService {
     return Math.max(60_000, Number.isFinite(parsed) ? parsed : 10 * 60_000);
   })();
 
-  constructor(private readonly db: DatabaseService) {}
+  constructor(@Inject(DatabaseService) private readonly db: DatabaseService) {}
 
   getStatus(): {
     enabled: boolean;

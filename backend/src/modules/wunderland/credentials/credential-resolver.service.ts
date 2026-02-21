@@ -5,7 +5,7 @@
  * 2. User-level vault keys (user_api_keys) — with rate limit checks
  */
 
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { CredentialsService } from './credentials.service.js';
 import { VaultService } from '../vault/vault.service.js';
 
@@ -18,8 +18,8 @@ export type ResolvedCredential = {
 @Injectable()
 export class CredentialResolverService {
   constructor(
-    private readonly credentials: CredentialsService,
-    private readonly vault: VaultService
+    @Inject(CredentialsService) private readonly credentials: CredentialsService,
+    @Inject(VaultService) private readonly vault: VaultService
   ) {}
 
   /**

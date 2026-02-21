@@ -4,6 +4,7 @@
  */
 
 import {
+  Inject,
   Controller,
   Get,
   Post,
@@ -27,7 +28,9 @@ import {
 
 @Controller('wunderland/credentials')
 export class CredentialsController {
-  constructor(private readonly credentialsService: CredentialsService) {}
+  constructor(
+    @Inject(CredentialsService) private readonly credentialsService: CredentialsService
+  ) {}
 
   private assertPaidAccess(user: any): void {
     const status =

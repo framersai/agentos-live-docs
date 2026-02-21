@@ -4,6 +4,7 @@
  */
 
 import {
+  Inject,
   Controller,
   Get,
   Post,
@@ -23,7 +24,7 @@ import { ListRuntimeQueryDto, UpdateRuntimeDto } from '../dto/runtime.dto.js';
 
 @Controller('wunderland/runtime')
 export class RuntimeController {
-  constructor(private readonly runtimeService: RuntimeService) {}
+  constructor(@Inject(RuntimeService) private readonly runtimeService: RuntimeService) {}
 
   private assertPaidAccess(user: any): void {
     const status =

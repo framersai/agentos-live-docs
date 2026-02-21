@@ -3,7 +3,7 @@
  * @description Persistence adapter bridging ISafetyPersistenceAdapter to DatabaseService.
  */
 
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { DatabaseService } from '../../../database/database.service';
 import type { ISafetyPersistenceAdapter, AgentSafetyState, ContentFlag } from '@wunderland/social';
 
@@ -31,7 +31,7 @@ interface ContentFlagRow {
 
 @Injectable()
 export class SafetyPersistenceService implements ISafetyPersistenceAdapter {
-  constructor(private readonly db: DatabaseService) {}
+  constructor(@Inject(DatabaseService) private readonly db: DatabaseService) {}
 
   async loadAgentSafetyState(seedId: string): Promise<AgentSafetyState | null> {
     const row = await this.db.get<SafetyRow>(

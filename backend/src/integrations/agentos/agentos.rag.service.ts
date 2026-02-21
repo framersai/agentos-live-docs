@@ -61,7 +61,12 @@ import type {
 } from '@framers/agentos/rag/graphrag';
 import { RAGAuditCollector } from '@framers/agentos/rag/audit/RAGAuditCollector';
 import { RAGAuditPersistence } from 'wunderland';
-import type { RagAuditTrailWire } from '@framers/agentos-ext-http-api';
+import type {
+  RagAuditTrailWire,
+  RagGraphContextWire,
+  RagDebugStepWire,
+} from '@framers/agentos-ext-http-api';
+import { RagDebugLogger, isRagDebugEnabled } from './rag-debug-logger.js';
 import { audioService } from '../../core/audio/audio.service.js';
 import type { ISttOptions } from '../../core/audio/stt.interfaces.js';
 
@@ -260,6 +265,10 @@ export interface RagQueryOptions {
   };
   /** When true, return a detailed audit trail with the response. */
   includeAudit?: boolean;
+  /** When true, also run GraphRAG local search and include entity/relationship context. */
+  includeGraphRag?: boolean;
+  /** When true, return detailed pipeline debug trace. */
+  debug?: boolean;
 }
 
 /**
@@ -284,6 +293,10 @@ export interface RagQueryResult {
   processingTimeMs: number;
   /** Present when `includeAudit: true` was requested. */
   auditTrail?: import('@framers/agentos-ext-http-api').RagAuditTrailWire;
+  /** Present when `includeGraphRag: true` was requested. */
+  graphContext?: import('@framers/agentos-ext-http-api').RagGraphContextWire;
+  /** Present when `debug: true` was requested. */
+  debugTrace?: import('@framers/agentos-ext-http-api').RagDebugStepWire[];
 }
 
 /**
@@ -4533,6 +4546,18 @@ Query: ${JSON.stringify(baseQuery)}`;
     const startTime = Date.now();
     const topK = options.topK || 5;
 
+    // Debug logger (zero overhead when disabled).
+    const dbg = new RagDebugLogger(isRagDebugEnabled(options.debug));
+    dbg.step('query_received', {
+      query: options.query,
+      preset: options.preset ?? this.getRetrievalPreset(),
+      topK,
+      vectorProvider: this.vectorProvider,
+      collectionIds: options.collectionIds ?? ['default'],
+      graphRagRequested: !!options.includeGraphRag,
+      strategy: options.strategy ?? 'similarity',
+    });
+
     // Audit collector (only when requested).
     const collector = options.includeAudit
       ? new RAGAuditCollector({ requestId: `rq-${Date.now().toString(36)}`, query: options.query })
@@ -4540,6 +4565,11 @@ Query: ${JSON.stringify(baseQuery)}`;
 
     const queries = await this.resolveQueryVariants(options);
     const [baseQuery, ...variants] = queries;
+    dbg.step('variants_resolved', {
+      baseQuery,
+      variantCount: variants.length,
+      variants: variants.length > 0 ? variants : undefined,
+    });
 
     // ── Vector retrieval ──────────────────────────────────────────────
     let vector: { chunks: RagRetrievedChunk[]; totalResults: number } | null = null;
@@ -4571,6 +4601,14 @@ Query: ${JSON.stringify(baseQuery)}`;
       merged.sort((a, b) => b.score - a.score);
       vector = canUseVector ? { chunks: merged, totalResults: merged.length } : null;
     }
+    const vectorMs = Date.now() - vectorStart;
+    dbg.step('vector_search', {
+      provider: this.vectorProvider,
+      candidateCount: vector?.chunks.length ?? 0,
+      latencyMs: vectorMs,
+      embeddingModel: this.embeddingModel?.modelId ?? 'none',
+      embeddingDimension: this.embeddingModel?.dimension ?? 0,
+    });
 
     // Record vector query audit operation.
     if (collector && vector) {
@@ -4596,7 +4634,7 @@ Query: ${JSON.stringify(baseQuery)}`;
         llmCompletionTokens: 0,
         totalTokens: embTokens,
       });
-      vecOp.complete(vector.chunks.length, Date.now() - vectorStart);
+      vecOp.complete(vector.chunks.length, vectorMs);
     }
 
     // ── Keyword retrieval ─────────────────────────────────────────────
@@ -4619,6 +4657,12 @@ Query: ${JSON.stringify(baseQuery)}`;
             return { chunks: merged, totalResults: merged.length };
           })()
       : null;
+    const keywordMs = Date.now() - keywordStart;
+    dbg.step('keyword_search', {
+      enabled: keywordNeeded,
+      matchCount: keyword?.chunks.length ?? 0,
+      latencyMs: keywordMs,
+    });
 
     // Record keyword query audit operation.
     if (collector && keyword && keyword.chunks.length > 0) {
@@ -4632,7 +4676,7 @@ Query: ${JSON.stringify(baseQuery)}`;
           relevanceScore: c.score,
         }))
       );
-      kwOp.complete(keyword.chunks.length, Date.now() - keywordStart);
+      kwOp.complete(keyword.chunks.length, keywordMs);
     }
 
     const mergedById = new Map<string, RagRetrievedChunk>();
@@ -4650,6 +4694,58 @@ Query: ${JSON.stringify(baseQuery)}`;
 
     const merged = Array.from(mergedById.values());
     merged.sort((a, b) => b.score - a.score);
+    dbg.step('fusion', {
+      strategy: 'RRF',
+      vectorCount: vector?.chunks.length ?? 0,
+      keywordCount: keyword?.chunks.length ?? 0,
+      mergedCount: merged.length,
+    });
+
+    // ── Combined GraphRAG search ──────────────────────────────────────
+    let graphContext: RagGraphContextWire | undefined;
+    if (options.includeGraphRag && this.isGraphRagEnabled()) {
+      const graphStart = Date.now();
+      try {
+        const localResult = await this.graphRagLocalSearch(options.query, { topK });
+        graphContext = {
+          entities: (localResult.entities ?? []).map((e: any) => ({
+            name: e.name,
+            type: e.type,
+            description: e.description,
+            relevanceScore: e.relevanceScore,
+          })),
+          relationships: (localResult.relationships ?? []).map((r: any) => ({
+            source:
+              (localResult.entities ?? []).find((e: any) => e.id === r.sourceEntityId)?.name ??
+              r.sourceEntityId,
+            target:
+              (localResult.entities ?? []).find((e: any) => e.id === r.targetEntityId)?.name ??
+              r.targetEntityId,
+            type: r.type,
+            description: r.description,
+          })),
+          communityContext: localResult.communityContext,
+          augmentedContext: localResult.augmentedContext,
+          diagnostics: localResult.diagnostics,
+        };
+        const graphMs = Date.now() - graphStart;
+        dbg.step('graphrag', {
+          entitiesFound: graphContext.entities.length,
+          relationshipsFound: graphContext.relationships.length,
+          hasCommunityContext: !!graphContext.communityContext,
+          searchTimeMs: graphMs,
+        });
+      } catch (err: any) {
+        const graphMs = Date.now() - graphStart;
+        dbg.step('graphrag_error', {
+          error: err?.message ?? String(err),
+          searchTimeMs: graphMs,
+        });
+        console.warn(`[RAG Service] GraphRAG augmentation failed: ${err?.message ?? err}`);
+      }
+    } else if (options.includeGraphRag) {
+      dbg.step('graphrag_skipped', { reason: 'GraphRAG not enabled' });
+    }
 
     // Finalize audit trail.
     let auditTrail: RagAuditTrailWire | undefined;
@@ -4666,13 +4762,23 @@ Query: ${JSON.stringify(baseQuery)}`;
       }
     }
 
+    const totalMs = Date.now() - startTime;
+    dbg.step('pipeline_complete', {
+      totalLatencyMs: totalMs,
+      resultsReturned: Math.min(merged.length, topK),
+      hasGraphContext: !!graphContext,
+      hasAuditTrail: !!auditTrail,
+    });
+
     return {
       success: true,
       query: options.query,
       chunks: merged.slice(0, topK),
       totalResults: merged.length,
-      processingTimeMs: Date.now() - startTime,
+      processingTimeMs: totalMs,
       auditTrail,
+      graphContext,
+      debugTrace: dbg.getSummary(),
     };
   }
 

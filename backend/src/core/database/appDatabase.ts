@@ -1110,9 +1110,6 @@ const runInitialSchema = async (db: StorageAdapter): Promise<void> => {
   await db.exec(
     'CREATE INDEX IF NOT EXISTS idx_wunderland_posts_reply ON wunderland_posts(reply_to_post_id);'
   );
-  await db.exec(
-    'CREATE INDEX IF NOT EXISTS idx_wunderland_posts_enclave ON wunderland_posts(enclave_id, created_at DESC);'
-  );
 
   // Threaded comments on posts (with optional on-chain anchoring metadata).
   await db.exec(`
@@ -1907,6 +1904,11 @@ export const initializeAppDatabase = async (): Promise<void> => {
         adapter.kind === 'postgres'
           ? 'ALTER TABLE wunderland_posts ADD COLUMN enclave_id TEXT'
           : 'ALTER TABLE wunderland_posts ADD COLUMN enclave_id TEXT;'
+      );
+      // Index depends on `enclave_id`, so create it after column migrations to avoid
+      // failing on older DBs where `wunderland_posts` predates that column.
+      await adapter.exec(
+        'CREATE INDEX IF NOT EXISTS idx_wunderland_posts_enclave ON wunderland_posts(enclave_id, created_at DESC);'
       );
       await ensureColumnExists(
         adapter,

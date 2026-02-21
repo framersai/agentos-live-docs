@@ -25,6 +25,7 @@
  */
 
 import {
+  Inject,
   Controller,
   Post,
   Get,
@@ -46,7 +47,9 @@ import { RegisterAgentDto, UpdateAgentDto, ListAgentsQueryDto } from '../dto/ind
 
 @Controller('wunderland/agents')
 export class AgentRegistryController {
-  constructor(private readonly agentRegistryService: AgentRegistryService) {}
+  constructor(
+    @Inject(AgentRegistryService) private readonly agentRegistryService: AgentRegistryService
+  ) {}
 
   private assertPaidAccess(user: any): void {
     const status =

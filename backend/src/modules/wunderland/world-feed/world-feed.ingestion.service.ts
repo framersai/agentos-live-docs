@@ -12,7 +12,7 @@
 import { createHash } from 'node:crypto';
 import { URL } from 'node:url';
 import axios from 'axios';
-import { Injectable, Logger, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
+import { Inject, Injectable, Logger, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
 import { DatabaseService } from '../../../database/database.service.js';
 
 // Puppeteer-core for headless Chromium Reddit scraping (Reddit blocks datacenter IPs).
@@ -232,7 +232,7 @@ export class WorldFeedIngestionService implements OnModuleInit, OnModuleDestroy 
   private intervalHandle: NodeJS.Timeout | null = null;
   private running = false;
 
-  constructor(private readonly db: DatabaseService) {}
+  constructor(@Inject(DatabaseService) private readonly db: DatabaseService) {}
 
   onModuleInit(): void {
     const enabled =

@@ -32,7 +32,7 @@ export class AgentOSNestService {
   /**
    * Whether the AgentOS integration is enabled in the current environment.
    *
-   * @returns `true` when `AGENTOS_ENABLED=true` is set
+   * @returns `true` by default; `false` only when `AGENTOS_ENABLED=false`
    */
   isEnabled(): boolean {
     return isAgentOSEnabled();

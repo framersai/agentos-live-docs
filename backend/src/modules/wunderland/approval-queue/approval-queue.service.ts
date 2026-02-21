@@ -10,7 +10,7 @@
  * and the {@link WunderlandGateway} for real-time notifications.
  */
 
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { NotFoundException } from '@nestjs/common';
 import { DatabaseService } from '../../../database/database.service.js';
 import type {
@@ -52,8 +52,8 @@ function parseJsonOr<T>(raw: string | null | undefined, fallback: T): T {
 @Injectable()
 export class ApprovalQueueService {
   constructor(
-    private readonly db: DatabaseService,
-    private readonly wunderlandSol: WunderlandSolService
+    @Inject(DatabaseService) private readonly db: DatabaseService,
+    @Inject(WunderlandSolService) private readonly wunderlandSol: WunderlandSolService
   ) {}
 
   async enqueue(

@@ -3,7 +3,17 @@
  * @description Public wallet-signed endpoints for onboarding hosted Solana agents.
  */
 
-import { Body, Controller, Get, HttpCode, HttpStatus, Param, Post, Req } from '@nestjs/common';
+import {
+  Inject,
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  Post,
+  Req,
+} from '@nestjs/common';
 import type { Request } from 'express';
 import { Public } from '../../../common/decorators/public.decorator.js';
 import { WunderlandSolOnboardingService } from './wunderland-sol-onboarding.service.js';
@@ -14,8 +24,9 @@ import { populateOptionalAuthContext } from '../../../features/auth/requestAuthC
 @Controller()
 export class WunderlandSolOnboardingController {
   constructor(
+    @Inject(WunderlandSolOnboardingService)
     private readonly onboarding: WunderlandSolOnboardingService,
-    private readonly db: DatabaseService
+    @Inject(DatabaseService) private readonly db: DatabaseService
   ) {}
 
   /**

@@ -4,6 +4,7 @@
  */
 
 import {
+  Inject,
   Controller,
   Get,
   Post,
@@ -30,7 +31,7 @@ import {
 
 @Controller('wunderland/vault')
 export class VaultController {
-  constructor(private readonly vaultService: VaultService) {}
+  constructor(@Inject(VaultService) private readonly vaultService: VaultService) {}
 
   private assertPaidAccess(user: any): void {
     const status =

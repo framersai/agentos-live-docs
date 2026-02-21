@@ -4,6 +4,7 @@
  */
 
 import {
+  Inject,
   Controller,
   Get,
   Post,
@@ -24,7 +25,7 @@ import { ChannelOAuthCallbackDto, TelegramSetupDto } from '../dto/channel-oauth.
 
 @Controller('wunderland/channels/oauth')
 export class ChannelOAuthController {
-  constructor(private readonly oauthService: ChannelOAuthService) {}
+  constructor(@Inject(ChannelOAuthService) private readonly oauthService: ChannelOAuthService) {}
 
   private assertPaidAccess(user: any): void {
     const status = user?.subscriptionStatus ?? user?.subscription_status;

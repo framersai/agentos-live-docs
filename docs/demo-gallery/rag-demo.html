@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wunderland RAG Demo Gallery</title>
+<style>
+  :root {
+    --bg: #0d1117;
+    --card-bg: #161b22;
+    --border: #30363d;
+    --text: #e6edf3;
+    --muted: #8b949e;
+    --accent: #a855f7;
+    --accent2: #06b6d4;
+    --green: #22c55e;
+    --yellow: #eab308;
+    --red: #ef4444;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    padding: 2rem;
+    line-height: 1.6;
+  }
+  .header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding: 2rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .header h1 {
+    font-size: 2.5rem;
+    background: linear-gradient(135deg, #a855f7, #06b6d4);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 0.5rem;
+  }
+  .header p {
+    color: var(--muted);
+    font-size: 1.1rem;
+  }
+  .stage {
+    margin-bottom: 3rem;
+  }
+  .stage-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+  }
+  .stage-header .badge {
+    background: var(--accent);
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.25rem 0.75rem;
+    border-radius: 999px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .stage-header h2 {
+    font-size: 1.5rem;
+    color: var(--text);
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(560px, 1fr));
+    gap: 1.5rem;
+  }
+  .card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+  .card:hover {
+    border-color: var(--accent);
+  }
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    background: rgba(168, 85, 247, 0.05);
+    border-bottom: 1px solid var(--border);
+  }
+  .card-header .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+  .card-header .dot.red { background: #ff5f57; }
+  .card-header .dot.yellow { background: #febc2e; }
+  .card-header .dot.green { background: #28c840; }
+  .card-header .title {
+    flex: 1;
+    font-size: 0.85rem;
+    color: var(--muted);
+    font-family: 'SF Mono', 'Monaco', 'Menlo', monospace;
+    margin-left: 0.5rem;
+  }
+  .card-header .cmd {
+    font-size: 0.75rem;
+    color: var(--accent2);
+    font-family: 'SF Mono', 'Monaco', 'Menlo', monospace;
+  }
+  .card-body {
+    padding: 1rem 1.25rem;
+    font-family: 'SF Mono', 'Monaco', 'Menlo', 'Courier New', monospace;
+    font-size: 0.8rem;
+    line-height: 1.7;
+    white-space: pre-wrap;
+    word-break: break-word;
+    color: var(--text);
+    max-height: 420px;
+    overflow-y: auto;
+  }
+  .card-body::-webkit-scrollbar { width: 6px; }
+  .card-body::-webkit-scrollbar-track { background: transparent; }
+  .card-body::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  /* ANSI color spans */
+  .ansi-green { color: #22c55e; }
+  .ansi-red { color: #ef4444; }
+  .ansi-yellow { color: #eab308; }
+  .ansi-blue { color: #3b82f6; }
+  .ansi-magenta, .ansi-purple { color: #a855f7; }
+  .ansi-cyan { color: #06b6d4; }
+  .ansi-gray, .ansi-dim { color: #6b7280; }
+  .ansi-white { color: #f9fafb; }
+  .ansi-bold { font-weight: 700; }
+  .ansi-bright { color: #f9fafb; font-weight: 600; }
+
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    margin-top: 2rem;
+    padding: 1.5rem;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+  .legend-item .swatch {
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
+  }
+  .footer {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 0.85rem;
+  }
+  .footer a {
+    color: var(--accent2);
+    text-decoration: none;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Wunderland RAG Demo</h1>
+  <p>Retrieval-Augmented Generation with Vector Search + GraphRAG Knowledge Graphs</p>
+</div>
+
+<!-- ====== STAGE 1: System Health & Status ====== -->
+<div class="stage">
+  <div class="stage-header">
+    <span class="badge">Stage 0</span>
+    <h2>System Health & Configuration</h2>
+  </div>
+  <div class="grid" id="stage0"></div>
+</div>
+
+<!-- ====== STAGE 1: Vector RAG ====== -->
+<div class="stage">
+  <div class="stage-header">
+    <span class="badge">Stage 1</span>
+    <h2>Vector-Based RAG Search</h2>
+  </div>
+  <div class="grid" id="stage1"></div>
+</div>
+
+<!-- ====== STAGE 2: GraphRAG ====== -->
+<div class="stage">
+  <div class="stage-header">
+    <span class="badge" style="background: #06b6d4;">Stage 2</span>
+    <h2>GraphRAG Knowledge Graph</h2>
+  </div>
+  <div class="grid" id="stage2"></div>
+</div>
+
+<div class="legend">
+  <div class="legend-item"><div class="swatch" style="background:#a855f7"></div> Section headers</div>
+  <div class="legend-item"><div class="swatch" style="background:#22c55e"></div> Success / healthy status</div>
+  <div class="legend-item"><div class="swatch" style="background:#06b6d4"></div> Accent / links</div>
+  <div class="legend-item"><div class="swatch" style="background:#6b7280"></div> Labels / metadata</div>
+  <div class="legend-item"><div class="swatch" style="background:#f9fafb"></div> Content / values</div>
+</div>
+
+<div class="footer">
+  <p>Generated from live CLI output &mdash; <a href="https://wunderland.sh">wunderland.sh</a> &middot; <a href="https://rabbithole.inc">rabbithole.inc</a></p>
+  <p style="margin-top: 0.5rem;">5 documents &bull; 21 chunks &bull; 148 entities &bull; 356 relationships &bull; 22 communities</p>
+</div>
+
+<script>
+// ANSI → HTML converter
+function ansiToHtml(text) {
+  // Map 38;2;R;G;B (true color fg) and 1 (bold) sequences
+  let result = '';
+  let i = 0;
+  while (i < text.length) {
+    if (text[i] === '\x1b' && text[i+1] === '[') {
+      // Find the 'm' terminator
+      let j = i + 2;
+      while (j < text.length && text[j] !== 'm') j++;
+      const codes = text.slice(i+2, j).split(';').map(Number);
+      i = j + 1;
+
+      if (codes[0] === 0 || (codes.length === 1 && codes[0] === 39)) {
+        result += '</span>';
+      } else if (codes[0] === 1) {
+        result += '<span class="ansi-bold">';
+      } else if (codes[0] === 22) {
+        result += '</span>';
+      } else if (codes[0] === 38 && codes[1] === 2) {
+        const r = codes[2], g = codes[3], b = codes[4];
+        result += `<span style="color:rgb(${r},${g},${b})">`;
+      } else if (codes[0] === 39) {
+        result += '</span>';
+      }
+    } else {
+      const ch = text[i];
+      if (ch === '<') result += '&lt;';
+      else if (ch === '>') result += '&gt;';
+      else if (ch === '&') result += '&amp;';
+      else result += ch;
+      i++;
+    }
+  }
+  return result;
+}
+
+function makeCard(title, cmd, content) {
+  return `
+    <div class="card">
+      <div class="card-header">
+        <span class="dot red"></span>
+        <span class="dot yellow"></span>
+        <span class="dot green"></span>
+        <span class="title">${title}</span>
+        <span class="cmd">${cmd}</span>
+      </div>
+      <div class="card-body">${ansiToHtml(content)}</div>
+    </div>`;
+}
+
+// Demo data (ANSI raw output from CLI)
+const demos = {
+  stage0: [
+    {
+      title: 'RAG Service Health',
+      cmd: 'wunderland rag health',
+      content: `  \x1b[38;2;168;85;247m\u25c6\x1b[39m \x1b[38;2;249;250;251m\x1b[1mRAG Health\x1b[22m\x1b[39m
+    \x1b[38;2;107;114;128mStatus                  \x1b[39m \x1b[38;2;34;197;94mready\x1b[39m
+    \x1b[38;2;107;114;128mAdapter                 \x1b[39m better-sqlite3
+    \x1b[38;2;107;114;128mVector Store            \x1b[39m \x1b[38;2;34;197;94mconnected\x1b[39m
+    \x1b[38;2;107;114;128mEmbeddings              \x1b[39m \x1b[38;2;34;197;94mavailable\x1b[39m
+    \x1b[38;2;107;114;128mGraphRAG                \x1b[39m \x1b[38;2;34;197;94menabled\x1b[39m
+    \x1b[38;2;107;114;128mDocuments               \x1b[39m 5
+    \x1b[38;2;107;114;128mChunks                  \x1b[39m 21
+    \x1b[38;2;107;114;128mCollections             \x1b[39m 1`
+    },
+    {
+      title: 'RAG Statistics',
+      cmd: 'wunderland rag stats',
+      content: `  \x1b[38;2;168;85;247m\u25c6\x1b[39m \x1b[38;2;249;250;251m\x1b[1mRAG Statistics\x1b[22m\x1b[39m
+    \x1b[38;2;107;114;128mStorage                 \x1b[39m better-sqlite3
+    \x1b[38;2;107;114;128mDocuments               \x1b[39m 5
+    \x1b[38;2;107;114;128mChunks                  \x1b[39m 21
+    \x1b[38;2;107;114;128mCollections             \x1b[39m 1
+    \x1b[38;2;107;114;128m  wunderland-docs       \x1b[39m 5 docs, 21 chunks`
+    },
+    {
+      title: 'Ingested Documents',
+      cmd: 'wunderland rag documents list',
+      content: `  \x1b[38;2;168;85;247m\u25c6\x1b[39m \x1b[38;2;249;250;251m\x1b[1mRAG Documents\x1b[22m\x1b[39m
+    \x1b[38;2;107;114;128mdoc_...jsfxqacb          \x1b[39m [technical] collection=wunderland-docs
+    \x1b[38;2;107;114;128mdoc_...a1tctvgg          \x1b[39m [technical] collection=wunderland-docs
+    \x1b[38;2;107;114;128mdoc_...9gclfd6p          \x1b[39m [technical] collection=wunderland-docs
+    \x1b[38;2;107;114;128mdoc_...phshmsxy          \x1b[39m [technical] collection=wunderland-docs
+    \x1b[38;2;107;114;128mdoc_...rfm7nk5g          \x1b[39m [technical] collection=wunderland-docs`
+    }
+  ],
+  stage1: [
+    {
+      title: 'Security Pipeline Query',
+      cmd: 'wunderland rag query "How does the security pipeline work?"',
+      content: `  \x1b[38;2;168;85;247m\u25c6\x1b[39m \x1b[38;2;249;250;251m\x1b[1mRAG Query: "How does the security pipeline work?"\x1b[22m\x1b[39m
+    \x1b[38;2;107;114;128m[chunk_3] \x1b[39m\x1b[38;2;34;197;94m(100.0%)\x1b[39m ### Security Pipeline
+Three-layer model: 1) Pre-LLM Classification detects prompt
+injection and harmful content, 2) Safe Guardrails provide
+runtime checks during tool execution, 3) Post-LLM Verificati...
+    \x1b[38;2;107;114;128m[chunk_1] \x1b[39m\x1b[38;2;234;179;8m(92.1%)\x1b[39m  ### WunderlandSeed
+The seed is the fundamental identity unit containing: Persona,
+HEXACO Profile, Emotionality, eXtraversion...
+    \x1b[38;2;107;114;128m[chunk_0] \x1b[39m\x1b[38;2;107;114;128m(68.8%)\x1b[39m  # RAG System Design
+The RAG system provides long-term memory for agents. Combines
+vector similarity search with BM25 using RRF...
+
+  \x1b[38;2;6;182;212m\u25c7\x1b[39m 5 result(s) in \x1b[38;2;34;197;94m452ms\x1b[39m`
+    },
+    {
+      title: 'Channel Adapters Query',
+      cmd: 'wunderland rag query "What channel adapters are supported?"',
+      content: `  \x1b[38;2;168;85;247m\u25c6\x1b[39m \x1b[38;2;249;250;251m\x1b[1mRAG Query: "What channel adapters are supported?"\x1b[22m\x1b[39m
+    \x1b[38;2;107;114;128m[chunk_0] \x1b[39m\x1b[38;2;34;197;94m(100.0%)\x1b[39m # Channel Adapters
+Wunderland agents communicate across 20+ platforms through
+unified IChannelAdapter interface.
+
+P0 Core Messaging: Telegram, Discord, Slack, WhatsApp, WebChat
+P1 Extended: Signal, Google Chat, Teams, IRC
+    \x1b[38;2;107;114;128m[chunk_0] \x1b[39m\x1b[38;2;234;179;8m(57.8%)\x1b[39m  # Wunderland Agent Architecture
+Each agent has a unique identity, personality model, and
+configurable set of capabilities...
+    \x1b[38;2;107;114;128m[chunk_0] \x1b[39m\x1b[38;2;107;114;128m(45.6%)\x1b[39m  # LLM Provider Ecosystem
+13 providers supported through unified inference layer...
+
+  \x1b[38;2;6;182;212m\u25c7\x1b[39m 3 result(s) in \x1b[38;2;34;197;94m197ms\x1b[39m`
+    },
+    {
+      title: 'RAG Fusion Query (verbose)',
+      cmd: 'wunderland rag query "How does RAG retrieval fusion work?" --verbose',
+      content: `  \x1b[38;2;168;85;247m\u25c6\x1b[39m \x1b[38;2;249;250;251m\x1b[1mRAG Query: "How does RAG retrieval fusion work?"\x1b[22m\x1b[39m
+    \x1b[38;2;107;114;128m[chunk_1] \x1b[39m\x1b[38;2;34;197;94m(100.0%)\x1b[39m ## Retrieval Presets
+Fast: 5 vector, 3 BM25 topK, no reranking.
+Balanced: 10 vector, 5 BM25, RRF merge.
+Accurate: 20 vector, 10 BM25, cross-encoder reranking.
+
+## Hybrid Search
+Combines Vector Similarity + BM25 via Reciprocal Rank Fusion
+    \x1b[38;2;107;114;128m[chunk_0] \x1b[39m\x1b[38;2;234;179;8m(91.4%)\x1b[39m  # RAG System Design
+Combines vector similarity with full-text BM25 using RRF...
+
+  \x1b[38;2;6;182;212m\u25c7\x1b[39m 3 result(s) in \x1b[38;2;34;197;94m309ms\x1b[39m
+
+  \x1b[38;2;168;85;247m\u25c6\x1b[39m \x1b[38;2;249;250;251m\x1b[1mAudit Trail\x1b[22m\x1b[39m
+    \x1b[38;2;107;114;128mTrail ID                \x1b[39m trail-mlvsjvkl-1
+    \x1b[38;2;107;114;128mSummary                 \x1b[39m 2 ops | 0 LLM calls | 11 tokens | $0.0000 | 146ms
+    \x1b[38;2;107;114;128mMethods                 \x1b[39m vector_query
+    \x1b[38;2;107;114;128mSources                 \x1b[39m 3 docs, 0 data sources`
+    }
+  ],
+  stage2: [
+    {
+      title: 'GraphRAG Statistics',
+      cmd: 'wunderland rag graph stats',
+      content: `  \x1b[38;2;168;85;247m\u25c6\x1b[39m \x1b[38;2;249;250;251m\x1b[1mGraphRAG Statistics\x1b[22m\x1b[39m
+    \x1b[38;2;107;114;128mEntities                \x1b[39m \x1b[38;2;34;197;94m148\x1b[39m
+    \x1b[38;2;107;114;128mRelationships           \x1b[39m \x1b[38;2;34;197;94m356\x1b[39m
+    \x1b[38;2;107;114;128mCommunities             \x1b[39m \x1b[38;2;34;197;94m22\x1b[39m
+    \x1b[38;2;107;114;128mCommunity Levels        \x1b[39m 2
+    \x1b[38;2;107;114;128mDocuments Indexed        \x1b[39m 5`
+    },
+    {
+      title: 'Local Search: Security',
+      cmd: 'wunderland rag graph local-search "security tiers and prompt injection"',
+      content: `  \x1b[38;2;168;85;247m\u25c6\x1b[39m \x1b[38;2;249;250;251m\x1b[1mGraphRAG Local Search: "security tiers and prompt injection"\x1b[22m\x1b[39m
+    \x1b[38;2;107;114;128mEntities Found          \x1b[39m \x1b[38;2;34;197;94m10\x1b[39m
+      \x1b[38;2;168;85;247mDetects\x1b[39m               (concept) prompt injection, jailbreak
+                              attempts, data exfiltration,
+                              privilege escalation, resource abuse
+      \x1b[38;2;168;85;247mSecurity Pipeline\x1b[39m      (concept) Three-layer model: Pre-LLM
+                              Classification, Safe Guardrails,
+                              Post-LLM Verification
+      \x1b[38;2;168;85;247mSecurity Tiers\x1b[39m         (concept) Five tiers control agent
+                              capabilities
+      \x1b[38;2;168;85;247mSafe Guardrails\x1b[39m        (concept) Runtime checks during tool
+                              execution
+    \x1b[38;2;107;114;128mRelationships           \x1b[39m 57
+    \x1b[38;2;107;114;128mCommunities             \x1b[39m 5
+  \x1b[38;2;6;182;212m\u25c7\x1b[39m Search: \x1b[38;2;34;197;94m18ms\x1b[39m, traversal: 0ms`
+    },
+    {
+      title: 'Local Search: LLM Providers',
+      cmd: 'wunderland rag graph local-search "LLM providers and model routing"',
+      content: `  \x1b[38;2;168;85;247m\u25c6\x1b[39m \x1b[38;2;249;250;251m\x1b[1mGraphRAG Local Search: "LLM providers and model routing"\x1b[22m\x1b[39m
+    \x1b[38;2;107;114;128mEntities Found          \x1b[39m \x1b[38;2;34;197;94m10\x1b[39m
+      \x1b[38;2;168;85;247mProvider Ecosystem\x1b[39m     (concept) 13 providers supported
+                              through unified inference layer
+      \x1b[38;2;168;85;247mRouter Model\x1b[39m           (concept) Fast, cheap model for
+                              request classification
+      \x1b[38;2;168;85;247mPrimary Model\x1b[39m          (concept) Capable model for
+                              complex reasoning
+      \x1b[38;2;168;85;247mAuditor Model\x1b[39m          (concept) Post-hoc verification
+                              of outputs
+    \x1b[38;2;107;114;128mRelationships           \x1b[39m 66
+    \x1b[38;2;107;114;128mCommunities             \x1b[39m 5
+  \x1b[38;2;6;182;212m\u25c7\x1b[39m Search: \x1b[38;2;34;197;94m347ms\x1b[39m, traversal: 0ms`
+    },
+    {
+      title: 'Global Search',
+      cmd: 'wunderland rag graph global-search "agent architecture overview"',
+      content: `  \x1b[38;2;168;85;247m\u25c6\x1b[39m \x1b[38;2;249;250;251m\x1b[1mGraphRAG Global Search: "agent architecture overview"\x1b[22m\x1b[39m
+    \x1b[38;2;107;114;128mCommunities Searched     \x1b[39m \x1b[38;2;34;197;94m22\x1b[39m
+  \x1b[38;2;6;182;212m\u25c7\x1b[39m No global summary available. Enable
+    AGENTOS_GRAPHRAG_LLM_ENABLED=true for
+    LLM-powered community summaries.
+  \x1b[38;2;6;182;212m\u25c7\x1b[39m Search: \x1b[38;2;34;197;94m338ms\x1b[39m`
+    }
+  ]
+};
+
+// Render cards
+for (const [stage, cards] of Object.entries(demos)) {
+  const container = document.getElementById(stage);
+  if (!container) continue;
+  for (const card of cards) {
+    container.innerHTML += makeCard(card.title, card.cmd, card.content);
+  }
+}
+</script>
+
+</body>
+</html>

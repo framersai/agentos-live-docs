@@ -100,6 +100,10 @@ export interface RagQueryRequest {
   };
   /** When true, return a detailed audit trail with the response. */
   includeAudit?: boolean;
+  /** When true, also run GraphRAG local search and include entity/relationship context. */
+  includeGraphRag?: boolean;
+  /** When true, return detailed pipeline debug trace. */
+  debug?: boolean;
 }
 
 /**
@@ -119,6 +123,36 @@ export interface RagRetrievedChunk {
 }
 
 /**
+ * A single step in the RAG debug pipeline trace.
+ */
+export interface RagDebugStepWire {
+  step: string;
+  data: Record<string, unknown>;
+  ms: number;
+}
+
+/**
+ * GraphRAG context returned when `includeGraphRag: true`.
+ */
+export interface RagGraphContextWire {
+  entities: Array<{
+    name: string;
+    type: string;
+    description?: string;
+    relevanceScore?: number;
+  }>;
+  relationships: Array<{
+    source: string;
+    target: string;
+    type: string;
+    description?: string;
+  }>;
+  communityContext?: string;
+  augmentedContext?: string;
+  diagnostics?: Record<string, unknown>;
+}
+
+/**
  * Response from RAG query.
  */
 export interface RagQueryResponse {
@@ -129,6 +163,10 @@ export interface RagQueryResponse {
   processingTimeMs: number;
   /** Present when `includeAudit: true` was requested. */
   auditTrail?: RagAuditTrailWire;
+  /** Present when `includeGraphRag: true` was requested. */
+  graphContext?: RagGraphContextWire;
+  /** Present when `debug: true` was requested. */
+  debugTrace?: RagDebugStepWire[];
 }
 
 /**
@@ -342,6 +380,8 @@ export interface AgentOSRagServiceLike {
     processingTimeMs: number;
     error?: string;
     auditTrail?: RagAuditTrailWire;
+    graphContext?: RagGraphContextWire;
+    debugTrace?: RagDebugStepWire[];
   }>;
 
   // GraphRAG (optional; may throw when disabled).

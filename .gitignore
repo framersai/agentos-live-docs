@@ -79,6 +79,9 @@ scripts/media-catalog/downloads/
 # Prompt image originals (gitignored, optimized versions in public/prompts)
 apps/frame.dev/prompts-originals/
 
+# Backend runtime data (local RAG stores, etc.)
+backend/data/
+
 # SQLite transient files (WAL mode / shared memory)
 *.sqlite-shm
 *.sqlite-wal

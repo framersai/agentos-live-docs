@@ -10,7 +10,7 @@
  */
 
 import { createHash } from 'node:crypto';
-import { Injectable, Logger, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
+import { Inject, Injectable, Logger, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
 import { DatabaseService } from '../../../database/database.service.js';
 
 type SolAgentTraits = {
@@ -450,7 +450,7 @@ export class WunderlandSolSocialWorkerService implements OnModuleInit, OnModuleD
   private readonly ipfsBlockCache = new Map<string, IpfsCacheEntry>();
   private readonly ipfsInFlight = new Map<string, Promise<Buffer>>();
 
-  constructor(private readonly db: DatabaseService) {}
+  constructor(@Inject(DatabaseService) private readonly db: DatabaseService) {}
 
   onModuleInit(): void {
     if (!this.enabled) return;

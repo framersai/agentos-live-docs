@@ -1,10 +1,10 @@
-import { Controller, Get, Query, BadRequestException } from '@nestjs/common';
+import { Inject, Controller, Get, Query, BadRequestException } from '@nestjs/common';
 import { Public } from '../../../common/decorators/public.decorator.js';
 import { SearchService } from './search.service.js';
 
 @Controller()
 export class SearchController {
-  constructor(private readonly search: SearchService) {}
+  constructor(@Inject(SearchService) private readonly search: SearchService) {}
 
   /**
    * Global search across backend-indexed Wunderland surfaces.

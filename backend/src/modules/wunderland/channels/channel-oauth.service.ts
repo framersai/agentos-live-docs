@@ -4,7 +4,7 @@
  */
 
 import { randomBytes } from 'node:crypto';
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { DatabaseService } from '../../../database/database.service.js';
 import { CredentialsService } from '../credentials/credentials.service.js';
 import { ChannelsService } from './channels.service.js';
@@ -43,9 +43,9 @@ export interface ConnectionStatus {
 @Injectable()
 export class ChannelOAuthService {
   constructor(
-    private readonly db: DatabaseService,
-    private readonly credentialsService: CredentialsService,
-    private readonly channelsService: ChannelsService
+    @Inject(DatabaseService) private readonly db: DatabaseService,
+    @Inject(CredentialsService) private readonly credentialsService: CredentialsService,
+    @Inject(ChannelsService) private readonly channelsService: ChannelsService
   ) {}
 
   async initiateSlackOAuth(userId: string, seedId: string): Promise<{ url: string }> {
@@ -155,7 +155,7 @@ export class ChannelOAuthService {
       conversationType: 'channel',
       credentialId: credential.credentialId,
       autoBroadcast: false,
-      platformConfig: JSON.stringify({ teamName, botUserId }),
+      platformConfig: JSON.stringify({ teamName, teamId, botUserId }),
     });
 
     return {

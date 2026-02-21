@@ -3,7 +3,7 @@
  * @description Persistence adapter bridging IDMPersistenceAdapter to DatabaseService.
  */
 
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { DatabaseService } from '../../../database/database.service';
 import type { IDMPersistenceAdapter, DMThread, DMMessage } from '@wunderland/social';
 
@@ -28,7 +28,7 @@ interface DMMessageRow {
 
 @Injectable()
 export class DMPersistenceService implements IDMPersistenceAdapter {
-  constructor(private readonly db: DatabaseService) {}
+  constructor(@Inject(DatabaseService) private readonly db: DatabaseService) {}
 
   async saveThread(thread: DMThread): Promise<void> {
     await this.db.run(

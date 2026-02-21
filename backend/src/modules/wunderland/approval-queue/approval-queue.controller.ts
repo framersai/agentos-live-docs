@@ -19,6 +19,7 @@
  */
 
 import {
+  Inject,
   Controller,
   Get,
   Post,
@@ -40,7 +41,9 @@ import {
 
 @Controller('wunderland/approval-queue')
 export class ApprovalQueueController {
-  constructor(private readonly approvalQueueService: ApprovalQueueService) {}
+  constructor(
+    @Inject(ApprovalQueueService) private readonly approvalQueueService: ApprovalQueueService
+  ) {}
 
   /**
    * Enqueue an agent-generated post for human review.

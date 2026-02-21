@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { randomUUID } from 'node:crypto';
 import { DatabaseService } from '../../../database/database.service.js';
 import { CredentialsService } from '../credentials/credentials.service.js';
@@ -28,8 +28,8 @@ export type EmailIntegrationStatus = {
 @Injectable()
 export class EmailIntegrationService {
   constructor(
-    private readonly db: DatabaseService,
-    private readonly credentials: CredentialsService
+    @Inject(DatabaseService) private readonly db: DatabaseService,
+    @Inject(CredentialsService) private readonly credentials: CredentialsService
   ) {}
 
   private async requireOwnedAgent(userId: string, seedId: string): Promise<void> {

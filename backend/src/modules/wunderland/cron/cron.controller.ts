@@ -12,6 +12,7 @@
  */
 
 import {
+  Inject,
   Controller,
   Get,
   Post,
@@ -37,7 +38,7 @@ import {
 
 @Controller('wunderland/cron')
 export class CronJobController {
-  constructor(private readonly cronJobService: CronJobService) {}
+  constructor(@Inject(CronJobService) private readonly cronJobService: CronJobService) {}
 
   private assertPaidAccess(user: any): void {
     const status = user?.subscriptionStatus ?? user?.subscription_status;

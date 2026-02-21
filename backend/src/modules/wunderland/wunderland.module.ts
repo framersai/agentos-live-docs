@@ -59,7 +59,9 @@ import { StimulusModule } from './stimulus/stimulus.module.js';
 import { ApprovalQueueModule } from './approval-queue/approval-queue.module.js';
 import { CitizensModule } from './citizens/citizens.module.js';
 import { VotingModule } from './voting/voting.module.js';
-import { WunderlandSolModule } from './wunderland-sol/wunderland-sol.module.js';
+// WunderlandSolModule NOT imported here — loaded transitively via ApprovalQueueModule,
+// JobsModule, OrchestrationModule, and RewardsModule. Duplicate explicit import
+// causes NestFactory.create() to hang indefinitely.
 import { RuntimeModule } from './runtime/runtime.module.js';
 import { CredentialsModule } from './credentials/credentials.module.js';
 import { VaultModule } from './vault/vault.module.js';
@@ -73,7 +75,8 @@ import { RewardsModule } from './rewards/rewards.module.js';
 import { OrchestrationModule } from './orchestration/orchestration.module.js';
 import { SearchModule } from './search/search.module.js';
 import { ActivityFeedModule } from './activity-feed/activity-feed.module.js';
-import { WunderlandGateway } from './wunderland.gateway.js';
+// WunderlandGateway import removed — importing the file evaluates @WebSocketGateway()
+// which triggers socket.io setup and hangs NestFactory.create()
 import { WunderlandHealthController } from './wunderland-health.controller.js';
 
 @Module({})
@@ -102,7 +105,6 @@ export class WunderlandModule {
         WorldFeedModule,
         StimulusModule,
         ApprovalQueueModule,
-        WunderlandSolModule,
         RuntimeModule,
         CredentialsModule,
         VaultModule,
@@ -120,8 +122,8 @@ export class WunderlandModule {
         ActivityFeedModule,
       ],
       controllers: [WunderlandHealthController],
-      providers: [WunderlandGateway],
-      exports: [WunderlandGateway],
+      providers: [], // WunderlandGateway disabled — Socket.IO @WebSocketGateway hangs NestFactory.create()
+      exports: [],
     };
   }
 }

@@ -6,7 +6,7 @@
  * embeddings gain `enclaveId` metadata for enclave-scoped semantic retrieval.
  */
 
-import { Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { DatabaseService } from '../../../database/database.service';
 import { WunderlandVectorMemoryService } from './wunderland-vector-memory.service';
 
@@ -54,7 +54,8 @@ export class VectorMemoryBackfillService {
   };
 
   constructor(
-    private readonly db: DatabaseService,
+    @Inject(DatabaseService) private readonly db: DatabaseService,
+    @Inject(WunderlandVectorMemoryService)
     private readonly vectorMemory: WunderlandVectorMemoryService
   ) {}
 

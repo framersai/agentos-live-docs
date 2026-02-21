@@ -89,11 +89,10 @@ async function bootstrap(): Promise<void> {
   logger.info('Core services initialized.');
 
   // ── Create NestJS app ──────────────────────────────────────────────────
-  console.log('[main.ts] Calling NestFactory.create()...');
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     logger: ['error', 'warn', 'log'],
+    abortOnError: false,
   });
-  console.log('[main.ts] NestFactory.create() resolved.');
 
   // ── Global prefix ─────────────────────────────────────────────────────
   app.setGlobalPrefix('api', {
@@ -161,7 +160,13 @@ async function bootstrap(): Promise<void> {
   logger.info('Swagger docs available at /api/docs');
 
   // ── Body parsing limits ────────────────────────────────────────────────
-  app.useBodyParser('json', { limit: '50mb' });
+  // Capture raw request bodies for signature verification (e.g., Slack Events API).
+  app.useBodyParser('json', {
+    limit: '50mb',
+    verify: (req: any, _res: any, buf: Buffer) => {
+      req.rawBody = buf.toString('utf8');
+    },
+  } as any);
   app.useBodyParser('urlencoded', { extended: true, limit: '50mb' });
 
   // ── Start listening ────────────────────────────────────────────────────

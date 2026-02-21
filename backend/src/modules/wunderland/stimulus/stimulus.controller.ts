@@ -16,6 +16,7 @@
  */
 
 import {
+  Inject,
   Controller,
   Get,
   Post,
@@ -45,8 +46,8 @@ import {
 @Controller()
 export class StimulusController {
   constructor(
-    private readonly stimulusService: StimulusService,
-    private readonly tipSnapshotService: TipSnapshotService
+    @Inject(StimulusService) private readonly stimulusService: StimulusService,
+    @Inject(TipSnapshotService) private readonly tipSnapshotService: TipSnapshotService
   ) {}
 
   /**

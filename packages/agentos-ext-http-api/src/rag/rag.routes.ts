@@ -114,6 +114,8 @@ export const createAgentOSRagRouter = (deps: AgentOSRagRouterDeps): Router => {
           queryVariants: body.queryVariants,
           rewrite: body.rewrite,
           includeAudit: body.includeAudit,
+          includeGraphRag: body.includeGraphRag,
+          debug: body.debug,
         });
 
         const response: RagQueryResponse = {
@@ -123,6 +125,8 @@ export const createAgentOSRagRouter = (deps: AgentOSRagRouterDeps): Router => {
           totalResults: result.totalResults,
           processingTimeMs: result.processingTimeMs,
           auditTrail: result.auditTrail,
+          graphContext: result.graphContext,
+          debugTrace: result.debugTrace,
         };
 
         return res.status(200).json(response);
@@ -527,10 +531,31 @@ export const createAgentOSRagRouter = (deps: AgentOSRagRouterDeps): Router => {
           graphRagEnabledRaw === 'yes' ||
           graphRagEnabledRaw === 'on';
 
+        const vectorProvider = (
+          process.env.AGENTOS_RAG_VECTOR_PROVIDER ||
+          process.env.RAG_VECTOR_PROVIDER ||
+          'sql'
+        )
+          .trim()
+          .toLowerCase();
+
+        const hnswParams =
+          vectorProvider === 'hnswlib'
+            ? {
+                M: Number(process.env.AGENTOS_RAG_HNSWLIB_M) || 16,
+                efConstruction: Number(process.env.AGENTOS_RAG_HNSWLIB_EF_CONSTRUCTION) || 200,
+                efSearch: Number(process.env.AGENTOS_RAG_HNSWLIB_EF_SEARCH) || 100,
+                persistDir:
+                  process.env.AGENTOS_RAG_HNSWLIB_PERSIST_DIR || './db_data/agentos_rag_hnswlib',
+              }
+            : undefined;
+
         return res.status(200).json({
           status: isEnabled && ragAvailable ? 'ready' : isEnabled ? 'initializing' : 'disabled',
           ragServiceInitialized: ragAvailable,
           storageAdapter: adapterKind,
+          vectorProvider,
+          hnswParams,
           vectorStoreConnected: ragAvailable,
           embeddingServiceAvailable: embeddingConfigured,
           graphRagEnabled,
@@ -543,7 +568,7 @@ export const createAgentOSRagRouter = (deps: AgentOSRagRouterDeps): Router => {
             : null,
           message: isEnabled
             ? ragAvailable
-              ? `RAG service ready (using ${adapterKind} storage)`
+              ? `RAG service ready (using ${adapterKind} storage, vector: ${vectorProvider})`
               : 'RAG service initializing'
             : 'AgentOS integration is disabled.',
         });

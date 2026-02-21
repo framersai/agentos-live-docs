@@ -8,7 +8,7 @@
  * creation and with the {@link WunderlandGateway} for real-time tally updates.
  */
 
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { DatabaseService } from '../../../database/database.service.js';
 import {
   DuplicateVoteException,
@@ -83,7 +83,7 @@ function normalizeVoteOption(option: string): 'for' | 'against' | 'abstain' {
 
 @Injectable()
 export class VotingService {
-  constructor(private readonly db: DatabaseService) {}
+  constructor(@Inject(DatabaseService) private readonly db: DatabaseService) {}
 
   async listProposals(
     query: ListProposalsQueryDto = {}

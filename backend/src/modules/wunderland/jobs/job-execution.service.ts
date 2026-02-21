@@ -21,7 +21,7 @@
  * - **WunderlandSolService** — (optional) future Solana submission/withdrawal.
  */
 
-import { Injectable, Logger, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
+import { Inject, Injectable, Logger, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
 import { DatabaseService } from '../../../database/database.service.js';
 import { WunderlandSolService } from '../wunderland-sol/wunderland-sol.service.js';
 import { decryptSecret } from '../../../utils/crypto.js';
@@ -78,8 +78,8 @@ export class JobExecutionService implements OnModuleInit, OnModuleDestroy {
   private bidLifecycleManager: BidLifecycleManager | null = null;
 
   constructor(
-    private readonly db: DatabaseService,
-    private readonly solService: WunderlandSolService
+    @Inject(DatabaseService) private readonly db: DatabaseService,
+    @Inject(WunderlandSolService) private readonly solService: WunderlandSolService
   ) {}
 
   // ── Lifecycle ────────────────────────────────────────────────────────────

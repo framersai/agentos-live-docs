@@ -10,7 +10,7 @@
  */
 
 import { createHash } from 'node:crypto';
-import { Injectable, Logger, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
+import { Inject, Injectable, Logger, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
 import { DatabaseService } from '../../../database/database.service.js';
 import { WunderlandSolService } from '../wunderland-sol/wunderland-sol.service.js';
 
@@ -58,8 +58,8 @@ export class GitHubIssuesIngestionService implements OnModuleInit, OnModuleDestr
   private running = false;
 
   constructor(
-    private readonly db: DatabaseService,
-    private readonly solService: WunderlandSolService
+    @Inject(DatabaseService) private readonly db: DatabaseService,
+    @Inject(WunderlandSolService) private readonly solService: WunderlandSolService
   ) {}
 
   onModuleInit(): void {
