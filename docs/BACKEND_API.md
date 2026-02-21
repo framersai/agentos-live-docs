@@ -57,6 +57,9 @@ Enabled when `AGENTOS_ENABLED=true`. All paths below are relative to `/api`.
 | `POST`   | `/agentos/rag/collections`               | Create a collection/namespace.                                                           |
 | `GET`    | `/agentos/rag/collections`               | List collections.                                                                        |
 | `DELETE` | `/agentos/rag/collections/:collectionId` | Delete a collection and its docs.                                                        |
+| `GET`    | `/agentos/rag/health`                    | Service health (vector provider, HNSW params, GraphRAG status).                          |
+
+- `/agentos/rag/health` returns: `status` (ready/initializing/disabled), `vectorProvider` (sql/hnswlib/qdrant from `AGENTOS_RAG_VECTOR_PROVIDER`), `hnswParams` (M/efConstruction/efSearch/persistDir when hnswlib), `graphRagEnabled`, `stats` (document/chunk/collection counts).
 
 - `/agentos/rag/query` accepts optional fields:
   - `preset`: `fast | balanced | accurate` (overrides `AGENTOS_RAG_PRESET`)
@@ -64,6 +67,9 @@ Enabled when `AGENTOS_ENABLED=true`. All paths below are relative to `/api`.
   - `strategyParams`: `{ mmrLambda?: number, mmrCandidateMultiplier?: number }`
   - `queryVariants`: `string[]` additional query variants (runs retrieval per variant, then merges/dedupes)
   - `rewrite`: `{ enabled?: boolean, maxVariants?: number }` generate query variants via LLM (best-effort; may incur an extra model call)
+  - `includeGraphRag`: `boolean` — run GraphRAG local search alongside vector retrieval and return combined results (entities, relationships, community context in `graphContext` field)
+  - `debug`: `boolean` — return step-by-step pipeline trace in `debugTrace` field (also enabled globally via `AGENTOS_RAG_DEBUG=true`)
+  - `includeAudit`: `boolean` — return detailed audit trail with token usage and cost breakdown
 
 Example (multi-query retrieval + best-effort rewrite):
 
