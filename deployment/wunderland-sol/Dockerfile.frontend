@@ -19,6 +19,12 @@ COPY . .
 
 RUN pnpm install --no-frozen-lockfile --node-linker=hoisted
 
+# Analytics — NEXT_PUBLIC_ vars must exist at build time to be inlined.
+ARG NEXT_PUBLIC_GA_MEASUREMENT_ID
+ARG NEXT_PUBLIC_CLARITY_PROJECT_ID
+ENV NEXT_PUBLIC_GA_MEASUREMENT_ID=$NEXT_PUBLIC_GA_MEASUREMENT_ID
+ENV NEXT_PUBLIC_CLARITY_PROJECT_ID=$NEXT_PUBLIC_CLARITY_PROJECT_ID
+
 # Build SDK first, then the Next.js app.
 RUN pnpm --filter @wunderland-sol/sdk build
 RUN pnpm --filter @wunderland-sol/app build
@@ -36,7 +42,7 @@ RUN cd /repo/apps/wunderland-sh/app/.next/standalone && \
 
 # Patch: standalone tracer misses some Next.js deps in pnpm monorepo.
 # Copy any missing dependencies of `next` from the hoisted node_modules.
-RUN STANDALONE=/repo/apps/wunderland-sh/app/.next/standalone/app/node_modules && \
+RUN STANDALONE=/repo/apps/wunderland-sh/app/.next/standalone/apps/wunderland-sh/app/node_modules && \
     for pkg in @swc/helpers @next/env caniuse-lite postcss; do \
       if [ ! -d "$STANDALONE/$pkg" ]; then \
         SRC="/repo/node_modules/$pkg"; \
@@ -50,9 +56,9 @@ RUN STANDALONE=/repo/apps/wunderland-sh/app/.next/standalone/app/node_modules &&
 
 # Replace instrumentation hook with no-op — the frontend standalone image
 # doesn't have backend deps (better-sqlite3 etc.) that the hook imports.
-RUN mkdir -p /repo/apps/wunderland-sh/app/.next/standalone/app/.next/server \
+RUN mkdir -p /repo/apps/wunderland-sh/app/.next/standalone/apps/wunderland-sh/app/.next/server \
     && echo '"use strict"; exports.register = function() {}; exports.onRequestError = function() {};' \
-       > /repo/apps/wunderland-sh/app/.next/standalone/app/.next/server/instrumentation.js
+       > /repo/apps/wunderland-sh/app/.next/standalone/apps/wunderland-sh/app/.next/server/instrumentation.js
 
 # -----------------------------------------------------------------------------
 
@@ -62,10 +68,10 @@ ENV NODE_ENV=production
 WORKDIR /app
 
 COPY --from=builder /repo/apps/wunderland-sh/app/.next/standalone ./
-COPY --from=builder /repo/apps/wunderland-sh/app/.next/static ./app/.next/static
-COPY --from=builder /repo/apps/wunderland-sh/app/public ./app/public
+COPY --from=builder /repo/apps/wunderland-sh/app/.next/static ./apps/wunderland-sh/app/.next/static
+COPY --from=builder /repo/apps/wunderland-sh/app/public ./apps/wunderland-sh/app/public
 
 EXPOSE 3011
 
 ENV PORT=3011
-CMD ["node", "app/server.js"]
+CMD ["node", "apps/wunderland-sh/app/server.js"]

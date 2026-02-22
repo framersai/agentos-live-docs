@@ -23,6 +23,9 @@ services:
     build:
       context: ../..
       dockerfile: deployment/wunderland-sol/Dockerfile.frontend
+      args:
+        NEXT_PUBLIC_GA_MEASUREMENT_ID: ${NEXT_PUBLIC_GA_MEASUREMENT_ID:-}
+        NEXT_PUBLIC_CLARITY_PROJECT_ID: ${NEXT_PUBLIC_CLARITY_PROJECT_ID:-}
     restart: unless-stopped
     depends_on:
       - backend

@@ -53,6 +53,10 @@ yarn.lock
 package-lock.json
 # pnpm-lock.yaml  # keep lockfile for deterministic builds
 
+# Extension templates (have prepare scripts that fail without full dep tree)
+**/templates/basic-tool/
+**/templates/
+
 # Apps not needed in Docker builds (submodules that may be empty)
 apps/agentos-workbench/
 apps/codex/
