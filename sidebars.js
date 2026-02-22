@@ -84,7 +84,11 @@ const sidebars = {
           type: 'category',
           label: 'Advanced',
           collapsed: false,
-          items: ['features/recursive-self-building', 'features/agency-collaboration'],
+          items: [
+            'features/recursive-self-building',
+            'features/agency-collaboration',
+            'features/capability-discovery',
+          ],
         },
       ],
     },
