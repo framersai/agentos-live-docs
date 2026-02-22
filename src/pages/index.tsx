@@ -67,14 +67,19 @@ const features = [
   },
   {
     title: 'Extensions',
-    description:
-      'Web search, Telegram, voice synthesis, image search, CLI executor, and more.',
+    description: 'Web search, Telegram, voice synthesis, image search, CLI executor, and more.',
     link: '/docs/extensions/overview',
   },
   {
     title: 'API Reference',
     description: 'Auto-generated TypeDoc reference for every class, interface, and function.',
     link: '/docs/api/',
+  },
+  {
+    title: 'Capability Discovery',
+    description:
+      'Semantic, tiered discovery engine — vector search + graph re-ranking reduces capability context ~90%.',
+    link: '/docs/features/capability-discovery',
   },
 ];
 
