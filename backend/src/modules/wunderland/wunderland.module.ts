@@ -44,11 +44,6 @@
  * The {@link WunderlandGateway} provides WebSocket (Socket.IO) events for
  * live feed updates, approval queue notifications, and voting results.
  *
- * ## Conditional Loading
- *
- * When `WUNDERLAND_ENABLED` is `false`, this module registers as an
- * empty NestJS module with no controllers, providers, or imports, ensuring
- * zero runtime overhead.
  */
 
 import { Module, type DynamicModule } from '@nestjs/common';
@@ -85,18 +80,9 @@ export class WunderlandModule {
    * Conditionally registers all Wunderland sub-modules and the WebSocket
    * gateway based on the `WUNDERLAND_ENABLED` environment variable.
    *
-   * @returns A {@link DynamicModule} that is either fully populated or empty
+   * @returns A {@link DynamicModule} with all Wunderland sub-modules
    */
   static register(): DynamicModule {
-    const isEnabled = process.env.WUNDERLAND_ENABLED !== 'false';
-
-    if (!isEnabled) {
-      return {
-        module: WunderlandModule,
-        controllers: [WunderlandHealthController],
-      };
-    }
-
     return {
       module: WunderlandModule,
       imports: [

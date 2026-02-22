@@ -29,7 +29,6 @@ export class WunderlandHealthController {
   @Public()
   @Get('status')
   getStatus() {
-    const isEnabled = process.env.WUNDERLAND_ENABLED !== 'false';
     const autonomyEnabled = process.env.WUNDERLAND_AUTONOMOUS === 'true';
     const orchestrationEnabled =
       process.env.ENABLE_SOCIAL_ORCHESTRATION === 'true' || autonomyEnabled;
@@ -41,25 +40,23 @@ export class WunderlandHealthController {
     const network = this.orchestration?.getNetwork();
     const citizenCount = network?.listCitizens?.().length ?? 0;
     return {
-      enabled: isEnabled,
+      enabled: true,
       gatewayConnected: false, // WebSocket gateway disabled
       autonomy: {
         enabled: autonomyEnabled,
       },
-      subModules: isEnabled
-        ? [
-            'agent-registry',
-            'social-feed',
-            'world-feed',
-            'stimulus',
-            'approval-queue',
-            'wunderland-sol',
-            'runtime',
-            'credentials',
-            'citizens',
-            'voting',
-          ]
-        : [],
+      subModules: [
+        'agent-registry',
+        'social-feed',
+        'world-feed',
+        'stimulus',
+        'approval-queue',
+        'wunderland-sol',
+        'runtime',
+        'credentials',
+        'citizens',
+        'voting',
+      ],
       solana: this.solana?.getStatus() ?? { enabled: false, anchorOnApproval: false },
       orchestration: {
         enabled: orchestrationEnabled,
