@@ -1,4 +1,21 @@
 services:
+  searxng:
+    image: searxng/searxng:latest
+    restart: unless-stopped
+    volumes:
+      - ./searxng-settings.yml:/etc/searxng/settings.yml:ro
+      - searxng-data:/var/cache/searxng
+    expose:
+      - "8080"
+    environment:
+      - SEARXNG_BASE_URL=http://searxng:8080/
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://localhost:8080/healthz || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
   frontend:
     build:
       context: ../..
@@ -19,11 +36,15 @@ services:
       context: ../..
       dockerfile: deployment/rabbithole/Dockerfile.backend
     restart: unless-stopped
+    depends_on:
+      searxng:
+        condition: service_healthy
     env_file:
       - .env
     environment:
       - PORT=3001
       - NODE_ENV=production
+      - SEARXNG_URL=http://searxng:8080
     expose:
       - "3001"
     volumes:
@@ -48,3 +69,6 @@ services:
       - /mnt/storage/logs/nginx:/var/log/nginx
       - /app/ssl/origin.crt:/etc/ssl/origin.crt:ro
       - /app/ssl/origin.key:/etc/ssl/origin.key:ro
+
+volumes:
+  searxng-data:

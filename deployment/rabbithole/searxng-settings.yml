@@ -1,0 +1,67 @@
+# SearXNG settings for Wunderland internal API-only instance
+# Docs: https://docs.searxng.org/admin/settings/settings.html
+
+use_default_settings: true
+
+general:
+  instance_name: "Wunderland SearXNG"
+  debug: false
+
+search:
+  safe_search: 0
+  default_lang: "en"
+  formats:
+    - html
+    - json
+
+server:
+  port: 8080
+  bind_address: "0.0.0.0"
+  secret_key: "wunderland-searxng-internal-2026"
+  limiter: false
+  image_proxy: false
+  method: "GET"
+
+ui:
+  static_use_hash: true
+
+engines:
+  - name: google
+    disabled: false
+  - name: bing
+    disabled: false
+  - name: duckduckgo
+    disabled: false
+  - name: brave
+    disabled: false
+  - name: startpage
+    disabled: false
+  - name: wikipedia
+    disabled: false
+  - name: arxiv
+    disabled: false
+  - name: github
+    disabled: false
+  - name: stackoverflow
+    disabled: false
+  - name: askubuntu
+    disabled: false
+  - name: superuser
+    disabled: false
+  - name: mdn
+    disabled: false
+  - name: pypi
+    disabled: false
+  - name: npm
+    disabled: false
+  - name: docker hub
+    disabled: false
+  - name: wikidata
+    disabled: false
+
+outgoing:
+  request_timeout: 5.0
+  max_request_timeout: 10.0
+  useragent_suffix: ""
+  pool_connections: 100
+  pool_maxsize: 20
