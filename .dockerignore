@@ -70,6 +70,9 @@ apps/wunderland-sh/app/
 apps/wunderland-sh/docs-site/
 apps/wunderland-sh/scripts/
 apps/wunderland-sh/.github/
+apps/wunderland-sh/**/anchor/
+apps/wunderland-sh/**/target/
+apps/wunderland-sh/packages/wunderland/
 
 # Other unnecessary files
 .dockerignore
