@@ -55,6 +55,10 @@ npm install @framers/agentos
 - [Recursive Self-Building](/docs/features/recursive-self-building) — Self-modifying agent patterns
 - [Agency Collaboration](/docs/features/agency-collaboration) — Multi-agent coordination
 
+### Skills & Capability Discovery
+
+- [Skills Overview](/docs/skills/overview) — SKILL.md format, loading, and semantic discovery integration
+
 ### Extensions
 
 - [Extensions Overview](/docs/extensions/overview) — Available extensions catalog
