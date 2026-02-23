@@ -17,7 +17,12 @@ import { DatabaseService } from '../../../database/database.service.js';
 import { OrchestrationService } from '../orchestration/orchestration.service.js';
 import { WunderlandVectorMemoryService } from '../orchestration/wunderland-vector-memory.service.js';
 import { WunderlandSolService } from '../wunderland-sol/wunderland-sol.service.js';
-import { BidLifecycleManager, JobMemoryService, JobScanner, createAgentJobState } from 'wunderland';
+import {
+  BidLifecycleManager,
+  JobMemoryService,
+  JobScanner,
+  createAgentJobState,
+} from 'wunderland/advanced';
 import type {
   ActiveBid,
   AgentJobState,
@@ -25,7 +30,7 @@ import type {
   Job,
   JobEvaluationResult,
   JobStatus,
-} from 'wunderland';
+} from 'wunderland/advanced';
 
 type AgentScannerInstance = {
   seedId: string;

@@ -60,7 +60,7 @@ import type {
   LocalSearchResult,
 } from '@framers/agentos/rag/graphrag';
 import { RAGAuditCollector } from '@framers/agentos/rag/audit/RAGAuditCollector';
-import { RAGAuditPersistence } from 'wunderland';
+import { RAGAuditPersistence } from 'wunderland/advanced';
 import type {
   RagAuditTrailWire,
   RagGraphContextWire,
@@ -4707,7 +4707,7 @@ Query: ${JSON.stringify(baseQuery)}`;
       const graphStart = Date.now();
       try {
         const localResult = await this.graphRagLocalSearch(options.query, { topK });
-        graphContext = {
+        const builtGraphContext: RagGraphContextWire = {
           entities: (localResult.entities ?? []).map((e: any) => ({
             name: e.name,
             type: e.type,
@@ -4724,15 +4724,20 @@ Query: ${JSON.stringify(baseQuery)}`;
             type: r.type,
             description: r.description,
           })),
-          communityContext: localResult.communityContext,
+          communityContext: localResult.communityContext.length
+            ? localResult.communityContext
+                .map((c) => `# ${c.title} (level ${c.level})\n${c.summary}`.trim())
+                .join('\n\n')
+            : undefined,
           augmentedContext: localResult.augmentedContext,
           diagnostics: localResult.diagnostics,
         };
+        graphContext = builtGraphContext;
         const graphMs = Date.now() - graphStart;
         dbg.step('graphrag', {
-          entitiesFound: graphContext.entities.length,
-          relationshipsFound: graphContext.relationships.length,
-          hasCommunityContext: !!graphContext.communityContext,
+          entitiesFound: builtGraphContext.entities.length,
+          relationshipsFound: builtGraphContext.relationships.length,
+          hasCommunityContext: !!builtGraphContext.communityContext,
           searchTimeMs: graphMs,
         });
       } catch (err: any) {

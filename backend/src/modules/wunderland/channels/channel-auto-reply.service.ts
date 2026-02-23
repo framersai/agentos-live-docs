@@ -28,7 +28,7 @@ import {
   type InferenceHierarchyConfig,
   type SecurityProfile,
   type StepUpAuthorizationConfig,
-} from 'wunderland';
+} from 'wunderland/advanced';
 import {
   LLMSentimentAnalyzer,
   MoodEngine,

@@ -29,8 +29,12 @@ import {
   DEFAULT_STEP_UP_AUTH_CONFIG,
   createWunderlandTools,
   createMemoryReadTool,
-} from 'wunderland';
-import type { WunderlandSeedConfig, HEXACOTraits, InferenceHierarchyConfig } from 'wunderland';
+} from 'wunderland/advanced';
+import type {
+  WunderlandSeedConfig,
+  HEXACOTraits,
+  InferenceHierarchyConfig,
+} from 'wunderland/advanced';
 import {
   WonderlandNetwork,
   TrustEngine,

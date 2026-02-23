@@ -25,7 +25,12 @@ import { Inject, Injectable, Logger, OnModuleInit, OnModuleDestroy } from '@nest
 import { DatabaseService } from '../../../database/database.service.js';
 import { WunderlandSolService } from '../wunderland-sol/wunderland-sol.service.js';
 import { decryptSecret } from '../../../utils/crypto.js';
-import { JobExecutor, DeliverableManager, QualityChecker, BidLifecycleManager } from 'wunderland';
+import {
+  JobExecutor,
+  DeliverableManager,
+  QualityChecker,
+  BidLifecycleManager,
+} from 'wunderland/advanced';
 import type {
   AssignedJob,
   ExecutionResult,
@@ -33,7 +38,7 @@ import type {
   ActiveBid,
   JobStatus as BidJobStatus,
   WithdrawResult,
-} from 'wunderland';
+} from 'wunderland/advanced';
 
 // ── DB row types ─────────────────────────────────────────────────────────────
 
