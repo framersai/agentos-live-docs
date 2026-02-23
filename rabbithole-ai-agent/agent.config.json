@@ -32,9 +32,18 @@
     }
   },
   "extensions": {
-    "tools": ["web-search", "web-browser", "news-search", "giphy", "image-search", "cli-executor"],
+    "tools": [
+      "web-search",
+      "web-browser",
+      "news-search",
+      "giphy",
+      "image-search",
+      "cli-executor",
+      "weather"
+    ],
     "voice": [],
     "productivity": []
   },
-  "skills": []
+  "channels": ["discord"],
+  "skills": ["weather", "summarize"]
 }
