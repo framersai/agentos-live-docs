@@ -39,7 +39,8 @@
       "giphy",
       "image-search",
       "cli-executor",
-      "weather"
+      "weather",
+      "founders"
     ],
     "voice": [],
     "productivity": []
