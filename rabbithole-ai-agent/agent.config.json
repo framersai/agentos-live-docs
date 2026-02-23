@@ -45,5 +45,50 @@
     "productivity": []
   },
   "channels": ["discord"],
-  "skills": ["weather", "summarize"]
+  "skills": ["weather", "summarize"],
+  "feeds": {
+    "channels": {
+      "us_news": "1474885907768410212",
+      "world_news": "1474885908863127664",
+      "tech_news": "1474885923220230165",
+      "finance_news": "1474885925866573867",
+      "science_news": "1474885926990643354",
+      "media_news": "1474885928345669642",
+      "threat_intelligence": "1474885929763213446",
+      "ai_papers": "1475038451790385153",
+      "udemy_deals": "1474885939716292838",
+      "short_squeeze": "1474885941863776287",
+      "cmc_trending": "1474885941037367406",
+      "uniswap_sniper": "1474885943121940641",
+      "debug": "1474885945252642949",
+      "info": "1474885946435440732"
+    },
+    "jobs": [
+      { "title": "Software Engineer", "channelId": "1474885914009538795" },
+      { "title": "Full-Stack Engineer", "channelId": "1474885914009538795" },
+      { "title": "Frontend Engineer", "channelId": "1474885914009538795" },
+      { "title": "Backend Engineer", "channelId": "1474885914009538795" },
+      { "title": "AI Engineer", "channelId": "1474885931709366395" },
+      { "title": "Machine Learning Engineer", "channelId": "1474885931709366395" },
+      { "title": "Blockchain Engineer", "channelId": "1474885933001211944" },
+      { "title": "Web3 Engineer", "channelId": "1474885933001211944" },
+      { "title": "Designer", "channelId": "1474885934523879515" },
+      { "title": "Animator", "channelId": "1474885934523879515" },
+      { "title": "Artist", "channelId": "1474885934523879515" },
+      { "title": "Writer", "channelId": "1474885934523879515" },
+      { "title": "Composer", "channelId": "1474885934523879515" },
+      { "title": "Marketer", "channelId": "1474885936239349781" }
+    ],
+    "founders": {
+      "welcome": "1475358315868590332",
+      "daily": "1475358317638451231",
+      "weekly": "1475358319404257330",
+      "showcase": "1475358320809218128",
+      "forum": "1475358321912451244",
+      "feedback": "1475358326027194439",
+      "cofounder": "1475358327616700527",
+      "chat": "1475358329051283497",
+      "milestones": "1475358331739570420"
+    }
+  }
 }
