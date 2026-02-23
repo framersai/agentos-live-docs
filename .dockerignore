@@ -64,7 +64,6 @@ apps/codex/
 apps/frame.dev/
 apps/gitpaywidget/
 apps/agentos-live-docs/
-apps/wunderland-sh/
 
 # Other unnecessary files
 .dockerignore

@@ -40,7 +40,9 @@ RUN pnpm --filter @framers/shared build \
  && pnpm --filter @framers/agentos-ext-news-search build \
  && pnpm --filter @framers/agentos-skills-registry build \
  && pnpm --filter @framers/agentos-ext-skills build \
+ && pnpm --filter @framers/agentos-ext-http-api build \
  && pnpm --filter wunderland build \
+ && pnpm --filter @wunderland/social build \
  && pnpm --filter @wunderland-sol/sdk build \
  && pnpm --filter voice-chat-assistant-backend build
 
