@@ -28,6 +28,14 @@ RUN pnpm --filter @framers/shared build \
  && pnpm --filter @framers/sql-storage-adapter build \
  && pnpm --filter @framers/agentos build \
  && pnpm --filter @framers/agentos-extensions-registry build \
+ && pnpm --filter @framers/agentos-ext-web-search build \
+ && pnpm --filter @framers/agentos-ext-web-browser build \
+ && pnpm --filter @framers/agentos-ext-giphy build \
+ && pnpm --filter @framers/agentos-ext-image-search build \
+ && pnpm --filter @framers/agentos-ext-news-search build \
+ && pnpm --filter @framers/agentos-ext-voice-synthesis build \
+ && pnpm --filter @framers/agentos-ext-cli-executor build \
+ && pnpm --filter @framers/agentos-ext-skills build \
  && pnpm --filter @framers/agentos-skills-registry build \
  && pnpm --filter wunderland build \
  && pnpm --filter rabbithole build
