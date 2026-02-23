@@ -22,9 +22,9 @@ ARG NEXT_PUBLIC_API_URL=/api
 ENV NEXT_PUBLIC_OAUTH_GOOGLE=$NEXT_PUBLIC_OAUTH_GOOGLE
 ENV NEXT_PUBLIC_OAUTH_GITHUB=$NEXT_PUBLIC_OAUTH_GITHUB
 ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
-ENV NODE_OPTIONS="--max-old-space-size=3072"
+ENV NODE_OPTIONS="--max-old-space-size=3584"
 
-# Build workspace dependencies in dependency order
+# Build workspace dependencies in dependency order (separate RUN for layer caching)
 RUN pnpm --filter @framers/shared build \
  && pnpm --filter @framers/sql-storage-adapter build \
  && pnpm --filter @framers/agentos build \
@@ -38,8 +38,10 @@ RUN pnpm --filter @framers/shared build \
  && pnpm --filter @framers/agentos-ext-cli-executor build \
  && pnpm --filter @framers/agentos-skills-registry build \
  && pnpm --filter @framers/agentos-ext-skills build \
- && pnpm --filter wunderland build \
- && pnpm --filter rabbithole build
+ && pnpm --filter wunderland build
+
+# Next.js build in separate RUN — starts fresh Node process with full heap for NFT tracer
+RUN pnpm --filter rabbithole build
 
 # Resolve all symlinks in standalone output to real files so Docker COPY works.
 RUN cd /repo/apps/rabbithole/.next/standalone && \
