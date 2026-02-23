@@ -29,6 +29,7 @@ RUN pnpm --filter @framers/shared build \
  && pnpm --filter @framers/agentos build \
  && pnpm --filter @framers/agentos-extensions-registry build \
  && pnpm --filter @framers/agentos-skills-registry build \
+ && pnpm --filter wunderland build \
  && pnpm --filter rabbithole build
 
 # Resolve all symlinks in standalone output to real files so Docker COPY works.
@@ -42,8 +43,12 @@ RUN cd /repo/apps/rabbithole/.next/standalone && \
     done
 
 # Patch: standalone tracer misses some Next.js deps in pnpm monorepo.
+# Also patch extension packages loaded via dynamic import() in the registry.
 RUN STANDALONE=/repo/apps/rabbithole/.next/standalone/apps/rabbithole/node_modules && \
-    for pkg in @swc/helpers @next/env caniuse-lite postcss; do \
+    for pkg in @swc/helpers @next/env caniuse-lite postcss \
+      @framers/agentos-extensions-registry @framers/agentos \
+      @framers/agentos-ext-web-search @framers/agentos-ext-giphy \
+      @framers/agentos-ext-image-search @framers/agentos-ext-news-search; do \
       if [ ! -d "$STANDALONE/$pkg" ]; then \
         SRC="/repo/node_modules/$pkg"; \
         if [ -d "$SRC" ] || [ -L "$SRC" ]; then \
