@@ -47,3 +47,6 @@
 [submodule "packages/agentos-extensions-registry"]
 	path = packages/agentos-extensions-registry
 	url = https://github.com/framersai/agentos-extensions-registry.git
+[submodule "packages/agentic-file-search"]
+	path = packages/agentic-file-search
+	url = https://github.com/PromtEngineer/agentic-file-search.git
