@@ -64,6 +64,12 @@ apps/codex/
 apps/frame.dev/
 apps/gitpaywidget/
 apps/agentos-live-docs/
+# wunderland-sh: keep packages/wunderland-social + sdk, exclude the rest
+apps/wunderland-sh/backend/
+apps/wunderland-sh/app/
+apps/wunderland-sh/docs-site/
+apps/wunderland-sh/scripts/
+apps/wunderland-sh/.github/
 
 # Other unnecessary files
 .dockerignore
