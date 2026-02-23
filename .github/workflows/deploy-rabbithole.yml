@@ -126,30 +126,30 @@ jobs:
               --external:telegraf --external:openai \
               --external:zlib-sync --external:bufferutil --external:utf-8-validate
 
-            # Generate start.js wrapper that loads bots + Next.js server
+            # Generate start.js wrapper that loads Next.js server + bots
             cat > "$STANDALONE_APP/start.js" << 'STARTJS'
-            const path = require("path");
             process.env.NEXT_RUNTIME = "nodejs";
 
-            async function main() {
-              // Start bots if enabled (compiled from src/bots/ by esbuild)
+            // Start Next.js standalone server FIRST (must not be blocked)
+            require("./server.js");
+
+            // Start bots AFTER server is listening (fire-and-forget)
+            setTimeout(async () => {
               try {
                 const bots = require("./boot-bots.js");
                 if (process.env.DISCORD_BOT_ENABLED === "true") {
-                  await bots.startDiscordBot();
+                  bots.startDiscordBot().catch(e =>
+                    console.error("[start.js] Discord bot error:", e.message));
                 }
                 if (process.env.TELEGRAM_BOT_ENABLED === "true") {
-                  await bots.startTelegramBot();
+                  bots.startTelegramBot().catch(e =>
+                    console.error("[start.js] Telegram bot error:", e.message));
                 }
-                console.log("[start.js] Bot bootstrap completed");
+                console.log("[start.js] Bot bootstrap initiated");
               } catch (e) {
                 console.error("[start.js] Bot bootstrap error:", e.message);
               }
-
-              // Start Next.js standalone server
-              require("./server.js");
-            }
-            main();
+            }, 2000);
             STARTJS
 
             # ── 5b. Link static assets into standalone output ──
