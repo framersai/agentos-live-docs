@@ -96,6 +96,31 @@ sequenceDiagram
   T-->>L: enabled=true
 ```
 
+## Capability Discovery Integration
+
+Beyond lazy loading, skills are fully indexed by the **Capability Discovery Engine** (`@framers/agentos/discovery`). This provides semantic search across all capabilities -- tools, skills, extensions, and channels -- using embedding similarity and graph re-ranking.
+
+Skills become `CapabilityDescriptor` entries with `kind: ‘skill’` and are indexed alongside tools. The discovery engine’s graph tracks relationships between skills and their required tools (e.g., `skill:web-search` → `DEPENDS_ON` → `tool:web_search`), so searching for either surfaces both.
+
+**Skills vs extensions in discovery**: Skills are prompt-level modules (`SKILL.md`) that teach _when_ and _how_ to use tools. Extensions are runtime code (tools, guardrails, workflows) that provide callable actions. Both feed into the same discovery index, but you don’t need a skill for every tool -- many tools work fine with just their schema. Skills add value when a tool needs behavioral guidelines beyond its name and parameters.
+
+For Wunderland agents, `WunderlandDiscoveryManager` handles indexing automatically. For standalone AgentOS usage:
+
+```ts
+import { CapabilityDiscoveryEngine } from ‘@framers/agentos/discovery’;
+
+const engine = new CapabilityDiscoveryEngine(config);
+await engine.initialize({
+  tools: toolMap,
+  skills: skillEntries,
+});
+
+const result = await engine.discover(‘search the web’);
+// result.tier0: category summaries (~150 tokens)
+// result.tier1: top-5 semantic matches with summaries (~200 tokens)
+// result.tier2: full schemas for top matches (~1,500 tokens)
+```
+
 ## Example: Inject Skills Snapshot Into a System Prompt
 
 One common integration pattern is:
