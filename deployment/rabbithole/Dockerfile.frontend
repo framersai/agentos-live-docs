@@ -22,7 +22,7 @@ ARG NEXT_PUBLIC_API_URL=/api
 ENV NEXT_PUBLIC_OAUTH_GOOGLE=$NEXT_PUBLIC_OAUTH_GOOGLE
 ENV NEXT_PUBLIC_OAUTH_GITHUB=$NEXT_PUBLIC_OAUTH_GITHUB
 ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
-ENV NODE_OPTIONS="--max-old-space-size=2048"
+ENV NODE_OPTIONS="--max-old-space-size=3072"
 
 # Build workspace dependencies in dependency order
 RUN pnpm --filter @framers/shared build \
