@@ -35,8 +35,8 @@ RUN pnpm --filter @framers/shared build \
  && pnpm --filter @framers/agentos-ext-news-search build \
  && pnpm --filter @framers/agentos-ext-voice-synthesis build \
  && pnpm --filter @framers/agentos-ext-cli-executor build \
- && pnpm --filter @framers/agentos-ext-skills build \
  && pnpm --filter @framers/agentos-skills-registry build \
+ && pnpm --filter @framers/agentos-ext-skills build \
  && pnpm --filter wunderland build \
  && pnpm --filter rabbithole build
 
