@@ -121,11 +121,110 @@ const result = await engine.discover(‘search the web’);
 // result.tier2: full schemas for top matches (~1,500 tokens)
 ```
 
-## Example: Inject Skills Snapshot Into a System Prompt
+## Full Usage Examples
 
-One common integration pattern is:
+### AgentOS: Load skills + extensions together
 
-1. Build a skills snapshot at startup (or per-session)
-2. Append `snapshot.prompt` into your system prompt
+```ts
+import { SkillRegistry } from ‘@framers/agentos/skills’;
+import { CapabilityDiscoveryEngine } from ‘@framers/agentos/discovery’;
+import { createCuratedManifest } from ‘@framers/agentos-extensions-registry’;
 
-This is how the `wunderland` CLI’s `--skills-dir` support works.
+// 1. Load skills from curated registry
+const { createCuratedSkillSnapshot } = await import(‘@framers/agentos-skills-registry’);
+const skillSnapshot = await createCuratedSkillSnapshot({
+  skills: [‘github’, ‘web-search’, ‘coding-agent’],
+});
+
+// 2. Load extensions (tools + voice)
+const manifest = await createCuratedManifest({
+  tools: [‘web-search’, ‘web-browser’, ‘giphy’],
+  voice: [‘voice-synthesis’],
+});
+
+// 3. Collect all ITool instances from extension packs
+const tools = new Map();
+for (const pack of manifest.packs) {
+  for (const tool of pack.factory()) {
+    tools.set(tool.name, tool);
+  }
+}
+
+// 4. Initialize discovery (indexes tools + skills for semantic search)
+const discovery = new CapabilityDiscoveryEngine();
+await discovery.initialize({ tools, skills: skillSnapshot.resolvedSkills });
+
+// 5. Inject skill prompt into system prompt
+const systemPrompt = `You are an AI assistant.\n\n${skillSnapshot.prompt}`;
+```
+
+### AgentOS: Load ALL curated skills
+
+```ts
+import { searchSkills } from ‘@framers/agentos-skills-registry/catalog’;
+import { createCuratedSkillSnapshot } from ‘@framers/agentos-skills-registry’;
+
+const allSkills = searchSkills(‘’);  // empty query returns all
+const snapshot = await createCuratedSkillSnapshot({
+  skills: allSkills.map(s => s.name),
+});
+console.log(`Loaded ${snapshot.skills.length} skills`);
+```
+
+### AgentOS: Load skills from local directories
+
+```ts
+import { SkillRegistry } from ‘@framers/agentos/skills’;
+
+const registry = new SkillRegistry();
+await registry.loadFromDirs([‘./skills’, ‘./vendor-skills’]);
+
+const snapshot = registry.buildSnapshot({ platform: process.platform, strict: true });
+console.log(`Loaded ${registry.count()} skills from disk`);
+console.log(snapshot.prompt);  // inject into system prompt
+```
+
+### Wunderland: One-line setup with everything
+
+With the Wunderland library API, skills, extensions, and discovery are configured in a single call:
+
+```ts
+import { createWunderland } from ‘wunderland’;
+
+// Load specific skills + extensions
+const app = await createWunderland({
+  llm: { providerId: ‘openai’ },
+  tools: ‘curated’,
+  skills: [‘github’, ‘web-search’, ‘coding-agent’],
+  extensions: {
+    tools: [‘web-search’, ‘web-browser’, ‘giphy’],
+    voice: [‘voice-synthesis’],
+  },
+});
+
+// Or load everything at once
+const fullApp = await createWunderland({
+  llm: { providerId: ‘openai’ },
+  tools: ‘curated’,
+  skills: ‘all’,  // all 18 curated skills
+  extensions: {
+    tools: [‘web-search’, ‘web-browser’, ‘news-search’, ‘image-search’, ‘giphy’, ‘cli-executor’],
+    voice: [‘voice-synthesis’],
+  },
+});
+
+// Or use a preset (auto-configures skills + extensions)
+const presetApp = await createWunderland({
+  llm: { providerId: ‘openai’ },
+  preset: ‘research-assistant’,
+});
+```
+
+### Check what’s loaded
+
+```ts
+const diag = app.diagnostics();
+console.log(‘Tools:’, diag.tools.names);       // [‘web_search’, ‘giphy_search’, ...]
+console.log(‘Skills:’, diag.skills.names);     // [‘github’, ‘web-search’, ...]
+console.log(‘Discovery:’, diag.discovery);     // { initialized: true, capabilityCount: 25, ... }
+```
