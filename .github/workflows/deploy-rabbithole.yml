@@ -49,7 +49,13 @@ jobs:
               git fetch origin
               git reset --hard origin/master
               git submodule deinit -f --all 2>/dev/null || true
-              git submodule update --init --recursive --force
+              git submodule update --init --recursive --force 2>&1 || {
+                echo "[deploy] WARNING: Some submodules failed to init — continuing with partial checkout"
+                # Try each critical submodule individually
+                for sm in packages/agentos packages/agentos-extensions packages/agentos-extensions-registry packages/agentos-skills-registry apps/rabbithole apps/wunderland-sh; do
+                  git submodule update --init "$sm" 2>&1 || echo "[deploy] WARNING: $sm failed"
+                done
+              }
             fi
 
             cd "$REPO_DIR"
@@ -94,10 +100,20 @@ jobs:
             pnpm --filter @framers/sql-storage-adapter build
             pnpm --filter @framers/agentos build
             pnpm --filter @framers/agentos-extensions-registry build
+            pnpm --filter @framers/agentos-ext-web-search build
+            pnpm --filter @framers/agentos-ext-web-browser build
+            pnpm --filter @framers/agentos-ext-giphy build
+            pnpm --filter @framers/agentos-ext-image-search build
+            pnpm --filter @framers/agentos-ext-news-search build
+            pnpm --filter @framers/agentos-ext-voice-synthesis build
+            pnpm --filter @framers/agentos-ext-cli-executor build
             pnpm --filter @framers/agentos-skills-registry build
+            pnpm --filter @framers/agentos-ext-skills build
+            pnpm --filter wunderland build
 
             # ── 4. Build Next.js frontend (--webpack needed for standalone output) ──
             echo "[deploy] Building rabbithole frontend..."
+            export NODE_OPTIONS="--max-old-space-size=3584"
             pnpm --filter rabbithole exec next build --webpack
 
             # ── 5. Compile bot bootstrap (instrumentation.ts bots aren't traced by webpack) ──
