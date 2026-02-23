@@ -113,7 +113,7 @@ jobs:
 
             # ── 4. Build Next.js frontend (--webpack needed for standalone output) ──
             echo "[deploy] Building rabbithole frontend..."
-            export NODE_OPTIONS="--max-old-space-size=3584"
+            export NODE_OPTIONS="--max-old-space-size=4608"
             pnpm --filter rabbithole exec next build --webpack
 
             # ── 5. Compile bot bootstrap (instrumentation.ts bots aren't traced by webpack) ──
