@@ -37,6 +37,7 @@ jobs:
 
             REPO_DIR="/app/rabbithole"
             REPO_URL="https://${GH_PAT}@github.com/manicinc/voice-chat-assistant.git"
+            APP_DIR="$REPO_DIR/apps/rabbithole"
 
             # ── 1. Pull latest code ──
             if [ ! -d "$REPO_DIR/.git" ]; then
@@ -114,8 +115,6 @@ jobs:
             export SEARXNG_URL=http://localhost:8080
 
             # ── 2. Install dependencies ──
-            # --ignore-scripts: skip prepare/postinstall lifecycle scripts during install
-            # (template packages try to tsc before deps are built; we build explicitly below)
             echo "[deploy] Installing dependencies..."
             pnpm install --no-frozen-lockfile --ignore-scripts
 
@@ -136,98 +135,18 @@ jobs:
             pnpm --filter @framers/agentos-ext-skills build
             pnpm --filter wunderland build
 
-            # ── 4. Build Next.js frontend (--webpack needed for standalone output) ──
+            # ── 4. Build Next.js frontend ──
+            # No `output: 'standalone'` — we run `next start` directly from the repo.
+            # This skips the @vercel/nft trace step that was OOMing at 4.6GB+.
             echo "[deploy] Building rabbithole frontend..."
-            export NODE_OPTIONS="--max-old-space-size=6144"
-            # Clear stale .next cache to prevent NFT trace ENOENT errors
-            rm -rf "$REPO_DIR/apps/rabbithole/.next"
-            pnpm --filter rabbithole exec next build --webpack
+            export NODE_OPTIONS="--max-old-space-size=4096"
+            rm -rf "$APP_DIR/.next"
+            pnpm --filter rabbithole exec next build
 
-            # ── 4b. Verify standalone output exists ──
-            STANDALONE_APP="$REPO_DIR/apps/rabbithole/.next/standalone/apps/rabbithole"
-            if [ ! -f "$STANDALONE_APP/server.js" ]; then
-              echo "[deploy] WARNING: Standalone output not found — retrying build without --webpack..."
-              pnpm --filter rabbithole exec next build
-              if [ ! -f "$STANDALONE_APP/server.js" ]; then
-                echo "[deploy] ERROR: Standalone output still not generated"
-                exit 1
-              fi
-            fi
-
-            # ── 4c. Patch @framers packages into standalone node_modules ──
-            echo "[deploy] Patching extension packages into standalone..."
-            for pkg in agentos agentos-extensions-registry agentos-ext-web-search \
-              agentos-ext-giphy agentos-ext-image-search agentos-ext-news-search \
-              agentos-ext-voice-synthesis agentos-ext-cli-executor agentos-ext-web-browser \
-              agentos-ext-skills agentos-skills-registry; do
-              if [ ! -d "$STANDALONE_APP/node_modules/@framers/$pkg" ]; then
-                SRC="$REPO_DIR/node_modules/@framers/$pkg"
-                if [ -d "$SRC" ] || [ -L "$SRC" ]; then
-                  mkdir -p "$STANDALONE_APP/node_modules/@framers"
-                  cp -rL "$SRC" "$STANDALONE_APP/node_modules/@framers/$pkg"
-                  echo "[deploy] Patched: @framers/$pkg"
-                fi
-              fi
-            done
-
-            # ── 4d. Fix turbopack hashed external references (Next.js 16) ──
-            if [ -f "$STANDALONE_APP/.next/turbopack" ]; then
-              echo "[deploy] Turbopack build detected — fixing hashed external references..."
-              for hashed in $(grep -ohr '@framers/[a-z0-9_-]*-[a-f0-9]\{12,\}' "$STANDALONE_APP/.next/server/chunks/" 2>/dev/null | sort -u); do
-                base=$(echo "$hashed" | sed 's/-[a-f0-9]\{12,\}$//' | sed 's|@framers/||')
-                hashed_name=$(echo "$hashed" | sed 's|@framers/||')
-                if [ -d "$STANDALONE_APP/node_modules/@framers/$base" ] && [ ! -e "$STANDALONE_APP/node_modules/@framers/$hashed_name" ]; then
-                  ln -sfn "$base" "$STANDALONE_APP/node_modules/@framers/$hashed_name"
-                  echo "[deploy] Linked: @framers/$hashed_name -> @framers/$base"
-                fi
-              done
-            fi
-
-            # ── 5. Compile bot bootstrap (instrumentation.ts bots aren't traced by webpack) ──
-            echo "[deploy] Compiling bot bootstrap with esbuild..."
-            node_modules/.bin/esbuild apps/rabbithole/src/bots/index.ts \
-              --bundle --platform=node --format=cjs \
-              --outfile="$STANDALONE_APP/boot-bots.js" \
-              --external:discord.js --external:"@discordjs/*" \
-              --external:telegraf --external:openai \
-              --external:zlib-sync --external:bufferutil --external:utf-8-validate
-
-            # Generate start.js wrapper that loads Next.js server + bots
-            cat > "$STANDALONE_APP/start.js" << 'STARTJS'
-            process.env.NEXT_RUNTIME = "nodejs";
-
-            // Start Next.js standalone server FIRST (must not be blocked)
-            require("./server.js");
-
-            // Start bots AFTER server is listening (fire-and-forget)
-            setTimeout(async () => {
-              try {
-                const bots = require("./boot-bots.js");
-                if (process.env.DISCORD_BOT_ENABLED === "true") {
-                  bots.startDiscordBot().catch(e =>
-                    console.error("[start.js] Discord bot error:", e.message));
-                }
-                if (process.env.TELEGRAM_BOT_ENABLED === "true") {
-                  bots.startTelegramBot().catch(e =>
-                    console.error("[start.js] Telegram bot error:", e.message));
-                }
-                console.log("[start.js] Bot bootstrap initiated");
-              } catch (e) {
-                console.error("[start.js] Bot bootstrap error:", e.message);
-              }
-            }, 2000);
-            STARTJS
-
-            # ── 5b. Link static assets into standalone output ──
-            ln -sfn "$REPO_DIR/apps/rabbithole/.next/static" "$STANDALONE_APP/.next/static"
-            ln -sfn "$REPO_DIR/apps/rabbithole/public" "$STANDALONE_APP/public"
-
-            # ── 5c. Canonical /opt/rabbithole symlink ──
-            # The submodule deploy (now disabled) used /opt/rabbithole directly.
-            # Keep this path as a symlink so the systemd service always resolves.
+            # ── 5. Canonical /opt/rabbithole symlink ──
             rm -rf /opt/rabbithole
-            ln -sfn "$STANDALONE_APP" /opt/rabbithole
-            echo "[deploy] /opt/rabbithole -> $STANDALONE_APP"
+            ln -sfn "$APP_DIR" /opt/rabbithole
+            echo "[deploy] /opt/rabbithole -> $APP_DIR"
 
             # ── 6. Ensure nginx config is correct ──
             echo "[deploy] Syncing nginx config..."
