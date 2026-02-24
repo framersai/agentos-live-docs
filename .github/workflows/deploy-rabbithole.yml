@@ -139,6 +139,8 @@ jobs:
             # ── 4. Build Next.js frontend (--webpack needed for standalone output) ──
             echo "[deploy] Building rabbithole frontend..."
             export NODE_OPTIONS="--max-old-space-size=4608"
+            # Clear stale .next cache to prevent NFT trace ENOENT errors
+            rm -rf "$REPO_DIR/apps/rabbithole/.next"
             pnpm --filter rabbithole exec next build --webpack
 
             # ── 4b. Verify standalone output exists ──
