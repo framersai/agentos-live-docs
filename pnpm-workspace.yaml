@@ -15,6 +15,7 @@ packages:
   - packages/agentos-extensions/registry/curated/research/news-search
   - packages/agentos-extensions/registry/curated/research/weather
   - packages/agentos-extensions/registry/curated/community/founders
+  - packages/agentos-extensions/registry/curated/integrations/wunderbot-feeds
   - packages/agentos-extensions/registry/curated/channels/telegram
   - packages/agentos-extensions/registry/curated/channels/whatsapp
   - packages/agentos-extensions/registry/curated/channels/discord
