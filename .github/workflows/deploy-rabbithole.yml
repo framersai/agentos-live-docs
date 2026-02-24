@@ -88,6 +88,31 @@ jobs:
             export NEXT_PUBLIC_OAUTH_GOOGLE=true
             export NEXT_PUBLIC_OAUTH_GITHUB=true
 
+            # ── 1d. Ensure SearXNG metasearch engine is running ──
+            echo "[deploy] Setting up SearXNG..."
+            command -v docker >/dev/null || { echo "[deploy] ERROR: Docker not installed"; exit 1; }
+            mkdir -p /etc/searxng
+            cp "$REPO_DIR/deployment/rabbithole/searxng-settings.yml" /etc/searxng/settings.yml
+            docker pull searxng/searxng:latest
+            cp "$REPO_DIR/deployment/rabbithole/searxng.service" /etc/systemd/system/searxng.service
+            systemctl daemon-reload
+            systemctl enable searxng
+            systemctl restart searxng
+            echo "[deploy] Waiting for SearXNG to be healthy..."
+            for i in $(seq 1 12); do
+              if wget -q --spider http://localhost:8080/healthz 2>/dev/null; then
+                echo "[deploy] SearXNG is healthy"
+                break
+              fi
+              [ "$i" -eq 12 ] && echo "[deploy] WARNING: SearXNG health check failed after 60s"
+              sleep 5
+            done
+            if ! grep -q '^SEARXNG_URL=' /etc/rabbithole/env; then
+              echo "SEARXNG_URL=http://localhost:8080" >> /etc/rabbithole/env
+              echo "[deploy] Added SEARXNG_URL to env file"
+            fi
+            export SEARXNG_URL=http://localhost:8080
+
             # ── 2. Install dependencies ──
             # --ignore-scripts: skip prepare/postinstall lifecycle scripts during install
             # (template packages try to tsc before deps are built; we build explicitly below)

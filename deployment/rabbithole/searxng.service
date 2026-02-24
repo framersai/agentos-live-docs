@@ -1,0 +1,22 @@
+[Unit]
+Description=SearXNG Metasearch Engine
+After=docker.service
+Requires=docker.service
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=10
+ExecStartPre=-/usr/bin/docker stop searxng
+ExecStartPre=-/usr/bin/docker rm searxng
+ExecStart=/usr/bin/docker run --name searxng \
+  --rm \
+  -p 127.0.0.1:8080:8080 \
+  -v /etc/searxng/settings.yml:/etc/searxng/settings.yml:ro \
+  -v searxng-data:/var/cache/searxng \
+  -e SEARXNG_BASE_URL=http://localhost:8080/ \
+  searxng/searxng:latest
+ExecStop=/usr/bin/docker stop searxng
+
+[Install]
+WantedBy=multi-user.target
