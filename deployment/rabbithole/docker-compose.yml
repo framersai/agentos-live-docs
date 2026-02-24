@@ -32,6 +32,8 @@ services:
       - NEXT_PUBLIC_API_URL=/api
       - NODE_ENV=production
       - SEARXNG_URL=http://searxng:8080
+      - DISCORD_BOT_ENABLED=false
+      - TELEGRAM_BOT_ENABLED=false
     expose:
       - "3010"
       - "3001"

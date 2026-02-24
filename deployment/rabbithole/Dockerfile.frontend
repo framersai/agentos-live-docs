@@ -38,7 +38,9 @@ RUN pnpm --filter @framers/shared build \
  && pnpm --filter @framers/agentos-ext-cli-executor build \
  && pnpm --filter @framers/agentos-skills-registry build \
  && pnpm --filter @framers/agentos-ext-skills build \
- && pnpm --filter wunderland build
+ && pnpm --filter @framers/agentos-ext-http-api build \
+ && pnpm --filter wunderland build \
+ && pnpm --filter @wunderland/social build
 
 # Next.js build in separate RUN — starts fresh Node process with full heap for NFT tracer
 RUN pnpm --filter rabbithole build
