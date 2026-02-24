@@ -59,7 +59,10 @@ RUN STANDALONE=/repo/apps/rabbithole/.next/standalone/apps/rabbithole/node_modul
     for pkg in @swc/helpers @next/env caniuse-lite postcss \
       @framers/agentos-extensions-registry @framers/agentos \
       @framers/agentos-ext-web-search @framers/agentos-ext-giphy \
-      @framers/agentos-ext-image-search @framers/agentos-ext-news-search; do \
+      @framers/agentos-ext-image-search @framers/agentos-ext-news-search \
+      @framers/agentos-ext-voice-synthesis @framers/agentos-ext-cli-executor \
+      @framers/agentos-ext-web-browser @framers/agentos-ext-skills \
+      @framers/agentos-skills-registry; do \
       if [ ! -d "$STANDALONE/$pkg" ]; then \
         SRC="/repo/node_modules/$pkg"; \
         if [ -d "$SRC" ] || [ -L "$SRC" ]; then \
@@ -69,6 +72,21 @@ RUN STANDALONE=/repo/apps/rabbithole/.next/standalone/apps/rabbithole/node_modul
         fi; \
       fi; \
     done
+
+# Fix turbopack hashed external references (Next.js 16 appends content hashes to external names)
+RUN APP_NEXT=/repo/apps/rabbithole/.next && \
+    STANDALONE_NM=/repo/apps/rabbithole/.next/standalone/apps/rabbithole/node_modules && \
+    if [ -f "$APP_NEXT/turbopack" ]; then \
+      echo "Turbopack build — fixing hashed external references..."; \
+      for hashed in $(grep -ohr '@framers/[a-z0-9_-]*-[a-f0-9]\{12,\}' "$APP_NEXT/server/chunks/" 2>/dev/null | sort -u); do \
+        base=$(echo "$hashed" | sed 's/-[a-f0-9]\{12,\}$//' | sed 's|@framers/||'); \
+        hashed_name=$(echo "$hashed" | sed 's|@framers/||'); \
+        if [ -d "$STANDALONE_NM/@framers/$base" ] && [ ! -e "$STANDALONE_NM/@framers/$hashed_name" ]; then \
+          ln -sfn "$base" "$STANDALONE_NM/@framers/$hashed_name"; \
+          echo "Linked: @framers/$hashed_name -> @framers/$base"; \
+        fi; \
+      done; \
+    fi
 
 # -----------------------------------------------------------------------------
 
