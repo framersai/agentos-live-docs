@@ -119,9 +119,10 @@ jobs:
             pnpm install --no-frozen-lockfile --ignore-scripts
 
             # ── 3. Build workspace packages in dependency order ──
+            # Only packages that rabbithole actually imports need to be built here.
+            # sql-storage-adapter is NOT used by rabbithole — skip it.
             echo "[deploy] Building workspace packages..."
             pnpm --filter @framers/shared build
-            pnpm --filter @framers/sql-storage-adapter build
             pnpm --filter @framers/agentos build
             pnpm --filter @framers/agentos-extensions-registry build
             pnpm --filter @framers/agentos-ext-web-search build
@@ -138,17 +139,30 @@ jobs:
             # ── 4. Build Next.js frontend ──
             # No `output: 'standalone'` — we run `next start` directly from the repo.
             # This skips the @vercel/nft trace step that was OOMing at 4.6GB+.
+            #
+            # IMPORTANT: We back up .next before building so a failed build doesn't
+            # leave the server with no build at all. Only swap on success.
             echo "[deploy] Building rabbithole frontend..."
             export NODE_OPTIONS="--max-old-space-size=4096"
-            rm -rf "$APP_DIR/.next"
-            pnpm --filter rabbithole exec next build
-
-            # Verify build produced required artifacts
-            if [ ! -f "$APP_DIR/.next/BUILD_ID" ]; then
-              echo "[deploy] FATAL: .next/BUILD_ID is missing — next start will fail"
+            if [ -d "$APP_DIR/.next" ]; then
+              mv "$APP_DIR/.next" "$APP_DIR/.next.bak"
+            fi
+            if pnpm --filter rabbithole exec next build; then
+              # Verify build produced required artifacts
+              if [ ! -f "$APP_DIR/.next/BUILD_ID" ]; then
+                echo "[deploy] FATAL: .next/BUILD_ID is missing — rolling back"
+                rm -rf "$APP_DIR/.next"
+                [ -d "$APP_DIR/.next.bak" ] && mv "$APP_DIR/.next.bak" "$APP_DIR/.next"
+                exit 1
+              fi
+              echo "[deploy] Build artifacts verified (BUILD_ID=$(cat "$APP_DIR/.next/BUILD_ID"))"
+              rm -rf "$APP_DIR/.next.bak"
+            else
+              echo "[deploy] FATAL: next build failed — rolling back to previous build"
+              rm -rf "$APP_DIR/.next"
+              [ -d "$APP_DIR/.next.bak" ] && mv "$APP_DIR/.next.bak" "$APP_DIR/.next"
               exit 1
             fi
-            echo "[deploy] Build artifacts verified (BUILD_ID=$(cat "$APP_DIR/.next/BUILD_ID"))"
 
             # Verify the correct Next.js version is used
             echo "[deploy] Next.js version: $(cd "$APP_DIR" && ./node_modules/.bin/next --version)"
