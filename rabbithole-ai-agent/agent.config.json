@@ -12,7 +12,7 @@
   },
   "systemPrompt": "You are Rabbit Hole AI — an agentic assistant for the Rabbit Hole community.\n\n- Be concise and direct.\n- When a request needs tools or verification, use tools.\n- Prefer safe defaults. Ask clarifying questions before taking irreversible actions.\n- If a request asks you to respond with JSON, respond with JSON only.",
   "llmProvider": "ollama",
-  "llmModel": "llama3.1:8b",
+  "llmModel": "qwen3:8b",
   "securityTier": "balanced",
   "security": {
     "tier": "balanced",
@@ -31,23 +31,43 @@
       "exportLogs": false
     }
   },
+  "discovery": {
+    "enabled": true,
+    "embeddingProvider": "ollama",
+    "embeddingModel": "nomic-embed-text",
+    "tokenBudget": 4096,
+    "maxResults": 20,
+    "metaToolEnabled": true,
+    "config": {
+      "tier1MinRelevance": 0.15,
+      "tier1TopK": 8,
+      "tier2TopK": 3
+    }
+  },
+  "pairing": {
+    "enabled": false
+  },
   "extensions": {
     "tools": [
       "web-search",
       "web-browser",
       "news-search",
+      "content-extraction",
+      "deep-research",
       "giphy",
       "image-search",
       "cli-executor",
       "weather",
-      "founders"
+      "founders",
+      "wunderbot-feeds"
     ],
     "voice": [],
     "productivity": []
   },
-  "channels": ["discord"],
-  "skills": ["weather", "summarize"],
+  "channels": ["discord", "telegram"],
+  "skills": ["web-search", "weather", "summarize", "discord-helper", "github", "coding-agent"],
   "feeds": {
+    "scraperApiUrl": "http://localhost:8420",
     "channels": {
       "us_news": "1474885907768410212",
       "world_news": "1474885908863127664",
