@@ -118,51 +118,63 @@ jobs:
             echo "[deploy] Installing dependencies..."
             pnpm install --no-frozen-lockfile --ignore-scripts
 
-            # ── 3. Build workspace packages in dependency order ──
-            # Only packages that rabbithole actually imports need to be built here.
-            # sql-storage-adapter is NOT used by rabbithole — skip it.
-            echo "[deploy] Building workspace packages..."
-            pnpm --filter @framers/shared build
-            pnpm --filter @framers/agentos build
-            pnpm --filter @framers/agentos-extensions-registry build
-            pnpm --filter @framers/agentos-ext-web-search build
-            pnpm --filter @framers/agentos-ext-web-browser build
-            pnpm --filter @framers/agentos-ext-giphy build
-            pnpm --filter @framers/agentos-ext-image-search build
-            pnpm --filter @framers/agentos-ext-news-search build
-            pnpm --filter @framers/agentos-ext-voice-synthesis build
-            pnpm --filter @framers/agentos-ext-cli-executor build
-            pnpm --filter @framers/agentos-skills-registry build
-            pnpm --filter @framers/agentos-ext-skills build
-            pnpm --filter wunderland build
-
-            # ── 4. Build Next.js frontend ──
-            # No `output: 'standalone'` — we run `next start` directly from the repo.
-            # This skips the @vercel/nft trace step that was OOMing at 4.6GB+.
-            #
-            # IMPORTANT: We back up .next before building so a failed build doesn't
-            # leave the server with no build at all. Only swap on success.
-            echo "[deploy] Building rabbithole frontend..."
-            export NODE_OPTIONS="--max-old-space-size=4096"
+            # ── 2b. Back up current .next BEFORE any builds ──
+            # If workspace package builds or next build fail, we restore the old
+            # .next so the running server isn't left with a wiped build directory.
             if [ -d "$APP_DIR/.next" ]; then
+              echo "[deploy] Backing up current .next..."
               mv "$APP_DIR/.next" "$APP_DIR/.next.bak"
             fi
-            if pnpm --filter rabbithole exec next build; then
-              # Verify build produced required artifacts
-              if [ ! -f "$APP_DIR/.next/BUILD_ID" ]; then
-                echo "[deploy] FATAL: .next/BUILD_ID is missing — rolling back"
-                rm -rf "$APP_DIR/.next"
-                [ -d "$APP_DIR/.next.bak" ] && mv "$APP_DIR/.next.bak" "$APP_DIR/.next"
-                exit 1
-              fi
-              echo "[deploy] Build artifacts verified (BUILD_ID=$(cat "$APP_DIR/.next/BUILD_ID"))"
-              rm -rf "$APP_DIR/.next.bak"
-            else
-              echo "[deploy] FATAL: next build failed — rolling back to previous build"
+
+            # Helper: restore .next backup on failure
+            rollback_next() {
+              echo "[deploy] Rolling back to previous .next build..."
               rm -rf "$APP_DIR/.next"
               [ -d "$APP_DIR/.next.bak" ] && mv "$APP_DIR/.next.bak" "$APP_DIR/.next"
+            }
+
+            # ── 3. Build workspace packages in dependency order ──
+            echo "[deploy] Building workspace packages..."
+            build_packages() {
+              pnpm --filter @framers/shared build
+              # sql-storage-adapter: use pnpm exec tsc (npx resolves to bad path in pnpm workspace)
+              cd "$REPO_DIR/packages/sql-storage-adapter"
+              npm run clean && pnpm exec tsc -p tsconfig.build.json && node scripts/fix-esm-imports.mjs
+              cd "$REPO_DIR"
+              pnpm --filter @framers/agentos build
+              pnpm --filter @framers/agentos-extensions-registry build
+              pnpm --filter @framers/agentos-ext-web-search build
+              pnpm --filter @framers/agentos-ext-web-browser build
+              pnpm --filter @framers/agentos-ext-giphy build
+              pnpm --filter @framers/agentos-ext-image-search build
+              pnpm --filter @framers/agentos-ext-news-search build
+              pnpm --filter @framers/agentos-ext-voice-synthesis build
+              pnpm --filter @framers/agentos-ext-cli-executor build
+              pnpm --filter @framers/agentos-skills-registry build
+              pnpm --filter @framers/agentos-ext-skills build
+              pnpm --filter wunderland build
+            }
+            if ! build_packages; then
+              echo "[deploy] FATAL: workspace package build failed"
+              rollback_next
               exit 1
             fi
+
+            # ── 4. Build Next.js frontend ──
+            echo "[deploy] Building rabbithole frontend..."
+            export NODE_OPTIONS="--max-old-space-size=4096"
+            if ! pnpm --filter rabbithole exec next build; then
+              echo "[deploy] FATAL: next build failed"
+              rollback_next
+              exit 1
+            fi
+            if [ ! -f "$APP_DIR/.next/BUILD_ID" ]; then
+              echo "[deploy] FATAL: .next/BUILD_ID is missing"
+              rollback_next
+              exit 1
+            fi
+            echo "[deploy] Build artifacts verified (BUILD_ID=$(cat "$APP_DIR/.next/BUILD_ID"))"
+            rm -rf "$APP_DIR/.next.bak"
 
             # Verify the correct Next.js version is used
             echo "[deploy] Next.js version: $(cd "$APP_DIR" && ./node_modules/.bin/next --version)"
