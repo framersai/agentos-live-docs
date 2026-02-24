@@ -5,14 +5,13 @@ After=network.target
 [Service]
 Type=simple
 User=root
-WorkingDirectory=/app/rabbithole
-ExecStart=/usr/bin/node apps/rabbithole/.next/standalone/apps/rabbithole/start.js
+WorkingDirectory=/opt/rabbithole
+ExecStart=/usr/bin/node start.js
 Restart=on-failure
 RestartSec=5
 Environment=NODE_ENV=production
 Environment=PORT=3000
 Environment=HOSTNAME=0.0.0.0
-Environment=NODE_PATH=/app/rabbithole/node_modules
 EnvironmentFile=-/etc/rabbithole/env
 
 [Install]
