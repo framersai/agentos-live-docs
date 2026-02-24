@@ -143,6 +143,15 @@ jobs:
             rm -rf "$APP_DIR/.next"
             pnpm --filter rabbithole exec next build
 
+            # Verify build produced required artifacts
+            for f in BUILD_ID routes-manifest.json build-manifest.json; do
+              if [ ! -f "$APP_DIR/.next/$f" ]; then
+                echo "[deploy] FATAL: .next/$f is missing — build may have used turbopack"
+                exit 1
+              fi
+            done
+            echo "[deploy] Build artifacts verified"
+
             # Verify the correct Next.js version is used
             echo "[deploy] Next.js version: $(cd "$APP_DIR" && ./node_modules/.bin/next --version)"
 
