@@ -6,12 +6,13 @@ After=network.target
 Type=simple
 User=root
 WorkingDirectory=/app/rabbithole/apps/rabbithole
-ExecStart=/usr/bin/node /app/rabbithole/node_modules/next/dist/bin/next start -p 3000 -H 0.0.0.0
+ExecStart=/bin/bash -c 'exec ./node_modules/.bin/next start -p 3000 -H 0.0.0.0'
 Restart=on-failure
 RestartSec=5
 Environment=NODE_ENV=production
 Environment=PORT=3000
 Environment=HOSTNAME=0.0.0.0
+Environment=PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 EnvironmentFile=-/etc/rabbithole/env
 
 [Install]

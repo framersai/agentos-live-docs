@@ -143,6 +143,9 @@ jobs:
             rm -rf "$APP_DIR/.next"
             pnpm --filter rabbithole exec next build
 
+            # Verify the correct Next.js version is used
+            echo "[deploy] Next.js version: $(cd "$APP_DIR" && ./node_modules/.bin/next --version)"
+
             # ── 5. Canonical /opt/rabbithole symlink ──
             rm -rf /opt/rabbithole
             ln -sfn "$APP_DIR" /opt/rabbithole
