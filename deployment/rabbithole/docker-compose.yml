@@ -22,30 +22,18 @@ services:
       dockerfile: deployment/rabbithole/Dockerfile.frontend
     restart: unless-stopped
     depends_on:
-      - backend
-    env_file:
-      - .env
-    environment:
-      - PORT=3010
-      - NEXT_PUBLIC_API_URL=/api
-    expose:
-      - "3010"
-
-  backend:
-    build:
-      context: ../..
-      dockerfile: deployment/rabbithole/Dockerfile.backend
-    restart: unless-stopped
-    depends_on:
       searxng:
         condition: service_healthy
     env_file:
       - .env
     environment:
-      - PORT=3001
+      - PORT=3010
+      - BACKEND_PORT=3001
+      - NEXT_PUBLIC_API_URL=/api
       - NODE_ENV=production
       - SEARXNG_URL=http://searxng:8080
     expose:
+      - "3010"
       - "3001"
     volumes:
       # Persist SQLite DB on the encrypted block volume
@@ -60,7 +48,6 @@ services:
     restart: unless-stopped
     depends_on:
       - frontend
-      - backend
     ports:
       - "80:80"
       - "443:443"
