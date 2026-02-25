@@ -70,7 +70,7 @@ function assertProOrEnterprise(user: any): void {
   const role = String(user?.role ?? '').toLowerCase();
 
   const isActive = ['active', 'trialing', 'unlimited'].includes(status) || role === 'admin';
-  const isProOrEnterprise = ['pro', 'enterprise'].includes(plan) || role === 'admin';
+  const isProOrEnterprise = ['pioneer', 'enterprise'].includes(plan) || role === 'admin';
 
   if (!isActive) throw new ForbiddenException('Active subscription required');
   if (!isProOrEnterprise)
@@ -265,7 +265,7 @@ export class TunnelController {
 
     const origin = siteOrigin();
     const planRaw = String(user?.planId ?? '').toLowerCase();
-    const planLabel = planRaw ? planRaw.charAt(0).toUpperCase() + planRaw.slice(1) : 'Pro';
+    const planLabel = planRaw ? planRaw.charAt(0).toUpperCase() + planRaw.slice(1) : 'Pioneer';
 
     const script = `#!/usr/bin/env bash
 # ============================================================================

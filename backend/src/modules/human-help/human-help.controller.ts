@@ -27,7 +27,7 @@ export class HumanHelpController {
   constructor(private readonly helpService: HumanHelpService) {}
 
   // =========================================================================
-  // Consumer endpoints (require auth + Pro tier)
+  // Consumer endpoints (require auth + Pioneer tier)
   // =========================================================================
 
   @UseGuards(AuthGuard, ProTierGuard)

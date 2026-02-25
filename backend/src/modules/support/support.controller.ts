@@ -28,7 +28,7 @@ export class SupportController {
   constructor(private readonly supportService: SupportService) {}
 
   // =========================================================================
-  // User endpoints (require auth + Pro tier)
+  // User endpoints (require auth + Pioneer tier)
   // =========================================================================
 
   @UseGuards(AuthGuard, ProTierGuard)

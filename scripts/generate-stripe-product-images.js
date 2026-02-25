@@ -2,9 +2,9 @@
 /* eslint-disable */
 /**
  * Generate Stripe product images for Rabbit Hole Inc plans.
- * Creates 2 branded PNGs (Starter, Pro) at 512x512.
- * Starter = cold silver/gunmetal metallic, understated.
- * Pro = rich gold foil, warm tones, premium.
+ * Creates 2 branded PNGs (Explorer, Pioneer) at 512x512.
+ * Explorer = cold silver/gunmetal metallic, understated.
+ * Pioneer = rich gold foil, warm tones, premium.
  */
 
 const fs = require('fs');
@@ -28,7 +28,7 @@ const S = {
 };
 
 const PALETTES = {
-  starter: {
+  explorer: {
     // Cold silver / gunmetal
     primary: '#8a8a9e',
     light: '#b8b8cc',
@@ -63,7 +63,7 @@ const PALETTES = {
     brandOpacity: '0.7',
     tierColor: '#d4d4e4',
   },
-  pro: {
+  pioneer: {
     // Rich warm gold
     primary: '#c9a227',
     light: '#f5e6a3',
@@ -102,16 +102,16 @@ const PALETTES = {
 
 const plans = [
   {
-    id: 'starter',
-    name: 'Starter',
+    id: 'explorer',
+    name: 'Explorer',
     price: '$19',
     period: '/mo',
     agents: '1 Wunderbot',
     subtitle: '500 AI messages/mo included',
   },
   {
-    id: 'pro',
-    name: 'Pro',
+    id: 'pioneer',
+    name: 'Pioneer',
     price: '$49',
     period: '/mo',
     agents: '5 Wunderbots',
@@ -150,8 +150,8 @@ function generateSVG(plan) {
   const P = PALETTES[id];
   const cx = 256,
     cy = 120;
-  const rand = seededRandom(id === 'starter' ? 42 : 97);
-  const isPro = id === 'pro';
+  const rand = seededRandom(id === 'explorer' ? 42 : 97);
+  const isPro = id === 'pioneer';
 
   // Starter: fewer, subtler elements. Pro: more, brighter.
   const armCount = isPro ? 8 : 5;
@@ -315,7 +315,7 @@ function generateSVG(plan) {
 
     ${
       isPro
-        ? `<!-- Pro: subtle warm tint (not glowing, just color) -->
+        ? `<!-- Pioneer: subtle warm tint (not glowing, just color) -->
     <radialGradient id="aura1_${id}" cx="35%" cy="30%" r="42%">
       <stop offset="0%" stop-color="#e8d48a" stop-opacity="0.025"/>
       <stop offset="100%" stop-color="${S.void}" stop-opacity="0"/>
@@ -623,13 +623,13 @@ function generateBrandIconSVG(plan) {
 /**
  * Card Element Banner — 640x200, wider responsive format.
  * Left: logo + RABBIT HOLE INC (big) + agents below + plan/price.
- * Right: vortex swirl (Pro=golden shine, Starter=subtle metallic).
+ * Right: vortex swirl (Pioneer=golden shine, Explorer=subtle metallic).
  */
 function generateCardBannerSVG(plan) {
   const P = PALETTES[plan.id];
   const id = plan.id;
-  const isPro = id === 'pro';
-  const rand = seededRandom(id === 'starter' ? 55 : 88);
+  const isPro = id === 'pioneer';
+  const rand = seededRandom(id === 'explorer' ? 55 : 88);
 
   // --- Build vortex elements for right side ---
   const vortexCx = 530,
@@ -795,7 +795,7 @@ function generateCardBannerSVG(plan) {
         font-size="28" font-weight="600" fill="${P.tierColor}" letter-spacing="2">
     ${plan.name}
   </text>
-  <text x="${plan.name === 'Pro' ? '270' : '330'}" y="176" font-family="'IBM Plex Mono', monospace"
+  <text x="${plan.name === 'Pioneer' ? '270' : '330'}" y="176" font-family="'IBM Plex Mono', monospace"
         font-size="20" font-weight="700" fill="${P.priceColor}">
     ${plan.price}<tspan font-size="12" font-weight="400" fill="${isPro ? '#c9a227' : '#8a8a9e'}" opacity="0.7">${plan.period}</tspan>
   </text>
@@ -814,7 +814,7 @@ async function main() {
   fs.mkdirSync(OUTPUT_DIR, { recursive: true });
 
   // Clean up old files
-  for (const old of ['wunderland-starter', 'wunderland-pro']) {
+  for (const old of ['wunderland-explorer', 'wunderland-pioneer']) {
     for (const ext of ['.svg', '.png']) {
       const f = path.join(OUTPUT_DIR, old + ext);
       if (fs.existsSync(f)) fs.unlinkSync(f);

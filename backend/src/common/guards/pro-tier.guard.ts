@@ -1,6 +1,6 @@
 /**
  * @file pro-tier.guard.ts
- * @description Guard that restricts access to Pro-tier (or higher) subscribers.
+ * @description Guard that restricts access to Pioneer-tier (or higher) subscribers.
  * Checks subscription_status and subscription plan from JWT claims.
  */
 
@@ -32,7 +32,7 @@ export class ProTierGuard implements CanActivate {
 
     if (!isActive) {
       throw new ForbiddenException(
-        'An active Pro or Enterprise subscription is required for human VA support.'
+        'An active Pioneer or Enterprise subscription is required for human VA support.'
       );
     }
 

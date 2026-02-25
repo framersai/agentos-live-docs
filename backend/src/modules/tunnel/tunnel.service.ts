@@ -174,7 +174,7 @@ export class TunnelService {
       .toLowerCase();
 
     const isActive = ['active', 'trialing', 'unlimited'].includes(status);
-    const isProOrEnterprise = ['pro', 'enterprise'].includes(planId);
+    const isProOrEnterprise = ['pioneer', 'enterprise'].includes(planId);
 
     if (!isActive) {
       return { ok: false, status: 403, message: 'Active subscription required' };

@@ -16,8 +16,8 @@ export type PlanId =
   | 'organization'
   | 'codex-free'
   | 'codex-pro'
-  | 'rh-pro-monthly'
-  | 'rh-pro-annual'
+  | 'rh-pioneer-monthly'
+  | 'rh-pioneer-annual'
   | 'rh-lifetime'
   | 'rh-assistant-addon';
 export type PlanTier = 'metered' | 'unlimited';
@@ -328,10 +328,10 @@ export const PLAN_CATALOG: Record<PlanId, PlanCatalogEntry> = {
     },
   },
 
-  'rh-pro-monthly': {
-    id: 'rh-pro-monthly',
-    slug: 'rh-pro-monthly',
-    displayName: 'Pro Monthly',
+  'rh-pioneer-monthly': {
+    id: 'rh-pioneer-monthly',
+    slug: 'rh-pioneer-monthly',
+    displayName: 'Pioneer Monthly',
     headline: 'Full platform access with human assistant hours',
     monthlyPriceUsd: 29.99,
     usageAllocationPct: 0,
@@ -347,23 +347,23 @@ export const PLAN_CATALOG: Record<PlanId, PlanCatalogEntry> = {
     checkout: [
       {
         provider: 'stripe',
-        productEnvVar: 'STRIPE_RH_PRO_MONTHLY_PRODUCT_ID',
-        priceEnvVar: 'STRIPE_RH_PRO_MONTHLY_PRICE_ID',
+        productEnvVar: 'STRIPE_RH_PIONEER_MONTHLY_PRODUCT_ID',
+        priceEnvVar: 'STRIPE_RH_PIONEER_MONTHLY_PRICE_ID',
       },
     ],
     public: true,
     metadata: { featured: true },
   },
-  'rh-pro-annual': {
-    id: 'rh-pro-annual',
-    slug: 'rh-pro-annual',
-    displayName: 'Pro Annual',
+  'rh-pioneer-annual': {
+    id: 'rh-pioneer-annual',
+    slug: 'rh-pioneer-annual',
+    displayName: 'Pioneer Annual',
     headline: 'Save 31% with annual billing — includes human assistant hours',
     monthlyPriceUsd: 20.75,
     usageAllocationPct: 0,
     usage: buildUsageProfile(0, 'disallowed', 'Human assistant hours, not AI token-based.'),
     bullets: [
-      'Everything in Pro Monthly',
+      'Everything in Pioneer Monthly',
       '3 hours/week human assistant',
       'Save $110.88/year vs monthly',
       'Priority support',
@@ -372,8 +372,8 @@ export const PLAN_CATALOG: Record<PlanId, PlanCatalogEntry> = {
     checkout: [
       {
         provider: 'stripe',
-        productEnvVar: 'STRIPE_RH_PRO_ANNUAL_PRODUCT_ID',
-        priceEnvVar: 'STRIPE_RH_PRO_ANNUAL_PRICE_ID',
+        productEnvVar: 'STRIPE_RH_PIONEER_ANNUAL_PRODUCT_ID',
+        priceEnvVar: 'STRIPE_RH_PIONEER_ANNUAL_PRICE_ID',
       },
     ],
     public: true,
@@ -440,7 +440,7 @@ export const getCodexPlans = (): PlanCatalogEntry[] =>
 
 export const findPlanById = (id: PlanId): PlanCatalogEntry => PLAN_CATALOG[id];
 
-export const RH_PLAN_ORDER: PlanId[] = ['rh-pro-monthly', 'rh-pro-annual', 'rh-lifetime'];
+export const RH_PLAN_ORDER: PlanId[] = ['rh-pioneer-monthly', 'rh-pioneer-annual', 'rh-lifetime'];
 
 export const getRhPlans = (): PlanCatalogEntry[] => RH_PLAN_ORDER.map((id) => PLAN_CATALOG[id]);
 
