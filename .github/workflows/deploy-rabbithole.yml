@@ -164,9 +164,13 @@ jobs:
             fi
 
             # ── 4. Build Next.js frontend ──
+            # IMPORTANT: Use `pnpm build` (not `exec next build`) so the
+            # package.json "build" script runs, which includes --webpack.
+            # Next.js 16 defaults to Turbopack for `next build`, but Three.js /
+            # meshline GLSL shaders require the webpack bundler.
             echo "[deploy] Building rabbithole frontend..."
             export NODE_OPTIONS="--max-old-space-size=6144"
-            if ! pnpm --filter rabbithole exec next build; then
+            if ! pnpm --filter rabbithole build; then
               echo "[deploy] FATAL: next build failed"
               rollback_next
               exit 1
