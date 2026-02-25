@@ -46,6 +46,7 @@ const agentosGuides = [
   { src: 'HUMAN_IN_THE_LOOP.md', dest: 'features/human-in-the-loop.md', title: 'Human-in-the-Loop', position: 2 },
   { src: 'AGENT_COMMUNICATION.md', dest: 'features/agent-communication.md', title: 'Agent Communication', position: 3 },
   { src: 'GUARDRAILS_USAGE.md', dest: 'features/guardrails.md', title: 'Guardrails', position: 4 },
+  { src: 'SAFETY_PRIMITIVES.md', dest: 'features/safety-primitives.md', title: 'Safety Primitives', position: 5 },
   { src: 'RAG_MEMORY_CONFIGURATION.md', dest: 'features/rag-memory.md', title: 'RAG Memory Configuration', position: 5 },
   { src: 'MULTIMODAL_RAG.md', dest: 'features/multimodal-rag.md', title: 'Multimodal RAG (Image + Audio)', position: 6 },
   { src: 'SQL_STORAGE_QUICKSTART.md', dest: 'features/sql-storage.md', title: 'SQL Storage Quickstart', position: 7 },
@@ -104,6 +105,7 @@ const extraDocs = [
   { srcPath: resolve(AGENTOS_PKG, 'CHANGELOG.md'), dest: 'getting-started/changelog.md', title: 'Changelog', position: 4 },
   { srcPath: resolve(REPO_DOCS, 'EMERGENT_AGENCY_SYSTEM.md'), dest: 'architecture/emergent-agency-system.md', title: 'Emergent Agency System', position: 4 },
   { srcPath: resolve(REPO_DOCS, 'BACKEND_API.md'), dest: 'architecture/backend-api.md', title: 'Backend API', position: 5 },
+  { srcPath: resolve(REPO_DOCS, 'MULTI_GMI_COLLABORATION.md'), dest: 'architecture/multi-gmi-implementation-plan.md', title: 'Multi-GMI Collaboration', position: 6 },
   { srcPath: resolve(SQL_STORAGE_ADAPTER_PKG, 'PLATFORM_STRATEGY.md'), dest: 'features/platform-strategy.md', title: 'Platform Strategy', position: 8 },
 ];
 
@@ -115,6 +117,8 @@ const linkRewrites = {
   'EMERGENT_AGENCY_SYSTEM.md': '/docs/architecture/emergent-agency-system',
   'BACKEND_API.md': '/docs/architecture/backend-api',
   'MULTI_GMI_IMPLEMENTATION_PLAN.md': '/docs/architecture/multi-gmi-implementation-plan',
+  'MULTI_GMI_COLLABORATION.md': '/docs/architecture/multi-gmi-implementation-plan',
+  'SAFETY_PRIMITIVES.md': '/docs/features/safety-primitives',
   'OBSERVABILITY.md': '/docs/architecture/observability',
   'LOGGING.md': '/docs/architecture/logging',
   'PLATFORM_SUPPORT.md': '/docs/architecture/platform-support',
@@ -243,14 +247,30 @@ function processMarkdown(content, title, position) {
 let copied = 0;
 let skipped = 0;
 
+// Helper: generate a stub doc so sidebars.js doesn't break on missing sources
+function writeStub(destPath, title, position, srcHint) {
+  ensureDir(destPath);
+  writeFileSync(destPath, `---
+title: "${title}"
+sidebar_position: ${position}
+---
+
+# ${title}
+
+> This page is sourced from the monorepo and is not available in this build.
+> See the [source file](https://github.com/manicinc/voice-chat-assistant) for full content.
+`);
+  console.warn(`  STUB (not found): ${srcHint}`);
+  skipped++;
+}
+
 // 1. Copy AgentOS guides
 for (const { src, dest, title, position } of agentosGuides) {
   const srcPath = resolve(AGENTOS_DOCS, src);
   const destPath = resolve(DOCS_OUT, dest);
 
   if (!existsSync(srcPath)) {
-    console.warn(`  SKIP (not found): ${src}`);
-    skipped++;
+    writeStub(destPath, title, position, src);
     continue;
   }
 
@@ -266,8 +286,7 @@ for (const { src, dest, title, position } of extensionGuides) {
   const destPath = resolve(DOCS_OUT, dest);
 
   if (!existsSync(srcPath)) {
-    console.warn(`  SKIP (not found): ${src}`);
-    skipped++;
+    writeStub(destPath, title, position, src);
     continue;
   }
 
@@ -316,8 +335,7 @@ for (const { srcPath, dest, title, position } of skillsDocs) {
   const destPath = resolve(DOCS_OUT, dest);
 
   if (!existsSync(srcPath)) {
-    console.warn(`  SKIP (not found): ${srcPath}`);
-    skipped++;
+    writeStub(destPath, title, position, srcPath);
     continue;
   }
 
@@ -332,8 +350,7 @@ for (const { srcPath, dest, title, position } of extraDocs) {
   const destPath = resolve(DOCS_OUT, dest);
 
   if (!existsSync(srcPath)) {
-    console.warn(`  SKIP (not found): ${srcPath}`);
-    skipped++;
+    writeStub(destPath, title, position, srcPath);
     continue;
   }
 
