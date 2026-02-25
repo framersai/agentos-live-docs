@@ -155,6 +155,7 @@ jobs:
               pnpm --filter @framers/agentos-ext-http-api build
               pnpm --filter wunderland build
               pnpm --filter @wunderland/social build
+              pnpm --filter @wunderland-sol/sdk build
             }
             if ! build_packages; then
               echo "[deploy] FATAL: workspace package build failed"
