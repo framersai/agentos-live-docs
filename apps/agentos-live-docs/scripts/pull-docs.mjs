@@ -26,6 +26,7 @@ const SKILLS_REGISTRY_PKG = resolve(MONO_ROOT, 'packages/agentos-skills-registry
 const SKILLS_EXTENSION_PKG = resolve(MONO_ROOT, 'packages/agentos-ext-skills');
 const SQL_STORAGE_ADAPTER_PKG = resolve(MONO_ROOT, 'packages/sql-storage-adapter');
 const REPO_DOCS = resolve(MONO_ROOT, 'docs');
+const VENDORED = resolve(ROOT, 'vendored-docs');
 const EXTENSIONS_GITHUB_REPO = 'https://github.com/framersai/agentos-extensions';
 
 // ── Mapping tables ──────────────────────────────────────────────────
@@ -119,6 +120,7 @@ const linkRewrites = {
   'MULTI_GMI_IMPLEMENTATION_PLAN.md': '/docs/architecture/multi-gmi-implementation-plan',
   'MULTI_GMI_COLLABORATION.md': '/docs/architecture/multi-gmi-implementation-plan',
   'SAFETY_PRIMITIVES.md': '/docs/features/safety-primitives',
+  'NESTJS_ARCHITECTURE.md': '/docs/architecture/backend-api',
   'OBSERVABILITY.md': '/docs/architecture/observability',
   'LOGGING.md': '/docs/architecture/logging',
   'PLATFORM_SUPPORT.md': '/docs/architecture/platform-support',
@@ -264,17 +266,36 @@ sidebar_position: ${position}
   skipped++;
 }
 
+/**
+ * Resolve a source file, checking primary path then vendored fallback.
+ * Vendored copies mirror the monorepo layout under vendored-docs/.
+ */
+function resolveSource(primaryPath) {
+  if (existsSync(primaryPath)) return primaryPath;
+  // Compute relative path from MONO_ROOT to find vendored copy
+  if (primaryPath.startsWith(MONO_ROOT)) {
+    const rel = primaryPath.slice(MONO_ROOT.length + 1);
+    const vendoredPath = resolve(VENDORED, rel);
+    if (existsSync(vendoredPath)) {
+      console.log(`  VENDORED: ${rel}`);
+      return vendoredPath;
+    }
+  }
+  return null;
+}
+
 // 1. Copy AgentOS guides
 for (const { src, dest, title, position } of agentosGuides) {
   const srcPath = resolve(AGENTOS_DOCS, src);
   const destPath = resolve(DOCS_OUT, dest);
+  const resolved = resolveSource(srcPath);
 
-  if (!existsSync(srcPath)) {
+  if (!resolved) {
     writeStub(destPath, title, position, src);
     continue;
   }
 
-  const content = readFileSync(srcPath, 'utf8');
+  const content = readFileSync(resolved, 'utf8');
   ensureDir(destPath);
   writeFileSync(destPath, processMarkdown(content, title, position));
   copied++;
@@ -284,13 +305,14 @@ for (const { src, dest, title, position } of agentosGuides) {
 for (const { src, dest, title, position } of extensionGuides) {
   const srcPath = resolve(EXTENSIONS_ROOT, src);
   const destPath = resolve(DOCS_OUT, dest);
+  const resolved = resolveSource(srcPath);
 
-  if (!existsSync(srcPath)) {
+  if (!resolved) {
     writeStub(destPath, title, position, src);
     continue;
   }
 
-  const content = readFileSync(srcPath, 'utf8');
+  const content = readFileSync(resolved, 'utf8');
   ensureDir(destPath);
   writeFileSync(destPath, processMarkdown(content, title, position));
   copied++;
@@ -300,8 +322,9 @@ for (const { src, dest, title, position } of extensionGuides) {
 for (const { dir, dest, title, position } of builtInExtensions) {
   const srcPath = resolve(CURATED_ROOT, dir, 'README.md');
   const destPath = resolve(DOCS_OUT, dest);
+  const resolved = resolveSource(srcPath);
 
-  if (!existsSync(srcPath)) {
+  if (!resolved) {
     // Generate a stub for extensions without READMEs
     ensureDir(destPath);
     writeFileSync(destPath, `---
@@ -318,7 +341,7 @@ Documentation coming soon. See the [extension source](https://github.com/framers
     continue;
   }
 
-  let content = readFileSync(srcPath, 'utf8');
+  let content = readFileSync(resolved, 'utf8');
   // Many extension READMEs link to local ./examples/ folders. In docs, those
   // directories aren't imported as pages, so point to the source repo instead.
   content = content.replace(/\[([^\]]+)\]\(\.\/examples\/?\)/g, (_m, label) => {
@@ -333,13 +356,14 @@ Documentation coming soon. See the [extension source](https://github.com/framers
 // 4. Copy skills docs (skills are a separate section from extensions)
 for (const { srcPath, dest, title, position } of skillsDocs) {
   const destPath = resolve(DOCS_OUT, dest);
+  const resolved = resolveSource(srcPath);
 
-  if (!existsSync(srcPath)) {
+  if (!resolved) {
     writeStub(destPath, title, position, srcPath);
     continue;
   }
 
-  const content = readFileSync(srcPath, 'utf8');
+  const content = readFileSync(resolved, 'utf8');
   ensureDir(destPath);
   writeFileSync(destPath, processMarkdown(content, title, position));
   copied++;
@@ -348,13 +372,14 @@ for (const { srcPath, dest, title, position } of skillsDocs) {
 // 5. Copy extra monorepo docs referenced by guides
 for (const { srcPath, dest, title, position } of extraDocs) {
   const destPath = resolve(DOCS_OUT, dest);
+  const resolved = resolveSource(srcPath);
 
-  if (!existsSync(srcPath)) {
+  if (!resolved) {
     writeStub(destPath, title, position, srcPath);
     continue;
   }
 
-  const content = readFileSync(srcPath, 'utf8');
+  const content = readFileSync(resolved, 'utf8');
   ensureDir(destPath);
   writeFileSync(destPath, processMarkdown(content, title, position));
   copied++;
