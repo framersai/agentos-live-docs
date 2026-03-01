@@ -141,9 +141,10 @@ schemaOnDemandTools: {
   allowPackages: false,
   // Default: false (prefer curated packages).
   allowModules: false,
+  // Default: true. When enabled, `extensions_enable` only loads packs present in
+  // the installed @framers/agentos-extensions-registry catalog.
+  officialRegistryOnly: true,
 }
 ```
 
 Then start your agent with a minimal `extensionManifest` (or selectively-loaded packs), and let the model call `extensions_enable` as needed.
-
-> **See also**: The [Capability Discovery Engine](../features/capability-discovery.md) extends tool loading with semantic search, graph re-ranking, and token-budgeted context assembly — reducing tool context by ~90%.
