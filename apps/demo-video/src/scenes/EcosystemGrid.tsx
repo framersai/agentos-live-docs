@@ -2,36 +2,37 @@ import React from 'react';
 import { AbsoluteFill, interpolate, useCurrentFrame } from 'remotion';
 import { W, RH } from '../theme/colors';
 import { syne, jetbrainsMono } from '../theme/fonts';
+import { EcosystemIconSvg } from '../components/EcosystemIconSvg';
+import { ShineText } from '../components/ShineText';
 
 const ITEMS = [
-  { label: 'OpenAI', color: W.emerald },
-  { label: 'Anthropic', color: W.primaryLight },
-  { label: 'Ollama', color: W.accent },
-  { label: 'Groq', color: W.cyan },
-  { label: 'Mistral', color: W.rose },
-  { label: 'Google', color: W.emerald },
-  { label: 'DeepSeek', color: W.primaryLight },
-  { label: 'Telegram', color: W.cyan },
-  { label: 'Discord', color: '#5865F2' },
-  { label: 'WhatsApp', color: '#25D366' },
-  { label: 'Slack', color: '#E01E5A' },
-  { label: 'Email', color: W.accent },
-  { label: 'Signal', color: '#3A76F0' },
-  { label: 'Twitter', color: W.textPrimary },
-  { label: 'Reddit', color: '#FF4500' },
-  { label: 'Matrix', color: W.emerald },
-  { label: 'web-scraper', color: W.primaryLight },
-  { label: 'deep-research', color: W.cyan },
-  { label: 'coding-agent', color: W.accent },
-  { label: 'summarize', color: W.emerald },
+  { label: 'OpenAI', color: W.emerald, icon: 'openai' },
+  { label: 'Anthropic', color: W.primaryLight, icon: 'anthropic' },
+  { label: 'Ollama', color: W.accent, icon: 'ollama' },
+  { label: 'Groq', color: W.cyan, icon: 'groq' },
+  { label: 'Mistral', color: W.rose, icon: 'mistral' },
+  { label: 'Google', color: W.emerald, icon: 'google' },
+  { label: 'DeepSeek', color: W.primaryLight, icon: 'deepseek' },
+  { label: 'Telegram', color: W.cyan, icon: 'telegram' },
+  { label: 'Discord', color: '#5865F2', icon: 'discord' },
+  { label: 'WhatsApp', color: '#25D366', icon: 'whatsapp' },
+  { label: 'Slack', color: '#E01E5A', icon: 'slack' },
+  { label: 'Email', color: W.accent, icon: 'email' },
+  { label: 'Signal', color: '#3A76F0', icon: 'signal' },
+  { label: 'Twitter', color: W.textPrimary, icon: 'twitter' },
+  { label: 'Reddit', color: '#FF4500', icon: 'reddit' },
+  { label: 'Matrix', color: W.emerald, icon: 'matrix' },
+  { label: 'web-scraper', color: W.primaryLight, icon: 'web-scraper' },
+  { label: 'deep-research', color: W.cyan, icon: 'deep-research' },
+  { label: 'coding-agent', color: W.accent, icon: 'coding-agent' },
+  { label: 'summarize', color: W.emerald, icon: 'summarize' },
 ];
 
 export const EcosystemGrid: React.FC = () => {
   const frame = useCurrentFrame();
 
-  // Background transitions from wunderland to rabbithole
-  const bgProgress = interpolate(frame, [0, 120], [0, 1], { extrapolateRight: 'clamp' });
-  const bg = bgProgress < 0.5 ? W.bgVoid : RH.deepObsidian;
+  const bgProgress = interpolate(frame, [0, 160], [0, 1], { extrapolateRight: 'clamp' });
+  const bg = bgProgress < 0.5 ? W.bgGradient : RH.deepObsidian;
 
   const titleOpacity = interpolate(frame, [0, 15], [0, 1], { extrapolateRight: 'clamp' });
 
@@ -59,36 +60,45 @@ export const EcosystemGrid: React.FC = () => {
         }}
       />
 
-      <div style={{ zIndex: 1, width: 1100 }}>
-        <div
-          style={{
-            textAlign: 'center',
-            marginBottom: 40,
-            opacity: titleOpacity,
-            fontFamily: syne,
-            fontWeight: 700,
-            fontSize: 36,
-            color: W.textPrimary,
-          }}
-        >
-          Providers &middot; Channels &middot; Skills
-        </div>
+      {/* Section title — standardized */}
+      <div
+        style={{
+          position: 'absolute',
+          top: 55,
+          left: 0,
+          right: 0,
+          zIndex: 2,
+          textAlign: 'center',
+          opacity: titleOpacity,
+          fontFamily: syne,
+          fontWeight: 700,
+          fontSize: 42,
+          letterSpacing: '0.06em',
+          color: W.textPrimary,
+        }}
+      >
+        <ShineText startFrame={8}>Providers &middot; Channels &middot; Skills</ShineText>
+      </div>
 
+      <div style={{ zIndex: 1, width: 1100, marginTop: 40 }}>
         {/* Grid */}
         <div
           style={{
             display: 'flex',
             flexWrap: 'wrap' as const,
-            gap: 12,
+            gap: 14,
             justifyContent: 'center',
           }}
         >
           {ITEMS.map((item, i) => {
-            const staggerStart = 15 + i * 3;
-            const opacity = interpolate(frame, [staggerStart, staggerStart + 10], [0, 1], {
+            const staggerStart = 15 + i * 4;
+            const opacity = interpolate(frame, [staggerStart, staggerStart + 12], [0, 1], {
               extrapolateRight: 'clamp',
             });
-            const scale = interpolate(frame, [staggerStart, staggerStart + 12], [0.6, 1], {
+            const scale = interpolate(frame, [staggerStart, staggerStart + 15], [0.5, 1], {
+              extrapolateRight: 'clamp',
+            });
+            const drawProgress = interpolate(frame, [staggerStart, staggerStart + 20], [0, 1], {
               extrapolateRight: 'clamp',
             });
 
@@ -98,34 +108,49 @@ export const EcosystemGrid: React.FC = () => {
                 style={{
                   opacity,
                   transform: `scale(${scale})`,
-                  padding: '8px 18px',
-                  borderRadius: 8,
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 8,
+                  padding: '8px 16px 8px 10px',
+                  borderRadius: 10,
                   border: `1px solid ${item.color}30`,
                   background: `${item.color}10`,
-                  fontFamily: jetbrainsMono,
-                  fontSize: 13,
-                  color: item.color,
-                  fontWeight: 600,
                 }}
               >
-                {item.label}
+                <EcosystemIconSvg
+                  type={item.icon}
+                  size={26}
+                  color={item.color}
+                  drawProgress={drawProgress}
+                />
+                <span
+                  style={{
+                    fontFamily: jetbrainsMono,
+                    fontSize: 13,
+                    color: item.color,
+                    fontWeight: 600,
+                  }}
+                >
+                  {item.label}
+                </span>
               </div>
             );
           })}
         </div>
 
-        {/* Connection lines hint */}
+        {/* Tagline */}
         <div
           style={{
             textAlign: 'center',
             marginTop: 30,
             fontFamily: syne,
             fontSize: 14,
+            lineHeight: 1.5,
             color: W.textTertiary,
-            opacity: interpolate(frame, [80, 100], [0, 1], { extrapolateRight: 'clamp' }),
+            opacity: interpolate(frame, [100, 130], [0, 1], { extrapolateRight: 'clamp' }),
           }}
         >
-          Self-host locally with Ollama — fully offline
+          Power your Wunderbots locally with Ollama &mdash; fully offline
         </div>
       </div>
     </AbsoluteFill>

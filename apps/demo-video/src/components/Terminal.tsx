@@ -47,7 +47,7 @@ export const Terminal: React.FC<TerminalProps> = ({
       </div>
 
       {/* Body */}
-      <div style={{ padding: '16px 20px', fontSize: 14, lineHeight: 1.8 }}>{children}</div>
+      <div style={{ padding: '16px 20px', fontSize: 18, lineHeight: 2.0 }}>{children}</div>
     </div>
   );
 };

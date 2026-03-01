@@ -18,6 +18,11 @@ export const W = {
   textTertiary: 'rgba(240, 238, 255, 0.50)',
   borderGlass: 'rgba(255, 255, 255, 0.08)',
   borderGlow: 'rgba(99, 102, 241, 0.35)',
+  // Sleek gradient backgrounds
+  bgGradient:
+    'radial-gradient(ellipse at 50% 0%, rgba(99, 102, 241, 0.10) 0%, transparent 60%), ' +
+    'radial-gradient(ellipse at 50% 100%, rgba(6, 182, 212, 0.06) 0%, transparent 50%), ' +
+    'radial-gradient(ellipse at 50% 40%, #1a1545 0%, #0f0b2e 50%, #060418 100%)',
 } as const;
 
 // Rabbithole palette
