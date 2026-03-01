@@ -1,14 +1,9 @@
-name: Deploy RabbitHole (Linode)
+name: Deploy RabbitHole (Linode) — DISABLED (use rabbithole submodule's deploy.yml)
 
+# DISABLED: Rabbithole now has its own deploy.yml that triggers on push to master.
+# The submodule workflow SSHs into the server and builds within the monorepo context.
+# Use workflow_dispatch only for manual override if the submodule workflow fails.
 on:
-  push:
-    branches: [master]
-    paths:
-      - 'apps/rabbithole'
-      - 'apps/rabbithole/**'
-      - 'packages/**'
-      - 'deployment/rabbithole/**'
-      - '.github/workflows/deploy-rabbithole.yml'
   workflow_dispatch:
 
 permissions:
