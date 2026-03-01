@@ -87,7 +87,7 @@ node ../packages/wunderland/bin/wunderland.js start --ollama --model llama3.1:8b
 Notes:
 
 - DM policy: by default this agent is intended for **guild channels** (no DMs).
-- Quotas: per-user daily limits by Discord role (Starter/Pro; `Enterprise` is treated as Pro; `Team` is unlimited). Run `/quota`.
+- Quotas: per-user daily limits by Discord role (Explorer/Pioneer; `Enterprise` is treated as Pioneer; `Team` is unlimited). Run `/quota`.
 - Pairing UI (approve allowlist): `http://localhost:3777/pairing`
 - HITL approvals UI: `http://localhost:3777/hitl`
 - Discord slash commands (in guild channels):
