@@ -18,6 +18,8 @@ services:
       - "127.0.0.1:8420:8420"
     volumes:
       - /mnt/storage/discord-bots/data:/app/data
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8420/health"]
       interval: 30s
@@ -34,6 +36,8 @@ services:
       - /etc/rabbithole/discord-bots.env
     volumes:
       - /mnt/storage/discord-bots/data:/app/data
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     depends_on:
       scraper-api:
         condition: service_healthy
@@ -47,6 +51,8 @@ services:
       - /etc/rabbithole/discord-bots.env
     volumes:
       - /mnt/storage/discord-bots/data:/app/data
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     depends_on:
       scraper-api:
         condition: service_healthy
