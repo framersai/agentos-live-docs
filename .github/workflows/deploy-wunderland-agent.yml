@@ -71,8 +71,10 @@ jobs:
             pnpm --filter @framers/agentos-skills-registry build
             pnpm --filter @framers/agentos-ext-skills build
             pnpm --filter @framers/agentos-ext-http-api build
+            pnpm --filter @framers/agentos-ext-channel-discord build
             pnpm --filter @framers/agentos-ext-founders build
             pnpm --filter @framers/agentos-ext-verify build
+            pnpm --filter @framers/agentos-ext-wunderbot-feeds build
             pnpm --filter wunderland build
 
             # ── 4. Ensure env file exists ──
