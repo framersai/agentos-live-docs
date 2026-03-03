@@ -7,6 +7,12 @@ interface TerminalProps {
   children: React.ReactNode;
   opacity?: number;
   scale?: number;
+  /** Maximum body height before scrolling kicks in (px) */
+  maxBodyHeight?: number;
+  /** Pixels to scroll content up (simulates auto-scroll) */
+  scrollOffset?: number;
+  /** Total content height for scrollbar thumb calculation */
+  totalContentHeight?: number;
 }
 
 export const Terminal: React.FC<TerminalProps> = ({
@@ -14,7 +20,21 @@ export const Terminal: React.FC<TerminalProps> = ({
   children,
   opacity = 1,
   scale = 1,
+  maxBodyHeight = 480,
+  scrollOffset = 0,
+  totalContentHeight = 0,
 }) => {
+  const showScrollbar = scrollOffset > 0 && totalContentHeight > maxBodyHeight;
+  const trackHeight = maxBodyHeight - 16; // padding offset
+  const thumbHeight = Math.max(
+    24,
+    totalContentHeight > 0 ? (maxBodyHeight / totalContentHeight) * trackHeight : 0
+  );
+  const thumbTop =
+    totalContentHeight > maxBodyHeight
+      ? (scrollOffset / (totalContentHeight - maxBodyHeight)) * (trackHeight - thumbHeight)
+      : 0;
+
   return (
     <div
       style={{
@@ -46,8 +66,54 @@ export const Terminal: React.FC<TerminalProps> = ({
         <span style={{ color: W.textTertiary, fontSize: 11, marginLeft: 8 }}>{title}</span>
       </div>
 
-      {/* Body */}
-      <div style={{ padding: '16px 20px', fontSize: 18, lineHeight: 2.0 }}>{children}</div>
+      {/* Body — clipped viewport with scroll offset */}
+      <div
+        style={{
+          position: 'relative',
+          maxHeight: maxBodyHeight,
+          overflow: 'hidden',
+          fontSize: 18,
+          lineHeight: 2.0,
+        }}
+      >
+        {/* Scrollable content */}
+        <div
+          style={{
+            padding: '16px 20px',
+            transform: `translateY(${-scrollOffset}px)`,
+          }}
+        >
+          {children}
+        </div>
+
+        {/* Scrollbar track + thumb */}
+        {showScrollbar && (
+          <div
+            style={{
+              position: 'absolute',
+              top: 8,
+              right: 4,
+              width: 4,
+              height: trackHeight,
+              borderRadius: 2,
+              background: 'rgba(99, 102, 241, 0.08)',
+              pointerEvents: 'none',
+            }}
+          >
+            <div
+              style={{
+                position: 'absolute',
+                top: thumbTop,
+                width: 4,
+                height: thumbHeight,
+                borderRadius: 2,
+                background: 'rgba(99, 102, 241, 0.35)',
+                boxShadow: '0 0 6px rgba(99, 102, 241, 0.2)',
+              }}
+            />
+          </div>
+        )}
+      </div>
     </div>
   );
 };

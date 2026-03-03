@@ -32,17 +32,15 @@ export const EcosystemGrid: React.FC = () => {
   const frame = useCurrentFrame();
 
   const bgProgress = interpolate(frame, [0, 160], [0, 1], { extrapolateRight: 'clamp' });
-  const bg = bgProgress < 0.5 ? W.bgGradient : RH.deepObsidian;
 
   const titleOpacity = interpolate(frame, [0, 15], [0, 1], { extrapolateRight: 'clamp' });
 
   return (
     <AbsoluteFill
       style={{
-        background: bg,
+        background: W.bgGradient,
         justifyContent: 'center',
         alignItems: 'center',
-        transition: 'background 2s',
       }}
     >
       {/* Holographic glow overlay */}

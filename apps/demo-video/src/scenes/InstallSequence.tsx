@@ -606,6 +606,41 @@ const PHASE3: Line[] = [
 const PHASE_DURATION = 480;
 const PHASE2_START = PHASE_DURATION;
 const PHASE3_START = PHASE_DURATION * 2;
+const PHASE3_DURATION = 345; // installSequence(1305) - PHASE3_START(960)
+
+// ── Line height constants (must match Terminal body styles) ──────────
+const LINE_H = 36; // fontSize 18 * lineHeight 2.0
+const BLANK_H = 6;
+const BODY_PAD = 32; // 16px top + 16px bottom
+const MAX_BODY_H = 600;
+
+/** Compute smooth scroll offset for a phase based on visible lines */
+const getScrollOffset = (lines: Line[], localFrame: number): number => {
+  const EASE = 10;
+  let totalH = BODY_PAD;
+  for (const line of lines) {
+    if (line.type === 'blank') {
+      totalH += BLANK_H;
+    } else {
+      const t = interpolate(localFrame, [line.start, line.start + EASE], [0, 1], {
+        extrapolateLeft: 'clamp',
+        extrapolateRight: 'clamp',
+      });
+      totalH += LINE_H * t;
+    }
+  }
+  return Math.max(0, totalH - MAX_BODY_H);
+};
+
+/** Total content height (for scrollbar thumb) */
+const getTotalHeight = (lines: Line[], localFrame: number): number => {
+  let totalH = BODY_PAD;
+  for (const line of lines) {
+    if (line.type === 'blank') totalH += BLANK_H;
+    else if (localFrame >= line.start) totalH += LINE_H;
+  }
+  return totalH;
+};
 
 // ── Render a single line ─────────────────────────────────────────────
 const RichLine: React.FC<{
@@ -631,14 +666,57 @@ const RichLine: React.FC<{
       </>
     ) : undefined;
 
+    // Gold glow appears as typing starts — visual "user input" indicator
+    const glowOpacity = interpolate(lf, [line.start - 2, line.start + 4], [0, 1], {
+      extrapolateLeft: 'clamp',
+      extrapolateRight: 'clamp',
+    });
+
     return (
-      <TypingAnimation
-        text={line.text}
-        startFrame={offset + line.start}
-        typingDuration={line.dur}
-        prefix={prefixNode}
-        color={line.color}
-      />
+      <div
+        style={{
+          position: 'relative',
+          marginLeft: -12,
+          marginRight: -12,
+          paddingLeft: 12,
+          paddingRight: 12,
+          borderRadius: 4,
+        }}
+      >
+        {/* Ambient gold glow background */}
+        <div
+          style={{
+            position: 'absolute',
+            inset: 0,
+            background:
+              'linear-gradient(90deg, rgba(245,158,11,0.08) 0%, rgba(245,158,11,0.04) 50%, transparent 100%)',
+            borderRadius: 4,
+            opacity: glowOpacity,
+            pointerEvents: 'none',
+          }}
+        />
+        {/* Left accent bar */}
+        <div
+          style={{
+            position: 'absolute',
+            left: 0,
+            top: 4,
+            bottom: 4,
+            width: 2,
+            background: `rgba(245,158,11,${0.5 * glowOpacity})`,
+            borderRadius: 1,
+            boxShadow: `0 0 8px rgba(245,158,11,${0.3 * glowOpacity})`,
+            pointerEvents: 'none',
+          }}
+        />
+        <TypingAnimation
+          text={line.text}
+          startFrame={offset + line.start}
+          typingDuration={line.dur}
+          prefix={prefixNode}
+          color={line.color}
+        />
+      </div>
     );
   }
 
@@ -668,31 +746,24 @@ export const InstallSequence: React.FC = () => {
       extrapolateRight: 'clamp',
     });
 
-  // Phase 1 zoom
-  const p1Zoom = interpolate(
-    frame,
-    [0, 12, 100, 125, PHASE_DURATION - 25, PHASE_DURATION],
-    [0.92, 1.0, 1.0, 1.1, 1.1, 1.0],
-    { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' }
-  );
+  // Phase 3 has a shorter duration (345 frames, not 480)
+  const fadeP3 = (lf: number) =>
+    interpolate(lf, [0, 8, PHASE3_DURATION - 20, PHASE3_DURATION], [0, 1, 1, 0], {
+      extrapolateLeft: 'clamp',
+      extrapolateRight: 'clamp',
+    });
 
-  // Phase 2 zoom
+  // No zoom — static 1.0 scale, no pan. Content highlighted via glow styling instead.
   const p2L = frame - PHASE2_START;
-  const p2Zoom = interpolate(
-    p2L,
-    [0, 12, 240, 265, PHASE_DURATION - 25, PHASE_DURATION],
-    [0.92, 1.0, 1.0, 1.12, 1.12, 1.0],
-    { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' }
-  );
-
-  // Phase 3 zoom
   const p3L = frame - PHASE3_START;
-  const p3Zoom = interpolate(
-    p3L,
-    [0, 12, 140, 165, PHASE_DURATION - 25, PHASE_DURATION],
-    [0.92, 1.0, 1.0, 1.08, 1.08, 1.0],
-    { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' }
-  );
+
+  // ── Scroll offsets per phase ──
+  const p1Scroll = getScrollOffset(PHASE1, frame);
+  const p1Total = getTotalHeight(PHASE1, frame);
+  const p2Scroll = getScrollOffset(PHASE2, p2L);
+  const p2Total = getTotalHeight(PHASE2, p2L);
+  const p3Scroll = getScrollOffset(PHASE3, p3L);
+  const p3Total = getTotalHeight(PHASE3, p3L);
 
   const headingStyle: React.CSSProperties = {
     position: 'absolute',
@@ -708,20 +779,19 @@ export const InstallSequence: React.FC = () => {
     letterSpacing: '0.06em',
   };
 
-  const wrap = (zoom: number, opacity: number, z: number): React.CSSProperties => ({
+  const wrap = (opacity: number, z: number): React.CSSProperties => ({
     position: 'absolute',
+    top: 170,
+    left: '50%',
     width: 1000,
     zIndex: z,
-    transform: `scale(${zoom})`,
-    transformOrigin: 'center center',
+    transform: 'translateX(-50%)',
+    transformOrigin: 'top center',
     opacity,
-    marginTop: 30,
   });
 
   return (
-    <AbsoluteFill
-      style={{ background: W.bgGradient, justifyContent: 'center', alignItems: 'center' }}
-    >
+    <AbsoluteFill style={{ background: W.bgGradient }}>
       <FloatingParticles count={15} />
 
       {/* ── Fixed-position heading — always at same height ── */}
@@ -736,15 +806,20 @@ export const InstallSequence: React.FC = () => {
         </div>
       )}
       {frame >= PHASE3_START - 15 && (
-        <div style={{ ...headingStyle, opacity: fade(p3L) }}>
+        <div style={{ ...headingStyle, opacity: fadeP3(p3L) }}>
           <ShineText startFrame={PHASE3_START + 5}>System Health Check</ShineText>
         </div>
       )}
 
       {/* ── Terminal panels ── */}
       {frame < PHASE2_START + 15 && (
-        <div style={wrap(p1Zoom, fade(frame), 1)}>
-          <Terminal title="wunderland setup">
+        <div style={wrap(fade(frame), 1)}>
+          <Terminal
+            title="wunderland setup"
+            maxBodyHeight={MAX_BODY_H}
+            scrollOffset={p1Scroll}
+            totalContentHeight={p1Total}
+          >
             {PHASE1.map((l, i) => (
               <RichLine key={`p1-${i}`} line={l} frame={frame} offset={0} />
             ))}
@@ -753,8 +828,13 @@ export const InstallSequence: React.FC = () => {
       )}
 
       {frame >= PHASE2_START - 15 && frame < PHASE3_START + 15 && (
-        <div style={wrap(p2Zoom, fade(p2L), 2)}>
-          <Terminal title="wunderland chat — Research Assistant">
+        <div style={wrap(fade(p2L), 2)}>
+          <Terminal
+            title="wunderland chat — Research Assistant"
+            maxBodyHeight={MAX_BODY_H}
+            scrollOffset={p2Scroll}
+            totalContentHeight={p2Total}
+          >
             {PHASE2.map((l, i) => (
               <RichLine key={`p2-${i}`} line={l} frame={frame} offset={PHASE2_START} />
             ))}
@@ -763,8 +843,13 @@ export const InstallSequence: React.FC = () => {
       )}
 
       {frame >= PHASE3_START - 15 && (
-        <div style={wrap(p3Zoom, fade(p3L), 3)}>
-          <Terminal title="wunderland doctor">
+        <div style={wrap(fadeP3(p3L), 3)}>
+          <Terminal
+            title="wunderland doctor"
+            maxBodyHeight={MAX_BODY_H}
+            scrollOffset={p3Scroll}
+            totalContentHeight={p3Total}
+          >
             {PHASE3.map((l, i) => (
               <RichLine key={`p3-${i}`} line={l} frame={frame} offset={PHASE3_START} />
             ))}

@@ -43,7 +43,7 @@ const starts = {
 
 const PHASE_DURATION = 480; // each install phase
 
-const FADE_IN_FRAMES = 12; // 0.4s fast fade-in on beat
+const FADE_IN_FRAMES = 3; // ~0.1s near-instant fade-in
 const FADE_OUT_FRAMES = 75; // 2.5s gentle fade-out
 
 export const DemoVideo: React.FC = () => {
@@ -51,8 +51,8 @@ export const DemoVideo: React.FC = () => {
 
   // Background music: fast fade-in, gentle fade-out
   const musicVolume = useCallback((f: number) => {
-    const fadeIn = interpolate(f, [0, FADE_IN_FRAMES], [0, 0.3], { extrapolateRight: 'clamp' });
-    const fadeOut = interpolate(f, [TOTAL_DURATION - FADE_OUT_FRAMES, TOTAL_DURATION], [0.3, 0], {
+    const fadeIn = interpolate(f, [0, FADE_IN_FRAMES], [0, 0.35], { extrapolateRight: 'clamp' });
+    const fadeOut = interpolate(f, [TOTAL_DURATION - FADE_OUT_FRAMES, TOTAL_DURATION], [0.35, 0], {
       extrapolateLeft: 'clamp',
       extrapolateRight: 'clamp',
     });
@@ -61,8 +61,8 @@ export const DemoVideo: React.FC = () => {
 
   return (
     <>
-      {/* ── Background Soundtrack (loops — track is 106s, video is ~127s) ── */}
-      <Audio src={staticFile('voiceover/soundtrack.mp3')} volume={musicVolume} loop />
+      {/* ── Background Soundtrack (145s extended track, covers full ~138s video) ── */}
+      <Audio src={staticFile('voiceover/soundtrack.mp3')} volume={musicVolume} />
 
       {/* ── Scene 1: Brand Intro ── */}
       <Sequence from={starts.brandIntro} durationInFrames={SCENE.brandIntro}>
@@ -81,8 +81,8 @@ export const DemoVideo: React.FC = () => {
         <Sequence from={PHASE_DURATION + 10} durationInFrames={PHASE_DURATION - 10}>
           <Audio src={staticFile('voiceover/install-phase2.mp3')} volume={0.9} />
         </Sequence>
-        {/* Phase 3 voiceover */}
-        <Sequence from={PHASE_DURATION * 2 + 10} durationInFrames={PHASE_DURATION - 10}>
+        {/* Phase 3 voiceover (shorter: 345 frames) */}
+        <Sequence from={PHASE_DURATION * 2 + 10} durationInFrames={345 - 10}>
           <Audio src={staticFile('voiceover/install-phase3.mp3')} volume={0.9} />
         </Sequence>
       </Sequence>

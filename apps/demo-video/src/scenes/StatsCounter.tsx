@@ -1,15 +1,15 @@
 import React from 'react';
 import { AbsoluteFill, interpolate, useCurrentFrame } from 'remotion';
 import { W } from '../theme/colors';
-import { syne } from '../theme/fonts';
+import { syne, inter } from '../theme/fonts';
 import { AnimatedCounter } from '../components/AnimatedCounter';
 import { ShineText } from '../components/ShineText';
 
 const STATS = [
-  { target: 27, label: 'Messaging\nChannels', color: W.accent, suffix: '' },
-  { target: 13, label: 'LLM\nProviders', color: W.emerald, suffix: '' },
+  { target: 27, label: 'Messaging\nChannels', color: W.accent, suffix: '+' },
+  { target: 13, label: 'LLM\nProviders', color: W.emerald, suffix: '+' },
   { target: 23, label: 'Built-in\nTools', color: W.primaryLight, suffix: '+' },
-  { target: 18, label: 'Curated\nSkills', color: W.cyan, suffix: '' },
+  { target: 18, label: 'Curated\nSkills', color: W.cyan, suffix: '+' },
   { target: 51, label: 'Total\nExtensions', color: W.rose, suffix: '+' },
 ];
 
@@ -86,14 +86,16 @@ export const StatsCounter: React.FC = () => {
           style={{
             textAlign: 'center',
             marginTop: 24,
-            fontFamily: syne,
-            fontSize: 16,
-            lineHeight: 1.5,
+            paddingBottom: 20,
+            fontFamily: inter,
+            fontSize: 20,
+            lineHeight: 1.8,
             color: W.textTertiary,
+            overflow: 'visible',
             opacity: interpolate(frame, [100, 120], [0, 1], { extrapolateRight: 'clamp' }),
           }}
         >
-          Everything your Wunderbot needs — Telegram, Discord, Slack, WhatsApp, Signal + more
+          Everything your Wunderbot needs and counting, growing every single week
         </div>
       </div>
     </AbsoluteFill>

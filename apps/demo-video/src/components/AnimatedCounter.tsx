@@ -61,6 +61,7 @@ export const AnimatedCounter: React.FC<Props> = ({
           textTransform: 'uppercase' as const,
           color: 'rgba(240, 238, 255, 0.5)',
           marginTop: 8,
+          lineHeight: 1.3,
         }}
       >
         {label}

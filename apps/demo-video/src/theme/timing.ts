@@ -4,11 +4,11 @@ export const HEIGHT = 1080;
 
 // Scene durations in frames — must exceed voiceover duration + ~1s buffer
 export const SCENE = {
-  brandIntro: 540, // 18s (voiceover ~16.7s)
-  installSequence: 1380, // 46s (phases 1+2: 480 each, phase 3: 420 compressed)
-  screenshotShowcase: 540, // 18s (voiceover ~10.9s + readable slide durations)
+  brandIntro: 750, // 25s (voiceover ~23.7s — includes Ollama offline line)
+  installSequence: 1305, // 43.5s (phases 1+2: 480 each, phase 3: 345 compressed)
+  screenshotShowcase: 720, // 24s (voiceover ~10.9s + human-readable slide durations)
   featureHighlights: 420, // 14s (voiceover ~12.3s)
-  statsCounter: 340, // 11.3s (voiceover ~10.1s)
+  statsCounter: 500, // 16.7s (voiceover ~15.3s)
   ecosystemGrid: 360, // 12s (voiceover ~10.3s)
   rabbitholeCTA: 330, // 11s (voiceover ~9.4s)
 } as const;

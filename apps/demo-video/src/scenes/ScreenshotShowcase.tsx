@@ -19,64 +19,78 @@ const SCREENSHOTS: {
   caption: string;
   color: string;
   dur: number; // frames this slide is visible
+  hasChrome?: boolean; // true if screenshot already has window dots/chrome
 }[] = [
   {
     file: 'setup-wizard.png',
     title: 'wunderland setup',
     caption: 'Interactive onboarding — QuickStart or Advanced config flow',
     color: W.accent,
-    dur: 80,
+    dur: 97,
+    hasChrome: true,
   },
   {
     file: 'tui-dashboard.png',
     title: 'wunderland tui',
     caption: 'Terminal dashboard with command palette and keyboard shortcuts',
     color: W.cyan,
-    dur: 100,
+    dur: 102,
+    hasChrome: true,
   },
   {
     file: 'presets-grid.png',
     title: 'wunderland list-presets',
     caption: '8 agent presets with HEXACO personality traits (H, E, X, A, C, O)',
     color: W.emerald,
-    dur: 80,
+    dur: 97,
+    hasChrome: true,
   },
   {
     file: 'hitl-dashboard.png',
     title: 'HITL Dashboard',
     caption: 'localhost:3777/hitl — approve or reject tool calls in real-time',
     color: W.cyan,
-    dur: 90,
+    dur: 97,
+    hasChrome: true,
   },
   {
     file: 'chat-toolcall.png',
     title: 'wunderland chat',
     caption: 'Autonomous tool calling — 23+ tools, web search, GitHub, and more',
     color: W.primaryLight,
-    dur: 75,
+    dur: 122,
+    hasChrome: true,
   },
   {
     file: 'models-grid.png',
     title: 'wunderland models',
     caption: '13 LLM providers — OpenAI, Anthropic, Ollama, Groq, Gemini + more',
     color: W.primaryLight,
-    dur: 65,
+    dur: 117,
+    hasChrome: true,
   },
   {
     file: 'skills-grid.png',
     title: 'wunderland skills',
     caption: '18 curated skills — web-search, github, coding-agent, spotify, notion + more',
     color: W.accent,
-    dur: 50,
+    dur: 137,
+    hasChrome: true,
   },
 ];
 
-// Pre-compute cumulative start frames for each slide
+// Slides overlap by OVERLAP frames for true crossfade
+const OVERLAP = 8;
+
+// Pre-compute cumulative start frames (with overlap subtracted)
 const SLIDE_STARTS = SCREENSHOTS.reduce<number[]>((acc, _, i) => {
   if (i === 0) return [0];
-  acc.push(acc[i - 1] + SCREENSHOTS[i - 1].dur);
+  acc.push(acc[i - 1] + SCREENSHOTS[i - 1].dur - OVERLAP);
   return acc;
 }, []);
+
+// Max image height — clips tallest screenshots (skills-grid, setup-wizard) for consistent cards
+const IMAGE_MAX_HEIGHT = 580;
 
 // Holographic gradient colors for the animated border
 const HOLO_GRADIENT =
@@ -115,30 +129,58 @@ export const ScreenshotShowcase: React.FC = () => {
         </ShineText>
       </div>
 
-      {/* Screenshot carousel — all slides same size, fade + gentle zoom */}
+      {/* Screenshot carousel — crossfade + motion + blur transitions */}
       {SCREENSHOTS.map((shot, i) => {
         const slideStart = SLIDE_STARTS[i];
         const dur = shot.dur;
         const slideEnd = slideStart + dur;
         const localFrame = frame - slideStart;
 
-        if (frame < slideStart - 15 || frame > slideEnd + 15) return null;
+        if (frame < slideStart - 20 || frame > slideEnd + 20) return null;
 
-        const TRANS = 12;
+        const TRANS = 20;
 
-        const opacity = interpolate(localFrame, [-5, TRANS, dur - TRANS, dur + 5], [0, 1, 1, 0], {
+        // Opacity: fade in over TRANS frames, hold, fade out over TRANS frames
+        const opacity = interpolate(localFrame, [-8, TRANS, dur - TRANS, dur + 8], [0, 1, 1, 0], {
           extrapolateLeft: 'clamp',
           extrapolateRight: 'clamp',
         });
-        // Slow zoom from 1.0 → 1.08 for a subtle cinematic feel
+
+        // Ken Burns zoom (slow cinematic push)
         const zoom = interpolate(localFrame, [0, dur], [1.0, 1.08], {
           extrapolateLeft: 'clamp',
           extrapolateRight: 'clamp',
         });
-        const enterY = interpolate(localFrame, [-5, TRANS], [30, 0], {
+
+        // Entrance: slide down from above + scale up
+        const enterY = interpolate(localFrame, [-8, TRANS], [40, 0], {
           extrapolateLeft: 'clamp',
           extrapolateRight: 'clamp',
         });
+        const enterScale = interpolate(localFrame, [-8, TRANS], [0.95, 1], {
+          extrapolateLeft: 'clamp',
+          extrapolateRight: 'clamp',
+        });
+
+        // Exit: slide up + scale down
+        const exitY = interpolate(localFrame, [dur - TRANS, dur + 8], [0, -40], {
+          extrapolateLeft: 'clamp',
+          extrapolateRight: 'clamp',
+        });
+        const exitScale = interpolate(localFrame, [dur - TRANS, dur + 8], [1, 0.96], {
+          extrapolateLeft: 'clamp',
+          extrapolateRight: 'clamp',
+        });
+
+        // Blur: cinematic focus transition
+        const blur = interpolate(localFrame, [-8, TRANS, dur - TRANS, dur + 8], [4, 0, 0, 4], {
+          extrapolateLeft: 'clamp',
+          extrapolateRight: 'clamp',
+        });
+
+        // Combine transforms
+        const translateY = enterY + exitY;
+        const scale = zoom * enterScale * exitScale;
 
         return (
           <div
@@ -146,12 +188,13 @@ export const ScreenshotShowcase: React.FC = () => {
             style={{
               position: 'absolute',
               width: 880,
-              transform: `translateY(${enterY}px) scale(${zoom})`,
+              transform: `translateY(${translateY}px) scale(${scale})`,
               transformOrigin: 'center center',
               opacity,
+              filter: blur > 0.1 ? `blur(${blur}px)` : undefined,
             }}
           >
-            <ScreenshotCard shot={shot} frame={frame} />
+            <ScreenshotCard shot={shot} frame={frame} hasChrome={shot.hasChrome} />
           </div>
         );
       })}
@@ -191,8 +234,9 @@ export const ScreenshotShowcase: React.FC = () => {
 const ScreenshotCard: React.FC<{
   shot: { file: string; title: string; caption: string; color: string };
   frame: number;
-}> = ({ shot, frame }) => {
-  // Rotating angle for holographic border (2 degrees per frame = ~24°/s)
+  hasChrome?: boolean;
+}> = ({ shot, frame, hasChrome }) => {
+  // Rotating angle for holographic border (3 degrees per frame)
   const angle = frame * 3;
 
   return (
@@ -219,37 +263,38 @@ const ScreenshotCard: React.FC<{
           overflow: 'hidden',
         }}
       >
-        {/* Header — traffic light dots + holographic shimmer line */}
-        <div
-          style={{
-            position: 'relative',
-            display: 'flex',
-            alignItems: 'center',
-            gap: 6,
-            padding: '8px 14px',
-            background: 'rgba(99, 102, 241, 0.06)',
-          }}
-        >
-          <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#ff5f56' }} />
-          <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#ffbd2e' }} />
-          <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#27c93f' }} />
-          {/* Holographic shimmer line at bottom of header */}
+        {/* Header — traffic light dots + holographic shimmer line (skip if screenshot has its own chrome) */}
+        {!hasChrome && (
           <div
             style={{
-              position: 'absolute',
-              bottom: 0,
-              left: 0,
-              right: 0,
-              height: 1,
-              background: `linear-gradient(90deg, transparent, ${W.primaryLight}40, ${W.cyan}50, ${W.emerald}40, ${W.accent}50, ${W.rose}40, transparent)`,
-              backgroundSize: '200% 100%',
-              backgroundPosition: `${(frame * 2) % 200}% 0`,
+              position: 'relative',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 6,
+              padding: '8px 14px',
+              background: 'rgba(99, 102, 241, 0.06)',
             }}
-          />
-        </div>
+          >
+            <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#ff5f56' }} />
+            <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#ffbd2e' }} />
+            <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#27c93f' }} />
+            <div
+              style={{
+                position: 'absolute',
+                bottom: 0,
+                left: 0,
+                right: 0,
+                height: 1,
+                background: `linear-gradient(90deg, transparent, ${W.primaryLight}40, ${W.cyan}50, ${W.emerald}40, ${W.accent}50, ${W.rose}40, transparent)`,
+                backgroundSize: '200% 100%',
+                backgroundPosition: `${(frame * 2) % 200}% 0`,
+              }}
+            />
+          </div>
+        )}
 
-        {/* Image with inner top highlight */}
-        <div style={{ position: 'relative' }}>
+        {/* Image with inner top highlight — capped height for consistency */}
+        <div style={{ position: 'relative', maxHeight: IMAGE_MAX_HEIGHT, overflow: 'hidden' }}>
           <Img src={staticFile(shot.file)} style={{ width: '100%', display: 'block' }} />
           {/* Neumorphic inner top highlight */}
           <div

@@ -9,7 +9,7 @@ import {
   useVideoConfig,
 } from 'remotion';
 import { RH, W } from '../theme/colors';
-import { syne, jetbrainsMono } from '../theme/fonts';
+import { syne, inter, jetbrainsMono } from '../theme/fonts';
 import { FloatingParticles } from '../components/FloatingParticles';
 
 const TITLE_WORDS = ['Start', 'Building', 'Wunderbots'];
@@ -76,7 +76,7 @@ export const RabbitholeCTA: React.FC = () => {
 
   return (
     <AbsoluteFill
-      style={{ background: RH.deepObsidian, justifyContent: 'center', alignItems: 'center' }}
+      style={{ background: W.bgGradient, justifyContent: 'center', alignItems: 'center' }}
     >
       <FloatingParticles count={20} color={RH.brandGold} />
 
@@ -112,10 +112,12 @@ export const RabbitholeCTA: React.FC = () => {
                 key={i}
                 style={{
                   display: 'inline-block',
-                  fontFamily: syne,
-                  fontWeight: 700,
+                  fontFamily: inter,
+                  fontWeight: 600,
                   fontSize: 56,
-                  letterSpacing: '0.04em',
+                  letterSpacing: '0.02em',
+                  lineHeight: 1.3,
+                  paddingBottom: 6,
                   opacity: anim.opacity,
                   transform: `translateY(${anim.y}px) scale(${Math.min(anim.scale, 1)})`,
                   background:
@@ -326,7 +328,7 @@ export const RabbitholeCTA: React.FC = () => {
             marginTop: 12,
           }}
         >
-          MIT License &middot; Free Forever
+          MIT License
         </div>
       </div>
     </AbsoluteFill>

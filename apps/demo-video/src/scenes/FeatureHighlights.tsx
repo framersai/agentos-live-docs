@@ -493,7 +493,7 @@ const FEATURES = [
   },
   {
     title: 'Unlimited Memory',
-    desc: 'Working memory, long-term semantic, episodic, GraphRAG, shared agency.',
+    desc: 'Semantic, episodic, GraphRAG, dynamic time-based mood decay.',
     color: W.cyan,
     Icon: MemoryIcon,
   },
