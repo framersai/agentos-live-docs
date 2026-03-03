@@ -50,3 +50,6 @@
 [submodule "packages/agentic-file-search"]
 	path = packages/agentic-file-search
 	url = https://github.com/PromtEngineer/agentic-file-search.git
+[submodule "apps/wunderland-sh-site"]
+	path = apps/wunderland-sh-site
+	url = https://github.com/jddunn/wunderland-sh.git
