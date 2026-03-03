@@ -7,7 +7,7 @@ Wants=searxng.service
 Type=simple
 User=root
 WorkingDirectory=/app/rabbithole/rabbithole-ai-agent
-ExecStart=/usr/bin/node /app/rabbithole/packages/wunderland/dist/cli/index.js start --port 3777
+ExecStart=/usr/bin/node /app/rabbithole/packages/wunderland/bin/wunderland.js start --port 3777
 Restart=on-failure
 RestartSec=10
 Environment=NODE_ENV=production
