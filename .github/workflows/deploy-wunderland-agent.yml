@@ -51,6 +51,7 @@ jobs:
             # ── 2. Install dependencies ──
             echo "[deploy] Installing dependencies..."
             pnpm install --no-frozen-lockfile --ignore-scripts
+            npm rebuild better-sqlite3 2>&1 || true
 
             # ── 3. Build workspace packages in dependency order ──
             echo "[deploy] Building workspace packages..."

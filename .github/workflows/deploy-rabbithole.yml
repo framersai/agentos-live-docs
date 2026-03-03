@@ -112,6 +112,7 @@ jobs:
             # ── 2. Install dependencies ──
             echo "[deploy] Installing dependencies..."
             pnpm install --no-frozen-lockfile --ignore-scripts
+            npm rebuild better-sqlite3 2>&1 || true
 
             # ── 2b. Back up current .next BEFORE any builds ──
             # If workspace package builds or next build fail, we restore the old
