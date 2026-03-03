@@ -14,7 +14,7 @@ Environment=NODE_ENV=production
 Environment=PORT=3000
 Environment=BACKEND_PORT=3001
 Environment=HOSTNAME=0.0.0.0
-Environment=NODE_OPTIONS=--max-old-space-size=6144
+Environment=NODE_OPTIONS=--max-old-space-size=2048
 Environment=DISCORD_BOT_ENABLED=false
 Environment=TELEGRAM_BOT_ENABLED=false
 Environment=PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin

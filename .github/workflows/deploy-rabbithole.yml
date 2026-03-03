@@ -1,8 +1,8 @@
-name: Deploy RabbitHole (Linode) — DISABLED (use rabbithole submodule's deploy.yml)
+name: Deploy RabbitHole + Wunderland Agent (Linode)
 
-# DISABLED: Rabbithole now has its own deploy.yml that triggers on push to master.
-# The submodule workflow SSHs into the server and builds within the monorepo context.
-# Use workflow_dispatch only for manual override if the submodule workflow fails.
+# Rabbithole frontend: auto-deployed via rabbithole submodule's own deploy.yml on push.
+# Wunderland agent: deployed as part of this workflow (step 10).
+# Use workflow_dispatch for manual full redeploy if the submodule workflow fails.
 on:
   workflow_dispatch:
 
@@ -148,6 +148,9 @@ jobs:
               pnpm --filter @framers/agentos-skills-registry build
               pnpm --filter @framers/agentos-ext-skills build
               pnpm --filter @framers/agentos-ext-http-api build
+              pnpm --filter @framers/agentos-ext-founders build
+              pnpm --filter @framers/agentos-ext-verify build
+              pnpm --filter @framers/agentos-ext-wunderbot-feeds build
               pnpm --filter wunderland build
               pnpm --filter @wunderland/social build
               pnpm --filter @wunderland-sol/sdk build
@@ -223,6 +226,29 @@ jobs:
               sleep 10
               API_CODE=$(curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:3001/health || echo "000")
               echo "[deploy] Backend sidecar retry: HTTP $API_CODE"
+            fi
+
+            # ── 10. Deploy Wunderland Agent (Discord bot) ──
+            echo "[deploy] Deploying Wunderland agent..."
+            if [ ! -f /etc/rabbithole/wunderland-agent.env ]; then
+              echo "[deploy] WARNING: /etc/rabbithole/wunderland-agent.env not found — skipping agent deploy"
+              echo "[deploy] Create it from: $REPO_DIR/deployment/rabbithole/wunderland-agent.env.example"
+            else
+              mkdir -p /mnt/storage/wunderland-agent/data
+              cp "$REPO_DIR/deployment/rabbithole/wunderland-agent.service" /etc/systemd/system/wunderland-agent.service
+              systemctl daemon-reload
+              systemctl enable wunderland-agent
+              systemctl restart wunderland-agent
+
+              echo "[deploy] Waiting for Wunderland agent to start..."
+              for i in $(seq 1 12); do
+                if curl -sf http://localhost:3777/health >/dev/null 2>&1; then
+                  echo "[deploy] Wunderland agent is healthy"
+                  break
+                fi
+                [ "$i" -eq 12 ] && echo "[deploy] WARNING: Agent health check failed after 60s"
+                sleep 5
+              done
             fi
 
             echo "[deploy] Done."

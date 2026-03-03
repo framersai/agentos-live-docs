@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Push .env files to production servers.
-# Usage: ./deployment/deploy-env.sh [wunderland|rabbithole|all]
+# Usage: ./deployment/deploy-env.sh [wunderland|rabbithole|discord-bots|wunderland-agent|all]
 
 set -euo pipefail
 
@@ -28,10 +28,17 @@ push_discord_bots() {
   echo "  Done."
 }
 
+push_wunderland_agent() {
+  echo "→ Pushing wunderland-agent.env to rabbithole ($RABBITHOLE_HOST)..."
+  scp -i "$SSH_KEY" "$DIR/rabbithole/wunderland-agent.env" "root@$RABBITHOLE_HOST:/etc/rabbithole/wunderland-agent.env"
+  echo "  Done."
+}
+
 case "${1:-all}" in
-  wunderland)    push_wunderland ;;
-  rabbithole)    push_rabbithole ;;
-  discord-bots)  push_discord_bots ;;
-  all)           push_wunderland; push_rabbithole; push_discord_bots ;;
-  *)             echo "Usage: $0 [wunderland|rabbithole|discord-bots|all]"; exit 1 ;;
+  wunderland)        push_wunderland ;;
+  rabbithole)        push_rabbithole ;;
+  discord-bots)      push_discord_bots ;;
+  wunderland-agent)  push_wunderland_agent ;;
+  all)               push_wunderland; push_rabbithole; push_discord_bots; push_wunderland_agent ;;
+  *)                 echo "Usage: $0 [wunderland|rabbithole|discord-bots|wunderland-agent|all]"; exit 1 ;;
 esac

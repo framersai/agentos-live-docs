@@ -1,5 +1,10 @@
 ##
-## Discord Bots — Scrapers API + Discord gateway bots
+## Discord Bots — Scraper API (headless data endpoints)
+##
+## The Python Discord gateway bots (wunderbot-news, wunderbot-agent) have been
+## replaced by the Wunderland TypeScript agent (systemd: wunderland-agent).
+## Only the scraper API remains as a headless data source.
+##
 ## Deploy: docker compose -f docker-compose.discord-bots.yml up -d --build
 ## Logs:   docker compose -f docker-compose.discord-bots.yml logs -f
 ##
@@ -26,33 +31,3 @@ services:
       timeout: 10s
       retries: 3
       start_period: 15s
-
-  wunderbot-news:
-    image: discord-bots:latest
-    container_name: wunderbot-news
-    restart: unless-stopped
-    command: ["python", "-u", "main.py", "--legacy"]
-    env_file:
-      - /etc/rabbithole/discord-bots.env
-    volumes:
-      - /mnt/storage/discord-bots/data:/app/data
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    depends_on:
-      scraper-api:
-        condition: service_healthy
-
-  wunderbot-agent:
-    image: discord-bots:latest
-    container_name: wunderbot-agent
-    restart: unless-stopped
-    command: ["python", "-u", "-c", "from wunderbot_agent.wunderbot_agent import run; run()"]
-    env_file:
-      - /etc/rabbithole/discord-bots.env
-    volumes:
-      - /mnt/storage/discord-bots/data:/app/data
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    depends_on:
-      scraper-api:
-        condition: service_healthy

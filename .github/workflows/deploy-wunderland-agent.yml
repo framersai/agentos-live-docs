@@ -1,0 +1,123 @@
+name: Deploy Wunderland Agent (Linode) — Manual Override
+
+# The Wunderland agent is deployed automatically as part of deploy-rabbithole.yml.
+# Use this workflow only for manual override if you need to redeploy just the agent.
+on:
+  workflow_dispatch:
+  repository_dispatch:
+    types: [deploy-wunderland-agent]
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1
+        env:
+          GH_PAT: ${{ secrets.GH_PAT }}
+        with:
+          host: ${{ secrets.RABBITHOLE_LINODE_HOST }}
+          username: root
+          key: ${{ secrets.RABBITHOLE_SSH_PRIVATE_KEY }}
+          command_timeout: 30m
+          envs: GH_PAT
+          script: |
+            set -euo pipefail
+
+            # Use PAT for all github.com HTTPS
+            git config --global url."https://${GH_PAT}@github.com/".insteadOf "https://github.com/"
+
+            REPO_DIR="/app/rabbithole"
+            REPO_URL="https://${GH_PAT}@github.com/manicinc/voice-chat-assistant.git"
+
+            # ── 1. Pull latest monorepo ──
+            if [ ! -d "$REPO_DIR/.git" ]; then
+              echo "[deploy] First deploy — cloning repo..."
+              git clone --recurse-submodules "$REPO_URL" "$REPO_DIR"
+            else
+              echo "[deploy] Pulling latest..."
+              cd "$REPO_DIR"
+              git remote set-url origin "$REPO_URL"
+              git fetch origin
+              git reset --hard origin/master
+              git submodule update --init --recursive --force 2>&1 || true
+            fi
+
+            cd "$REPO_DIR"
+
+            # ── 2. Install dependencies ──
+            echo "[deploy] Installing dependencies..."
+            pnpm install --no-frozen-lockfile --ignore-scripts
+
+            # ── 3. Build workspace packages in dependency order ──
+            echo "[deploy] Building workspace packages..."
+            pnpm --filter @framers/shared build
+            cd "$REPO_DIR/packages/sql-storage-adapter"
+            npm run clean && pnpm exec tsc -p tsconfig.build.json && node scripts/fix-esm-imports.mjs
+            cd "$REPO_DIR"
+            pnpm --filter @framers/agentos build
+            pnpm --filter @framers/agentos-extensions-registry build
+            pnpm --filter @framers/agentos-ext-web-search build
+            pnpm --filter @framers/agentos-ext-web-browser build
+            pnpm --filter @framers/agentos-ext-giphy build
+            pnpm --filter @framers/agentos-ext-image-search build
+            pnpm --filter @framers/agentos-ext-news-search build
+            pnpm --filter @framers/agentos-ext-voice-synthesis build
+            pnpm --filter @framers/agentos-ext-cli-executor build
+            pnpm --filter @framers/agentos-skills-registry build
+            pnpm --filter @framers/agentos-ext-skills build
+            pnpm --filter @framers/agentos-ext-http-api build
+            pnpm --filter @framers/agentos-ext-founders build
+            pnpm --filter @framers/agentos-ext-verify build
+            pnpm --filter wunderland build
+
+            # ── 4. Ensure env file exists ──
+            if [ ! -f /etc/rabbithole/wunderland-agent.env ]; then
+              echo "[deploy] WARNING: /etc/rabbithole/wunderland-agent.env not found"
+              echo "[deploy] Copy the template and fill in values:"
+              echo "[deploy]   cp $REPO_DIR/deployment/rabbithole/wunderland-agent.env.example /etc/rabbithole/wunderland-agent.env"
+              exit 1
+            fi
+
+            # ── 5. Ensure data directory exists ──
+            mkdir -p /mnt/storage/wunderland-agent/data
+
+            # ── 6. Stop Python wunderbot-agent (shares same bot token) ──
+            COMPOSE_DIR="$REPO_DIR/deployment/rabbithole"
+            COMPOSE_FILE="$COMPOSE_DIR/docker-compose.discord-bots.yml"
+            if docker compose -f "$COMPOSE_FILE" ps wunderbot-agent 2>/dev/null | grep -q "Up"; then
+              echo "[deploy] Stopping Python wunderbot-agent (shares bot token)..."
+              docker compose -f "$COMPOSE_FILE" stop wunderbot-agent
+            fi
+            if docker compose -f "$COMPOSE_FILE" ps wunderbot-news 2>/dev/null | grep -q "Up"; then
+              echo "[deploy] Stopping Python wunderbot-news (replaced by wunderbot-feeds)..."
+              docker compose -f "$COMPOSE_FILE" stop wunderbot-news
+            fi
+
+            # ── 7. Install and start systemd service ──
+            echo "[deploy] Installing systemd service..."
+            cp "$COMPOSE_DIR/wunderland-agent.service" /etc/systemd/system/wunderland-agent.service
+            systemctl daemon-reload
+            systemctl enable wunderland-agent
+            systemctl restart wunderland-agent
+
+            # ── 8. Health check ──
+            echo "[deploy] Waiting for Wunderland agent to start..."
+            for i in $(seq 1 12); do
+              if curl -sf http://localhost:3777/health >/dev/null 2>&1; then
+                echo "[deploy] Wunderland agent is healthy"
+                break
+              fi
+              [ "$i" -eq 12 ] && echo "[deploy] WARNING: Health check failed after 60s"
+              sleep 5
+            done
+
+            # ── 9. Check Discord connection ──
+            sleep 5
+            echo "[deploy] Recent logs:"
+            journalctl -u wunderland-agent --no-pager -n 20
+
+            echo "[deploy] Done."

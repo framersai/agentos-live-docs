@@ -1,0 +1,22 @@
+[Unit]
+Description=Wunderland AI Agent (Rabbit Hole Discord Bot)
+After=network.target
+Wants=searxng.service
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/app/rabbithole/rabbithole-ai-agent
+ExecStart=/usr/bin/node /app/rabbithole/packages/wunderland/dist/cli/index.js start --port 3777
+Restart=on-failure
+RestartSec=10
+Environment=NODE_ENV=production
+Environment=PORT=3777
+Environment=NODE_OPTIONS=--max-old-space-size=1024
+EnvironmentFile=-/etc/rabbithole/wunderland-agent.env
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=wunderland-agent
+
+[Install]
+WantedBy=multi-user.target

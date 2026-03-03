@@ -59,6 +59,7 @@
       "cli-executor",
       "weather",
       "founders",
+      "verify",
       "wunderbot-feeds"
     ],
     "voice": [],
@@ -112,6 +113,9 @@
       "cofounder": "1475358327616700527",
       "chat": "1475358329051283497",
       "milestones": "1475358331739570420"
+    },
+    "verify": {
+      "channel_id": "1470661396197933119"
     }
   }
 }

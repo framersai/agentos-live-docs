@@ -1,6 +1,11 @@
-name: Deploy Discord Bots (Linode)
+name: Deploy Scraper API (Linode)
 
 on:
+  push:
+    branches: [master]
+    paths:
+      - 'deployment/rabbithole/docker-compose.discord-bots.yml'
+      - '.github/workflows/deploy-discord-bots.yml'
   workflow_dispatch:
   repository_dispatch:
     types: [deploy-discord-bots]
@@ -28,7 +33,6 @@ jobs:
             BOTS_DIR="/app/discord-bots"
             BOTS_URL="https://${GH_PAT}@github.com/manicinc/discord-bots.git"
             COMPOSE_DIR="/app/rabbithole/deployment/rabbithole"
-            COMPOSE_FILE="$COMPOSE_DIR/docker-compose.discord-bots.yml"
 
             # ── 1. Pull latest discord-bots code ──
             if [ ! -d "$BOTS_DIR/.git" ]; then
@@ -42,7 +46,7 @@ jobs:
               git reset --hard origin/master
             fi
 
-            # ── 2. Pull latest voice-chat-assistant (for compose file + nginx) ──
+            # ── 2. Pull latest voice-chat-assistant (for compose file) ──
             REPO_DIR="/app/rabbithole"
             REPO_URL="https://${GH_PAT}@github.com/manicinc/voice-chat-assistant.git"
             if [ -d "$REPO_DIR/.git" ]; then
@@ -64,21 +68,15 @@ jobs:
               exit 1
             fi
 
-            # ── 5. Build and deploy containers ──
-            echo "[deploy] Building discord-bots Docker image..."
+            # ── 5. Build and deploy scraper-api container ──
+            echo "[deploy] Building scraper-api Docker image..."
             cd "$COMPOSE_DIR"
             docker compose -f docker-compose.discord-bots.yml build
 
-            echo "[deploy] Starting containers..."
+            echo "[deploy] Starting scraper-api..."
             docker compose -f docker-compose.discord-bots.yml up -d
 
-            # ── 6. Update nginx config ──
-            echo "[deploy] Syncing nginx config..."
-            cp "$COMPOSE_DIR/nginx-rabbithole.conf" /etc/nginx/sites-available/rabbithole
-            ln -sfn /etc/nginx/sites-available/rabbithole /etc/nginx/sites-enabled/rabbithole
-            nginx -t && systemctl reload nginx
-
-            # ── 7. Health check ──
+            # ── 6. Health check ──
             echo "[deploy] Waiting for scraper API to start..."
             for i in $(seq 1 12); do
               if curl -sf http://localhost:8420/health >/dev/null 2>&1; then
@@ -89,7 +87,7 @@ jobs:
               sleep 5
             done
 
-            # ── 8. Container status ──
+            # ── 7. Container status ──
             echo "[deploy] Container status:"
             docker compose -f docker-compose.discord-bots.yml ps
 
