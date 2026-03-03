@@ -1,0 +1,52 @@
+##
+## Discord Bots — Scrapers API + Discord gateway bots
+## Deploy: docker compose -f docker-compose.discord-bots.yml up -d --build
+## Logs:   docker compose -f docker-compose.discord-bots.yml logs -f
+##
+
+services:
+  scraper-api:
+    build:
+      context: /app/discord-bots
+      dockerfile: Dockerfile
+    image: discord-bots:latest
+    container_name: scraper-api
+    restart: unless-stopped
+    env_file:
+      - /etc/rabbithole/discord-bots.env
+    ports:
+      - "127.0.0.1:8420:8420"
+    volumes:
+      - /mnt/storage/discord-bots/data:/app/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8420/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
+
+  wunderbot-news:
+    image: discord-bots:latest
+    container_name: wunderbot-news
+    restart: unless-stopped
+    command: ["python", "-u", "main.py", "--legacy"]
+    env_file:
+      - /etc/rabbithole/discord-bots.env
+    volumes:
+      - /mnt/storage/discord-bots/data:/app/data
+    depends_on:
+      scraper-api:
+        condition: service_healthy
+
+  wunderbot-agent:
+    image: discord-bots:latest
+    container_name: wunderbot-agent
+    restart: unless-stopped
+    command: ["python", "-u", "-c", "from wunderbot_agent.wunderbot_agent import run; run()"]
+    env_file:
+      - /etc/rabbithole/discord-bots.env
+    volumes:
+      - /mnt/storage/discord-bots/data:/app/data
+    depends_on:
+      scraper-api:
+        condition: service_healthy

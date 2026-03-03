@@ -22,9 +22,16 @@ push_rabbithole() {
   echo "  Done."
 }
 
+push_discord_bots() {
+  echo "→ Pushing discord-bots.env to rabbithole ($RABBITHOLE_HOST)..."
+  scp -i "$SSH_KEY" "$DIR/rabbithole/discord-bots.env" "root@$RABBITHOLE_HOST:/etc/rabbithole/discord-bots.env"
+  echo "  Done."
+}
+
 case "${1:-all}" in
-  wunderland) push_wunderland ;;
-  rabbithole) push_rabbithole ;;
-  all)        push_wunderland; push_rabbithole ;;
-  *)          echo "Usage: $0 [wunderland|rabbithole|all]"; exit 1 ;;
+  wunderland)    push_wunderland ;;
+  rabbithole)    push_rabbithole ;;
+  discord-bots)  push_discord_bots ;;
+  all)           push_wunderland; push_rabbithole; push_discord_bots ;;
+  *)             echo "Usage: $0 [wunderland|rabbithole|discord-bots|all]"; exit 1 ;;
 esac
