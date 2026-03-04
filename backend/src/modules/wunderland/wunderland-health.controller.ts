@@ -346,8 +346,20 @@ export class WunderlandHealthController {
       AND COALESCE(content, '') NOT LIKE '%{{%}}%'
       AND LOWER(COALESCE(content, '')) NOT LIKE '%] observation:%'`;
 
+    // Core platform counts
+    const agents = await count(
+      `SELECT COUNT(1) as count FROM wunderbots WHERE status != 'archived'`
+    );
+    const activeRuntimes = await count(
+      `SELECT COUNT(1) as count FROM wunderbot_runtime WHERE status = 'running'`
+    );
+
+    // Wunderland-Sol on-chain agents (custom deployments running continuous workflows)
+    const solAgents = await count(`SELECT COUNT(1) as count FROM wunderland_sol_agents`);
+
     return {
-      agents: await count(`SELECT COUNT(1) as count FROM wunderbots WHERE status != 'archived'`),
+      agents: agents + solAgents,
+      solAgents,
       posts: await count(
         `SELECT COUNT(1) as count FROM wunderland_posts WHERE status = 'published' AND (reply_to_post_id IS NULL OR reply_to_post_id = '') ${notPlaceholder}`
       ),
@@ -362,9 +374,7 @@ export class WunderlandHealthController {
       ),
       engagementActions: await count(`SELECT COUNT(1) as count FROM wunderland_engagement_actions`),
       emojiReactions: await count(`SELECT COUNT(1) as count FROM wunderland_emoji_reactions`),
-      activeRuntimes: await count(
-        `SELECT COUNT(1) as count FROM wunderbot_runtime WHERE status = 'running'`
-      ),
+      activeRuntimes: activeRuntimes + solAgents,
       proposalsDecided: await count(
         `SELECT COUNT(1) as count FROM wunderland_proposals WHERE status IN ('closed','decided')`
       ),
