@@ -1062,6 +1062,62 @@ const runInitialSchema = async (db: StorageAdapter): Promise<void> => {
     'CREATE INDEX IF NOT EXISTS idx_wunderland_cron_jobs_owner ON wunderland_cron_jobs(owner_user_id, seed_id, created_at DESC);'
   );
 
+  // ── Cross-platform social publishing (Postiz parity) ──────────────────────
+
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS wunderland_social_posts (
+      id TEXT PRIMARY KEY,
+      seed_id TEXT NOT NULL,
+      base_content TEXT NOT NULL,
+      adaptations TEXT DEFAULT '{}',
+      platforms TEXT NOT NULL,
+      media_urls TEXT DEFAULT '[]',
+      scheduled_at TEXT,
+      status TEXT NOT NULL DEFAULT 'draft',
+      results TEXT DEFAULT '{}',
+      retry_count INTEGER DEFAULT 0,
+      max_retries INTEGER DEFAULT 3,
+      error TEXT,
+      created_at TEXT NOT NULL,
+      updated_at TEXT NOT NULL
+    );
+  `);
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_wunderland_social_posts_seed_created ON wunderland_social_posts(seed_id, created_at DESC);'
+  );
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_wunderland_social_posts_status_sched ON wunderland_social_posts(status, scheduled_at);'
+  );
+
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS wunderland_media_assets (
+      id TEXT PRIMARY KEY,
+      seed_id TEXT NOT NULL,
+      owner_user_id TEXT NOT NULL,
+      filename TEXT NOT NULL,
+      original_name TEXT NOT NULL,
+      mime_type TEXT NOT NULL,
+      size INTEGER NOT NULL DEFAULT 0,
+      width INTEGER,
+      height INTEGER,
+      duration REAL,
+      tags TEXT NOT NULL DEFAULT '[]',
+      storage_path TEXT NOT NULL,
+      thumbnail_path TEXT,
+      created_at BIGINT NOT NULL,
+      updated_at BIGINT NOT NULL
+    );
+  `);
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_wunderland_media_assets_seed ON wunderland_media_assets(seed_id, created_at DESC);'
+  );
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_wunderland_media_assets_owner ON wunderland_media_assets(owner_user_id, created_at DESC);'
+  );
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_wunderland_media_assets_mime ON wunderland_media_assets(mime_type);'
+  );
+
   await db.exec(`
     CREATE TABLE IF NOT EXISTS wunderland_posts (
       post_id TEXT PRIMARY KEY,
@@ -1895,6 +1951,119 @@ export const initializeAppDatabase = async (): Promise<void> => {
         adapter.kind === 'postgres'
           ? 'ALTER TABLE wunderbots ADD COLUMN voice_config TEXT'
           : 'ALTER TABLE wunderbots ADD COLUMN voice_config TEXT;'
+      );
+
+      await ensureColumnExists(
+        adapter,
+        'wunderland_social_posts',
+        'adaptations',
+        adapter.kind === 'postgres'
+          ? "ALTER TABLE wunderland_social_posts ADD COLUMN adaptations TEXT DEFAULT '{}'"
+          : "ALTER TABLE wunderland_social_posts ADD COLUMN adaptations TEXT DEFAULT '{}';"
+      );
+      await ensureColumnExists(
+        adapter,
+        'wunderland_social_posts',
+        'media_urls',
+        adapter.kind === 'postgres'
+          ? "ALTER TABLE wunderland_social_posts ADD COLUMN media_urls TEXT DEFAULT '[]'"
+          : "ALTER TABLE wunderland_social_posts ADD COLUMN media_urls TEXT DEFAULT '[]';"
+      );
+      await ensureColumnExists(
+        adapter,
+        'wunderland_social_posts',
+        'scheduled_at',
+        adapter.kind === 'postgres'
+          ? 'ALTER TABLE wunderland_social_posts ADD COLUMN scheduled_at TEXT'
+          : 'ALTER TABLE wunderland_social_posts ADD COLUMN scheduled_at TEXT;'
+      );
+      await ensureColumnExists(
+        adapter,
+        'wunderland_social_posts',
+        'results',
+        adapter.kind === 'postgres'
+          ? "ALTER TABLE wunderland_social_posts ADD COLUMN results TEXT DEFAULT '{}'"
+          : "ALTER TABLE wunderland_social_posts ADD COLUMN results TEXT DEFAULT '{}';"
+      );
+      await ensureColumnExists(
+        adapter,
+        'wunderland_social_posts',
+        'retry_count',
+        adapter.kind === 'postgres'
+          ? 'ALTER TABLE wunderland_social_posts ADD COLUMN retry_count INTEGER DEFAULT 0'
+          : 'ALTER TABLE wunderland_social_posts ADD COLUMN retry_count INTEGER DEFAULT 0;'
+      );
+      await ensureColumnExists(
+        adapter,
+        'wunderland_social_posts',
+        'max_retries',
+        adapter.kind === 'postgres'
+          ? 'ALTER TABLE wunderland_social_posts ADD COLUMN max_retries INTEGER DEFAULT 3'
+          : 'ALTER TABLE wunderland_social_posts ADD COLUMN max_retries INTEGER DEFAULT 3;'
+      );
+      await ensureColumnExists(
+        adapter,
+        'wunderland_social_posts',
+        'error',
+        adapter.kind === 'postgres'
+          ? 'ALTER TABLE wunderland_social_posts ADD COLUMN error TEXT'
+          : 'ALTER TABLE wunderland_social_posts ADD COLUMN error TEXT;'
+      );
+      await adapter.exec(
+        'CREATE INDEX IF NOT EXISTS idx_wunderland_social_posts_seed_created ON wunderland_social_posts(seed_id, created_at DESC);'
+      );
+      await adapter.exec(
+        'CREATE INDEX IF NOT EXISTS idx_wunderland_social_posts_status_sched ON wunderland_social_posts(status, scheduled_at);'
+      );
+
+      await ensureColumnExists(
+        adapter,
+        'wunderland_media_assets',
+        'width',
+        adapter.kind === 'postgres'
+          ? 'ALTER TABLE wunderland_media_assets ADD COLUMN width INTEGER'
+          : 'ALTER TABLE wunderland_media_assets ADD COLUMN width INTEGER;'
+      );
+      await ensureColumnExists(
+        adapter,
+        'wunderland_media_assets',
+        'height',
+        adapter.kind === 'postgres'
+          ? 'ALTER TABLE wunderland_media_assets ADD COLUMN height INTEGER'
+          : 'ALTER TABLE wunderland_media_assets ADD COLUMN height INTEGER;'
+      );
+      await ensureColumnExists(
+        adapter,
+        'wunderland_media_assets',
+        'duration',
+        adapter.kind === 'postgres'
+          ? 'ALTER TABLE wunderland_media_assets ADD COLUMN duration REAL'
+          : 'ALTER TABLE wunderland_media_assets ADD COLUMN duration REAL;'
+      );
+      await ensureColumnExists(
+        adapter,
+        'wunderland_media_assets',
+        'tags',
+        adapter.kind === 'postgres'
+          ? "ALTER TABLE wunderland_media_assets ADD COLUMN tags TEXT DEFAULT '[]'"
+          : "ALTER TABLE wunderland_media_assets ADD COLUMN tags TEXT DEFAULT '[]';"
+      );
+      await ensureColumnExists(
+        adapter,
+        'wunderland_media_assets',
+        'thumbnail_path',
+        adapter.kind === 'postgres'
+          ? 'ALTER TABLE wunderland_media_assets ADD COLUMN thumbnail_path TEXT'
+          : 'ALTER TABLE wunderland_media_assets ADD COLUMN thumbnail_path TEXT;'
+      );
+      await adapter.exec(
+        'CREATE INDEX IF NOT EXISTS idx_wunderland_media_assets_seed ON wunderland_media_assets(seed_id, created_at DESC);'
+      );
+      await adapter.exec(
+        'CREATE INDEX IF NOT EXISTS idx_wunderland_media_assets_owner ON wunderland_media_assets(owner_user_id, created_at DESC);'
+      );
+      await adapter.exec(
+        'CREATE INDEX IF NOT EXISTS idx_wunderland_media_assets_mime ON wunderland_media_assets(mime_type);'
       );
 
       await ensureColumnExists(

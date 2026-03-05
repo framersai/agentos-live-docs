@@ -7,6 +7,7 @@
 import { Module, MiddlewareConsumer, NestModule } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
+import { ScheduleModule } from '@nestjs/schedule';
 import { DatabaseModule } from './database/database.module.js';
 import { OptionalAuthGuard } from './common/guards/optional-auth.guard.js';
 import { I18nMiddleware } from './common/middleware/i18n.middleware.js';
@@ -35,6 +36,7 @@ import { TunnelModule } from './modules/tunnel/tunnel.module.js';
       isGlobal: true,
       envFilePath: ['../.env', '.env'],
     }),
+    ScheduleModule.forRoot(),
     DatabaseModule,
     AuthModule,
     ChatModule,

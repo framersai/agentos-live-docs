@@ -176,6 +176,75 @@ test('initializeAppDatabase creates enclave index after adding enclave_id column
   assert.ok(alterIdx < indexIdx, 'expected index creation after column migration');
 });
 
+test('initializeAppDatabase migrates social-posting and media-library columns', async () => {
+  const adapter = new MockAdapter('better-sqlite3', {
+    persistent: true,
+    wal: true,
+    columns: {
+      // Legacy social-post schema missing newer JSON/result fields
+      wunderland_social_posts: [
+        'id',
+        'seed_id',
+        'base_content',
+        'platforms',
+        'created_at',
+        'updated_at',
+      ],
+      // Legacy media schema missing dimensions/tags/thumb
+      wunderland_media_assets: [
+        'id',
+        'seed_id',
+        'owner_user_id',
+        'filename',
+        'original_name',
+        'mime_type',
+        'size',
+        'storage_path',
+        'created_at',
+        'updated_at',
+      ],
+    },
+  });
+
+  const { initializeAppDatabase, __setAppDatabaseAdapterResolverForTests } =
+    await loadAppDatabaseModule();
+
+  __setAppDatabaseAdapterResolverForTests(async (): Promise<StorageAdapter> => adapter);
+  await initializeAppDatabase();
+
+  const statements = adapter.execCalls.join('\n');
+  assert.match(
+    statements,
+    /ALTER TABLE wunderland_social_posts ADD COLUMN adaptations/i,
+    'expected social posts adaptations migration'
+  );
+  assert.match(
+    statements,
+    /ALTER TABLE wunderland_social_posts ADD COLUMN media_urls/i,
+    'expected social posts media_urls migration'
+  );
+  assert.match(
+    statements,
+    /ALTER TABLE wunderland_social_posts ADD COLUMN results/i,
+    'expected social posts results migration'
+  );
+  assert.match(
+    statements,
+    /ALTER TABLE wunderland_media_assets ADD COLUMN width/i,
+    'expected media assets width migration'
+  );
+  assert.match(
+    statements,
+    /ALTER TABLE wunderland_media_assets ADD COLUMN tags/i,
+    'expected media assets tags migration'
+  );
+  assert.match(
+    statements,
+    /CREATE INDEX IF NOT EXISTS idx_wunderland_media_assets_mime/i,
+    'expected media assets index creation'
+  );
+});
+
 test('initializeAppDatabase falls back to in-memory adapter when resolver throws', async () => {
   const fallbackAdapter = new MockAdapter('sqljs', { persistent: false });
   let callCount = 0;

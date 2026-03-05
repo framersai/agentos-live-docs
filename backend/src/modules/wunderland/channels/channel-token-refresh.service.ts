@@ -11,8 +11,8 @@
  * are skipped during the refresh cycle.
  */
 
-import { Inject, Injectable, Logger } from '@nestjs/common';
-import { Cron } from '@nestjs/schedule';
+import { Inject, Injectable, Logger, type OnModuleInit } from '@nestjs/common';
+import { Cron, CronExpression } from '@nestjs/schedule';
 import { DatabaseService } from '../../../database/database.service.js';
 
 /** Platforms that use OAuth refresh tokens. */
@@ -48,17 +48,38 @@ interface RefreshMetadata {
 }
 
 @Injectable()
-export class ChannelTokenRefreshService {
+export class ChannelTokenRefreshService implements OnModuleInit {
   private readonly logger = new Logger(ChannelTokenRefreshService.name);
+  private readonly refreshEnabled =
+    process.env.WUNDERLAND_CHANNEL_TOKEN_REFRESH_ENABLED !== 'false';
+  private readonly runOnBoot = process.env.WUNDERLAND_CHANNEL_TOKEN_REFRESH_RUN_ON_BOOT !== 'false';
 
   constructor(@Inject(DatabaseService) private readonly db: DatabaseService) {}
+
+  async onModuleInit(): Promise<void> {
+    if (!this.refreshEnabled) {
+      this.logger.log(
+        'OAuth token refresh cron is disabled via WUNDERLAND_CHANNEL_TOKEN_REFRESH_ENABLED=false.'
+      );
+      return;
+    }
+
+    if (!this.runOnBoot) return;
+
+    // Warm-start refresh pass so newly booted instances do not wait for the next cron tick.
+    void this.refreshExpiringTokens().catch((err) => {
+      this.logger.error(`Initial token refresh pass failed: ${err}`);
+    });
+  }
 
   /**
    * Runs every 30 minutes to check for expiring OAuth tokens.
    * Attempts to refresh tokens that expire within the next 30 minutes.
    */
-  @Cron('0 */30 * * * *')
+  @Cron(CronExpression.EVERY_30_MINUTES)
   async refreshExpiringTokens(): Promise<void> {
+    if (!this.refreshEnabled) return;
+
     this.logger.debug('Checking for expiring OAuth tokens...');
 
     try {
@@ -225,10 +246,10 @@ export class ChannelTokenRefreshService {
         metadata.lastRefreshAttempt = new Date().toISOString();
         metadata.lastRefreshError = err instanceof Error ? err.message : String(err);
 
-        await this.db.run(
-          `UPDATE wunderbot_credentials SET metadata = ? WHERE credential_id = ?`,
-          [JSON.stringify(metadata), credentialId]
-        );
+        await this.db.run(`UPDATE wunderbot_credentials SET metadata = ? WHERE credential_id = ?`, [
+          JSON.stringify(metadata),
+          credentialId,
+        ]);
       } catch {
         // Best effort metadata update
       }
@@ -253,10 +274,10 @@ export class ChannelTokenRefreshService {
       metadata.refreshNeeded = true;
       metadata.lastRefreshAttempt = new Date().toISOString();
 
-      await this.db.run(
-        `UPDATE wunderbot_credentials SET metadata = ? WHERE credential_id = ?`,
-        [JSON.stringify(metadata), credentialId]
-      );
+      await this.db.run(`UPDATE wunderbot_credentials SET metadata = ? WHERE credential_id = ?`, [
+        JSON.stringify(metadata),
+        credentialId,
+      ]);
     } catch (err) {
       this.logger.error(`Failed to mark credential ${credentialId} as needing refresh: ${err}`);
     }
