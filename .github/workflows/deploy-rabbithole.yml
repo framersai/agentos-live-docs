@@ -41,7 +41,7 @@ jobs:
               echo "[deploy] Pulling latest..."
               cd "$REPO_DIR"
               git remote set-url origin "$REPO_URL"
-              git fetch origin
+              git fetch --no-recurse-submodules origin
               git reset --hard origin/master
               git submodule deinit -f --all 2>/dev/null || true
               git submodule update --init --recursive --force 2>&1 || {
