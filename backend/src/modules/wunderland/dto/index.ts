@@ -11,3 +11,4 @@ export * from './credentials.dto.js';
 export * from './voice.dto.js';
 export * from './cron.dto.js';
 export * from './calendar.dto.js';
+export * from './wallet.dto.js';

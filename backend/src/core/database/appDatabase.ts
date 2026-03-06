@@ -1689,6 +1689,110 @@ const runInitialSchema = async (db: StorageAdapter): Promise<void> => {
     'CREATE INDEX IF NOT EXISTS idx_wunderland_job_deliverables_job ON wunderland_job_deliverables(job_pda, created_at DESC);'
   );
 
+  // ── Agent Personal Wallet tables ──────────────────────────────────────
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS agent_wallets (
+      id TEXT PRIMARY KEY,
+      agent_id TEXT NOT NULL,
+      chain TEXT NOT NULL,
+      address TEXT NOT NULL,
+      encrypted_key TEXT NOT NULL,
+      key_derivation_salt TEXT,
+      created_at INTEGER DEFAULT (strftime('%s','now')),
+      UNIQUE(agent_id, chain)
+    );
+  `);
+
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS wallet_transactions (
+      id TEXT PRIMARY KEY,
+      wallet_id TEXT NOT NULL REFERENCES agent_wallets(id),
+      tx_hash TEXT,
+      direction TEXT NOT NULL,
+      to_address TEXT,
+      from_address TEXT,
+      amount_raw TEXT NOT NULL,
+      amount_usd REAL,
+      token TEXT NOT NULL,
+      category TEXT,
+      status TEXT DEFAULT 'pending',
+      description TEXT,
+      created_at INTEGER DEFAULT (strftime('%s','now'))
+    );
+  `);
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_wallet_transactions_wallet ON wallet_transactions(wallet_id, created_at DESC);'
+  );
+
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS spending_ledger (
+      id TEXT PRIMARY KEY,
+      agent_id TEXT NOT NULL,
+      category TEXT NOT NULL,
+      amount_usd REAL NOT NULL,
+      period_key TEXT NOT NULL,
+      created_at INTEGER DEFAULT (strftime('%s','now'))
+    );
+  `);
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_spending_ledger_agent_period ON spending_ledger(agent_id, period_key);'
+  );
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_spending_ledger_agent_cat_period ON spending_ledger(agent_id, category, period_key);'
+  );
+
+  // ── Agent Virtual Card tables (Lithic) ───────────────────────────────
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS agent_cards (
+      id TEXT PRIMARY KEY,
+      agent_id TEXT NOT NULL,
+      lithic_card_token TEXT NOT NULL UNIQUE,
+      last4 TEXT NOT NULL,
+      card_type TEXT NOT NULL DEFAULT 'VIRTUAL',
+      state TEXT NOT NULL DEFAULT 'OPEN',
+      spend_limit_usd REAL,
+      spend_limit_duration TEXT DEFAULT 'MONTHLY',
+      network TEXT DEFAULT 'VISA',
+      memo TEXT,
+      created_at INTEGER DEFAULT (strftime('%s','now')),
+      UNIQUE(agent_id)
+    );
+  `);
+
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS card_transactions (
+      id TEXT PRIMARY KEY,
+      card_id TEXT NOT NULL REFERENCES agent_cards(id),
+      lithic_tx_token TEXT UNIQUE,
+      merchant_name TEXT,
+      merchant_mcc TEXT,
+      category TEXT,
+      amount_usd REAL NOT NULL,
+      status TEXT DEFAULT 'PENDING',
+      created_at INTEGER DEFAULT (strftime('%s','now'))
+    );
+  `);
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_card_transactions_card ON card_transactions(card_id, created_at DESC);'
+  );
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_card_transactions_category ON card_transactions(card_id, category);'
+  );
+
+  // ── Spending Policies table ──────────────────────────────────────────
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS spending_policies (
+      id TEXT PRIMARY KEY,
+      agent_id TEXT NOT NULL UNIQUE,
+      daily_limit_usd REAL DEFAULT 100,
+      per_transaction_limit_usd REAL DEFAULT 20,
+      monthly_limit_usd REAL DEFAULT 500,
+      blocked_categories TEXT DEFAULT '["gambling"]',
+      created_at INTEGER DEFAULT (strftime('%s','now')),
+      updated_at INTEGER DEFAULT (strftime('%s','now'))
+    );
+  `);
+
   console.log('[AppDatabase] Wunderland tables initialized.');
 };
 
