@@ -47,6 +47,62 @@ packages:
   - packages/agentos-extensions/registry/curated/channels/pinterest
   - packages/agentos-extensions/registry/curated/provenance/anchor-providers
   - packages/agentos-extensions/registry/curated/provenance/wunderland-tip-ingestion
+  # Social media channels (Postiz parity)
+  - packages/agentos-extensions/registry/curated/channels/linkedin
+  - packages/agentos-extensions/registry/curated/channels/facebook
+  - packages/agentos-extensions/registry/curated/channels/threads
+  - packages/agentos-extensions/registry/curated/channels/bluesky
+  - packages/agentos-extensions/registry/curated/channels/mastodon
+  - packages/agentos-extensions/registry/curated/channels/blog-publisher
+  - packages/agentos-extensions/registry/curated/channels/farcaster
+  - packages/agentos-extensions/registry/curated/channels/lemmy
+  - packages/agentos-extensions/registry/curated/channels/google-business
+  # Cloud provider extensions
+  - packages/agentos-extensions/registry/curated/cloud/vercel
+  - packages/agentos-extensions/registry/curated/cloud/cloudflare-pages
+  - packages/agentos-extensions/registry/curated/cloud/digitalocean
+  - packages/agentos-extensions/registry/curated/cloud/netlify
+  - packages/agentos-extensions/registry/curated/cloud/linode
+  - packages/agentos-extensions/registry/curated/cloud/aws
+  - packages/agentos-extensions/registry/curated/cloud/heroku
+  - packages/agentos-extensions/registry/curated/cloud/railway
+  - packages/agentos-extensions/registry/curated/cloud/flyio
+  # Domain registrar extensions
+  - packages/agentos-extensions/registry/curated/domains/porkbun
+  - packages/agentos-extensions/registry/curated/domains/namecheap
+  - packages/agentos-extensions/registry/curated/domains/godaddy
+  - packages/agentos-extensions/registry/curated/domains/cloudflare-registrar
+  # Orchestration tools
+  - packages/agentos-extensions/registry/curated/tools/multi-channel-post
+  - packages/agentos-extensions/registry/curated/tools/social-analytics
+  - packages/agentos-extensions/registry/curated/tools/bulk-scheduler
+  - packages/agentos-extensions/registry/curated/tools/media-upload
+  - packages/agentos-extensions/registry/curated/tools/site-deploy
+  - packages/agentos-extensions/registry/curated/tools/wallet
+  # Browser automation & research tools
+  - packages/agentos-extensions/registry/curated/research/browser-automation
+  - packages/agentos-extensions/registry/curated/research/deep-research
+  - packages/agentos-extensions/registry/curated/research/content-extraction
+  # System & security tools
+  - packages/agentos-extensions/registry/curated/system/credential-vault
+  - packages/agentos-extensions/registry/curated/system/notifications
+  # Media tools
+  - packages/agentos-extensions/registry/curated/media/video-search
+  - packages/agentos-extensions/registry/curated/media/openverse
+  - packages/agentos-extensions/registry/curated/media/sound-search
+  - packages/agentos-extensions/registry/curated/media/music-search
+  - packages/agentos-extensions/registry/curated/media/smithsonian
+  # Developer tools
+  - packages/agentos-extensions/registry/curated/integrations/github
+  # Voice providers
+  - packages/agentos-extensions/registry/curated/voice/twilio
+  - packages/agentos-extensions/registry/curated/voice/telnyx
+  - packages/agentos-extensions/registry/curated/voice/plivo
+  # Productivity
+  - packages/agentos-extensions/registry/curated/productivity/calendar-google
+  - packages/agentos-extensions/registry/curated/productivity/email-gmail
+  # Skills extension
+  - packages/agentos-extensions/registry/curated/system/skills
   - apps/*
   - apps/**
   - codex-extensions

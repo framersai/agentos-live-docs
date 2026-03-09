@@ -153,10 +153,10 @@ importers:
   apps/agentos-workbench:
     dependencies:
       '@framers/agentos':
-        specifier: workspace:*
+        specifier: '*'
         version: link:../../packages/agentos
       '@framers/sql-storage-adapter':
-        specifier: workspace:*
+        specifier: '*'
         version: link:../../packages/sql-storage-adapter
       '@framers/theme-tokens':
         specifier: ^0.1.0
@@ -2362,6 +2362,9 @@ importers:
       '@nestjs/platform-socket.io':
         specifier: ^11.1.13
         version: 11.1.13(@nestjs/common@11.1.13(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/websockets@11.1.13)(bufferutil@4.1.0)(rxjs@7.8.2)(utf-8-validate@5.0.10)
+      '@nestjs/schedule':
+        specifier: ^6.1.1
+        version: 6.1.1(@nestjs/common@11.1.13(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.13)
       '@nestjs/swagger':
         specifier: ^11.2.6
         version: 11.2.6(@fastify/static@8.3.0)(@nestjs/common@11.1.13(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.13)(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)
@@ -2864,12 +2867,18 @@ importers:
 
   packages/agentos-extensions:
     devDependencies:
+      '@atproto/api':
+        specifier: ^0.13.0
+        version: 0.13.35
       '@changesets/changelog-github':
         specifier: ^0.5.2
         version: 0.5.2(encoding@0.1.13)
       '@changesets/cli':
         specifier: ^2.29.8
         version: 2.29.8(@types/node@25.3.3)
+      masto:
+        specifier: ^6.8.0
+        version: 6.10.4(bufferutil@4.1.0)(utf-8-validate@5.0.10)
       typedoc:
         specifier: ^0.25.13
         version: 0.25.13(typescript@5.9.3)
@@ -2939,6 +2948,44 @@ importers:
         specifier: ^9.0.6
         version: 9.0.10
 
+  packages/agentos-extensions/registry/curated/channels/blog-publisher:
+    dependencies:
+      axios:
+        specifier: ^1.7.0
+        version: 1.13.5
+    devDependencies:
+      '@framers/agentos':
+        specifier: workspace:*
+        version: link:../../../../../agentos
+      '@types/node':
+        specifier: ^20.0.0
+        version: 20.19.23
+      typescript:
+        specifier: ^5.0.0
+        version: 5.6.3
+      vitest:
+        specifier: ^1.0.0
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@24.1.3(bufferutil@4.1.0)(canvas@2.11.2(encoding@0.1.13))(utf-8-validate@5.0.10))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+
+  packages/agentos-extensions/registry/curated/channels/bluesky:
+    dependencies:
+      '@atproto/api':
+        specifier: ^0.13.0
+        version: 0.13.35
+    devDependencies:
+      '@framers/agentos':
+        specifier: workspace:*
+        version: link:../../../../../agentos
+      '@types/node':
+        specifier: ^20.0.0
+        version: 20.19.23
+      typescript:
+        specifier: ^5.0.0
+        version: 5.6.3
+      vitest:
+        specifier: ^1.0.0
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@24.1.3(bufferutil@4.1.0)(canvas@2.11.2(encoding@0.1.13))(utf-8-validate@5.0.10))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+
   packages/agentos-extensions/registry/curated/channels/discord:
     dependencies:
       discord.js:
@@ -2983,11 +3030,68 @@ importers:
         specifier: ^1.0.0
         version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@24.1.3(bufferutil@4.1.0)(canvas@2.11.2(encoding@0.1.13))(utf-8-validate@5.0.10))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
 
+  packages/agentos-extensions/registry/curated/channels/facebook:
+    dependencies:
+      axios:
+        specifier: ^1.7.0
+        version: 1.13.5
+    devDependencies:
+      '@framers/agentos':
+        specifier: workspace:*
+        version: link:../../../../../agentos
+      '@types/node':
+        specifier: ^20.0.0
+        version: 20.19.23
+      typescript:
+        specifier: ^5.0.0
+        version: 5.6.3
+      vitest:
+        specifier: ^1.0.0
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@24.1.3(bufferutil@4.1.0)(canvas@2.11.2(encoding@0.1.13))(utf-8-validate@5.0.10))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+
+  packages/agentos-extensions/registry/curated/channels/farcaster:
+    dependencies:
+      axios:
+        specifier: ^1.7.0
+        version: 1.13.5
+    devDependencies:
+      '@framers/agentos':
+        specifier: workspace:*
+        version: link:../../../../../agentos
+      '@types/node':
+        specifier: ^20.0.0
+        version: 20.19.23
+      typescript:
+        specifier: ^5.0.0
+        version: 5.6.3
+      vitest:
+        specifier: ^1.0.0
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@24.1.3(bufferutil@4.1.0)(canvas@2.11.2(encoding@0.1.13))(utf-8-validate@5.0.10))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+
   packages/agentos-extensions/registry/curated/channels/feishu:
     dependencies:
       '@larksuiteoapi/node-sdk':
         specifier: ^1.52.0
         version: 1.59.0(bufferutil@4.1.0)(utf-8-validate@5.0.10)
+    devDependencies:
+      '@framers/agentos':
+        specifier: workspace:*
+        version: link:../../../../../agentos
+      '@types/node':
+        specifier: ^20.0.0
+        version: 20.19.23
+      typescript:
+        specifier: ^5.0.0
+        version: 5.6.3
+      vitest:
+        specifier: ^1.0.0
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@24.1.3(bufferutil@4.1.0)(canvas@2.11.2(encoding@0.1.13))(utf-8-validate@5.0.10))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+
+  packages/agentos-extensions/registry/curated/channels/google-business:
+    dependencies:
+      axios:
+        specifier: ^1.7.0
+        version: 1.13.5
     devDependencies:
       '@framers/agentos':
         specifier: workspace:*
@@ -3070,11 +3174,68 @@ importers:
         specifier: ^1.0.0
         version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@24.1.3(bufferutil@4.1.0)(canvas@2.11.2(encoding@0.1.13))(utf-8-validate@5.0.10))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
 
+  packages/agentos-extensions/registry/curated/channels/lemmy:
+    dependencies:
+      axios:
+        specifier: ^1.7.0
+        version: 1.13.5
+    devDependencies:
+      '@framers/agentos':
+        specifier: workspace:*
+        version: link:../../../../../agentos
+      '@types/node':
+        specifier: ^20.0.0
+        version: 20.19.23
+      typescript:
+        specifier: ^5.0.0
+        version: 5.6.3
+      vitest:
+        specifier: ^1.0.0
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@24.1.3(bufferutil@4.1.0)(canvas@2.11.2(encoding@0.1.13))(utf-8-validate@5.0.10))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+
   packages/agentos-extensions/registry/curated/channels/line:
     dependencies:
       '@line/bot-sdk':
         specifier: 10.6.0
         version: 10.6.0
+    devDependencies:
+      '@framers/agentos':
+        specifier: workspace:*
+        version: link:../../../../../agentos
+      '@types/node':
+        specifier: ^20.0.0
+        version: 20.19.23
+      typescript:
+        specifier: ^5.0.0
+        version: 5.6.3
+      vitest:
+        specifier: ^1.0.0
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@24.1.3(bufferutil@4.1.0)(canvas@2.11.2(encoding@0.1.13))(utf-8-validate@5.0.10))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+
+  packages/agentos-extensions/registry/curated/channels/linkedin:
+    dependencies:
+      axios:
+        specifier: ^1.7.0
+        version: 1.13.5
+    devDependencies:
+      '@framers/agentos':
+        specifier: workspace:*
+        version: link:../../../../../agentos
+      '@types/node':
+        specifier: ^20.0.0
+        version: 20.19.23
+      typescript:
+        specifier: ^5.0.0
+        version: 5.6.3
+      vitest:
+        specifier: ^1.0.0
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@24.1.3(bufferutil@4.1.0)(canvas@2.11.2(encoding@0.1.13))(utf-8-validate@5.0.10))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+
+  packages/agentos-extensions/registry/curated/channels/mastodon:
+    dependencies:
+      masto:
+        specifier: ^6.8.0
+        version: 6.10.4(bufferutil@4.1.0)(utf-8-validate@5.0.10)
     devDependencies:
       '@framers/agentos':
         specifier: workspace:*
@@ -3293,6 +3454,25 @@ importers:
         specifier: ^1.0.0
         version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@24.1.3(bufferutil@4.1.0)(canvas@2.11.2(encoding@0.1.13))(utf-8-validate@5.0.10))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
 
+  packages/agentos-extensions/registry/curated/channels/threads:
+    dependencies:
+      axios:
+        specifier: ^1.7.0
+        version: 1.13.5
+    devDependencies:
+      '@framers/agentos':
+        specifier: workspace:*
+        version: link:../../../../../agentos
+      '@types/node':
+        specifier: ^20.0.0
+        version: 20.19.23
+      typescript:
+        specifier: ^5.0.0
+        version: 5.6.3
+      vitest:
+        specifier: ^1.0.0
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@24.1.3(bufferutil@4.1.0)(canvas@2.11.2(encoding@0.1.13))(utf-8-validate@5.0.10))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+
   packages/agentos-extensions/registry/curated/channels/tiktok:
     dependencies:
       axios:
@@ -3451,6 +3631,168 @@ importers:
         specifier: ^1.0.0
         version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@24.1.3(bufferutil@4.1.0)(canvas@2.11.2(encoding@0.1.13))(utf-8-validate@5.0.10))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
 
+  packages/agentos-extensions/registry/curated/cloud/aws:
+    devDependencies:
+      '@framers/agentos':
+        specifier: ^0.1.0
+        version: link:../../../../../agentos
+      '@types/node':
+        specifier: ^20.12.12
+        version: 20.19.23
+      rimraf:
+        specifier: ^5.0.7
+        version: 5.0.10
+      typescript:
+        specifier: ^5.4.5
+        version: 5.6.3
+      vitest:
+        specifier: ^1.6.0
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@24.1.3(bufferutil@4.1.0)(canvas@2.11.2(encoding@0.1.13))(utf-8-validate@5.0.10))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+
+  packages/agentos-extensions/registry/curated/cloud/cloudflare-pages:
+    devDependencies:
+      '@framers/agentos':
+        specifier: ^0.1.0
+        version: link:../../../../../agentos
+      '@types/node':
+        specifier: ^20.12.12
+        version: 20.19.23
+      rimraf:
+        specifier: ^5.0.7
+        version: 5.0.10
+      typescript:
+        specifier: ^5.4.5
+        version: 5.6.3
+      vitest:
+        specifier: ^1.6.0
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@24.1.3(bufferutil@4.1.0)(canvas@2.11.2(encoding@0.1.13))(utf-8-validate@5.0.10))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+
+  packages/agentos-extensions/registry/curated/cloud/digitalocean:
+    devDependencies:
+      '@framers/agentos':
+        specifier: ^0.1.0
+        version: link:../../../../../agentos
+      '@types/node':
+        specifier: ^20.12.12
+        version: 20.19.23
+      rimraf:
+        specifier: ^5.0.7
+        version: 5.0.10
+      typescript:
+        specifier: ^5.4.5
+        version: 5.6.3
+      vitest:
+        specifier: ^1.6.0
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@24.1.3(bufferutil@4.1.0)(canvas@2.11.2(encoding@0.1.13))(utf-8-validate@5.0.10))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+
+  packages/agentos-extensions/registry/curated/cloud/flyio:
+    devDependencies:
+      '@framers/agentos':
+        specifier: ^0.1.0
+        version: link:../../../../../agentos
+      '@types/node':
+        specifier: ^20.12.12
+        version: 20.19.23
+      rimraf:
+        specifier: ^5.0.7
+        version: 5.0.10
+      typescript:
+        specifier: ^5.4.5
+        version: 5.6.3
+      vitest:
+        specifier: ^1.6.0
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@24.1.3(bufferutil@4.1.0)(canvas@2.11.2(encoding@0.1.13))(utf-8-validate@5.0.10))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+
+  packages/agentos-extensions/registry/curated/cloud/heroku:
+    devDependencies:
+      '@framers/agentos':
+        specifier: ^0.1.0
+        version: link:../../../../../agentos
+      '@types/node':
+        specifier: ^20.12.12
+        version: 20.19.23
+      rimraf:
+        specifier: ^5.0.7
+        version: 5.0.10
+      typescript:
+        specifier: ^5.4.5
+        version: 5.6.3
+      vitest:
+        specifier: ^1.6.0
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@24.1.3(bufferutil@4.1.0)(canvas@2.11.2(encoding@0.1.13))(utf-8-validate@5.0.10))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+
+  packages/agentos-extensions/registry/curated/cloud/linode:
+    devDependencies:
+      '@framers/agentos':
+        specifier: ^0.1.0
+        version: link:../../../../../agentos
+      '@types/node':
+        specifier: ^20.12.12
+        version: 20.19.23
+      rimraf:
+        specifier: ^5.0.7
+        version: 5.0.10
+      typescript:
+        specifier: ^5.4.5
+        version: 5.6.3
+      vitest:
+        specifier: ^1.6.0
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@24.1.3(bufferutil@4.1.0)(canvas@2.11.2(encoding@0.1.13))(utf-8-validate@5.0.10))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+
+  packages/agentos-extensions/registry/curated/cloud/netlify:
+    devDependencies:
+      '@framers/agentos':
+        specifier: ^0.1.0
+        version: link:../../../../../agentos
+      '@types/node':
+        specifier: ^20.12.12
+        version: 20.19.23
+      rimraf:
+        specifier: ^5.0.7
+        version: 5.0.10
+      typescript:
+        specifier: ^5.4.5
+        version: 5.6.3
+      vitest:
+        specifier: ^1.6.0
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@24.1.3(bufferutil@4.1.0)(canvas@2.11.2(encoding@0.1.13))(utf-8-validate@5.0.10))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+
+  packages/agentos-extensions/registry/curated/cloud/railway:
+    devDependencies:
+      '@framers/agentos':
+        specifier: ^0.1.0
+        version: link:../../../../../agentos
+      '@types/node':
+        specifier: ^20.12.12
+        version: 20.19.23
+      rimraf:
+        specifier: ^5.0.7
+        version: 5.0.10
+      typescript:
+        specifier: ^5.4.5
+        version: 5.6.3
+      vitest:
+        specifier: ^1.6.0
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@24.1.3(bufferutil@4.1.0)(canvas@2.11.2(encoding@0.1.13))(utf-8-validate@5.0.10))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+
+  packages/agentos-extensions/registry/curated/cloud/vercel:
+    devDependencies:
+      '@framers/agentos':
+        specifier: ^0.1.0
+        version: link:../../../../../agentos
+      '@types/node':
+        specifier: ^20.12.12
+        version: 20.19.23
+      rimraf:
+        specifier: ^5.0.7
+        version: 5.0.10
+      typescript:
+        specifier: ^5.4.5
+        version: 5.6.3
+      vitest:
+        specifier: ^1.6.0
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@24.1.3(bufferutil@4.1.0)(canvas@2.11.2(encoding@0.1.13))(utf-8-validate@5.0.10))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+
   packages/agentos-extensions/registry/curated/communications/telegram-bot:
     dependencies:
       dotenv:
@@ -3530,6 +3872,97 @@ importers:
       typescript:
         specifier: ^5.4.5
         version: 5.6.3
+
+  packages/agentos-extensions/registry/curated/domains/cloudflare-registrar:
+    devDependencies:
+      '@framers/agentos':
+        specifier: ^0.1.0
+        version: link:../../../../../agentos
+      '@types/node':
+        specifier: ^20.12.12
+        version: 20.19.23
+      rimraf:
+        specifier: ^5.0.7
+        version: 5.0.10
+      typescript:
+        specifier: ^5.4.5
+        version: 5.6.3
+      vitest:
+        specifier: ^1.6.0
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@24.1.3(bufferutil@4.1.0)(canvas@2.11.2(encoding@0.1.13))(utf-8-validate@5.0.10))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+
+  packages/agentos-extensions/registry/curated/domains/godaddy:
+    devDependencies:
+      '@framers/agentos':
+        specifier: ^0.1.0
+        version: link:../../../../../agentos
+      '@types/node':
+        specifier: ^20.12.12
+        version: 20.19.23
+      rimraf:
+        specifier: ^5.0.7
+        version: 5.0.10
+      typescript:
+        specifier: ^5.4.5
+        version: 5.6.3
+      vitest:
+        specifier: ^1.6.0
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@24.1.3(bufferutil@4.1.0)(canvas@2.11.2(encoding@0.1.13))(utf-8-validate@5.0.10))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+
+  packages/agentos-extensions/registry/curated/domains/namecheap:
+    devDependencies:
+      '@framers/agentos':
+        specifier: ^0.1.0
+        version: link:../../../../../agentos
+      '@types/node':
+        specifier: ^20.12.12
+        version: 20.19.23
+      rimraf:
+        specifier: ^5.0.7
+        version: 5.0.10
+      typescript:
+        specifier: ^5.4.5
+        version: 5.6.3
+      vitest:
+        specifier: ^1.6.0
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@24.1.3(bufferutil@4.1.0)(canvas@2.11.2(encoding@0.1.13))(utf-8-validate@5.0.10))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+
+  packages/agentos-extensions/registry/curated/domains/porkbun:
+    devDependencies:
+      '@framers/agentos':
+        specifier: ^0.1.0
+        version: link:../../../../../agentos
+      '@types/node':
+        specifier: ^20.12.12
+        version: 20.19.23
+      rimraf:
+        specifier: ^5.0.7
+        version: 5.0.10
+      typescript:
+        specifier: ^5.4.5
+        version: 5.6.3
+      vitest:
+        specifier: ^1.6.0
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@24.1.3(bufferutil@4.1.0)(canvas@2.11.2(encoding@0.1.13))(utf-8-validate@5.0.10))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+
+  packages/agentos-extensions/registry/curated/integrations/github:
+    dependencies:
+      '@octokit/rest':
+        specifier: ^21.0.0
+        version: 21.1.1
+    devDependencies:
+      '@framers/agentos':
+        specifier: workspace:*
+        version: link:../../../../../agentos
+      '@types/node':
+        specifier: ^20.0.0
+        version: 20.19.23
+      typescript:
+        specifier: ^5.0.0
+        version: 5.6.3
+      vitest:
+        specifier: ^1.0.0
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@24.1.3(bufferutil@4.1.0)(canvas@2.11.2(encoding@0.1.13))(utf-8-validate@5.0.10))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
 
   packages/agentos-extensions/registry/curated/integrations/telegram:
     dependencies:
@@ -3707,6 +4140,44 @@ importers:
         specifier: '>=0.2.0'
         version: link:../../../../../wunderland
 
+  packages/agentos-extensions/registry/curated/research/content-extraction:
+    dependencies:
+      axios:
+        specifier: ^1.7.0
+        version: 1.13.5
+    devDependencies:
+      '@framers/agentos':
+        specifier: workspace:*
+        version: link:../../../../../agentos
+      '@types/node':
+        specifier: ^20.0.0
+        version: 20.19.23
+      typescript:
+        specifier: ^5.0.0
+        version: 5.6.3
+      vitest:
+        specifier: ^1.0.0
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@24.1.3(bufferutil@4.1.0)(canvas@2.11.2(encoding@0.1.13))(utf-8-validate@5.0.10))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+
+  packages/agentos-extensions/registry/curated/research/deep-research:
+    dependencies:
+      axios:
+        specifier: ^1.7.0
+        version: 1.13.5
+    devDependencies:
+      '@framers/agentos':
+        specifier: workspace:*
+        version: link:../../../../../agentos
+      '@types/node':
+        specifier: ^20.0.0
+        version: 20.19.23
+      typescript:
+        specifier: ^5.0.0
+        version: 5.6.3
+      vitest:
+        specifier: ^1.0.0
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@24.1.3(bufferutil@4.1.0)(canvas@2.11.2(encoding@0.1.13))(utf-8-validate@5.0.10))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+
   packages/agentos-extensions/registry/curated/research/news-search:
     devDependencies:
       '@framers/agentos':
@@ -3817,6 +4288,202 @@ importers:
         specifier: ^1.6.0
         version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@24.1.3(bufferutil@4.1.0)(canvas@2.11.2(encoding@0.1.13))(utf-8-validate@5.0.10))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
 
+  packages/agentos-extensions/registry/curated/system/credential-vault:
+    devDependencies:
+      '@framers/agentos':
+        specifier: workspace:*
+        version: link:../../../../../agentos
+      '@types/node':
+        specifier: ^20.0.0
+        version: 20.19.23
+      typescript:
+        specifier: ^5.0.0
+        version: 5.6.3
+      vitest:
+        specifier: ^1.0.0
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@24.1.3(bufferutil@4.1.0)(canvas@2.11.2(encoding@0.1.13))(utf-8-validate@5.0.10))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+
+  packages/agentos-extensions/registry/curated/tools/bulk-scheduler:
+    devDependencies:
+      '@framers/agentos':
+        specifier: ^0.1.0
+        version: link:../../../../../agentos
+      '@types/node':
+        specifier: ^20.12.12
+        version: 20.19.23
+      '@vitest/coverage-v8':
+        specifier: ^1.6.0
+        version: 1.6.1(vitest@1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@24.1.3(bufferutil@4.1.0)(canvas@2.11.2(encoding@0.1.13))(utf-8-validate@5.0.10))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0))
+      rimraf:
+        specifier: ^5.0.7
+        version: 5.0.10
+      typescript:
+        specifier: ^5.4.5
+        version: 5.6.3
+      vitest:
+        specifier: ^1.6.0
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@24.1.3(bufferutil@4.1.0)(canvas@2.11.2(encoding@0.1.13))(utf-8-validate@5.0.10))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+
+  packages/agentos-extensions/registry/curated/tools/media-upload:
+    devDependencies:
+      '@framers/agentos':
+        specifier: ^0.1.0
+        version: link:../../../../../agentos
+      '@types/node':
+        specifier: ^20.12.12
+        version: 20.19.23
+      '@vitest/coverage-v8':
+        specifier: ^1.6.0
+        version: 1.6.1(vitest@1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@24.1.3(bufferutil@4.1.0)(canvas@2.11.2(encoding@0.1.13))(utf-8-validate@5.0.10))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0))
+      rimraf:
+        specifier: ^5.0.7
+        version: 5.0.10
+      typescript:
+        specifier: ^5.4.5
+        version: 5.6.3
+      vitest:
+        specifier: ^1.6.0
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@24.1.3(bufferutil@4.1.0)(canvas@2.11.2(encoding@0.1.13))(utf-8-validate@5.0.10))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+
+  packages/agentos-extensions/registry/curated/tools/multi-channel-post:
+    devDependencies:
+      '@framers/agentos':
+        specifier: ^0.1.0
+        version: link:../../../../../agentos
+      '@types/node':
+        specifier: ^20.12.12
+        version: 20.19.23
+      '@vitest/coverage-v8':
+        specifier: ^1.6.0
+        version: 1.6.1(vitest@1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@24.1.3(bufferutil@4.1.0)(canvas@2.11.2(encoding@0.1.13))(utf-8-validate@5.0.10))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0))
+      rimraf:
+        specifier: ^5.0.7
+        version: 5.0.10
+      typescript:
+        specifier: ^5.4.5
+        version: 5.6.3
+      vitest:
+        specifier: ^1.6.0
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@24.1.3(bufferutil@4.1.0)(canvas@2.11.2(encoding@0.1.13))(utf-8-validate@5.0.10))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+
+  packages/agentos-extensions/registry/curated/tools/site-deploy:
+    devDependencies:
+      '@framers/agentos':
+        specifier: ^0.1.0
+        version: link:../../../../../agentos
+      '@types/node':
+        specifier: ^20.12.12
+        version: 20.19.23
+      '@vitest/coverage-v8':
+        specifier: ^1.6.0
+        version: 1.6.1(vitest@1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@24.1.3(bufferutil@4.1.0)(canvas@2.11.2(encoding@0.1.13))(utf-8-validate@5.0.10))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0))
+      rimraf:
+        specifier: ^5.0.7
+        version: 5.0.10
+      typescript:
+        specifier: ^5.4.5
+        version: 5.6.3
+      vitest:
+        specifier: ^1.6.0
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@24.1.3(bufferutil@4.1.0)(canvas@2.11.2(encoding@0.1.13))(utf-8-validate@5.0.10))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+
+  packages/agentos-extensions/registry/curated/tools/social-analytics:
+    devDependencies:
+      '@framers/agentos':
+        specifier: ^0.1.0
+        version: link:../../../../../agentos
+      '@types/node':
+        specifier: ^20.12.12
+        version: 20.19.23
+      '@vitest/coverage-v8':
+        specifier: ^1.6.0
+        version: 1.6.1(vitest@1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@24.1.3(bufferutil@4.1.0)(canvas@2.11.2(encoding@0.1.13))(utf-8-validate@5.0.10))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0))
+      rimraf:
+        specifier: ^5.0.7
+        version: 5.0.10
+      typescript:
+        specifier: ^5.4.5
+        version: 5.6.3
+      vitest:
+        specifier: ^1.6.0
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@24.1.3(bufferutil@4.1.0)(canvas@2.11.2(encoding@0.1.13))(utf-8-validate@5.0.10))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+
+  packages/agentos-extensions/registry/curated/tools/wallet:
+    dependencies:
+      uuid:
+        specifier: ^9.0.0
+        version: 9.0.1
+    devDependencies:
+      '@types/node':
+        specifier: ^20.10.0
+        version: 20.19.23
+      '@types/uuid':
+        specifier: ^9.0.0
+        version: 9.0.8
+      typescript:
+        specifier: ^5.4.0
+        version: 5.6.3
+      vitest:
+        specifier: ^1.3.0
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@24.1.3(bufferutil@4.1.0)(canvas@2.11.2(encoding@0.1.13))(utf-8-validate@5.0.10))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+
+  packages/agentos-extensions/registry/curated/voice/plivo:
+    dependencies:
+      plivo:
+        specifier: ^4.0.0
+        version: 4.75.6
+    devDependencies:
+      '@framers/agentos':
+        specifier: workspace:*
+        version: link:../../../../../agentos
+      '@types/node':
+        specifier: ^20.0.0
+        version: 20.19.23
+      typescript:
+        specifier: ^5.0.0
+        version: 5.6.3
+      vitest:
+        specifier: ^1.0.0
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@24.1.3(bufferutil@4.1.0)(canvas@2.11.2(encoding@0.1.13))(utf-8-validate@5.0.10))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+
+  packages/agentos-extensions/registry/curated/voice/telnyx:
+    dependencies:
+      telnyx:
+        specifier: ^2.0.0
+        version: 2.1.1
+    devDependencies:
+      '@framers/agentos':
+        specifier: workspace:*
+        version: link:../../../../../agentos
+      '@types/node':
+        specifier: ^20.0.0
+        version: 20.19.23
+      typescript:
+        specifier: ^5.0.0
+        version: 5.6.3
+      vitest:
+        specifier: ^1.0.0
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@24.1.3(bufferutil@4.1.0)(canvas@2.11.2(encoding@0.1.13))(utf-8-validate@5.0.10))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+
+  packages/agentos-extensions/registry/curated/voice/twilio:
+    dependencies:
+      twilio:
+        specifier: ^5.0.0
+        version: 5.12.2
+    devDependencies:
+      '@framers/agentos':
+        specifier: workspace:*
+        version: link:../../../../../agentos
+      '@types/node':
+        specifier: ^20.0.0
+        version: 20.19.23
+      typescript:
+        specifier: ^5.0.0
+        version: 5.6.3
+      vitest:
+        specifier: ^1.0.0
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@24.1.3(bufferutil@4.1.0)(canvas@2.11.2(encoding@0.1.13))(utf-8-validate@5.0.10))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+
   packages/agentos-personas: {}
 
   packages/agentos-skills-registry:
@@ -3833,6 +4500,9 @@ importers:
       vitest:
         specifier: ^1.0.0
         version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@24.1.3(bufferutil@4.1.0)(canvas@2.11.2(encoding@0.1.13))(utf-8-validate@5.0.10))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+      yaml:
+        specifier: ^2.8.1
+        version: 2.8.1
 
   packages/codex-extensions:
     dependencies:
@@ -4056,11 +4726,11 @@ importers:
         specifier: ^0.9.1
         version: 0.9.1
       '@framers/agentos':
-        specifier: ^0.1.37
-        version: 0.1.37(@framers/sql-storage-adapter@packages+sql-storage-adapter)(graphology-communities-louvain@2.0.2(graphology-types@0.24.8))(graphology-types@0.24.8)(graphology@0.26.0(graphology-types@0.24.8))(hnswlib-node@3.0.0)(typescript@5.9.3)
+        specifier: ^0.1.40
+        version: link:../agentos
       '@framers/agentos-ext-cli-executor':
         specifier: ^1.1.1
-        version: 1.1.1(@framers/agentos@0.1.37(@framers/sql-storage-adapter@packages+sql-storage-adapter)(graphology-communities-louvain@2.0.2(graphology-types@0.24.8))(graphology-types@0.24.8)(graphology@0.26.0(graphology-types@0.24.8))(hnswlib-node@3.0.0)(typescript@5.9.3))
+        version: 1.1.1(@framers/agentos@packages+agentos)
       '@framers/agentos-ext-giphy':
         specifier: ^1.0.0
         version: link:../agentos-extensions/registry/curated/media/giphy
@@ -4075,12 +4745,12 @@ importers:
         version: link:../agentos-extensions/registry/curated/media/voice-synthesis
       '@framers/agentos-ext-web-browser':
         specifier: ^1.1.1
-        version: 1.1.1(@framers/agentos@0.1.37(@framers/sql-storage-adapter@packages+sql-storage-adapter)(graphology-communities-louvain@2.0.2(graphology-types@0.24.8))(graphology-types@0.24.8)(graphology@0.26.0(graphology-types@0.24.8))(hnswlib-node@3.0.0)(typescript@5.9.3))(bufferutil@4.1.0)(utf-8-validate@5.0.10)
+        version: 1.1.1(@framers/agentos@packages+agentos)(bufferutil@4.1.0)(utf-8-validate@5.0.10)
       '@framers/agentos-ext-web-search':
         specifier: ^1.1.1
         version: link:../agentos-extensions/registry/curated/research/web-search
       '@framers/agentos-extensions-registry':
-        specifier: ^0.1.3
+        specifier: ^0.1.4
         version: link:../agentos-extensions-registry
       '@framers/sql-storage-adapter':
         specifier: ^0.5.3
@@ -4243,6 +4913,33 @@ packages:
 
   '@asamuzakjp/css-color@3.2.0':
     resolution: {integrity: sha512-K1A6z8tS3XsmCMM86xoWdn7Fkdn9m6RSVtocUrJYIwZnFVkng/PvkEoWtOWmP+Scc6saYWHWZYbndEEXxl24jw==}
+
+  '@atproto/api@0.13.35':
+    resolution: {integrity: sha512-vsEfBj0C333TLjDppvTdTE0IdKlXuljKSveAeI4PPx/l6eUKNnDTsYxvILtXUVzwUlTDmSRqy5O4Ryh78n1b7g==}
+
+  '@atproto/common-web@0.4.18':
+    resolution: {integrity: sha512-ilImzP+9N/mtse440kN60pGrEzG7wi4xsV13nGeLrS+Zocybc/ISOpKlbZM13o+twPJ+Q7veGLw9CtGg0GAFoQ==}
+
+  '@atproto/lex-data@0.0.13':
+    resolution: {integrity: sha512-7Z7RwZ1Y/JzBF/Tcn/I4UJ/vIGfh5zn1zjv0KX+flke2JtgFkSE8uh2hOtqgBQMNqE3zdJFM+dcSWln86hR3MQ==}
+
+  '@atproto/lex-json@0.0.13':
+    resolution: {integrity: sha512-hwLhkKaIHulGJpt0EfXAEWdrxqM2L1tV/tvilzhMp3QxPqYgXchFnrfVmLsyFDx6P6qkH1GsX/XC2V36U0UlPQ==}
+
+  '@atproto/lexicon@0.4.14':
+    resolution: {integrity: sha512-jiKpmH1QER3Gvc7JVY5brwrfo+etFoe57tKPQX/SmPwjvUsFnJAow5xLIryuBaJgFAhnTZViXKs41t//pahGHQ==}
+
+  '@atproto/syntax@0.3.4':
+    resolution: {integrity: sha512-8CNmi5DipOLaVeSMPggMe7FCksVag0aO6XZy9WflbduTKM4dFZVCs4686UeMLfGRXX+X966XgwECHoLYrovMMg==}
+
+  '@atproto/syntax@0.4.3':
+    resolution: {integrity: sha512-YoZUz40YAJr5nPwvCDWgodEOlt5IftZqPJvA0JDWjuZKD8yXddTwSzXSaKQAzGOpuM+/A3uXRtPzJJqlScc+iA==}
+
+  '@atproto/syntax@0.5.0':
+    resolution: {integrity: sha512-UA2DSpGdOQzUQ4gi5SH+NEJz/YR3a3Fg3y2oh+xETDSiTRmA4VhHRCojhXAVsBxUT6EnItw190C/KN+DWW90kw==}
+
+  '@atproto/xrpc@0.6.12':
+    resolution: {integrity: sha512-Ut3iISNLujlmY9Gu8sNU+SPDJDvqlVzWddU8qUr0Yae5oD4SguaUFjjhireMGhQ3M5E0KljQgDbTmnBo1kIZ3w==}
 
   '@auth/core@0.41.0':
     resolution: {integrity: sha512-Wd7mHPQ/8zy6Qj7f4T46vg3aoor8fskJm6g2Zyj064oQ3+p0xNZXAV60ww0hY+MbTesfu29kK14Zk5d5JTazXQ==}
@@ -7045,30 +7742,6 @@ packages:
     peerDependencies:
       '@framers/agentos': ^0.1.0
 
-  '@framers/agentos@0.1.37':
-    resolution: {integrity: sha512-52fZzJvfB0ABb2m0PGmf8N+ll1GvDvf2DMUAHTWB1SoFwuKYUviegDLpcwYeNKyCTKPoEtOvZ1ls3yuk6QBkXw==}
-    peerDependencies:
-      '@framers/sql-storage-adapter': '>=0.4.0'
-      graphology: '>=0.25.0'
-      graphology-communities-louvain: '>=2.0.0'
-      graphology-types: '>=0.24.0'
-      hnswlib-node: '>=3.0.0'
-      neo4j-driver: '>=5.0.0'
-      typescript: '>=5.0.0'
-    peerDependenciesMeta:
-      '@framers/sql-storage-adapter':
-        optional: true
-      graphology:
-        optional: true
-      graphology-communities-louvain:
-        optional: true
-      graphology-types:
-        optional: true
-      hnswlib-node:
-        optional: true
-      neo4j-driver:
-        optional: true
-
   '@framers/sql-storage-adapter@0.3.5':
     resolution: {integrity: sha512-aQUMi+EIbfz+TPLpJjsnC1PXVF6B3jAVP97sJkV4kaM66E06TQTUXT5nbMYTSiLc0Cr3MVoGYu7QhZHKYj9B4Q==}
     peerDependencies:
@@ -7968,6 +8641,12 @@ packages:
       '@nestjs/websockets': ^11.0.0
       rxjs: ^7.1.0
 
+  '@nestjs/schedule@6.1.1':
+    resolution: {integrity: sha512-kQl1RRgi02GJ0uaUGCrXHCcwISsCsJDciCKe38ykJZgnAeeoeVWs8luWtBo4AqAAXm4nS5K8RlV0smHUJ4+2FA==}
+    peerDependencies:
+      '@nestjs/common': ^10.0.0 || ^11.0.0
+      '@nestjs/core': ^10.0.0 || ^11.0.0
+
   '@nestjs/swagger@11.2.6':
     resolution: {integrity: sha512-oiXOxMQqDFyv1AKAqFzSo6JPvMEs4uA36Eyz/s2aloZLxUjcLfUMELSLSNQunr61xCPTpwEOShfmO7NIufKXdA==}
     peerDependencies:
@@ -8334,6 +9013,18 @@ packages:
     peerDependencies:
       '@octokit/core': '5'
 
+  '@octokit/plugin-request-log@5.3.1':
+    resolution: {integrity: sha512-n/lNeCtq+9ofhC15xzmJCNKP2BWTv8Ih2TTy+jatNCCq/gQP/V7rK3fjIfuz0pDWDALO/o/4QY4hyOF6TQQFUw==}
+    engines: {node: '>= 18'}
+    peerDependencies:
+      '@octokit/core': '>=6'
+
+  '@octokit/plugin-rest-endpoint-methods@13.5.0':
+    resolution: {integrity: sha512-9Pas60Iv9ejO3WlAX3maE1+38c5nqbJXV5GrncEfkndIpZrJ/WPMRd2xYDcPPEt5yzpxcjw9fWNoPhsSGzqKqw==}
+    engines: {node: '>= 18'}
+    peerDependencies:
+      '@octokit/core': '>=6'
+
   '@octokit/plugin-retry@6.1.0':
     resolution: {integrity: sha512-WrO3bvq4E1Xh1r2mT9w6SDFg01gFmP81nIG77+p/MqW1JeXXgL++6umim3t6x0Zj5pZm3rXAN+0HEjmmdhIRig==}
     engines: {node: '>= 18'}
@@ -8392,6 +9083,10 @@ packages:
 
   '@octokit/request@9.2.4':
     resolution: {integrity: sha512-q8ybdytBmxa6KogWlNa818r0k1wlqzNC+yNkcQDECHvQo8Vmstrg18JwqJHdJdUiHD2sjlwBgSm9kHkOKe2iyA==}
+    engines: {node: '>= 18'}
+
+  '@octokit/rest@21.1.1':
+    resolution: {integrity: sha512-sTQV7va0IUVZcntzy1q3QqPm/r8rWtDCqpRAmb8eXXnKkjoQEtFe3Nt5GTVsHft+R6jJoHeSiVLcgcvhtue/rg==}
     engines: {node: '>= 18'}
 
   '@octokit/types@12.6.0':
@@ -12159,6 +12854,9 @@ packages:
   '@types/long@4.0.2':
     resolution: {integrity: sha512-MqTGEo5bj5t157U6fA/BiDynNkn0YknVdh48CMPkTSpFTVmvao5UQmm7uEF6xBEo7qIMAlY/JSleYaE6VOdpaA==}
 
+  '@types/luxon@3.7.1':
+    resolution: {integrity: sha512-H3iskjFIAn5SlJU7OuxUmTEpebK6TKB8rxZShDslBMZJ5u9S//KM1sbdAisiSrqwLQncVjnpi2OK2J51h+4lsg==}
+
   '@types/markdown-it@13.0.9':
     resolution: {integrity: sha512-1XPwR0+MgXLWfTn9gCsZ55AHOKW1WN+P9vr0PaQh5aerR9LLQXUbjfEAFhjmEmyoYFWAyuN2Mqkn40MZ4ukjBw==}
 
@@ -13616,6 +14314,9 @@ packages:
   avvio@9.1.0:
     resolution: {integrity: sha512-fYASnYi600CsH/j9EQov7lECAniYiBFiiAtBNuZYLA2leLe9qOvZzqYHFjtIj6gD2VMoMLP14834LFWvr4IfDw==}
 
+  await-lock@2.2.2:
+    resolution: {integrity: sha512-aDczADvlvTGajTDjcjpJMqRkOF6Qdz3YbPZm/PyW6tKPkx2hlYBzxMhEywM/tU72HrVZjgl5VCdRuMlA7pZ8Gw==}
+
   aws-sign2@0.7.0:
     resolution: {integrity: sha512-08kcGqnYf/YmjoRhfxyu+CLxBjUtHLXLXX/vUfx9l2LYzG3c1m61nrpyFUZI6zeS+Li/wWMMidD9KgrqtGq3mA==}
 
@@ -14219,6 +14920,9 @@ packages:
     resolution: {integrity: sha512-5ON+q7jCTgMp9cjpu4Jo6XbvfYwSB2Ow3kzHKfIyJfaCAOHLbdKPQqGKgfED/R5B+3TFFfe8pegYA+b423SRyA==}
     engines: {node: '>=10.0.0'}
 
+  capital-case@1.0.4:
+    resolution: {integrity: sha512-ds37W8CytHgwnhGGTi88pcPyR15qoNkOpYwmMMfnWqqWgESapLqvDx6huFjQ5vqWSn2Z06173XNA7LtMOeUh1A==}
+
   caseless@0.12.0:
     resolution: {integrity: sha512-4tYFyifaFfGacoiObjJegolkwSU4xQNGbVgUiNYVUxbQ2x2lUsFvY4hVgVzGiIe6WLOPqycWXA40l+PWsxthUw==}
 
@@ -14253,6 +14957,9 @@ packages:
   chalk@5.6.2:
     resolution: {integrity: sha512-7NzBL0rN6fMUW+f7A6Io4h40qQlG+xGmtMxfbnH/K7TAtt8JQWVQK+6g0UXKMeVJoyV5EkkNsErQ8pVD3bLHbA==}
     engines: {node: ^12.17.0 || ^14.13 || >=16.0.0}
+
+  change-case@4.1.2:
+    resolution: {integrity: sha512-bSxY2ws9OtviILG1EiY5K7NNxkqg/JnRnFxLtKQ96JaviiIxi7djMrSd0ECT9AC+lttClmYwKw53BWpOMblo7A==}
 
   char-regex@1.0.2:
     resolution: {integrity: sha512-kWWXztvZ5SBQV+eRgKFeh8q5sLuZY2+8WUIzlxWVTg+oGwY14qylx1KbKzHd8P6ZYkAg0xyIDU9JMHhyJMZ1jw==}
@@ -14718,6 +15425,9 @@ packages:
   console-control-strings@1.1.0:
     resolution: {integrity: sha512-ty/fTekppD2fIwRvnZAVdeOiGd1c7YXEixbgJTNzqcxJWKQnjJ/V1bNEEE6hygpM3WjwHFUVK6HTjWSzV4a8sQ==}
 
+  constant-case@3.0.4:
+    resolution: {integrity: sha512-I2hSBi7Vvs7BEuJDr5dDHfzb/Ruj3FyvFyh7KLilAjNQw3Be+xgqUBA2W6scVEcL0hL1dwPRtIqEPVUCKkSsyQ==}
+
   constants-browserify@1.0.0:
     resolution: {integrity: sha512-xFxOwqIzR/e1k1gLiWEophSCMqXcwVHIH7akf7b/vxcUeGunlj3hvZaaqxwHsTgn+IndtkQJgSztIDWeumWJDQ==}
 
@@ -14916,6 +15626,10 @@ packages:
 
   critters@0.0.22:
     resolution: {integrity: sha512-NU7DEcQZM2Dy8XTKFHxtdnIM/drE312j2T4PCVaSUcS0oBeyT/NImpRw/Ap0zOr/1SE7SgPK9tGPg1WK/sVakw==}
+
+  cron@4.4.0:
+    resolution: {integrity: sha512-fkdfq+b+AHI4cKdhZlppHveI/mgz2qpiYxcm+t5E5TsxX7QrLS1VE0+7GENEk9z0EeGPcpSciGv6ez24duWhwQ==}
+    engines: {node: '>=18.x'}
 
   cross-env@10.1.0:
     resolution: {integrity: sha512-GsYosgnACZTADcmEyJctkJIoqAhHjttw7RsFrVoJNXbsWWqaq6Ym+7kZjq6mS45O0jij6vtiReppKQEtqWy6Dw==}
@@ -16343,6 +17057,9 @@ packages:
   eventemitter3@5.0.4:
     resolution: {integrity: sha512-mlsTRyGaPBjPedk6Bvw+aqbsXDtoAyAzm5MO7JgU+yVRyMQ5O8bD4Kcci7BS85f93veegeCPkL8R4GLClnjLFw==}
 
+  events-to-async@2.0.2:
+    resolution: {integrity: sha512-WzI6m/SU+F38t2tejHh6IQuQkNZ0dMOmSEmODJb9czaeMYtQ5FVZ+b6DOHr3hC6hNKNnn9CwDUN8mJiAkWSI9Q==}
+
   events-universal@1.0.1:
     resolution: {integrity: sha512-LUd5euvbMLpwOF8m6ivPCbhQeSiYVNb8Vs0fQ8QjXo0JTkEHpz8pxdQf0gStltaPpw0Cca8b39KxvK9cfKRiAw==}
 
@@ -17438,6 +18155,9 @@ packages:
     resolution: {integrity: sha512-F/1DnUGPopORZi0ni+CvrCgHQ5FyEAHRLSApuYWMmrbSwoN2Mn/7k+Gl38gJnR7yyDZk6WLXwiGod1JOWNDKGw==}
     hasBin: true
 
+  header-case@2.0.4:
+    resolution: {integrity: sha512-H/vuk5TEEVZwrR0lp2zed9OCo1uAILMlx0JEMgC26rzyJJ3N1v6XkwHHXJQdR2doSjcGPM6OKPYoJgf0plJ11Q==}
+
   helmet@7.2.0:
     resolution: {integrity: sha512-ZRiwvN089JfMXokizgqEPXsl2Guk094yExfoDXR0cBYWxtBbaSww/w+vT4WEJsBW2iTUi1GgZ6swmoug3Oy4Xw==}
     engines: {node: '>=16.0.0'}
@@ -18390,6 +19110,9 @@ packages:
     resolution: {integrity: sha512-LpB/54B+/2J5hqQ7imZHfdU31OlgQqx7ZicVlkm9kzg9/w8GKLEcFfJl/t7DCEDueOyBAD6zCCwTO6Fzs0NoEQ==}
     engines: {node: '>=16'}
 
+  iso-datestring-validator@2.2.2:
+    resolution: {integrity: sha512-yLEMkBbLZTlVQqOnQ4FiMujR6T4DEcCb1xizmvXS+OxuhwcbtynoosRzdMA69zZCShCNAbi+gJ71FxZBBXx1SA==}
+
   isobject@2.1.0:
     resolution: {integrity: sha512-+OUdGJlgjOBZDfxnDjYYG6zp487z0JGNQq3cYQYg5f5hKR+syHMsaztzGeml/4kGG55CSpKSpWTY+jYGgsHLgA==}
     engines: {node: '>=0.10.0'}
@@ -18404,6 +19127,11 @@ packages:
 
   isomorphic-ws@4.0.1:
     resolution: {integrity: sha512-BhBvN2MBpWTaSHdWRb/bwdZJ1WaehQ2L1KngkCkfLUGF0mAWAT1sQUQacEmQ0jXkFw/czDXPNQSL5u2/Krsz1w==}
+    peerDependencies:
+      ws: '*'
+
+  isomorphic-ws@5.0.0:
+    resolution: {integrity: sha512-muId7Zzn9ywDsyXgTIafTry2sV3nySZeUDe6YedVd1Hvuuep5AsIlqK+XefWpYTyJG5e503F2xIuT2lcU6rCSw==}
     peerDependencies:
       ws: '*'
 
@@ -19165,6 +19893,10 @@ packages:
   lunr@2.3.9:
     resolution: {integrity: sha512-zTU3DaZaF3Rt9rhN3uBMGQD3dD2/vFQqnvZCDv4dl5iOzq2IZQqTxu90r4E5J+nP70J3ilqVCrbho2eWaeW8Ow==}
 
+  luxon@3.7.2:
+    resolution: {integrity: sha512-vtEhXh/gNjI9Yg1u4jX/0YVPMvxzHuGgCm6tC5kZyb08yjGWGnqAjGJvcXbqQR2P3MyMEFnRbpcdFS6PBcLqew==}
+    engines: {node: '>=12'}
+
   lz-string@1.5.0:
     resolution: {integrity: sha512-h5bgJWpxJNswbU7qCrV0tIKQCaS3blPDrqKWx+QxzuzL1zGUzij9XCWLrSLsJPu5t+eWA/ycetzYAO5IOMcWAQ==}
     hasBin: true
@@ -19293,6 +20025,9 @@ packages:
     resolution: {integrity: sha512-D8bzT1YwIC/8rkbwm6WzigVUrpOAGv7ioEGTi1Lj+Oo8gO5sAm6hhli27jvTgUcZ9TwBeIWZ+dSUP+AupYUGlQ==}
     peerDependencies:
       markmap-common: '*'
+
+  masto@6.10.4:
+    resolution: {integrity: sha512-TqIkWaZa884j9jik39efsv6mdpgalUElwiGLLPHevLlIuCSnGjapGC++VovlQvvVV6O5e4ce/gzWNy17cF6PHg==}
 
   matchdep@2.0.0:
     resolution: {integrity: sha512-LFgVbaHIHMqCRuCZyfCtUOq9/Lnzhi7Z0KFUE2fhD54+JN2jLh3hC02RLkqauJ3U4soU6H1J3tfj/Byk7GoEjA==}
@@ -19980,6 +20715,9 @@ packages:
   multicast-dns@7.2.5:
     resolution: {integrity: sha512-2eznPJP8z2BFLX50tf0LuODrpINqP1RVIm/CObbTcBRITQgmC/TjcREF1NeTBzIcR5XO/ukWo+YHOjBbFwIupg==}
     hasBin: true
+
+  multiformats@9.9.0:
+    resolution: {integrity: sha512-HoMUjhH9T8DDBNT+6xzkrd9ga/XiBI4xLr58LJACwK6G3HTOPeMz4nB4KJs33L2BelrIJa7P0VuNaVF3hMYfjg==}
 
   mute-stdout@1.0.1:
     resolution: {integrity: sha512-kDcwXR4PS7caBpuRYYBUz9iVixUk3anO3f5OYFiIPwK/20vCzKCHyKoulbiDY1S53zD2bxUpxN/IJ+TnXjfvxg==}
@@ -20982,6 +21720,9 @@ packages:
 
   path-browserify@1.0.1:
     resolution: {integrity: sha512-b7uo2UCUOYZcnF/3ID0lulOJi/bafxa1xPe7ZPsammBSpjSWQkjNxlt635YGS2MiR9GjvuXCtz2emr3jbsz98g==}
+
+  path-case@3.0.4:
+    resolution: {integrity: sha512-qO4qCFjXqVTrcbPt/hQfhTQ+VhFsqNKOPtytgNKkKxSoEp3XPUQ8ObFuePylOIok5gjn69ry8XiULxCwot3Wfg==}
 
   path-data-parser@0.1.0:
     resolution: {integrity: sha512-NOnmBpt5Y2RWbuv0LMzsayp3lVylAHLPUTut412ZA3l+C4uw4ZVkQbjShYCQ8TCpUMdPapr4YjUqLYD6v68j+w==}
@@ -23355,6 +24096,9 @@ packages:
     resolution: {integrity: sha512-1gnZf7DFcoIcajTjTwjwuDjzuz4PPcY2StKPlsGAQ1+YH20IRVrBaXSWmdjowTJ6u8Rc01PoYOGHXfP1mYcZNQ==}
     engines: {node: '>= 18'}
 
+  sentence-case@3.0.4:
+    resolution: {integrity: sha512-8LS0JInaQMCRoQ7YUytAo/xUu5W2XnQxV2HI/6uM6U7CITS1RqPElr30V6uIqyMKM9lJGRVFy5/4CuzcixNYSg==}
+
   serialize-error@7.0.1:
     resolution: {integrity: sha512-8I8TjW5KMOKsZQTvoxjuSIa7foAwPWGOts+6o7sgjz41/qMD9VQHEDxi6PBvK2l0MXUmqZyNpUK+T2tQaaElvw==}
     engines: {node: '>=10'}
@@ -24463,6 +25207,10 @@ packages:
       react: ^18
       react-dom: ^18
 
+  tlds@1.261.0:
+    resolution: {integrity: sha512-QXqwfEl9ddlGBaRFXIvNKK6OhipSiLXuRuLJX5DErz0o0Q0rYxulWLdFryTkV5PkdZct5iMInwYEGe/eR++1AA==}
+    hasBin: true
+
   tldts-core@6.1.86:
     resolution: {integrity: sha512-Je6p7pkk+KMzMv2XXKmAE3McmolOQFdxkKw0R8EYNr7sELW46JqnNeTX8ybPiQgvg1ymCoF8LXs5fzFaZvJPTA==}
 
@@ -24615,6 +25363,10 @@ packages:
     engines: {node: '>=18.12'}
     peerDependencies:
       typescript: '>=4.8.4'
+
+  ts-custom-error@3.3.1:
+    resolution: {integrity: sha512-5OX1tzOjxWEgsr/YEUWSuPrQ00deKLh6D7OTWcvNHm12/7QPyRh8SYpyWvA4IZv8H/+GQWQEh/kwo95Q9OVW1A==}
+    engines: {node: '>=14.0.0'}
 
   ts-dedent@2.2.0:
     resolution: {integrity: sha512-q5W7tVM71e2xjHZTlgfTDoPF/SmqKG5hddq9SzR49CH2hayqRKJtQ4mtRlSxKaJlR/+9rEM+mnBHf7I2/BQcpQ==}
@@ -24886,6 +25638,9 @@ packages:
     resolution: {integrity: sha512-rvKSBiC5zqCCiDZ9kAOszZcDvdAHwwIKJG33Ykj43OKcWsnmcBRL09YTU4nOeHZ8Y2a7l1MgTd08SBe9A8Qj6A==}
     engines: {node: '>=18'}
 
+  uint8arrays@3.0.0:
+    resolution: {integrity: sha512-HRCx0q6O9Bfbp+HHSfQQKD7wU70+lydKVt4EghkdOvlK/NlrF90z+eXV34mUd48rNvVJXwkrMSPpCATkct8fJA==}
+
   ultron@1.1.1:
     resolution: {integrity: sha512-UIEXBNeYmKptWH6z8ZnqTeS8fV74zG0/eRU9VGkpzz+LIJNs8W/zM/L+7ctCkRrgbNnnR0xxw4bKOr0cW0N0Og==}
 
@@ -24954,6 +25709,9 @@ packages:
   unicode-property-aliases-ecmascript@2.2.0:
     resolution: {integrity: sha512-hpbDzxUY9BFwX+UeBnxv3Sh1q7HFxj48DTmXchNgRa46lO8uj3/1iEn3MiNUYTg1g9ctIqXCCERn8gYZhHC5lQ==}
     engines: {node: '>=4'}
+
+  unicode-segmenter@0.14.5:
+    resolution: {integrity: sha512-jHGmj2LUuqDcX3hqY12Ql+uhUTn8huuxNZGq7GvtF6bSybzH3aFgedYu/KTzQStEgt1Ra2F3HxadNXsNjb3m3g==}
 
   unicorn-magic@0.1.0:
     resolution: {integrity: sha512-lRfVq8fE8gz6QMBuDM6a+LO3IAzTi05H6gCVaUpir2E1Rwpo4ZUog45KpNXKC/Mn3Yb9UDuHumeFTo9iV/D9FQ==}
@@ -25132,8 +25890,14 @@ packages:
     resolution: {integrity: sha512-EDxhTEVPZZRLWYcJ4ZXjGFN0oP7qYvbXWzEgRm/Yql4dHX5wDbvh89YHP6PK1lzZJYrMtXUuZZz8XGK+U6U1og==}
     engines: {node: '>=14.16'}
 
+  upper-case-first@2.0.2:
+    resolution: {integrity: sha512-514ppYHBaKwfJRK/pNC6c/OxfGa0obSnAl106u97Ed0I625Nin96KAjttZF6ZL3e1XLtphxnqrOi9iWgm+u+bg==}
+
   upper-case@1.1.3:
     resolution: {integrity: sha512-WRbjgmYzgXkCV7zNVpy5YgrHgbBv126rMALQQMrmzOVC4GM2waQ9x7xtm8VU+1yF2kWyPzI9zbZ48n4vSxwfSA==}
+
+  upper-case@2.0.2:
+    resolution: {integrity: sha512-KgdgDGJt2TpuwBUIjgG6lzw2GWFRCW9Qkfkiv0DxqHHLYJHmtmdUIKcZd8rHgFSjopVTlw6ggzCm1b8MFQwikg==}
 
   uri-js@4.4.1:
     resolution: {integrity: sha512-7rKUyy33Q1yc98pQ1DAmLtwX109F7TIfWlW1Ydo8Wl1ii1SeHieeh0HHfPeL2fMXK6z0s8ecKs9frCuLJvndBg==}
@@ -26289,6 +27053,59 @@ snapshots:
       '@csstools/css-parser-algorithms': 3.0.5(@csstools/css-tokenizer@3.0.4)
       '@csstools/css-tokenizer': 3.0.4
       lru-cache: 10.4.3
+
+  '@atproto/api@0.13.35':
+    dependencies:
+      '@atproto/common-web': 0.4.18
+      '@atproto/lexicon': 0.4.14
+      '@atproto/syntax': 0.3.4
+      '@atproto/xrpc': 0.6.12
+      await-lock: 2.2.2
+      multiformats: 9.9.0
+      tlds: 1.261.0
+      zod: 3.25.76
+
+  '@atproto/common-web@0.4.18':
+    dependencies:
+      '@atproto/lex-data': 0.0.13
+      '@atproto/lex-json': 0.0.13
+      '@atproto/syntax': 0.5.0
+      zod: 3.25.76
+
+  '@atproto/lex-data@0.0.13':
+    dependencies:
+      multiformats: 9.9.0
+      tslib: 2.8.1
+      uint8arrays: 3.0.0
+      unicode-segmenter: 0.14.5
+
+  '@atproto/lex-json@0.0.13':
+    dependencies:
+      '@atproto/lex-data': 0.0.13
+      tslib: 2.8.1
+
+  '@atproto/lexicon@0.4.14':
+    dependencies:
+      '@atproto/common-web': 0.4.18
+      '@atproto/syntax': 0.4.3
+      iso-datestring-validator: 2.2.2
+      multiformats: 9.9.0
+      zod: 3.25.76
+
+  '@atproto/syntax@0.3.4': {}
+
+  '@atproto/syntax@0.4.3':
+    dependencies:
+      tslib: 2.8.1
+
+  '@atproto/syntax@0.5.0':
+    dependencies:
+      tslib: 2.8.1
+
+  '@atproto/xrpc@0.6.12':
+    dependencies:
+      '@atproto/lexicon': 0.4.14
+      zod: 3.25.76
 
   '@auth/core@0.41.0':
     dependencies:
@@ -31201,13 +32018,13 @@ snapshots:
       '@formatjs/fast-memoize': 3.1.0
       tslib: 2.8.1
 
-  '@framers/agentos-ext-cli-executor@1.1.1(@framers/agentos@0.1.37(@framers/sql-storage-adapter@packages+sql-storage-adapter)(graphology-communities-louvain@2.0.2(graphology-types@0.24.8))(graphology-types@0.24.8)(graphology@0.26.0(graphology-types@0.24.8))(hnswlib-node@3.0.0)(typescript@5.9.3))':
+  '@framers/agentos-ext-cli-executor@1.1.1(@framers/agentos@packages+agentos)':
     dependencies:
-      '@framers/agentos': 0.1.37(@framers/sql-storage-adapter@packages+sql-storage-adapter)(graphology-communities-louvain@2.0.2(graphology-types@0.24.8))(graphology-types@0.24.8)(graphology@0.26.0(graphology-types@0.24.8))(hnswlib-node@3.0.0)(typescript@5.9.3)
+      '@framers/agentos': link:packages/agentos
 
-  '@framers/agentos-ext-web-browser@1.1.1(@framers/agentos@0.1.37(@framers/sql-storage-adapter@packages+sql-storage-adapter)(graphology-communities-louvain@2.0.2(graphology-types@0.24.8))(graphology-types@0.24.8)(graphology@0.26.0(graphology-types@0.24.8))(hnswlib-node@3.0.0)(typescript@5.9.3))(bufferutil@4.1.0)(utf-8-validate@5.0.10)':
+  '@framers/agentos-ext-web-browser@1.1.1(@framers/agentos@packages+agentos)(bufferutil@4.1.0)(utf-8-validate@5.0.10)':
     dependencies:
-      '@framers/agentos': 0.1.37(@framers/sql-storage-adapter@packages+sql-storage-adapter)(graphology-communities-louvain@2.0.2(graphology-types@0.24.8))(graphology-types@0.24.8)(graphology@0.26.0(graphology-types@0.24.8))(hnswlib-node@3.0.0)(typescript@5.9.3)
+      '@framers/agentos': link:packages/agentos
       cheerio: 1.1.2
       puppeteer-core: 22.15.0(bufferutil@4.1.0)(utf-8-validate@5.0.10)
     transitivePeerDependencies:
@@ -31217,37 +32034,6 @@ snapshots:
       - react-native-b4a
       - supports-color
       - utf-8-validate
-
-  '@framers/agentos@0.1.37(@framers/sql-storage-adapter@packages+sql-storage-adapter)(graphology-communities-louvain@2.0.2(graphology-types@0.24.8))(graphology-types@0.24.8)(graphology@0.26.0(graphology-types@0.24.8))(hnswlib-node@3.0.0)(typescript@5.9.3)':
-    dependencies:
-      '@opentelemetry/api': 1.9.0
-      '@opentelemetry/api-logs': 0.201.1
-      ajv: 8.17.1
-      ajv-formats: 3.0.1(ajv@8.17.1)
-      axios: 1.13.5
-      lru-cache: 11.2.4
-      natural: 6.12.0(socks@2.8.7)
-      pino: 9.14.0
-      typescript: 5.9.3
-      uuid: 11.1.0
-      yaml: 2.8.1
-    optionalDependencies:
-      '@framers/sql-storage-adapter': link:packages/sql-storage-adapter
-      graphology: 0.26.0(graphology-types@0.24.8)
-      graphology-communities-louvain: 2.0.2(graphology-types@0.24.8)
-      graphology-types: 0.24.8
-      hnswlib-node: 3.0.0
-    transitivePeerDependencies:
-      - '@aws-sdk/credential-providers'
-      - '@mongodb-js/zstd'
-      - debug
-      - gcp-metadata
-      - kerberos
-      - mongodb-client-encryption
-      - pg-native
-      - snappy
-      - socks
-      - supports-color
 
   '@framers/sql-storage-adapter@0.3.5(@aws-sdk/client-s3@3.922.0)(@capacitor-community/sqlite@6.0.2(@capacitor/core@8.0.0))(better-sqlite3@12.4.1)':
     dependencies:
@@ -32286,6 +33072,12 @@ snapshots:
       - supports-color
       - utf-8-validate
 
+  '@nestjs/schedule@6.1.1(@nestjs/common@11.1.13(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.13)':
+    dependencies:
+      '@nestjs/common': 11.1.13(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@nestjs/core': 11.1.13(@nestjs/common@11.1.13(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/platform-express@11.1.13)(@nestjs/websockets@11.1.13)(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      cron: 4.4.0
+
   '@nestjs/swagger@11.2.6(@fastify/static@8.3.0)(@nestjs/common@11.1.13(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.13)(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)':
     dependencies:
       '@microsoft/tsdoc': 0.16.0
@@ -32600,6 +33392,15 @@ snapshots:
       '@octokit/core': 5.2.2
       '@octokit/types': 12.6.0
 
+  '@octokit/plugin-request-log@5.3.1(@octokit/core@6.1.6)':
+    dependencies:
+      '@octokit/core': 6.1.6
+
+  '@octokit/plugin-rest-endpoint-methods@13.5.0(@octokit/core@6.1.6)':
+    dependencies:
+      '@octokit/core': 6.1.6
+      '@octokit/types': 13.10.0
+
   '@octokit/plugin-retry@6.1.0(@octokit/core@5.2.2)':
     dependencies:
       '@octokit/core': 5.2.2
@@ -32675,6 +33476,13 @@ snapshots:
       '@octokit/types': 14.1.0
       fast-content-type-parse: 2.0.1
       universal-user-agent: 7.0.3
+
+  '@octokit/rest@21.1.1':
+    dependencies:
+      '@octokit/core': 6.1.6
+      '@octokit/plugin-paginate-rest': 11.6.0(@octokit/core@6.1.6)
+      '@octokit/plugin-request-log': 5.3.1(@octokit/core@6.1.6)
+      '@octokit/plugin-rest-endpoint-methods': 13.5.0(@octokit/core@6.1.6)
 
   '@octokit/types@12.6.0':
     dependencies:
@@ -37776,6 +38584,8 @@ snapshots:
 
   '@types/long@4.0.2': {}
 
+  '@types/luxon@3.7.1': {}
+
   '@types/markdown-it@13.0.9':
     dependencies:
       '@types/linkify-it': 3.0.5
@@ -39835,6 +40645,8 @@ snapshots:
       '@fastify/error': 4.2.0
       fastq: 1.19.1
 
+  await-lock@2.2.2: {}
+
   aws-sign2@0.7.0: {}
 
   aws4@1.13.2: {}
@@ -40679,6 +41491,12 @@ snapshots:
       svg-pathdata: 6.0.3
     optional: true
 
+  capital-case@1.0.4:
+    dependencies:
+      no-case: 3.0.4
+      tslib: 2.8.1
+      upper-case-first: 2.0.2
+
   caseless@0.12.0: {}
 
   ccount@2.0.1: {}
@@ -40726,6 +41544,21 @@ snapshots:
       supports-color: 7.2.0
 
   chalk@5.6.2: {}
+
+  change-case@4.1.2:
+    dependencies:
+      camel-case: 4.1.2
+      capital-case: 1.0.4
+      constant-case: 3.0.4
+      dot-case: 3.0.4
+      header-case: 2.0.4
+      no-case: 3.0.4
+      param-case: 3.0.4
+      pascal-case: 3.1.2
+      path-case: 3.0.4
+      sentence-case: 3.0.4
+      snake-case: 3.0.4
+      tslib: 2.8.1
 
   char-regex@1.0.2: {}
 
@@ -41268,6 +42101,12 @@ snapshots:
 
   console-control-strings@1.1.0: {}
 
+  constant-case@3.0.4:
+    dependencies:
+      no-case: 3.0.4
+      tslib: 2.8.1
+      upper-case: 2.0.2
+
   constants-browserify@1.0.0: {}
 
   content-disposition@0.5.2: {}
@@ -41487,6 +42326,11 @@ snapshots:
       htmlparser2: 8.0.2
       postcss: 8.5.6
       postcss-media-query-parser: 0.2.3
+
+  cron@4.4.0:
+    dependencies:
+      '@types/luxon': 3.7.1
+      luxon: 3.7.2
 
   cross-env@10.1.0:
     dependencies:
@@ -43462,6 +44306,8 @@ snapshots:
 
   eventemitter3@5.0.4: {}
 
+  events-to-async@2.0.2: {}
+
   events-universal@1.0.1:
     dependencies:
       bare-events: 2.8.2
@@ -45041,6 +45887,11 @@ snapshots:
 
   he@1.2.0: {}
 
+  header-case@2.0.4:
+    dependencies:
+      capital-case: 1.0.4
+      tslib: 2.8.1
+
   helmet@7.2.0: {}
 
   help-me@5.0.0: {}
@@ -45972,6 +46823,8 @@ snapshots:
 
   isexe@3.1.1: {}
 
+  iso-datestring-validator@2.2.2: {}
+
   isobject@2.1.0:
     dependencies:
       isarray: 1.0.0
@@ -45983,6 +46836,10 @@ snapshots:
   isomorphic-ws@4.0.1(ws@7.5.10(bufferutil@4.1.0)(utf-8-validate@5.0.10)):
     dependencies:
       ws: 7.5.10(bufferutil@4.1.0)(utf-8-validate@5.0.10)
+
+  isomorphic-ws@5.0.0(ws@8.19.0(bufferutil@4.1.0)(utf-8-validate@5.0.10)):
+    dependencies:
+      ws: 8.19.0(bufferutil@4.1.0)(utf-8-validate@5.0.10)
 
   isstream@0.1.2: {}
 
@@ -46835,6 +47692,8 @@ snapshots:
 
   lunr@2.3.9: {}
 
+  luxon@3.7.2: {}
+
   lz-string@1.5.0: {}
 
   magic-bytes.js@1.13.0: {}
@@ -46999,6 +47858,17 @@ snapshots:
       '@babel/runtime': 7.28.4
       d3: 7.9.0
       markmap-common: 0.18.9
+
+  masto@6.10.4(bufferutil@4.1.0)(utf-8-validate@5.0.10):
+    dependencies:
+      change-case: 4.1.2
+      events-to-async: 2.0.2
+      isomorphic-ws: 5.0.0(ws@8.19.0(bufferutil@4.1.0)(utf-8-validate@5.0.10))
+      ts-custom-error: 3.3.1
+      ws: 8.19.0(bufferutil@4.1.0)(utf-8-validate@5.0.10)
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
 
   matchdep@2.0.0:
     dependencies:
@@ -48130,6 +49000,8 @@ snapshots:
     dependencies:
       dns-packet: 5.6.1
       thunky: 1.1.0
+
+  multiformats@9.9.0: {}
 
   mute-stdout@1.0.1: {}
 
@@ -49293,6 +50165,11 @@ snapshots:
   path-browserify@0.0.1: {}
 
   path-browserify@1.0.1: {}
+
+  path-case@3.0.4:
+    dependencies:
+      dot-case: 3.0.4
+      tslib: 2.8.1
 
   path-data-parser@0.1.0: {}
 
@@ -52400,6 +53277,12 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  sentence-case@3.0.4:
+    dependencies:
+      no-case: 3.0.4
+      tslib: 2.8.1
+      upper-case-first: 2.0.2
+
   serialize-error@7.0.1:
     dependencies:
       type-fest: 0.13.1
@@ -53895,6 +54778,8 @@ snapshots:
       - '@types/react'
       - '@types/react-dom'
 
+  tlds@1.261.0: {}
+
   tldts-core@6.1.86: {}
 
   tldts@6.1.86:
@@ -54052,6 +54937,8 @@ snapshots:
   ts-api-utils@2.1.0(typescript@5.9.3):
     dependencies:
       typescript: 5.9.3
+
+  ts-custom-error@3.3.1: {}
 
   ts-dedent@2.2.0: {}
 
@@ -54432,6 +55319,10 @@ snapshots:
 
   uint8array-extras@1.5.0: {}
 
+  uint8arrays@3.0.0:
+    dependencies:
+      multiformats: 9.9.0
+
   ultron@1.1.1: {}
 
   unbox-primitive@1.1.0:
@@ -54491,6 +55382,8 @@ snapshots:
   unicode-match-property-value-ecmascript@2.2.1: {}
 
   unicode-property-aliases-ecmascript@2.2.0: {}
+
+  unicode-segmenter@0.14.5: {}
 
   unicorn-magic@0.1.0: {}
 
@@ -54782,7 +55675,15 @@ snapshots:
       semver-diff: 4.0.0
       xdg-basedir: 5.1.0
 
+  upper-case-first@2.0.2:
+    dependencies:
+      tslib: 2.8.1
+
   upper-case@1.1.3: {}
+
+  upper-case@2.0.2:
+    dependencies:
+      tslib: 2.8.1
 
   uri-js@4.4.1:
     dependencies:
@@ -55388,7 +56289,7 @@ snapshots:
 
   wait-on@8.0.5:
     dependencies:
-      axios: 1.12.2
+      axios: 1.13.5
       joi: 18.0.2
       lodash: 4.17.21
       minimist: 1.2.8

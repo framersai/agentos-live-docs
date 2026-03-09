@@ -13,8 +13,34 @@
     "baseUrl": ".",
     "paths": {
       "@prisma/client": ["./packages/agentos/src/stubs/prismaClient.ts"]
-    }
+    },
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "noEmit": true,
+    "incremental": true,
+    "isolatedModules": true,
+    "jsx": "react-jsx",
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
   },
-  "include": ["packages/**/*.ts", "packages/**/*.tsx"],
-  "exclude": ["node_modules", "dist", "frontend", "apps", "backend", "shared", "**/tests/**", "**/*.spec.ts", "**/*.test.ts"]
+  "include": [
+    "packages/**/*.ts",
+    "packages/**/*.tsx",
+    ".next/types/**/*.ts",
+    ".next/dev/types/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "frontend",
+    "apps",
+    "backend",
+    "shared",
+    "**/tests/**",
+    "**/*.spec.ts",
+    "**/*.test.ts"
+  ]
 }

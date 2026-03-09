@@ -1,0 +1,216 @@
+{
+  "metadata": {
+    "generatedAt": "2026-03-04T19:28:04.317Z",
+    "openclawVersion": "2026.3.2",
+    "wunderlandVersion": "wunderland v0.36.1"
+  },
+  "pairs": [
+    {
+      "pairId": "cmd-help",
+      "label": "Help",
+      "category": "command",
+      "hasOpenclaw": true,
+      "hasWunderland": true,
+      "differenceNotes": [
+        "Wunderland has 17+ commands vs OpenClaw ~12",
+        "Wunderland adds: seal, list-presets, skills, models, plugins, export, import"
+      ]
+    },
+    {
+      "pairId": "cmd-version",
+      "label": "Version",
+      "category": "command",
+      "hasOpenclaw": true,
+      "hasWunderland": true,
+      "differenceNotes": [
+        "Different versioning: OpenClaw uses calendar (2026.x.x), Wunderland uses semver (0.x.x)"
+      ]
+    },
+    {
+      "pairId": "cmd-doctor-health-check",
+      "label": "Doctor-Health-Check",
+      "category": "command",
+      "hasOpenclaw": true,
+      "hasWunderland": true,
+      "differenceNotes": [
+        "Both check system health",
+        "Wunderland checks HEXACO personality config, security tier, and extension health"
+      ]
+    },
+    {
+      "pairId": "cmd-status",
+      "label": "Status",
+      "category": "command",
+      "hasOpenclaw": true,
+      "hasWunderland": true,
+      "differenceNotes": ["Wunderland shows security tier, personality preset, active channels"]
+    },
+    {
+      "pairId": "cmd-models",
+      "label": "Models",
+      "category": "command",
+      "hasOpenclaw": true,
+      "hasWunderland": true,
+      "differenceNotes": [
+        "Wunderland supports 13 LLM providers vs OpenClaw ~4",
+        "Wunderland includes SmallModelResolver for cost optimization"
+      ]
+    },
+    {
+      "pairId": "cmd-skills",
+      "label": "Skills",
+      "category": "command",
+      "hasOpenclaw": true,
+      "hasWunderland": true,
+      "differenceNotes": [
+        "Wunderland has 18 curated skills with SKILL.md descriptors",
+        "OpenClaw uses community skill repository"
+      ]
+    },
+    {
+      "pairId": "cmd-agent-presets",
+      "label": "Agent Presets",
+      "category": "command",
+      "hasOpenclaw": false,
+      "hasWunderland": true,
+      "differenceNotes": [
+        "Wunderland-only: 8 agent presets (research, support, creative, code-review, data, security, devops, personal)",
+        "Each preset includes HEXACO traits, security tier, skill suggestions, persona document"
+      ]
+    },
+    {
+      "pairId": "cmd-channels",
+      "label": "Channels",
+      "category": "command",
+      "hasOpenclaw": true,
+      "hasWunderland": true,
+      "differenceNotes": [
+        "Wunderland: 29 channel platforms",
+        "OpenClaw: ~8 channel platforms",
+        "Wunderland adds: Signal, iMessage, Zalo, Nostr, Twitch, Line, Feishu, Mattermost, NextcloudTalk, Tlon"
+      ]
+    },
+    {
+      "pairId": "setup-security-ack",
+      "label": "Security Acknowledgment",
+      "category": "onboarding",
+      "hasOpenclaw": true,
+      "hasWunderland": false,
+      "differenceNotes": ["OpenClaw-only: requires security acknowledgment before setup begins"]
+    },
+    {
+      "pairId": "setup-mode",
+      "label": "Setup Mode Selection",
+      "category": "onboarding",
+      "hasOpenclaw": true,
+      "hasWunderland": true,
+      "differenceNotes": [
+        "Both offer QuickStart vs Advanced; OpenClaw calls it \"Onboarding mode\""
+      ]
+    },
+    {
+      "pairId": "setup-name",
+      "label": "Agent / Workspace Name",
+      "category": "onboarding",
+      "hasOpenclaw": true,
+      "hasWunderland": true,
+      "differenceNotes": ["OpenClaw: \"workspace directory\", Wunderland: \"agent name\""]
+    },
+    {
+      "pairId": "setup-observability",
+      "label": "Observability Config",
+      "category": "onboarding",
+      "hasOpenclaw": false,
+      "hasWunderland": true,
+      "differenceNotes": ["Wunderland-only: OpenTelemetry configuration (off/traces+metrics/full)"]
+    },
+    {
+      "pairId": "setup-provider",
+      "label": "LLM Provider",
+      "category": "onboarding",
+      "hasOpenclaw": true,
+      "hasWunderland": true,
+      "differenceNotes": [
+        "OpenClaw: ~30 providers (model/auth provider), Wunderland: 13 providers multi-select"
+      ]
+    },
+    {
+      "pairId": "setup-auth-method",
+      "label": "Auth Method",
+      "category": "onboarding",
+      "hasOpenclaw": true,
+      "hasWunderland": false,
+      "differenceNotes": [
+        "OpenClaw-only: OAuth (Codex) vs API key auth; Wunderland uses direct API key only"
+      ]
+    },
+    {
+      "pairId": "setup-key-provision",
+      "label": "API Key Provision",
+      "category": "onboarding",
+      "hasOpenclaw": true,
+      "hasWunderland": false,
+      "differenceNotes": ["OpenClaw-only: choose how to provide API key (paste, env var, etc.)"]
+    },
+    {
+      "pairId": "setup-use-env-key",
+      "label": "Use Existing Key",
+      "category": "onboarding",
+      "hasOpenclaw": true,
+      "hasWunderland": false,
+      "differenceNotes": ["OpenClaw auto-detects OPENAI_API_KEY from environment"]
+    },
+    {
+      "pairId": "setup-api-key",
+      "label": "API Key Input",
+      "category": "onboarding",
+      "hasOpenclaw": false,
+      "hasWunderland": false,
+      "differenceNotes": ["Both require API key; Wunderland also offers .env paste import"]
+    },
+    {
+      "pairId": "setup-model",
+      "label": "Model Selection",
+      "category": "onboarding",
+      "hasOpenclaw": true,
+      "hasWunderland": true,
+      "differenceNotes": [
+        "Similar model selection; Wunderland includes SmallModelResolver for cost optimization"
+      ]
+    },
+    {
+      "pairId": "setup-channels",
+      "label": "Channel Selection",
+      "category": "onboarding",
+      "hasOpenclaw": true,
+      "hasWunderland": true,
+      "differenceNotes": ["OpenClaw: ~20 channels, Wunderland: ~30 platforms with emoji icons"]
+    },
+    {
+      "pairId": "setup-daemon",
+      "label": "Daemon / Background Mode",
+      "category": "onboarding",
+      "hasOpenclaw": false,
+      "hasWunderland": false,
+      "differenceNotes": ["OpenClaw-only: built-in daemon mode (LaunchAgent/systemd)"]
+    },
+    {
+      "pairId": "setup-skills",
+      "label": "Skills Selection",
+      "category": "onboarding",
+      "hasOpenclaw": false,
+      "hasWunderland": false,
+      "differenceNotes": [
+        "Both have skills; Wunderland skills appear in Advanced mode with paginated catalog"
+      ]
+    },
+    {
+      "pairId": "setup-review",
+      "label": "Review & Confirm",
+      "category": "onboarding",
+      "hasOpenclaw": false,
+      "hasWunderland": true,
+      "differenceNotes": ["Both show review/summary before finalizing"]
+    }
+  ]
+}
