@@ -4,8 +4,8 @@
  * Usage:
  *   ELEVENLABS_API_KEY=xi_... npx tsx scripts/generate-vo.ts [scene]
  *
- * Scenes: brand-intro, install-phase1, install-phase2, install-phase3,
- *         screenshots, features, stats, ecosystem, cta
+ * Scenes: pain-hook, problem-state, brand-intro, install-setup,
+ *         install-chat, screenshot-showcase, proof, final-state, cta
  *
  * Omit [scene] to regenerate ALL clips.
  */
@@ -18,43 +18,75 @@ const MODEL_ID = 'eleven_multilingual_v2';
 const OUTPUT_DIR = path.resolve(__dirname, '../public/voiceover');
 
 const SCRIPTS: Record<string, string> = {
-  'brand-intro': `Meet Wunderland — the last AI virtual assistant you will ever need.
-Built on OpenClaw with HEXACO personality modeling, graph-based RAG, and more.
-Five-tier security, fifty-one plus extensions, thirteen LLM providers.
-Free, open source, and fully self-hostable.
-Fully offline compatible with Ollama — zero cost.`,
+  'pain-hook': `You tried the other frameworks.
+OpenClaw. AutoGPT. CrewAI.`,
 
-  'install-phase1': `One command to install — fully automated setup.
-Eight curated presets — choose your agent's personality.
-Thirteen LLM providers — OpenAI, Anthropic, Ollama, Groq, and more, with streamlined Ollama setup.`,
+  'problem-state': `Gateway errors. Dependency hell. Runaway API costs.
+No personality. No memory. One channel at a time.
+There has to be a better way.`,
 
-  'install-phase2': `Start chatting instantly — your agent is ready.
-Twenty-three plus autonomous tools — web search, GitHub, coding, and more.
-Real-time results — agents that think, plan, and act.`,
+  'brand-intro': `Meet Wunderland.
+The AI assistant that just works.
+Twenty-seven messaging channels. Thirteen LLM providers. Zero friction.
+Works everywhere. Remembers everything. Stays secure. Can run free of charge with Ollama.`,
 
-  'install-phase3': `Built-in diagnostics — API keys, LLMs, channels, all verified.
-Twenty-seven plus channels, thirteen providers — everything checked at a glance.`,
+  'install-setup': `One command. Choose a preset. Pick your provider.
+Skills auto-loaded. Channels configured.
+Your Wunderbot — initialized and ready.`,
 
-  screenshots: `Setup wizard to TUI dashboard to full CLI toolkit.
-Eight agent presets plus a human-in-the-loop approval panel.
-Real-time tool approval — review and control every action.`,
+  'install-chat': `Your Wunderbot thinks, plans, and acts.
+Twenty-three autonomous tools.
+Web search, GitHub, coding, summarization.
+Full tool orchestration with real-time results.`,
 
-  features: `HEXACO six-factor personality — drives mood, style, and decisions.
-Five-tier security — pre-LLM filters, dual audit, HMAC, cost guards.
-Fifty-one plus extensions — channels, tools, voice, browser, and more.
-Unlimited graph-based knowledge — semantic memory, dynamic time-based mood decay.`,
+  'screenshot-showcase': `Interactive setup wizard. Terminal UI dashboard.
+Agent presets with HEXACO personality traits.
+Human-in-the-loop approval. Autonomous tool calling.
+Thirteen LLM providers. Eighteen curated skills.`,
 
-  stats: `The numbers speak for themselves — an unmatched open-source agent toolkit.
-Tools, skills, channels, providers — everything your Wunderbot needs, built in.
-A massive, growing ecosystem — updated every single week.`,
+  'feature-highlights': `HEXACO personality engine. Five-tier security.
+Fifty-one extensions. Unlimited memory.`,
 
-  ecosystem: `OpenAI, Anthropic, Ollama, Groq, Gemini, Mistral, and more.
-Telegram, Discord, Slack, Signal, Matrix, and twenty plus more.
-Fully offline with Ollama — your data stays local.`,
+  proof: `The numbers speak for themselves.
+Twenty-seven channels. Thirteen providers.
+Twenty-three tools. Eighteen skills.
+Fifty-one extensions. Five security tiers.
+An unmatched open-source agent toolkit.`,
 
-  cta: `Start building Wunderbots — free and open source.
-Any LLM provider — including uncensored models and Ollama fully offline.
+  'final-state': `This is what you get.
+A complete command center for your AI agent.
+Real-time dashboard. API keys verified. Channels live.
+Twelve quick actions at your fingertips.
+And a human-in-the-loop approval panel — full control, full autonomy. Your choice.`,
+
+  cta: `Start in sixty seconds. Free, open source, no credit card.
 wunderland dot s-h. rabbithole dot inc.`,
+
+  // ── Workbench Demo voiceovers ──
+
+  'wb-intro': `The AgentOS Workbench. Let's see what it can really do.`,
+
+  'wb-streaming': `Send a prompt. Watch every token stream in — color-coded by type.
+Text deltas in slate. Tool calls in amber. Metadata in cyan.
+Full telemetry tracked in the bottom bar.`,
+
+  'wb-agency': `Build multi-agent teams with role-based delegation.
+Researcher, analyst, creator — each with their own persona.
+Watch them execute in parallel and deliver coordinated results.`,
+
+  'wb-personas': `Browse six personas out of the box. Or create your own with the guided wizard.
+Define personality traits, capabilities, and guardrails.`,
+
+  'wb-planning': `Multi-step task decomposition. Each step has a confidence score and estimated token cost.
+Pause, resume, or advance — you control the execution.`,
+
+  'wb-evaluation': `Run evaluation suites to track quality over time.
+See pass fail per test case with detailed accuracy metrics.`,
+
+  'wb-themes': `Nine color palettes. Three density modes.
+Light, dark, and system. Fully customizable.`,
+
+  'wb-cta': `Open source. Free to use. Try the AgentOS Workbench at agentos dot s-h.`,
 };
 
 async function generateClip(scene: string, text: string) {

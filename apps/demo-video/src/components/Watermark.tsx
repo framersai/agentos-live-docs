@@ -2,11 +2,21 @@ import React from 'react';
 import { Img, interpolate, staticFile, useCurrentFrame } from 'remotion';
 import { jetbrainsMono } from '../theme/fonts';
 
+interface WatermarkProps {
+  durationInFrames: number;
+  icon?: string;
+  label?: string;
+}
+
 /**
- * Subtle bottom-right watermark: tiny logo + "wunderland.sh"
+ * Subtle bottom-right watermark: tiny logo + site name.
  * Fades in at start, fades out at end of its Sequence.
  */
-export const Watermark: React.FC<{ durationInFrames: number }> = ({ durationInFrames }) => {
+export const Watermark: React.FC<WatermarkProps> = ({
+  durationInFrames,
+  icon = 'wunderland-icon.png',
+  label = 'wunderland.sh',
+}) => {
   const frame = useCurrentFrame();
 
   const opacity = interpolate(
@@ -30,10 +40,7 @@ export const Watermark: React.FC<{ durationInFrames: number }> = ({ durationInFr
         pointerEvents: 'none',
       }}
     >
-      <Img
-        src={staticFile('wunderland-icon.png')}
-        style={{ width: 22, height: 22, borderRadius: 4 }}
-      />
+      <Img src={staticFile(icon)} style={{ width: 22, height: 22, borderRadius: 4 }} />
       <span
         style={{
           fontFamily: jetbrainsMono,
@@ -42,7 +49,7 @@ export const Watermark: React.FC<{ durationInFrames: number }> = ({ durationInFr
           color: 'rgba(240, 238, 255, 0.6)',
         }}
       >
-        wunderland.sh
+        {label}
       </span>
     </div>
   );

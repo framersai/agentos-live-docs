@@ -7,7 +7,17 @@
     "render": "remotion render src/index.ts DemoVideo out/demo.mp4 --codec h264",
     "render:webm": "remotion render src/index.ts DemoVideo out/demo.webm --codec vp8",
     "render:poster": "remotion still src/index.ts DemoVideo out/demo-poster.jpg --frame=75",
-    "deploy": "cp out/demo.mp4 ../wunderland-sh-site/public/demo.mp4 && cp out/demo-poster.jpg ../wunderland-sh-site/public/demo-poster.jpg"
+    "deploy": "cp out/demo.mp4 ../wunderland-sh-site/public/demo.mp4 && cp out/demo-poster.jpg ../wunderland-sh-site/public/demo-poster.jpg",
+    "render:workbench": "remotion render src/index.ts WorkbenchDemo out/workbench-demo.mp4 --codec h264",
+    "render:workbench:webm": "remotion render src/index.ts WorkbenchDemo out/workbench-demo.webm --codec vp8",
+    "render:workbench:poster": "remotion still src/index.ts WorkbenchDemo out/workbench-poster.jpg --frame=200",
+    "copy:recordings": "cp ../agentos-workbench/demo-automation/output/final/*.mp4 public/recordings/",
+    "render:demo-streaming": "remotion render src/index.ts DemoStreaming out/streaming.mp4 --codec h264",
+    "render:demo-agent-creation": "remotion render src/index.ts DemoAgentCreation out/agent-creation.mp4 --codec h264",
+    "render:demo-multi-agent": "remotion render src/index.ts DemoMultiAgent out/multi-agent.mp4 --codec h264",
+    "render:demo-rag-memory": "remotion render src/index.ts DemoRagMemory out/rag-memory.mp4 --codec h264",
+    "render:demo-planning": "remotion render src/index.ts DemoPlanningEngine out/planning-engine.mp4 --codec h264",
+    "render:all-demos": "npm run render:demo-streaming && npm run render:demo-agent-creation && npm run render:demo-multi-agent && npm run render:demo-rag-memory && npm run render:demo-planning"
   },
   "dependencies": {
     "@remotion/animation-utils": "4.0.431",

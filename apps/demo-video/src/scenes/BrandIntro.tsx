@@ -18,7 +18,7 @@ const PILLS = [
   { label: 'HEXACO Personality', color: W.primaryLight },
   { label: 'Graph-Based RAG', color: W.emerald },
   { label: '5-Tier Security', color: W.cyan },
-  { label: 'Infinite Memory', color: W.accent },
+  { label: 'Free with Ollama', color: W.accent },
 ];
 
 // ── Art deco ornamental SVG components ──────────────────────────────

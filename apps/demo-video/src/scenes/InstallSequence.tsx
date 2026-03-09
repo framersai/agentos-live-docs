@@ -97,7 +97,7 @@ const PHASE1: Line[] = [
     segs: [
       { t: '    ✓ ', c: C.green },
       { t: 'openai', c: C.green, b: true },
-      { t: ' (gpt-4o-mini) — configured', c: C.muted },
+      { t: ' (gpt-4o) — configured', c: C.muted },
     ],
   },
   {
@@ -241,7 +241,7 @@ const PHASE2: Line[] = [
       { t: 'openai', c: C.white, b: true },
       { t: '    ', c: C.muted },
       { t: 'Model: ', c: C.muted },
-      { t: 'gpt-4o-mini', c: C.white, b: true },
+      { t: 'gpt-4o', c: C.white, b: true },
       { t: '    ', c: C.muted },
       { t: 'Tools: ', c: C.muted },
       { t: '6', c: C.white, b: true },
@@ -381,232 +381,8 @@ const PHASE2: Line[] = [
   },
 ];
 
-// ── Phase 3: wunderland doctor (matches doctor-grid.png) ─────────────
-// Compressed timing — ~60% faster for snappier pacing
-const PHASE3: Line[] = [
-  { type: 'typed', start: 5, text: 'wunderland doctor', dur: 14, prefix: [{ t: '$ ', c: C.gold }] },
-  { type: 'blank', start: 22 },
-  {
-    type: 'rich',
-    start: 25,
-    segs: [
-      { t: '  ◆ ', c: C.cyan },
-      { t: 'Wunderland Doctor', c: C.white, b: true },
-    ],
-  },
-  { type: 'blank', start: 35 },
-
-  // Configuration
-  {
-    type: 'rich',
-    start: 38,
-    segs: [
-      { t: '  ◆ ', c: C.cyan },
-      { t: 'Configuration', c: C.white, b: true },
-    ],
-  },
-  {
-    type: 'rich',
-    start: 48,
-    segs: [
-      { t: '    ○ ', c: C.yellowWarn },
-      { t: 'Config: ', c: C.white },
-      { t: 'config.json', c: C.white, b: true },
-      { t: '          ~/.wunderland/agent.config.json', c: C.muted },
-    ],
-  },
-  {
-    type: 'rich',
-    start: 56,
-    segs: [
-      { t: '    ○ ', c: C.yellowWarn },
-      { t: 'Config: ', c: C.white },
-      { t: '.env', c: C.white, b: true },
-      { t: '                 not in current directory', c: C.muted },
-    ],
-  },
-  {
-    type: 'rich',
-    start: 64,
-    segs: [
-      { t: '    ○ ', c: C.yellowWarn },
-      { t: 'Config: ', c: C.white },
-      { t: 'agent.config.json', c: C.white, b: true },
-      { t: '  not in current directory', c: C.muted },
-    ],
-  },
-  { type: 'blank', start: 75 },
-
-  // API Keys
-  {
-    type: 'rich',
-    start: 80,
-    segs: [
-      { t: '  ◆ ', c: C.cyan },
-      { t: 'API Keys', c: C.white, b: true },
-    ],
-  },
-  {
-    type: 'rich',
-    start: 90,
-    segs: [
-      { t: '    ✓ ', c: C.green },
-      { t: 'Key: ', c: C.white },
-      { t: 'OPENAI_API_KEY', c: C.white, b: true },
-      { t: '           sk-••••••••', c: C.muted },
-    ],
-  },
-  {
-    type: 'rich',
-    start: 100,
-    segs: [
-      { t: '    ✓ ', c: C.green },
-      { t: 'Key: ', c: C.white },
-      { t: 'ANTHROPIC_API_KEY', c: C.white, b: true },
-      { t: '        sk-ant-••••', c: C.muted },
-    ],
-  },
-  {
-    type: 'rich',
-    start: 110,
-    segs: [
-      { t: '    ✓ ', c: C.green },
-      { t: 'Key: ', c: C.white },
-      { t: 'OPENROUTER_API_KEY', c: C.white, b: true },
-      { t: '       sk-or-••••••', c: C.muted },
-    ],
-  },
-  {
-    type: 'rich',
-    start: 120,
-    segs: [
-      { t: '    ○ ', c: C.yellowWarn },
-      { t: 'Key: ', c: C.white },
-      { t: 'ELEVENLABS_API_KEY', c: C.white, b: true },
-      { t: '       not set', c: C.yellowWarn },
-    ],
-  },
-  { type: 'blank', start: 133 },
-
-  // Channels
-  {
-    type: 'rich',
-    start: 138,
-    segs: [
-      { t: '  ◆ ', c: C.cyan },
-      { t: 'Channels', c: C.white, b: true },
-    ],
-  },
-  {
-    type: 'rich',
-    start: 148,
-    segs: [
-      { t: '    ✓ ', c: C.green },
-      { t: 'Channel: ', c: C.white },
-      { t: 'telegram', c: C.green, b: true },
-      { t: '        configured', c: C.muted },
-    ],
-  },
-  {
-    type: 'rich',
-    start: 156,
-    segs: [
-      { t: '    ✓ ', c: C.green },
-      { t: 'Channel: ', c: C.white },
-      { t: 'discord', c: C.green, b: true },
-      { t: '         configured', c: C.muted },
-    ],
-  },
-  {
-    type: 'rich',
-    start: 164,
-    segs: [
-      { t: '    ○ ', c: C.yellowWarn },
-      { t: 'Channel: ', c: C.white },
-      { t: 'slack', c: C.yellowWarn, b: true },
-      { t: '           partially configured', c: C.muted },
-    ],
-  },
-  {
-    type: 'rich',
-    start: 172,
-    segs: [
-      { t: '    ○ ', c: C.yellowWarn },
-      { t: 'Channel: ', c: C.white },
-      { t: 'whatsapp', c: C.yellowWarn, b: true },
-      { t: '        not configured', c: C.muted },
-    ],
-  },
-  {
-    type: 'rich',
-    start: 180,
-    segs: [
-      { t: '    ✓ ', c: C.green },
-      { t: 'Channel: ', c: C.white },
-      { t: 'signal', c: C.green, b: true },
-      { t: '          configured', c: C.muted },
-    ],
-  },
-  {
-    type: 'rich',
-    start: 188,
-    segs: [
-      { t: '    ○ ', c: C.yellowWarn },
-      { t: 'Channel: ', c: C.white },
-      { t: 'imessage', c: C.yellowWarn, b: true },
-      { t: '        not configured', c: C.muted },
-    ],
-  },
-  { type: 'blank', start: 200 },
-
-  // Connectivity
-  {
-    type: 'rich',
-    start: 205,
-    segs: [
-      { t: '  ◆ ', c: C.cyan },
-      { t: 'Connectivity', c: C.white, b: true },
-    ],
-  },
-  {
-    type: 'rich',
-    start: 215,
-    segs: [
-      { t: '    ✓ ', c: C.green },
-      { t: 'Connectivity: ', c: C.white },
-      { t: 'OpenAI API', c: C.green, b: true },
-      { t: '          142ms', c: C.muted },
-    ],
-  },
-  {
-    type: 'rich',
-    start: 225,
-    segs: [
-      { t: '    ✓ ', c: C.green },
-      { t: 'Connectivity: ', c: C.white },
-      { t: 'https://wunderland.sh', c: C.green, b: true },
-      { t: '   67ms', c: C.muted },
-    ],
-  },
-  { type: 'blank', start: 238 },
-
-  // Summary
-  {
-    type: 'rich',
-    start: 245,
-    segs: [
-      { t: '  ◆ ', c: C.green },
-      { t: '10 passed', c: C.green, b: true },
-      { t: '  ', c: C.muted },
-      { t: '5 skipped', c: C.yellowWarn, b: true },
-    ],
-  },
-];
-
 const PHASE_DURATION = 480;
 const PHASE2_START = PHASE_DURATION;
-const PHASE3_START = PHASE_DURATION * 2;
-const PHASE3_DURATION = 345; // installSequence(1305) - PHASE3_START(960)
 
 // ── Line height constants (must match Terminal body styles) ──────────
 const LINE_H = 36; // fontSize 18 * lineHeight 2.0
@@ -746,24 +522,13 @@ export const InstallSequence: React.FC = () => {
       extrapolateRight: 'clamp',
     });
 
-  // Phase 3 has a shorter duration (345 frames, not 480)
-  const fadeP3 = (lf: number) =>
-    interpolate(lf, [0, 8, PHASE3_DURATION - 20, PHASE3_DURATION], [0, 1, 1, 0], {
-      extrapolateLeft: 'clamp',
-      extrapolateRight: 'clamp',
-    });
-
-  // No zoom — static 1.0 scale, no pan. Content highlighted via glow styling instead.
   const p2L = frame - PHASE2_START;
-  const p3L = frame - PHASE3_START;
 
   // ── Scroll offsets per phase ──
   const p1Scroll = getScrollOffset(PHASE1, frame);
   const p1Total = getTotalHeight(PHASE1, frame);
   const p2Scroll = getScrollOffset(PHASE2, p2L);
   const p2Total = getTotalHeight(PHASE2, p2L);
-  const p3Scroll = getScrollOffset(PHASE3, p3L);
-  const p3Total = getTotalHeight(PHASE3, p3L);
 
   const headingStyle: React.CSSProperties = {
     position: 'absolute',
@@ -800,14 +565,9 @@ export const InstallSequence: React.FC = () => {
           <ShineText startFrame={5}>Build a Wunderbot in 60 Seconds</ShineText>
         </div>
       )}
-      {frame >= PHASE2_START - 15 && frame < PHASE3_START + 15 && (
+      {frame >= PHASE2_START - 15 && (
         <div style={{ ...headingStyle, opacity: fade(p2L) }}>
           <ShineText startFrame={PHASE2_START + 5}>Your Wunderbot in Action</ShineText>
-        </div>
-      )}
-      {frame >= PHASE3_START - 15 && (
-        <div style={{ ...headingStyle, opacity: fadeP3(p3L) }}>
-          <ShineText startFrame={PHASE3_START + 5}>System Health Check</ShineText>
         </div>
       )}
 
@@ -827,7 +587,7 @@ export const InstallSequence: React.FC = () => {
         </div>
       )}
 
-      {frame >= PHASE2_START - 15 && frame < PHASE3_START + 15 && (
+      {frame >= PHASE2_START - 15 && (
         <div style={wrap(fade(p2L), 2)}>
           <Terminal
             title="wunderland chat — Research Assistant"
@@ -837,21 +597,6 @@ export const InstallSequence: React.FC = () => {
           >
             {PHASE2.map((l, i) => (
               <RichLine key={`p2-${i}`} line={l} frame={frame} offset={PHASE2_START} />
-            ))}
-          </Terminal>
-        </div>
-      )}
-
-      {frame >= PHASE3_START - 15 && (
-        <div style={wrap(fadeP3(p3L), 3)}>
-          <Terminal
-            title="wunderland doctor"
-            maxBodyHeight={MAX_BODY_H}
-            scrollOffset={p3Scroll}
-            totalContentHeight={p3Total}
-          >
-            {PHASE3.map((l, i) => (
-              <RichLine key={`p3-${i}`} line={l} frame={frame} offset={PHASE3_START} />
             ))}
           </Terminal>
         </div>

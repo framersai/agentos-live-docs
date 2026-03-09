@@ -25,6 +25,35 @@ export const W = {
     'radial-gradient(ellipse at 50% 40%, #1a1545 0%, #0f0b2e 50%, #060418 100%)',
 } as const;
 
+// AgentOS palette
+export const AOS = {
+  bgVoid: '#0c0c0f',
+  bgSurface: '#141418',
+  bgElevated: '#1c1c22',
+  bgGradient:
+    'radial-gradient(ellipse at 50% 0%, rgba(255, 255, 255, 0.03) 0%, transparent 60%), ' +
+    'radial-gradient(ellipse at 50% 100%, rgba(99, 102, 241, 0.04) 0%, transparent 50%), ' +
+    'radial-gradient(ellipse at 50% 40%, #141418 0%, #0c0c0f 50%, #080809 100%)',
+  primary: '#6366f1',
+  primaryLight: '#818cf8',
+  primaryDark: '#4f46e5',
+  accent: '#8b5cf6',
+  accentLight: '#a78bfa',
+  tertiary: '#ec4899',
+  warm: '#f97316',
+  cyan: '#06b6d4',
+  emerald: '#10b981',
+  rose: '#f43f5e',
+  textPrimary: '#f0eeff',
+  textSecondary: 'rgba(240, 238, 255, 0.75)',
+  textTertiary: 'rgba(240, 238, 255, 0.50)',
+  borderGlass: 'rgba(255, 255, 255, 0.08)',
+  borderGlow: 'rgba(99, 102, 241, 0.25)',
+  surface: 'rgba(99, 102, 241, 0.08)',
+  surfaceBorder: 'rgba(99, 102, 241, 0.15)',
+  gradientAccent: 'linear-gradient(135deg, #6366f1, #8b5cf6, #ec4899)',
+} as const;
+
 // Rabbithole palette
 export const RH = {
   void: '#030305',

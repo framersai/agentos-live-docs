@@ -8,10 +8,14 @@ const ENTER = 10;
 const EXIT = 10;
 const WORD_STAGGER = 3; // frames between each word appearing
 
-export const CaptionOverlay: React.FC = () => {
+interface CaptionOverlayProps {
+  captions?: CaptionEntry[];
+}
+
+export const CaptionOverlay: React.FC<CaptionOverlayProps> = ({ captions = CAPTIONS }) => {
   const frame = useCurrentFrame();
 
-  const active: CaptionEntry | undefined = CAPTIONS.find((c) => frame >= c.from && frame < c.to);
+  const active: CaptionEntry | undefined = captions.find((c) => frame >= c.from && frame < c.to);
 
   if (!active) return null;
 
