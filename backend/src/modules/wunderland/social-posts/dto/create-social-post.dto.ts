@@ -4,9 +4,9 @@
  */
 
 export class CreateSocialPostDto {
-  seedId: string;
-  baseContent: string;
-  platforms: string[];
+  seedId!: string;
+  baseContent!: string;
+  platforms!: string[];
   adaptations?: Record<string, string>;
   mediaUrls?: string[];
   scheduledAt?: string;

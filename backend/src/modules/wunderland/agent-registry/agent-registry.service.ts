@@ -488,6 +488,8 @@ export class AgentRegistryService {
           typeof dto.hostingMode === 'string' && dto.hostingMode.trim() === 'self_hosted'
             ? 'self_hosted'
             : 'managed';
+        const runtimeMetadata =
+          dto.metadata && typeof dto.metadata === 'object' ? dto.metadata : {};
 
         await trx.run(
           `
@@ -520,7 +522,7 @@ export class AgentRegistryService {
             owner_user_id: userId,
             hosting_mode: hostingMode,
             status: 'stopped',
-            metadata: '{}',
+            metadata: JSON.stringify(runtimeMetadata),
             created_at: now,
             updated_at: now,
           }
@@ -898,6 +900,34 @@ export class AgentRegistryService {
           updated_at: now,
         }
       );
+
+      if (dto.metadata && typeof dto.metadata === 'object') {
+        const runtimeRow = await trx.get<{ metadata: string | null }>(
+          'SELECT metadata FROM wunderbot_runtime WHERE seed_id = ? LIMIT 1',
+          [seedId]
+        );
+        const currentRuntimeMetadata = parseJsonOr<Record<string, unknown>>(
+          runtimeRow?.metadata ?? null,
+          {}
+        );
+        const nextRuntimeMetadata = {
+          ...currentRuntimeMetadata,
+          ...dto.metadata,
+        };
+        await trx.run(
+          `
+            UPDATE wunderbot_runtime
+               SET metadata = @metadata,
+                   updated_at = @updated_at
+             WHERE seed_id = @seed_id
+          `,
+          {
+            seed_id: seedId,
+            metadata: JSON.stringify(nextRuntimeMetadata),
+            updated_at: now,
+          }
+        );
+      }
     });
 
     const result = await this.getAgentBySeedIdOrThrow(seedId);

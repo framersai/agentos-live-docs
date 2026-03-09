@@ -199,8 +199,10 @@ function buildRollingSummaryProfilesFromMetapromptPresets(
   for (const [profileId, profile] of Object.entries(profilesRaw)) {
     if (!profile || typeof profile !== 'object') continue;
     const enabled = Boolean((profile as any).enabled);
-    const rawModelId =
-      typeof (profile as any).modelId === 'string'
+    const envModelOverride = process.env.AGENTOS_DEFAULT_MODEL_ID;
+    const rawModelId = envModelOverride
+      ? envModelOverride
+      : typeof (profile as any).modelId === 'string'
         ? String((profile as any).modelId)
         : 'gpt-4o-mini';
     let modelId = rawModelId;
@@ -603,6 +605,21 @@ async function buildEmbeddedAgentOSConfig(): Promise<EmbeddedAgentOSConfigBuildR
       ? process.env.MODEL_PREF_OPENROUTER_DEFAULT || 'openai/gpt-4o-mini'
       : 'gpt-4o-mini');
 
+  const parseBooleanEnv = (value: string | undefined): boolean | undefined => {
+    if (!value) return undefined;
+    const raw = value.trim().toLowerCase();
+    if (!raw) return undefined;
+    if (raw === '1' || raw === 'true' || raw === 'yes' || raw === 'on') return true;
+    if (raw === '0' || raw === 'false' || raw === 'no' || raw === 'off') return false;
+    return undefined;
+  };
+
+  const parseNumberEnv = (value: string | undefined): number | undefined => {
+    if (!value || !value.trim()) return undefined;
+    const parsed = Number(value);
+    return Number.isFinite(parsed) ? parsed : undefined;
+  };
+
   const gmiManagerConfig: GMIManagerConfig = {
     personaLoaderConfig: {
       loaderType: 'file_system',
@@ -621,6 +638,101 @@ async function buildEmbeddedAgentOSConfig(): Promise<EmbeddedAgentOSConfigBuildR
     defaultAgentTurnTimeoutMs: Number(process.env.AGENTOS_TURN_TIMEOUT_MS ?? 120_000),
     enableConversationalPersistence: persistenceEnabled,
   };
+
+  const tenantModeRaw = process.env.AGENTOS_TENANT_ROUTING_MODE?.trim().toLowerCase();
+  if (tenantModeRaw === 'single_tenant' || tenantModeRaw === 'multi_tenant') {
+    orchestratorConfig.tenantRouting = {
+      mode: tenantModeRaw,
+      defaultOrganizationId:
+        typeof process.env.AGENTOS_TENANT_DEFAULT_ORGANIZATION_ID === 'string' &&
+        process.env.AGENTOS_TENANT_DEFAULT_ORGANIZATION_ID.trim()
+          ? process.env.AGENTOS_TENANT_DEFAULT_ORGANIZATION_ID.trim()
+          : undefined,
+      strictOrganizationIsolation:
+        parseBooleanEnv(process.env.AGENTOS_TENANT_STRICT_ORGANIZATION_ISOLATION) ?? false,
+    };
+  }
+
+  const longTermMemoryRecallProfileRaw =
+    process.env.AGENTOS_LONG_TERM_MEMORY_RECALL_PROFILE?.trim().toLowerCase();
+  if (
+    longTermMemoryRecallProfileRaw === 'aggressive' ||
+    longTermMemoryRecallProfileRaw === 'balanced' ||
+    longTermMemoryRecallProfileRaw === 'conservative'
+  ) {
+    const topKByScope: Record<'user' | 'persona' | 'organization', number> = {
+      user: 0,
+      persona: 0,
+      organization: 0,
+    };
+    const topKUser = parseNumberEnv(process.env.AGENTOS_LONG_TERM_MEMORY_TOPK_USER);
+    const topKPersona = parseNumberEnv(process.env.AGENTOS_LONG_TERM_MEMORY_TOPK_PERSONA);
+    const topKOrg = parseNumberEnv(process.env.AGENTOS_LONG_TERM_MEMORY_TOPK_ORGANIZATION);
+    if (typeof topKUser === 'number') topKByScope.user = Math.max(0, Math.trunc(topKUser));
+    if (typeof topKPersona === 'number') topKByScope.persona = Math.max(0, Math.trunc(topKPersona));
+    if (typeof topKOrg === 'number') topKByScope.organization = Math.max(0, Math.trunc(topKOrg));
+
+    orchestratorConfig.longTermMemoryRecall = {
+      profile: longTermMemoryRecallProfileRaw,
+      cadenceTurns: parseNumberEnv(process.env.AGENTOS_LONG_TERM_MEMORY_CADENCE_TURNS),
+      forceOnCompaction: parseBooleanEnv(process.env.AGENTOS_LONG_TERM_MEMORY_FORCE_ON_COMPACTION),
+      maxContextChars: parseNumberEnv(process.env.AGENTOS_LONG_TERM_MEMORY_MAX_CONTEXT_CHARS),
+      topKByScope:
+        topKByScope.user > 0 || topKByScope.persona > 0 || topKByScope.organization > 0
+          ? topKByScope
+          : undefined,
+    };
+  }
+
+  const telemetryConfig: NonNullable<AgentOSOrchestratorConfig['taskOutcomeTelemetry']> = {};
+  const telemetryEnabled = parseBooleanEnv(process.env.AGENTOS_TASK_OUTCOME_TELEMETRY_ENABLED);
+  if (typeof telemetryEnabled === 'boolean') telemetryConfig.enabled = telemetryEnabled;
+  const telemetryWindow = parseNumberEnv(process.env.AGENTOS_TASK_OUTCOME_ROLLING_WINDOW_SIZE);
+  if (typeof telemetryWindow === 'number') telemetryConfig.rollingWindowSize = telemetryWindow;
+  const telemetryScope = process.env.AGENTOS_TASK_OUTCOME_SCOPE?.trim().toLowerCase();
+  if (
+    telemetryScope === 'global' ||
+    telemetryScope === 'organization' ||
+    telemetryScope === 'organization_persona'
+  ) {
+    telemetryConfig.scope = telemetryScope;
+  }
+  const emitAlerts = parseBooleanEnv(process.env.AGENTOS_TASK_OUTCOME_EMIT_ALERTS);
+  if (typeof emitAlerts === 'boolean') telemetryConfig.emitAlerts = emitAlerts;
+  const alertThreshold = parseNumberEnv(
+    process.env.AGENTOS_TASK_OUTCOME_ALERT_BELOW_WEIGHTED_SUCCESS_RATE
+  );
+  if (typeof alertThreshold === 'number')
+    telemetryConfig.alertBelowWeightedSuccessRate = alertThreshold;
+  const alertMinSamples = parseNumberEnv(process.env.AGENTOS_TASK_OUTCOME_ALERT_MIN_SAMPLES);
+  if (typeof alertMinSamples === 'number') telemetryConfig.alertMinSamples = alertMinSamples;
+  const alertCooldownMs = parseNumberEnv(process.env.AGENTOS_TASK_OUTCOME_ALERT_COOLDOWN_MS);
+  if (typeof alertCooldownMs === 'number') telemetryConfig.alertCooldownMs = alertCooldownMs;
+  if (Object.keys(telemetryConfig).length > 0) {
+    orchestratorConfig.taskOutcomeTelemetry = telemetryConfig;
+  }
+
+  const adaptiveConfig: NonNullable<AgentOSOrchestratorConfig['adaptiveExecution']> = {};
+  const adaptiveEnabled = parseBooleanEnv(process.env.AGENTOS_ADAPTIVE_EXECUTION_ENABLED);
+  if (typeof adaptiveEnabled === 'boolean') adaptiveConfig.enabled = adaptiveEnabled;
+  const adaptiveMinSamples = parseNumberEnv(process.env.AGENTOS_ADAPTIVE_EXECUTION_MIN_SAMPLES);
+  if (typeof adaptiveMinSamples === 'number') adaptiveConfig.minSamples = adaptiveMinSamples;
+  const adaptiveMinWeighted = parseNumberEnv(
+    process.env.AGENTOS_ADAPTIVE_EXECUTION_MIN_WEIGHTED_SUCCESS_RATE
+  );
+  if (typeof adaptiveMinWeighted === 'number')
+    adaptiveConfig.minWeightedSuccessRate = adaptiveMinWeighted;
+  const adaptiveForceAll = parseBooleanEnv(process.env.AGENTOS_ADAPTIVE_FORCE_ALL_TOOLS);
+  if (typeof adaptiveForceAll === 'boolean')
+    adaptiveConfig.forceAllToolsWhenDegraded = adaptiveForceAll;
+  const adaptiveForceFailOpen = parseBooleanEnv(
+    process.env.AGENTOS_ADAPTIVE_FORCE_FAIL_OPEN_WHEN_DEGRADED
+  );
+  if (typeof adaptiveForceFailOpen === 'boolean')
+    adaptiveConfig.forceFailOpenWhenDegraded = adaptiveForceFailOpen;
+  if (Object.keys(adaptiveConfig).length > 0) {
+    orchestratorConfig.adaptiveExecution = adaptiveConfig;
+  }
 
   const metapromptPresets = loadMetapromptPresetsConfig();
   const promptProfileConfig = metapromptPresets
@@ -908,15 +1020,6 @@ async function buildEmbeddedAgentOSConfig(): Promise<EmbeddedAgentOSConfigBuildR
 
   const extensionManifest = curatedManifest.packs.length > 0 ? curatedManifest : undefined;
 
-  const parseBooleanEnv = (value: string | undefined): boolean | undefined => {
-    if (!value) return undefined;
-    const raw = value.trim().toLowerCase();
-    if (!raw) return undefined;
-    if (raw === '1' || raw === 'true' || raw === 'yes' || raw === 'on') return true;
-    if (raw === '0' || raw === 'false' || raw === 'no' || raw === 'off') return false;
-    return undefined;
-  };
-
   const hitlEnabled = parseBooleanEnv(process.env.AGENTOS_HITL_ENABLED) ?? false;
   if (hitlEnabled) {
     const timeoutRaw = process.env.AGENTOS_HITL_APPROVAL_TIMEOUT_MS?.trim();
@@ -982,6 +1085,61 @@ async function buildEmbeddedAgentOSConfig(): Promise<EmbeddedAgentOSConfigBuildR
         }
       : undefined;
 
+  const turnPlanningConfig: NonNullable<AgentOSConfig['turnPlanning']> = {};
+  const turnPlanningEnabled = parseBooleanEnv(process.env.AGENTOS_TURN_PLANNING_ENABLED);
+  if (typeof turnPlanningEnabled === 'boolean') {
+    turnPlanningConfig.enabled = turnPlanningEnabled;
+  }
+  const defaultToolFailureMode =
+    process.env.AGENTOS_TURN_PLANNING_DEFAULT_TOOL_FAILURE_MODE?.trim().toLowerCase();
+  if (defaultToolFailureMode === 'fail_open' || defaultToolFailureMode === 'fail_closed') {
+    turnPlanningConfig.defaultToolFailureMode = defaultToolFailureMode;
+  }
+  const allowRequestOverrides = parseBooleanEnv(
+    process.env.AGENTOS_TURN_PLANNING_ALLOW_REQUEST_OVERRIDES
+  );
+  if (typeof allowRequestOverrides === 'boolean') {
+    turnPlanningConfig.allowRequestOverrides = allowRequestOverrides;
+  }
+
+  const discoveryConfig: NonNullable<NonNullable<AgentOSConfig['turnPlanning']>['discovery']> = {};
+  const turnDiscoveryEnabled = parseBooleanEnv(process.env.AGENTOS_TURN_PLANNING_DISCOVERY_ENABLED);
+  if (typeof turnDiscoveryEnabled === 'boolean') {
+    discoveryConfig.enabled = turnDiscoveryEnabled;
+  }
+  const defaultToolSelectionMode =
+    process.env.AGENTOS_TURN_PLANNING_DEFAULT_TOOL_SELECTION_MODE?.trim().toLowerCase();
+  if (defaultToolSelectionMode === 'all' || defaultToolSelectionMode === 'discovered') {
+    discoveryConfig.defaultToolSelectionMode = defaultToolSelectionMode;
+  }
+  const discoveryOnlyAvailable = parseBooleanEnv(
+    process.env.AGENTOS_TURN_PLANNING_DISCOVERY_ONLY_AVAILABLE
+  );
+  if (typeof discoveryOnlyAvailable === 'boolean') {
+    discoveryConfig.onlyAvailable = discoveryOnlyAvailable;
+  }
+  const discoveryIncludePromptContext = parseBooleanEnv(
+    process.env.AGENTOS_TURN_PLANNING_DISCOVERY_INCLUDE_PROMPT_CONTEXT
+  );
+  if (typeof discoveryIncludePromptContext === 'boolean') {
+    discoveryConfig.includePromptContext = discoveryIncludePromptContext;
+  }
+  const discoveryMaxRetries = parseNumberEnv(
+    process.env.AGENTOS_TURN_PLANNING_DISCOVERY_MAX_RETRIES
+  );
+  if (typeof discoveryMaxRetries === 'number') {
+    discoveryConfig.maxRetries = Math.max(0, Math.trunc(discoveryMaxRetries));
+  }
+  const discoveryRetryBackoff = parseNumberEnv(
+    process.env.AGENTOS_TURN_PLANNING_DISCOVERY_RETRY_BACKOFF_MS
+  );
+  if (typeof discoveryRetryBackoff === 'number') {
+    discoveryConfig.retryBackoffMs = Math.max(0, Math.trunc(discoveryRetryBackoff));
+  }
+  if (Object.keys(discoveryConfig).length > 0) {
+    turnPlanningConfig.discovery = discoveryConfig;
+  }
+
   const config: AgentOSConfig = {
     gmiManagerConfig,
     orchestratorConfig,
@@ -1003,6 +1161,7 @@ async function buildEmbeddedAgentOSConfig(): Promise<EmbeddedAgentOSConfigBuildR
     utilityAIService: undefined,
     guardrailService,
     observability,
+    ...(Object.keys(turnPlanningConfig).length > 0 ? { turnPlanning: turnPlanningConfig } : {}),
   };
 
   return {

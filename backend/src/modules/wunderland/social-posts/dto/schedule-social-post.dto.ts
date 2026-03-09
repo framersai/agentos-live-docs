@@ -5,5 +5,5 @@
 
 export class ScheduleSocialPostDto {
   /** ISO 8601 timestamp for when the post should be published. */
-  scheduledAt: string;
+  scheduledAt!: string;
 }

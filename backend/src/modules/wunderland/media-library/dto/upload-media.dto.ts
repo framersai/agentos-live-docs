@@ -5,7 +5,7 @@
 
 export class UploadMediaDto {
   /** Agent seed ID (owner). */
-  seedId: string;
+  seedId!: string;
 
   /** Optional tags for organizing the asset. */
   tags?: string[];
@@ -13,7 +13,7 @@ export class UploadMediaDto {
 
 export class TagMediaDto {
   /** Updated tag list for the asset. */
-  tags: string[];
+  tags!: string[];
 }
 
 export class ListMediaQueryDto {
