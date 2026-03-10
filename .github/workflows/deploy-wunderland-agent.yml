@@ -1,8 +1,17 @@
-name: Deploy Wunderland Agent (Linode) — Manual Override
+name: Deploy Wunderland Agent (Linode)
 
-# The Wunderland agent is deployed automatically as part of deploy-rabbithole.yml.
-# Use this workflow only for manual override if you need to redeploy just the agent.
+# Auto-deploys when agent-related code changes on master.
+# Also supports manual trigger and cross-repo dispatch.
 on:
+  push:
+    branches: [master]
+    paths:
+      - 'packages/wunderland/**'
+      - 'packages/agentos-extensions/**'
+      - 'packages/agentos/**'
+      - 'packages/shared/**'
+      - 'rabbithole-ai-agent/agent.config.json'
+      - '.github/workflows/deploy-wunderland-agent.yml'
   workflow_dispatch:
   repository_dispatch:
     types: [deploy-wunderland-agent]
