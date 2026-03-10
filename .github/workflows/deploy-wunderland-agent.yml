@@ -5,13 +5,6 @@ name: Deploy Wunderland Agent (Linode)
 on:
   push:
     branches: [master]
-    paths:
-      - 'packages/wunderland/**'
-      - 'packages/agentos-extensions/**'
-      - 'packages/agentos/**'
-      - 'packages/shared/**'
-      - 'rabbithole-ai-agent/agent.config.json'
-      - '.github/workflows/deploy-wunderland-agent.yml'
   workflow_dispatch:
   repository_dispatch:
     types: [deploy-wunderland-agent]
