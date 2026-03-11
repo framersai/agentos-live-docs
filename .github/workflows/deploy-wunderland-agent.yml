@@ -1,8 +1,21 @@
 name: Deploy Wunderland Agent (Linode)
 
 # Auto-deploys when agent-related code changes on master.
-# Also supports manual trigger and cross-repo dispatch.
+# Also supports manual trigger and cross-repo dispatch (from discord-bots).
 on:
+  push:
+    branches: [master]
+    paths:
+      - 'packages/wunderland/**'
+      - 'packages/agentos/**'
+      - 'packages/agentos-extensions/**'
+      - 'packages/agentos-extensions-registry/**'
+      - 'packages/agentos-skills-registry/**'
+      - 'packages/sql-storage-adapter/**'
+      - 'packages/shared/**'
+      - 'rabbithole-ai-agent/**'
+      - 'deployment/rabbithole/wunderland-agent.*'
+      - '.github/workflows/deploy-wunderland-agent.yml'
   workflow_dispatch:
   repository_dispatch:
     types: [deploy-wunderland-agent]
