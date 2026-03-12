@@ -57,6 +57,10 @@ jobs:
               git fetch origin
               git reset --hard origin/master
               git submodule update --init --recursive --force 2>&1 || true
+              # Update critical submodules individually (bulk update may fail on stale refs in non-critical submodules)
+              for sub in packages/wunderland packages/agentos packages/agentos-extensions packages/agentos-extensions-registry packages/agentos-skills-registry packages/shared packages/sql-storage-adapter; do
+                git submodule update --init --force "$sub" 2>&1 || echo "[deploy] WARNING: Could not update submodule $sub"
+              done
             fi
 
             cd "$REPO_DIR"
