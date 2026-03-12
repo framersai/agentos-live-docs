@@ -30,7 +30,7 @@
 [submodule "apps/wunderland-sh"]
 	path = apps/wunderland-sh
 	url = https://github.com/manicinc/wunderland-sol.git
-	branch = master
+	branch = main
 [submodule "packages/wunderland"]
 	path = packages/wunderland
 	url = https://github.com/jddunn/wunderland.git
