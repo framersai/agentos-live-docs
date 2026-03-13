@@ -33,81 +33,336 @@ const EXTENSIONS_GITHUB_REPO = 'https://github.com/framersai/agentos-extensions'
 
 /** @type {{ src: string; dest: string; title: string; position: number }[]} */
 const agentosGuides = [
-  { src: 'README.md', dest: 'getting-started/documentation-index.md', title: 'Documentation Index', position: 1 },
+  {
+    src: 'README.md',
+    dest: 'getting-started/documentation-index.md',
+    title: 'Documentation Index',
+    position: 1,
+  },
   { src: 'ECOSYSTEM.md', dest: 'getting-started/ecosystem.md', title: 'Ecosystem', position: 2 },
   { src: 'RELEASING.md', dest: 'getting-started/releasing.md', title: 'Releasing', position: 3 },
-  { src: 'ARCHITECTURE.md', dest: 'architecture/system-architecture.md', title: 'System Architecture', position: 1 },
-  { src: 'PLATFORM_SUPPORT.md', dest: 'architecture/platform-support.md', title: 'Platform Support', position: 2 },
-  { src: 'OBSERVABILITY.md', dest: 'architecture/observability.md', title: 'Observability (OpenTelemetry)', position: 3 },
-  { src: 'LOGGING.md', dest: 'architecture/logging.md', title: 'Logging (Pino + OpenTelemetry)', position: 4 },
-  { src: 'TOOL_CALLING_AND_LOADING.md', dest: 'architecture/tool-calling-and-loading.md', title: 'Tool Calling & Lazy Loading', position: 5 },
-  { src: 'IMMUTABLE_AGENTS.md', dest: 'features/immutable-agents.md', title: 'Immutable Agents', position: 13 },
-  { src: 'PROVENANCE_IMMUTABILITY.md', dest: 'features/provenance-immutability.md', title: 'Provenance & Immutability', position: 14 },
-  { src: 'PLANNING_ENGINE.md', dest: 'features/planning-engine.md', title: 'Planning Engine', position: 1 },
-  { src: 'HUMAN_IN_THE_LOOP.md', dest: 'features/human-in-the-loop.md', title: 'Human-in-the-Loop', position: 2 },
-  { src: 'AGENT_COMMUNICATION.md', dest: 'features/agent-communication.md', title: 'Agent Communication', position: 3 },
+  {
+    src: 'ARCHITECTURE.md',
+    dest: 'architecture/system-architecture.md',
+    title: 'System Architecture',
+    position: 1,
+  },
+  {
+    src: 'PLATFORM_SUPPORT.md',
+    dest: 'architecture/platform-support.md',
+    title: 'Platform Support',
+    position: 2,
+  },
+  {
+    src: 'OBSERVABILITY.md',
+    dest: 'architecture/observability.md',
+    title: 'Observability (OpenTelemetry)',
+    position: 3,
+  },
+  {
+    src: 'LOGGING.md',
+    dest: 'architecture/logging.md',
+    title: 'Logging (Pino + OpenTelemetry)',
+    position: 4,
+  },
+  {
+    src: 'TOOL_CALLING_AND_LOADING.md',
+    dest: 'architecture/tool-calling-and-loading.md',
+    title: 'Tool Calling & Lazy Loading',
+    position: 5,
+  },
+  {
+    src: 'IMMUTABLE_AGENTS.md',
+    dest: 'features/immutable-agents.md',
+    title: 'Immutable Agents',
+    position: 13,
+  },
+  {
+    src: 'PROVENANCE_IMMUTABILITY.md',
+    dest: 'features/provenance-immutability.md',
+    title: 'Provenance & Immutability',
+    position: 14,
+  },
+  {
+    src: 'PLANNING_ENGINE.md',
+    dest: 'features/planning-engine.md',
+    title: 'Planning Engine',
+    position: 1,
+  },
+  {
+    src: 'HUMAN_IN_THE_LOOP.md',
+    dest: 'features/human-in-the-loop.md',
+    title: 'Human-in-the-Loop',
+    position: 2,
+  },
+  {
+    src: 'AGENT_COMMUNICATION.md',
+    dest: 'features/agent-communication.md',
+    title: 'Agent Communication',
+    position: 3,
+  },
   { src: 'GUARDRAILS_USAGE.md', dest: 'features/guardrails.md', title: 'Guardrails', position: 4 },
-  { src: 'SAFETY_PRIMITIVES.md', dest: 'features/safety-primitives.md', title: 'Safety Primitives', position: 5 },
-  { src: 'RAG_MEMORY_CONFIGURATION.md', dest: 'features/rag-memory.md', title: 'RAG Memory Configuration', position: 5 },
-  { src: 'MULTIMODAL_RAG.md', dest: 'features/multimodal-rag.md', title: 'Multimodal RAG (Image + Audio)', position: 6 },
-  { src: 'SQL_STORAGE_QUICKSTART.md', dest: 'features/sql-storage.md', title: 'SQL Storage Quickstart', position: 7 },
-  { src: 'CLIENT_SIDE_STORAGE.md', dest: 'features/client-side-storage.md', title: 'Client-Side Storage', position: 8 },
-  { src: 'STRUCTURED_OUTPUT.md', dest: 'features/structured-output.md', title: 'Structured Output', position: 9 },
-  { src: 'EVALUATION_FRAMEWORK.md', dest: 'features/evaluation-framework.md', title: 'Evaluation Framework', position: 10 },
-  { src: 'COST_OPTIMIZATION.md', dest: 'features/cost-optimization.md', title: 'Cost Optimization', position: 11 },
-  { src: 'RECURSIVE_SELF_BUILDING_AGENTS.md', dest: 'features/recursive-self-building.md', title: 'Recursive Self-Building Agents', position: 12 },
-  { src: 'RFC_EXTENSION_STANDARDS.md', dest: 'extensions/extension-standards.md', title: 'Extension Standards (RFC)', position: 5 },
+  {
+    src: 'SAFETY_PRIMITIVES.md',
+    dest: 'features/safety-primitives.md',
+    title: 'Safety Primitives',
+    position: 5,
+  },
+  {
+    src: 'RAG_MEMORY_CONFIGURATION.md',
+    dest: 'features/rag-memory.md',
+    title: 'RAG Memory Configuration',
+    position: 5,
+  },
+  {
+    src: 'MULTIMODAL_RAG.md',
+    dest: 'features/multimodal-rag.md',
+    title: 'Multimodal RAG (Image + Audio)',
+    position: 6,
+  },
+  {
+    src: 'SQL_STORAGE_QUICKSTART.md',
+    dest: 'features/sql-storage.md',
+    title: 'SQL Storage Quickstart',
+    position: 7,
+  },
+  {
+    src: 'CLIENT_SIDE_STORAGE.md',
+    dest: 'features/client-side-storage.md',
+    title: 'Client-Side Storage',
+    position: 8,
+  },
+  {
+    src: 'STRUCTURED_OUTPUT.md',
+    dest: 'features/structured-output.md',
+    title: 'Structured Output',
+    position: 9,
+  },
+  {
+    src: 'EVALUATION_FRAMEWORK.md',
+    dest: 'features/evaluation-framework.md',
+    title: 'Evaluation Framework',
+    position: 10,
+  },
+  {
+    src: 'COST_OPTIMIZATION.md',
+    dest: 'features/cost-optimization.md',
+    title: 'Cost Optimization',
+    position: 11,
+  },
+  {
+    src: 'RECURSIVE_SELF_BUILDING_AGENTS.md',
+    dest: 'features/recursive-self-building.md',
+    title: 'Recursive Self-Building Agents',
+    position: 12,
+  },
+  {
+    src: 'RFC_EXTENSION_STANDARDS.md',
+    dest: 'extensions/extension-standards.md',
+    title: 'Extension Standards (RFC)',
+    position: 5,
+  },
 ];
 
 /** @type {{ src: string; dest: string; title: string; position: number }[]} */
 const extensionGuides = [
   { src: 'README.md', dest: 'extensions/overview.md', title: 'Extensions Overview', position: 1 },
-  { src: 'HOW_EXTENSIONS_WORK.md', dest: 'extensions/how-extensions-work.md', title: 'How Extensions Work', position: 2 },
-  { src: 'EXTENSION_ARCHITECTURE.md', dest: 'extensions/extension-architecture.md', title: 'Extension Architecture', position: 3 },
-  { src: 'AUTO_LOADING_EXTENSIONS.md', dest: 'extensions/auto-loading.md', title: 'Auto-Loading Extensions', position: 4 },
-  { src: 'CONTRIBUTING.md', dest: 'extensions/contributing.md', title: 'Contributing', position: 6 },
-  { src: 'SELF_HOSTED_REGISTRIES.md', dest: 'extensions/self-hosted-registries.md', title: 'Self-Hosted Registries', position: 7 },
-  { src: 'MIGRATION_GUIDE.md', dest: 'extensions/migration-guide.md', title: 'Migration Guide', position: 8 },
+  {
+    src: 'HOW_EXTENSIONS_WORK.md',
+    dest: 'extensions/how-extensions-work.md',
+    title: 'How Extensions Work',
+    position: 2,
+  },
+  {
+    src: 'EXTENSION_ARCHITECTURE.md',
+    dest: 'extensions/extension-architecture.md',
+    title: 'Extension Architecture',
+    position: 3,
+  },
+  {
+    src: 'AUTO_LOADING_EXTENSIONS.md',
+    dest: 'extensions/auto-loading.md',
+    title: 'Auto-Loading Extensions',
+    position: 4,
+  },
+  {
+    src: 'CONTRIBUTING.md',
+    dest: 'extensions/contributing.md',
+    title: 'Contributing',
+    position: 6,
+  },
+  {
+    src: 'SELF_HOSTED_REGISTRIES.md',
+    dest: 'extensions/self-hosted-registries.md',
+    title: 'Self-Hosted Registries',
+    position: 7,
+  },
+  {
+    src: 'MIGRATION_GUIDE.md',
+    dest: 'extensions/migration-guide.md',
+    title: 'Migration Guide',
+    position: 8,
+  },
   { src: 'RELEASING.md', dest: 'extensions/releasing.md', title: 'Releasing', position: 9 },
-  { src: 'AGENCY_COLLABORATION_EXAMPLE.md', dest: 'features/agency-collaboration.md', title: 'Agency Collaboration', position: 12 },
+  {
+    src: 'AGENCY_COLLABORATION_EXAMPLE.md',
+    dest: 'features/agency-collaboration.md',
+    title: 'Agency Collaboration',
+    position: 12,
+  },
 ];
 
 /** @type {{ dir: string; dest: string; title: string; position: number }[]} */
 const builtInExtensions = [
   { dir: 'auth', dest: 'extensions/built-in/auth.md', title: 'Auth', position: 1 },
-  { dir: 'research/web-search', dest: 'extensions/built-in/web-search.md', title: 'Web Search', position: 2 },
-  { dir: 'research/web-browser', dest: 'extensions/built-in/web-browser.md', title: 'Web Browser', position: 3 },
-  { dir: 'research/news-search', dest: 'extensions/built-in/news-search.md', title: 'News Search', position: 4 },
+  {
+    dir: 'research/web-search',
+    dest: 'extensions/built-in/web-search.md',
+    title: 'Web Search',
+    position: 2,
+  },
+  {
+    dir: 'research/web-browser',
+    dest: 'extensions/built-in/web-browser.md',
+    title: 'Web Browser',
+    position: 3,
+  },
+  {
+    dir: 'research/news-search',
+    dest: 'extensions/built-in/news-search.md',
+    title: 'News Search',
+    position: 4,
+  },
   { dir: 'media/giphy', dest: 'extensions/built-in/giphy.md', title: 'Giphy', position: 5 },
-  { dir: 'media/image-search', dest: 'extensions/built-in/image-search.md', title: 'Image Search', position: 6 },
-  { dir: 'media/voice-synthesis', dest: 'extensions/built-in/voice-synthesis.md', title: 'Voice Synthesis', position: 7 },
-  { dir: 'system/cli-executor', dest: 'extensions/built-in/cli-executor.md', title: 'CLI Executor', position: 8 },
-  { dir: 'integrations/telegram', dest: 'extensions/built-in/telegram.md', title: 'Telegram', position: 9 },
-  { dir: 'provenance/anchor-providers', dest: 'extensions/built-in/anchor-providers.md', title: 'Anchor Providers', position: 10 },
-  { dir: 'provenance/wunderland-tip-ingestion', dest: 'extensions/built-in/tip-ingestion.md', title: 'Tip Ingestion', position: 11 },
-  { dir: 'communications/telegram-bot', dest: 'extensions/built-in/telegram-bot.md', title: 'Telegram Bot (Comms)', position: 12 },
-  { dir: 'channels/telegram', dest: 'extensions/built-in/channel-telegram.md', title: 'Channel: Telegram', position: 13 },
-  { dir: 'channels/whatsapp', dest: 'extensions/built-in/channel-whatsapp.md', title: 'Channel: WhatsApp', position: 14 },
-  { dir: 'channels/discord', dest: 'extensions/built-in/channel-discord.md', title: 'Channel: Discord', position: 15 },
-  { dir: 'channels/slack', dest: 'extensions/built-in/channel-slack.md', title: 'Channel: Slack', position: 16 },
-  { dir: 'channels/webchat', dest: 'extensions/built-in/channel-webchat.md', title: 'Channel: WebChat', position: 17 },
+  {
+    dir: 'media/image-search',
+    dest: 'extensions/built-in/image-search.md',
+    title: 'Image Search',
+    position: 6,
+  },
+  {
+    dir: 'media/voice-synthesis',
+    dest: 'extensions/built-in/voice-synthesis.md',
+    title: 'Voice Synthesis',
+    position: 7,
+  },
+  {
+    dir: 'system/cli-executor',
+    dest: 'extensions/built-in/cli-executor.md',
+    title: 'CLI Executor',
+    position: 8,
+  },
+  {
+    dir: 'integrations/telegram',
+    dest: 'extensions/built-in/telegram.md',
+    title: 'Telegram',
+    position: 9,
+  },
+  {
+    dir: 'provenance/anchor-providers',
+    dest: 'extensions/built-in/anchor-providers.md',
+    title: 'Anchor Providers',
+    position: 10,
+  },
+  {
+    dir: 'provenance/wunderland-tip-ingestion',
+    dest: 'extensions/built-in/tip-ingestion.md',
+    title: 'Tip Ingestion',
+    position: 11,
+  },
+  {
+    dir: 'communications/telegram-bot',
+    dest: 'extensions/built-in/telegram-bot.md',
+    title: 'Telegram Bot (Comms)',
+    position: 12,
+  },
+  {
+    dir: 'channels/telegram',
+    dest: 'extensions/built-in/channel-telegram.md',
+    title: 'Channel: Telegram',
+    position: 13,
+  },
+  {
+    dir: 'channels/whatsapp',
+    dest: 'extensions/built-in/channel-whatsapp.md',
+    title: 'Channel: WhatsApp',
+    position: 14,
+  },
+  {
+    dir: 'channels/discord',
+    dest: 'extensions/built-in/channel-discord.md',
+    title: 'Channel: Discord',
+    position: 15,
+  },
+  {
+    dir: 'channels/slack',
+    dest: 'extensions/built-in/channel-slack.md',
+    title: 'Channel: Slack',
+    position: 16,
+  },
+  {
+    dir: 'channels/webchat',
+    dest: 'extensions/built-in/channel-webchat.md',
+    title: 'Channel: WebChat',
+    position: 17,
+  },
 ];
 
 /** @type {{ srcPath: string; dest: string; title: string; position: number }[]} */
 const skillsDocs = [
   // Keep `docs/skills/overview.md` as the hand-curated landing page.
-  { srcPath: resolve(AGENTOS_DOCS, 'SKILLS.md'), dest: 'skills/skill-format.md', title: 'Skills (SKILL.md)', position: 2 },
-  { srcPath: resolve(SKILLS_EXTENSION_PKG, 'README.md'), dest: 'skills/skills-extension.md', title: 'Skills Extension', position: 3 },
-  { srcPath: resolve(SKILLS_REGISTRY_PKG, 'README.md'), dest: 'skills/agentos-skills-registry.md', title: '@framers/agentos-skills-registry', position: 4 },
+  {
+    srcPath: resolve(AGENTOS_DOCS, 'SKILLS.md'),
+    dest: 'skills/skill-format.md',
+    title: 'Skills (SKILL.md)',
+    position: 2,
+  },
+  {
+    srcPath: resolve(SKILLS_EXTENSION_PKG, 'README.md'),
+    dest: 'skills/skills-extension.md',
+    title: 'Skills Extension',
+    position: 3,
+  },
+  {
+    srcPath: resolve(SKILLS_REGISTRY_PKG, 'README.md'),
+    dest: 'skills/agentos-skills-registry.md',
+    title: '@framers/agentos-skills-registry',
+    position: 4,
+  },
 ];
 
 /** @type {{ srcPath: string; dest: string; title: string; position: number }[]} */
 const extraDocs = [
-  { srcPath: resolve(AGENTOS_PKG, 'CHANGELOG.md'), dest: 'getting-started/changelog.md', title: 'Changelog', position: 4 },
-  { srcPath: resolve(REPO_DOCS, 'EMERGENT_AGENCY_SYSTEM.md'), dest: 'architecture/emergent-agency-system.md', title: 'Emergent Agency System', position: 4 },
-  { srcPath: resolve(REPO_DOCS, 'BACKEND_API.md'), dest: 'architecture/backend-api.md', title: 'Backend API', position: 5 },
-  { srcPath: resolve(REPO_DOCS, 'MULTI_GMI_COLLABORATION.md'), dest: 'architecture/multi-gmi-implementation-plan.md', title: 'Multi-GMI Collaboration', position: 6 },
-  { srcPath: resolve(SQL_STORAGE_ADAPTER_PKG, 'PLATFORM_STRATEGY.md'), dest: 'features/platform-strategy.md', title: 'Platform Strategy', position: 8 },
+  {
+    srcPath: resolve(AGENTOS_PKG, 'CHANGELOG.md'),
+    dest: 'getting-started/changelog.md',
+    title: 'Changelog',
+    position: 4,
+  },
+  {
+    srcPath: resolve(REPO_DOCS, 'EMERGENT_AGENCY_SYSTEM.md'),
+    dest: 'architecture/emergent-agency-system.md',
+    title: 'Emergent Agency System',
+    position: 4,
+  },
+  {
+    srcPath: resolve(REPO_DOCS, 'BACKEND_API.md'),
+    dest: 'architecture/backend-api.md',
+    title: 'Backend API',
+    position: 5,
+  },
+  {
+    srcPath: resolve(REPO_DOCS, 'MULTI_GMI_COLLABORATION.md'),
+    dest: 'architecture/multi-gmi-implementation-plan.md',
+    title: 'Multi-GMI Collaboration',
+    position: 6,
+  },
+  {
+    srcPath: resolve(SQL_STORAGE_ADAPTER_PKG, 'PLATFORM_STRATEGY.md'),
+    dest: 'features/platform-strategy.md',
+    title: 'Platform Strategy',
+    position: 8,
+  },
 ];
 
 // ── Link rewrite rules ──────────────────────────────────────────────
@@ -130,6 +385,7 @@ const linkRewrites = {
   'AGENT_COMMUNICATION.md': '/docs/features/agent-communication',
   'GUARDRAILS_USAGE.md': '/docs/features/guardrails',
   'RAG_MEMORY_CONFIGURATION.md': '/docs/features/rag-memory',
+  'COGNITIVE_MEMORY.md': '/docs/features/cognitive-memory',
   'MULTIMODAL_RAG.md': '/docs/features/multimodal-rag',
   'SQL_STORAGE_QUICKSTART.md': '/docs/features/sql-storage',
   'CLIENT_SIDE_STORAGE.md': '/docs/features/client-side-storage',
@@ -162,7 +418,7 @@ const curatedLinkRewrites = Object.fromEntries(
     const from = `./registry/curated/${dir}`;
     const to = `/docs/${dest.replace(/\.md$/, '')}`;
     return [from, to];
-  }),
+  })
 );
 
 /** Exact-path rewrites that don't fit the filename-only table. */
@@ -252,7 +508,9 @@ let skipped = 0;
 // Helper: generate a stub doc so sidebars.js doesn't break on missing sources
 function writeStub(destPath, title, position, srcHint) {
   ensureDir(destPath);
-  writeFileSync(destPath, `---
+  writeFileSync(
+    destPath,
+    `---
 title: "${title}"
 sidebar_position: ${position}
 ---
@@ -261,7 +519,8 @@ sidebar_position: ${position}
 
 > This page is sourced from the monorepo and is not available in this build.
 > See the [source file](https://github.com/manicinc/voice-chat-assistant) for full content.
-`);
+`
+  );
   console.warn(`  STUB (not found): ${srcHint}`);
   skipped++;
 }
@@ -327,7 +586,9 @@ for (const { dir, dest, title, position } of builtInExtensions) {
   if (!resolved) {
     // Generate a stub for extensions without READMEs
     ensureDir(destPath);
-    writeFileSync(destPath, `---
+    writeFileSync(
+      destPath,
+      `---
 title: "${title}"
 sidebar_position: ${position}
 ---
@@ -335,7 +596,8 @@ sidebar_position: ${position}
 # ${title}
 
 Documentation coming soon. See the [extension source](https://github.com/framersai/agentos-extensions/tree/master/registry/curated/${dir}) for usage details.
-`);
+`
+    );
     console.warn(`  STUB (no README): ${dir}`);
     skipped++;
     continue;

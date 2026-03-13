@@ -3,7 +3,7 @@ title: '@framers/agentos-skills-registry'
 sidebar_position: 4
 ---
 
-Curated skills registry for [AgentOS](https://github.com/framersai/agentos) — 18 SKILL.md prompt modules, typed catalog, and lazy-loading factories.
+Curated skills registry for [AgentOS](https://github.com/framersai/agentos) — 36 SKILL.md prompt modules, typed catalog, and lazy-loading factories.
 
 ```bash
 npm install @framers/agentos-skills-registry
@@ -13,7 +13,7 @@ npm install @framers/agentos-skills-registry
 
 This is the **single package** for AgentOS skills. It contains:
 
-- **18 curated SKILL.md files** — prompt modules for weather, GitHub, Notion, Slack, Spotify, coding-agent, and more
+- **36 curated SKILL.md files** — prompt modules spanning social automation, developer tooling, productivity, research, and more
 - **registry.json** — machine-readable index of all skills with metadata
 - **Static catalog** (`SKILLS_CATALOG`) — typed array with query helpers
 - **Registry factories** — `createCuratedSkillRegistry()`, `createCuratedSkillSnapshot()` (requires `@framers/agentos`)
@@ -40,7 +40,7 @@ import {
 const matches = searchSkills('github');
 
 // Filter by category
-const devTools = getSkillsByCategory('developer-tools');
+const social = getSkillsByCategory('social-automation');
 
 // Filter by installed tools
 const available = getAvailableSkills(['web-search', 'filesystem']);
@@ -51,7 +51,7 @@ console.log(github?.requiredSecrets); // ['github.token']
 
 // All unique categories
 const categories = getCategories();
-// ['communication', 'creative', 'developer-tools', 'devops', 'information', ...]
+// ['automation', 'communication', 'creative', 'developer-tools', 'social-automation', ...]
 ```
 
 ### 2. Load raw registry data
@@ -62,7 +62,7 @@ Access the JSON index directly:
 import { getSkillsCatalog } from '@framers/agentos-skills-registry';
 
 const catalog = await getSkillsCatalog();
-console.log(catalog.skills.curated.length); // 17
+console.log(catalog.skills.curated.length); // 36
 console.log(catalog.version); // '1.0.0'
 ```
 
@@ -138,18 +138,15 @@ const snapshot = await createCuratedSkillSnapshot({ skills: valid });
 
 The `@framers/agentos` dependency is loaded **lazily** at runtime and cached after first resolution. If it's not installed and you call a factory function, you get a clear error with install instructions.
 
-## Included Skills (18)
+## Included Skills (36)
 
-| Category            | Skills                                                 |
-| ------------------- | ------------------------------------------------------ |
-| **Information**     | web-search, weather, summarize                         |
-| **Developer Tools** | github, coding-agent, git                              |
-| **Communication**   | slack-helper, discord-helper                           |
-| **Productivity**    | notion, obsidian, trello, apple-notes, apple-reminders |
-| **DevOps**          | healthcheck                                            |
-| **Media**           | spotify-player, whisper-transcribe                     |
-| **Security**        | 1password                                              |
-| **Creative**        | image-gen                                              |
+The catalog now includes both foundational utility skills and social automation modules, including:
+
+- Information and research: `web-search`, `weather`, `summarize`, `deep-research`
+- Developer tools: `github`, `coding-agent`, `git`
+- Productivity: `notion`, `obsidian`, `trello`, `apple-notes`, `apple-reminders`
+- Social automation: `social-broadcast`, `twitter-bot`, `instagram-bot`, `linkedin-bot`, `facebook-bot`, `threads-bot`, `bluesky-bot`, `mastodon-bot`, `youtube-bot`, `tiktok-bot`, `pinterest-bot`, `reddit-bot`, `blog-publisher`
+- Additional categories: `automation`, `communication`, `devops`, `media`, `marketing`, `creative`, `security`
 
 ## Community Skills
 

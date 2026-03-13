@@ -100,14 +100,14 @@ sequenceDiagram
 
 Beyond lazy loading, skills are fully indexed by the **Capability Discovery Engine** (`@framers/agentos/discovery`). This provides semantic search across all capabilities -- tools, skills, extensions, and channels -- using embedding similarity and graph re-ranking.
 
-Skills become `CapabilityDescriptor` entries with `kind: ‘skill’` and are indexed alongside tools. The discovery engine’s graph tracks relationships between skills and their required tools (e.g., `skill:web-search` → `DEPENDS_ON` → `tool:web_search`), so searching for either surfaces both.
+Skills become `CapabilityDescriptor` entries with `kind: 'skill'` and are indexed alongside tools. The discovery engine’s graph tracks relationships between skills and their required tools (e.g., `skill:web-search` -> `DEPENDS_ON` -> `tool:web_search`), so searching for either surfaces both.
 
 **Skills vs extensions in discovery**: Skills are prompt-level modules (`SKILL.md`) that teach _when_ and _how_ to use tools. Extensions are runtime code (tools, guardrails, workflows) that provide callable actions. Both feed into the same discovery index, but you don’t need a skill for every tool -- many tools work fine with just their schema. Skills add value when a tool needs behavioral guidelines beyond its name and parameters.
 
 For Wunderland agents, `WunderlandDiscoveryManager` handles indexing automatically. For standalone AgentOS usage:
 
 ```ts
-import { CapabilityDiscoveryEngine } from ‘@framers/agentos/discovery’;
+import { CapabilityDiscoveryEngine } from '@framers/agentos/discovery';
 
 const engine = new CapabilityDiscoveryEngine(config);
 await engine.initialize({
@@ -115,7 +115,7 @@ await engine.initialize({
   skills: skillEntries,
 });
 
-const result = await engine.discover(‘search the web’);
+const result = await engine.discover('search the web');
 // result.tier0: category summaries (~150 tokens)
 // result.tier1: top-5 semantic matches with summaries (~200 tokens)
 // result.tier2: full schemas for top matches (~1,500 tokens)
@@ -126,27 +126,31 @@ const result = await engine.discover(‘search the web’);
 ### AgentOS: Load skills + extensions together
 
 ```ts
-import { SkillRegistry } from ‘@framers/agentos/skills’;
-import { CapabilityDiscoveryEngine } from ‘@framers/agentos/discovery’;
-import { createCuratedManifest } from ‘@framers/agentos-extensions-registry’;
+import type { ITool } from '@framers/agentos';
+import { CapabilityDiscoveryEngine } from '@framers/agentos/discovery';
+import { createCuratedManifest } from '@framers/agentos-extensions-registry';
 
 // 1. Load skills from curated registry
-const { createCuratedSkillSnapshot } = await import(‘@framers/agentos-skills-registry’);
+const { createCuratedSkillSnapshot } = await import('@framers/agentos-skills-registry');
 const skillSnapshot = await createCuratedSkillSnapshot({
-  skills: [‘github’, ‘web-search’, ‘coding-agent’],
+  skills: ['github', 'web-search', 'coding-agent'],
 });
 
 // 2. Load extensions (tools + voice)
 const manifest = await createCuratedManifest({
-  tools: [‘web-search’, ‘web-browser’, ‘giphy’],
-  voice: [‘voice-synthesis’],
+  tools: ['web-search', 'web-browser', 'giphy'],
+  voice: ['voice-synthesis'],
 });
 
-// 3. Collect all ITool instances from extension packs
-const tools = new Map();
-for (const pack of manifest.packs) {
-  for (const tool of pack.factory()) {
-    tools.set(tool.name, tool);
+// 3. Collect ITool instances from resolved extension packs
+const tools = new Map<string, ITool>();
+for (const packEntry of manifest.packs) {
+  if (!('factory' in packEntry) || typeof packEntry.factory !== 'function') continue;
+  const extensionPack = await packEntry.factory();
+  for (const descriptor of extensionPack.descriptors) {
+    if (descriptor.kind === 'tool') {
+      tools.set(descriptor.payload.name, descriptor.payload as ITool);
+    }
   }
 }
 
@@ -161,12 +165,12 @@ const systemPrompt = `You are an AI assistant.\n\n${skillSnapshot.prompt}`;
 ### AgentOS: Load ALL curated skills
 
 ```ts
-import { searchSkills } from ‘@framers/agentos-skills-registry/catalog’;
-import { createCuratedSkillSnapshot } from ‘@framers/agentos-skills-registry’;
+import { searchSkills } from '@framers/agentos-skills-registry/catalog';
+import { createCuratedSkillSnapshot } from '@framers/agentos-skills-registry';
 
-const allSkills = searchSkills(‘’);  // empty query returns all
+const allSkills = searchSkills(''); // empty query returns all
 const snapshot = await createCuratedSkillSnapshot({
-  skills: allSkills.map(s => s.name),
+  skills: allSkills.map((skill) => skill.name),
 });
 console.log(`Loaded ${snapshot.skills.length} skills`);
 ```
@@ -174,14 +178,14 @@ console.log(`Loaded ${snapshot.skills.length} skills`);
 ### AgentOS: Load skills from local directories
 
 ```ts
-import { SkillRegistry } from ‘@framers/agentos/skills’;
+import { SkillRegistry } from '@framers/agentos/skills';
 
 const registry = new SkillRegistry();
-await registry.loadFromDirs([‘./skills’, ‘./vendor-skills’]);
+await registry.loadFromDirs(['./skills', './vendor-skills']);
 
 const snapshot = registry.buildSnapshot({ platform: process.platform, strict: true });
 console.log(`Loaded ${registry.count()} skills from disk`);
-console.log(snapshot.prompt);  // inject into system prompt
+console.log(snapshot.prompt); // inject into system prompt
 ```
 
 ### Wunderland: One-line setup with everything
@@ -189,34 +193,34 @@ console.log(snapshot.prompt);  // inject into system prompt
 With the Wunderland library API, skills, extensions, and discovery are configured in a single call:
 
 ```ts
-import { createWunderland } from ‘wunderland’;
+import { createWunderland } from 'wunderland';
 
 // Load specific skills + extensions
 const app = await createWunderland({
-  llm: { providerId: ‘openai’ },
-  tools: ‘curated’,
-  skills: [‘github’, ‘web-search’, ‘coding-agent’],
+  llm: { providerId: 'openai' },
+  tools: 'curated',
+  skills: ['github', 'web-search', 'coding-agent'],
   extensions: {
-    tools: [‘web-search’, ‘web-browser’, ‘giphy’],
-    voice: [‘voice-synthesis’],
+    tools: ['web-search', 'web-browser', 'giphy'],
+    voice: ['voice-synthesis'],
   },
 });
 
 // Or load everything at once
 const fullApp = await createWunderland({
-  llm: { providerId: ‘openai’ },
-  tools: ‘curated’,
-  skills: ‘all’,  // all 18 curated skills
+  llm: { providerId: 'openai' },
+  tools: 'curated',
+  skills: 'all', // all curated skills for the current platform
   extensions: {
-    tools: [‘web-search’, ‘web-browser’, ‘news-search’, ‘image-search’, ‘giphy’, ‘cli-executor’],
-    voice: [‘voice-synthesis’],
+    tools: ['web-search', 'web-browser', 'news-search', 'image-search', 'giphy', 'cli-executor'],
+    voice: ['voice-synthesis'],
   },
 });
 
 // Or use a preset (auto-configures skills + extensions)
 const presetApp = await createWunderland({
-  llm: { providerId: ‘openai’ },
-  preset: ‘research-assistant’,
+  llm: { providerId: 'openai' },
+  preset: 'research-assistant',
 });
 ```
 
@@ -224,7 +228,7 @@ const presetApp = await createWunderland({
 
 ```ts
 const diag = app.diagnostics();
-console.log(‘Tools:’, diag.tools.names);       // [‘web_search’, ‘giphy_search’, ...]
-console.log(‘Skills:’, diag.skills.names);     // [‘github’, ‘web-search’, ...]
-console.log(‘Discovery:’, diag.discovery);     // { initialized: true, capabilityCount: 25, ... }
+console.log('Tools:', diag.tools.names); // ['web_search', 'giphy_search', ...]
+console.log('Skills:', diag.skills.names); // ['github', 'web-search', ...]
+console.log('Discovery:', diag.discovery); // { initialized: true, capabilityCount: 25, ... }
 ```

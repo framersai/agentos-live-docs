@@ -60,6 +60,32 @@ interface CreateProspectiveBody {
 interface UpdateConfigBody {
   featureDetectionStrategy?: 'keyword' | 'llm' | 'hybrid';
   workingMemoryCapacity?: number;
+  encoding?: {
+    baseStrength?: number;
+    flashbulbThreshold?: number;
+    flashbulbStrengthMultiplier?: number;
+    flashbulbStabilityMultiplier?: number;
+  };
+  decay?: {
+    pruningThreshold?: number;
+    recencyHalfLifeMs?: number;
+    interferenceThreshold?: number;
+  };
+  autoIngest?: {
+    importanceThreshold?: number;
+    maxMemoriesPerTurn?: number;
+    retrievalTopK?: number;
+    enableSentimentTracking?: boolean;
+    enabledCategories?: string[];
+  };
+  // Legacy flat keys kept for backward compatibility with older clients.
+  baseStrength?: number;
+  flashbulbThreshold?: number;
+  flashbulbStrengthMultiplier?: number;
+  flashbulbStabilityMultiplier?: number;
+  pruningThreshold?: number;
+  recencyHalfLifeMs?: number;
+  interferenceThreshold?: number;
   importanceThreshold?: number;
   maxMemoriesPerTurn?: number;
   retrievalTopK?: number;
@@ -113,6 +139,102 @@ const prospectiveStore = new Map<string, ProspectiveRecord>();
 const configStore = new Map<string, Record<string, any>>();
 let traceCounter = 0;
 let prospectiveCounter = 0;
+
+function buildConfigResponse(stored: Record<string, any>) {
+  const encoding = stored.encoding ?? {};
+  const decay = stored.decay ?? {};
+  const autoIngest = stored.autoIngest ?? {};
+
+  return {
+    featureDetectionStrategy: stored.featureDetectionStrategy ?? 'keyword',
+    workingMemoryCapacity: stored.workingMemoryCapacity ?? 7,
+    encoding: {
+      baseStrength: encoding.baseStrength ?? stored.baseStrength ?? 0.6,
+      flashbulbThreshold: encoding.flashbulbThreshold ?? stored.flashbulbThreshold ?? 0.8,
+      flashbulbStrengthMultiplier:
+        encoding.flashbulbStrengthMultiplier ?? stored.flashbulbStrengthMultiplier ?? 2.0,
+      flashbulbStabilityMultiplier:
+        encoding.flashbulbStabilityMultiplier ?? stored.flashbulbStabilityMultiplier ?? 5.0,
+    },
+    decay: {
+      pruningThreshold: decay.pruningThreshold ?? stored.pruningThreshold ?? 0.05,
+      recencyHalfLifeMs: decay.recencyHalfLifeMs ?? stored.recencyHalfLifeMs ?? 86_400_000,
+      interferenceThreshold: decay.interferenceThreshold ?? stored.interferenceThreshold ?? 0.7,
+    },
+    autoIngest: {
+      importanceThreshold: autoIngest.importanceThreshold ?? stored.importanceThreshold ?? 0.3,
+      maxMemoriesPerTurn: autoIngest.maxMemoriesPerTurn ?? stored.maxMemoriesPerTurn ?? 3,
+      retrievalTopK: autoIngest.retrievalTopK ?? stored.retrievalTopK ?? 6,
+      enableSentimentTracking:
+        autoIngest.enableSentimentTracking ?? stored.enableSentimentTracking ?? true,
+      enabledCategories: autoIngest.enabledCategories ??
+        stored.enabledCategories ?? [
+          'user_preference',
+          'episodic',
+          'goal',
+          'knowledge',
+          'correction',
+        ],
+    },
+  };
+}
+
+function mergeConfigUpdate(
+  existing: Record<string, any>,
+  body: UpdateConfigBody
+): Record<string, any> {
+  return {
+    ...existing,
+    ...(body.featureDetectionStrategy !== undefined
+      ? { featureDetectionStrategy: body.featureDetectionStrategy }
+      : null),
+    ...(body.workingMemoryCapacity !== undefined
+      ? { workingMemoryCapacity: body.workingMemoryCapacity }
+      : null),
+    encoding: {
+      ...(existing.encoding ?? {}),
+      ...(body.encoding ?? {}),
+      ...(body.baseStrength !== undefined ? { baseStrength: body.baseStrength } : null),
+      ...(body.flashbulbThreshold !== undefined
+        ? { flashbulbThreshold: body.flashbulbThreshold }
+        : null),
+      ...(body.flashbulbStrengthMultiplier !== undefined
+        ? { flashbulbStrengthMultiplier: body.flashbulbStrengthMultiplier }
+        : null),
+      ...(body.flashbulbStabilityMultiplier !== undefined
+        ? { flashbulbStabilityMultiplier: body.flashbulbStabilityMultiplier }
+        : null),
+    },
+    decay: {
+      ...(existing.decay ?? {}),
+      ...(body.decay ?? {}),
+      ...(body.pruningThreshold !== undefined ? { pruningThreshold: body.pruningThreshold } : null),
+      ...(body.recencyHalfLifeMs !== undefined
+        ? { recencyHalfLifeMs: body.recencyHalfLifeMs }
+        : null),
+      ...(body.interferenceThreshold !== undefined
+        ? { interferenceThreshold: body.interferenceThreshold }
+        : null),
+    },
+    autoIngest: {
+      ...(existing.autoIngest ?? {}),
+      ...(body.autoIngest ?? {}),
+      ...(body.importanceThreshold !== undefined
+        ? { importanceThreshold: body.importanceThreshold }
+        : null),
+      ...(body.maxMemoriesPerTurn !== undefined
+        ? { maxMemoriesPerTurn: body.maxMemoriesPerTurn }
+        : null),
+      ...(body.retrievalTopK !== undefined ? { retrievalTopK: body.retrievalTopK } : null),
+      ...(body.enableSentimentTracking !== undefined
+        ? { enableSentimentTracking: body.enableSentimentTracking }
+        : null),
+      ...(body.enabledCategories !== undefined
+        ? { enabledCategories: body.enabledCategories }
+        : null),
+    },
+  };
+}
 
 // ---------------------------------------------------------------------------
 // Controller
@@ -472,7 +594,7 @@ export class MemoryController {
     const skip = Number(offset) || 0;
 
     try {
-      const rows = await this.db.getDb().all(
+      const rows = await this.db.all(
         `SELECT
           conversationId,
           MAX(timestamp) as lastActivity,
@@ -483,9 +605,7 @@ export class MemoryController {
         GROUP BY conversationId
         ORDER BY lastActivity DESC
         LIMIT ? OFFSET ?`,
-        seedId,
-        maxResults,
-        skip
+        [seedId, maxResults, skip]
       );
 
       return { conversations: rows ?? [] };
@@ -507,15 +627,13 @@ export class MemoryController {
     const maxResults = Math.min(Number(limit) || 100, 500);
 
     try {
-      const rows = await this.db.getDb().all(
-        `SELECT role, content, timestamp, tokenCount, toolName, metadata
+      const rows = await this.db.all(
+        `SELECT role, content, timestamp, total_tokens AS tokenCount, tool_call_id AS toolName, metadata
         FROM conversation_turns
         WHERE userId = ? AND conversationId = ?
         ORDER BY timestamp ASC
         LIMIT ?`,
-        seedId,
-        conversationId,
-        maxResults
+        [seedId, conversationId, maxResults]
       );
 
       return { turns: rows ?? [] };
@@ -535,37 +653,7 @@ export class MemoryController {
   @Get('wunderland/memory/:seedId/config')
   getConfig(@Param('seedId') seedId: string) {
     const stored = configStore.get(seedId) ?? {};
-
-    const config = {
-      featureDetectionStrategy: stored.featureDetectionStrategy ?? 'keyword',
-      workingMemoryCapacity: stored.workingMemoryCapacity ?? 7,
-      encoding: {
-        baseStrength: stored.baseStrength ?? 0.6,
-        flashbulbThreshold: stored.flashbulbThreshold ?? 0.8,
-        flashbulbStrengthMultiplier: stored.flashbulbStrengthMultiplier ?? 2.0,
-        flashbulbStabilityMultiplier: stored.flashbulbStabilityMultiplier ?? 5.0,
-      },
-      decay: {
-        pruningThreshold: stored.pruningThreshold ?? 0.05,
-        recencyHalfLifeMs: stored.recencyHalfLifeMs ?? 86_400_000,
-        interferenceThreshold: stored.interferenceThreshold ?? 0.7,
-      },
-      autoIngest: {
-        importanceThreshold: stored.importanceThreshold ?? 0.3,
-        maxMemoriesPerTurn: stored.maxMemoriesPerTurn ?? 3,
-        retrievalTopK: stored.retrievalTopK ?? 6,
-        enableSentimentTracking: stored.enableSentimentTracking ?? true,
-        enabledCategories: stored.enabledCategories ?? [
-          'user_preference',
-          'episodic',
-          'goal',
-          'knowledge',
-          'correction',
-        ],
-      },
-    };
-
-    return { config };
+    return { config: buildConfigResponse(stored) };
   }
 
   /**
@@ -575,7 +663,7 @@ export class MemoryController {
   @Patch('wunderland/memory/:seedId/config')
   updateConfig(@Param('seedId') seedId: string, @Body() body: UpdateConfigBody) {
     const existing = configStore.get(seedId) ?? {};
-    const updated = { ...existing, ...body };
+    const updated = mergeConfigUpdate(existing, body);
     configStore.set(seedId, updated);
 
     // Return the full config shape
