@@ -101,11 +101,13 @@ const config: Config = {
   themeConfig: {
     image: 'img/og-image.png',
     navbar: {
-      title: 'AgentOS',
+      title: '',
       logo: {
-        alt: 'AgentOS Logo',
-        src: 'img/logo.svg',
+        alt: 'AgentOS',
+        src: 'img/agentos-wordmark.png',
+        srcDark: 'img/agentos-wordmark.png',
         href: '/',
+        height: '32px',
       },
       items: [
         {
@@ -138,6 +140,12 @@ const config: Config = {
     },
     footer: {
       style: 'dark',
+      logo: {
+        alt: 'Frame.dev',
+        src: 'img/frame-logo.svg',
+        href: 'https://frame.dev',
+        height: '36px',
+      },
       links: [
         {
           title: 'Docs',
@@ -149,24 +157,32 @@ const config: Config = {
           ],
         },
         {
+          title: 'Ecosystem',
+          items: [
+            { label: 'Frame.dev', href: 'https://frame.dev' },
+            { label: 'AgentOS', href: 'https://agentos.sh' },
+            { label: 'RabbitHole', href: 'https://rabbithole.sh' },
+            { label: 'Wunderland CLI', href: 'https://wunderland.sh' },
+          ],
+        },
+        {
           title: 'Community',
           items: [
             { label: 'GitHub', href: 'https://github.com/framersai/agentos' },
             { label: 'Discord', href: 'https://discord.gg/agentos' },
             { label: 'Twitter', href: 'https://twitter.com/framersai' },
+            { label: 'npm', href: 'https://www.npmjs.com/package/@framers/agentos' },
           ],
         },
         {
-          title: 'More',
+          title: 'Legal',
           items: [
-            { label: 'Website', href: 'https://agentos.sh' },
-            { label: 'npm', href: 'https://www.npmjs.com/package/@framers/agentos' },
             { label: 'Privacy Policy', href: 'https://agentos.sh/privacy' },
             { label: 'Terms of Service', href: 'https://agentos.sh/terms' },
           ],
         },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} Frame.dev. All rights reserved.`,
+      copyright: `Copyright \u00A9 ${new Date().getFullYear()} <a href="https://frame.dev" target="_blank" rel="noopener noreferrer" style="color: #00C896;">Frame.dev</a>. All rights reserved.`,
     },
     prism: {
       theme: prismThemes.github,
