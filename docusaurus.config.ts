@@ -84,7 +84,7 @@ const config: Config = {
       {
         docs: {
           sidebarPath: './sidebars.js',
-          editUrl: 'https://github.com/framersai/agentos/tree/master/docs/',
+          editUrl: 'https://github.com/framersai/agentos-live-docs/tree/master/docs/',
         },
         blog: false,
         theme: {

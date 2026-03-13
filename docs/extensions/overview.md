@@ -26,42 +26,52 @@ All extensions are published to npm under the `@framers` scope.
 
 ### Extensions
 
-| Package                                                                                     | Description                                       | npm |
-| ------------------------------------------------------------------------------------------- | ------------------------------------------------- | --- |
-| [`@framers/agentos-ext-web-search`](/docs/extensions/built-in/web-search)                   | Multi-provider web search & fact-checking         |     |
-| [`@framers/agentos-ext-web-browser`](/docs/extensions/built-in/web-browser)                 | Browser automation & content extraction           |     |
-| [`@framers/agentos-ext-news-search`](/docs/extensions/built-in/news-search)                 | News article search via NewsAPI                   |     |
-| [`@framers/agentos-ext-giphy`](/docs/extensions/built-in/giphy)                             | GIF & sticker search via Giphy API                |     |
-| [`@framers/agentos-ext-image-search`](/docs/extensions/built-in/image-search)               | Stock photo search (Pexels, Unsplash, Pixabay)    |     |
-| [`@framers/agentos-ext-voice-synthesis`](/docs/extensions/built-in/voice-synthesis)         | Text-to-speech via ElevenLabs                     |     |
-| [`@framers/agentos-ext-cli-executor`](/docs/extensions/built-in/cli-executor)               | Shell command execution & file management         |     |
-| [`@framers/agentos-ext-auth`](/docs/extensions/built-in/auth)                               | JWT authentication & subscription management      |     |
-| [`@framers/agentos-ext-telegram`](/docs/extensions/built-in/telegram)                       | Telegram Bot API integration                      |     |
-| [`@framers/agentos-ext-telegram-bot`](/docs/extensions/built-in/telegram-bot)               | Telegram bot communications handler               |     |
-| [`@framers/agentos-ext-anchor-providers`](/docs/extensions/built-in/anchor-providers)       | Solana on-chain provenance anchoring              |     |
-| [`@framers/agentos-ext-tip-ingestion`](/docs/extensions/built-in/tip-ingestion)             | Tip content processing pipeline                   |     |
-| [`@framers/agentos-ext-browser-automation`](./registry/curated/system/browser-automation)   | Full browser automation (Playwright) — 10 tools   |     |
-| [`@framers/agentos-ext-deep-research`](./registry/curated/research/deep-research)           | Multi-source research & investigation — 5 tools   |     |
-| [`@framers/agentos-ext-content-extraction`](./registry/curated/research/content-extraction) | Content extraction (URLs, YouTube, PDF) — 5 tools |     |
-| [`@framers/agentos-ext-credential-vault`](./registry/curated/system/credential-vault)       | Encrypted credential management — 5 tools         |     |
-| [`@framers/agentos-ext-notifications`](./registry/curated/communications/notifications)     | Multi-channel notification router — 3 tools       |     |
+| Package                                                                                     | Description                                                    | npm |
+| ------------------------------------------------------------------------------------------- | -------------------------------------------------------------- | --- |
+| [`@framers/agentos-ext-web-search`](/docs/extensions/built-in/web-search)                   | Multi-provider web search & fact-checking                      |     |
+| [`@framers/agentos-ext-web-browser`](/docs/extensions/built-in/web-browser)                 | Browser automation & content extraction                        |     |
+| [`@framers/agentos-ext-news-search`](/docs/extensions/built-in/news-search)                 | News article search via NewsAPI                                |     |
+| [`@framers/agentos-ext-giphy`](/docs/extensions/built-in/giphy)                             | GIF & sticker search via Giphy API                             |     |
+| [`@framers/agentos-ext-image-search`](/docs/extensions/built-in/image-search)               | Stock photo search (Pexels, Unsplash, Pixabay)                 |     |
+| [`@framers/agentos-ext-voice-synthesis`](/docs/extensions/built-in/voice-synthesis)         | Text-to-speech via ElevenLabs                                  |     |
+| [`@framers/agentos-ext-cli-executor`](/docs/extensions/built-in/cli-executor)               | Shell command execution & file management                      |     |
+| [`@framers/agentos-ext-auth`](/docs/extensions/built-in/auth)                               | JWT authentication & subscription management                   |     |
+| [`@framers/agentos-ext-telegram`](/docs/extensions/built-in/telegram)                       | Telegram Bot API integration                                   |     |
+| [`@framers/agentos-ext-wunderbot-feeds`](./registry/curated/integrations/wunderbot-feeds)   | Wunderbot feed ingestion + social content pipeline integration |     |
+| [`@framers/agentos-ext-telegram-bot`](/docs/extensions/built-in/telegram-bot)               | Telegram bot communications handler                            |     |
+| [`@framers/agentos-ext-anchor-providers`](/docs/extensions/built-in/anchor-providers)       | Solana on-chain provenance anchoring                           |     |
+| [`@framers/agentos-ext-tip-ingestion`](/docs/extensions/built-in/tip-ingestion)             | Tip content processing pipeline                                |     |
+| [`@framers/agentos-ext-browser-automation`](./registry/curated/system/browser-automation)   | Full browser automation (Playwright) — 10 tools                |     |
+| [`@framers/agentos-ext-deep-research`](./registry/curated/research/deep-research)           | Multi-source research & investigation — 5 tools                |     |
+| [`@framers/agentos-ext-content-extraction`](./registry/curated/research/content-extraction) | Content extraction (URLs, YouTube, PDF) — 5 tools              |     |
+| [`@framers/agentos-ext-credential-vault`](./registry/curated/system/credential-vault)       | Encrypted credential management — 5 tools                      |     |
+| [`@framers/agentos-ext-notifications`](./registry/curated/communications/notifications)     | Multi-channel notification router — 3 tools                    |     |
 
 ### Channel Adapters
 
-| Package                                                                               | Description                                   | npm |
-| ------------------------------------------------------------------------------------- | --------------------------------------------- | --- |
-| [`@framers/agentos-ext-channel-telegram`](/docs/extensions/built-in/channel-telegram) | Telegram messaging channel (grammY)           |     |
-| [`@framers/agentos-ext-channel-whatsapp`](/docs/extensions/built-in/channel-whatsapp) | WhatsApp messaging channel (Baileys)          |     |
-| [`@framers/agentos-ext-channel-discord`](/docs/extensions/built-in/channel-discord)   | Discord messaging channel (discord.js)        |     |
-| [`@framers/agentos-ext-channel-slack`](/docs/extensions/built-in/channel-slack)       | Slack messaging channel (Bolt)                |     |
-| [`@framers/agentos-ext-channel-webchat`](/docs/extensions/built-in/channel-webchat)   | Built-in WebChat channel (Socket.IO)          |     |
-| [`@framers/agentos-ext-channel-twitter`](./registry/curated/channels/twitter)         | Twitter/X social channel (twitter-api-v2)     |     |
-| [`@framers/agentos-ext-channel-instagram`](./registry/curated/channels/instagram)     | Instagram social channel (Graph API)          |     |
-| [`@framers/agentos-ext-channel-reddit`](./registry/curated/channels/reddit)           | Reddit social channel (snoowrap)              |     |
-| [`@framers/agentos-ext-channel-youtube`](./registry/curated/channels/youtube)         | YouTube social channel (googleapis)           |     |
-| [`@framers/agentos-ext-channel-pinterest`](./registry/curated/channels/pinterest)     | Pinterest social channel (API v5)             |     |
-| [`@framers/agentos-ext-channel-tiktok`](./registry/curated/channels/tiktok)           | TikTok social channel (API for Business)      |     |
-| [`@framers/agentos-ext-channel-email`](./registry/curated/channels/email)             | Email messaging channel (nodemailer/imapflow) |     |
+| Package                                                                                       | Description                                          | npm |
+| --------------------------------------------------------------------------------------------- | ---------------------------------------------------- | --- |
+| [`@framers/agentos-ext-channel-telegram`](/docs/extensions/built-in/channel-telegram)         | Telegram messaging channel (grammY)                  |     |
+| [`@framers/agentos-ext-channel-whatsapp`](/docs/extensions/built-in/channel-whatsapp)         | WhatsApp messaging channel (Baileys)                 |     |
+| [`@framers/agentos-ext-channel-discord`](/docs/extensions/built-in/channel-discord)           | Discord messaging channel (discord.js)               |     |
+| [`@framers/agentos-ext-channel-slack`](/docs/extensions/built-in/channel-slack)               | Slack messaging channel (Bolt)                       |     |
+| [`@framers/agentos-ext-channel-webchat`](/docs/extensions/built-in/channel-webchat)           | Built-in WebChat channel (Socket.IO)                 |     |
+| [`@framers/agentos-ext-channel-twitter`](./registry/curated/channels/twitter)                 | Twitter/X social channel (twitter-api-v2)            |     |
+| [`@framers/agentos-ext-channel-instagram`](./registry/curated/channels/instagram)             | Instagram social channel (Graph API)                 |     |
+| [`@framers/agentos-ext-channel-reddit`](./registry/curated/channels/reddit)                   | Reddit social channel (snoowrap)                     |     |
+| [`@framers/agentos-ext-channel-youtube`](./registry/curated/channels/youtube)                 | YouTube social channel (googleapis)                  |     |
+| [`@framers/agentos-ext-channel-linkedin`](./registry/curated/channels/linkedin)               | LinkedIn social channel (Marketing API)              |     |
+| [`@framers/agentos-ext-channel-facebook`](./registry/curated/channels/facebook)               | Facebook social channel (Meta Graph API)             |     |
+| [`@framers/agentos-ext-channel-threads`](./registry/curated/channels/threads)                 | Threads social channel (Meta Graph API)              |     |
+| [`@framers/agentos-ext-channel-bluesky`](./registry/curated/channels/bluesky)                 | Bluesky social channel (AT Protocol)                 |     |
+| [`@framers/agentos-ext-channel-mastodon`](./registry/curated/channels/mastodon)               | Mastodon social channel (federated)                  |     |
+| [`@framers/agentos-ext-channel-farcaster`](./registry/curated/channels/farcaster)             | Farcaster social channel (Neynar API)                |     |
+| [`@framers/agentos-ext-channel-lemmy`](./registry/curated/channels/lemmy)                     | Lemmy federated social channel                       |     |
+| [`@framers/agentos-ext-channel-google-business`](./registry/curated/channels/google-business) | Google Business Profile channel                      |     |
+| [`@framers/agentos-ext-channel-blog-publisher`](./registry/curated/channels/blog-publisher)   | Blog publisher (Dev.to, Hashnode, Medium, WordPress) |     |
+| [`@framers/agentos-ext-channel-pinterest`](./registry/curated/channels/pinterest)             | Pinterest social channel (API v5)                    |     |
+| [`@framers/agentos-ext-channel-tiktok`](./registry/curated/channels/tiktok)                   | TikTok social channel (API for Business)             |     |
+| [`@framers/agentos-ext-channel-email`](./registry/curated/channels/email)                     | Email messaging channel (nodemailer/imapflow)        |     |
 
 ## Repository Structure
 
@@ -78,7 +88,7 @@ agentos-extensions/
 ├── registry/
 │   ├── curated/           # Official & verified extensions
 │   │   ├── auth/          # Authentication & subscriptions
-│   │   ├── channels/      # Messaging & social channels (28 platforms)
+│   │   ├── channels/      # Messaging & social channels (37 platform packs)
 │   │   ├── communications/# Telegram bot, notifications
 │   │   ├── integrations/  # External services (Telegram API)
 │   │   ├── media/         # Giphy, image search, voice synthesis
@@ -163,37 +173,49 @@ await agentos.initialize({
 
 #### Secret keys
 
-| Secret ID               | Environment Variable     | Extension         |
-| ----------------------- | ------------------------ | ----------------- |
-| `serper.apiKey`         | `SERPER_API_KEY`         | web-search        |
-| `serpapi.apiKey`        | `SERPAPI_API_KEY`        | web-search        |
-| `brave.apiKey`          | `BRAVE_API_KEY`          | web-search        |
-| `giphy.apiKey`          | `GIPHY_API_KEY`          | giphy             |
-| `elevenlabs.apiKey`     | `ELEVENLABS_API_KEY`     | voice-synthesis   |
-| `pexels.apiKey`         | `PEXELS_API_KEY`         | image-search      |
-| `unsplash.apiKey`       | `UNSPLASH_ACCESS_KEY`    | image-search      |
-| `pixabay.apiKey`        | `PIXABAY_API_KEY`        | image-search      |
-| `newsapi.apiKey`        | `NEWSAPI_API_KEY`        | news-search       |
-| `telegram.botToken`     | `TELEGRAM_BOT_TOKEN`     | channel-telegram  |
-| `discord.botToken`      | `DISCORD_BOT_TOKEN`      | channel-discord   |
-| `slack.botToken`        | `SLACK_BOT_TOKEN`        | channel-slack     |
-| `slack.appToken`        | `SLACK_APP_TOKEN`        | channel-slack     |
-| `twitter.bearerToken`   | `TWITTER_BEARER_TOKEN`   | channel-twitter   |
-| `twitter.apiKey`        | `TWITTER_API_KEY`        | channel-twitter   |
-| `twitter.apiSecret`     | `TWITTER_API_SECRET`     | channel-twitter   |
-| `twitter.accessToken`   | `TWITTER_ACCESS_TOKEN`   | channel-twitter   |
-| `twitter.accessSecret`  | `TWITTER_ACCESS_SECRET`  | channel-twitter   |
-| `instagram.accessToken` | `INSTAGRAM_ACCESS_TOKEN` | channel-instagram |
-| `reddit.clientId`       | `REDDIT_CLIENT_ID`       | channel-reddit    |
-| `reddit.clientSecret`   | `REDDIT_CLIENT_SECRET`   | channel-reddit    |
-| `reddit.username`       | `REDDIT_USERNAME`        | channel-reddit    |
-| `reddit.password`       | `REDDIT_PASSWORD`        | channel-reddit    |
-| `youtube.apiKey`        | `YOUTUBE_API_KEY`        | channel-youtube   |
-| `pinterest.accessToken` | `PINTEREST_ACCESS_TOKEN` | channel-pinterest |
-| `tiktok.accessToken`    | `TIKTOK_ACCESS_TOKEN`    | channel-tiktok    |
-| `email.smtpHost`        | `SMTP_HOST`              | channel-email     |
-| `email.smtpUser`        | `SMTP_USER`              | channel-email     |
-| `email.smtpPassword`    | `SMTP_PASSWORD`          | channel-email     |
+| Secret ID                | Environment Variable       | Extension               |
+| ------------------------ | -------------------------- | ----------------------- |
+| `serper.apiKey`          | `SERPER_API_KEY`           | web-search              |
+| `serpapi.apiKey`         | `SERPAPI_API_KEY`          | web-search              |
+| `brave.apiKey`           | `BRAVE_API_KEY`            | web-search              |
+| `giphy.apiKey`           | `GIPHY_API_KEY`            | giphy                   |
+| `elevenlabs.apiKey`      | `ELEVENLABS_API_KEY`       | voice-synthesis         |
+| `pexels.apiKey`          | `PEXELS_API_KEY`           | image-search            |
+| `unsplash.apiKey`        | `UNSPLASH_ACCESS_KEY`      | image-search            |
+| `pixabay.apiKey`         | `PIXABAY_API_KEY`          | image-search            |
+| `newsapi.apiKey`         | `NEWSAPI_API_KEY`          | news-search             |
+| `telegram.botToken`      | `TELEGRAM_BOT_TOKEN`       | channel-telegram        |
+| `discord.botToken`       | `DISCORD_BOT_TOKEN`        | channel-discord         |
+| `slack.botToken`         | `SLACK_BOT_TOKEN`          | channel-slack           |
+| `slack.appToken`         | `SLACK_APP_TOKEN`          | channel-slack           |
+| `twitter.bearerToken`    | `TWITTER_BEARER_TOKEN`     | channel-twitter         |
+| `twitter.apiKey`         | `TWITTER_API_KEY`          | channel-twitter         |
+| `twitter.apiSecret`      | `TWITTER_API_SECRET`       | channel-twitter         |
+| `twitter.accessToken`    | `TWITTER_ACCESS_TOKEN`     | channel-twitter         |
+| `twitter.accessSecret`   | `TWITTER_ACCESS_SECRET`    | channel-twitter         |
+| `instagram.accessToken`  | `INSTAGRAM_ACCESS_TOKEN`   | channel-instagram       |
+| `linkedin.accessToken`   | `LINKEDIN_ACCESS_TOKEN`    | channel-linkedin        |
+| `facebook.accessToken`   | `FACEBOOK_ACCESS_TOKEN`    | channel-facebook        |
+| `threads.accessToken`    | `THREADS_ACCESS_TOKEN`     | channel-threads         |
+| `bluesky.handle`         | `BLUESKY_HANDLE`           | channel-bluesky         |
+| `bluesky.appPassword`    | `BLUESKY_APP_PASSWORD`     | channel-bluesky         |
+| `mastodon.accessToken`   | `MASTODON_ACCESS_TOKEN`    | channel-mastodon        |
+| `farcaster.neynarApiKey` | `FARCASTER_NEYNAR_API_KEY` | channel-farcaster       |
+| `farcaster.signerUuid`   | `FARCASTER_SIGNER_UUID`    | channel-farcaster       |
+| `lemmy.instanceUrl`      | `LEMMY_INSTANCE_URL`       | channel-lemmy           |
+| `lemmy.username`         | `LEMMY_USERNAME`           | channel-lemmy           |
+| `lemmy.password`         | `LEMMY_PASSWORD`           | channel-lemmy           |
+| `google.accessToken`     | `GOOGLE_ACCESS_TOKEN`      | channel-google-business |
+| `reddit.clientId`        | `REDDIT_CLIENT_ID`         | channel-reddit          |
+| `reddit.clientSecret`    | `REDDIT_CLIENT_SECRET`     | channel-reddit          |
+| `reddit.username`        | `REDDIT_USERNAME`          | channel-reddit          |
+| `reddit.password`        | `REDDIT_PASSWORD`          | channel-reddit          |
+| `youtube.apiKey`         | `YOUTUBE_API_KEY`          | channel-youtube         |
+| `pinterest.accessToken`  | `PINTEREST_ACCESS_TOKEN`   | channel-pinterest       |
+| `tiktok.accessToken`     | `TIKTOK_ACCESS_TOKEN`      | channel-tiktok          |
+| `email.smtpHost`         | `SMTP_HOST`                | channel-email           |
+| `email.smtpUser`         | `SMTP_USER`                | channel-email           |
+| `email.smtpPassword`     | `SMTP_PASSWORD`            | channel-email           |
 
 #### Selective loading examples
 

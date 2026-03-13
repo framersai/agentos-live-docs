@@ -150,6 +150,8 @@ An associative graph connects related memories with typed edges:
 | `CONTRADICTS`       | Conflicting information               |
 | `CO_ACTIVATED`      | Retrieved together (Hebbian learning) |
 | `SCHEMA_INSTANCE`   | Episodic instance of semantic schema  |
+| `SUPERSEDES`        | Newer memory replaces an older trace  |
+| `CAUSED_BY`         | Explicit causal relationship          |
 
 **Spreading activation** (Anderson's ACT-R): Given seed nodes, activation propagates through edges to surface associated memories.
 
@@ -186,6 +188,8 @@ await memory.initialize({
   moodProvider: () => ({ valence: 0, arousal: 0.3, dominance: 0 }),
   featureDetectionStrategy: 'keyword',
 });
+
+const mood = { valence: 0, arousal: 0.3, dominance: 0 };
 
 // Encode
 const trace = await memory.encode('I prefer deploying with Docker Compose', mood, 'content', {
