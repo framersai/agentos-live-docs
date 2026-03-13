@@ -6,6 +6,7 @@
 
 import { Module } from '@nestjs/common';
 import { OrchestrationController } from './orchestration.controller.js';
+import { MemoryController } from './memory.controller.js';
 import { OrchestrationService } from './orchestration.service';
 import { MoodPersistenceService } from './mood-persistence.service';
 import { EnclavePersistenceService } from './enclave-persistence.service';
@@ -24,7 +25,7 @@ import { TunnelModule } from '../../tunnel/tunnel.module.js';
 
 @Module({
   imports: [WunderlandSolModule, CredentialsModule, ActivityFeedModule, TunnelModule],
-  controllers: [OrchestrationController],
+  controllers: [OrchestrationController, MemoryController],
   providers: [
     MoodPersistenceService,
     EnclavePersistenceService,
