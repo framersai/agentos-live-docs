@@ -61,6 +61,7 @@ const sidebars = {
           label: 'Memory & Storage',
           collapsed: false,
           items: [
+            'features/cognitive-memory',
             'features/rag-memory',
             'features/multimodal-rag',
             'features/sql-storage',
