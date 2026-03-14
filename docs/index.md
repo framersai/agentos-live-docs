@@ -40,12 +40,14 @@ npm install @framers/agentos
 
 ### Memory & Storage
 
+- [Cognitive Memory](/docs/features/cognitive-memory) — Personality-modulated memory, retrieval, and consolidation
 - [RAG Memory](/docs/features/rag-memory) — Vector storage and retrieval
 - [SQL Storage](/docs/features/sql-storage) — Database adapters
 - [Client-Side Storage](/docs/features/client-side-storage) — Browser and local persistence
 
 ### AI & LLM
 
+- [Speech Runtime](/docs/features/speech-runtime) — Unified STT, TTS, VAD, and provider abstraction
 - [Structured Output](/docs/features/structured-output) — JSON schema validation
 - [Evaluation Framework](/docs/features/evaluation-framework) — Testing and benchmarks
 - [Cost Optimization](/docs/features/cost-optimization) — Token usage and caching
@@ -65,7 +67,7 @@ npm install @framers/agentos
 - [How Extensions Work](/docs/extensions/how-extensions-work) — Loading and configuration
 - [Extension Architecture](/docs/extensions/extension-architecture) — Building custom extensions
 - [Auto-Loading](/docs/extensions/auto-loading) — Automatic extension discovery
-- **Official**: [Web Search](/docs/extensions/built-in/web-search), [Telegram](/docs/extensions/built-in/telegram), [Voice Synthesis](/docs/extensions/built-in/voice-synthesis), [CLI Executor](/docs/extensions/built-in/cli-executor), [Image Search](/docs/extensions/built-in/image-search), [News Search](/docs/extensions/built-in/news-search), [Giphy](/docs/extensions/built-in/giphy), [Web Browser](/docs/extensions/built-in/web-browser), [Auth](/docs/extensions/built-in/auth)
+- **Official**: [Web Search](/docs/extensions/built-in/web-search), [Telegram](/docs/extensions/built-in/telegram), [Speech Runtime](/docs/extensions/built-in/speech-runtime), [Voice Synthesis](/docs/extensions/built-in/voice-synthesis), [CLI Executor](/docs/extensions/built-in/cli-executor), [Image Search](/docs/extensions/built-in/image-search), [News Search](/docs/extensions/built-in/news-search), [Giphy](/docs/extensions/built-in/giphy), [Web Browser](/docs/extensions/built-in/web-browser), [Auth](/docs/extensions/built-in/auth)
 
 ### API Reference
 
