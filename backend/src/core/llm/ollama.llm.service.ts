@@ -190,4 +190,110 @@ export class OllamaLlmService implements ILlmService {
       clearTimeout(timeout);
     }
   }
+
+  /**
+   * Stream a chat completion from Ollama, yielding partial content chunks.
+   * Each yielded object contains a `text` delta and optional `done` flag.
+   */
+  async *generateChatCompletionStream(
+    messages: IChatMessage[],
+    modelId: string,
+    params?: IChatCompletionParams
+  ): AsyncGenerator<{ text: string; done: boolean; usage?: ILlmUsage }> {
+    const effectiveModel = stripProviderPrefix(modelId || this.defaultModel || '').trim();
+    if (!effectiveModel) {
+      throw new Error('Ollama modelId is required.');
+    }
+
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), this.timeoutMs);
+    try {
+      const payload: Record<string, unknown> = {
+        model: effectiveModel,
+        messages: mapMessagesToOllama(messages),
+        stream: true,
+      };
+
+      const options = mapOptionsToOllama(params);
+      if (Object.keys(options).length > 0) payload.options = options;
+
+      const res = await fetch(`${this.baseUrl}/chat`, {
+        method: 'POST',
+        headers: this.headers,
+        body: JSON.stringify(payload),
+        signal: controller.signal,
+      });
+
+      if (!res.ok) {
+        const errBody = await res.text().catch(() => '');
+        throw new Error(`Ollama streaming request failed with status ${res.status}: ${errBody}`);
+      }
+
+      if (!res.body) {
+        throw new Error('Ollama response has no body for streaming');
+      }
+
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = '';
+
+      while (true) {
+        const { done: readerDone, value } = await reader.read();
+        if (readerDone) break;
+
+        buffer += decoder.decode(value, { stream: true });
+
+        // Ollama streams newline-delimited JSON
+        const lines = buffer.split('\n');
+        buffer = lines.pop() || '';
+
+        for (const line of lines) {
+          const trimmed = line.trim();
+          if (!trimmed) continue;
+
+          let chunk: OllamaChatResponse;
+          try {
+            chunk = JSON.parse(trimmed);
+          } catch {
+            continue;
+          }
+
+          if (chunk.error) {
+            throw new Error(String(chunk.error));
+          }
+
+          const text = chunk.message?.content || '';
+          const isDone = chunk.done === true;
+
+          const usage: ILlmUsage | undefined = isDone
+            ? {
+                prompt_tokens:
+                  typeof chunk.prompt_eval_count === 'number' ? chunk.prompt_eval_count : null,
+                completion_tokens: typeof chunk.eval_count === 'number' ? chunk.eval_count : null,
+                total_tokens:
+                  typeof chunk.prompt_eval_count === 'number' &&
+                  typeof chunk.eval_count === 'number'
+                    ? chunk.prompt_eval_count + chunk.eval_count
+                    : null,
+              }
+            : undefined;
+
+          yield { text, done: isDone, usage };
+        }
+      }
+
+      // Process any remaining buffer
+      if (buffer.trim()) {
+        try {
+          const chunk: OllamaChatResponse = JSON.parse(buffer.trim());
+          const text = chunk.message?.content || '';
+          yield { text, done: chunk.done === true };
+        } catch {
+          // Incomplete final chunk — ignore
+        }
+      }
+    } finally {
+      clearTimeout(timeout);
+    }
+  }
 }
