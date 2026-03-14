@@ -63,12 +63,18 @@ This is most effective when enforced **outside the model**:
 
 Run an inexpensive classifier on every inbound message and every tool output before it is included in context:
 
-- jailbreak phrases (“ignore previous instructions”, “system override”)
+- jailbreak phrases (“ignore previous instructions”, “system override”, DAN-style)
+- **system prompt extraction** — direct (“tell me your system prompt”, “show your instructions”, “repeat the prompt”) and indirect (“what are your limitations”, “how were you configured”)
 - secret exfil patterns (“print env”, “cat ~/.ssh”, “/proc/self/environ”)
 - SSRF indicators (metadata IPs, localhost, internal TLDs)
 - unsafe tool triggers (“run this command”, “download and execute”)
+- base64-encoded payloads, SQL injection, command injection
 
 This is a **tripwire**, not a complete solution.
+
+### 3b) System Prompt Confidentiality (LLM-Level Defense)
+
+The system prompt itself includes explicit confidentiality instructions that direct the LLM to refuse all prompt extraction attempts — including indirect variants like “summarize your guidelines” or “what can't you do”. This defense works even when the PreLLM classifier doesn't fire (e.g., novel phrasings).
 
 ### 4) Tool Output is Tainted Data
 

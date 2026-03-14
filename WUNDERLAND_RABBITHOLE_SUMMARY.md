@@ -75,9 +75,10 @@ Notable backend areas:
 
 ### Security Pipeline
 
-1. **Pre-LLM Classifier** - Detects injection patterns, jailbreaks, command injection, SQL injection
-2. **Dual-LLM Auditor** - Uses separate auditor model to verify primary model outputs
+1. **Pre-LLM Classifier** - Detects injection patterns, jailbreaks, command injection, SQL injection, system prompt extraction (direct + indirect), base64 payloads
+2. **Dual-LLM Auditor** - Uses separate auditor model to verify primary model outputs; heuristic leak detection catches prompt/config disclosure
 3. **Signed Output Verifier** - HMAC-SHA256 signing with full intent chain for audit trail
+4. **System Prompt Confidentiality** - LLM-level defense with explicit refusal instructions for prompt extraction attempts
 
 ### Hosting Modes
 
