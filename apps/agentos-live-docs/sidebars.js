@@ -83,6 +83,12 @@ const sidebars = {
         },
         {
           type: 'category',
+          label: 'Voice & Speech',
+          collapsed: false,
+          items: ['features/speech-runtime'],
+        },
+        {
+          type: 'category',
           label: 'Advanced',
           collapsed: false,
           items: [
@@ -143,6 +149,7 @@ const sidebars = {
             'extensions/built-in/news-search',
             'extensions/built-in/giphy',
             'extensions/built-in/image-search',
+            'extensions/built-in/speech-runtime',
             'extensions/built-in/voice-synthesis',
             'extensions/built-in/cli-executor',
             'extensions/built-in/telegram',

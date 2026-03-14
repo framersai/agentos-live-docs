@@ -12,7 +12,7 @@ npm install @framers/agentos-skills-registry
 
 This is the **single package** for AgentOS skills. It contains:
 
-- **18 curated SKILL.md files** — prompt modules for weather, GitHub, Notion, Slack, Spotify, coding-agent, and more
+- **40 curated SKILL.md files** — prompt modules spanning developer tooling, productivity, research, voice, memory, and more
 - **registry.json** — machine-readable index of all skills with metadata
 - **Static catalog** (`SKILLS_CATALOG`) — typed array with query helpers
 - **Registry factories** — `createCuratedSkillRegistry()`, `createCuratedSkillSnapshot()` (requires `@framers/agentos`)

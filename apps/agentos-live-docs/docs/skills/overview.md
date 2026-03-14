@@ -139,7 +139,7 @@ const skillSnapshot = await createCuratedSkillSnapshot({
 // 2. Load extensions (tools + voice)
 const manifest = await createCuratedManifest({
   tools: ['web-search', 'web-browser', 'giphy'],
-  voice: ['voice-synthesis'],
+  voice: ['speech-runtime'],
 });
 
 // 3. Collect ITool instances from resolved extension packs
@@ -202,7 +202,7 @@ const app = await createWunderland({
   skills: ['github', 'web-search', 'coding-agent'],
   extensions: {
     tools: ['web-search', 'web-browser', 'giphy'],
-    voice: ['voice-synthesis'],
+    voice: ['speech-runtime'],
   },
 });
 
@@ -213,7 +213,7 @@ const fullApp = await createWunderland({
   skills: 'all', // all curated skills for the current platform
   extensions: {
     tools: ['web-search', 'web-browser', 'news-search', 'image-search', 'giphy', 'cli-executor'],
-    voice: ['voice-synthesis'],
+    voice: ['speech-runtime'],
   },
 });
 
