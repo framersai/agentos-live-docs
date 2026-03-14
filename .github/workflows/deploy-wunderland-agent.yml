@@ -54,7 +54,7 @@ jobs:
               echo "[deploy] Pulling latest..."
               cd "$REPO_DIR"
               git remote set-url origin "$REPO_URL"
-              git fetch origin
+              git -c fetch.recurseSubmodules=false fetch origin
               git reset --hard origin/master
               git submodule update --init --recursive --force 2>&1 || true
               # Update critical submodules individually (bulk update may fail on stale refs in non-critical submodules)
