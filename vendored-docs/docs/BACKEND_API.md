@@ -353,7 +353,7 @@ Email integration reads SMTP values from the Credential Vault (per user + seed):
 LLM preferences + API keys (agent-specific first, then user-level vault fallback):
 
 - **Preference fields** (set by Rabbithole Agent Builder):
-  - `wunderbots.inference_hierarchy.llmProvider` (`openai` | `openrouter` | `anthropic` | `ollama`)
+  - `wunderbots.inference_hierarchy.llmProvider` (`openai` | `openrouter` | `anthropic` | `ollama` | `gemini`)
   - `wunderbots.inference_hierarchy.llmModel` (model id string)
 - **Legacy preference** (optional): `LLM_MODEL` credential as JSON:
   - `{"provider":"openai","model":"gpt-4o-mini"}`
