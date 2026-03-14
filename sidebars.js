@@ -76,6 +76,7 @@ const sidebars = {
           label: 'AI & LLM',
           collapsed: false,
           items: [
+            'features/llm-providers',
             'features/structured-output',
             'features/evaluation-framework',
             'features/cost-optimization',
