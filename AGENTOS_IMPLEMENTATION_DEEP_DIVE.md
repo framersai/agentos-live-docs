@@ -898,7 +898,7 @@ export class StreamingManager {
 }
 ```
 
-**Pull Side** (AsyncStreamClientBridge - [AgentOS.ts:1338-1539](packages/agentos/src/api/AgentOS.ts#L1338-L1539)):
+**Pull Side** (AsyncStreamClientBridge - [AsyncStreamClientBridge.ts](packages/agentos/src/core/streaming/AsyncStreamClientBridge.ts)):
 
 ```typescript
 class AsyncStreamClientBridge implements IStreamClient {

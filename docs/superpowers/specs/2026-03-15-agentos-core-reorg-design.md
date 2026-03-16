@@ -399,6 +399,45 @@ Verify build after each extraction.
 - New tests for: guardrail persistence service, skills discovery wiring
 - No new test framework dependencies
 
+## Implementation Status (as of 2026-03-16)
+
+### Completed
+
+| Pass | What                                         | Result                                                                                                |
+| ---- | -------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| 1    | Barrel exports for 6 core subsystems         | `conversation`, `streaming`, `orchestration`, `agents`, `ai_utilities`, `audio` — all have `index.ts` |
+| 2+3  | Skills wired into discovery + ext-skills dep | 28 curated skills in `CapabilityIndexSources`, 5 skill tools available to agents                      |
+| 4    | Guardrail SQLite persistence                 | `logToDatabase()` and `queueForReview()` use `StorageAdapter` with auto-created tables                |
+| 5    | API file splits                              | `AgentOS.ts`: 2190→1921 (-12%), `AgentOSOrchestrator.ts`: 2861→1936 (-32%)                            |
+| 5    | HybridUtilityAI implemented                  | Was 0 bytes since initial import, now 169 LOC delegate                                                |
+| 6    | Domain barrel                                | `core/index.ts` groups 27 subsystems into 7 domains (no file moves)                                   |
+
+### New Modules Created (11 files, 1556 LOC)
+
+- `api/errors.ts` — AgentOSServiceError (34 LOC)
+- `api/types/OrchestratorConfig.ts` — Config interfaces (136 LOC)
+- `api/TaskOutcomeTelemetryManager.ts` — KPI windows + adaptive execution (442 LOC)
+- `api/StreamChunkEmitter.ts` — Chunk assembly + emission (216 LOC)
+- `api/turn-phases/rolling-summary.ts` — Compaction phase (133 LOC)
+- `api/turn-phases/prompt-profile.ts` — Profile routing (66 LOC)
+- `api/turn-phases/long-term-memory.ts` — Memory retrieval (144 LOC)
+- `api/turn-phases/conversation-history.ts` — History assembly (75 LOC)
+- `core/streaming/AsyncStreamClientBridge.ts` — Push-pull adapter (137 LOC)
+- `core/ai_utilities/HybridUtilityAI.ts` — LLM+statistical hybrid (169 LOC)
+- `core/index.ts` — Domain barrel (72 LOC)
+
+### Test Status
+
+- **1647 agentos tests**: all passing (115 files, vitest)
+- **36 backend tests**: all passing (node:test)
+- **Zero regressions** from refactoring
+- **New test suites** added for: TaskOutcomeTelemetryManager, StreamChunkEmitter, HybridUtilityAI, turn-phase helpers
+
+### Deferred (requires further work)
+
+- Physical file moves into domain folders — blocked by wildcard exports in `package.json`; consumers need barrel import migration first
+- `StreamChunkAssembler` was renamed to `StreamChunkEmitter` in implementation
+
 ## Out of Scope
 
 - WunderlandGateway bootstrap hang (requires Nest startup refactor)
