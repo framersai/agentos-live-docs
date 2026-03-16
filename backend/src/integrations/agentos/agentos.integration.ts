@@ -26,6 +26,7 @@ import {
   type ProvenancePackResult,
 } from '@framers/agentos/extensions/packs/provenance-pack';
 import { createCuratedManifest } from '@framers/agentos-extensions-registry';
+import { getCuratedSkills } from '@framers/agentos-skills-registry/catalog';
 import type { FileSystemPersonaLoaderConfig } from '@framers/agentos/cognitive_substrate/personas/PersonaLoader';
 import type {
   IAuthService as AgentOSAuthServiceInterface,
@@ -1018,7 +1019,10 @@ async function buildEmbeddedAgentOSConfig(): Promise<EmbeddedAgentOSConfigBuildR
     });
   }
 
-  const extensionManifest = curatedManifest.packs.length > 0 ? curatedManifest : undefined;
+  const extensionManifest =
+    curatedManifest.packs.length > 0
+      ? (curatedManifest as NonNullable<AgentOSConfig['extensionManifest']>)
+      : undefined;
 
   const hitlEnabled = parseBooleanEnv(process.env.AGENTOS_HITL_ENABLED) ?? false;
   if (hitlEnabled) {
@@ -1136,6 +1140,59 @@ async function buildEmbeddedAgentOSConfig(): Promise<EmbeddedAgentOSConfigBuildR
   if (typeof discoveryRetryBackoff === 'number') {
     discoveryConfig.retryBackoffMs = Math.max(0, Math.trunc(discoveryRetryBackoff));
   }
+  // Wire curated skills into discovery sources so agents can discover them
+  // via the discover_capabilities meta-tool.
+  try {
+    const skillsCatalog = getCuratedSkills();
+    if (skillsCatalog.length > 0) {
+      const { createRequire } = await import('node:module');
+      const require = createRequire(import.meta.url);
+      let skillsRegistryDir: string;
+      try {
+        skillsRegistryDir = path.dirname(
+          require.resolve('@framers/agentos-skills-registry/catalog')
+        );
+      } catch {
+        skillsRegistryDir = '';
+      }
+
+      const skillDescriptors = skillsCatalog.map((skill) => {
+        let content = skill.description;
+        if (skillsRegistryDir) {
+          try {
+            const mdPath = path.resolve(skillsRegistryDir, '..', skill.skillPath);
+            content = fs.readFileSync(mdPath, 'utf-8');
+          } catch {
+            // Fallback to description if SKILL.md can't be read
+          }
+        }
+        return {
+          name: skill.name,
+          description: skill.description,
+          content,
+          category: skill.category,
+          tags: skill.tags,
+          requiredSecrets: skill.requiredSecrets,
+          requiredTools: skill.requiredTools,
+          sourcePath: skill.skillPath,
+        };
+      });
+
+      discoveryConfig.sources = {
+        ...discoveryConfig.sources,
+        skills: skillDescriptors,
+      };
+
+      // Ensure discovery is enabled when skills are available
+      if (discoveryConfig.enabled === undefined) {
+        discoveryConfig.enabled = true;
+      }
+    }
+  } catch (err) {
+    // Skills registry not available — continue without skills discovery
+    console.warn('[AgentOS] Could not load curated skills for discovery:', (err as Error).message);
+  }
+
   if (Object.keys(discoveryConfig).length > 0) {
     turnPlanningConfig.discovery = discoveryConfig;
   }
