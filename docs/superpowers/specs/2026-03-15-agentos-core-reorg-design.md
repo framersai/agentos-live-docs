@@ -25,7 +25,7 @@ These were initially flagged but verified as non-issues:
 | 1   | Missing barrel exports for 4 core domains   | `core/{conversation,streaming,orchestration,workflows}/`                 | Add `index.ts` files                    |
 | 2   | Skills not wired as discovery source        | `agentos.integration.ts:1108` never populates `discovery.sources.skills` | Wire `@framers/agentos-skills-registry` |
 | 3   | `agentos-ext-skills` not loaded by default  | Backend extension manifest omits it                                      | Add to `createCuratedManifest()` call   |
-| 4   | Guardrail logger/review persistence stubbed | `GuardrailLogger.ts:283,364`                                             | Replace with SQLite-backed service      |
+| 4   | Guardrail logger/review persistence stubbed | `backend/src/integrations/agentos/guardrails/GuardrailLogger.ts:283,364` | Replace with SQLite-backed service      |
 
 ## Architecture
 
@@ -143,8 +143,17 @@ packages/agentos/src/
 ├── utils/                            # Unchanged
 ├── logging/                          # Unchanged
 ├── services/                         # Auth service types (if present)
+├── memory_lifecycle/                 # Unchanged
+├── neo4j/                            # Unchanged
+├── server/                           # Unchanged
+├── stubs/                            # Unchanged (imported by backend for PrismaClient proxy)
+├── prisma/                           # Unchanged
 └── index.ts                          # Updated barrel with compat shims
 ```
+
+**Note on `cognitive_substrate`**: This path has no explicit export entry in `package.json` — it resolves via the 4-segment wildcard patterns (`./*`, `./*/*`, `./*/*/*`, `./*/*/*/*`). These wildcard entries must be preserved. Consider adding explicit exports for frequently used deep paths (e.g., `./cognitive_substrate/personas/*`) to stabilize the dependency.
+
+**Note on Pass 1 barrel names**: Pass 1 uses current directory names (e.g., `ai_utilities`). Renames (e.g., `ai-utilities`) happen in Pass 6.
 
 ### Merges (4 tiny subsystems absorbed)
 
@@ -187,19 +196,47 @@ Stays in AgentOSOrchestrator.ts: `orchestrateTurn`, `_processTurnInternal` (slim
 ```typescript
 // In buildEmbeddedAgentOSConfig(), near line 1108:
 import { getCuratedSkills } from '@framers/agentos-skills-registry/catalog';
+import { readFileSync } from 'node:fs';
+import { resolve, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const skillsCatalog = getCuratedSkills();
-const skillDescriptors = skillsCatalog.map((skill) => ({
-  id: `skill:${skill.name}`,
-  name: skill.name,
-  kind: 'skill' as const,
-  description: skill.description,
-  category: skill.category,
-  tags: skill.tags,
-}));
 
-// Populate discovery sources:
-config.orchestrator.turnPlanning.discovery.sources.skills = skillDescriptors;
+// Resolve base dir for loading SKILL.md content (required by CapabilityIndexSources['skills'])
+const skillsRegistryDir = dirname(
+  fileURLToPath(import.meta.resolve('@framers/agentos-skills-registry/catalog'))
+);
+
+const skillDescriptors = skillsCatalog.map((skill) => {
+  let content = skill.description; // fallback
+  try {
+    const mdPath = resolve(skillsRegistryDir, '..', skill.skillPath, 'SKILL.md');
+    content = readFileSync(mdPath, 'utf-8');
+  } catch {
+    /* use description as fallback */
+  }
+  return {
+    name: skill.name,
+    description: skill.description,
+    content, // required by CapabilityIndexSources['skills']
+    category: skill.category,
+    tags: skill.tags,
+    requiredSecrets: skill.requiredSecrets,
+    requiredTools: skill.requiredTools,
+    sourcePath: skill.skillPath,
+  };
+});
+
+// Populate discovery sources via AgentOSConfig.turnPlanning.discovery.sources.skills:
+// (AgentOS.buildCapabilityIndexSources() passes config.turnPlanning.discovery.sources.skills
+//  through as overrides?.skills at AgentOS.ts:1299)
+turnPlanningConfig.discovery = {
+  ...turnPlanningConfig.discovery,
+  sources: {
+    ...turnPlanningConfig.discovery?.sources,
+    skills: skillDescriptors,
+  },
+};
 ```
 
 #### Load agentos-ext-skills by Default
@@ -244,7 +281,7 @@ CREATE TABLE IF NOT EXISTS guardrail_review_queue (
 );
 ```
 
-Replace stubs in `GuardrailLogger.ts`:
+Replace stubs in `backend/src/integrations/agentos/guardrails/GuardrailLogger.ts`:
 
 - L283: `logGuardrailAction()` → INSERT into `guardrail_audit_log`
 - L364: `submitForReview()` → INSERT into `guardrail_review_queue`
@@ -290,14 +327,14 @@ Verify build passes.
 ### Pass 2: Wire Skills into Discovery
 
 - Import `getCuratedSkills` from `@framers/agentos-skills-registry/catalog`
-- Map skill catalog entries to `CapabilityDescriptor` format
-- Populate `discovery.sources.skills` in `buildEmbeddedAgentOSConfig()`
+- Map skill catalog entries to `CapabilityIndexSources['skills']` shape (requires `content: string` — load from SKILL.md files on disk, fall back to `description`)
+- Populate `turnPlanningConfig.discovery.sources.skills` in `buildEmbeddedAgentOSConfig()` (see corrected code sample above — `AgentOS.buildCapabilityIndexSources()` passes these through as `overrides?.skills`)
 - Add `@framers/agentos-skills-registry` to backend dependencies if not present
 - Verify: agents can discover skills via `discover_capabilities` tool
 
 ### Pass 3: Load agentos-ext-skills by Default
 
-- Ensure `@framers/agentos-ext-skills` is in backend `package.json` dependencies
+- Add `@framers/agentos-ext-skills` to `backend/package.json` dependencies as `workspace:*` and run `pnpm install`
 - Verify `skills` entry exists in `TOOL_CATALOG` (it does)
 - Confirm `createCuratedManifest({ tools: 'all' })` includes the skills tool pack
 - Verify: agents have `skills_list`, `skills_read`, `skills_enable` etc. available
@@ -339,10 +376,11 @@ Verify build after each extraction.
    - `audio/`, `language/`, `observability/` + `usage/`, `evaluation/`, `marketplace/` → `platform/`
    - `workspace/` → `agents/runtime/workspace/`
    - `ui/IUIComponent.ts` → co-locate with consumer
-3. Add compat re-exports at all old paths
-4. Update `src/index.ts` barrel
-5. Update `package.json` exports map
-6. Verify full build chain: agentos → backend → rabbithole
+3. Add compat re-exports at all old paths (including `src/core/guardrails/` → `src/core/safety/guardrails/` — backend tests import guardrails via both `core/guardrails/` and `guardrails/` wildcard paths)
+4. Normalize workspace/` barrel export compat shim (`src/index.ts`exports`core/workspace`which moves to`core/agents/runtime/workspace/`)
+5. Update `src/index.ts` barrel
+6. Update `package.json` exports map (28 explicit + 4 wildcard entries)
+7. Verify full build chain: agentos → backend → rabbithole
 
 ## Design Principles
 
