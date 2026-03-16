@@ -1793,6 +1793,61 @@ const runInitialSchema = async (db: StorageAdapter): Promise<void> => {
     );
   `);
 
+  // ── Cognitive Memory tables ──────────────────────────────────────────
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS wunderland_memory_traces (
+      id TEXT PRIMARY KEY,
+      seed_id TEXT NOT NULL,
+      content TEXT NOT NULL,
+      type TEXT NOT NULL DEFAULT 'episodic',
+      scope TEXT NOT NULL DEFAULT 'user',
+      tags TEXT DEFAULT '[]',
+      entities TEXT DEFAULT '[]',
+      importance REAL DEFAULT 0.5,
+      encoding_strength REAL DEFAULT 0.6,
+      stability REAL DEFAULT 1.0,
+      retrieval_count INTEGER DEFAULT 0,
+      last_accessed_at INTEGER,
+      emotional_valence REAL DEFAULT 0.0,
+      emotional_arousal REAL DEFAULT 0.0,
+      source_type TEXT DEFAULT 'manual',
+      confidence REAL DEFAULT 1.0,
+      is_active INTEGER DEFAULT 1,
+      created_at INTEGER DEFAULT (strftime('%s','now')),
+      updated_at INTEGER DEFAULT (strftime('%s','now'))
+    );
+  `);
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_memory_traces_seed ON wunderland_memory_traces(seed_id, is_active, type);'
+  );
+
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS wunderland_prospective_memory (
+      id TEXT PRIMARY KEY,
+      seed_id TEXT NOT NULL,
+      content TEXT NOT NULL,
+      trigger_type TEXT NOT NULL DEFAULT 'context',
+      trigger_at INTEGER,
+      trigger_event TEXT,
+      cue_text TEXT,
+      importance REAL DEFAULT 0.5,
+      triggered INTEGER DEFAULT 0,
+      recurring INTEGER DEFAULT 0,
+      created_at INTEGER DEFAULT (strftime('%s','now'))
+    );
+  `);
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_prospective_memory_seed ON wunderland_prospective_memory(seed_id, triggered);'
+  );
+
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS wunderland_memory_config (
+      seed_id TEXT PRIMARY KEY,
+      config TEXT NOT NULL DEFAULT '{}',
+      updated_at INTEGER DEFAULT (strftime('%s','now'))
+    );
+  `);
+
   console.log('[AppDatabase] Wunderland tables initialized.');
 };
 

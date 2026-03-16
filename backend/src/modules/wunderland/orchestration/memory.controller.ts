@@ -26,6 +26,7 @@ import {
 import { AuthGuard } from '../../../common/guards/auth.guard.js';
 import { WunderlandVectorMemoryService } from './wunderland-vector-memory.service.js';
 import { DatabaseService } from '../../../database/database.service.js';
+import { getAppDatabase } from '../../../core/database/appDatabase.js';
 
 // ---------------------------------------------------------------------------
 // DTO types
@@ -133,12 +134,180 @@ interface ProspectiveRecord {
   createdAt: number;
 }
 
-// In-memory stores - will be replaced by CognitiveMemoryManager when wired
-const traceStore = new Map<string, MemoryTraceRecord>();
-const prospectiveStore = new Map<string, ProspectiveRecord>();
-const configStore = new Map<string, Record<string, any>>();
-let traceCounter = 0;
-let prospectiveCounter = 0;
+// SQLite-backed persistence for cognitive memory (replaces former in-memory Maps)
+const traceDb = {
+  async getAll(
+    seedId: string,
+    filter?: { type?: string; scope?: string; isActive?: boolean }
+  ): Promise<MemoryTraceRecord[]> {
+    const db = getAppDatabase();
+    let sql = 'SELECT * FROM wunderland_memory_traces WHERE seed_id = ?';
+    const params: any[] = [seedId];
+    if (filter?.type) {
+      sql += ' AND type = ?';
+      params.push(filter.type);
+    }
+    if (filter?.scope) {
+      sql += ' AND scope = ?';
+      params.push(filter.scope);
+    }
+    if (filter?.isActive !== undefined) {
+      sql += ' AND is_active = ?';
+      params.push(filter.isActive ? 1 : 0);
+    }
+    sql += ' ORDER BY created_at DESC';
+    const rows = (await db.all(sql, params)) as any[];
+    return rows.map(rowToTrace);
+  },
+  async get(id: string): Promise<MemoryTraceRecord | undefined> {
+    const db = getAppDatabase();
+    const rows = (await db.all('SELECT * FROM wunderland_memory_traces WHERE id = ?', [
+      id,
+    ])) as any[];
+    return rows[0] ? rowToTrace(rows[0]) : undefined;
+  },
+  async set(trace: MemoryTraceRecord): Promise<void> {
+    const db = getAppDatabase();
+    await db.run(
+      `INSERT OR REPLACE INTO wunderland_memory_traces
+        (id, seed_id, content, type, scope, tags, entities, importance, encoding_strength,
+         stability, retrieval_count, last_accessed_at, emotional_valence, emotional_arousal,
+         source_type, confidence, is_active, created_at, updated_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        trace.id,
+        trace.seedId,
+        trace.content,
+        trace.type,
+        trace.scope,
+        JSON.stringify(trace.tags),
+        JSON.stringify(trace.entities),
+        trace.importance,
+        trace.encodingStrength,
+        trace.stability,
+        trace.retrievalCount,
+        trace.lastAccessedAt,
+        trace.emotionalValence,
+        trace.emotionalArousal,
+        trace.sourceType,
+        trace.confidence,
+        trace.isActive ? 1 : 0,
+        Math.trunc(trace.createdAt / 1000),
+        Math.trunc(trace.updatedAt / 1000),
+      ]
+    );
+  },
+  async count(seedId: string, isActive?: boolean): Promise<number> {
+    const db = getAppDatabase();
+    const sql =
+      isActive !== undefined
+        ? 'SELECT COUNT(*) as cnt FROM wunderland_memory_traces WHERE seed_id = ? AND is_active = ?'
+        : 'SELECT COUNT(*) as cnt FROM wunderland_memory_traces WHERE seed_id = ?';
+    const params = isActive !== undefined ? [seedId, isActive ? 1 : 0] : [seedId];
+    const rows = (await db.all(sql, params)) as any[];
+    return rows[0]?.cnt ?? 0;
+  },
+};
+
+function rowToTrace(row: any): MemoryTraceRecord {
+  return {
+    id: row.id,
+    seedId: row.seed_id,
+    content: row.content,
+    type: row.type,
+    scope: row.scope,
+    tags: JSON.parse(row.tags || '[]'),
+    entities: JSON.parse(row.entities || '[]'),
+    importance: row.importance,
+    encodingStrength: row.encoding_strength,
+    stability: row.stability,
+    retrievalCount: row.retrieval_count,
+    lastAccessedAt: row.last_accessed_at ? row.last_accessed_at * 1000 : Date.now(),
+    emotionalValence: row.emotional_valence,
+    emotionalArousal: row.emotional_arousal,
+    sourceType: row.source_type,
+    confidence: row.confidence,
+    isActive: Boolean(row.is_active),
+    createdAt: row.created_at * 1000,
+    updatedAt: row.updated_at * 1000,
+  };
+}
+
+const prospectiveDb = {
+  async getAll(seedId: string): Promise<ProspectiveRecord[]> {
+    const db = getAppDatabase();
+    const rows = (await db.all(
+      'SELECT * FROM wunderland_prospective_memory WHERE seed_id = ? ORDER BY created_at DESC',
+      [seedId]
+    )) as any[];
+    return rows.map((r: any) => ({
+      id: r.id,
+      seedId: r.seed_id,
+      content: r.content,
+      triggerType: r.trigger_type,
+      triggerAt: r.trigger_at ? r.trigger_at * 1000 : undefined,
+      triggerEvent: r.trigger_event ?? undefined,
+      cueText: r.cue_text ?? undefined,
+      importance: r.importance,
+      triggered: Boolean(r.triggered),
+      recurring: Boolean(r.recurring),
+      createdAt: r.created_at * 1000,
+    }));
+  },
+  async set(item: ProspectiveRecord): Promise<void> {
+    const db = getAppDatabase();
+    await db.run(
+      `INSERT OR REPLACE INTO wunderland_prospective_memory
+        (id, seed_id, content, trigger_type, trigger_at, trigger_event, cue_text,
+         importance, triggered, recurring, created_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        item.id,
+        item.seedId,
+        item.content,
+        item.triggerType,
+        item.triggerAt ? Math.trunc(item.triggerAt / 1000) : null,
+        item.triggerEvent ?? null,
+        item.cueText ?? null,
+        item.importance,
+        item.triggered ? 1 : 0,
+        item.recurring ? 1 : 0,
+        Math.trunc(item.createdAt / 1000),
+      ]
+    );
+  },
+  async delete(id: string): Promise<boolean> {
+    const db = getAppDatabase();
+    const result = await db.run('DELETE FROM wunderland_prospective_memory WHERE id = ?', [id]);
+    return (result as any)?.changes > 0;
+  },
+  async count(seedId: string): Promise<number> {
+    const db = getAppDatabase();
+    const rows = (await db.all(
+      'SELECT COUNT(*) as cnt FROM wunderland_prospective_memory WHERE seed_id = ?',
+      [seedId]
+    )) as any[];
+    return rows[0]?.cnt ?? 0;
+  },
+};
+
+const configDb = {
+  async get(seedId: string): Promise<Record<string, any>> {
+    const db = getAppDatabase();
+    const rows = (await db.all('SELECT config FROM wunderland_memory_config WHERE seed_id = ?', [
+      seedId,
+    ])) as any[];
+    return rows[0] ? JSON.parse(rows[0].config || '{}') : {};
+  },
+  async set(seedId: string, config: Record<string, any>): Promise<void> {
+    const db = getAppDatabase();
+    await db.run(
+      `INSERT OR REPLACE INTO wunderland_memory_config (seed_id, config, updated_at)
+       VALUES (?, ?, strftime('%s','now'))`,
+      [seedId, JSON.stringify(config)]
+    );
+  },
+};
 
 function buildConfigResponse(stored: Record<string, any>) {
   const encoding = stored.encoding ?? {};
@@ -284,7 +453,7 @@ export class MemoryController {
         });
         vectorResults = result.chunks.map((c) => ({
           content: c.content,
-          score: c.score ?? 0,
+          score: (c as any).relevanceScore ?? (c as any).score ?? 0,
           metadata: c.metadata as Record<string, any> | undefined,
         }));
       } catch {
@@ -292,8 +461,8 @@ export class MemoryController {
       }
     }
 
-    // Get traces from in-memory store
-    let traces = Array.from(traceStore.values()).filter((t) => t.seedId === seedId && t.isActive);
+    // Get traces from persistent store
+    let traces = await traceDb.getAll(seedId, { isActive: true });
 
     if (type) traces = traces.filter((t) => t.type === type);
     if (scope) traces = traces.filter((t) => t.scope === scope);
@@ -337,7 +506,7 @@ export class MemoryController {
     }
 
     const now = Date.now();
-    const id = `mt_${now}_${++traceCounter}`;
+    const id = `mt_${now}_${Math.random().toString(36).substring(2, 8)}`;
     const importance = body.importance ?? 0.5;
 
     const trace: MemoryTraceRecord = {
@@ -362,7 +531,7 @@ export class MemoryController {
       updatedAt: now,
     };
 
-    traceStore.set(id, trace);
+    await traceDb.set(trace);
 
     // Also ingest into vector memory for semantic search
     try {
@@ -384,15 +553,17 @@ export class MemoryController {
    * Get a single trace with full metadata.
    */
   @Get('wunderland/memory/:seedId/traces/:traceId')
-  getTrace(@Param('seedId') seedId: string, @Param('traceId') traceId: string) {
-    const trace = traceStore.get(traceId);
+  async getTrace(@Param('seedId') seedId: string, @Param('traceId') traceId: string) {
+    const trace = await traceDb.get(traceId);
     if (!trace || trace.seedId !== seedId) {
       throw new HttpException('Trace not found', HttpStatus.NOT_FOUND);
     }
 
-    // Record access
+    // Record access and persist
     trace.retrievalCount++;
     trace.lastAccessedAt = Date.now();
+    trace.updatedAt = Date.now();
+    await traceDb.set(trace);
 
     return { trace };
   }
@@ -407,7 +578,7 @@ export class MemoryController {
     @Param('traceId') traceId: string,
     @Body() body: UpdateTraceBody
   ) {
-    const trace = traceStore.get(traceId);
+    const trace = await traceDb.get(traceId);
     if (!trace || trace.seedId !== seedId) {
       throw new HttpException('Trace not found', HttpStatus.NOT_FOUND);
     }
@@ -417,6 +588,9 @@ export class MemoryController {
     if (body.entities !== undefined) trace.entities = body.entities;
     if (body.isActive !== undefined) trace.isActive = body.isActive;
     trace.updatedAt = Date.now();
+
+    // Persist updated trace to SQLite
+    await traceDb.set(trace);
 
     // Re-ingest if content changed
     if (body.content !== undefined) {
@@ -440,14 +614,15 @@ export class MemoryController {
    * Soft-delete a trace.
    */
   @Delete('wunderland/memory/:seedId/traces/:traceId')
-  deleteTrace(@Param('seedId') seedId: string, @Param('traceId') traceId: string) {
-    const trace = traceStore.get(traceId);
+  async deleteTrace(@Param('seedId') seedId: string, @Param('traceId') traceId: string) {
+    const trace = await traceDb.get(traceId);
     if (!trace || trace.seedId !== seedId) {
       throw new HttpException('Trace not found', HttpStatus.NOT_FOUND);
     }
 
     trace.isActive = false;
     trace.updatedAt = Date.now();
+    await traceDb.set(trace);
     return { success: true };
   }
 
@@ -461,7 +636,7 @@ export class MemoryController {
    */
   @Get('wunderland/memory/:seedId/health')
   async getHealth(@Param('seedId') seedId: string) {
-    const allTraces = Array.from(traceStore.values()).filter((t) => t.seedId === seedId);
+    const allTraces = await traceDb.getAll(seedId);
     const active = allTraces.filter((t) => t.isActive);
 
     const tracesPerType: Record<string, number> = {
@@ -504,9 +679,7 @@ export class MemoryController {
       tracesPerType,
       tracesPerScope,
       vectorMemoryAvailable,
-      prospectiveCount: Array.from(prospectiveStore.values()).filter(
-        (p) => p.seedId === seedId && !p.triggered
-      ).length,
+      prospectiveCount: await prospectiveDb.count(seedId),
     };
   }
 
@@ -519,9 +692,10 @@ export class MemoryController {
    * List active prospective memory items.
    */
   @Get('wunderland/memory/:seedId/prospective')
-  getProspective(@Param('seedId') seedId: string) {
-    const items = Array.from(prospectiveStore.values())
-      .filter((p) => p.seedId === seedId && (!p.triggered || p.recurring))
+  async getProspective(@Param('seedId') seedId: string) {
+    const all = await prospectiveDb.getAll(seedId);
+    const items = all
+      .filter((p) => !p.triggered || p.recurring)
       .sort((a, b) => b.importance - a.importance);
 
     return { items };
@@ -532,7 +706,7 @@ export class MemoryController {
    * Create a new prospective memory item.
    */
   @Post('wunderland/memory/:seedId/prospective')
-  createProspective(@Param('seedId') seedId: string, @Body() body: CreateProspectiveBody) {
+  async createProspective(@Param('seedId') seedId: string, @Body() body: CreateProspectiveBody) {
     if (!body.content?.trim()) {
       throw new HttpException('content is required', HttpStatus.BAD_REQUEST);
     }
@@ -541,7 +715,7 @@ export class MemoryController {
     }
 
     const now = Date.now();
-    const id = `pm_${now}_${++prospectiveCounter}`;
+    const id = `pm_${now}_${Math.random().toString(36).substring(2, 8)}`;
 
     const item: ProspectiveRecord = {
       id,
@@ -557,7 +731,7 @@ export class MemoryController {
       createdAt: now,
     };
 
-    prospectiveStore.set(id, item);
+    await prospectiveDb.set(item);
     return { item };
   }
 
@@ -566,13 +740,11 @@ export class MemoryController {
    * Delete a prospective memory item.
    */
   @Delete('wunderland/memory/:seedId/prospective/:itemId')
-  deleteProspective(@Param('seedId') seedId: string, @Param('itemId') itemId: string) {
-    const item = prospectiveStore.get(itemId);
-    if (!item || item.seedId !== seedId) {
+  async deleteProspective(@Param('seedId') seedId: string, @Param('itemId') itemId: string) {
+    const deleted = await prospectiveDb.delete(itemId);
+    if (!deleted) {
       throw new HttpException('Prospective item not found', HttpStatus.NOT_FOUND);
     }
-
-    prospectiveStore.delete(itemId);
     return { success: true };
   }
 
@@ -651,8 +823,8 @@ export class MemoryController {
    * Get memory configuration for an agent.
    */
   @Get('wunderland/memory/:seedId/config')
-  getConfig(@Param('seedId') seedId: string) {
-    const stored = configStore.get(seedId) ?? {};
+  async getConfig(@Param('seedId') seedId: string) {
+    const stored = (await configDb.get(seedId)) ?? {};
     return { config: buildConfigResponse(stored) };
   }
 
@@ -661,10 +833,10 @@ export class MemoryController {
    * Update memory configuration.
    */
   @Patch('wunderland/memory/:seedId/config')
-  updateConfig(@Param('seedId') seedId: string, @Body() body: UpdateConfigBody) {
-    const existing = configStore.get(seedId) ?? {};
+  async updateConfig(@Param('seedId') seedId: string, @Body() body: UpdateConfigBody) {
+    const existing = (await configDb.get(seedId)) ?? {};
     const updated = mergeConfigUpdate(existing, body);
-    configStore.set(seedId, updated);
+    await configDb.set(seedId, updated);
 
     // Return the full config shape
     return this.getConfig(seedId);
