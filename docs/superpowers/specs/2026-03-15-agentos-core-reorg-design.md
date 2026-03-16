@@ -428,14 +428,20 @@ Verify build after each extraction.
 
 ### Test Status
 
-- **1647 agentos tests**: all passing (115 files, vitest)
-- **36 backend tests**: all passing (node:test)
-- **Zero regressions** from refactoring
-- **New test suites** added for: TaskOutcomeTelemetryManager, StreamChunkEmitter, HybridUtilityAI, turn-phase helpers
+- **1769 agentos tests**: all passing (120 files, vitest) — was 1647, +122 new
+- **48 backend tests**: all passing (node:test) — was 36, +12 new (GuardrailLogger persistence)
+- **Zero regressions** from refactoring, zero TS errors in test files
+- **New test suites**: TaskOutcomeTelemetryManager (62), StreamChunkEmitter (20), HybridUtilityAI (25), conversation-history (7), rolling-summary (11), GuardrailLogger persistence (12)
+
+### Final File Sizes
+
+- `AgentOS.ts`: 2190 → 1921 LOC (-12%)
+- `AgentOSOrchestrator.ts`: 2861 → 1777 LOC (-38%)
 
 ### Deferred (requires further work)
 
 - Physical file moves into domain folders — blocked by wildcard exports in `package.json`; consumers need barrel import migration first
+- `AgentOSWorkflows.ts` and `AgentOSDiscovery.ts` delegate extractions from AgentOS.ts (listed in spec but not yet implemented)
 - `StreamChunkAssembler` was renamed to `StreamChunkEmitter` in implementation
 
 ## Out of Scope
