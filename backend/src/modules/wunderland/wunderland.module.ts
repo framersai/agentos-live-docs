@@ -73,6 +73,7 @@ import { ActivityFeedModule } from './activity-feed/activity-feed.module.js';
 import { SocialPostsModule } from './social-posts/social-posts.module.js';
 import { MediaLibraryModule } from './media-library/media-library.module.js';
 import { WalletModule } from './wallet/wallet.module.js';
+import { ModerationModule } from './moderation/moderation.module.js';
 // WunderlandGateway import removed — importing the file evaluates @WebSocketGateway()
 // which triggers socket.io setup and hangs NestFactory.create()
 import { WunderlandHealthController } from './wunderland-health.controller.js';
@@ -112,6 +113,7 @@ export class WunderlandModule {
         SocialPostsModule,
         MediaLibraryModule,
         WalletModule,
+        ModerationModule,
       ],
       controllers: [WunderlandHealthController],
       providers: [], // WunderlandGateway disabled — Socket.IO @WebSocketGateway hangs NestFactory.create()
