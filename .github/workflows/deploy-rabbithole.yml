@@ -197,11 +197,15 @@ jobs:
             ln -sfn /etc/nginx/sites-available/rabbithole /etc/nginx/sites-enabled/rabbithole
             nginx -t && systemctl reload nginx
 
-            # ── 7. Update systemd service + restart ──
-            echo "[deploy] Updating systemd service..."
+            # ── 7. Update systemd services + restart ──
+            echo "[deploy] Updating systemd services..."
             cp "$REPO_DIR/deployment/rabbithole/rabbithole.service" /etc/systemd/system/rabbithole.service
+            cp "$REPO_DIR/deployment/rabbithole/rabbithole-discord-bot.service" /etc/systemd/system/rabbithole-discord-bot.service
+            cp "$APP_DIR/discord-bot-start.js" "$APP_DIR/discord-bot-start.js" 2>/dev/null || true
             systemctl daemon-reload
             systemctl restart rabbithole
+            systemctl enable rabbithole-discord-bot
+            systemctl restart rabbithole-discord-bot
 
             # ── 8. Update API bridge if changed ──
             if [ -f "$REPO_DIR/deployment/rabbithole/api-server.js" ]; then

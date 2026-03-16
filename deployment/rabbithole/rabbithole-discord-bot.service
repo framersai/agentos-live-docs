@@ -1,0 +1,18 @@
+[Unit]
+Description=Rabbit Hole Discord Bot (TypeScript)
+After=network.target rabbithole.service
+Wants=rabbithole.service
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/app/rabbithole/apps/rabbithole
+ExecStart=/usr/bin/node discord-bot-start.js
+Restart=on-failure
+RestartSec=10
+Environment=NODE_ENV=production
+Environment=NODE_OPTIONS=--max-old-space-size=512
+EnvironmentFile=-/etc/rabbithole/env
+
+[Install]
+WantedBy=multi-user.target
