@@ -13,7 +13,8 @@ import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
 
 // --- Core LLM & Config Imports ---
-import { callLlm, initializeLlmServices } from '../../core/llm/llm.factory.js';
+import { callLlmViaAgentOS as callLlm } from '../../core/llm/agentos-bridge.js';
+import { initializeLlmServices } from '../../core/llm/llm.factory.js';
 import { LlmConfigService, AgentLLMDefinition } from '../../core/llm/llm.config.service.js';
 import {
   IChatMessage,

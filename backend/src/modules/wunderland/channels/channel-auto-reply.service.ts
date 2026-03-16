@@ -13,7 +13,7 @@ import { createHash } from 'node:crypto';
 import { DatabaseService } from '../../../database/database.service.js';
 import { CredentialsService } from '../credentials/credentials.service.js';
 import { CredentialResolverService } from '../credentials/credential-resolver.service.js';
-import { callLlmWithProviderConfig } from '../../../core/llm/llm.factory.js';
+import { callLlmWithProviderConfigViaAgentOS as callLlmWithProviderConfig } from '../../../core/llm/agentos-bridge.js';
 import { LlmProviderId } from '../../../core/llm/llm.config.service.js';
 import type { IChatMessage, ILlmProviderConfig } from '../../../core/llm/llm.interfaces.js';
 import { TunnelService } from '../../tunnel/tunnel.service.js';

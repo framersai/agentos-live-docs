@@ -3,7 +3,7 @@
  * @description A guardrail that uses an LLM to reason about whether content should be allowed,
  * flagged, sanitized, or blocked. This enables natural-language policy definitions without
  * hard-coding keywords.
- * 
+ *
  * Example use cases:
  * - "Block any request that asks for medical advice"
  * - "Sanitize outputs that reveal personally identifiable information"
@@ -20,7 +20,7 @@ import {
   type GuardrailConfig,
 } from '@framers/agentos/core/guardrails/IGuardrailService';
 import { AgentOSResponseChunkType } from '@framers/agentos/api/types/AgentOSResponse';
-import { callLlm } from '../../../core/llm/llm.factory.js';
+import { callLlmViaAgentOS as callLlm } from '../../../core/llm/agentos-bridge.js';
 import type { IChatMessage } from '../../../core/llm/llm.interfaces.js';
 
 /**
@@ -61,18 +61,18 @@ interface GuardrailLLMResponse {
 
 /**
  * Generic guardrail that uses an LLM to evaluate content against natural-language policies.
- * 
+ *
  * **How it works:**
  * 1. You describe the policy in plain English (e.g., "Block medical advice requests")
  * 2. The guardrail sends user input or agent output to an LLM with a reasoning prompt
  * 3. The LLM returns { violates: true/false, reason: "...", sanitizedText: "..." }
  * 4. The guardrail applies the configured action (flag/sanitize/block)
- * 
+ *
  * **Agent "changing its mind":**
  * - If the agent generates a response that violates the policy, the LLM can rewrite it
  * - The user receives the LLM-sanitized version instead of the original output
  * - This happens transparently mid-stream before delivery
- * 
+ *
  * @example
  * ```typescript
  * const guard = new GenericLLMGuardrail({
@@ -113,7 +113,8 @@ export class GenericLLMGuardrail implements IGuardrailService {
     }
 
     const action = this.mapViolationAction();
-    const replacementText = this.options.replacementText || llmResult.sanitizedText || 'Input was filtered by policy.';
+    const replacementText =
+      this.options.replacementText || llmResult.sanitizedText || 'Input was filtered by policy.';
 
     return {
       action,
@@ -153,14 +154,18 @@ export class GenericLLMGuardrail implements IGuardrailService {
     }
 
     const action = this.mapViolationAction();
-    const replacementText = this.options.replacementText || llmResult.sanitizedText || 'Output was filtered by policy.';
+    const replacementText =
+      this.options.replacementText || llmResult.sanitizedText || 'Output was filtered by policy.';
 
     return {
       action,
       reason: llmResult.reason || 'Agent output violated policy.',
       reasonCode: 'GENERIC_LLM_OUTPUT_VIOLATION',
       modifiedText: action === GuardrailAction.SANITIZE ? replacementText : undefined,
-      metadata: { policyDescription: this.options.policyDescription, originalText: text.substring(0, 100) },
+      metadata: {
+        policyDescription: this.options.policyDescription,
+        originalText: text.substring(0, 100),
+      },
     };
   }
 
@@ -170,7 +175,10 @@ export class GenericLLMGuardrail implements IGuardrailService {
    * @param context 'user_input' or 'agent_output'
    * @returns LLM's verdict and optional sanitized replacement
    */
-  private async queryLLMForViolation(text: string, context: 'user_input' | 'agent_output'): Promise<GuardrailLLMResponse> {
+  private async queryLLMForViolation(
+    text: string,
+    context: 'user_input' | 'agent_output'
+  ): Promise<GuardrailLLMResponse> {
     const prompt = this.buildEvaluationPrompt(text, context);
     const messages: IChatMessage[] = [
       { role: 'system', content: prompt },
@@ -183,7 +191,7 @@ export class GenericLLMGuardrail implements IGuardrailService {
         this.options.evaluatorModel || 'gpt-4o-mini',
         undefined,
         undefined,
-        this.options.evaluatorUserId || 'guardrail-system',
+        this.options.evaluatorUserId || 'guardrail-system'
       );
 
       const parsed = this.parseLLMResponse(response.text ?? '');
@@ -202,7 +210,7 @@ export class GenericLLMGuardrail implements IGuardrailService {
   private buildEvaluationPrompt(text: string, context: 'user_input' | 'agent_output'): string {
     const contextLabel = context === 'user_input' ? 'user request' : 'AI agent response';
     const dynamicMode = this.options.useDynamicReplacement && !this.options.replacementText;
-    
+
     const dynamicInstructions = dynamicMode
       ? `   - "sanitizedText": (REQUIRED if violates=true) Generate a context-aware, helpful replacement that:
      * Explains why the original content was filtered (reference the policy)
@@ -244,7 +252,10 @@ Respond ONLY with valid JSON. No markdown code fences or extra text.`;
   private parseLLMResponse(text: string): GuardrailLLMResponse {
     try {
       // Strip markdown code fences if present
-      const cleaned = text.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim();
+      const cleaned = text
+        .replace(/```json\s*/g, '')
+        .replace(/```\s*/g, '')
+        .trim();
       const parsed = JSON.parse(cleaned);
       return {
         violates: Boolean(parsed.violates),
@@ -273,5 +284,3 @@ Respond ONLY with valid JSON. No markdown code fences or extra text.`;
     }
   }
 }
-
-

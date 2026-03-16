@@ -5,7 +5,7 @@
  */
 
 import type { Request, Response } from 'express';
-import { callLlm } from '../../core/llm/llm.factory.js';
+import { callLlmViaAgentOS as callLlm } from '../../core/llm/agentos-bridge.js';
 import type { IChatMessage } from '../../core/llm/llm.interfaces.js';
 
 interface LanguageDetectionRequest {
@@ -87,7 +87,10 @@ export const postDetectLanguage = async (req: Request, res: Response): Promise<v
     console.error('[LanguageRoutes] Failed to detect language:', error);
     res.status(500).json({
       message: 'Failed to detect language',
-      error: process.env.NODE_ENV === 'development' ? error?.message ?? 'UNKNOWN_ERROR' : 'LANGUAGE_DETECTION_FAILED',
+      error:
+        process.env.NODE_ENV === 'development'
+          ? (error?.message ?? 'UNKNOWN_ERROR')
+          : 'LANGUAGE_DETECTION_FAILED',
     });
   }
 };

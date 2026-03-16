@@ -6,11 +6,17 @@
  */
 
 import { Request, Response } from 'express';
-import { callLlm, initializeLlmServices } from '../../core/llm/llm.factory.js';
+import { callLlmViaAgentOS as callLlm } from '../../core/llm/agentos-bridge.js';
+import { initializeLlmServices } from '../../core/llm/llm.factory.js';
 import { IChatMessage, ILlmUsage } from '../../core/llm/llm.interfaces.js';
 import { CostService } from '../../core/cost/cost.service.js';
 import { resolveSessionUserId } from '../../utils/session.utils.js';
-import { MODEL_PREFERENCES, getModelPrice, ModelConfig, MODEL_PRICING } from '../../../config/models.config.js';
+import {
+  MODEL_PREFERENCES,
+  getModelPrice,
+  ModelConfig,
+  MODEL_PRICING,
+} from '../../../config/models.config.js';
 
 initializeLlmServices(); // Ensures LLM services are ready
 
@@ -18,17 +24,27 @@ initializeLlmServices(); // Ensures LLM services are ready
  * Calculates the cost of an LLM interaction for diagram generation.
  */
 function calculateDiagramLlmCost(modelId: string, usage?: ILlmUsage): number {
-  if (!usage || typeof usage.prompt_tokens !== 'number' || typeof usage.completion_tokens !== 'number') {
-    console.warn(`Diagram Cost calculation: Invalid or missing usage data for model "${modelId}". Cost set to $0. Usage: ${JSON.stringify(usage)}`);
+  if (
+    !usage ||
+    typeof usage.prompt_tokens !== 'number' ||
+    typeof usage.completion_tokens !== 'number'
+  ) {
+    console.warn(
+      `Diagram Cost calculation: Invalid or missing usage data for model "${modelId}". Cost set to $0. Usage: ${JSON.stringify(usage)}`
+    );
     return 0;
   }
   const modelPriceConfig: ModelConfig | undefined = getModelPrice(modelId);
   if (!modelPriceConfig) {
-    console.warn(`Diagram Cost calculation: Pricing for model "${modelId}" not found. Attempting default pricing. Cost will be $0 if default not found.`);
+    console.warn(
+      `Diagram Cost calculation: Pricing for model "${modelId}" not found. Attempting default pricing. Cost will be $0 if default not found.`
+    );
     const defaultPricing = MODEL_PRICING['default'];
     if (defaultPricing) {
-      return (usage.prompt_tokens / 1000) * defaultPricing.inputCostPer1K +
-        (usage.completion_tokens / 1000) * defaultPricing.outputCostPer1K;
+      return (
+        (usage.prompt_tokens / 1000) * defaultPricing.inputCostPer1K +
+        (usage.completion_tokens / 1000) * defaultPricing.outputCostPer1K
+      );
     }
     return 0;
   }
@@ -51,7 +67,12 @@ export async function POST(req: Request, res: Response): Promise<void> {
     const effectiveUserId = resolveSessionUserId(req, userId);
 
     if (!description || typeof description !== 'string' || description.trim() === '') {
-      res.status(400).json({ message: 'Diagram description is required and cannot be empty.', error: 'MISSING_DESCRIPTION' });
+      res
+        .status(400)
+        .json({
+          message: 'Diagram description is required and cannot be empty.',
+          error: 'MISSING_DESCRIPTION',
+        });
       return;
     }
 
@@ -69,11 +90,16 @@ export async function POST(req: Request, res: Response): Promise<void> {
 
     // Safely access diagram_generation model preference
     let diagramModelId: string;
-    if ('diagram_generation' in MODEL_PREFERENCES && (MODEL_PREFERENCES as any).diagram_generation) {
+    if (
+      'diagram_generation' in MODEL_PREFERENCES &&
+      (MODEL_PREFERENCES as any).diagram_generation
+    ) {
       diagramModelId = (MODEL_PREFERENCES as any).diagram_generation;
     } else {
       diagramModelId = MODEL_PREFERENCES.general || MODEL_PREFERENCES.default;
-      console.warn(`DiagramRoutes: 'MODEL_PREFERENCES.diagram_generation' is not defined or is empty in models.config.ts. Falling back to model: '${diagramModelId}'. Consider adding a specific model preference for diagrams.`);
+      console.warn(
+        `DiagramRoutes: 'MODEL_PREFERENCES.diagram_generation' is not defined or is empty in models.config.ts. Falling back to model: '${diagramModelId}'. Consider adding a specific model preference for diagrams.`
+      );
     }
 
     const diagramPromptMessages: IChatMessage[] = [
@@ -90,9 +116,14 @@ If you cannot generate a valid diagram, respond with the exact string "DIAGRAM_G
       },
     ];
 
-    console.log(`DiagramRoutes: User [${effectiveUserId}] generating ${type} diagram with model ${diagramModelId}. Description: "${description.substring(0, 100)}..."`);
+    console.log(
+      `DiagramRoutes: User [${effectiveUserId}] generating ${type} diagram with model ${diagramModelId}. Description: "${description.substring(0, 100)}..."`
+    );
 
-    const llmResponse = await callLlm(diagramPromptMessages, diagramModelId, { temperature: 0.2, max_tokens: 1500 });
+    const llmResponse = await callLlm(diagramPromptMessages, diagramModelId, {
+      temperature: 0.2,
+      max_tokens: 1500,
+    });
 
     let diagramCode = llmResponse.text || '';
     diagramCode = diagramCode.replace(/^```(?:mermaid|plantuml|graphviz|dot|)\s*\n?/im, '');
@@ -100,11 +131,17 @@ If you cannot generate a valid diagram, respond with the exact string "DIAGRAM_G
     diagramCode = diagramCode.trim();
 
     if (diagramCode.toUpperCase() === 'DIAGRAM_GENERATION_ERROR' || diagramCode.length < 10) {
-      console.warn(`DiagramRoutes: LLM indicated an error or returned insufficient code for diagram. Raw output: "${diagramCode}"`);
+      console.warn(
+        `DiagramRoutes: LLM indicated an error or returned insufficient code for diagram. Raw output: "${diagramCode}"`
+      );
       res.status(502).json({
-        message: 'The AI failed to generate a valid diagram for the provided description. Please try rephrasing your description or try again later.',
+        message:
+          'The AI failed to generate a valid diagram for the provided description. Please try rephrasing your description or try again later.',
         error: 'AI_DIAGRAM_GENERATION_FAILED',
-        details: diagramCode.toUpperCase() === 'DIAGRAM_GENERATION_ERROR' ? 'AI indicated generation error.' : 'Generated code was too short or empty.'
+        details:
+          diagramCode.toUpperCase() === 'DIAGRAM_GENERATION_ERROR'
+            ? 'AI indicated generation error.'
+            : 'Generated code was too short or empty.',
       });
       return;
     }
@@ -132,9 +169,12 @@ If you cannot generate a valid diagram, respond with the exact string "DIAGRAM_G
       sessionCost: sessionCostDetail,
       cost: costOfThisCall,
     });
-
   } catch (error: any) {
-    console.error('DiagramRoutes: Error in /api/diagram POST endpoint:', error.message, error.stack ? `\nStack: ${error.stack}` : '');
+    console.error(
+      'DiagramRoutes: Error in /api/diagram POST endpoint:',
+      error.message,
+      error.stack ? `\nStack: ${error.stack}` : ''
+    );
     if (res.headersSent) {
       return;
     }

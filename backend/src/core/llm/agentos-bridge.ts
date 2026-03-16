@@ -14,6 +14,7 @@ import type {
   IChatCompletionParams,
   ILlmResponse,
   ILlmToolCall,
+  ILlmProviderConfig,
 } from './llm.interfaces.js';
 
 /**
@@ -30,7 +31,8 @@ export async function callLlmViaAgentOS(
   messages: IChatMessage[],
   modelId?: string,
   params?: IChatCompletionParams,
-  providerId?: string
+  providerId?: string,
+  _userIdForCostTracking?: string
 ): Promise<ILlmResponse> {
   // Try to get the AgentOS integration
   let agentosProvider: any;
@@ -123,4 +125,19 @@ export async function callLlmViaAgentOS(
         }
       : undefined,
   };
+}
+
+/**
+ * Drop-in replacement for callLlmWithProviderConfig that routes through AgentOS.
+ * Falls back to legacy when AgentOS is unavailable.
+ */
+export async function callLlmWithProviderConfigViaAgentOS(
+  messages: IChatMessage[],
+  modelId: string | undefined,
+  params: IChatCompletionParams | undefined,
+  providerConfig: ILlmProviderConfig,
+  userIdForCostTracking: string = 'system_user_llm_factory'
+): Promise<ILlmResponse> {
+  const providerId = String(providerConfig.providerId || '').toLowerCase();
+  return callLlmViaAgentOS(messages, modelId, params, providerId);
 }

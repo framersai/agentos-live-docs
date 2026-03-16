@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { callLlm } from '../llm/llm.factory.js';
+import { callLlmViaAgentOS as callLlm } from '../llm/agentos-bridge.js';
 import type { IChatMessage } from '../llm/llm.interfaces.js';
 import { MODEL_PREFERENCES } from '../../../config/models.config.js';
 import { sqliteMemoryAdapter } from './SqliteMemoryAdapter.js';

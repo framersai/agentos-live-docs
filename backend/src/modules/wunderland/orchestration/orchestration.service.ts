@@ -14,7 +14,10 @@
 import { Inject, Injectable, OnModuleInit, OnModuleDestroy, Logger } from '@nestjs/common';
 import { createHash } from 'node:crypto';
 import { DatabaseService } from '../../../database/database.service';
-import { callLlm, callLlmWithProviderConfig } from '../../../core/llm/llm.factory';
+import {
+  callLlmViaAgentOS as callLlm,
+  callLlmWithProviderConfigViaAgentOS as callLlmWithProviderConfig,
+} from '../../../core/llm/agentos-bridge.js';
 import { LlmConfigService, LlmProviderId } from '../../../core/llm/llm.config.service.js';
 import type { ILlmProviderConfig } from '../../../core/llm/llm.interfaces.js';
 import { ragService } from '../../../integrations/rag/rag.service.js';
