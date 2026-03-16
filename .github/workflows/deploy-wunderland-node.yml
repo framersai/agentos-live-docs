@@ -1,15 +1,13 @@
 name: Deploy Wunderland Sol (Linode)
 
 on:
-  # Disabled — wunderland deploys via its own repo (manicinc/wunderland-sol)
-  # push:
-  #   branches: [master]
-  #   paths:
-  #     - 'apps/wunderland-sh/**'
-  #     - 'backend/**'
-  #     - 'packages/**'
-  #     - 'deployment/wunderland-sol/**'
-  #     - '.github/workflows/deploy-wunderland-node.yml'
+  push:
+    branches: [master]
+    paths:
+      - 'apps/wunderland-sh/**'
+      - 'backend/**'
+      - 'packages/**'
+      - '.github/workflows/deploy-wunderland-node.yml'
   workflow_dispatch:
 
 permissions:
@@ -51,16 +49,16 @@ jobs:
               git submodule update --init --recursive --force
             fi
 
-            cd "$REPO_DIR"
+            cd "$REPO_DIR/src/deployment"
 
             echo "[deploy] Building frontend..."
-            docker compose -f deployment/wunderland-sol/docker-compose.yml build frontend
+            docker compose build frontend
 
             echo "[deploy] Building backend..."
-            docker compose -f deployment/wunderland-sol/docker-compose.yml build backend
+            docker compose build backend
 
             echo "[deploy] Stopping old stack..."
-            docker compose -f deployment/wunderland-sol/docker-compose.yml down --remove-orphans || true
+            docker compose down --remove-orphans || true
 
             # Stop host-level nginx if running (conflicts with Docker nginx on port 80/443)
             systemctl stop nginx 2>/dev/null || true
@@ -70,13 +68,13 @@ jobs:
             mkdir -p /mnt/storage-wunder/ipfs
 
             echo "[deploy] Starting stack (includes IPFS Kubo)..."
-            docker compose -f deployment/wunderland-sol/docker-compose.yml up -d
+            docker compose up -d
 
             echo "[deploy] Pruning old images..."
             docker image prune -f
 
             echo "[deploy] Waiting for IPFS to be healthy..."
-            COMPOSE="docker compose -f deployment/wunderland-sol/docker-compose.yml"
+            COMPOSE="docker compose"
             for i in $(seq 1 12); do
               if $COMPOSE exec -T ipfs ipfs id >/dev/null 2>&1; then
                 echo "[deploy] IPFS is healthy"
