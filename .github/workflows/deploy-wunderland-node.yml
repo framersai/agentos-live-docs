@@ -67,6 +67,9 @@ jobs:
             echo "[deploy] Ensuring IPFS data directory..."
             mkdir -p /mnt/storage-wunder/ipfs
 
+            # Re-enter deploy dir (cwd may be stale after compose down)
+            cd "$REPO_DIR/src/deployment"
+
             echo "[deploy] Starting stack (includes IPFS Kubo)..."
             docker compose up -d
 
@@ -74,6 +77,7 @@ jobs:
             docker image prune -f
 
             echo "[deploy] Waiting for IPFS to be healthy..."
+            cd "$REPO_DIR/src/deployment"
             COMPOSE="docker compose"
             for i in $(seq 1 12); do
               if $COMPOSE exec -T ipfs ipfs id >/dev/null 2>&1; then
