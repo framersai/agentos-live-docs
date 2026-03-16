@@ -1,7 +1,7 @@
 /**
  * @fileoverview Guardrail Logging and Escalation System
  * @description Logs guardrail decisions, triggers human escalation, and manages intervention queues.
- * 
+ *
  * Use cases:
  * - Log all SANITIZE/BLOCK actions for compliance audit
  * - Escalate high-risk detections to human moderators
@@ -14,6 +14,7 @@ import {
   type GuardrailEvaluationResult,
   type GuardrailContext,
 } from '@framers/agentos/core/guardrails/IGuardrailService';
+import type { StorageAdapter } from '@framers/sql-storage-adapter';
 
 /**
  * Severity level for guardrail events.
@@ -82,8 +83,8 @@ export interface GuardrailLoggerConfig {
   logToConsole: boolean;
   /** Enable database persistence */
   logToDatabase: boolean;
-  /** Database connection (if enabled) */
-  databaseUrl?: string;
+  /** StorageAdapter for SQLite/Postgres persistence */
+  storageAdapter?: StorageAdapter;
   /** Webhook URL for high-severity events */
   escalationWebhook?: string;
   /** Escalation rules */
@@ -99,14 +100,14 @@ export interface GuardrailLoggerConfig {
 
 /**
  * Guardrail event logger with escalation support.
- * 
+ *
  * **Features:**
  * - Logs all guardrail decisions (FLAG, SANITIZE, BLOCK)
  * - Assigns severity levels based on action and content
  * - Triggers human escalation for critical events
  * - Queues responses for manual review
  * - Sends webhooks to external monitoring systems
- * 
+ *
  * @example
  * ```typescript
  * const logger = new GuardrailLogger({
@@ -120,7 +121,7 @@ export interface GuardrailLoggerConfig {
  *     },
  *   ],
  * });
- * 
+ *
  * // Log a guardrail decision
  * await logger.log({
  *   guardrailId: 'guardrail-sensitive-topic',
@@ -133,8 +134,47 @@ export interface GuardrailLoggerConfig {
  */
 export class GuardrailLogger {
   private logs: GuardrailLogEntry[] = [];
+  private tablesInitialized = false;
 
   constructor(private readonly config: GuardrailLoggerConfig) {}
+
+  /**
+   * Ensure guardrail persistence tables exist.
+   */
+  private async ensureTables(): Promise<void> {
+    if (this.tablesInitialized || !this.config.storageAdapter) return;
+    const db = this.config.storageAdapter;
+    await db.run(`
+      CREATE TABLE IF NOT EXISTS guardrail_audit_log (
+        id TEXT PRIMARY KEY,
+        seed_id TEXT,
+        session_id TEXT,
+        guardrail_id TEXT NOT NULL,
+        stage TEXT NOT NULL,
+        action TEXT NOT NULL,
+        severity TEXT NOT NULL,
+        trigger_reason TEXT,
+        reason_code TEXT,
+        input_snippet TEXT,
+        modified_snippet TEXT,
+        metadata TEXT,
+        escalated INTEGER NOT NULL DEFAULT 0,
+        created_at TEXT DEFAULT (datetime('now'))
+      )
+    `);
+    await db.run(`
+      CREATE TABLE IF NOT EXISTS guardrail_review_queue (
+        id TEXT PRIMARY KEY,
+        audit_log_id TEXT NOT NULL,
+        status TEXT NOT NULL DEFAULT 'pending',
+        reviewer_id TEXT,
+        review_notes TEXT,
+        created_at TEXT DEFAULT (datetime('now')),
+        reviewed_at TEXT
+      )
+    `);
+    this.tablesInitialized = true;
+  }
 
   /**
    * Log a guardrail event.
@@ -205,11 +245,15 @@ export class GuardrailLogger {
   /**
    * Determine severity from action and evaluation.
    */
-  private determineSeverity(action: GuardrailAction, evaluation: GuardrailEvaluationResult): GuardrailSeverity {
+  private determineSeverity(
+    action: GuardrailAction,
+    evaluation: GuardrailEvaluationResult
+  ): GuardrailSeverity {
     if (action === GuardrailAction.BLOCK) {
       // BLOCK actions are at least HIGH, possibly CRITICAL
       const topics = (evaluation.metadata as any)?.detectedTopics as string[] | undefined;
-      const isCritical = evaluation.reasonCode?.includes('ILLEGAL') ||
+      const isCritical =
+        evaluation.reasonCode?.includes('ILLEGAL') ||
         evaluation.reasonCode?.includes('HARMFUL') ||
         (Array.isArray(topics) && topics.some((t) => ['violence', 'self-harm'].includes(t)));
       return isCritical ? GuardrailSeverity.CRITICAL : GuardrailSeverity.HIGH;
@@ -217,7 +261,10 @@ export class GuardrailLogger {
 
     if (action === GuardrailAction.SANITIZE) {
       // SANITIZE is HIGH if PII or sensitive, otherwise WARNING
-      const isPII = evaluation.reasonCode?.includes('PII') || evaluation.reasonCode?.includes('SSN') || evaluation.reasonCode?.includes('EMAIL');
+      const isPII =
+        evaluation.reasonCode?.includes('PII') ||
+        evaluation.reasonCode?.includes('SSN') ||
+        evaluation.reasonCode?.includes('EMAIL');
       return isPII ? GuardrailSeverity.HIGH : GuardrailSeverity.WARNING;
     }
 
@@ -229,7 +276,12 @@ export class GuardrailLogger {
    * Compare severity levels (returns -1, 0, 1 like strcmp).
    */
   private compareSeverity(a: GuardrailSeverity, b: GuardrailSeverity): number {
-    const order = [GuardrailSeverity.INFO, GuardrailSeverity.WARNING, GuardrailSeverity.HIGH, GuardrailSeverity.CRITICAL];
+    const order = [
+      GuardrailSeverity.INFO,
+      GuardrailSeverity.WARNING,
+      GuardrailSeverity.HIGH,
+      GuardrailSeverity.CRITICAL,
+    ];
     return order.indexOf(a) - order.indexOf(b);
   }
 
@@ -278,13 +330,41 @@ export class GuardrailLogger {
   }
 
   /**
-   * Persist log to database (stub—implement with your DB adapter).
+   * Persist log to database via StorageAdapter.
    */
   private async logToDatabase(entry: GuardrailLogEntry): Promise<void> {
-    // TODO: Implement database persistence
-    // Example:
-    // await db.guardrailLogs.create({ data: entry });
-    console.debug('[GuardrailLogger] Database logging not implemented yet');
+    if (!this.config.storageAdapter) {
+      console.debug(
+        '[GuardrailLogger] No storageAdapter configured — skipping database persistence'
+      );
+      return;
+    }
+    try {
+      await this.ensureTables();
+      await this.config.storageAdapter.run(
+        `INSERT INTO guardrail_audit_log
+          (id, seed_id, session_id, guardrail_id, stage, action, severity,
+           trigger_reason, reason_code, input_snippet, modified_snippet, metadata, escalated)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [
+          entry.id,
+          (entry.context as any)?.seedId ?? null,
+          (entry.context as any)?.sessionId ?? null,
+          entry.guardrailId,
+          entry.stage,
+          entry.action,
+          entry.severity,
+          entry.evaluation.reason ?? null,
+          entry.evaluation.reasonCode ?? null,
+          entry.originalContent ?? null,
+          entry.modifiedContent ?? null,
+          entry.evaluation.metadata ? JSON.stringify(entry.evaluation.metadata) : null,
+          entry.escalated ? 1 : 0,
+        ]
+      );
+    } catch (err) {
+      console.error('[GuardrailLogger] Failed to persist audit log:', (err as Error).message);
+    }
   }
 
   /**
@@ -330,7 +410,7 @@ export class GuardrailLogger {
    */
   private async sendWebhook(
     webhook: { url: string; headers?: Record<string, string> },
-    entry: GuardrailLogEntry,
+    entry: GuardrailLogEntry
   ): Promise<void> {
     try {
       const response = await fetch(webhook.url, {
@@ -362,10 +442,20 @@ export class GuardrailLogger {
    * Add entry to manual review queue.
    */
   private async queueForReview(entry: GuardrailLogEntry): Promise<void> {
-    // TODO: Implement queue persistence
-    // Example:
-    // await db.reviewQueue.create({ data: { logId: entry.id, status: 'pending' } });
-    console.log('[GuardrailLogger] Queued for review:', entry.id);
+    if (!this.config.storageAdapter) {
+      console.log('[GuardrailLogger] Queued for review (in-memory only):', entry.id);
+      return;
+    }
+    try {
+      await this.ensureTables();
+      const reviewId = `review-${Date.now()}-${Math.random().toString(36).substring(7)}`;
+      await this.config.storageAdapter.run(
+        `INSERT INTO guardrail_review_queue (id, audit_log_id, status) VALUES (?, ?, ?)`,
+        [reviewId, entry.id, 'pending']
+      );
+    } catch (err) {
+      console.error('[GuardrailLogger] Failed to queue for review:', (err as Error).message);
+    }
   }
 
   /**
@@ -406,5 +496,3 @@ export class GuardrailLogger {
     };
   }
 }
-
-
