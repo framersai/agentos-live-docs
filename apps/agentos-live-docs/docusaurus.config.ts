@@ -23,7 +23,19 @@ const config: Config = {
     mermaid: true,
   },
 
-  themes: ['@docusaurus/theme-mermaid'],
+  themes: [
+    '@docusaurus/theme-mermaid',
+    [
+      '@easyops-cn/docusaurus-search-local',
+      {
+        hashed: true,
+        language: ['en'],
+        indexBlog: false,
+        docsRouteBasePath: '/docs',
+        highlightSearchTermsOnTargetPage: true,
+      },
+    ],
+  ],
 
   plugins: [
     [
@@ -105,7 +117,7 @@ const config: Config = {
       logo: {
         alt: 'AgentOS',
         src: 'img/agentos-wordmark.png',
-        srcDark: 'img/agentos-wordmark.png',
+        srcDark: 'img/logo-dark.svg',
         href: '/',
         height: '32px',
       },
