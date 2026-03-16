@@ -1,5 +1,6 @@
-import { BadRequestException, Inject, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable, Optional } from '@nestjs/common';
 import { DatabaseService } from '../../../database/database.service.js';
+import { WunderlandVectorMemoryService } from '../orchestration/wunderland-vector-memory.service.js';
 
 type SearchSection<T> = { items: T[]; total: number; limit: number };
 
@@ -117,11 +118,32 @@ function toIsoOrRaw(value: unknown): string {
   return new Date().toISOString();
 }
 
+export type SearchMode = 'keyword' | 'semantic' | 'hybrid';
+
+export type SemanticSearchHit = {
+  content: string;
+  score: number;
+  metadata?: Record<string, any>;
+  seedId?: string;
+  postId?: string;
+};
+
+export type WunderlandSearchResponseWithSemantic = WunderlandSearchResponse & {
+  semantic?: SearchSection<SemanticSearchHit>;
+  mode: SearchMode;
+};
+
 @Injectable()
 export class SearchService {
-  constructor(@Inject(DatabaseService) private readonly db: DatabaseService) {}
+  constructor(
+    @Inject(DatabaseService) private readonly db: DatabaseService,
+    @Optional() private readonly vectorMemory?: WunderlandVectorMemoryService
+  ) {}
 
-  async search(rawQuery: string, opts?: { limit?: number }): Promise<WunderlandSearchResponse> {
+  async search(
+    rawQuery: string,
+    opts?: { limit?: number; mode?: SearchMode }
+  ): Promise<WunderlandSearchResponseWithSemantic> {
     const startedAt = Date.now();
     const query = typeof rawQuery === 'string' ? rawQuery.trim() : '';
     const qLower = query.toLowerCase();
@@ -131,6 +153,7 @@ export class SearchService {
     if (!query) {
       return {
         query: '',
+        mode: opts?.mode ?? ('hybrid' as SearchMode),
         agents: { items: [], total: 0, limit },
         posts: { items: [], total: 0, limit },
         comments: { items: [], total: 0, limit },
@@ -146,21 +169,52 @@ export class SearchService {
 
     const pattern = `%${qLower}%`;
 
-    const [agents, posts, comments, jobs, stimuli] = await Promise.all([
-      this.searchAgents(pattern, limit),
-      this.searchPosts(pattern, limit),
-      this.searchComments(pattern, limit),
-      this.searchJobs(pattern, limit),
-      this.searchStimuli(pattern, limit),
+    const mode: SearchMode = opts?.mode ?? 'hybrid';
+    const doKeyword = mode === 'keyword' || mode === 'hybrid';
+    const doSemantic = (mode === 'semantic' || mode === 'hybrid') && Boolean(this.vectorMemory);
+
+    const keywordPromises = doKeyword
+      ? [
+          this.searchAgents(pattern, limit),
+          this.searchPosts(pattern, limit),
+          this.searchComments(pattern, limit),
+          this.searchJobs(pattern, limit),
+          this.searchStimuli(pattern, limit),
+        ]
+      : [
+          Promise.resolve({ items: [], total: 0, limit }),
+          Promise.resolve({ items: [], total: 0, limit }),
+          Promise.resolve({ items: [], total: 0, limit }),
+          Promise.resolve({ items: [], total: 0, limit }),
+          Promise.resolve({ items: [], total: 0, limit }),
+        ];
+
+    const semanticPromise = doSemantic
+      ? this.searchSemantic(query, limit)
+      : Promise.resolve(undefined);
+
+    const [[agents, posts, comments, jobs, stimuli], semantic] = await Promise.all([
+      Promise.all(keywordPromises),
+      semanticPromise,
     ]);
 
-    // Small sanity check for latency regressions (best-effort log).
     const tookMs = Date.now() - startedAt;
     if (tookMs > 1500) {
-      console.warn(`[SearchService] Slow search (${tookMs}ms) for query="${query.slice(0, 80)}"`);
+      console.warn(
+        `[SearchService] Slow search (${tookMs}ms) for query="${query.slice(0, 80)}" mode=${mode}`
+      );
     }
 
-    return { query, agents, posts, comments, jobs, stimuli };
+    return {
+      query,
+      mode,
+      agents: agents as SearchSection<AgentSearchHit>,
+      posts: posts as SearchSection<PostSearchHit>,
+      comments: comments as SearchSection<CommentSearchHit>,
+      jobs: jobs as SearchSection<JobSearchHit>,
+      stimuli: stimuli as SearchSection<StimulusSearchHit>,
+      ...(semantic ? { semantic } : {}),
+    };
   }
 
   private async searchAgents(
@@ -433,5 +487,42 @@ export class SearchService {
           typeof r.processed_at === 'number' ? new Date(r.processed_at).toISOString() : null,
       })),
     };
+  }
+
+  // ── Semantic Search (via WunderlandVectorMemoryService) ─────────────
+
+  private async searchSemantic(
+    query: string,
+    limit: number
+  ): Promise<SearchSection<SemanticSearchHit>> {
+    if (!this.vectorMemory) {
+      return { items: [], total: 0, limit };
+    }
+
+    try {
+      // Use querySeedMemory with a wildcard seedId to search across all agents
+      const result = await this.vectorMemory.querySeedMemory({
+        seedId: '*',
+        query,
+        topK: limit,
+      });
+
+      const chunks = (result as any)?.chunks ?? (result as any)?.results ?? [];
+      const items: SemanticSearchHit[] = chunks.map((c: any) => ({
+        content: safePreview(c.content ?? c.text ?? '', 300),
+        score: Number(c.relevanceScore ?? c.score ?? c.similarity ?? 0),
+        metadata: c.metadata ?? undefined,
+        seedId: c.metadata?.seedId ?? c.metadata?.seed_id ?? undefined,
+        postId: c.metadata?.postId ?? c.metadata?.post_id ?? undefined,
+      }));
+
+      return { items, total: items.length, limit };
+    } catch (err) {
+      console.warn(
+        '[SearchService] Semantic search failed, returning empty:',
+        (err as Error).message
+      );
+      return { items: [], total: 0, limit };
+    }
   }
 }
