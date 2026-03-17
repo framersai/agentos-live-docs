@@ -1,6 +1,6 @@
 # @framers/agentos-skills-registry
 
-Curated skills registry for [AgentOS](https://github.com/framersai/agentos) — 18 SKILL.md prompt modules, typed catalog, and lazy-loading factories.
+Curated skills registry for [AgentOS](https://github.com/framersai/agentos) — 40 SKILL.md prompt modules, typed catalog, and lazy-loading factories.
 
 [![npm](https://img.shields.io/npm/v/@framers/agentos-skills-registry?logo=npm&color=cb3837)](https://www.npmjs.com/package/@framers/agentos-skills-registry)
 
@@ -20,7 +20,7 @@ This is the **single package** for AgentOS skills. It contains:
 
 ## Quick Start
 
-### 1. Browse the catalog (zero deps)
+### 1. Browse the catalog (zero peer deps)
 
 The `./catalog` sub-export has no peer dependencies:
 
@@ -39,7 +39,7 @@ import {
 const matches = searchSkills('github');
 
 // Filter by category
-const devTools = getSkillsByCategory('developer-tools');
+const social = getSkillsByCategory('social-automation');
 
 // Filter by installed tools
 const available = getAvailableSkills(['web-search', 'filesystem']);
@@ -61,7 +61,7 @@ Access the JSON index directly:
 import { getSkillsCatalog } from '@framers/agentos-skills-registry';
 
 const catalog = await getSkillsCatalog();
-console.log(catalog.skills.curated.length); // 17
+console.log(catalog.skills.curated.length); // 40
 console.log(catalog.version); // '1.0.0'
 ```
 
@@ -85,10 +85,16 @@ import {
   createCuratedSkillRegistry,
   createCuratedSkillSnapshot,
   getBundledCuratedSkillsDir,
+  loadSkillByName,
 } from '@framers/agentos-skills-registry';
 
 // Option A: Create a live SkillRegistry loaded with all curated skills
 const registry = await createCuratedSkillRegistry();
+
+// Or load only a specific curated subset
+const selectedRegistry = await createCuratedSkillRegistry({
+  skills: ['github', 'weather'],
+});
 
 // Option B: Build a prompt snapshot for specific skills
 const snapshot = await createCuratedSkillSnapshot({
@@ -96,10 +102,19 @@ const snapshot = await createCuratedSkillSnapshot({
   platform: 'darwin',
 });
 
+// Only the selected skills are loaded when you pass an explicit list.
+console.log(snapshot.skills.map((skill) => skill.name));
+// ['github', 'weather', 'notion']
+
 // Inject the snapshot prompt into your agent's system message
 const systemPrompt = `You are an AI assistant.\n\n${snapshot.prompt}`;
 
-// Option C: Get the directory path and load manually
+// Option C: Load a single SKILL.md lazily with parsed metadata
+const githubSkill = await loadSkillByName('github');
+console.log(githubSkill?.metadata?.primaryEnv); // 'GITHUB_TOKEN'
+console.log(githubSkill?.frontmatter.requires_tools); // ['filesystem']
+
+// Option D: Get the directory path and load manually
 const skillsDir = getBundledCuratedSkillsDir();
 // → '/path/to/node_modules/@framers/agentos-skills-registry/registry/curated'
 ```
@@ -128,6 +143,11 @@ const valid = skillNames.filter((name) => {
 const snapshot = await createCuratedSkillSnapshot({ skills: valid });
 ```
 
+When `skills` is a string array, the registry only loads those specific `SKILL.md`
+files before building the snapshot. It does not walk the full curated bundle first.
+Loaded skills also include parsed `metadata` so consumers do not need to decode
+the `metadata.agentos` block manually.
+
 ## Two Import Paths
 
 | Import                                     | Peer deps                     | Use case                              |
@@ -137,18 +157,15 @@ const snapshot = await createCuratedSkillSnapshot({ skills: valid });
 
 The `@framers/agentos` dependency is loaded **lazily** at runtime and cached after first resolution. If it's not installed and you call a factory function, you get a clear error with install instructions.
 
-## Included Skills (18)
+## Included Skills (40)
 
-| Category            | Skills                                                 |
-| ------------------- | ------------------------------------------------------ |
-| **Information**     | web-search, weather, summarize                         |
-| **Developer Tools** | github, coding-agent, git                              |
-| **Communication**   | slack-helper, discord-helper                           |
-| **Productivity**    | notion, obsidian, trello, apple-notes, apple-reminders |
-| **DevOps**          | healthcheck                                            |
-| **Media**           | spotify-player, whisper-transcribe                     |
-| **Security**        | 1password                                              |
-| **Creative**        | image-gen                                              |
+The catalog now includes both foundational utility skills and social automation modules, including:
+
+- Information and research: `web-search`, `weather`, `summarize`, `deep-research`
+- Developer tools: `github`, `coding-agent`, `git`
+- Productivity: `notion`, `obsidian`, `trello`, `apple-notes`, `apple-reminders`
+- Social automation: `social-broadcast`, `twitter-bot`, `instagram-bot`, `linkedin-bot`, `facebook-bot`, `threads-bot`, `bluesky-bot`, `mastodon-bot`, `youtube-bot`, `tiktok-bot`, `pinterest-bot`, `reddit-bot`, `blog-publisher`
+- Additional categories: `automation`, `communication`, `devops`, `media`, `marketing`, `creative`, `security`
 
 ## Community Skills
 
@@ -182,12 +199,12 @@ import type {
 
 ## Exports
 
-| Export path       | Contents                                                     |
-| ----------------- | ------------------------------------------------------------ |
-| `.`               | Full SDK: catalog helpers + factory functions + schema types |
-| `./catalog`       | Lightweight: `SKILLS_CATALOG`, query helpers (zero deps)     |
-| `./registry.json` | Raw JSON index of all skills                                 |
-| `./types`         | TypeScript declarations for registry.json schema             |
+| Export path       | Contents                                                      |
+| ----------------- | ------------------------------------------------------------- |
+| `.`               | Full SDK: catalog helpers + factory functions + schema types  |
+| `./catalog`       | Lightweight: `SKILLS_CATALOG`, query helpers (zero peer deps) |
+| `./registry.json` | Raw JSON index of all skills                                  |
+| `./types`         | TypeScript declarations for registry.json schema              |
 
 ## Relationship to Other Packages
 
