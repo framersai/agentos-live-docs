@@ -4,7 +4,8 @@ import type * as Preset from '@docusaurus/preset-classic';
 
 const config: Config = {
   title: 'AgentOS',
-  tagline: 'Modular orchestration runtime for adaptive AI systems',
+  tagline:
+    'Autonomous AI agent framework with cognitive memory, graph-based RAG, and HEXACO personality modeling',
   favicon: 'img/favicon.svg',
   url: 'https://docs.agentos.sh',
   baseUrl: '/',
@@ -116,10 +117,11 @@ const config: Config = {
       title: '',
       logo: {
         alt: 'AgentOS',
-        src: 'img/agentos-wordmark.png',
+        src: 'img/logo-light.svg',
         srcDark: 'img/logo-dark.svg',
         href: '/',
-        height: '32px',
+        height: '36px',
+        style: { marginRight: '0.5rem' },
       },
       items: [
         {
