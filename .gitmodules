@@ -27,10 +27,6 @@
 [submodule "packages/quarry-plugins"]
 	path = packages/quarry-plugins
 	url = https://github.com/framersai/quarry-plugins.git
-[submodule "apps/wunderland-sh"]
-	path = apps/wunderland-sh
-	url = https://github.com/manicinc/wunderland-sol.git
-	branch = main
 [submodule "packages/wunderland"]
 	path = packages/wunderland
 	url = https://github.com/jddunn/wunderland.git
@@ -50,6 +46,15 @@
 [submodule "packages/agentic-file-search"]
 	path = packages/agentic-file-search
 	url = https://github.com/PromtEngineer/agentic-file-search.git
-[submodule "apps/wunderland-sh-site"]
-	path = apps/wunderland-sh-site
+[submodule "apps/wunderland-live-docs"]
+	path = apps/wunderland-live-docs
+	url = https://github.com/jddunn/wunderland-live-docs.git
+	branch = main
+[submodule "apps/wunderland-sh"]
+	path = apps/wunderland-sh
 	url = https://github.com/jddunn/wunderland-sh.git
+	branch = main
+[submodule "apps/wunderland-sol"]
+	path = apps/wunderland-sol
+	url = https://github.com/manicinc/wunderland-sol.git
+	branch = master

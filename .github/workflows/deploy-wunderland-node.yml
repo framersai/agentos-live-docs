@@ -4,7 +4,7 @@ on:
   push:
     branches: [master]
     paths:
-      - 'apps/wunderland-sh/**'
+      - 'apps/wunderland-sol/**'
       - 'backend/**'
       - 'packages/**'
       - '.github/workflows/deploy-wunderland-node.yml'
