@@ -116,6 +116,42 @@ th {
   margin: 1.5rem 0;
 }
 
+/* Search bar — ensure readable in both themes */
+[data-theme='light'] .navbar .DocSearch-Button,
+[data-theme='light'] .navbar input[type="search"],
+[data-theme='light'] #tsd-search input {
+  color: #1e293b;
+  background: #f1f5f9;
+}
+
+[data-theme='light'] .navbar .DocSearch-Button-Placeholder,
+[data-theme='light'] .navbar input::placeholder {
+  color: #64748b;
+}
+
+/* Hero section improvements */
+.hero {
+  padding: 4rem 0 3rem;
+}
+
+.hero .hero__title {
+  font-size: 3rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.hero .hero__subtitle {
+  font-size: 1.2rem;
+  max-width: 640px;
+  margin: 0.75rem auto 1.5rem;
+  opacity: 0.85;
+}
+
+/* Navbar logo alignment */
+.navbar__logo img {
+  vertical-align: middle;
+}
+
 /* Smooth scrolling */
 html {
   scroll-behavior: smooth;
