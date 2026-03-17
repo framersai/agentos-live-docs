@@ -85,7 +85,7 @@ const sidebars = {
           type: 'category',
           label: 'Voice & Speech',
           collapsed: false,
-          items: ['features/speech-runtime', 'extensions/built-in/voice-synthesis'],
+          items: ['extensions/built-in/voice-synthesis'],
         },
         {
           type: 'category',
