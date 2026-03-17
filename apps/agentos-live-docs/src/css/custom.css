@@ -75,6 +75,33 @@ th {
   font-weight: 600;
 }
 
+/* Hero buttons — fix dark-on-dark hover in dark mode */
+[data-theme='dark'] .button--secondary {
+  color: #e2e8f0;
+  border-color: #475569;
+}
+
+[data-theme='dark'] .button--secondary:hover {
+  color: #fff;
+  background: rgba(129, 140, 248, 0.15);
+  border-color: #818cf8;
+}
+
+/* Hero sub-links (Browse Public API / Browse Internal Modules) */
+[data-theme='dark'] .hero-sub-links a {
+  color: #a5b4fc;
+}
+
+[data-theme='dark'] .hero-sub-links a:hover {
+  color: #fff;
+}
+
+/* Feature cards — ensure readable hover in dark mode */
+[data-theme='dark'] a[style*="border-radius: 0.75rem"]:hover {
+  border-color: #818cf8 !important;
+  box-shadow: 0 0 20px rgba(99, 102, 241, 0.15);
+}
+
 /* Sidebar */
 .menu__link {
   font-size: 0.9rem;
