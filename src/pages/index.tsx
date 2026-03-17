@@ -138,7 +138,7 @@ const features = [
     title: 'Deep Research',
     description:
       'LLM-as-judge query classification, 3-phase research pipeline, real-time progress streaming via SSE.',
-    link: '/docs/features/deep-research',
+    link: '/docs/features/rag-memory',
   },
   {
     title: 'Safety & Guardrails',
