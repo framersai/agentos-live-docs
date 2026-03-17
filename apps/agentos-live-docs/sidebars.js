@@ -76,7 +76,6 @@ const sidebars = {
           label: 'AI & LLM',
           collapsed: false,
           items: [
-            'features/llm-providers',
             'features/structured-output',
             'features/evaluation-framework',
             'features/cost-optimization',
@@ -86,7 +85,7 @@ const sidebars = {
           type: 'category',
           label: 'Voice & Speech',
           collapsed: false,
-          items: ['features/speech-runtime'],
+          items: ['extensions/built-in/voice-synthesis'],
         },
         {
           type: 'category',
@@ -150,7 +149,6 @@ const sidebars = {
             'extensions/built-in/news-search',
             'extensions/built-in/giphy',
             'extensions/built-in/image-search',
-            'extensions/built-in/speech-runtime',
             'extensions/built-in/voice-synthesis',
             'extensions/built-in/cli-executor',
             'extensions/built-in/telegram',
