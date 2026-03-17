@@ -79,6 +79,7 @@ const sidebars = {
             'features/structured-output',
             'features/evaluation-framework',
             'features/cost-optimization',
+            'features/deep-research',
           ],
         },
         {

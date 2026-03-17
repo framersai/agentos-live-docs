@@ -157,6 +157,12 @@ const agentosGuides = [
     position: 12,
   },
   {
+    src: 'DEEP_RESEARCH.md',
+    dest: 'features/deep-research.md',
+    title: 'Deep Research & Query Classification',
+    position: 13,
+  },
+  {
     src: 'RFC_EXTENSION_STANDARDS.md',
     dest: 'extensions/extension-standards.md',
     title: 'Extension Standards (RFC)',
