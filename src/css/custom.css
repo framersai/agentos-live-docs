@@ -1,5 +1,5 @@
 /* AgentOS Documentation Theme
-   Brand: Indigo (#6366f1) + Violet (#8b5cf6)
+   Brand: Indigo (#6366f1) + Violet (#8b5cf6) + Pink (#EC4899)
    Font: Inter */
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
@@ -32,7 +32,7 @@
   --docusaurus-highlighted-code-line-bg: rgba(129, 140, 248, 0.15);
 }
 
-/* Navbar */
+/* ── Navbar ── */
 .navbar {
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
@@ -53,19 +53,147 @@
   font-size: 1.25rem;
 }
 
-/* Footer */
+.navbar__logo img {
+  vertical-align: middle;
+}
+
+/* ── Search bar ── */
+[data-theme='light'] .navbar .DocSearch-Button,
+[data-theme='light'] .navbar [class*="searchBox"] input,
+[data-theme='light'] .navbar input[type="search"] {
+  color: #1e293b;
+  background: #e2e8f0;
+  border: 1px solid #cbd5e1;
+}
+
+[data-theme='light'] .navbar .DocSearch-Button-Placeholder,
+[data-theme='light'] .navbar input::placeholder {
+  color: #475569;
+}
+
+/* ── Hero section ── */
+.hero-agentos {
+  padding: 5rem 2rem 4rem;
+  text-align: center;
+  position: relative;
+}
+
+[data-theme='dark'] .hero-agentos {
+  background: linear-gradient(180deg, #020617 0%, #0f172a 50%, #1e1b4b 100%);
+}
+
+[data-theme='light'] .hero-agentos {
+  background: linear-gradient(180deg, #f8fafc 0%, #eef2ff 50%, #e0e7ff 100%);
+}
+
+.hero-agentos__title {
+  font-size: 3.5rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  margin-bottom: 0.75rem;
+}
+
+[data-theme='dark'] .hero-agentos__title {
+  color: #f1f5f9;
+}
+
+[data-theme='light'] .hero-agentos__title {
+  color: #0f172a;
+}
+
+.hero-agentos__subtitle {
+  font-size: 1.15rem;
+  max-width: 640px;
+  margin: 0 auto 2rem;
+  line-height: 1.6;
+}
+
+[data-theme='dark'] .hero-agentos__subtitle {
+  color: #94a3b8;
+}
+
+[data-theme='light'] .hero-agentos__subtitle {
+  color: #475569;
+}
+
+/* ── Hero buttons ── */
+.hero-agentos .hero-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.hero-agentos .btn-primary {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.75rem 2rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  font-size: 1rem;
+  text-decoration: none;
+  transition: all 0.2s;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  color: #ffffff;
+  border: none;
+}
+
+.hero-agentos .btn-primary:hover {
+  color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 25px rgba(99, 102, 241, 0.35);
+}
+
+.hero-agentos .btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.75rem 2rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  font-size: 1rem;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+[data-theme='dark'] .hero-agentos .btn-secondary {
+  background: rgba(255, 255, 255, 0.08);
+  color: #e2e8f0;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+[data-theme='dark'] .hero-agentos .btn-secondary:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.4);
+  transform: translateY(-1px);
+}
+
+[data-theme='light'] .hero-agentos .btn-secondary {
+  background: #ffffff;
+  color: #1e293b;
+  border: 1px solid #cbd5e1;
+}
+
+[data-theme='light'] .hero-agentos .btn-secondary:hover {
+  color: #6366f1;
+  border-color: #6366f1;
+  transform: translateY(-1px);
+}
+
+/* ── Footer ── */
 .footer--dark {
   background: #0f172a;
   border-top: 1px solid #1e293b;
 }
 
-/* Code blocks */
+/* ── Code blocks ── */
 pre {
   border-radius: 0.5rem;
   border: 1px solid var(--ifm-toc-border-color);
 }
 
-/* Table styling */
+/* ── Tables ── */
 table {
   display: table;
   width: 100%;
@@ -75,34 +203,41 @@ th {
   font-weight: 600;
 }
 
-/* Hero buttons — fix dark-on-dark hover in dark mode */
-[data-theme='dark'] .button--secondary {
-  color: #e2e8f0;
-  border-color: #475569;
+/* ── Feature cards ── */
+.feature-card {
+  display: block;
+  padding: 1.75rem;
+  border-radius: 0.75rem;
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.2s;
 }
 
-[data-theme='dark'] .button--secondary:hover {
-  color: #fff;
-  background: rgba(129, 140, 248, 0.15);
+[data-theme='dark'] .feature-card {
+  border: 1px solid #1e293b;
+}
+
+[data-theme='light'] .feature-card {
+  border: 1px solid #e2e8f0;
+}
+
+.feature-card:hover {
+  transform: translateY(-2px);
+  text-decoration: none;
+  color: inherit;
+}
+
+[data-theme='dark'] .feature-card:hover {
   border-color: #818cf8;
+  box-shadow: 0 4px 20px rgba(99, 102, 241, 0.15);
 }
 
-/* Hero sub-links (Browse Public API / Browse Internal Modules) */
-[data-theme='dark'] .hero-sub-links a {
-  color: #a5b4fc;
+[data-theme='light'] .feature-card:hover {
+  border-color: #6366f1;
+  box-shadow: 0 4px 20px rgba(99, 102, 241, 0.1);
 }
 
-[data-theme='dark'] .hero-sub-links a:hover {
-  color: #fff;
-}
-
-/* Feature cards — ensure readable hover in dark mode */
-[data-theme='dark'] a[style*="border-radius: 0.75rem"]:hover {
-  border-color: #818cf8 !important;
-  box-shadow: 0 0 20px rgba(99, 102, 241, 0.15);
-}
-
-/* Sidebar */
+/* ── Sidebar ── */
 .menu__link {
   font-size: 0.9rem;
 }
@@ -111,53 +246,17 @@ th {
   font-weight: 600;
 }
 
-/* Mermaid diagrams */
+/* ── Mermaid ── */
 .docusaurus-mermaid-container {
   margin: 1.5rem 0;
 }
 
-/* Search bar — ensure readable in both themes */
-[data-theme='light'] .navbar .DocSearch-Button,
-[data-theme='light'] .navbar input[type="search"],
-[data-theme='light'] #tsd-search input {
-  color: #1e293b;
-  background: #f1f5f9;
-}
-
-[data-theme='light'] .navbar .DocSearch-Button-Placeholder,
-[data-theme='light'] .navbar input::placeholder {
-  color: #64748b;
-}
-
-/* Hero section improvements */
-.hero {
-  padding: 4rem 0 3rem;
-}
-
-.hero .hero__title {
-  font-size: 3rem;
-  font-weight: 800;
-  letter-spacing: -0.02em;
-}
-
-.hero .hero__subtitle {
-  font-size: 1.2rem;
-  max-width: 640px;
-  margin: 0.75rem auto 1.5rem;
-  opacity: 0.85;
-}
-
-/* Navbar logo alignment */
-.navbar__logo img {
-  vertical-align: middle;
-}
-
-/* Smooth scrolling */
+/* ── Smooth scrolling ── */
 html {
   scroll-behavior: smooth;
 }
 
-/* Article content */
+/* ── Article content ── */
 article h1 {
   font-size: 2rem;
   font-weight: 800;
