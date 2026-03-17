@@ -1,9 +1,9 @@
 <div align="center">
 
 <p align="center">
-  <a href="https://agentos.sh"><img src="https://raw.githubusercontent.com/manicinc/voice-chat-assistant/master/logos/agentos-primary-no-tagline-transparent-2x.png" alt="AgentOS" height="64" /></a>
+  <a href="https://agentos.sh"><img src="static/img/brand/agentos-primary-no-tagline-transparent-2x.png" alt="AgentOS" height="64" /></a>
   &nbsp;&nbsp;&nbsp;
-  <a href="https://frame.dev" target="_blank" rel="noopener"><img src="https://raw.githubusercontent.com/manicinc/voice-chat-assistant/master/logos/frame-logo-green-no-tagline.svg" alt="Frame.dev" height="40" /></a>
+  <a href="https://frame.dev" target="_blank" rel="noopener"><img src="static/img/brand/frame-logo-green-no-tagline.svg" alt="Frame.dev" height="40" /></a>
 </p>
 
 # AgentOS Documentation
