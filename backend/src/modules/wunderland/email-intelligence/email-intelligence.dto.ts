@@ -3,7 +3,14 @@
  * @description DTOs for the EmailIntelligenceController endpoints.
  */
 
-import { IsString, IsOptional, IsNumber, IsBoolean } from 'class-validator';
+import {
+  IsString,
+  IsOptional,
+  IsNumber,
+  IsBoolean,
+  IsArray,
+  ValidateNested,
+} from 'class-validator';
 
 export class SeedIdQuery {
   @IsString()
@@ -68,4 +75,93 @@ export class UpdateAccountDto {
   @IsOptional()
   @IsBoolean()
   syncEnabled?: boolean;
+}
+
+// ---------------------------------------------------------------------------
+// Project DTOs
+// ---------------------------------------------------------------------------
+
+export class CreateProjectDto {
+  @IsString()
+  name!: string;
+
+  @IsOptional()
+  @IsString()
+  description?: string;
+
+  @IsOptional()
+  threads?: Array<{ threadId: string; accountId: string }>;
+}
+
+export class UpdateProjectDto {
+  @IsOptional()
+  @IsString()
+  name?: string;
+
+  @IsOptional()
+  @IsString()
+  description?: string;
+
+  @IsOptional()
+  @IsString()
+  status?: string;
+}
+
+export class AddThreadsDto {
+  threads!: Array<{ threadId: string; accountId: string }>;
+}
+
+export class MergeProjectsDto {
+  @IsString()
+  projectIdA!: string;
+
+  @IsString()
+  projectIdB!: string;
+}
+
+export class ApplyProposalsDto {
+  proposals!: any[];
+}
+
+// ---------------------------------------------------------------------------
+// Intelligence / RAG DTOs
+// ---------------------------------------------------------------------------
+
+export class EmailQueryDto {
+  @IsString()
+  query!: string;
+
+  @IsOptional()
+  accountIds?: string[];
+
+  @IsOptional()
+  projectIds?: string[];
+
+  @IsOptional()
+  threadIds?: string[];
+
+  @IsOptional()
+  dateRange?: { from?: number; to?: number };
+
+  @IsOptional()
+  @IsBoolean()
+  includeAttachments?: boolean;
+
+  @IsOptional()
+  @IsNumber()
+  topK?: number;
+}
+
+// ---------------------------------------------------------------------------
+// Attachment query DTOs
+// ---------------------------------------------------------------------------
+
+export class ListAttachmentsQuery extends SeedIdQuery {
+  @IsOptional()
+  @IsString()
+  messageId?: string;
+
+  @IsOptional()
+  @IsString()
+  mimeType?: string;
 }

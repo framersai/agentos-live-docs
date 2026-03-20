@@ -1,7 +1,8 @@
 /**
  * @file email-intelligence.controller.ts
  * @description REST endpoints for the email intelligence subsystem:
- *              account management, synced message browsing, and thread views.
+ *              account management, synced message browsing, thread views,
+ *              project management, RAG query, attachments, and stats.
  *
  * Route prefix: /wunderland/email-intelligence
  *
@@ -22,6 +23,7 @@ import {
   UseGuards,
   HttpCode,
   HttpStatus,
+  HttpException,
   ForbiddenException,
   BadRequestException,
   NotFoundException,
@@ -33,11 +35,22 @@ import { CurrentUser } from '../../../common/decorators/current-user.decorator.j
 import { DatabaseService } from '../../../database/database.service.js';
 import { EmailSyncService } from './services/email-sync.service.js';
 import { EmailThreadService } from './services/email-thread.service.js';
+import { EmailProjectService } from './services/email-project.service.js';
+import { EmailRagService } from './services/email-rag.service.js';
+import { EmailAttachmentService } from './services/email-attachment.service.js';
+import { EmailRateLimitService } from './services/email-rate-limit.service.js';
 import {
   SeedIdQuery,
   ListMessagesQuery,
   ListThreadsQuery,
+  ListAttachmentsQuery,
   UpdateAccountDto,
+  CreateProjectDto,
+  UpdateProjectDto,
+  AddThreadsDto,
+  MergeProjectsDto,
+  ApplyProposalsDto,
+  EmailQueryDto,
 } from './email-intelligence.dto.js';
 
 // ---------------------------------------------------------------------------
@@ -96,6 +109,19 @@ interface ThreadSummaryRow {
   earliest_date: number;
 }
 
+interface AttachmentRow {
+  id: string;
+  message_id: string;
+  account_id: string;
+  filename: string;
+  mime_type: string;
+  size_bytes: number | null;
+  is_inline: number;
+  extraction_status: string;
+  extracted_text: string | null;
+  multimodal_description: string | null;
+}
+
 // ---------------------------------------------------------------------------
 // Controller
 // ---------------------------------------------------------------------------
@@ -107,7 +133,11 @@ export class EmailIntelligenceController {
   constructor(
     @Inject(DatabaseService) private readonly db: DatabaseService,
     @Inject(EmailSyncService) private readonly syncService: EmailSyncService,
-    @Inject(EmailThreadService) private readonly threadService: EmailThreadService
+    @Inject(EmailThreadService) private readonly threadService: EmailThreadService,
+    @Inject(EmailProjectService) private readonly projectService: EmailProjectService,
+    @Inject(EmailRagService) private readonly ragService: EmailRagService,
+    @Inject(EmailAttachmentService) private readonly attachmentService: EmailAttachmentService,
+    @Inject(EmailRateLimitService) private readonly rateLimitService: EmailRateLimitService
   ) {}
 
   // ---- Auth helpers --------------------------------------------------------
@@ -150,6 +180,18 @@ export class EmailIntelligenceController {
       status === 'unlimited';
     if (!isPaid) {
       throw new ForbiddenException('Active paid subscription required.');
+    }
+  }
+
+  // ---- Rate limit helper ---------------------------------------------------
+
+  private async assertRateLimit(seedId: string, endpoint: string, limit: number): Promise<void> {
+    const result = await this.rateLimitService.checkAndIncrement(seedId, endpoint, limit);
+    if (!result.allowed) {
+      throw new HttpException(
+        { message: 'Rate limit exceeded', retryAfterMs: result.retryAfterMs },
+        429
+      );
     }
   }
 
@@ -535,6 +577,384 @@ export class EmailIntelligenceController {
 
     const hierarchy = await this.threadService.reconstructThread(query.accountId, threadId);
     return { timeline: hierarchy.flatTimeline };
+  }
+
+  // =========================================================================
+  // Projects
+  // =========================================================================
+
+  /** GET /projects?seedId=X — list projects */
+  @UseGuards(AuthGuard)
+  @Get('projects')
+  async listProjects(@Req() req: Request, @CurrentUser() user: any, @Query() query: SeedIdQuery) {
+    this.assertAccess(req, user, query.seedId);
+    const projects = await this.projectService.listProjects(query.seedId);
+    return { projects };
+  }
+
+  /** POST /projects?seedId=X — create project */
+  @UseGuards(AuthGuard)
+  @Post('projects')
+  async createProject(
+    @Req() req: Request,
+    @CurrentUser() user: any,
+    @Query() query: SeedIdQuery,
+    @Body() body: CreateProjectDto
+  ) {
+    this.assertAccess(req, user, query.seedId);
+    const userId = user?.id ?? 'system';
+    const project = await this.projectService.createProject(
+      query.seedId,
+      userId,
+      body.name,
+      body.description,
+      body.threads
+    );
+    return { project };
+  }
+
+  /** GET /projects/:projectId?seedId=X — get single project */
+  @UseGuards(AuthGuard)
+  @Get('projects/:projectId')
+  async getProject(
+    @Req() req: Request,
+    @CurrentUser() user: any,
+    @Param('projectId') projectId: string,
+    @Query() query: SeedIdQuery
+  ) {
+    this.assertAccess(req, user, query.seedId);
+    const project = await this.projectService.getProject(projectId);
+    if (!project) throw new NotFoundException('Project not found.');
+    return { project };
+  }
+
+  /** PATCH /projects/:projectId?seedId=X — update project */
+  @UseGuards(AuthGuard)
+  @Patch('projects/:projectId')
+  async updateProject(
+    @Req() req: Request,
+    @CurrentUser() user: any,
+    @Param('projectId') projectId: string,
+    @Query() query: SeedIdQuery,
+    @Body() body: UpdateProjectDto
+  ) {
+    this.assertAccess(req, user, query.seedId);
+    const existing = await this.projectService.getProject(projectId);
+    if (!existing) throw new NotFoundException('Project not found.');
+    await this.projectService.updateProject(projectId, body);
+    return { ok: true, projectId };
+  }
+
+  /** DELETE /projects/:projectId?seedId=X — delete project */
+  @UseGuards(AuthGuard)
+  @Delete('projects/:projectId')
+  async deleteProject(
+    @Req() req: Request,
+    @CurrentUser() user: any,
+    @Param('projectId') projectId: string,
+    @Query() query: SeedIdQuery
+  ) {
+    this.assertAccess(req, user, query.seedId);
+    const existing = await this.projectService.getProject(projectId);
+    if (!existing) throw new NotFoundException('Project not found.');
+    await this.projectService.deleteProject(projectId);
+    return { ok: true, projectId };
+  }
+
+  /** POST /projects/:projectId/threads?seedId=X — add threads to project */
+  @UseGuards(AuthGuard)
+  @Post('projects/:projectId/threads')
+  async addThreadsToProject(
+    @Req() req: Request,
+    @CurrentUser() user: any,
+    @Param('projectId') projectId: string,
+    @Query() query: SeedIdQuery,
+    @Body() body: AddThreadsDto
+  ) {
+    this.assertAccess(req, user, query.seedId);
+    const existing = await this.projectService.getProject(projectId);
+    if (!existing) throw new NotFoundException('Project not found.');
+    const userId = user?.id ?? 'system';
+    await this.projectService.addThreadsToProject(projectId, body.threads, userId);
+    return { ok: true, projectId };
+  }
+
+  /** DELETE /projects/:projectId/threads/:threadId?seedId=X&accountId=Y — remove thread from project */
+  @UseGuards(AuthGuard)
+  @Delete('projects/:projectId/threads/:threadId')
+  async removeThreadFromProject(
+    @Req() req: Request,
+    @CurrentUser() user: any,
+    @Param('projectId') projectId: string,
+    @Param('threadId') threadId: string,
+    @Query() query: { seedId: string; accountId: string }
+  ) {
+    this.assertAccess(req, user, query.seedId);
+    if (!query.accountId) {
+      throw new BadRequestException('accountId query parameter is required.');
+    }
+    await this.projectService.removeThreadFromProject(projectId, threadId, query.accountId);
+    return { ok: true, projectId, threadId };
+  }
+
+  /** POST /projects/merge?seedId=X — merge two projects */
+  @UseGuards(AuthGuard)
+  @Post('projects/merge')
+  async mergeProjects(
+    @Req() req: Request,
+    @CurrentUser() user: any,
+    @Query() query: SeedIdQuery,
+    @Body() body: MergeProjectsDto
+  ) {
+    this.assertAccess(req, user, query.seedId);
+    const mergedId = await this.projectService.mergeProjects(body.projectIdA, body.projectIdB);
+    return { ok: true, mergedProjectId: mergedId };
+  }
+
+  /** GET /projects/:projectId/summary?seedId=X — LLM-generated summary (rate-limited: 10/hr) */
+  @UseGuards(AuthGuard)
+  @Get('projects/:projectId/summary')
+  async getProjectSummary(
+    @Req() req: Request,
+    @CurrentUser() user: any,
+    @Param('projectId') projectId: string,
+    @Query() query: SeedIdQuery
+  ) {
+    this.assertAccess(req, user, query.seedId);
+    await this.assertRateLimit(query.seedId, 'project_summary', 10);
+    const existing = await this.projectService.getProject(projectId);
+    if (!existing) throw new NotFoundException('Project not found.');
+    const summary = await this.projectService.getProjectSummary(projectId);
+    return { projectId, summary };
+  }
+
+  /** GET /projects/:projectId/timeline?seedId=X — project timeline */
+  @UseGuards(AuthGuard)
+  @Get('projects/:projectId/timeline')
+  async getProjectTimeline(
+    @Req() req: Request,
+    @CurrentUser() user: any,
+    @Param('projectId') projectId: string,
+    @Query() query: SeedIdQuery
+  ) {
+    this.assertAccess(req, user, query.seedId);
+    const existing = await this.projectService.getProject(projectId);
+    if (!existing) throw new NotFoundException('Project not found.');
+    const timeline = await this.projectService.getProjectTimeline(projectId);
+    return { projectId, timeline };
+  }
+
+  /** POST /projects/detect?seedId=X — auto-detect projects (rate-limited: 3/hr) */
+  @UseGuards(AuthGuard)
+  @Post('projects/detect')
+  async detectProjects(@Req() req: Request, @CurrentUser() user: any, @Query() query: SeedIdQuery) {
+    this.assertAccess(req, user, query.seedId);
+    await this.assertRateLimit(query.seedId, 'project_detect', 3);
+    const proposals = await this.projectService.detectProjects(query.seedId);
+    return { proposals };
+  }
+
+  /** POST /projects/detect/apply?seedId=X — apply detection proposals */
+  @UseGuards(AuthGuard)
+  @Post('projects/detect/apply')
+  async applyProposals(
+    @Req() req: Request,
+    @CurrentUser() user: any,
+    @Query() query: SeedIdQuery,
+    @Body() body: ApplyProposalsDto
+  ) {
+    this.assertAccess(req, user, query.seedId);
+    const userId = user?.id ?? 'system';
+    // body.proposals is the full proposals array; extract IDs for the service
+    const proposalIds = body.proposals.map((p: any) => p.id);
+    await this.projectService.applyProposals(query.seedId, userId, proposalIds, body.proposals);
+    return { ok: true, applied: proposalIds.length };
+  }
+
+  // =========================================================================
+  // Intelligence / RAG
+  // =========================================================================
+
+  /** POST /query?seedId=X — semantic search across email content (rate-limited: 30/hr) */
+  @UseGuards(AuthGuard)
+  @Post('query')
+  async queryEmails(
+    @Req() req: Request,
+    @CurrentUser() user: any,
+    @Query() query: SeedIdQuery,
+    @Body() body: EmailQueryDto
+  ) {
+    this.assertAccess(req, user, query.seedId);
+    await this.assertRateLimit(query.seedId, 'query', 30);
+    const result = await this.ragService.query({
+      query: body.query,
+      seedId: query.seedId,
+      accountIds: body.accountIds,
+      projectIds: body.projectIds,
+      threadIds: body.threadIds,
+      dateRange: body.dateRange,
+      includeAttachments: body.includeAttachments,
+      topK: body.topK,
+    });
+    return result;
+  }
+
+  /** GET /stats?seedId=X — aggregate intelligence stats */
+  @UseGuards(AuthGuard)
+  @Get('stats')
+  async getStats(@Req() req: Request, @CurrentUser() user: any, @Query() query: SeedIdQuery) {
+    this.assertAccess(req, user, query.seedId);
+
+    const unreadRow = await this.db.get<{ cnt: number }>(
+      `SELECT COUNT(*) as cnt
+       FROM wunderland_email_synced_messages m
+       JOIN wunderland_email_accounts a ON a.id = m.account_id
+       WHERE a.seed_id = ? AND a.is_active = 1 AND m.is_read = 0`,
+      [query.seedId]
+    );
+
+    // "Awaiting reply" = messages sent by the user's account where no reply exists
+    // Simplified: messages where from_address matches account email and is the latest in thread
+    const awaitingRow = await this.db.get<{ cnt: number }>(
+      `SELECT COUNT(DISTINCT m.thread_id) as cnt
+       FROM wunderland_email_synced_messages m
+       JOIN wunderland_email_accounts a ON a.id = m.account_id
+       WHERE a.seed_id = ? AND a.is_active = 1
+         AND m.from_address = a.email_address
+         AND m.internal_date = (
+           SELECT MAX(m2.internal_date)
+           FROM wunderland_email_synced_messages m2
+           WHERE m2.thread_id = m.thread_id AND m2.account_id = m.account_id
+         )`,
+      [query.seedId]
+    );
+
+    const activeProjectsRow = await this.db.get<{ cnt: number }>(
+      `SELECT COUNT(*) as cnt FROM wunderland_email_projects
+       WHERE seed_id = ? AND status = 'active'`,
+      [query.seedId]
+    );
+
+    return {
+      unreadCount: unreadRow?.cnt ?? 0,
+      awaitingReplyCount: awaitingRow?.cnt ?? 0,
+      activeProjectsCount: activeProjectsRow?.cnt ?? 0,
+    };
+  }
+
+  // =========================================================================
+  // Attachments
+  // =========================================================================
+
+  /** GET /attachments?seedId=X&messageId=Y&mimeType=Z — list attachments */
+  @UseGuards(AuthGuard)
+  @Get('attachments')
+  async listAttachments(
+    @Req() req: Request,
+    @CurrentUser() user: any,
+    @Query() query: ListAttachmentsQuery
+  ) {
+    this.assertAccess(req, user, query.seedId);
+
+    const conditions: string[] = [
+      `att.account_id IN (SELECT id FROM wunderland_email_accounts WHERE seed_id = ? AND is_active = 1)`,
+    ];
+    const params: (string | number)[] = [query.seedId];
+
+    if (query.messageId) {
+      conditions.push('att.message_id = ?');
+      params.push(query.messageId);
+    }
+    if (query.mimeType) {
+      conditions.push('att.mime_type = ?');
+      params.push(query.mimeType);
+    }
+
+    const where = `WHERE ${conditions.join(' AND ')}`;
+
+    const attachments = await this.db.all<AttachmentRow>(
+      `SELECT att.* FROM wunderland_email_attachments att ${where}
+       ORDER BY att.id`,
+      params
+    );
+
+    return {
+      attachments: attachments.map((a) => ({
+        id: a.id,
+        messageId: a.message_id,
+        filename: a.filename,
+        mimeType: a.mime_type,
+        sizeBytes: a.size_bytes,
+        isInline: !!a.is_inline,
+        extractionStatus: a.extraction_status,
+      })),
+    };
+  }
+
+  /** GET /attachments/:attachmentId?seedId=X — single attachment detail with extracted text */
+  @UseGuards(AuthGuard)
+  @Get('attachments/:attachmentId')
+  async getAttachment(
+    @Req() req: Request,
+    @CurrentUser() user: any,
+    @Param('attachmentId') attachmentId: string,
+    @Query() query: SeedIdQuery
+  ) {
+    this.assertAccess(req, user, query.seedId);
+
+    const attachment = await this.db.get<AttachmentRow>(
+      `SELECT att.* FROM wunderland_email_attachments att
+       JOIN wunderland_email_accounts a ON a.id = att.account_id
+       WHERE att.id = ? AND a.seed_id = ? AND a.is_active = 1`,
+      [attachmentId, query.seedId]
+    );
+
+    if (!attachment) throw new NotFoundException('Attachment not found.');
+
+    return {
+      attachment: {
+        id: attachment.id,
+        messageId: attachment.message_id,
+        filename: attachment.filename,
+        mimeType: attachment.mime_type,
+        sizeBytes: attachment.size_bytes,
+        isInline: !!attachment.is_inline,
+        extractionStatus: attachment.extraction_status,
+        extractedText: attachment.extracted_text,
+        multimodalDescription: attachment.multimodal_description,
+      },
+    };
+  }
+
+  /** POST /attachments/:attachmentId/transcribe?seedId=X — trigger image transcription (rate-limited: 20/hr) */
+  @UseGuards(AuthGuard)
+  @Post('attachments/:attachmentId/transcribe')
+  async transcribeAttachment(
+    @Req() req: Request,
+    @CurrentUser() user: any,
+    @Param('attachmentId') attachmentId: string,
+    @Query() query: SeedIdQuery
+  ) {
+    this.assertAccess(req, user, query.seedId);
+    await this.assertRateLimit(query.seedId, 'attachment_transcribe', 20);
+
+    const attachment = await this.db.get<AttachmentRow>(
+      `SELECT att.* FROM wunderland_email_attachments att
+       JOIN wunderland_email_accounts a ON a.id = att.account_id
+       WHERE att.id = ? AND a.seed_id = ? AND a.is_active = 1`,
+      [attachmentId, query.seedId]
+    );
+
+    if (!attachment) throw new NotFoundException('Attachment not found.');
+
+    // For now, transcription requires content to be re-fetched.
+    // The service handles the actual transcription logic; we pass an empty
+    // buffer placeholder — real content would come from the provider.
+    // In practice, the caller would supply the image bytes or the service
+    // would fetch them from the provider using stored credentials.
+    await this.attachmentService.transcribeImage(attachmentId, Buffer.alloc(0));
+
+    return { ok: true, attachmentId, status: 'transcription_triggered' };
   }
 
   // =========================================================================

@@ -10,6 +10,7 @@ import { EmailAttachmentService } from './services/email-attachment.service.js';
 import { EmailVectorMemoryService } from './services/email-vector-memory.service.js';
 import { EmailRagService } from './services/email-rag.service.js';
 import { EmailProjectService } from './services/email-project.service.js';
+import { EmailRateLimitService } from './services/email-rate-limit.service.js';
 
 @Module({
   imports: [CredentialsModule, MediaLibraryModule, CronModule, ChannelsModule],
@@ -21,6 +22,7 @@ import { EmailProjectService } from './services/email-project.service.js';
     EmailVectorMemoryService,
     EmailRagService,
     EmailProjectService,
+    EmailRateLimitService,
   ],
   exports: [
     EmailSyncService,
@@ -29,6 +31,7 @@ import { EmailProjectService } from './services/email-project.service.js';
     EmailVectorMemoryService,
     EmailRagService,
     EmailProjectService,
+    EmailRateLimitService,
   ],
 })
 export class EmailIntelligenceModule {}
