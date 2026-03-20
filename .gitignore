@@ -87,3 +87,5 @@ backend/data/
 *.sqlite-wal
 *.sqlite3-shm
 *.sqlite3-wal
+.worktrees/
+.superpowers/
