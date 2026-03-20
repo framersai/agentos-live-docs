@@ -473,6 +473,197 @@ const runInitialSchema = async (db: StorageAdapter): Promise<void> => {
     'CREATE INDEX IF NOT EXISTS idx_email_messages_seed ON wunderland_email_messages(seed_id, created_at DESC);'
   );
 
+  // ── Email Intelligence: Accounts ────────────────────────────────────────
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS wunderland_email_accounts (
+      id TEXT PRIMARY KEY,
+      seed_id TEXT NOT NULL,
+      owner_user_id TEXT NOT NULL,
+      provider TEXT NOT NULL,
+      email_address TEXT NOT NULL,
+      display_name TEXT,
+      credential_id TEXT NOT NULL,
+      sync_cursor TEXT,
+      last_full_sync_at BIGINT,
+      sync_interval_ms INTEGER DEFAULT 300000,
+      sync_enabled INTEGER DEFAULT 1,
+      sync_state TEXT DEFAULT 'idle',
+      sync_progress_json TEXT,
+      last_sync_error TEXT,
+      total_messages_synced INTEGER DEFAULT 0,
+      is_active INTEGER DEFAULT 1,
+      created_at BIGINT NOT NULL,
+      updated_at BIGINT NOT NULL,
+      UNIQUE(seed_id, email_address)
+    );
+  `);
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_email_accounts_seed ON wunderland_email_accounts(seed_id, is_active);'
+  );
+
+  // ── Email Intelligence: Synced Messages ─────────────────────────────────
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS wunderland_email_synced_messages (
+      id TEXT PRIMARY KEY,
+      provider_message_id TEXT NOT NULL,
+      account_id TEXT NOT NULL,
+      thread_id TEXT NOT NULL,
+      message_id_header TEXT,
+      subject TEXT,
+      from_address TEXT NOT NULL,
+      from_name TEXT,
+      to_addresses TEXT,
+      cc_addresses TEXT,
+      bcc_addresses TEXT,
+      body_text TEXT,
+      body_html TEXT,
+      body_html_media_id TEXT,
+      snippet TEXT,
+      internal_date BIGINT NOT NULL,
+      received_date BIGINT,
+      labels TEXT,
+      is_read INTEGER DEFAULT 0,
+      is_starred INTEGER DEFAULT 0,
+      is_draft INTEGER DEFAULT 0,
+      in_reply_to TEXT,
+      references_header TEXT,
+      parent_message_id TEXT,
+      thread_depth INTEGER DEFAULT 0,
+      thread_position INTEGER DEFAULT 0,
+      has_attachments INTEGER DEFAULT 0,
+      attachment_count INTEGER DEFAULT 0,
+      size_bytes INTEGER,
+      rag_indexed_at BIGINT,
+      rag_chunk_ids TEXT,
+      created_at BIGINT NOT NULL,
+      updated_at BIGINT NOT NULL
+    );
+  `);
+  await db.exec(
+    'CREATE UNIQUE INDEX IF NOT EXISTS idx_email_messages_provider_id ON wunderland_email_synced_messages(account_id, provider_message_id);'
+  );
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_email_messages_account_thread ON wunderland_email_synced_messages(account_id, thread_id);'
+  );
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_email_messages_internal_date ON wunderland_email_synced_messages(internal_date);'
+  );
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_email_messages_from ON wunderland_email_synced_messages(from_address);'
+  );
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_email_messages_rag_indexed ON wunderland_email_synced_messages(rag_indexed_at);'
+  );
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_email_messages_message_id_header ON wunderland_email_synced_messages(message_id_header);'
+  );
+
+  // ── Email Intelligence: Attachments ─────────────────────────────────────
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS wunderland_email_attachments (
+      id TEXT PRIMARY KEY,
+      message_id TEXT NOT NULL,
+      account_id TEXT NOT NULL,
+      gmail_attachment_id TEXT,
+      filename TEXT NOT NULL,
+      mime_type TEXT NOT NULL,
+      size_bytes INTEGER,
+      content_id TEXT,
+      is_inline INTEGER DEFAULT 0,
+      media_library_id TEXT,
+      extraction_status TEXT DEFAULT 'pending',
+      extracted_text TEXT,
+      multimodal_description TEXT,
+      extraction_error TEXT,
+      rag_indexed_at BIGINT,
+      rag_chunk_ids TEXT,
+      created_at BIGINT NOT NULL,
+      updated_at BIGINT NOT NULL
+    );
+  `);
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_email_attachments_message ON wunderland_email_attachments(message_id);'
+  );
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_email_attachments_extraction ON wunderland_email_attachments(extraction_status);'
+  );
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_email_attachments_mime ON wunderland_email_attachments(mime_type);'
+  );
+
+  // ── Email Intelligence: Projects ────────────────────────────────────────
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS wunderland_email_projects (
+      id TEXT PRIMARY KEY,
+      seed_id TEXT NOT NULL,
+      owner_user_id TEXT NOT NULL,
+      name TEXT NOT NULL,
+      description TEXT,
+      status TEXT DEFAULT 'active',
+      auto_detected INTEGER DEFAULT 0,
+      detection_confidence REAL,
+      detection_method TEXT,
+      participant_emails TEXT,
+      thread_count INTEGER DEFAULT 0,
+      message_count INTEGER DEFAULT 0,
+      attachment_count INTEGER DEFAULT 0,
+      last_activity_at BIGINT,
+      created_at BIGINT NOT NULL,
+      updated_at BIGINT NOT NULL
+    );
+  `);
+  await db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_email_projects_seed ON wunderland_email_projects(seed_id, status);'
+  );
+
+  // ── Email Intelligence: Project Threads ─────────────────────────────────
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS wunderland_email_project_threads (
+      id TEXT PRIMARY KEY,
+      project_id TEXT NOT NULL,
+      thread_id TEXT NOT NULL,
+      account_id TEXT NOT NULL,
+      added_by TEXT NOT NULL,
+      confidence REAL,
+      added_at BIGINT NOT NULL,
+      UNIQUE(project_id, thread_id, account_id)
+    );
+  `);
+
+  // ── Email Intelligence: Digests ─────────────────────────────────────────
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS wunderland_email_digests (
+      id TEXT PRIMARY KEY,
+      seed_id TEXT NOT NULL,
+      owner_user_id TEXT NOT NULL,
+      name TEXT,
+      schedule TEXT NOT NULL,
+      format TEXT DEFAULT 'markdown',
+      delivery_channel TEXT NOT NULL,
+      delivery_target TEXT NOT NULL,
+      filter_projects TEXT,
+      filter_accounts TEXT,
+      include_attachments INTEGER DEFAULT 0,
+      include_timeline INTEGER DEFAULT 1,
+      is_active INTEGER DEFAULT 1,
+      last_sent_at BIGINT,
+      cron_job_id TEXT,
+      created_at BIGINT NOT NULL,
+      updated_at BIGINT NOT NULL
+    );
+  `);
+
+  // ── Email Intelligence: Rate Limits ─────────────────────────────────────
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS wunderland_email_rate_limits (
+      seed_id TEXT NOT NULL,
+      endpoint TEXT NOT NULL,
+      window_start BIGINT NOT NULL,
+      count INTEGER DEFAULT 0,
+      PRIMARY KEY (seed_id, endpoint, window_start)
+    );
+  `);
+
   // ── Admin Task Queue ──────────────────────────────────────────────────────
   await db.exec(`
     CREATE TABLE IF NOT EXISTS admin_task_queue (
