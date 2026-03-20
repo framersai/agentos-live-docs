@@ -20,6 +20,7 @@ import {
   Body,
   Query,
   Req,
+  Res,
   UseGuards,
   HttpCode,
   HttpStatus,
@@ -29,7 +30,7 @@ import {
   NotFoundException,
   Logger,
 } from '@nestjs/common';
-import type { Request } from 'express';
+import type { Request, Response } from 'express';
 import { AuthGuard } from '../../../common/guards/auth.guard.js';
 import { CurrentUser } from '../../../common/decorators/current-user.decorator.js';
 import { DatabaseService } from '../../../database/database.service.js';
@@ -39,6 +40,8 @@ import { EmailProjectService } from './services/email-project.service.js';
 import { EmailRagService } from './services/email-rag.service.js';
 import { EmailAttachmentService } from './services/email-attachment.service.js';
 import { EmailRateLimitService } from './services/email-rate-limit.service.js';
+import { EmailReportService } from './services/email-report.service.js';
+import { EmailDigestService } from './services/email-digest.service.js';
 import {
   SeedIdQuery,
   ListMessagesQuery,
@@ -51,6 +54,9 @@ import {
   MergeProjectsDto,
   ApplyProposalsDto,
   EmailQueryDto,
+  GenerateReportDto,
+  CreateDigestDto,
+  UpdateDigestDto,
 } from './email-intelligence.dto.js';
 
 // ---------------------------------------------------------------------------
@@ -137,7 +143,9 @@ export class EmailIntelligenceController {
     @Inject(EmailProjectService) private readonly projectService: EmailProjectService,
     @Inject(EmailRagService) private readonly ragService: EmailRagService,
     @Inject(EmailAttachmentService) private readonly attachmentService: EmailAttachmentService,
-    @Inject(EmailRateLimitService) private readonly rateLimitService: EmailRateLimitService
+    @Inject(EmailRateLimitService) private readonly rateLimitService: EmailRateLimitService,
+    @Inject(EmailReportService) private readonly reportService: EmailReportService,
+    @Inject(EmailDigestService) private readonly digestService: EmailDigestService
   ) {}
 
   // ---- Auth helpers --------------------------------------------------------
@@ -955,6 +963,186 @@ export class EmailIntelligenceController {
     await this.attachmentService.transcribeImage(attachmentId, Buffer.alloc(0));
 
     return { ok: true, attachmentId, status: 'transcription_triggered' };
+  }
+
+  // =========================================================================
+  // Reports
+  // =========================================================================
+
+  /** POST /reports/project/:projectId?seedId=X — generate project report (rate-limited: 5/hr) */
+  @UseGuards(AuthGuard)
+  @Post('reports/project/:projectId')
+  async generateProjectReport(
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: Response,
+    @CurrentUser() user: any,
+    @Param('projectId') projectId: string,
+    @Query() query: SeedIdQuery,
+    @Body() body: GenerateReportDto
+  ) {
+    this.assertAccess(req, user, query.seedId);
+    await this.assertRateLimit(query.seedId, 'report_generate', 5);
+
+    const existing = await this.projectService.getProject(projectId);
+    if (!existing) throw new NotFoundException('Project not found.');
+
+    const report = await this.reportService.generateProjectReport(
+      projectId,
+      body.format as 'pdf' | 'markdown' | 'json'
+    );
+
+    if (body.format === 'pdf') {
+      res.set('Content-Type', report.mimeType);
+      res.set('Content-Disposition', `attachment; filename="${report.filename}"`);
+      res.set('Content-Length', String(report.sizeBytes));
+      return report.content;
+    }
+
+    return { content: report.content, filename: report.filename, mimeType: report.mimeType };
+  }
+
+  /** POST /reports/thread/:threadId?seedId=X&accountId=Y — generate thread report (rate-limited: 5/hr) */
+  @UseGuards(AuthGuard)
+  @Post('reports/thread/:threadId')
+  async generateThreadReport(
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: Response,
+    @CurrentUser() user: any,
+    @Param('threadId') threadId: string,
+    @Query() query: { seedId: string; accountId: string },
+    @Body() body: GenerateReportDto
+  ) {
+    this.assertAccess(req, user, query.seedId);
+    await this.assertRateLimit(query.seedId, 'report_generate', 5);
+
+    if (!query.accountId) {
+      throw new BadRequestException('accountId query parameter is required.');
+    }
+
+    const report = await this.reportService.generateThreadReport(
+      threadId,
+      query.accountId,
+      body.format as 'pdf' | 'markdown' | 'json'
+    );
+
+    if (body.format === 'pdf') {
+      res.set('Content-Type', report.mimeType);
+      res.set('Content-Disposition', `attachment; filename="${report.filename}"`);
+      res.set('Content-Length', String(report.sizeBytes));
+      return report.content;
+    }
+
+    return { content: report.content, filename: report.filename, mimeType: report.mimeType };
+  }
+
+  // =========================================================================
+  // Digests
+  // =========================================================================
+
+  /** GET /digests?seedId=X — list digests */
+  @UseGuards(AuthGuard)
+  @Get('digests')
+  async listDigests(@Req() req: Request, @CurrentUser() user: any, @Query() query: SeedIdQuery) {
+    this.assertAccess(req, user, query.seedId);
+    const digests = await this.digestService.listDigests(query.seedId);
+    return { digests };
+  }
+
+  /** POST /digests?seedId=X — create digest */
+  @UseGuards(AuthGuard)
+  @Post('digests')
+  async createDigest(
+    @Req() req: Request,
+    @CurrentUser() user: any,
+    @Query() query: SeedIdQuery,
+    @Body() body: CreateDigestDto
+  ) {
+    this.assertAccess(req, user, query.seedId);
+    const userId = user?.id ?? 'system';
+    const digest = await this.digestService.createDigest(query.seedId, userId, body);
+    return { digest };
+  }
+
+  /** GET /digests/:digestId?seedId=X — get single digest */
+  @UseGuards(AuthGuard)
+  @Get('digests/:digestId')
+  async getDigest(
+    @Req() req: Request,
+    @CurrentUser() user: any,
+    @Param('digestId') digestId: string,
+    @Query() query: SeedIdQuery
+  ) {
+    this.assertAccess(req, user, query.seedId);
+    const digest = await this.digestService.getDigest(digestId);
+    if (!digest) throw new NotFoundException('Digest not found.');
+    return { digest };
+  }
+
+  /** PATCH /digests/:digestId?seedId=X — update digest */
+  @UseGuards(AuthGuard)
+  @Patch('digests/:digestId')
+  async updateDigest(
+    @Req() req: Request,
+    @CurrentUser() user: any,
+    @Param('digestId') digestId: string,
+    @Query() query: SeedIdQuery,
+    @Body() body: UpdateDigestDto
+  ) {
+    this.assertAccess(req, user, query.seedId);
+    const existing = await this.digestService.getDigest(digestId);
+    if (!existing) throw new NotFoundException('Digest not found.');
+    await this.digestService.updateDigest(digestId, body);
+    return { ok: true, digestId };
+  }
+
+  /** DELETE /digests/:digestId?seedId=X — delete digest */
+  @UseGuards(AuthGuard)
+  @Delete('digests/:digestId')
+  async deleteDigest(
+    @Req() req: Request,
+    @CurrentUser() user: any,
+    @Param('digestId') digestId: string,
+    @Query() query: SeedIdQuery
+  ) {
+    this.assertAccess(req, user, query.seedId);
+    const existing = await this.digestService.getDigest(digestId);
+    if (!existing) throw new NotFoundException('Digest not found.');
+    const userId = user?.id ?? 'system';
+    await this.digestService.deleteDigest(digestId, userId);
+    return { ok: true, digestId };
+  }
+
+  /** POST /digests/:digestId/preview?seedId=X — preview digest content */
+  @UseGuards(AuthGuard)
+  @Post('digests/:digestId/preview')
+  async previewDigest(
+    @Req() req: Request,
+    @CurrentUser() user: any,
+    @Param('digestId') digestId: string,
+    @Query() query: SeedIdQuery
+  ) {
+    this.assertAccess(req, user, query.seedId);
+    const existing = await this.digestService.getDigest(digestId);
+    if (!existing) throw new NotFoundException('Digest not found.');
+    const preview = await this.digestService.previewDigest(digestId);
+    return { content: preview.content, filename: preview.filename, mimeType: preview.mimeType };
+  }
+
+  /** POST /digests/:digestId/send-now?seedId=X — trigger immediate delivery (rate-limited: 3/hr) */
+  @UseGuards(AuthGuard)
+  @Post('digests/:digestId/send-now')
+  async sendDigestNow(
+    @Req() req: Request,
+    @CurrentUser() user: any,
+    @Param('digestId') digestId: string,
+    @Query() query: SeedIdQuery
+  ) {
+    this.assertAccess(req, user, query.seedId);
+    await this.assertRateLimit(query.seedId, 'digest_send_now', 3);
+    const existing = await this.digestService.getDigest(digestId);
+    if (!existing) throw new NotFoundException('Digest not found.');
+    await this.digestService.sendNow(digestId);
+    return { ok: true, digestId, status: 'sent' };
   }
 
   // =========================================================================

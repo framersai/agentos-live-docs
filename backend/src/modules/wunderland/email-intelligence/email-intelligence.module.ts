@@ -13,6 +13,7 @@ import { EmailProjectService } from './services/email-project.service.js';
 import { EmailRateLimitService } from './services/email-rate-limit.service.js';
 import { EmailReportService } from './services/email-report.service.js';
 import { EmailDigestService } from './services/email-digest.service.js';
+import { EmailRetentionService } from './services/email-retention.service.js';
 
 @Module({
   imports: [CredentialsModule, MediaLibraryModule, CronModule, ChannelsModule],
@@ -27,6 +28,7 @@ import { EmailDigestService } from './services/email-digest.service.js';
     EmailRateLimitService,
     EmailReportService,
     EmailDigestService,
+    EmailRetentionService,
   ],
   exports: [
     EmailSyncService,
@@ -38,6 +40,7 @@ import { EmailDigestService } from './services/email-digest.service.js';
     EmailRateLimitService,
     EmailReportService,
     EmailDigestService,
+    EmailRetentionService,
   ],
 })
 export class EmailIntelligenceModule {}

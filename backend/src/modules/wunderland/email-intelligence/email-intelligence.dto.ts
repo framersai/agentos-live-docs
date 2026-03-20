@@ -9,6 +9,7 @@ import {
   IsNumber,
   IsBoolean,
   IsArray,
+  IsIn,
   ValidateNested,
 } from 'class-validator';
 
@@ -150,6 +151,85 @@ export class EmailQueryDto {
   @IsOptional()
   @IsNumber()
   topK?: number;
+}
+
+// ---------------------------------------------------------------------------
+// Attachment query DTOs
+// ---------------------------------------------------------------------------
+
+// ---------------------------------------------------------------------------
+// Report / Digest DTOs
+// ---------------------------------------------------------------------------
+
+export class GenerateReportDto {
+  @IsString()
+  @IsIn(['pdf', 'markdown', 'json'])
+  format!: string;
+}
+
+export class CreateDigestDto {
+  @IsOptional()
+  @IsString()
+  name?: string;
+
+  @IsString()
+  schedule!: string;
+
+  @IsOptional()
+  @IsString()
+  format?: string;
+
+  @IsString()
+  deliveryChannel!: string;
+
+  @IsString()
+  deliveryTarget!: string;
+
+  @IsOptional()
+  @IsArray()
+  filterProjects?: string[];
+
+  @IsOptional()
+  @IsArray()
+  filterAccounts?: string[];
+
+  @IsOptional()
+  @IsBoolean()
+  includeAttachments?: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  includeTimeline?: boolean;
+}
+
+export class UpdateDigestDto {
+  @IsOptional()
+  @IsString()
+  name?: string;
+
+  @IsOptional()
+  @IsString()
+  schedule?: string;
+
+  @IsOptional()
+  @IsString()
+  format?: string;
+
+  @IsOptional()
+  @IsString()
+  deliveryChannel?: string;
+
+  @IsOptional()
+  @IsString()
+  deliveryTarget?: string;
+
+  @IsOptional()
+  @IsBoolean()
+  includeAttachments?: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  includeTimeline?: boolean;
 }
 
 // ---------------------------------------------------------------------------
