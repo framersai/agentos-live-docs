@@ -8,11 +8,12 @@
  * @module email-intelligence/services/email-sync
  */
 
-import { Injectable, Inject, Logger, OnModuleInit } from '@nestjs/common';
+import { Injectable, Inject, Optional, Logger, OnModuleInit } from '@nestjs/common';
 import { DatabaseService } from '../../../../database/database.service.js';
 import { CronJobService } from '../../cron/cron.service.js';
 import type { CronJobRecord } from '../../cron/cron.service.js';
 import { EmailThreadService } from './email-thread.service.js';
+import { EmailRagService } from './email-rag.service.js';
 import { GmailProvider } from '../providers/gmail-provider.js';
 import type {
   IEmailProvider,
@@ -53,7 +54,8 @@ export class EmailSyncService implements OnModuleInit {
   constructor(
     @Inject(DatabaseService) private readonly db: DatabaseService,
     private readonly threadService: EmailThreadService,
-    private readonly cronJobService: CronJobService
+    private readonly cronJobService: CronJobService,
+    @Optional() @Inject(EmailRagService) private readonly ragService?: EmailRagService
   ) {}
 
   // ---- Module init — re-activate sync schedules on restart ----------------
@@ -304,7 +306,29 @@ export class EmailSyncService implements OnModuleInit {
         await this.threadService.reconstructThread(accountId, threadId);
       }
 
-      // 10. Mark idle
+      // 10. RAG-index newly synced messages and extracted attachments
+      if (this.ragService) {
+        for (const msgId of syncedMessageIds) {
+          try {
+            await this.ragService.indexMessage(account.seed_id, msgId);
+          } catch (err) {
+            this.logger.warn(
+              `RAG index failed for message ${msgId}: ${err instanceof Error ? err.message : err}`
+            );
+          }
+        }
+
+        // Index any attachments that have been extracted but not yet RAG-indexed
+        try {
+          await this.ragService.indexPendingAttachments(account.seed_id);
+        } catch (err) {
+          this.logger.warn(
+            `RAG attachment indexing failed: ${err instanceof Error ? err.message : err}`
+          );
+        }
+      }
+
+      // 11. Mark idle
       await this.updateSyncState(accountId, 'idle');
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : String(err);
