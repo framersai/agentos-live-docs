@@ -161,6 +161,7 @@ const sidebars = {
             'extensions/built-in/channel-webchat',
             'extensions/built-in/anchor-providers',
             'extensions/built-in/tip-ingestion',
+            'extensions/built-in/pii-redaction',
           ],
         },
       ],

@@ -312,6 +312,12 @@ const builtInExtensions = [
     title: 'Channel: WebChat',
     position: 17,
   },
+  {
+    dir: 'security/pii-redaction',
+    dest: 'extensions/built-in/pii-redaction.md',
+    title: 'PII Redaction',
+    position: 18,
+  },
 ];
 
 /** @type {{ srcPath: string; dest: string; title: string; position: number }[]} */
