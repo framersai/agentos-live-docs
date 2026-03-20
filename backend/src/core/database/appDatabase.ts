@@ -2215,6 +2215,22 @@ export const initializeAppDatabase = async (): Promise<void> => {
           ? 'ALTER TABLE wunderland_media_assets ADD COLUMN thumbnail_path TEXT'
           : 'ALTER TABLE wunderland_media_assets ADD COLUMN thumbnail_path TEXT;'
       );
+      await ensureColumnExists(
+        adapter,
+        'wunderland_media_assets',
+        'source_type',
+        adapter.kind === 'postgres'
+          ? 'ALTER TABLE wunderland_media_assets ADD COLUMN source_type TEXT DEFAULT NULL'
+          : 'ALTER TABLE wunderland_media_assets ADD COLUMN source_type TEXT DEFAULT NULL;'
+      );
+      await ensureColumnExists(
+        adapter,
+        'wunderland_media_assets',
+        'source_ref',
+        adapter.kind === 'postgres'
+          ? 'ALTER TABLE wunderland_media_assets ADD COLUMN source_ref TEXT DEFAULT NULL'
+          : 'ALTER TABLE wunderland_media_assets ADD COLUMN source_ref TEXT DEFAULT NULL;'
+      );
       await adapter.exec(
         'CREATE INDEX IF NOT EXISTS idx_wunderland_media_assets_seed ON wunderland_media_assets(seed_id, created_at DESC);'
       );
