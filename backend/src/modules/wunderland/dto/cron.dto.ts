@@ -37,7 +37,7 @@ export class CreateCronJobDto {
   scheduleConfig!: string;
 
   @IsString()
-  @IsIn(['stimulus', 'webhook', 'message', 'custom'])
+  @IsIn(['stimulus', 'webhook', 'message', 'custom', 'email_sync'])
   payloadKind!: string;
 
   @IsString()
@@ -76,7 +76,7 @@ export class UpdateCronJobDto {
 
   @IsOptional()
   @IsString()
-  @IsIn(['stimulus', 'webhook', 'message', 'custom'])
+  @IsIn(['stimulus', 'webhook', 'message', 'custom', 'email_sync'])
   payloadKind?: string;
 
   @IsOptional()

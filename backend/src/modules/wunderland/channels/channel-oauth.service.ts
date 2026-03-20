@@ -22,6 +22,17 @@ const DISCORD_AUTH_URL = 'https://discord.com/api/oauth2/authorize';
 const DISCORD_TOKEN_URL = 'https://discord.com/api/oauth2/token';
 const DISCORD_BOT_PERMISSIONS = (2048 | 65536 | 64 | 536870912).toString();
 
+const GMAIL_AUTH_URL = 'https://accounts.google.com/o/oauth2/v2/auth';
+const GMAIL_TOKEN_URL = 'https://oauth2.googleapis.com/token';
+const GMAIL_USERINFO_URL = 'https://www.googleapis.com/oauth2/v2/userinfo';
+const GMAIL_SCOPES = [
+  'https://www.googleapis.com/auth/gmail.readonly',
+  'https://www.googleapis.com/auth/gmail.send',
+  'https://www.googleapis.com/auth/gmail.modify',
+  'https://www.googleapis.com/auth/gmail.labels',
+  'https://www.googleapis.com/auth/userinfo.email',
+].join(' ');
+
 const TELEGRAM_API = 'https://api.telegram.org';
 const TELEGRAM_TOKEN_REGEX = /^\d+:[A-Za-z0-9_-]+$/;
 
@@ -96,6 +107,149 @@ export class ChannelOAuthService {
     });
 
     return { url: `${DISCORD_AUTH_URL}?${params.toString()}` };
+  }
+
+  async initiateGmailOAuth(
+    userId: string,
+    seedId: string
+  ): Promise<{ url: string; stateId: string }> {
+    await this.requireOwnedAgent(userId, seedId);
+    await this.assertNotSealed(seedId);
+
+    const clientId = process.env.GOOGLE_CLIENT_ID;
+    if (!clientId) {
+      throw new BadRequestException('Gmail OAuth is not configured (GOOGLE_CLIENT_ID missing).');
+    }
+
+    const redirectUri = process.env.GOOGLE_CALLBACK_URL || this.getCallbackUrl('gmail');
+    const stateId = await this.createOAuthState(userId, seedId, 'gmail', redirectUri);
+
+    const params = new URLSearchParams({
+      client_id: clientId,
+      redirect_uri: redirectUri,
+      response_type: 'code',
+      scope: GMAIL_SCOPES,
+      state: stateId,
+      access_type: 'offline',
+      prompt: 'consent',
+    });
+
+    return { url: `${GMAIL_AUTH_URL}?${params.toString()}`, stateId };
+  }
+
+  async handleGmailCallback(
+    code: string,
+    stateId: string
+  ): Promise<{
+    accountId: string;
+    emailAddress: string;
+    credentialId: string;
+    seedId: string;
+  }> {
+    const state = await this.consumeOAuthState(stateId);
+
+    const clientId = process.env.GOOGLE_CLIENT_ID;
+    const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
+    const redirectUri = process.env.GOOGLE_CALLBACK_URL || state.redirectUri;
+    if (!clientId || !clientSecret) {
+      throw new BadRequestException('Google OAuth credentials not configured.');
+    }
+
+    // Exchange authorization code for tokens
+    const tokenRes = await fetch(GMAIL_TOKEN_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({
+        code,
+        client_id: clientId,
+        client_secret: clientSecret,
+        redirect_uri: redirectUri,
+        grant_type: 'authorization_code',
+      }),
+    });
+
+    if (!tokenRes.ok) {
+      const errBody = await tokenRes.text();
+      throw new BadRequestException(
+        `Google token exchange failed (${tokenRes.status}): ${errBody}`
+      );
+    }
+
+    const tokenData = (await tokenRes.json()) as {
+      access_token: string;
+      refresh_token?: string;
+      expires_in: number;
+      token_type: string;
+    };
+
+    if (!tokenData.access_token) {
+      throw new BadRequestException('Google OAuth did not return an access token.');
+    }
+
+    // Fetch user email from userinfo endpoint
+    const userinfoRes = await fetch(GMAIL_USERINFO_URL, {
+      headers: { Authorization: `Bearer ${tokenData.access_token}` },
+    });
+
+    if (!userinfoRes.ok) {
+      throw new BadRequestException(`Failed to fetch Google user info (${userinfoRes.status}).`);
+    }
+
+    const userInfo = (await userinfoRes.json()) as {
+      email: string;
+      name?: string;
+    };
+
+    const email = userInfo.email;
+    if (!email) {
+      throw new BadRequestException('Google userinfo did not return an email address.');
+    }
+
+    const expiresAt = Date.now() + tokenData.expires_in * 1000;
+
+    // Store credential with refresh token in metadata
+    await this.removeExistingCredential(state.ownerUserId, state.seedId, 'google_oauth_token');
+    const { credential } = await this.credentialsService.createCredential(state.ownerUserId, {
+      seedId: state.seedId,
+      type: 'google_oauth_token',
+      label: `Gmail: ${email}`,
+      value: tokenData.access_token,
+      metadata: JSON.stringify({
+        refreshToken: tokenData.refresh_token || null,
+        email,
+        expiresAt,
+      }),
+      expiresAt,
+    });
+
+    // Create email account record
+    const accountId = this.db.generateId();
+    const now = Date.now();
+
+    await this.db.run(
+      `INSERT INTO wunderland_email_accounts
+        (id, seed_id, owner_user_id, provider, email_address, display_name, credential_id,
+         sync_enabled, sync_state, is_active, created_at, updated_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, 1, 'idle', 1, ?, ?)`,
+      [
+        accountId,
+        state.seedId,
+        state.ownerUserId,
+        'gmail',
+        email,
+        userInfo.name || null,
+        credential.credentialId,
+        now,
+        now,
+      ]
+    );
+
+    return {
+      accountId,
+      emailAddress: email,
+      credentialId: credential.credentialId,
+      seedId: state.seedId,
+    };
   }
 
   async handleSlackCallback(code: string, stateId: string): Promise<OAuthResult> {
@@ -506,6 +660,8 @@ export class ChannelOAuthService {
         return 'discord_oauth_bot_token';
       case 'telegram':
         return 'telegram_bot_token';
+      case 'gmail':
+        return 'google_oauth_token';
       default:
         return `${platform}_oauth_token`;
     }

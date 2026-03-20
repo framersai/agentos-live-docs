@@ -28,6 +28,8 @@ export interface MediaAsset {
   tags: string[];
   storagePath: string;
   thumbnailPath?: string;
+  sourceType?: string;
+  sourceRef?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -39,6 +41,10 @@ export interface UploadMediaInput {
   originalName: string;
   mimeType: string;
   tags?: string[];
+  /** Provenance: type of source (e.g. 'email_attachment', 'manual_upload') */
+  sourceType?: string;
+  /** Provenance: reference identifier (e.g. email message ID, thread ID) */
+  sourceRef?: string;
 }
 
 /* ------------------------------------------------------------------ */
@@ -113,6 +119,8 @@ export class MediaLibraryService {
         tags          TEXT NOT NULL DEFAULT '[]',
         storage_path  TEXT NOT NULL,
         thumbnail_path TEXT,
+        source_type   TEXT DEFAULT NULL,
+        source_ref    TEXT DEFAULT NULL,
         created_at    BIGINT NOT NULL,
         updated_at    BIGINT NOT NULL
       );
@@ -160,6 +168,8 @@ export class MediaLibraryService {
       tags,
       storagePath: String(row.storage_path),
       thumbnailPath: row.thumbnail_path ? String(row.thumbnail_path) : undefined,
+      sourceType: row.source_type ? String(row.source_type) : undefined,
+      sourceRef: row.source_ref ? String(row.source_ref) : undefined,
       createdAt: toIso(toEpochMs(row.created_at)) ?? new Date().toISOString(),
       updatedAt: toIso(toEpochMs(row.updated_at)) ?? new Date().toISOString(),
     };
@@ -191,8 +201,9 @@ export class MediaLibraryService {
       `
         INSERT INTO wunderland_media_assets (
           id, seed_id, owner_user_id, filename, original_name,
-          mime_type, size, tags, storage_path, created_at, updated_at
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+          mime_type, size, tags, storage_path, source_type, source_ref,
+          created_at, updated_at
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `,
       [
         id,
@@ -204,33 +215,39 @@ export class MediaLibraryService {
         input.file.length,
         JSON.stringify(tags),
         storagePath,
+        input.sourceType ?? null,
+        input.sourceRef ?? null,
         now,
         now,
-      ],
+      ]
     );
 
     this.logger.log(
-      `Uploaded media asset ${id}: ${input.originalName} (${input.mimeType}, ${input.file.length} bytes)`,
+      `Uploaded media asset ${id}: ${input.originalName} (${input.mimeType}, ${input.file.length} bytes)`
     );
 
     const row = await this.db.get<any>(
       `SELECT * FROM wunderland_media_assets WHERE id = ? LIMIT 1`,
-      [id],
+      [id]
     );
 
-    return row ? this.mapRow(row) : this.mapRow({
-      id,
-      seed_id: input.seedId,
-      owner_user_id: input.ownerUserId,
-      filename,
-      original_name: input.originalName,
-      mime_type: input.mimeType,
-      size: input.file.length,
-      tags: JSON.stringify(tags),
-      storage_path: storagePath,
-      created_at: now,
-      updated_at: now,
-    });
+    return row
+      ? this.mapRow(row)
+      : this.mapRow({
+          id,
+          seed_id: input.seedId,
+          owner_user_id: input.ownerUserId,
+          filename,
+          original_name: input.originalName,
+          mime_type: input.mimeType,
+          size: input.file.length,
+          tags: JSON.stringify(tags),
+          storage_path: storagePath,
+          source_type: input.sourceType ?? null,
+          source_ref: input.sourceRef ?? null,
+          created_at: now,
+          updated_at: now,
+        });
   }
 
   /* -------------------------------------------------------------- */
@@ -242,7 +259,7 @@ export class MediaLibraryService {
 
     const row = await this.db.get<any>(
       `SELECT * FROM wunderland_media_assets WHERE id = ? LIMIT 1`,
-      [id],
+      [id]
     );
 
     return row ? this.mapRow(row) : null;
@@ -258,7 +275,7 @@ export class MediaLibraryService {
     tags?: string[],
     mimeType?: string,
     limit = 50,
-    offset = 0,
+    offset = 0
   ): Promise<{ items: MediaAsset[]; total: number }> {
     await this.ensureTable();
 
@@ -287,7 +304,7 @@ export class MediaLibraryService {
 
     const countRow = await this.db.get<{ cnt: number }>(
       `SELECT COUNT(*) as cnt FROM wunderland_media_assets WHERE ${whereClause}`,
-      params,
+      params
     );
     const total = Number(countRow?.cnt ?? 0);
 
@@ -298,7 +315,7 @@ export class MediaLibraryService {
         ORDER BY created_at DESC
         LIMIT ? OFFSET ?
       `,
-      [...params, limit, offset],
+      [...params, limit, offset]
     );
 
     return {
@@ -316,7 +333,7 @@ export class MediaLibraryService {
 
     const row = await this.db.get<any>(
       `SELECT * FROM wunderland_media_assets WHERE id = ? AND owner_user_id = ? LIMIT 1`,
-      [id, ownerUserId],
+      [id, ownerUserId]
     );
 
     if (!row) return false;
@@ -337,10 +354,10 @@ export class MediaLibraryService {
       }
     }
 
-    await this.db.run(
-      `DELETE FROM wunderland_media_assets WHERE id = ? AND owner_user_id = ?`,
-      [id, ownerUserId],
-    );
+    await this.db.run(`DELETE FROM wunderland_media_assets WHERE id = ? AND owner_user_id = ?`, [
+      id,
+      ownerUserId,
+    ]);
 
     this.logger.log(`Deleted media asset ${id}`);
     return true;
@@ -355,20 +372,21 @@ export class MediaLibraryService {
 
     const existing = await this.db.get<any>(
       `SELECT * FROM wunderland_media_assets WHERE id = ? AND owner_user_id = ? LIMIT 1`,
-      [id, ownerUserId],
+      [id, ownerUserId]
     );
 
     if (!existing) return null;
 
     const now = Date.now();
-    await this.db.run(
-      `UPDATE wunderland_media_assets SET tags = ?, updated_at = ? WHERE id = ?`,
-      [JSON.stringify(tags), now, id],
-    );
+    await this.db.run(`UPDATE wunderland_media_assets SET tags = ?, updated_at = ? WHERE id = ?`, [
+      JSON.stringify(tags),
+      now,
+      id,
+    ]);
 
     const updated = await this.db.get<any>(
       `SELECT * FROM wunderland_media_assets WHERE id = ? LIMIT 1`,
-      [id],
+      [id]
     );
 
     return updated ? this.mapRow(updated) : null;
@@ -380,13 +398,13 @@ export class MediaLibraryService {
 
   async getAssetFile(
     id: string,
-    ownerUserId: string,
+    ownerUserId: string
   ): Promise<{ buffer: Buffer; mimeType: string; filename: string } | null> {
     await this.ensureTable();
 
     const row = await this.db.get<any>(
       `SELECT * FROM wunderland_media_assets WHERE id = ? AND owner_user_id = ? LIMIT 1`,
-      [id, ownerUserId],
+      [id, ownerUserId]
     );
 
     if (!row) return null;

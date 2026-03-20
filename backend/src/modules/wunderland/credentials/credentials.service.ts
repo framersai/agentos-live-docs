@@ -223,9 +223,11 @@ export class CredentialsService {
           encrypted_value,
           masked_value,
           last_used_at,
+          metadata,
+          expires_at,
           created_at,
           updated_at
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, NULL, ?, ?)
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, NULL, ?, ?, ?, ?)
       `,
       [
         credentialId,
@@ -235,6 +237,8 @@ export class CredentialsService {
         label,
         this.encryptSecret(value),
         this.maskSecret(value),
+        dto.metadata ?? null,
+        dto.expiresAt ?? null,
         now,
         now,
       ]

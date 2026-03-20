@@ -65,6 +65,7 @@ import { VoiceModule } from './voice/voice.module.js';
 import { CronModule } from './cron/cron.module.js';
 import { CalendarModule } from './calendar/calendar.module.js';
 import { EmailIntegrationModule } from './email/email.module.js';
+import { EmailIntelligenceModule } from './email-intelligence/email-intelligence.module.js';
 import { JobsModule } from './jobs/jobs.module.js';
 import { RewardsModule } from './rewards/rewards.module.js';
 import { OrchestrationModule } from './orchestration/orchestration.module.js';
@@ -103,6 +104,7 @@ export class WunderlandModule {
         CronModule,
         CalendarModule,
         EmailIntegrationModule,
+        EmailIntelligenceModule,
         CitizensModule,
         VotingModule,
         JobsModule,
