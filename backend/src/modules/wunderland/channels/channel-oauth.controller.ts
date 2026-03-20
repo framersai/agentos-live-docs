@@ -70,6 +70,24 @@ export class ChannelOAuthController {
     return this.oauthService.initiateDiscordOAuth(userId, seedId);
   }
 
+  @UseGuards(AuthGuard)
+  @Get('gmail/initiate')
+  async initiateGmail(
+    @CurrentUser() user: any,
+    @CurrentUser('id') userId: string,
+    @Query('seedId') seedId?: string
+  ) {
+    this.assertPaidAccess(user);
+    if (!seedId) throw new BadRequestException('seedId query parameter is required.');
+    return this.oauthService.initiateGmailOAuth(userId, seedId);
+  }
+
+  @Post('gmail/callback')
+  async gmailCallback(@Req() req: Request, @Body() body: ChannelOAuthCallbackDto) {
+    this.assertInternalSecret(req);
+    return this.oauthService.handleGmailCallback(body.code, body.state);
+  }
+
   @Post('slack/callback')
   async slackCallback(@Req() req: Request, @Body() body: ChannelOAuthCallbackDto) {
     this.assertInternalSecret(req);
