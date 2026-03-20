@@ -138,8 +138,14 @@ export interface ExtensionLifecycleContext {
   logger?: ILogger;
   /** Resolve secrets by ID (checks explicit map → env vars → extension-secrets.json) */
   getSecret?: (secretId: string) => string | undefined;
-  /** Shared service registry for lazy-loaded cross-extension singletons */
-  services: ISharedServiceRegistry;
+  /**
+   * Shared service registry for lazy-loaded cross-extension singletons.
+   * Optional for backwards compatibility — existing extensions that don't
+   * use shared services continue to work unchanged. ExtensionManager always
+   * instantiates and injects a SharedServiceRegistry instance, so this is
+   * always available at runtime for extensions that need it.
+   */
+  services?: ISharedServiceRegistry;
 }
 ```
 
@@ -190,20 +196,27 @@ export class SharedServiceRegistry implements ISharedServiceRegistry {
     }
 
     // Cold path: we are the first caller — run the factory
-    const promise = Promise.resolve(factory()).then((instance) => {
-      this.instances.set(serviceId, instance);
-      this.pending.delete(serviceId);
+    const promise = Promise.resolve(factory())
+      .then((instance) => {
+        this.instances.set(serviceId, instance);
+        this.pending.delete(serviceId);
 
-      // Register dispose callback and tags if provided
-      if (options?.dispose) {
-        this.disposers.set(serviceId, options.dispose);
-      }
-      if (options?.tags) {
-        this.tagMap.set(serviceId, options.tags);
-      }
+        // Register dispose callback and tags if provided
+        if (options?.dispose) {
+          this.disposers.set(serviceId, options.dispose);
+        }
+        if (options?.tags) {
+          this.tagMap.set(serviceId, options.tags);
+        }
 
-      return instance;
-    });
+        return instance;
+      })
+      .catch((error) => {
+        // Clean up pending entry so subsequent callers can retry the factory
+        // instead of awaiting a permanently rejected promise
+        this.pending.delete(serviceId);
+        throw error;
+      });
 
     this.pending.set(serviceId, promise);
     return promise as Promise<T>;
@@ -381,9 +394,12 @@ export interface PiiRedactionPackOptions {
 
   /**
    * Which direction(s) the guardrail applies to.
-   * - `input`: scan user messages before orchestration
-   * - `output`: scan agent responses before streaming to client
-   * - `both`: scan in both directions
+   * - `input`: only `evaluateInput()` is active; `evaluateOutput()` returns null
+   * - `output`: only `evaluateOutput()` is active; `evaluateInput()` returns null
+   * - `both`: both `evaluateInput()` and `evaluateOutput()` are active
+   *
+   * Note: `IGuardrailService` does not have a native scope concept — this option
+   * controls which methods the `PiiRedactionGuardrail` implementation activates.
    * @default 'both'
    */
   guardrailScope?: 'input' | 'output' | 'both';
@@ -392,6 +408,7 @@ export interface PiiRedactionPackOptions {
    * Enable real-time streaming chunk evaluation for output guardrail.
    * When true, TEXT_DELTA chunks are evaluated as they stream.
    * When false, only FINAL_RESPONSE is evaluated.
+   * Maps directly to `IGuardrailService.config.evaluateStreamingChunks`.
    * @default true
    */
   evaluateStreamingChunks?: boolean;
@@ -399,7 +416,11 @@ export interface PiiRedactionPackOptions {
   /**
    * Maximum number of streaming evaluations per request.
    * Rate-limits how often the NER/LLM tiers run during streaming.
-   * @default 200
+   * Maps directly to `IGuardrailService.config.maxStreamingEvaluations`.
+   * With sentence-boundary buffering, each evaluation covers a full sentence,
+   * so 50 evaluations covers ~50 sentences per response — sufficient for
+   * most agent responses while keeping NER/LLM costs bounded.
+   * @default 50
    */
   maxStreamingEvaluations?: number;
 }
@@ -600,6 +621,31 @@ Initially detected as: {{DETECTED_TYPE}} (score: {{DETECTED_SCORE}}, source: {{D
 Is this PII? Classify it.`;
 ```
 
+**LLM response handling:** When the LLM returns `entityType: "NOT_PII"`, the entity is discarded from the results entirely (treated as a false positive from earlier tiers). When it returns `isPii: true`, the entity's `score` and `entityType` are updated with the LLM's values, and `source` is changed to `'llm-judge'`. The original tier's classification is preserved in `metadata.originalSource` and `metadata.originalScore` for audit.
+
+#### 2.6 PiiDetectionResult Wrapper
+
+```typescript
+// packages/agentos/src/extensions/packs/pii-redaction/types.ts
+
+/**
+ * Result wrapper returned by PiiDetectionPipeline.detect().
+ * Includes detected entities plus metadata for observability and debugging.
+ */
+export interface PiiDetectionResult {
+  /** Final deduplicated, threshold-filtered entities */
+  entities: PiiEntity[];
+  /** Length of the input text in characters */
+  inputLength: number;
+  /** Total processing time across all tiers in milliseconds */
+  processingTimeMs: number;
+  /** Which tiers actually ran (some may be skipped by gating logic) */
+  tiersExecuted: ('regex' | 'nlp-prefilter' | 'ner-model' | 'llm-judge')[];
+  /** Human-readable summary (e.g., "Found 3 PII entities: 1 PERSON, 1 EMAIL, 1 SSN") */
+  summary: string;
+}
+```
+
 ---
 
 ### 3. Extension Pack Structure
@@ -635,9 +681,9 @@ pii-redaction/
  * Creates the PII redaction extension pack.
  *
  * Provides three descriptors:
- * 1. A guardrail (`kind: 'guardrail'`) for automatic input/output PII redaction
- * 2. A `pii_scan` tool (`kind: 'tool'`) for on-demand PII detection
- * 3. A `pii_redact` tool (`kind: 'tool'`) for on-demand PII redaction
+ * 1. A guardrail (`id: 'pii-redaction-guardrail'`, `kind: 'guardrail'`) for automatic input/output PII redaction
+ * 2. A `pii_scan` tool (`id: 'pii_scan'`, `kind: 'tool'`) for on-demand PII detection
+ * 3. A `pii_redact` tool (`id: 'pii_redact'`, `kind: 'tool'`) for on-demand PII redaction
  *
  * Heavy dependencies (compromise NLP, BERT NER model, LLM client) are
  * lazy-loaded via ISharedServiceRegistry — they only initialize when
@@ -671,6 +717,32 @@ pii-redaction/
  */
 export function createPiiRedactionPack(options?: PiiRedactionPackOptions): ExtensionPack {
   // ... implementation
+}
+
+/**
+ * Standard entry point for manifest-based loading via ExtensionManager.
+ *
+ * When the pack is loaded via `{ package: '@framers/agentos-ext-pii-redaction' }`,
+ * ExtensionManager calls this function with an ExtensionPackContext. The context's
+ * `options` field is forwarded as PiiRedactionPackOptions.
+ *
+ * @param context - ExtensionPackContext provided by ExtensionManager during loading
+ * @returns The configured PII redaction ExtensionPack
+ *
+ * @example Manifest-based loading:
+ * ```typescript
+ * await agent.initialize({
+ *   manifest: {
+ *     packs: [{
+ *       package: '@framers/agentos-ext-pii-redaction',
+ *       options: { redactionStyle: 'mask', enableNerModel: false }
+ *     }]
+ *   }
+ * });
+ * ```
+ */
+export function createExtensionPack(context: ExtensionPackContext): ExtensionPack {
+  return createPiiRedactionPack(context.options as PiiRedactionPackOptions);
 }
 ````
 
@@ -714,13 +786,14 @@ export function createPiiRedactionPack(options?: PiiRedactionPackOptions): Exten
  * |----------------|---------------|---------------------------------|
  * | `placeholder`  | John Smith    | [PERSON]                        |
  * | `mask`         | John Smith    | J*** S****                      |
- * | `hash`         | John Smith    | [PERSON:a1b2c3]                 |
+ * | `hash`         | John Smith    | [PERSON:a1b2c3d4e5]             |
  * | `category-tag` | John Smith    | <PII type="PERSON">REDACTED</PII> |
  *
- * The `hash` style uses a deterministic hash (SHA-256 truncated to 6 hex chars)
- * so the same entity text always produces the same hash. This enables
- * cross-document correlation of redacted entities without revealing the
- * original text. The hash is NOT reversible without the original input.
+ * The `hash` style uses a deterministic hash (SHA-256 truncated to 10 hex chars,
+ * providing ~1 trillion unique values to minimize collision risk across large
+ * document corpora) so the same entity text always produces the same hash.
+ * This enables cross-document correlation of redacted entities without
+ * revealing the original text. The hash is NOT reversible without the original input.
  *
  * Entities are processed in reverse order (highest start offset first) to
  * preserve character offsets during replacement.
@@ -886,6 +959,38 @@ The `pii-redaction.skill.md` file is added to `packages/agentos-skills-registry/
 ```
 
 Optional dependencies ensure users who disable NER or LLM tiers don't pay the install cost. Lazy `import()` calls handle missing packages gracefully with try/catch, logging a warning and skipping the tier.
+
+#### 5.6 Optional Dependency Fallback Behavior
+
+Each tier handles missing dependencies gracefully:
+
+| Dependency                  | Missing Behavior                                                                                                   | Impact                                              |
+| --------------------------- | ------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------- |
+| `openredaction`             | **Required** — pack fails to load with clear error message                                                         | Extension cannot function without regex tier        |
+| `compromise`                | Tier 2 skipped, warning logged. Tier 3 (NER) runs unconditionally on all text instead of being gated by pre-filter | Higher NER costs but no loss of detection accuracy  |
+| `@huggingface/transformers` | Tier 3 skipped, warning logged. Only regex + LLM judge available for name detection                                | Reduced recall for unstructured PII (names, orgs)   |
+| `openai`                    | Tier 4 skipped, warning logged. Ambiguous entities use their raw confidence score without LLM resolution           | Some false positives/negatives in the 0.3–0.7 range |
+
+When `enableNerModel: false` and `compromise` is missing, Tiers 2+3 are both skipped. The pipeline degrades to regex + optional LLM judge, which is still useful for structured PII.
+
+#### 5.7 Streaming Buffer Scoping
+
+The sentence-boundary buffer in `PiiRedactionGuardrail` is scoped **per-request**, not per-guardrail-instance. Each call to `evaluateOutput()` receives a `GuardrailContext` with `sessionId` and `conversationId`. The guardrail maintains a `Map<string, string>` of request-scoped buffers keyed by a composite of `sessionId + conversationId`. Buffers are cleaned up when the stream ends (FINAL_RESPONSE chunk received) or on timeout (30s of no chunks).
+
+This ensures concurrent multi-agent or multi-turn streaming responses don't corrupt each other's buffers.
+
+#### 5.8 Confidence Threshold vs LLM Judge Interaction
+
+The `confidenceThreshold` (default: 0.5) is applied **after** LLM judge resolution, not before. The pipeline flow is:
+
+1. All four tiers produce raw entities with scores
+2. EntityMerger deduplicates and merges overlapping spans
+3. Entities with merged score in the ambiguous range (0.3–0.7) are sent to LLM judge (if configured)
+4. LLM judge returns updated `isPii`, `entityType`, and `confidence`
+5. **Then** `confidenceThreshold` is applied to the final merged+judged entities
+6. Entities below threshold are discarded
+
+This ensures the LLM judge has a chance to resolve ambiguity before the threshold filter removes them.
 
 ---
 
