@@ -8,8 +8,10 @@
  * @module email-intelligence/services/email-sync
  */
 
-import { Injectable, Inject, Logger } from '@nestjs/common';
+import { Injectable, Inject, Logger, OnModuleInit } from '@nestjs/common';
 import { DatabaseService } from '../../../../database/database.service.js';
+import { CronJobService } from '../../cron/cron.service.js';
+import type { CronJobRecord } from '../../cron/cron.service.js';
 import { EmailThreadService } from './email-thread.service.js';
 import { GmailProvider } from '../providers/gmail-provider.js';
 import type {
@@ -36,6 +38,8 @@ interface AccountRow {
   sync_progress_json: string | null;
   total_messages_synced: number;
   last_full_sync_at: number | null;
+  sync_interval_ms: number;
+  cron_job_id: string | null;
 }
 
 // ---------------------------------------------------------------------------
@@ -43,13 +47,112 @@ interface AccountRow {
 // ---------------------------------------------------------------------------
 
 @Injectable()
-export class EmailSyncService {
+export class EmailSyncService implements OnModuleInit {
   private readonly logger = new Logger(EmailSyncService.name);
 
   constructor(
     @Inject(DatabaseService) private readonly db: DatabaseService,
-    private readonly threadService: EmailThreadService
+    private readonly threadService: EmailThreadService,
+    private readonly cronJobService: CronJobService
   ) {}
+
+  // ---- Module init — re-activate sync schedules on restart ----------------
+
+  async onModuleInit(): Promise<void> {
+    try {
+      await this.db.run(`ALTER TABLE wunderland_email_accounts ADD COLUMN cron_job_id TEXT`, []);
+    } catch {
+      // Column already exists — ignore
+    }
+
+    const activeAccounts = await this.db.all<AccountRow>(
+      `SELECT * FROM wunderland_email_accounts WHERE sync_enabled = 1 AND is_active = 1`,
+      []
+    );
+
+    for (const account of activeAccounts) {
+      if (account.cron_job_id) continue; // already scheduled
+      try {
+        await this.scheduleSync(account.id, account.owner_user_id, account.seed_id);
+        this.logger.log(`Re-scheduled sync for account ${account.email_address}`);
+      } catch (err) {
+        this.logger.warn(
+          `Failed to re-schedule sync for account ${account.id}: ${err instanceof Error ? err.message : err}`
+        );
+      }
+    }
+  }
+
+  // ---- Sync scheduling ----------------------------------------------------
+
+  /**
+   * Create a cron job for periodic email sync of the given account.
+   * If the account already has a cron job, returns the existing one.
+   */
+  async scheduleSync(accountId: string, userId: string, seedId: string): Promise<CronJobRecord> {
+    const account = await this.db.get<AccountRow>(
+      `SELECT * FROM wunderland_email_accounts WHERE id = ?`,
+      [accountId]
+    );
+    if (!account) throw new Error(`Email account "${accountId}" not found`);
+
+    // If already scheduled, return existing job
+    if (account.cron_job_id) {
+      try {
+        const { job } = await this.cronJobService.getJob(userId, account.cron_job_id);
+        return job;
+      } catch {
+        // Job may have been deleted externally — clear stale reference and re-create
+        await this.db.run(`UPDATE wunderland_email_accounts SET cron_job_id = NULL WHERE id = ?`, [
+          accountId,
+        ]);
+      }
+    }
+
+    const { job } = await this.cronJobService.createJob(userId, {
+      seedId,
+      name: `Email sync: ${account.email_address}`,
+      description: `Periodic email sync for ${account.email_address}`,
+      scheduleKind: 'every',
+      scheduleConfig: JSON.stringify({ intervalMs: account.sync_interval_ms }),
+      payloadKind: 'email_sync',
+      payloadConfig: JSON.stringify({ accountId }),
+      enabled: true,
+    } as any); // cast to bypass class-validator IsIn constraint (programmatic call)
+
+    // Store association
+    await this.db.run(
+      `UPDATE wunderland_email_accounts SET cron_job_id = ?, updated_at = ? WHERE id = ?`,
+      [job.jobId, Date.now(), accountId]
+    );
+
+    return job;
+  }
+
+  /**
+   * Remove the periodic sync cron job for the given account.
+   */
+  async unscheduleSync(accountId: string, userId: string): Promise<void> {
+    const account = await this.db.get<AccountRow>(
+      `SELECT * FROM wunderland_email_accounts WHERE id = ?`,
+      [accountId]
+    );
+    if (!account) return;
+
+    if (account.cron_job_id) {
+      try {
+        await this.cronJobService.deleteJob(userId, account.cron_job_id);
+      } catch {
+        // Job may already be gone — that's fine
+      }
+    }
+
+    // Clear association
+    await this.db.run(
+      `UPDATE wunderland_email_accounts SET cron_job_id = NULL, updated_at = ? WHERE id = ?`,
+      [Date.now(), accountId]
+    );
+  }
 
   // ---- Main entry point ---------------------------------------------------
 

@@ -492,6 +492,7 @@ const runInitialSchema = async (db: StorageAdapter): Promise<void> => {
       last_sync_error TEXT,
       total_messages_synced INTEGER DEFAULT 0,
       is_active INTEGER DEFAULT 1,
+      cron_job_id TEXT,
       created_at BIGINT NOT NULL,
       updated_at BIGINT NOT NULL,
       UNIQUE(seed_id, email_address)
