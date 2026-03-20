@@ -47,6 +47,12 @@ All extensions are published to npm under the `@framers` scope.
 | [`@framers/agentos-ext-credential-vault`](./registry/curated/system/credential-vault)       | Encrypted credential management — 5 tools                      |     |
 | [`@framers/agentos-ext-notifications`](./registry/curated/communications/notifications)     | Multi-channel notification router — 3 tools                    |     |
 
+### Security
+
+| Package                                                                         | Description                                                              | npm |
+| ------------------------------------------------------------------------------- | ------------------------------------------------------------------------ | --- |
+| [`@framers/agentos-ext-pii-redaction`](/docs/extensions/built-in/pii-redaction) | Four-tier PII detection and redaction (regex + NLP + NER + LLM-as-judge) |     |
+
 ### Channel Adapters
 
 | Package                                                                                       | Description                                          | npm |
