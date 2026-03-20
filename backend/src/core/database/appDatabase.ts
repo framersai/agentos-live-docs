@@ -2304,6 +2304,24 @@ export const initializeAppDatabase = async (): Promise<void> => {
           : 'ALTER TABLE wunderland_browsing_sessions ADD COLUMN reasoning_traces_json TEXT;'
       );
 
+      // ── Credential metadata & expiry (Email Intelligence / OAuth token refresh) ──
+      await ensureColumnExists(
+        adapter,
+        'wunderbot_credentials',
+        'metadata',
+        adapter.kind === 'postgres'
+          ? 'ALTER TABLE wunderbot_credentials ADD COLUMN metadata TEXT DEFAULT NULL'
+          : 'ALTER TABLE wunderbot_credentials ADD COLUMN metadata TEXT DEFAULT NULL;'
+      );
+      await ensureColumnExists(
+        adapter,
+        'wunderbot_credentials',
+        'expires_at',
+        adapter.kind === 'postgres'
+          ? 'ALTER TABLE wunderbot_credentials ADD COLUMN expires_at BIGINT DEFAULT NULL'
+          : 'ALTER TABLE wunderbot_credentials ADD COLUMN expires_at BIGINT DEFAULT NULL;'
+      );
+
       await ensureWorkbenchUser(adapter);
     } catch (error) {
       usingInMemory = true;
