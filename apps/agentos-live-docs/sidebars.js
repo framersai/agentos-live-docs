@@ -52,9 +52,17 @@ const sidebars = {
             'features/planning-engine',
             'features/human-in-the-loop',
             'features/agent-communication',
-            'features/guardrails',
-            'features/creating-guardrails',
             'features/safety-primitives',
+          ],
+        },
+        {
+          type: 'category',
+          label: 'Guardrails',
+          collapsed: false,
+          items: [
+            'features/guardrails',
+            'features/guardrails-architecture',
+            'features/creating-guardrails',
           ],
         },
         {
