@@ -188,9 +188,18 @@ export interface CodeSafetyPackOptions {
   codeExecutingTools?: string[];
 
   /**
+   * Maps tool names to the argument key containing code and the default language.
+   * Used for TOOL_CALL_REQUEST scanning.
+   * @default DEFAULT_CODE_ARGUMENT_MAPPING (shell_execute→command/bash, run_sql→query/sql, etc.)
+   */
+  codeArgumentMapping?: Record<string, { argKey: string; language: string | null }>;
+
+  /**
    * Guardrail scope.
-   * Defaults to 'output' — scans agent responses for insecure code.
+   * Defaults to 'output' — scans agent responses and tool calls for insecure code.
    * Set to 'both' to also scan user-provided code in input messages.
+   * When scope includes 'input', evaluateInput extracts code blocks from
+   * payload.input.textInput and scans them with the same rules.
    * @default 'output'
    */
   guardrailScope?: 'input' | 'output' | 'both';
@@ -272,13 +281,13 @@ export function detectLanguage(code: string): string | null;
 
 #### Injection (5 rules)
 
-| Rule ID                      | Severity | Universal Pattern                | Language-Specific                                                                                                                          |
-| ---------------------------- | -------- | -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
-| `code-injection-eval`        | critical | `eval(`                          | Python: `exec(`, `compile(`. JS: `new Function(`, `setTimeout("`. PHP: `passthru(`, `shell_exec(`                                          |
-| `command-injection-system`   | critical | —                                | Python: `os.system(`, `subprocess.call(shell=True)`, `subprocess.Popen(shell=True)`. Ruby: `system(`, `` `cmd` ``. PHP: `system(`, `exec(` |
-| `command-injection-backtick` | high     | `` `...` `` (backtick execution) | Bash: `$(...)` command substitution                                                                                                        |
-| `code-injection-template`    | medium   | —                                | JS: template literal with `${...}` inside eval/Function. Python: f-string in exec                                                          |
-| `unsafe-reflection`          | medium   | —                                | Java: `Class.forName(userInput)`. Python: `getattr(obj, userInput)`                                                                        |
+| Rule ID                      | Severity | Universal Pattern                                                   | Language-Specific                                                                                                                                                                          |
+| ---------------------------- | -------- | ------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `code-injection-eval`        | critical | `eval(`                                                             | Python: `exec(`, `compile(`. JS: `new Function(`, `setTimeout("`. PHP: `passthru(`, `shell_exec(`                                                                                          |
+| `command-injection-system`   | critical | —                                                                   | Python: `os.system(`, `subprocess.call(shell=True)`, `subprocess.Popen(shell=True)`. Ruby: `system(`, `` `cmd` ``. PHP: `system(`, `exec(`                                                 |
+| `command-injection-backtick` | high     | — (no universal pattern — backticks are template literals in JS/TS) | Ruby/Perl/Bash only: `` `cmd` `` backtick execution. Bash: `$(...)` command substitution. **Explicitly excluded for JavaScript/TypeScript** to avoid false positives on template literals. |
+| `code-injection-template`    | medium   | —                                                                   | JS: template literal with `${...}` inside eval/Function. Python: f-string in exec                                                                                                          |
+| `unsafe-reflection`          | medium   | —                                                                   | Java: `Class.forName(userInput)`. Python: `getattr(obj, userInput)`                                                                                                                        |
 
 #### SQL Injection (3 rules)
 
@@ -286,7 +295,7 @@ export function detectLanguage(code: string): string | null;
 | ------------------------ | -------- | --------------------------------------------------------------------------------------------------- |
 | `sql-injection-concat`   | critical | String concatenation in SQL: `"SELECT * FROM " + var`, `f"SELECT...{var}"`, `` `SELECT...${var}` `` |
 | `sql-injection-format`   | high     | `.format()` or `%s` in SQL strings                                                                  |
-| `sql-injection-keywords` | medium   | `' OR 1=1`, `UNION SELECT`, `; DROP TABLE` in string literals                                       |
+| `sql-injection-keywords` | high     | `' OR 1=1`, `UNION SELECT`, `; DROP TABLE` in string literals                                       |
 
 #### XSS (3 rules)
 
@@ -321,10 +330,10 @@ export function detectLanguage(code: string): string | null;
 
 #### Deserialization (2 rules)
 
-| Rule ID           | Severity | Pattern                                                              |
-| ----------------- | -------- | -------------------------------------------------------------------- |
-| `insecure-pickle` | critical | `pickle.loads(`, `pickle.load(`, `cPickle.loads(`                    |
-| `insecure-yaml`   | high     | `yaml.load(` without `Loader=SafeLoader` or `Loader=yaml.SafeLoader` |
+| Rule ID           | Severity | Pattern                                                                                                                                  |
+| ----------------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| `insecure-pickle` | critical | `pickle.loads(`, `pickle.load(`, `cPickle.loads(`                                                                                        |
+| `insecure-yaml`   | high     | `yaml.load(` without `Loader=SafeLoader` or `Loader=yaml.SafeLoader` (requires negative lookahead regex: `yaml\.load\((?!.*Loader\s*=)`) |
 
 #### SSRF (2 rules)
 
@@ -428,9 +437,23 @@ export class CodeSafetyScanner {
  * - CODE_SAFETY_LOW: low severity violation
  */
 export class CodeSafetyGuardrail implements IGuardrailService {
-  readonly config: GuardrailConfig;
+  /**
+   * Guardrail config:
+   * - evaluateStreamingChunks: true (required to receive TEXT_DELTA chunks
+   *   for fence-boundary buffering — without this, only FINAL_RESPONSE is received)
+   * - canSanitize: false (runs in Phase 2 parallel, returns BLOCK/FLAG not SANITIZE)
+   *
+   * The guardrail's evaluateOutput receives ALL chunk types from the pipeline
+   * (TEXT_DELTA, TOOL_CALL_REQUEST, FINAL_RESPONSE, etc.). It only acts on
+   * TEXT_DELTA (fence buffering), TOOL_CALL_REQUEST (tool arg scanning), and
+   * isFinal chunks (flush remaining buffer).
+   */
+  readonly config: GuardrailConfig = {
+    evaluateStreamingChunks: true,
+    canSanitize: false,
+  };
 
-  constructor(options: CodeSafetyPackOptions);
+  constructor(options: CodeSafetyPackOptions, scanner: CodeSafetyScanner);
 
   async evaluateInput(payload: GuardrailInputPayload): Promise<GuardrailEvaluationResult | null>;
 
@@ -472,11 +495,26 @@ Stale cleanup: same lazy pattern (prune when map size > 100).
 
 On TOOL_CALL_REQUEST chunks:
 
-1. Check if `toolName` is in `codeExecutingTools` list
-2. If yes: extract the code argument (typically `command` for shell_execute, `query` for run_sql, `content` for write_file)
-3. Infer language from tool name: `shell_execute` → `'bash'`, `run_sql` → `'sql'`, `write_file` → detect from filename
+The chunk has `toolCalls: ToolCallRequest[]` (array — a chunk can contain multiple tool calls). Each `ToolCallRequest` has `{ id, name, arguments }`.
+
+1. Iterate over `chunk.toolCalls`
+2. For each `call`, check if `call.name` is in `codeExecutingTools` list
+3. If yes: extract the code argument from `call.arguments` using the `codeArgumentMapping`:
+   ```typescript
+   /** Maps tool name → { argument key to extract, default language } */
+   const DEFAULT_CODE_ARGUMENT_MAPPING: Record<
+     string,
+     { argKey: string; language: string | null }
+   > = {
+     shell_execute: { argKey: 'command', language: 'bash' },
+     run_sql: { argKey: 'query', language: 'sql' },
+     write_file: { argKey: 'content', language: null }, // detect from filename arg
+     create_file: { argKey: 'content', language: null },
+     edit_file: { argKey: 'content', language: null },
+   };
+   ```
 4. Scan with `scanner.scanCode(code, language)`
-5. Report violations
+5. Report violations — if any tool call has a violation, the entire chunk is flagged/blocked
 
 ---
 
@@ -565,9 +603,13 @@ export function createCodeSafetyPack(options?: CodeSafetyPackOptions): Extension
     ...opts.severityActions,
   });
 
-  const guardrail = new CodeSafetyGuardrail(opts);
+  const guardrail = new CodeSafetyGuardrail(opts, scanner);
   const tool = new ScanCodeTool(scanner);
 
+  // Plain descriptors array (not a getter) is intentional:
+  // No onActivate/onDeactivate lifecycle needed for this pack.
+  // Pure regex, no shared services, no model loading.
+  // If lifecycle hooks are ever needed, migrate to the getter pattern.
   return {
     name: 'code-safety',
     version: '1.0.0',
