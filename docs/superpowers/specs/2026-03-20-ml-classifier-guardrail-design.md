@@ -166,13 +166,21 @@ export class SlidingWindowBuffer {
    */
   flush(streamId: string): ChunkReady | null;
 
-  /** Remove stale streams that haven't received tokens within the timeout */
+  /**
+   * Remove stale streams that haven't received tokens within the timeout.
+   * Called automatically on every push() when the stream map exceeds 10 entries,
+   * ensuring bounded memory growth without requiring a separate interval timer.
+   */
   pruneStale(): void;
 
-  /** Clean up all state (called during extension deactivation) */
+  /** Clean up all state (called during extension onDeactivate) */
   clear(): void;
 }
 ```
+
+**Concurrent stream safety:** The AgentOS streaming pipeline serializes `evaluateOutput()` calls per-stream (chunks for a given `streamId` are yielded sequentially). Two different streams may call `push()` concurrently with different `streamId`s, which is safe because they access separate `WindowState` entries in the Map. No additional locking is required. This matches the same guarantee documented in the PII redaction guardrail.
+
+**Stale cleanup:** `pruneStale()` is called lazily inside `push()` when the stream map exceeds 10 entries, rather than via `setInterval`. This avoids timer management complexity and ensures cleanup happens proportionally to usage.
 
 **Token estimation:**
 
@@ -268,7 +276,16 @@ export interface ClassifierConfig {
   modelId?: string;
   /** Override action thresholds for this specific classifier */
   thresholds?: Partial<ClassifierThresholds>;
-  /** Custom label-to-action mapping (overrides threshold-based logic) */
+  /**
+   * Custom label-to-action mapping. When set for a label, that label's
+   * action is determined by this map INSTEAD of threshold-based logic.
+   * Any score > 0 for a mapped label triggers the specified action.
+   * Labels not in this map still use threshold-based logic.
+   *
+   * Example: { 'identity_hate': 'block', 'insult': 'flag' }
+   * means identity_hate always blocks (regardless of score), insult
+   * always flags, and other labels use score thresholds.
+   */
   labelActions?: Record<string, 'pass' | 'flag' | 'block'>;
 }
 ```
@@ -470,13 +487,28 @@ class ToxicityClassifier implements IContentClassifier {
  *   overlap) is classified through all enabled classifiers in parallel.
  * - Results are aggregated: worst-wins (any BLOCK → stream terminated).
  *
- * Streaming modes:
- * - non-blocking: tokens stream to user immediately, classification
- *   runs in background. On violation, stream is terminated on next chunk.
- * - blocking: tokens are held until chunk is classified as safe.
- *   User sees ~2 second bursts instead of smooth streaming.
- * - hybrid: first chunk is blocking (catches injection in initial
- *   response), subsequent chunks are non-blocking.
+ * Streaming modes (implemented within the IGuardrailService contract):
+ *
+ * The guardrail dispatcher `await`s each `evaluateOutput()` call before
+ * yielding the chunk, making all guardrails inherently blocking. The three
+ * streaming modes are implemented as follows within that constraint:
+ *
+ * - non-blocking: `evaluateOutput()` returns `null` immediately for chunks
+ *   that are still accumulating. Classification fires asynchronously in the
+ *   background. On the NEXT `evaluateOutput()` call, the guardrail checks
+ *   the previous async result — if it was a violation, returns BLOCK then.
+ *   This means tokens stream with ~0ms added latency, and violations are
+ *   caught with a one-chunk delay (~2s at chunkSize=200).
+ *
+ * - blocking: `evaluateOutput()` awaits classification before returning.
+ *   When the buffer hasn't reached chunkSize, returns `null` immediately.
+ *   When the buffer IS ready, the call blocks for ~20-60ms while classifiers
+ *   run, then returns null (pass) or BLOCK. User sees smooth streaming
+ *   with ~60ms micro-pauses every ~2 seconds (imperceptible).
+ *
+ * - hybrid: first chunk uses blocking (catches injection in the first
+ *   response — the most dangerous attack vector). Subsequent chunks use
+ *   non-blocking (smooth streaming with one-chunk-delayed violation detection).
  *
  * Guardrail scope:
  * - 'input': only evaluateInput is active
@@ -602,16 +634,9 @@ export interface MLClassifierPackOptions {
    */
   customClassifiers?: IContentClassifier[];
 
-  /**
-   * Override default model IDs for all built-in classifiers.
-   * Useful for air-gapped deployments with local model paths,
-   * or for swapping in fine-tuned variants.
-   */
-  modelOverrides?: {
-    toxicity?: string; // default: 'unitary/toxic-bert'
-    injection?: string; // default: 'protectai/deberta-v3-small-prompt-injection-v2'
-    jailbreak?: string; // default: 'meta-llama/PromptGuard-86M'
-  };
+  // NOTE: To override model IDs, use per-classifier config:
+  //   classifiers: { toxicity: { modelId: 'custom/my-toxicity-model' } }
+  // No separate modelOverrides field — avoids config duplication.
 
   /**
    * Model cache directory (Node.js only).
@@ -749,7 +774,7 @@ export function createExtensionPack(context: ExtensionPackContext): ExtensionPac
 | `ml-classifier-guardrail` | `guardrail` | 5        | Automatic input/output classification   |
 | `classify_content`        | `tool`      | 0        | On-demand agent-callable classification |
 
-Priority 5 (lower than PII redaction at 10) so ML classification runs before PII redaction in the guardrail chain — block unsafe content before spending time on PII detection.
+Priority 5 for stacking (lower than PII redaction at 10). Note: guardrail execution order depends on pack registration order in the manifest, NOT priority values. Priority only controls which descriptor wins when multiple descriptors share the same `id`. To ensure ML classification runs before PII redaction, register the ML classifier pack before the PII pack in the manifest.
 
 **onActivate pattern** (same as PII — rebuild components with shared registry):
 
@@ -763,6 +788,11 @@ return {
   onActivate: (context) => {
     if (context.services) state.services = context.services;
     buildComponents(); // Rebuild with ExtensionManager's shared registry
+  },
+  onDeactivate: async () => {
+    // Release ~98MB of model memory
+    await orchestrator?.dispose();
+    buffer?.clear();
   },
 };
 ```
@@ -871,18 +901,47 @@ These are extracted and re-exported from `packages/agentos/src/core/utils/index.
 The ML classifier results use the existing `ClassificationResult` type from `packages/agentos/src/core/ai_utilities/IUtilityAI.ts`:
 
 ```typescript
-// Already exists in IUtilityAI.ts:
-interface ClassificationResult {
-  scores: ClassificationScore[]; // { category, score, label }
-  topCategory: string;
-  confidence: number;
-  method: string; // e.g., 'ml_bert', 'ml_deberta', 'ml_promptguard'
+// Actual types from IUtilityAI.ts (lines 49-54):
+export interface ClassificationScore {
+  classLabel: string;
+  score: number;
+}
+export interface ClassificationResult {
+  bestClass: string | string[]; // top predicted class(es)
+  confidence: number | number[]; // confidence for bestClass(es)
+  allScores: ClassificationScore[]; // all class scores
 }
 ```
 
-Each `IContentClassifier.classify()` returns one `ClassificationResult`. The `ClassifierOrchestrator` aggregates them into a `ChunkEvaluation` which adds the `recommendedAction` and `triggeredBy` fields.
+Each `IContentClassifier.classify()` maps model output to this shape:
 
-No new classification result type is defined. The ML classifiers are just another `method` in the IUtilityAI classification system.
+```typescript
+// Example: ToxicityClassifier maps toxic-bert output to:
+{
+  bestClass: 'toxic',
+  confidence: 0.92,
+  allScores: [
+    { classLabel: 'toxic', score: 0.92 },
+    { classLabel: 'severe_toxic', score: 0.03 },
+    { classLabel: 'obscene', score: 0.85 },
+    { classLabel: 'threat', score: 0.01 },
+    { classLabel: 'insult', score: 0.78 },
+    { classLabel: 'identity_hate', score: 0.02 },
+  ],
+}
+```
+
+To track classifier provenance, we define a thin extension:
+
+```typescript
+/** ClassificationResult annotated with which classifier produced it */
+export interface AnnotatedClassificationResult extends ClassificationResult {
+  classifierId: string; // e.g., 'toxicity', 'prompt-injection'
+  latencyMs: number; // classification time for this classifier
+}
+```
+
+The `ClassifierOrchestrator` aggregates `AnnotatedClassificationResult[]` into a `ChunkEvaluation` with the `recommendedAction` and `triggeredBy` fields. This extends (not replaces) the IUtilityAI type.
 
 ---
 
@@ -945,7 +1004,7 @@ a tool for on-demand classification.
 
 ## Open Questions (Deferred)
 
-1. Should the classifier support **fine-tuning on domain-specific data** (e.g., train the injection classifier on your specific prompt templates)? Deferred — the `modelOverrides` config already allows swapping in fine-tuned models.
+1. Should the classifier support **fine-tuning on domain-specific data** (e.g., train the injection classifier on your specific prompt templates)? Deferred — the per-classifier `modelId` config already allows swapping in fine-tuned models.
 2. Should there be a **guardrail evaluation dashboard** showing classification distribution, false positive rates, and latency percentiles? Deferred to Sub-project 2 (dispatcher upgrade).
 3. Should the **sliding window buffer be extracted to AgentOS core** as a reusable primitive (not just internal to this pack)? Could benefit other streaming guardrails. Deferred — keep internal for now, promote if needed.
 4. Should we add a **multilingual toxicity classifier** (e.g., `unitary/multilingual-toxic-xlm-roberta`)? Deferred — can be added via `customClassifiers` config today.
