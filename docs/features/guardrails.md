@@ -52,6 +52,29 @@ await agent.initialize({
 });
 ```
 
+## Guardrail Extension Packs
+
+AgentOS ships with five first-class guardrail extension packs covering SOTA content safety:
+
+| Pack                                                               | What It Does                                          | Memory | Key Tech                                          |
+| ------------------------------------------------------------------ | ----------------------------------------------------- | ------ | ------------------------------------------------- |
+| [PII Redaction](/docs/extensions/built-in/pii-redaction)           | Four-tier PII detection and redaction                 | ~115MB | OpenRedaction + compromise + BERT NER + LLM judge |
+| [ML Content Classifiers](/docs/extensions/built-in/ml-classifiers) | Toxicity, prompt injection, jailbreak detection       | ~98MB  | toxic-bert + DeBERTa + PromptGuard (ONNX)         |
+| [Topicality](/docs/extensions/built-in/topicality)                 | Allowed/forbidden topic enforcement + drift detection | ~1.7MB | Embedding centroids + EMA drift tracking          |
+| [Code Safety](/docs/extensions/built-in/code-safety)               | OWASP Top 10 code vulnerability scanning              | ~110KB | 25 language-aware regex rules                     |
+| [Grounding Guard](/docs/extensions/built-in/grounding-guard)       | RAG-grounded hallucination detection                  | ~40MB  | NLI cross-encoder + LLM-as-judge                  |
+
+All packs are self-contained, independently loadable via manifest, and lazy-load their models on first use. Combined worst-case memory: ~255MB. Typical (PII + ML classifiers): ~98MB.
+
+### Two-Phase Parallel Execution
+
+When multiple guardrails are registered, the `ParallelGuardrailDispatcher` runs them in two phases:
+
+1. **Phase 1 (sequential)**: Guardrails with `canSanitize: true` (e.g., PII Redaction) run one at a time so each can modify content based on the prior's output.
+2. **Phase 2 (parallel)**: All remaining guardrails run concurrently via `Promise.allSettled`. Worst-wins aggregation (BLOCK > FLAG > ALLOW).
+
+This means PII redacts sensitive data first, then ML classifiers, topicality, code safety, and grounding guard all run simultaneously on the sanitized text.
+
 ## Guardrail Actions
 
 | Action     | Effect                                  |
