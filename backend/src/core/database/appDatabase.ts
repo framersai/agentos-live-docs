@@ -2258,6 +2258,22 @@ export const initializeAppDatabase = async (): Promise<void> => {
       await ensureColumnExists(
         adapter,
         'wunderbots',
+        'storage_policy',
+        adapter.kind === 'postgres'
+          ? "ALTER TABLE wunderbots ADD COLUMN storage_policy TEXT DEFAULT 'sealed'"
+          : "ALTER TABLE wunderbots ADD COLUMN storage_policy TEXT DEFAULT 'sealed';"
+      );
+      await ensureColumnExists(
+        adapter,
+        'wunderbots',
+        'sealed_at',
+        adapter.kind === 'postgres'
+          ? 'ALTER TABLE wunderbots ADD COLUMN sealed_at BIGINT'
+          : 'ALTER TABLE wunderbots ADD COLUMN sealed_at BIGINT;'
+      );
+      await ensureColumnExists(
+        adapter,
+        'wunderbots',
         'skills_json',
         adapter.kind === 'postgres'
           ? 'ALTER TABLE wunderbots ADD COLUMN skills_json TEXT'
