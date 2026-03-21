@@ -103,6 +103,12 @@ const agentosGuides = [
   },
   { src: 'GUARDRAILS_USAGE.md', dest: 'features/guardrails.md', title: 'Guardrails', position: 4 },
   {
+    src: 'CREATING_GUARDRAILS.md',
+    dest: 'features/creating-guardrails.md',
+    title: 'Creating Custom Guardrails',
+    position: 8,
+  },
+  {
     src: 'SAFETY_PRIMITIVES.md',
     dest: 'features/safety-primitives.md',
     title: 'Safety Primitives',
@@ -396,6 +402,7 @@ const linkRewrites = {
   'HUMAN_IN_THE_LOOP.md': '/docs/features/human-in-the-loop',
   'AGENT_COMMUNICATION.md': '/docs/features/agent-communication',
   'GUARDRAILS_USAGE.md': '/docs/features/guardrails',
+  'CREATING_GUARDRAILS.md': '/docs/features/creating-guardrails',
   'RAG_MEMORY_CONFIGURATION.md': '/docs/features/rag-memory',
   'COGNITIVE_MEMORY.md': '/docs/features/cognitive-memory',
   'MULTIMODAL_RAG.md': '/docs/features/multimodal-rag',
