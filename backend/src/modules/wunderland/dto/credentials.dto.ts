@@ -3,7 +3,7 @@
  * @description DTOs for agent credential vault endpoints.
  */
 
-import { IsOptional, IsString, MaxLength } from 'class-validator';
+import { IsNumber, IsOptional, IsString, MaxLength } from 'class-validator';
 
 export class ListCredentialsQueryDto {
   @IsOptional()
@@ -29,6 +29,17 @@ export class CreateCredentialDto {
   @IsString()
   @MaxLength(4096)
   value!: string;
+
+  /** Optional JSON string with provider-specific metadata (e.g. OAuth refresh token). */
+  @IsOptional()
+  @IsString()
+  @MaxLength(8192)
+  metadata?: string;
+
+  /** Optional expiry timestamp in epoch milliseconds. */
+  @IsOptional()
+  @IsNumber()
+  expiresAt?: number;
 }
 
 export class RotateCredentialDto {
