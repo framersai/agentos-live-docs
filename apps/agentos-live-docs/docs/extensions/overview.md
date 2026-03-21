@@ -49,9 +49,13 @@ All extensions are published to npm under the `@framers` scope.
 
 ### Security
 
-| Package                                                                         | Description                                                              | npm |
-| ------------------------------------------------------------------------------- | ------------------------------------------------------------------------ | --- |
-| [`@framers/agentos-ext-pii-redaction`](/docs/extensions/built-in/pii-redaction) | Four-tier PII detection and redaction (regex + NLP + NER + LLM-as-judge) |     |
+| Package                                                                             | Description                                                                 | npm |
+| ----------------------------------------------------------------------------------- | --------------------------------------------------------------------------- | --- |
+| [`@framers/agentos-ext-pii-redaction`](/docs/extensions/built-in/pii-redaction)     | Four-tier PII detection and redaction (regex + NLP + NER + LLM-as-judge)    |     |
+| [`@framers/agentos-ext-ml-classifiers`](/docs/extensions/built-in/ml-classifiers)   | Streaming ML content safety classification (toxicity, injection, jailbreak) |     |
+| [`@framers/agentos-ext-topicality`](/docs/extensions/built-in/topicality)           | Embedding-based topic enforcement with drift detection                      |     |
+| [`@framers/agentos-ext-code-safety`](/docs/extensions/built-in/code-safety)         | OWASP Top 10 code safety scanning for LLM-generated code                    |     |
+| [`@framers/agentos-ext-grounding-guard`](/docs/extensions/built-in/grounding-guard) | RAG-grounded hallucination detection via NLI entailment                     |     |
 
 ### Channel Adapters
 
