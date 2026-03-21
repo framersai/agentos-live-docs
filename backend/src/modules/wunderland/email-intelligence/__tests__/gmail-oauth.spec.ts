@@ -33,6 +33,18 @@ beforeAll(async () => {
   await initializeAppDatabase();
   db = new DatabaseService();
 
+  // Ensure credential metadata columns exist (migration may not run in sqljs fallback path)
+  try {
+    await db.run(`ALTER TABLE wunderbot_credentials ADD COLUMN metadata TEXT DEFAULT NULL`);
+  } catch {
+    /* column may already exist */
+  }
+  try {
+    await db.run(`ALTER TABLE wunderbot_credentials ADD COLUMN expires_at BIGINT DEFAULT NULL`);
+  } catch {
+    /* column may already exist */
+  }
+
   // Seed agent ownership row
   const now = Date.now();
   await db.run(
@@ -57,12 +69,19 @@ afterAll(async () => {
   await closeAppDatabase();
 });
 
-beforeEach(() => {
+beforeEach(async () => {
   mockFetch.mockReset();
   // Set env vars for tests
   process.env.GOOGLE_CLIENT_ID = 'test-client-id';
   process.env.GOOGLE_CLIENT_SECRET = 'test-client-secret';
   process.env.GOOGLE_CALLBACK_URL = 'http://localhost:3000/api/channels/oauth/gmail/callback';
+  // Clean up state and accounts from previous tests to avoid UNIQUE constraint violations
+  await db.run(`DELETE FROM wunderland_email_accounts WHERE seed_id = ?`, [seedId]);
+  await db.run(
+    `DELETE FROM wunderbot_credentials WHERE seed_id = ? AND credential_type = 'google_oauth_token'`,
+    [seedId]
+  );
+  await db.run(`DELETE FROM wunderland_channel_oauth_states WHERE seed_id = ?`, [seedId]);
 });
 
 describe('initiateGmailOAuth', () => {
