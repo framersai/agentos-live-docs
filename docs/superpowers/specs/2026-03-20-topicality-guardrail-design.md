@@ -115,7 +115,11 @@ export interface TopicMatch {
   topicId: string;
   /** Topic display name */
   topicName: string;
-  /** Cosine similarity between message embedding and topic centroid (0.0–1.0) */
+  /**
+   * Cosine similarity between message embedding and topic centroid.
+   * Clamped to 0.0–1.0 via Math.max(0, cosineSimilarity(a, b))
+   * since negative similarity definitionally means "not on topic."
+   */
   similarity: number;
 }
 
@@ -150,6 +154,13 @@ export interface DriftConfig {
    * @default 3600000 (1 hour)
    */
   sessionTimeoutMs: number;
+
+  /**
+   * Maximum number of concurrent session states to track.
+   * When exceeded, pruneStale() is called lazily on next update.
+   * @default 100
+   */
+  maxSessions: number;
 }
 
 /**
@@ -258,7 +269,11 @@ export interface TopicalityPackOptions {
 
   /**
    * Guardrail scope.
-   * Topicality checks user input, not agent output.
+   * Defaults to 'input' (unlike PII/ML classifiers which default to 'both')
+   * because topicality checks USER messages for topic compliance.
+   * Agent responses are constrained by the system prompt — if the input
+   * is on-topic, the response should be too. Evaluating output would
+   * add embedding API latency without meaningful safety benefit.
    * @default 'input'
    */
   guardrailScope?: 'input' | 'output' | 'both';
@@ -272,6 +287,7 @@ export const DEFAULT_DRIFT_CONFIG: DriftConfig = {
   driftThreshold: 0.3,
   driftStreakLimit: 3,
   sessionTimeoutMs: 3_600_000, // 1 hour
+  maxSessions: 100,
 };
 ````
 
@@ -498,6 +514,30 @@ export class TopicEmbeddingIndex {
     nearestTopic: TopicMatch | null;
     allScores: TopicMatch[];
   }>;
+
+  /**
+   * Match a pre-computed embedding vector against topic centroids.
+   * Avoids re-embedding text that was already embedded by the caller.
+   *
+   * The TopicalityGuardrail embeds each message ONCE, then passes the
+   * vector to both matchByVector (for topic checking) and
+   * TopicDriftTracker.update (for drift tracking). This halves the
+   * embedding API calls compared to embedding separately for each.
+   *
+   * @param embedding - Pre-computed embedding vector
+   * @returns All topic matches sorted by similarity descending
+   */
+  matchByVector(embedding: number[]): TopicMatch[];
+
+  /**
+   * Check if a pre-computed embedding is on-topic.
+   * Same as isOnTopic but skips the embedding step.
+   */
+  isOnTopicByVector(embedding: number[], threshold: number): {
+    onTopic: boolean;
+    nearestTopic: TopicMatch | null;
+    allScores: TopicMatch[];
+  };
 }
 ```
 
@@ -557,6 +597,11 @@ EMA update formula:
 for (let i = 0; i < messageEmbedding.length; i++) {
   state.runningEmbedding[i] = alpha * messageEmbedding[i] + (1 - alpha) * state.runningEmbedding[i];
 }
+
+// Note: the running embedding's magnitude shrinks over iterations because
+// the average of unit-normalized vectors is not unit-normalized. This is
+// fine because cosineSimilarity normalizes by magnitude — only the
+// direction matters for the comparison. No re-normalization needed.
 ```
 
 ---
@@ -589,9 +634,16 @@ for (let i = 0; i < messageEmbedding.length; i++) {
 export class TopicalityGuardrail implements IGuardrailService {
   readonly config: GuardrailConfig;
 
+  /**
+   * @param services - ISharedServiceRegistry for consistency with PII/ML classifier packs.
+   *                   Currently used to resolve EmbeddingManager if embeddingFn not provided.
+   * @param options - Pack configuration (topics, thresholds, drift config)
+   * @param embeddingFn - Optional custom embedding function. If omitted, resolved from services.
+   */
   constructor(
-    embeddingFn: (texts: string[]) => Promise<number[][]>,
-    options: TopicalityPackOptions
+    services: ISharedServiceRegistry,
+    options: TopicalityPackOptions,
+    embeddingFn?: (texts: string[]) => Promise<number[][]>
   );
 
   async evaluateInput(payload: GuardrailInputPayload): Promise<GuardrailEvaluationResult | null>;
@@ -603,21 +655,21 @@ export class TopicalityGuardrail implements IGuardrailService {
 GuardrailEvaluationResult metadata includes:
 
 ```typescript
-metadata: {
-  // For forbidden topic match:
-  matchedTopic: { topicId, topicName, similarity },
-  reason: 'forbidden_topic',
+// Reason codes (machine-readable, for analytics):
+reasonCode: 'TOPICALITY_FORBIDDEN' | 'TOPICALITY_OFF_TOPIC' | 'TOPICALITY_DRIFT',
 
-  // For off-topic:
+metadata: {
+  // For forbidden topic match (reasonCode: 'TOPICALITY_FORBIDDEN'):
+  matchedTopic: { topicId, topicName, similarity },
+
+  // For off-topic (reasonCode: 'TOPICALITY_OFF_TOPIC'):
   nearestTopic: { topicId, topicName, similarity },
   threshold: 0.35,
-  reason: 'off_topic',
 
-  // For drift:
+  // For drift (reasonCode: 'TOPICALITY_DRIFT'):
   driftStreak: 5,
   currentSimilarity: 0.22,
   nearestTopic: { topicId, topicName, similarity },
-  reason: 'topic_drift',
 }
 ```
 
@@ -677,13 +729,76 @@ topicality/
 └── topicality.skill.md         # SKILL.md for agent awareness
 ```
 
-**Factory:**
+**Factory (explicit structure matching PII/ML classifier packs):**
 
 ```typescript
 export function createTopicalityPack(options: TopicalityPackOptions): ExtensionPack {
-  // Same onActivate/rebuild pattern as PII and ML classifiers.
-  // Resolves embeddingFn from options or ISharedServiceRegistry.
-  // Descriptors: 1 guardrail + 1 tool.
+  const opts = options;
+
+  const state = {
+    services: new SharedServiceRegistry() as ISharedServiceRegistry,
+  };
+
+  let guardrail: TopicalityGuardrail;
+  let tool: CheckTopicTool;
+  let driftTracker: TopicDriftTracker;
+
+  /**
+   * Resolve the embedding function from options or ISharedServiceRegistry.
+   * If options.embeddingFn is provided, use it directly (testable).
+   * Otherwise, resolve EmbeddingManager from the shared registry and
+   * wrap its generateEmbeddings into the expected signature.
+   */
+  function resolveEmbeddingFn(): (texts: string[]) => Promise<number[][]> {
+    if (opts.embeddingFn) return opts.embeddingFn;
+
+    return async (texts: string[]) => {
+      const embeddingManager = await state.services.getOrCreate(
+        'agentos:topicality:embedding-manager',
+        async () => {
+          // EmbeddingManager is expected to be pre-registered by AgentOS.
+          // If not available, throw to trigger fail-open in the guardrail.
+          throw new Error('EmbeddingManager not available in ISharedServiceRegistry');
+        }
+      );
+      return embeddingManager.generateEmbeddings(texts);
+    };
+  }
+
+  function buildComponents() {
+    const embeddingFn = resolveEmbeddingFn();
+    driftTracker = new TopicDriftTracker(opts.drift);
+    guardrail = new TopicalityGuardrail(state.services, opts, embeddingFn);
+    tool = new CheckTopicTool(embeddingFn, opts);
+  }
+
+  buildComponents();
+
+  return {
+    name: 'topicality',
+    version: '1.0.0',
+    get descriptors(): ExtensionDescriptor[] {
+      return [
+        {
+          id: 'topicality-guardrail',
+          kind: EXTENSION_KIND_GUARDRAIL,
+          priority: 3,
+          payload: guardrail,
+        },
+        { id: 'check_topic', kind: EXTENSION_KIND_TOOL, priority: 0, payload: tool },
+      ];
+    },
+    onActivate: (context: ExtensionLifecycleContext) => {
+      if (context.services) state.services = context.services;
+      // Rebuild with the shared registry (may now have EmbeddingManager)
+      // Topic centroids are NOT re-embedded here — they are built lazily
+      // on first evaluateInput call, so changing the registry is safe.
+      buildComponents();
+    },
+    onDeactivate: async () => {
+      driftTracker?.clear();
+    },
+  };
 }
 
 export function createExtensionPack(context: ExtensionPackContext): ExtensionPack {
