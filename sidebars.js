@@ -53,6 +53,7 @@ const sidebars = {
             'features/human-in-the-loop',
             'features/agent-communication',
             'features/guardrails',
+            'features/creating-guardrails',
             'features/safety-primitives',
           ],
         },
