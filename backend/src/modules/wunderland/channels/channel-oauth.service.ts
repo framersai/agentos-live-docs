@@ -116,9 +116,11 @@ export class ChannelOAuthService {
     await this.requireOwnedAgent(userId, seedId);
     await this.assertNotSealed(seedId);
 
-    const clientId = process.env.GOOGLE_CLIENT_ID;
+    const clientId = process.env.GOOGLE_CLIENT_ID || process.env.AUTH_GOOGLE_ID;
     if (!clientId) {
-      throw new BadRequestException('Gmail OAuth is not configured (GOOGLE_CLIENT_ID missing).');
+      throw new BadRequestException(
+        'Gmail OAuth is not configured (set GOOGLE_CLIENT_ID or AUTH_GOOGLE_ID).'
+      );
     }
 
     const redirectUri = process.env.GOOGLE_CALLBACK_URL || this.getCallbackUrl('gmail');
@@ -148,11 +150,13 @@ export class ChannelOAuthService {
   }> {
     const state = await this.consumeOAuthState(stateId);
 
-    const clientId = process.env.GOOGLE_CLIENT_ID;
-    const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
+    const clientId = process.env.GOOGLE_CLIENT_ID || process.env.AUTH_GOOGLE_ID;
+    const clientSecret = process.env.GOOGLE_CLIENT_SECRET || process.env.AUTH_GOOGLE_SECRET;
     const redirectUri = process.env.GOOGLE_CALLBACK_URL || state.redirectUri;
     if (!clientId || !clientSecret) {
-      throw new BadRequestException('Google OAuth credentials not configured.');
+      throw new BadRequestException(
+        'Google OAuth credentials not configured (set GOOGLE_CLIENT_ID/SECRET or AUTH_GOOGLE_ID/SECRET).'
+      );
     }
 
     // Exchange authorization code for tokens
