@@ -59,7 +59,7 @@ export interface AgentOSFinalResponseChunk extends AgentOSResponseChunk {
    * the retrieved source documents. When no RAG retrieval was performed,
    * this field is undefined.
    */
-  ragSources?: import('../../rag/IVectorStore').RagRetrievedChunk[];
+  ragSources?: import('../../rag').RagRetrievedChunk[];
 }
 ```
 
@@ -81,7 +81,7 @@ export interface GuardrailOutputPayload {
    *
    * When no RAG retrieval was performed, this field is undefined.
    */
-  ragSources?: import('../../rag/IVectorStore').RagRetrievedChunk[];
+  ragSources?: import('../../rag').RagRetrievedChunk[];
 }
 ```
 
@@ -89,13 +89,15 @@ export interface GuardrailOutputPayload {
 
 **GMI.ts** (~5 lines): After `retrieveContext()` returns `ragResult`, store `ragResult.retrievedChunks` in a request-scoped variable. Attach to the final response chunk's `ragSources` field.
 
-**GuardrailOutputOptions** (~2 lines): Add `ragSources?: RagRetrievedChunk[]` to the options type in `guardrailDispatcher.ts`.
+**GuardrailOutputOptions** (~2 lines): Add `ragSources?: RagRetrievedChunk[]` to the `GuardrailOutputOptions` type in `guardrailDispatcher.ts`.
 
-**wrapOutputGuardrails / ParallelGuardrailDispatcher.wrapOutput** (~3 lines): Thread `ragSources` from options into every `GuardrailOutputPayload` passed to guardrail evaluations.
+**ParallelGuardrailDispatcher.wrapOutput** (~10 lines): Thread `ragSources` from options into every `GuardrailOutputPayload` at all 4 call sites where the payload is constructed (streaming sanitizer eval, streaming parallel eval, final sanitizer eval, final parallel eval). Each call site spreads `ragSources` into the payload object.
 
 **AgentOS.processRequest** (~2 lines): Pass the stored `retrievedChunks` into `wrapOutputGuardrails` options.
 
-Total: ~12 lines across 4 files. Fully backwards compatible — both fields are optional.
+Total: ~20 lines across 4 files. Fully backwards compatible — both fields are optional.
+
+**Note on ragSources placement:** `ragSources` lives on `GuardrailOutputPayload` (payload-level), NOT duplicated on individual chunk types. This ensures streaming TEXT_DELTA evaluations have access to sources (even though the chunk itself is a TEXT_DELTA, not a FINAL_RESPONSE). The `AgentOSFinalResponseChunk.ragSources` field is retained for non-guardrail consumers (logging, analytics, UI source display) but the guardrail reads from the payload, not the chunk.
 
 ---
 
@@ -189,7 +191,7 @@ Sentence: "{sentence}"
  *
  * Tier 1: NLI Cross-Encoder (fast, ~30ms per claim-source pair)
  *   Model: cross-encoder/nli-deberta-v3-small (~40MB, INT8 quantized)
- *   Input: "{claim} [SEP] {source_text}" → entailment / contradiction / neutral
+ *   Input: pipeline({ text: claim, text_pair: source_text }) → entailment / contradiction / neutral
  *   - entailment score > threshold → SUPPORTED
  *   - contradiction score > threshold → CONTRADICTED
  *   - neither above threshold → AMBIGUOUS (escalate to Tier 2)
@@ -268,7 +270,7 @@ const nliPipeline = await services.getOrCreate(
 
 **Claim × source comparison:**
 
-For each claim, compare against the top N source chunks (default 5, sorted by relevance score):
+For each claim, compare against the top N source chunks (default 5, sorted by relevance score). When `relevanceScore` is undefined on a chunk, it defaults to `1.0` (assume maximum relevance — the retrieval system returned it for a reason):
 
 ```
 Claim: "The API rate limit is 1000 req/min"
@@ -345,6 +347,10 @@ export class GroundingGuardrail implements IGuardrailService {
 
   constructor(services: ISharedServiceRegistry, options: GroundingGuardOptions);
 
+  /**
+   * Always returns null. Grounding verification only applies to output —
+   * cannot verify faithfulness of user input against RAG sources.
+   */
   async evaluateInput(payload: GuardrailInputPayload): Promise<GuardrailEvaluationResult | null>;
 
   async evaluateOutput(payload: GuardrailOutputPayload): Promise<GuardrailEvaluationResult | null>;
@@ -565,7 +571,26 @@ export class CheckGroundingTool implements ITool<CheckGroundingInput, GroundingR
 }
 ```
 
-The tool accepts `sources: string[]` (plain text) for simplicity. Internally wraps them as synthetic `RagRetrievedChunk` objects with relevance score 1.0.
+The tool accepts `sources: string[]` (plain text) for simplicity.
+
+```typescript
+async execute(
+  args: CheckGroundingInput,
+  _context: ToolExecutionContext,
+): Promise<ToolExecutionResult<GroundingResult>> {
+  // Wrap plain string sources as synthetic RagRetrievedChunk objects
+  const syntheticSources = args.sources.map((text, i) => ({
+    id: `tool-source-${i}`,
+    content: text,
+    relevanceScore: 1.0,  // tool-provided sources are fully relevant
+    metadata: {},
+  } as RagRetrievedChunk));
+
+  const claims = await this.claimExtractor.extract(args.text);
+  const verifications = await this.checker.checkClaims(claims, syntheticSources);
+  return { success: true, output: this.buildResult(verifications) };
+}
+```
 
 ---
 
@@ -641,7 +666,8 @@ export function createGroundingGuardPack(options?: GroundingGuardOptions): Exten
       buildComponents();
     },
     onDeactivate: async () => {
-      await checker?.dispose();
+      await checker?.dispose(); // release NLI model memory
+      guardrail?.clearBuffers(); // clear per-stream sentence buffers
     },
   };
 }
@@ -658,7 +684,7 @@ export function createExtensionPack(context: ExtensionPackContext): ExtensionPac
 | `grounding-guardrail` | `guardrail` | 8        | false       | Automatic grounding verification |
 | `check_grounding`     | `tool`      | 0        | —           | On-demand grounding check        |
 
-Priority 8 — runs late in Phase 2. Most expensive guardrail (NLI + potential LLM). Other guardrails (toxicity at 5, code-safety at 4, topicality at 3) catch and block before grounding even runs.
+Priority 8 for stacking purposes (same as all other guardrail priorities). Note: Phase 2 guardrails run concurrently via `Promise.allSettled` — priority does NOT determine execution order within Phase 2. All Phase 2 guardrails (toxicity, code-safety, topicality, grounding) run in parallel. If any other guardrail returns BLOCK, the grounding result is still collected but the stream is terminated regardless.
 
 ---
 
@@ -750,7 +776,7 @@ against the retrieved sources using NLI entailment detection.
 - Only runs when RAG sources are available (no sources → no verification)
 - NLI model (~40MB) loads lazily on first grounding check
 - LLM escalation for ambiguous claims adds ~150-500ms (only when configured)
-- Best for factual/informational responses; less useful for creative/opinon content
+- Best for factual/informational responses; less useful for creative/opinion content
 ```
 
 ---
