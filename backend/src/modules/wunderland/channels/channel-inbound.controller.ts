@@ -8,6 +8,7 @@
  * - Slack Events API -> `POST /api/wunderland/channels/inbound/slack/:seedId` (seed-scoped)
  * - WhatsApp (Meta Cloud API) verification -> `GET /api/wunderland/channels/inbound/whatsapp/verify`
  * - WhatsApp (Twilio or Meta Cloud API) -> `POST /api/wunderland/channels/inbound/whatsapp/:seedId`
+ * - Signal (signal-cli JSON-RPC) -> `POST /api/wunderland/channels/inbound/signal/:seedId`
  */
 
 import {
@@ -249,6 +250,35 @@ function parseWhatsAppMessage(body: any, _req: Request): ParsedInboundMessage | 
   }
 
   return null;
+}
+
+function parseSignalMessage(body: any): ParsedInboundMessage | null {
+  // signal-cli JSON-RPC format: { params: { envelope: { ... } } } or { envelope: { ... } }
+  const envelope = body?.params?.envelope || body?.envelope;
+  if (!envelope?.dataMessage?.message) return null;
+
+  const source = envelope.source || envelope.sourceNumber;
+  if (!source) return null;
+
+  const text = String(envelope.dataMessage.message).trim();
+  if (!text) return null;
+
+  const timestamp =
+    typeof envelope.timestamp === 'number' && Number.isFinite(envelope.timestamp)
+      ? envelope.timestamp
+      : Date.now();
+  const timestampIso = new Date(timestamp).toISOString();
+
+  return {
+    conversationId: String(source),
+    conversationType: 'direct',
+    senderName: envelope.sourceName || String(source),
+    senderPlatformId: String(source),
+    senderIsBot: false,
+    text,
+    messageId: `signal-${timestamp}-${String(source).slice(-4)}`,
+    timestampIso,
+  };
 }
 
 @Controller('wunderland/channels/inbound')
@@ -789,6 +819,90 @@ export class ChannelInboundController {
       senderIsBot: false,
       text: parsed.text,
       messageId: parsed.messageId || `wa-${Date.now()}`,
+    });
+
+    return { ok: true, eventId };
+  }
+
+  // ── Signal ──────────────────────────────────────────────────────────────
+
+  /**
+   * Signal inbound webhook receiver.
+   *
+   * Accepts signal-cli JSON-RPC format payloads (from signal-cli daemon or
+   * a relay that forwards signal-cli output).
+   */
+  @Public()
+  @Post('signal/:seedId')
+  @HttpCode(HttpStatus.OK)
+  async signalInbound(
+    @Param('seedId') seedId: string,
+    @Body() body: any
+  ): Promise<{ ok: true; ignored?: boolean; eventId?: string }> {
+    const binding = await this.db.get<{
+      binding_id: string;
+      owner_user_id: string;
+      platform_config: string | null;
+    }>(
+      `SELECT binding_id, owner_user_id, platform_config FROM wunderland_channel_bindings
+       WHERE seed_id = ? AND platform = 'signal' AND is_active = 1
+       LIMIT 1`,
+      [seedId]
+    );
+    if (!binding) return { ok: true, ignored: true };
+
+    const parsed = parseSignalMessage(body);
+    if (!parsed) return { ok: true, ignored: true };
+
+    const eventId = `signal:${seedId}:${parsed.conversationId}:${parsed.messageId || Date.now()}`;
+
+    const now = Date.now();
+    const dedupe = await this.db.run(
+      `INSERT OR IGNORE INTO wunderland_channel_inbound_events
+        (event_id, seed_id, platform, conversation_id, created_at)
+       VALUES (?, ?, 'signal', ?, ?)`,
+      [eventId, seedId, parsed.conversationId, now]
+    );
+    if (Number(dedupe?.changes ?? 0) === 0) {
+      return { ok: true, ignored: true, eventId };
+    }
+
+    const pruneBefore = now - 7 * 24 * 60 * 60 * 1000;
+    void this.db
+      .run(`DELETE FROM wunderland_channel_inbound_events WHERE created_at < ?`, [pruneBefore])
+      .catch(() => undefined);
+
+    await this.channelBridge.handleInboundMessage({
+      seedId,
+      platform: 'signal',
+      conversationId: parsed.conversationId,
+      conversationType: parsed.conversationType,
+      senderName: parsed.senderName,
+      senderPlatformId: parsed.senderPlatformId,
+      text: parsed.text,
+      messageId: parsed.messageId || `signal-${Date.now()}`,
+      timestamp: parsed.timestampIso,
+      isOwner: false,
+    });
+
+    let platformConfig: Record<string, unknown> = {};
+    try {
+      platformConfig = JSON.parse(String(binding.platform_config || '{}'));
+    } catch {
+      platformConfig = {};
+    }
+
+    this.channelAutoReply.queueSignalAutoReply({
+      seedId,
+      ownerUserId: String(binding.owner_user_id),
+      platformConfig,
+      conversationId: parsed.conversationId,
+      conversationType: parsed.conversationType,
+      senderName: parsed.senderName,
+      senderPlatformId: parsed.senderPlatformId,
+      senderIsBot: false,
+      text: parsed.text,
+      messageId: parsed.messageId || `signal-${Date.now()}`,
     });
 
     return { ok: true, eventId };
