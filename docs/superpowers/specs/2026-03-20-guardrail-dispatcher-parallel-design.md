@@ -52,8 +52,11 @@ export interface GuardrailConfig {
    *
    * When false or omitted, this guardrail runs in Phase 2 (parallel)
    * on the already-sanitized text from Phase 1. It may return BLOCK,
-   * FLAG, or ALLOW but its SANITIZE actions will NOT chain with other
-   * guardrails' modifications.
+   * FLAG, or ALLOW. If a Phase 2 guardrail returns SANITIZE, the action
+   * is **downgraded to FLAG** with a warning logged, because concurrent
+   * sanitization is non-deterministic (multiple guardrails modifying
+   * the same text simultaneously would produce unpredictable results).
+   * The original modifiedText is preserved in metadata for debugging.
    *
    * @default false
    */
@@ -66,6 +69,12 @@ export interface GuardrailConfig {
    * logged, and the guardrail contributes nothing to the result.
    * Prevents a slow guardrail (e.g., LLM-based) from blocking the
    * entire pipeline.
+   *
+   * **Safety note:** Do NOT set timeoutMs on safety-critical guardrails
+   * (e.g., CSAM detection, compliance-mandatory filters) because fail-open
+   * on timeout means content passes unchecked. Only use timeoutMs on
+   * guardrails where a missed evaluation is acceptable (e.g., toxicity
+   * scoring, quality flags).
    *
    * @default undefined (no timeout — wait indefinitely)
    */
@@ -104,7 +113,9 @@ Fully backwards compatible — both fields are optional with safe defaults.
  *     - Worst-wins aggregation: BLOCK > FLAG > ALLOW
  *     - Individual failures are fail-open (logged, skipped)
  *     - Per-guardrail timeout via config.timeoutMs
- *     - Early-exit: first BLOCK triggers return without waiting for rest
+ *     - No early-exit: Promise.allSettled waits for all to settle,
+ *       then aggregates. ML inference cannot be cancelled mid-pass
+ *       anyway, so early-exit would save negligible time.
  *
  * Latency comparison (3 guardrails at 20ms, 50ms, 60ms):
  *   Sequential: 20 + 50 + 60 = 130ms
@@ -168,21 +179,24 @@ private static async callWithTimeout(
  * Run multiple guardrail evaluations concurrently.
  *
  * Uses Promise.allSettled so one failure doesn't cancel others.
- * Supports early-exit on BLOCK: when any promise resolves to BLOCK,
- * the method returns immediately with partial results. Remaining
- * promises are allowed to settle naturally (no cancellation) but
- * their results are ignored.
+ * Waits for all to settle, then aggregates. Phase 2 SANITIZE actions
+ * are downgraded to FLAG before being included in results.
+ * Results are returned in registration order for determinism.
  *
- * @param evaluations - Array of { service, promise } pairs
- * @returns Non-null evaluation results + whether an early BLOCK occurred
+ * @param evaluations - Array of { service, promise } pairs (in registration order)
+ * @returns Non-null evaluation results in registration order
  */
 private static async evaluateParallel(
   evaluations: Array<{ service: IGuardrailService; promise: Promise<GuardrailEvaluationResult | null> }>,
-): Promise<{ results: GuardrailEvaluationResult[]; earlyBlock: boolean }>;
+): Promise<GuardrailEvaluationResult[]>;
 
 /**
  * Determine the worst (most severe) action across multiple evaluations.
- * Severity ordering: BLOCK > FLAG > SANITIZE > ALLOW.
+ * Severity ordering: BLOCK > FLAG > ALLOW.
+ *
+ * SANITIZE is excluded from Phase 2 worst-wins aggregation because
+ * Phase 2 SANITIZE actions are downgraded to FLAG before aggregation.
+ * In Phase 1 (sequential), SANITIZE is handled inline, not via worstAction.
  *
  * @param evaluations - Results to aggregate
  * @returns The most severe action, or ALLOW if empty
@@ -214,7 +228,11 @@ evaluateInput(services, input, context):
      Push all results to evaluations[]
      If any BLOCK → return with BLOCK evaluation
 
-  4. Return { sanitizedInput, evaluation: last, evaluations: all }
+  4. Return {
+       sanitizedInput,
+       evaluation: BLOCK eval if any, else worst-severity eval, else last by registration order,
+       evaluations: all (Phase 1 in order, then Phase 2 in registration order)
+     }
 ```
 
 ### wrapOutput flow
@@ -272,7 +290,7 @@ export async function evaluateInputGuardrails(
 }
 ```
 
-The `normalizeServices` helper (already exists) converts `service | service[] | undefined` to `service[]`. The `wrapOutputGuardrails` function delegates similarly.
+A `normalizeServices` helper is extracted from the existing inline normalization logic (currently inline at line ~137 of `guardrailDispatcher.ts`). It converts `service | service[] | undefined` to `service[]`. The `wrapOutputGuardrails` function delegates similarly.
 
 All existing helper functions (`serializeEvaluation`, `withGuardrailMetadata`, `createGuardrailBlockedStream`) remain unchanged and are reused by `ParallelGuardrailDispatcher`.
 
@@ -287,7 +305,7 @@ Same two-phase pattern applied to `evaluateCrossAgentGuardrails`:
 - Phase 1: cross-agent guardrails with `canSanitize: true` (rare but supported)
 - Phase 2: all others in parallel
 
-The `canInterruptOthers` downgrade logic is preserved — it runs after each evaluation, regardless of phase.
+The `canInterruptOthers` downgrade logic is preserved. For Phase 2 parallel execution, the downgrade happens **inside the individual promise wrapper** (before results are aggregated), not after. This ensures the aggregation step never sees a raw BLOCK from a guardrail that shouldn't interrupt others.
 
 ---
 
@@ -333,14 +351,14 @@ The benefit scales with the number of non-sanitizing guardrails. The common case
 
 ## File Changes Summary
 
-| File                               | Change                                                                    | Lines     |
-| ---------------------------------- | ------------------------------------------------------------------------- | --------- |
-| `IGuardrailService.ts`             | Add `canSanitize?: boolean` and `timeoutMs?: number` to `GuardrailConfig` | +25       |
-| `ParallelGuardrailDispatcher.ts`   | **NEW** — two-phase logic, timeout, parallel aggregation, early-exit      | ~250      |
-| `guardrailDispatcher.ts`           | Delegate to ParallelGuardrailDispatcher, keep existing helpers            | ~-80, +20 |
-| `crossAgentGuardrailDispatcher.ts` | Same delegation pattern                                                   | ~-40, +15 |
-| `index.ts`                         | Export ParallelGuardrailDispatcher                                        | +1        |
-| PII `PiiRedactionGuardrail.ts`     | Add `canSanitize: true`                                                   | +1        |
+| File                               | Change                                                                                                                                                                                                                | Lines     |
+| ---------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- |
+| `IGuardrailService.ts`             | Add `canSanitize?: boolean` and `timeoutMs?: number` to `GuardrailConfig`                                                                                                                                             | +25       |
+| `ParallelGuardrailDispatcher.ts`   | **NEW** — two-phase logic, timeout, parallel aggregation, early-exit                                                                                                                                                  | ~250      |
+| `guardrailDispatcher.ts`           | Extract `normalizeServices`, delegate to ParallelGuardrailDispatcher, remove `_finalOnlyGuardrails` dead code, keep existing helpers (`serializeEvaluation`, `withGuardrailMetadata`, `createGuardrailBlockedStream`) | ~-80, +30 |
+| `crossAgentGuardrailDispatcher.ts` | Same delegation pattern                                                                                                                                                                                               | ~-40, +15 |
+| `index.ts`                         | Export ParallelGuardrailDispatcher                                                                                                                                                                                    | +1        |
+| PII `PiiRedactionGuardrail.ts`     | Add `canSanitize: true`                                                                                                                                                                                               | +1        |
 
 Total: 1 new file, 5 modified, ~250 new lines.
 
@@ -391,6 +409,6 @@ Total: 1 new file, 5 modified, ~250 new lines.
 
 ## Open Questions (Deferred)
 
-1. Should Phase 2 results be **ordered** in the `evaluations[]` array (e.g., by completion time, or by registration order)? Currently: completion order. Could add registration order for deterministic output.
+1. ~~Should Phase 2 results be ordered?~~ **Decided:** Registration order. Pre-allocate result slots by index, fill on settlement. Guarantees deterministic `evaluations[]` ordering for tests and consumers.
 2. Should there be a `phase?: number` field on `GuardrailConfig` for N-phase pipelines? Deferred — two phases are sufficient for all current use cases.
 3. Should the cross-agent dispatcher also support parallel execution? Deferred — cross-agent guardrails are rare and the sequential model is simpler.
