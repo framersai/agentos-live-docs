@@ -76,10 +76,12 @@ const config: Config = {
           { from: '/docs/RFC_EXTENSION_STANDARDS', to: '/extensions/extension-standards' },
           { from: '/docs/SQL_STORAGE_QUICKSTART', to: '/features/sql-storage' },
           { from: '/docs/STRUCTURED_OUTPUT', to: '/features/structured-output' },
+          // Catch-all: /docs and /docs/ → root
+          { from: '/docs', to: '/' },
+          { from: '/docs/', to: '/' },
         ],
         createRedirects(existingPath: string) {
           // Redirect old /docs/ prefixed paths to root (docs are now at /)
-          // Skip root path to avoid build conflict with index.html
           if (existingPath === '/' || existingPath.startsWith('/docs/')) {
             return undefined;
           }
