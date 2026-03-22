@@ -191,10 +191,10 @@ class PIIRedactionGuardrail implements IGuardrailService {
 Uses a four-tier pipeline (regex + NLP + NER + LLM-as-judge) for higher accuracy across 50+ country ID formats, names, and context-dependent PII:
 
 ```typescript
-import { createPiiRedactionPack } from '@framers/agentos/extensions/packs/pii-redaction';
+import { createPiiRedactionGuardrail } from '@framers/agentos/extensions/packs/pii-redaction';
 
 // Full PII redaction with 4-tier detection pipeline
-const piiPack = createPiiRedactionPack({
+const piiPack = createPiiRedactionGuardrail({
   confidenceThreshold: 0.5,
   redactionStyle: 'placeholder',
   enableNerModel: true,
@@ -358,12 +358,12 @@ class QualityGateGuardrail implements ICrossAgentGuardrailService {
 Multiple guardrails are evaluated in sequence. Each can modify the content before passing to the next:
 
 ```typescript
-import { createPiiRedactionPack } from '@framers/agentos-ext-pii-redaction';
+import { createPiiRedactionGuardrail } from '@framers/agentos-ext-pii-redaction';
 
 // Register extension packs — the recommended approach for production use.
 // The PII pack provides a full four-tier detection pipeline (regex + NLP + NER + LLM-as-judge).
 // See /docs/extensions/built-in/pii-redaction for full configuration options.
-const piiPack = createPiiRedactionPack({
+const piiPack = createPiiRedactionGuardrail({
   redactionStyle: 'placeholder',
   confidenceThreshold: 0.5,
 });

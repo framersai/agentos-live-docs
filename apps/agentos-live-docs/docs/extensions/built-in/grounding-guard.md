@@ -61,9 +61,9 @@ npm install @huggingface/transformers
 
 ```typescript
 import { AgentOS } from '@framers/agentos';
-import { createGroundingGuardPack } from '@framers/agentos-ext-grounding-guard';
+import { createGroundingGuardrail } from '@framers/agentos-ext-grounding-guard';
 
-const groundingPack = createGroundingGuardPack({
+const groundingPack = createGroundingGuardrail({
   entailmentThreshold: 0.7,
   contradictionThreshold: 0.7,
   maxUnverifiableRatio: 0.5,
