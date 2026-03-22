@@ -54,9 +54,9 @@ npm install openai
 
 ```typescript
 import { AgentOS } from '@framers/agentos';
-import { createPiiRedactionPack } from '@framers/agentos-ext-pii-redaction';
+import { createPiiRedactionGuardrail } from '@framers/agentos-ext-pii-redaction';
 
-const piiPack = createPiiRedactionPack({
+const piiPack = createPiiRedactionGuardrail({
   confidenceThreshold: 0.5,
   redactionStyle: 'placeholder',
   enableNerModel: true,
