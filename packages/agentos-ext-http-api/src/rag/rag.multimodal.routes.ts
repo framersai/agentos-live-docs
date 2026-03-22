@@ -1,15 +1,16 @@
 /**
  * @file rag.multimodal.routes.ts
- * @description Multimodal RAG (image/audio) endpoints for AgentOS.
+ * @description Multimodal RAG (image/audio/document) endpoints for AgentOS.
  *
  * This router ingests binary assets (multipart/form-data) and indexes them by
- * deriving a text representation (caption/transcript) which is stored as a normal
+ * deriving a text representation (caption/transcript/document text) which is stored as a normal
  * RAG document for retrieval.
  *
- * It also supports query-by-image and query-by-audio:
- * - Query-by-image prefers offline image embeddings when enabled in the host app.
- * - Otherwise it derives a text representation for the query asset, then runs the standard
- *   text retrieval pipeline over previously indexed assets.
+ * It also supports query-by-image and query-by-audio using a unified retrieval mode:
+ * - `text`: derive a caption/transcript/document text and query the standard text retrieval pipeline.
+ * - `native`: use modality-native embeddings only.
+ * - `hybrid`: combine text retrieval with native retrieval when available.
+ * - `auto` (default): text-first, with native augmentation when available.
  *
  * Routes are typically mounted under `/api/agentos/rag/multimodal`.
  */
@@ -20,6 +21,28 @@ import type { AgentOSRagRouterDeps } from './rag.types.js';
 
 const MAX_IMAGE_SIZE_BYTES = 15 * 1024 * 1024; // 15MB
 const MAX_AUDIO_SIZE_BYTES = 25 * 1024 * 1024; // Whisper API limit is 25MB
+const MAX_DOCUMENT_SIZE_BYTES = 30 * 1024 * 1024; // Keep memory-safe with multer.memoryStorage().
+
+const SUPPORTED_DOCUMENT_MIME_TYPES = new Set([
+  'application/pdf',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  'text/plain',
+  'text/markdown',
+  'text/csv',
+  'application/json',
+  'application/xml',
+  'text/xml',
+]);
+
+const SUPPORTED_DOCUMENT_EXTENSIONS = new Set([
+  '.pdf',
+  '.docx',
+  '.txt',
+  '.md',
+  '.csv',
+  '.json',
+  '.xml',
+]);
 
 const imageUpload = multer({
   storage: multer.memoryStorage(),
@@ -53,6 +76,37 @@ const audioUpload = multer({
       return;
     }
     cb(new Error(`Unsupported audio MIME type: ${file.mimetype}`));
+  },
+});
+
+const getLowercaseExtension = (name: string | undefined): string => {
+  const value = String(name ?? '').trim().toLowerCase();
+  const index = value.lastIndexOf('.');
+  return index >= 0 ? value.slice(index) : '';
+};
+
+const isSupportedDocumentUpload = (file: Express.Multer.File): boolean => {
+  const mimeType = String(file.mimetype ?? '')
+    .trim()
+    .toLowerCase();
+  if (SUPPORTED_DOCUMENT_MIME_TYPES.has(mimeType)) {
+    return true;
+  }
+  if (mimeType === 'application/octet-stream') {
+    return SUPPORTED_DOCUMENT_EXTENSIONS.has(getLowercaseExtension(file.originalname));
+  }
+  return false;
+};
+
+const documentUpload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: MAX_DOCUMENT_SIZE_BYTES },
+  fileFilter: (_req, file, cb) => {
+    if (isSupportedDocumentUpload(file as Express.Multer.File)) {
+      cb(null, true);
+      return;
+    }
+    cb(new Error(`Unsupported document MIME type: ${file.mimetype}`));
   },
 });
 
@@ -99,6 +153,43 @@ const parseTagsField = (value: unknown): string[] | undefined => {
     .map((t) => t.trim())
     .filter(Boolean);
   return out.length > 0 ? out : undefined;
+};
+
+const parseStringListField = (value: unknown): string[] | undefined => {
+  if (value === null || value === undefined) return undefined;
+  if (Array.isArray(value)) {
+    const out = value.map((v) => String(v ?? '').trim()).filter(Boolean);
+    return out.length > 0 ? out : undefined;
+  }
+  if (typeof value !== 'string') return undefined;
+  const trimmed = value.trim();
+  if (!trimmed) return undefined;
+  return trimmed
+    .split(',')
+    .map((v) => v.trim())
+    .filter(Boolean);
+};
+
+const parseModalitiesField = (value: unknown): Array<'image' | 'audio' | 'document'> | undefined => {
+  const items = parseStringListField(value);
+  if (!items || items.length === 0) return undefined;
+
+  const out = items.filter(
+    (v): v is 'image' | 'audio' | 'document' =>
+      v === 'image' || v === 'audio' || v === 'document'
+  );
+  return out.length > 0 ? out : undefined;
+};
+
+const parseRetrievalModeField = (
+  value: unknown
+): 'auto' | 'text' | 'native' | 'hybrid' | undefined => {
+  if (typeof value !== 'string') return undefined;
+  const trimmed = value.trim().toLowerCase();
+  if (trimmed === 'auto' || trimmed === 'text' || trimmed === 'native' || trimmed === 'hybrid') {
+    return trimmed;
+  }
+  return undefined;
 };
 
 const parseCategoryField = (
@@ -178,22 +269,11 @@ export const createAgentOSRagMultimodalRouter = (deps: AgentOSRagRouterDeps): Ro
         }
 
         const body = req.body as Record<string, unknown>;
-        const parsedModalities = Array.isArray(body.modalities)
-          ? (body.modalities
-              .map((v) => String(v ?? '').trim())
-              .filter((v) => v === 'image' || v === 'audio') as Array<'image' | 'audio'>)
-          : undefined;
-        const modalities: Array<'image' | 'audio'> =
+        const parsedModalities = parseModalitiesField(body.modalities);
+        const modalities: Array<'image' | 'audio' | 'document'> =
           parsedModalities && parsedModalities.length > 0 ? parsedModalities : ['image'];
 
-        const collectionIds = Array.isArray(body.collectionIds)
-          ? body.collectionIds.map((v) => String(v ?? '').trim()).filter(Boolean)
-          : typeof body.collectionIds === 'string'
-            ? body.collectionIds
-                .split(',')
-                .map((v) => v.trim())
-                .filter(Boolean)
-            : undefined;
+        const collectionIds = parseStringListField(body.collectionIds);
 
         const topK =
           typeof body.topK === 'number'
@@ -203,6 +283,7 @@ export const createAgentOSRagMultimodalRouter = (deps: AgentOSRagRouterDeps): Ro
               : undefined;
 
         const includeMetadata = parseBooleanField(body.includeMetadata);
+        const retrievalMode = parseRetrievalModeField(body.retrievalMode);
 
         const result = await deps.ragService.queryMediaAssetsByImage({
           payload: file.buffer,
@@ -210,6 +291,7 @@ export const createAgentOSRagMultimodalRouter = (deps: AgentOSRagRouterDeps): Ro
           sourceUrl: typeof body.sourceUrl === 'string' ? body.sourceUrl : undefined,
           textRepresentation:
             typeof body.textRepresentation === 'string' ? body.textRepresentation : undefined,
+          retrievalMode,
           modalities,
           collectionIds,
           topK: Number.isFinite(topK as any) ? (topK as number) : undefined,
@@ -261,22 +343,11 @@ export const createAgentOSRagMultimodalRouter = (deps: AgentOSRagRouterDeps): Ro
         }
 
         const body = req.body as Record<string, unknown>;
-        const parsedModalities = Array.isArray(body.modalities)
-          ? (body.modalities
-              .map((v) => String(v ?? '').trim())
-              .filter((v) => v === 'image' || v === 'audio') as Array<'image' | 'audio'>)
-          : undefined;
-        const modalities: Array<'image' | 'audio'> =
+        const parsedModalities = parseModalitiesField(body.modalities);
+        const modalities: Array<'image' | 'audio' | 'document'> =
           parsedModalities && parsedModalities.length > 0 ? parsedModalities : ['audio'];
 
-        const collectionIds = Array.isArray(body.collectionIds)
-          ? body.collectionIds.map((v) => String(v ?? '').trim()).filter(Boolean)
-          : typeof body.collectionIds === 'string'
-            ? body.collectionIds
-                .split(',')
-                .map((v) => v.trim())
-                .filter(Boolean)
-            : undefined;
+        const collectionIds = parseStringListField(body.collectionIds);
 
         const topK =
           typeof body.topK === 'number'
@@ -286,6 +357,7 @@ export const createAgentOSRagMultimodalRouter = (deps: AgentOSRagRouterDeps): Ro
               : undefined;
 
         const includeMetadata = parseBooleanField(body.includeMetadata);
+        const retrievalMode = parseRetrievalModeField(body.retrievalMode);
 
         const result = await deps.ragService.queryMediaAssetsByAudio({
           payload: file.buffer,
@@ -293,6 +365,7 @@ export const createAgentOSRagMultimodalRouter = (deps: AgentOSRagRouterDeps): Ro
           originalFileName: file.originalname,
           textRepresentation:
             typeof body.textRepresentation === 'string' ? body.textRepresentation : undefined,
+          retrievalMode,
           modalities,
           collectionIds,
           topK: Number.isFinite(topK as any) ? (topK as number) : undefined,
@@ -440,6 +513,72 @@ export const createAgentOSRagMultimodalRouter = (deps: AgentOSRagRouterDeps): Ro
   );
 
   router.post(
+    '/documents/ingest',
+    async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
+      try {
+        if (!deps.isEnabled()) {
+          return res.status(503).json({
+            success: false,
+            message: 'AgentOS integration disabled',
+            error: 'AGENTOS_DISABLED',
+          });
+        }
+
+        let file: Express.Multer.File;
+        try {
+          file = await runSingleUpload(documentUpload, 'document', req, res);
+        } catch (err: any) {
+          if (err instanceof MulterError) {
+            if (err.code === 'LIMIT_FILE_SIZE') {
+              return res.status(413).json({
+                success: false,
+                message: `Document file is too large. Max is ${Math.round(MAX_DOCUMENT_SIZE_BYTES / (1024 * 1024))}MB.`,
+                error: 'FILE_TOO_LARGE',
+              });
+            }
+            return res.status(400).json({
+              success: false,
+              message: `File upload error: ${err.message}`,
+              error: 'FILE_UPLOAD_ERROR',
+            });
+          }
+          return res.status(415).json({
+            success: false,
+            message: err?.message || 'Invalid document file.',
+            error: 'INVALID_DOCUMENT_FILE',
+          });
+        }
+
+        const body = req.body as Record<string, unknown>;
+        const metadata = parseJsonField<Record<string, unknown>>(body.metadata) ?? undefined;
+        const tags = parseTagsField(body.tags);
+        const storePayload = parseBooleanField(body.storePayload);
+
+        const result = await deps.ragService.ingestDocumentAsset({
+          assetId: typeof body.assetId === 'string' ? body.assetId : undefined,
+          collectionId: typeof body.collectionId === 'string' ? body.collectionId : undefined,
+          mimeType: file.mimetype,
+          originalFileName: file.originalname,
+          payload: file.buffer,
+          sourceUrl: typeof body.sourceUrl === 'string' ? body.sourceUrl : undefined,
+          category: parseCategoryField(body.category),
+          metadata,
+          tags,
+          storePayload,
+          userId: typeof body.userId === 'string' ? body.userId : undefined,
+          agentId: typeof body.agentId === 'string' ? body.agentId : undefined,
+          textRepresentation:
+            typeof body.textRepresentation === 'string' ? body.textRepresentation : undefined,
+        });
+
+        return res.status(result.success ? 201 : 500).json(result);
+      } catch (error) {
+        next(error);
+      }
+    }
+  );
+
+  router.post(
     '/query',
     async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
       try {
@@ -461,15 +600,8 @@ export const createAgentOSRagMultimodalRouter = (deps: AgentOSRagRouterDeps): Ro
           });
         }
 
-        const modalities = Array.isArray(body.modalities)
-          ? (body.modalities
-              .map((v) => String(v ?? '').trim())
-              .filter((v) => v === 'image' || v === 'audio') as Array<'image' | 'audio'>)
-          : undefined;
-
-        const collectionIds = Array.isArray(body.collectionIds)
-          ? body.collectionIds.map((v) => String(v ?? '').trim()).filter(Boolean)
-          : undefined;
+        const modalities = parseModalitiesField(body.modalities);
+        const collectionIds = parseStringListField(body.collectionIds);
 
         const topK =
           typeof body.topK === 'number'

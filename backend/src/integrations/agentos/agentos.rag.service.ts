@@ -29,6 +29,7 @@ import {
   type StorageResolutionOptions,
 } from '@framers/sql-storage-adapter';
 import { createHash } from 'node:crypto';
+import { extname } from 'node:path';
 import { AIModelProviderManager } from '@framers/agentos/core/llm/providers/AIModelProviderManager';
 import type { ProviderConfigEntry } from '@framers/agentos/core/llm/providers/AIModelProviderManager';
 import type { ChatMessage } from '@framers/agentos/core/llm/providers/IProvider';
@@ -329,10 +330,12 @@ export interface RagCollection {
 /**
  * Supported multimodal asset types for RAG indexing.
  */
-export type RagMediaModality = 'image' | 'audio';
+export type RagMediaModality = 'image' | 'audio' | 'document';
+export type RagMediaRetrievalMode = 'auto' | 'text' | 'native' | 'hybrid';
+export type RagMediaResolvedRetrievalMode = 'text' | 'native' | 'hybrid';
 
 /**
- * Input payload for ingesting a multimodal asset (image/audio) into RAG.
+ * Input payload for ingesting a multimodal asset (image/audio/document) into RAG.
  *
  * The default implementation indexes assets by deriving a **text representation**
  * (image caption / OCR text / audio transcript) and storing that text as a normal
@@ -360,8 +363,8 @@ export interface RagMediaAssetInput {
   /** Optional category to store the derived document under. Default: `custom`. */
   category?: 'conversation_memory' | 'knowledge_base' | 'user_notes' | 'system' | 'custom';
   /**
-   * Optional precomputed text representation (caption/transcript).
-   * When provided, the service skips captioning/transcription.
+   * Optional precomputed text representation (caption/transcript/document text).
+   * When provided, the service skips captioning/transcription/parsing.
    */
   textRepresentation?: string;
   /** If true, stores the raw payload bytes (base64) in the RAG database. Default: env-driven. */
@@ -420,6 +423,13 @@ export interface RagMediaQueryOptions {
   includeMetadata?: boolean;
 }
 
+export interface RagMediaQueryRetrievalInfo {
+  requestedMode: RagMediaRetrievalMode;
+  resolvedMode: RagMediaResolvedRetrievalMode;
+  textQueryUsed?: string;
+  fallbackReason?: string;
+}
+
 /**
  * Multimodal query response (grouped by asset).
  */
@@ -433,6 +443,7 @@ export interface RagMediaQueryResult {
   }>;
   totalResults: number;
   processingTimeMs: number;
+  retrieval?: RagMediaQueryRetrievalInfo;
   /** Optional error message when `success=false`. */
   error?: string;
 }
@@ -684,7 +695,7 @@ class SqlRagStore {
         ON ${this.tablePrefix}chunks(collection_id);
     `);
 
-    // Multimodal assets table (image/audio). The derived caption/transcript is indexed as a normal RAG document.
+    // Multimodal assets table (image/audio/document). The derived text is indexed as a normal RAG document.
     await this.adapter.exec(`
       CREATE TABLE IF NOT EXISTS ${this.tablePrefix}media_assets (
         asset_id TEXT PRIMARY KEY,
@@ -1906,6 +1917,16 @@ class SqlRagStore {
       );
     }
 
+    if (modality === 'document') {
+      return (
+        firstNonEmptyEnv(
+          'AGENTOS_RAG_MEDIA_DOCUMENT_COLLECTION_ID',
+          'AGENTOS_RAG_MEDIA_DOCUMENT_COLLECTION',
+          'AGENTOS_MULTIMODAL_DOCUMENT_COLLECTION_ID'
+        )?.trim() || 'media_documents'
+      );
+    }
+
     return (
       firstNonEmptyEnv(
         'AGENTOS_RAG_MEDIA_AUDIO_COLLECTION_ID',
@@ -2634,6 +2655,58 @@ class SqlRagStore {
     return normalized.length > 0 ? normalized : undefined;
   }
 
+  private resolveDocumentMimeType(mimeType: string | undefined, originalFileName?: string): string {
+    const normalized = String(mimeType ?? '')
+      .trim()
+      .toLowerCase();
+    if (normalized && normalized !== 'application/octet-stream') {
+      return normalized;
+    }
+
+    const extension = extname(originalFileName ?? '')
+      .trim()
+      .toLowerCase();
+    if (extension === '.pdf') return 'application/pdf';
+    if (extension === '.docx') {
+      return 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+    }
+    if (extension === '.md') return 'text/markdown';
+    if (extension === '.txt') return 'text/plain';
+    if (extension === '.csv') return 'text/csv';
+    if (extension === '.json') return 'application/json';
+    if (extension === '.xml') return 'application/xml';
+    return normalized || 'application/octet-stream';
+  }
+
+  private normalizeDocumentText(text: string): string {
+    return String(text ?? '')
+      .replace(/\u0000/g, '')
+      .replace(/\r\n/g, '\n')
+      .replace(/\r/g, '\n')
+      .replace(/[ \t]+\n/g, '\n')
+      .replace(/\n{3,}/g, '\n\n')
+      .trim();
+  }
+
+  private buildDocumentTextRepresentation(input: {
+    mimeType: string;
+    originalFileName?: string;
+    extractedText: string;
+    parser: string;
+    pageCount?: number;
+  }): string {
+    const lines: string[] = ['[Document]'];
+    if (input.originalFileName) lines.push(`File: ${input.originalFileName}`);
+    lines.push(`MimeType: ${input.mimeType}`);
+    lines.push(`Parser: ${input.parser}`);
+    if (typeof input.pageCount === 'number' && Number.isFinite(input.pageCount)) {
+      lines.push(`PageCount: ${input.pageCount}`);
+    }
+    lines.push('Content:');
+    lines.push(input.extractedText);
+    return this.normalizeDocumentText(lines.join('\n'));
+  }
+
   private extractFirstJsonObject(text: string): any | null {
     const raw = String(text ?? '').trim();
     const start = raw.indexOf('{');
@@ -2739,6 +2812,129 @@ class SqlRagStore {
     return { textRepresentation, tags: normalizedModelTags };
   }
 
+  private async deriveDocumentTextRepresentation(input: {
+    payload?: Buffer;
+    mimeType: string;
+    originalFileName?: string;
+    sourceUrl?: string;
+  }): Promise<{ textRepresentation: string; metadata?: Record<string, unknown> }> {
+    const payload = input.payload;
+    if (!payload || payload.length === 0) {
+      throw new Error(
+        'Document ingestion requires `payload` bytes unless `textRepresentation` is provided explicitly.'
+      );
+    }
+
+    const mimeType = this.resolveDocumentMimeType(input.mimeType, input.originalFileName);
+
+    if (mimeType === 'application/pdf') {
+      const pdfParseModule = await import('pdf-parse');
+      const pdfParse = (pdfParseModule.default ?? pdfParseModule) as (
+        buffer: Buffer
+      ) => Promise<{ text?: string; numpages?: number; info?: Record<string, unknown> }>;
+      const parsed = await pdfParse(payload);
+      const extractedText = this.normalizeDocumentText(parsed?.text ?? '');
+      if (!extractedText) {
+        throw new Error(
+          'PDF text extraction produced no text. Scanned/image-only PDFs require a page-image pipeline, which is not enabled in this backend yet.'
+        );
+      }
+
+      return {
+        textRepresentation: this.buildDocumentTextRepresentation({
+          mimeType,
+          originalFileName: input.originalFileName,
+          extractedText,
+          parser: 'pdf-parse',
+          pageCount:
+            typeof parsed?.numpages === 'number' && Number.isFinite(parsed.numpages)
+              ? parsed.numpages
+              : undefined,
+        }),
+        metadata: {
+          documentParser: 'pdf-parse',
+          pageCount:
+            typeof parsed?.numpages === 'number' && Number.isFinite(parsed.numpages)
+              ? parsed.numpages
+              : undefined,
+          pdfInfo: parsed?.info ?? undefined,
+        },
+      };
+    }
+
+    if (mimeType === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
+      const mammothModule = await import('mammoth');
+      const mammoth = (mammothModule.default ?? mammothModule) as {
+        extractRawText: (input: {
+          buffer: Buffer;
+        }) => Promise<{ value?: string; messages?: Array<{ type?: string; message?: string }> }>;
+      };
+      const result = await mammoth.extractRawText({ buffer: payload });
+      const extractedText = this.normalizeDocumentText(result?.value ?? '');
+      if (!extractedText) {
+        throw new Error('DOCX extraction produced no text.');
+      }
+
+      return {
+        textRepresentation: this.buildDocumentTextRepresentation({
+          mimeType,
+          originalFileName: input.originalFileName,
+          extractedText,
+          parser: 'mammoth',
+        }),
+        metadata: {
+          documentParser: 'mammoth',
+          conversionWarnings:
+            result?.messages
+              ?.map((message) => this.normalizeDocumentText(message?.message ?? ''))
+              .filter(Boolean)
+              .slice(0, 10) ?? undefined,
+        },
+      };
+    }
+
+    const textLikeMimeTypes = new Set([
+      'text/plain',
+      'text/markdown',
+      'text/csv',
+      'application/json',
+      'application/xml',
+      'text/xml',
+    ]);
+
+    if (mimeType.startsWith('text/') || textLikeMimeTypes.has(mimeType)) {
+      let extractedText = payload.toString('utf8');
+      if (mimeType === 'application/json') {
+        try {
+          extractedText = JSON.stringify(JSON.parse(extractedText), null, 2);
+        } catch {
+          // Keep the raw JSON-ish text when parsing fails.
+        }
+      }
+
+      extractedText = this.normalizeDocumentText(extractedText);
+      if (!extractedText) {
+        throw new Error('Document text extraction produced no text.');
+      }
+
+      return {
+        textRepresentation: this.buildDocumentTextRepresentation({
+          mimeType,
+          originalFileName: input.originalFileName,
+          extractedText,
+          parser: 'utf8-text',
+        }),
+        metadata: {
+          documentParser: 'utf8-text',
+        },
+      };
+    }
+
+    throw new Error(
+      `Unsupported document MIME type: ${mimeType}. Supported types: pdf, docx, txt, md, csv, json, xml.`
+    );
+  }
+
   private async deriveAudioTextRepresentation(input: {
     payload: Buffer;
     originalFileName: string;
@@ -2809,6 +3005,89 @@ class SqlRagStore {
     });
   }
 
+  private withMediaRetrievalInfo(
+    result: RagMediaQueryResult,
+    retrieval: RagMediaQueryRetrievalInfo,
+    processingTimeMs?: number
+  ): RagMediaQueryResult {
+    return {
+      ...result,
+      ...(typeof processingTimeMs === 'number' ? { processingTimeMs } : {}),
+      retrieval,
+    };
+  }
+
+  private fuseMediaQueryResults(input: {
+    primary: RagMediaQueryResult;
+    secondary: RagMediaQueryResult;
+    topK: number;
+    includeMetadata?: boolean;
+  }): RagMediaQueryResult {
+    const rrfK = 60;
+    const fused = new Map<
+      string,
+      {
+        asset: RagMediaAsset;
+        bestChunk: RagRetrievedChunk;
+        fusedScore: number;
+        methods: Set<string>;
+      }
+    >();
+
+    const add = (result: RagMediaQueryResult, method: 'text' | 'native', weight: number): void => {
+      result.assets.forEach((item, index) => {
+        const existing = fused.get(item.asset.assetId);
+        const contribution = weight / (rrfK + index + 1);
+        if (!existing) {
+          fused.set(item.asset.assetId, {
+            asset: item.asset,
+            bestChunk: item.bestChunk,
+            fusedScore: contribution,
+            methods: new Set([method]),
+          });
+          return;
+        }
+
+        existing.fusedScore += contribution;
+        existing.methods.add(method);
+        if ((item.bestChunk?.score ?? 0) > (existing.bestChunk?.score ?? 0)) {
+          existing.bestChunk = item.bestChunk;
+        }
+      });
+    };
+
+    add(input.primary, 'text', 1.0);
+    add(input.secondary, 'native', 0.85);
+
+    const assets = Array.from(fused.values())
+      .sort((a, b) => b.fusedScore - a.fusedScore)
+      .slice(0, Math.max(1, input.topK))
+      .map((entry) => ({
+        asset: entry.asset,
+        bestChunk: {
+          ...entry.bestChunk,
+          score: entry.fusedScore,
+          metadata: input.includeMetadata
+            ? {
+                ...(entry.bestChunk.metadata ?? {}),
+                _retrievalMethods: Array.from(entry.methods),
+              }
+            : undefined,
+        },
+      }));
+
+    return {
+      success: true,
+      query: input.primary.query,
+      assets,
+      totalResults: assets.length,
+      processingTimeMs: Math.max(
+        input.primary.processingTimeMs ?? 0,
+        input.secondary.processingTimeMs ?? 0
+      ),
+    };
+  }
+
   /**
    * Query indexed media assets using a binary image query.
    *
@@ -2823,44 +3102,70 @@ class SqlRagStore {
     mimeType?: string;
     sourceUrl?: string;
     textRepresentation?: string;
+    retrievalMode?: RagMediaRetrievalMode;
     modalities?: RagMediaModality[];
     collectionIds?: string[];
     topK?: number;
     includeMetadata?: boolean;
   }): Promise<RagMediaQueryResult> {
     const start = Date.now();
+    const requestedMode = options.retrievalMode ?? 'auto';
     try {
-      const wantsImageEmbeddingQuery =
-        this.isMediaImageEmbeddingsEnabled() &&
-        !String(options.textRepresentation ?? '').trim() &&
-        !!options.payload &&
-        options.payload.length > 0;
+      const baseCollectionIds =
+        options.collectionIds && options.collectionIds.length > 0
+          ? options.collectionIds
+          : [this.resolveMediaCollectionId('image')];
+      const hasNativePayload = !!options.payload && options.payload.length > 0;
+      const nativeEnabled = this.isMediaImageEmbeddingsEnabled();
+      const canRunNative = hasNativePayload && nativeEnabled;
 
-      // Prefer CLIP-style image embeddings when enabled and the caller provides bytes.
-      // This avoids any captioning/model calls and supports true image-to-image retrieval.
-      if (wantsImageEmbeddingQuery) {
-        const adapter = await this.ensureInitialized();
-        const baseCollectionIds =
-          options.collectionIds && options.collectionIds.length > 0
-            ? options.collectionIds
-            : [this.resolveMediaCollectionId('image')];
-
-        try {
-          return await this.queryMediaAssetsByImageEmbeddingInternal({
-            adapter,
-            payload: options.payload!,
-            mimeType: options.mimeType || 'image/*',
-            baseCollectionIds,
-            topK: options.topK ?? 5,
-            includeMetadata: options.includeMetadata,
-          });
-        } catch (embedError: any) {
-          // Fall back to the captioning path when the optional image embedder isn't available.
-          const message = embedError?.message ?? String(embedError);
-          console.warn(
-            `[RAG Service] Image embedding query failed; falling back to caption-based retrieval. ${message}`
-          );
+      if (requestedMode === 'native') {
+        if (!hasNativePayload) {
+          return {
+            success: false,
+            query: '',
+            assets: [],
+            totalResults: 0,
+            processingTimeMs: Date.now() - start,
+            retrieval: {
+              requestedMode,
+              resolvedMode: 'native',
+              fallbackReason: 'Native retrieval requires image payload bytes.',
+            },
+            error: 'Native retrieval requires image payload bytes.',
+          };
         }
+        if (!nativeEnabled) {
+          return {
+            success: false,
+            query: '',
+            assets: [],
+            totalResults: 0,
+            processingTimeMs: Date.now() - start,
+            retrieval: {
+              requestedMode,
+              resolvedMode: 'native',
+              fallbackReason:
+                'Native image retrieval is disabled. Set AGENTOS_RAG_MEDIA_IMAGE_EMBEDDINGS_ENABLED=true.',
+            },
+            error:
+              'Native image retrieval is disabled. Set AGENTOS_RAG_MEDIA_IMAGE_EMBEDDINGS_ENABLED=true.',
+          };
+        }
+
+        const adapter = await this.ensureInitialized();
+        const nativeResult = await this.queryMediaAssetsByImageEmbeddingInternal({
+          adapter,
+          payload: options.payload!,
+          mimeType: options.mimeType || 'image/*',
+          baseCollectionIds,
+          topK: options.topK ?? 5,
+          includeMetadata: options.includeMetadata,
+        });
+        return this.withMediaRetrievalInfo(nativeResult, {
+          requestedMode,
+          resolvedMode: 'native',
+        }, Date.now() - start);
       }
 
       const queryText = (options.textRepresentation ?? '').trim()
@@ -2884,7 +3189,7 @@ class SqlRagStore {
         };
       }
 
-      const result = await this.queryMediaAssets({
+      const textResult = await this.queryMediaAssets({
         query: queryText,
         modalities: options.modalities ?? ['image'],
         collectionIds: options.collectionIds,
@@ -2892,7 +3197,72 @@ class SqlRagStore {
         includeMetadata: options.includeMetadata,
       });
 
-      return result;
+      if (requestedMode === 'text') {
+        return this.withMediaRetrievalInfo(textResult, {
+          requestedMode,
+          resolvedMode: 'text',
+          textQueryUsed: queryText,
+        }, Date.now() - start);
+      }
+
+      let nativeFallbackReason: string | undefined;
+      let nativeResult: RagMediaQueryResult | null = null;
+
+      if (canRunNative) {
+        const adapter = await this.ensureInitialized();
+        try {
+          nativeResult = await this.queryMediaAssetsByImageEmbeddingInternal({
+            adapter,
+            payload: options.payload!,
+            mimeType: options.mimeType || 'image/*',
+            baseCollectionIds,
+            topK: options.topK ?? 5,
+            includeMetadata: options.includeMetadata,
+          });
+        } catch (embedError: any) {
+          nativeFallbackReason = embedError?.message ?? String(embedError);
+          console.warn(
+            `[RAG Service] Image native retrieval unavailable; continuing with text retrieval. ${nativeFallbackReason}`
+          );
+        }
+      } else if (requestedMode === 'hybrid' && !hasNativePayload) {
+        nativeFallbackReason = 'Native retrieval requires image payload bytes.';
+      } else if (requestedMode === 'hybrid' && !nativeEnabled) {
+        nativeFallbackReason =
+          'Native image retrieval is disabled. Set AGENTOS_RAG_MEDIA_IMAGE_EMBEDDINGS_ENABLED=true.';
+      }
+
+      if (nativeResult && nativeResult.assets.length > 0 && textResult.assets.length > 0) {
+        return this.withMediaRetrievalInfo(
+          this.fuseMediaQueryResults({
+            primary: textResult,
+            secondary: nativeResult,
+            topK: options.topK ?? 5,
+            includeMetadata: options.includeMetadata,
+          }),
+          {
+            requestedMode,
+            resolvedMode: 'hybrid',
+            textQueryUsed: queryText,
+          },
+          Date.now() - start
+        );
+      }
+
+      if (nativeResult && nativeResult.assets.length > 0) {
+        return this.withMediaRetrievalInfo(nativeResult, {
+          requestedMode,
+          resolvedMode: 'native',
+          textQueryUsed: queryText,
+        }, Date.now() - start);
+      }
+
+      return this.withMediaRetrievalInfo(textResult, {
+        requestedMode,
+        resolvedMode: 'text',
+        textQueryUsed: queryText,
+        fallbackReason: nativeFallbackReason,
+      }, Date.now() - start);
     } catch (error: any) {
       const message = error?.message ?? String(error);
       return {
@@ -2901,6 +3271,10 @@ class SqlRagStore {
         assets: [],
         totalResults: 0,
         processingTimeMs: Date.now() - start,
+        retrieval: {
+          requestedMode,
+          resolvedMode: requestedMode === 'native' ? 'native' : 'text',
+        },
         error: message,
       };
     }
@@ -3197,6 +3571,7 @@ class SqlRagStore {
     mimeType?: string;
     originalFileName?: string;
     textRepresentation?: string;
+    retrievalMode?: RagMediaRetrievalMode;
     modalities?: RagMediaModality[];
     collectionIds?: string[];
     topK?: number;
@@ -3204,37 +3579,63 @@ class SqlRagStore {
     userId?: string;
   }): Promise<RagMediaQueryResult> {
     const start = Date.now();
+    const requestedMode = options.retrievalMode ?? 'auto';
     try {
-      const wantsAudioEmbeddingQuery =
-        this.isMediaAudioEmbeddingsEnabled() &&
-        !String(options.textRepresentation ?? '').trim() &&
-        !!options.payload &&
-        options.payload.length > 0;
+      const baseCollectionIds =
+        options.collectionIds && options.collectionIds.length > 0
+          ? options.collectionIds
+          : [this.resolveMediaCollectionId('audio')];
+      const hasNativePayload = !!options.payload && options.payload.length > 0;
+      const nativeEnabled = this.isMediaAudioEmbeddingsEnabled();
+      const canRunNative = hasNativePayload && nativeEnabled;
 
-      // Prefer CLAP-style audio embeddings when enabled and the caller provides bytes.
-      // This avoids transcription calls and supports true audio-to-audio retrieval.
-      if (wantsAudioEmbeddingQuery) {
-        const adapter = await this.ensureInitialized();
-        const baseCollectionIds =
-          options.collectionIds && options.collectionIds.length > 0
-            ? options.collectionIds
-            : [this.resolveMediaCollectionId('audio')];
-
-        try {
-          return await this.queryMediaAssetsByAudioEmbeddingInternal({
-            adapter,
-            payload: options.payload!,
-            mimeType: options.mimeType || 'audio/*',
-            baseCollectionIds,
-            topK: options.topK ?? 5,
-            includeMetadata: options.includeMetadata,
-          });
-        } catch (embedError: any) {
-          const message = embedError?.message ?? String(embedError);
-          console.warn(
-            `[RAG Service] Audio embedding query failed; falling back to transcript-based retrieval. ${message}`
-          );
+      if (requestedMode === 'native') {
+        if (!hasNativePayload) {
+          return {
+            success: false,
+            query: '',
+            assets: [],
+            totalResults: 0,
+            processingTimeMs: Date.now() - start,
+            retrieval: {
+              requestedMode,
+              resolvedMode: 'native',
+              fallbackReason: 'Native retrieval requires audio payload bytes.',
+            },
+            error: 'Native retrieval requires audio payload bytes.',
+          };
         }
+        if (!nativeEnabled) {
+          return {
+            success: false,
+            query: '',
+            assets: [],
+            totalResults: 0,
+            processingTimeMs: Date.now() - start,
+            retrieval: {
+              requestedMode,
+              resolvedMode: 'native',
+              fallbackReason:
+                'Native audio retrieval is disabled. Set AGENTOS_RAG_MEDIA_AUDIO_EMBEDDINGS_ENABLED=true.',
+            },
+            error:
+              'Native audio retrieval is disabled. Set AGENTOS_RAG_MEDIA_AUDIO_EMBEDDINGS_ENABLED=true.',
+          };
+        }
+
+        const adapter = await this.ensureInitialized();
+        const nativeResult = await this.queryMediaAssetsByAudioEmbeddingInternal({
+          adapter,
+          payload: options.payload!,
+          mimeType: options.mimeType || 'audio/*',
+          baseCollectionIds,
+          topK: options.topK ?? 5,
+          includeMetadata: options.includeMetadata,
+        });
+        return this.withMediaRetrievalInfo(nativeResult, {
+          requestedMode,
+          resolvedMode: 'native',
+        }, Date.now() - start);
       }
 
       const queryText = (options.textRepresentation ?? '').trim()
@@ -3257,7 +3658,7 @@ class SqlRagStore {
         };
       }
 
-      const result = await this.queryMediaAssets({
+      const textResult = await this.queryMediaAssets({
         query: queryText,
         modalities: options.modalities ?? ['audio'],
         collectionIds: options.collectionIds,
@@ -3265,7 +3666,72 @@ class SqlRagStore {
         includeMetadata: options.includeMetadata,
       });
 
-      return result;
+      if (requestedMode === 'text') {
+        return this.withMediaRetrievalInfo(textResult, {
+          requestedMode,
+          resolvedMode: 'text',
+          textQueryUsed: queryText,
+        }, Date.now() - start);
+      }
+
+      let nativeFallbackReason: string | undefined;
+      let nativeResult: RagMediaQueryResult | null = null;
+
+      if (canRunNative) {
+        const adapter = await this.ensureInitialized();
+        try {
+          nativeResult = await this.queryMediaAssetsByAudioEmbeddingInternal({
+            adapter,
+            payload: options.payload!,
+            mimeType: options.mimeType || 'audio/*',
+            baseCollectionIds,
+            topK: options.topK ?? 5,
+            includeMetadata: options.includeMetadata,
+          });
+        } catch (embedError: any) {
+          nativeFallbackReason = embedError?.message ?? String(embedError);
+          console.warn(
+            `[RAG Service] Audio native retrieval unavailable; continuing with text retrieval. ${nativeFallbackReason}`
+          );
+        }
+      } else if (requestedMode === 'hybrid' && !hasNativePayload) {
+        nativeFallbackReason = 'Native retrieval requires audio payload bytes.';
+      } else if (requestedMode === 'hybrid' && !nativeEnabled) {
+        nativeFallbackReason =
+          'Native audio retrieval is disabled. Set AGENTOS_RAG_MEDIA_AUDIO_EMBEDDINGS_ENABLED=true.';
+      }
+
+      if (nativeResult && nativeResult.assets.length > 0 && textResult.assets.length > 0) {
+        return this.withMediaRetrievalInfo(
+          this.fuseMediaQueryResults({
+            primary: textResult,
+            secondary: nativeResult,
+            topK: options.topK ?? 5,
+            includeMetadata: options.includeMetadata,
+          }),
+          {
+            requestedMode,
+            resolvedMode: 'hybrid',
+            textQueryUsed: queryText,
+          },
+          Date.now() - start
+        );
+      }
+
+      if (nativeResult && nativeResult.assets.length > 0) {
+        return this.withMediaRetrievalInfo(nativeResult, {
+          requestedMode,
+          resolvedMode: 'native',
+          textQueryUsed: queryText,
+        }, Date.now() - start);
+      }
+
+      return this.withMediaRetrievalInfo(textResult, {
+        requestedMode,
+        resolvedMode: 'text',
+        textQueryUsed: queryText,
+        fallbackReason: nativeFallbackReason,
+      }, Date.now() - start);
     } catch (error: any) {
       const message = error?.message ?? String(error);
       return {
@@ -3274,6 +3740,10 @@ class SqlRagStore {
         assets: [],
         totalResults: 0,
         processingTimeMs: Date.now() - start,
+        retrieval: {
+          requestedMode,
+          resolvedMode: requestedMode === 'native' ? 'native' : 'text',
+        },
         error: message,
       };
     }
@@ -3313,6 +3783,15 @@ class SqlRagStore {
   }
 
   /**
+   * Ingest a document into RAG by extracting text and indexing it as a normal document.
+   */
+  async ingestDocumentAsset(
+    input: Omit<RagMediaAssetInput, 'modality'>
+  ): Promise<RagMediaIngestionResult> {
+    return this.ingestMediaAsset({ ...input, modality: 'document' });
+  }
+
+  /**
    * Ingest a multimodal asset into RAG by deriving a text representation and indexing it as a normal document.
    *
    * The derived documentId is currently the same as `assetId`, making query grouping deterministic.
@@ -3325,6 +3804,10 @@ class SqlRagStore {
     const modality = input.modality;
     const collectionId = this.resolveMediaCollectionId(modality, input.collectionId);
     const category = input.category || 'knowledge_base';
+    const mimeType =
+      modality === 'document'
+        ? this.resolveDocumentMimeType(input.mimeType, input.originalFileName)
+        : input.mimeType;
 
     const storePayload = input.storePayload ?? this.resolveMediaStorePayloadDefault();
     const payload = input.payload;
@@ -3356,16 +3839,26 @@ class SqlRagStore {
       await this.createCollection(collectionId);
 
       let derivedTags: string[] | undefined;
+      let derivedMetadata: Record<string, unknown> | undefined;
       let textRepresentation = input.textRepresentation?.trim();
       if (!textRepresentation) {
         if (modality === 'image') {
           const derived = await this.deriveImageTextRepresentation({
-            mimeType: input.mimeType,
+            mimeType,
             payload,
             sourceUrl: sourceUrl ?? undefined,
           });
           textRepresentation = derived.textRepresentation;
           derivedTags = derived.tags;
+        } else if (modality === 'document') {
+          const derived = await this.deriveDocumentTextRepresentation({
+            payload,
+            mimeType,
+            originalFileName: input.originalFileName,
+            sourceUrl: sourceUrl ?? undefined,
+          });
+          textRepresentation = derived.textRepresentation;
+          derivedMetadata = derived.metadata;
         } else {
           if (!payload || payload.length === 0) {
             throw new Error('Audio ingestion requires `payload` bytes.');
@@ -3374,8 +3867,8 @@ class SqlRagStore {
             payload,
             originalFileName:
               input.originalFileName ||
-              `audio-${Date.now()}.${input.mimeType.split('/')[1] || 'bin'}`,
-            mimeType: input.mimeType,
+              `audio-${Date.now()}.${mimeType.split('/')[1] || 'bin'}`,
+            mimeType,
             userId,
           });
         }
@@ -3388,10 +3881,11 @@ class SqlRagStore {
       const mergedTags = this.normalizeTags([...(input.tags ?? []), ...(derivedTags ?? [])]);
       const baseMetadata = {
         ...(input.metadata ?? {}),
+        ...(derivedMetadata ?? {}),
         kind: 'rag_media_asset',
         assetId,
         modality,
-        mimeType: input.mimeType,
+        mimeType,
         originalFileName: input.originalFileName,
         sourceUrl: sourceUrl ?? undefined,
         contentHashHex: contentHashHex ?? undefined,
@@ -3403,12 +3897,12 @@ class SqlRagStore {
         ...(input.metadata?.agentId ? { agentId: input.metadata.agentId as any } : {}),
         ...(input.metadata?.userId ? { userId: input.metadata.userId as any } : {}),
         ...(input.userId ? { userId: input.userId } : {}),
-        type: 'media_asset',
+        type: modality === 'document' ? 'document_asset' : 'media_asset',
         tags: mergedTags,
       };
 
-      const chunkSize = 700;
-      const chunkOverlap = 60;
+      const chunkSize = modality === 'document' ? 1000 : 700;
+      const chunkOverlap = modality === 'document' ? 120 : 60;
       const chunks = this.chunkContent(textRepresentation, chunkSize, chunkOverlap);
       const nextChunkIdSet = new Set(
         chunks.map((_content, chunkIndex) => `${assetId}_chunk_${chunkIndex}`)
@@ -3424,13 +3918,14 @@ class SqlRagStore {
             assetId,
             collectionId,
             modality,
-            input.mimeType,
+            mimeType,
             input.originalFileName ?? null,
             payloadBase64,
             sourceUrl,
             contentHashHex,
             JSON.stringify({
               ...(input.metadata ?? {}),
+              ...(derivedMetadata ?? {}),
               ...(mergedTags ? { tags: mergedTags } : {}),
               ...(agentId ? { agentId } : {}),
               ...(input.userId ? { userId: input.userId } : {}),
@@ -3500,7 +3995,7 @@ class SqlRagStore {
             baseCollectionId: collectionId,
             previousBaseCollectionId: previousCollectionId ?? null,
             payload,
-            mimeType: input.mimeType,
+            mimeType,
             metadata: (docMetadata ?? null) as any,
           });
         } catch (embedError: any) {
@@ -3521,7 +4016,7 @@ class SqlRagStore {
             baseCollectionId: collectionId,
             previousBaseCollectionId: previousCollectionId ?? null,
             payload,
-            mimeType: input.mimeType,
+            mimeType,
             metadata: (docMetadata ?? null) as any,
           });
         } catch (embedError: any) {
@@ -3676,7 +4171,7 @@ class SqlRagStore {
     const adapter = await this.ensureInitialized();
     const start = Date.now();
 
-    const defaultModalities: RagMediaModality[] = ['image', 'audio'];
+    const defaultModalities: RagMediaModality[] = ['image', 'audio', 'document'];
     const modalities: RagMediaModality[] =
       options.modalities && options.modalities.length > 0 ? options.modalities : defaultModalities;
     const requestedCollections =
@@ -5225,6 +5720,15 @@ export const ragService = {
   },
 
   /**
+   * Ingest a document file into multimodal RAG (stores metadata + extracted text document).
+   */
+  async ingestDocumentAsset(
+    input: Omit<RagMediaAssetInput, 'modality'>
+  ): Promise<RagMediaIngestionResult> {
+    return ragStore.ingestDocumentAsset(input);
+  },
+
+  /**
    * Ingest a multimodal asset into RAG by deriving a text representation.
    */
   async ingestMediaAsset(input: RagMediaAssetInput): Promise<RagMediaIngestionResult> {
@@ -5271,6 +5775,7 @@ export const ragService = {
     mimeType?: string;
     sourceUrl?: string;
     textRepresentation?: string;
+    retrievalMode?: RagMediaRetrievalMode;
     modalities?: RagMediaModality[];
     collectionIds?: string[];
     topK?: number;
@@ -5287,6 +5792,7 @@ export const ragService = {
     mimeType?: string;
     originalFileName?: string;
     textRepresentation?: string;
+    retrievalMode?: RagMediaRetrievalMode;
     modalities?: RagMediaModality[];
     collectionIds?: string[];
     topK?: number;

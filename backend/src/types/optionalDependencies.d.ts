@@ -45,6 +45,43 @@ declare module 'wavefile' {
   export default wavefile;
 }
 
+declare module 'pdf-parse' {
+  export interface PdfParseResult {
+    text?: string;
+    numpages?: number;
+    info?: Record<string, unknown>;
+    metadata?: unknown;
+    version?: string;
+  }
+
+  export default function pdfParse(
+    dataBuffer: Buffer | Uint8Array,
+    options?: Record<string, unknown>
+  ): Promise<PdfParseResult>;
+}
+
+declare module 'mammoth' {
+  export interface MammothMessage {
+    type?: string;
+    message?: string;
+  }
+
+  export interface MammothRawTextResult {
+    value?: string;
+    messages?: MammothMessage[];
+  }
+
+  export function extractRawText(input: {
+    buffer: Buffer | Uint8Array;
+  }): Promise<MammothRawTextResult>;
+
+  const mammoth: {
+    extractRawText: typeof extractRawText;
+  };
+
+  export default mammoth;
+}
+
 // Legacy JS route modules without TS declarations.
 declare module '../../features/prompts/prompt.routes.js' {
   import type { Request, Response } from 'express';

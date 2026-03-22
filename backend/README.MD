@@ -110,19 +110,21 @@ GraphRAG update/delete semantics:
 
 ---
 
-### AgentOS Multimodal RAG (Image + Audio)
+### AgentOS Multimodal RAG (Image + Audio + Documents)
 
 Multimodal ingestion stores a small asset record (and optionally the raw bytes), then indexes the asset by writing a derived **text representation** as a normal RAG document:
 
 - Images: caption + visible text (LLM vision) or user-supplied `textRepresentation`
 - Audio: transcript (OpenAI Whisper) or user-supplied `textRepresentation`
+- Documents: parsed text (PDF, DOCX, TXT, Markdown, CSV, JSON, XML) or user-supplied `textRepresentation`
 
 Env (optional):
 
 - `AGENTOS_RAG_MEDIA_STORE_PAYLOAD=true|false` (default: `false`)
 - `AGENTOS_RAG_MEDIA_IMAGE_COLLECTION_ID=media_images` (default shown)
 - `AGENTOS_RAG_MEDIA_AUDIO_COLLECTION_ID=media_audio` (default shown)
-- `AGENTOS_RAG_MEDIA_IMAGE_LLM_PROVIDER=openai|openrouter` (default: `openai`)
+- `AGENTOS_RAG_MEDIA_DOCUMENT_COLLECTION_ID=media_documents` (default shown)
+- `AGENTOS_RAG_MEDIA_IMAGE_LLM_PROVIDER=openai|openrouter|ollama` (default: `openai`)
 - `AGENTOS_RAG_MEDIA_IMAGE_LLM_MODEL=gpt-4o-mini` (default shown)
 - Optional image-to-image embeddings (offline, CLIP-style):
   - `AGENTOS_RAG_MEDIA_IMAGE_EMBEDDINGS_ENABLED=true` (default: `false`)
@@ -152,32 +154,43 @@ curl -s -X POST http://localhost:3001/api/agentos/rag/multimodal/audio/ingest \
   -F "audio=@/path/to/audio.webm" \
   -F "storePayload=false" | jq
 
+# Ingest document (multipart/form-data; field name: "document")
+curl -s -X POST http://localhost:3001/api/agentos/rag/multimodal/documents/ingest \
+  -F "document=@/path/to/report.pdf" \
+  -F "storePayload=true" | jq
+
 # Query by image (multipart/form-data; field name: "image")
 # Default behavior:
-# - If `AGENTOS_RAG_MEDIA_IMAGE_EMBEDDINGS_ENABLED=true` and Transformers.js is installed, uses offline image embeddings.
-# - Otherwise, captions the query image and runs text retrieval.
-# To force text retrieval (and bypass both captioning + image embeddings), pass `textRepresentation` explicitly.
+# - `retrievalMode=auto` is text-first by default, then augments with native image retrieval when available.
+# - `retrievalMode=text` forces caption/OCR-derived retrieval only.
+# - `retrievalMode=native` forces image-embedding retrieval only.
+# - `retrievalMode=hybrid` fuses text + native retrieval when both are available.
+# - Ollama captioning is supported for vision-capable models when the image is forwarded as inline bytes.
 curl -s -X POST http://localhost:3001/api/agentos/rag/multimodal/images/query \
   -F "image=@/path/to/query.png" \
   -F "topK=5" \
   -F "modalities=image" \
+  -F "retrievalMode=auto" \
   -F "textRepresentation=diagram auth flow" | jq
 
 # Query by audio (multipart/form-data; field name: "audio")
 # Default behavior:
-# - If `AGENTOS_RAG_MEDIA_AUDIO_EMBEDDINGS_ENABLED=true` and Transformers.js + wavefile are installed, uses offline audio embeddings (WAV-only) for audio-to-audio retrieval.
-# - Otherwise, transcribes the query audio and runs text retrieval.
-# To avoid any transcription API calls, pass `textRepresentation` explicitly.
+# - `retrievalMode=auto` is text-first by default, then augments with native audio retrieval when available.
+# - `retrievalMode=text` forces transcript-derived retrieval only.
+# - `retrievalMode=native` forces audio-embedding retrieval only.
+# - `retrievalMode=hybrid` fuses text + native retrieval when both are available.
+# - Non-WAV inputs still use transcript-first retrieval as the compatibility path.
 curl -s -X POST http://localhost:3001/api/agentos/rag/multimodal/audio/query \
   -F "audio=@/path/to/query.webm" \
   -F "topK=5" \
   -F "modalities=audio" \
+  -F "retrievalMode=auto" \
   -F "textRepresentation=hello world" | jq
 
 # Query assets (JSON)
 curl -s -X POST http://localhost:3001/api/agentos/rag/multimodal/query \
   -H 'content-type: application/json' \
-  -d '{"query":"find the diagram about auth flow","modalities":["image"],"topK":5}' | jq
+  -d '{"query":"find the Q4 revenue report","modalities":["document"],"topK":5}' | jq
 
 # Fetch metadata
 curl -s http://localhost:3001/api/agentos/rag/multimodal/assets/<assetId> | jq

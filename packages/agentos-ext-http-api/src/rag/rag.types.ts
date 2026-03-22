@@ -268,7 +268,8 @@ export interface RagMemoryStats {
   lastIngestionAt?: string;
 }
 
-export type RagMediaModality = 'image' | 'audio';
+export type RagMediaModality = 'image' | 'audio' | 'document';
+export type RagMediaRetrievalMode = 'auto' | 'text' | 'native' | 'hybrid';
 
 export interface RagMediaAsset {
   assetId: string;
@@ -323,6 +324,7 @@ export interface RagMediaQueryByImageRequest {
   mimeType?: string;
   sourceUrl?: string;
   textRepresentation?: string;
+  retrievalMode?: RagMediaRetrievalMode;
   modalities?: RagMediaModality[];
   collectionIds?: string[];
   topK?: number;
@@ -334,6 +336,7 @@ export interface RagMediaQueryByAudioRequest {
   mimeType?: string;
   originalFileName?: string;
   textRepresentation?: string;
+  retrievalMode?: RagMediaRetrievalMode;
   modalities?: RagMediaModality[];
   collectionIds?: string[];
   topK?: number;
@@ -350,6 +353,12 @@ export interface RagMediaQueryResponse {
   }>;
   totalResults: number;
   processingTimeMs: number;
+  retrieval?: {
+    requestedMode: RagMediaRetrievalMode;
+    resolvedMode: 'text' | 'native' | 'hybrid';
+    textQueryUsed?: string;
+    fallbackReason?: string;
+  };
   error?: string;
 }
 
@@ -420,9 +429,10 @@ export interface AgentOSRagServiceLike {
   getAuditTrail(trailId: string): Promise<RagAuditTrailWire | null>;
   storeAuditTrail(trail: RagAuditTrailWire): Promise<void>;
 
-  // Multimodal asset operations (image/audio).
+  // Multimodal asset operations (image/audio/document).
   ingestImageAsset(input: RagMediaAssetIngestRequest): Promise<RagMediaIngestionResponse>;
   ingestAudioAsset(input: RagMediaAssetIngestRequest): Promise<RagMediaIngestionResponse>;
+  ingestDocumentAsset(input: RagMediaAssetIngestRequest): Promise<RagMediaIngestionResponse>;
   queryMediaAssets(input: RagMediaQueryRequest): Promise<RagMediaQueryResponse>;
   queryMediaAssetsByImage(input: RagMediaQueryByImageRequest): Promise<RagMediaQueryResponse>;
   queryMediaAssetsByAudio(input: RagMediaQueryByAudioRequest): Promise<RagMediaQueryResponse>;

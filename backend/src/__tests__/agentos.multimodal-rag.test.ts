@@ -10,10 +10,9 @@ test('Multimodal RAG ingests, queries, and serves asset payloads', async () => {
   process.env.RAG_DATABASE_PATH = '';
   process.env.RAG_STORAGE_PRIORITY = 'sqljs';
   process.env.AGENTOS_RAG_VECTOR_PROVIDER = 'sql';
-  // Enable offline multimodal embeddings to ensure they degrade gracefully when optional deps
-  // are not installed (indexing is best-effort and should never break ingestion).
-  process.env.AGENTOS_RAG_MEDIA_IMAGE_EMBEDDINGS_ENABLED = 'true';
-  process.env.AGENTOS_RAG_MEDIA_AUDIO_EMBEDDINGS_ENABLED = 'true';
+  // Keep optional multimodal embedders disabled so this test remains deterministic and fast.
+  process.env.AGENTOS_RAG_MEDIA_IMAGE_EMBEDDINGS_ENABLED = 'false';
+  process.env.AGENTOS_RAG_MEDIA_AUDIO_EMBEDDINGS_ENABLED = 'false';
   // Avoid any real network calls in this unit test (embeddings are best-effort).
   process.env.OPENAI_API_KEY = '';
   process.env.OPENROUTER_API_KEY = '';
@@ -23,9 +22,11 @@ test('Multimodal RAG ingests, queries, and serves asset payloads', async () => {
 
   const imageAssetId = `test_image_${Date.now()}`;
   const audioAssetId = `test_audio_${Date.now()}`;
+  const documentAssetId = `test_document_${Date.now()}`;
 
   const imageBytes = Buffer.from('not-a-real-png');
   const audioBytes = Buffer.from('not-a-real-audio');
+  const documentBytes = Buffer.from('Quarterly revenue grew 30 percent in Q4.');
 
   const imageIngest = await ragService.ingestImageAsset({
     assetId: imageAssetId,
@@ -53,6 +54,19 @@ test('Multimodal RAG ingests, queries, and serves asset payloads', async () => {
   });
   assert.equal(audioIngest.success, true);
 
+  const documentIngest = await ragService.ingestDocumentAsset({
+    assetId: documentAssetId,
+    mimeType: 'text/plain',
+    originalFileName: 'report.txt',
+    payload: documentBytes,
+    storePayload: true,
+    metadata: { test: true, kind: 'unit_test_document' },
+    userId: 'test_user',
+    agentId: 'test_agent',
+  });
+  assert.equal(documentIngest.success, true);
+  assert.match(documentIngest.textRepresentation, /\[Document\]/);
+
   const imageQuery = await ragService.queryMediaAssets({
     query: 'red square',
     modalities: ['image'],
@@ -65,11 +79,14 @@ test('Multimodal RAG ingests, queries, and serves asset payloads', async () => {
   // Query-by-image path (textRepresentation supplied to avoid any captioning network calls).
   const imageQueryByImage = await ragService.queryMediaAssetsByImage({
     textRepresentation: 'red square',
+    retrievalMode: 'text',
     modalities: ['image'],
     topK: 5,
   });
   assert.equal(imageQueryByImage.success, true);
   assert.ok(imageQueryByImage.assets.some((a) => a.asset.assetId === imageAssetId));
+  assert.equal(imageQueryByImage.retrieval?.requestedMode, 'text');
+  assert.equal(imageQueryByImage.retrieval?.resolvedMode, 'text');
 
   // Re-ingest the same assetId with different derived text (update semantics).
   const imageReingest = await ragService.ingestImageAsset({
@@ -111,19 +128,45 @@ test('Multimodal RAG ingests, queries, and serves asset payloads', async () => {
   assert.equal(audioQuery.success, true);
   assert.ok(audioQuery.assets.some((a) => a.asset.assetId === audioAssetId));
 
+  const documentQuery = await ragService.queryMediaAssets({
+    query: 'quarterly revenue',
+    modalities: ['document'],
+    topK: 5,
+    includeMetadata: true,
+  });
+  assert.equal(documentQuery.success, true);
+  assert.ok(documentQuery.assets.some((a) => a.asset.assetId === documentAssetId));
+
   // Query-by-audio path (textRepresentation supplied to avoid any transcription network calls).
   const audioQueryByAudio = await ragService.queryMediaAssetsByAudio({
     textRepresentation: 'hello',
+    retrievalMode: 'text',
     modalities: ['audio'],
     topK: 5,
   });
   assert.equal(audioQueryByAudio.success, true);
   assert.ok(audioQueryByAudio.assets.some((a) => a.asset.assetId === audioAssetId));
+  assert.equal(audioQueryByAudio.retrieval?.requestedMode, 'text');
+  assert.equal(audioQueryByAudio.retrieval?.resolvedMode, 'text');
+
+  const nativeImageWithoutPayload = await ragService.queryMediaAssetsByImage({
+    retrievalMode: 'native',
+    modalities: ['image'],
+    topK: 5,
+  });
+  assert.equal(nativeImageWithoutPayload.success, false);
+  assert.equal(nativeImageWithoutPayload.retrieval?.requestedMode, 'native');
+  assert.equal(nativeImageWithoutPayload.retrieval?.resolvedMode, 'native');
 
   const assetMeta = await ragService.getMediaAsset(imageAssetId);
   assert.ok(assetMeta, 'expected image asset metadata');
   assert.equal(assetMeta?.assetId, imageAssetId);
   assert.equal(assetMeta?.modality, 'image');
+
+  const documentMeta = await ragService.getMediaAsset(documentAssetId);
+  assert.ok(documentMeta, 'expected document asset metadata');
+  assert.equal(documentMeta?.assetId, documentAssetId);
+  assert.equal(documentMeta?.modality, 'document');
 
   const storedImage = await ragService.getMediaAssetContent(imageAssetId);
   assert.ok(storedImage, 'expected stored image payload');
@@ -132,6 +175,11 @@ test('Multimodal RAG ingests, queries, and serves asset payloads', async () => {
 
   const storedAudio = await ragService.getMediaAssetContent(audioAssetId);
   assert.equal(storedAudio, null, 'expected no stored audio payload when storePayload=false');
+
+  const storedDocument = await ragService.getMediaAssetContent(documentAssetId);
+  assert.ok(storedDocument, 'expected stored document payload');
+  assert.equal(storedDocument?.mimeType, 'text/plain');
+  assert.deepEqual(storedDocument?.buffer, documentBytes);
 
   const deleted = await ragService.deleteMediaAsset(audioAssetId);
   assert.equal(deleted, true);
