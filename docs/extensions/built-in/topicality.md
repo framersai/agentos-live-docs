@@ -44,9 +44,9 @@ Requires an embedding provider to be configured in AgentOS (e.g., OpenAI embeddi
 
 ```typescript
 import { AgentOS } from '@framers/agentos';
-import { createTopicalityPack, TOPIC_PRESETS } from '@framers/agentos-ext-topicality';
+import { createTopicalityGuardrail, TOPIC_PRESETS } from '@framers/agentos-ext-topicality';
 
-const topicalityPack = createTopicalityPack({
+const topicalityPack = createTopicalityGuardrail({
   allowedTopics: TOPIC_PRESETS.customerSupport,
   forbiddenTopics: TOPIC_PRESETS.commonUnsafe,
   allowedThreshold: 0.35,
@@ -192,9 +192,9 @@ The extension ships with pre-built topic descriptor sets for common use cases:
 3 forbidden topics: Violence & Harm, Illegal Activity, Self-Harm.
 
 ```typescript
-import { createTopicalityPack, TOPIC_PRESETS } from '@framers/agentos-ext-topicality';
+import { createTopicalityGuardrail, TOPIC_PRESETS } from '@framers/agentos-ext-topicality';
 
-const pack = createTopicalityPack({
+const pack = createTopicalityGuardrail({
   allowedTopics: TOPIC_PRESETS.customerSupport,
   forbiddenTopics: TOPIC_PRESETS.commonUnsafe,
 });

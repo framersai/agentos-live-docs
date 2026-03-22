@@ -48,9 +48,9 @@ npm install @huggingface/transformers
 
 ```typescript
 import { AgentOS } from '@framers/agentos';
-import { createMLClassifierPack } from '@framers/agentos-ext-ml-classifiers';
+import { createMLClassifierGuardrail } from '@framers/agentos-ext-ml-classifiers';
 
-const mlPack = createMLClassifierPack({
+const mlPack = createMLClassifierGuardrail({
   classifiers: {
     toxicity: true,
     injection: true,
@@ -165,7 +165,7 @@ interface IContentClassifier {
 Register custom classifiers in the pack options:
 
 ```typescript
-const pack = createMLClassifierPack({
+const pack = createMLClassifierGuardrail({
   customClassifiers: [new MyCustomClassifier()],
   classifiers: { toxicity: true }, // defaults still run alongside
 });
@@ -216,7 +216,7 @@ The guardrail supports three streaming modes, all implemented within the `IGuard
 First chunk uses blocking mode (catches injection in the first response -- the most dangerous attack vector). Subsequent chunks use non-blocking for smooth streaming with one-chunk-delayed violation detection.
 
 ```typescript
-const pack = createMLClassifierPack({
+const pack = createMLClassifierGuardrail({
   streamingMode: 'hybrid', // first chunk blocking, rest non-blocking
 });
 ```
@@ -253,7 +253,7 @@ const pack = createMLClassifierPack({
 ### Per-Classifier Overrides
 
 ```typescript
-const pack = createMLClassifierPack({
+const pack = createMLClassifierGuardrail({
   classifiers: {
     toxicity: {
       modelId: 'custom/my-toxicity-model', // override model
@@ -283,7 +283,7 @@ Models are cached in the browser using the Cache API (default) or IndexedDB for 
 ### Configuration
 
 ```typescript
-const pack = createMLClassifierPack({
+const pack = createMLClassifierGuardrail({
   runtime: 'browser',
   browser: {
     useWebWorker: true,

@@ -50,9 +50,9 @@ No additional dependencies required.
 
 ```typescript
 import { AgentOS } from '@framers/agentos';
-import { createCodeSafetyPack } from '@framers/agentos-ext-code-safety';
+import { createCodeSafetyGuardrail } from '@framers/agentos-ext-code-safety';
 
-const codeSafetyPack = createCodeSafetyPack({
+const codeSafetyPack = createCodeSafetyGuardrail({
   severityActions: {
     critical: 'block',
     high: 'block',
@@ -223,7 +223,7 @@ The guardrail intercepts `TOOL_CALL_REQUEST` chunks for code-executing tools. Wh
 ### Custom Tool Mapping
 
 ```typescript
-const pack = createCodeSafetyPack({
+const pack = createCodeSafetyGuardrail({
   codeExecutingTools: ['shell_execute', 'run_sql', 'my_custom_tool'],
   codeArgumentMapping: {
     my_custom_tool: { argKey: 'script', language: 'python' },
@@ -252,7 +252,7 @@ interface ICodeSafetyRule {
 Example:
 
 ```typescript
-const pack = createCodeSafetyPack({
+const pack = createCodeSafetyGuardrail({
   customRules: [
     {
       id: 'my-custom-rule',
