@@ -654,7 +654,7 @@ export interface PiiDetectionResult {
 
 ```
 pii-redaction/
-├── index.ts                          # createPiiRedactionPack() factory, exports
+├── index.ts                          # createPiiRedactionGuardrail() factory, exports
 ├── types.ts                          # PiiEntity, PiiEntityType, config interfaces
 ├── PiiRedactionGuardrail.ts          # IGuardrailService implementation
 ├── PiiDetectionPipeline.ts           # Orchestrates 4-tier recognizer chain
@@ -695,9 +695,9 @@ pii-redaction/
  *
  * @example
  * ```typescript
- * import { createPiiRedactionPack } from '@framers/agentos/extensions/packs/pii-redaction';
+ * import { createPiiRedactionGuardrail } from '@framers/agentos/extensions/packs/pii-redaction';
  *
- * const piiPack = createPiiRedactionPack({
+ * const piiPack = createPiiRedactionGuardrail({
  *   confidenceThreshold: 0.5,
  *   redactionStyle: 'placeholder',
  *   enableNerModel: true,
@@ -715,7 +715,7 @@ pii-redaction/
  * });
  * ```
  */
-export function createPiiRedactionPack(options?: PiiRedactionPackOptions): ExtensionPack {
+export function createPiiRedactionGuardrail(options?: PiiRedactionPackOptions): ExtensionPack {
   // ... implementation
 }
 
@@ -742,7 +742,7 @@ export function createPiiRedactionPack(options?: PiiRedactionPackOptions): Exten
  * ```
  */
 export function createExtensionPack(context: ExtensionPackContext): ExtensionPack {
-  return createPiiRedactionPack(context.options as PiiRedactionPackOptions);
+  return createPiiRedactionGuardrail(context.options as PiiRedactionPackOptions);
 }
 ````
 
@@ -913,7 +913,7 @@ export const PII_SERVICE_IDS = {
 
 The existing [guardrails.md](apps/agentos-live-docs/docs/features/guardrails.md) will be updated:
 
-1. **Replace** the placeholder `PIIRedactionGuardrail` regex-only example with a reference to the real extension using `createPiiRedactionPack()`
+1. **Replace** the placeholder `PIIRedactionGuardrail` regex-only example with a reference to the real extension using `createPiiRedactionGuardrail()`
 2. **Add** a dedicated "PII Redaction Extension" section covering: detection tiers, configuration, redaction styles, agent tools, performance
 3. **Add** an `ISharedServiceRegistry` section under "Advanced" explaining the shared service pattern
 

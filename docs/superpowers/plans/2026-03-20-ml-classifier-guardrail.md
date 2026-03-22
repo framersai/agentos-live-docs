@@ -29,7 +29,7 @@ All ML classifier pack files live under `packages/agentos/src/extensions/packs/m
 | `classifiers/WorkerClassifierProxy.ts` | Browser Web Worker wrapper                                                                                                                                              |
 | `worker/classifier-worker.ts`          | Web Worker entry point                                                                                                                                                  |
 | `tools/ClassifyContentTool.ts`         | `ITool` for on-demand classification                                                                                                                                    |
-| `index.ts`                             | `createMLClassifierPack()` factory + `createExtensionPack()` bridge                                                                                                     |
+| `index.ts`                             | `createMLClassifierGuardrail()` factory + `createExtensionPack()` bridge                                                                                                |
 | `ml-classifiers.skill.md`              | SKILL.md for agent awareness                                                                                                                                            |
 
 Shared utilities at `packages/agentos/src/core/utils/`:
@@ -757,7 +757,7 @@ git commit -m "feat(ml-classifiers): add WorkerClassifierProxy for browser Web W
 
 Test cases:
 
-- `createMLClassifierPack()` returns ExtensionPack with name 'ml-classifiers' and version '1.0.0'
+- `createMLClassifierGuardrail()` returns ExtensionPack with name 'ml-classifiers' and version '1.0.0'
 - Provides 2 descriptors: 1 guardrail + 1 tool
 - Guardrail has id 'ml-classifier-guardrail' and kind 'guardrail'
 - Tool has id 'classify_content' and kind 'tool'
@@ -794,7 +794,7 @@ Re-export types: `export * from './types';`
 ```bash
 cd packages/agentos
 git add src/extensions/packs/ml-classifiers/index.ts tests/extensions/packs/ml-classifiers/index.spec.ts
-git commit -m "feat(ml-classifiers): add createMLClassifierPack factory with guardrail + tool"
+git commit -m "feat(ml-classifiers): add createMLClassifierGuardrail factory with guardrail + tool"
 ```
 
 ---
@@ -812,7 +812,7 @@ In `packages/agentos/src/extensions/index.ts`, add:
 
 ```typescript
 export {
-  createMLClassifierPack,
+  createMLClassifierGuardrail,
   createExtensionPack as createMLClassifierExtensionPack,
 } from './packs/ml-classifiers';
 ```

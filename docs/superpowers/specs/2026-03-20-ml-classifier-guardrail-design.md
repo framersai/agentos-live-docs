@@ -721,7 +721,7 @@ export const ML_CLASSIFIER_SERVICE_IDS = {
 
 ```
 ml-classifiers/
-├── index.ts                           # createMLClassifierPack() + createExtensionPack()
+├── index.ts                           # createMLClassifierGuardrail() + createExtensionPack()
 ├── types.ts                           # All config types, service IDs, thresholds
 ├── IContentClassifier.ts              # Pluggable classifier interface
 ├── SlidingWindowBuffer.ts             # Chunk accumulation + context carry-forward
@@ -758,7 +758,7 @@ Tests under `packages/agentos/tests/extensions/packs/ml-classifiers/`.
  * @param options - Classifier selection, thresholds, sliding window config
  * @returns ExtensionPack with 1 guardrail + 1 tool
  */
-export function createMLClassifierPack(options?: MLClassifierPackOptions): ExtensionPack;
+export function createMLClassifierGuardrail(options?: MLClassifierPackOptions): ExtensionPack;
 
 /**
  * Manifest-based loading bridge.
@@ -1020,7 +1020,7 @@ a tool for on-demand classification.
 5. **ClassifierOrchestrator** — parallel execution + aggregation
 6. **MLClassifierGuardrail** — IGuardrailService impl with sliding window
 7. **ClassifyContentTool** — on-demand tool
-8. **Pack factory** — `createMLClassifierPack()`, barrel exports, package.json exports
+8. **Pack factory** — `createMLClassifierGuardrail()`, barrel exports, package.json exports
 9. **Browser support** — WorkerClassifierProxy, classifier-worker.ts
 10. **SKILL.md + registry + docs**
 11. **Verification** — full test suite, typecheck

@@ -30,7 +30,7 @@ All PII pack files live under `packages/agentos/src/extensions/packs/pii-redacti
 | `PiiRedactionGuardrail.ts`              | `IGuardrailService` impl: input + streaming output, sentence-boundary buffer                                      |
 | `tools/PiiScanTool.ts`                  | `ITool`: scans text, returns `PiiDetectionResult`                                                                 |
 | `tools/PiiRedactTool.ts`                | `ITool`: redacts text, returns sanitized string + entities                                                        |
-| `index.ts`                              | `createPiiRedactionPack()` factory + `createExtensionPack()` bridge                                               |
+| `index.ts`                              | `createPiiRedactionGuardrail()` factory + `createExtensionPack()` bridge                                          |
 | `pii-redaction.skill.md`                | SKILL.md for agent self-discovery                                                                                 |
 
 Tests live under `packages/agentos/tests/extensions/packs/pii-redaction/`.
@@ -2985,20 +2985,20 @@ Create `packages/agentos/tests/extensions/packs/pii-redaction/index.spec.ts`:
 ```typescript
 import { describe, it, expect } from 'vitest';
 import {
-  createPiiRedactionPack,
+  createPiiRedactionGuardrail,
   createExtensionPack,
 } from '../../../../src/extensions/packs/pii-redaction';
 import { EXTENSION_KIND_TOOL, EXTENSION_KIND_GUARDRAIL } from '../../../../src/extensions/types';
 
-describe('createPiiRedactionPack', () => {
+describe('createPiiRedactionGuardrail', () => {
   it('returns an ExtensionPack with correct name and version', () => {
-    const pack = createPiiRedactionPack();
+    const pack = createPiiRedactionGuardrail();
     expect(pack.name).toBe('pii-redaction');
     expect(pack.version).toBe('1.0.0');
   });
 
   it('provides 3 descriptors: 1 guardrail + 2 tools', () => {
-    const pack = createPiiRedactionPack();
+    const pack = createPiiRedactionGuardrail();
     expect(pack.descriptors).toHaveLength(3);
 
     const guardrails = pack.descriptors.filter((d) => d.kind === EXTENSION_KIND_GUARDRAIL);
@@ -3009,13 +3009,13 @@ describe('createPiiRedactionPack', () => {
   });
 
   it('guardrail has correct id', () => {
-    const pack = createPiiRedactionPack();
+    const pack = createPiiRedactionGuardrail();
     const guardrail = pack.descriptors.find((d) => d.kind === EXTENSION_KIND_GUARDRAIL);
     expect(guardrail!.id).toBe('pii-redaction-guardrail');
   });
 
   it('tools have correct ids', () => {
-    const pack = createPiiRedactionPack();
+    const pack = createPiiRedactionGuardrail();
     const toolIds = pack.descriptors.filter((d) => d.kind === EXTENSION_KIND_TOOL).map((d) => d.id);
     expect(toolIds).toContain('pii_scan');
     expect(toolIds).toContain('pii_redact');
@@ -3023,7 +3023,7 @@ describe('createPiiRedactionPack', () => {
 });
 
 describe('createExtensionPack', () => {
-  it('bridges ExtensionPackContext to createPiiRedactionPack', () => {
+  it('bridges ExtensionPackContext to createPiiRedactionGuardrail', () => {
     const pack = createExtensionPack({
       options: { redactionStyle: 'mask' },
     } as any);
@@ -3082,7 +3082,7 @@ export * from './types';
  * @param options - Configuration for detection, redaction, and guardrail behavior
  * @returns An ExtensionPack with 3 descriptors (guardrail + 2 tools)
  */
-export function createPiiRedactionPack(options?: PiiRedactionPackOptions): ExtensionPack {
+export function createPiiRedactionGuardrail(options?: PiiRedactionPackOptions): ExtensionPack {
   const opts = options ?? {};
 
   // Use a proxy object so the services reference can be upgraded in onActivate.
@@ -3155,7 +3155,7 @@ export function createPiiRedactionPack(options?: PiiRedactionPackOptions): Exten
  * Bridges ExtensionPackContext.options to PiiRedactionPackOptions.
  */
 export function createExtensionPack(context: ExtensionPackContext): ExtensionPack {
-  return createPiiRedactionPack(context.options as PiiRedactionPackOptions);
+  return createPiiRedactionGuardrail(context.options as PiiRedactionPackOptions);
 }
 ```
 
@@ -3171,7 +3171,7 @@ Expected: PASS
 
 ```bash
 git add packages/agentos/src/extensions/packs/pii-redaction/index.ts packages/agentos/tests/extensions/packs/pii-redaction/index.spec.ts
-git commit -m "feat(pii): add createPiiRedactionPack factory with guardrail + tools"
+git commit -m "feat(pii): add createPiiRedactionGuardrail factory with guardrail + tools"
 ```
 
 ---
@@ -3241,10 +3241,10 @@ git commit -m "feat(pii): register PII redaction in extension catalog"
 In `apps/agentos-live-docs/docs/features/guardrails.md`, find the existing `PIIRedactionGuardrail` example (the one with simple regex patterns for SSN, email, credit card) and replace it with a reference to the real extension:
 
 ```typescript
-import { createPiiRedactionPack } from '@framers/agentos/extensions/packs/pii-redaction';
+import { createPiiRedactionGuardrail } from '@framers/agentos/extensions/packs/pii-redaction';
 
 // Full PII redaction with 4-tier detection pipeline
-const piiPack = createPiiRedactionPack({
+const piiPack = createPiiRedactionGuardrail({
   confidenceThreshold: 0.5,
   redactionStyle: 'placeholder',
   enableNerModel: true,

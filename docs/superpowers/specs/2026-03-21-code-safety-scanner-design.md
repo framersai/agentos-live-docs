@@ -570,7 +570,7 @@ export class ScanCodeTool implements ITool<ScanCodeInput, CodeSafetyScanResult> 
 
 ```
 code-safety/
-├── index.ts                    # createCodeSafetyPack() + createExtensionPack()
+├── index.ts                    # createCodeSafetyGuardrail() + createExtensionPack()
 ├── types.ts                    # ICodeSafetyRule, CodeSafetyCategory, CodeSafetyPackOptions, etc.
 ├── CodeSafetyScanner.ts        # Core scanning engine (stateless, sync)
 ├── CodeFenceExtractor.ts       # Markdown fence extraction + language detection
@@ -595,7 +595,7 @@ code-safety/
  * Pure regex — no models, no dependencies, no ISharedServiceRegistry needed.
  * The simplest pack in the guardrails suite.
  */
-export function createCodeSafetyPack(options?: CodeSafetyPackOptions): ExtensionPack {
+export function createCodeSafetyGuardrail(options?: CodeSafetyPackOptions): ExtensionPack {
   const opts = options ?? {};
 
   const scanner = new CodeSafetyScanner(buildRuleSet(opts), {
@@ -631,7 +631,7 @@ export function createCodeSafetyPack(options?: CodeSafetyPackOptions): Extension
 }
 
 export function createExtensionPack(context: ExtensionPackContext): ExtensionPack {
-  return createCodeSafetyPack(context.options as CodeSafetyPackOptions);
+  return createCodeSafetyGuardrail(context.options as CodeSafetyPackOptions);
 }
 ```
 
@@ -746,6 +746,6 @@ vulnerabilities. You also have a tool for on-demand code scanning.
 4. **CodeSafetyScanner** — core scanning engine
 5. **CodeSafetyGuardrail** — IGuardrailService impl with fence-boundary buffering + tool call scanning
 6. **ScanCodeTool** — ITool for on-demand scanning
-7. **Pack factory** — `createCodeSafetyPack()`, barrel exports, package.json exports
+7. **Pack factory** — `createCodeSafetyGuardrail()`, barrel exports, package.json exports
 8. **SKILL.md + registry**
 9. **Verification** — full test suite, push

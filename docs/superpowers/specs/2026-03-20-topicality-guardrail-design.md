@@ -300,7 +300,7 @@ export const DEFAULT_DRIFT_CONFIG: DriftConfig = {
  *
  * @example
  * ```typescript
- * createTopicalityPack({
+ * createTopicalityGuardrail({
  *   allowedTopics: TOPIC_PRESETS.customerSupport,
  *   forbiddenTopics: TOPIC_PRESETS.commonUnsafe,
  * });
@@ -719,7 +719,7 @@ export class CheckTopicTool implements ITool<CheckTopicInput, CheckTopicResult> 
 
 ```
 topicality/
-├── index.ts                    # createTopicalityPack() + createExtensionPack()
+├── index.ts                    # createTopicalityGuardrail() + createExtensionPack()
 ├── types.ts                    # TopicDescriptor, TopicalityPackOptions, DriftConfig, presets
 ├── TopicEmbeddingIndex.ts      # Centroid embedding index
 ├── TopicDriftTracker.ts        # Per-session EMA drift detection
@@ -732,7 +732,7 @@ topicality/
 **Factory (explicit structure matching PII/ML classifier packs):**
 
 ```typescript
-export function createTopicalityPack(options: TopicalityPackOptions): ExtensionPack {
+export function createTopicalityGuardrail(options: TopicalityPackOptions): ExtensionPack {
   const opts = options;
 
   const state = {
@@ -802,7 +802,7 @@ export function createTopicalityPack(options: TopicalityPackOptions): ExtensionP
 }
 
 export function createExtensionPack(context: ExtensionPackContext): ExtensionPack {
-  return createTopicalityPack(context.options as TopicalityPackOptions);
+  return createTopicalityGuardrail(context.options as TopicalityPackOptions);
 }
 ```
 
@@ -910,6 +910,6 @@ flagged. Gradual off-topic drift across multiple turns is detected.
 4. **TopicDriftTracker** — EMA update + drift detection + tests
 5. **TopicalityGuardrail** — IGuardrailService impl + tests
 6. **CheckTopicTool** — ITool impl + tests
-7. **Pack factory** — `createTopicalityPack()`, barrel exports, package.json exports
+7. **Pack factory** — `createTopicalityGuardrail()`, barrel exports, package.json exports
 8. **SKILL.md + registry + docs**
 9. **Verification** — full test suite, push

@@ -600,7 +600,7 @@ async execute(
 
 ```
 grounding-guard/
-├── index.ts                    # createGroundingGuardPack() + createExtensionPack()
+├── index.ts                    # createGroundingGuardrail() + createExtensionPack()
 ├── types.ts                    # GroundingGuardOptions, ClaimVerification, GroundingResult, etc.
 ├── ClaimExtractor.ts           # Heuristic split + LLM decomposition
 ├── GroundingChecker.ts         # NLI + LLM escalation
@@ -613,7 +613,7 @@ grounding-guard/
 **Factory:**
 
 ```typescript
-export function createGroundingGuardPack(options?: GroundingGuardOptions): ExtensionPack {
+export function createGroundingGuardrail(options?: GroundingGuardOptions): ExtensionPack {
   const opts = options ?? {};
 
   const state = {
@@ -673,7 +673,7 @@ export function createGroundingGuardPack(options?: GroundingGuardOptions): Exten
 }
 
 export function createExtensionPack(context: ExtensionPackContext): ExtensionPack {
-  return createGroundingGuardPack(context.options as GroundingGuardOptions);
+  return createGroundingGuardrail(context.options as GroundingGuardOptions);
 }
 ```
 
@@ -798,6 +798,6 @@ against the retrieved sources using NLI entailment detection.
 4. **GroundingChecker** — NLI + LLM escalation
 5. **GroundingGuardrail** — IGuardrailService impl with streaming + final
 6. **CheckGroundingTool** — on-demand tool
-7. **Pack factory** — createGroundingGuardPack(), barrel exports, package.json
+7. **Pack factory** — createGroundingGuardrail(), barrel exports, package.json
 8. **SKILL.md + registry**
 9. **Verification** — full test suite, push

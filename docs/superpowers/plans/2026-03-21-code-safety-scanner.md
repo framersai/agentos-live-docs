@@ -24,7 +24,7 @@ All files under `packages/agentos/src/extensions/packs/code-safety/`:
 | `CodeSafetyScanner.ts`   | Core scanning engine (stateless, sync)                                                                                                 |
 | `CodeSafetyGuardrail.ts` | `IGuardrailService` impl with fence-boundary buffering + tool call scanning                                                            |
 | `tools/ScanCodeTool.ts`  | `ITool` for on-demand scanning                                                                                                         |
-| `index.ts`               | `createCodeSafetyPack()` factory + `createExtensionPack()` bridge                                                                      |
+| `index.ts`               | `createCodeSafetyGuardrail()` factory + `createExtensionPack()` bridge                                                                 |
 | `code-safety.skill.md`   | SKILL.md for agent awareness                                                                                                           |
 
 Tests under `packages/agentos/tests/extensions/packs/code-safety/`:
@@ -534,7 +534,7 @@ import { CodeSafetyScanner } from './CodeSafetyScanner';
 import { CodeSafetyGuardrail } from './CodeSafetyGuardrail';
 import { ScanCodeTool } from './tools/ScanCodeTool';
 
-export function createCodeSafetyPack(options?: CodeSafetyPackOptions): ExtensionPack {
+export function createCodeSafetyGuardrail(options?: CodeSafetyPackOptions): ExtensionPack {
   const opts = options ?? {};
 
   // Build rule set: default rules (optionally filtered) + custom rules
@@ -563,7 +563,7 @@ export function createCodeSafetyPack(options?: CodeSafetyPackOptions): Extension
 }
 
 export function createExtensionPack(context: ExtensionPackContext): ExtensionPack {
-  return createCodeSafetyPack(context.options as CodeSafetyPackOptions);
+  return createCodeSafetyGuardrail(context.options as CodeSafetyPackOptions);
 }
 
 function buildRuleSet(opts: CodeSafetyPackOptions) {
@@ -584,38 +584,38 @@ export * from './types';
 - [ ] **Step 2: Write index tests**
 
 ```typescript
-describe('createCodeSafetyPack', () => {
+describe('createCodeSafetyGuardrail', () => {
   it('returns pack with name and version', () => {
-    const pack = createCodeSafetyPack();
+    const pack = createCodeSafetyGuardrail();
     expect(pack.name).toBe('code-safety');
     expect(pack.version).toBe('1.0.0');
   });
 
   it('provides 2 descriptors: guardrail + tool', () => {
-    const pack = createCodeSafetyPack();
+    const pack = createCodeSafetyGuardrail();
     expect(pack.descriptors).toHaveLength(2);
     expect(pack.descriptors[0].kind).toBe('guardrail');
     expect(pack.descriptors[1].kind).toBe('tool');
   });
 
   it('guardrail has id code-safety-guardrail', () => {
-    const pack = createCodeSafetyPack();
+    const pack = createCodeSafetyGuardrail();
     expect(pack.descriptors[0].id).toBe('code-safety-guardrail');
   });
 
   it('tool has id scan_code', () => {
-    const pack = createCodeSafetyPack();
+    const pack = createCodeSafetyGuardrail();
     expect(pack.descriptors[1].id).toBe('scan_code');
   });
 
   it('supports disabledRules', () => {
     // Pack with a disabled rule should still create without error
-    const pack = createCodeSafetyPack({ disabledRules: ['code-injection-eval'] });
+    const pack = createCodeSafetyGuardrail({ disabledRules: ['code-injection-eval'] });
     expect(pack.descriptors).toHaveLength(2);
   });
 
   it('supports custom rules', () => {
-    const pack = createCodeSafetyPack({
+    const pack = createCodeSafetyGuardrail({
       customRules: [
         {
           id: 'custom-test',
@@ -648,7 +648,7 @@ cd packages/agentos && pnpm vitest run tests/extensions/packs/code-safety/
 ```bash
 cd packages/agentos
 git add src/extensions/packs/code-safety/index.ts tests/extensions/packs/code-safety/index.spec.ts
-git commit -m "feat(code-safety): add createCodeSafetyPack factory"
+git commit -m "feat(code-safety): add createCodeSafetyGuardrail factory"
 git push origin master
 ```
 
@@ -669,7 +669,7 @@ Add to `src/extensions/index.ts`:
 
 ```typescript
 export {
-  createCodeSafetyPack,
+  createCodeSafetyGuardrail,
   createExtensionPack as createCodeSafetyExtensionPack,
 } from './packs/code-safety';
 ```

@@ -34,7 +34,7 @@ Under `packages/agentos/src/extensions/packs/grounding-guard/`:
 | `GroundingChecker.ts`         | NLI cross-encoder + LLM escalation for ambiguous claims                                                                        |
 | `GroundingGuardrail.ts`       | `IGuardrailService` impl with streaming + final verification                                                                   |
 | `tools/CheckGroundingTool.ts` | `ITool` for on-demand grounding check                                                                                          |
-| `index.ts`                    | `createGroundingGuardPack()` factory + `createExtensionPack()` bridge                                                          |
+| `index.ts`                    | `createGroundingGuardrail()` factory + `createExtensionPack()` bridge                                                          |
 | `grounding-guard.skill.md`    | SKILL.md for agent awareness                                                                                                   |
 
 Tests under `packages/agentos/tests/extensions/packs/grounding-guard/`:
@@ -557,7 +557,7 @@ cd packages/agentos && pnpm vitest run tests/extensions/packs/grounding-guard/
 ```bash
 cd packages/agentos
 git add src/extensions/packs/grounding-guard/index.ts tests/extensions/packs/grounding-guard/index.spec.ts
-git commit -m "feat(grounding): add createGroundingGuardPack factory"
+git commit -m "feat(grounding): add createGroundingGuardrail factory"
 git push origin master
 ```
 
@@ -571,7 +571,7 @@ Add to `src/extensions/index.ts`:
 
 ```typescript
 export {
-  createGroundingGuardPack,
+  createGroundingGuardrail,
   createExtensionPack as createGroundingGuardExtensionPack,
 } from './packs/grounding-guard';
 ```

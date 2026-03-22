@@ -30,7 +30,7 @@ Topicality pack (all new) under `packages/agentos/src/extensions/packs/topicalit
 | `TopicDriftTracker.ts`    | Per-session EMA drift detection — update, pruneStale, clear                                                                                   |
 | `TopicalityGuardrail.ts`  | `IGuardrailService` impl — forbidden check → allowed check → drift check                                                                      |
 | `tools/CheckTopicTool.ts` | `ITool` for on-demand topic matching                                                                                                          |
-| `index.ts`                | `createTopicalityPack()` factory + `createExtensionPack()` bridge                                                                             |
+| `index.ts`                | `createTopicalityGuardrail()` factory + `createExtensionPack()` bridge                                                                        |
 | `topicality.skill.md`     | SKILL.md for agent awareness                                                                                                                  |
 
 Tests under `packages/agentos/tests/extensions/packs/topicality/`:
@@ -475,7 +475,7 @@ cd packages/agentos && pnpm vitest run tests/extensions/packs/topicality/
 ```bash
 cd packages/agentos
 git add src/extensions/packs/topicality/tools/ src/extensions/packs/topicality/index.ts tests/extensions/packs/topicality/CheckTopicTool.spec.ts tests/extensions/packs/topicality/index.spec.ts
-git commit -m "feat(topicality): add CheckTopicTool and createTopicalityPack factory"
+git commit -m "feat(topicality): add CheckTopicTool and createTopicalityGuardrail factory"
 git push origin master
 ```
 
@@ -496,7 +496,7 @@ In `src/extensions/index.ts`, add:
 
 ```typescript
 export {
-  createTopicalityPack,
+  createTopicalityGuardrail,
   createExtensionPack as createTopicalityExtensionPack,
 } from './packs/topicality';
 ```
