@@ -28,19 +28,19 @@ All extensions are published to npm under the `@framers` scope.
 
 | Package                                                                                     | Description                                                    | npm |
 | ------------------------------------------------------------------------------------------- | -------------------------------------------------------------- | --- |
-| [`@framers/agentos-ext-web-search`](/docs/extensions/built-in/web-search)                   | Multi-provider web search & fact-checking                      |     |
-| [`@framers/agentos-ext-web-browser`](/docs/extensions/built-in/web-browser)                 | Browser automation & content extraction                        |     |
-| [`@framers/agentos-ext-news-search`](/docs/extensions/built-in/news-search)                 | News article search via NewsAPI                                |     |
-| [`@framers/agentos-ext-giphy`](/docs/extensions/built-in/giphy)                             | GIF & sticker search via Giphy API                             |     |
-| [`@framers/agentos-ext-image-search`](/docs/extensions/built-in/image-search)               | Stock photo search (Pexels, Unsplash, Pixabay)                 |     |
-| [`@framers/agentos-ext-voice-synthesis`](/docs/extensions/built-in/voice-synthesis)         | Text-to-speech via ElevenLabs                                  |     |
-| [`@framers/agentos-ext-cli-executor`](/docs/extensions/built-in/cli-executor)               | Shell command execution & file management                      |     |
-| [`@framers/agentos-ext-auth`](/docs/extensions/built-in/auth)                               | JWT authentication & subscription management                   |     |
-| [`@framers/agentos-ext-telegram`](/docs/extensions/built-in/telegram)                       | Telegram Bot API integration                                   |     |
+| [`@framers/agentos-ext-web-search`](/extensions/built-in/web-search)                        | Multi-provider web search & fact-checking                      |     |
+| [`@framers/agentos-ext-web-browser`](/extensions/built-in/web-browser)                      | Browser automation & content extraction                        |     |
+| [`@framers/agentos-ext-news-search`](/extensions/built-in/news-search)                      | News article search via NewsAPI                                |     |
+| [`@framers/agentos-ext-giphy`](/extensions/built-in/giphy)                                  | GIF & sticker search via Giphy API                             |     |
+| [`@framers/agentos-ext-image-search`](/extensions/built-in/image-search)                    | Stock photo search (Pexels, Unsplash, Pixabay)                 |     |
+| [`@framers/agentos-ext-voice-synthesis`](/extensions/built-in/voice-synthesis)              | Text-to-speech via ElevenLabs                                  |     |
+| [`@framers/agentos-ext-cli-executor`](/extensions/built-in/cli-executor)                    | Shell command execution & file management                      |     |
+| [`@framers/agentos-ext-auth`](/extensions/built-in/auth)                                    | JWT authentication & subscription management                   |     |
+| [`@framers/agentos-ext-telegram`](/extensions/built-in/telegram)                            | Telegram Bot API integration                                   |     |
 | [`@framers/agentos-ext-wunderbot-feeds`](./registry/curated/integrations/wunderbot-feeds)   | Wunderbot feed ingestion + social content pipeline integration |     |
-| [`@framers/agentos-ext-telegram-bot`](/docs/extensions/built-in/telegram-bot)               | Telegram bot communications handler                            |     |
-| [`@framers/agentos-ext-anchor-providers`](/docs/extensions/built-in/anchor-providers)       | Solana on-chain provenance anchoring                           |     |
-| [`@framers/agentos-ext-tip-ingestion`](/docs/extensions/built-in/tip-ingestion)             | Tip content processing pipeline                                |     |
+| [`@framers/agentos-ext-telegram-bot`](/extensions/built-in/telegram-bot)                    | Telegram bot communications handler                            |     |
+| [`@framers/agentos-ext-anchor-providers`](/extensions/built-in/anchor-providers)            | Solana on-chain provenance anchoring                           |     |
+| [`@framers/agentos-ext-tip-ingestion`](/extensions/built-in/tip-ingestion)                  | Tip content processing pipeline                                |     |
 | [`@framers/agentos-ext-browser-automation`](./registry/curated/system/browser-automation)   | Full browser automation (Playwright) — 10 tools                |     |
 | [`@framers/agentos-ext-deep-research`](./registry/curated/research/deep-research)           | Multi-source research & investigation — 5 tools                |     |
 | [`@framers/agentos-ext-content-extraction`](./registry/curated/research/content-extraction) | Content extraction (URLs, YouTube, PDF) — 5 tools              |     |
@@ -51,11 +51,11 @@ All extensions are published to npm under the `@framers` scope.
 
 | Package                                                                                       | Description                                          | npm |
 | --------------------------------------------------------------------------------------------- | ---------------------------------------------------- | --- |
-| [`@framers/agentos-ext-channel-telegram`](/docs/extensions/built-in/channel-telegram)         | Telegram messaging channel (grammY)                  |     |
-| [`@framers/agentos-ext-channel-whatsapp`](/docs/extensions/built-in/channel-whatsapp)         | WhatsApp messaging channel (Baileys)                 |     |
-| [`@framers/agentos-ext-channel-discord`](/docs/extensions/built-in/channel-discord)           | Discord messaging channel (discord.js)               |     |
-| [`@framers/agentos-ext-channel-slack`](/docs/extensions/built-in/channel-slack)               | Slack messaging channel (Bolt)                       |     |
-| [`@framers/agentos-ext-channel-webchat`](/docs/extensions/built-in/channel-webchat)           | Built-in WebChat channel (Socket.IO)                 |     |
+| [`@framers/agentos-ext-channel-telegram`](/extensions/built-in/channel-telegram)              | Telegram messaging channel (grammY)                  |     |
+| [`@framers/agentos-ext-channel-whatsapp`](/extensions/built-in/channel-whatsapp)              | WhatsApp messaging channel (Baileys)                 |     |
+| [`@framers/agentos-ext-channel-discord`](/extensions/built-in/channel-discord)                | Discord messaging channel (discord.js)               |     |
+| [`@framers/agentos-ext-channel-slack`](/extensions/built-in/channel-slack)                    | Slack messaging channel (Bolt)                       |     |
+| [`@framers/agentos-ext-channel-webchat`](/extensions/built-in/channel-webchat)                | Built-in WebChat channel (Socket.IO)                 |     |
 | [`@framers/agentos-ext-channel-twitter`](./registry/curated/channels/twitter)                 | Twitter/X social channel (twitter-api-v2)            |     |
 | [`@framers/agentos-ext-channel-instagram`](./registry/curated/channels/instagram)             | Instagram social channel (Graph API)                 |     |
 | [`@framers/agentos-ext-channel-reddit`](./registry/curated/channels/reddit)                   | Reddit social channel (snoowrap)                     |     |
@@ -262,7 +262,7 @@ pnpm run dev
 
 ## Releasing & Publishing
 
-This repo uses [Changesets](https://github.com/changesets/changesets) for multi-package versioning and npm publishing. See [RELEASING.md](/docs/getting-started/releasing) for the full workflow.
+This repo uses [Changesets](https://github.com/changesets/changesets) for multi-package versioning and npm publishing. See [RELEASING.md](/getting-started/releasing) for the full workflow.
 
 ### TL;DR
 
@@ -317,18 +317,18 @@ All extensions get free CI/CD via GitHub Actions:
 ## Documentation
 
 - [API Reference (TypeDoc)](https://framersai.github.io/agentos-extensions/)
-- [How Extensions Work](/docs/extensions/how-extensions-work)
-- [Extension Architecture](/docs/extensions/extension-architecture)
-- [Auto-Loading Extensions](/docs/extensions/auto-loading)
-- [Agency Collaboration Examples](/docs/features/agency-collaboration)
-- [Self-Hosted Registries](/docs/extensions/self-hosted-registries)
-- [Migration Guide](/docs/extensions/migration-guide)
-- [Releasing & Publishing](/docs/getting-started/releasing)
-- [Contributing](/docs/extensions/contributing)
+- [How Extensions Work](/extensions/how-extensions-work)
+- [Extension Architecture](/extensions/extension-architecture)
+- [Auto-Loading Extensions](/extensions/auto-loading)
+- [Agency Collaboration Examples](/features/agency-collaboration)
+- [Self-Hosted Registries](/extensions/self-hosted-registries)
+- [Migration Guide](/extensions/migration-guide)
+- [Releasing & Publishing](/getting-started/releasing)
+- [Contributing](/extensions/contributing)
 
 ## Contributing
 
-See [CONTRIBUTING.md](/docs/extensions/contributing) for detailed guidelines.
+See [CONTRIBUTING.md](/extensions/contributing) for detailed guidelines.
 
 - [Submit New Extension](https://github.com/framersai/agentos-extensions/issues/new?template=new-extension.yml)
 - [Report Bug](https://github.com/framersai/agentos-extensions/issues/new?template=bug-report.yml)

@@ -131,7 +131,7 @@ class CostCeilingGuardrail implements IGuardrailService {
 
 ### Example 2: Real-Time PII Redaction
 
-AgentOS provides a first-class PII redaction extension with four-tier detection (regex + NLP + NER + LLM-as-judge), covering 50+ country ID formats, person names, organizations, and context-dependent PII. See the [PII Redaction extension docs](/docs/extensions/built-in/pii-redaction) for full configuration reference.
+AgentOS provides a first-class PII redaction extension with four-tier detection (regex + NLP + NER + LLM-as-judge), covering 50+ country ID formats, person names, organizations, and context-dependent PII. See the [PII Redaction extension docs](/extensions/built-in/pii-redaction) for full configuration reference.
 
 ```typescript
 import { createPiiRedactionGuardrail } from '@framers/agentos-ext-pii-redaction';
@@ -674,7 +674,7 @@ const stats = await guardrails.getViolationStats('agent-123', {
 
 ## Related Documentation
 
-- [Architecture Overview](/docs/architecture/system-architecture)
-- [Human-in-the-Loop](/docs/features/human-in-the-loop)
-- [Agent Communication](/docs/features/agent-communication)
-- [Safety Primitives](/docs/features/safety-primitives)
+- [Architecture Overview](/architecture/system-architecture)
+- [Human-in-the-Loop](/features/human-in-the-loop)
+- [Agent Communication](/features/agent-communication)
+- [Safety Primitives](/features/safety-primitives)

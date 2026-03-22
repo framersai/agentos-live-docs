@@ -157,9 +157,9 @@ node scripts/validate-skill.mjs registry/curated/my-skill/SKILL.md
 
 ## Related
 
-- [Skills Overview](/docs/skills/overview) -- dedicated skills documentation section
-- [Extensions Overview](/docs/extensions/overview) -- how skills relate to tools/extensions
-- [Guardrails](/docs/features/guardrails) -- security controls for skill execution
-- [Agent Communication](/docs/features/agent-communication) -- inter-agent messaging
+- [Skills Overview](/skills/overview) -- dedicated skills documentation section
+- [Extensions Overview](/extensions/overview) -- how skills relate to tools/extensions
+- [Guardrails](/features/guardrails) -- security controls for skill execution
+- [Agent Communication](/features/agent-communication) -- inter-agent messaging
 
 > **Tip**: Skills are automatically indexed by the [Capability Discovery Engine](./capability-discovery.md) for semantic retrieval. Instead of loading all skills statically, the discovery engine retrieves only relevant skills per turn.
