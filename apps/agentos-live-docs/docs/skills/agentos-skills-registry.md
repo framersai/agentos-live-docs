@@ -222,7 +222,7 @@ import type {
 
 ## Contributing
 
-See [CONTRIBUTING.md](/docs/extensions/contributing) for how to submit new skills.
+See [CONTRIBUTING.md](/extensions/contributing) for how to submit new skills.
 
 ## License
 

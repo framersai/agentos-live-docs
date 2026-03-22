@@ -229,8 +229,8 @@ The warm path uses a per-session embedding cache. The index build runs once duri
 
 ## Related
 
-- [Skills](/docs/features/skills) -- skill system that feeds into capability discovery
-- [Extensions](/docs/extensions/overview) -- extension ecosystem and registry
-- [Guardrails](/docs/features/guardrails) -- security controls for capability execution
-- [Cost Optimization](/docs/features/cost-optimization) -- token budgeting strategies
-- [RAG & Memory](/docs/features/rag-memory) -- vector store and embedding infrastructure shared by discovery
+- [Skills](/features/skills) -- skill system that feeds into capability discovery
+- [Extensions](/extensions/overview) -- extension ecosystem and registry
+- [Guardrails](/features/guardrails) -- security controls for capability execution
+- [Cost Optimization](/features/cost-optimization) -- token budgeting strategies
+- [RAG & Memory](/features/rag-memory) -- vector store and embedding infrastructure shared by discovery

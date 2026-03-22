@@ -136,9 +136,9 @@ All models lazy-load on first use. Nothing is loaded until a guardrail actually 
 
 ## Related Documentation
 
-- [Guardrails Overview](/docs/features/guardrails)
-- [Creating Custom Guardrails](/docs/features/creating-guardrails)
-- [PII Redaction](/docs/extensions/built-in/pii-redaction)
-- [ML Classifiers](/docs/extensions/built-in/ml-classifiers)
-- [Grounding Guard](/docs/extensions/built-in/grounding-guard)
-- [Safety Primitives](/docs/features/safety-primitives)
+- [Guardrails Overview](/features/guardrails)
+- [Creating Custom Guardrails](/features/creating-guardrails)
+- [PII Redaction](/extensions/built-in/pii-redaction)
+- [ML Classifiers](/extensions/built-in/ml-classifiers)
+- [Grounding Guard](/extensions/built-in/grounding-guard)
+- [Safety Primitives](/features/safety-primitives)

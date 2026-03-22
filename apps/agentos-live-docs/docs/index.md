@@ -16,59 +16,59 @@ npm install @framers/agentos
 
 ### Getting Started
 
-- [Documentation Index](/docs/getting-started/documentation-index) — Installation and quick start
-- [Ecosystem](/docs/getting-started/ecosystem) — Related packages and resources
-- [Releasing](/docs/getting-started/releasing) — Version history and release process
+- [Documentation Index](/getting-started/documentation-index) — Installation and quick start
+- [Ecosystem](/getting-started/ecosystem) — Related packages and resources
+- [Releasing](/getting-started/releasing) — Version history and release process
 
 ### Architecture & Core
 
-- [System Architecture](/docs/architecture/system-architecture) — System design and core internals
-- [Platform Support](/docs/architecture/platform-support) — Supported environments
-- [Observability (OpenTelemetry)](/docs/architecture/observability) — Traces, metrics, and OTEL-compatible logging (opt-in)
-- [Logging (Pino + OpenTelemetry)](/docs/architecture/logging) — Structured logs, trace correlation, and OTEL LogRecord export (opt-in)
+- [System Architecture](/architecture/system-architecture) — System design and core internals
+- [Platform Support](/architecture/platform-support) — Supported environments
+- [Observability (OpenTelemetry)](/architecture/observability) — Traces, metrics, and OTEL-compatible logging (opt-in)
+- [Logging (Pino + OpenTelemetry)](/architecture/logging) — Structured logs, trace correlation, and OTEL LogRecord export (opt-in)
 
 ### Planning & Orchestration
 
-- [Planning Engine](/docs/features/planning-engine) — Multi-step task planning
-- [Human-in-the-Loop](/docs/features/human-in-the-loop) — Approval workflows
-- [Agent Communication](/docs/features/agent-communication) — Inter-agent messaging
+- [Planning Engine](/features/planning-engine) — Multi-step task planning
+- [Human-in-the-Loop](/features/human-in-the-loop) — Approval workflows
+- [Agent Communication](/features/agent-communication) — Inter-agent messaging
 
 ### Safety & Security
 
-- [Guardrails](/docs/features/guardrails) — Content filtering, PII redaction, and folder-level filesystem permissions
-- [Safety Primitives](/docs/features/safety-primitives) — Circuit breakers, cost guards, stuck detection, and tool execution guards
+- [Guardrails](/features/guardrails) — Content filtering, PII redaction, and folder-level filesystem permissions
+- [Safety Primitives](/features/safety-primitives) — Circuit breakers, cost guards, stuck detection, and tool execution guards
 
 ### Memory & Storage
 
-- [Cognitive Memory](/docs/features/cognitive-memory) — Personality-modulated memory, retrieval, and consolidation
-- [RAG Memory](/docs/features/rag-memory) — Vector storage and retrieval
-- [SQL Storage](/docs/features/sql-storage) — Database adapters
-- [Client-Side Storage](/docs/features/client-side-storage) — Browser and local persistence
+- [Cognitive Memory](/features/cognitive-memory) — Personality-modulated memory, retrieval, and consolidation
+- [RAG Memory](/features/rag-memory) — Vector storage and retrieval
+- [SQL Storage](/features/sql-storage) — Database adapters
+- [Client-Side Storage](/features/client-side-storage) — Browser and local persistence
 
 ### AI & LLM
 
-- [Speech Runtime](/docs/features/speech-runtime) — Unified STT, TTS, VAD, and provider abstraction
-- [Structured Output](/docs/features/structured-output) — JSON schema validation
-- [Evaluation Framework](/docs/features/evaluation-framework) — Testing and benchmarks
-- [Cost Optimization](/docs/features/cost-optimization) — Token usage and caching
+- [Speech Runtime](/features/speech-runtime) — Unified STT, TTS, VAD, and provider abstraction
+- [Structured Output](/features/structured-output) — JSON schema validation
+- [Evaluation Framework](/features/evaluation-framework) — Testing and benchmarks
+- [Cost Optimization](/features/cost-optimization) — Token usage and caching
 
 ### Advanced
 
-- [Recursive Self-Building](/docs/features/recursive-self-building) — Self-modifying agent patterns
-- [Agency Collaboration](/docs/features/agency-collaboration) — Multi-agent coordination
+- [Recursive Self-Building](/features/recursive-self-building) — Self-modifying agent patterns
+- [Agency Collaboration](/features/agency-collaboration) — Multi-agent coordination
 
 ### Skills & Capability Discovery
 
-- [Skills Overview](/docs/skills/overview) — SKILL.md format, loading, and semantic discovery integration
+- [Skills Overview](/skills/overview) — SKILL.md format, loading, and semantic discovery integration
 
 ### Extensions
 
-- [Extensions Overview](/docs/extensions/overview) — Available extensions catalog
-- [How Extensions Work](/docs/extensions/how-extensions-work) — Loading and configuration
-- [Extension Architecture](/docs/extensions/extension-architecture) — Building custom extensions
-- [Auto-Loading](/docs/extensions/auto-loading) — Automatic extension discovery
-- **Official**: [Web Search](/docs/extensions/built-in/web-search), [Telegram](/docs/extensions/built-in/telegram), [Speech Runtime](/docs/extensions/built-in/speech-runtime), [Voice Synthesis](/docs/extensions/built-in/voice-synthesis), [CLI Executor](/docs/extensions/built-in/cli-executor), [Image Search](/docs/extensions/built-in/image-search), [News Search](/docs/extensions/built-in/news-search), [Giphy](/docs/extensions/built-in/giphy), [Web Browser](/docs/extensions/built-in/web-browser), [Auth](/docs/extensions/built-in/auth)
+- [Extensions Overview](/extensions/overview) — Available extensions catalog
+- [How Extensions Work](/extensions/how-extensions-work) — Loading and configuration
+- [Extension Architecture](/extensions/extension-architecture) — Building custom extensions
+- [Auto-Loading](/extensions/auto-loading) — Automatic extension discovery
+- **Official**: [Web Search](/extensions/built-in/web-search), [Telegram](/extensions/built-in/telegram), [Speech Runtime](/extensions/built-in/speech-runtime), [Voice Synthesis](/extensions/built-in/voice-synthesis), [CLI Executor](/extensions/built-in/cli-executor), [Image Search](/extensions/built-in/image-search), [News Search](/extensions/built-in/news-search), [Giphy](/extensions/built-in/giphy), [Web Browser](/extensions/built-in/web-browser), [Auth](/extensions/built-in/auth)
 
 ### API Reference
 
-- [TypeDoc API](/docs/api/) — Auto-generated API documentation
+- [TypeDoc API](/api/) — Auto-generated API documentation
