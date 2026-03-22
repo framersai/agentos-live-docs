@@ -13,6 +13,36 @@ RAG-grounded hallucination detection using a hybrid NLI cross-encoder and LLM-as
 
 ## Overview
 
+```mermaid
+flowchart TD
+    A[LLM Response] --> B[Claim Extractor]
+    B --> B1[Heuristic Sentence Split]
+    B1 -->|simple sentences| C[NLI Cross-Encoder]
+    B1 -->|complex sentences| B2[LLM Decomposition]
+    B2 --> C
+
+    C --> C1[claim vs source 1]
+    C --> C2[claim vs source 2]
+    C --> C3[claim vs source N]
+
+    C1 --> D{Score}
+    C2 --> D
+    C3 --> D
+
+    D -->|entailment > 0.7| E[SUPPORTED]
+    D -->|contradiction > 0.7| F[CONTRADICTED]
+    D -->|neutral| G[LLM Judge Escalation]
+    G --> H[SUPPORTED / CONTRADICTED / UNVERIFIABLE]
+
+    E --> I[Aggregate Results]
+    F --> I
+    H --> I
+
+    I -->|any contradicted| J[FLAG/BLOCK]
+    I -->|>50% unverifiable| K[FLAG]
+    I -->|all supported| L[PASS]
+```
+
 The Grounding Guard extension provides two modes of operation:
 
 - **Passive protection** via a built-in guardrail that automatically verifies response faithfulness against RAG source documents during streaming and on final response
