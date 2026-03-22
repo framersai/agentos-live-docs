@@ -18,7 +18,7 @@
   "dependencies": {
     "@framers/agentos": "workspace:*",
     "@framers/agentos-ext-http-api": "workspace:*",
-    "@framers/agentos-ext-skills": "workspace:*",
+    "@framers/agentos-skills": "workspace:*",
     "@framers/agentos-extensions-registry": "workspace:*",
     "@framers/agentos-skills-registry": "workspace:*",
     "@framers/shared": "workspace:*",

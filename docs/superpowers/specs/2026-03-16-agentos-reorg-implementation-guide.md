@@ -31,7 +31,7 @@ grep -n "sources.*skills" backend/src/integrations/agentos/agentos.integration.t
 
 **File changed**: `backend/package.json`
 
-**What**: Added `"@framers/agentos-ext-skills": "workspace:*"` to dependencies. The `skills` entry already exists in `TOOL_CATALOG` at `packages/agentos-extensions-registry/src/tool-registry.ts`, so `createCuratedManifest({ tools: 'all' })` now loads the skills extension pack, giving agents access to `skills_list`, `skills_read`, `skills_enable`, `skills_status`, `skills_install` tools.
+**What**: Added `"@framers/agentos-skills": "workspace:*"` to dependencies. The `skills` entry already exists in `TOOL_CATALOG` at `packages/agentos-extensions-registry/src/tool-registry.ts`, so `createCuratedManifest({ tools: 'all' })` now loads the skills extension pack, giving agents access to `skills_list`, `skills_read`, `skills_enable`, `skills_status`, `skills_install` tools.
 
 **Verify**:
 

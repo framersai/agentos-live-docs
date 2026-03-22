@@ -334,7 +334,7 @@ Verify build passes.
 
 ### Pass 3: Load agentos-ext-skills by Default
 
-- Add `@framers/agentos-ext-skills` to `backend/package.json` dependencies as `workspace:*` and run `pnpm install`
+- Add `@framers/agentos-skills` to `backend/package.json` dependencies as `workspace:*` and run `pnpm install`
 - Verify `skills` entry exists in `TOOL_CATALOG` (it does)
 - Confirm `createCuratedManifest({ tools: 'all' })` includes the skills tool pack
 - Verify: agents have `skills_list`, `skills_read`, `skills_enable` etc. available
