@@ -1,5 +1,5 @@
 /**
- * Example: lazy skill discovery + enablement via @framers/agentos-ext-skills.
+ * Example: lazy skill discovery + enablement via @framers/agentos-skills.
  *
  * Run:
  *   # In the monorepo workspace, make sure @framers/agentos is built:
@@ -13,7 +13,7 @@ import * as os from 'node:os';
 import * as path from 'node:path';
 import * as fs from 'node:fs/promises';
 
-import { createExtensionPack } from '@framers/agentos-ext-skills';
+import { createExtensionPack } from '@framers/agentos-skills';
 import { SkillRegistry } from '@framers/agentos/skills';
 
 async function main() {
