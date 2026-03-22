@@ -13,6 +13,29 @@ Streaming ML content safety classification using BERT-family models with sliding
 
 ## Overview
 
+```mermaid
+flowchart LR
+    subgraph Buffer["Sliding Window Buffer"]
+        direction TB
+        CTX[Context Ring<br/>50 tokens] --> BUF[Current Buffer<br/>accumulating...]
+    end
+
+    A[Token Stream] -->|TEXT_DELTA| Buffer
+    Buffer -->|chunk_size reached| C[Classifier Orchestrator]
+
+    C --> C1[Toxicity<br/>toxic-bert<br/>~20ms]
+    C --> C2[Injection<br/>DeBERTa<br/>~50ms]
+    C --> C3[Jailbreak<br/>PromptGuard<br/>~60ms]
+
+    C1 --> D{Worst Wins}
+    C2 --> D
+    C3 --> D
+
+    D -->|BLOCK| E[Terminate Stream]
+    D -->|ALLOW| F[Slide Window Forward]
+    F -->|context carry-forward| Buffer
+```
+
 The ML Content Classifiers extension provides two modes of operation:
 
 - **Passive protection** via a built-in guardrail that automatically classifies input and output content using three BERT-family models running in parallel
