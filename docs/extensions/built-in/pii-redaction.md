@@ -3,8 +3,6 @@ title: 'PII Redaction'
 sidebar_position: 18
 ---
 
-# PII Redaction
-
 Automatic and on-demand detection and redaction of personally identifiable information via a four-tier detection pipeline: regex with checksum validation → NLP pre-filter → ML NER model → LLM-as-judge.
 
 **Package:** `@framers/agentos-ext-pii-redaction`
@@ -13,7 +11,7 @@ Automatic and on-demand detection and redaction of personally identifiable infor
 
 ## Overview
 
-The PII redaction extension uses a four-tier detection pipeline that progressively applies more sophisticated (and expensive) analysis. Each tier gates the next — if Tier 2 finds no name-like tokens, the heavyweight Tier 3 BERT model never loads.
+The PII Redaction extension uses a **four-tier detection pipeline** where each tier only fires when the previous tier finds candidates that need deeper analysis. Most messages only hit Tier 1 (regex) — the expensive tiers are lazy and conditional.
 
 ```mermaid
 flowchart LR
@@ -31,9 +29,23 @@ flowchart LR
     style T4 fill:#3a1a5c,color:#fff
 ```
 
-Each tier only fires when the previous tier finds candidates that need deeper analysis. A message with no PII-like content costs ~0ms (Tier 1 regex only). A message with a person's name costs ~50ms (Tiers 1-3). Only ambiguous cases reach the LLM judge (~200ms).
+### How the tiers gate each other
 
-The PII Redaction extension provides two modes of operation:
+| Tier                       | What it does                                                                                                                                | When it runs                                                                                                 | Cost                                     |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ | ---------------------------------------- |
+| **Tier 1: Regex**          | Pattern-matches structured PII (SSN, credit cards, emails, phones, IBANs, passports, API keys) using 570+ patterns with checksum validation | **Always** — runs on every message                                                                           | ~0ms, ~50KB                              |
+| **Tier 2: NLP Pre-filter** | Scans for name-like tokens using `compromise` (.people(), .places(), .orgs())                                                               | **Always** (if installed) — fast heuristic sweep                                                             | ~1ms, ~250KB                             |
+| **Tier 3: NER Model**      | Runs BERT NER (`Xenova/bert-base-NER`) to confirm/classify candidates from Tier 2                                                           | **Only if Tier 2 found name-like tokens** — skipped entirely for messages with no names                      | ~50ms, ~110MB (lazy-loaded on first use) |
+| **Tier 4: LLM Judge**      | Chain-of-thought prompt to a lightweight LLM asking "Is 'Jordan' a person name or a country here?"                                          | **Only for ambiguous spans** where Tier 3 scored between 0.3-0.7 — most spans are clearly PII or clearly not | ~200ms, API cost per call                |
+
+**Typical costs by message type:**
+
+- `"What's the weather?"` → Tier 1 only → **~0ms** (no PII patterns, no names)
+- `"My SSN is 123-45-6789"` → Tier 1 catches it → **~0ms** (regex match, high confidence)
+- `"Please contact John Smith"` → Tiers 1-3 → **~51ms** (Tier 2 finds "John Smith", Tier 3 confirms PERSON)
+- `"Send this to Jordan"` → Tiers 1-4 → **~251ms** (ambiguous — person name or country? LLM decides)
+
+The extension provides two modes of operation:
 
 - **Passive protection** via a built-in guardrail that automatically intercepts and sanitizes input and output content
 - **Active capability** via two agent-callable tools (`pii_scan`, `pii_redact`) for deliberate, on-demand PII handling
