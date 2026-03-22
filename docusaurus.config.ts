@@ -59,30 +59,7 @@ const config: Config = {
       '@docusaurus/plugin-client-redirects',
       {
         redirects: [
-          // Old /docs/ paths -> root paths (docs now mounted at /)
-          {
-            from: '/docs/architecture/system-architecture',
-            to: '/architecture/system-architecture',
-          },
-          { from: '/docs/features/agent-communication', to: '/features/agent-communication' },
-          { from: '/docs/features/client-side-storage', to: '/features/client-side-storage' },
-          { from: '/docs/features/cost-optimization', to: '/features/cost-optimization' },
-          { from: '/docs/getting-started/ecosystem', to: '/getting-started/ecosystem' },
-          { from: '/docs/features/evaluation-framework', to: '/features/evaluation-framework' },
-          { from: '/docs/features/guardrails', to: '/features/guardrails' },
-          { from: '/docs/features/human-in-the-loop', to: '/features/human-in-the-loop' },
-          { from: '/docs/features/planning-engine', to: '/features/planning-engine' },
-          { from: '/docs/architecture/platform-support', to: '/architecture/platform-support' },
-          { from: '/docs/features/rag-memory', to: '/features/rag-memory' },
-          {
-            from: '/docs/features/recursive-self-building',
-            to: '/features/recursive-self-building',
-          },
-          { from: '/docs/getting-started/releasing', to: '/getting-started/releasing' },
-          { from: '/docs/extensions/extension-standards', to: '/extensions/extension-standards' },
-          { from: '/docs/features/sql-storage', to: '/features/sql-storage' },
-          { from: '/docs/features/structured-output', to: '/features/structured-output' },
-          // Legacy HTML paths
+          // Legacy SCREAMING_CASE doc paths from before Docusaurus migration
           { from: '/docs/ARCHITECTURE', to: '/architecture/system-architecture' },
           { from: '/docs/AGENT_COMMUNICATION', to: '/features/agent-communication' },
           { from: '/docs/CLIENT_SIDE_STORAGE', to: '/features/client-side-storage' },
@@ -99,17 +76,14 @@ const config: Config = {
           { from: '/docs/RFC_EXTENSION_STANDARDS', to: '/extensions/extension-standards' },
           { from: '/docs/SQL_STORAGE_QUICKSTART', to: '/features/sql-storage' },
           { from: '/docs/STRUCTURED_OUTPUT', to: '/features/structured-output' },
-          // Catch-all
-          { from: '/docs', to: '/' },
         ],
         createRedirects(existingPath: string) {
-          // Redirect old /docs/ prefixed paths
-          const redirects: string[] = [];
-          if (!existingPath.startsWith('/docs/')) {
-            redirects.push('/docs' + existingPath);
+          // Redirect old /docs/ prefixed paths to root (docs are now at /)
+          // Skip root path to avoid build conflict with index.html
+          if (existingPath === '/' || existingPath.startsWith('/docs/')) {
+            return undefined;
           }
-          redirects.push(existingPath + '.html');
-          return redirects.length > 0 ? redirects : undefined;
+          return ['/docs' + existingPath];
         },
       },
     ],
