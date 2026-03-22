@@ -26,7 +26,7 @@ sidebar_position: 1
 
 #### Safety & Security
 
-- [**Guardrails System**](/docs/features/guardrails) — Content filtering, PII redaction, and folder-level filesystem permissions
+- [**Guardrails System**](/docs/features/guardrails) — Two-phase guardrail dispatch, built-in packs (PII, ML classifiers, topicality, code safety, grounding), and folder-level filesystem permissions
 - [**Safety Primitives**](/docs/features/safety-primitives) — Circuit breakers, cost guards, stuck detection, and tool execution guards
 
 #### Memory & Storage
@@ -40,7 +40,6 @@ sidebar_position: 1
 
 #### AI & LLM
 
-- [**LLM Provider Setup**](/docs/features/llm-providers) — Configure OpenAI, Anthropic, Gemini, Ollama (local/remote), or OpenRouter
 - [**Structured Output**](/docs/features/structured-output) — JSON schema validation and structured generation
 - [**Evaluation Framework**](/docs/features/evaluation-framework) — Testing, scoring, and quality assurance
 - [**Cost Optimization**](/docs/features/cost-optimization) — Token usage and API cost management

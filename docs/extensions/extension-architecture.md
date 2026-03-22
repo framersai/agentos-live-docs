@@ -142,22 +142,6 @@ async onActivate(ctx) {
 
 Avoid using shared services for stateful, request-scoped data — each tool execution should be stateless beyond what the shared service intentionally holds.
 
-### Parallel Guardrail Execution
-
-The `ParallelGuardrailDispatcher` provides two-phase guardrail evaluation:
-
-**Phase 1 (sequential):** Guardrails declaring `config.canSanitize = true` run one at a time. Each receives the sanitized output from all prior sanitizers. This preserves SANITIZE chaining (e.g., PII redaction modifying text before the next guardrail sees it).
-
-**Phase 2 (parallel):** All remaining guardrails run concurrently. Results are aggregated with worst-wins semantics (BLOCK > FLAG > ALLOW). Individual failures are fail-open. Per-guardrail timeout via `config.timeoutMs`.
-
-```typescript
-// GuardrailConfig additions:
-config = {
-  canSanitize: true, // Phase 1 (sequential) — for guardrails that modify content
-  timeoutMs: 5000, // Fail-open after 5 seconds
-};
-```
-
 ## Best Practices
 
 - Keep `ITool.name` stable; it is the public API for tool calling.
