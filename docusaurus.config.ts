@@ -32,7 +32,7 @@ const config: Config = {
         hashed: true,
         language: ['en'],
         indexBlog: false,
-        docsRouteBasePath: '/docs',
+        docsRouteBasePath: '/',
         highlightSearchTermsOnTargetPage: true,
       },
     ],
@@ -59,33 +59,57 @@ const config: Config = {
       '@docusaurus/plugin-client-redirects',
       {
         redirects: [
-          // Old guide HTML pages -> new paths
-          { from: '/docs/ARCHITECTURE', to: '/docs/architecture/system-architecture' },
-          { from: '/docs/AGENT_COMMUNICATION', to: '/docs/features/agent-communication' },
-          { from: '/docs/CLIENT_SIDE_STORAGE', to: '/docs/features/client-side-storage' },
-          { from: '/docs/COST_OPTIMIZATION', to: '/docs/features/cost-optimization' },
-          { from: '/docs/ECOSYSTEM', to: '/docs/getting-started/ecosystem' },
-          { from: '/docs/EVALUATION_FRAMEWORK', to: '/docs/features/evaluation-framework' },
-          { from: '/docs/GUARDRAILS_USAGE', to: '/docs/features/guardrails' },
-          { from: '/docs/HUMAN_IN_THE_LOOP', to: '/docs/features/human-in-the-loop' },
-          { from: '/docs/PLANNING_ENGINE', to: '/docs/features/planning-engine' },
-          { from: '/docs/PLATFORM_SUPPORT', to: '/docs/architecture/platform-support' },
-          { from: '/docs/RAG_MEMORY_CONFIGURATION', to: '/docs/features/rag-memory' },
+          // Old /docs/ paths -> root paths (docs now mounted at /)
           {
-            from: '/docs/RECURSIVE_SELF_BUILDING_AGENTS',
-            to: '/docs/features/recursive-self-building',
+            from: '/docs/architecture/system-architecture',
+            to: '/architecture/system-architecture',
           },
-          { from: '/docs/RELEASING', to: '/docs/getting-started/releasing' },
-          { from: '/docs/RFC_EXTENSION_STANDARDS', to: '/docs/extensions/extension-standards' },
-          { from: '/docs/SQL_STORAGE_QUICKSTART', to: '/docs/features/sql-storage' },
-          { from: '/docs/STRUCTURED_OUTPUT', to: '/docs/features/structured-output' },
+          { from: '/docs/features/agent-communication', to: '/features/agent-communication' },
+          { from: '/docs/features/client-side-storage', to: '/features/client-side-storage' },
+          { from: '/docs/features/cost-optimization', to: '/features/cost-optimization' },
+          { from: '/docs/getting-started/ecosystem', to: '/getting-started/ecosystem' },
+          { from: '/docs/features/evaluation-framework', to: '/features/evaluation-framework' },
+          { from: '/docs/features/guardrails', to: '/features/guardrails' },
+          { from: '/docs/features/human-in-the-loop', to: '/features/human-in-the-loop' },
+          { from: '/docs/features/planning-engine', to: '/features/planning-engine' },
+          { from: '/docs/architecture/platform-support', to: '/architecture/platform-support' },
+          { from: '/docs/features/rag-memory', to: '/features/rag-memory' },
+          {
+            from: '/docs/features/recursive-self-building',
+            to: '/features/recursive-self-building',
+          },
+          { from: '/docs/getting-started/releasing', to: '/getting-started/releasing' },
+          { from: '/docs/extensions/extension-standards', to: '/extensions/extension-standards' },
+          { from: '/docs/features/sql-storage', to: '/features/sql-storage' },
+          { from: '/docs/features/structured-output', to: '/features/structured-output' },
+          // Legacy HTML paths
+          { from: '/docs/ARCHITECTURE', to: '/architecture/system-architecture' },
+          { from: '/docs/AGENT_COMMUNICATION', to: '/features/agent-communication' },
+          { from: '/docs/CLIENT_SIDE_STORAGE', to: '/features/client-side-storage' },
+          { from: '/docs/COST_OPTIMIZATION', to: '/features/cost-optimization' },
+          { from: '/docs/ECOSYSTEM', to: '/getting-started/ecosystem' },
+          { from: '/docs/EVALUATION_FRAMEWORK', to: '/features/evaluation-framework' },
+          { from: '/docs/GUARDRAILS_USAGE', to: '/features/guardrails' },
+          { from: '/docs/HUMAN_IN_THE_LOOP', to: '/features/human-in-the-loop' },
+          { from: '/docs/PLANNING_ENGINE', to: '/features/planning-engine' },
+          { from: '/docs/PLATFORM_SUPPORT', to: '/architecture/platform-support' },
+          { from: '/docs/RAG_MEMORY_CONFIGURATION', to: '/features/rag-memory' },
+          { from: '/docs/RECURSIVE_SELF_BUILDING_AGENTS', to: '/features/recursive-self-building' },
+          { from: '/docs/RELEASING', to: '/getting-started/releasing' },
+          { from: '/docs/RFC_EXTENSION_STANDARDS', to: '/extensions/extension-standards' },
+          { from: '/docs/SQL_STORAGE_QUICKSTART', to: '/features/sql-storage' },
+          { from: '/docs/STRUCTURED_OUTPUT', to: '/features/structured-output' },
+          // Catch-all
+          { from: '/docs', to: '/' },
         ],
         createRedirects(existingPath: string) {
-          // Redirect .html suffixed old paths
-          if (existingPath.startsWith('/docs/')) {
-            return [existingPath + '.html'];
+          // Redirect old /docs/ prefixed paths
+          const redirects: string[] = [];
+          if (!existingPath.startsWith('/docs/')) {
+            redirects.push('/docs' + existingPath);
           }
-          return undefined;
+          redirects.push(existingPath + '.html');
+          return redirects.length > 0 ? redirects : undefined;
         },
       },
     ],
@@ -96,6 +120,7 @@ const config: Config = {
       'classic',
       {
         docs: {
+          routeBasePath: '/',
           sidebarPath: './sidebars.js',
           editUrl: 'https://github.com/framersai/agentos-live-docs/tree/master/docs/',
         },
@@ -131,7 +156,7 @@ const config: Config = {
           label: 'Guides',
         },
         {
-          to: '/docs/api/',
+          to: '/api/',
           position: 'left',
           label: 'API Reference',
         },
@@ -164,10 +189,10 @@ const config: Config = {
         {
           title: 'Docs',
           items: [
-            { label: 'Getting Started', to: '/docs/' },
-            { label: 'Architecture', to: '/docs/architecture/system-architecture' },
-            { label: 'Extensions', to: '/docs/extensions/overview' },
-            { label: 'API Reference', to: '/docs/api/' },
+            { label: 'Getting Started', to: '/' },
+            { label: 'Architecture', to: '/architecture/system-architecture' },
+            { label: 'Extensions', to: '/extensions/overview' },
+            { label: 'API Reference', to: '/api/' },
           ],
         },
         {
