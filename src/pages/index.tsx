@@ -116,10 +116,10 @@ function Hero() {
       </h1>
       <p className="hero-agentos__subtitle">{siteConfig.tagline}</p>
       <div className="hero-buttons">
-        <Link className="btn-primary" to="/docs/">
+        <Link className="btn-primary" to="/getting-started/documentation-index">
           Get Started
         </Link>
-        <Link className="btn-secondary" to="/docs/api/">
+        <Link className="btn-secondary" to="/api/">
           API Reference
         </Link>
       </div>
