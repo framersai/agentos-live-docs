@@ -40,29 +40,17 @@ The classifier decides which tools to inject into the prompt based on the depth 
 
 When `deep_research` runs, it follows a structured process:
 
-```
-  User query
-       │
-       ▼
-┌─────────────────────┐
-│  Phase 1: DECOMPOSE  │  LLM breaks query into sub-questions
-│  (small model)       │  Creates a research tree
-└──────────┬──────────┘
-           │
-           ▼
-┌─────────────────────┐
-│  Phase 2: SEARCH     │  For each sub-question:
-│  - web_search        │    1. Search multiple source types
-│  - Extract pages     │    2. Extract content from top results
-│  - Analyze gaps      │    3. Identify what's still missing
-│  - Recurse           │    4. Generate new sub-questions for gaps
-└──────────┬──────────┘     (repeat until budget exhausted)
-           │
-           ▼
-┌─────────────────────┐
-│  Phase 3: SYNTHESIZE │  Mid-tier LLM merges all findings
-│  (primary model)     │  into a structured report with citations
-└─────────────────────┘
+```mermaid
+flowchart TD
+    Q[User Query] --> P1
+
+    P1["Phase 1: DECOMPOSE<br/><i>small model</i><br/>LLM breaks query into sub-questions<br/>Creates a research tree"]
+    P1 --> P2
+
+    P2["Phase 2: SEARCH<br/>web_search → Extract pages →<br/>Analyze gaps → Recurse<br/><i>Repeat until budget exhausted</i>"]
+    P2 --> P3
+
+    P3["Phase 3: SYNTHESIZE<br/><i>primary model</i><br/>Merges all findings into a<br/>structured report with citations"]
 ```
 
 Phase 2 iterates. Each iteration searches, extracts, analyzes gaps, and optionally spawns child queries to fill those gaps. The number of iterations depends on depth:
