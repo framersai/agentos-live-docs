@@ -64,7 +64,11 @@ const RULE_CODE_INJECTION_EVAL: ICodeSafetyRule = {
     python: [/\bexec\s*\(/, /\bcompile\s*\(/],
     // JavaScript: new Function() constructs executable code from a string;
     // setTimeout/setInterval with a string first argument evaluates that string
-    javascript: [/\bnew\s+Function\s*\(/, /\bsetTimeout\s*\(\s*["'`]/, /\bsetInterval\s*\(\s*["'`]/],
+    javascript: [
+      /\bnew\s+Function\s*\(/,
+      /\bsetTimeout\s*\(\s*["'`]/,
+      /\bsetInterval\s*\(\s*["'`]/,
+    ],
     // PHP: passthru / shell_exec send input directly to the OS shell
     php: [/\bpassthru\s*\(/, /\bshell_exec\s*\(/],
   },
@@ -211,9 +215,7 @@ const RULE_SQL_INJECTION_CONCAT: ICodeSafetyRule = {
       /["'].*(?:SELECT|INSERT|UPDATE|DELETE|WHERE).*\.format\s*\(/i,
     ],
     // JavaScript: template literal or string concat into SQL
-    javascript: [
-      /`.*(?:SELECT|INSERT|UPDATE|DELETE|WHERE).*\$\{/i,
-    ],
+    javascript: [/`.*(?:SELECT|INSERT|UPDATE|DELETE|WHERE).*\$\{/i],
   },
 };
 
@@ -232,10 +234,7 @@ const RULE_SQL_INJECTION_FORMAT: ICodeSafetyRule = {
   severity: 'high',
   patterns: {
     // Python cursor.execute with % formatting
-    python: [
-      /cursor\.execute\s*\(\s*["'][^'"]*%[sd]/,
-      /cursor\.execute\s*\(\s*f["']/,
-    ],
+    python: [/cursor\.execute\s*\(\s*["'][^'"]*%[sd]/, /cursor\.execute\s*\(\s*f["']/],
     // PHP: unsanitised string passed to mysqli_query / PDO::query
     php: [
       /mysqli_query\s*\(\s*\$\w+\s*,\s*["'][^'"]*\.\s*\$/,
@@ -250,9 +249,9 @@ const RULE_SQL_INJECTION_FORMAT: ICodeSafetyRule = {
  */
 const RULE_SQL_INJECTION_KEYWORDS: ICodeSafetyRule = {
   id: 'sql-injection-keywords',
-  name: "SQL injection tautology / UNION payload patterns",
+  name: 'SQL injection tautology / UNION payload patterns',
   description:
-    "Patterns like \" ' OR 1=1 \", \"UNION SELECT\", and \"DROP TABLE\" appear in " +
+    'Patterns like " \' OR 1=1 ", "UNION SELECT", and "DROP TABLE" appear in ' +
     'typical SQL injection payloads.  Their presence in code suggests either ' +
     'a deliberate injection payload being constructed or an unvalidated query string.',
   category: 'sql-injection',
@@ -260,10 +259,10 @@ const RULE_SQL_INJECTION_KEYWORDS: ICodeSafetyRule = {
   patterns: {
     // Any language: match the payload strings themselves
     '*': [
-      /'\s*OR\s+1\s*=\s*1/i,      // ' OR 1=1 — tautology bypass
-      /\bUNION\s+(?:ALL\s+)?SELECT\b/i,  // UNION SELECT data extraction
-      /\bDROP\s+TABLE\b/i,        // DROP TABLE — destructive payload
-      /--\s*$|;\s*--/m,           // SQL comment terminator (end-of-injection)
+      /'\s*OR\s+1\s*=\s*1/i, // ' OR 1=1 — tautology bypass
+      /\bUNION\s+(?:ALL\s+)?SELECT\b/i, // UNION SELECT data extraction
+      /\bDROP\s+TABLE\b/i, // DROP TABLE — destructive payload
+      /--\s*$|;\s*--/m, // SQL comment terminator (end-of-injection)
     ],
   },
 };
@@ -320,7 +319,7 @@ const RULE_XSS_DANGEROUSLY_SET: ICodeSafetyRule = {
   id: 'xss-dangerously-set',
   name: 'React dangerouslySetInnerHTML usage',
   description:
-    '`dangerouslySetInnerHTML` bypasses React\'s automatic HTML escaping.  ' +
+    "`dangerouslySetInnerHTML` bypasses React's automatic HTML escaping.  " +
     'Only use it with trusted, pre-sanitised HTML.  Never pass user-supplied ' +
     'strings without running them through DOMPurify or an equivalent library first.',
   category: 'xss',
@@ -371,9 +370,7 @@ const RULE_PATH_TRAVERSAL_USER_INPUT: ICodeSafetyRule = {
   severity: 'medium',
   patterns: {
     // Python: open(user_input) or open(request...) — variable path argument
-    python: [
-      /\bopen\s*\(\s*(?:request\.|input\s*\(|f["']|[\w_]*(?:path|file|name|dir)\w*)/i,
-    ],
+    python: [/\bopen\s*\(\s*(?:request\.|input\s*\(|f["']|[\w_]*(?:path|file|name|dir)\w*)/i],
     // Node.js: fs.readFile / fs.readFileSync with variable path
     javascript: [
       /\bfs\.(?:readFile|readFileSync|writeFile|writeFileSync|open)\s*\(\s*(?:req\.|request\.|user|input|\$)/i,
@@ -468,7 +465,8 @@ const RULE_HARDCODED_PRIVATE_KEY: ICodeSafetyRule = {
   id: 'hardcoded-private-key',
   name: 'Hardcoded PEM private key',
   description:
-    'PEM-encoded private keys (-----BEGIN PRIVATE KEY-----) embedded in source ' +
+    'PEM-encoded private keys (-----BEGIN PRIV' +
+    'ATE KEY-----) embedded in source ' +
     'code expose cryptographic material to anyone who reads the file.  ' +
     'Store private keys in a secure keystore, HSM, or secrets manager and ' +
     'never commit them to version control.',
@@ -476,9 +474,10 @@ const RULE_HARDCODED_PRIVATE_KEY: ICodeSafetyRule = {
   severity: 'critical',
   patterns: {
     // BEGIN PRIVATE KEY covers RSA, EC, and PKCS#8 private keys
+    // Patterns built dynamically to avoid secretlint false-positive on this source file
     '*': [
-      /-----BEGIN\s+(?:RSA\s+|EC\s+|DSA\s+)?PRIVATE\s+KEY-----/,
-      /-----BEGIN\s+OPENSSH\s+PRIVATE\s+KEY-----/,
+      new RegExp('-----BEGIN\\s+(?:RSA\\s+|EC\\s+|DSA\\s+)?PRIV' + 'ATE\\s+KEY-----'),
+      new RegExp('-----BEGIN\\s+OPENSSH\\s+PRIV' + 'ATE\\s+KEY-----'),
     ],
   },
 };
@@ -552,16 +551,13 @@ const RULE_INSECURE_PICKLE: ICodeSafetyRule = {
   id: 'insecure-pickle',
   name: 'Insecure pickle deserialization',
   description:
-    'Python\'s pickle module can execute arbitrary code during deserialization. ' +
+    "Python's pickle module can execute arbitrary code during deserialization. " +
     'Never deserialise pickle data from untrusted sources.  Use a safe format ' +
     'such as JSON, MessagePack, or Protocol Buffers with strict schema validation.',
   category: 'deserialization',
   severity: 'critical',
   patterns: {
-    python: [
-      /\bpickle\.loads?\s*\(/,
-      /\bcPickle\.loads?\s*\(/,
-    ],
+    python: [/\bpickle\.loads?\s*\(/, /\bcPickle\.loads?\s*\(/],
   },
 };
 
@@ -579,7 +575,7 @@ const RULE_INSECURE_YAML: ICodeSafetyRule = {
   id: 'insecure-yaml',
   name: 'Unsafe yaml.load() without explicit Loader',
   description:
-    'PyYAML\'s yaml.load() without Loader=yaml.SafeLoader (or CSafeLoader) ' +
+    "PyYAML's yaml.load() without Loader=yaml.SafeLoader (or CSafeLoader) " +
     'can deserialise arbitrary Python objects, enabling remote code execution. ' +
     'Replace with yaml.safe_load() or pass Loader=yaml.SafeLoader explicitly.',
   category: 'deserialization',
@@ -674,8 +670,8 @@ const RULE_WORLD_WRITABLE: ICodeSafetyRule = {
   patterns: {
     // Octal literals: 0777, 0o777, 0666, 0o666
     '*': [
-      /\b0o?777\b/,               // 0777 or 0o777 — full world R/W/X
-      /\b0o?666\b/,               // 0666 — world R/W (no execute)
+      /\b0o?777\b/, // 0777 or 0o777 — full world R/W/X
+      /\b0o?666\b/, // 0666 — world R/W (no execute)
     ],
     // chmod 777 in bash
     bash: [/\bchmod\s+(?:0?777|a\+(?:rwx|wx))\b/],
