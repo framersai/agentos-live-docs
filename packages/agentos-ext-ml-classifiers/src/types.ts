@@ -27,12 +27,7 @@ export type ClassifierCategory = 'toxic' | 'injection' | 'nsfw' | 'threat';
  * All supported classifier categories as a constant array, used for
  * iteration and default configuration.
  */
-export const ALL_CATEGORIES: ClassifierCategory[] = [
-  'toxic',
-  'injection',
-  'nsfw',
-  'threat',
-];
+export const ALL_CATEGORIES: ClassifierCategory[] = ['toxic', 'injection', 'nsfw', 'threat'];
 
 // ---------------------------------------------------------------------------
 // Result interfaces
@@ -94,10 +89,7 @@ export interface ClassifierResult {
  * @param userMessage  - The text to classify.
  * @returns The raw string response from the LLM.
  */
-export type LlmInvoker = (
-  systemPrompt: string,
-  userMessage: string,
-) => Promise<string>;
+export type LlmInvoker = (systemPrompt: string, userMessage: string) => Promise<string>;
 
 // ---------------------------------------------------------------------------
 // Pack options
@@ -124,9 +116,7 @@ export interface MLClassifierOptions {
    *
    * @example `{ toxic: { flag: 0.4, block: 0.7 } }`
    */
-  thresholds?: Partial<
-    Record<ClassifierCategory, { flag?: number; block?: number }>
-  >;
+  thresholds?: Partial<Record<ClassifierCategory, { flag?: number; block?: number }>>;
 
   /**
    * Global flag threshold applied to all categories that do not have a

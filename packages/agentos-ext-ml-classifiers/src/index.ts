@@ -33,9 +33,7 @@ export * from './types';
  *                  sensible defaults; see {@link MLClassifierOptions}.
  * @returns A fully-configured {@link ExtensionPack}.
  */
-export function createMLClassifierGuardrail(
-  options?: MLClassifierOptions,
-): ExtensionPack {
+export function createMLClassifierGuardrail(options?: MLClassifierOptions): ExtensionPack {
   const guardrail = new MLClassifierGuardrail(options);
   const tool = new ClassifyContentTool(guardrail);
 

@@ -79,7 +79,7 @@ interface LlmClassificationResponse {
 export async function classifyByLlm(
   text: string,
   invoker: LlmInvoker,
-  categories: ClassifierCategory[] = ALL_CATEGORIES,
+  categories: ClassifierCategory[] = ALL_CATEGORIES
 ): Promise<CategoryScore[]> {
   let raw: string;
 

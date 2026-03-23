@@ -132,9 +132,7 @@ export class MLClassifierGuardrail implements IGuardrailService {
    * @param payload - Input evaluation payload containing the user's message.
    * @returns Guardrail result or `null` if no action is required.
    */
-  async evaluateInput(
-    payload: GuardrailInputPayload,
-  ): Promise<GuardrailEvaluationResult | null> {
+  async evaluateInput(payload: GuardrailInputPayload): Promise<GuardrailEvaluationResult | null> {
     const text = payload.input.textInput;
     if (!text || text.length === 0) return null;
 
@@ -153,9 +151,7 @@ export class MLClassifierGuardrail implements IGuardrailService {
    * @param payload - Output evaluation payload from the AgentOS dispatcher.
    * @returns Guardrail result or `null` if no action is required.
    */
-  async evaluateOutput(
-    payload: GuardrailOutputPayload,
-  ): Promise<GuardrailEvaluationResult | null> {
+  async evaluateOutput(payload: GuardrailOutputPayload): Promise<GuardrailEvaluationResult | null> {
     const { chunk } = payload;
 
     // Only evaluate final text responses.
@@ -195,9 +191,7 @@ export class MLClassifierGuardrail implements IGuardrailService {
     const scores = classifyByKeywords(text, this.categories);
     return {
       categories: scores,
-      flagged: scores.some(
-        (s) => s.confidence > this.flagThresholds[s.name],
-      ),
+      flagged: scores.some((s) => s.confidence > this.flagThresholds[s.name]),
       source: 'keyword',
     };
   }
@@ -219,9 +213,7 @@ export class MLClassifierGuardrail implements IGuardrailService {
    *
    * @internal
    */
-  private async tryOnnxClassification(
-    text: string,
-  ): Promise<ClassifierResult | null> {
+  private async tryOnnxClassification(text: string): Promise<ClassifierResult | null> {
     // If we already know ONNX is unavailable, skip.
     if (this.onnxPipeline === null) return null;
 
@@ -233,7 +225,7 @@ export class MLClassifierGuardrail implements IGuardrailService {
         this.onnxPipeline = await transformers.pipeline(
           'text-classification',
           'Xenova/toxic-bert',
-          { device: 'cpu' },
+          { device: 'cpu' }
         );
       } catch {
         // Module not installed or model load failed — mark as unavailable.
@@ -249,9 +241,7 @@ export class MLClassifierGuardrail implements IGuardrailService {
       const scores = this.mapOnnxScores(raw);
       return {
         categories: scores,
-        flagged: scores.some(
-          (s) => s.confidence > this.flagThresholds[s.name],
-        ),
+        flagged: scores.some((s) => s.confidence > this.flagThresholds[s.name]),
         source: 'onnx',
       };
     } catch {
@@ -319,26 +309,18 @@ export class MLClassifierGuardrail implements IGuardrailService {
    *
    * @internal
    */
-  private async tryLlmClassification(
-    text: string,
-  ): Promise<ClassifierResult | null> {
+  private async tryLlmClassification(text: string): Promise<ClassifierResult | null> {
     if (!this.llmInvoker) return null;
 
     try {
-      const scores = await classifyByLlm(
-        text,
-        this.llmInvoker,
-        this.categories,
-      );
+      const scores = await classifyByLlm(text, this.llmInvoker, this.categories);
 
       // If all scores are zero the LLM likely failed to parse — treat as null.
       if (scores.every((s) => s.confidence === 0)) return null;
 
       return {
         categories: scores,
-        flagged: scores.some(
-          (s) => s.confidence > this.flagThresholds[s.name],
-        ),
+        flagged: scores.some((s) => s.confidence > this.flagThresholds[s.name]),
         source: 'llm',
       };
     } catch {
@@ -359,18 +341,12 @@ export class MLClassifierGuardrail implements IGuardrailService {
    *
    * @internal
    */
-  private buildResult(
-    result: ClassifierResult,
-  ): GuardrailEvaluationResult | null {
+  private buildResult(result: ClassifierResult): GuardrailEvaluationResult | null {
     // Check for BLOCK-level violations first.
-    const blockers = result.categories.filter(
-      (s) => s.confidence > this.blockThresholds[s.name],
-    );
+    const blockers = result.categories.filter((s) => s.confidence > this.blockThresholds[s.name]);
 
     if (blockers.length > 0) {
-      const worst = blockers.reduce((a, b) =>
-        b.confidence > a.confidence ? b : a,
-      );
+      const worst = blockers.reduce((a, b) => (b.confidence > a.confidence ? b : a));
 
       return {
         action: GuardrailAction.BLOCK,
@@ -384,14 +360,10 @@ export class MLClassifierGuardrail implements IGuardrailService {
     }
 
     // Check for FLAG-level violations.
-    const flaggers = result.categories.filter(
-      (s) => s.confidence > this.flagThresholds[s.name],
-    );
+    const flaggers = result.categories.filter((s) => s.confidence > this.flagThresholds[s.name]);
 
     if (flaggers.length > 0) {
-      const worst = flaggers.reduce((a, b) =>
-        b.confidence > a.confidence ? b : a,
-      );
+      const worst = flaggers.reduce((a, b) => (b.confidence > a.confidence ? b : a));
 
       return {
         action: GuardrailAction.FLAG,

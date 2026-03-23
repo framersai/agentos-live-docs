@@ -101,7 +101,7 @@ const CATEGORY_PATTERNS: Record<ClassifierCategory, RegExp[]> = {
  */
 export function classifyByKeywords(
   text: string,
-  categories: ClassifierCategory[] = ALL_CATEGORIES,
+  categories: ClassifierCategory[] = ALL_CATEGORIES
 ): CategoryScore[] {
   const scores: CategoryScore[] = [];
 
@@ -121,10 +121,7 @@ export function classifyByKeywords(
     }
 
     // Scale: first match = 0.4, each additional += 0.15, capped at 1.0.
-    const confidence =
-      matchCount === 0
-        ? 0
-        : Math.min(1.0, 0.4 + (matchCount - 1) * 0.15);
+    const confidence = matchCount === 0 ? 0 : Math.min(1.0, 0.4 + (matchCount - 1) * 0.15);
 
     scores.push({ name: cat, confidence });
   }

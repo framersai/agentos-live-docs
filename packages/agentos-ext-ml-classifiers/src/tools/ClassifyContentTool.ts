@@ -43,9 +43,7 @@ export interface ClassifyContentOutput {
  *
  * @implements {ITool<ClassifyContentInput, ClassifyContentOutput>}
  */
-export class ClassifyContentTool
-  implements ITool<ClassifyContentInput, ClassifyContentOutput>
-{
+export class ClassifyContentTool implements ITool<ClassifyContentInput, ClassifyContentOutput> {
   // -----------------------------------------------------------------------
   // ITool metadata
   // -----------------------------------------------------------------------
@@ -122,7 +120,7 @@ export class ClassifyContentTool
   async execute(
     args: ClassifyContentInput,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    context: ToolExecutionContext,
+    context: ToolExecutionContext
   ): Promise<ToolExecutionResult<ClassifyContentOutput>> {
     try {
       const result = await this.guardrail.classify(args.text);
@@ -135,8 +133,7 @@ export class ClassifyContentTool
         },
       };
     } catch (err: unknown) {
-      const message =
-        err instanceof Error ? err.message : 'Unknown error during classification';
+      const message = err instanceof Error ? err.message : 'Unknown error during classification';
 
       return {
         success: false,
