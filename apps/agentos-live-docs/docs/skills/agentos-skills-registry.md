@@ -3,8 +3,6 @@ title: '@framers/agentos-skills-registry'
 sidebar_position: 4
 ---
 
-# @framers/agentos-skills-registry
-
 Curated skills registry for [AgentOS](https://github.com/framersai/agentos) — 40 SKILL.md prompt modules, typed catalog, and lazy-loading factories.
 
 ```bash
@@ -15,7 +13,7 @@ npm install @framers/agentos-skills-registry
 
 This is the **single package** for AgentOS skills. It contains:
 
-- **40 curated SKILL.md files** — prompt modules spanning social automation, developer tooling, productivity, research, voice, and more
+- **40 curated SKILL.md files** — prompt modules spanning developer tooling, productivity, research, voice, memory, and more
 - **registry.json** — machine-readable index of all skills with metadata
 - **Static catalog** (`SKILLS_CATALOG`) — typed array with query helpers
 - **Registry factories** — `createCuratedSkillRegistry()`, `createCuratedSkillSnapshot()` (requires `@framers/agentos`)
@@ -53,7 +51,7 @@ console.log(github?.requiredSecrets); // ['github.token']
 
 // All unique categories
 const categories = getCategories();
-// ['automation', 'communication', 'creative', 'developer-tools', 'social-automation', ...]
+// ['communication', 'creative', 'developer-tools', 'devops', 'information', ...]
 ```
 
 ### 2. Load raw registry data
@@ -211,13 +209,14 @@ import type {
 
 ## Relationship to Other Packages
 
-```
-@framers/agentos-skills-registry     ← This package (data + SDK)
-  ├── registry/curated/*/SKILL.md    (bundled prompt modules)
-  ├── registry.json                  (machine-readable index)
-  ├── catalog.ts                     (typed queries: search, filter, browse)
-  └── index.ts                       (factories: lazy-load @framers/agentos)
-        └── @framers/agentos         (optional peer: live SkillRegistry + snapshots)
+```mermaid
+graph TD
+    A["@framers/agentos-skills-registry<br/><i>This package — data + SDK</i>"]
+    A --> B["registry/curated/*/SKILL.md<br/><i>bundled prompt modules</i>"]
+    A --> C["registry.json<br/><i>machine-readable index</i>"]
+    A --> D["catalog.ts<br/><i>typed queries: search, filter, browse</i>"]
+    A --> E["index.ts<br/><i>factories: lazy-load @framers/agentos</i>"]
+    E --> F["@framers/agentos<br/><i>optional peer: live SkillRegistry + snapshots</i>"]
 ```
 
 ## Contributing

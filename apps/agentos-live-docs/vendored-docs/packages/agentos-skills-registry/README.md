@@ -208,13 +208,14 @@ import type {
 
 ## Relationship to Other Packages
 
-```
-@framers/agentos-skills-registry     ← This package (data + SDK)
-  ├── registry/curated/*/SKILL.md    (bundled prompt modules)
-  ├── registry.json                  (machine-readable index)
-  ├── catalog.ts                     (typed queries: search, filter, browse)
-  └── index.ts                       (factories: lazy-load @framers/agentos)
-        └── @framers/agentos         (optional peer: live SkillRegistry + snapshots)
+```mermaid
+graph TD
+    A["@framers/agentos-skills-registry<br/><i>This package — data + SDK</i>"]
+    A --> B["registry/curated/*/SKILL.md<br/><i>bundled prompt modules</i>"]
+    A --> C["registry.json<br/><i>machine-readable index</i>"]
+    A --> D["catalog.ts<br/><i>typed queries: search, filter, browse</i>"]
+    A --> E["index.ts<br/><i>factories: lazy-load @framers/agentos</i>"]
+    E --> F["@framers/agentos<br/><i>optional peer: live SkillRegistry + snapshots</i>"]
 ```
 
 ## Contributing
