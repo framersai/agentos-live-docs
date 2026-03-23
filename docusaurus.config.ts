@@ -3,9 +3,9 @@ import type { Config } from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
 
 const config: Config = {
-  title: 'AgentOS',
+  title: 'AgentOS Docs',
   tagline:
-    'Autonomous AI agent framework with cognitive memory, graph-based RAG, and HEXACO personality modeling',
+    'Open-source TypeScript runtime for production AI agents — multimodal RAG, multi-agent orchestration, 37 channels, guardrails, 21 LLM providers.',
   favicon: 'img/favicon.svg',
   url: 'https://docs.agentos.sh',
   baseUrl: '/',
