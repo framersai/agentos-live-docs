@@ -98,6 +98,7 @@ packages:
   - packages/agentos-extensions/registry/curated/voice/twilio
   - packages/agentos-extensions/registry/curated/voice/telnyx
   - packages/agentos-extensions/registry/curated/voice/plivo
+  - packages/agentos-extensions/registry/curated/voice/streaming-tts-openai
   # Productivity
   - packages/agentos-extensions/registry/curated/productivity/calendar-google
   - packages/agentos-extensions/registry/curated/productivity/email-gmail
