@@ -36,6 +36,11 @@ npm install @framers/agentos
 
 ### Planning & Orchestration
 
+- [Unified Orchestration Layer](/features/unified-orchestration) — One runtime, three authoring APIs
+- [AgentGraph](/features/agent-graph) — Explicit graph builder with node/edge control
+- [workflow() DSL](/features/workflow-dsl) — Deterministic DAG pipelines
+- [mission() API](/features/mission-api) — Goal-first orchestration
+- [Checkpointing](/features/checkpointing) — Resume, replay, and forking
 - [Planning Engine](/features/planning-engine) — Multi-step task planning
 - [Human-in-the-Loop](/features/human-in-the-loop) — Approval workflows
 - [Agent Communication](/features/agent-communication) — Inter-agent messaging
