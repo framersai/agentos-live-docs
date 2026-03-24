@@ -156,7 +156,7 @@ importers:
   apps/agentos-workbench:
     dependencies:
       '@framers/agentos':
-        specifier: '*'
+        specifier: '>=0.1.63'
         version: link:../../packages/agentos
       '@framers/sql-storage-adapter':
         specifier: '*'
@@ -233,7 +233,7 @@ importers:
         version: 7.18.0(eslint@8.57.1)(typescript@5.6.3)
       '@vitejs/plugin-react-swc':
         specifier: ^3.7.0
-        version: 3.11.0(vite@5.4.21(@types/node@25.3.3)(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0))
+        version: 3.11.0(vite@5.4.21(@types/node@25.3.3)(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0))
       autoprefixer:
         specifier: ^10.4.20
         version: 10.4.24(postcss@8.5.6)
@@ -252,15 +252,18 @@ importers:
       tailwindcss:
         specifier: ^3.4.14
         version: 3.4.18(tsx@4.21.0)(yaml@2.8.1)
+      tsx:
+        specifier: ^4.19.0
+        version: 4.21.0
       typescript:
         specifier: ^5.6.3
         version: 5.6.3
       vite:
         specifier: ^5.4.10
-        version: 5.4.21(@types/node@25.3.3)(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 5.4.21(@types/node@25.3.3)(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
       vite-plugin-node-polyfills:
         specifier: ^0.22.0
-        version: 0.22.0(rollup@4.52.5)(vite@5.4.21(@types/node@25.3.3)(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0))
+        version: 0.22.0(rollup@4.52.5)(vite@5.4.21(@types/node@25.3.3)(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0))
 
   apps/agentos-workbench/backend:
     dependencies:
@@ -277,7 +280,7 @@ importers:
         specifier: ^5.2.3
         version: 5.2.3
       '@framers/agentos':
-        specifier: workspace:*
+        specifier: ^0.1.56
         version: link:../../../packages/agentos
       dotenv:
         specifier: ^17.2.3
@@ -285,6 +288,12 @@ importers:
       fastify:
         specifier: ^5.6.2
         version: 5.6.2
+      pdfkit:
+        specifier: ^0.16.0
+        version: 0.16.0
+      xlsx:
+        specifier: ^0.18.5
+        version: 0.18.5
     devDependencies:
       '@types/node':
         specifier: ^25.0.2
@@ -355,10 +364,10 @@ importers:
         version: 10.9.4
       next:
         specifier: ^14.2.15
-        version: 14.2.35(@opentelemetry/api@1.9.0)(@playwright/test@1.58.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.97.3)
+        version: 14.2.35(@opentelemetry/api@1.9.0)(@playwright/test@1.58.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.98.0)
       next-intl:
         specifier: ^4.5.3
-        version: 4.8.2(next@14.2.35(@opentelemetry/api@1.9.0)(@playwright/test@1.58.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.97.3))(react@18.3.1)(typescript@5.9.3)
+        version: 4.8.2(next@14.2.35(@opentelemetry/api@1.9.0)(@playwright/test@1.58.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.98.0))(react@18.3.1)(typescript@5.9.3)
       next-themes:
         specifier: ^0.3.0
         version: 0.3.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -432,7 +441,7 @@ importers:
     devDependencies:
       '@vitest/coverage-v8':
         specifier: ^1.6.1
-        version: 1.6.1(vitest@1.6.1(@types/node@25.3.3)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0))
+        version: 1.6.1(vitest@1.6.1(@types/node@25.3.3)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0))
       gray-matter:
         specifier: ^4.0.3
         version: 4.0.3
@@ -447,7 +456,7 @@ importers:
         version: 9.0.1
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@25.3.3)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@25.3.3)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   apps/demo-video:
     dependencies:
@@ -533,13 +542,13 @@ importers:
         version: 6.2.1
       '@vitejs/plugin-vue':
         specifier: ^5.2.1
-        version: 5.2.4(vite@6.4.1(@types/node@25.3.3)(jiti@2.6.1)(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)(tsx@4.21.0)(yaml@2.8.1))(vue@3.5.22(typescript@5.9.3))
+        version: 5.2.4(vite@6.4.1(@types/node@25.3.3)(jiti@2.6.1)(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)(tsx@4.21.0)(yaml@2.8.1))(vue@3.5.22(typescript@5.9.3))
       typescript:
         specifier: ^5.6.3
         version: 5.9.3
       vite:
         specifier: ^6.0.3
-        version: 6.4.1(@types/node@25.3.3)(jiti@2.6.1)(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)(tsx@4.21.0)(yaml@2.8.1)
+        version: 6.4.1(@types/node@25.3.3)(jiti@2.6.1)(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)(tsx@4.21.0)(yaml@2.8.1)
 
   apps/frame.dev:
     dependencies:
@@ -845,7 +854,7 @@ importers:
         version: 8.1.0(socks@2.8.7)
       next:
         specifier: ^14.2.35
-        version: 14.2.35(@opentelemetry/api@1.9.0)(@playwright/test@1.57.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.97.3)
+        version: 14.2.35(@opentelemetry/api@1.9.0)(@playwright/test@1.57.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.98.0)
       next-themes:
         specifier: ^0.3.0
         version: 0.3.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -978,10 +987,10 @@ importers:
         version: 8.18.1
       '@vitejs/plugin-react':
         specifier: ^5.1.2
-        version: 5.1.2(vite@6.4.1(@types/node@20.19.23)(jiti@2.6.1)(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)(tsx@4.21.0)(yaml@2.8.1))
+        version: 5.1.2(vite@6.4.1(@types/node@20.19.23)(jiti@2.6.1)(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)(tsx@4.21.0)(yaml@2.8.1))
       '@vitest/coverage-v8':
         specifier: ^1.6.1
-        version: 1.6.1(vitest@1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@24.1.3(bufferutil@4.1.0)(canvas@2.11.2(encoding@0.1.13))(utf-8-validate@5.0.10))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0))
+        version: 1.6.1(vitest@1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@24.1.3(bufferutil@4.1.0)(canvas@2.11.2(encoding@0.1.13))(utf-8-validate@5.0.10))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0))
       autoprefixer:
         specifier: ^10.4.20
         version: 10.4.21(postcss@8.5.6)
@@ -1032,7 +1041,7 @@ importers:
         version: 5.9.3
       vitest:
         specifier: ^1.6.1
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@24.1.3(bufferutil@4.1.0)(canvas@2.11.2(encoding@0.1.13))(utf-8-validate@5.0.10))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@24.1.3(bufferutil@4.1.0)(canvas@2.11.2(encoding@0.1.13))(utf-8-validate@5.0.10))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
       wait-on:
         specifier: ^8.0.1
         version: 8.0.5
@@ -1422,6 +1431,9 @@ importers:
       '@docusaurus/core':
         specifier: 3.9.2
         version: 3.9.2(@mdx-js/react@3.1.1(@types/react@18.3.26)(react@19.2.3))(@rspack/core@1.7.6(@swc/helpers@0.5.15))(bufferutil@4.1.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(typescript@5.6.3)(utf-8-validate@5.0.10)
+      '@docusaurus/plugin-ideal-image':
+        specifier: ^3.9.2
+        version: 3.9.2(@mdx-js/react@3.1.1(@types/react@18.3.26)(react@19.2.3))(@rspack/core@1.7.6(@swc/helpers@0.5.15))(bufferutil@4.1.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(typescript@5.6.3)(utf-8-validate@5.0.10)
       '@docusaurus/preset-classic':
         specifier: 3.9.2
         version: 3.9.2(@mdx-js/react@3.1.1(@types/react@18.3.26)(react@19.2.3))(@rspack/core@1.7.6(@swc/helpers@0.5.15))(@types/react@18.3.26)(bufferutil@4.1.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(typescript@5.6.3)(utf-8-validate@5.0.10)
@@ -1437,6 +1449,12 @@ importers:
       clsx:
         specifier: ^2.0.0
         version: 2.1.1
+      docusaurus-plugin-image-zoom:
+        specifier: ^3.0.1
+        version: 3.0.1(@docusaurus/theme-classic@3.9.2(@rspack/core@1.7.6(@swc/helpers@0.5.15))(@types/react@18.3.26)(bufferutil@4.1.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(typescript@5.6.3)(utf-8-validate@5.0.10))
+      docusaurus-plugin-sass:
+        specifier: ^0.2.6
+        version: 0.2.6(@docusaurus/core@3.9.2(@mdx-js/react@3.1.1(@types/react@18.3.26)(react@19.2.3))(@rspack/core@1.7.6(@swc/helpers@0.5.15))(bufferutil@4.1.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(typescript@5.6.3)(utf-8-validate@5.0.10))(@rspack/core@1.7.6(@swc/helpers@0.5.15))(sass@1.98.0)(webpack@5.105.0)
       docusaurus-plugin-typedoc:
         specifier: ^1.4.0
         version: 1.4.2(typedoc-plugin-markdown@4.10.0(typedoc@0.28.16(typescript@5.6.3)))
@@ -1449,6 +1467,9 @@ importers:
       react-dom:
         specifier: ^19.0.0
         version: 19.2.3(react@19.2.3)
+      sass:
+        specifier: ^1.98.0
+        version: 1.98.0
       typedoc:
         specifier: ~0.28.0
         version: 0.28.16(typescript@5.6.3)
@@ -1473,7 +1494,7 @@ importers:
     dependencies:
       next:
         specifier: ^15.1.0
-        version: 15.5.11(@opentelemetry/api@1.9.0)(@playwright/test@1.58.1)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(sass@1.97.3)
+        version: 15.5.11(@opentelemetry/api@1.9.0)(@playwright/test@1.58.1)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(sass@1.98.0)
       react:
         specifier: ^19.0.0
         version: 19.2.3
@@ -1540,7 +1561,7 @@ importers:
         version: 6.0.0
       next:
         specifier: ^15.1.0
-        version: 15.5.11(@opentelemetry/api@1.9.0)(@playwright/test@1.58.1)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(sass@1.97.3)
+        version: 15.5.11(@opentelemetry/api@1.9.0)(@playwright/test@1.58.1)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(sass@1.98.0)
       react:
         specifier: ^19.0.0
         version: 19.2.3
@@ -1571,7 +1592,7 @@ importers:
         version: 18.3.7(@types/react@18.3.26)
       '@vitest/coverage-v8':
         specifier: ^2.1.9
-        version: 2.1.9(vitest@2.1.9(@types/node@22.19.1)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0))
+        version: 2.1.9(vitest@2.1.9(@types/node@22.19.1)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0))
       better-sqlite3:
         specifier: ^12.6.2
         version: 12.6.2
@@ -1586,7 +1607,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^2.1.9
-        version: 2.1.9(@types/node@22.19.1)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 2.1.9(@types/node@22.19.1)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   apps/wunderland-sol/backend:
     dependencies:
@@ -1755,7 +1776,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.3.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   apps/wunderland-sol/docs-site:
     dependencies:
@@ -1922,7 +1943,7 @@ importers:
         version: 8.46.2(eslint@9.38.0(jiti@2.6.1))(typescript@5.6.3)
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   apps/wunderland-sol/packages/agentos-ext-skills:
     devDependencies:
@@ -1937,7 +1958,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   apps/wunderland-sol/packages/agentos-extensions:
     devDependencies:
@@ -1955,7 +1976,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@25.3.3)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@25.3.3)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   apps/wunderland-sol/packages/agentos-extensions-registry:
     devDependencies:
@@ -1967,7 +1988,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.0.0
-        version: 1.6.1(@types/node@25.3.3)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@25.3.3)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
     optionalDependencies:
       '@framers/agentos-ext-auth':
         specifier: ^1.0.0
@@ -1984,9 +2005,6 @@ importers:
       '@framers/agentos-ext-news-search':
         specifier: ^1.0.0
         version: link:../../../../packages/agentos-extensions/registry/curated/research/news-search
-      '@framers/agentos-ext-skills':
-        specifier: ^1.0.0
-        version: link:../../../../packages/agentos-ext-skills
       '@framers/agentos-ext-telegram':
         specifier: ^1.0.0
         version: link:../../../../packages/agentos-extensions/registry/curated/integrations/telegram
@@ -1999,6 +2017,9 @@ importers:
       '@framers/agentos-ext-web-search':
         specifier: ^1.0.0
         version: link:../../../../packages/agentos-extensions/registry/curated/research/web-search
+      '@framers/agentos-skills':
+        specifier: ^1.0.0
+        version: link:../../../../packages/agentos-ext-skills
 
   apps/wunderland-sol/packages/agentos-extensions/registry/curated/auth:
     dependencies:
@@ -2033,7 +2054,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.0.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   apps/wunderland-sol/packages/agentos-extensions/registry/curated/channels/slack:
     dependencies:
@@ -2052,7 +2073,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.0.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   apps/wunderland-sol/packages/agentos-extensions/registry/curated/channels/telegram:
     dependencies:
@@ -2071,7 +2092,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.0.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   apps/wunderland-sol/packages/agentos-extensions/registry/curated/channels/webchat:
     devDependencies:
@@ -2086,7 +2107,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.0.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   apps/wunderland-sol/packages/agentos-extensions/registry/curated/channels/whatsapp:
     devDependencies:
@@ -2101,7 +2122,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.0.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   apps/wunderland-sol/packages/agentos-extensions/registry/curated/communications/telegram-bot:
     dependencies:
@@ -2129,7 +2150,7 @@ importers:
         version: 6.21.0(eslint@8.57.1)(typescript@5.6.3)
       '@vitest/coverage-v8':
         specifier: ^1.0.0
-        version: 1.6.1(vitest@1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0))
+        version: 1.6.1(vitest@1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0))
       eslint:
         specifier: ^8.0.0
         version: 8.57.1
@@ -2141,7 +2162,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.0.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   apps/wunderland-sol/packages/agentos-extensions/registry/curated/integrations/telegram:
     dependencies:
@@ -2172,7 +2193,7 @@ importers:
         version: 6.21.0(eslint@8.57.1)(typescript@5.6.3)
       '@vitest/coverage-v8':
         specifier: ^1.0.0
-        version: 1.6.1(vitest@1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0))
+        version: 1.6.1(vitest@1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0))
       eslint:
         specifier: ^8.0.0
         version: 8.57.1
@@ -2184,7 +2205,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.0.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   apps/wunderland-sol/packages/agentos-extensions/registry/curated/media/giphy:
     devDependencies:
@@ -2196,7 +2217,7 @@ importers:
         version: 20.19.23
       '@vitest/coverage-v8':
         specifier: ^1.6.0
-        version: 1.6.1(vitest@1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0))
+        version: 1.6.1(vitest@1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0))
       rimraf:
         specifier: ^5.0.7
         version: 5.0.10
@@ -2205,7 +2226,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   apps/wunderland-sol/packages/agentos-extensions/registry/curated/media/image-search:
     devDependencies:
@@ -2217,7 +2238,7 @@ importers:
         version: 20.19.23
       '@vitest/coverage-v8':
         specifier: ^1.6.0
-        version: 1.6.1(vitest@1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0))
+        version: 1.6.1(vitest@1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0))
       rimraf:
         specifier: ^5.0.7
         version: 5.0.10
@@ -2226,7 +2247,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   apps/wunderland-sol/packages/agentos-extensions/registry/curated/media/voice-synthesis:
     devDependencies:
@@ -2238,7 +2259,7 @@ importers:
         version: 20.19.23
       '@vitest/coverage-v8':
         specifier: ^1.6.0
-        version: 1.6.1(vitest@1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0))
+        version: 1.6.1(vitest@1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0))
       rimraf:
         specifier: ^5.0.7
         version: 5.0.10
@@ -2247,7 +2268,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   apps/wunderland-sol/packages/agentos-extensions/registry/curated/productivity/gmail:
     dependencies:
@@ -2266,7 +2287,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.0.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   apps/wunderland-sol/packages/agentos-extensions/registry/curated/productivity/google-calendar:
     dependencies:
@@ -2285,7 +2306,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.0.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   apps/wunderland-sol/packages/agentos-extensions/registry/curated/provenance/anchor-providers:
     devDependencies:
@@ -2303,7 +2324,7 @@ importers:
         version: 8.46.2(eslint@9.38.0(jiti@2.6.1))(typescript@5.6.3)
       '@vitest/coverage-v8':
         specifier: ^1.6.0
-        version: 1.6.1(vitest@1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0))
+        version: 1.6.1(vitest@1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0))
       eslint:
         specifier: ^9.11.0
         version: 9.38.0(jiti@2.6.1)
@@ -2318,7 +2339,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   apps/wunderland-sol/packages/agentos-extensions/registry/curated/provenance/wunderland-tip-ingestion:
     devDependencies:
@@ -2327,7 +2348,7 @@ importers:
         version: 20.19.23
       '@vitest/coverage-v8':
         specifier: ^1.6.0
-        version: 1.6.1(vitest@1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0))
+        version: 1.6.1(vitest@1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0))
       rimraf:
         specifier: ^5.0.7
         version: 5.0.10
@@ -2336,7 +2357,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
       wunderland:
         specifier: '>=0.2.0'
         version: link:../../../../../../../../packages/wunderland
@@ -2351,7 +2372,7 @@ importers:
         version: 20.19.23
       '@vitest/coverage-v8':
         specifier: ^1.6.0
-        version: 1.6.1(vitest@1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0))
+        version: 1.6.1(vitest@1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0))
       rimraf:
         specifier: ^5.0.7
         version: 5.0.10
@@ -2360,7 +2381,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   apps/wunderland-sol/packages/agentos-extensions/registry/curated/research/web-browser:
     dependencies:
@@ -2382,7 +2403,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   apps/wunderland-sol/packages/agentos-extensions/registry/curated/research/web-search:
     dependencies:
@@ -2404,7 +2425,7 @@ importers:
         version: 7.18.0(eslint@9.38.0(jiti@2.6.1))(typescript@5.6.3)
       '@vitest/coverage-v8':
         specifier: ^1.6.0
-        version: 1.6.1(vitest@1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0))
+        version: 1.6.1(vitest@1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0))
       eslint:
         specifier: ^9.11.0
         version: 9.38.0(jiti@2.6.1)
@@ -2419,7 +2440,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   apps/wunderland-sol/packages/agentos-extensions/registry/curated/system/cli-executor:
     devDependencies:
@@ -2434,7 +2455,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   apps/wunderland-sol/packages/agentos-extensions/registry/curated/voice/plivo:
     dependencies:
@@ -2453,7 +2474,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.0.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   apps/wunderland-sol/packages/agentos-extensions/registry/curated/voice/telnyx:
     dependencies:
@@ -2472,7 +2493,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.0.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   apps/wunderland-sol/packages/agentos-extensions/registry/curated/voice/twilio:
     dependencies:
@@ -2491,7 +2512,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.0.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   apps/wunderland-sol/packages/agentos-extensions/templates/basic-tool:
     devDependencies:
@@ -2506,7 +2527,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.0.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   apps/wunderland-sol/packages/agentos-extensions/templates/guardrail:
     devDependencies:
@@ -2521,7 +2542,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.0.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   apps/wunderland-sol/packages/agentos-extensions/templates/multi-tool:
     devDependencies:
@@ -2536,7 +2557,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.0.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   apps/wunderland-sol/packages/agentos-skills-registry:
     devDependencies:
@@ -2551,7 +2572,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.0.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   apps/wunderland-sol/packages/shared:
     devDependencies:
@@ -2606,7 +2627,7 @@ importers:
         version: 8.16.0
       '@vitest/coverage-v8':
         specifier: ^1.6.1
-        version: 1.6.1(vitest@1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0))
+        version: 1.6.1(vitest@1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0))
       electron:
         specifier: ^33.0.0
         version: 33.2.0
@@ -2645,7 +2666,7 @@ importers:
         version: 8.46.2(eslint@9.38.0(jiti@2.6.1))(typescript@5.6.3)
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   apps/wunderland-sol/packages/wunderland:
     dependencies:
@@ -2727,7 +2748,7 @@ importers:
         version: 9.0.8
       '@vitest/coverage-v8':
         specifier: ^1.3.0
-        version: 1.6.1(vitest@1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0))
+        version: 1.6.1(vitest@1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0))
       graphology:
         specifier: ^0.26.0
         version: 0.26.0(graphology-types@0.24.8)
@@ -2745,9 +2766,9 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.3.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
     optionalDependencies:
-      '@framers/agentos-ext-skills':
+      '@framers/agentos-skills':
         specifier: workspace:*
         version: link:../../../../packages/agentos-ext-skills
       '@framers/agentos-skills-registry':
@@ -2844,10 +2865,10 @@ importers:
         version: 10.9.4
       next:
         specifier: ^14.2.15
-        version: 14.2.35(@opentelemetry/api@1.9.0)(@playwright/test@1.58.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.97.3)
+        version: 14.2.35(@opentelemetry/api@1.9.0)(@playwright/test@1.58.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.98.0)
       next-intl:
         specifier: ^4.5.3
-        version: 4.8.2(next@14.2.35(@opentelemetry/api@1.9.0)(@playwright/test@1.58.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.97.3))(react@18.3.1)(typescript@5.6.3)
+        version: 4.8.2(next@14.2.35(@opentelemetry/api@1.9.0)(@playwright/test@1.58.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.98.0))(react@18.3.1)(typescript@5.6.3)
       next-themes:
         specifier: ^0.3.0
         version: 0.3.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -2921,7 +2942,7 @@ importers:
     devDependencies:
       '@vitest/coverage-v8':
         specifier: ^1.6.1
-        version: 1.6.1(vitest@1.6.1(@types/node@25.3.3)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0))
+        version: 1.6.1(vitest@1.6.1(@types/node@25.3.3)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0))
       gray-matter:
         specifier: ^4.0.3
         version: 4.0.3
@@ -2936,7 +2957,7 @@ importers:
         version: 9.0.1
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@25.3.3)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@25.3.3)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   apps/wunderland-sol/packages/wunderland/apps/fabric-mobile:
     dependencies:
@@ -2988,13 +3009,13 @@ importers:
         version: 6.2.1
       '@vitejs/plugin-vue':
         specifier: ^5.2.1
-        version: 5.2.4(vite@6.4.1(@types/node@25.3.3)(jiti@2.6.1)(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)(tsx@4.21.0)(yaml@2.8.1))(vue@3.5.22(typescript@5.6.3))
+        version: 5.2.4(vite@6.4.1(@types/node@25.3.3)(jiti@2.6.1)(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)(tsx@4.21.0)(yaml@2.8.1))(vue@3.5.22(typescript@5.6.3))
       typescript:
         specifier: ^5.6.3
         version: 5.6.3
       vite:
         specifier: ^6.0.3
-        version: 6.4.1(@types/node@25.3.3)(jiti@2.6.1)(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)(tsx@4.21.0)(yaml@2.8.1)
+        version: 6.4.1(@types/node@25.3.3)(jiti@2.6.1)(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)(tsx@4.21.0)(yaml@2.8.1)
 
   apps/wunderland-sol/packages/wunderland/apps/frame.dev:
     dependencies:
@@ -3300,7 +3321,7 @@ importers:
         version: 8.1.0(socks@2.8.7)
       next:
         specifier: ^14.2.35
-        version: 14.2.35(@opentelemetry/api@1.9.0)(@playwright/test@1.58.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.97.3)
+        version: 14.2.35(@opentelemetry/api@1.9.0)(@playwright/test@1.58.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.98.0)
       next-themes:
         specifier: ^0.3.0
         version: 0.3.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -3433,10 +3454,10 @@ importers:
         version: 8.18.1
       '@vitejs/plugin-react':
         specifier: ^5.1.2
-        version: 5.1.2(vite@6.4.1(@types/node@20.19.23)(jiti@2.6.1)(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)(tsx@4.21.0)(yaml@2.8.1))
+        version: 5.1.2(vite@6.4.1(@types/node@20.19.23)(jiti@2.6.1)(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)(tsx@4.21.0)(yaml@2.8.1))
       '@vitest/coverage-v8':
         specifier: ^1.6.1
-        version: 1.6.1(vitest@1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@24.1.3(bufferutil@4.1.0)(canvas@2.11.2(encoding@0.1.13))(utf-8-validate@5.0.10))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0))
+        version: 1.6.1(vitest@1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@24.1.3(bufferutil@4.1.0)(canvas@2.11.2(encoding@0.1.13))(utf-8-validate@5.0.10))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0))
       autoprefixer:
         specifier: ^10.4.20
         version: 10.4.24(postcss@8.5.6)
@@ -3487,7 +3508,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.6.1
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@24.1.3(bufferutil@4.1.0)(canvas@2.11.2(encoding@0.1.13))(utf-8-validate@5.0.10))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@24.1.3(bufferutil@4.1.0)(canvas@2.11.2(encoding@0.1.13))(utf-8-validate@5.0.10))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
       wait-on:
         specifier: ^8.0.1
         version: 8.0.5
@@ -3524,7 +3545,7 @@ importers:
         version: 5.9.3
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@25.3.3)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@25.3.3)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   apps/wunderland-sol/packages/wunderland/apps/frame.dev/packages/codex-viewer/examples/codex-template:
     dependencies:
@@ -3539,7 +3560,7 @@ importers:
         version: 0.460.0(react@18.3.1)
       next:
         specifier: 14.2.13
-        version: 14.2.13(@opentelemetry/api@1.9.0)(@playwright/test@1.58.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.97.3)
+        version: 14.2.13(@opentelemetry/api@1.9.0)(@playwright/test@1.58.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.98.0)
       react:
         specifier: ^18.3.1
         version: 18.3.1
@@ -3576,7 +3597,7 @@ importers:
         version: 14.2.13(eslint@8.57.1)(typescript@5.6.3)
       next-sitemap:
         specifier: ^4.2.3
-        version: 4.2.3(next@14.2.13(@opentelemetry/api@1.9.0)(@playwright/test@1.58.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.97.3))
+        version: 4.2.3(next@14.2.13(@opentelemetry/api@1.9.0)(@playwright/test@1.58.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.98.0))
       typescript:
         specifier: ^5.6.3
         version: 5.6.3
@@ -4074,7 +4095,7 @@ importers:
         version: 8.46.2(eslint@9.38.0(jiti@2.6.1))(typescript@5.6.3)
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   apps/wunderland-sol/packages/wunderland/packages/agentos-ext-http-api:
     devDependencies:
@@ -4101,7 +4122,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   apps/wunderland-sol/packages/wunderland/packages/agentos-ext-skills:
     devDependencies:
@@ -4116,7 +4137,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
     optionalDependencies:
       '@framers/agentos-skills-registry':
         specifier: workspace:*
@@ -4138,7 +4159,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@25.3.3)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@25.3.3)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   apps/wunderland-sol/packages/wunderland/packages/agentos-extensions-registry:
     devDependencies:
@@ -4150,7 +4171,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.0.0
-        version: 1.6.1(@types/node@25.3.3)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@25.3.3)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
     optionalDependencies:
       '@framers/agentos-ext-auth':
         specifier: ^1.0.0
@@ -4167,9 +4188,6 @@ importers:
       '@framers/agentos-ext-news-search':
         specifier: ^1.0.0
         version: link:../../../../../../packages/agentos-extensions/registry/curated/research/news-search
-      '@framers/agentos-ext-skills':
-        specifier: ^1.0.0
-        version: link:../../../../../../packages/agentos-ext-skills
       '@framers/agentos-ext-telegram':
         specifier: ^1.0.0
         version: link:../../../../../../packages/agentos-extensions/registry/curated/integrations/telegram
@@ -4182,6 +4200,9 @@ importers:
       '@framers/agentos-ext-web-search':
         specifier: ^1.0.0
         version: link:../../../../../../packages/agentos-extensions/registry/curated/research/web-search
+      '@framers/agentos-skills':
+        specifier: ^1.0.0
+        version: link:../../../../../../packages/agentos-ext-skills
 
   apps/wunderland-sol/packages/wunderland/packages/agentos-extensions/registry/curated/auth:
     dependencies:
@@ -4216,7 +4237,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.0.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   apps/wunderland-sol/packages/wunderland/packages/agentos-extensions/registry/curated/channels/slack:
     dependencies:
@@ -4235,7 +4256,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.0.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   apps/wunderland-sol/packages/wunderland/packages/agentos-extensions/registry/curated/channels/telegram:
     dependencies:
@@ -4254,7 +4275,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.0.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   apps/wunderland-sol/packages/wunderland/packages/agentos-extensions/registry/curated/channels/webchat:
     devDependencies:
@@ -4269,7 +4290,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.0.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   apps/wunderland-sol/packages/wunderland/packages/agentos-extensions/registry/curated/channels/whatsapp:
     devDependencies:
@@ -4284,7 +4305,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.0.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   apps/wunderland-sol/packages/wunderland/packages/agentos-extensions/registry/curated/communications/telegram-bot:
     dependencies:
@@ -4312,7 +4333,7 @@ importers:
         version: 6.21.0(eslint@8.57.1)(typescript@5.6.3)
       '@vitest/coverage-v8':
         specifier: ^1.0.0
-        version: 1.6.1(vitest@1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0))
+        version: 1.6.1(vitest@1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0))
       eslint:
         specifier: ^8.0.0
         version: 8.57.1
@@ -4324,7 +4345,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.0.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   apps/wunderland-sol/packages/wunderland/packages/agentos-extensions/registry/curated/integrations/telegram:
     dependencies:
@@ -4355,7 +4376,7 @@ importers:
         version: 6.21.0(eslint@8.57.1)(typescript@5.6.3)
       '@vitest/coverage-v8':
         specifier: ^1.0.0
-        version: 1.6.1(vitest@1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0))
+        version: 1.6.1(vitest@1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0))
       eslint:
         specifier: ^8.0.0
         version: 8.57.1
@@ -4367,7 +4388,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.0.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   apps/wunderland-sol/packages/wunderland/packages/agentos-extensions/registry/curated/media/giphy:
     devDependencies:
@@ -4379,7 +4400,7 @@ importers:
         version: 20.19.23
       '@vitest/coverage-v8':
         specifier: ^1.6.0
-        version: 1.6.1(vitest@1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0))
+        version: 1.6.1(vitest@1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0))
       rimraf:
         specifier: ^5.0.7
         version: 5.0.10
@@ -4388,7 +4409,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   apps/wunderland-sol/packages/wunderland/packages/agentos-extensions/registry/curated/media/image-search:
     devDependencies:
@@ -4400,7 +4421,7 @@ importers:
         version: 20.19.23
       '@vitest/coverage-v8':
         specifier: ^1.6.0
-        version: 1.6.1(vitest@1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0))
+        version: 1.6.1(vitest@1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0))
       rimraf:
         specifier: ^5.0.7
         version: 5.0.10
@@ -4409,7 +4430,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   apps/wunderland-sol/packages/wunderland/packages/agentos-extensions/registry/curated/media/voice-synthesis:
     devDependencies:
@@ -4421,7 +4442,7 @@ importers:
         version: 20.19.23
       '@vitest/coverage-v8':
         specifier: ^1.6.0
-        version: 1.6.1(vitest@1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0))
+        version: 1.6.1(vitest@1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0))
       rimraf:
         specifier: ^5.0.7
         version: 5.0.10
@@ -4430,7 +4451,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   apps/wunderland-sol/packages/wunderland/packages/agentos-extensions/registry/curated/productivity/gmail:
     dependencies:
@@ -4449,7 +4470,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.0.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   apps/wunderland-sol/packages/wunderland/packages/agentos-extensions/registry/curated/productivity/google-calendar:
     dependencies:
@@ -4468,7 +4489,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.0.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   apps/wunderland-sol/packages/wunderland/packages/agentos-extensions/registry/curated/provenance/anchor-providers:
     devDependencies:
@@ -4486,7 +4507,7 @@ importers:
         version: 8.46.2(eslint@9.38.0(jiti@2.6.1))(typescript@5.6.3)
       '@vitest/coverage-v8':
         specifier: ^1.6.0
-        version: 1.6.1(vitest@1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0))
+        version: 1.6.1(vitest@1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0))
       eslint:
         specifier: ^9.11.0
         version: 9.38.0(jiti@2.6.1)
@@ -4501,7 +4522,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   apps/wunderland-sol/packages/wunderland/packages/agentos-extensions/registry/curated/provenance/wunderland-tip-ingestion:
     devDependencies:
@@ -4510,7 +4531,7 @@ importers:
         version: 20.19.23
       '@vitest/coverage-v8':
         specifier: ^1.6.0
-        version: 1.6.1(vitest@1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0))
+        version: 1.6.1(vitest@1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0))
       rimraf:
         specifier: ^5.0.7
         version: 5.0.10
@@ -4519,7 +4540,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
       wunderland:
         specifier: '>=0.2.0'
         version: link:../../../../../../../../../../packages/wunderland
@@ -4534,7 +4555,7 @@ importers:
         version: 20.19.23
       '@vitest/coverage-v8':
         specifier: ^1.6.0
-        version: 1.6.1(vitest@1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0))
+        version: 1.6.1(vitest@1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0))
       rimraf:
         specifier: ^5.0.7
         version: 5.0.10
@@ -4543,7 +4564,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   apps/wunderland-sol/packages/wunderland/packages/agentos-extensions/registry/curated/research/web-browser:
     dependencies:
@@ -4565,7 +4586,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   apps/wunderland-sol/packages/wunderland/packages/agentos-extensions/registry/curated/research/web-search:
     dependencies:
@@ -4587,7 +4608,7 @@ importers:
         version: 7.18.0(eslint@9.38.0(jiti@2.6.1))(typescript@5.6.3)
       '@vitest/coverage-v8':
         specifier: ^1.6.0
-        version: 1.6.1(vitest@1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0))
+        version: 1.6.1(vitest@1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0))
       eslint:
         specifier: ^9.11.0
         version: 9.38.0(jiti@2.6.1)
@@ -4602,7 +4623,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   apps/wunderland-sol/packages/wunderland/packages/agentos-extensions/registry/curated/system/cli-executor:
     devDependencies:
@@ -4617,7 +4638,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   apps/wunderland-sol/packages/wunderland/packages/agentos-extensions/registry/curated/voice/plivo:
     dependencies:
@@ -4636,7 +4657,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.0.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   apps/wunderland-sol/packages/wunderland/packages/agentos-extensions/registry/curated/voice/telnyx:
     dependencies:
@@ -4655,7 +4676,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.0.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   apps/wunderland-sol/packages/wunderland/packages/agentos-extensions/registry/curated/voice/twilio:
     dependencies:
@@ -4674,7 +4695,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.0.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   apps/wunderland-sol/packages/wunderland/packages/agentos-extensions/templates/basic-tool:
     devDependencies:
@@ -4689,7 +4710,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.0.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   apps/wunderland-sol/packages/wunderland/packages/agentos-extensions/templates/guardrail:
     devDependencies:
@@ -4704,7 +4725,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.0.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   apps/wunderland-sol/packages/wunderland/packages/agentos-extensions/templates/multi-tool:
     devDependencies:
@@ -4719,7 +4740,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.0.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   apps/wunderland-sol/packages/wunderland/packages/agentos-personas: {}
 
@@ -4736,7 +4757,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.0.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   apps/wunderland-sol/packages/wunderland/packages/codex-extensions:
     dependencies:
@@ -4773,7 +4794,7 @@ importers:
         version: 7.18.0(eslint@8.57.1)(typescript@5.6.3)
       '@vitest/coverage-v8':
         specifier: ^1.0.0
-        version: 1.6.1(vitest@1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0))
+        version: 1.6.1(vitest@1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0))
       eslint:
         specifier: ^8.0.0
         version: 8.57.1
@@ -4806,7 +4827,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.0.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
       zod:
         specifier: ^3.0.0
         version: 3.25.76
@@ -4827,7 +4848,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.0.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   apps/wunderland-sol/packages/wunderland/packages/codex-extensions/templates/viewer-ui:
     devDependencies:
@@ -4851,7 +4872,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.0.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   apps/wunderland-sol/packages/wunderland/packages/codex-viewer:
     dependencies:
@@ -4903,7 +4924,7 @@ importers:
         version: 5.9.3
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@25.3.3)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@25.3.3)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   apps/wunderland-sol/packages/wunderland/packages/codex-viewer/examples/codex-template:
     dependencies:
@@ -4918,7 +4939,7 @@ importers:
         version: 0.460.0(react@18.3.1)
       next:
         specifier: 14.2.13
-        version: 14.2.13(@opentelemetry/api@1.9.0)(@playwright/test@1.58.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.97.3)
+        version: 14.2.13(@opentelemetry/api@1.9.0)(@playwright/test@1.58.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.98.0)
       react:
         specifier: ^18.3.1
         version: 18.3.1
@@ -4955,7 +4976,7 @@ importers:
         version: 14.2.13(eslint@8.57.1)(typescript@5.6.3)
       next-sitemap:
         specifier: ^4.2.3
-        version: 4.2.3(next@14.2.13(@opentelemetry/api@1.9.0)(@playwright/test@1.58.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.97.3))
+        version: 4.2.3(next@14.2.13(@opentelemetry/api@1.9.0)(@playwright/test@1.58.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.98.0))
       typescript:
         specifier: ^5.6.3
         version: 5.6.3
@@ -5094,7 +5115,7 @@ importers:
         version: 0.441.0(react@18.3.1)
       next:
         specifier: 15.0.0
-        version: 15.0.0(@opentelemetry/api@1.9.0)(@playwright/test@1.58.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.97.3)
+        version: 15.0.0(@opentelemetry/api@1.9.0)(@playwright/test@1.58.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.98.0)
       react:
         specifier: ^18.3.1
         version: 18.3.1
@@ -5224,7 +5245,7 @@ importers:
         version: 8.16.0
       '@vitest/coverage-v8':
         specifier: ^1.6.1
-        version: 1.6.1(vitest@1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0))
+        version: 1.6.1(vitest@1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0))
       electron:
         specifier: ^33.0.0
         version: 33.2.0
@@ -5263,7 +5284,7 @@ importers:
         version: 8.46.2(eslint@9.38.0(jiti@2.6.1))(typescript@5.6.3)
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   apps/wunderland-sol/packages/wunderland/packages/theme-tokens: {}
 
@@ -5347,7 +5368,7 @@ importers:
         version: 9.0.8
       '@vitest/coverage-v8':
         specifier: ^1.3.0
-        version: 1.6.1(vitest@1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0))
+        version: 1.6.1(vitest@1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0))
       graphology:
         specifier: ^0.26.0
         version: 0.26.0(graphology-types@0.24.8)
@@ -5365,9 +5386,9 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.3.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
     optionalDependencies:
-      '@framers/agentos-ext-skills':
+      '@framers/agentos-skills':
         specifier: workspace:*
         version: link:../../../../../../packages/agentos-ext-skills
       '@framers/agentos-skills-registry':
@@ -5394,7 +5415,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^2.0.0
-        version: 2.1.9(@types/node@22.19.1)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 2.1.9(@types/node@22.19.1)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   backend:
     dependencies:
@@ -5404,12 +5425,12 @@ importers:
       '@framers/agentos-ext-http-api':
         specifier: workspace:*
         version: link:../packages/agentos-ext-http-api
-      '@framers/agentos-ext-skills':
-        specifier: workspace:*
-        version: link:../packages/agentos-ext-skills
       '@framers/agentos-extensions-registry':
         specifier: workspace:*
         version: link:../packages/agentos-extensions-registry
+      '@framers/agentos-skills':
+        specifier: workspace:*
+        version: link:../packages/agentos-ext-skills
       '@framers/agentos-skills-registry':
         specifier: workspace:*
         version: link:../packages/agentos-skills-registry
@@ -5817,6 +5838,9 @@ importers:
       yaml:
         specifier: ^2.8.1
         version: 2.8.1
+      zod:
+        specifier: ^4.3.6
+        version: 4.3.6
     devDependencies:
       '@eslint/js':
         specifier: ^9.11.0
@@ -5898,7 +5922,7 @@ importers:
         version: 8.46.2(eslint@9.38.0(jiti@2.6.1))(typescript@5.9.3)
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
     optionalDependencies:
       '@huggingface/transformers':
         specifier: ^3.8.1
@@ -5906,6 +5930,46 @@ importers:
       compromise:
         specifier: ^14.15.0
         version: 14.15.0
+
+  packages/agentos-ext-code-safety:
+    devDependencies:
+      '@framers/agentos':
+        specifier: workspace:*
+        version: link:../agentos
+      '@semantic-release/github':
+        specifier: ^11.0.0
+        version: 11.0.6(semantic-release@24.2.9(typescript@5.6.3))
+      semantic-release:
+        specifier: ^24.0.0
+        version: 24.2.9(typescript@5.6.3)
+      typescript:
+        specifier: ^5.5.0
+        version: 5.6.3
+      vitest:
+        specifier: ^1.6.0
+        version: 1.6.1(@types/node@25.3.3)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
+
+  packages/agentos-ext-grounding-guard:
+    devDependencies:
+      '@framers/agentos':
+        specifier: workspace:*
+        version: link:../agentos
+      '@semantic-release/github':
+        specifier: ^11.0.0
+        version: 11.0.6(semantic-release@24.2.9(typescript@5.6.3))
+      semantic-release:
+        specifier: ^24.0.0
+        version: 24.2.9(typescript@5.6.3)
+      typescript:
+        specifier: ^5.5.0
+        version: 5.6.3
+      vitest:
+        specifier: ^1.6.0
+        version: 1.6.1(@types/node@25.3.3)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
+    optionalDependencies:
+      '@huggingface/transformers':
+        specifier: ^3.0.0
+        version: 3.8.1
 
   packages/agentos-ext-http-api:
     devDependencies:
@@ -5932,7 +5996,48 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
+
+  packages/agentos-ext-ml-classifiers:
+    devDependencies:
+      '@semantic-release/github':
+        specifier: ^11.0.0
+        version: 11.0.6(semantic-release@24.2.9(typescript@5.9.3))
+      semantic-release:
+        specifier: ^24.0.0
+        version: 24.2.9(typescript@5.9.3)
+    optionalDependencies:
+      '@huggingface/transformers':
+        specifier: ^3.0.0
+        version: 3.8.1
+
+  packages/agentos-ext-pii-redaction:
+    devDependencies:
+      '@framers/agentos':
+        specifier: workspace:*
+        version: link:../agentos
+      '@semantic-release/github':
+        specifier: ^11.0.0
+        version: 11.0.6(semantic-release@24.2.9(typescript@5.6.3))
+      semantic-release:
+        specifier: ^24.0.0
+        version: 24.2.9(typescript@5.6.3)
+      typescript:
+        specifier: ^5.5.0
+        version: 5.6.3
+      vitest:
+        specifier: ^1.6.0
+        version: 1.6.1(@types/node@25.3.3)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
+    optionalDependencies:
+      '@huggingface/transformers':
+        specifier: ^3.0.0
+        version: 3.8.1
+      compromise:
+        specifier: ^14.0.0
+        version: 14.15.0
+      openredaction:
+        specifier: ^1.1.0
+        version: 1.1.2(mammoth@1.12.0)(pdf-parse@1.1.4)(react@19.2.4)
 
   packages/agentos-ext-skills:
     devDependencies:
@@ -5947,11 +6052,24 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
     optionalDependencies:
       '@framers/agentos-skills-registry':
         specifier: workspace:*
         version: link:../agentos-skills-registry
+
+  packages/agentos-ext-topicality:
+    devDependencies:
+      '@semantic-release/github':
+        specifier: ^11.0.0
+        version: 11.0.6(semantic-release@24.2.9(typescript@5.9.3))
+      semantic-release:
+        specifier: ^24.0.0
+        version: 24.2.9(typescript@5.9.3)
+    optionalDependencies:
+      '@huggingface/transformers':
+        specifier: ^3.0.0
+        version: 3.8.1
 
   packages/agentos-extensions:
     devDependencies:
@@ -5975,7 +6093,7 @@ importers:
         version: 5.9.3
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@25.3.3)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@25.3.3)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   packages/agentos-extensions-registry:
     devDependencies:
@@ -5987,7 +6105,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.0.0
-        version: 1.6.1(@types/node@25.3.3)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@25.3.3)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
     optionalDependencies:
       '@framers/agentos-ext-auth':
         specifier: ^1.1.0
@@ -6008,7 +6126,7 @@ importers:
         specifier: ^1.1.0
         version: link:../agentos-extensions/registry/curated/integrations/telegram
       '@framers/agentos-ext-voice-synthesis':
-        specifier: workspace:*
+        specifier: ^2.0.0
         version: link:../agentos-extensions/registry/curated/media/voice-synthesis
       '@framers/agentos-ext-weather':
         specifier: ^1.0.0
@@ -6053,7 +6171,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.0.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   packages/agentos-extensions/registry/curated/channels/bluesky:
     dependencies:
@@ -6072,7 +6190,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.0.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   packages/agentos-extensions/registry/curated/channels/discord:
     dependencies:
@@ -6091,7 +6209,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.0.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   packages/agentos-extensions/registry/curated/channels/email:
     dependencies:
@@ -6116,7 +6234,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.0.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   packages/agentos-extensions/registry/curated/channels/facebook:
     dependencies:
@@ -6135,7 +6253,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.0.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   packages/agentos-extensions/registry/curated/channels/farcaster:
     dependencies:
@@ -6154,7 +6272,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.0.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   packages/agentos-extensions/registry/curated/channels/feishu:
     dependencies:
@@ -6173,7 +6291,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.0.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   packages/agentos-extensions/registry/curated/channels/google-business:
     dependencies:
@@ -6192,7 +6310,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.0.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   packages/agentos-extensions/registry/curated/channels/google-chat:
     dependencies:
@@ -6211,7 +6329,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.0.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   packages/agentos-extensions/registry/curated/channels/imessage:
     devDependencies:
@@ -6226,7 +6344,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.0.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   packages/agentos-extensions/registry/curated/channels/instagram:
     dependencies:
@@ -6245,7 +6363,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.0.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   packages/agentos-extensions/registry/curated/channels/irc:
     devDependencies:
@@ -6260,7 +6378,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.0.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   packages/agentos-extensions/registry/curated/channels/lemmy:
     dependencies:
@@ -6279,7 +6397,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.0.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   packages/agentos-extensions/registry/curated/channels/line:
     dependencies:
@@ -6298,7 +6416,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.0.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   packages/agentos-extensions/registry/curated/channels/linkedin:
     dependencies:
@@ -6317,7 +6435,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.0.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   packages/agentos-extensions/registry/curated/channels/mastodon:
     dependencies:
@@ -6336,7 +6454,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.0.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   packages/agentos-extensions/registry/curated/channels/matrix:
     dependencies:
@@ -6355,7 +6473,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.0.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   packages/agentos-extensions/registry/curated/channels/mattermost:
     dependencies:
@@ -6374,7 +6492,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.0.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   packages/agentos-extensions/registry/curated/channels/nextcloud:
     devDependencies:
@@ -6389,7 +6507,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.0.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   packages/agentos-extensions/registry/curated/channels/nostr:
     dependencies:
@@ -6411,7 +6529,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.0.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   packages/agentos-extensions/registry/curated/channels/pinterest:
     dependencies:
@@ -6430,7 +6548,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.0.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   packages/agentos-extensions/registry/curated/channels/reddit:
     dependencies:
@@ -6449,7 +6567,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.0.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   packages/agentos-extensions/registry/curated/channels/signal:
     devDependencies:
@@ -6464,7 +6582,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.0.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   packages/agentos-extensions/registry/curated/channels/slack:
     dependencies:
@@ -6483,7 +6601,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.0.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   packages/agentos-extensions/registry/curated/channels/sms:
     dependencies:
@@ -6502,7 +6620,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.0.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   packages/agentos-extensions/registry/curated/channels/teams:
     dependencies:
@@ -6521,7 +6639,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.0.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   packages/agentos-extensions/registry/curated/channels/telegram:
     dependencies:
@@ -6540,7 +6658,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.0.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   packages/agentos-extensions/registry/curated/channels/threads:
     dependencies:
@@ -6559,7 +6677,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.0.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   packages/agentos-extensions/registry/curated/channels/tiktok:
     dependencies:
@@ -6578,7 +6696,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.0.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   packages/agentos-extensions/registry/curated/channels/tlon:
     dependencies:
@@ -6597,7 +6715,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.0.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   packages/agentos-extensions/registry/curated/channels/twitch:
     dependencies:
@@ -6619,7 +6737,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.0.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   packages/agentos-extensions/registry/curated/channels/twitter:
     dependencies:
@@ -6638,7 +6756,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.0.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   packages/agentos-extensions/registry/curated/channels/webchat:
     devDependencies:
@@ -6653,7 +6771,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.0.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   packages/agentos-extensions/registry/curated/channels/whatsapp:
     devDependencies:
@@ -6668,7 +6786,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.0.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   packages/agentos-extensions/registry/curated/channels/youtube:
     dependencies:
@@ -6687,7 +6805,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.0.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   packages/agentos-extensions/registry/curated/channels/zalo:
     devDependencies:
@@ -6702,7 +6820,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.0.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   packages/agentos-extensions/registry/curated/channels/zalouser:
     devDependencies:
@@ -6717,7 +6835,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.0.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   packages/agentos-extensions/registry/curated/cloud/aws:
     devDependencies:
@@ -6735,7 +6853,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   packages/agentos-extensions/registry/curated/cloud/cloudflare-pages:
     devDependencies:
@@ -6753,7 +6871,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   packages/agentos-extensions/registry/curated/cloud/digitalocean:
     devDependencies:
@@ -6771,7 +6889,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   packages/agentos-extensions/registry/curated/cloud/flyio:
     devDependencies:
@@ -6789,7 +6907,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   packages/agentos-extensions/registry/curated/cloud/heroku:
     devDependencies:
@@ -6807,7 +6925,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   packages/agentos-extensions/registry/curated/cloud/linode:
     devDependencies:
@@ -6825,7 +6943,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   packages/agentos-extensions/registry/curated/cloud/netlify:
     devDependencies:
@@ -6843,7 +6961,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   packages/agentos-extensions/registry/curated/cloud/railway:
     devDependencies:
@@ -6861,7 +6979,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   packages/agentos-extensions/registry/curated/cloud/vercel:
     devDependencies:
@@ -6879,7 +6997,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   packages/agentos-extensions/registry/curated/communications/telegram-bot:
     dependencies:
@@ -6907,7 +7025,7 @@ importers:
         version: 6.21.0(eslint@8.57.1)(typescript@5.6.3)
       '@vitest/coverage-v8':
         specifier: ^1.0.0
-        version: 1.6.1(vitest@1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0))
+        version: 1.6.1(vitest@1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0))
       eslint:
         specifier: ^8.0.0
         version: 8.57.1
@@ -6919,7 +7037,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.0.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   packages/agentos-extensions/registry/curated/community/founders:
     dependencies:
@@ -6977,7 +7095,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   packages/agentos-extensions/registry/curated/domains/godaddy:
     devDependencies:
@@ -6995,7 +7113,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   packages/agentos-extensions/registry/curated/domains/namecheap:
     devDependencies:
@@ -7013,7 +7131,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   packages/agentos-extensions/registry/curated/domains/porkbun:
     devDependencies:
@@ -7031,7 +7149,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   packages/agentos-extensions/registry/curated/integrations/github:
     dependencies:
@@ -7050,7 +7168,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.0.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   packages/agentos-extensions/registry/curated/integrations/telegram:
     dependencies:
@@ -7081,7 +7199,7 @@ importers:
         version: 6.21.0(eslint@8.57.1)(typescript@5.6.3)
       '@vitest/coverage-v8':
         specifier: ^1.0.0
-        version: 1.6.1(vitest@1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0))
+        version: 1.6.1(vitest@1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0))
       eslint:
         specifier: ^8.0.0
         version: 8.57.1
@@ -7093,7 +7211,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.0.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   packages/agentos-extensions/registry/curated/integrations/wunderbot-feeds:
     dependencies:
@@ -7121,7 +7239,7 @@ importers:
         version: 20.19.23
       '@vitest/coverage-v8':
         specifier: ^1.6.0
-        version: 1.6.1(vitest@1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0))
+        version: 1.6.1(vitest@1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0))
       rimraf:
         specifier: ^5.0.7
         version: 5.0.10
@@ -7130,7 +7248,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   packages/agentos-extensions/registry/curated/media/image-search:
     devDependencies:
@@ -7142,7 +7260,7 @@ importers:
         version: 20.19.23
       '@vitest/coverage-v8':
         specifier: ^1.6.0
-        version: 1.6.1(vitest@1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0))
+        version: 1.6.1(vitest@1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0))
       rimraf:
         specifier: ^5.0.7
         version: 5.0.10
@@ -7151,7 +7269,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   packages/agentos-extensions/registry/curated/media/voice-synthesis:
     devDependencies:
@@ -7163,7 +7281,7 @@ importers:
         version: 20.19.23
       '@vitest/coverage-v8':
         specifier: ^1.6.0
-        version: 1.6.1(vitest@1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0))
+        version: 1.6.1(vitest@1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0))
       rimraf:
         specifier: ^5.0.7
         version: 5.0.10
@@ -7172,7 +7290,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   packages/agentos-extensions/registry/curated/provenance/anchor-providers:
     devDependencies:
@@ -7190,7 +7308,7 @@ importers:
         version: 8.46.2(eslint@9.38.0(jiti@2.6.1))(typescript@5.9.3)
       '@vitest/coverage-v8':
         specifier: ^1.6.0
-        version: 1.6.1(vitest@1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0))
+        version: 1.6.1(vitest@1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0))
       eslint:
         specifier: ^9.11.0
         version: 9.38.0(jiti@2.6.1)
@@ -7205,7 +7323,7 @@ importers:
         version: 5.9.3
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   packages/agentos-extensions/registry/curated/provenance/wunderland-tip-ingestion:
     devDependencies:
@@ -7245,7 +7363,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.0.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   packages/agentos-extensions/registry/curated/research/deep-research:
     dependencies:
@@ -7264,7 +7382,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.0.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   packages/agentos-extensions/registry/curated/research/news-search:
     devDependencies:
@@ -7276,7 +7394,7 @@ importers:
         version: 20.19.23
       '@vitest/coverage-v8':
         specifier: ^1.6.0
-        version: 1.6.1(vitest@1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0))
+        version: 1.6.1(vitest@1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0))
       rimraf:
         specifier: ^5.0.7
         version: 5.0.10
@@ -7285,7 +7403,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   packages/agentos-extensions/registry/curated/research/weather:
     devDependencies:
@@ -7300,7 +7418,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   packages/agentos-extensions/registry/curated/research/web-browser:
     dependencies:
@@ -7322,7 +7440,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   packages/agentos-extensions/registry/curated/research/web-search:
     dependencies:
@@ -7344,7 +7462,7 @@ importers:
         version: 7.18.0(eslint@9.38.0(jiti@2.6.1))(typescript@5.6.3)
       '@vitest/coverage-v8':
         specifier: ^1.6.0
-        version: 1.6.1(vitest@1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0))
+        version: 1.6.1(vitest@1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0))
       eslint:
         specifier: ^9.11.0
         version: 9.38.0(jiti@2.6.1)
@@ -7359,7 +7477,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   packages/agentos-extensions/registry/curated/system/cli-executor:
     dependencies:
@@ -7390,7 +7508,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   packages/agentos-extensions/registry/curated/system/credential-vault:
     devDependencies:
@@ -7405,7 +7523,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.0.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   packages/agentos-extensions/registry/curated/tools/bulk-scheduler:
     devDependencies:
@@ -7417,7 +7535,7 @@ importers:
         version: 20.19.23
       '@vitest/coverage-v8':
         specifier: ^1.6.0
-        version: 1.6.1(vitest@1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0))
+        version: 1.6.1(vitest@1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0))
       rimraf:
         specifier: ^5.0.7
         version: 5.0.10
@@ -7426,7 +7544,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   packages/agentos-extensions/registry/curated/tools/media-upload:
     devDependencies:
@@ -7438,7 +7556,7 @@ importers:
         version: 20.19.23
       '@vitest/coverage-v8':
         specifier: ^1.6.0
-        version: 1.6.1(vitest@1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0))
+        version: 1.6.1(vitest@1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0))
       rimraf:
         specifier: ^5.0.7
         version: 5.0.10
@@ -7447,7 +7565,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   packages/agentos-extensions/registry/curated/tools/multi-channel-post:
     devDependencies:
@@ -7459,7 +7577,7 @@ importers:
         version: 20.19.23
       '@vitest/coverage-v8':
         specifier: ^1.6.0
-        version: 1.6.1(vitest@1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0))
+        version: 1.6.1(vitest@1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0))
       rimraf:
         specifier: ^5.0.7
         version: 5.0.10
@@ -7468,7 +7586,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   packages/agentos-extensions/registry/curated/tools/site-deploy:
     devDependencies:
@@ -7480,7 +7598,7 @@ importers:
         version: 20.19.23
       '@vitest/coverage-v8':
         specifier: ^1.6.0
-        version: 1.6.1(vitest@1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0))
+        version: 1.6.1(vitest@1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0))
       rimraf:
         specifier: ^5.0.7
         version: 5.0.10
@@ -7489,7 +7607,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   packages/agentos-extensions/registry/curated/tools/social-analytics:
     devDependencies:
@@ -7501,7 +7619,7 @@ importers:
         version: 20.19.23
       '@vitest/coverage-v8':
         specifier: ^1.6.0
-        version: 1.6.1(vitest@1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0))
+        version: 1.6.1(vitest@1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0))
       rimraf:
         specifier: ^5.0.7
         version: 5.0.10
@@ -7510,7 +7628,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   packages/agentos-extensions/registry/curated/tools/wallet:
     dependencies:
@@ -7529,7 +7647,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.3.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   packages/agentos-extensions/registry/curated/voice/plivo:
     dependencies:
@@ -7548,7 +7666,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.0.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   packages/agentos-extensions/registry/curated/voice/telnyx:
     dependencies:
@@ -7567,7 +7685,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.0.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   packages/agentos-extensions/registry/curated/voice/twilio:
     dependencies:
@@ -7586,7 +7704,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.0.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   packages/agentos-personas: {}
 
@@ -7620,7 +7738,7 @@ importers:
         version: 5.6.3
       vitest:
         specifier: ^1.0.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   packages/codex-extensions:
     dependencies:
@@ -7657,7 +7775,7 @@ importers:
         version: 7.18.0(eslint@8.57.1)(typescript@5.9.3)
       '@vitest/coverage-v8':
         specifier: ^1.0.0
-        version: 1.6.1(vitest@1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0))
+        version: 1.6.1(vitest@1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0))
       eslint:
         specifier: ^8.0.0
         version: 8.57.1
@@ -7690,7 +7808,7 @@ importers:
         version: 5.9.3
       vitest:
         specifier: ^1.0.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
       zod:
         specifier: ^3.0.0
         version: 3.25.76
@@ -7795,7 +7913,7 @@ importers:
         version: 8.16.0
       '@vitest/coverage-v8':
         specifier: ^1.6.1
-        version: 1.6.1(vitest@1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0))
+        version: 1.6.1(vitest@1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0))
       electron:
         specifier: ^33.0.0
         version: 33.2.0
@@ -7834,7 +7952,7 @@ importers:
         version: 8.46.2(eslint@9.38.0(jiti@2.6.1))(typescript@5.9.3)
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   packages/theme-tokens: {}
 
@@ -7860,7 +7978,7 @@ importers:
         version: link:../agentos-extensions/registry/curated/research/news-search
       '@framers/agentos-ext-voice-synthesis':
         specifier: '>=1.0.0'
-        version: link:../../apps/wunderland-sol/packages/wunderland/packages/agentos-extensions/registry/curated/media/voice-synthesis
+        version: link:../agentos-extensions/registry/curated/media/voice-synthesis
       '@framers/agentos-ext-web-browser':
         specifier: ^1.2.1
         version: link:../agentos-extensions/registry/curated/research/web-browser
@@ -7936,7 +8054,7 @@ importers:
         version: 9.0.8
       '@vitest/coverage-v8':
         specifier: ^1.3.0
-        version: 1.6.1(vitest@1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0))
+        version: 1.6.1(vitest@1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0))
       typescript:
         specifier: ^5.4.0
         version: 5.9.3
@@ -7945,7 +8063,7 @@ importers:
         version: 7.24.4
       vitest:
         specifier: ^1.3.0
-        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+        version: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
     optionalDependencies:
       '@framers/agentos-skills-registry':
         specifier: '>=0.1.0'
@@ -10173,6 +10291,10 @@ packages:
     resolution: {integrity: sha512-/SVCc57ByARzGSU60c50rMyQlBuMIJCjcsJlkphxY6B0GV4UH3tcA1994N8fFfbJ9kX3jIBe/xg3XP5qBtGDbA==}
     engines: {node: '>=20.0'}
 
+  '@docusaurus/lqip-loader@3.9.2':
+    resolution: {integrity: sha512-Q9QO0E+HLKhcpKVOIXRVBdJ1bbxxpfSwBll5NsmGxcx1fArH0fFi68cpEztqBg7WwbFRb976MTlqlBuGrMLpuw==}
+    engines: {node: '>=20.0'}
+
   '@docusaurus/mdx-loader@3.9.2':
     resolution: {integrity: sha512-wiYoGwF9gdd6rev62xDU8AAM8JuLI/hlwOtCzMmYcspEkzecKrP8J8X+KpYnTlACBUUtXNJpSoCwFWJhLRevzQ==}
     engines: {node: '>=20.0'}
@@ -10247,6 +10369,17 @@ packages:
       react: ^18.0.0 || ^19.0.0
       react-dom: ^18.0.0 || ^19.0.0
 
+  '@docusaurus/plugin-ideal-image@3.9.2':
+    resolution: {integrity: sha512-YYYbmC2wSYFd7o4//5rPXt9+DkZwfwjCUmyGi5OIVqEbwELK80o3COXs2Xd0BtVIpuRvG7pKCYrMQwVo32Y9qw==}
+    engines: {node: '>=20.0'}
+    peerDependencies:
+      jimp: '*'
+      react: ^18.0.0 || ^19.0.0
+      react-dom: ^18.0.0 || ^19.0.0
+    peerDependenciesMeta:
+      jimp:
+        optional: true
+
   '@docusaurus/plugin-sitemap@3.9.2':
     resolution: {integrity: sha512-WLh7ymgDXjG8oPoM/T4/zUP7KcSuFYRZAUTl8vR6VzYkfc18GBM4xLhcT+AKOwun6kBivYKUJf+vlqYJkm+RHw==}
     engines: {node: '>=20.0'}
@@ -10272,6 +10405,18 @@ packages:
     resolution: {integrity: sha512-YMMxTUQV/QFSnbgrP3tjDzLHRg7vsbMn8e9HAa8o/1iXoiomo48b7sk/kkmWEuWNDPJVlKSJRB6Y2fHqdJk+SQ==}
     peerDependencies:
       react: '*'
+
+  '@docusaurus/responsive-loader@1.7.1':
+    resolution: {integrity: sha512-jAebZ43f8GVpZSrijLGHVVp7Y0OMIPRaL+HhiIWQ+f/b72lTsKLkSkOVHEzvd2psNJ9lsoiM3gt6akpak6508w==}
+    engines: {node: '>=12'}
+    peerDependencies:
+      jimp: '*'
+      sharp: '*'
+    peerDependenciesMeta:
+      jimp:
+        optional: true
+      sharp:
+        optional: true
 
   '@docusaurus/theme-classic@3.9.2':
     resolution: {integrity: sha512-IGUsArG5hhekXd7RDb11v94ycpJpFdJPkLnt10fFQWOVxAtq5/D7hT6lzc2fhyQKaaCE62qVajOMKL7OiAFAIA==}
@@ -19305,6 +19450,10 @@ packages:
     resolution: {integrity: sha512-I3yl4r9QB5ZRY3XuJVEPfc2XhZO6YweFPI+UovAzn+8/hb3oJ6lnysaFcjVpkCPfVWFUDvoZ8kmVDP7WyRtYtQ==}
     engines: {node: '>= 0.6.0'}
 
+  base64-js@0.0.8:
+    resolution: {integrity: sha512-3XSA2cR/h/73EzlXXdU6YNycmYI7+kicTxks4eJg2g39biHR84slg2+des+p7iHYhbRg/udIS4TD53WabcOUkw==}
+    engines: {node: '>= 0.4'}
+
   base64-js@1.5.1:
     resolution: {integrity: sha512-AKpaYlHn8t4SVbOHCy+b5+KKgvR4vrsD8vbvrbiQJps7fKDTkjkDry6ji0rUJjC0kzbNePLwzxq8iypo41qeWA==}
 
@@ -19535,6 +19684,9 @@ packages:
 
   brorand@1.1.0:
     resolution: {integrity: sha512-cKV8tMCEpQs4hK/ik71d6LrPOnpkpGBR0wzxqr68g2m/LB2GxVYQroAjMJZRVM1Y4BCjCKc3vAamxSzOY2RP+w==}
+
+  brotli@1.3.3:
+    resolution: {integrity: sha512-oTKjJdShmDuGW94SyyaoQvAjf30dZaHnjJ8uAF+u2/vGJkJbJPJAT1gDiOJP5v1Zb6f9KEyW/1HpuaWIXtGHPg==}
 
   browser-fs-access@0.35.0:
     resolution: {integrity: sha512-sLoadumpRfsjprP8XzVjpQc0jK8yqHBx0PtUTGYj2fftT+P/t+uyDAQdMgGAPKD011in/O+YYGh7fIs0oG/viw==}
@@ -20654,6 +20806,9 @@ packages:
     resolution: {integrity: sha512-lyAZ0EMyjDkVvz8WOeVnuCPvKVBXcMv1l5SVqO1yC7PzTwrD/pPje/BIRbWhMoPe436U+Y2nD7f5bFx0kt+Sbg==}
     engines: {node: '>=8'}
 
+  crypto-js@4.2.0:
+    resolution: {integrity: sha512-KALDyEYgpY+Rlob/iriUtjV6d5Eq+Y191A5g4UqLAi8CyGP9N1+FdVbkc1SxKc2r4YAYqG8JzO2KGL+AizD70Q==}
+
   crypto-random-string@4.0.0:
     resolution: {integrity: sha512-x8dy3RnvYdlUcPOjkEHqozhiwzKNSq7GcPuXFbnyMOCHxX8V3OgIg/pYuabl2sbUPfIJaeAQB7PMOK8DFIdoRA==}
     engines: {node: '>=12'}
@@ -21362,6 +21517,9 @@ packages:
   dezalgo@1.0.4:
     resolution: {integrity: sha512-rXSP0bf+5n0Qonsb+SVVfNfIsimO4HEtmnIpPHY8Q1UCzKlQrDMfdobr8nJOOsRgWCyMRqeSBQzmWUMq7zvVig==}
 
+  dfa@1.2.0:
+    resolution: {integrity: sha512-ED3jP8saaweFTjeGX8HQPjeC1YYyZs98jGNZx6IiBvxW7JG5v492kamAQB3m2wop07CvU/RQmzcKr6bgcC5D/Q==}
+
   didyoumean@1.2.2:
     resolution: {integrity: sha512-gxtyfqMg7GKyhQmb056K7M3xszy/myH8w+B4RT+QXBQsvAOdc3XymqDDPHx1BgPgsdAA5SIifona89YtRATDzw==}
 
@@ -21436,6 +21594,17 @@ packages:
   doctrine@3.0.0:
     resolution: {integrity: sha512-yS+Q5i3hBf7GBkd4KG8a7eBNNWNGLTaEwwYWUijIYM7zrlYDM0BFXHjjPWlWZ1Rg7UaddZeIDmi9jF3HmqiQ2w==}
     engines: {node: '>=6.0.0'}
+
+  docusaurus-plugin-image-zoom@3.0.1:
+    resolution: {integrity: sha512-mQrqA99VpoMQJNbi02qkWAMVNC4+kwc6zLLMNzraHAJlwn+HrlUmZSEDcTwgn+H4herYNxHKxveE2WsYy73eGw==}
+    peerDependencies:
+      '@docusaurus/theme-classic': '>=3.0.0'
+
+  docusaurus-plugin-sass@0.2.6:
+    resolution: {integrity: sha512-2hKQQDkrufMong9upKoG/kSHJhuwd+FA3iAe/qzS/BmWpbIpe7XKmq5wlz4J5CJaOPu4x+iDJbgAxZqcoQf0kg==}
+    peerDependencies:
+      '@docusaurus/core': ^2.0.0-beta || ^3.0.0-alpha
+      sass: ^1.30.0
 
   docusaurus-plugin-typedoc@1.4.2:
     resolution: {integrity: sha512-1qerRejLSYxEWdyVPLDMMeKFPLA/37yZAsdwJy9ThHFQR78+v3b5spSbk67VHGLr2mAn4FVHu0aGJ6p7iWotSg==}
@@ -22848,6 +23017,9 @@ packages:
       debug:
         optional: true
 
+  fontkit@2.0.4:
+    resolution: {integrity: sha512-syetQadaUEDNdxdugga9CpEYVaQIxOwk7GlwZWWZ19//qW4zE5bknOKeMBDYAASwnpaSHKJITRLMF9m1fp3s6g==}
+
   for-each@0.3.5:
     resolution: {integrity: sha512-dKx12eRCVIzqCxFGplyFKJMPvLEWgmNtUrpTiJIR5u97zEhRG8ySrtboPHZXx7daLxQVrl643cTzbab2tkQjxg==}
     engines: {node: '>= 0.4'}
@@ -24027,6 +24199,9 @@ packages:
   immutable@5.1.4:
     resolution: {integrity: sha512-p6u1bG3YSnINT5RQmx/yRZBpenIl30kVxkTLDyHLIMk0gict704Q9n+thfDI7lTRm9vXdDYutVzXhzcThxTnXA==}
 
+  immutable@5.1.5:
+    resolution: {integrity: sha512-t7xcm2siw+hlUM68I+UEOK+z84RzmN59as9DZ7P1l0994DKUWV7UXBMQZVxaoMSRQ+PBZbHCOoBt7a2wxOMt+A==}
+
   import-fresh@2.0.0:
     resolution: {integrity: sha512-eZ5H8rcgYazHbKC3PG4ClHNykCSxtAhxSSEM+2mb+7evD2CKF5V7c0dNum7AdpDh0ZdICwZY9sRSn8f+KH96sg==}
     engines: {node: '>=4'}
@@ -24925,6 +25100,10 @@ packages:
     resolution: {integrity: sha512-34wB/Y7MW7bzjKRjUKTa46I2Z7eV62Rkhva+KkopW7Qvv/OSWBqvkSY7vusOPrNuZcUG3tApvdVgNB8POj3SPw==}
     engines: {node: '>=10'}
 
+  jpeg-exif@1.1.4:
+    resolution: {integrity: sha512-a+bKEcCjtuW5WTdgeXFzswSrdqi0jk4XlEtZlx5A94wCoBpFjfFTbo/Tra5SpNCl/YFZPvcV1dJc+TAYeg6ROQ==}
+    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
+
   js-base64@2.6.4:
     resolution: {integrity: sha512-pZe//GGmwJndub7ZghVHz7vjb2LgC1m8B07Au3eYqeqv9emhESByMXxaEgkUkEqJe87oBbSniGYoQNIBklc7IQ==}
 
@@ -25346,6 +25525,9 @@ packages:
 
   line-column@1.0.2:
     resolution: {integrity: sha512-Ktrjk5noGYlHsVnYWh62FLVs4hTb8A3e+vucNZMgPeAOITdshMSgv4cCZQeRDjm7+goqmo6+liZwTXo+U3sVww==}
+
+  linebreak@1.1.0:
+    resolution: {integrity: sha512-MHp03UImeVhB7XZtjd0E4n6+3xr5Dq/9xI/5FptGk5FrbDR3zagPa2DS6U8ks/3HjbKWG9Q1M2ufOzxV2qLYSQ==}
 
   lines-and-columns@1.2.4:
     resolution: {integrity: sha512-7ylylesZQ/PV29jhEDl3Ufjo6ZX7gCqJr5F7PKrqc93v7fzSymt1BpwEU8nAUXs8qzzvqhbjhK5QZg6Mt/HkBg==}
@@ -25930,6 +26112,9 @@ packages:
 
   mediabunny@1.35.1:
     resolution: {integrity: sha512-VrprpjkLTZyIyhzBAc9D3HqgXarAE+le7+6x0Sdu9WN2SD86L8bUy0hz06Xwf14dVPqS7OwpY2KOhlUyqmI2eQ==}
+
+  medium-zoom@1.1.0:
+    resolution: {integrity: sha512-ewyDsp7k4InCUp3jRmwHBRFGyjBimKps/AJLjRSox+2q/2H4p/PNpQf+pwONWlJiOudkBXtbdmVbFjqyybfTmQ==}
 
   memfs@3.4.3:
     resolution: {integrity: sha512-eivjfi7Ahr6eQTn44nvTnR60e4a1Fs1Via2kCR5lHo/kyNoiMWaXCNJ/GpSd0ilXas2JSOl9B5FTIhflXu0hlg==}
@@ -26835,6 +27020,9 @@ packages:
   node-addon-api@5.1.0:
     resolution: {integrity: sha512-eh0GgfEkpnoWDq+VY8OyvYhFEzBk6jIYbRKdIlyTiAXIVJ8PyBaKb0rp7oDtoddbdoHWhq8wwr+XZ81F1rpNdA==}
 
+  node-addon-api@6.1.0:
+    resolution: {integrity: sha512-+eawOlIgy680F0kBzPUNFhMZGtJ1YmqM6l4+Crf4IkImjYrO/mqPwRMh352g23uIaQKFItcQ64I7KMaJxHgAVA==}
+
   node-addon-api@7.1.1:
     resolution: {integrity: sha512-5m3bsyrjFWE1xf7nz7YXdN4udnVtXK6/Yfgn5qnahL6bCkf2yKt4k3nuTKAtT4r3IG8JNR2ncsIMdZuAzJjHQQ==}
 
@@ -27591,6 +27779,9 @@ packages:
   page-flip@2.0.7:
     resolution: {integrity: sha512-96lQFUUz7r/LZzEUZJ3yBIMEKU9+m8HMFDzTvTdD6P7Ag/wXINjp9n0W7b4wanwnDbQETo4uNUoL3zMqpFxwGA==}
 
+  pako@0.2.9:
+    resolution: {integrity: sha512-NUcwaKxUxWrZLpDG+z/xZaCgQITkA/Dv4V/T6bw7VON6l1Xz/VnrBqrYjZQ12TamKHzITTfOEIYUj48y2KXImA==}
+
   pako@1.0.11:
     resolution: {integrity: sha512-4hLB8Py4zZce5s4yd9XzopqwVv/yGNhV1Bl8NTmCq1763HeK2+EwVTv+leGeL13Dnh2wfbqowVPXCIO0z4taYw==}
 
@@ -27850,6 +28041,9 @@ packages:
     resolution: {integrity: sha512-DlOzet0HO7OEnmUmB6wWGJrrdvbyJKftI1bhMitK7O2N8W2gc757yyYBbINy9IDafXAV9wmKr9t7xsTaNKRG5Q==}
     engines: {node: '>=20.16.0 || >=22.3.0'}
 
+  pdfkit@0.16.0:
+    resolution: {integrity: sha512-oXMxkIqXH4uTAtohWdYA41i/f6i2ReB78uhgizN8H4hJEpgR3/Xjy3iu2InNAuwCIabN3PVs8P1D6G4+W2NH0A==}
+
   pe-library@0.4.1:
     resolution: {integrity: sha512-eRWB5LBz7PpDu4PUlwT0PhnQfTQJlDDdPa35urV4Osrm0t0AqQFGn+UIkU3klZvwJ8KPO3VbBFsXquA6p6kqZw==}
     engines: {node: '>=12', npm: '>=6'}
@@ -28106,6 +28300,9 @@ packages:
   pluralize@8.0.0:
     resolution: {integrity: sha512-Nc3IT5yHzflTfbjgqWcCPpo7DaKy4FnpB0l/zCAW0Tc7jxAiuqSxHasntB3D7887LSrA93kDJ9IXovxJYxyLCA==}
     engines: {node: '>=4'}
+
+  png-js@1.0.0:
+    resolution: {integrity: sha512-k+YsbhpA9e+EFfKjTCH3VW6aoKlyNYI6NYdTfDL4CIvFnvsuO84ttonmZE7rc+v23SLTH8XX+5w/Ak9v0xGY4g==}
 
   pngjs@5.0.0:
     resolution: {integrity: sha512-40QW5YalBNfQo5yRYmiw7Yz6TKKVr3h6970B2YE+3fQpsWcrbj1PzJgxeJ19DRQjhMbKPIuMY8rFaXc8moolVw==}
@@ -29910,6 +30107,10 @@ packages:
     resolution: {integrity: sha512-NYDgziiroVeDC29xq7bp/CacZERYsA9bXYd1ZmcJlF3BcrZv5pTb4NG7SjdyKDnXZ84aC4vo2u6sNKIA1LCu/A==}
     engines: {node: '>= 0.10'}
 
+  resolve-package-path@4.0.3:
+    resolution: {integrity: sha512-SRpNAPW4kewOaNUt8VPqhJ0UMxawMwzJD8V7m1cJfdSTK9ieZwS6K7Dabsm4bmLFM96Z5Y/UznrpG5kt1im8yA==}
+    engines: {node: '>= 12'}
+
   resolve-pathname@3.0.0:
     resolution: {integrity: sha512-C7rARubxI8bXFNB/hqcp/4iUeIXJhJZvFPFPiSPRnhU5UPxzMFIl+2E6yY6c4k9giDJAhtV+enfA+G89N6Csng==}
 
@@ -29951,6 +30152,9 @@ packages:
   restore-cursor@5.1.0:
     resolution: {integrity: sha512-oMA2dcrw6u0YfxJQXm342bFKX/E4sG9rbTzO9ptUcR/e8A33cHuvStiYOwH7fszkZlZ1z/ta9AAoPk2F4qIOHA==}
     engines: {node: '>=18'}
+
+  restructure@3.0.2:
+    resolution: {integrity: sha512-gSfoiOEA0VPE6Tukkrr7I0RBdE0s7H1eFCDBk05l1KIQT1UIKNc5JZy6jdyW6eYH3aR3g5b3PuL77rq0hvwtAw==}
 
   ret@0.1.15:
     resolution: {integrity: sha512-TTlYpa+OL+vMMNG24xSlQGEJ3B/RzEfUlLct7b5G/ytav+wPrplCpVMFuwzXbkecJrb6IYo1iFb0S9v37754mg==}
@@ -30174,6 +30378,11 @@ packages:
     engines: {node: '>=14.0.0'}
     hasBin: true
 
+  sass@1.98.0:
+    resolution: {integrity: sha512-+4N/u9dZ4PrgzGgPlKnaaRQx64RO0JBKs9sDhQ2pLgN6JQZ25uPQZKQYaBJU48Kd5BxgXoJ4e09Dq7nMcOUW3A==}
+    engines: {node: '>=14.0.0'}
+    hasBin: true
+
   sax@1.1.4:
     resolution: {integrity: sha512-5f3k2PbGGp+YtKJjOItpg3P99IMD84E4HOvcfleTb5joCHNXYLsR9yWFPOYGgaeMPDubQILTCMdsFb2OMeOjtg==}
 
@@ -30383,6 +30592,10 @@ packages:
 
   shallowequal@1.1.0:
     resolution: {integrity: sha512-y0m1JoUZSlPAjXVtPPW70aZWfIL/dSP7AFkRnniLCrK/8MDKog3TySTBmckD+RObVxH0v4Tox67+F14PdED2oQ==}
+
+  sharp@0.32.6:
+    resolution: {integrity: sha512-KyLTWwgcR9Oe4d9HwCwNM2l7+J0dUQwn/yf7S0EnTtb0eVS4RxO0eUSvxPtzT4F3SY+C4K6fqdv/DO27sJ/v/w==}
+    engines: {node: '>=14.15.0'}
 
   sharp@0.33.5:
     resolution: {integrity: sha512-haPVm1EkS9pgvHrQ/F3Xy+hgcuMV0Wm9vfIBSiwZ05k+xgb0PkBQpGsAA/oWdDobNaZTH5ppvHtzCFbnSEwHVw==}
@@ -31446,6 +31659,9 @@ packages:
   tiny-emitter@2.1.0:
     resolution: {integrity: sha512-NB6Dk1A9xgQPMoGqC5CVXn123gWyte215ONT5Pp5a0yt4nlEoO1ZWeCwpncaekPHXO60i47ihFnZPiRPjRMq4Q==}
 
+  tiny-inflate@1.0.3:
+    resolution: {integrity: sha512-pkY1fj1cKHb2seWDy0B16HeWyczlJA9/WW3u3c4z/NiWDsO3DOU5D7nhTLE9CF0yXv/QZFY7sEJmj24dK+Rrqw==}
+
   tiny-invariant@1.3.3:
     resolution: {integrity: sha512-+FbBPE1o9QAYvviau/qC5SE3caw21q3xkvWKBtja5vgqOWIHHJ3ioaq1VPfn/Szqctz2bU/oYeKd9/z5BL+PVg==}
 
@@ -32094,12 +32310,18 @@ packages:
     resolution: {integrity: sha512-JQ84qTuMg4nVkx8ga4A16a1epI9H6uTXAknqxkGF/aFfRLw1xC/Bp24HNLaZhHSkWd3+84t8iXnp1J0kYcZHhg==}
     engines: {node: '>=4'}
 
+  unicode-properties@1.4.1:
+    resolution: {integrity: sha512-CLjCCLQ6UuMxWnbIylkisbRj31qxHPAurvena/0iwSVbQ2G1VY5/HjV0IRabOEbDHlzZlRdCrD4NhB0JtU40Pg==}
+
   unicode-property-aliases-ecmascript@2.2.0:
     resolution: {integrity: sha512-hpbDzxUY9BFwX+UeBnxv3Sh1q7HFxj48DTmXchNgRa46lO8uj3/1iEn3MiNUYTg1g9ctIqXCCERn8gYZhHC5lQ==}
     engines: {node: '>=4'}
 
   unicode-segmenter@0.14.5:
     resolution: {integrity: sha512-jHGmj2LUuqDcX3hqY12Ql+uhUTn8huuxNZGq7GvtF6bSybzH3aFgedYu/KTzQStEgt1Ra2F3HxadNXsNjb3m3g==}
+
+  unicode-trie@2.0.0:
+    resolution: {integrity: sha512-x7bc76x0bm4prf1VLg79uhAzKw8DVboClSN5VxJuQ+LKDOVEW9CdH+VY7SP+vX7xCYQqzzgQpFqz15zeLvAtZQ==}
 
   unicorn-magic@0.1.0:
     resolution: {integrity: sha512-lRfVq8fE8gz6QMBuDM6a+LO3IAzTi05H6gCVaUpir2E1Rwpo4ZUog45KpNXKC/Mn3Yb9UDuHumeFTo9iV/D9FQ==}
@@ -32456,6 +32678,10 @@ packages:
   validate-npm-package-name@5.0.1:
     resolution: {integrity: sha512-OljLrQ9SQdOUqTaQxqL5dEfZWrXExyyWsozYlAWFawPVNuD83igl7uJD2RTkNMbniIYgt8l81eCJGIdQF7avLQ==}
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
+
+  validate-peer-dependencies@2.2.0:
+    resolution: {integrity: sha512-8X1OWlERjiUY6P6tdeU9E0EwO8RA3bahoOVG7ulOZT5MqgNDUO/BQoVjYiHPcNe+v8glsboZRIw9iToMAA2zAA==}
+    engines: {node: '>= 12'}
 
   validator@13.15.26:
     resolution: {integrity: sha512-spH26xU080ydGggxRyR1Yhcbgx+j3y5jbNXk/8L+iRvdIEQ4uTRH2Sgf2dokud6Q4oAtsbNvJ1Ft+9xmm6IZcA==}
@@ -37649,6 +37875,19 @@ snapshots:
       chalk: 4.1.2
       tslib: 2.8.1
 
+  '@docusaurus/lqip-loader@3.9.2(webpack@5.105.0)':
+    dependencies:
+      '@docusaurus/logger': 3.9.2
+      file-loader: 6.2.0(webpack@5.105.0)
+      lodash: 4.17.23
+      sharp: 0.32.6
+      tslib: 2.8.1
+    transitivePeerDependencies:
+      - bare-abort-controller
+      - bare-buffer
+      - react-native-b4a
+      - webpack
+
   '@docusaurus/mdx-loader@3.9.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@docusaurus/logger': 3.9.2
@@ -38356,6 +38595,40 @@ snapshots:
       - utf-8-validate
       - webpack-cli
 
+  '@docusaurus/plugin-ideal-image@3.9.2(@mdx-js/react@3.1.1(@types/react@18.3.26)(react@19.2.3))(@rspack/core@1.7.6(@swc/helpers@0.5.15))(bufferutil@4.1.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(typescript@5.6.3)(utf-8-validate@5.0.10)':
+    dependencies:
+      '@docusaurus/core': 3.9.2(@mdx-js/react@3.1.1(@types/react@18.3.26)(react@19.2.3))(@rspack/core@1.7.6(@swc/helpers@0.5.15))(bufferutil@4.1.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(typescript@5.6.3)(utf-8-validate@5.0.10)
+      '@docusaurus/lqip-loader': 3.9.2(webpack@5.105.0)
+      '@docusaurus/responsive-loader': 1.7.1(sharp@0.32.6)
+      '@docusaurus/theme-translations': 3.9.2
+      '@docusaurus/types': 3.9.2(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
+      '@docusaurus/utils-validation': 3.9.2(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
+      react: 19.2.3
+      react-dom: 19.2.3(react@19.2.3)
+      sharp: 0.32.6
+      tslib: 2.8.1
+      webpack: 5.105.0
+    transitivePeerDependencies:
+      - '@docusaurus/faster'
+      - '@mdx-js/react'
+      - '@parcel/css'
+      - '@rspack/core'
+      - '@swc/core'
+      - '@swc/css'
+      - bare-abort-controller
+      - bare-buffer
+      - bufferutil
+      - csso
+      - debug
+      - esbuild
+      - lightningcss
+      - react-native-b4a
+      - supports-color
+      - typescript
+      - uglify-js
+      - utf-8-validate
+      - webpack-cli
+
   '@docusaurus/plugin-sitemap@3.9.2(@mdx-js/react@3.1.1(@types/react@18.3.26)(react@18.3.1))(@rspack/core@1.7.6(@swc/helpers@0.5.15))(bufferutil@4.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.6.3)(utf-8-validate@5.0.10)':
     dependencies:
       '@docusaurus/core': 3.9.2(@mdx-js/react@3.1.1(@types/react@18.3.26)(react@18.3.1))(@rspack/core@1.7.6(@swc/helpers@0.5.15))(bufferutil@4.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.6.3)(utf-8-validate@5.0.10)
@@ -38565,6 +38838,12 @@ snapshots:
     dependencies:
       '@types/react': 18.3.26
       react: 19.2.3
+
+  '@docusaurus/responsive-loader@1.7.1(sharp@0.32.6)':
+    dependencies:
+      loader-utils: 2.0.4
+    optionalDependencies:
+      sharp: 0.32.6
 
   '@docusaurus/theme-classic@3.9.2(@rspack/core@1.7.6(@swc/helpers@0.5.15))(@types/react@18.3.26)(bufferutil@4.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.6.3)(utf-8-validate@5.0.10)':
     dependencies:
@@ -49079,15 +49358,15 @@ snapshots:
 
   '@vercel/oidc@3.1.0': {}
 
-  '@vitejs/plugin-react-swc@3.11.0(vite@5.4.21(@types/node@25.3.3)(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0))':
+  '@vitejs/plugin-react-swc@3.11.0(vite@5.4.21(@types/node@25.3.3)(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0))':
     dependencies:
       '@rolldown/pluginutils': 1.0.0-beta.27
       '@swc/core': 1.15.11
-      vite: 5.4.21(@types/node@25.3.3)(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+      vite: 5.4.21(@types/node@25.3.3)(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
     transitivePeerDependencies:
       - '@swc/helpers'
 
-  '@vitejs/plugin-react@5.1.2(vite@6.4.1(@types/node@20.19.23)(jiti@2.6.1)(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)(tsx@4.21.0)(yaml@2.8.1))':
+  '@vitejs/plugin-react@5.1.2(vite@6.4.1(@types/node@20.19.23)(jiti@2.6.1)(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)(tsx@4.21.0)(yaml@2.8.1))':
     dependencies:
       '@babel/core': 7.28.5
       '@babel/plugin-transform-react-jsx-self': 7.27.1(@babel/core@7.28.5)
@@ -49095,7 +49374,7 @@ snapshots:
       '@rolldown/pluginutils': 1.0.0-beta.53
       '@types/babel__core': 7.20.5
       react-refresh: 0.18.0
-      vite: 6.4.1(@types/node@20.19.23)(jiti@2.6.1)(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)(tsx@4.21.0)(yaml@2.8.1)
+      vite: 6.4.1(@types/node@20.19.23)(jiti@2.6.1)(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)(tsx@4.21.0)(yaml@2.8.1)
     transitivePeerDependencies:
       - supports-color
 
@@ -49109,17 +49388,17 @@ snapshots:
       vite: 5.4.21(@types/node@20.19.23)(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
       vue: 3.5.22(typescript@5.6.3)
 
-  '@vitejs/plugin-vue@5.2.4(vite@6.4.1(@types/node@25.3.3)(jiti@2.6.1)(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)(tsx@4.21.0)(yaml@2.8.1))(vue@3.5.22(typescript@5.6.3))':
+  '@vitejs/plugin-vue@5.2.4(vite@6.4.1(@types/node@25.3.3)(jiti@2.6.1)(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)(tsx@4.21.0)(yaml@2.8.1))(vue@3.5.22(typescript@5.6.3))':
     dependencies:
-      vite: 6.4.1(@types/node@25.3.3)(jiti@2.6.1)(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)(tsx@4.21.0)(yaml@2.8.1)
+      vite: 6.4.1(@types/node@25.3.3)(jiti@2.6.1)(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)(tsx@4.21.0)(yaml@2.8.1)
       vue: 3.5.22(typescript@5.6.3)
 
-  '@vitejs/plugin-vue@5.2.4(vite@6.4.1(@types/node@25.3.3)(jiti@2.6.1)(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)(tsx@4.21.0)(yaml@2.8.1))(vue@3.5.22(typescript@5.9.3))':
+  '@vitejs/plugin-vue@5.2.4(vite@6.4.1(@types/node@25.3.3)(jiti@2.6.1)(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)(tsx@4.21.0)(yaml@2.8.1))(vue@3.5.22(typescript@5.9.3))':
     dependencies:
-      vite: 6.4.1(@types/node@25.3.3)(jiti@2.6.1)(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)(tsx@4.21.0)(yaml@2.8.1)
+      vite: 6.4.1(@types/node@25.3.3)(jiti@2.6.1)(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)(tsx@4.21.0)(yaml@2.8.1)
       vue: 3.5.22(typescript@5.9.3)
 
-  '@vitest/coverage-v8@1.6.1(vitest@1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@24.1.3(bufferutil@4.1.0)(canvas@2.11.2(encoding@0.1.13))(utf-8-validate@5.0.10))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0))':
+  '@vitest/coverage-v8@1.6.1(vitest@1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@24.1.3(bufferutil@4.1.0)(canvas@2.11.2(encoding@0.1.13))(utf-8-validate@5.0.10))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0))':
     dependencies:
       '@ampproject/remapping': 2.3.0
       '@bcoe/v8-coverage': 0.2.3
@@ -49134,7 +49413,7 @@ snapshots:
       std-env: 3.10.0
       strip-literal: 2.1.1
       test-exclude: 6.0.0
-      vitest: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@24.1.3(bufferutil@4.1.0)(canvas@2.11.2(encoding@0.1.13))(utf-8-validate@5.0.10))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+      vitest: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@24.1.3(bufferutil@4.1.0)(canvas@2.11.2(encoding@0.1.13))(utf-8-validate@5.0.10))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -49157,7 +49436,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@vitest/coverage-v8@1.6.1(vitest@1.6.1(@types/node@25.3.3)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0))':
+  '@vitest/coverage-v8@1.6.1(vitest@1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0))':
     dependencies:
       '@ampproject/remapping': 2.3.0
       '@bcoe/v8-coverage': 0.2.3
@@ -49172,11 +49451,30 @@ snapshots:
       std-env: 3.10.0
       strip-literal: 2.1.1
       test-exclude: 6.0.0
-      vitest: 1.6.1(@types/node@25.3.3)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+      vitest: 1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
     transitivePeerDependencies:
       - supports-color
 
-  '@vitest/coverage-v8@2.1.9(vitest@2.1.9(@types/node@22.19.1)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0))':
+  '@vitest/coverage-v8@1.6.1(vitest@1.6.1(@types/node@25.3.3)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0))':
+    dependencies:
+      '@ampproject/remapping': 2.3.0
+      '@bcoe/v8-coverage': 0.2.3
+      debug: 4.4.3(supports-color@6.1.0)
+      istanbul-lib-coverage: 3.2.2
+      istanbul-lib-report: 3.0.1
+      istanbul-lib-source-maps: 5.0.6
+      istanbul-reports: 3.2.0
+      magic-string: 0.30.21
+      magicast: 0.3.5
+      picocolors: 1.1.1
+      std-env: 3.10.0
+      strip-literal: 2.1.1
+      test-exclude: 6.0.0
+      vitest: 1.6.1(@types/node@25.3.3)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
+    transitivePeerDependencies:
+      - supports-color
+
+  '@vitest/coverage-v8@2.1.9(vitest@2.1.9(@types/node@22.19.1)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0))':
     dependencies:
       '@ampproject/remapping': 2.3.0
       '@bcoe/v8-coverage': 0.2.3
@@ -49190,7 +49488,7 @@ snapshots:
       std-env: 3.10.0
       test-exclude: 7.0.2
       tinyrainbow: 1.2.0
-      vitest: 2.1.9(@types/node@22.19.1)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+      vitest: 2.1.9(@types/node@22.19.1)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -49207,13 +49505,13 @@ snapshots:
       chai: 5.3.3
       tinyrainbow: 1.2.0
 
-  '@vitest/mocker@2.1.9(vite@5.4.21(@types/node@22.19.1)(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0))':
+  '@vitest/mocker@2.1.9(vite@5.4.21(@types/node@22.19.1)(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0))':
     dependencies:
       '@vitest/spy': 2.1.9
       estree-walker: 3.0.3
       magic-string: 0.30.21
     optionalDependencies:
-      vite: 5.4.21(@types/node@22.19.1)(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+      vite: 5.4.21(@types/node@22.19.1)(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
 
   '@vitest/pretty-format@2.1.9':
     dependencies:
@@ -50481,6 +50779,8 @@ snapshots:
 
   base64-arraybuffer@1.0.2: {}
 
+  base64-js@0.0.8: {}
+
   base64-js@1.5.1: {}
 
   base64id@2.0.0: {}
@@ -50840,6 +51140,10 @@ snapshots:
       fill-range: 7.1.1
 
   brorand@1.1.0: {}
+
+  brotli@1.3.3:
+    dependencies:
+      base64-js: 1.5.1
 
   browser-fs-access@0.35.0: {}
 
@@ -52231,6 +52535,8 @@ snapshots:
 
   crypto-hash@1.3.0: {}
 
+  crypto-js@4.2.0: {}
+
   crypto-random-string@4.0.0:
     dependencies:
       type-fest: 1.4.0
@@ -53007,6 +53313,8 @@ snapshots:
       asap: 2.0.6
       wrappy: 1.0.2
 
+  dfa@1.2.0: {}
+
   didyoumean@1.2.2: {}
 
   diff-sequences@29.6.3: {}
@@ -53109,6 +53417,23 @@ snapshots:
   doctrine@3.0.0:
     dependencies:
       esutils: 2.0.3
+
+  docusaurus-plugin-image-zoom@3.0.1(@docusaurus/theme-classic@3.9.2(@rspack/core@1.7.6(@swc/helpers@0.5.15))(@types/react@18.3.26)(bufferutil@4.1.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(typescript@5.6.3)(utf-8-validate@5.0.10)):
+    dependencies:
+      '@docusaurus/theme-classic': 3.9.2(@rspack/core@1.7.6(@swc/helpers@0.5.15))(@types/react@18.3.26)(bufferutil@4.1.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(typescript@5.6.3)(utf-8-validate@5.0.10)
+      medium-zoom: 1.1.0
+      validate-peer-dependencies: 2.2.0
+
+  docusaurus-plugin-sass@0.2.6(@docusaurus/core@3.9.2(@mdx-js/react@3.1.1(@types/react@18.3.26)(react@19.2.3))(@rspack/core@1.7.6(@swc/helpers@0.5.15))(bufferutil@4.1.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(typescript@5.6.3)(utf-8-validate@5.0.10))(@rspack/core@1.7.6(@swc/helpers@0.5.15))(sass@1.98.0)(webpack@5.105.0):
+    dependencies:
+      '@docusaurus/core': 3.9.2(@mdx-js/react@3.1.1(@types/react@18.3.26)(react@19.2.3))(@rspack/core@1.7.6(@swc/helpers@0.5.15))(bufferutil@4.1.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(typescript@5.6.3)(utf-8-validate@5.0.10)
+      sass: 1.98.0
+      sass-loader: 16.0.6(@rspack/core@1.7.6(@swc/helpers@0.5.15))(sass@1.98.0)(webpack@5.105.0)
+    transitivePeerDependencies:
+      - '@rspack/core'
+      - node-sass
+      - sass-embedded
+      - webpack
 
   docusaurus-plugin-typedoc@1.4.2(typedoc-plugin-markdown@4.10.0(typedoc@0.28.16(typescript@5.6.3))):
     dependencies:
@@ -54890,6 +55215,12 @@ snapshots:
     dependencies:
       flat-cache: 4.0.1
 
+  file-loader@6.2.0(webpack@5.105.0):
+    dependencies:
+      loader-utils: 2.0.4
+      schema-utils: 3.3.0
+      webpack: 5.105.0
+
   file-loader@6.2.0(webpack@5.97.1):
     dependencies:
       loader-utils: 2.0.4
@@ -55107,6 +55438,18 @@ snapshots:
   follow-redirects@1.15.11(debug@4.4.3):
     optionalDependencies:
       debug: 4.4.3(supports-color@6.1.0)
+
+  fontkit@2.0.4:
+    dependencies:
+      '@swc/helpers': 0.5.15
+      brotli: 1.3.3
+      clone: 2.1.2
+      dfa: 1.2.0
+      fast-deep-equal: 3.1.3
+      restructure: 3.0.2
+      tiny-inflate: 1.0.3
+      unicode-properties: 1.4.1
+      unicode-trie: 2.0.0
 
   for-each@0.3.5:
     dependencies:
@@ -56710,6 +57053,8 @@ snapshots:
 
   immutable@5.1.4: {}
 
+  immutable@5.1.5: {}
+
   import-fresh@2.0.0:
     dependencies:
       caller-path: 2.0.0
@@ -57802,6 +58147,8 @@ snapshots:
 
   joycon@3.1.1: {}
 
+  jpeg-exif@1.1.4: {}
+
   js-base64@2.6.4: {}
 
   js-base64@3.7.8: {}
@@ -58280,6 +58627,11 @@ snapshots:
     dependencies:
       isarray: 1.0.0
       isobject: 2.1.0
+
+  linebreak@1.1.0:
+    dependencies:
+      base64-js: 0.0.8
+      unicode-trie: 2.0.0
 
   lines-and-columns@1.2.4: {}
 
@@ -59099,6 +59451,8 @@ snapshots:
     dependencies:
       '@types/dom-mediacapture-transform': 0.1.11
       '@types/dom-webcodecs': 0.1.13
+
+  medium-zoom@1.1.0: {}
 
   memfs@3.4.3:
     dependencies:
@@ -60174,14 +60528,14 @@ snapshots:
 
   next-intl-swc-plugin-extractor@4.8.2: {}
 
-  next-intl@4.8.2(next@14.2.35(@opentelemetry/api@1.9.0)(@playwright/test@1.58.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.97.3))(react@18.3.1)(typescript@5.6.3):
+  next-intl@4.8.2(next@14.2.35(@opentelemetry/api@1.9.0)(@playwright/test@1.58.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.98.0))(react@18.3.1)(typescript@5.6.3):
     dependencies:
       '@formatjs/intl-localematcher': 0.5.10
       '@parcel/watcher': 2.5.1
       '@swc/core': 1.15.2
       icu-minify: 4.8.2
       negotiator: 1.0.0
-      next: 14.2.35(@opentelemetry/api@1.9.0)(@playwright/test@1.58.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.97.3)
+      next: 14.2.35(@opentelemetry/api@1.9.0)(@playwright/test@1.58.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.98.0)
       next-intl-swc-plugin-extractor: 4.8.2
       po-parser: 2.1.1
       react: 18.3.1
@@ -60191,14 +60545,14 @@ snapshots:
     transitivePeerDependencies:
       - '@swc/helpers'
 
-  next-intl@4.8.2(next@14.2.35(@opentelemetry/api@1.9.0)(@playwright/test@1.58.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.97.3))(react@18.3.1)(typescript@5.9.3):
+  next-intl@4.8.2(next@14.2.35(@opentelemetry/api@1.9.0)(@playwright/test@1.58.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.98.0))(react@18.3.1)(typescript@5.9.3):
     dependencies:
       '@formatjs/intl-localematcher': 0.5.10
       '@parcel/watcher': 2.5.1
       '@swc/core': 1.15.2
       icu-minify: 4.8.2
       negotiator: 1.0.0
-      next: 14.2.35(@opentelemetry/api@1.9.0)(@playwright/test@1.58.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.97.3)
+      next: 14.2.35(@opentelemetry/api@1.9.0)(@playwright/test@1.58.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.98.0)
       next-intl-swc-plugin-extractor: 4.8.2
       po-parser: 2.1.1
       react: 18.3.1
@@ -60222,13 +60576,13 @@ snapshots:
       - '@types/react'
       - supports-color
 
-  next-sitemap@4.2.3(next@14.2.13(@opentelemetry/api@1.9.0)(@playwright/test@1.58.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.97.3)):
+  next-sitemap@4.2.3(next@14.2.13(@opentelemetry/api@1.9.0)(@playwright/test@1.58.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.98.0)):
     dependencies:
       '@corex/deepmerge': 4.0.43
       '@next/env': 13.5.11
       fast-glob: 3.3.3
       minimist: 1.2.8
-      next: 14.2.13(@opentelemetry/api@1.9.0)(@playwright/test@1.58.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.97.3)
+      next: 14.2.13(@opentelemetry/api@1.9.0)(@playwright/test@1.58.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.98.0)
 
   next-themes@0.3.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
@@ -60237,7 +60591,7 @@ snapshots:
 
   next-tick@1.1.0: {}
 
-  next@14.2.13(@opentelemetry/api@1.9.0)(@playwright/test@1.58.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.97.3):
+  next@14.2.13(@opentelemetry/api@1.9.0)(@playwright/test@1.58.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.98.0):
     dependencies:
       '@next/env': 14.2.13
       '@swc/helpers': 0.5.5
@@ -60260,12 +60614,12 @@ snapshots:
       '@next/swc-win32-x64-msvc': 14.2.13
       '@opentelemetry/api': 1.9.0
       '@playwright/test': 1.58.1
-      sass: 1.97.3
+      sass: 1.98.0
     transitivePeerDependencies:
       - '@babel/core'
       - babel-plugin-macros
 
-  next@14.2.35(@opentelemetry/api@1.9.0)(@playwright/test@1.57.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.97.3):
+  next@14.2.35(@opentelemetry/api@1.9.0)(@playwright/test@1.57.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.98.0):
     dependencies:
       '@next/env': 14.2.35
       '@swc/helpers': 0.5.5
@@ -60288,12 +60642,12 @@ snapshots:
       '@next/swc-win32-x64-msvc': 14.2.33
       '@opentelemetry/api': 1.9.0
       '@playwright/test': 1.57.0
-      sass: 1.97.3
+      sass: 1.98.0
     transitivePeerDependencies:
       - '@babel/core'
       - babel-plugin-macros
 
-  next@14.2.35(@opentelemetry/api@1.9.0)(@playwright/test@1.58.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.97.3):
+  next@14.2.35(@opentelemetry/api@1.9.0)(@playwright/test@1.58.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.98.0):
     dependencies:
       '@next/env': 14.2.35
       '@swc/helpers': 0.5.5
@@ -60316,12 +60670,12 @@ snapshots:
       '@next/swc-win32-x64-msvc': 14.2.33
       '@opentelemetry/api': 1.9.0
       '@playwright/test': 1.58.1
-      sass: 1.97.3
+      sass: 1.98.0
     transitivePeerDependencies:
       - '@babel/core'
       - babel-plugin-macros
 
-  next@15.0.0(@opentelemetry/api@1.9.0)(@playwright/test@1.58.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.97.3):
+  next@15.0.0(@opentelemetry/api@1.9.0)(@playwright/test@1.58.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.98.0):
     dependencies:
       '@next/env': 15.0.0
       '@swc/counter': 0.1.3
@@ -60343,13 +60697,13 @@ snapshots:
       '@next/swc-win32-x64-msvc': 15.0.0
       '@opentelemetry/api': 1.9.0
       '@playwright/test': 1.58.1
-      sass: 1.97.3
+      sass: 1.98.0
       sharp: 0.33.5
     transitivePeerDependencies:
       - '@babel/core'
       - babel-plugin-macros
 
-  next@15.5.11(@opentelemetry/api@1.9.0)(@playwright/test@1.58.1)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(sass@1.97.3):
+  next@15.5.11(@opentelemetry/api@1.9.0)(@playwright/test@1.58.1)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(sass@1.98.0):
     dependencies:
       '@next/env': 15.5.11
       '@swc/helpers': 0.5.15
@@ -60369,7 +60723,7 @@ snapshots:
       '@next/swc-win32-x64-msvc': 15.5.7
       '@opentelemetry/api': 1.9.0
       '@playwright/test': 1.58.1
-      sass: 1.97.3
+      sass: 1.98.0
       sharp: 0.34.5
     transitivePeerDependencies:
       - '@babel/core'
@@ -60423,6 +60777,8 @@ snapshots:
     optional: true
 
   node-addon-api@5.1.0: {}
+
+  node-addon-api@6.1.0: {}
 
   node-addon-api@7.1.1: {}
 
@@ -61204,6 +61560,8 @@ snapshots:
 
   page-flip@2.0.7: {}
 
+  pako@0.2.9: {}
+
   pako@1.0.11: {}
 
   pako@2.1.0: {}
@@ -61479,6 +61837,14 @@ snapshots:
     optionalDependencies:
       '@napi-rs/canvas': 0.1.88
     optional: true
+
+  pdfkit@0.16.0:
+    dependencies:
+      crypto-js: 4.2.0
+      fontkit: 2.0.4
+      jpeg-exif: 1.1.4
+      linebreak: 1.1.0
+      png-js: 1.0.0
 
   pe-library@0.4.1: {}
 
@@ -61776,6 +62142,8 @@ snapshots:
   pluralize@2.0.0: {}
 
   pluralize@8.0.0: {}
+
+  png-js@1.0.0: {}
 
   pngjs@5.0.0: {}
 
@@ -64419,6 +64787,10 @@ snapshots:
     dependencies:
       value-or-function: 3.0.0
 
+  resolve-package-path@4.0.3:
+    dependencies:
+      path-root: 0.1.1
+
   resolve-pathname@3.0.0: {}
 
   resolve-pkg-maps@1.0.0: {}
@@ -64461,6 +64833,8 @@ snapshots:
     dependencies:
       onetime: 7.0.0
       signal-exit: 4.1.0
+
+  restructure@3.0.2: {}
 
   ret@0.1.15: {}
 
@@ -64703,6 +65077,14 @@ snapshots:
       sass: 1.97.3
       webpack: 5.105.0
 
+  sass-loader@16.0.6(@rspack/core@1.7.6(@swc/helpers@0.5.15))(sass@1.98.0)(webpack@5.105.0):
+    dependencies:
+      neo-async: 2.6.2
+    optionalDependencies:
+      '@rspack/core': 1.7.6(@swc/helpers@0.5.15)
+      sass: 1.98.0
+      webpack: 5.105.0
+
   sass@1.93.2:
     dependencies:
       chokidar: 4.0.3
@@ -64715,6 +65097,14 @@ snapshots:
     dependencies:
       chokidar: 4.0.3
       immutable: 5.1.4
+      source-map-js: 1.2.1
+    optionalDependencies:
+      '@parcel/watcher': 2.5.1
+
+  sass@1.98.0:
+    dependencies:
+      chokidar: 4.0.3
+      immutable: 5.1.5
       source-map-js: 1.2.1
     optionalDependencies:
       '@parcel/watcher': 2.5.1
@@ -65123,6 +65513,21 @@ snapshots:
       kind-of: 6.0.3
 
   shallowequal@1.1.0: {}
+
+  sharp@0.32.6:
+    dependencies:
+      color: 4.2.3
+      detect-libc: 2.1.2
+      node-addon-api: 6.1.0
+      prebuild-install: 7.1.3
+      semver: 7.7.4
+      simple-get: 4.0.1
+      tar-fs: 3.1.1
+      tunnel-agent: 0.6.0
+    transitivePeerDependencies:
+      - bare-abort-controller
+      - bare-buffer
+      - react-native-b4a
 
   sharp@0.33.5:
     dependencies:
@@ -66422,7 +66827,6 @@ snapshots:
       serialize-javascript: 6.0.2
       terser: 5.46.0
       webpack: 5.105.0
-    optional: true
 
   terser-webpack-plugin@5.3.16(webpack@5.97.1):
     dependencies:
@@ -66546,6 +66950,8 @@ snapshots:
   timsort@0.3.0: {}
 
   tiny-emitter@2.1.0: {}
+
+  tiny-inflate@1.0.3: {}
 
   tiny-invariant@1.3.3: {}
 
@@ -67385,9 +67791,19 @@ snapshots:
 
   unicode-match-property-value-ecmascript@2.2.1: {}
 
+  unicode-properties@1.4.1:
+    dependencies:
+      base64-js: 1.5.1
+      unicode-trie: 2.0.0
+
   unicode-property-aliases-ecmascript@2.2.0: {}
 
   unicode-segmenter@0.14.5: {}
+
+  unicode-trie@2.0.0:
+    dependencies:
+      pako: 0.2.9
+      tiny-inflate: 1.0.3
 
   unicorn-magic@0.1.0: {}
 
@@ -67851,6 +68267,11 @@ snapshots:
 
   validate-npm-package-name@5.0.1: {}
 
+  validate-peer-dependencies@2.2.0:
+    dependencies:
+      resolve-package-path: 4.0.3
+      semver: 7.7.4
+
   validator@13.15.26: {}
 
   value-equal@1.0.1: {}
@@ -68000,13 +68421,13 @@ snapshots:
       - supports-color
       - terser
 
-  vite-node@1.6.1(@types/node@25.3.3)(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0):
+  vite-node@1.6.1(@types/node@20.19.23)(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0):
     dependencies:
       cac: 6.7.14
       debug: 4.4.3(supports-color@6.1.0)
       pathe: 1.1.2
       picocolors: 1.1.1
-      vite: 5.4.21(@types/node@25.3.3)(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+      vite: 5.4.21(@types/node@20.19.23)(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
     transitivePeerDependencies:
       - '@types/node'
       - less
@@ -68018,13 +68439,31 @@ snapshots:
       - supports-color
       - terser
 
-  vite-node@2.1.9(@types/node@22.19.1)(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0):
+  vite-node@1.6.1(@types/node@25.3.3)(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0):
+    dependencies:
+      cac: 6.7.14
+      debug: 4.4.3(supports-color@6.1.0)
+      pathe: 1.1.2
+      picocolors: 1.1.1
+      vite: 5.4.21(@types/node@25.3.3)(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
+    transitivePeerDependencies:
+      - '@types/node'
+      - less
+      - lightningcss
+      - sass
+      - sass-embedded
+      - stylus
+      - sugarss
+      - supports-color
+      - terser
+
+  vite-node@2.1.9(@types/node@22.19.1)(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0):
     dependencies:
       cac: 6.7.14
       debug: 4.4.3(supports-color@6.1.0)
       es-module-lexer: 1.7.0
       pathe: 1.1.2
-      vite: 5.4.21(@types/node@22.19.1)(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+      vite: 5.4.21(@types/node@22.19.1)(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
     transitivePeerDependencies:
       - '@types/node'
       - less
@@ -68036,11 +68475,11 @@ snapshots:
       - supports-color
       - terser
 
-  vite-plugin-node-polyfills@0.22.0(rollup@4.52.5)(vite@5.4.21(@types/node@25.3.3)(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)):
+  vite-plugin-node-polyfills@0.22.0(rollup@4.52.5)(vite@5.4.21(@types/node@25.3.3)(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)):
     dependencies:
       '@rollup/plugin-inject': 5.0.5(rollup@4.52.5)
       node-stdlib-browser: 1.3.1
-      vite: 5.4.21(@types/node@25.3.3)(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+      vite: 5.4.21(@types/node@25.3.3)(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
     transitivePeerDependencies:
       - rollup
 
@@ -68070,7 +68509,20 @@ snapshots:
       stylus: 0.54.8
       terser: 5.46.0
 
-  vite@5.4.21(@types/node@22.19.1)(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0):
+  vite@5.4.21(@types/node@20.19.23)(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0):
+    dependencies:
+      esbuild: 0.21.5
+      postcss: 8.5.6
+      rollup: 4.52.5
+    optionalDependencies:
+      '@types/node': 20.19.23
+      fsevents: 2.3.3
+      lightningcss: 1.30.2
+      sass: 1.98.0
+      stylus: 0.54.8
+      terser: 5.46.0
+
+  vite@5.4.21(@types/node@22.19.1)(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0):
     dependencies:
       esbuild: 0.21.5
       postcss: 8.5.6
@@ -68079,11 +68531,11 @@ snapshots:
       '@types/node': 22.19.1
       fsevents: 2.3.3
       lightningcss: 1.30.2
-      sass: 1.97.3
+      sass: 1.98.0
       stylus: 0.54.8
       terser: 5.46.0
 
-  vite@5.4.21(@types/node@25.3.3)(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0):
+  vite@5.4.21(@types/node@25.3.3)(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0):
     dependencies:
       esbuild: 0.21.5
       postcss: 8.5.6
@@ -68092,11 +68544,11 @@ snapshots:
       '@types/node': 25.3.3
       fsevents: 2.3.3
       lightningcss: 1.30.2
-      sass: 1.97.3
+      sass: 1.98.0
       stylus: 0.54.8
       terser: 5.46.0
 
-  vite@6.4.1(@types/node@20.19.23)(jiti@2.6.1)(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)(tsx@4.21.0)(yaml@2.8.1):
+  vite@6.4.1(@types/node@20.19.23)(jiti@2.6.1)(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)(tsx@4.21.0)(yaml@2.8.1):
     dependencies:
       esbuild: 0.25.11
       fdir: 6.5.0(picomatch@4.0.3)
@@ -68109,13 +68561,13 @@ snapshots:
       fsevents: 2.3.3
       jiti: 2.6.1
       lightningcss: 1.30.2
-      sass: 1.97.3
+      sass: 1.98.0
       stylus: 0.54.8
       terser: 5.46.0
       tsx: 4.21.0
       yaml: 2.8.1
 
-  vite@6.4.1(@types/node@25.3.3)(jiti@2.6.1)(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)(tsx@4.21.0)(yaml@2.8.1):
+  vite@6.4.1(@types/node@25.3.3)(jiti@2.6.1)(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)(tsx@4.21.0)(yaml@2.8.1):
     dependencies:
       esbuild: 0.25.11
       fdir: 6.5.0(picomatch@4.0.3)
@@ -68128,13 +68580,13 @@ snapshots:
       fsevents: 2.3.3
       jiti: 2.6.1
       lightningcss: 1.30.2
-      sass: 1.97.3
+      sass: 1.98.0
       stylus: 0.54.8
       terser: 5.46.0
       tsx: 4.21.0
       yaml: 2.8.1
 
-  vitest@1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@24.1.3(bufferutil@4.1.0)(canvas@2.11.2(encoding@0.1.13))(utf-8-validate@5.0.10))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0):
+  vitest@1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@24.1.3(bufferutil@4.1.0)(canvas@2.11.2(encoding@0.1.13))(utf-8-validate@5.0.10))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0):
     dependencies:
       '@vitest/expect': 1.6.1
       '@vitest/runner': 1.6.1
@@ -68153,8 +68605,8 @@ snapshots:
       strip-literal: 2.1.1
       tinybench: 2.9.0
       tinypool: 0.8.4
-      vite: 5.4.21(@types/node@20.19.23)(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
-      vite-node: 1.6.1(@types/node@20.19.23)(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+      vite: 5.4.21(@types/node@20.19.23)(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
+      vite-node: 1.6.1(@types/node@20.19.23)(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@types/node': 20.19.23
@@ -68206,7 +68658,7 @@ snapshots:
       - supports-color
       - terser
 
-  vitest@1.6.1(@types/node@25.3.3)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0):
+  vitest@1.6.1(@types/node@20.19.23)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0):
     dependencies:
       '@vitest/expect': 1.6.1
       '@vitest/runner': 1.6.1
@@ -68225,8 +68677,44 @@ snapshots:
       strip-literal: 2.1.1
       tinybench: 2.9.0
       tinypool: 0.8.4
-      vite: 5.4.21(@types/node@25.3.3)(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
-      vite-node: 1.6.1(@types/node@25.3.3)(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+      vite: 5.4.21(@types/node@20.19.23)(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
+      vite-node: 1.6.1(@types/node@20.19.23)(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
+      why-is-node-running: 2.3.0
+    optionalDependencies:
+      '@types/node': 20.19.23
+      happy-dom: 13.10.1
+      jsdom: 28.1.0(@noble/hashes@2.0.1)
+    transitivePeerDependencies:
+      - less
+      - lightningcss
+      - sass
+      - sass-embedded
+      - stylus
+      - sugarss
+      - supports-color
+      - terser
+
+  vitest@1.6.1(@types/node@25.3.3)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0):
+    dependencies:
+      '@vitest/expect': 1.6.1
+      '@vitest/runner': 1.6.1
+      '@vitest/snapshot': 1.6.1
+      '@vitest/spy': 1.6.1
+      '@vitest/utils': 1.6.1
+      acorn-walk: 8.3.4
+      chai: 4.5.0
+      debug: 4.4.3(supports-color@6.1.0)
+      execa: 8.0.1
+      local-pkg: 0.5.1
+      magic-string: 0.30.21
+      pathe: 1.1.2
+      picocolors: 1.1.1
+      std-env: 3.10.0
+      strip-literal: 2.1.1
+      tinybench: 2.9.0
+      tinypool: 0.8.4
+      vite: 5.4.21(@types/node@25.3.3)(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
+      vite-node: 1.6.1(@types/node@25.3.3)(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@types/node': 25.3.3
@@ -68242,10 +68730,10 @@ snapshots:
       - supports-color
       - terser
 
-  vitest@2.1.9(@types/node@22.19.1)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0):
+  vitest@2.1.9(@types/node@22.19.1)(happy-dom@13.10.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0):
     dependencies:
       '@vitest/expect': 2.1.9
-      '@vitest/mocker': 2.1.9(vite@5.4.21(@types/node@22.19.1)(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0))
+      '@vitest/mocker': 2.1.9(vite@5.4.21(@types/node@22.19.1)(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0))
       '@vitest/pretty-format': 2.1.9
       '@vitest/runner': 2.1.9
       '@vitest/snapshot': 2.1.9
@@ -68261,8 +68749,8 @@ snapshots:
       tinyexec: 0.3.2
       tinypool: 1.1.1
       tinyrainbow: 1.2.0
-      vite: 5.4.21(@types/node@22.19.1)(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
-      vite-node: 2.1.9(@types/node@22.19.1)(lightningcss@1.30.2)(sass@1.97.3)(stylus@0.54.8)(terser@5.46.0)
+      vite: 5.4.21(@types/node@22.19.1)(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
+      vite-node: 2.1.9(@types/node@22.19.1)(lightningcss@1.30.2)(sass@1.98.0)(stylus@0.54.8)(terser@5.46.0)
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@types/node': 22.19.1
@@ -68711,7 +69199,6 @@ snapshots:
       - '@swc/core'
       - esbuild
       - uglify-js
-    optional: true
 
   webpack@5.105.0(@swc/core@1.15.18):
     dependencies:
