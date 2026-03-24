@@ -10,5 +10,7 @@
     "skipLibCheck": true,
     "resolveJsonModule": true,
     "types": ["@docusaurus/module-type-aliases"]
-  }
+  },
+  "include": ["src/**/*", "docusaurus.config.ts"],
+  "exclude": [".docusaurus", "build", "docs", "node_modules"]
 }
