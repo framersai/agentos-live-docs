@@ -119,6 +119,9 @@ function Hero() {
         <Link className="btn-primary" to="/getting-started/documentation-index">
           Get Started
         </Link>
+        <Link className="btn-secondary" to="/getting-started/high-level-api">
+          High-Level API
+        </Link>
         <Link className="btn-secondary" to="/api/">
           API Reference
         </Link>
@@ -127,54 +130,109 @@ function Hero() {
   );
 }
 
+const quickStartTracks = [
+  {
+    title: 'High-Level API',
+    description:
+      'Use `generateText()`, `streamText()`, `generateImage()`, and `agent()` when you want the fastest path from prompt to working code.',
+    link: '/getting-started/high-level-api',
+  },
+  {
+    title: 'Full Runtime',
+    description:
+      'Drop to `new AgentOS()` when you need extensions, personas, workflows, HITL, or runtime lifecycle control.',
+    link: '/api/',
+  },
+  {
+    title: 'Extensions & Skills',
+    description:
+      'Wire curated extensions, SKILL.md registries, and provider-agnostic image generation into the runtime you choose.',
+    link: '/extensions/overview',
+  },
+];
+
+function QuickStartTracks() {
+  return (
+    <section style={{ padding: '2rem 2rem 1rem', maxWidth: '1200px', margin: '0 auto' }}>
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
+          gap: '1rem',
+        }}
+      >
+        {quickStartTracks.map(({ title, description, link }) => (
+          <Link
+            key={title}
+            to={link}
+            className="feature-card"
+            style={{ padding: '1.25rem', minHeight: '160px' }}
+          >
+            <h3 style={{ marginBottom: '0.5rem', fontSize: '1.05rem' }}>{title}</h3>
+            <p style={{ opacity: 0.75, margin: 0, fontSize: '0.95rem', lineHeight: 1.5 }}>
+              {description}
+            </p>
+          </Link>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 const features = [
+  {
+    title: 'High-Level API',
+    description:
+      'Streamlined root exports for text generation, streaming, provider-agnostic image generation, and lightweight stateful sessions.',
+    link: '/getting-started/high-level-api',
+  },
   {
     title: 'Cognitive Memory',
     description:
       'Observational memory with Ebbinghaus decay, Baddeley working memory, HyDE retrieval, and personality-driven encoding.',
-    link: '/docs/features/cognitive-memory',
+    link: '/features/cognitive-memory',
   },
   {
     title: 'Deep Research',
     description:
       'LLM-as-judge query classification, 3-phase research pipeline, real-time progress streaming via SSE.',
-    link: '/docs/features/deep-research',
+    link: '/features/deep-research',
   },
   {
     title: 'Safety & Guardrails',
     description:
       '5-tier security pipeline — pre-LLM classification, dual-LLM audit, signed outputs, step-up authorization.',
-    link: '/docs/features/guardrails',
+    link: '/features/guardrails',
   },
   {
     title: 'RAG & Vector Search',
     description:
       'HNSW vector store, graph-augmented re-ranking, hybrid retrieval, adaptive HyDE thresholding.',
-    link: '/docs/features/rag-memory',
+    link: '/features/rag-memory',
   },
   {
     title: 'Capability Discovery',
     description:
       'Semantic tiered discovery — 89% token reduction, graph re-ranking, agents self-discover tools mid-conversation.',
-    link: '/docs/features/capability-discovery',
+    link: '/features/capability-discovery',
   },
   {
     title: 'Extensions & Skills',
     description:
       '37 channel adapters, 23+ tools, 40 curated skills, multi-provider TTS/STT, image generation.',
-    link: '/docs/extensions/overview',
+    link: '/extensions/overview',
   },
   {
     title: 'Planning & Orchestration',
     description:
       'Multi-step planning engine, human-in-the-loop approvals, adaptive execution runtime.',
-    link: '/docs/features/planning-engine',
+    link: '/features/planning-engine',
   },
   {
     title: 'API Reference',
     description:
       'Auto-generated TypeDoc reference — every class, interface, type, and function documented.',
-    link: '/docs/api/',
+    link: '/api/',
   },
 ];
 
@@ -205,6 +263,7 @@ export default function Home(): React.JSX.Element {
   return (
     <Layout description="AgentOS documentation — cognitive memory, graph-based RAG, HEXACO personalities, and autonomous agent orchestration.">
       <Hero />
+      <QuickStartTracks />
       <Features />
     </Layout>
   );
