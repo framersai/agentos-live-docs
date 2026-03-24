@@ -14,9 +14,16 @@ npm install @framers/agentos
 
 ## Quick Navigation
 
+### Start Here
+
+- [High-Level API](/getting-started/high-level-api) — `generateText()`, `streamText()`, `generateImage()`, and `agent()`
+- [Documentation Index](/getting-started/documentation-index) — Installation, architecture, and core guides
+- [TypeDoc API](/api/) — Generated API reference for the full runtime
+
 ### Getting Started
 
 - [Documentation Index](/getting-started/documentation-index) — Installation and quick start
+- [High-Level API](/getting-started/high-level-api) — `generateText()`, `streamText()`, `generateImage()`, and `agent()`
 - [Ecosystem](/getting-started/ecosystem) — Related packages and resources
 - [Releasing](/getting-started/releasing) — Version history and release process
 

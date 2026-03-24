@@ -11,41 +11,7 @@ Automatic and on-demand detection and redaction of personally identifiable infor
 
 ## Overview
 
-The PII Redaction extension uses a **four-tier detection pipeline** where each tier only fires when the previous tier finds candidates that need deeper analysis. Most messages only hit Tier 1 (regex) — the expensive tiers are lazy and conditional.
-
-```mermaid
-flowchart LR
-    A[Input] --> T1[Tier 1: Regex<br/>570+ patterns<br/>~0ms]
-    T1 --> T2[Tier 2: NLP<br/>compromise<br/>~1ms]
-    T2 -->|names found| T3[Tier 3: NER<br/>BERT model<br/>~50ms]
-    T2 -->|no names| OUT[Output]
-    T3 -->|ambiguous| T4[Tier 4: LLM<br/>Judge<br/>~200ms]
-    T3 -->|confident| OUT
-    T4 --> OUT
-
-    style T1 fill:#2d5016,color:#fff
-    style T2 fill:#1a3a5c,color:#fff
-    style T3 fill:#5c1a3a,color:#fff
-    style T4 fill:#3a1a5c,color:#fff
-```
-
-### How the tiers gate each other
-
-| Tier                       | What it does                                                                                                                                | When it runs                                                                                                 | Cost                                     |
-| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ | ---------------------------------------- |
-| **Tier 1: Regex**          | Pattern-matches structured PII (SSN, credit cards, emails, phones, IBANs, passports, API keys) using 570+ patterns with checksum validation | **Always** — runs on every message                                                                           | ~0ms, ~50KB                              |
-| **Tier 2: NLP Pre-filter** | Scans for name-like tokens using `compromise` (.people(), .places(), .orgs())                                                               | **Always** (if installed) — fast heuristic sweep                                                             | ~1ms, ~250KB                             |
-| **Tier 3: NER Model**      | Runs BERT NER (`Xenova/bert-base-NER`) to confirm/classify candidates from Tier 2                                                           | **Only if Tier 2 found name-like tokens** — skipped entirely for messages with no names                      | ~50ms, ~110MB (lazy-loaded on first use) |
-| **Tier 4: LLM Judge**      | Chain-of-thought prompt to a lightweight LLM asking "Is 'Jordan' a person name or a country here?"                                          | **Only for ambiguous spans** where Tier 3 scored between 0.3-0.7 — most spans are clearly PII or clearly not | ~200ms, API cost per call                |
-
-**Typical costs by message type:**
-
-- `"What's the weather?"` → Tier 1 only → **~0ms** (no PII patterns, no names)
-- `"My SSN is 123-45-6789"` → Tier 1 catches it → **~0ms** (regex match, high confidence)
-- `"Please contact John Smith"` → Tiers 1-3 → **~51ms** (Tier 2 finds "John Smith", Tier 3 confirms PERSON)
-- `"Send this to Jordan"` → Tiers 1-4 → **~251ms** (ambiguous — person name or country? LLM decides)
-
-The extension provides two modes of operation:
+The PII Redaction extension provides two modes of operation:
 
 - **Passive protection** via a built-in guardrail that automatically intercepts and sanitizes input and output content
 - **Active capability** via two agent-callable tools (`pii_scan`, `pii_redact`) for deliberate, on-demand PII handling
@@ -313,7 +279,7 @@ The streaming guardrail uses sentence-boundary buffering (splits on `. `, `? `, 
 
 ## Related Documentation
 
-- [Guardrails](/features/guardrails)
-- [Extension Architecture](/extensions/extension-architecture)
-- [Extensions Overview](/extensions/overview)
-- [Safety Primitives](/features/safety-primitives)
+- [Guardrails](/docs/features/guardrails)
+- [Extension Architecture](/docs/extensions/extension-architecture)
+- [Extensions Overview](/docs/extensions/overview)
+- [Safety Primitives](/docs/features/safety-primitives)

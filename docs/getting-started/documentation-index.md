@@ -10,6 +10,7 @@ sidebar_position: 1
 ### Getting Started
 
 - [**README**](/getting-started/documentation-index) — Installation and quick start
+- [**High-Level API**](/getting-started/high-level-api) — `generateText()`, `streamText()`, `generateImage()`, and `agent()`
 - [**CHANGELOG**](/getting-started/changelog) — Version history and release notes
 
 ### Architecture & Core Concepts
