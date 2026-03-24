@@ -131,7 +131,7 @@ const config: Config = {
         {
           to: '/api/',
           position: 'left',
-          label: 'API Reference',
+          label: 'API',
         },
         {
           href: 'https://agentos.sh',
