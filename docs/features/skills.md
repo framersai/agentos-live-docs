@@ -10,15 +10,18 @@ Skills are modular prompt extensions that give agents domain-specific capabiliti
 
 ## Architecture
 
-The skills system has three layers:
+The skills system has four layers:
 
-| Layer       | Package                            | Role                                                       |
-| ----------- | ---------------------------------- | ---------------------------------------------------------- |
-| **Data**    | `@framers/agentos-skills`          | 18 curated SKILL.md files in `registry/curated/`           |
-| **SDK**     | `@framers/agentos-skills-registry` | Typed catalog, query helpers, snapshot builder             |
-| **Runtime** | `@framers/agentos` (SkillRegistry) | Filesystem discovery, platform filtering, prompt injection |
+| Layer       | Package                            | Role                                                |
+| ----------- | ---------------------------------- | --------------------------------------------------- |
+| **Data**    | `@framers/agentos-skills-registry` | 40 curated SKILL.md files + `registry.json` catalog |
+| **Runtime** | `@framers/agentos-skills`          | Standalone `SkillRegistry` loader/snapshot engine   |
+| **Barrel**  | `@framers/agentos/skills`          | Backward-compatible re-export from the main SDK     |
+| **Tools**   | `@framers/agentos-ext-skills`      | Lazy `skills_*` tools for discovery + enablement    |
 
 ## Curated Skills Catalog
+
+Representative curated skills include:
 
 | Skill                | Category        | Required Tools | Required Secrets                                                |
 | -------------------- | --------------- | -------------- | --------------------------------------------------------------- |
@@ -126,7 +129,7 @@ const available = getAvailableSkills(['filesystem', 'web-search']);
 
 ## Creating Custom Skills
 
-See the [CONTRIBUTING guide](https://github.com/framersai/agentos-skills/blob/main/CONTRIBUTING.md) in the `@framers/agentos-skills` repository for the full submission workflow.
+See the [CONTRIBUTING guide](https://github.com/framersai/agentos-skills-registry/blob/main/CONTRIBUTING.md) in the `@framers/agentos-skills-registry` repository for the full submission workflow.
 
 ### SKILL.md Format
 
@@ -154,6 +157,16 @@ Instructions for the LLM on how to use this skill...
 cd packages/agentos-skills
 node scripts/validate-skill.mjs registry/curated/my-skill/SKILL.md
 ```
+
+## Lazy Skill Tools
+
+If you want the model to inspect or enable curated skills at runtime instead of pre-injecting them into the prompt, install the skills tool extension:
+
+```bash
+npm install @framers/agentos-ext-skills
+```
+
+It exposes `skills_list`, `skills_read`, `skills_status`, `skills_enable`, and `skills_install`.
 
 ## Related
 

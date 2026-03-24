@@ -21,6 +21,11 @@ sidebar_position: 1
 
 #### Planning & Orchestration
 
+- [**Unified Orchestration Layer**](./UNIFIED_ORCHESTRATION.md) — One runtime, three authoring APIs (`AgentGraph`, `workflow()`, `mission()`)
+- [**AgentGraph**](./AGENT_GRAPH.md) — Full graph builder with typed nodes, conditional edges, and subgraphs
+- [**workflow() DSL**](./WORKFLOW_DSL.md) — Deterministic DAG pipelines with branching and parallel joins
+- [**mission() API**](./MISSION_API.md) — Goal-first orchestration driven by the PlanningEngine
+- [**Checkpointing**](./CHECKPOINTING.md) — Resume, fork, replay, and memory consistency semantics
 - [**Planning Engine**](/features/planning-engine) — Multi-step task planning and execution
 - [**Human-in-the-Loop**](/features/human-in-the-loop) — Approval workflows and human oversight
 - [**Agent Communication**](/features/agent-communication) — Inter-agent messaging and coordination

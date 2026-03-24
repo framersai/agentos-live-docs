@@ -57,4 +57,4 @@ import { SkillLoader, SkillRegistry } from '@framers/agentos/skills';
 ## See Also
 
 - [`@framers/agentos-skills-registry`](./agentos-skills-registry) — curated skill catalog
-- [Skills (SKILL.md)](./skill-md) — how to write skills
+- [Skills (SKILL.md)](./skill-format) — how to write skills

@@ -55,7 +55,6 @@ const sidebars = {
             'features/mission-api',
             'features/checkpointing',
             'features/planning-engine',
-            'features/workflow-execution',
             'features/human-in-the-loop',
             'features/agent-communication',
             'features/safety-primitives',
