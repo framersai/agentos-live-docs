@@ -3,7 +3,7 @@ import type { Config } from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
 
 const config: Config = {
-  title: 'AgentOS Docs',
+  title: 'AgentOS — Open-Source TypeScript AI Agent Runtime',
   tagline:
     'Open-source TypeScript runtime for production AI agents — multimodal RAG, multi-agent orchestration, 37 channels, guardrails, 21 LLM providers.',
   favicon: 'img/favicon.svg',
