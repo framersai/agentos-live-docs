@@ -57,7 +57,12 @@ async function assertPathContainment(
     }
   }
 
-  const realParent = path.resolve(allowedParent);
+  let realParent: string;
+  try {
+    realParent = await fs.realpath(allowedParent);
+  } catch {
+    realParent = path.resolve(allowedParent);
+  }
 
   if (!realResolved.startsWith(realParent + path.sep) && realResolved !== realParent) {
     throw new Error(
