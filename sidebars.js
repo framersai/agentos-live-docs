@@ -100,7 +100,7 @@ const sidebars = {
           type: 'category',
           label: 'Voice & Speech',
           collapsed: false,
-          items: ['extensions/built-in/voice-synthesis'],
+          items: ['features/voice-pipeline', 'extensions/built-in/voice-synthesis'],
         },
         {
           type: 'category',

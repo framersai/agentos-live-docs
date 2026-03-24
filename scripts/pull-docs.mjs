@@ -205,6 +205,12 @@ const agentosGuides = [
     position: 13,
   },
   {
+    src: 'VOICE_PIPELINE.md',
+    dest: 'features/voice-pipeline.md',
+    title: 'Voice Pipeline',
+    position: 14,
+  },
+  {
     src: 'RFC_EXTENSION_STANDARDS.md',
     dest: 'extensions/extension-standards.md',
     title: 'Extension Standards (RFC)',
@@ -451,6 +457,7 @@ const linkRewrites = {
   'EVALUATION_FRAMEWORK.md': '/features/evaluation-framework',
   'COST_OPTIMIZATION.md': '/features/cost-optimization',
   'RECURSIVE_SELF_BUILDING_AGENTS.md': '/features/recursive-self-building',
+  'VOICE_PIPELINE.md': '/features/voice-pipeline',
   'RFC_EXTENSION_STANDARDS.md': '/extensions/extension-standards',
   'RELEASING.md': '/getting-started/releasing',
   'ECOSYSTEM.md': '/getting-started/ecosystem',
