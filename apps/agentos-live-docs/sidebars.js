@@ -206,6 +206,15 @@ const sidebars = {
               label: 'Provenance',
               items: ['extensions/built-in/anchor-providers', 'extensions/built-in/tip-ingestion'],
             },
+            {
+              type: 'category',
+              label: 'Voice Extensions',
+              items: [
+                'features/voice-pipeline',
+                'features/speech-providers',
+                'features/telephony-providers',
+              ],
+            },
           ],
         },
       ],
