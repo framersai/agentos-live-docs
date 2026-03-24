@@ -85,31 +85,6 @@ All extensions are published to npm under the `@framers` scope.
 | [`@framers/agentos-ext-channel-tiktok`](./registry/curated/channels/tiktok)                   | TikTok social channel (API for Business)             |     |
 | [`@framers/agentos-ext-channel-email`](./registry/curated/channels/email)                     | Email messaging channel (nodemailer/imapflow)        |     |
 
-### Voice & Speech
-
-#### Streaming Pipeline
-
-| Package                                         | Description                                     | npm |
-| ----------------------------------------------- | ----------------------------------------------- | --- |
-| `@framers/agentos-ext-streaming-stt-deepgram`   | Real-time STT via Deepgram WebSocket            |     |
-| `@framers/agentos-ext-streaming-stt-whisper`    | Chunked streaming STT via Whisper               |     |
-| `@framers/agentos-ext-streaming-tts-openai`     | Streaming TTS with sentence chunking            |     |
-| `@framers/agentos-ext-streaming-tts-elevenlabs` | Streaming TTS via ElevenLabs WebSocket          |     |
-| `@framers/agentos-ext-diarization`              | Speaker identification with provider delegation |     |
-| `@framers/agentos-ext-endpoint-semantic`        | LLM-based turn-completeness detection           |     |
-
-#### Provider Ecosystem
-
-| Package                                 | Description                           | npm |
-| --------------------------------------- | ------------------------------------- | --- |
-| `@framers/agentos-ext-google-cloud-stt` | Google Cloud Speech-to-Text           |     |
-| `@framers/agentos-ext-google-cloud-tts` | Google Cloud Text-to-Speech           |     |
-| `@framers/agentos-ext-amazon-polly`     | Amazon Polly neural TTS               |     |
-| `@framers/agentos-ext-vosk`             | Local offline STT via Vosk            |     |
-| `@framers/agentos-ext-piper`            | Local offline TTS via Piper           |     |
-| `@framers/agentos-ext-porcupine`        | Porcupine wake-word detection         |     |
-| `@framers/agentos-ext-openwakeword`     | OpenWakeWord ONNX wake-word detection |     |
-
 ## Repository Structure
 
 ```
