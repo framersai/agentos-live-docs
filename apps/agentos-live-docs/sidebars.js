@@ -49,7 +49,13 @@ const sidebars = {
           label: 'Planning & Orchestration',
           collapsed: false,
           items: [
+            'features/unified-orchestration',
+            'features/agent-graph',
+            'features/workflow-dsl',
+            'features/mission-api',
+            'features/checkpointing',
             'features/planning-engine',
+            'features/workflow-execution',
             'features/human-in-the-loop',
             'features/agent-communication',
             'features/safety-primitives',
