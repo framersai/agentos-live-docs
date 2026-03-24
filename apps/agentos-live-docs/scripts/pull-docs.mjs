@@ -211,6 +211,18 @@ const agentosGuides = [
     position: 14,
   },
   {
+    src: 'SPEECH_PROVIDERS.md',
+    dest: 'features/speech-providers.md',
+    title: 'Speech Providers',
+    position: 15,
+  },
+  {
+    src: 'TELEPHONY_PROVIDERS.md',
+    dest: 'features/telephony-providers.md',
+    title: 'Telephony Providers',
+    position: 16,
+  },
+  {
     src: 'RFC_EXTENSION_STANDARDS.md',
     dest: 'extensions/extension-standards.md',
     title: 'Extension Standards (RFC)',
@@ -458,6 +470,8 @@ const linkRewrites = {
   'COST_OPTIMIZATION.md': '/features/cost-optimization',
   'RECURSIVE_SELF_BUILDING_AGENTS.md': '/features/recursive-self-building',
   'VOICE_PIPELINE.md': '/features/voice-pipeline',
+  'SPEECH_PROVIDERS.md': '/features/speech-providers',
+  'TELEPHONY_PROVIDERS.md': '/features/telephony-providers',
   'RFC_EXTENSION_STANDARDS.md': '/extensions/extension-standards',
   'RELEASING.md': '/getting-started/releasing',
   'ECOSYSTEM.md': '/getting-started/ecosystem',
