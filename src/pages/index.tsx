@@ -134,71 +134,38 @@ function InstallTabs() {
 /* ------------------------------------------------------------------ */
 
 const quickStartCode = {
-  'Provider-First': `import { generateText, streamText, generateImage, agent } from '@framers/agentos';
+  Multimodal: `import { generateText, streamText, generateImage, agent } from '@framers/agentos';
 
-// Just specify the provider — smart defaults pick the right model
-const result = await generateText({
-  provider: 'openai',
-  prompt: 'Explain TCP handshakes in 3 bullets.',
+// Text — just set the provider, AgentOS picks the model
+const { text } = await generateText({ provider: 'openai', prompt: 'Explain QUIC.' });
+
+// Images — cloud or local (Ollama, SD WebUI)
+const poster = await generateImage({
+  provider: 'stability',
+  model: 'stable-image-core',
+  prompt: 'Art deco travel poster for a moon colony',
+  providerOptions: { stability: { stylePreset: 'illustration' } },
 });
-console.log(result.text);
 
-// Stream responses
-for await (const delta of streamText({ provider: 'anthropic', prompt: 'Explain UDP.' }).textStream) {
+// Streaming
+for await (const delta of streamText({ provider: 'anthropic', prompt: 'Compare TCP vs UDP.' }).textStream) {
   process.stdout.write(delta);
 }
 
-// Generate images
-const image = await generateImage({ provider: 'openai', prompt: 'Neon city at night.' });
+// Stateful agent with sessions and personality
+const tutor = agent({
+  provider: 'openai',
+  instructions: 'You are a networking tutor.',
+  personality: { openness: 0.9, conscientiousness: 0.8 },  // HEXACO
+});
+const session = tutor.session('demo');
+await session.send('What is QUIC?');
+await session.send('How does it compare to HTTP/2?');`,
 
-// Stateful agent with sessions
-const assistant = agent({ provider: 'openai', instructions: 'You are a networking tutor.' });
-const reply = await assistant.session('demo').send('Compare TCP and UDP.');`,
-
-  'Workflows (YAML)': `# research-pipeline.workflow.yaml
-name: research-pipeline
-input:
-  topic: { type: string, required: true }
-returns:
-  summary: { type: string }
-steps:
-  - id: search
-    tool: web_search
-  - id: evaluate
-    gmi:
-      instructions: "Evaluate source quality, assign confidence 0-1"
-  - id: judge
-    judge:
-      rubric: "Score accuracy (1-10) and credibility (1-10)"
-      threshold: 7
-  - id: summarize
-    gmi:
-      instructions: "Write a cited summary"
-    guardrails:
-      output: [grounding-guard]`,
-
-  AgentGraph: `import { AgentGraph, toolNode, gmiNode, START, END } from '@framers/agentos/orchestration';
+  'Deep Research': `import { mission, toolNode, humanNode } from '@framers/agentos/orchestration';
 import { z } from 'zod';
 
-const graph = new AgentGraph({
-  input: z.object({ topic: z.string() }),
-  scratch: z.object({ confidence: z.number().default(0) }),
-  artifacts: z.object({ summary: z.string() }),
-})
-  .addNode('search', toolNode('web_search'))
-  .addNode('evaluate', gmiNode({ instructions: 'Score quality', executionMode: 'single_turn' }))
-  .addNode('summarize', gmiNode({ instructions: 'Write summary', executionMode: 'single_turn' }))
-  .addEdge(START, 'search')
-  .addEdge('search', 'evaluate')
-  .addConditionalEdge('evaluate', (s) => s.scratch.confidence > 0.8 ? 'summarize' : 'search')
-  .addEdge('summarize', END)
-  .compile();
-
-const result = await graph.invoke({ topic: 'quantum computing' });`,
-
-  Mission: `import { mission, toolNode, humanNode } from '@framers/agentos/orchestration';
-import { z } from 'zod';
-
+// Goal-first orchestration — the planner decides the steps
 const researcher = mission('deep-research')
   .input(z.object({ topic: z.string() }))
   .goal('Research {topic} thoroughly and produce a cited summary')
@@ -210,11 +177,87 @@ const researcher = mission('deep-research')
     guardrails: ['grounding-guard', 'pii-redaction'],
   })
   .anchor('fact-check', toolNode('grounding_verifier'), { phase: 'validate', required: true })
-  .anchor('human-review', humanNode({ prompt: 'Verify sources' }), { phase: 'validate', after: 'fact-check' })
+  .anchor('human-review', humanNode({ prompt: 'Verify sources' }), { phase: 'validate' })
   .compile();
 
-const plan = await researcher.explain({ topic: 'AI safety' });
-const result = await researcher.invoke({ topic: 'AI safety' });`,
+const plan = await researcher.explain({ topic: 'AI safety' });  // Preview the plan
+const result = await researcher.invoke({ topic: 'AI safety' });  // Execute it`,
+
+  'Voice IVR': `import { AgentOS } from '@framers/agentos';
+
+const agent = new AgentOS();
+await agent.initialize({
+  provider: 'openai',
+  voice: {
+    stt: { provider: 'deepgram', model: 'nova-2' },
+    tts: { provider: 'elevenlabs', model: 'eleven_turbo_v2', voice: 'Rachel' },
+    vad: { provider: 'silero' },
+    endpointDetection: 'acoustic',   // or 'heuristic' | 'semantic'
+    bargeinStrategy: 'soft-fade',    // or 'hard-cut'
+  },
+  telephony: {
+    provider: 'twilio',              // or 'telnyx' | 'plivo'
+    webhookPath: '/voice/webhook',
+  },
+  guardrails: ['pii-redaction'],     // Redact PII from voice transcripts
+});
+
+// Handle inbound calls
+agent.onCall(async (call) => {
+  for await (const chunk of agent.processVoice(call)) {
+    call.stream(chunk);              // Stream TTS audio back
+  }
+});`,
+
+  'Emergent Tools': `import { AgentOS } from '@framers/agentos';
+
+// Enable emergent capabilities — agents can forge new tools at runtime
+const agent = new AgentOS();
+await agent.initialize({
+  provider: 'openai',
+  emergent: true,
+  emergentConfig: {
+    maxSessionTools: 10,
+    sandboxTimeoutMs: 5000,
+    judgeModel: 'gpt-4o-mini',       // LLM-as-judge for safety review
+  },
+});
+
+// The agent now has forge_tool. When it encounters a task with no matching
+// tool, it creates one — compose mode (chain existing tools) or sandbox
+// mode (isolated V8). Every tool is judge-reviewed before activation.
+
+// Tools start at session tier, auto-promote to agent tier after 5+ uses
+// with >0.8 confidence, then require human approval for shared tier.
+
+// Export a forged tool as a portable YAML package:
+// wunderland emergent export <id> --output ./my-tool.emergent-tool.yaml`,
+
+  AgentGraph: `import { AgentGraph, toolNode, gmiNode, judgeNode, START, END } from '@framers/agentos/orchestration';
+import { z } from 'zod';
+
+const graph = new AgentGraph({
+  input: z.object({ topic: z.string() }),
+  scratch: z.object({ confidence: z.number().default(0) }),
+  artifacts: z.object({ summary: z.string(), image: z.string().optional() }),
+})
+  .addNode('search', toolNode('web_search'))
+  .addNode('evaluate', gmiNode({ instructions: 'Score source quality 0-1' }))
+  .addNode('judge', judgeNode({
+    rubric: 'Score accuracy (1-10) and credibility (1-10)',
+    threshold: 7,
+  }))
+  .addNode('summarize', gmiNode({ instructions: 'Write a cited summary' }))
+  .addNode('illustrate', toolNode('generate_image'))
+  .addEdge(START, 'search')
+  .addEdge('search', 'evaluate')
+  .addConditionalEdge('evaluate', (s) => s.scratch.confidence > 0.8 ? 'judge' : 'search')
+  .addEdge('judge', 'summarize')
+  .addEdge('summarize', 'illustrate')
+  .addEdge('illustrate', END)
+  .compile({ checkpoint: 'every_node' });  // Enable time-travel
+
+const result = await graph.invoke({ topic: 'quantum computing' });`,
 };
 
 function QuickStartTabs() {
@@ -299,58 +342,76 @@ function ArchitectureDiagram() {
 
 const features = [
   {
-    title: 'Provider-First API',
+    title: 'Multimodal Provider API',
     description:
-      'Just set provider: "openai" — AgentOS picks the best model. Cloud (OpenAI, Anthropic, Gemini, Stability, Replicate) or local (Ollama, SD WebUI). 21 providers, auto-fallback.',
+      'Text, images, embeddings, and speech from one API. 21 cloud providers (OpenAI, Anthropic, Gemini, Stability, Replicate) + local (Ollama, SD WebUI). Auto-fallback between providers.',
     link: '/getting-started/high-level-api',
   },
   {
-    title: 'Graph Orchestration',
+    title: 'Deep Research Agents',
     description:
-      'Three authoring APIs — AgentGraph (explicit nodes/edges), workflow() (DAG pipelines), mission() (goal-first planning) — compile to one IR with checkpointing and time-travel.',
-    link: '/features/unified-orchestration',
+      'mission() API with goal-first planning, multi-source search, grounding verification, and human-in-the-loop review. Agents plan their own steps, discover tools, and self-evaluate.',
+    link: '/features/deep-research',
   },
   {
     title: 'Emergent Capabilities',
     description:
-      'Agents forge new tools at runtime via compose (chain existing tools) or sandbox (isolated V8). LLM-as-judge verification, tiered promotion, portable YAML export.',
+      'Agents forge new tools at runtime — compose (chain existing tools) or sandbox (isolated V8 with allowlists). LLM-as-judge safety review, tiered promotion, portable YAML export.',
     link: '/features/emergent-capabilities',
+  },
+  {
+    title: 'Voice & IVR Pipeline',
+    description:
+      'Full-duplex voice with 3 endpoint detection modes, barge-in handling, 28 STT/TTS providers, diarization. Twilio/Telnyx/Plivo telephony bridging for production IVR.',
+    link: '/features/voice-pipeline',
+  },
+  {
+    title: 'Graph Orchestration',
+    description:
+      'Three authoring APIs — AgentGraph, workflow() DSL, mission() — compile to one IR. judgeNode for evaluation, checkpointing for time-travel, streaming events.',
+    link: '/features/unified-orchestration',
   },
   {
     title: 'Cognitive Memory',
     description:
-      'Ebbinghaus decay curves, spreading activation, Baddeley working memory model, personality-driven encoding. GraphRAG retrieval with episodic-to-semantic consolidation.',
+      'Ebbinghaus decay, spreading activation, Baddeley working memory, personality-driven encoding (HEXACO). GraphRAG retrieval with episodic-to-semantic consolidation.',
     link: '/features/cognitive-memory',
   },
   {
     title: 'Streaming Guardrails',
     description:
-      '5-tier pipeline: PII redaction (4-layer), ML classifiers (ONNX BERT), topicality drift detection, code safety (OWASP), grounding guard (NLI). Sentence-boundary buffered for streaming.',
+      '5-tier pipeline: PII redaction (regex + NLP + NER + LLM), ML classifiers (ONNX BERT), topicality drift, code safety (OWASP), grounding guard (NLI). Sentence-boundary buffered.',
     link: '/features/guardrails',
   },
   {
-    title: 'Voice Pipeline',
+    title: 'Evaluation Framework',
     description:
-      'Full-duplex voice with acoustic/heuristic/semantic endpoint detection, hard-cut and soft-fade barge-in, 28 STT/TTS providers, Twilio/Telnyx/Plivo telephony.',
-    link: '/features/voice-pipeline',
+      'Dataset-driven evals with candidates, graders, and experiments. LLM prompt runner and HTTP endpoint runner. Compare baseline vs challenger. Drizzle ORM with SQLite/Postgres.',
+    link: '/features/evaluation-framework',
   },
   {
     title: 'Capability Discovery',
     description:
-      '3-tier semantic discovery: category summaries (150 tokens) → top-5 matches (200 tokens) → full schemas on demand. 89% token reduction via embedding search + graph re-ranking.',
+      '3-tier semantic discovery: category summaries (150 tokens) → top-5 matches (200 tokens) → full schemas on demand. 89% token reduction. Agents self-discover tools mid-conversation.',
     link: '/features/capability-discovery',
   },
   {
     title: 'Provenance & Audit',
     description:
-      'Signed event ledger (Ed25519 + SHA-256 hash chain), soft-delete via tombstones, revision history, autonomy guard enforcement. Merkle anchoring for external verification.',
+      'Signed event ledger (Ed25519 + SHA-256 hash chain), soft-delete tombstones, revision history, autonomy guard. Merkle anchoring for tamper-evident external verification.',
     link: '/features/provenance-immutability',
   },
   {
     title: '37 Channel Adapters',
     description:
-      'Telegram, Discord, Slack, WhatsApp, Twitter/X, LinkedIn, email, SMS, and 29 more. Multi-channel routing, content adaptation, custom adapter API.',
+      'Telegram, Discord, Slack, WhatsApp, Twitter/X, LinkedIn, email, SMS, and 29 more. Multi-channel routing, content adaptation engine, and custom adapter API.',
     link: '/extensions/overview',
+  },
+  {
+    title: 'Immutable Agents',
+    description:
+      'Sealed storage policy, toolset pinning, secret rotation, soft-forget memory. Full provenance audit trail. Deploy agents that cannot be tampered with after initialization.',
+    link: '/features/immutable-agents',
   },
 ];
 
