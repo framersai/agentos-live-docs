@@ -5,7 +5,7 @@ import type * as Preset from '@docusaurus/preset-classic';
 const config: Config = {
   title: 'AgentOS — Open-Source TypeScript AI Agent Runtime',
   tagline:
-    'Open-source TypeScript runtime for production AI agents — multimodal RAG, multi-agent orchestration, 37 channels, guardrails, 21 LLM providers.',
+    'Open-source TypeScript runtime for autonomous AI agents — unified graph orchestration, cognitive memory, streaming guardrails, voice pipeline, 21 LLM providers.',
   favicon: 'img/favicon.svg',
   url: 'https://docs.agentos.sh',
   baseUrl: '/',
