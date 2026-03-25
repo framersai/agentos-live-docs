@@ -94,14 +94,14 @@ jobs:
             -Pandroid.injected.signing.key.password="$ANDROID_KEY_PASSWORD"
 
       - name: Upload APK artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: fabric-android-apk
           path: apps/fabric-mobile/android/app/build/outputs/apk/**/*.apk
           if-no-files-found: warn
 
       - name: Upload AAB artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: fabric-android-aab
           path: apps/fabric-mobile/android/app/build/outputs/bundle/**/*.aab
@@ -216,7 +216,7 @@ jobs:
             -exportPath build/ipa
 
       - name: Upload IPA artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: fabric-ios-ipa
           path: apps/fabric-mobile/ios/App/build/ipa/*.ipa
