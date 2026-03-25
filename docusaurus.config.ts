@@ -213,6 +213,10 @@ const config: Config = {
           sidebarId: 'guideSidebar',
           position: 'left',
           label: 'Guides',
+          // Prevent "Guides" from highlighting on the homepage — the root
+          // index doc belongs to guideSidebar, so the default behaviour marks
+          // the item active on "/".  This regex only matches actual sub-paths.
+          activeBaseRegex: '/(getting-started|architecture|features|extensions|skills|api)/',
         },
         {
           to: '/api/',
