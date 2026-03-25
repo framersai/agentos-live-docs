@@ -256,49 +256,26 @@ function QuickStartTabs() {
 /*  Architecture Diagram (Mermaid)                                     */
 /* ------------------------------------------------------------------ */
 
-const architectureMermaid = `graph TB
-    subgraph Runtime["AgentOS Runtime"]
-        API["<b>High-Level API</b><br/>generateText · streamText · generateImage<br/>agent() · mission() · workflow() · AgentGraph"]
+const architectureMermaid = `flowchart TD
+    API["<b>High-Level API</b><br/>generateText · streamText · generateImage · agent()"]
+    API --> GMI["<b>Cognitive Substrate</b> — GMI<br/>Persona · HEXACO · Working Memory · ReAct Loop"]
+    GMI --> MEM["<b>Memory</b><br/>Cognitive + GraphRAG + Ebbinghaus Decay"]
+    GMI --> TOOLS["<b>Tools</b><br/>23+ Built-in · Semantic Discovery · Emergent Forge"]
+    GMI --> GUARD["<b>Guardrails</b><br/>5-Tier Pipeline · PII · ML Classifiers · Grounding"]
+    TOOLS --> GRAPH["<b>Graph Runtime</b><br/>AgentGraph · workflow() · mission() · Checkpoints"]
+    GRAPH --> VOICE["<b>Voice Pipeline</b><br/>28 STT/TTS Providers · VAD · Barge-in"]
+    GRAPH --> CHAN["<b>Channels</b><br/>37 Platform Adapters"]
+    GRAPH --> LLM["<b>LLM Providers</b><br/>21 Providers · Auto-fallback · Local (Ollama)"]
 
-        subgraph GMI["Cognitive Substrate — GMI"]
-            WM["Working<br/>Memory"] ~~~ CM["Context<br/>Manager"] ~~~ PO["Persona<br/>Overlay"] ~~~ LM["Learning<br/>Module"]
-        end
-
-        API --> GMI
-
-        subgraph Core["Core Services"]
-            MEM["Memory<br/><i>Cognitive + GraphRAG</i>"]
-            TOOLS["Tools<br/><i>23+ & Discovery</i>"]
-            GUARD["Guardrails<br/><i>5-Tier Pipeline</i>"]
-        end
-
-        GMI --> MEM
-        GMI --> TOOLS
-        GMI --> GUARD
-
-        subgraph GraphRT["Graph Runtime"]
-            EXEC["CompiledExecutionGraph"] ~~~ SCHED["NodeScheduler"]
-            LOOP["LoopController"] ~~~ CKPT["Checkpoints"]
-        end
-
-        TOOLS --> GraphRT
-
-        subgraph Infra["Infrastructure"]
-            VOICE["Voice Pipeline<br/><i>STT / TTS</i>"]
-            CHAN["Channels<br/><i>37 Adapters</i>"]
-            LLM["LLM Providers<br/><i>21 Providers</i>"]
-        end
-
-        GraphRT --> VOICE
-        GraphRT --> CHAN
-        GraphRT --> LLM
-    end
-
-    style Runtime fill:#0e0e18,stroke:#c9a227,stroke-width:2px,color:#f2f2fa
-    style GMI fill:#151520,stroke:#00f5ff,stroke-width:1px,color:#f2f2fa
-    style Core fill:#151520,stroke:#22c55e,stroke-width:1px,color:#f2f2fa
-    style GraphRT fill:#151520,stroke:#f59e0b,stroke-width:1px,color:#f2f2fa
-    style Infra fill:#151520,stroke:#8b5cf6,stroke-width:1px,color:#f2f2fa`;
+    style API fill:#1e1b4b,stroke:#818cf8,stroke-width:2px,color:#e0e7ff
+    style GMI fill:#1e1b4b,stroke:#00f5ff,stroke-width:2px,color:#e0e7ff
+    style MEM fill:#0f172a,stroke:#22c55e,color:#e0e7ff
+    style TOOLS fill:#0f172a,stroke:#22c55e,color:#e0e7ff
+    style GUARD fill:#0f172a,stroke:#ef4444,color:#e0e7ff
+    style GRAPH fill:#1e1b4b,stroke:#f59e0b,stroke-width:2px,color:#e0e7ff
+    style VOICE fill:#0f172a,stroke:#8b5cf6,color:#e0e7ff
+    style CHAN fill:#0f172a,stroke:#8b5cf6,color:#e0e7ff
+    style LLM fill:#0f172a,stroke:#8b5cf6,color:#e0e7ff`;
 
 function ArchitectureDiagram() {
   return (
@@ -322,58 +299,58 @@ function ArchitectureDiagram() {
 
 const features = [
   {
-    title: 'Unified Orchestration',
+    title: 'Provider-First API',
     description:
-      'Three authoring APIs (AgentGraph, workflow, mission) compile to one IR. Visual builder, YAML authoring, checkpointing, time-travel.',
+      'Just set provider: "openai" — AgentOS picks the best model. Cloud (OpenAI, Anthropic, Gemini, Stability, Replicate) or local (Ollama, SD WebUI). 21 providers, auto-fallback.',
+    link: '/getting-started/high-level-api',
+  },
+  {
+    title: 'Graph Orchestration',
+    description:
+      'Three authoring APIs — AgentGraph (explicit nodes/edges), workflow() (DAG pipelines), mission() (goal-first planning) — compile to one IR with checkpointing and time-travel.',
     link: '/features/unified-orchestration',
   },
   {
-    title: 'Provider-First API',
+    title: 'Emergent Capabilities',
     description:
-      'Just specify provider: "openai" — smart defaults pick the right model for text, images, embeddings, and speech.',
-    link: '/getting-started/high-level-api',
+      'Agents forge new tools at runtime via compose (chain existing tools) or sandbox (isolated V8). LLM-as-judge verification, tiered promotion, portable YAML export.',
+    link: '/features/emergent-capabilities',
   },
   {
     title: 'Cognitive Memory',
     description:
-      'Ebbinghaus decay, spreading activation, Baddeley working memory, personality-driven encoding with GraphRAG retrieval.',
+      'Ebbinghaus decay curves, spreading activation, Baddeley working memory model, personality-driven encoding. GraphRAG retrieval with episodic-to-semantic consolidation.',
     link: '/features/cognitive-memory',
   },
   {
     title: 'Streaming Guardrails',
     description:
-      '5-tier security: PII redaction, ML classifiers, topicality, code safety, grounding guard. Sentence-boundary buffering for streaming.',
+      '5-tier pipeline: PII redaction (4-layer), ML classifiers (ONNX BERT), topicality drift detection, code safety (OWASP), grounding guard (NLI). Sentence-boundary buffered for streaming.',
     link: '/features/guardrails',
   },
   {
     title: 'Voice Pipeline',
     description:
-      'Full-duplex voice with endpoint detection, barge-in handling, 21 STT/TTS providers, telephony bridging.',
+      'Full-duplex voice with acoustic/heuristic/semantic endpoint detection, hard-cut and soft-fade barge-in, 28 STT/TTS providers, Twilio/Telnyx/Plivo telephony.',
     link: '/features/voice-pipeline',
   },
   {
     title: 'Capability Discovery',
     description:
-      '3-tier semantic discovery — 89% token reduction. Agents self-discover tools mid-conversation via embedding search + graph re-ranking.',
+      '3-tier semantic discovery: category summaries (150 tokens) → top-5 matches (200 tokens) → full schemas on demand. 89% token reduction via embedding search + graph re-ranking.',
     link: '/features/capability-discovery',
+  },
+  {
+    title: 'Provenance & Audit',
+    description:
+      'Signed event ledger (Ed25519 + SHA-256 hash chain), soft-delete via tombstones, revision history, autonomy guard enforcement. Merkle anchoring for external verification.',
+    link: '/features/provenance-immutability',
   },
   {
     title: '37 Channel Adapters',
     description:
-      'Telegram, Discord, Slack, WhatsApp, Twitter/X, LinkedIn, email, SMS, and 29 more. Full Postiz parity.',
+      'Telegram, Discord, Slack, WhatsApp, Twitter/X, LinkedIn, email, SMS, and 29 more. Multi-channel routing, content adaptation, custom adapter API.',
     link: '/extensions/overview',
-  },
-  {
-    title: 'LLM-as-Judge',
-    description:
-      'judgeNode with structured rubric scoring, multi-judge evaluation pipelines, and threshold-based routing.',
-    link: '/features/unified-orchestration',
-  },
-  {
-    title: '21 LLM Providers',
-    description:
-      'OpenAI, Anthropic, Gemini, Ollama, OpenRouter, Cohere, Replicate, and 14 more. Auto-fallback and cost optimization.',
-    link: '/architecture/system-architecture',
   },
 ];
 
