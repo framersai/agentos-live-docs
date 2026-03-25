@@ -69,6 +69,12 @@ npm install @framers/agentos
 - [Recursive Self-Building](/features/recursive-self-building) — Self-modifying agent patterns
 - [Agency Collaboration](/features/agency-collaboration) — Multi-agent coordination
 
+### Voice & IVR
+
+- [Voice Pipeline](/features/voice-pipeline) — End-to-end voice conversation architecture
+- [Speech Providers](/features/speech-providers) — STT and TTS provider catalog and configuration
+- [Telephony Providers](/features/telephony-providers) — Twilio, Telnyx, Plivo, and SIP integration
+
 ### Skills & Capability Discovery
 
 - [Skills Overview](/skills/overview) — SKILL.md format, loading, and semantic discovery integration
