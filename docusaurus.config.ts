@@ -97,7 +97,14 @@ const config: Config = {
           sidebarPath: './sidebars.js',
           editUrl: 'https://github.com/framersai/agentos-live-docs/tree/master/docs/',
         },
-        blog: false,
+        blog: {
+          showReadingTime: true,
+          blogTitle: 'AgentOS Blog',
+          blogDescription:
+            'News, updates, and insights about AgentOS, AI agents, and multi-agent orchestration.',
+          blogSidebarTitle: 'Recent posts',
+          blogSidebarCount: 'ALL',
+        },
         theme: {
           customCss: './src/css/custom.css',
         },
@@ -132,6 +139,11 @@ const config: Config = {
           to: '/api/',
           position: 'left',
           label: 'API',
+        },
+        {
+          to: '/blog',
+          position: 'left',
+          label: 'Blog',
         },
         {
           href: 'https://agentos.sh',
