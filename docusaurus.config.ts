@@ -47,6 +47,43 @@ const config: Config = {
       tagName: 'meta',
       attributes: { name: 'author', content: 'Framers — https://frame.dev' },
     },
+    {
+      tagName: 'script',
+      attributes: { type: 'application/ld+json' },
+      innerHTML: JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'WebSite',
+        name: 'AgentOS Documentation',
+        url: 'https://docs.agentos.sh',
+        description:
+          'Official documentation for AgentOS — open-source TypeScript AI agent framework.',
+        publisher: {
+          '@type': 'Organization',
+          name: 'Framers',
+          url: 'https://frame.dev',
+        },
+        potentialAction: {
+          '@type': 'SearchAction',
+          target: 'https://docs.agentos.sh/?q={search_term_string}',
+          'query-input': 'required name=search_term_string',
+        },
+      }),
+    },
+    {
+      tagName: 'script',
+      attributes: { type: 'application/ld+json' },
+      innerHTML: JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'SoftwareApplication',
+        name: 'AgentOS',
+        applicationCategory: 'DeveloperApplication',
+        operatingSystem: 'Cross-platform',
+        offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+        url: 'https://agentos.sh',
+        downloadUrl: 'https://www.npmjs.com/package/@framers/agentos',
+        codeRepository: 'https://github.com/framersai/agentos',
+      }),
+    },
   ],
 
   i18n: {
