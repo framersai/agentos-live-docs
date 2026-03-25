@@ -222,6 +222,33 @@ const agentosGuides = [
     title: 'Telephony Providers',
     position: 16,
   },
+  // Memory
+  {
+    src: 'COGNITIVE_MEMORY.md',
+    dest: 'features/cognitive-memory.md',
+    title: 'Cognitive Memory',
+    position: 1,
+  },
+  {
+    src: 'WORKING_MEMORY.md',
+    dest: 'features/working-memory.md',
+    title: 'Working Memory',
+    position: 2,
+  },
+  // Capability & Emergent
+  {
+    src: 'CAPABILITY_DISCOVERY.md',
+    dest: 'features/capability-discovery.md',
+    title: 'Capability Discovery',
+    position: 1,
+  },
+  {
+    src: 'EMERGENT_CAPABILITIES.md',
+    dest: 'features/emergent-capabilities.md',
+    title: 'Emergent Capabilities',
+    position: 2,
+  },
+  // Extensions standards
   {
     src: 'RFC_EXTENSION_STANDARDS.md',
     dest: 'extensions/extension-standards.md',

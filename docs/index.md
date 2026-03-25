@@ -31,6 +31,7 @@ npm install @framers/agentos
 
 - [System Architecture](/architecture/system-architecture) — System design and core internals
 - [Platform Support](/architecture/platform-support) — Supported environments
+- [Tool Calling & Lazy Loading](/architecture/tool-calling-and-loading) — Extension loading, schema-on-demand, and descriptor IDs
 - [Observability (OpenTelemetry)](/architecture/observability) — Traces, metrics, and OTEL-compatible logging (opt-in)
 - [Logging (Pino + OpenTelemetry)](/architecture/logging) — Structured logs, trace correlation, and OTEL LogRecord export (opt-in)
 
@@ -48,18 +49,25 @@ npm install @framers/agentos
 ### Safety & Security
 
 - [Guardrails](/features/guardrails) — Content filtering, PII redaction, and folder-level filesystem permissions
+- [Creating Custom Guardrails](/features/creating-guardrails) — Building and composing guardrail pipelines
 - [Safety Primitives](/features/safety-primitives) — Circuit breakers, cost guards, stuck detection, and tool execution guards
+- [Provenance & Immutability](/features/provenance-immutability) — Signed event ledger, soft-delete tombstones, revision history, and autonomy guard
+- [Immutable Agents](/features/immutable-agents) — Toolset pinning, secret rotation, and soft-forget memory patterns
 
 ### Memory & Storage
 
 - [Cognitive Memory](/features/cognitive-memory) — Personality-modulated memory, retrieval, and consolidation
+- [Working Memory](/features/working-memory) — Markdown notes and Baddeley slot-model working memory
 - [RAG Memory](/features/rag-memory) — Vector storage and retrieval
+- [Multimodal RAG](/features/multimodal-rag) — Image and audio embeddings
 - [SQL Storage](/features/sql-storage) — Database adapters
 - [Client-Side Storage](/features/client-side-storage) — Browser and local persistence
 
-### AI & LLM
+### Capabilities & AI
 
-- [Speech Runtime](/features/speech-runtime) — Unified STT, TTS, VAD, and provider abstraction
+- [Capability Discovery](/features/capability-discovery) — Tiered semantic discovery (~90% token reduction)
+- [Emergent Capabilities](/features/emergent-capabilities) — Runtime tool creation, sandboxed execution, and LLM-as-judge verification
+- [Deep Research](/features/deep-research) — Multi-source research pipeline with query classification
 - [Structured Output](/features/structured-output) — JSON schema validation
 - [Evaluation Framework](/features/evaluation-framework) — Testing and benchmarks
 - [Cost Optimization](/features/cost-optimization) — Token usage and caching
@@ -71,21 +79,28 @@ npm install @framers/agentos
 
 ### Voice & IVR
 
-- [Voice Pipeline](/features/voice-pipeline) — End-to-end voice conversation architecture
-- [Speech Providers](/features/speech-providers) — STT and TTS provider catalog and configuration
-- [Telephony Providers](/features/telephony-providers) — Twilio, Telnyx, Plivo, and SIP integration
+- [Voice Pipeline](/features/voice-pipeline) — End-to-end voice conversation architecture, VAD, barge-in, and turn detection
+- [Speech Providers](/features/speech-providers) — Full catalog of STT, TTS, VAD, and wake-word providers
+- [Telephony Providers](/features/telephony-providers) — Twilio, Telnyx, Plivo webhook setup and call management
 
-### Skills & Capability Discovery
+### Skills
 
 - [Skills Overview](/skills/overview) — SKILL.md format, loading, and semantic discovery integration
+- [Skills Format](/skills/skill-format) — Authoring SKILL.md files
+- [Skills Extension](/skills/skills-extension) — Installing and managing skill packs
+- [Skills Registry](/skills/agentos-skills-registry) — Browsing and installing curated skills
 
 ### Extensions
 
 - [Extensions Overview](/extensions/overview) — Available extensions catalog
-- [How Extensions Work](/extensions/how-extensions-work) — Loading and configuration
+- [How Extensions Work](/extensions/how-extensions-work) — Loading and lifecycle
 - [Extension Architecture](/extensions/extension-architecture) — Building custom extensions
 - [Auto-Loading](/extensions/auto-loading) — Automatic extension discovery
-- **Official**: [Web Search](/extensions/built-in/web-search), [Telegram](/extensions/built-in/telegram), [Speech Runtime](/extensions/built-in/speech-runtime), [Voice Synthesis](/extensions/built-in/voice-synthesis), [CLI Executor](/extensions/built-in/cli-executor), [Image Search](/extensions/built-in/image-search), [News Search](/extensions/built-in/news-search), [Giphy](/extensions/built-in/giphy), [Web Browser](/extensions/built-in/web-browser), [Auth](/extensions/built-in/auth)
+- [Extension Standards (RFC)](/extensions/extension-standards) — Interface contracts and versioning
+- **Safety**: [PII Redaction](/extensions/built-in/pii-redaction), [Code Safety](/extensions/built-in/code-safety), [Grounding Guard](/extensions/built-in/grounding-guard), [ML Classifiers](/extensions/built-in/ml-classifiers), [Topicality](/extensions/built-in/topicality)
+- **Research**: [Web Search](/extensions/built-in/web-search), [Web Browser](/extensions/built-in/web-browser), [News Search](/extensions/built-in/news-search)
+- **Media**: [Voice Synthesis](/extensions/built-in/voice-synthesis), [Image Search](/extensions/built-in/image-search), [Giphy](/extensions/built-in/giphy)
+- **Integrations**: [Auth](/extensions/built-in/auth), [Telegram](/extensions/built-in/telegram), [CLI Executor](/extensions/built-in/cli-executor)
 
 ### API Reference
 

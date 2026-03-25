@@ -12,7 +12,42 @@ const config: Config = {
   organizationName: 'framersai',
   projectName: 'agentos-live-docs',
   onBrokenLinks: 'warn',
+  onBrokenMarkdownLinks: 'warn',
   trailingSlash: false,
+
+  headTags: [
+    {
+      tagName: 'meta',
+      attributes: {
+        name: 'description',
+        content:
+          'AgentOS documentation — guides, tutorials, and TypeDoc API reference for building production AI agents with TypeScript. Graph orchestration, cognitive memory, RAG, guardrails, voice pipelines, and 21 LLM providers.',
+      },
+    },
+    {
+      tagName: 'meta',
+      attributes: {
+        name: 'keywords',
+        content:
+          'AgentOS, AI agent framework, TypeScript AI runtime, multi-agent orchestration, RAG memory, cognitive memory, AI guardrails, prompt injection defense, voice pipeline, LLM providers, agent runtime, AI SDK, open source AI, autonomous agents, agentic AI, agent extensions, agent skills, HEXACO personality, graph orchestration, workflow automation, LangGraph alternative, CrewAI alternative, build AI agents',
+      },
+    },
+    {
+      tagName: 'meta',
+      attributes: {
+        name: 'robots',
+        content: 'index, follow, max-image-preview:large, max-snippet:-1',
+      },
+    },
+    {
+      tagName: 'meta',
+      attributes: { name: 'googlebot', content: 'index, follow' },
+    },
+    {
+      tagName: 'meta',
+      attributes: { name: 'author', content: 'Framers — https://frame.dev' },
+    },
+  ],
 
   i18n: {
     defaultLocale: 'en',
@@ -112,6 +147,13 @@ const config: Config = {
           trackingID: 'G-4KEEK15KWZ',
           anonymizeIP: true,
         },
+        sitemap: {
+          lastmod: 'date',
+          changefreq: 'weekly',
+          priority: 0.5,
+          ignorePatterns: ['/tags/**'],
+          filename: 'sitemap.xml',
+        },
       } satisfies Preset.Options,
     ],
   ],
@@ -193,7 +235,7 @@ const config: Config = {
           title: 'Community',
           items: [
             { label: 'GitHub', href: 'https://github.com/framersai/agentos' },
-            { label: 'Discord', href: 'https://discord.gg/agentos' },
+            { label: 'Discord', href: 'https://discord.com/invite/KxF9b6HY6h' },
             { label: 'Twitter', href: 'https://twitter.com/framersai' },
             { label: 'npm', href: 'https://www.npmjs.com/package/@framers/agentos' },
           ],
