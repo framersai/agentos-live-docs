@@ -3,6 +3,7 @@ import Link from '@docusaurus/Link';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import Layout from '@theme/Layout';
 import CodeBlock from '@theme/CodeBlock';
+import Mermaid from '@theme/Mermaid';
 
 /* ------------------------------------------------------------------ */
 /*  Hero                                                               */
@@ -252,6 +253,70 @@ function QuickStartTabs() {
 }
 
 /* ------------------------------------------------------------------ */
+/*  Architecture Diagram (Mermaid)                                     */
+/* ------------------------------------------------------------------ */
+
+const architectureMermaid = `graph TB
+    subgraph Runtime["AgentOS Runtime"]
+        API["<b>High-Level API</b><br/>generateText · streamText · generateImage<br/>agent() · mission() · workflow() · AgentGraph"]
+
+        subgraph GMI["Cognitive Substrate — GMI"]
+            WM["Working<br/>Memory"] ~~~ CM["Context<br/>Manager"] ~~~ PO["Persona<br/>Overlay"] ~~~ LM["Learning<br/>Module"]
+        end
+
+        API --> GMI
+
+        subgraph Core["Core Services"]
+            MEM["Memory<br/><i>Cognitive + GraphRAG</i>"]
+            TOOLS["Tools<br/><i>23+ & Discovery</i>"]
+            GUARD["Guardrails<br/><i>5-Tier Pipeline</i>"]
+        end
+
+        GMI --> MEM
+        GMI --> TOOLS
+        GMI --> GUARD
+
+        subgraph GraphRT["Graph Runtime"]
+            EXEC["CompiledExecutionGraph"] ~~~ SCHED["NodeScheduler"]
+            LOOP["LoopController"] ~~~ CKPT["Checkpoints"]
+        end
+
+        TOOLS --> GraphRT
+
+        subgraph Infra["Infrastructure"]
+            VOICE["Voice Pipeline<br/><i>STT / TTS</i>"]
+            CHAN["Channels<br/><i>37 Adapters</i>"]
+            LLM["LLM Providers<br/><i>21 Providers</i>"]
+        end
+
+        GraphRT --> VOICE
+        GraphRT --> CHAN
+        GraphRT --> LLM
+    end
+
+    style Runtime fill:#0e0e18,stroke:#c9a227,stroke-width:2px,color:#f2f2fa
+    style GMI fill:#151520,stroke:#00f5ff,stroke-width:1px,color:#f2f2fa
+    style Core fill:#151520,stroke:#22c55e,stroke-width:1px,color:#f2f2fa
+    style GraphRT fill:#151520,stroke:#f59e0b,stroke-width:1px,color:#f2f2fa
+    style Infra fill:#151520,stroke:#8b5cf6,stroke-width:1px,color:#f2f2fa`;
+
+function ArchitectureDiagram() {
+  return (
+    <section style={{ padding: '3rem 2rem 1rem', maxWidth: '960px', margin: '0 auto' }}>
+      <h2 style={{ textAlign: 'center', marginBottom: '1rem' }}>System Architecture</h2>
+      <div style={{ overflow: 'auto' }}>
+        <Mermaid value={architectureMermaid} />
+      </div>
+      <p style={{ textAlign: 'center', marginTop: '0.75rem' }}>
+        <Link to="/architecture/system-architecture" style={{ fontSize: '0.9rem' }}>
+          Full architecture guide &rarr;
+        </Link>
+      </p>
+    </section>
+  );
+}
+
+/* ------------------------------------------------------------------ */
 /*  Feature Cards                                                      */
 /* ------------------------------------------------------------------ */
 
@@ -284,7 +349,7 @@ const features = [
     title: 'Voice Pipeline',
     description:
       'Full-duplex voice with endpoint detection, barge-in handling, 21 STT/TTS providers, telephony bridging.',
-    link: '/extensions/built-in/voice-synthesis',
+    link: '/features/voice-pipeline',
   },
   {
     title: 'Capability Discovery',
@@ -346,6 +411,7 @@ export default function Home(): React.JSX.Element {
       <Hero />
       <InstallTabs />
       <QuickStartTabs />
+      <ArchitectureDiagram />
       <Features />
     </Layout>
   );
