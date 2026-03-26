@@ -57,18 +57,77 @@
   vertical-align: middle;
 }
 
-/* ── Search bar ── */
-[data-theme='light'] .navbar .DocSearch-Button,
-[data-theme='light'] .navbar [class*="searchBox"] input,
-[data-theme='light'] .navbar input[type="search"] {
-  color: #1e293b;
-  background: #e2e8f0;
-  border: 1px solid #cbd5e1;
+/* ── Search bar — compact icon, expand on focus ── */
+
+/* Hide the wide search input by default — show only the icon */
+.navbar [class*="searchBox"] {
+  max-width: 36px;
+  overflow: hidden;
+  transition: max-width 0.3s ease;
 }
 
-[data-theme='light'] .navbar .DocSearch-Button-Placeholder,
-[data-theme='light'] .navbar input::placeholder {
-  color: #475569;
+.navbar [class*="searchBox"]:focus-within {
+  max-width: 240px;
+}
+
+.navbar [class*="searchBox"] input[type="search"] {
+  padding-left: 32px;
+  width: 100%;
+  cursor: pointer;
+  background: transparent;
+  border: 1px solid var(--ifm-toc-border-color);
+  border-radius: 20px;
+  height: 36px;
+  font-size: 0.85rem;
+  transition: all 0.3s ease;
+}
+
+.navbar [class*="searchBox"] input[type="search"]::placeholder {
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.navbar [class*="searchBox"]:focus-within input[type="search"]::placeholder {
+  opacity: 0.6;
+}
+
+.navbar [class*="searchBox"]:focus-within input[type="search"] {
+  cursor: text;
+}
+
+[data-theme='light'] .navbar [class*="searchBox"] input[type="search"] {
+  color: #1e293b;
+}
+
+[data-theme='light'] .navbar [class*="searchBox"]:focus-within input[type="search"] {
+  background: #e2e8f0;
+  border-color: #cbd5e1;
+}
+
+[data-theme='dark'] .navbar [class*="searchBox"]:focus-within input[type="search"] {
+  background: rgba(30, 27, 75, 0.6);
+  border-color: rgba(129, 140, 248, 0.3);
+}
+
+/* Responsive: always compact on small screens */
+@media (max-width: 996px) {
+  .navbar [class*="searchBox"] {
+    max-width: 36px;
+  }
+  .navbar [class*="searchBox"]:focus-within {
+    max-width: 180px;
+  }
+}
+
+/* Navbar items: tighter spacing on smaller screens */
+@media (max-width: 1200px) {
+  .navbar__items {
+    gap: 0.25rem;
+  }
+  .navbar__link {
+    padding: 0.4rem 0.5rem;
+    font-size: 0.85rem;
+  }
 }
 
 /* ── Hero section ── */

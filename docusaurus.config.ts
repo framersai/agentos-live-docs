@@ -212,31 +212,19 @@ const config: Config = {
           type: 'docSidebar',
           sidebarId: 'guideSidebar',
           position: 'left',
-          label: 'Guides',
-          // Prevent "Guides" from highlighting on the homepage — the root
-          // index doc belongs to guideSidebar, so the default behaviour marks
-          // the item active on "/".  This regex only matches actual sub-paths.
-          activeBaseRegex: '/(getting-started|architecture|features|extensions|skills|api)/',
+          label: 'Docs',
+          activeBaseRegex:
+            '/(getting-started|architecture|features|extensions|skills|memory|orchestration)/',
         },
         {
           to: '/api/',
           position: 'left',
-          label: 'API',
+          label: 'API Reference',
         },
         {
           to: '/blog',
           position: 'left',
           label: 'Blog',
-        },
-        {
-          href: 'https://agentos.sh',
-          label: 'Website',
-          position: 'right',
-        },
-        {
-          href: 'https://www.npmjs.com/package/@framers/agentos',
-          label: 'npm',
-          position: 'right',
         },
         {
           href: 'https://github.com/framersai/agentos',
