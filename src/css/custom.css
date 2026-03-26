@@ -244,6 +244,33 @@
 .footer--dark {
   background: #0f172a;
   border-top: 1px solid #1e293b;
+  color: #94a3b8;
+}
+
+.footer--dark .footer__title {
+  color: #e2e8f0;
+  font-weight: 700;
+}
+
+.footer--dark .footer__link-item {
+  color: #94a3b8;
+  transition: color 0.2s ease;
+}
+
+.footer--dark .footer__link-item:hover {
+  color: #818cf8;
+}
+
+.footer--dark .footer__copyright {
+  color: #64748b;
+}
+
+[data-theme='light'] .footer--dark .footer__link-item {
+  color: #cbd5e1;
+}
+
+[data-theme='light'] .footer--dark .footer__link-item:hover {
+  color: #a5b4fc;
 }
 
 /* ── Code blocks ── */
