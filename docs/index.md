@@ -45,6 +45,7 @@ npm install @framers/agentos
 - [Planning Engine](/features/planning-engine) — Multi-step task planning
 - [Human-in-the-Loop](/features/human-in-the-loop) — Approval workflows
 - [Agent Communication](/features/agent-communication) — Inter-agent messaging
+- [Multi-Agent Agency API](/features/agency-api) — agency(), strategies (sequential, parallel, graph, hierarchical), dependsOn
 
 ### Safety & Security
 

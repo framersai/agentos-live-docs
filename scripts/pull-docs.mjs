@@ -248,6 +248,13 @@ const agentosGuides = [
     title: 'Emergent Capabilities',
     position: 2,
   },
+  // Agency
+  {
+    src: 'AGENCY_API.md',
+    dest: 'features/agency-api.md',
+    title: 'Multi-Agent Agency API',
+    position: 22,
+  },
   // Extensions standards
   {
     src: 'RFC_EXTENSION_STANDARDS.md',
@@ -514,6 +521,7 @@ const linkRewrites = {
   'SELF_HOSTED_REGISTRIES.md': '/extensions/self-hosted-registries',
   'MIGRATION_GUIDE.md': '/extensions/migration-guide',
   'AGENCY_COLLABORATION_EXAMPLE.md': '/features/agency-collaboration',
+  'AGENCY_API.md': '/features/agency-api',
 };
 
 /** Rewrite curated registry folder links -> docs pages */
