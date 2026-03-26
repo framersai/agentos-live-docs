@@ -111,6 +111,8 @@ const config: Config = {
   ],
 
   plugins: [
+    // Lightweight search manifest for agentos.sh marketing-site DocSearch
+    './plugins/search-manifest.js',
     [
       'docusaurus-plugin-typedoc',
       {
