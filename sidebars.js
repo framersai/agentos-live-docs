@@ -76,6 +76,19 @@ const sidebars = {
           collapsed: false,
           items: [
             'features/cognitive-memory',
+            {
+              type: 'category',
+              label: 'Memory System',
+              collapsed: false,
+              items: [
+                'features/memory-architecture',
+                'features/memory-document-ingestion',
+                'features/memory-import-export',
+                'features/memory-consolidation',
+                'features/memory-tools',
+                'features/memory-storage',
+              ],
+            },
             'features/rag-memory',
             'features/multimodal-rag',
             'features/sql-storage',

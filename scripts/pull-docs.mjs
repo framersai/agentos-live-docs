@@ -235,6 +235,43 @@ const agentosGuides = [
     title: 'Working Memory',
     position: 2,
   },
+  // Memory System guides
+  {
+    src: 'MEMORY_ARCHITECTURE.md',
+    dest: 'features/memory-architecture.md',
+    title: 'Memory Architecture Overview',
+    position: 20,
+  },
+  {
+    src: 'MEMORY_DOCUMENT_INGESTION.md',
+    dest: 'features/memory-document-ingestion.md',
+    title: 'Document Ingestion',
+    position: 21,
+  },
+  {
+    src: 'MEMORY_IMPORT_EXPORT.md',
+    dest: 'features/memory-import-export.md',
+    title: 'Memory Import/Export',
+    position: 22,
+  },
+  {
+    src: 'MEMORY_CONSOLIDATION.md',
+    dest: 'features/memory-consolidation.md',
+    title: 'Self-Improving Memory',
+    position: 23,
+  },
+  {
+    src: 'MEMORY_TOOLS.md',
+    dest: 'features/memory-tools.md',
+    title: 'Agent Memory Tools',
+    position: 24,
+  },
+  {
+    src: 'MEMORY_STORAGE.md',
+    dest: 'features/memory-storage.md',
+    title: 'SQLite Brain Storage',
+    position: 25,
+  },
   // Capability & Emergent
   {
     src: 'CAPABILITY_DISCOVERY.md',
@@ -522,6 +559,12 @@ const linkRewrites = {
   'MIGRATION_GUIDE.md': '/extensions/migration-guide',
   'AGENCY_COLLABORATION_EXAMPLE.md': '/features/agency-collaboration',
   'AGENCY_API.md': '/features/agency-api',
+  'MEMORY_ARCHITECTURE.md': '/features/memory-architecture',
+  'MEMORY_DOCUMENT_INGESTION.md': '/features/memory-document-ingestion',
+  'MEMORY_IMPORT_EXPORT.md': '/features/memory-import-export',
+  'MEMORY_CONSOLIDATION.md': '/features/memory-consolidation',
+  'MEMORY_TOOLS.md': '/features/memory-tools',
+  'MEMORY_STORAGE.md': '/features/memory-storage',
 };
 
 /** Rewrite curated registry folder links -> docs pages */
