@@ -11,8 +11,14 @@ import Mermaid from '@theme/Mermaid';
 
 function Hero() {
   const { siteConfig } = useDocusaurusContext();
+  const s = 'for-the-badge';
+  const bg = '08070e';
   return (
     <header className="hero-agentos">
+      <div className="hero-agentos__logo">
+        <img src="/img/logo.svg" alt="AgentOS" width={64} height={64} />
+      </div>
+
       <div
         style={{
           display: 'flex',
@@ -24,36 +30,28 @@ function Hero() {
       >
         <a href="https://www.npmjs.com/package/@framers/agentos">
           <img
-            src="https://img.shields.io/npm/v/@framers/agentos?style=flat-square&logo=npm&color=cb3837"
-            alt="npm"
+            src={`https://img.shields.io/npm/v/@framers/agentos?style=${s}&logo=npm&logoColor=white&label=npm&color=6366f1&labelColor=${bg}`}
+            alt="npm version"
           />
         </a>
-        <a href="https://github.com/framersai/agentos/actions">
+        <a href="https://codecov.io/gh/framersai/agentos">
           <img
-            src="https://img.shields.io/github/actions/workflow/status/framersai/agentos/ci.yml?style=flat-square&logo=github&label=CI"
-            alt="CI"
+            src={`https://img.shields.io/codecov/c/github/framersai/agentos?style=${s}&logo=codecov&logoColor=white&label=coverage&color=22c55e&labelColor=${bg}`}
+            alt="Test Coverage"
           />
         </a>
-        <a href="https://github.com/framersai/agentos">
+        <a href="https://github.com/framersai/agentos/stargazers">
           <img
-            src="https://img.shields.io/github/stars/framersai/agentos?style=flat-square&logo=github"
-            alt="Stars"
+            src={`https://img.shields.io/github/stars/framersai/agentos?style=${s}&logo=github&logoColor=white&label=stars&color=8b5cf6&labelColor=${bg}`}
+            alt="GitHub Stars"
           />
         </a>
         <a href="https://github.com/framersai/agentos/network/members">
           <img
-            src="https://img.shields.io/github/forks/framersai/agentos?style=flat-square&logo=github"
-            alt="Forks"
+            src={`https://img.shields.io/github/forks/framersai/agentos?style=${s}&logo=github&logoColor=white&label=forks&color=6e7681&labelColor=${bg}`}
+            alt="GitHub Forks"
           />
         </a>
-        <img
-          src="https://img.shields.io/badge/TypeScript-5.4+-3178c6?style=flat-square&logo=typescript&logoColor=white"
-          alt="TypeScript"
-        />
-        <img
-          src="https://img.shields.io/badge/License-Apache_2.0-blue?style=flat-square"
-          alt="License"
-        />
       </div>
 
       <h1 className="hero-agentos__title">
@@ -73,11 +71,11 @@ function Hero() {
       <p className="hero-agentos__subtitle">{siteConfig.tagline}</p>
 
       <div className="hero-buttons">
-        <Link className="btn-primary" to="/getting-started/documentation-index">
+        <Link className="btn-primary" to="/getting-started/getting-started">
           Get Started
         </Link>
-        <Link className="btn-secondary" to="/getting-started/high-level-api">
-          High-Level API
+        <Link className="btn-secondary" to="/getting-started/examples">
+          Examples
         </Link>
         <Link className="btn-secondary" to="/api/">
           API Reference
@@ -369,13 +367,13 @@ const features = [
     title: 'Graph Orchestration',
     description:
       'Three authoring APIs — AgentGraph, workflow() DSL, mission() — compile to one IR. judgeNode for evaluation, checkpointing for time-travel, streaming events.',
-    link: '/features/unified-orchestration',
+    link: '/features/orchestration-guide',
   },
   {
     title: 'Cognitive Memory',
     description:
       'Ebbinghaus decay, spreading activation, Baddeley working memory, personality-driven encoding (HEXACO). GraphRAG retrieval with episodic-to-semantic consolidation.',
-    link: '/features/cognitive-memory',
+    link: '/features/cognitive-memory-guide',
   },
   {
     title: 'Streaming Guardrails',
@@ -387,25 +385,25 @@ const features = [
     title: 'Evaluation Framework',
     description:
       'Dataset-driven evals with candidates, graders, and experiments. LLM prompt runner and HTTP endpoint runner. Compare baseline vs challenger. Drizzle ORM with SQLite/Postgres.',
-    link: '/features/evaluation-framework',
+    link: '/features/evaluation-guide',
   },
   {
     title: 'Capability Discovery',
     description:
       '3-tier semantic discovery: category summaries (150 tokens) → top-5 matches (200 tokens) → full schemas on demand. 89% token reduction. Agents self-discover tools mid-conversation.',
-    link: '/features/capability-discovery',
+    link: '/features/discovery-guide',
   },
   {
     title: 'Provenance & Audit',
     description:
       'Signed event ledger (Ed25519 + SHA-256 hash chain), soft-delete tombstones, revision history, autonomy guard. Merkle anchoring for tamper-evident external verification.',
-    link: '/features/provenance-immutability',
+    link: '/features/provenance-guide',
   },
   {
-    title: '37 Channel Adapters',
+    title: 'Channels & Social',
     description:
-      'Telegram, Discord, Slack, WhatsApp, Twitter/X, LinkedIn, email, SMS, and 29 more. Multi-channel routing, content adaptation engine, and custom adapter API.',
-    link: '/extensions/overview',
+      'Telegram, Discord, Slack, WhatsApp, Twitter/X, LinkedIn, email, SMS, and more. Multi-channel routing, social publishing, browser automation, and custom adapter APIs.',
+    link: '/features/channels',
   },
   {
     title: 'Immutable Agents',

@@ -11,20 +11,89 @@
       <stop offset="100%" style="stop-color:#6366F1;stop-opacity:0.8" />
     </radialGradient>
   </defs>
+
+  <style>
+    /* Orbital nodes rotate clockwise around center */
+    @keyframes orbitRotate {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Connection lines pulse opacity */
+    @keyframes linePulse {
+      0% { opacity: 0.4; }
+      50% { opacity: 0.8; }
+      100% { opacity: 0.4; }
+    }
+
+    /* Dashed orbit rotates counter-clockwise */
+    @keyframes orbitCounterRotate {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(-360deg); }
+    }
+
+    /* Center node radius pulse via scale */
+    @keyframes centerPulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.125); }
+      100% { transform: scale(1); }
+    }
+
+    .orbital-nodes {
+      transform-origin: 32px 32px;
+      animation: orbitRotate 20s linear infinite;
+    }
+
+    .connection-lines path {
+      animation: linePulse 3s ease-in-out infinite;
+    }
+
+    .connection-lines path:nth-child(2) { animation-delay: 0.5s; }
+    .connection-lines path:nth-child(3) { animation-delay: 1.0s; }
+    .connection-lines path:nth-child(4) { animation-delay: 1.5s; }
+    .connection-lines path:nth-child(5) { animation-delay: 2.0s; }
+    .connection-lines path:nth-child(6) { animation-delay: 2.5s; }
+
+    .dashed-orbit {
+      transform-origin: 32px 32px;
+      animation: orbitCounterRotate 30s linear infinite;
+    }
+
+    .center-node {
+      transform-origin: 32px 32px;
+      animation: centerPulse 4s ease-in-out infinite;
+    }
+  </style>
+
   <g id="icon-mark">
-    <circle cx="32" cy="32" r="8" fill="url(#centerGradient)"/>
-    <circle cx="32" cy="12" r="5" fill="#6366F1" opacity="0.9"/>
-    <circle cx="48" cy="20" r="5" fill="#8B5CF6" opacity="0.9"/>
-    <circle cx="48" cy="44" r="5" fill="#EC4899" opacity="0.9"/>
-    <circle cx="32" cy="52" r="5" fill="#06B6D4" opacity="0.9"/>
-    <circle cx="16" cy="44" r="5" fill="#8B5CF6" opacity="0.9"/>
-    <circle cx="16" cy="20" r="5" fill="#6366F1" opacity="0.9"/>
-    <path d="M 32 32 L 32 12" stroke="url(#iconGradient)" stroke-width="2" opacity="0.7"/>
-    <path d="M 32 32 L 48 20" stroke="url(#iconGradient)" stroke-width="2" opacity="0.7"/>
-    <path d="M 32 32 L 48 44" stroke="url(#iconGradient)" stroke-width="2" opacity="0.7"/>
-    <path d="M 32 32 L 32 52" stroke="url(#iconGradient)" stroke-width="2" opacity="0.7"/>
-    <path d="M 32 32 L 16 44" stroke="url(#iconGradient)" stroke-width="2" opacity="0.7"/>
-    <path d="M 32 32 L 16 20" stroke="url(#iconGradient)" stroke-width="2" opacity="0.7"/>
-    <circle cx="32" cy="32" r="24" fill="none" stroke="url(#iconGradient)" stroke-width="1" opacity="0.3" stroke-dasharray="2 4"/>
+    <!-- Center node with pulse -->
+    <g class="center-node">
+      <circle cx="32" cy="32" r="8" fill="url(#centerGradient)"/>
+    </g>
+
+    <!-- Connection lines with staggered pulse -->
+    <g class="connection-lines">
+      <path d="M 32 32 L 32 12" stroke="url(#iconGradient)" stroke-width="2"/>
+      <path d="M 32 32 L 48 20" stroke="url(#iconGradient)" stroke-width="2"/>
+      <path d="M 32 32 L 48 44" stroke="url(#iconGradient)" stroke-width="2"/>
+      <path d="M 32 32 L 32 52" stroke="url(#iconGradient)" stroke-width="2"/>
+      <path d="M 32 32 L 16 44" stroke="url(#iconGradient)" stroke-width="2"/>
+      <path d="M 32 32 L 16 20" stroke="url(#iconGradient)" stroke-width="2"/>
+    </g>
+
+    <!-- Dashed orbit — counter-rotating -->
+    <g class="dashed-orbit">
+      <circle cx="32" cy="32" r="24" fill="none" stroke="url(#iconGradient)" stroke-width="1" opacity="0.3" stroke-dasharray="2 4"/>
+    </g>
+
+    <!-- Orbital nodes — rotating clockwise -->
+    <g class="orbital-nodes">
+      <circle cx="32" cy="12" r="5" fill="#6366F1" opacity="0.9"/>
+      <circle cx="48" cy="20" r="5" fill="#8B5CF6" opacity="0.9"/>
+      <circle cx="48" cy="44" r="5" fill="#EC4899" opacity="0.9"/>
+      <circle cx="32" cy="52" r="5" fill="#06B6D4" opacity="0.9"/>
+      <circle cx="16" cy="44" r="5" fill="#8B5CF6" opacity="0.9"/>
+      <circle cx="16" cy="20" r="5" fill="#6366F1" opacity="0.9"/>
+    </g>
   </g>
 </svg>
