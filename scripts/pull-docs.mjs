@@ -26,6 +26,7 @@ const SKILLS_REGISTRY_PKG = resolve(MONO_ROOT, 'packages/agentos-skills-registry
 const SKILLS_EXTENSION_PKG = resolve(MONO_ROOT, 'packages/agentos-ext-skills');
 const SQL_STORAGE_ADAPTER_PKG = resolve(MONO_ROOT, 'packages/sql-storage-adapter');
 const REPO_DOCS = resolve(MONO_ROOT, 'docs');
+const WUNDERLAND_SOL_GUIDES = resolve(MONO_ROOT, 'apps/wunderland-sol/docs-site/docs/guides');
 const VENDORED = resolve(ROOT, 'vendored-docs');
 const EXTENSIONS_GITHUB_REPO = 'https://github.com/framersai/agentos-extensions';
 
@@ -40,13 +41,25 @@ const agentosGuides = [
     position: 1,
   },
   {
+    src: 'GETTING_STARTED.md',
+    dest: 'getting-started/getting-started.md',
+    title: 'Getting Started Guide',
+    position: 2,
+  },
+  {
     src: 'HIGH_LEVEL_API.md',
     dest: 'getting-started/high-level-api.md',
     title: 'High-Level API',
-    position: 2,
+    position: 3,
   },
-  { src: 'ECOSYSTEM.md', dest: 'getting-started/ecosystem.md', title: 'Ecosystem', position: 3 },
-  { src: 'RELEASING.md', dest: 'getting-started/releasing.md', title: 'Releasing', position: 4 },
+  {
+    src: 'EXAMPLES.md',
+    dest: 'getting-started/examples.md',
+    title: 'Examples Cookbook',
+    position: 4,
+  },
+  { src: 'ECOSYSTEM.md', dest: 'getting-started/ecosystem.md', title: 'Ecosystem', position: 5 },
+  { src: 'RELEASING.md', dest: 'getting-started/releasing.md', title: 'Releasing', position: 6 },
   {
     src: 'ARCHITECTURE.md',
     dest: 'architecture/system-architecture.md',
@@ -90,40 +103,46 @@ const agentosGuides = [
     position: 14,
   },
   {
+    src: 'ORCHESTRATION.md',
+    dest: 'features/orchestration-guide.md',
+    title: 'Orchestration Guide',
+    position: 1,
+  },
+  {
     src: 'UNIFIED_ORCHESTRATION.md',
     dest: 'features/unified-orchestration.md',
     title: 'Unified Orchestration Layer',
-    position: 1,
+    position: 2,
   },
   {
     src: 'AGENT_GRAPH.md',
     dest: 'features/agent-graph.md',
     title: 'AgentGraph',
-    position: 2,
+    position: 3,
   },
   {
     src: 'WORKFLOW_DSL.md',
     dest: 'features/workflow-dsl.md',
     title: 'workflow() DSL',
-    position: 3,
+    position: 4,
   },
   {
     src: 'MISSION_API.md',
     dest: 'features/mission-api.md',
     title: 'mission() API',
-    position: 4,
+    position: 5,
   },
   {
     src: 'CHECKPOINTING.md',
     dest: 'features/checkpointing.md',
     title: 'Checkpointing and Time-Travel',
-    position: 5,
+    position: 6,
   },
   {
     src: 'PLANNING_ENGINE.md',
     dest: 'features/planning-engine.md',
     title: 'Planning Engine',
-    position: 6,
+    position: 7,
   },
   {
     src: 'HUMAN_IN_THE_LOOP.md',
@@ -187,22 +206,28 @@ const agentosGuides = [
     position: 10,
   },
   {
+    src: 'IMAGE_GENERATION.md',
+    dest: 'features/image-generation.md',
+    title: 'Image Generation',
+    position: 11,
+  },
+  {
     src: 'COST_OPTIMIZATION.md',
     dest: 'features/cost-optimization.md',
     title: 'Cost Optimization',
-    position: 11,
+    position: 12,
   },
   {
     src: 'RECURSIVE_SELF_BUILDING_AGENTS.md',
     dest: 'features/recursive-self-building.md',
     title: 'Recursive Self-Building Agents',
-    position: 12,
+    position: 13,
   },
   {
     src: 'DEEP_RESEARCH.md',
     dest: 'features/deep-research.md',
     title: 'Deep Research & Query Classification',
-    position: 13,
+    position: 14,
   },
   {
     src: 'VOICE_PIPELINE.md',
@@ -224,16 +249,22 @@ const agentosGuides = [
   },
   // Memory
   {
+    src: 'COGNITIVE_MEMORY_GUIDE.md',
+    dest: 'features/cognitive-memory-guide.md',
+    title: 'Cognitive Memory Guide',
+    position: 1,
+  },
+  {
     src: 'COGNITIVE_MEMORY.md',
     dest: 'features/cognitive-memory.md',
     title: 'Cognitive Memory',
-    position: 1,
+    position: 2,
   },
   {
     src: 'WORKING_MEMORY.md',
     dest: 'features/working-memory.md',
     title: 'Working Memory',
-    position: 2,
+    position: 3,
   },
   // Memory System guides
   {
@@ -274,16 +305,34 @@ const agentosGuides = [
   },
   // Capability & Emergent
   {
+    src: 'DISCOVERY.md',
+    dest: 'features/discovery-guide.md',
+    title: 'Capability Discovery Guide',
+    position: 1,
+  },
+  {
     src: 'CAPABILITY_DISCOVERY.md',
     dest: 'features/capability-discovery.md',
     title: 'Capability Discovery',
-    position: 1,
+    position: 2,
   },
   {
     src: 'EMERGENT_CAPABILITIES.md',
     dest: 'features/emergent-capabilities.md',
     title: 'Emergent Capabilities',
-    position: 2,
+    position: 3,
+  },
+  {
+    src: 'EVALUATION.md',
+    dest: 'features/evaluation-guide.md',
+    title: 'Evaluation Guide',
+    position: 10,
+  },
+  {
+    src: 'PROVENANCE.md',
+    dest: 'features/provenance-guide.md',
+    title: 'Provenance Guide',
+    position: 14,
   },
   // Agency
   {
@@ -291,6 +340,53 @@ const agentosGuides = [
     dest: 'features/agency-api.md',
     title: 'Multi-Agent Agency API',
     position: 22,
+  },
+  {
+    src: 'CHANNELS.md',
+    dest: 'features/channels.md',
+    title: 'Channels',
+    position: 23,
+  },
+  {
+    src: 'SOCIAL_POSTING.md',
+    dest: 'features/social-posting.md',
+    title: 'Social Posting',
+    position: 24,
+  },
+  // Image Editing
+  {
+    src: 'IMAGE_EDITING.md',
+    dest: 'features/image-editing.md',
+    title: 'Image Editing (Img2Img, Inpainting, Upscaling)',
+    position: 25,
+  },
+  // Vision Pipeline (OCR)
+  {
+    src: 'VISION_PIPELINE.md',
+    dest: 'features/vision-pipeline.md',
+    title: 'Vision Pipeline (OCR & Image Understanding)',
+    position: 26,
+  },
+  // LLM Providers
+  {
+    src: 'LLM_PROVIDERS.md',
+    dest: 'architecture/llm-providers.md',
+    title: 'LLM Providers',
+    position: 6,
+  },
+  // Structured Output API (generateObject / streamObject)
+  {
+    src: 'STRUCTURED_OUTPUT_API.md',
+    dest: 'features/structured-output-api.md',
+    title: 'Structured Output API (generateObject / streamObject)',
+    position: 27,
+  },
+  // Agent Config Export & Import
+  {
+    src: 'AGENT_CONFIG_EXPORT.md',
+    dest: 'features/agent-config-export.md',
+    title: 'Agent Config Export & Import',
+    position: 28,
   },
   // Extensions standards
   {
@@ -501,10 +597,34 @@ const extraDocs = [
     position: 6,
   },
   {
+    srcPath: resolve(WUNDERLAND_SOL_GUIDES, 'http-streaming-api.md'),
+    dest: 'architecture/http-streaming-api.md',
+    title: 'HTTP Streaming API',
+    position: 7,
+  },
+  {
+    srcPath: resolve(WUNDERLAND_SOL_GUIDES, 'chat-server.md'),
+    dest: 'architecture/chat-server.md',
+    title: 'Chat Server (HTTP API)',
+    position: 8,
+  },
+  {
+    srcPath: resolve(WUNDERLAND_SOL_GUIDES, 'tools.md'),
+    dest: 'architecture/tools.md',
+    title: 'Tools',
+    position: 9,
+  },
+  {
     srcPath: resolve(SQL_STORAGE_ADAPTER_PKG, 'PLATFORM_STRATEGY.md'),
     dest: 'features/platform-strategy.md',
     title: 'Platform Strategy',
     position: 8,
+  },
+  {
+    srcPath: resolve(WUNDERLAND_SOL_GUIDES, 'browser-automation.md'),
+    dest: 'features/browser-automation.md',
+    title: 'Browser Automation',
+    position: 26,
   },
 ];
 
@@ -517,12 +637,20 @@ const linkRewrites = {
   'BACKEND_API.md': '/architecture/backend-api',
   'MULTI_GMI_IMPLEMENTATION_PLAN.md': '/architecture/multi-gmi-implementation-plan',
   'MULTI_GMI_COLLABORATION.md': '/architecture/multi-gmi-implementation-plan',
+  'GETTING_STARTED.md': '/getting-started/getting-started',
+  'EXAMPLES.md': '/getting-started/examples',
   'SAFETY_PRIMITIVES.md': '/features/safety-primitives',
   'NESTJS_ARCHITECTURE.md': '/architecture/backend-api',
   'OBSERVABILITY.md': '/architecture/observability',
   'LOGGING.md': '/architecture/logging',
   'PLATFORM_SUPPORT.md': '/architecture/platform-support',
   'TOOL_CALLING_AND_LOADING.md': '/architecture/tool-calling-and-loading',
+  'ORCHESTRATION.md': '/features/orchestration-guide',
+  'UNIFIED_ORCHESTRATION.md': '/features/unified-orchestration',
+  'AGENT_GRAPH.md': '/features/agent-graph',
+  'WORKFLOW_DSL.md': '/features/workflow-dsl',
+  'MISSION_API.md': '/features/mission-api',
+  'CHECKPOINTING.md': '/features/checkpointing',
   'PLANNING_ENGINE.md': '/features/planning-engine',
   'HUMAN_IN_THE_LOOP.md': '/features/human-in-the-loop',
   'AGENT_COMMUNICATION.md': '/features/agent-communication',
@@ -530,19 +658,28 @@ const linkRewrites = {
   'CREATING_GUARDRAILS.md': '/features/creating-guardrails',
   'RAG_MEMORY_CONFIGURATION.md': '/features/rag-memory',
   'COGNITIVE_MEMORY.md': '/features/cognitive-memory',
+  'COGNITIVE_MEMORY_GUIDE.md': '/features/cognitive-memory-guide',
+  'WORKING_MEMORY.md': '/features/working-memory',
   'MULTIMODAL_RAG.md': '/features/multimodal-rag',
   'SQL_STORAGE_QUICKSTART.md': '/features/sql-storage',
   'CLIENT_SIDE_STORAGE.md': '/features/client-side-storage',
   'PLATFORM_STRATEGY.md': '/features/platform-strategy',
   'IMMUTABLE_AGENTS.md': '/features/immutable-agents',
+  'PROVENANCE.md': '/features/provenance-guide',
   'PROVENANCE_IMMUTABILITY.md': '/features/provenance-immutability',
   'STRUCTURED_OUTPUT.md': '/features/structured-output',
+  'EVALUATION.md': '/features/evaluation-guide',
   'EVALUATION_FRAMEWORK.md': '/features/evaluation-framework',
+  'IMAGE_GENERATION.md': '/features/image-generation',
+  'DISCOVERY.md': '/features/discovery-guide',
+  'CAPABILITY_DISCOVERY.md': '/features/capability-discovery',
   'COST_OPTIMIZATION.md': '/features/cost-optimization',
   'RECURSIVE_SELF_BUILDING_AGENTS.md': '/features/recursive-self-building',
   'VOICE_PIPELINE.md': '/features/voice-pipeline',
   'SPEECH_PROVIDERS.md': '/features/speech-providers',
   'TELEPHONY_PROVIDERS.md': '/features/telephony-providers',
+  'CHANNELS.md': '/features/channels',
+  'SOCIAL_POSTING.md': '/features/social-posting',
   'RFC_EXTENSION_STANDARDS.md': '/extensions/extension-standards',
   'RELEASING.md': '/getting-started/releasing',
   'ECOSYSTEM.md': '/getting-started/ecosystem',
@@ -559,12 +696,21 @@ const linkRewrites = {
   'MIGRATION_GUIDE.md': '/extensions/migration-guide',
   'AGENCY_COLLABORATION_EXAMPLE.md': '/features/agency-collaboration',
   'AGENCY_API.md': '/features/agency-api',
+  'http-streaming-api.md': '/architecture/http-streaming-api',
+  'chat-server.md': '/architecture/chat-server',
+  'tools.md': '/architecture/tools',
+  'browser-automation.md': '/features/browser-automation',
   'MEMORY_ARCHITECTURE.md': '/features/memory-architecture',
   'MEMORY_DOCUMENT_INGESTION.md': '/features/memory-document-ingestion',
   'MEMORY_IMPORT_EXPORT.md': '/features/memory-import-export',
   'MEMORY_CONSOLIDATION.md': '/features/memory-consolidation',
   'MEMORY_TOOLS.md': '/features/memory-tools',
   'MEMORY_STORAGE.md': '/features/memory-storage',
+  'IMAGE_EDITING.md': '/features/image-editing',
+  'VISION_PIPELINE.md': '/features/vision-pipeline',
+  'LLM_PROVIDERS.md': '/architecture/llm-providers',
+  'STRUCTURED_OUTPUT_API.md': '/features/structured-output-api',
+  'AGENT_CONFIG_EXPORT.md': '/features/agent-config-export',
 };
 
 /** Rewrite curated registry folder links -> docs pages */
