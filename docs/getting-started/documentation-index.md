@@ -9,10 +9,10 @@ sidebar_position: 1
 
 ### Getting Started
 
-- [**Getting Started Guide**](./GETTING_STARTED.md) — Install, env setup, and 3 levels (1 line → 3 lines → 5 lines)
+- [**Getting Started Guide**](/getting-started/getting-started) — Install, env setup, and 3 levels (1 line → 3 lines → 5 lines)
 - [**README**](/getting-started/documentation-index) — Installation and quick start
-- [**High-Level API**](/getting-started/high-level-api) — `generateText()`, `streamText()`, `generateImage()`, and `agent()`
-- [**Examples Cookbook**](./EXAMPLES.md) — 8 complete runnable examples (customer service, research team, blog publisher, etc.)
+- [**High-Level API**](/getting-started/high-level-api) — `generateText()`, `streamText()`, `generateImage()`, `agent()`, and `agency()`
+- [**Examples Cookbook**](/getting-started/examples) — 12 complete runnable examples, including QueryRouter host hooks and finalized agency streaming
 - [**CHANGELOG**](/getting-started/changelog) — Version history and release notes
 
 ### Architecture & Core Concepts
@@ -23,12 +23,12 @@ sidebar_position: 1
 
 #### Planning & Orchestration
 
-- [**Orchestration Guide**](./ORCHESTRATION.md) — Graphs, workflows, missions, voice nodes, checkpointing, YAML authoring
-- [**Unified Orchestration Layer**](./UNIFIED_ORCHESTRATION.md) — One runtime, three authoring APIs (`AgentGraph`, `workflow()`, `mission()`)
-- [**AgentGraph**](./AGENT_GRAPH.md) — Full graph builder with typed nodes, conditional edges, and subgraphs
-- [**workflow() DSL**](./WORKFLOW_DSL.md) — Deterministic DAG pipelines with branching and parallel joins
-- [**mission() API**](./MISSION_API.md) — Goal-first orchestration driven by the PlanningEngine
-- [**Checkpointing**](./CHECKPOINTING.md) — Resume, fork, replay, and memory consistency semantics
+- [**Orchestration Guide**](/features/orchestration-guide) — Graphs, workflows, missions, voice nodes, checkpointing, YAML authoring
+- [**Unified Orchestration Layer**](/features/unified-orchestration) — One runtime, three authoring APIs (`AgentGraph`, `workflow()`, `mission()`)
+- [**AgentGraph**](/features/agent-graph) — Full graph builder with typed nodes, conditional edges, and subgraphs
+- [**workflow() DSL**](/features/workflow-dsl) — Deterministic DAG pipelines with branching and parallel joins
+- [**mission() API**](/features/mission-api) — Goal-first orchestration driven by the PlanningEngine
+- [**Checkpointing**](/features/checkpointing) — Resume, fork, replay, and memory consistency semantics
 - [**Planning Engine**](/features/planning-engine) — Multi-step task planning and execution
 - [**Human-in-the-Loop**](/features/human-in-the-loop) — Approval workflows and human oversight
 - [**Agent Communication**](/features/agent-communication) — Inter-agent messaging and coordination
@@ -40,23 +40,25 @@ sidebar_position: 1
 
 #### Memory & Storage
 
-- [**Cognitive Memory Guide**](./COGNITIVE_MEMORY_GUIDE.md) — Working memory, encoding, retrieval, consolidation, prospective memory
+- [**Cognitive Memory Guide**](/features/cognitive-memory-guide) — Working memory, encoding, retrieval, consolidation, prospective memory
 - [**Cognitive Memory System**](/features/cognitive-memory) — Personality-modulated memory with Ebbinghaus decay, Baddeley's working memory, spreading activation, and HEXACO-driven encoding
 - [**RAG Memory Configuration**](/features/rag-memory) — Vector storage and retrieval setup
 - [**SQL Storage Quickstart**](/features/sql-storage) — Database integration guide
 - [**Client-Side Storage**](/features/client-side-storage) — Browser-based persistence
 - [**Immutable Agents**](/features/immutable-agents) — Sealing lifecycle, toolset pinning, secret rotation, and soft-forget
-- [**Provenance Guide**](./PROVENANCE.md) — HashChain, ChainVerifier, BundleExporter, proof levels, external anchors
+- [**Provenance Guide**](/features/provenance-guide) — HashChain, ChainVerifier, BundleExporter, proof levels, external anchors
 - [**Provenance & Immutability**](/features/provenance-immutability) — Sealed storage policy, signed ledger, and anchoring
 
 #### AI & LLM
 
 - [**Structured Output**](/features/structured-output) — JSON schema validation and structured generation
-- [**Evaluation Guide**](./EVALUATION.md) — Test cases, graders, LLM-as-judge, A/B testing, experiment tracking
+- [**Streaming Semantics**](./STREAMING_SEMANTICS.md) — Raw live chunks vs finalized approved output across `textStream`, `fullStream`, `text`, and `finalTextStream`
+- [**Evaluation Guide**](/features/evaluation-guide) — Test cases, graders, LLM-as-judge, A/B testing, experiment tracking
 - [**Evaluation Framework**](/features/evaluation-framework) — Testing, scoring, and quality assurance
-- [**Image Generation Guide**](./IMAGE_GENERATION.md) — 5 providers (OpenAI, Stability, Replicate, OpenRouter, local SD)
-- [**Capability Discovery Guide**](./DISCOVERY.md) — Three-tier semantic discovery, CAPABILITY.yaml, meta-tool
-- [**Capability Discovery**](./CAPABILITY_DISCOVERY.md) — Full architecture reference
+- [**Query Router**](./QUERY_ROUTER.md) — Tiered query classification, retrieval routing, keyword fallback, and grounded answer generation
+- [**Image Generation Guide**](/features/image-generation) — 5 providers (OpenAI, Stability, Replicate, OpenRouter, local SD)
+- [**Capability Discovery Guide**](/features/discovery-guide) — Three-tier semantic discovery, CAPABILITY.yaml, meta-tool
+- [**Capability Discovery**](/features/capability-discovery) — Full architecture reference
 - [**Cost Optimization**](/features/cost-optimization) — Token usage and API cost management
 
 #### Extensions & Customization
@@ -67,8 +69,8 @@ sidebar_position: 1
 
 #### Channels & Social
 
-- [**Channels Guide**](./CHANNELS.md) — All 37 channels with setup for Discord, Slack, Telegram, Twitter, WhatsApp
-- [**Social Posting Guide**](./SOCIAL_POSTING.md) — SocialPostManager, content adaptation, scheduling, analytics
+- [**Channels Guide**](/features/channels) — All 37 channels with setup for Discord, Slack, Telegram, Twitter, WhatsApp
+- [**Social Posting Guide**](/features/social-posting) — SocialPostManager, content adaptation, scheduling, analytics
 
 ### Platform & Infrastructure
 

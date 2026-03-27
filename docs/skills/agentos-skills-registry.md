@@ -5,7 +5,7 @@ sidebar_position: 4
 
 # @framers/agentos-skills-registry
 
-Curated catalog of 40+ AgentOS skills with query helpers and lazy-loading factories.
+Curated catalog of 60+ AgentOS skills with query helpers and lazy-loading factories.
 
 ```bash
 npm install @framers/agentos-skills-registry
@@ -13,7 +13,7 @@ npm install @framers/agentos-skills-registry
 
 ## What This Package Is
 
-This is the **skills catalog** — the data layer that ships 40+ curated SKILL.md
+This is the **skills catalog** — the data layer that ships 60+ curated SKILL.md
 prompt modules and provides typed query helpers, search functions, and lazy-loading
 factories for consuming them.
 
@@ -32,7 +32,7 @@ resolver.
         │  lazy import()
         │
 @framers/agentos-skills-registry   ← THIS package (CATALOG)
-  ├── registry/curated/*/SKILL.md  40+ bundled prompt modules
+  ├── registry/curated/*/SKILL.md  60+ bundled prompt modules
   ├── registry.json                machine-readable index of all skills
   ├── catalog.ts                   SKILLS_CATALOG array + query helpers (zero deps)
   └── index.ts                     factory functions that lazy-import the engine
@@ -85,7 +85,7 @@ Access the JSON index directly:
 import { getSkillsCatalog } from '@framers/agentos-skills-registry';
 
 const catalog = await getSkillsCatalog();
-console.log(catalog.skills.curated.length); // 40+
+console.log(catalog.skills.curated.length); // 60+
 console.log(catalog.version); // '1.0.0'
 ```
 
@@ -185,7 +185,7 @@ the `metadata.agentos` block manually.
 
 The `@framers/agentos` dependency is loaded **lazily** at runtime and cached after first resolution. If it is not installed and you call a factory function, you get a clear error with install instructions. The catalog query helpers work without it.
 
-## Included Skills (40+)
+## Included Skills (60+)
 
 The catalog includes both foundational utility skills and social automation modules:
 

@@ -1,7 +1,7 @@
 ---
 title: 'AgentOS Documentation'
 sidebar_position: 0
-slug: /
+slug: /documentation
 ---
 
 # AgentOS Documentation

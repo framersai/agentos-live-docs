@@ -7,7 +7,7 @@ tags: [architecture, deep-dive, agentos, typescript, orchestration, memory, guar
 
 **An In-Depth Technical Analysis of Architecture, Implementation Patterns, and Design Decisions**
 
-<\!-- truncate -->
+<!-- truncate -->
 
 _Author: Development Team_
 _Date: 2024_

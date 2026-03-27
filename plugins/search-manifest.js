@@ -18,6 +18,18 @@
 const fs = require('fs');
 const path = require('path');
 
+const NAMED_ENTITIES = {
+  amp: '&',
+  lt: '<',
+  gt: '>',
+  quot: '"',
+  apos: "'",
+  nbsp: ' ',
+  ndash: '-',
+  mdash: '-',
+  hellip: '...',
+};
+
 /** Recursively collect every .html file under `dir`, skipping assets/server dirs. */
 function collectHtmlFiles(dir) {
   const results = [];
@@ -42,18 +54,23 @@ function stripTags(html) {
     .replace(/<nav[^>]*>[\s\S]*?<\/nav>/gi, '')
     .replace(/<footer[^>]*>[\s\S]*?<\/footer>/gi, '')
     .replace(/<[^>]+>/g, ' ')
-    .replace(/&amp;/g, '&')
-    .replace(/&lt;/g, '<')
-    .replace(/&gt;/g, '>')
-    .replace(/&#x27;/g, "'")
-    .replace(/&quot;/g, '"')
-    .replace(/&#\d+;/g, '')
-    .replace(/&\w+;/g, '')
+    .replace(/&#x([0-9a-f]+);/gi, (_match, hex) => decodeCodePoint(parseInt(hex, 16)))
+    .replace(/&#(\d+);/g, (_match, dec) => decodeCodePoint(parseInt(dec, 10)))
+    .replace(/&([a-z]+);/gi, (_match, entity) => NAMED_ENTITIES[entity.toLowerCase()] ?? ' ')
     .replace(/\s+/g, ' ')
     .trim();
 }
 
-module.exports = function searchManifestPlugin(_context, _options) {
+function decodeCodePoint(value) {
+  if (!Number.isFinite(value) || value <= 0) return ' ';
+  try {
+    return String.fromCodePoint(value);
+  } catch {
+    return ' ';
+  }
+}
+
+function searchManifestPlugin(_context, _options) {
   return {
     name: 'search-manifest',
 
@@ -118,4 +135,7 @@ module.exports = function searchManifestPlugin(_context, _options) {
       );
     },
   };
-};
+}
+
+module.exports = searchManifestPlugin;
+module.exports.stripTags = stripTags;

@@ -1,6 +1,6 @@
 ---
 title: 'Cognitive Memory'
-sidebar_position: 1
+sidebar_position: 2
 ---
 
 > Personality-modulated, decay-aware memory grounded in cognitive science — replacing flat key-value memory with Ebbinghaus forgetting curves, Baddeley's working memory, spreading activation, and HEXACO-driven encoding biases.
@@ -850,4 +850,4 @@ AgentOS provides two complementary working memory systems:
 | Format   | Capacity-limited slots (7±2)      | Free-form markdown template                                    |
 | Budget   | 15% of prompt tokens              | 5% of prompt tokens                                            |
 
-Both are injected into the system prompt simultaneously. The persistent memory appears as `## Persistent Memory` before the cognitive slots. See [Persistent Working Memory](./WORKING_MEMORY.md) for details.
+Both are injected into the system prompt simultaneously. The persistent memory appears as `## Persistent Memory` before the cognitive slots. See [Persistent Working Memory](/features/working-memory) for details.

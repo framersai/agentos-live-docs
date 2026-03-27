@@ -1,6 +1,6 @@
 ---
 title: 'Capability Discovery'
-sidebar_position: 1
+sidebar_position: 2
 ---
 
 > Semantic, tiered capability discovery that replaces static tool dumps with per-turn, token-budgeted context — cutting capability context by ~90% (from ~20,000 to ~1,850 tokens) while improving retrieval accuracy.
