@@ -6,52 +6,85 @@ import CodeBlock from '@theme/CodeBlock';
 import Mermaid from '@theme/Mermaid';
 
 /* ------------------------------------------------------------------ */
+/*  Badges                                                             */
+/* ------------------------------------------------------------------ */
+
+function Badges() {
+  const s = 'for-the-badge';
+  const bg = '08070e';
+
+  const badges: { href: string; src: string; alt: string }[] = [
+    {
+      href: 'https://www.npmjs.com/package/@framers/agentos',
+      src: `https://img.shields.io/npm/v/@framers/agentos?style=${s}&logo=npm&logoColor=white&label=npm&color=6366f1&labelColor=${bg}`,
+      alt: 'npm version',
+    },
+    {
+      href: 'https://codecov.io/gh/framersai/agentos',
+      src: `https://img.shields.io/codecov/c/github/framersai/agentos?style=${s}&logo=codecov&logoColor=white&label=coverage&color=22c55e&labelColor=${bg}`,
+      alt: 'Test Coverage',
+    },
+    {
+      href: 'https://github.com/framersai/agentos/stargazers',
+      src: `https://img.shields.io/github/stars/framersai/agentos?style=${s}&logo=github&logoColor=white&label=stars&color=8b5cf6&labelColor=${bg}`,
+      alt: 'GitHub Stars',
+    },
+    {
+      href: 'https://github.com/framersai/agentos/network/members',
+      src: `https://img.shields.io/github/forks/framersai/agentos?style=${s}&logo=github&logoColor=white&label=forks&color=6e7681&labelColor=${bg}`,
+      alt: 'GitHub Forks',
+    },
+  ];
+
+  return (
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        gap: '0.5rem',
+        margin: '1.25rem 0',
+      }}
+    >
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          flexWrap: 'wrap',
+          gap: '0.625rem',
+        }}
+      >
+        {badges.map((b) => (
+          <a
+            key={b.alt}
+            href={b.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              transition: 'opacity 0.2s ease, transform 0.2s ease',
+            }}
+          >
+            <img src={b.src} alt={b.alt} style={{ height: '28px' }} />
+          </a>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
 /*  Hero                                                               */
 /* ------------------------------------------------------------------ */
 
 function Hero() {
   const { siteConfig } = useDocusaurusContext();
-  const s = 'for-the-badge';
-  const bg = '08070e';
   return (
     <header className="hero-agentos">
       <div className="hero-agentos__logo">
-        <img src="/img/logo.svg" alt="AgentOS" width={64} height={64} />
-      </div>
-
-      <div
-        style={{
-          display: 'flex',
-          gap: '0.75rem',
-          marginBottom: '1.5rem',
-          flexWrap: 'wrap',
-          justifyContent: 'center',
-        }}
-      >
-        <a href="https://www.npmjs.com/package/@framers/agentos">
-          <img
-            src={`https://img.shields.io/npm/v/@framers/agentos?style=${s}&logo=npm&logoColor=white&label=npm&color=6366f1&labelColor=${bg}`}
-            alt="npm version"
-          />
-        </a>
-        <a href="https://codecov.io/gh/framersai/agentos">
-          <img
-            src={`https://img.shields.io/codecov/c/github/framersai/agentos?style=${s}&logo=codecov&logoColor=white&label=coverage&color=22c55e&labelColor=${bg}`}
-            alt="Test Coverage"
-          />
-        </a>
-        <a href="https://github.com/framersai/agentos/stargazers">
-          <img
-            src={`https://img.shields.io/github/stars/framersai/agentos?style=${s}&logo=github&logoColor=white&label=stars&color=8b5cf6&labelColor=${bg}`}
-            alt="GitHub Stars"
-          />
-        </a>
-        <a href="https://github.com/framersai/agentos/network/members">
-          <img
-            src={`https://img.shields.io/github/forks/framersai/agentos?style=${s}&logo=github&logoColor=white&label=forks&color=6e7681&labelColor=${bg}`}
-            alt="GitHub Forks"
-          />
-        </a>
+        <img src="/img/logo.svg" alt="AgentOS" width={72} height={72} />
       </div>
 
       <h1 className="hero-agentos__title">
@@ -69,6 +102,8 @@ function Hero() {
       </h1>
 
       <p className="hero-agentos__subtitle">{siteConfig.tagline}</p>
+
+      <Badges />
 
       <div className="hero-buttons">
         <Link className="btn-primary" to="/getting-started/getting-started">
@@ -110,7 +145,7 @@ function InstallTabs() {
               borderRadius: '6px 6px 0 0',
               border: 'none',
               cursor: 'pointer',
-              fontFamily: "'IBM Plex Mono', monospace",
+              fontFamily: "'JetBrains Mono', monospace",
               fontSize: '0.8rem',
               fontWeight: pm === key ? 700 : 400,
               background: pm === key ? 'var(--ifm-color-primary)' : 'transparent',
@@ -274,7 +309,7 @@ function QuickStartTabs() {
               borderRadius: '6px 6px 0 0',
               border: 'none',
               cursor: 'pointer',
-              fontFamily: "'IBM Plex Mono', monospace",
+              fontFamily: "'JetBrains Mono', monospace",
               fontSize: '0.8rem',
               fontWeight: active === tab ? 700 : 400,
               background: active === tab ? 'var(--ifm-color-primary)' : 'transparent',
@@ -298,15 +333,15 @@ function QuickStartTabs() {
 /* ------------------------------------------------------------------ */
 
 const architectureMermaid = `flowchart TD
-    API["<b>High-Level API</b><br/>generateText · streamText · generateImage · agent()"]
-    API --> GMI["<b>Cognitive Substrate</b> — GMI<br/>Persona · HEXACO · Working Memory · ReAct Loop"]
+    API["<b>High-Level API</b><br/>generateText \u00B7 streamText \u00B7 generateImage \u00B7 agent()"]
+    API --> GMI["<b>Cognitive Substrate</b> \u2014 GMI<br/>Persona \u00B7 HEXACO \u00B7 Working Memory \u00B7 ReAct Loop"]
     GMI --> MEM["<b>Memory</b><br/>Cognitive + GraphRAG + Ebbinghaus Decay"]
-    GMI --> TOOLS["<b>Tools</b><br/>23+ Built-in · Semantic Discovery · Emergent Forge"]
-    GMI --> GUARD["<b>Guardrails</b><br/>5-Tier Pipeline · PII · ML Classifiers · Grounding"]
-    TOOLS --> GRAPH["<b>Graph Runtime</b><br/>AgentGraph · workflow() · mission() · Checkpoints"]
-    GRAPH --> VOICE["<b>Voice Pipeline</b><br/>28 STT/TTS Providers · VAD · Barge-in"]
+    GMI --> TOOLS["<b>Tools</b><br/>23+ Built-in \u00B7 Semantic Discovery \u00B7 Emergent Forge"]
+    GMI --> GUARD["<b>Guardrails</b><br/>5-Tier Pipeline \u00B7 PII \u00B7 ML Classifiers \u00B7 Grounding"]
+    TOOLS --> GRAPH["<b>Graph Runtime</b><br/>AgentGraph \u00B7 workflow() \u00B7 mission() \u00B7 Checkpoints"]
+    GRAPH --> VOICE["<b>Voice Pipeline</b><br/>28 STT/TTS Providers \u00B7 VAD \u00B7 Barge-in"]
     GRAPH --> CHAN["<b>Channels</b><br/>37 Platform Adapters"]
-    GRAPH --> LLM["<b>LLM Providers</b><br/>21 Providers · Auto-fallback · Local (Ollama)"]
+    GRAPH --> LLM["<b>LLM Providers</b><br/>21 Providers \u00B7 Auto-fallback \u00B7 Local (Ollama)"]
 
     style API fill:#1e1b4b,stroke:#818cf8,stroke-width:2px,color:#e0e7ff
     style GMI fill:#1e1b4b,stroke:#00f5ff,stroke-width:2px,color:#e0e7ff
@@ -354,7 +389,7 @@ const features = [
   {
     title: 'Emergent Capabilities',
     description:
-      'Agents forge new tools at runtime — compose (chain existing tools) or sandbox (isolated V8 with allowlists). LLM-as-judge safety review, tiered promotion, portable YAML export.',
+      'Agents forge new tools at runtime \u2014 compose (chain existing tools) or sandbox (isolated V8 with allowlists). LLM-as-judge safety review, tiered promotion, portable YAML export.',
     link: '/features/emergent-capabilities',
   },
   {
@@ -366,7 +401,7 @@ const features = [
   {
     title: 'Graph Orchestration',
     description:
-      'Three authoring APIs — AgentGraph, workflow() DSL, mission() — compile to one IR. judgeNode for evaluation, checkpointing for time-travel, streaming events.',
+      'Three authoring APIs \u2014 AgentGraph, workflow() DSL, mission() \u2014 compile to one IR. judgeNode for evaluation, checkpointing for time-travel, streaming events.',
     link: '/features/orchestration-guide',
   },
   {
@@ -390,7 +425,7 @@ const features = [
   {
     title: 'Capability Discovery',
     description:
-      '3-tier semantic discovery: category summaries (150 tokens) → top-5 matches (200 tokens) → full schemas on demand. 89% token reduction. Agents self-discover tools mid-conversation.',
+      '3-tier semantic discovery: category summaries (150 tokens) \u2192 top-5 matches (200 tokens) \u2192 full schemas on demand. 89% token reduction. Agents self-discover tools mid-conversation.',
     link: '/features/discovery-guide',
   },
   {
@@ -443,7 +478,7 @@ function Features() {
 
 export default function Home(): React.JSX.Element {
   return (
-    <Layout description="AgentOS — open-source TypeScript runtime for autonomous AI agents with unified graph orchestration, cognitive memory, streaming guardrails, and voice pipeline.">
+    <Layout description="AgentOS \u2014 open-source TypeScript runtime for autonomous AI agents with unified graph orchestration, cognitive memory, streaming guardrails, and voice pipeline.">
       <Hero />
       <InstallTabs />
       <QuickStartTabs />

@@ -242,7 +242,7 @@ const config: Config = {
       ],
     },
     footer: {
-      style: 'dark',
+      style: 'light',
       logo: {
         alt: 'Frame.dev',
         src: 'img/frame-logo.svg',
