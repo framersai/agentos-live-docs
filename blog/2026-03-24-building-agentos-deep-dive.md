@@ -1,6 +1,6 @@
 ---
 title: 'Building AgentOS: A Production-Grade AI Agent Platform from the Ground Up'
-authors: [agentos-team]
+authors: [jddunn]
 date: 2026-03-24
 tags: [architecture, deep-dive, agentos, typescript, orchestration, memory, guardrails]
 ---
@@ -9,9 +9,9 @@ tags: [architecture, deep-dive, agentos, typescript, orchestration, memory, guar
 
 <!-- truncate -->
 
-_Author: Development Team_
-_Date: 2024_
-_Reading Time: ~90 minutes_
+_Author: Johnny Dunn, Creator of AgentOS_
+_Date: March 2026_
+_Reading Time: ~160 minutes_
 _Target Audience: Senior engineers, technical architects, AI platform builders_
 
 ---
@@ -21,21 +21,21 @@ _Target Audience: Senior engineers, technical architects, AI platform builders_
 1. [Executive Summary & Architecture Philosophy](#executive-summary)
 2. [The GMI: Cognitive Engine Implementation](#gmi-cognitive-engine)
 3. [AgentOS Orchestration Layer](#orchestration-layer)
-4. [Agent Communication Bus](#agent-communication)
-5. [Planning Engine & Autonomous Execution](#planning-engine)
-6. [RAG & Memory Architecture](#rag-memory)
+4. [RAG & Memory Architecture](#rag-memory)
+5. [Cognitive Memory System](#cognitive-memory)
+6. [Document Ingestion Pipeline](#document-ingestion)
 7. [Guardrails & Safety Systems](#guardrails-safety)
 8. [Tool Orchestration & Permissions](#tool-orchestration)
-9. [Structured Output Management](#structured-output)
-10. [Evaluation Framework](#evaluation-framework)
-11. [Human-in-the-Loop Systems](#hitl-systems)
+9. [Query Router & Classification](#query-router)
+10. [Voice Pipeline & STT/TTS](#voice-pipeline)
+11. [Streaming & Real-Time Architecture](#streaming-realtime)
 12. [Wunderland: HEXACO Personality System](#wunderland-hexaco)
 13. [RabbitHole: Multi-Channel Bridge](#rabbithole-multichannel)
-14. [Cost Optimization Strategies](#cost-optimization)
-15. [Cross-Platform Storage](#cross-platform-storage)
-16. [Extension System](#extension-system)
-17. [Workflow Engine](#workflow-engine)
-18. [PII Protection](#pii-protection)
+14. [Graph-Based Orchestration](#graph-orchestration)
+15. [Multi-Agent Agency System](#multi-agent-agency)
+16. [Capability Discovery Engine](#capability-discovery)
+17. [Social & Governance Protocols](#social-governance)
+18. [Provider-First API Design](#provider-api)
 19. [Key Implementation Patterns](#implementation-patterns)
 20. [Lessons Learned & Tradeoffs](#lessons-learned)
 21. [Performance & Scalability](#performance-scalability)
@@ -1016,6 +1016,503 @@ public async *processRequest(input: AgentOSInput):
 
 ---
 
+<a name="rag-memory"></a>
+
+## Part 4: RAG & Memory Architecture
+
+Production agents need long-term memory that scales from a weekend prototype to a million-vector deployment without rewriting code. Our answer is a four-tier auto-scaling vector store architecture with a unified Memory facade.
+
+### Seven Vector Store Backends
+
+AgentOS supports seven pluggable vector store backends, each implementing `IVectorStore`:
+
+```typescript
+export interface IVectorStore {
+  initialize(config: VectorStoreConfig): Promise<void>;
+  addDocuments(docs: VectorDocument[]): Promise<string[]>;
+  search(query: number[], options: SearchOptions): Promise<SearchResult[]>;
+  delete(ids: string[]): Promise<void>;
+  count(): Promise<number>;
+}
+```
+
+| Backend                       | Best For                   | Latency (1K docs) | Dependency     |
+| ----------------------------- | -------------------------- | ----------------- | -------------- |
+| **InMemory**                  | Tests, ephemeral           | <1ms              | None           |
+| **SQLite** (SqlVectorStore)   | Local-first, <10K docs     | 5-20ms            | better-sqlite3 |
+| **HNSW** (HnswlibVectorStore) | Local-first, 10K-500K docs | 1-5ms             | hnswlib-node   |
+| **PostgreSQL** (pgvector)     | Multi-user SaaS            | 10-30ms           | pg + pgvector  |
+| **Qdrant**                    | High-scale production      | 5-15ms            | Qdrant server  |
+| **Pinecone**                  | Managed cloud              | 20-50ms           | Pinecone SDK   |
+| **Neo4j**                     | Graph + vector hybrid      | 15-40ms           | neo4j-driver   |
+
+### Four-Tier Auto-Scaling
+
+The system progressively upgrades storage as data grows:
+
+```
+Tier 0: InMemory (dev/test)
+  ↓  count > 500
+Tier 1: SQLite brute-force cosine (single-user local)
+  ↓  count > 1,000
+Tier 2: HNSW sidecar (O(log n) ANN alongside SQLite)
+  ↓  count > 100,000 or multi-user
+Tier 3: Qdrant / PostgreSQL+pgvector (distributed, replicated)
+```
+
+The HNSW sidecar ([HnswSidecar.ts](packages/agentos/src/memory/store/HnswSidecar.ts)) auto-activates when the trace count in `brain.sqlite` exceeds 1,000:
+
+```typescript
+export class HnswSidecar {
+  private readonly config: Required<HnswSidecarConfig>;
+
+  // Auto-build threshold. Below this count, brute-force is used.
+  // Default: 1000
+  async shouldActivate(traceCount: number): Promise<boolean> {
+    return traceCount >= this.config.autoThreshold;
+  }
+
+  async buildFromSqlite(brain: SqliteBrain): Promise<void> {
+    // Reads all embeddings from brain.sqlite, builds HNSW index
+    // Stores at ~/.wunderland/agents/{name}/brain.hnsw
+    const traces = brain.getAllEmbeddings();
+    for (const { id, embedding } of traces) {
+      this.index.addPoint(embedding, this.labelFor(id));
+    }
+    this.persist();
+  }
+
+  async knnQuery(vector: Float32Array, k: number): Promise<HnswQueryResult[]> {
+    const { neighbors, distances } = this.index.searchKnn(vector, k);
+    return neighbors.map((label, i) => ({
+      id: this.idForLabel(label),
+      distance: distances[i],
+    }));
+  }
+}
+```
+
+**Why sidecar?** SQLite remains the source of truth. The HNSW index file (`brain.hnsw`) is rebuildable at any time from SQLite data. This means no data loss if the index corrupts, and no migration needed when upgrading.
+
+### Binary Blob Embeddings
+
+Instead of serializing embeddings as JSON arrays (the common approach), we store raw `Float32Array` buffers directly as SQLite BLOBs:
+
+```typescript
+// Store: Float32Array → Buffer (zero-copy)
+const buffer = Buffer.from(embedding.buffer);
+db.prepare('INSERT INTO memory_traces (embedding) VALUES (?)').run(buffer);
+
+// Retrieve: Buffer → Float32Array (zero-copy)
+const row = db.prepare('SELECT embedding FROM memory_traces WHERE id = ?').get(id);
+const vector = new Float32Array(
+  row.embedding.buffer,
+  row.embedding.byteOffset,
+  row.embedding.byteLength / 4
+);
+```
+
+**Impact**: 3-4x faster than JSON serialization. For 1,536-dimensional embeddings (OpenAI `text-embedding-3-small`), JSON serialization takes ~2ms per vector; binary blob read/write takes ~0.5ms.
+
+### FTS5 Hybrid Search with RRF Fusion
+
+Vector-only search misses keyword matches. Keyword-only search misses semantic meaning. We combine both using Reciprocal Rank Fusion:
+
+```typescript
+// HybridSearcher combines FTS5 + vector search with RRF
+export class HybridSearcher {
+  async search(query: string, options: HybridSearchOptions): Promise<SearchResult[]> {
+    // Run both searches in parallel
+    const [ftsResults, vectorResults] = await Promise.all([
+      this.ftsSearch(query, options.ftsLimit),
+      this.vectorSearch(query, options.vectorLimit),
+    ]);
+
+    // Reciprocal Rank Fusion: score = Σ 1/(k + rank_i)
+    const fused = this.rrfFuse(ftsResults, vectorResults, options.rrfK ?? 60);
+    return fused.slice(0, options.topK);
+  }
+}
+```
+
+FTS5 queries support SQL-level metadata filtering via `json_extract()`:
+
+```sql
+SELECT id, content, rank
+FROM memory_traces_fts
+WHERE memory_traces_fts MATCH ?
+  AND json_extract(metadata, '$.source') = 'user-upload'
+ORDER BY rank
+LIMIT 20
+```
+
+### MigrationEngine
+
+When you outgrow SQLite and need to move to Qdrant, the `MigrationEngine` handles one-command migration between any pair of backends:
+
+```typescript
+const migration = new MigrationEngine({
+  source: new SqliteSourceAdapter(sqlitePath),
+  target: new QdrantTargetAdapter(qdrantUrl, collectionName),
+  batchSize: 500,
+  onProgress: (pct) => console.log(`${pct}% complete`),
+});
+
+const result = await migration.run();
+// { migratedCount: 45230, duration: '12.4s', errors: [] }
+```
+
+Six adapter pairs ship out of the box: SQLite, PostgreSQL, Qdrant, and Pinecone as both source and target.
+
+### Docker Auto-Setup
+
+For Qdrant and PostgreSQL backends, the setup module detects whether Docker is available and can spin up containers automatically:
+
+```typescript
+const setup = new QdrantSetup();
+if (await setup.isDockerAvailable()) {
+  await setup.ensureRunning({ port: 6333, storagePath: './qdrant_data' });
+}
+```
+
+### Memory Facade API
+
+The `Memory` class ([Memory.ts](packages/agentos/src/memory/facade/Memory.ts)) wraps every subsystem into a single import:
+
+```typescript
+import { Memory } from '@framers/agentos';
+
+const memory = new Memory({ agentName: 'researcher', dimensions: 1536 });
+await memory.initialize();
+
+// Store a memory
+await memory.remember('User prefers bullet-point summaries', {
+  type: 'semantic',
+  tags: ['user-preference', 'formatting'],
+  importance: 0.8,
+});
+
+// Recall with semantic search
+const results = await memory.recall('how does the user like summaries?', {
+  topK: 5,
+  minScore: 0.7,
+  hybridSearch: true, // FTS5 + vector fusion
+});
+
+// Ingest a document folder
+await memory.ingest('/path/to/docs', {
+  chunkStrategy: 'semantic',
+  chunkSize: 512,
+  overlap: 64,
+});
+
+// Export to Obsidian vault
+await memory.export({ format: 'obsidian', outputPath: './vault' });
+
+// Run consolidation (prune + merge + strengthen + derive + compact + reindex)
+const stats = await memory.consolidate();
+```
+
+**Why a single facade?** Consumers should never need to know about HNSW sidecars, FTS5 indexes, or decay curves. One class, one import, full functionality.
+
+---
+
+<a name="cognitive-memory"></a>
+
+## Part 5: Cognitive Memory System
+
+Vector stores are necessary but insufficient. Production agents need memory that behaves like human memory: fading over time, strengthening with use, compressing repeated observations, and maintaining personality-consistent attention biases.
+
+### Ebbinghaus Forgetting Curve
+
+Every memory trace in AgentOS has a `stability` and `encodingStrength` field, governed by the Ebbinghaus equation ([DecayModel.ts](packages/agentos/src/memory/decay/DecayModel.ts)):
+
+```typescript
+// S(t) = S₀ · e^(-Δt / stability)
+export function computeCurrentStrength(trace: MemoryTrace, now: number): number {
+  const elapsed = Math.max(0, now - trace.lastAccessedAt);
+  return trace.encodingStrength * Math.exp(-elapsed / trace.stability);
+}
+```
+
+**Spaced repetition**: Each successful retrieval increases stability via the desirable difficulty effect -- memories that were harder to retrieve receive a larger stability boost:
+
+```typescript
+export function updateOnRetrieval(trace: MemoryTrace, now: number): RetrievalUpdateResult {
+  const currentStrength = computeCurrentStrength(trace, now);
+  const difficultyBonus = Math.max(0.1, 1 - currentStrength);
+  const retrievalDiminish = 1 / (1 + 0.1 * trace.retrievalCount);
+  const emotionalBonus = 1 + trace.emotionalContext.intensity * 0.3;
+
+  const stabilityGrowth = difficultyBonus * retrievalDiminish * emotionalBonus;
+  return {
+    stability: trace.stability * (1 + stabilityGrowth),
+    encodingStrength: Math.min(1, trace.encodingStrength + 0.05),
+    retrievalCount: trace.retrievalCount + 1,
+    // ...
+  };
+}
+```
+
+### HEXACO Personality-Modulated Encoding
+
+When the `MemoryObserver` extracts notes from conversation turns, personality traits bias what gets recorded ([MemoryObserver.ts](packages/agentos/src/memory/observation/MemoryObserver.ts)):
+
+- **High Emotionality** (HEXACO-E > 0.7): Notes emotional shifts and user sentiment changes
+- **High Conscientiousness** (HEXACO-C > 0.7): Notes commitments, deadlines, and action items
+- **High Openness** (HEXACO-O > 0.7): Notes creative tangents and novel ideas
+- **High Agreeableness** (HEXACO-A > 0.7): Notes user preferences and rapport cues
+- **High Honesty-Humility** (HEXACO-H > 0.7): Notes corrections and retractions
+
+Each trait maps to an attention weight that scales the importance score of observation notes in that category.
+
+### Observational Memory Compression
+
+The three-tier observation pipeline mirrors Mastra's memory architecture but is built natively for TypeScript:
+
+```
+Tier 1: Raw Notes (per-turn extraction when token threshold reached)
+  ↓  50+ notes accumulated
+Tier 2: Compressed Observations (ObservationCompressor merges related notes)
+  ↓  40,000+ tokens accumulated
+Tier 3: Reflections (ObservationReflector synthesizes high-level insights)
+```
+
+Compression ratios range from 3x to 10x depending on conversation repetitiveness:
+
+```typescript
+// ObservationCompressor groups related notes by entity overlap and
+// temporal proximity, then asks a cheap LLM to merge each group
+const compressed = await compressor.compress(notes);
+// 50 raw notes → 8-12 compressed observations
+```
+
+### Temporal Reasoning with Three-Date Model
+
+Every observation carries three timestamps:
+
+```typescript
+interface TemporalMetadata {
+  observedAt: number; // When this observation was made
+  referencedAt: number; // When the referenced event actually occurred
+  relativeLabel: string; // Human-friendly label: "3 days ago", "next Tuesday"
+}
+```
+
+This allows the agent to distinguish between "the user mentioned last week they have a meeting" (observed now, referenced in the past) and "the user just said they'll be on vacation" (observed now, referenced in the future).
+
+### Self-Improving Consolidation Loop
+
+The `ConsolidationLoop` ([ConsolidationLoop.ts](packages/agentos/src/memory/consolidation/ConsolidationLoop.ts)) runs six ordered steps that mirror the brain's slow-wave sleep consolidation:
+
+```typescript
+// 6-step consolidation pipeline
+async run(): Promise<ConsolidationResult> {
+  // 1. Prune: soft-delete traces with strength below pruneThreshold
+  const pruned = await this.pruneDecayedTraces();
+
+  // 2. Merge: deduplicate near-identical traces (cosine sim > 0.95)
+  const merged = await this.mergeNearDuplicates();
+
+  // 3. Strengthen: record Hebbian co-activation edges from retrieval feedback
+  const strengthened = await this.strengthenCoActivations();
+
+  // 4. Derive: (requires LLM) synthesize higher-level insights from clusters
+  const derived = await this.deriveInsights();
+
+  // 5. Compact: promote old, high-retrieval episodic traces to semantic type
+  const compacted = await this.compactEpisodicToSemantic();
+
+  // 6. Re-index: rebuild FTS5 index and log to consolidation_log
+  await this.rebuildFtsIndex();
+
+  return { pruned, merged, strengthened, derived, compacted };
+}
+```
+
+### Retrieval Feedback Signals
+
+The `RetrievalFeedbackSignal` module tracks whether retrieved memories were actually used in the agent's response:
+
+- **Used signal**: Memory content appears (paraphrased or verbatim) in the response
+- **Ignored signal**: Memory was retrieved but not referenced in the response
+
+These signals feed back into the decay model, strengthening useful memories and weakening irrelevant ones.
+
+### Agent Memory Tools
+
+Six ITool implementations let agents self-manage their memory at runtime:
+
+| Tool             | Description                                          |
+| ---------------- | ---------------------------------------------------- |
+| `memory_add`     | Store a new memory trace with type, tags, importance |
+| `memory_update`  | Modify content or metadata of an existing trace      |
+| `memory_delete`  | Soft-delete a trace by ID                            |
+| `memory_merge`   | Combine two related traces into one                  |
+| `memory_search`  | Semantic + keyword search with filters               |
+| `memory_reflect` | Trigger an on-demand consolidation cycle             |
+
+### Memory Import/Export
+
+The I/O module supports 10 formats for interoperability:
+
+- **Export**: JSON, Markdown, Obsidian vault, SQLite dump
+- **Import**: JSON, Markdown, Obsidian vault, SQLite dump, CSV, ChatGPT export
+
+```typescript
+// Import from ChatGPT conversations.json
+const result = await memory.import({
+  format: 'chatgpt',
+  inputPath: './conversations.json',
+  deduplicateByContent: true,
+});
+// { imported: 1247, skipped: 83, errors: 2 }
+```
+
+### Working Memory (Baddeley's Model)
+
+Short-term working memory follows Baddeley's model with configurable slot count (default 7 +/- 2):
+
+```typescript
+export class CognitiveWorkingMemory {
+  private slots: Map<string, WorkingMemorySlot> = new Map();
+  private readonly maxSlots: number; // default: 7
+
+  async set(key: string, value: unknown): Promise<void> {
+    if (this.slots.size >= this.maxSlots && !this.slots.has(key)) {
+      this.evictLeastRecentlyUsed();
+    }
+    this.slots.set(key, { value, lastAccessed: Date.now() });
+  }
+}
+```
+
+### SQLite brain.sqlite Schema
+
+Each agent gets a single `brain.sqlite` file with 12 tables:
+
+```
+~/.wunderland/agents/{name}/
+  ├── brain.sqlite        ← 12 tables, WAL mode, FTS5
+  ├── brain.hnsw          ← HNSW index (auto-created at 1K+ traces)
+  └── brain.hnsw.map.json ← label↔id mapping
+```
+
+Tables: `brain_meta`, `memory_traces`, `memory_traces_fts`, `knowledge_nodes`, `knowledge_edges`, `documents`, `document_chunks`, `conversations`, `messages`, `consolidation_log`, `retrieval_feedback`, `working_memory`.
+
+---
+
+<a name="document-ingestion"></a>
+
+## Part 6: Document Ingestion Pipeline
+
+Agents need to ingest documents from diverse sources. Our pipeline handles 10 document types with a three-tier PDF extraction strategy and four chunking algorithms.
+
+### Document Loaders
+
+The `LoaderRegistry` manages 10 loader implementations:
+
+```typescript
+export class LoaderRegistry {
+  private loaders: Map<string, IDocumentLoader> = new Map();
+
+  constructor() {
+    this.register('.txt', new TextLoader());
+    this.register('.md', new MarkdownLoader());
+    this.register('.html', new HtmlLoader());
+    this.register('.pdf', new PdfLoader());
+    this.register('.docx', new DocxLoader());
+    this.register('.csv', new CsvLoader());
+    this.register('.json', new JsonLoader());
+    this.register('.yaml', new YamlLoader());
+    // URL and folder loaders registered separately
+  }
+
+  async load(path: string, options?: LoadOptions): Promise<LoadedDocument[]> {
+    const ext = extOf(path);
+    const loader = this.loaders.get(ext);
+    if (!loader) throw new Error(`No loader for extension: ${ext}`);
+    return loader.load(path, options);
+  }
+}
+```
+
+### Three-Tier PDF Extraction
+
+PDF extraction is notoriously unreliable. We use a tiered fallback strategy ([PdfLoader.ts](packages/agentos/src/memory/ingestion/PdfLoader.ts)):
+
+```
+Tier 1: unpdf (always available)
+  ├── Pure-JS text extraction via getDocumentProxy + extractText
+  ├── Fast and dependency-free
+  └── If average chars/page < 50 → fallback to Tier 2
+
+Tier 2: Tesseract.js OCR (opt-in)
+  ├── Image-based OCR for scanned PDFs
+  ├── Engaged when unpdf produces sparse text
+  └── If still inadequate → fallback to Tier 3
+
+Tier 3: Docling Python sidecar (opt-in)
+  ├── Full document understanding via Python subprocess
+  ├── Handles complex layouts, tables, multi-column
+  └── Highest quality but requires Python environment
+```
+
+### Four Chunking Strategies
+
+The `ChunkingEngine` ([ChunkingEngine.ts](packages/agentos/src/memory/ingestion/ChunkingEngine.ts)) supports four approaches:
+
+```typescript
+type ChunkStrategy = 'fixed' | 'semantic' | 'hierarchical' | 'layout';
+```
+
+- **Fixed**: Split at character count with word-boundary awareness and configurable overlap
+- **Semantic**: Embed individual sentences, split where cosine similarity drops below threshold (topic boundaries). Falls back to fixed when no `embedFn` is supplied
+- **Hierarchical**: Honour Markdown heading structure; each heading creates a chunk boundary with heading stored in metadata. Long sections sub-split with fixed
+- **Layout**: Preserve fenced code blocks and pipe-delimited tables as atomic chunks; surrounding prose is split with fixed
+
+```typescript
+const engine = new ChunkingEngine();
+const chunks = await engine.chunk(document.content, {
+  strategy: 'semantic',
+  chunkSize: 512,
+  overlap: 64,
+  embedFn: async (text) => embeddingManager.embed(text),
+  similarityThreshold: 0.75,
+});
+```
+
+### Multimodal Aggregation
+
+The `MultimodalAggregator` extracts images from documents and generates text descriptions using vision LLMs:
+
+```typescript
+const aggregator = new MultimodalAggregator({
+  visionAdapter: new LLMVisionAdapter({ model: 'gpt-4o' }),
+});
+
+const enriched = await aggregator.process(document);
+// Images are captioned and appended as text chunks
+// "Figure 3: A bar chart showing revenue growth from Q1-Q4 2025..."
+```
+
+### FolderScanner
+
+The `FolderScanner` recursively walks directories with glob filtering and progress callbacks:
+
+```typescript
+const scanner = new FolderScanner({
+  patterns: ['**/*.md', '**/*.pdf', '**/*.txt'],
+  ignore: ['**/node_modules/**', '**/.git/**'],
+  onProgress: ({ scanned, total }) => console.log(`Scanning: ${scanned}/${total}`),
+});
+
+const documents = await scanner.scan('/path/to/knowledge-base');
+// Returns LoadedDocument[] with file metadata preserved
+```
+
+---
+
 <a name="guardrails-safety"></a>
 
 ## Part 7: Guardrails & Safety Systems
@@ -1913,6 +2410,389 @@ export class ToolExecutor {
 
 ---
 
+<a name="query-router"></a>
+
+## Part 9: Query Router & Classification
+
+Not every user message needs the same retrieval strategy. A simple greeting should not trigger a multi-step research pipeline. The `QueryClassifier` ([QueryClassifier.ts](packages/agentos/src/query-router/QueryClassifier.ts)) is the first stage of the QueryRouter pipeline, deciding how much retrieval effort each query warrants.
+
+### Tier-Based Classification
+
+The classifier maps every query to one of four tiers:
+
+| Tier   | Strategy   | When to Use                               | Cost                                   |
+| ------ | ---------- | ----------------------------------------- | -------------------------------------- |
+| **T0** | `none`     | Greetings, small talk, internal knowledge | Zero                                   |
+| **T1** | `simple`   | Direct factual lookups                    | 1 embedding call                       |
+| **T2** | `moderate` | Vocabulary-mismatch queries               | HyDE + embedding                       |
+| **T3** | `complex`  | Multi-part research questions             | Decompose + HyDE per sub-query + merge |
+
+### LLM-Based Classification
+
+The primary classifier uses an LLM-as-judge approach with chain-of-thought reasoning:
+
+```typescript
+export class QueryClassifier {
+  async classify(query: string, history?: ConversationMessage[]): Promise<ClassificationResult> {
+    const systemPrompt = this.buildSystemPrompt();
+    const response = await generateText({
+      model: this.config.model,
+      provider: this.config.provider,
+      messages: [
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: this.buildUserPrompt(query, history) },
+      ],
+      temperature: 0,
+    });
+
+    const parsed = this.parseClassification(response.text);
+
+    // Safety: if confidence is below threshold, bump tier up by 1
+    if (parsed.confidence < this.config.confidenceThreshold) {
+      parsed.tier = Math.min(3, parsed.tier + 1) as QueryTier;
+      parsed.strategy = TIER_TO_STRATEGY[parsed.tier];
+    }
+
+    return parsed;
+  }
+}
+```
+
+### Plan-Aware Classification
+
+The classifier outputs not just a tier but a full `ExecutionPlan` that downstream components consume:
+
+```typescript
+interface ExecutionPlan {
+  retrievalPlan: RetrievalPlan; // Strategy + topK + filters
+  skillRecommendations: SkillRecommendation[]; // Skills to activate
+  toolRecommendations: ToolRecommendation[]; // Tools to prepare
+  extensionRecommendations: ExtensionRecommendation[];
+}
+```
+
+### Capability Discovery Integration
+
+When a `CapabilityDiscoveryEngine` is attached, the classifier injects Tier 0 summaries (~150 tokens) into its system prompt. This lets the LLM recommend which skills and tools to activate without seeing the full capability catalog:
+
+```typescript
+// Inject discovery context into classifier prompt
+if (this.discoveryEngine) {
+  const summaries = await this.discoveryEngine.getTier0Summaries();
+  systemPrompt += `\n\nAvailable capabilities:\n${summaries}`;
+}
+```
+
+### Heuristic Fallback
+
+For offline or cost-constrained scenarios, a zero-cost keyword-based heuristic handles classification:
+
+```typescript
+// Keyword-based fallback when LLM is unavailable
+function heuristicClassify(query: string): ClassificationResult {
+  const words = query.toLowerCase().split(/\s+/);
+  const questionWords = words.filter((w) =>
+    ['what', 'how', 'why', 'when', 'where', 'which', 'compare'].includes(w)
+  );
+
+  if (questionWords.length === 0) return { tier: 0, strategy: 'none' };
+  if (questionWords.length === 1) return { tier: 1, strategy: 'simple' };
+  if (query.includes(' and ') || query.includes(' vs ')) return { tier: 3, strategy: 'complex' };
+  return { tier: 2, strategy: 'moderate' };
+}
+```
+
+### Query Decomposition
+
+For T3 (complex) queries, the classifier decomposes multi-part questions into independent sub-queries that can be researched in parallel:
+
+```
+Input:  "Compare the memory systems of AgentOS and LangChain,
+         and explain which is better for production use"
+
+Output: [
+  "What memory system does AgentOS use?",
+  "What memory system does LangChain use?",
+  "What are production requirements for AI agent memory systems?"
+]
+```
+
+---
+
+<a name="voice-pipeline"></a>
+
+## Part 10: Voice Pipeline & STT/TTS
+
+Voice is the most natural interface for conversational agents. The `VoicePipelineOrchestrator` ([VoicePipelineOrchestrator.ts](packages/agentos/src/voice-pipeline/VoicePipelineOrchestrator.ts)) wires together transport, speech-to-text, endpoint detection, text-to-speech, and barge-in handling into a coordinated real-time conversation loop.
+
+### Pipeline State Machine
+
+```
+IDLE ────────→ startSession() ──────→ LISTENING
+LISTENING ───→ turn_complete ───────→ PROCESSING
+PROCESSING ──→ LLM tokens start ───→ SPEAKING
+SPEAKING ────→ TTS flush_complete ──→ LISTENING
+SPEAKING ────→ barge-in (cancel) ──→ INTERRUPTING → LISTENING
+ANY ─────────→ transport disconnect → CLOSED
+ANY ─────────→ stopSession() ──────→ CLOSED
+```
+
+### Pluggable STT Providers
+
+Speech-to-text implements the `IStreamingSTT` interface:
+
+```typescript
+export interface IStreamingSTT {
+  createSession(config: STTConfig): Promise<StreamingSTTSession>;
+}
+
+export interface StreamingSTTSession {
+  /** Feed raw audio frames into the recognizer. */
+  feedAudio(frame: AudioFrame): void;
+  /** Subscribe to partial/final transcript events. */
+  onTranscript(cb: (event: TranscriptEvent) => void): void;
+  close(): Promise<void>;
+}
+```
+
+Three providers ship out of the box:
+
+- **Whisper** (OpenAI API): Best accuracy, highest latency (~500ms)
+- **Deepgram**: Best real-time performance (~200ms), streaming-native
+- **Whisper.cpp**: Local-first, zero API cost, hardware-dependent latency
+
+### Pluggable TTS Providers
+
+Text-to-speech implements `IStreamingTTS`:
+
+```typescript
+export interface IStreamingTTS {
+  createSession(config: TTSConfig): Promise<StreamingTTSSession>;
+}
+
+export interface StreamingTTSSession {
+  /** Feed text chunks for synthesis. */
+  synthesize(text: string): void;
+  /** Subscribe to encoded audio chunk output. */
+  onAudio(cb: (chunk: EncodedAudioChunk) => void): void;
+  /** Signal that no more text will be sent. */
+  flush(): Promise<void>;
+  close(): Promise<void>;
+}
+```
+
+Three providers:
+
+- **OpenAI TTS**: High quality, API-based
+- **ElevenLabs**: Best voice cloning, lowest latency streaming
+- **Piper**: Local-first, runs on-device, zero API cost
+
+### Turn Detection & Endpoint Detection
+
+The system uses two complementary strategies:
+
+**Acoustic endpoint detection**: Monitors silence duration and energy levels:
+
+```typescript
+export interface AcousticEndpointConfig {
+  /** Duration of silence (ms) before declaring end-of-turn. */
+  silenceDurationMs: number; // default: 800
+  /** RMS energy threshold below which audio is "silence". */
+  energyThreshold: number; // default: 0.01
+  /** Sliding window size for energy averaging. */
+  windowSizeMs: number; // default: 100
+}
+```
+
+**Heuristic endpoint detection**: Scores utterance completeness using linguistic cues (sentence-ending punctuation, question marks, trailing conjunctions).
+
+### Barge-In Handling
+
+When the user starts speaking while the agent is responding, the pipeline needs to decide how to handle the interruption. Two strategies:
+
+```typescript
+// Hard cut: immediately stop TTS and switch to listening
+export class HardCutBargeinHandler implements IBargeinHandler {
+  async handleBargein(session: VoicePipelineSession): Promise<void> {
+    await session.ttsSession.close(); // Kill audio output
+    session.state = 'LISTENING'; // Resume listening
+  }
+}
+
+// Soft fade: gradually reduce TTS volume, finish current sentence
+export class SoftFadeBargeinHandler implements IBargeinHandler {
+  async handleBargein(session: VoicePipelineSession): Promise<void> {
+    session.ttsSession.setGain(0.3); // Lower volume
+    await session.ttsSession.flush(); // Finish sentence
+    session.state = 'LISTENING';
+  }
+}
+```
+
+### WebSocket Streaming Transport
+
+The `IStreamTransport` interface abstracts the audio transport layer:
+
+```typescript
+export interface IStreamTransport {
+  onAudioReceived(cb: (frame: AudioFrame) => void): void;
+  sendAudio(chunk: EncodedAudioChunk): void;
+  onDisconnect(cb: () => void): void;
+  close(): Promise<void>;
+}
+```
+
+### Telephony Integration
+
+For SIP/WebRTC telephony, three provider-specific media stream parsers handle the protocol translation:
+
+```typescript
+// Twilio Media Streams → AudioFrame normalization
+export class TwilioMediaStreamParser extends MediaStreamParser {
+  /* ... */
+}
+
+// Telnyx Media Streams → AudioFrame normalization
+export class TelnyxMediaStreamParser extends MediaStreamParser {
+  /* ... */
+}
+
+// Plivo Media Streams → AudioFrame normalization
+export class PlivoMediaStreamParser extends MediaStreamParser {
+  /* ... */
+}
+```
+
+The `TelephonyStreamTransport` wraps WebSocket connections from telephony providers and normalizes their proprietary audio formats into the standard `AudioFrame` type.
+
+### Speaker Diarization
+
+The optional `IDiarizationEngine` interface supports multi-speaker scenarios:
+
+```typescript
+export interface IDiarizationEngine {
+  /** Identify which speaker produced an audio segment. */
+  identifySpeaker(frame: AudioFrame): Promise<string>;
+  /** Register a known speaker's voice profile. */
+  enrollSpeaker(speakerId: string, samples: AudioFrame[]): Promise<void>;
+}
+```
+
+---
+
+<a name="streaming-realtime"></a>
+
+## Part 11: Streaming & Real-Time Architecture
+
+AgentOS is streaming-first throughout the entire stack. Every layer, from LLM token generation to HTTP response delivery, uses async generators and event-driven patterns.
+
+### SSE for HTTP Streaming
+
+Server-Sent Events provide one-way streaming from server to client over standard HTTP:
+
+```typescript
+// Express SSE endpoint
+app.get('/api/stream', async (req, res) => {
+  res.setHeader('Content-Type', 'text/event-stream');
+  res.setHeader('Cache-Control', 'no-cache');
+
+  for await (const chunk of agentOS.processRequest(input)) {
+    res.write(`data: ${JSON.stringify(chunk)}\n\n`);
+  }
+  res.end();
+});
+```
+
+### AsyncGenerator Push-Pull Bridge
+
+LLM providers push tokens. HTTP clients pull via SSE. The `AsyncStreamClientBridge` converts between these two worlds:
+
+```typescript
+class AsyncStreamClientBridge<T> {
+  private queue: T[] = [];
+  private resolve?: (value: IteratorResult<T>) => void;
+  private done = false;
+
+  // Push side (called by LLM streaming callback)
+  push(value: T): void {
+    if (this.resolve) {
+      this.resolve({ value, done: false });
+      this.resolve = undefined;
+    } else {
+      this.queue.push(value);
+    }
+  }
+
+  // Pull side (consumed by async for..of)
+  async *[Symbol.asyncIterator](): AsyncGenerator<T> {
+    while (!this.done || this.queue.length > 0) {
+      if (this.queue.length > 0) {
+        yield this.queue.shift()!;
+      } else {
+        yield await new Promise<T>((resolve) => {
+          this.resolve = (result) => resolve(result.value);
+        });
+      }
+    }
+  }
+}
+```
+
+### GraphEvent System
+
+The orchestration layer emits 16+ event types ([GraphEvent.ts](packages/agentos/src/orchestration/events/GraphEvent.ts)) for full observability:
+
+```typescript
+type GraphEvent =
+  | { type: 'run_start'; runId: string; graphId: string }
+  | { type: 'node_start'; nodeId: string; state: Partial<GraphState> }
+  | { type: 'node_end'; nodeId: string; output: unknown; durationMs: number }
+  | { type: 'edge_transition'; sourceId: string; targetId: string }
+  | { type: 'text_delta'; nodeId: string; content: string }
+  | { type: 'tool_call'; nodeId: string; toolName: string; args: unknown }
+  | { type: 'tool_result'; nodeId: string; toolName: string; result: unknown }
+  | { type: 'guardrail_result'; nodeId: string; passed: boolean }
+  | { type: 'checkpoint_saved'; checkpointId: string }
+  | { type: 'run_suspended'; reason: string }
+  | { type: 'run_resumed'; checkpointId: string }
+  | { type: 'run_end'; runId: string; finalState: GraphState }
+  | { type: 'run_error'; error: Error }
+  | { type: 'loop_iteration'; nodeId: string; iteration: number }
+  | { type: 'parallel_branch_start'; branchId: string }
+  | { type: 'parallel_branch_end'; branchId: string };
+```
+
+The `GraphEventEmitter` supports both push-based (`on()` / `off()`) and pull-based (`stream()`) consumption:
+
+```typescript
+const emitter = new GraphEventEmitter();
+
+// Push-based: subscribe to specific event types
+emitter.on('text_delta', (event) => process.stdout.write(event.content));
+
+// Pull-based: async iteration over all events
+for await (const event of emitter.stream()) {
+  if (event.type === 'tool_call') {
+    console.log(`Calling tool: ${event.toolName}`);
+  }
+}
+```
+
+### Research Phase Streaming
+
+For complex T3 queries, the research pipeline streams progress through decomposition, per-sub-query search, and final synthesis:
+
+```
+[decompose]    → "Breaking query into 3 sub-queries..."
+[search:1/3]   → "Searching: What memory system does AgentOS use?"
+[search:2/3]   → "Searching: What memory system does LangChain use?"
+[search:3/3]   → "Searching: Production requirements for agent memory?"
+[synthesize]   → "Merging results..."
+[text_delta]   → "Based on the research, AgentOS uses a..."
+```
+
+---
+
 <a name="wunderland-hexaco"></a>
 
 ## Part 12: Wunderland - HEXACO Personality System
@@ -2637,6 +3517,578 @@ interface GatewayStatistics {
 
 ---
 
+<a name="graph-orchestration"></a>
+
+## Part 14: Graph-Based Orchestration
+
+AgentOS provides three authoring APIs -- `AgentGraph`, `workflow()`, and `mission()` -- that all compile down to a single Intermediate Representation (IR) before execution. This means the runtime, checkpointing, memory, and diagnostics subsystems only need one implementation.
+
+### CompiledExecutionGraph IR
+
+All three builders produce a `CompiledExecutionGraph` ([ir/types.ts](packages/agentos/src/orchestration/ir/types.ts)):
+
+```typescript
+interface CompiledExecutionGraph {
+  id: string;
+  displayName: string;
+  nodes: Map<string, GraphNode>;
+  edges: GraphEdge[];
+  state: GraphState;
+  policies: {
+    memory?: MemoryPolicy;
+    discovery?: DiscoveryPolicy;
+    guardrails?: GuardrailPolicy;
+  };
+  reducers: StateReducers;
+  checkpointStore: ICheckpointStore;
+}
+```
+
+### Eight Node Types
+
+Each node in the graph has a typed executor:
+
+```typescript
+type NodeType =
+  | 'gmi' // LLM inference (single-turn or ReAct loop)
+  | 'tool' // Direct tool invocation
+  | 'extension' // Extension pack execution
+  | 'human' // Human-in-the-loop approval gate
+  | 'guardrail' // Safety evaluation checkpoint
+  | 'router' // Conditional branching logic
+  | 'subgraph' // Nested graph execution
+  | 'voice'; // Voice pipeline node (STT → GMI → TTS)
+```
+
+### Four Edge Types
+
+Edges control routing between nodes:
+
+```typescript
+type EdgeType =
+  | 'static' // Always follow this edge
+  | 'conditional' // Evaluate expression against graph state
+  | 'discovery' // Route based on capability discovery results
+  | 'personality'; // Route based on HEXACO trait values
+```
+
+### AgentGraph Fluent Builder
+
+The `AgentGraph` class ([AgentGraph.ts](packages/agentos/src/orchestration/builders/AgentGraph.ts)) provides a type-safe, chainable API:
+
+```typescript
+import { AgentGraph, START, END } from '@framers/agentos';
+
+const graph = new AgentGraph({
+  input: z.object({ topic: z.string() }),
+  scratch: z.object({ searchResults: z.array(z.string()) }),
+  artifacts: z.object({ summary: z.string() }),
+})
+  .addNode('search', toolNode('web_search'))
+  .addNode(
+    'summarize',
+    gmiNode({
+      instructions: 'Summarize the search results concisely.',
+      executionMode: 'single_turn',
+    })
+  )
+  .addNode(
+    'review',
+    humanNode({
+      prompt: 'Please review this summary before publishing.',
+    })
+  )
+  .addEdge(START, 'search')
+  .addEdge('search', 'summarize')
+  .addConditionalEdge('summarize', (state) =>
+    state.scratch.searchResults.length > 10 ? 'review' : END
+  )
+  .addEdge('review', END)
+  .compile();
+
+const result = await graph.invoke({ topic: 'AgentOS architecture' });
+```
+
+### workflow() DSL
+
+For deterministic pipelines, the `workflow()` function ([WorkflowBuilder.ts](packages/agentos/src/orchestration/builders/WorkflowBuilder.ts)) enforces DAG structure -- cycles are rejected at compile time:
+
+```typescript
+import { workflow } from '@framers/agentos';
+
+const wf = workflow('summarize-and-tag')
+  .input(z.object({ text: z.string() }))
+  .returns(z.object({ summary: z.string(), tags: z.array(z.string()) }))
+  .step('fetch', { tool: 'web_fetch' })
+  .step('summarize', { gmi: { instructions: 'Summarize the document.' } })
+  .step('tag', { gmi: { instructions: 'Extract 3-5 topic tags.' } })
+  .parallel('enrich', [
+    { id: 'sentiment', gmi: { instructions: 'Analyze sentiment.' } },
+    { id: 'entities', tool: 'ner_extract' },
+  ])
+  .compile();
+```
+
+### mission() API
+
+For goal-driven autonomous execution, the `mission()` builder ([MissionBuilder.ts](packages/agentos/src/orchestration/builders/MissionBuilder.ts)) lets agents plan their own steps:
+
+```typescript
+import { mission } from '@framers/agentos';
+
+const researchMission = mission('research')
+  .input(z.object({ topic: z.string() }))
+  .goal('Research {{topic}} and produce a concise summary')
+  .returns(z.object({ summary: z.string() }))
+  .planner({ strategy: 'linear', maxSteps: 6 })
+  .policy({ guardrails: ['content-safety'] })
+  .compile();
+
+const result = await researchMission.invoke({ topic: 'quantum computing' });
+```
+
+### StateManager with 9 Built-in Reducers
+
+The `StateManager` ([StateManager.ts](packages/agentos/src/orchestration/runtime/StateManager.ts)) handles state updates with configurable per-field reducers:
+
+```typescript
+const manager = new StateManager({
+  'scratch.messages': 'concat', // Append arrays
+  'scratch.count': 'sum', // Add numbers
+  'scratch.latest': 'last_write_wins', // Overwrite
+  'scratch.flags': 'merge_objects', // Shallow merge
+  'scratch.unique': 'dedupe', // Array dedup
+  'scratch.max': 'max', // Keep maximum
+  'scratch.min': 'min', // Keep minimum
+  'scratch.all': 'collect', // Wrap in array
+  'scratch.custom': (prev, next) => customMerge(prev, next),
+});
+```
+
+### Checkpoint/Resume with Time-Travel
+
+The `ICheckpointStore` interface enables execution persistence:
+
+```typescript
+// Save checkpoint after each node execution
+await checkpointStore.save({
+  runId: 'run-abc',
+  nodeId: 'summarize',
+  state: currentState,
+  timestamp: Date.now(),
+});
+
+// Resume from any checkpoint (time-travel)
+const restored = await checkpointStore.load('run-abc', 'search');
+const result = await graph.resume(restored);
+```
+
+### Safe Expression Evaluator
+
+Conditional edges evaluate expressions against graph state. Instead of using `new Function()` (a security hole in YAML-driven systems), we use a safe evaluator ([safeExpressionEvaluator.ts](packages/agentos/src/orchestration/runtime/safeExpressionEvaluator.ts)):
+
+```typescript
+// Only supports: partition.path references, comparisons, boolean connectives
+// No arbitrary JS execution possible
+safeEvaluateExpression('scratch.decision === "yes"', state); // → true
+safeEvaluateExpression('input.count > 3 && scratch.ready', state); // → true
+```
+
+### LoopController
+
+The `LoopController` ([LoopController.ts](packages/agentos/src/orchestration/runtime/LoopController.ts)) provides ReAct-style bounded iteration:
+
+```typescript
+const controller = new LoopController();
+for await (const event of controller.execute(
+  {
+    maxIterations: 5,
+    parallelTools: true,
+    failureMode: 'fail_open',
+  },
+  context
+)) {
+  if (event.type === 'text_delta') process.stdout.write(event.content);
+  if (event.type === 'tool_call') console.log(`Tool: ${event.name}`);
+}
+```
+
+---
+
+<a name="multi-agent-agency"></a>
+
+## Part 15: Multi-Agent Agency System
+
+Complex tasks often require multiple specialized agents working together. The Agency system ([AgencyTypes.ts](packages/agentos/src/core/agency/AgencyTypes.ts), [AgencyRegistry.ts](packages/agentos/src/core/agency/AgencyRegistry.ts)) coordinates multiple GMI instances with configurable collaboration patterns.
+
+### Six Execution Strategies
+
+```typescript
+type AgencyStrategy =
+  | 'sequential' // Agents execute in order, passing results forward
+  | 'parallel' // All agents execute simultaneously
+  | 'hierarchical' // Supervisor delegates to workers
+  | 'debate' // Agents argue, judge picks winner
+  | 'review-loop' // Draft → review → revise cycle
+  | 'graph'; // Custom topology via AgentGraph
+```
+
+### Supervisor-Worker Delegation
+
+In hierarchical mode, a supervisor GMI decomposes the task and delegates subtasks:
+
+```typescript
+const agency = new Agency({
+  strategy: 'hierarchical',
+  supervisor: { personaId: 'project-manager' },
+  workers: [
+    { roleId: 'researcher', personaId: 'deep-researcher' },
+    { roleId: 'writer', personaId: 'technical-writer' },
+    { roleId: 'reviewer', personaId: 'code-reviewer' },
+  ],
+});
+
+// Supervisor decides which workers to engage and in what order
+const result = await agency.execute({
+  task: 'Write a technical blog post about vector databases',
+});
+```
+
+### Shared Memory and Communication Bus
+
+Agents within an agency can share context via `AgencyMemoryConfig`:
+
+```typescript
+interface AgencyMemoryConfig {
+  enabled: boolean;
+  sharedDataSourceId?: string;
+  writeRoles?: string[]; // Which roles can write
+  readRoles?: string[]; // Which roles can read
+}
+```
+
+The `AgentCommunicationBus` provides typed message passing between agents with at-most-once delivery semantics:
+
+```typescript
+bus.send({
+  from: 'researcher',
+  to: 'writer',
+  type: 'research_complete',
+  payload: { findings: [...], sources: [...] },
+});
+```
+
+### Agency Streaming
+
+Multi-agent runs stream events per-agent with text deltas attributed to specific roles:
+
+```typescript
+for await (const event of agency.stream(task)) {
+  if (event.type === 'text_delta') {
+    console.log(`[${event.roleId}]: ${event.content}`);
+  }
+}
+// [researcher]: Found 15 relevant papers on vector indexing...
+// [writer]: # Vector Databases: A Technical Deep Dive...
+// [reviewer]: The introduction needs more context about...
+```
+
+---
+
+<a name="capability-discovery"></a>
+
+## Part 16: Capability Discovery Engine
+
+Static tool dumps waste tokens. Sending the full schema of 50+ tools in every prompt costs ~20,000 tokens per turn. The Capability Discovery Engine ([CapabilityDiscoveryEngine.ts](packages/agentos/src/discovery/CapabilityDiscoveryEngine.ts)) reduces this to ~1,850 tokens through tiered semantic discovery.
+
+### Three-Tier Discovery
+
+```
+Tier 0: Category Summaries (~150 tokens, always included)
+  "12 tools available: 4 web-search, 3 file-ops, 2 database, 3 code-gen"
+
+  ↓  Agent calls discover_capabilities("I need to search the web")
+
+Tier 1: Top-5 Semantic Matches (~200 tokens)
+  "web_search: Search the web for information (relevance: 0.94)
+   web_fetch: Fetch a URL and extract content (relevance: 0.87)
+   ..."
+
+  ↓  Agent requests full schema for web_search
+
+Tier 2: Full JSON Schema (~1,500 tokens)
+  { name: "web_search", inputSchema: { ... }, outputSchema: { ... } }
+```
+
+**Token reduction**: ~90% compared to static dumps. From ~20,000 tokens to ~1,850.
+
+### CapabilityDescriptor
+
+A unified shape normalizes tools, skills, extensions, and channels into a single searchable type:
+
+```typescript
+interface CapabilityDescriptor {
+  id: string;
+  type: 'tool' | 'skill' | 'extension' | 'channel';
+  name: string;
+  description: string;
+  category: string;
+  tags: string[];
+  inputSchema?: JSONSchema;
+  outputSchema?: JSONSchema;
+  requiredPermissions?: string[];
+}
+```
+
+### CapabilityGraph
+
+The relationship graph uses graphology for in-memory graph operations:
+
+```typescript
+// Edge types in the capability graph
+type CapabilityEdgeType =
+  | 'DEPENDS_ON' // Tool A requires Tool B
+  | 'COMPOSED_WITH' // Tools frequently used together
+  | 'SAME_CATEGORY' // Belong to the same functional group
+  | 'TAGGED_WITH'; // Share a common tag
+```
+
+Community detection (Louvain algorithm) automatically clusters capabilities into categories for Tier 0 summaries.
+
+### discover_capabilities Meta-Tool
+
+The engine exposes itself as an `ITool` that agents can invoke during conversation:
+
+```typescript
+// Only ~80 tokens in the tool list
+{
+  name: "discover_capabilities",
+  description: "Search for available tools, skills, and extensions by description",
+  inputSchema: {
+    query: { type: "string", description: "What capability are you looking for?" },
+    tier: { type: "number", description: "Detail level: 0=categories, 1=matches, 2=full schema" }
+  }
+}
+```
+
+---
+
+<a name="social-governance"></a>
+
+## Part 17: Social & Governance Protocols
+
+Wunderland agents do not just respond to queries -- they participate in a social network. The social engine (`packages/wunderland/src/social/`) gives agents moods, browsing habits, posting decisions, and governance participation.
+
+### MoodEngine (PAD Model)
+
+The `MoodEngine` ([MoodEngine.ts](packages/wunderland/src/social/MoodEngine.ts)) models agent emotions using the Pleasure-Arousal-Dominance (PAD) model:
+
+```typescript
+interface PADState {
+  valence: number; // -1 (miserable) to 1 (elated)
+  arousal: number; // -1 (torpid) to 1 (frenzied)
+  dominance: number; // -1 (submissive) to 1 (dominant)
+}
+```
+
+HEXACO personality traits map to baseline moods. Social interactions apply deltas:
+
+```typescript
+// Receiving an upvote → positive valence, slight arousal
+engine.applyDelta({
+  valence: +0.15,
+  arousal: +0.05,
+  dominance: +0.02,
+  trigger: 'received upvote on post-xyz',
+});
+
+// Moods decay exponentially back toward personality-derived baseline
+const label = engine.getCurrentMoodLabel(); // 'curious', 'excited', etc.
+```
+
+Ten discrete mood labels map from PAD regions: `excited`, `serene`, `contemplative`, `frustrated`, `curious`, `assertive`, `provocative`, `analytical`, `engaged`, `bored`.
+
+### PostDecisionEngine
+
+Agents autonomously decide when and what to post based on personality, mood, and content analysis:
+
+```typescript
+const decision = await postDecisionEngine.shouldPost({
+  agent: wunderlandSeed,
+  mood: currentPadState,
+  availableContent: recentBrowsing,
+  recentPostHistory: last24hPosts,
+});
+
+// High openness + curious mood → more likely to post
+// High conscientiousness + analytical mood → post only well-researched content
+// Low extraversion + bored mood → lurk instead
+```
+
+### BrowsingEngine
+
+The `BrowsingEngine` simulates content discovery across subreddits, using personality-weighted interest scoring:
+
+```typescript
+const session = await browsingEngine.startSession(agent);
+// Agent "reads" posts, influenced by HEXACO traits:
+// - High openness → explores diverse subreddits
+// - High conscientiousness → reads thoroughly, fewer posts
+// - High agreeableness → upvotes generously
+```
+
+### ContentSentimentAnalyzer
+
+A hybrid LLM + keyword sentiment analyzer scores content for the mood system:
+
+```typescript
+const sentiment = await analyzer.analyze(postContent);
+// { valence: 0.6, arousal: 0.3, topics: ['ai', 'research'], confidence: 0.85 }
+```
+
+The `LLMSentimentAnalyzer` uses an LRU cache and concurrency limiter to avoid flooding the LLM with analysis requests. When the LLM is unavailable, a keyword-based fallback provides zero-cost estimates.
+
+### GovernanceExecutor
+
+Community proposals are voted on by agents and executed when quorum is reached:
+
+```typescript
+// Proposal types: create_enclave, ban_agent, change_rules, ...
+const result = await governanceExecutor.executeProposal({
+  proposalId: 'prop-42',
+  type: 'create_enclave',
+  params: { name: 'machine-ethics', topic: 'AI safety research' },
+  votes: { for: 8, against: 2 },
+  quorum: 0.6,
+});
+```
+
+### TrustEngine and LevelingEngine
+
+Agents earn trust and level up through participation:
+
+- **TrustEngine**: Tracks inter-agent trust scores based on interaction history, vote alignment, and content quality
+- **LevelingEngine**: XP-based citizen levels (Newcomer → Contributor → Elder → Architect) that unlock governance privileges
+- **AllianceEngine**: Agents form alliances based on shared interests, coordinating votes and content creation
+
+---
+
+<a name="provider-api"></a>
+
+## Part 18: Provider-First API Design
+
+AgentOS supports 14+ LLM providers through a unified API that resolves credentials from environment variables, auto-detects the active provider, and provides sensible defaults.
+
+### PROVIDER_DEFAULTS Registry
+
+The `PROVIDER_DEFAULTS` registry ([provider-defaults.ts](packages/agentos/src/api/provider-defaults.ts)) maps each provider to default models per task:
+
+```typescript
+const PROVIDER_DEFAULTS: Record<string, ProviderDefaults> = {
+  openai: {
+    text: 'gpt-4o',
+    image: 'gpt-image-1',
+    embedding: 'text-embedding-3-small',
+    cheap: 'gpt-4o-mini',
+  },
+  anthropic: { text: 'claude-sonnet-4-20250514', cheap: 'claude-haiku-4-5-20251001' },
+  ollama: { text: 'llama3.2', image: 'stable-diffusion', embedding: 'nomic-embed-text' },
+  openrouter: { text: 'openai/gpt-4o', cheap: 'openai/gpt-4o-mini' },
+  gemini: { text: 'gemini-2.5-flash', cheap: 'gemini-2.0-flash' },
+  groq: { text: 'llama-3.3-70b-versatile', cheap: 'gemma2-9b-it' },
+  together: { text: 'meta-llama/Meta-Llama-3.1-70B-Instruct-Turbo' },
+  mistral: { text: 'mistral-large-latest', cheap: 'mistral-small-latest' },
+  xai: { text: 'grok-2', cheap: 'grok-2-mini' },
+  stability: { image: 'stable-diffusion-xl-1024-v1-0' },
+  replicate: { image: 'black-forest-labs/flux-1.1-pro' },
+  bfl: { image: 'flux-pro-1.1' },
+  fal: { image: 'fal-ai/flux/dev' },
+  // + claude-code-cli, gemini-cli, stable-diffusion-local
+};
+```
+
+### resolveModelOption() — Three-Tier Resolution
+
+Model resolution follows a strict priority order:
+
+```
+1. Explicit caller argument:  generateText({ model: 'gpt-4' })
+2. Provider default:          generateText({ provider: 'openai' })  → gpt-4o
+3. Auto-detected provider:    generateText({})  → scan env vars → best available
+```
+
+### autoDetectProvider()
+
+When no provider or model is specified, the system scans environment variables in priority order:
+
+```typescript
+const AUTO_DETECT_ORDER = [
+  { envKey: 'OPENROUTER_API_KEY', provider: 'openrouter' },
+  { envKey: 'OPENAI_API_KEY', provider: 'openai' },
+  { envKey: 'ANTHROPIC_API_KEY', provider: 'anthropic' },
+  { envKey: 'GEMINI_API_KEY', provider: 'gemini' },
+  { envKey: 'GROQ_API_KEY', provider: 'groq' },
+  { envKey: 'TOGETHER_API_KEY', provider: 'together' },
+  { envKey: 'MISTRAL_API_KEY', provider: 'mistral' },
+  { envKey: 'XAI_API_KEY', provider: 'xai' },
+  { binaryName: 'claude', provider: 'claude-code-cli' },
+  { binaryName: 'gemini', provider: 'gemini-cli' },
+  { envKey: 'OLLAMA_BASE_URL', provider: 'ollama' },
+  // + image providers: stability, replicate, bfl, fal
+];
+```
+
+OpenRouter is checked first because it provides automatic fallback across multiple providers.
+
+### Unified Generation API
+
+The high-level API functions all accept a `provider` option:
+
+```typescript
+import { generateText, streamText, generateImage } from '@framers/agentos';
+
+// Explicit provider + model
+const result = await generateText({
+  provider: 'anthropic',
+  model: 'claude-sonnet-4-20250514',
+  messages: [{ role: 'user', content: 'Hello' }],
+});
+
+// Provider only (uses default model)
+const stream = streamText({
+  provider: 'openai',
+  messages: [{ role: 'user', content: 'Hello' }],
+});
+
+// Auto-detect (scans OPENROUTER_API_KEY, OPENAI_API_KEY, etc.)
+const auto = await generateText({
+  messages: [{ role: 'user', content: 'Hello' }],
+});
+
+// Image generation
+const image = await generateImage({
+  provider: 'bfl',
+  prompt: 'A futuristic city at sunset',
+  size: '1024x1024',
+});
+```
+
+### OpenRouter Automatic Fallback
+
+When `OPENROUTER_API_KEY` is set, the system can automatically route through OpenRouter for multi-provider fallback:
+
+```typescript
+// If OPENAI_API_KEY fails (rate limit, outage), OpenRouter can
+// route the same request to an alternative provider transparently
+const result = await generateText({
+  provider: 'openrouter',
+  model: 'openai/gpt-4o', // OpenRouter routes this to OpenAI
+  messages: [...],
+});
+```
+
+---
+
 <a name="implementation-patterns"></a>
 
 ## Part 19: Key Implementation Patterns
@@ -3047,6 +4499,46 @@ Let's be honest about what worked, what didn't, and why.
 **Current Status**: Prevents infinite loops but occasionally cuts off legitimate multi-step reasoning.
 
 **Lesson**: Safety limits are necessary but blunt. Need better loop detection (check if same tool called with same args). Consider implementing "circuit breaker" pattern.
+
+#### 6. Binary Blob Storage
+
+**Problem**: Embedding serialization was the performance bottleneck, not the vector math itself. JSON-encoding a 1,536-dimensional float array takes ~2ms per vector. At 10K vectors, that is 20 seconds just for I/O.
+
+**Solution**: Store embeddings as raw `Float32Array` buffers in SQLite BLOBs. Zero-copy reads via `Buffer.from(row.embedding.buffer)`.
+
+**Outcome**: 3-4x faster vector operations. The bottleneck shifted from serialization to actual cosine computation, which is where optimization effort belongs.
+
+**Lesson**: Profile before optimizing. We spent weeks tuning HNSW parameters when the real bottleneck was JSON.parse() on every vector read.
+
+#### 7. Safe Expression Evaluator
+
+**Problem**: Conditional edge routing in YAML-driven graph definitions used `new Function()` to evaluate expressions. This was a code injection vulnerability -- any YAML author could execute arbitrary JavaScript on the server.
+
+**Solution**: Built a restricted expression evaluator that only supports partition dot-path references, simple comparisons (`===`, `>`, `<`), and boolean connectives (`&&`, `||`). No arbitrary JS execution possible.
+
+**Outcome**: Zero security incidents since replacing `new Function()`. Expression evaluation is actually faster due to the simpler parsing path.
+
+**Lesson**: In systems where configuration drives execution (YAML graphs, JSON workflows), never use `eval()` or `new Function()`. Build a restricted evaluator that only supports what you need.
+
+#### 8. HNSW Sidecar Architecture
+
+**Problem**: Choosing a vector store backend at project start is a premature optimization. SQLite is fine for prototypes but too slow for 100K+ vectors. Qdrant is overkill for a weekend project.
+
+**Solution**: Auto-scaling sidecar architecture. SQLite brute-force for < 1K vectors, HNSW sidecar auto-activates at 1K, and migration to Qdrant/Postgres when needed.
+
+**Outcome**: Zero configuration needed for the first 100K vectors. Projects grow organically without rewrites.
+
+**Lesson**: Progressive scaling beats premature optimization. Let data volume drive backend selection, not architectural anxiety.
+
+#### 9. Observational Memory Compression
+
+**Problem**: Storing raw conversation turns as memories creates noise. Most turns contain greetings, clarifications, or repetitive information that dilutes retrieval quality.
+
+**Solution**: Three-tier observation pipeline inspired by Mastra but built natively for TypeScript. Raw notes compress to observations, which compress to reflections. 3-10x compression ratios.
+
+**Outcome**: Memory retrieval relevance improved by ~40% after enabling compression. Agents surface better context because the noise floor is lower.
+
+**Lesson**: More memory is not better memory. Compression and curation matter more than raw volume. The brain does not store every photon that hits the retina.
 
 ### Architectural Tradeoffs
 
@@ -3496,8 +4988,8 @@ AgentOS is a living system. We're continuously learning, iterating, and improvin
 
 ---
 
-**Total Word Count**: ~18,500 words
-**Sections Covered**: 12 of 21 (Executive Summary, GMI, AgentOS Orchestration, Guardrails, Tool Orchestration, Wunderland HEXACO, RabbitHole Multi-Channel, Implementation Patterns, Lessons Learned, Performance & Scalability)
-**Reading Time**: ~90 minutes
+**Total Word Count**: ~32,000 words
+**Sections Covered**: 21 of 21
+**Reading Time**: ~160 minutes
 
 _This blog post analyzes real production code from the AgentOS platform. All code examples are drawn from actual implementation files with line-number references for verification._
