@@ -313,7 +313,7 @@ const config: Config = {
     },
     colorMode: {
       defaultMode: 'dark',
-      respectPrefersColorScheme: true,
+      respectPrefersColorScheme: false,
     },
     mermaid: {
       theme: { light: 'neutral', dark: 'dark' },
