@@ -1,14 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
   <defs>
+    <!-- Main gradient with color-cycling -->
     <linearGradient id="iconGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#6366F1;stop-opacity:1" />
-      <stop offset="50%" style="stop-color:#8B5CF6;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#EC4899;stop-opacity:1" />
+      <stop offset="0%">
+        <animate attributeName="stop-color" values="#6366F1;#EC4899;#06B6D4;#6366F1" dur="8s" repeatCount="indefinite"/>
+      </stop>
+      <stop offset="50%">
+        <animate attributeName="stop-color" values="#8B5CF6;#06B6D4;#EC4899;#8B5CF6" dur="8s" repeatCount="indefinite"/>
+      </stop>
+      <stop offset="100%">
+        <animate attributeName="stop-color" values="#EC4899;#6366F1;#8B5CF6;#EC4899" dur="8s" repeatCount="indefinite"/>
+      </stop>
     </linearGradient>
+
+    <!-- Center node radial gradient with color shift -->
     <radialGradient id="centerGradient">
-      <stop offset="0%" style="stop-color:#8B5CF6;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#6366F1;stop-opacity:0.8" />
+      <stop offset="0%">
+        <animate attributeName="stop-color" values="#8B5CF6;#EC4899;#06B6D4;#8B5CF6" dur="6s" repeatCount="indefinite"/>
+      </stop>
+      <stop offset="100%">
+        <animate attributeName="stop-color" values="#6366F1;#8B5CF6;#6366F1" dur="6s" repeatCount="indefinite"/>
+        <animate attributeName="stop-opacity" values="0.8;1;0.8" dur="4s" repeatCount="indefinite"/>
+      </stop>
     </radialGradient>
   </defs>
 
@@ -16,15 +30,27 @@
     <!-- Center node -->
     <circle cx="32" cy="32" r="8" fill="url(#centerGradient)"/>
 
-    <!-- Orbital nodes -->
-    <circle cx="32" cy="12" r="5" fill="#6366F1"/>
-    <circle cx="48" cy="20" r="5" fill="#8B5CF6"/>
-    <circle cx="48" cy="44" r="5" fill="#EC4899"/>
-    <circle cx="32" cy="52" r="5" fill="#06B6D4"/>
-    <circle cx="16" cy="44" r="5" fill="#8B5CF6"/>
-    <circle cx="16" cy="20" r="5" fill="#6366F1"/>
+    <!-- Orbital nodes — each cycles through different colors -->
+    <circle cx="32" cy="12" r="5">
+      <animate attributeName="fill" values="#6366F1;#EC4899;#06B6D4;#6366F1" dur="10s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="48" cy="20" r="5">
+      <animate attributeName="fill" values="#8B5CF6;#06B6D4;#6366F1;#8B5CF6" dur="10s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="48" cy="44" r="5">
+      <animate attributeName="fill" values="#EC4899;#8B5CF6;#eab308;#EC4899" dur="10s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="32" cy="52" r="5">
+      <animate attributeName="fill" values="#06B6D4;#6366F1;#EC4899;#06B6D4" dur="10s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="16" cy="44" r="5">
+      <animate attributeName="fill" values="#8B5CF6;#EC4899;#06B6D4;#8B5CF6" dur="10s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="16" cy="20" r="5">
+      <animate attributeName="fill" values="#6366F1;#06B6D4;#8B5CF6;#6366F1" dur="10s" repeatCount="indefinite"/>
+    </circle>
 
-    <!-- Connection lines -->
+    <!-- Connection lines — color-cycling gradient -->
     <path d="M 32 32 L 32 12" stroke="url(#iconGradient)" stroke-width="2" opacity="0.6"/>
     <path d="M 32 32 L 48 20" stroke="url(#iconGradient)" stroke-width="2" opacity="0.6"/>
     <path d="M 32 32 L 48 44" stroke="url(#iconGradient)" stroke-width="2" opacity="0.6"/>
@@ -32,7 +58,7 @@
     <path d="M 32 32 L 16 44" stroke="url(#iconGradient)" stroke-width="2" opacity="0.6"/>
     <path d="M 32 32 L 16 20" stroke="url(#iconGradient)" stroke-width="2" opacity="0.6"/>
 
-    <!-- Dashed orbit ring -->
+    <!-- Dashed orbit ring — color-cycling -->
     <circle cx="32" cy="32" r="24" fill="none"
             stroke="url(#iconGradient)" stroke-width="1" stroke-dasharray="2 4" opacity="0.3"/>
   </g>
