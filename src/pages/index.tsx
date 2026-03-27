@@ -266,6 +266,37 @@ await agent.initialize({
 // Export a forged tool as a portable YAML package:
 // wunderland emergent export <id> --output ./my-tool.emergent-tool.yaml`,
 
+  'Video & Audio': `import { generateVideo, analyzeVideo, generateMusic, generateSFX } from '@framers/agentos';
+
+// Text-to-video — provider auto-detected from env vars
+const video = await generateVideo({
+  prompt: 'A drone flying over a misty forest at sunrise',
+  provider: 'runway',
+  durationSec: 5,
+  aspectRatio: '16:9',
+});
+console.log(video.videos[0].url);
+
+// Video analysis with RAG indexing
+const analysis = await analyzeVideo({
+  videoUrl: 'https://example.com/demo.mp4',
+  transcribeAudio: true,
+  indexForRAG: true,      // Index scenes into the vector store
+});
+console.log(analysis.scenes);
+
+// Music generation — 8 providers with auto-fallback
+const music = await generateMusic({
+  prompt: 'Upbeat lo-fi hip hop beat with vinyl crackle and mellow piano',
+  durationSec: 60,
+});
+
+// Sound effects
+const sfx = await generateSFX({
+  prompt: 'Thunder crack followed by heavy rain on a tin roof',
+  durationSec: 5,
+});`,
+
   AgentGraph: `import { AgentGraph, toolNode, gmiNode, judgeNode, START, END } from '@framers/agentos/orchestration';
 import { z } from 'zod';
 
@@ -336,9 +367,10 @@ const architectureMermaid = `flowchart TD
     API["<b>High-Level API</b><br/>generateText \u00B7 streamText \u00B7 generateImage \u00B7 agent()"]
     API --> GMI["<b>Cognitive Substrate</b> \u2014 GMI<br/>Persona \u00B7 HEXACO \u00B7 Working Memory \u00B7 ReAct Loop"]
     GMI --> MEM["<b>Memory</b><br/>Cognitive + GraphRAG + Ebbinghaus Decay"]
-    GMI --> TOOLS["<b>Tools</b><br/>23+ Built-in \u00B7 Semantic Discovery \u00B7 Emergent Forge"]
+    GMI --> TOOLS["<b>Tools</b><br/>50+ Built-in \u00B7 Semantic Discovery \u00B7 Emergent Forge"]
     GMI --> GUARD["<b>Guardrails</b><br/>5-Tier Pipeline \u00B7 PII \u00B7 ML Classifiers \u00B7 Grounding"]
     TOOLS --> GRAPH["<b>Graph Runtime</b><br/>AgentGraph \u00B7 workflow() \u00B7 mission() \u00B7 Checkpoints"]
+    GRAPH --> MEDIA["<b>Media Pipeline</b><br/>Video (3 Providers) \u00B7 Audio (8 Providers) \u00B7 Images"]
     GRAPH --> VOICE["<b>Voice Pipeline</b><br/>28 STT/TTS Providers \u00B7 VAD \u00B7 Barge-in"]
     GRAPH --> CHAN["<b>Channels</b><br/>37 Platform Adapters"]
     GRAPH --> LLM["<b>LLM Providers</b><br/>21 Providers \u00B7 Auto-fallback \u00B7 Local (Ollama)"]
@@ -349,6 +381,7 @@ const architectureMermaid = `flowchart TD
     style TOOLS fill:#0f172a,stroke:#22c55e,color:#e0e7ff
     style GUARD fill:#0f172a,stroke:#ef4444,color:#e0e7ff
     style GRAPH fill:#1e1b4b,stroke:#f59e0b,stroke-width:2px,color:#e0e7ff
+    style MEDIA fill:#0f172a,stroke:#8b5cf6,color:#e0e7ff
     style VOICE fill:#0f172a,stroke:#8b5cf6,color:#e0e7ff
     style CHAN fill:#0f172a,stroke:#8b5cf6,color:#e0e7ff
     style LLM fill:#0f172a,stroke:#8b5cf6,color:#e0e7ff`;
@@ -377,7 +410,7 @@ const features = [
   {
     title: 'Multimodal Provider API',
     description:
-      'Text, images, embeddings, and speech from one API. 21 cloud providers (OpenAI, Anthropic, Gemini, Stability, Replicate) + local (Ollama, SD WebUI). Auto-fallback between providers.',
+      'Text, images, video, music, SFX, embeddings, and speech from one API. 21 cloud providers + local (Ollama, MusicGen, AudioGen). Auto-fallback chains with provider preferences for load balancing.',
     link: '/getting-started/high-level-api',
   },
   {
@@ -445,6 +478,24 @@ const features = [
     description:
       'Sealed storage policy, toolset pinning, secret rotation, soft-forget memory. Full provenance audit trail. Deploy agents that cannot be tampered with after initialization.',
     link: '/features/immutable-agents',
+  },
+  {
+    title: 'Video & Audio Generation',
+    description:
+      'generateVideo(), analyzeVideo(), detectScenes(), generateMusic(), generateSFX() APIs. 3 video providers (Runway, Replicate, Fal) + 8 audio providers. Fallback chains, scene detection, RAG indexing.',
+    link: '/features/video-pipeline',
+  },
+  {
+    title: 'GitHub Integration',
+    description:
+      '26 GitHub tools: issues, PRs, files, branches, releases, CI/CD, and code search. GitHubRepoIndexer for RAG-ready codebase ingestion. Ecosystem auto-indexing.',
+    link: '/features/github-integration',
+  },
+  {
+    title: 'Self-Improving Agents',
+    description:
+      'Bounded self-modification: adapt_personality (HEXACO mutation with per-session budgets), manage_skills, create_workflow, self_evaluate. Ebbinghaus decay ensures unreinforced changes fade.',
+    link: '/features/self-improving-agents',
   },
 ];
 

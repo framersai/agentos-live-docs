@@ -129,12 +129,15 @@ const sidebars = {
         },
         {
           type: 'category',
-          label: 'Images & Vision',
+          label: 'Media Generation',
           collapsed: false,
           items: [
             'features/image-generation',
             'features/image-editing',
             'features/vision-pipeline',
+            'features/video-pipeline',
+            'features/audio-generation',
+            'features/provider-preferences',
           ],
         },
         {
@@ -165,7 +168,14 @@ const sidebars = {
             'features/discovery-guide',
             'features/capability-discovery',
             'features/emergent-capabilities',
+            'features/self-improving-agents',
           ],
+        },
+        {
+          type: 'category',
+          label: 'Integrations',
+          collapsed: false,
+          items: ['features/github-integration'],
         },
       ],
     },
