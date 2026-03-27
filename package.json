@@ -5,6 +5,7 @@
   "scripts": {
     "pull-docs": "node scripts/pull-docs.mjs",
     "prebuild": "npm run pull-docs",
+    "prestart": "npm run pull-docs",
     "docusaurus": "docusaurus",
     "start": "docusaurus start",
     "build": "docusaurus build",

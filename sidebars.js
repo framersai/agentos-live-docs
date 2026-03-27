@@ -124,6 +124,7 @@ const sidebars = {
             'features/evaluation-framework',
             'features/cost-optimization',
             'features/deep-research',
+            'features/query-routing',
           ],
         },
         {

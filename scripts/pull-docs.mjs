@@ -28,6 +28,7 @@ const SQL_STORAGE_ADAPTER_PKG = resolve(MONO_ROOT, 'packages/sql-storage-adapter
 const REPO_DOCS = resolve(MONO_ROOT, 'docs');
 const WUNDERLAND_SOL_GUIDES = resolve(MONO_ROOT, 'apps/wunderland-sol/docs-site/docs/guides');
 const VENDORED = resolve(ROOT, 'vendored-docs');
+const STATIC_DOCS = resolve(ROOT, 'static-docs');
 const EXTENSIONS_GITHUB_REPO = 'https://github.com/framersai/agentos-extensions';
 
 // ── Mapping tables ──────────────────────────────────────────────────
@@ -412,6 +413,13 @@ const agentosGuides = [
     title: 'Agent Config Export & Import',
     position: 28,
   },
+  // Query Routing
+  {
+    src: 'QUERY_ROUTER.md',
+    dest: 'features/query-routing.md',
+    title: 'Query Router',
+    position: 29,
+  },
   // Extensions standards
   {
     src: 'RFC_EXTENSION_STANDARDS.md',
@@ -739,6 +747,7 @@ const linkRewrites = {
   'LLM_PROVIDERS.md': '/architecture/llm-providers',
   'STRUCTURED_OUTPUT_API.md': '/features/structured-output-api',
   'AGENT_CONFIG_EXPORT.md': '/features/agent-config-export',
+  'QUERY_ROUTER.md': '/features/query-routing',
 };
 
 /** Rewrite curated registry folder links -> docs pages */
@@ -974,6 +983,38 @@ for (const { srcPath, dest, title, position } of extraDocs) {
   ensureDir(destPath);
   writeFileSync(destPath, processMarkdown(content, title, position));
   copied++;
+}
+
+// 6. Copy hand-curated static docs (not sourced from monorepo packages).
+//    These live in static-docs/ and are committed to git directly.
+if (existsSync(STATIC_DOCS)) {
+  cpSync(STATIC_DOCS, DOCS_OUT, { recursive: true, force: false });
+  console.log('  Copied static-docs/ overlay');
+}
+
+// 7. Create api/index.md stub (TypeDoc overwrites it during build, but we
+//    need a placeholder so sidebars.js doesn't break on dev/pre-build).
+const apiIndexPath = resolve(DOCS_OUT, 'api/index.md');
+if (!existsSync(apiIndexPath)) {
+  ensureDir(apiIndexPath);
+  writeFileSync(
+    apiIndexPath,
+    `---
+title: "API Reference"
+sidebar_position: 1
+---
+
+# API Reference
+
+Auto-generated TypeDoc API reference for the \`@framers/agentos\` package.
+
+> **Note:** The full API reference is generated during the build step via
+> [docusaurus-plugin-typedoc](https://www.npmjs.com/package/docusaurus-plugin-typedoc).
+> If you are viewing a local development build, run \`npm run build\` to generate
+> the complete API docs.
+`
+  );
+  console.log('  Created api/index.md stub');
 }
 
 console.log(`\npull-docs: ${copied} files copied, ${skipped} skipped/stubbed`);
