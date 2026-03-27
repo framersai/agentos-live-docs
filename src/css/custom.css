@@ -780,28 +780,47 @@ th { font-weight: 600; }
 [data-theme='dark'] ::-webkit-scrollbar-thumb { background: rgba(99, 102, 241, 0.2); border-radius: 3px; }
 [data-theme='dark'] ::-webkit-scrollbar-thumb:hover { background: rgba(99, 102, 241, 0.35); }
 
-/* -- Mobile navbar -------------------------------------------------------- */
+/* -- Mobile navbar — hamburger top-right, search compact ----------------- */
 @media (max-width: 996px) {
-  .navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  .navbar__inner { padding: 0 0.75rem; }
+
+  .navbar__toggle {
+    order: 100;
+    flex-shrink: 0;
+    margin-left: 8px;
   }
 
-  .navbar__toggle { order: 10; margin-left: auto; }
-  .navbar__brand { order: 0; }
+  .navbar__brand {
+    order: 0;
+    flex-shrink: 0;
+  }
 
-  .navbar__search {
-    order: 9;
+  .navbar__search,
+  [class*="searchBarContainer"] {
+    order: 99;
+    flex-shrink: 1;
+    max-width: 160px;
     margin-left: auto;
-    margin-right: 0.5rem;
+    margin-right: 4px;
   }
 
-  .navbar__items--right > .navbar__item:not(.navbar__search):not([class*="toggle"]):not([class*="Toggle"]) {
+  .navbar__search input,
+  [class*="searchBarContainer"] input {
+    width: 120px !important;
+    font-size: 0.8125rem;
+    padding: 0.35rem 0.5rem;
+  }
+
+  .navbar__items--right > .navbar__item:not(.navbar__search):not([class*="search"]):not([class*="toggle"]):not([class*="Toggle"]):not([class*="colorMode"]) {
     display: none;
   }
 
-  .navbar__inner { padding: 0 0.75rem; }
+  [class*="searchModal"],
+  [class*="searchResultsColumn"] {
+    max-width: 95vw !important;
+    left: 2.5vw !important;
+    right: 2.5vw !important;
+  }
 }
 
 /* -- Mobile navbar / sidebar ---------------------------------------------- */
