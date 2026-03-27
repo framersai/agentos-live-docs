@@ -274,7 +274,7 @@ const config: Config = {
             { label: 'Getting Started', to: '/getting-started/getting-started' },
             { label: 'Examples', to: '/getting-started/examples' },
             { label: 'Architecture', to: '/architecture/system-architecture' },
-            { label: 'Feature Guides', to: '/documentation' },
+            { label: 'Feature Guides', to: '/getting-started/documentation-index' },
             { label: 'API Reference', to: '/api/' },
           ],
         },
