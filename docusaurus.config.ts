@@ -12,7 +12,6 @@ const config: Config = {
   organizationName: 'framersai',
   projectName: 'agentos-live-docs',
   onBrokenLinks: 'warn',
-  onBrokenMarkdownLinks: 'warn',
   trailingSlash: false,
 
   headTags: [
@@ -94,6 +93,9 @@ const config: Config = {
   markdown: {
     format: 'detect', // Allow CommonMark for TypeDoc-generated files (MDX v3 strict)
     mermaid: true,
+    hooks: {
+      onBrokenMarkdownLinks: 'warn',
+    },
   },
 
   themes: [
@@ -214,9 +216,13 @@ const config: Config = {
           type: 'docSidebar',
           sidebarId: 'guideSidebar',
           position: 'left',
-          label: 'Docs',
-          activeBaseRegex:
-            '/(getting-started|architecture|features|extensions|skills|memory|orchestration)/',
+          label: 'Guides',
+          activeBaseRegex: '/(getting-started|features|extensions|skills|memory|orchestration)/',
+        },
+        {
+          to: '/architecture/system-architecture',
+          position: 'left',
+          label: 'Architecture',
         },
         {
           to: '/api/',
@@ -247,9 +253,10 @@ const config: Config = {
         {
           title: 'Docs',
           items: [
-            { label: 'Getting Started', to: '/' },
+            { label: 'Getting Started', to: '/getting-started/getting-started' },
+            { label: 'Examples', to: '/getting-started/examples' },
             { label: 'Architecture', to: '/architecture/system-architecture' },
-            { label: 'Extensions', to: '/extensions/overview' },
+            { label: 'Feature Guides', to: '/documentation' },
             { label: 'API Reference', to: '/api/' },
           ],
         },
@@ -279,7 +286,7 @@ const config: Config = {
           ],
         },
       ],
-      copyright: `Copyright \u00A9 ${new Date().getFullYear()} <a href="https://frame.dev" target="_blank" rel="noopener noreferrer" style="color: #00C896;">Frame.dev</a>. All rights reserved.`,
+      copyright: `Copyright \u00A9 ${new Date().getFullYear()} <a href="https://manicagency.com" target="_blank" rel="noopener noreferrer" style="color: #00C896;">Manic Agency LLC</a>. Open source under Apache 2.0.`,
     },
     prism: {
       theme: prismThemes.github,
