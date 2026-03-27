@@ -216,6 +216,7 @@ const config: Config = {
           type: 'dropdown',
           label: 'Guides',
           position: 'left',
+          to: '/getting-started/getting-started',
           items: [
             {label: 'Getting Started', to: '/getting-started/getting-started'},
             {label: 'Memory System', to: '/features/cognitive-memory'},
@@ -225,17 +226,12 @@ const config: Config = {
             {label: 'Voice Pipeline', to: '/features/voice-pipeline'},
             {label: 'Extensions', to: '/extensions/overview'},
             {label: 'Skills', to: '/skills/skills-extension'},
-            {label: 'All Guides', type: 'docSidebar', sidebarId: 'guideSidebar'},
-          ],
-        },
-        {
-          type: 'dropdown',
-          label: 'Architecture',
-          position: 'left',
-          items: [
+            {label: '─── Architecture ───', to: '/architecture/system-architecture', className: 'dropdown-separator'},
             {label: 'System Architecture', to: '/architecture/system-architecture'},
             {label: 'Tool Calling', to: '/architecture/tool-calling-and-loading'},
             {label: 'Capability Discovery', to: '/features/capability-discovery'},
+            {label: '───────────', to: '/getting-started/getting-started', className: 'dropdown-separator'},
+            {label: 'All Guides & Docs', type: 'docSidebar', sidebarId: 'guideSidebar'},
           ],
         },
         {
