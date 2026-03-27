@@ -213,16 +213,30 @@ const config: Config = {
       },
       items: [
         {
-          type: 'docSidebar',
-          sidebarId: 'guideSidebar',
-          position: 'left',
+          type: 'dropdown',
           label: 'Guides',
-          activeBaseRegex: '/(getting-started|features|extensions|skills|memory|orchestration)/',
+          position: 'left',
+          items: [
+            {label: 'Getting Started', to: '/getting-started/getting-started'},
+            {label: 'Memory System', to: '/features/cognitive-memory'},
+            {label: 'RAG & Vector Storage', to: '/features/rag-memory'},
+            {label: 'Vector Scaling', to: '/features/memory-scaling'},
+            {label: 'Guardrails', to: '/features/guardrails'},
+            {label: 'Voice Pipeline', to: '/features/voice-pipeline'},
+            {label: 'Extensions', to: '/extensions/overview'},
+            {label: 'Skills', to: '/skills/skills-extension'},
+            {label: 'All Guides', type: 'docSidebar', sidebarId: 'guideSidebar'},
+          ],
         },
         {
-          to: '/architecture/system-architecture',
-          position: 'left',
+          type: 'dropdown',
           label: 'Architecture',
+          position: 'left',
+          items: [
+            {label: 'System Architecture', to: '/architecture/system-architecture'},
+            {label: 'Tool Calling', to: '/architecture/tool-calling-and-loading'},
+            {label: 'Capability Discovery', to: '/features/capability-discovery'},
+          ],
         },
         {
           to: '/api/',
