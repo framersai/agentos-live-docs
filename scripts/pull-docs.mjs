@@ -303,6 +303,30 @@ const agentosGuides = [
     title: 'SQLite Brain Storage',
     position: 25,
   },
+  {
+    src: 'MEMORY_SCALING.md',
+    dest: 'features/memory-scaling.md',
+    title: 'Memory Scaling (4-Tier Vector Storage)',
+    position: 26,
+  },
+  {
+    src: 'POSTGRES_BACKEND.md',
+    dest: 'features/postgres-backend.md',
+    title: 'Postgres + pgvector Backend',
+    position: 27,
+  },
+  {
+    src: 'QDRANT_BACKEND.md',
+    dest: 'features/qdrant-backend.md',
+    title: 'Qdrant Backend',
+    position: 28,
+  },
+  {
+    src: 'PINECONE_BACKEND.md',
+    dest: 'features/pinecone-backend.md',
+    title: 'Pinecone Backend',
+    position: 29,
+  },
   // Capability & Emergent
   {
     src: 'DISCOVERY.md',
@@ -706,6 +730,10 @@ const linkRewrites = {
   'MEMORY_CONSOLIDATION.md': '/features/memory-consolidation',
   'MEMORY_TOOLS.md': '/features/memory-tools',
   'MEMORY_STORAGE.md': '/features/memory-storage',
+  'MEMORY_SCALING.md': '/features/memory-scaling',
+  'POSTGRES_BACKEND.md': '/features/postgres-backend',
+  'QDRANT_BACKEND.md': '/features/qdrant-backend',
+  'PINECONE_BACKEND.md': '/features/pinecone-backend',
   'IMAGE_EDITING.md': '/features/image-editing',
   'VISION_PIPELINE.md': '/features/vision-pipeline',
   'LLM_PROVIDERS.md': '/architecture/llm-providers',
