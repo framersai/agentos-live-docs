@@ -12,12 +12,12 @@ Skills are modular prompt extensions that give agents domain-specific capabiliti
 
 The skills system has four layers:
 
-| Layer       | Package                            | Role                                                |
-| ----------- | ---------------------------------- | --------------------------------------------------- |
-| **Data**    | `@framers/agentos-skills-registry` | 40 curated SKILL.md files + `registry.json` catalog |
-| **Runtime** | `@framers/agentos-skills`          | Standalone `SkillRegistry` loader/snapshot engine   |
-| **Barrel**  | `@framers/agentos/skills`          | Backward-compatible re-export from the main SDK     |
-| **Tools**   | `@framers/agentos-ext-skills`      | Lazy `skills_*` tools for discovery + enablement    |
+| Layer       | Package                            | Role                                                              |
+| ----------- | ---------------------------------- | ----------------------------------------------------------------- |
+| **Data**    | `@framers/agentos-skills-registry` | 40 curated SKILL.md files + `registry.json` catalog               |
+| **Runtime** | `@framers/agentos-skills`          | Standalone `SkillRegistry` loader/snapshot engine                 |
+| **Barrel**  | `@framers/agentos/skills`          | Backward-compatible re-export from the main SDK                   |
+| **Tools**   | `@framers/agentos-skills`          | `skills_*` tools for discovery + enablement (via `SkillRegistry`) |
 
 ## Curated Skills Catalog
 
@@ -160,13 +160,13 @@ node scripts/validate-skill.mjs registry/curated/my-skill/SKILL.md
 
 ## Lazy Skill Tools
 
-If you want the model to inspect or enable curated skills at runtime instead of pre-injecting them into the prompt, install the skills tool extension:
+If you want the model to inspect or enable curated skills at runtime instead of pre-injecting them into the prompt, use `SkillRegistry` from `@framers/agentos-skills`:
 
 ```bash
-npm install @framers/agentos-ext-skills
+npm install @framers/agentos-skills
 ```
 
-It exposes `skills_list`, `skills_read`, `skills_status`, `skills_enable`, and `skills_install`.
+It exposes `skills_list`, `skills_read`, `skills_status`, `skills_enable`, and `skills_install` tools via `SkillRegistry`.
 
 ## Related
 

@@ -23,7 +23,7 @@ const AGENTOS_DOCS = resolve(MONO_ROOT, 'packages/agentos/docs');
 const EXTENSIONS_ROOT = resolve(MONO_ROOT, 'packages/agentos-extensions');
 const CURATED_ROOT = resolve(EXTENSIONS_ROOT, 'registry/curated');
 const SKILLS_REGISTRY_PKG = resolve(MONO_ROOT, 'packages/agentos-skills-registry');
-const SKILLS_EXTENSION_PKG = resolve(MONO_ROOT, 'packages/agentos-ext-skills');
+const SKILLS_RUNTIME_PKG = resolve(MONO_ROOT, 'packages/agentos-skills');
 const SQL_STORAGE_ADAPTER_PKG = resolve(MONO_ROOT, 'packages/sql-storage-adapter');
 const REPO_DOCS = resolve(MONO_ROOT, 'docs');
 const WUNDERLAND_SOL_GUIDES = resolve(MONO_ROOT, 'apps/wunderland-sol/docs-site/docs/guides');
@@ -581,9 +581,9 @@ const skillsDocs = [
     position: 2,
   },
   {
-    srcPath: resolve(SKILLS_EXTENSION_PKG, 'README.md'),
+    srcPath: resolve(SKILLS_RUNTIME_PKG, 'README.md'),
     dest: 'skills/skills-extension.md',
-    title: 'Skills Extension',
+    title: 'Skills Tools',
     position: 3,
   },
   {
