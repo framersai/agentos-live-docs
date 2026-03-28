@@ -300,8 +300,8 @@ const config: Config = {
         {
           title: 'Legal',
           items: [
-            { label: 'Privacy Policy', href: 'https://agentos.sh/privacy' },
-            { label: 'Terms of Service', href: 'https://agentos.sh/terms' },
+            { label: 'Privacy Policy', href: 'https://agentos.sh/legal/privacy' },
+            { label: 'Terms of Service', href: 'https://agentos.sh/legal/terms' },
           ],
         },
       ],
