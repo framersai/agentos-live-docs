@@ -38,7 +38,7 @@ export default function NotFound(): JSX.Element {
             Documentation Home
           </Link>
           <Link
-            to="/getting-started/getting-started"
+            to="/getting-started"
             className="button button--secondary button--lg"
           >
             Getting Started

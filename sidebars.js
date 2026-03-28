@@ -19,7 +19,7 @@ const sidebars = {
       collapsed: false,
       items: [
         'getting-started/documentation-index',
-        'getting-started/getting-started',
+        'getting-started/index',
         'getting-started/high-level-api',
         'getting-started/examples',
         'getting-started/ecosystem',

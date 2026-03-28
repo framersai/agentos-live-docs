@@ -152,6 +152,8 @@ const config: Config = {
           { from: '/docs/RFC_EXTENSION_STANDARDS', to: '/extensions/extension-standards' },
           { from: '/docs/SQL_STORAGE_QUICKSTART', to: '/features/sql-storage' },
           { from: '/docs/STRUCTURED_OUTPUT', to: '/features/structured-output' },
+          // Renamed getting-started/getting-started → getting-started (index.md)
+          { from: '/getting-started/getting-started', to: '/getting-started' },
         ],
         createRedirects(existingPath: string) {
           // Redirect old /docs/ prefixed paths to root (docs are now at /)
@@ -216,9 +218,9 @@ const config: Config = {
           type: 'dropdown',
           label: 'Guides',
           position: 'left',
-          to: '/getting-started/getting-started',
+          to: '/getting-started',
           items: [
-            { label: 'Getting Started', to: '/getting-started/getting-started' },
+            { label: 'Getting Started', to: '/getting-started' },
             { label: 'Memory System', to: '/features/cognitive-memory' },
             { label: 'RAG & Vector Storage', to: '/features/rag-memory' },
             { label: 'Vector Scaling', to: '/features/memory-scaling' },
@@ -236,7 +238,7 @@ const config: Config = {
             { label: 'Capability Discovery', to: '/features/capability-discovery' },
             {
               label: '───────────',
-              to: '/getting-started/getting-started',
+              to: '/getting-started',
               className: 'dropdown-separator',
             },
             { label: 'All Guides & Docs', type: 'docSidebar', sidebarId: 'guideSidebar' },
@@ -271,7 +273,7 @@ const config: Config = {
         {
           title: 'Docs',
           items: [
-            { label: 'Getting Started', to: '/getting-started/getting-started' },
+            { label: 'Getting Started', to: '/getting-started' },
             { label: 'Examples', to: '/getting-started/examples' },
             { label: 'Architecture', to: '/architecture/system-architecture' },
             { label: 'Feature Guides', to: '/getting-started/documentation-index' },

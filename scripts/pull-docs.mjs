@@ -43,7 +43,7 @@ const agentosGuides = [
   },
   {
     src: 'GETTING_STARTED.md',
-    dest: 'getting-started/getting-started.md',
+    dest: 'getting-started/index.md',
     title: 'Getting Started Guide',
     position: 2,
   },
@@ -712,7 +712,7 @@ const linkRewrites = {
   'BACKEND_API.md': '/architecture/backend-api',
   'MULTI_GMI_IMPLEMENTATION_PLAN.md': '/architecture/multi-gmi-implementation-plan',
   'MULTI_GMI_COLLABORATION.md': '/architecture/multi-gmi-implementation-plan',
-  'GETTING_STARTED.md': '/getting-started/getting-started',
+  'GETTING_STARTED.md': '/getting-started',
   'EXAMPLES.md': '/getting-started/examples',
   'SAFETY_PRIMITIVES.md': '/features/safety-primitives',
   'NESTJS_ARCHITECTURE.md': '/architecture/backend-api',

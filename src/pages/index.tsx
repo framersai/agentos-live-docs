@@ -106,7 +106,7 @@ function Hero() {
       <Badges />
 
       <div className="hero-buttons">
-        <Link className="btn-primary" to="/getting-started/getting-started">
+        <Link className="btn-primary" to="/getting-started">
           Get Started
         </Link>
         <Link className="btn-secondary" to="/getting-started/examples">
