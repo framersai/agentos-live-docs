@@ -1,6 +1,6 @@
 # @framers/agentos-skills-registry
 
-Curated skills registry for [AgentOS](https://github.com/framersai/agentos) — 40 SKILL.md prompt modules, typed catalog, and lazy-loading factories.
+Curated skills registry for [AgentOS](https://github.com/framersai/agentos) — 69 SKILL.md prompt modules, typed catalog, and lazy-loading factories.
 
 [![npm](https://img.shields.io/npm/v/@framers/agentos-skills-registry?logo=npm&color=cb3837)](https://www.npmjs.com/package/@framers/agentos-skills-registry)
 
@@ -10,9 +10,9 @@ npm install @framers/agentos-skills-registry
 
 ## What's Inside
 
-This is the **single package** for AgentOS skills. It contains:
+This is the **catalog SDK** for AgentOS skills. It contains:
 
-- **40 curated SKILL.md files** — prompt modules spanning developer tooling, productivity, research, voice, memory, and more
+- **69 curated SKILL.md files** — prompt modules spanning developer tooling, productivity, research, social automation, voice, memory, and more
 - **registry.json** — machine-readable index of all skills with metadata
 - **Static catalog** (`SKILLS_CATALOG`) — typed array with query helpers
 - **Registry factories** — `createCuratedSkillRegistry()`, `createCuratedSkillSnapshot()` (requires `@framers/agentos`)
@@ -61,7 +61,7 @@ Access the JSON index directly:
 import { getSkillsCatalog } from '@framers/agentos-skills-registry';
 
 const catalog = await getSkillsCatalog();
-console.log(catalog.skills.curated.length); // 40
+console.log(catalog.skills.curated.length); // 69
 console.log(catalog.version); // '1.0.0'
 ```
 
@@ -157,7 +157,7 @@ the `metadata.agentos` block manually.
 
 The `@framers/agentos` dependency is loaded **lazily** at runtime and cached after first resolution. If it's not installed and you call a factory function, you get a clear error with install instructions.
 
-## Included Skills (40)
+## Included Skills (69)
 
 The catalog now includes both foundational utility skills and social automation modules, including:
 
