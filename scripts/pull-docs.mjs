@@ -427,6 +427,19 @@ const agentosGuides = [
     title: 'Extension Standards (RFC)',
     position: 5,
   },
+  // CLI Registry & CLI Providers
+  {
+    src: 'features/CLI_REGISTRY.md',
+    dest: 'extensions/built-in/cli-registry.md',
+    title: 'CLI Registry',
+    position: 9,
+  },
+  {
+    src: 'getting-started/CLI_PROVIDERS.md',
+    dest: 'features/cli-providers.md',
+    title: 'CLI Providers',
+    position: 30,
+  },
 ];
 
 /** @type {{ src: string; dest: string; title: string; position: number }[]} */
@@ -728,6 +741,8 @@ const linkRewrites = {
   'MIGRATION_GUIDE.md': '/extensions/migration-guide',
   'AGENCY_COLLABORATION_EXAMPLE.md': '/features/agency-collaboration',
   'AGENCY_API.md': '/features/agency-api',
+  'CLI_REGISTRY.md': '/extensions/built-in/cli-registry',
+  'CLI_PROVIDERS.md': '/features/cli-providers',
   'http-streaming-api.md': '/architecture/http-streaming-api',
   'chat-server.md': '/architecture/chat-server',
   'tools.md': '/architecture/tools',
