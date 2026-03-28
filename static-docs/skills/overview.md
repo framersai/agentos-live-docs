@@ -48,9 +48,10 @@ console.log(snapshot.prompt);
 
 ## Curated Skills Packages
 
-The curated catalog ships as a single package:
+The curated skills ecosystem ships as two packages:
 
-- `@framers/agentos-skills-registry`: SKILL.md files + registry.json + typed catalog + query helpers + factories
+- `@framers/agentos-skills`: Content (69 SKILL.md files + registry.json)
+- `@framers/agentos-skills-registry`: Catalog SDK (SKILLS_CATALOG, query helpers, snapshot factories)
 
 It supports a lightweight import path:
 
@@ -68,9 +69,10 @@ const snapshot = await createCuratedSkillSnapshot({ skills: ['github', 'weather'
 
 ## On-Demand Skill Discovery (Lazy)
 
-If you don’t want to inject all skill prompt content up front, load the **skills tool extension**:
+If you don’t want to inject all skill prompt content up front, use the **skills tools** from the engine:
 
-- `@framers/agentos-skills` (via `SkillRegistry`): exposes `skills_list`, `skills_read`, `skills_status`, `skills_enable`, `skills_install`
+- `@framers/agentos/skills` (via `SkillRegistry`): exposes `skills_list`, `skills_read`, `skills_status`, `skills_enable`, `skills_install`
+- Skill content (the actual SKILL.md files) ships in `@framers/agentos-skills`
 
 This enables a “lazy” flow where the model can:
 

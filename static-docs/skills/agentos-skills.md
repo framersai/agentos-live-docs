@@ -5,7 +5,7 @@ sidebar_position: 6
 
 # @framers/agentos-skills
 
-The skills runtime package — loads, parses, and manages SKILL.md prompt modules.
+The skills **content** package — 69 curated SKILL.md prompt modules + a `registry.json` index.
 
 ```bash
 npm install @framers/agentos-skills
@@ -13,48 +13,58 @@ npm install @framers/agentos-skills
 
 ## What It Does
 
-`@framers/agentos-skills` provides the runtime engine for the skills system:
+`@framers/agentos-skills` ships the curated SKILL.md files that agents consume. It does **not** contain the runtime engine — that lives in `@framers/agentos/skills`.
 
-| Export                                 | Description                                                                                                       |
-| -------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
-| `SkillLoader`                          | Parses SKILL.md files (YAML frontmatter + markdown body), loads from directories, filters by platform/eligibility |
-| `SkillRegistry`                        | Runtime registry — registration, querying, bulk loading, snapshot building, command spec generation               |
-| `Skill`, `SkillEntry`, `SkillMetadata` | Type definitions for skill objects                                                                                |
-| `getDefaultSkillDirs()`                | Resolves default skill directories (CLI flags, `AGENTOS_SKILLS_DIR`, `~/.codex/skills`, `cwd/skills`)             |
+| What ships                  | Description                                                                 |
+| --------------------------- | --------------------------------------------------------------------------- |
+| `registry/curated/*/SKILL.md` | 69 curated skill files (developer tools, productivity, social, voice, etc.) |
+| `registry.json`             | Machine-readable index of all bundled skills (name, category, description)  |
 
 ## How It Relates to Other Packages
 
 ```
-@framers/agentos-skills              ← Runtime (this package)
-@framers/agentos-skills-registry     ← Catalog (40 curated SKILL.md files)
-@framers/agentos                     ← Re-exports skills via @framers/agentos/skills
+@framers/agentos/skills               <- Engine (SkillLoader, SkillRegistry, path utils)
+@framers/agentos-skills               <- Content (this package — 69 SKILL.md files)
+@framers/agentos-skills-registry      <- Catalog SDK (SKILLS_CATALOG, query helpers, factories)
 ```
 
-The runtime handles loading and execution. The registry provides the curated skill catalog. AgentOS re-exports the runtime for convenience.
+This mirrors the extensions layout:
+
+```
+@framers/agentos-extensions            <- Content (107 extension implementations)
+@framers/agentos-extensions-registry   <- Catalog SDK (CHANNEL_CATALOG, TOOL_CATALOG, etc.)
+```
+
+The engine handles loading and execution. This package provides the skill content. The registry SDK provides typed catalog queries and snapshot factories.
 
 ## Usage
 
+Load curated skill content using the engine from `@framers/agentos/skills`:
+
 ```typescript
-import { SkillLoader, SkillRegistry } from '@framers/agentos-skills';
+import { SkillRegistry } from '@framers/agentos/skills';
 
-// Load skills from a directory
-const skills = await SkillLoader.loadFromDirectory('~/.wunderland/skills');
-
-// Or use the registry
+// Point the engine at the content package's curated directory
 const registry = new SkillRegistry();
-await registry.loadSkillsFromDir('~/.wunderland/skills');
+await registry.loadFromDirs([
+  require.resolve('@framers/agentos-skills').replace(/index\.[cm]?js$/, 'registry/curated'),
+]);
 
 const skill = registry.get('deep-research');
 console.log(skill?.displayName, skill?.description);
 ```
 
-Or import via AgentOS (same API):
+Or use the registry SDK (which wires content + engine together automatically):
 
 ```typescript
-import { SkillLoader, SkillRegistry } from '@framers/agentos/skills';
+import { createCuratedSkillSnapshot } from '@framers/agentos-skills-registry';
+
+const snapshot = await createCuratedSkillSnapshot({ skills: ['github', 'weather'] });
+console.log(snapshot.prompt);
 ```
 
 ## See Also
 
-- [`@framers/agentos-skills-registry`](./agentos-skills-registry) — curated skill catalog
+- [`@framers/agentos-skills-registry`](./agentos-skills-registry) — catalog SDK with query helpers and factories
+- [`@framers/agentos/skills`](../api/skills) — the runtime engine (SkillLoader, SkillRegistry)
 - [Skills (SKILL.md)](./skill-format) — how to write skills
