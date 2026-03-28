@@ -33,6 +33,11 @@ const sidebars = {
       collapsed: false,
       items: [
         'architecture/system-architecture',
+        'architecture/sandbox-security',
+        'architecture/cli-subprocess',
+        'architecture/tool-permissions',
+        'architecture/extension-loading',
+        'architecture/skills-engine',
         'architecture/platform-support',
         'architecture/observability',
         'architecture/logging',

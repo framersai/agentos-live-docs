@@ -671,6 +671,36 @@ const extraDocs = [
     title: 'Browser Automation',
     position: 26,
   },
+  {
+    srcPath: resolve(REPO_DOCS, 'architecture/sandbox-security.md'),
+    dest: 'architecture/sandbox-security.md',
+    title: 'Sandbox Security',
+    position: 3,
+  },
+  {
+    srcPath: resolve(REPO_DOCS, 'architecture/cli-subprocess.md'),
+    dest: 'architecture/cli-subprocess.md',
+    title: 'CLI Subprocess Bridge',
+    position: 4,
+  },
+  {
+    srcPath: resolve(REPO_DOCS, 'architecture/tool-permissions.md'),
+    dest: 'architecture/tool-permissions.md',
+    title: 'Tool Permissions & Security Tiers',
+    position: 5,
+  },
+  {
+    srcPath: resolve(REPO_DOCS, 'architecture/extension-loading.md'),
+    dest: 'architecture/extension-loading.md',
+    title: 'Extension Loading',
+    position: 6,
+  },
+  {
+    srcPath: resolve(REPO_DOCS, 'architecture/skills-engine.md'),
+    dest: 'architecture/skills-engine.md',
+    title: 'Skills Engine',
+    position: 7,
+  },
 ];
 
 // ── Link rewrite rules ──────────────────────────────────────────────
@@ -763,6 +793,11 @@ const linkRewrites = {
   'STRUCTURED_OUTPUT_API.md': '/features/structured-output-api',
   'AGENT_CONFIG_EXPORT.md': '/features/agent-config-export',
   'QUERY_ROUTER.md': '/features/query-routing',
+  'sandbox-security.md': '/architecture/sandbox-security',
+  'cli-subprocess.md': '/architecture/cli-subprocess',
+  'tool-permissions.md': '/architecture/tool-permissions',
+  'extension-loading.md': '/architecture/extension-loading',
+  'skills-engine.md': '/architecture/skills-engine',
 };
 
 /** Rewrite curated registry folder links -> docs pages */
