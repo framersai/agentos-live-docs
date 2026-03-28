@@ -302,6 +302,8 @@ const config: Config = {
           items: [
             { label: 'Privacy Policy', href: 'https://agentos.sh/legal/privacy' },
             { label: 'Terms of Service', href: 'https://agentos.sh/legal/terms' },
+            { label: 'Security', href: 'https://agentos.sh/legal/security' },
+            { label: 'Cookies', href: 'https://agentos.sh/legal/cookies' },
           ],
         },
       ],
