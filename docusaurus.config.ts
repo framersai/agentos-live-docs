@@ -292,7 +292,8 @@ const config: Config = {
           items: [
             { label: 'GitHub', href: 'https://github.com/framersai/agentos' },
             { label: 'Discord', href: 'https://discord.com/invite/KxF9b6HY6h' },
-            { label: 'Twitter', href: 'https://twitter.com/framersai' },
+            { label: 'Twitter', href: 'https://x.com/rabbitholewun' },
+            { label: 'LinkedIn', href: 'https://www.linkedin.com/company/manicinc' },
             { label: 'npm', href: 'https://www.npmjs.com/package/@framers/agentos' },
           ],
         },
