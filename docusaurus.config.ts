@@ -316,7 +316,7 @@ const config: Config = {
           ],
         },
       ],
-      copyright: `Copyright \u00A9 ${new Date().getFullYear()} <a href="https://manicinc.com" target="_blank" rel="noopener noreferrer" style="color: #00C896;">Manic Inc</a>. Open source under Apache 2.0.`,
+      copyright: `Copyright \u00A9 ${new Date().getFullYear()} <a href="https://manic.agency" target="_blank" rel="noopener noreferrer" style="color: #00C896;">Manic Agency LLC</a>. Open source under Apache 2.0.`,
     },
     prism: {
       theme: prismThemes.github,
