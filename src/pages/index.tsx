@@ -299,7 +299,7 @@ const architectureMermaid = `flowchart TD
     GMI --> GUARD["<b>Guardrails</b><br/>5-Tier Pipeline \u00B7 PII \u00B7 ML Classifiers \u00B7 Grounding"]
     TOOLS --> GRAPH["<b>Graph Runtime</b><br/>AgentGraph \u00B7 workflow() \u00B7 mission() \u00B7 Checkpoints"]
     GRAPH --> MEDIA["<b>Media Pipeline</b><br/>Video (3 Providers) \u00B7 Audio (8 Providers) \u00B7 Images"]
-    GRAPH --> VOICE["<b>Voice Pipeline</b><br/>28 STT/TTS Providers \u00B7 VAD \u00B7 Barge-in"]
+    GRAPH --> VOICE["<b>Voice Pipeline</b><br/>27 STT/TTS Providers \u00B7 VAD \u00B7 Barge-in"]
     GRAPH --> CHAN["<b>Channels</b><br/>37 Platform Adapters"]
     GRAPH --> LLM["<b>LLM Providers</b><br/>21 Providers \u00B7 Auto-fallback \u00B7 Local (Ollama)"]
 
@@ -339,12 +339,12 @@ const features = [
     title: 'Multimodal Provider API',
     description:
       'Text, images, video, music, SFX, embeddings, and speech from one API. 21 cloud providers + local (Ollama, MusicGen, AudioGen). Auto-fallback chains with provider preferences for load balancing.',
-    link: '/getting-started/high-level-api',
+    link: '/features/multimodal-rag',
   },
   {
     title: 'Deep Research Agents',
     description:
-      'mission() API with goal-first planning, multi-source search, grounding verification, and human-in-the-loop review. Agents plan their own steps, discover tools, and self-evaluate.',
+      'mission() API with Tree of Thought planning, multi-source search, grounding verification, and human-in-the-loop review. 3 autonomy modes, 5 provider strategies, and dynamic graph expansion.',
     link: '/features/deep-research',
   },
   {
@@ -356,20 +356,20 @@ const features = [
   {
     title: 'Voice & IVR Pipeline',
     description:
-      'Full-duplex voice with 3 endpoint detection modes, barge-in handling, 28 STT/TTS providers, diarization. Twilio/Telnyx/Plivo telephony bridging for production IVR.',
+      'Full-duplex voice with 3 endpoint detection modes, barge-in handling, 27 STT/TTS providers, diarization. Twilio/Telnyx/Plivo telephony bridging for production IVR.',
     link: '/features/voice-pipeline',
   },
   {
     title: 'Graph Orchestration',
     description:
       'Three authoring APIs \u2014 AgentGraph, workflow() DSL, mission() \u2014 compile to one IR. judgeNode for evaluation, checkpointing for time-travel, streaming events.',
-    link: '/features/orchestration-guide',
+    link: '/features/unified-orchestration',
   },
   {
     title: 'Cognitive Memory',
     description:
-      'Ebbinghaus decay, spreading activation, Baddeley working memory, personality-driven encoding (HEXACO). GraphRAG retrieval with episodic-to-semantic consolidation.',
-    link: '/features/cognitive-memory-guide',
+      '8 neuroscience-grounded mechanisms with HEXACO personality modulation. Ebbinghaus decay, spreading activation, Baddeley working memory, GraphRAG retrieval with episodic-to-semantic consolidation.',
+    link: '/features/cognitive-memory',
   },
   {
     title: 'Streaming Guardrails',
@@ -387,18 +387,18 @@ const features = [
     title: 'Capability Discovery',
     description:
       '3-tier semantic discovery: category summaries (150 tokens) \u2192 top-5 matches (200 tokens) \u2192 full schemas on demand. 89% token reduction. Agents self-discover tools mid-conversation.',
-    link: '/features/discovery-guide',
+    link: '/features/capability-discovery',
   },
   {
     title: 'Provenance & Audit',
     description:
       'Signed event ledger (Ed25519 + SHA-256 hash chain), soft-delete tombstones, revision history, autonomy guard. Merkle anchoring for tamper-evident external verification.',
-    link: '/features/provenance-guide',
+    link: '/features/provenance-immutability',
   },
   {
     title: 'Channels & Social',
     description:
-      'Telegram, Discord, Slack, WhatsApp, Twitter/X, LinkedIn, email, SMS, and more. Multi-channel routing, social publishing, browser automation, and custom adapter APIs.',
+      'Telegram, Discord, Slack, WhatsApp, Twitter/X, LinkedIn, Bluesky, Mastodon, and 29 more. Multi-channel routing, social publishing, browser automation, and custom adapter APIs.',
     link: '/features/channels',
   },
   {
@@ -414,10 +414,10 @@ const features = [
     link: '/features/video-pipeline',
   },
   {
-    title: 'GitHub Integration',
+    title: '72 Curated Skills',
     description:
-      '26 GitHub tools: issues, PRs, files, branches, releases, CI/CD, and code search. GitHubRepoIndexer for RAG-ready codebase ingestion. Ecosystem auto-indexing.',
-    link: '/features/github-integration',
+      'SKILL.md prompt modules across 8 categories: information, developer-tools, communication, productivity, devops, media, security, creative. Semantic discovery finds the right skill per turn.',
+    link: '/skills/overview',
   },
   {
     title: 'Self-Improving Agents',
