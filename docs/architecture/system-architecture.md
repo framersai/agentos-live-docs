@@ -3,110 +3,59 @@ title: "System Architecture"
 sidebar_position: 1
 ---
 
+For deployments that need immutability guarantees and auditability, see [Provenance & Immutability](/features/provenance-immutability) for `sealed`/`revisioned` storage policy enforcement, signed event ledgers, and optional external anchoring.
+
+Current runtime memory note:
+
+- The standalone SQLite-first `Memory` facade is now a first-class runtime path alongside the older cognitive memory stack.
+- `AgentOSConfig.tools` is the runtime-level registered tool input. It accepts named tool maps, `ExternalToolRegistry` values (`Record` / `Map` / iterable), or prompt-only `ToolDefinitionForLLM[]`, normalizes them during `initialize(...)`, and registers them into the shared `ToolOrchestrator`.
+- `AgentOSConfig.memoryTools` only registers memory editor tools.
+- `AgentOSConfig.standaloneMemory` is the higher-level bridge when one `Memory` instance should also act as `longTermMemoryRetriever` and `rollingSummaryMemorySink`.
+- Actionable external tool pauses are persisted on the conversation, so hosts can recover them with `getPendingExternalToolRequest(...)` and continue them with `resumeExternalToolRequest(...)` after restart.
+- If those pending tool calls are AgentOS-registered tools, `resumeExternalToolRequestWithRegisteredTools(...)` can execute them with the correct resume-time context and continue the stream in one step.
+- `AgentOSConfig.externalTools` remains the helper-level host registry for `processRequestWithRegisteredTools(...)` / `resumeExternalToolRequestWithRegisteredTools(...)`. If a live or resumed pause mixes AgentOS-registered tools with host-managed custom tools, those helpers accept `externalTools` for a stable host tool map and `fallbackExternalToolHandler` for fully dynamic routing, so only missing tool names fall back to host execution. Prompt-aware `externalTools` entries that include `description` + `inputSchema` are temporarily registered as proxy tools for the helper call so the model can plan against them too. Lower-level/custom GMI callers can also read the same prompt-aware host tools through `agent.listExternalToolsForLLM()` and format them for raw provider calls with `formatToolDefinitionsForOpenAI(...)` or `formatExternalToolsForOpenAI(...)`.
+- Organization context is intentionally not persisted there; restarted hosts must re-supply trusted `organizationId` in the resume options when the continued turn needs org-scoped memory.
+
 ---
 
 ## System Architecture Overview
 
-```mermaid
-graph TB
-    subgraph "Public API Layer"
-        HLA["High-Level API<br/><i>generateText() · streamText()<br/>generateImage() · agent() · agency()</i>"]
-        AGENTOS["AgentOS Runtime<br/><i>processRequest() · initialize()<br/>personas · extensions · lifecycle</i>"]
-    end
-
-    subgraph "Orchestration Engine"
-        MISSION["mission()<br/><i>Goal-first · Tree of Thought<br/>3 autonomy modes</i>"]
-        WORKFLOW["workflow()<br/><i>Deterministic DAG<br/>compile-time validation</i>"]
-        GRAPH["AgentGraph<br/><i>Full graph control · cycles<br/>human gates · subgraphs</i>"]
-        IR["Compiled Execution Graph IR<br/><i>Single runtime for all 3 APIs</i>"]
-        CHECKPOINT["Checkpoint Store<br/><i>Time-travel · resume</i>"]
-    end
-
-    subgraph "Intelligence Layer"
-        GMI["GMI — General Model Interface<br/><i>21 LLM providers · tool calling<br/>persona overlay · metaprompt</i>"]
-        TOOLS["Tool Orchestrator<br/><i>ITool registry · lazy loading<br/>emergent forging</i>"]
-        GUARD["Guardrail Pipeline<br/><i>PreLLM classifier · DualLLM auditor<br/>5 security tiers</i>"]
-    end
-
-    subgraph "Memory System"
-        COG["Cognitive Memory<br/><i>8 mechanisms · HEXACO modulation<br/>Ebbinghaus decay</i>"]
-        RAG["RAG Pipeline<br/><i>HyDE · RAPTOR · GraphRAG<br/>BM25 · vector · hybrid</i>"]
-        WM["Working Memory<br/><i>7±2 capacity · salience ranking</i>"]
-        DISC["Capability Discovery<br/><i>3-tier semantic search<br/>~150 tokens always-on</i>"]
-    end
-
-    subgraph "Perception & Media"
-        VOICE["Voice Pipeline<br/><i>STT · TTS · VAD · barge-in<br/>27 speech providers</i>"]
-        VISION["Vision<br/><i>OCR · scene detection<br/>image understanding</i>"]
-        MEDIA["Media Generation<br/><i>images · video · music · SFX<br/>document export</i>"]
-    end
-
-    subgraph "Channels — 37 platforms"
-        CHAN["Channel Router<br/><i>Discord · Telegram · Slack<br/>Twitter · LinkedIn · +32 more</i>"]
-        SOCIAL["Social Posting<br/><i>ContentAdaptationEngine<br/>multi-channel scheduling</i>"]
-    end
-
-    subgraph "Infrastructure"
-        SQL["SQL Storage Adapter<br/><i>SQLite · PostgreSQL · in-memory</i>"]
-        EMBED["Embedding Manager<br/><i>LRU cache · HNSW · InMemory</i>"]
-        OTEL["Observability<br/><i>OpenTelemetry · Pino</i>"]
-    end
-
-    HLA --> GMI
-    AGENTOS --> GMI
-    AGENTOS --> TOOLS
-    AGENTOS --> GUARD
-
-    MISSION --> IR
-    WORKFLOW --> IR
-    GRAPH --> IR
-    IR --> CHECKPOINT
-
-    GMI --> COG
-    GMI --> RAG
-    GMI --> WM
-    TOOLS --> DISC
-    GUARD --> GMI
-
-    VOICE --> GMI
-    VISION --> GMI
-    MEDIA --> GMI
-
-    CHAN --> AGENTOS
-    SOCIAL --> CHAN
-
-    COG --> SQL
-    RAG --> SQL
-    RAG --> EMBED
-    AGENTOS --> OTEL
-
-    style HLA fill:#00f5ff,stroke:#00f5ff,color:#0a0a14
-    style AGENTOS fill:#00f5ff,stroke:#00f5ff,color:#0a0a14
-    style GMI fill:#10ffb0,stroke:#10ffb0,color:#0a0a14
-    style MISSION fill:#c9a227,stroke:#c9a227,color:#0a0a14
-    style WORKFLOW fill:#c9a227,stroke:#c9a227,color:#0a0a14
-    style GRAPH fill:#c9a227,stroke:#c9a227,color:#0a0a14
-    style IR fill:#c9a227,stroke:#c9a227,color:#0a0a14
-    style COG fill:#8b5cf6,stroke:#8b5cf6,color:#fff
-    style RAG fill:#4facfe,stroke:#4facfe,color:#0a0a14
-    style VOICE fill:#e040fb,stroke:#e040fb,color:#0a0a14
-    style GUARD fill:#ff4444,stroke:#ff4444,color:#fff
-    style DISC fill:#ffd700,stroke:#ffd700,color:#0a0a14
-```
-
-### How It Fits Together
-
-**Request flow:** A user message enters through the **Public API** (via `agent()`, `agency()`, or the full `AgentOS` runtime), passes through the **Guardrail Pipeline** (pre-LLM classification + post-LLM audit), reaches the **GMI** which selects the right LLM provider, retrieves context from **Memory** and **RAG**, calls **Tools** as needed, and returns a streaming response.
-
-**Orchestration:** All three authoring APIs (`mission()`, `workflow()`, `AgentGraph`) compile to the same **Compiled Execution Graph IR**. The runtime executes nodes, emits streaming events, and saves checkpoints for time-travel and resume.
-
-**Memory:** The **Cognitive Memory** system uses 8 neuroscience-grounded mechanisms (reconsolidation, RIF, involuntary recall, etc.) modulated by HEXACO personality traits. **Working Memory** maintains a 7±2 capacity buffer. **RAG** provides 5 retrieval strategies. **Capability Discovery** uses 3-tier semantic search to find relevant tools/skills on demand.
-
-**Perception:** **Voice** handles bidirectional audio with 27 speech providers. **Vision** processes images and documents. **Media** generates images, video, music, and SFX.
-
 ### Source Directory Layout
 
-The `src/` tree is organized into 26 domain-specific top-level modules:
+After the hierarchy restructuring, the `src/` tree is organized into 26 domain-specific
+top-level modules. Only foundational infrastructure remains under `core/`.
+
+#### Perception model
+
+Vision, hearing, and speech are separated into three independent modules following
+the biological perception analogy: **vision/** (seeing -- OCR, scene detection, image
+analysis), **hearing/** (listening -- STT providers, VAD, silence detection), and
+**speech/** (speaking -- TTS providers, resolver, session). This clean separation
+allows each perception channel to evolve independently, with shared media generation
+(images, video, music, SFX) remaining under **media/**.
+
+#### God-object decompositions
+
+Three former monolithic classes were decomposed during the restructuring:
+
+- **GMI** now delegates focused responsibilities to `ConversationHistoryManager`
+  (history trimming + formatting), `CognitiveMemoryBridge` (PAD/memory context),
+  `SentimentTracker` (mood/affect), and `MetapromptExecutor` (dynamic prompt
+  rewriting). Persona layering remains in `PersonaOverlayManager` under
+  `cognitive_substrate/persona_overlays/`.
+
+- **AgentOS** remains the public lifecycle facade, but substantial setup and
+  runtime concerns were extracted into `WorkflowFacade`,
+  `CapabilityDiscoveryInitializer`, `SelfImprovementSessionManager`, and
+  `RagMemoryInitializer` under `api/runtime/`. High-level helpers like
+  `generateText`, `streamText`, `agent`, `agency`, and media APIs still live
+  under `api/`.
+
+- **AgentOSOrchestrator** remains the request coordinator while delegating major
+  hot-path responsibilities to `TurnExecutionPipeline` (pre-LLM turn
+  preparation), `GMIChunkTransformer` (stream chunk mapping), and
+  `ExternalToolResultHandler` (tool-result continuation and resume flow). All
+  live under `api/runtime/`.
 
 ```
 src/
@@ -1656,18 +1605,6 @@ class PatternRecognizer {
 ---
 
 ## RAG & Knowledge Integration System - Complete Implementation
-
-### Bundled Platform Knowledge
-
-The QueryRouter loads knowledge from three layered sources:
-
-1. **Platform knowledge (baseline)** — 243 pre-built entries covering all AgentOS tools (105), skills (79), FAQ (30), API reference (14), and troubleshooting guides (15). Bundled in the npm package at `knowledge/platform-corpus.json` and loaded automatically during `init()`. This baseline is always available and ensures every agent can answer questions about AgentOS capabilities without any external documentation.
-
-2. **User corpus (project-specific)** — Markdown files from the directories specified in `knowledgeCorpus`. These cover your project's own documentation, guides, and API references. User docs layer on top of platform knowledge, so project-specific answers take priority when both sources match a query.
-
-3. **GitHub repos (optional, async)** — When `githubRepos` is configured, the router indexes repository content asynchronously after `init()` and merges the resulting chunks into the live corpus.
-
-All three sources feed into the same vector index and keyword fallback engine, providing a unified retrieval surface.
 
 ```typescript
 interface IRAGSystem {

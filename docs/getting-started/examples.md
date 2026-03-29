@@ -776,167 +776,29 @@ console.log(result.text);
 
 ---
 
-## 16. Personality-Driven Agent (HEXACO Traits)
+## Runnable Example Files
 
-Create agents with distinct personalities using the HEXACO model. Personality traits affect tone, reasoning style, memory decay rates, and risk tolerance.
+The `examples/` directory contains standalone `.mjs` files you can run directly:
 
-```typescript
-import { agent } from '@framers/agentos';
-
-// A cautious, analytical researcher (high Conscientiousness + Openness)
-const researcher = agent({
-  model: 'anthropic:claude-sonnet-4-20250514',
-  instructions: `You are a meticulous research analyst. Always cite sources,
-    qualify uncertainty, and present multiple perspectives before concluding.`,
-  personality: {
-    hexaco: {
-      honestyHumility: 0.9,    // transparent about limitations
-      emotionality: 0.3,        // calm under pressure
-      extraversion: 0.4,        // reserved, focused
-      agreeableness: 0.6,       // collaborative but firm
-      conscientiousness: 0.95,  // extremely thorough
-      openness: 0.85,           // intellectually curious
-    },
-  },
-});
-
-// A bold, creative writer (high Openness + Extraversion)
-const writer = agent({
-  model: 'openai:gpt-4o',
-  instructions: `You are a creative writer with a distinctive voice. Take risks
-    with metaphors, challenge conventions, and make complex ideas feel alive.`,
-  personality: {
-    hexaco: {
-      honestyHumility: 0.7,
-      emotionality: 0.6,        // emotionally expressive
-      extraversion: 0.9,        // energetic, bold
-      agreeableness: 0.5,       // willing to provoke
-      conscientiousness: 0.6,   // creative over meticulous
-      openness: 0.95,           // maximum creativity
-    },
-  },
-});
-
-// Personality affects everything: tone, word choice, memory prioritization,
-// risk tolerance in tool use, and self-improvement direction.
-const analysis = await researcher.generate('Analyze the risks of AGI alignment');
-const essay = await writer.generate(
-  `Turn this analysis into a compelling essay:\n\n${analysis.text}`
-);
-
-console.log(essay.text);
+```bash
+npx tsx examples/<file>.mjs
 ```
 
----
-
-## 17. Simultaneous Multi-Agent Debate
-
-Run agents in parallel with a debate strategy where they argue opposing positions, then a judge synthesizes.
-
-```typescript
-import { agency } from '@framers/agentos';
-
-const debateClub = agency({
-  provider: 'anthropic',
-  strategy: 'debate',
-  rounds: 3,  // 3 rounds of back-and-forth before the judge rules
-  agents: {
-    optimist: {
-      instructions: `You argue FOR the proposition. Be persuasive, cite evidence,
-        and anticipate counterarguments. You genuinely believe this is a good idea.`,
-      personality: {
-        hexaco: { extraversion: 0.9, openness: 0.8, agreeableness: 0.4 },
-      },
-    },
-    skeptic: {
-      instructions: `You argue AGAINST the proposition. Find flaws, risks, and
-        unintended consequences. Be rigorous but fair — steelman before attacking.`,
-      personality: {
-        hexaco: { conscientiousness: 0.95, emotionality: 0.2, agreeableness: 0.3 },
-      },
-    },
-    pragmatist: {
-      instructions: `You find the middle ground. Acknowledge valid points from
-        both sides and propose a practical path forward with specific conditions.`,
-      personality: {
-        hexaco: { agreeableness: 0.9, conscientiousness: 0.8, honestyHumility: 0.9 },
-      },
-    },
-  },
-  judge: {
-    instructions: `You are a senior decision-maker. After hearing all arguments:
-      1. Summarize the strongest point from each participant
-      2. Identify where they agree and disagree
-      3. Render a final verdict with conditions and next steps
-      Format: VERDICT: [FOR/AGAINST/CONDITIONAL] followed by reasoning.`,
-  },
-});
-
-// All 3 agents run simultaneously in each round, then the judge rules
-const result = await debateClub.generate(
-  'Should AI agents have persistent long-term memory across all conversations?'
-);
-
-console.log(result.text);
-// VERDICT: CONDITIONAL — persistent memory is valuable for continuity but
-// requires user consent, decay policies, and right-to-forget mechanisms...
-
-console.log('Rounds:', result.rounds?.length);
-console.log('Agent contributions:', result.agentCalls?.length);
-```
-
----
-
-## 18. Parallel Research Agency with Provider Mixing
-
-Fan-out to multiple specialist agents running simultaneously on different LLM providers, then merge results.
-
-```typescript
-import { agency } from '@framers/agentos';
-
-const intelligenceTeam = agency({
-  strategy: 'parallel',  // all agents run simultaneously
-  agents: {
-    // Use Claude for nuanced analysis
-    marketAnalyst: {
-      model: 'anthropic:claude-sonnet-4-20250514',
-      instructions: `Analyze market positioning, pricing strategy, and competitive
-        advantages. Focus on business model sustainability.`,
-      tools: ['web_search'],
-    },
-    // Use GPT-4o for fast technical assessment
-    techReviewer: {
-      model: 'openai:gpt-4o',
-      instructions: `Evaluate the technical architecture, API design, developer
-        experience, and scalability. Compare to industry standards.`,
-      tools: ['web_search', 'github_search'],
-    },
-    // Use Groq for fast community sentiment
-    sentimentScanner: {
-      model: 'groq:llama-3.3-70b-versatile',
-      instructions: `Scan developer communities (GitHub, Twitter, HN, Reddit) for
-        sentiment, adoption trends, and common complaints. Quantify where possible.`,
-      tools: ['web_search', 'news_search'],
-    },
-  },
-  // The synthesizer receives all 3 reports and produces the final brief
-  synthesizer: {
-    model: 'anthropic:claude-sonnet-4-20250514',
-    instructions: `You receive reports from 3 specialists (market, technical, community).
-      Produce a 500-word competitive intelligence brief with:
-      - Executive summary (3 sentences)
-      - Strengths and weaknesses table
-      - Risk assessment (high/medium/low)
-      - Recommendation`,
-  },
-});
-
-// All 3 agents research in parallel, then the synthesizer merges
-const brief = await intelligenceTeam.generate('Competitive analysis of Cursor IDE');
-
-console.log(brief.text);
-console.log('Total tool calls:', brief.toolCalls?.length);
-```
+| File | Description | Key APIs |
+|------|-------------|----------|
+| [`high-level-api.mjs`](../../examples/high-level-api.mjs) | One-shot text, streaming, image generation, agent sessions | `generateText`, `streamText`, `generateImage`, `agent` |
+| [`agency-graph.mjs`](../../examples/agency-graph.mjs) | Multi-agent agency with graph strategy | `agency`, graph edges, parallel execution |
+| [`agency-streaming.mjs`](../../examples/agency-streaming.mjs) | Streaming agency output with real-time chunks | `agency`, `onChunk` callbacks |
+| [`agent-graph.mjs`](../../examples/agent-graph.mjs) | AgentGraph runtime with typed nodes and edges | `AgentGraph`, node definitions, edge routing |
+| [`agent-communication-bus.mjs`](../../examples/agent-communication-bus.mjs) | Inter-agent messaging via communication bus | `AgentCommunicationBus`, pub/sub topics |
+| [`workflow-dsl.mjs`](../../examples/workflow-dsl.mjs) | Declarative workflow definitions | `workflow`, sequential/parallel/conditional steps |
+| [`mission-api.mjs`](../../examples/mission-api.mjs) | Self-expanding mission orchestration with planner | `mission`, goal decomposition, fact-checking |
+| [`multi-agent-workflow.mjs`](../../examples/multi-agent-workflow.mjs) | Coordinated multi-agent pipeline with handoffs | Multi-agent, handoff protocol |
+| [`query-router.mjs`](../../examples/query-router.mjs) | Intent-based routing to specialized agents | `QueryRouter`, route definitions |
+| [`query-router-host-hooks.mjs`](../../examples/query-router-host-hooks.mjs) | Query router with host lifecycle hooks | `QueryRouter`, `onRoute`, `onFallback` hooks |
+| [`generate-image.mjs`](../../examples/generate-image.mjs) | Image generation across providers | `generateImage`, provider selection |
+| [`agentos-config-tools.mjs`](../../examples/agentos-config-tools.mjs) | Full AgentOS runtime with tool registration | `AgentOS`, `processRequest`, custom tools |
+| [`schema-on-demand-local-module.mjs`](../../examples/schema-on-demand-local-module.mjs) | Dynamic extension loading from local modules | `createCuratedManifest`, lazy imports |
 
 ---
 
@@ -948,6 +810,7 @@ console.log('Total tool calls:', brief.toolCalls?.length);
 - [SOCIAL_POSTING.md](/features/social-posting) — social media publishing
 - [HIGH_LEVEL_API.md](/getting-started/high-level-api) — `AgentOS`, helper wrappers, and runtime tool registration
 - [COGNITIVE_MEMORY_GUIDE.md](/features/cognitive-memory-guide) — memory system
+- [COGNITIVE_MECHANISMS.md](../memory/COGNITIVE_MECHANISMS.md) — 8 neuroscience-backed mechanisms
 - [IMAGE_GENERATION.md](/features/image-generation) — image provider setup
 - [EVALUATION.md](/features/evaluation-guide) — testing and benchmarking
 - [AGENCY_API.md](/features/agency-api) — full agency reference
