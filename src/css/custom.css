@@ -910,6 +910,44 @@ article h3 { font-size: 1.25rem; }
   display: block;
 }
 
+/* -- Mobile responsive (768px) ------------------------------------------- */
+@media (max-width: 768px) {
+  .hero-agentos { padding: 3rem 1.5rem 2.5rem; }
+  .hero-agentos__title { font-size: 2.5rem; }
+  .hero-agentos__subtitle { font-size: 0.95rem; max-width: 90vw; }
+  .hero-agentos .btn-primary,
+  .hero-agentos .btn-secondary { padding: 0.6rem 1.25rem; font-size: 0.875rem; }
+  .hero-badge img { height: 24px; }
+  article h1 { font-size: 1.75rem; }
+  article h2 { font-size: 1.35rem; }
+  article h3 { font-size: 1.1rem; }
+}
+
+/* -- Mobile responsive (480px) ------------------------------------------- */
+@media (max-width: 480px) {
+  .hero-agentos { padding: 2rem 1rem 1.5rem; }
+  .hero-agentos__title { font-size: 1.85rem; }
+  .hero-agentos__subtitle { font-size: 0.875rem; }
+  .hero-agentos .btn-primary,
+  .hero-agentos .btn-secondary { padding: 0.5rem 1rem; font-size: 0.8125rem; }
+  .hero-badges { gap: 5px; }
+  .hero-badge img { height: 22px; }
+  article h1 { font-size: 1.5rem; }
+  article h2 { font-size: 1.2rem; }
+}
+
+/* -- Code block overflow (all sizes) ------------------------------------- */
+pre, .prism-code { overflow-x: auto; max-width: 100%; }
+code { word-break: break-word; }
+
+/* -- Table responsive wrapper -------------------------------------------- */
+.markdown table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.markdown table thead,
+.markdown table tbody { min-width: 600px; }
+
+/* -- Mermaid diagrams responsive ----------------------------------------- */
+.mermaid svg { max-width: 100%; height: auto; }
+
 /* -- GitHub navbar link with icon (inline, same line) -------------------- */
 .header-github-link {
   display: flex !important;
