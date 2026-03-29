@@ -143,6 +143,7 @@ const sidebars = {
             'features/video-pipeline',
             'features/audio-generation',
             'features/provider-preferences',
+            'features/document-export',
           ],
         },
         {
