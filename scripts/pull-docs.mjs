@@ -919,6 +919,20 @@ sidebar_position: ${position}
  */
 function resolveSource(primaryPath) {
   if (existsSync(primaryPath)) return primaryPath;
+
+  // Files may have moved into subdirectories — search the parent tree for the filename
+  const fileName = basename(primaryPath);
+  const searchRoot = dirname(primaryPath);
+  if (existsSync(searchRoot)) {
+    for (const subdir of ['getting-started', 'architecture', 'features', 'memory', 'safety', 'observability', 'extensions', 'orchestration']) {
+      const candidate = resolve(searchRoot, subdir, fileName);
+      if (existsSync(candidate)) {
+        console.log(`  RESOLVED: ${fileName} → ${subdir}/${fileName}`);
+        return candidate;
+      }
+    }
+  }
+
   // Compute relative path from MONO_ROOT to find vendored copy
   if (primaryPath.startsWith(MONO_ROOT)) {
     const rel = primaryPath.slice(MONO_ROOT.length + 1);
