@@ -255,9 +255,16 @@ const config: Config = {
           label: 'Blog',
         },
         {
+          href: 'https://agentos.sh',
+          label: 'Website',
+          position: 'right',
+        },
+        {
           href: 'https://github.com/framersai/agentos',
           label: 'GitHub',
           position: 'right',
+          className: 'header-github-link',
+          'aria-label': 'GitHub repository',
         },
       ],
     },
