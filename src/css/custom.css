@@ -886,6 +886,30 @@ article h1 { font-size: 2rem; font-weight: 800; }
 article h2 { font-size: 1.5rem; margin-top: 2rem; }
 article h3 { font-size: 1.25rem; }
 
+/* -- Hero badges --------------------------------------------------------- */
+.hero-badges {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 1.25rem;
+}
+.hero-badge {
+  display: inline-flex;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  border-radius: 4px;
+  overflow: hidden;
+}
+.hero-badge:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+.hero-badge img {
+  height: 28px;
+  display: block;
+}
+
 /* -- GitHub navbar link with icon (inline, same line) -------------------- */
 .header-github-link {
   display: flex !important;

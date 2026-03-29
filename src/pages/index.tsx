@@ -33,15 +33,19 @@ function Hero() {
 
       <p className="hero-agentos__subtitle">{siteConfig.tagline}</p>
 
-      <div className="hero-badges" style={{ display: 'flex', gap: '6px', justifyContent: 'center', marginBottom: '1rem', flexWrap: 'wrap', alignItems: 'center' }}>
-        <a href="https://github.com/framersai/agentos" target="_blank" rel="noopener noreferrer">
-          <img src="https://img.shields.io/github/stars/framersai/agentos?style=flat-square&logo=github&label=stars&color=1e293b&labelColor=0f172a" alt="GitHub stars" height="22" />
+      <div className="hero-badges">
+        <a href="https://github.com/framersai/agentos" className="hero-badge" target="_blank" rel="noopener noreferrer">
+          <img src="https://img.shields.io/github/stars/framersai/agentos?style=for-the-badge&logo=github&logoColor=white&label=stars&color=6366f1&labelColor=4f46e5" alt="GitHub stars" />
         </a>
-        <a href="https://www.npmjs.com/package/@framers/agentos" target="_blank" rel="noopener noreferrer">
-          <img src="https://img.shields.io/npm/v/@framers/agentos?style=flat-square&logo=npm&label=npm&color=1e293b&labelColor=0f172a" alt="npm version" height="22" />
+        <a href="https://www.npmjs.com/package/@framers/agentos" className="hero-badge" target="_blank" rel="noopener noreferrer">
+          <img src="https://img.shields.io/npm/v/@framers/agentos?style=for-the-badge&logo=npm&logoColor=white&label=npm&color=6366f1&labelColor=4f46e5" alt="npm version" />
         </a>
-        <img src="https://img.shields.io/badge/TypeScript-5.4+-1e293b?style=flat-square&logo=typescript&labelColor=0f172a" alt="TypeScript" height="22" />
-        <img src="https://img.shields.io/badge/license-Apache_2.0-1e293b?style=flat-square&labelColor=0f172a" alt="License" height="22" />
+        <span className="hero-badge">
+          <img src="https://img.shields.io/badge/TypeScript-5.4+-6366f1?style=for-the-badge&logo=typescript&logoColor=white&labelColor=4f46e5" alt="TypeScript" />
+        </span>
+        <span className="hero-badge">
+          <img src="https://img.shields.io/badge/license-Apache_2.0-6366f1?style=for-the-badge&labelColor=4f46e5" alt="License" />
+        </span>
       </div>
 
       <div className="hero-buttons">
