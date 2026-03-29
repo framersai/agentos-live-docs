@@ -17,12 +17,62 @@ Modular orchestration runtime for AI agent systems.
 npm install @framers/agentos
 ```
 
+## Architecture
+
+```mermaid
+graph TB
+    subgraph "Public API"
+        API["generateText() · streamText() · generateImage()<br/>agent() · agency() · mission()"]
+    end
+
+    subgraph "Orchestration"
+        ORC["mission() → workflow() → AgentGraph<br/>All compile to one IR · checkpointing · streaming"]
+    end
+
+    subgraph "Intelligence"
+        GMI["GMI — 21 LLM Providers<br/>tool calling · persona overlay"]
+        GUARD["Guardrails — 5 tiers<br/>PreLLM + DualLLM + signed audit"]
+        TOOLS["Tool Orchestrator<br/>lazy loading · emergent forging"]
+    end
+
+    subgraph "Memory"
+        COG["Cognitive Memory — 8 mechanisms<br/>HEXACO modulation · Ebbinghaus decay"]
+        RAG["RAG — HyDE · RAPTOR · GraphRAG<br/>BM25 · vector · hybrid"]
+    end
+
+    subgraph "Perception"
+        VOICE["Voice — 27 providers<br/>STT · TTS · VAD · barge-in"]
+        MEDIA["Media — images · video · music · SFX<br/>vision · document export"]
+    end
+
+    subgraph "Channels — 37 platforms"
+        CHAN["Discord · Telegram · Slack · Twitter<br/>LinkedIn · WhatsApp · +31 more"]
+    end
+
+    API --> ORC --> GMI
+    GMI --> GUARD
+    GMI --> TOOLS
+    GMI --> COG
+    GMI --> RAG
+    VOICE --> GMI
+    MEDIA --> GMI
+    CHAN --> API
+
+    style API fill:#00f5ff,stroke:#00f5ff,color:#0a0a14
+    style ORC fill:#c9a227,stroke:#c9a227,color:#0a0a14
+    style GMI fill:#10ffb0,stroke:#10ffb0,color:#0a0a14
+    style GUARD fill:#ff4444,stroke:#ff4444,color:#fff
+    style COG fill:#8b5cf6,stroke:#8b5cf6,color:#fff
+    style RAG fill:#4facfe,stroke:#4facfe,color:#0a0a14
+    style VOICE fill:#e040fb,stroke:#e040fb,color:#0a0a14
+```
+
 ## Quick Navigation
 
 ### Start Here
 
 - [High-Level API](/getting-started/high-level-api) — `generateText()`, `streamText()`, `generateImage()`, and `agent()`
-- [Documentation Index](/getting-started/documentation-index) — Installation, architecture, and core guides
+- [Examples Cookbook](/getting-started/examples) — 18 runnable examples (agents, agencies, voice, orchestration)
 - [TypeDoc API](/api/) — Generated API reference for the full runtime
 
 ### Getting Started
