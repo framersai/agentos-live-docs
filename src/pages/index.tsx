@@ -33,6 +33,16 @@ function Hero() {
 
       <p className="hero-agentos__subtitle">{siteConfig.tagline}</p>
 
+      <div className="hero-badges" style={{ display: 'flex', gap: '8px', justifyContent: 'center', marginBottom: '1rem', flexWrap: 'wrap' }}>
+        <a href="https://github.com/framersai/agentos" target="_blank" rel="noopener noreferrer">
+          <img src="https://img.shields.io/github/stars/framersai/agentos?style=social" alt="GitHub stars" />
+        </a>
+        <a href="https://www.npmjs.com/package/@framers/agentos" target="_blank" rel="noopener noreferrer">
+          <img src="https://img.shields.io/npm/v/@framers/agentos?style=flat-square&logo=npm&label=npm" alt="npm version" />
+        </a>
+        <img src="https://img.shields.io/badge/license-Apache_2.0-blue?style=flat-square" alt="License" />
+      </div>
+
       <div className="hero-buttons">
         <Link className="btn-primary" to="/getting-started">
           Get Started
