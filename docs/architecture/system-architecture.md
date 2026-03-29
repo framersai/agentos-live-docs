@@ -9,8 +9,8 @@ sidebar_position: 1
 
 ### Source Directory Layout
 
-After the hierarchy restructuring, the `src/` tree is organized into 26 domain-specific
-top-level modules. Only foundational infrastructure remains under `core/`.
+The `src/` tree is organized into 26 domain-specific
+top-level modules. Only foundational infrastructure lives under `core/`.
 
 #### Perception model
 
@@ -19,26 +19,25 @@ the biological perception analogy: **vision/** (seeing -- OCR, scene detection, 
 analysis), **hearing/** (listening -- STT providers, VAD, silence detection), and
 **speech/** (speaking -- TTS providers, resolver, session). This clean separation
 allows each perception channel to evolve independently, with shared media generation
-(images, video, music, SFX) remaining under **media/**.
+(images, video, music, SFX) housed under **media/**.
 
-#### God-object decompositions
+#### Core Subsystems
 
-Three former monolithic classes were decomposed during the restructuring:
+Three primary subsystems are decomposed into focused collaborators:
 
-- **GMI** now delegates focused responsibilities to `ConversationHistoryManager`
+- **GMI** delegates focused responsibilities to `ConversationHistoryManager`
   (history trimming + formatting), `CognitiveMemoryBridge` (PAD/memory context),
   `SentimentTracker` (mood/affect), and `MetapromptExecutor` (dynamic prompt
-  rewriting). Persona layering remains in `PersonaOverlayManager` under
+  rewriting). Persona layering lives in `PersonaOverlayManager` under
   `cognitive_substrate/persona_overlays/`.
 
-- **AgentOS** remains the public lifecycle facade, but substantial setup and
-  runtime concerns were extracted into `WorkflowFacade`,
-  `CapabilityDiscoveryInitializer`, `SelfImprovementSessionManager`, and
-  `RagMemoryInitializer` under `api/runtime/`. High-level helpers like
-  `generateText`, `streamText`, `agent`, `agency`, and media APIs still live
-  under `api/`.
+- **AgentOS** is the public lifecycle facade. Setup and runtime concerns are
+  handled by `WorkflowFacade`, `CapabilityDiscoveryInitializer`,
+  `SelfImprovementSessionManager`, and `RagMemoryInitializer` under
+  `api/runtime/`. High-level helpers (`generateText`, `streamText`, `agent`,
+  `agency`, media APIs) live under `api/`.
 
-- **AgentOSOrchestrator** remains the request coordinator while delegating major
+- **AgentOSOrchestrator** is the request coordinator, delegating major
   hot-path responsibilities to `TurnExecutionPipeline` (pre-LLM turn
   preparation), `GMIChunkTransformer` (stream chunk mapping), and
   `ExternalToolResultHandler` (tool-result continuation and resume flow). All
