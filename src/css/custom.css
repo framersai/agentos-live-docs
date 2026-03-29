@@ -780,17 +780,20 @@ th { font-weight: 600; }
 [data-theme='dark'] ::-webkit-scrollbar-thumb { background: rgba(99, 102, 241, 0.2); border-radius: 3px; }
 [data-theme='dark'] ::-webkit-scrollbar-thumb:hover { background: rgba(99, 102, 241, 0.35); }
 
+/* -- Prevent horizontal scroll on mobile --------------------------------- */
+html, body { overflow-x: hidden; }
+
 /* -- Mobile navbar -------------------------------------------------------- */
-/* Keep Docusaurus default layout — only hide desktop links and compact search.
-   Do NOT reposition the hamburger — Docusaurus needs it in normal flow. */
 @media (max-width: 996px) {
-  .navbar__items--right > .navbar__item.navbar__link {
-    display: none !important;
+  /* Hide right-side links in the TOP BAR only — they still appear in the
+     sidebar drawer which Docusaurus manages automatically. */
+  .navbar > .navbar__inner > .navbar__items--right > .navbar__link {
+    display: none;
   }
 
   .navbar__search input,
   [class*="searchBarContainer"] input {
-    width: 120px !important;
+    width: 100px !important;
     font-size: 0.8125rem;
     padding: 0.3rem 0.5rem;
   }
@@ -799,6 +802,12 @@ th { font-weight: 600; }
   [class*="searchResultsColumn"] {
     max-width: 95vw !important;
   }
+}
+
+/* -- Ensure sidebar drawer links are VISIBLE ----------------------------- */
+.navbar-sidebar .navbar__link,
+.navbar-sidebar .menu__link {
+  display: flex !important;
 }
 
 /* -- Mobile navbar / sidebar ---------------------------------------------- */
