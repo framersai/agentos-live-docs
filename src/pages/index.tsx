@@ -6,76 +6,6 @@ import CodeBlock from '@theme/CodeBlock';
 import Mermaid from '@theme/Mermaid';
 
 /* ------------------------------------------------------------------ */
-/*  Badges                                                             */
-/* ------------------------------------------------------------------ */
-
-function Badges() {
-  const s = 'for-the-badge';
-  const bg = '08070e';
-
-  const badges: { href: string; src: string; alt: string }[] = [
-    {
-      href: 'https://www.npmjs.com/package/@framers/agentos',
-      src: `https://img.shields.io/npm/v/@framers/agentos?style=${s}&logo=npm&logoColor=white&label=npm&color=6366f1&labelColor=${bg}`,
-      alt: 'npm version',
-    },
-    {
-      href: 'https://codecov.io/gh/framersai/agentos',
-      src: `https://img.shields.io/codecov/c/github/framersai/agentos?style=${s}&logo=codecov&logoColor=white&label=coverage&color=22c55e&labelColor=${bg}`,
-      alt: 'Test Coverage',
-    },
-    {
-      href: 'https://github.com/framersai/agentos/stargazers',
-      src: `https://img.shields.io/github/stars/framersai/agentos?style=${s}&logo=github&logoColor=white&label=stars&color=8b5cf6&labelColor=${bg}`,
-      alt: 'GitHub Stars',
-    },
-    {
-      href: 'https://github.com/framersai/agentos/network/members',
-      src: `https://img.shields.io/github/forks/framersai/agentos?style=${s}&logo=github&logoColor=white&label=forks&color=6e7681&labelColor=${bg}`,
-      alt: 'GitHub Forks',
-    },
-  ];
-
-  return (
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        gap: '0.5rem',
-        margin: '1.25rem 0',
-      }}
-    >
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          flexWrap: 'wrap',
-          gap: '0.625rem',
-        }}
-      >
-        {badges.map((b) => (
-          <a
-            key={b.alt}
-            href={b.href}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              transition: 'opacity 0.2s ease, transform 0.2s ease',
-            }}
-          >
-            <img src={b.src} alt={b.alt} style={{ height: '28px' }} />
-          </a>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-/* ------------------------------------------------------------------ */
 /*  Hero                                                               */
 /* ------------------------------------------------------------------ */
 
@@ -102,8 +32,6 @@ function Hero() {
       </h1>
 
       <p className="hero-agentos__subtitle">{siteConfig.tagline}</p>
-
-      <Badges />
 
       <div className="hero-buttons">
         <Link className="btn-primary" to="/getting-started">
