@@ -1051,16 +1051,53 @@ article img {
   .header-github-link {
     font-size: 0 !important;
     gap: 0;
-    padding: 0.5rem !important;
+    padding: 0.4rem !important;
   }
   .header-github-link::before {
-    width: 24px !important;
-    height: 24px !important;
+    width: 22px !important;
+    height: 22px !important;
   }
   /* Hide the external link icon Docusaurus adds */
-  .header-github-link svg {
+  .header-github-link svg,
+  .header-github-link .iconExternalLink_node_modules,
+  .header-github-link [class*="iconExternalLink"] {
     display: none !important;
   }
+
+  /* Hide "Website" link on mobile — it's in the sidebar drawer already */
+  .navbar__items--right .navbar__link:not(.header-github-link) {
+    display: none !important;
+  }
+
+  /* Shrink search bar on mobile so it doesn't push GitHub off-screen */
+  .navbar__search {
+    max-width: 140px;
+  }
+  .navbar__search-input {
+    width: 100% !important;
+    padding: 0.3rem 0.5rem !important;
+    font-size: 0.8rem !important;
+  }
+
+  /* Prevent navbar items from overflowing */
+  .navbar__items--right {
+    gap: 0.25rem !important;
+    flex-shrink: 0;
+    overflow: hidden;
+  }
+  .navbar {
+    overflow: hidden !important;
+  }
+}
+
+/* Inside mobile sidebar drawer — ensure GitHub and links fit properly */
+.navbar-sidebar .header-github-link {
+  font-size: 0.9rem !important;
+  gap: 6px;
+}
+.navbar-sidebar .header-github-link::before {
+  width: 20px !important;
+  height: 20px !important;
 }
 .header-github-link::before {
   content: '';
