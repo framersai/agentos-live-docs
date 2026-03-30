@@ -393,49 +393,19 @@ const architectureMermaid = `flowchart TD
     style IO_LAYER fill:#0f172a,stroke:#8b5cf6,stroke-width:2px,color:#e9d5ff`;
 
 function ArchitectureDiagram() {
-  const [zoomed, setZoomed] = React.useState(false);
-  const diagramContent = (
-    <div style={{ overflow: 'auto', cursor: zoomed ? 'zoom-out' : 'zoom-in' }} onClick={() => setZoomed(!zoomed)}>
-      <Mermaid value={architectureMermaid} />
-    </div>
-  );
-
   return (
-    <>
-      <section style={{ padding: '3rem 2rem 1rem', maxWidth: '960px', margin: '0 auto' }}>
-        <h2 style={{ textAlign: 'center', marginBottom: '0.5rem' }}>System Architecture</h2>
-        <p style={{ textAlign: 'center', fontSize: '0.85rem', opacity: 0.6, marginBottom: '1rem' }}>Click diagram to expand. 8 subsystems, 21 providers, 107 extensions.</p>
-        {!zoomed && diagramContent}
-        <p style={{ textAlign: 'center', marginTop: '0.75rem' }}>
-          <Link to="/architecture/system-architecture" style={{ fontSize: '0.9rem' }}>
-            Full architecture guide &rarr;
-          </Link>
-        </p>
-      </section>
-
-      {zoomed && (
-        <div
-          onClick={() => setZoomed(false)}
-          style={{
-            position: 'fixed', inset: 0, zIndex: 9999,
-            background: 'rgba(0,0,0,0.85)', backdropFilter: 'blur(4px)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            padding: '2rem', cursor: 'zoom-out',
-          }}
-        >
-          <div style={{ maxWidth: '1400px', width: '100%', maxHeight: '90vh', overflow: 'auto', background: 'var(--ifm-background-color)', borderRadius: '12px', padding: '2rem' }}
-               onClick={(e) => e.stopPropagation()}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-              <h3 style={{ margin: 0 }}>System Architecture</h3>
-              <button onClick={() => setZoomed(false)} style={{ background: 'none', border: '1px solid var(--ifm-color-emphasis-300)', borderRadius: '6px', padding: '0.25rem 0.75rem', cursor: 'pointer', color: 'var(--ifm-font-color-base)', fontSize: '0.85rem' }}>
-                Close &times;
-              </button>
-            </div>
-            <Mermaid value={architectureMermaid} />
-          </div>
-        </div>
-      )}
-    </>
+    <section style={{ padding: '3rem 2rem 1rem', maxWidth: '960px', margin: '0 auto' }}>
+      <h2 style={{ textAlign: 'center', marginBottom: '0.5rem' }}>System Architecture</h2>
+      <p style={{ textAlign: 'center', fontSize: '0.85rem', opacity: 0.6, marginBottom: '1rem' }}>Click diagram to expand. 8 subsystems, 16 providers, 107 extensions.</p>
+      <div style={{ overflow: 'auto' }}>
+        <Mermaid value={architectureMermaid} />
+      </div>
+      <p style={{ textAlign: 'center', marginTop: '0.75rem' }}>
+        <Link to="/architecture/system-architecture" style={{ fontSize: '0.9rem' }}>
+          Full architecture guide &rarr;
+        </Link>
+      </p>
+    </section>
   );
 }
 
