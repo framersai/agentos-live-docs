@@ -19,11 +19,16 @@ const sidebars = {
       type: 'category',
       label: 'Getting Started',
       collapsed: false,
+      link: {
+        type: 'doc',
+        id: 'getting-started/index',
+      },
       items: [
         'getting-started/high-level-api',
         'getting-started/examples',
         'getting-started/ecosystem',
         'getting-started/releasing',
+        'getting-started/changelog',
       ],
     },
 
