@@ -1043,6 +1043,24 @@ article img {
   display: flex !important;
   align-items: center;
   gap: 6px;
+  white-space: nowrap;
+}
+
+/* On mobile: show only icon, hide text and external-link arrow */
+@media (max-width: 996px) {
+  .header-github-link {
+    font-size: 0 !important;
+    gap: 0;
+    padding: 0.5rem !important;
+  }
+  .header-github-link::before {
+    width: 24px !important;
+    height: 24px !important;
+  }
+  /* Hide the external link icon Docusaurus adds */
+  .header-github-link svg {
+    display: none !important;
+  }
 }
 .header-github-link::before {
   content: '';
