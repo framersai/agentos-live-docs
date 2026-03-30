@@ -307,41 +307,135 @@ function QuickStartTabs() {
 /* ------------------------------------------------------------------ */
 
 const architectureMermaid = `flowchart TD
-    API["<b>High-Level API</b><br/>generateText \u00B7 streamText \u00B7 generateImage \u00B7 agent()"]
-    API --> GMI["<b>Cognitive Substrate</b> \u2014 GMI<br/>Persona \u00B7 HEXACO \u00B7 Working Memory \u00B7 ReAct Loop"]
-    GMI --> MEM["<b>Memory</b><br/>Cognitive + GraphRAG + Ebbinghaus Decay"]
-    GMI --> TOOLS["<b>Tools</b><br/>50+ Built-in \u00B7 Semantic Discovery \u00B7 Emergent Forge"]
-    GMI --> GUARD["<b>Guardrails</b><br/>5-Tier Pipeline \u00B7 PII \u00B7 ML Classifiers \u00B7 Grounding"]
-    TOOLS --> GRAPH["<b>Graph Runtime</b><br/>AgentGraph \u00B7 workflow() \u00B7 mission() \u00B7 Checkpoints"]
-    GRAPH --> MEDIA["<b>Media Pipeline</b><br/>Video (3 Providers) \u00B7 Audio (8 Providers) \u00B7 Images"]
-    GRAPH --> VOICE["<b>Voice Pipeline</b><br/>27 STT/TTS Providers \u00B7 VAD \u00B7 Barge-in"]
-    GRAPH --> CHAN["<b>Channels</b><br/>37 Platform Adapters"]
-    GRAPH --> LLM["<b>LLM Providers</b><br/>21 Providers \u00B7 Auto-fallback \u00B7 Local (Ollama)"]
+    subgraph API_LAYER["API Layer"]
+        direction LR
+        GT["generateText()"]
+        ST["streamText()"]
+        GO["generateObject()"]
+        GI["generateImage()"]
+        AG["agent()"]
+        AGY["agency()"]
+    end
 
-    style API fill:#1e1b4b,stroke:#818cf8,stroke-width:2px,color:#e0e7ff
-    style GMI fill:#1e1b4b,stroke:#00f5ff,stroke-width:2px,color:#e0e7ff
-    style MEM fill:#0f172a,stroke:#22c55e,color:#e0e7ff
-    style TOOLS fill:#0f172a,stroke:#22c55e,color:#e0e7ff
-    style GUARD fill:#0f172a,stroke:#ef4444,color:#e0e7ff
-    style GRAPH fill:#1e1b4b,stroke:#f59e0b,stroke-width:2px,color:#e0e7ff
-    style MEDIA fill:#0f172a,stroke:#8b5cf6,color:#e0e7ff
-    style VOICE fill:#0f172a,stroke:#8b5cf6,color:#e0e7ff
-    style CHAN fill:#0f172a,stroke:#8b5cf6,color:#e0e7ff
-    style LLM fill:#0f172a,stroke:#8b5cf6,color:#e0e7ff`;
+    subgraph GMI_LAYER["Cognitive Substrate"]
+        GMI["GMI Instance"]
+        CONV["ConversationHistoryManager"]
+        SENT["SentimentTracker"]
+        META["MetapromptExecutor"]
+        PERSONA["PersonaOverlayManager<br/>HEXACO 6-Factor Personality"]
+    end
+
+    subgraph MEMORY_LAYER["Memory System"]
+        WM["Working Memory"]
+        EPIS["Episodic Memory<br/>Ebbinghaus Decay"]
+        SEM["Semantic Memory<br/>GraphRAG + Louvain"]
+        OBS["Observational Memory<br/>3-10x LLM Compression"]
+        MECH["8 Cognitive Mechanisms<br/>Reconsolidation \u00B7 RIF \u00B7 FOK \u00B7 Gist"]
+    end
+
+    subgraph RAG_LAYER["RAG Pipeline"]
+        INGEST["10 Document Loaders"]
+        CHUNK["4 Chunking Strategies"]
+        EMBED["Embedding Providers"]
+        VECTOR["7 Vector Backends<br/>SQLite \u00B7 HNSW \u00B7 Postgres \u00B7 Qdrant \u00B7 Pinecone \u00B7 Neo4j"]
+        RETRIEVE["Retrieval: Semantic \u00B7 HyDE \u00B7 GraphRAG \u00B7 Hybrid"]
+        RERANK["Cross-Encoder Reranking"]
+    end
+
+    subgraph SAFETY_LAYER["Safety & Guardrails"]
+        TIERS["5 Security Tiers<br/>dangerous \u2192 paranoid"]
+        PII["PII Redaction<br/>4-tier: Regex+NLP+NER+LLM"]
+        ML["ML Classifiers<br/>ONNX BERT: Toxicity \u00B7 Injection"]
+        GROUND["Grounding Guard<br/>NLI Hallucination Detection"]
+        CODE["Code Safety<br/>OWASP Top 10"]
+    end
+
+    subgraph TOOLS_LAYER["Tools & Extensions"]
+        ORCH["ToolOrchestrator"]
+        EXT["107 Extensions"]
+        SKILLS["72 Curated Skills"]
+        DISC["Capability Discovery<br/>3-Tier Semantic Search"]
+        FORGE["Emergent Tool Forge<br/>Runtime Tool Creation"]
+    end
+
+    subgraph EXEC_LAYER["Orchestration"]
+        WF["workflow() DSL"]
+        MISS["mission() Planner<br/>Tree of Thought"]
+        AGRAPH["AgentGraph<br/>Programmatic DAGs"]
+        HITL["Human-in-the-Loop<br/>CLI \u00B7 Webhook \u00B7 Slack"]
+        CKPT["Checkpoint / Resume"]
+    end
+
+    subgraph IO_LAYER["I/O Layer"]
+        VOICE["Voice Pipeline<br/>12 STT + 12 TTS Providers"]
+        CHAN["37 Channel Adapters<br/>Discord \u00B7 Slack \u00B7 Telegram \u00B7 Twitter"]
+        MEDIA["Media Generation<br/>Images \u00B7 Video \u00B7 Music \u00B7 SFX"]
+        LLM["21 LLM Providers<br/>Auto-Fallback Chains"]
+    end
+
+    API_LAYER ==> GMI_LAYER
+    GMI_LAYER ==> MEMORY_LAYER
+    GMI_LAYER ==> SAFETY_LAYER
+    GMI_LAYER ==> TOOLS_LAYER
+    TOOLS_LAYER ==> EXEC_LAYER
+    EXEC_LAYER ==> IO_LAYER
+    MEMORY_LAYER -.-> RAG_LAYER
+
+    INGEST --> CHUNK --> EMBED --> VECTOR --> RETRIEVE --> RERANK
+
+    style API_LAYER fill:#1e1b4b,stroke:#818cf8,stroke-width:2px,color:#c7d2fe
+    style GMI_LAYER fill:#1a1a2e,stroke:#06b6d4,stroke-width:2px,color:#cffafe
+    style MEMORY_LAYER fill:#0f172a,stroke:#22c55e,stroke-width:2px,color:#dcfce7
+    style RAG_LAYER fill:#0f172a,stroke:#14b8a6,stroke-width:2px,color:#ccfbf1
+    style SAFETY_LAYER fill:#1a0a0a,stroke:#ef4444,stroke-width:2px,color:#fecaca
+    style TOOLS_LAYER fill:#0f172a,stroke:#f59e0b,stroke-width:2px,color:#fef3c7
+    style EXEC_LAYER fill:#1e1b4b,stroke:#a78bfa,stroke-width:2px,color:#ede9fe
+    style IO_LAYER fill:#0f172a,stroke:#8b5cf6,stroke-width:2px,color:#e9d5ff`;
 
 function ArchitectureDiagram() {
+  const [zoomed, setZoomed] = React.useState(false);
+  const diagramContent = (
+    <div style={{ overflow: 'auto', cursor: zoomed ? 'zoom-out' : 'zoom-in' }} onClick={() => setZoomed(!zoomed)}>
+      <Mermaid value={architectureMermaid} />
+    </div>
+  );
+
   return (
-    <section style={{ padding: '3rem 2rem 1rem', maxWidth: '960px', margin: '0 auto' }}>
-      <h2 style={{ textAlign: 'center', marginBottom: '1rem' }}>System Architecture</h2>
-      <div style={{ overflow: 'auto' }}>
-        <Mermaid value={architectureMermaid} />
-      </div>
-      <p style={{ textAlign: 'center', marginTop: '0.75rem' }}>
-        <Link to="/architecture/system-architecture" style={{ fontSize: '0.9rem' }}>
-          Full architecture guide &rarr;
-        </Link>
-      </p>
-    </section>
+    <>
+      <section style={{ padding: '3rem 2rem 1rem', maxWidth: '960px', margin: '0 auto' }}>
+        <h2 style={{ textAlign: 'center', marginBottom: '0.5rem' }}>System Architecture</h2>
+        <p style={{ textAlign: 'center', fontSize: '0.85rem', opacity: 0.6, marginBottom: '1rem' }}>Click diagram to expand. 8 subsystems, 21 providers, 107 extensions.</p>
+        {!zoomed && diagramContent}
+        <p style={{ textAlign: 'center', marginTop: '0.75rem' }}>
+          <Link to="/architecture/system-architecture" style={{ fontSize: '0.9rem' }}>
+            Full architecture guide &rarr;
+          </Link>
+        </p>
+      </section>
+
+      {zoomed && (
+        <div
+          onClick={() => setZoomed(false)}
+          style={{
+            position: 'fixed', inset: 0, zIndex: 9999,
+            background: 'rgba(0,0,0,0.85)', backdropFilter: 'blur(4px)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            padding: '2rem', cursor: 'zoom-out',
+          }}
+        >
+          <div style={{ maxWidth: '1400px', width: '100%', maxHeight: '90vh', overflow: 'auto', background: 'var(--ifm-background-color)', borderRadius: '12px', padding: '2rem' }}
+               onClick={(e) => e.stopPropagation()}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+              <h3 style={{ margin: 0 }}>System Architecture</h3>
+              <button onClick={() => setZoomed(false)} style={{ background: 'none', border: '1px solid var(--ifm-color-emphasis-300)', borderRadius: '6px', padding: '0.25rem 0.75rem', cursor: 'pointer', color: 'var(--ifm-font-color-base)', fontSize: '0.85rem' }}>
+                Close &times;
+              </button>
+            </div>
+            <Mermaid value={architectureMermaid} />
+          </div>
+        </div>
+      )}
+    </>
   );
 }
 
