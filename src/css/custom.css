@@ -883,9 +883,33 @@ html, body { overflow-x: hidden; }
 [data-theme='light'] .navbar-sidebar__backdrop { background-color: rgba(0, 0, 0, 0.3); }
 [data-theme='light'] .navbar__toggle { color: #1e293b; }
 
-/* Ensure sidebar appears above content */
+/* Ensure sidebar appears above content with solid backdrop */
 .navbar-sidebar { z-index: 100 !important; }
-.navbar-sidebar__backdrop { z-index: 99 !important; }
+.navbar-sidebar__backdrop {
+  z-index: 99 !important;
+  background-color: rgba(0, 0, 0, 0.85) !important;
+  backdrop-filter: blur(4px);
+}
+
+/* Lock body scroll when mobile sidebar is open */
+.navbar-sidebar--show {
+  overflow: hidden !important;
+}
+html:has(.navbar-sidebar--show) {
+  overflow: hidden !important;
+}
+
+/* Ensure mobile sidebar has solid background, not transparent */
+.navbar-sidebar {
+  background-color: var(--ifm-background-color) !important;
+}
+
+/* Mobile sidebar: full-width items with proper spacing */
+.navbar-sidebar .menu__link,
+.navbar-sidebar .navbar__link {
+  padding: 0.75rem 1.25rem !important;
+  font-size: 0.95rem;
+}
 
 /* -- Smooth scrolling ----------------------------------------------------- */
 html { scroll-behavior: smooth; }
