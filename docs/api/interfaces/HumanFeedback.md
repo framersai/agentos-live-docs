@@ -1,0 +1,95 @@
+# Interface: HumanFeedback
+
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:322](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/hitl/IHumanInteractionManager.ts#L322)
+
+Human feedback on agent performance.
+
+## Properties
+
+### agentId
+
+> **agentId**: `string`
+
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:326](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/hitl/IHumanInteractionManager.ts#L326)
+
+Agent receiving feedback
+
+***
+
+### aspect
+
+> **aspect**: `"accuracy"` \| `"style"` \| `"communication"` \| `"other"` \| `"speed"` \| `"judgment"`
+
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:330](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/hitl/IHumanInteractionManager.ts#L330)
+
+Specific aspect being addressed
+
+***
+
+### content
+
+> **content**: `string`
+
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:332](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/hitl/IHumanInteractionManager.ts#L332)
+
+Detailed feedback
+
+***
+
+### context?
+
+> `optional` **context**: `Record`\<`string`, `unknown`\>
+
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:336](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/hitl/IHumanInteractionManager.ts#L336)
+
+Context of the feedback
+
+***
+
+### feedbackId
+
+> **feedbackId**: `string`
+
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:324](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/hitl/IHumanInteractionManager.ts#L324)
+
+Feedback identifier
+
+***
+
+### feedbackType
+
+> **feedbackType**: `"preference"` \| `"correction"` \| `"praise"` \| `"guidance"` \| `"complaint"`
+
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:328](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/hitl/IHumanInteractionManager.ts#L328)
+
+Type of feedback
+
+***
+
+### importance
+
+> **importance**: `number`
+
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:334](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/hitl/IHumanInteractionManager.ts#L334)
+
+Severity/importance (1-5)
+
+***
+
+### providedAt
+
+> **providedAt**: `Date`
+
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:340](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/hitl/IHumanInteractionManager.ts#L340)
+
+Timestamp
+
+***
+
+### providedBy
+
+> **providedBy**: `string`
+
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:338](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/hitl/IHumanInteractionManager.ts#L338)
+
+Who provided feedback

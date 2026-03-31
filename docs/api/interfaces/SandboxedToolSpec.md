@@ -1,0 +1,53 @@
+# Interface: SandboxedToolSpec
+
+Defined in: [packages/agentos/src/emergent/types.ts:134](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/emergent/types.ts#L134)
+
+Implementation specification for a tool whose logic is arbitrary code
+executed in a memory/time-bounded sandbox.
+
+The sandboxed function signature must be:
+```ts
+async function run(input: unknown): Promise<unknown>
+```
+The engine calls `run(input)` and returns its resolved value as the tool output.
+
+## Properties
+
+### allowlist
+
+> **allowlist**: [`SandboxAPI`](../type-aliases/SandboxAPI.md)[]
+
+Defined in: [packages/agentos/src/emergent/types.ts:156](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/emergent/types.ts#L156)
+
+Explicit allowlist of sandbox APIs the code may invoke.
+Any call to an API not in this list will throw at runtime.
+
+***
+
+### code
+
+> **code**: `string`
+
+Defined in: [packages/agentos/src/emergent/types.ts:150](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/emergent/types.ts#L150)
+
+The full source code of the sandboxed module.
+Must export or define an async `run` function as its entry point.
+
+#### Example
+
+```ts
+async function run(input) {
+  const res = await fetch(`https://api.example.com?q=${input.query}`);
+  return res.json();
+}
+```
+
+***
+
+### mode
+
+> **mode**: `"sandbox"`
+
+Defined in: [packages/agentos/src/emergent/types.ts:136](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/emergent/types.ts#L136)
+
+Discriminant: always `'sandbox'` for sandboxed specs.

@@ -1,0 +1,77 @@
+# Class: ConsolidationPipeline
+
+Defined in: [packages/agentos/src/memory/pipeline/consolidation/ConsolidationPipeline.ts:78](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/pipeline/consolidation/ConsolidationPipeline.ts#L78)
+
+## Constructors
+
+### Constructor
+
+> **new ConsolidationPipeline**(`config`): `ConsolidationPipeline`
+
+Defined in: [packages/agentos/src/memory/pipeline/consolidation/ConsolidationPipeline.ts:85](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/pipeline/consolidation/ConsolidationPipeline.ts#L85)
+
+#### Parameters
+
+##### config
+
+[`ConsolidationPipelineConfig`](../interfaces/ConsolidationPipelineConfig.md)
+
+#### Returns
+
+`ConsolidationPipeline`
+
+## Methods
+
+### getLastRunAt()
+
+> **getLastRunAt**(): `number`
+
+Defined in: [packages/agentos/src/memory/pipeline/consolidation/ConsolidationPipeline.ts:172](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/pipeline/consolidation/ConsolidationPipeline.ts#L172)
+
+Get timestamp of last consolidation run.
+
+#### Returns
+
+`number`
+
+***
+
+### run()
+
+> **run**(): `Promise`\<[`ConsolidationResult`](../interfaces/ConsolidationResult.md)\>
+
+Defined in: [packages/agentos/src/memory/pipeline/consolidation/ConsolidationPipeline.ts:118](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/pipeline/consolidation/ConsolidationPipeline.ts#L118)
+
+Run a single consolidation cycle.
+
+#### Returns
+
+`Promise`\<[`ConsolidationResult`](../interfaces/ConsolidationResult.md)\>
+
+***
+
+### start()
+
+> **start**(): `void`
+
+Defined in: [packages/agentos/src/memory/pipeline/consolidation/ConsolidationPipeline.ts:97](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/pipeline/consolidation/ConsolidationPipeline.ts#L97)
+
+Start the periodic consolidation timer.
+
+#### Returns
+
+`void`
+
+***
+
+### stop()
+
+> **stop**(): `void`
+
+Defined in: [packages/agentos/src/memory/pipeline/consolidation/ConsolidationPipeline.ts:108](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/pipeline/consolidation/ConsolidationPipeline.ts#L108)
+
+Stop the periodic consolidation timer.
+
+#### Returns
+
+`void`

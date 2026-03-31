@@ -1,0 +1,90 @@
+---
+sidebar_position: 42
+---
+
+# Reranker Chain
+
+Configurable multi-stage reranking pipeline for search results and RAG retrieval.
+
+## Overview
+
+AgentOS supports chaining multiple reranking providers into a sequential pipeline. Each stage narrows the result set, producing progressively higher-quality rankings at each step.
+
+```
+120 search results
+  → Stage 1: Local Cross-Encoder (120 → 30)    [~300ms, free]
+  → Stage 2: Cohere Rerank (30 → 15)            [~100ms, ~$0.001]
+  → Stage 3: LLM Judge (15 → 5)                 [~2s, ~$0.002]
+  → 5 high-confidence results
+```
+
+## Configuration
+
+```json title="agent.config.json"
+{
+  "rag": {
+    "reranking": {
+      "chain": [
+        { "provider": "local", "topK": 30, "model": "cross-encoder/ms-marco-MiniLM-L-6-v2" },
+        { "provider": "cohere", "topK": 15, "model": "rerank-v4.0-fast" },
+        { "provider": "llm-judge", "topK": 5 }
+      ]
+    }
+  }
+}
+```
+
+## Available Providers
+
+### Local Cross-Encoder (free, offline)
+
+Uses ONNX-based transformer models that auto-download on first use (~80-560MB).
+
+| Model | Size | Speed (50 docs) | Quality |
+|-------|------|-----------------|---------|
+| `cross-encoder/ms-marco-MiniLM-L-6-v2` | 80MB | ~200ms | Good |
+| `cross-encoder/ms-marco-MiniLM-L-12-v2` | 120MB | ~400ms | Better |
+| `BAAI/bge-reranker-base` | 110MB | ~300ms | Good |
+| `BAAI/bge-reranker-large` | 560MB | ~800ms | Best |
+
+### Cohere Rerank (cloud API)
+
+Requires `COHERE_API_KEY`. Models: `rerank-v4.0-pro`, `rerank-v4.0-fast`, `rerank-v3.5`.
+
+### LLM-as-Judge (two-phase)
+
+Uses your agent's LLM for relevance scoring:
+
+1. **Phase 1 — Batch pointwise**: Cheap model scores documents in batches of 10 (0-10 scale)
+2. **Phase 2 — Listwise ranking**: Better model ranks the top candidates
+
+Cost: ~$0.002 per rerank with gpt-4o-mini.
+
+## Default Chains by Research Depth
+
+| Depth | Default Chain |
+|-------|--------------|
+| `quick` | `[{ provider: "local", topK: 5 }]` |
+| `moderate` | `[{ provider: "local", topK: 15 }, { provider: "cohere", topK: 5 }]` |
+| `deep` | `[{ provider: "local", topK: 30 }, { provider: "cohere", topK: 15 }, { provider: "llm-judge", topK: 5 }]` |
+
+## Graceful Degradation
+
+If a provider is unavailable (no API key, model not loaded, API error), that stage is silently skipped and the pipeline continues with the next stage. The chain always produces results.
+
+## Programmatic Usage
+
+```typescript
+import { RerankerService, LlmJudgeReranker, CohereReranker, LocalCrossEncoderReranker } from '@framers/agentos';
+
+const service = new RerankerService({ config: { providers: [] } });
+service.registerProvider(new LocalCrossEncoderReranker({ providerId: 'local' }));
+service.registerProvider(new CohereReranker({ providerId: 'cohere', apiKey: '...' }));
+service.registerProvider(new LlmJudgeReranker({ llmCallFn: myLlmCall }));
+
+const results = await service.rerankChain('quantum computing', chunks, [
+  { provider: 'local', topK: 20 },
+  { provider: 'cohere', topK: 10 },
+  { provider: 'llm-judge', topK: 5 },
+]);
+```

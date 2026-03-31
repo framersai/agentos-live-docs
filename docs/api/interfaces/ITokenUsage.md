@@ -1,0 +1,49 @@
+# Interface: ITokenUsage
+
+Defined in: [packages/agentos/src/core/storage/IStorageAdapter.ts:124](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/core/storage/IStorageAdapter.ts#L124)
+
+Token usage statistics for LLM API calls.
+
+## Interface
+
+ITokenUsage
+
+## Example
+
+```typescript
+const usage: ITokenUsage = {
+  promptTokens: 150,
+  completionTokens: 75,
+  totalTokens: 225
+};
+```
+
+## Properties
+
+### completionTokens
+
+> **completionTokens**: `number`
+
+Defined in: [packages/agentos/src/core/storage/IStorageAdapter.ts:126](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/core/storage/IStorageAdapter.ts#L126)
+
+Number of tokens in the completion (output)
+
+***
+
+### promptTokens
+
+> **promptTokens**: `number`
+
+Defined in: [packages/agentos/src/core/storage/IStorageAdapter.ts:125](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/core/storage/IStorageAdapter.ts#L125)
+
+Number of tokens in the prompt (input)
+
+***
+
+### totalTokens
+
+> **totalTokens**: `number`
+
+Defined in: [packages/agentos/src/core/storage/IStorageAdapter.ts:127](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/core/storage/IStorageAdapter.ts#L127)
+
+Total tokens used (prompt + completion)

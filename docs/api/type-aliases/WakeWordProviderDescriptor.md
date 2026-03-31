@@ -1,0 +1,11 @@
+# Type Alias: WakeWordProviderDescriptor
+
+> **WakeWordProviderDescriptor** = [`ExtensionDescriptor`](../interfaces/ExtensionDescriptor.md)\<[`WakeWordProvider`](../interfaces/WakeWordProvider.md)\> & `object`
+
+Defined in: [packages/agentos/src/extensions/types.ts:405](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/extensions/types.ts#L405)
+
+## Type Declaration
+
+### kind
+
+> **kind**: *typeof* [`EXTENSION_KIND_WAKE_WORD_PROVIDER`](../variables/EXTENSION_KIND_WAKE_WORD_PROVIDER.md)

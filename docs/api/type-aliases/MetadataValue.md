@@ -1,0 +1,7 @@
+# Type Alias: MetadataValue
+
+> **MetadataValue** = [`MetadataScalarValue`](MetadataScalarValue.md) \| [`MetadataScalarValue`](MetadataScalarValue.md)[]
+
+Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:45](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/core/vector-store/IVectorStore.ts#L45)
+
+Represents a value in document metadata, which can be a scalar or an array of scalars.

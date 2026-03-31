@@ -1,0 +1,53 @@
+# Interface: IngestResult
+
+Defined in: [packages/agentos/src/memory/io/facade/types.ts:430](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/io/facade/types.ts#L430)
+
+Summary of a completed ingestion run returned by `Memory.ingest()`.
+
+## Properties
+
+### chunksCreated
+
+> **chunksCreated**: `number`
+
+Defined in: [packages/agentos/src/memory/io/facade/types.ts:444](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/io/facade/types.ts#L444)
+
+Total number of document chunks created and stored.
+
+***
+
+### failed
+
+> **failed**: `object`[]
+
+Defined in: [packages/agentos/src/memory/io/facade/types.ts:439](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/io/facade/types.ts#L439)
+
+Files that could not be ingested, with per-file error messages.
+
+#### error
+
+> **error**: `string`
+
+#### path
+
+> **path**: `string`
+
+***
+
+### succeeded
+
+> **succeeded**: `string`[]
+
+Defined in: [packages/agentos/src/memory/io/facade/types.ts:434](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/io/facade/types.ts#L434)
+
+Absolute paths of all files that were successfully ingested.
+
+***
+
+### tracesCreated
+
+> **tracesCreated**: `number`
+
+Defined in: [packages/agentos/src/memory/io/facade/types.ts:449](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/io/facade/types.ts#L449)
+
+Total number of new memory traces created from the ingested content.

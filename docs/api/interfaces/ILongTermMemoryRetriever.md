@@ -1,0 +1,39 @@
+# Interface: ILongTermMemoryRetriever
+
+Defined in: [packages/agentos/src/core/conversation/ILongTermMemoryRetriever.ts:41](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/core/conversation/ILongTermMemoryRetriever.ts#L41)
+
+## Methods
+
+### recordRetrievalFeedback()?
+
+> `optional` **recordRetrievalFeedback**(`input`): `Promise`\<`void`\>
+
+Defined in: [packages/agentos/src/core/conversation/ILongTermMemoryRetriever.ts:46](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/core/conversation/ILongTermMemoryRetriever.ts#L46)
+
+#### Parameters
+
+##### input
+
+[`LongTermMemoryFeedbackInput`](LongTermMemoryFeedbackInput.md)
+
+#### Returns
+
+`Promise`\<`void`\>
+
+***
+
+### retrieveLongTermMemory()
+
+> **retrieveLongTermMemory**(`input`): `Promise`\<[`LongTermMemoryRetrievalResult`](LongTermMemoryRetrievalResult.md) \| `null`\>
+
+Defined in: [packages/agentos/src/core/conversation/ILongTermMemoryRetriever.ts:42](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/core/conversation/ILongTermMemoryRetriever.ts#L42)
+
+#### Parameters
+
+##### input
+
+[`LongTermMemoryRetrievalInput`](LongTermMemoryRetrievalInput.md)
+
+#### Returns
+
+`Promise`\<[`LongTermMemoryRetrievalResult`](LongTermMemoryRetrievalResult.md) \| `null`\>
