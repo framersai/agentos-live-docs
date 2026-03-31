@@ -839,6 +839,48 @@ article,
     background: rgba(2, 6, 23, 0.56) !important;
     backdrop-filter: blur(8px);
   }
+
+  /* Mobile sidebar drawer — ensure it's visible and full height */
+  .navbar-sidebar {
+    background: var(--ifm-navbar-background-color, rgba(2, 6, 23, 0.98)) !important;
+    height: 100vh !important;
+    max-height: 100vh !important;
+    overflow-y: auto !important;
+    padding: 1rem 0 !important;
+    z-index: 100 !important;
+  }
+
+  /* Show all sidebar items — undo the hiding from desktop */
+  .navbar-sidebar .navbar__item,
+  .navbar-sidebar .navbar__link,
+  .navbar-sidebar .menu__link {
+    display: flex !important;
+    padding: 0.75rem 1.25rem !important;
+    font-size: 1rem !important;
+    color: var(--ifm-navbar-link-color) !important;
+  }
+
+  .navbar-sidebar .navbar__link:hover,
+  .navbar-sidebar .menu__link:hover {
+    color: var(--ao-indigo-light) !important;
+    background: rgba(99, 102, 241, 0.08) !important;
+  }
+
+  .navbar-sidebar .navbar-sidebar__brand {
+    padding: 0.5rem 1.25rem !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+    margin-bottom: 0.5rem !important;
+  }
+
+  .navbar-sidebar .navbar-sidebar__items {
+    padding: 0 !important;
+  }
+
+  /* Close button styling */
+  .navbar-sidebar .clean-btn[aria-label="Close"] {
+    color: var(--ifm-navbar-link-color) !important;
+    font-size: 1.5rem !important;
+  }
 }
 
 /* -- Smooth scrolling ----------------------------------------------------- */
