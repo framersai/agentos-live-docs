@@ -107,33 +107,42 @@ export default function NavbarMobileSidebar(): ReactNode {
   }
 
   return (
-    <aside
-      aria-hidden={!mobileSidebar.shown}
-      aria-label={translate({
-        id: 'theme.navbar.mobileSidebar.ariaLabel',
-        message: 'Mobile navigation',
-        description: 'The ARIA label for the mobile navigation drawer',
-      })}
-      aria-modal="true"
-      className={clsx(styles.drawer, mobileSidebar.shown && styles.drawerVisible)}
-      role="dialog">
-      <div className={styles.header}>
-        <div className={styles.brand}>
-          <NavbarLogo />
+    <>
+      {/* Backdrop overlay */}
+      <div
+        role="presentation"
+        className={clsx(styles.backdrop, mobileSidebar.shown && styles.backdropVisible)}
+        onClick={() => mobileSidebar.toggle()}
+      />
+      {/* Drawer panel */}
+      <aside
+        aria-hidden={!mobileSidebar.shown}
+        aria-label={translate({
+          id: 'theme.navbar.mobileSidebar.ariaLabel',
+          message: 'Mobile navigation',
+          description: 'The ARIA label for the mobile navigation drawer',
+        })}
+        aria-modal="true"
+        className={clsx(styles.drawer, mobileSidebar.shown && styles.drawerVisible)}
+        role="dialog">
+        <div className={styles.header}>
+          <div className={styles.brand}>
+            <NavbarLogo />
+          </div>
+          <div className={styles.headerActions}>
+            <NavbarColorModeToggle className={styles.colorModeToggle} />
+            <CloseButton onClose={() => mobileSidebar.toggle()} />
+          </div>
         </div>
-        <div className={styles.headerActions}>
-          <NavbarColorModeToggle className={styles.colorModeToggle} />
-          <CloseButton onClose={() => mobileSidebar.toggle()} />
-        </div>
-      </div>
 
-      <div className={styles.content}>
-        {secondaryMenu.shown ? (
-          <SecondaryMenu content={secondaryMenu.content} onBack={secondaryMenu.hide} />
-        ) : (
-          <PrimaryMenu items={items} onNavigate={() => mobileSidebar.toggle()} />
-        )}
-      </div>
-    </aside>
+        <div className={styles.content}>
+          {secondaryMenu.shown ? (
+            <SecondaryMenu content={secondaryMenu.content} onBack={secondaryMenu.hide} />
+          ) : (
+            <PrimaryMenu items={items} onNavigate={() => mobileSidebar.toggle()} />
+          )}
+        </div>
+      </aside>
+    </>
   );
 }

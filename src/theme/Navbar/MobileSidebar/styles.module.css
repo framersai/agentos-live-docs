@@ -211,8 +211,35 @@
   margin-top: 0.2rem;
 }
 
-@media (min-width: 997px) {
+/* Backdrop overlay */
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: calc(var(--ifm-z-index-fixed) + 1);
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(2px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.22s ease;
+}
+
+.backdropVisible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Full-width on phones */
+@media (max-width: 480px) {
   .drawer {
+    width: 100%;
+    max-width: 100%;
+    border-left: none;
+  }
+}
+
+@media (min-width: 997px) {
+  .drawer,
+  .backdrop {
     display: none;
   }
 }
