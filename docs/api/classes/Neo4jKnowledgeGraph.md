@@ -1,6 +1,6 @@
 # Class: Neo4jKnowledgeGraph
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/Neo4jKnowledgeGraph.ts:81](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/retrieval/graph/knowledge/Neo4jKnowledgeGraph.ts#L81)
+Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/Neo4jKnowledgeGraph.ts:81](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/knowledge/Neo4jKnowledgeGraph.ts#L81)
 
 Interface for the Knowledge Graph system
 
@@ -14,7 +14,7 @@ Interface for the Knowledge Graph system
 
 > **new Neo4jKnowledgeGraph**(`config`): `Neo4jKnowledgeGraph`
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/Neo4jKnowledgeGraph.ts:87](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/retrieval/graph/knowledge/Neo4jKnowledgeGraph.ts#L87)
+Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/Neo4jKnowledgeGraph.ts:87](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/knowledge/Neo4jKnowledgeGraph.ts#L87)
 
 #### Parameters
 
@@ -32,7 +32,7 @@ Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/Neo4jKnowledg
 
 > **clear**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/Neo4jKnowledgeGraph.ts:839](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/retrieval/graph/knowledge/Neo4jKnowledgeGraph.ts#L839)
+Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/Neo4jKnowledgeGraph.ts:839](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/knowledge/Neo4jKnowledgeGraph.ts#L839)
 
 Clear all knowledge
 
@@ -50,7 +50,7 @@ Clear all knowledge
 
 > **decayMemories**(`decayFactor?`): `Promise`\<`number`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/Neo4jKnowledgeGraph.ts:767](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/retrieval/graph/knowledge/Neo4jKnowledgeGraph.ts#L767)
+Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/Neo4jKnowledgeGraph.ts:767](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/knowledge/Neo4jKnowledgeGraph.ts#L767)
 
 Decay old memories (reduce importance over time)
 
@@ -74,7 +74,7 @@ Decay old memories (reduce importance over time)
 
 > **deleteEntity**(`id`): `Promise`\<`boolean`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/Neo4jKnowledgeGraph.ts:230](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/retrieval/graph/knowledge/Neo4jKnowledgeGraph.ts#L230)
+Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/Neo4jKnowledgeGraph.ts:230](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/knowledge/Neo4jKnowledgeGraph.ts#L230)
 
 Delete an entity and its relations
 
@@ -98,7 +98,7 @@ Delete an entity and its relations
 
 > **deleteRelation**(`id`): `Promise`\<`boolean`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/Neo4jKnowledgeGraph.ts:334](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/retrieval/graph/knowledge/Neo4jKnowledgeGraph.ts#L334)
+Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/Neo4jKnowledgeGraph.ts:334](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/knowledge/Neo4jKnowledgeGraph.ts#L334)
 
 Delete a relation
 
@@ -122,7 +122,7 @@ Delete a relation
 
 > **extractFromText**(`_text`, `_options?`): `Promise`\<\{ `entities`: [`KnowledgeEntity`](../interfaces/KnowledgeEntity.md)[]; `relations`: [`KnowledgeRelation`](../interfaces/KnowledgeRelation.md)[]; \}\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/Neo4jKnowledgeGraph.ts:708](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/retrieval/graph/knowledge/Neo4jKnowledgeGraph.ts#L708)
+Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/Neo4jKnowledgeGraph.ts:708](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/knowledge/Neo4jKnowledgeGraph.ts#L708)
 
 Extract entities and relations from text
 
@@ -156,7 +156,7 @@ Extract entities and relations from text
 
 > **findPath**(`sourceId`, `targetId`, `maxDepth?`): `Promise`\<`object`[] \| `null`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/Neo4jKnowledgeGraph.ts:575](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/retrieval/graph/knowledge/Neo4jKnowledgeGraph.ts#L575)
+Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/Neo4jKnowledgeGraph.ts:575](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/knowledge/Neo4jKnowledgeGraph.ts#L575)
 
 Find shortest path between two entities
 
@@ -188,7 +188,7 @@ Find shortest path between two entities
 
 > **getEntity**(`id`): `Promise`\<[`KnowledgeEntity`](../interfaces/KnowledgeEntity.md) \| `undefined`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/Neo4jKnowledgeGraph.ts:177](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/retrieval/graph/knowledge/Neo4jKnowledgeGraph.ts#L177)
+Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/Neo4jKnowledgeGraph.ts:177](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/knowledge/Neo4jKnowledgeGraph.ts#L177)
 
 Get entity by ID
 
@@ -212,7 +212,7 @@ Get entity by ID
 
 > **getMemory**(`id`): `Promise`\<[`EpisodicMemory`](../interfaces/EpisodicMemory.md) \| `undefined`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/Neo4jKnowledgeGraph.ts:411](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/retrieval/graph/knowledge/Neo4jKnowledgeGraph.ts#L411)
+Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/Neo4jKnowledgeGraph.ts:411](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/knowledge/Neo4jKnowledgeGraph.ts#L411)
 
 Get memory by ID
 
@@ -236,7 +236,7 @@ Get memory by ID
 
 > **getNeighborhood**(`entityId`, `depth?`): `Promise`\<\{ `entities`: [`KnowledgeEntity`](../interfaces/KnowledgeEntity.md)[]; `relations`: [`KnowledgeRelation`](../interfaces/KnowledgeRelation.md)[]; \}\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/Neo4jKnowledgeGraph.ts:609](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/retrieval/graph/knowledge/Neo4jKnowledgeGraph.ts#L609)
+Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/Neo4jKnowledgeGraph.ts:609](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/knowledge/Neo4jKnowledgeGraph.ts#L609)
 
 Get neighborhood of an entity
 
@@ -264,7 +264,7 @@ Get neighborhood of an entity
 
 > **getRelations**(`entityId`, `options?`): `Promise`\<[`KnowledgeRelation`](../interfaces/KnowledgeRelation.md)[]\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/Neo4jKnowledgeGraph.ts:298](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/retrieval/graph/knowledge/Neo4jKnowledgeGraph.ts#L298)
+Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/Neo4jKnowledgeGraph.ts:298](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/knowledge/Neo4jKnowledgeGraph.ts#L298)
 
 Get relations for an entity
 
@@ -298,7 +298,7 @@ Get relations for an entity
 
 > **getStats**(): `Promise`\<[`KnowledgeGraphStats`](../interfaces/KnowledgeGraphStats.md)\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/Neo4jKnowledgeGraph.ts:786](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/retrieval/graph/knowledge/Neo4jKnowledgeGraph.ts#L786)
+Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/Neo4jKnowledgeGraph.ts:786](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/knowledge/Neo4jKnowledgeGraph.ts#L786)
 
 Get knowledge graph statistics
 
@@ -316,7 +316,7 @@ Get knowledge graph statistics
 
 > **initialize**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/Neo4jKnowledgeGraph.ts:93](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/retrieval/graph/knowledge/Neo4jKnowledgeGraph.ts#L93)
+Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/Neo4jKnowledgeGraph.ts:93](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/knowledge/Neo4jKnowledgeGraph.ts#L93)
 
 Initialize the knowledge graph
 
@@ -334,7 +334,7 @@ Initialize the knowledge graph
 
 > **mergeEntities**(`entityIds`, `primaryId`): `Promise`\<[`KnowledgeEntity`](../interfaces/KnowledgeEntity.md)\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/Neo4jKnowledgeGraph.ts:719](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/retrieval/graph/knowledge/Neo4jKnowledgeGraph.ts#L719)
+Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/Neo4jKnowledgeGraph.ts:719](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/knowledge/Neo4jKnowledgeGraph.ts#L719)
 
 Merge duplicate entities
 
@@ -362,7 +362,7 @@ Merge duplicate entities
 
 > **queryEntities**(`options?`): `Promise`\<[`KnowledgeEntity`](../interfaces/KnowledgeEntity.md)[]\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/Neo4jKnowledgeGraph.ts:186](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/retrieval/graph/knowledge/Neo4jKnowledgeGraph.ts#L186)
+Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/Neo4jKnowledgeGraph.ts:186](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/knowledge/Neo4jKnowledgeGraph.ts#L186)
 
 Query entities
 
@@ -386,7 +386,7 @@ Query entities
 
 > **queryMemories**(`options?`): `Promise`\<[`EpisodicMemory`](../interfaces/EpisodicMemory.md)[]\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/Neo4jKnowledgeGraph.ts:428](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/retrieval/graph/knowledge/Neo4jKnowledgeGraph.ts#L428)
+Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/Neo4jKnowledgeGraph.ts:428](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/knowledge/Neo4jKnowledgeGraph.ts#L428)
 
 Query episodic memories
 
@@ -436,7 +436,7 @@ Query episodic memories
 
 > **recallMemories**(`query`, `topK?`): `Promise`\<[`EpisodicMemory`](../interfaces/EpisodicMemory.md)[]\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/Neo4jKnowledgeGraph.ts:471](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/retrieval/graph/knowledge/Neo4jKnowledgeGraph.ts#L471)
+Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/Neo4jKnowledgeGraph.ts:471](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/knowledge/Neo4jKnowledgeGraph.ts#L471)
 
 Recall relevant memories (updates access count)
 
@@ -464,7 +464,7 @@ Recall relevant memories (updates access count)
 
 > **recordMemory**(`memory`): `Promise`\<[`EpisodicMemory`](../interfaces/EpisodicMemory.md)\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/Neo4jKnowledgeGraph.ts:346](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/retrieval/graph/knowledge/Neo4jKnowledgeGraph.ts#L346)
+Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/Neo4jKnowledgeGraph.ts:346](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/knowledge/Neo4jKnowledgeGraph.ts#L346)
 
 Record an episodic memory
 
@@ -488,7 +488,7 @@ Record an episodic memory
 
 > **semanticSearch**(`options`): `Promise`\<[`SemanticSearchResult`](../interfaces/SemanticSearchResult.md)[]\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/Neo4jKnowledgeGraph.ts:643](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/retrieval/graph/knowledge/Neo4jKnowledgeGraph.ts#L643)
+Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/Neo4jKnowledgeGraph.ts:643](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/knowledge/Neo4jKnowledgeGraph.ts#L643)
 
 Semantic search across entities and memories
 
@@ -512,7 +512,7 @@ Semantic search across entities and memories
 
 > **traverse**(`startEntityId`, `options?`): `Promise`\<[`TraversalResult`](../interfaces/TraversalResult.md)\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/Neo4jKnowledgeGraph.ts:497](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/retrieval/graph/knowledge/Neo4jKnowledgeGraph.ts#L497)
+Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/Neo4jKnowledgeGraph.ts:497](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/knowledge/Neo4jKnowledgeGraph.ts#L497)
 
 Traverse the graph from a starting entity
 
@@ -540,7 +540,7 @@ Traverse the graph from a starting entity
 
 > **upsertEntity**(`entity`): `Promise`\<[`KnowledgeEntity`](../interfaces/KnowledgeEntity.md)\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/Neo4jKnowledgeGraph.ts:127](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/retrieval/graph/knowledge/Neo4jKnowledgeGraph.ts#L127)
+Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/Neo4jKnowledgeGraph.ts:127](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/knowledge/Neo4jKnowledgeGraph.ts#L127)
 
 Add or update an entity
 
@@ -564,7 +564,7 @@ Add or update an entity
 
 > **upsertRelation**(`relation`): `Promise`\<[`KnowledgeRelation`](../interfaces/KnowledgeRelation.md)\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/Neo4jKnowledgeGraph.ts:242](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/retrieval/graph/knowledge/Neo4jKnowledgeGraph.ts#L242)
+Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/Neo4jKnowledgeGraph.ts:242](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/knowledge/Neo4jKnowledgeGraph.ts#L242)
 
 Add or update a relation
 

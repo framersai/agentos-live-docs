@@ -1,6 +1,6 @@
 # Interface: StreamingManagerConfig
 
-Defined in: [packages/agentos/src/core/streaming/StreamingManager.ts:28](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/core/streaming/StreamingManager.ts#L28)
+Defined in: [packages/agentos/src/core/streaming/StreamingManager.ts:28](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/streaming/StreamingManager.ts#L28)
 
 Configuration options for the StreamingManager.
 
@@ -14,7 +14,7 @@ StreamingManagerConfig
 
 > `optional` **defaultStreamInactivityTimeoutMs**: `number`
 
-Defined in: [packages/agentos/src/core/streaming/StreamingManager.ts:43](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/core/streaming/StreamingManager.ts#L43)
+Defined in: [packages/agentos/src/core/streaming/StreamingManager.ts:43](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/streaming/StreamingManager.ts#L43)
 
 Default timeout in milliseconds for a stream if no activity is detected.
 If set to 0, streams do not time out automatically. (Conceptual, requires active tracking)
@@ -31,7 +31,7 @@ If set to 0, streams do not time out automatically. (Conceptual, requires active
 
 > `optional` **maxClientsPerStream**: `number`
 
-Defined in: [packages/agentos/src/core/streaming/StreamingManager.ts:51](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/core/streaming/StreamingManager.ts#L51)
+Defined in: [packages/agentos/src/core/streaming/StreamingManager.ts:51](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/streaming/StreamingManager.ts#L51)
 
 Maximum number of clients allowed to subscribe to a single stream.
 If set to 0 or a negative number, it implies no limit.
@@ -48,7 +48,7 @@ If set to 0 or a negative number, it implies no limit.
 
 > `optional` **maxConcurrentStreams**: `number`
 
-Defined in: [packages/agentos/src/core/streaming/StreamingManager.ts:35](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/core/streaming/StreamingManager.ts#L35)
+Defined in: [packages/agentos/src/core/streaming/StreamingManager.ts:35](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/streaming/StreamingManager.ts#L35)
 
 Maximum number of concurrent active streams allowed.
 If set to 0 or a negative number, it implies no limit (not recommended for production).
@@ -65,7 +65,7 @@ If set to 0 or a negative number, it implies no limit (not recommended for produ
 
 > `optional` **onClientSendErrorBehavior**: `"log_and_continue"` \| `"deregister_client"` \| `"throw"`
 
-Defined in: [packages/agentos/src/core/streaming/StreamingManager.ts:61](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/core/streaming/StreamingManager.ts#L61)
+Defined in: [packages/agentos/src/core/streaming/StreamingManager.ts:61](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/streaming/StreamingManager.ts#L61)
 
 Optional: Defines the behavior when trying to push a chunk to a client whose `sendChunk` method fails.
 - 'log_and_continue': Logs the error and continues sending to other clients. (Default)

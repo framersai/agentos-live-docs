@@ -1,6 +1,6 @@
 # Class: ProspectiveMemoryManager
 
-Defined in: [packages/agentos/src/memory/retrieval/prospective/ProspectiveMemoryManager.ts:60](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/retrieval/prospective/ProspectiveMemoryManager.ts#L60)
+Defined in: [packages/agentos/src/memory/retrieval/prospective/ProspectiveMemoryManager.ts:60](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/prospective/ProspectiveMemoryManager.ts#L60)
 
 ## Constructors
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/memory/retrieval/prospective/ProspectiveMemory
 
 > **new ProspectiveMemoryManager**(`embeddingManager?`): `ProspectiveMemoryManager`
 
-Defined in: [packages/agentos/src/memory/retrieval/prospective/ProspectiveMemoryManager.ts:64](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/retrieval/prospective/ProspectiveMemoryManager.ts#L64)
+Defined in: [packages/agentos/src/memory/retrieval/prospective/ProspectiveMemoryManager.ts:64](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/prospective/ProspectiveMemoryManager.ts#L64)
 
 #### Parameters
 
@@ -26,7 +26,7 @@ Defined in: [packages/agentos/src/memory/retrieval/prospective/ProspectiveMemory
 
 > **check**(`context`): `Promise`\<[`ProspectiveMemoryItem`](../interfaces/ProspectiveMemoryItem.md)[]\>
 
-Defined in: [packages/agentos/src/memory/retrieval/prospective/ProspectiveMemoryManager.ts:98](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/retrieval/prospective/ProspectiveMemoryManager.ts#L98)
+Defined in: [packages/agentos/src/memory/retrieval/prospective/ProspectiveMemoryManager.ts:98](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/prospective/ProspectiveMemoryManager.ts#L98)
 
 Check all prospective memories against the current context.
 Returns items that should fire this turn.
@@ -61,7 +61,7 @@ Returns items that should fire this turn.
 
 > **clear**(): `void`
 
-Defined in: [packages/agentos/src/memory/retrieval/prospective/ProspectiveMemoryManager.ts:172](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/retrieval/prospective/ProspectiveMemoryManager.ts#L172)
+Defined in: [packages/agentos/src/memory/retrieval/prospective/ProspectiveMemoryManager.ts:172](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/prospective/ProspectiveMemoryManager.ts#L172)
 
 Clear all items.
 
@@ -75,7 +75,7 @@ Clear all items.
 
 > **getActive**(): [`ProspectiveMemoryItem`](../interfaces/ProspectiveMemoryItem.md)[]
 
-Defined in: [packages/agentos/src/memory/retrieval/prospective/ProspectiveMemoryManager.ts:156](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/retrieval/prospective/ProspectiveMemoryManager.ts#L156)
+Defined in: [packages/agentos/src/memory/retrieval/prospective/ProspectiveMemoryManager.ts:156](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/prospective/ProspectiveMemoryManager.ts#L156)
 
 Get all active (non-triggered or recurring) items.
 
@@ -89,7 +89,7 @@ Get all active (non-triggered or recurring) items.
 
 > **getCount**(): `number`
 
-Defined in: [packages/agentos/src/memory/retrieval/prospective/ProspectiveMemoryManager.ts:165](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/retrieval/prospective/ProspectiveMemoryManager.ts#L165)
+Defined in: [packages/agentos/src/memory/retrieval/prospective/ProspectiveMemoryManager.ts:165](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/prospective/ProspectiveMemoryManager.ts#L165)
 
 Get total item count.
 
@@ -103,7 +103,7 @@ Get total item count.
 
 > **register**(`input`): `Promise`\<[`ProspectiveMemoryItem`](../interfaces/ProspectiveMemoryItem.md)\>
 
-Defined in: [packages/agentos/src/memory/retrieval/prospective/ProspectiveMemoryManager.ts:71](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/retrieval/prospective/ProspectiveMemoryManager.ts#L71)
+Defined in: [packages/agentos/src/memory/retrieval/prospective/ProspectiveMemoryManager.ts:71](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/prospective/ProspectiveMemoryManager.ts#L71)
 
 Register a new prospective memory item.
 
@@ -123,7 +123,7 @@ Register a new prospective memory item.
 
 > **remove**(`id`): `boolean`
 
-Defined in: [packages/agentos/src/memory/retrieval/prospective/ProspectiveMemoryManager.ts:149](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/retrieval/prospective/ProspectiveMemoryManager.ts#L149)
+Defined in: [packages/agentos/src/memory/retrieval/prospective/ProspectiveMemoryManager.ts:149](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/prospective/ProspectiveMemoryManager.ts#L149)
 
 Remove a prospective memory item.
 

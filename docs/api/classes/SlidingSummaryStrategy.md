@@ -1,6 +1,6 @@
 # Class: SlidingSummaryStrategy
 
-Defined in: [packages/agentos/src/memory/pipeline/context/strategies/SlidingSummaryStrategy.ts:27](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/pipeline/context/strategies/SlidingSummaryStrategy.ts#L27)
+Defined in: [packages/agentos/src/memory/pipeline/context/strategies/SlidingSummaryStrategy.ts:27](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/pipeline/context/strategies/SlidingSummaryStrategy.ts#L27)
 
 ## Implements
 
@@ -12,7 +12,7 @@ Defined in: [packages/agentos/src/memory/pipeline/context/strategies/SlidingSumm
 
 > **new SlidingSummaryStrategy**(`llmInvoker`): `SlidingSummaryStrategy`
 
-Defined in: [packages/agentos/src/memory/pipeline/context/strategies/SlidingSummaryStrategy.ts:31](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/pipeline/context/strategies/SlidingSummaryStrategy.ts#L31)
+Defined in: [packages/agentos/src/memory/pipeline/context/strategies/SlidingSummaryStrategy.ts:31](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/pipeline/context/strategies/SlidingSummaryStrategy.ts#L31)
 
 #### Parameters
 
@@ -30,7 +30,7 @@ Defined in: [packages/agentos/src/memory/pipeline/context/strategies/SlidingSumm
 
 > `readonly` **name**: `"sliding"`
 
-Defined in: [packages/agentos/src/memory/pipeline/context/strategies/SlidingSummaryStrategy.ts:28](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/pipeline/context/strategies/SlidingSummaryStrategy.ts#L28)
+Defined in: [packages/agentos/src/memory/pipeline/context/strategies/SlidingSummaryStrategy.ts:28](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/pipeline/context/strategies/SlidingSummaryStrategy.ts#L28)
 
 #### Implementation of
 
@@ -42,7 +42,7 @@ Defined in: [packages/agentos/src/memory/pipeline/context/strategies/SlidingSumm
 
 > **compact**(`input`, `config`): `Promise`\<[`CompactionResult`](../interfaces/CompactionResult.md)\>
 
-Defined in: [packages/agentos/src/memory/pipeline/context/strategies/SlidingSummaryStrategy.ts:35](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/pipeline/context/strategies/SlidingSummaryStrategy.ts#L35)
+Defined in: [packages/agentos/src/memory/pipeline/context/strategies/SlidingSummaryStrategy.ts:35](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/pipeline/context/strategies/SlidingSummaryStrategy.ts#L35)
 
 #### Parameters
 

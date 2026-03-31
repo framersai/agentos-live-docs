@@ -1,6 +1,6 @@
 # Interface: RetrieveStartEvent
 
-Defined in: [packages/agentos/src/query-router/types.ts:876](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/query-router/types.ts#L876)
+Defined in: [packages/agentos/src/query-router/types.ts:890](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/query-router/types.ts#L890)
 
 Emitted when the retrieval phase begins.
 
@@ -10,7 +10,7 @@ Emitted when the retrieval phase begins.
 
 > **tier**: [`QueryTier`](../type-aliases/QueryTier.md)
 
-Defined in: [packages/agentos/src/query-router/types.ts:879](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/query-router/types.ts#L879)
+Defined in: [packages/agentos/src/query-router/types.ts:893](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/query-router/types.ts#L893)
 
 The assigned tier driving retrieval strategy.
 
@@ -20,7 +20,7 @@ The assigned tier driving retrieval strategy.
 
 > **timestamp**: `number`
 
-Defined in: [packages/agentos/src/query-router/types.ts:881](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/query-router/types.ts#L881)
+Defined in: [packages/agentos/src/query-router/types.ts:895](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/query-router/types.ts#L895)
 
 Timestamp when retrieval started.
 
@@ -30,4 +30,4 @@ Timestamp when retrieval started.
 
 > **type**: `"retrieve:start"`
 
-Defined in: [packages/agentos/src/query-router/types.ts:877](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/query-router/types.ts#L877)
+Defined in: [packages/agentos/src/query-router/types.ts:891](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/query-router/types.ts#L891)

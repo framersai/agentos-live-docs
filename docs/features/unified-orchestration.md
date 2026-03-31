@@ -3,8 +3,6 @@ title: "Unified Orchestration Layer"
 sidebar_position: 2
 ---
 
-# Unified Orchestration Layer
-
 Three authoring APIs. One compiled intermediate representation. A single runtime that executes every graph with streaming, checkpointing, guardrails, memory, and capability discovery built in.
 
 ## Architecture

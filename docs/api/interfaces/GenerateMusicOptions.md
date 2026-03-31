@@ -1,6 +1,6 @@
 # Interface: GenerateMusicOptions
 
-Defined in: [packages/agentos/src/api/generateMusic.ts:209](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/generateMusic.ts#L209)
+Defined in: [packages/agentos/src/api/generateMusic.ts:209](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/generateMusic.ts#L209)
 
 Options for a [generateMusic](../functions/generateMusic.md) call.
 
@@ -15,7 +15,7 @@ At minimum, a `prompt` is required. The provider is resolved from
 
 > `optional` **apiKey**: `string`
 
-Defined in: [packages/agentos/src/api/generateMusic.ts:254](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/generateMusic.ts#L254)
+Defined in: [packages/agentos/src/api/generateMusic.ts:254](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/generateMusic.ts#L254)
 
 Override the provider API key instead of reading from env vars.
 
@@ -25,7 +25,7 @@ Override the provider API key instead of reading from env vars.
 
 > `optional` **durationSec**: `number`
 
-Defined in: [packages/agentos/src/api/generateMusic.ts:227](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/generateMusic.ts#L227)
+Defined in: [packages/agentos/src/api/generateMusic.ts:227](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/generateMusic.ts#L227)
 
 Desired output duration in seconds. Provider limits vary.
 
@@ -35,7 +35,7 @@ Desired output duration in seconds. Provider limits vary.
 
 > `optional` **model**: `string`
 
-Defined in: [packages/agentos/src/api/generateMusic.ts:224](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/generateMusic.ts#L224)
+Defined in: [packages/agentos/src/api/generateMusic.ts:224](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/generateMusic.ts#L224)
 
 Model identifier within the provider (e.g. `"suno-v3.5"`,
 `"stable-audio-open-1.0"`). When omitted, the provider's default
@@ -47,7 +47,7 @@ model is used.
 
 > `optional` **n**: `number`
 
-Defined in: [packages/agentos/src/api/generateMusic.ts:245](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/generateMusic.ts#L245)
+Defined in: [packages/agentos/src/api/generateMusic.ts:245](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/generateMusic.ts#L245)
 
 Number of audio clips to generate. Defaults to 1.
 
@@ -57,7 +57,7 @@ Number of audio clips to generate. Defaults to 1.
 
 > `optional` **negativePrompt**: `string`
 
-Defined in: [packages/agentos/src/api/generateMusic.ts:230](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/generateMusic.ts#L230)
+Defined in: [packages/agentos/src/api/generateMusic.ts:230](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/generateMusic.ts#L230)
 
 Negative prompt describing musical elements to avoid.
 
@@ -67,7 +67,7 @@ Negative prompt describing musical elements to avoid.
 
 > `optional` **onProgress**: (`event`) => `void`
 
-Defined in: [packages/agentos/src/api/generateMusic.ts:251](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/generateMusic.ts#L251)
+Defined in: [packages/agentos/src/api/generateMusic.ts:251](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/generateMusic.ts#L251)
 
 Optional progress callback invoked during long-running generation.
 Called with an [AudioProgressEvent](AudioProgressEvent.md) at each status transition.
@@ -88,7 +88,7 @@ Called with an [AudioProgressEvent](AudioProgressEvent.md) at each status transi
 
 > `optional` **outputFormat**: [`AudioOutputFormat`](../type-aliases/AudioOutputFormat.md)
 
-Defined in: [packages/agentos/src/api/generateMusic.ts:233](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/generateMusic.ts#L233)
+Defined in: [packages/agentos/src/api/generateMusic.ts:233](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/generateMusic.ts#L233)
 
 Output audio format (e.g. `"mp3"`, `"wav"`). Defaults to provider default.
 
@@ -98,7 +98,7 @@ Output audio format (e.g. `"mp3"`, `"wav"`). Defaults to provider default.
 
 > **prompt**: `string`
 
-Defined in: [packages/agentos/src/api/generateMusic.ts:211](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/generateMusic.ts#L211)
+Defined in: [packages/agentos/src/api/generateMusic.ts:211](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/generateMusic.ts#L211)
 
 Text prompt describing the desired musical composition.
 
@@ -108,7 +108,7 @@ Text prompt describing the desired musical composition.
 
 > `optional` **provider**: `string`
 
-Defined in: [packages/agentos/src/api/generateMusic.ts:217](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/generateMusic.ts#L217)
+Defined in: [packages/agentos/src/api/generateMusic.ts:217](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/generateMusic.ts#L217)
 
 Explicit provider identifier (e.g. `"suno"`, `"stable-audio"`, `"musicgen-local"`).
 When omitted, auto-detection from environment variables is used.
@@ -119,7 +119,7 @@ When omitted, auto-detection from environment variables is used.
 
 > `optional` **providerOptions**: `Record`\<`string`, `unknown`\>
 
-Defined in: [packages/agentos/src/api/generateMusic.ts:260](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/generateMusic.ts#L260)
+Defined in: [packages/agentos/src/api/generateMusic.ts:260](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/generateMusic.ts#L260)
 
 Arbitrary provider-specific options.
 
@@ -129,7 +129,7 @@ Arbitrary provider-specific options.
 
 > `optional` **providerPreferences**: [`MediaProviderPreference`](MediaProviderPreference.md)
 
-Defined in: [packages/agentos/src/api/generateMusic.ts:267](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/generateMusic.ts#L267)
+Defined in: [packages/agentos/src/api/generateMusic.ts:267](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/generateMusic.ts#L267)
 
 Provider preferences for reordering or filtering the fallback chain.
 When supplied, the available providers are reordered according to
@@ -141,7 +141,7 @@ When supplied, the available providers are reordered according to
 
 > `optional` **seed**: `number`
 
-Defined in: [packages/agentos/src/api/generateMusic.ts:236](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/generateMusic.ts#L236)
+Defined in: [packages/agentos/src/api/generateMusic.ts:236](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/generateMusic.ts#L236)
 
 Random seed for reproducible generation (provider-dependent).
 
@@ -151,7 +151,7 @@ Random seed for reproducible generation (provider-dependent).
 
 > `optional` **timeoutMs**: `number`
 
-Defined in: [packages/agentos/src/api/generateMusic.ts:242](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/generateMusic.ts#L242)
+Defined in: [packages/agentos/src/api/generateMusic.ts:242](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/generateMusic.ts#L242)
 
 Maximum time in milliseconds to wait for generation to complete.
 Provider-dependent — polling providers enforce this directly.
@@ -162,7 +162,7 @@ Provider-dependent — polling providers enforce this directly.
 
 > `optional` **usageLedger**: [`AgentOSUsageLedgerOptions`](AgentOSUsageLedgerOptions.md)
 
-Defined in: [packages/agentos/src/api/generateMusic.ts:270](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/generateMusic.ts#L270)
+Defined in: [packages/agentos/src/api/generateMusic.ts:270](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/generateMusic.ts#L270)
 
 Optional durable usage ledger configuration for accounting.
 
@@ -172,6 +172,6 @@ Optional durable usage ledger configuration for accounting.
 
 > `optional` **userId**: `string`
 
-Defined in: [packages/agentos/src/api/generateMusic.ts:257](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/generateMusic.ts#L257)
+Defined in: [packages/agentos/src/api/generateMusic.ts:257](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/generateMusic.ts#L257)
 
 Optional user identifier forwarded to the provider for billing.

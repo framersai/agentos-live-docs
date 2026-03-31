@@ -1,6 +1,6 @@
 # Interface: PlannerConfig
 
-Defined in: [packages/agentos/src/orchestration/planning/types.ts:110](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/planning/types.ts#L110)
+Defined in: [packages/agentos/src/orchestration/planning/types.ts:110](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/planning/types.ts#L110)
 
 Configuration for the MissionPlanner.
 
@@ -10,7 +10,7 @@ Configuration for the MissionPlanner.
 
 > **autonomy**: [`AutonomyMode`](../type-aliases/AutonomyMode.md)
 
-Defined in: [packages/agentos/src/orchestration/planning/types.ts:113](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/planning/types.ts#L113)
+Defined in: [packages/agentos/src/orchestration/planning/types.ts:113](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/planning/types.ts#L113)
 
 ***
 
@@ -18,7 +18,7 @@ Defined in: [packages/agentos/src/orchestration/planning/types.ts:113](https://g
 
 > **branchCount**: `number`
 
-Defined in: [packages/agentos/src/orchestration/planning/types.ts:112](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/planning/types.ts#L112)
+Defined in: [packages/agentos/src/orchestration/planning/types.ts:112](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/planning/types.ts#L112)
 
 Number of Tree of Thought branches to explore.
 
@@ -28,7 +28,7 @@ Number of Tree of Thought branches to explore.
 
 > **costCap**: `number`
 
-Defined in: [packages/agentos/src/orchestration/planning/types.ts:116](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/planning/types.ts#L116)
+Defined in: [packages/agentos/src/orchestration/planning/types.ts:116](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/planning/types.ts#L116)
 
 ***
 
@@ -36,7 +36,7 @@ Defined in: [packages/agentos/src/orchestration/planning/types.ts:116](https://g
 
 > `optional` **executionModel**: `string`
 
-Defined in: [packages/agentos/src/orchestration/planning/types.ts:144](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/planning/types.ts#L144)
+Defined in: [packages/agentos/src/orchestration/planning/types.ts:144](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/planning/types.ts#L144)
 
 Human-readable label for the default execution model (for logging/events).
 
@@ -46,7 +46,7 @@ Human-readable label for the default execution model (for logging/events).
 
 > **llmCaller**: (`system`, `user`) => `Promise`\<`string`\>
 
-Defined in: [packages/agentos/src/orchestration/planning/types.ts:128](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/planning/types.ts#L128)
+Defined in: [packages/agentos/src/orchestration/planning/types.ts:128](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/planning/types.ts#L128)
 
 LLM caller used by agent nodes during execution.
 Falls back to `plannerLlmCaller` if not provided separately.
@@ -71,7 +71,7 @@ Falls back to `plannerLlmCaller` if not provided separately.
 
 > **maxAgents**: `number`
 
-Defined in: [packages/agentos/src/orchestration/planning/types.ts:117](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/planning/types.ts#L117)
+Defined in: [packages/agentos/src/orchestration/planning/types.ts:117](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/planning/types.ts#L117)
 
 ***
 
@@ -79,7 +79,7 @@ Defined in: [packages/agentos/src/orchestration/planning/types.ts:117](https://g
 
 > **maxDepth**: `number`
 
-Defined in: [packages/agentos/src/orchestration/planning/types.ts:120](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/planning/types.ts#L120)
+Defined in: [packages/agentos/src/orchestration/planning/types.ts:120](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/planning/types.ts#L120)
 
 ***
 
@@ -87,7 +87,7 @@ Defined in: [packages/agentos/src/orchestration/planning/types.ts:120](https://g
 
 > **maxExpansions**: `number`
 
-Defined in: [packages/agentos/src/orchestration/planning/types.ts:119](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/planning/types.ts#L119)
+Defined in: [packages/agentos/src/orchestration/planning/types.ts:119](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/planning/types.ts#L119)
 
 ***
 
@@ -95,7 +95,7 @@ Defined in: [packages/agentos/src/orchestration/planning/types.ts:119](https://g
 
 > **maxToolForges**: `number`
 
-Defined in: [packages/agentos/src/orchestration/planning/types.ts:118](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/planning/types.ts#L118)
+Defined in: [packages/agentos/src/orchestration/planning/types.ts:118](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/planning/types.ts#L118)
 
 ***
 
@@ -103,7 +103,7 @@ Defined in: [packages/agentos/src/orchestration/planning/types.ts:118](https://g
 
 > `optional` **plannerLlmCaller**: (`system`, `user`) => `Promise`\<`string`\>
 
-Defined in: [packages/agentos/src/orchestration/planning/types.ts:139](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/planning/types.ts#L139)
+Defined in: [packages/agentos/src/orchestration/planning/types.ts:139](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/planning/types.ts#L139)
 
 LLM caller used specifically for the Tree of Thought planning phases
 (decomposition, evaluation, refinement, expansion).
@@ -133,7 +133,7 @@ Defaults to `llmCaller` if not provided.
 
 > `optional` **plannerModel**: `string`
 
-Defined in: [packages/agentos/src/orchestration/planning/types.ts:142](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/planning/types.ts#L142)
+Defined in: [packages/agentos/src/orchestration/planning/types.ts:142](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/planning/types.ts#L142)
 
 Human-readable label for the planner model (for logging/events).
 
@@ -143,7 +143,7 @@ Human-readable label for the planner model (for logging/events).
 
 > **providerStrategy**: [`ProviderStrategyConfig`](ProviderStrategyConfig.md)
 
-Defined in: [packages/agentos/src/orchestration/planning/types.ts:114](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/planning/types.ts#L114)
+Defined in: [packages/agentos/src/orchestration/planning/types.ts:114](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/planning/types.ts#L114)
 
 ***
 
@@ -151,7 +151,7 @@ Defined in: [packages/agentos/src/orchestration/planning/types.ts:114](https://g
 
 > **reevalInterval**: `number`
 
-Defined in: [packages/agentos/src/orchestration/planning/types.ts:122](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/planning/types.ts#L122)
+Defined in: [packages/agentos/src/orchestration/planning/types.ts:122](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/planning/types.ts#L122)
 
 Re-evaluate graph every N completed nodes.
 
@@ -161,4 +161,4 @@ Re-evaluate graph every N completed nodes.
 
 > **thresholds**: [`GuardrailThresholds`](GuardrailThresholds.md)
 
-Defined in: [packages/agentos/src/orchestration/planning/types.ts:115](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/planning/types.ts#L115)
+Defined in: [packages/agentos/src/orchestration/planning/types.ts:115](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/planning/types.ts#L115)

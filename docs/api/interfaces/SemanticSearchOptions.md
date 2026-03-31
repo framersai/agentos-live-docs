@@ -1,6 +1,6 @@
 # Interface: SemanticSearchOptions
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts:246](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts#L246)
+Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts:246](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts#L246)
 
 Semantic search options
 
@@ -10,7 +10,7 @@ Semantic search options
 
 > `optional` **entityTypes**: [`EntityType`](../type-aliases/EntityType.md)[]
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts:252](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts#L252)
+Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts:252](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts#L252)
 
 Entity types to search
 
@@ -20,7 +20,7 @@ Entity types to search
 
 > `optional` **minSimilarity**: `number`
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts:256](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts#L256)
+Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts:256](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts#L256)
 
 Minimum similarity threshold (0-1)
 
@@ -30,7 +30,7 @@ Minimum similarity threshold (0-1)
 
 > `optional` **ownerId**: `string`
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts:258](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts#L258)
+Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts:258](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts#L258)
 
 Owner filter
 
@@ -40,7 +40,7 @@ Owner filter
 
 > **query**: `string`
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts:248](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts#L248)
+Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts:248](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts#L248)
 
 Query text
 
@@ -50,7 +50,7 @@ Query text
 
 > `optional` **scope**: `"all"` \| `"entities"` \| `"memories"`
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts:250](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts#L250)
+Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts:250](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts#L250)
 
 Search scope
 
@@ -60,6 +60,6 @@ Search scope
 
 > `optional` **topK**: `number`
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts:254](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts#L254)
+Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts:254](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts#L254)
 
 Maximum results

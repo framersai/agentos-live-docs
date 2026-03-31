@@ -1,6 +1,6 @@
 # Interface: IVoiceCallProvider
 
-Defined in: [packages/agentos/src/channels/telephony/IVoiceCallProvider.ts:117](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/channels/telephony/IVoiceCallProvider.ts#L117)
+Defined in: [packages/agentos/src/channels/telephony/IVoiceCallProvider.ts:117](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/telephony/IVoiceCallProvider.ts#L117)
 
 Core interface for telephony providers.
 
@@ -32,7 +32,7 @@ class TwilioProvider implements IVoiceCallProvider {
 
 > `readonly` **name**: [`VoiceProviderName`](../type-aliases/VoiceProviderName.md)
 
-Defined in: [packages/agentos/src/channels/telephony/IVoiceCallProvider.ts:119](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/channels/telephony/IVoiceCallProvider.ts#L119)
+Defined in: [packages/agentos/src/channels/telephony/IVoiceCallProvider.ts:119](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/telephony/IVoiceCallProvider.ts#L119)
 
 Provider identifier.
 
@@ -42,7 +42,7 @@ Provider identifier.
 
 > **hangupCall**(`input`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/channels/telephony/IVoiceCallProvider.ts:152](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/channels/telephony/IVoiceCallProvider.ts#L152)
+Defined in: [packages/agentos/src/channels/telephony/IVoiceCallProvider.ts:152](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/telephony/IVoiceCallProvider.ts#L152)
 
 Hang up an active call.
 
@@ -62,7 +62,7 @@ Hang up an active call.
 
 > **initiateCall**(`input`): `Promise`\<[`InitiateCallResult`](InitiateCallResult.md)\>
 
-Defined in: [packages/agentos/src/channels/telephony/IVoiceCallProvider.ts:147](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/channels/telephony/IVoiceCallProvider.ts#L147)
+Defined in: [packages/agentos/src/channels/telephony/IVoiceCallProvider.ts:147](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/telephony/IVoiceCallProvider.ts#L147)
 
 Initiate an outbound phone call.
 For 'notify' mode, the provider generates TwiML/SSML to speak the
@@ -85,7 +85,7 @@ a bidirectional media stream.
 
 > **parseWebhookEvent**(`ctx`): [`WebhookParseResult`](WebhookParseResult.md)
 
-Defined in: [packages/agentos/src/channels/telephony/IVoiceCallProvider.ts:137](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/channels/telephony/IVoiceCallProvider.ts#L137)
+Defined in: [packages/agentos/src/channels/telephony/IVoiceCallProvider.ts:137](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/telephony/IVoiceCallProvider.ts#L137)
 
 Parse a verified webhook payload into normalized call events.
 Transforms provider-specific event formats into the common
@@ -107,7 +107,7 @@ Transforms provider-specific event formats into the common
 
 > `optional` **playTts**(`input`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/channels/telephony/IVoiceCallProvider.ts:159](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/channels/telephony/IVoiceCallProvider.ts#L159)
+Defined in: [packages/agentos/src/channels/telephony/IVoiceCallProvider.ts:159](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/telephony/IVoiceCallProvider.ts#L159)
 
 Play TTS audio into an active call (non-streaming).
 Used by providers that support in-call TTS via their API
@@ -129,7 +129,7 @@ Used by providers that support in-call TTS via their API
 
 > `optional` **startListening**(`input`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/channels/telephony/IVoiceCallProvider.ts:165](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/channels/telephony/IVoiceCallProvider.ts#L165)
+Defined in: [packages/agentos/src/channels/telephony/IVoiceCallProvider.ts:165](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/telephony/IVoiceCallProvider.ts#L165)
 
 Start STT listening on an active call (non-streaming).
 Used by providers that support in-call speech recognition.
@@ -150,7 +150,7 @@ Used by providers that support in-call speech recognition.
 
 > `optional` **stopListening**(`input`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/channels/telephony/IVoiceCallProvider.ts:170](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/channels/telephony/IVoiceCallProvider.ts#L170)
+Defined in: [packages/agentos/src/channels/telephony/IVoiceCallProvider.ts:170](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/telephony/IVoiceCallProvider.ts#L170)
 
 Stop STT listening on an active call.
 
@@ -170,7 +170,7 @@ Stop STT listening on an active call.
 
 > **verifyWebhook**(`ctx`): [`WebhookVerificationResult`](WebhookVerificationResult.md)
 
-Defined in: [packages/agentos/src/channels/telephony/IVoiceCallProvider.ts:130](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/channels/telephony/IVoiceCallProvider.ts#L130)
+Defined in: [packages/agentos/src/channels/telephony/IVoiceCallProvider.ts:130](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/telephony/IVoiceCallProvider.ts#L130)
 
 Verify the authenticity of an incoming webhook request.
 Each provider has its own signature scheme:

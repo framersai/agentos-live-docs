@@ -1,6 +1,6 @@
 # Interface: MessageButton
 
-Defined in: [packages/agentos/src/channels/types.ts:168](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/channels/types.ts#L168)
+Defined in: [packages/agentos/src/channels/types.ts:168](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/types.ts#L168)
 
 Interactive button in a message.
 
@@ -10,7 +10,7 @@ Interactive button in a message.
 
 > **action**: `"url"` \| `"callback"`
 
-Defined in: [packages/agentos/src/channels/types.ts:172](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/channels/types.ts#L172)
+Defined in: [packages/agentos/src/channels/types.ts:172](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/types.ts#L172)
 
 'callback' triggers an event; 'url' opens a link.
 
@@ -20,7 +20,7 @@ Defined in: [packages/agentos/src/channels/types.ts:172](https://github.com/fram
 
 > **id**: `string`
 
-Defined in: [packages/agentos/src/channels/types.ts:169](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/channels/types.ts#L169)
+Defined in: [packages/agentos/src/channels/types.ts:169](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/types.ts#L169)
 
 ***
 
@@ -28,7 +28,7 @@ Defined in: [packages/agentos/src/channels/types.ts:169](https://github.com/fram
 
 > **label**: `string`
 
-Defined in: [packages/agentos/src/channels/types.ts:170](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/channels/types.ts#L170)
+Defined in: [packages/agentos/src/channels/types.ts:170](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/types.ts#L170)
 
 ***
 
@@ -36,4 +36,4 @@ Defined in: [packages/agentos/src/channels/types.ts:170](https://github.com/fram
 
 > **value**: `string`
 
-Defined in: [packages/agentos/src/channels/types.ts:173](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/channels/types.ts#L173)
+Defined in: [packages/agentos/src/channels/types.ts:173](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/types.ts#L173)

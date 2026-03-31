@@ -1,6 +1,6 @@
 # Interface: SignedEvent
 
-Defined in: [packages/agentos/src/provenance/types.ts:179](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/provenance/types.ts#L179)
+Defined in: [packages/agentos/src/provenance/types.ts:179](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/types.ts#L179)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/provenance/types.ts:179](https://github.com/fr
 
 > **agentId**: `string`
 
-Defined in: [packages/agentos/src/provenance/types.ts:189](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/provenance/types.ts#L189)
+Defined in: [packages/agentos/src/provenance/types.ts:189](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/types.ts#L189)
 
 Agent instance ID that produced this event.
 
@@ -18,7 +18,7 @@ Agent instance ID that produced this event.
 
 > `optional` **anchorId**: `string`
 
-Defined in: [packages/agentos/src/provenance/types.ts:203](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/provenance/types.ts#L203)
+Defined in: [packages/agentos/src/provenance/types.ts:203](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/types.ts#L203)
 
 Optional: Merkle anchor this event belongs to.
 
@@ -28,7 +28,7 @@ Optional: Merkle anchor this event belongs to.
 
 > **hash**: `string`
 
-Defined in: [packages/agentos/src/provenance/types.ts:193](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/provenance/types.ts#L193)
+Defined in: [packages/agentos/src/provenance/types.ts:193](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/types.ts#L193)
 
 SHA-256 hash of this event's preimage.
 
@@ -38,7 +38,7 @@ SHA-256 hash of this event's preimage.
 
 > **id**: `string`
 
-Defined in: [packages/agentos/src/provenance/types.ts:181](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/provenance/types.ts#L181)
+Defined in: [packages/agentos/src/provenance/types.ts:181](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/types.ts#L181)
 
 Unique event ID (UUID v4).
 
@@ -48,7 +48,7 @@ Unique event ID (UUID v4).
 
 > **payload**: `Record`\<`string`, `unknown`\>
 
-Defined in: [packages/agentos/src/provenance/types.ts:197](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/provenance/types.ts#L197)
+Defined in: [packages/agentos/src/provenance/types.ts:197](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/types.ts#L197)
 
 Event-specific payload (JSON-serializable).
 
@@ -58,7 +58,7 @@ Event-specific payload (JSON-serializable).
 
 > **payloadHash**: `string`
 
-Defined in: [packages/agentos/src/provenance/types.ts:195](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/provenance/types.ts#L195)
+Defined in: [packages/agentos/src/provenance/types.ts:195](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/types.ts#L195)
 
 SHA-256 hash of the payload JSON.
 
@@ -68,7 +68,7 @@ SHA-256 hash of the payload JSON.
 
 > **prevHash**: `string`
 
-Defined in: [packages/agentos/src/provenance/types.ts:191](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/provenance/types.ts#L191)
+Defined in: [packages/agentos/src/provenance/types.ts:191](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/types.ts#L191)
 
 SHA-256 hash of the previous event (empty string for genesis).
 
@@ -78,7 +78,7 @@ SHA-256 hash of the previous event (empty string for genesis).
 
 > **sequence**: `number`
 
-Defined in: [packages/agentos/src/provenance/types.ts:187](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/provenance/types.ts#L187)
+Defined in: [packages/agentos/src/provenance/types.ts:187](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/types.ts#L187)
 
 Monotonically increasing sequence number within this agent.
 
@@ -88,7 +88,7 @@ Monotonically increasing sequence number within this agent.
 
 > **signature**: `string`
 
-Defined in: [packages/agentos/src/provenance/types.ts:199](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/provenance/types.ts#L199)
+Defined in: [packages/agentos/src/provenance/types.ts:199](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/types.ts#L199)
 
 Ed25519 signature of the hash, base64-encoded.
 
@@ -98,7 +98,7 @@ Ed25519 signature of the hash, base64-encoded.
 
 > **signerPublicKey**: `string`
 
-Defined in: [packages/agentos/src/provenance/types.ts:201](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/provenance/types.ts#L201)
+Defined in: [packages/agentos/src/provenance/types.ts:201](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/types.ts#L201)
 
 Base64-encoded Ed25519 public key of the signing agent.
 
@@ -108,7 +108,7 @@ Base64-encoded Ed25519 public key of the signing agent.
 
 > **timestamp**: `string`
 
-Defined in: [packages/agentos/src/provenance/types.ts:185](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/provenance/types.ts#L185)
+Defined in: [packages/agentos/src/provenance/types.ts:185](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/types.ts#L185)
 
 ISO 8601 timestamp.
 
@@ -118,6 +118,6 @@ ISO 8601 timestamp.
 
 > **type**: [`ProvenanceEventType`](../type-aliases/ProvenanceEventType.md)
 
-Defined in: [packages/agentos/src/provenance/types.ts:183](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/provenance/types.ts#L183)
+Defined in: [packages/agentos/src/provenance/types.ts:183](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/types.ts#L183)
 
 Event type.

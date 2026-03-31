@@ -1,6 +1,6 @@
 # Class: WorkflowBuilder
 
-Defined in: [packages/agentos/src/orchestration/builders/WorkflowBuilder.ts:178](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/builders/WorkflowBuilder.ts#L178)
+Defined in: [packages/agentos/src/orchestration/builders/WorkflowBuilder.ts:178](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/builders/WorkflowBuilder.ts#L178)
 
 Fluent builder for deterministic DAG workflows.
 
@@ -16,7 +16,7 @@ Call `.compile()` to validate the graph (must be acyclic) and obtain a
 
 > **new WorkflowBuilder**(`name`): `WorkflowBuilder`
 
-Defined in: [packages/agentos/src/orchestration/builders/WorkflowBuilder.ts:197](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/builders/WorkflowBuilder.ts#L197)
+Defined in: [packages/agentos/src/orchestration/builders/WorkflowBuilder.ts:197](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/builders/WorkflowBuilder.ts#L197)
 
 #### Parameters
 
@@ -36,7 +36,7 @@ Human-readable workflow name.
 
 > **branch**(`condition`, `routes`): `this`
 
-Defined in: [packages/agentos/src/orchestration/builders/WorkflowBuilder.ts:295](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/builders/WorkflowBuilder.ts#L295)
+Defined in: [packages/agentos/src/orchestration/builders/WorkflowBuilder.ts:295](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/builders/WorkflowBuilder.ts#L295)
 
 Append a conditional branch to the workflow.
 
@@ -68,7 +68,7 @@ Map of route key → step config for each branch arm.
 
 > **compile**(`options?`): [`CompiledWorkflow`](CompiledWorkflow.md)
 
-Defined in: [packages/agentos/src/orchestration/builders/WorkflowBuilder.ts:344](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/builders/WorkflowBuilder.ts#L344)
+Defined in: [packages/agentos/src/orchestration/builders/WorkflowBuilder.ts:344](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/builders/WorkflowBuilder.ts#L344)
 
 Compile the workflow into an executable `CompiledWorkflow`.
 
@@ -111,7 +111,7 @@ When the compiled graph contains a cycle (should never happen via this API).
 
 > **input**(`schema`): `this`
 
-Defined in: [packages/agentos/src/orchestration/builders/WorkflowBuilder.ts:213](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/builders/WorkflowBuilder.ts#L213)
+Defined in: [packages/agentos/src/orchestration/builders/WorkflowBuilder.ts:213](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/builders/WorkflowBuilder.ts#L213)
 
 Declare the input schema for this workflow.
 
@@ -136,7 +136,7 @@ Input schema (Zod instance or plain JSON Schema object).
 
 > **parallel**(`steps`, `join`): `this`
 
-Defined in: [packages/agentos/src/orchestration/builders/WorkflowBuilder.ts:310](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/builders/WorkflowBuilder.ts#L310)
+Defined in: [packages/agentos/src/orchestration/builders/WorkflowBuilder.ts:310](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/builders/WorkflowBuilder.ts#L310)
 
 Append a parallel fan-out to the workflow.
 
@@ -182,7 +182,7 @@ Fan-in configuration including merge strategy and reducers.
 
 > **returns**(`schema`): `this`
 
-Defined in: [packages/agentos/src/orchestration/builders/WorkflowBuilder.ts:223](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/builders/WorkflowBuilder.ts#L223)
+Defined in: [packages/agentos/src/orchestration/builders/WorkflowBuilder.ts:223](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/builders/WorkflowBuilder.ts#L223)
 
 Declare the return (output artifacts) schema for this workflow.
 
@@ -204,7 +204,7 @@ Output schema (Zod instance or plain JSON Schema object).
 
 > **step**(`id`, `config`): `this`
 
-Defined in: [packages/agentos/src/orchestration/builders/WorkflowBuilder.ts:270](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/builders/WorkflowBuilder.ts#L270)
+Defined in: [packages/agentos/src/orchestration/builders/WorkflowBuilder.ts:270](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/builders/WorkflowBuilder.ts#L270)
 
 Append a single named step to the workflow.
 
@@ -235,7 +235,7 @@ Execution and policy configuration for the step.
 
 > **then**(`id`, `config`): `this`
 
-Defined in: [packages/agentos/src/orchestration/builders/WorkflowBuilder.ts:281](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/builders/WorkflowBuilder.ts#L281)
+Defined in: [packages/agentos/src/orchestration/builders/WorkflowBuilder.ts:281](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/builders/WorkflowBuilder.ts#L281)
 
 Alias for `step()` — reads more naturally when chaining sequential steps.
 
@@ -263,7 +263,7 @@ Execution and policy configuration.
 
 > **transport**(`type`, `config?`): `this`
 
-Defined in: [packages/agentos/src/orchestration/builders/WorkflowBuilder.ts:252](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/builders/WorkflowBuilder.ts#L252)
+Defined in: [packages/agentos/src/orchestration/builders/WorkflowBuilder.ts:252](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/builders/WorkflowBuilder.ts#L252)
 
 Attach a transport backend to this workflow.
 

@@ -1,6 +1,6 @@
 # Interface: ITracer
 
-Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:243](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/evaluation/observability/ITracer.ts#L243)
+Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:243](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/evaluation/observability/ITracer.ts#L243)
 
 Interface for the distributed tracer.
 
@@ -34,7 +34,7 @@ try {
 
 > `readonly` **name**: `string`
 
-Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:247](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/evaluation/observability/ITracer.ts#L247)
+Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:247](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/evaluation/observability/ITracer.ts#L247)
 
 Gets the tracer name.
 
@@ -44,7 +44,7 @@ Gets the tracer name.
 
 > **addExporter**(`exporter`): `void`
 
-Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:302](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/evaluation/observability/ITracer.ts#L302)
+Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:302](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/evaluation/observability/ITracer.ts#L302)
 
 Adds a span exporter.
 
@@ -66,7 +66,7 @@ Exporter to add
 
 > **extract**(`carrier`): [`TraceContext`](TraceContext.md) \| `undefined`
 
-Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:283](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/evaluation/observability/ITracer.ts#L283)
+Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:283](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/evaluation/observability/ITracer.ts#L283)
 
 Extracts trace context from a carrier.
 
@@ -90,7 +90,7 @@ Extracted context or undefined
 
 > **flush**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:307](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/evaluation/observability/ITracer.ts#L307)
+Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:307](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/evaluation/observability/ITracer.ts#L307)
 
 Forces export of all completed spans.
 
@@ -104,7 +104,7 @@ Forces export of all completed spans.
 
 > **getActiveSpans**(): [`ISpan`](ISpan.md)[]
 
-Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:296](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/evaluation/observability/ITracer.ts#L296)
+Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:296](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/evaluation/observability/ITracer.ts#L296)
 
 Gets all active spans.
 
@@ -120,7 +120,7 @@ Array of active spans
 
 > **getCurrentContext**(): [`TraceContext`](TraceContext.md) \| `undefined`
 
-Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:252](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/evaluation/observability/ITracer.ts#L252)
+Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:252](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/evaluation/observability/ITracer.ts#L252)
 
 Gets the current trace context.
 
@@ -134,7 +134,7 @@ Gets the current trace context.
 
 > **getSpan**(`spanId`): [`ISpan`](ISpan.md) \| `undefined`
 
-Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:290](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/evaluation/observability/ITracer.ts#L290)
+Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:290](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/evaluation/observability/ITracer.ts#L290)
 
 Gets a span by ID.
 
@@ -158,7 +158,7 @@ The span or undefined
 
 > **getStats**(): [`TracerStats`](TracerStats.md)
 
-Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:312](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/evaluation/observability/ITracer.ts#L312)
+Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:312](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/evaluation/observability/ITracer.ts#L312)
 
 Gets tracer statistics.
 
@@ -172,7 +172,7 @@ Gets tracer statistics.
 
 > **inject**\<`T`\>(`carrier`): `T`
 
-Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:276](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/evaluation/observability/ITracer.ts#L276)
+Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:276](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/evaluation/observability/ITracer.ts#L276)
 
 Injects trace context into a carrier (for propagation).
 
@@ -202,7 +202,7 @@ The carrier with injected context
 
 > **resetStats**(): `void`
 
-Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:317](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/evaluation/observability/ITracer.ts#L317)
+Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:317](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/evaluation/observability/ITracer.ts#L317)
 
 Resets statistics.
 
@@ -216,7 +216,7 @@ Resets statistics.
 
 > **shutdown**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:322](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/evaluation/observability/ITracer.ts#L322)
+Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:322](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/evaluation/observability/ITracer.ts#L322)
 
 Shuts down the tracer.
 
@@ -230,7 +230,7 @@ Shuts down the tracer.
 
 > **startSpan**(`name`, `options?`): [`ISpan`](ISpan.md)
 
-Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:260](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/evaluation/observability/ITracer.ts#L260)
+Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:260](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/evaluation/observability/ITracer.ts#L260)
 
 Starts a new span.
 
@@ -260,7 +260,7 @@ The created span
 
 > **withSpan**\<`T`\>(`name`, `fn`, `options?`): `Promise`\<`T`\>
 
-Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:269](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/evaluation/observability/ITracer.ts#L269)
+Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:269](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/evaluation/observability/ITracer.ts#L269)
 
 Wraps an async function with tracing.
 

@@ -1,6 +1,6 @@
 # Interface: SkillInvocationPolicy
 
-Defined in: [packages/agentos/src/skills/types.ts:125](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/skills/types.ts#L125)
+Defined in: [packages/agentos/src/skills/types.ts:125](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/skills/types.ts#L125)
 
 Policy controlling how a skill can be invoked.
 
@@ -10,7 +10,7 @@ Policy controlling how a skill can be invoked.
 
 > **disableModelInvocation**: `boolean`
 
-Defined in: [packages/agentos/src/skills/types.ts:130](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/skills/types.ts#L130)
+Defined in: [packages/agentos/src/skills/types.ts:130](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/skills/types.ts#L130)
 
 Whether to disable LLM model invocation
 
@@ -20,6 +20,6 @@ Whether to disable LLM model invocation
 
 > **userInvocable**: `boolean`
 
-Defined in: [packages/agentos/src/skills/types.ts:127](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/skills/types.ts#L127)
+Defined in: [packages/agentos/src/skills/types.ts:127](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/skills/types.ts#L127)
 
 Whether users can invoke directly via commands

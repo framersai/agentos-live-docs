@@ -1,6 +1,6 @@
 # Interface: GuardrailConfig
 
-Defined in: [packages/agentos/src/safety/guardrails/IGuardrailService.ts:220](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/safety/guardrails/IGuardrailService.ts#L220)
+Defined in: [packages/agentos/src/safety/guardrails/IGuardrailService.ts:220](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/safety/guardrails/IGuardrailService.ts#L220)
 
 Configuration for guardrail evaluation behavior.
 
@@ -29,7 +29,7 @@ const config: GuardrailConfig = {
 
 > `optional` **canSanitize**: `boolean`
 
-Defined in: [packages/agentos/src/safety/guardrails/IGuardrailService.ts:270](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/safety/guardrails/IGuardrailService.ts#L270)
+Defined in: [packages/agentos/src/safety/guardrails/IGuardrailService.ts:270](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/safety/guardrails/IGuardrailService.ts#L270)
 
 Whether this guardrail may return SANITIZE actions that modify content.
 
@@ -56,7 +56,7 @@ false
 
 > `optional` **evaluateStreamingChunks**: `boolean`
 
-Defined in: [packages/agentos/src/safety/guardrails/IGuardrailService.ts:241](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/safety/guardrails/IGuardrailService.ts#L241)
+Defined in: [packages/agentos/src/safety/guardrails/IGuardrailService.ts:241](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/safety/guardrails/IGuardrailService.ts#L241)
 
 Enable real-time evaluation of streaming chunks.
 
@@ -87,7 +87,7 @@ false
 
 > `optional` **maxStreamingEvaluations**: `number`
 
-Defined in: [packages/agentos/src/safety/guardrails/IGuardrailService.ts:252](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/safety/guardrails/IGuardrailService.ts#L252)
+Defined in: [packages/agentos/src/safety/guardrails/IGuardrailService.ts:252](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/safety/guardrails/IGuardrailService.ts#L252)
 
 Maximum streaming evaluations per request.
 
@@ -107,7 +107,7 @@ undefined (no limit)
 
 > `optional` **streamingMode**: `"per-chunk"` \| `"sentence-buffered"`
 
-Defined in: [packages/agentos/src/safety/guardrails/IGuardrailService.ts:300](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/safety/guardrails/IGuardrailService.ts#L300)
+Defined in: [packages/agentos/src/safety/guardrails/IGuardrailService.ts:300](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/safety/guardrails/IGuardrailService.ts#L300)
 
 Streaming evaluation mode.
 
@@ -130,7 +130,7 @@ Only applies when [evaluateStreamingChunks](#evaluatestreamingchunks) is `true`.
 
 > `optional` **timeoutMs**: `number`
 
-Defined in: [packages/agentos/src/safety/guardrails/IGuardrailService.ts:286](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/safety/guardrails/IGuardrailService.ts#L286)
+Defined in: [packages/agentos/src/safety/guardrails/IGuardrailService.ts:286](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/safety/guardrails/IGuardrailService.ts#L286)
 
 Maximum time in milliseconds to wait for this guardrail's evaluation.
 

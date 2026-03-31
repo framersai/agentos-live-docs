@@ -1,6 +1,6 @@
 # Interface: RetrievalUpdateResult
 
-Defined in: [packages/agentos/src/memory/core/decay/DecayModel.ts:40](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/core/decay/DecayModel.ts#L40)
+Defined in: [packages/agentos/src/memory/core/decay/DecayModel.ts:40](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/core/decay/DecayModel.ts#L40)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/memory/core/decay/DecayModel.ts:40](https://gi
 
 > **accessCount**: `number`
 
-Defined in: [packages/agentos/src/memory/core/decay/DecayModel.ts:50](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/core/decay/DecayModel.ts#L50)
+Defined in: [packages/agentos/src/memory/core/decay/DecayModel.ts:50](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/core/decay/DecayModel.ts#L50)
 
 Incremented access count.
 
@@ -18,7 +18,7 @@ Incremented access count.
 
 > **encodingStrength**: `number`
 
-Defined in: [packages/agentos/src/memory/core/decay/DecayModel.ts:42](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/core/decay/DecayModel.ts#L42)
+Defined in: [packages/agentos/src/memory/core/decay/DecayModel.ts:42](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/core/decay/DecayModel.ts#L42)
 
 New encoding strength (small bump).
 
@@ -28,7 +28,7 @@ New encoding strength (small bump).
 
 > **lastAccessedAt**: `number`
 
-Defined in: [packages/agentos/src/memory/core/decay/DecayModel.ts:48](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/core/decay/DecayModel.ts#L48)
+Defined in: [packages/agentos/src/memory/core/decay/DecayModel.ts:48](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/core/decay/DecayModel.ts#L48)
 
 Updated timestamp.
 
@@ -38,7 +38,7 @@ Updated timestamp.
 
 > **nextReinforcementAt**: `number`
 
-Defined in: [packages/agentos/src/memory/core/decay/DecayModel.ts:54](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/core/decay/DecayModel.ts#L54)
+Defined in: [packages/agentos/src/memory/core/decay/DecayModel.ts:54](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/core/decay/DecayModel.ts#L54)
 
 Next reinforcement due.
 
@@ -48,7 +48,7 @@ Next reinforcement due.
 
 > **reinforcementInterval**: `number`
 
-Defined in: [packages/agentos/src/memory/core/decay/DecayModel.ts:52](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/core/decay/DecayModel.ts#L52)
+Defined in: [packages/agentos/src/memory/core/decay/DecayModel.ts:52](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/core/decay/DecayModel.ts#L52)
 
 Doubled reinforcement interval.
 
@@ -58,7 +58,7 @@ Doubled reinforcement interval.
 
 > **retrievalCount**: `number`
 
-Defined in: [packages/agentos/src/memory/core/decay/DecayModel.ts:46](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/core/decay/DecayModel.ts#L46)
+Defined in: [packages/agentos/src/memory/core/decay/DecayModel.ts:46](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/core/decay/DecayModel.ts#L46)
 
 Incremented retrieval count.
 
@@ -68,6 +68,6 @@ Incremented retrieval count.
 
 > **stability**: `number`
 
-Defined in: [packages/agentos/src/memory/core/decay/DecayModel.ts:44](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/core/decay/DecayModel.ts#L44)
+Defined in: [packages/agentos/src/memory/core/decay/DecayModel.ts:44](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/core/decay/DecayModel.ts#L44)
 
 New stability (grows based on difficulty).

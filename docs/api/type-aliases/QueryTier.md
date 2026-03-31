@@ -2,7 +2,7 @@
 
 > **QueryTier** = `0` \| `1` \| `2` \| `3`
 
-Defined in: [packages/agentos/src/query-router/types.ts:43](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/query-router/types.ts#L43)
+Defined in: [packages/agentos/src/query-router/types.ts:43](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/query-router/types.ts#L43)
 
 Complexity tier assigned to an incoming query.
 

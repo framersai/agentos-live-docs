@@ -1,6 +1,6 @@
 # Class: PlivoMediaStreamParser
 
-Defined in: [packages/agentos/src/channels/telephony/parsers/PlivoMediaStreamParser.ts:68](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/channels/telephony/parsers/PlivoMediaStreamParser.ts#L68)
+Defined in: [packages/agentos/src/channels/telephony/parsers/PlivoMediaStreamParser.ts:68](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/telephony/parsers/PlivoMediaStreamParser.ts#L68)
 
 Parses the Plivo Audio Stream WebSocket protocol.
 
@@ -36,7 +36,7 @@ No explicit connection acknowledgment is required after the handshake.
 
 > **formatOutgoing**(`audio`, `_streamSid`): `string`
 
-Defined in: [packages/agentos/src/channels/telephony/parsers/PlivoMediaStreamParser.ts:156](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/channels/telephony/parsers/PlivoMediaStreamParser.ts#L156)
+Defined in: [packages/agentos/src/channels/telephony/parsers/PlivoMediaStreamParser.ts:156](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/telephony/parsers/PlivoMediaStreamParser.ts#L156)
 
 Encode mu-law audio for transmission back to Plivo.
 
@@ -76,7 +76,7 @@ JSON string: `{ event: 'playAudio', media: { payload: '<base64>' } }`
 
 > **parseIncoming**(`data`): [`MediaStreamIncoming`](../type-aliases/MediaStreamIncoming.md) \| `null`
 
-Defined in: [packages/agentos/src/channels/telephony/parsers/PlivoMediaStreamParser.ts:87](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/channels/telephony/parsers/PlivoMediaStreamParser.ts#L87)
+Defined in: [packages/agentos/src/channels/telephony/parsers/PlivoMediaStreamParser.ts:87](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/telephony/parsers/PlivoMediaStreamParser.ts#L87)
 
 Parse a raw WebSocket frame from Plivo's audio stream.
 

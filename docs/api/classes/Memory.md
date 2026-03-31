@@ -1,6 +1,6 @@
 # Class: Memory
 
-Defined in: [packages/agentos/src/memory/io/facade/Memory.ts:172](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/io/facade/Memory.ts#L172)
+Defined in: [packages/agentos/src/memory/io/facade/Memory.ts:172](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/io/facade/Memory.ts#L172)
 
 Unified public API for the AgentOS memory system.
 
@@ -27,7 +27,7 @@ await mem.close();
 
 > **get** **graph**(): [`IKnowledgeGraph`](../interfaces/IKnowledgeGraph.md)
 
-Defined in: [packages/agentos/src/memory/io/facade/Memory.ts:814](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/io/facade/Memory.ts#L814)
+Defined in: [packages/agentos/src/memory/io/facade/Memory.ts:814](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/io/facade/Memory.ts#L814)
 
 Access the underlying IKnowledgeGraph implementation.
 
@@ -44,7 +44,7 @@ lookups) that are not exposed on the facade directly.
 
 > **addEntity**(`entity`): `Promise`\<[`KnowledgeEntity`](../interfaces/KnowledgeEntity.md)\>
 
-Defined in: [packages/agentos/src/memory/io/facade/Memory.ts:753](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/io/facade/Memory.ts#L753)
+Defined in: [packages/agentos/src/memory/io/facade/Memory.ts:753](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/io/facade/Memory.ts#L753)
 
 Add or update an entity in the knowledge graph.
 
@@ -71,7 +71,7 @@ The complete, persisted entity.
 
 > **addRelation**(`relation`): `Promise`\<[`KnowledgeRelation`](../interfaces/KnowledgeRelation.md)\>
 
-Defined in: [packages/agentos/src/memory/io/facade/Memory.ts:784](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/io/facade/Memory.ts#L784)
+Defined in: [packages/agentos/src/memory/io/facade/Memory.ts:784](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/io/facade/Memory.ts#L784)
 
 Add or update a relation (edge) in the knowledge graph.
 
@@ -98,7 +98,7 @@ The complete, persisted relation.
 
 > **close**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/memory/io/facade/Memory.ts:1242](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/io/facade/Memory.ts#L1242)
+Defined in: [packages/agentos/src/memory/io/facade/Memory.ts:1242](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/io/facade/Memory.ts#L1242)
 
 Close the Memory instance and release all resources.
 
@@ -115,7 +115,7 @@ the agent shuts down.
 
 > **consolidate**(`options?`): `Promise`\<[`MemoryConsolidationResult`](../interfaces/MemoryConsolidationResult.md)\>
 
-Defined in: [packages/agentos/src/memory/io/facade/Memory.ts:830](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/io/facade/Memory.ts#L830)
+Defined in: [packages/agentos/src/memory/io/facade/Memory.ts:830](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/io/facade/Memory.ts#L830)
 
 Run one consolidation cycle (prune, merge, strengthen, derive, compact,
 re-index).
@@ -146,7 +146,7 @@ When `selfImprove` was set to `false` in the config.
 
 > **createTools**(`options?`): [`ITool`](../interfaces/ITool.md)\<`any`, `any`\>[]
 
-Defined in: [packages/agentos/src/memory/io/facade/Memory.ts:1121](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/io/facade/Memory.ts#L1121)
+Defined in: [packages/agentos/src/memory/io/facade/Memory.ts:1121](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/io/facade/Memory.ts#L1121)
 
 Create runtime `ITool` instances backed by this memory facade's SQLite brain.
 
@@ -182,7 +182,7 @@ there is no backing [ConsolidationLoop](ConsolidationLoop.md) instance.
 
 > **export**(`outputPath`, `options?`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/memory/io/facade/Memory.ts:954](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/io/facade/Memory.ts#L954)
+Defined in: [packages/agentos/src/memory/io/facade/Memory.ts:954](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/io/facade/Memory.ts#L954)
 
 Export the memory store to a file or directory.
 
@@ -215,7 +215,7 @@ Optional format and content controls.
 
 > **exportToString**(`options?`): `Promise`\<`string`\>
 
-Defined in: [packages/agentos/src/memory/io/facade/Memory.ts:1094](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/io/facade/Memory.ts#L1094)
+Defined in: [packages/agentos/src/memory/io/facade/Memory.ts:1094](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/io/facade/Memory.ts#L1094)
 
 Export the full brain state as a JSON string without filesystem access.
 
@@ -242,7 +242,7 @@ Pretty-printed JSON string of the full brain payload.
 
 > **feedback**(`traceId`, `signal`, `query?`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/memory/io/facade/Memory.ts:853](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/io/facade/Memory.ts#L853)
+Defined in: [packages/agentos/src/memory/io/facade/Memory.ts:853](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/io/facade/Memory.ts#L853)
 
 Record retrieval feedback for a memory trace.
 
@@ -279,7 +279,7 @@ Optional retrieval context, typically the original user query.
 
 > **feedbackFromResponse**(`injectedTraces`, `response`, `query?`): `Promise`\<[`RetrievalFeedback`](../interfaces/RetrievalFeedback.md)[]\>
 
-Defined in: [packages/agentos/src/memory/io/facade/Memory.ts:930](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/io/facade/Memory.ts#L930)
+Defined in: [packages/agentos/src/memory/io/facade/Memory.ts:930](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/io/facade/Memory.ts#L930)
 
 Detect and persist used/ignored feedback for a batch of injected traces
 based on the assistant's final response text.
@@ -311,7 +311,7 @@ already know which traces were injected into the prompt.
 
 > **forget**(`traceId`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/memory/io/facade/Memory.ts:632](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/io/facade/Memory.ts#L632)
+Defined in: [packages/agentos/src/memory/io/facade/Memory.ts:632](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/io/facade/Memory.ts#L632)
 
 Soft-delete a memory trace by setting `deleted = 1`.
 
@@ -336,7 +336,7 @@ The ID of the trace to forget.
 
 > **health**(): `Promise`\<[`MemoryHealth`](../interfaces/MemoryHealth.md)\>
 
-Defined in: [packages/agentos/src/memory/io/facade/Memory.ts:1148](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/io/facade/Memory.ts#L1148)
+Defined in: [packages/agentos/src/memory/io/facade/Memory.ts:1148](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/io/facade/Memory.ts#L1148)
 
 Return a health snapshot of the memory store.
 
@@ -353,7 +353,7 @@ Queries aggregate statistics from all tables and returns a
 
 > **importFrom**(`source`, `options?`): `Promise`\<[`ImportResult`](../interfaces/ImportResult.md)\>
 
-Defined in: [packages/agentos/src/memory/io/facade/Memory.ts:1000](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/io/facade/Memory.ts#L1000)
+Defined in: [packages/agentos/src/memory/io/facade/Memory.ts:1000](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/io/facade/Memory.ts#L1000)
 
 Import memory data from a file or directory.
 
@@ -386,7 +386,7 @@ Summary of the import operation.
 
 > **importFromString**(`content`, `format`, `options?`): `Promise`\<[`ImportResult`](../interfaces/ImportResult.md)\>
 
-Defined in: [packages/agentos/src/memory/io/facade/Memory.ts:1061](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/io/facade/Memory.ts#L1061)
+Defined in: [packages/agentos/src/memory/io/facade/Memory.ts:1061](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/io/facade/Memory.ts#L1061)
 
 Import memory data from a string without filesystem access.
 
@@ -425,7 +425,7 @@ Summary of the import operation.
 
 > **ingest**(`source`, `options?`): `Promise`\<[`IngestResult`](../interfaces/IngestResult.md)\>
 
-Defined in: [packages/agentos/src/memory/io/facade/Memory.ts:659](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/io/facade/Memory.ts#L659)
+Defined in: [packages/agentos/src/memory/io/facade/Memory.ts:659](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/io/facade/Memory.ts#L659)
 
 Ingest documents from a file, directory, or URL.
 
@@ -462,7 +462,7 @@ Summary of the ingestion run.
 
 > **recall**(`query`, `options?`): `Promise`\<[`ScoredTrace`](../interfaces/ScoredTrace.md)[]\>
 
-Defined in: [packages/agentos/src/memory/io/facade/Memory.ts:478](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/io/facade/Memory.ts#L478)
+Defined in: [packages/agentos/src/memory/io/facade/Memory.ts:478](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/io/facade/Memory.ts#L478)
 
 Search for memory traces matching a natural-language query.
 
@@ -496,7 +496,7 @@ Ranked array of [ScoredTrace](../interfaces/ScoredTrace.md) results.
 
 > **remember**(`content`, `options?`): `Promise`\<[`MemoryTrace`](../interfaces/MemoryTrace.md)\>
 
-Defined in: [packages/agentos/src/memory/io/facade/Memory.ts:337](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/io/facade/Memory.ts#L337)
+Defined in: [packages/agentos/src/memory/io/facade/Memory.ts:337](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/io/facade/Memory.ts#L337)
 
 Store a new memory trace.
 
@@ -530,7 +530,7 @@ The created MemoryTrace-like object.
 
 > `static` **create**(`config?`): `Promise`\<`Memory`\>
 
-Defined in: [packages/agentos/src/memory/io/facade/Memory.ts:278](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/io/facade/Memory.ts#L278)
+Defined in: [packages/agentos/src/memory/io/facade/Memory.ts:278](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/io/facade/Memory.ts#L278)
 
 Create a new Memory instance and wire together all subsystems.
 

@@ -1,6 +1,6 @@
 # Interface: ISpeechToTextProvider
 
-Defined in: [packages/agentos/src/rag/multimodal/types.ts:308](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/rag/multimodal/types.ts#L308)
+Defined in: [packages/agentos/src/rag/multimodal/types.ts:308](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/multimodal/types.ts#L308)
 
 Minimal interface for a speech-to-text provider.
 
@@ -29,7 +29,7 @@ const sttProvider: ISpeechToTextProvider = {
 
 > **transcribe**(`audio`, `language?`): `Promise`\<`string`\>
 
-Defined in: [packages/agentos/src/rag/multimodal/types.ts:316](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/rag/multimodal/types.ts#L316)
+Defined in: [packages/agentos/src/rag/multimodal/types.ts:316](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/multimodal/types.ts#L316)
 
 Transcribe audio data to text.
 

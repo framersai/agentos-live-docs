@@ -1,8 +1,8 @@
 # Type Alias: NodeExecutorConfig
 
-> **NodeExecutorConfig** = \{ `instructions`: `string`; `maxInternalIterations?`: `number`; `maxTokens?`: `number`; `parallelTools?`: `boolean`; `temperature?`: `number`; `type`: `"gmi"`; \} \| \{ `args?`: `Record`\<`string`, `unknown`\>; `toolName`: `string`; `type`: `"tool"`; \} \| \{ `extensionId`: `string`; `method`: `string`; `type`: `"extension"`; \} \| \{ `prompt`: `string`; `type`: `"human"`; \} \| \{ `guardrailIds`: `string`[]; `onViolation`: `"block"` \| `"reroute"` \| `"warn"` \| `"sanitize"`; `rerouteTarget?`: `string`; `type`: `"guardrail"`; \} \| \{ `condition`: [`GraphCondition`](GraphCondition.md); `type`: `"router"`; \} \| \{ `graphId`: `string`; `inputMapping?`: `Record`\<`string`, `string`\>; `outputMapping?`: `Record`\<`string`, `string`\>; `type`: `"subgraph"`; \} \| \{ `type`: `"voice"`; `voiceConfig`: [`VoiceNodeConfig`](../interfaces/VoiceNodeConfig.md); \}
+> **NodeExecutorConfig** = \{ `instructions`: `string`; `maxInternalIterations?`: `number`; `maxTokens?`: `number`; `parallelTools?`: `boolean`; `temperature?`: `number`; `type`: `"gmi"`; \} \| \{ `args?`: `Record`\<`string`, `unknown`\>; `toolName`: `string`; `type`: `"tool"`; \} \| \{ `extensionId`: `string`; `method`: `string`; `type`: `"extension"`; \} \| \{ `autoAccept?`: `boolean`; `autoReject?`: `boolean` \| `string`; `guardrailOverride?`: `boolean`; `judge?`: \{ `confidenceThreshold?`: `number`; `criteria?`: `string`; `model?`: `string`; `provider?`: `string`; \}; `onTimeout?`: `"accept"` \| `"reject"` \| `"error"`; `prompt`: `string`; `type`: `"human"`; \} \| \{ `guardrailIds`: `string`[]; `onViolation`: `"block"` \| `"reroute"` \| `"warn"` \| `"sanitize"`; `rerouteTarget?`: `string`; `type`: `"guardrail"`; \} \| \{ `condition`: [`GraphCondition`](GraphCondition.md); `type`: `"router"`; \} \| \{ `graphId`: `string`; `inputMapping?`: `Record`\<`string`, `string`\>; `outputMapping?`: `Record`\<`string`, `string`\>; `type`: `"subgraph"`; \} \| \{ `type`: `"voice"`; `voiceConfig`: [`VoiceNodeConfig`](../interfaces/VoiceNodeConfig.md); \}
 
-Defined in: [packages/agentos/src/orchestration/ir/types.ts:156](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/ir/types.ts#L156)
+Defined in: [packages/agentos/src/orchestration/ir/types.ts:162](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/ir/types.ts#L162)
 
 Describes how the runtime should execute a `GraphNode`.  Each variant maps to a
 distinct execution strategy.
@@ -90,7 +90,73 @@ Name of the extension method to call.
 
 > **type**: `"extension"`
 
-\{ `prompt`: `string`; `type`: `"human"`; \}
+\{ `autoAccept?`: `boolean`; `autoReject?`: `boolean` \| `string`; `guardrailOverride?`: `boolean`; `judge?`: \{ `confidenceThreshold?`: `number`; `criteria?`: `string`; `model?`: `string`; `provider?`: `string`; \}; `onTimeout?`: `"accept"` \| `"reject"` \| `"error"`; `prompt`: `string`; `type`: `"human"`; \}
+
+### autoAccept?
+
+> `optional` **autoAccept**: `boolean`
+
+When `true`, the node auto-accepts without waiting for human input. Useful for testing.
+
+### autoReject?
+
+> `optional` **autoReject**: `boolean` \| `string`
+
+When `true` or a string, the node auto-rejects. A string value is used as the rejection reason.
+
+### guardrailOverride?
+
+> `optional` **guardrailOverride**: `boolean`
+
+Run post-approval guardrails after an automated approval path
+(`autoAccept`, `judge`, or timeout-accept). Defaults to `true`.
+
+### judge?
+
+> `optional` **judge**: `object`
+
+Delegates the approval decision to an LLM judge instead of a human.
+When the judge's confidence falls below `confidenceThreshold`, execution
+falls through to the normal human interrupt.
+
+#### judge.confidenceThreshold?
+
+> `optional` **confidenceThreshold**: `number`
+
+Confidence threshold (0–1). Below this, fall through to human interrupt. Defaults to `0.7`.
+
+#### judge.criteria?
+
+> `optional` **criteria**: `string`
+
+Custom evaluation criteria/rubric.
+
+#### judge.model?
+
+> `optional` **model**: `string`
+
+LLM model to use for the judge call. Defaults to `'gpt-4o-mini'`.
+
+#### judge.provider?
+
+> `optional` **provider**: `string`
+
+LLM provider. Defaults to `'openai'`.
+
+### onTimeout?
+
+> `optional` **onTimeout**: `"accept"` \| `"reject"` \| `"error"`
+
+Behaviour when the node's `timeout` expires.
+- `'accept'` — auto-accept.
+- `'reject'` — auto-reject.
+- `'error'`  — throw a timeout error (default behaviour).
+
+#### Default
+
+```ts
+'error'
+```
 
 ### prompt
 

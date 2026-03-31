@@ -1,6 +1,6 @@
 # Interface: WriteResult
 
-Defined in: [packages/agentos/src/memory/core/working/MarkdownWorkingMemory.ts:17](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/core/working/MarkdownWorkingMemory.ts#L17)
+Defined in: [packages/agentos/src/memory/core/working/MarkdownWorkingMemory.ts:17](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/core/working/MarkdownWorkingMemory.ts#L17)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/memory/core/working/MarkdownWorkingMemory.ts:1
 
 > `optional` **error**: `string`
 
-Defined in: [packages/agentos/src/memory/core/working/MarkdownWorkingMemory.ts:21](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/core/working/MarkdownWorkingMemory.ts#L21)
+Defined in: [packages/agentos/src/memory/core/working/MarkdownWorkingMemory.ts:21](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/core/working/MarkdownWorkingMemory.ts#L21)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [packages/agentos/src/memory/core/working/MarkdownWorkingMemory.ts:2
 
 > **success**: `boolean`
 
-Defined in: [packages/agentos/src/memory/core/working/MarkdownWorkingMemory.ts:18](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/core/working/MarkdownWorkingMemory.ts#L18)
+Defined in: [packages/agentos/src/memory/core/working/MarkdownWorkingMemory.ts:18](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/core/working/MarkdownWorkingMemory.ts#L18)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: [packages/agentos/src/memory/core/working/MarkdownWorkingMemory.ts:1
 
 > **tokensUsed**: `number`
 
-Defined in: [packages/agentos/src/memory/core/working/MarkdownWorkingMemory.ts:20](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/core/working/MarkdownWorkingMemory.ts#L20)
+Defined in: [packages/agentos/src/memory/core/working/MarkdownWorkingMemory.ts:20](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/core/working/MarkdownWorkingMemory.ts#L20)
 
 ***
 
@@ -32,4 +32,4 @@ Defined in: [packages/agentos/src/memory/core/working/MarkdownWorkingMemory.ts:2
 
 > **truncated**: `boolean`
 
-Defined in: [packages/agentos/src/memory/core/working/MarkdownWorkingMemory.ts:19](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/core/working/MarkdownWorkingMemory.ts#L19)
+Defined in: [packages/agentos/src/memory/core/working/MarkdownWorkingMemory.ts:19](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/core/working/MarkdownWorkingMemory.ts#L19)

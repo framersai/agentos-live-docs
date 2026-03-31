@@ -1,6 +1,6 @@
 # Interface: SpreadingActivationInput
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/SpreadingActivation.ts:23](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/retrieval/graph/SpreadingActivation.ts#L23)
+Defined in: [packages/agentos/src/memory/retrieval/graph/SpreadingActivation.ts:23](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/SpreadingActivation.ts#L23)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/memory/retrieval/graph/SpreadingActivation.ts:
 
 > `optional` **config**: [`SpreadingActivationConfig`](SpreadingActivationConfig.md)
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/SpreadingActivation.ts:27](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/retrieval/graph/SpreadingActivation.ts#L27)
+Defined in: [packages/agentos/src/memory/retrieval/graph/SpreadingActivation.ts:27](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/SpreadingActivation.ts#L27)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [packages/agentos/src/memory/retrieval/graph/SpreadingActivation.ts:
 
 > **getNeighbors**: (`nodeId`) => `object`[] \| `Promise`\<`object`[]\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/SpreadingActivation.ts:26](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/retrieval/graph/SpreadingActivation.ts#L26)
+Defined in: [packages/agentos/src/memory/retrieval/graph/SpreadingActivation.ts:26](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/SpreadingActivation.ts#L26)
 
 Get neighbors with edge weights. Can be sync or async.
 
@@ -36,4 +36,4 @@ Get neighbors with edge weights. Can be sync or async.
 
 > **seedIds**: `string`[]
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/SpreadingActivation.ts:24](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/retrieval/graph/SpreadingActivation.ts#L24)
+Defined in: [packages/agentos/src/memory/retrieval/graph/SpreadingActivation.ts:24](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/SpreadingActivation.ts#L24)

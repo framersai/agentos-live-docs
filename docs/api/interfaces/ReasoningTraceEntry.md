@@ -1,6 +1,6 @@
 # Interface: ReasoningTraceEntry
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:390](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/cognitive_substrate/IGMI.ts#L390)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:390](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/cognitive_substrate/IGMI.ts#L390)
 
 A single entry in the GMI's reasoning trace, providing an auditable log of its operations.
 
@@ -14,7 +14,7 @@ ReasoningTraceEntry
 
 > `optional` **details**: `Record`\<`string`, `any`\>
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:394](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/cognitive_substrate/IGMI.ts#L394)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:394](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/cognitive_substrate/IGMI.ts#L394)
 
 ***
 
@@ -22,7 +22,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:394](https://gith
 
 > **message**: `string`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:393](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/cognitive_substrate/IGMI.ts#L393)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:393](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/cognitive_substrate/IGMI.ts#L393)
 
 ***
 
@@ -30,7 +30,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:393](https://gith
 
 > **timestamp**: `Date`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:391](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/cognitive_substrate/IGMI.ts#L391)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:391](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/cognitive_substrate/IGMI.ts#L391)
 
 ***
 
@@ -38,4 +38,4 @@ Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:391](https://gith
 
 > **type**: [`ReasoningEntryType`](../enumerations/ReasoningEntryType.md)
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:392](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/cognitive_substrate/IGMI.ts#L392)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:392](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/cognitive_substrate/IGMI.ts#L392)

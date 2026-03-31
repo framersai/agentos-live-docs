@@ -12,7 +12,7 @@ sidebar_position: 25
 The `SqliteBrain` class manages a single WAL-mode SQLite database that contains all memory subsystem data. One file holds everything an agent has ever learned, ingested, or been told:
 
 ```
-~/.wunderland/agents/{name}/brain.sqlite
+~/.agentos/agents/{name}/brain.sqlite
 ```
 
 ### Design Choices
@@ -294,10 +294,10 @@ await mem.reindex();
 
 ## Custom Paths
 
-By default, Wunderland agents store their brain at:
+By default, agents store their brain at:
 
 ```
-~/.wunderland/agents/{seedId}/brain.sqlite
+~/.agentos/agents/{seedId}/brain.sqlite
 ```
 
 You can override this with any path:

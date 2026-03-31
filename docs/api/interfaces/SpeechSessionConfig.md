@@ -1,6 +1,6 @@
 # Interface: SpeechSessionConfig
 
-Defined in: [packages/agentos/src/speech/types.ts:267](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/speech/types.ts#L267)
+Defined in: [packages/agentos/src/speech/types.ts:267](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/speech/types.ts#L267)
 
 ## Extended by
 
@@ -12,7 +12,7 @@ Defined in: [packages/agentos/src/speech/types.ts:267](https://github.com/framer
 
 > `optional` **audioFileName**: `string`
 
-Defined in: [packages/agentos/src/speech/types.ts:271](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/speech/types.ts#L271)
+Defined in: [packages/agentos/src/speech/types.ts:271](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/speech/types.ts#L271)
 
 ***
 
@@ -20,7 +20,7 @@ Defined in: [packages/agentos/src/speech/types.ts:271](https://github.com/framer
 
 > `optional` **autoTranscribeOnSpeechEnd**: `boolean`
 
-Defined in: [packages/agentos/src/speech/types.ts:272](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/speech/types.ts#L272)
+Defined in: [packages/agentos/src/speech/types.ts:272](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/speech/types.ts#L272)
 
 ***
 
@@ -28,7 +28,7 @@ Defined in: [packages/agentos/src/speech/types.ts:272](https://github.com/framer
 
 > `optional` **frameDurationMs**: `number`
 
-Defined in: [packages/agentos/src/speech/types.ts:270](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/speech/types.ts#L270)
+Defined in: [packages/agentos/src/speech/types.ts:270](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/speech/types.ts#L270)
 
 ***
 
@@ -36,7 +36,7 @@ Defined in: [packages/agentos/src/speech/types.ts:270](https://github.com/framer
 
 > `optional` **mode**: [`SpeechSessionMode`](../type-aliases/SpeechSessionMode.md)
 
-Defined in: [packages/agentos/src/speech/types.ts:268](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/speech/types.ts#L268)
+Defined in: [packages/agentos/src/speech/types.ts:268](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/speech/types.ts#L268)
 
 ***
 
@@ -44,7 +44,7 @@ Defined in: [packages/agentos/src/speech/types.ts:268](https://github.com/framer
 
 > `optional` **sampleRate**: `number`
 
-Defined in: [packages/agentos/src/speech/types.ts:269](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/speech/types.ts#L269)
+Defined in: [packages/agentos/src/speech/types.ts:269](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/speech/types.ts#L269)
 
 ***
 
@@ -52,7 +52,7 @@ Defined in: [packages/agentos/src/speech/types.ts:269](https://github.com/framer
 
 > `optional` **silence**: [`SilenceDetectorConfig`](SilenceDetectorConfig.md)
 
-Defined in: [packages/agentos/src/speech/types.ts:276](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/speech/types.ts#L276)
+Defined in: [packages/agentos/src/speech/types.ts:276](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/speech/types.ts#L276)
 
 ***
 
@@ -60,7 +60,7 @@ Defined in: [packages/agentos/src/speech/types.ts:276](https://github.com/framer
 
 > `optional` **sttOptions**: [`SpeechTranscriptionOptions`](SpeechTranscriptionOptions.md)
 
-Defined in: [packages/agentos/src/speech/types.ts:273](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/speech/types.ts#L273)
+Defined in: [packages/agentos/src/speech/types.ts:273](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/speech/types.ts#L273)
 
 ***
 
@@ -68,7 +68,7 @@ Defined in: [packages/agentos/src/speech/types.ts:273](https://github.com/framer
 
 > `optional` **ttsOptions**: [`SpeechSynthesisOptions`](SpeechSynthesisOptions.md)
 
-Defined in: [packages/agentos/src/speech/types.ts:274](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/speech/types.ts#L274)
+Defined in: [packages/agentos/src/speech/types.ts:274](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/speech/types.ts#L274)
 
 ***
 
@@ -76,7 +76,7 @@ Defined in: [packages/agentos/src/speech/types.ts:274](https://github.com/framer
 
 > `optional` **vad**: [`AdaptiveVADConfig`](AdaptiveVADConfig.md)
 
-Defined in: [packages/agentos/src/speech/types.ts:275](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/speech/types.ts#L275)
+Defined in: [packages/agentos/src/speech/types.ts:275](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/speech/types.ts#L275)
 
 ***
 
@@ -84,7 +84,7 @@ Defined in: [packages/agentos/src/speech/types.ts:275](https://github.com/framer
 
 > `optional` **wakeWord**: `object`
 
-Defined in: [packages/agentos/src/speech/types.ts:277](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/speech/types.ts#L277)
+Defined in: [packages/agentos/src/speech/types.ts:277](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/speech/types.ts#L277)
 
 #### keyword?
 

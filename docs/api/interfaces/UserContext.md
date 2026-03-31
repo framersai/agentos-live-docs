@@ -1,6 +1,6 @@
 # Interface: UserContext
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:57](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/cognitive_substrate/IGMI.ts#L57)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:57](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/cognitive_substrate/IGMI.ts#L57)
 
 Represents the contextual information about the user interacting with the GMI.
 
@@ -18,7 +18,7 @@ UserContext
 
 > `optional` **currentSentiment**: `string`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:62](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/cognitive_substrate/IGMI.ts#L62)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:62](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/cognitive_substrate/IGMI.ts#L62)
 
 ***
 
@@ -26,7 +26,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:62](https://githu
 
 > `optional` **pastInteractionSummary**: `string`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:61](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/cognitive_substrate/IGMI.ts#L61)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:61](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/cognitive_substrate/IGMI.ts#L61)
 
 ***
 
@@ -34,7 +34,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:61](https://githu
 
 > `optional` **preferences**: `Record`\<`string`, `any`\>
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:60](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/cognitive_substrate/IGMI.ts#L60)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:60](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/cognitive_substrate/IGMI.ts#L60)
 
 ***
 
@@ -42,7 +42,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:60](https://githu
 
 > `optional` **skillLevel**: `string`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:59](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/cognitive_substrate/IGMI.ts#L59)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:59](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/cognitive_substrate/IGMI.ts#L59)
 
 ***
 
@@ -50,4 +50,4 @@ Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:59](https://githu
 
 > **userId**: `string`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:58](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/cognitive_substrate/IGMI.ts#L58)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:58](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/cognitive_substrate/IGMI.ts#L58)

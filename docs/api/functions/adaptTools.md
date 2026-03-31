@@ -2,7 +2,7 @@
 
 > **adaptTools**(`tools`): [`ITool`](../interfaces/ITool.md)\<`any`, `any`\>[]
 
-Defined in: [packages/agentos/src/api/runtime/toolAdapter.ts:294](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/runtime/toolAdapter.ts#L294)
+Defined in: [packages/agentos/src/api/runtime/toolAdapter.ts:294](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/runtime/toolAdapter.ts#L294)
 
 Converts supported tool inputs into an array of `ITool` instances
 suitable for use with the AgentOS provider layer.

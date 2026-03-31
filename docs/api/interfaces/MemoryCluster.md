@@ -1,6 +1,6 @@
 # Interface: MemoryCluster
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/IMemoryGraph.ts:77](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/retrieval/graph/IMemoryGraph.ts#L77)
+Defined in: [packages/agentos/src/memory/retrieval/graph/IMemoryGraph.ts:77](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/IMemoryGraph.ts#L77)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/memory/retrieval/graph/IMemoryGraph.ts:77](htt
 
 > **clusterId**: `string`
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/IMemoryGraph.ts:78](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/retrieval/graph/IMemoryGraph.ts#L78)
+Defined in: [packages/agentos/src/memory/retrieval/graph/IMemoryGraph.ts:78](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/IMemoryGraph.ts#L78)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [packages/agentos/src/memory/retrieval/graph/IMemoryGraph.ts:78](htt
 
 > **density**: `number`
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/IMemoryGraph.ts:80](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/retrieval/graph/IMemoryGraph.ts#L80)
+Defined in: [packages/agentos/src/memory/retrieval/graph/IMemoryGraph.ts:80](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/IMemoryGraph.ts#L80)
 
 ***
 
@@ -24,4 +24,4 @@ Defined in: [packages/agentos/src/memory/retrieval/graph/IMemoryGraph.ts:80](htt
 
 > **memberIds**: `string`[]
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/IMemoryGraph.ts:79](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/retrieval/graph/IMemoryGraph.ts#L79)
+Defined in: [packages/agentos/src/memory/retrieval/graph/IMemoryGraph.ts:79](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/IMemoryGraph.ts#L79)

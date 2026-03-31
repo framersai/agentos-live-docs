@@ -1,6 +1,6 @@
 # Interface: GraphState\<TInput, TScratch, TArtifacts\>
 
-Defined in: [packages/agentos/src/orchestration/ir/types.ts:497](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/ir/types.ts#L497)
+Defined in: [packages/agentos/src/orchestration/ir/types.ts:535](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/ir/types.ts#L535)
 
 The mutable execution state threaded through every node of a graph run.
 
@@ -33,7 +33,7 @@ Shape of outputs produced for external consumption.
 
 > **artifacts**: `TArtifacts`
 
-Defined in: [packages/agentos/src/orchestration/ir/types.ts:505](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/ir/types.ts#L505)
+Defined in: [packages/agentos/src/orchestration/ir/types.ts:543](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/ir/types.ts#L543)
 
 Accumulated outputs intended for the caller; merged via `StateReducers` after each node.
 
@@ -43,7 +43,7 @@ Accumulated outputs intended for the caller; merged via `StateReducers` after ea
 
 > `optional` **checkpointId**: `string`
 
-Defined in: [packages/agentos/src/orchestration/ir/types.ts:515](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/ir/types.ts#L515)
+Defined in: [packages/agentos/src/orchestration/ir/types.ts:553](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/ir/types.ts#L553)
 
 Id of the most recently persisted checkpoint snapshot, if any.
 
@@ -53,7 +53,7 @@ Id of the most recently persisted checkpoint snapshot, if any.
 
 > **currentNodeId**: `string`
 
-Defined in: [packages/agentos/src/orchestration/ir/types.ts:509](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/ir/types.ts#L509)
+Defined in: [packages/agentos/src/orchestration/ir/types.ts:547](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/ir/types.ts#L547)
 
 Id of the node currently executing (or most recently completed).
 
@@ -63,7 +63,7 @@ Id of the node currently executing (or most recently completed).
 
 > **diagnostics**: [`DiagnosticsView`](DiagnosticsView.md)
 
-Defined in: [packages/agentos/src/orchestration/ir/types.ts:507](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/ir/types.ts#L507)
+Defined in: [packages/agentos/src/orchestration/ir/types.ts:545](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/ir/types.ts#L545)
 
 Append-only telemetry record updated after each node completes.
 
@@ -73,7 +73,7 @@ Append-only telemetry record updated after each node completes.
 
 > **input**: `Readonly`\<`TInput`\>
 
-Defined in: [packages/agentos/src/orchestration/ir/types.ts:499](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/ir/types.ts#L499)
+Defined in: [packages/agentos/src/orchestration/ir/types.ts:537](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/ir/types.ts#L537)
 
 The original user-provided input; frozen after graph start.
 
@@ -83,7 +83,7 @@ The original user-provided input; frozen after graph start.
 
 > **iteration**: `number`
 
-Defined in: [packages/agentos/src/orchestration/ir/types.ts:513](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/ir/types.ts#L513)
+Defined in: [packages/agentos/src/orchestration/ir/types.ts:551](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/ir/types.ts#L551)
 
 Number of times the graph has looped back to a previously visited node.
 
@@ -93,7 +93,7 @@ Number of times the graph has looped back to a previously visited node.
 
 > **memory**: [`MemoryView`](MemoryView.md)
 
-Defined in: [packages/agentos/src/orchestration/ir/types.ts:503](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/ir/types.ts#L503)
+Defined in: [packages/agentos/src/orchestration/ir/types.ts:541](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/ir/types.ts#L541)
 
 Read-only memory snapshot populated before each node executes.
 
@@ -103,7 +103,7 @@ Read-only memory snapshot populated before each node executes.
 
 > **scratch**: `TScratch`
 
-Defined in: [packages/agentos/src/orchestration/ir/types.ts:501](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/ir/types.ts#L501)
+Defined in: [packages/agentos/src/orchestration/ir/types.ts:539](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/ir/types.ts#L539)
 
 Node-to-node communication bag; merged via `StateReducers` after each node.
 
@@ -113,6 +113,6 @@ Node-to-node communication bag; merged via `StateReducers` after each node.
 
 > **visitedNodes**: `string`[]
 
-Defined in: [packages/agentos/src/orchestration/ir/types.ts:511](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/ir/types.ts#L511)
+Defined in: [packages/agentos/src/orchestration/ir/types.ts:549](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/ir/types.ts#L549)
 
 Ordered list of node ids that have completed execution in this run.

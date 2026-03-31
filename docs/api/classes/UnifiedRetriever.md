@@ -1,6 +1,6 @@
 # Class: UnifiedRetriever
 
-Defined in: [packages/agentos/src/rag/unified/UnifiedRetriever.ts:256](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/rag/unified/UnifiedRetriever.ts#L256)
+Defined in: [packages/agentos/src/rag/unified/UnifiedRetriever.ts:256](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/unified/UnifiedRetriever.ts#L256)
 
 Unified retrieval orchestrator that executes a [RetrievalPlan](../interfaces/RetrievalPlan.md)
 across ALL available sources in parallel, merges results via RRF,
@@ -50,7 +50,7 @@ console.log(`Found ${result.chunks.length} chunks from ${Object.keys(result.sour
 
 > **new UnifiedRetriever**(`deps`): `UnifiedRetriever`
 
-Defined in: [packages/agentos/src/rag/unified/UnifiedRetriever.ts:292](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/rag/unified/UnifiedRetriever.ts#L292)
+Defined in: [packages/agentos/src/rag/unified/UnifiedRetriever.ts:292](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/unified/UnifiedRetriever.ts#L292)
 
 Creates a new UnifiedRetriever.
 
@@ -980,7 +980,7 @@ v0.1.26
 
 > **retrieve**(`query`, `plan`, `topK?`): `Promise`\<[`UnifiedRetrievalResult`](../interfaces/UnifiedRetrievalResult.md)\>
 
-Defined in: [packages/agentos/src/rag/unified/UnifiedRetriever.ts:335](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/rag/unified/UnifiedRetriever.ts#L335)
+Defined in: [packages/agentos/src/rag/unified/UnifiedRetriever.ts:335](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/unified/UnifiedRetriever.ts#L335)
 
 Execute a retrieval plan across all enabled sources.
 

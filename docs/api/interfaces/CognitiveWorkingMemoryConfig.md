@@ -1,6 +1,6 @@
 # Interface: CognitiveWorkingMemoryConfig
 
-Defined in: [packages/agentos/src/memory/core/working/CognitiveWorkingMemory.ts:21](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/core/working/CognitiveWorkingMemory.ts#L21)
+Defined in: [packages/agentos/src/memory/core/working/CognitiveWorkingMemory.ts:21](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/core/working/CognitiveWorkingMemory.ts#L21)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/memory/core/working/CognitiveWorkingMemory.ts:
 
 > **activationDecayRate**: `number`
 
-Defined in: [packages/agentos/src/memory/core/working/CognitiveWorkingMemory.ts:29](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/core/working/CognitiveWorkingMemory.ts#L29)
+Defined in: [packages/agentos/src/memory/core/working/CognitiveWorkingMemory.ts:29](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/core/working/CognitiveWorkingMemory.ts#L29)
 
 Activation decay rate per turn (0-1).
 
@@ -24,7 +24,7 @@ Activation decay rate per turn (0-1).
 
 > **baseCapacity**: `number`
 
-Defined in: [packages/agentos/src/memory/core/working/CognitiveWorkingMemory.ts:23](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/core/working/CognitiveWorkingMemory.ts#L23)
+Defined in: [packages/agentos/src/memory/core/working/CognitiveWorkingMemory.ts:23](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/core/working/CognitiveWorkingMemory.ts#L23)
 
 Base capacity (Miller's number).
 
@@ -40,7 +40,7 @@ Base capacity (Miller's number).
 
 > **minActivation**: `number`
 
-Defined in: [packages/agentos/src/memory/core/working/CognitiveWorkingMemory.ts:31](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/core/working/CognitiveWorkingMemory.ts#L31)
+Defined in: [packages/agentos/src/memory/core/working/CognitiveWorkingMemory.ts:31](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/core/working/CognitiveWorkingMemory.ts#L31)
 
 Minimum activation before a slot is eligible for eviction.
 
@@ -56,7 +56,7 @@ Minimum activation before a slot is eligible for eviction.
 
 > `optional` **onEvict**: (`slotId`, `traceId`) => `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/memory/core/working/CognitiveWorkingMemory.ts:27](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/core/working/CognitiveWorkingMemory.ts#L27)
+Defined in: [packages/agentos/src/memory/core/working/CognitiveWorkingMemory.ts:27](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/core/working/CognitiveWorkingMemory.ts#L27)
 
 Callback when a slot is evicted (should encode into episodic LTM).
 
@@ -80,6 +80,6 @@ Callback when a slot is evicted (should encode into episodic LTM).
 
 > **traits**: [`HexacoTraits`](HexacoTraits.md)
 
-Defined in: [packages/agentos/src/memory/core/working/CognitiveWorkingMemory.ts:25](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/core/working/CognitiveWorkingMemory.ts#L25)
+Defined in: [packages/agentos/src/memory/core/working/CognitiveWorkingMemory.ts:25](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/core/working/CognitiveWorkingMemory.ts#L25)
 
 HEXACO traits for personality-modulated capacity.

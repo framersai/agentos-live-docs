@@ -1,6 +1,6 @@
 # Class: FalImageProvider
 
-Defined in: [packages/agentos/src/media/images/providers/FalImageProvider.ts:210](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/media/images/providers/FalImageProvider.ts#L210)
+Defined in: [packages/agentos/src/media/images/providers/FalImageProvider.ts:210](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/media/images/providers/FalImageProvider.ts#L210)
 
 Image generation provider connecting to the Fal.ai serverless platform.
 
@@ -43,7 +43,7 @@ console.log(result.images[0].url);
 
 > `optional` **defaultModelId**: `string`
 
-Defined in: [packages/agentos/src/media/images/providers/FalImageProvider.ts:218](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/media/images/providers/FalImageProvider.ts#L218)
+Defined in: [packages/agentos/src/media/images/providers/FalImageProvider.ts:218](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/media/images/providers/FalImageProvider.ts#L218)
 
 #### Inherit Doc
 
@@ -57,7 +57,7 @@ Defined in: [packages/agentos/src/media/images/providers/FalImageProvider.ts:218
 
 > **isInitialized**: `boolean` = `false`
 
-Defined in: [packages/agentos/src/media/images/providers/FalImageProvider.ts:215](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/media/images/providers/FalImageProvider.ts#L215)
+Defined in: [packages/agentos/src/media/images/providers/FalImageProvider.ts:215](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/media/images/providers/FalImageProvider.ts#L215)
 
 #### Inherit Doc
 
@@ -71,7 +71,7 @@ Defined in: [packages/agentos/src/media/images/providers/FalImageProvider.ts:215
 
 > `readonly` **providerId**: `"fal"` = `'fal'`
 
-Defined in: [packages/agentos/src/media/images/providers/FalImageProvider.ts:212](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/media/images/providers/FalImageProvider.ts#L212)
+Defined in: [packages/agentos/src/media/images/providers/FalImageProvider.ts:212](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/media/images/providers/FalImageProvider.ts#L212)
 
 #### Inherit Doc
 
@@ -85,7 +85,7 @@ Defined in: [packages/agentos/src/media/images/providers/FalImageProvider.ts:212
 
 > **generateImage**(`request`): `Promise`\<[`ImageGenerationResult`](../interfaces/ImageGenerationResult.md)\>
 
-Defined in: [packages/agentos/src/media/images/providers/FalImageProvider.ts:285](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/media/images/providers/FalImageProvider.ts#L285)
+Defined in: [packages/agentos/src/media/images/providers/FalImageProvider.ts:285](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/media/images/providers/FalImageProvider.ts#L285)
 
 Generate an image using the Fal.ai queue API.
 
@@ -134,7 +134,7 @@ const result = await provider.generateImage({
 
 > **initialize**(`config`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/media/images/providers/FalImageProvider.ts:234](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/media/images/providers/FalImageProvider.ts#L234)
+Defined in: [packages/agentos/src/media/images/providers/FalImageProvider.ts:234](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/media/images/providers/FalImageProvider.ts#L234)
 
 Initialize the provider with API credentials and optional configuration.
 
@@ -170,7 +170,7 @@ await provider.initialize({ apiKey: 'fal_xxx' });
 
 > **listAvailableModels**(): `Promise`\<[`ImageModelInfo`](../interfaces/ImageModelInfo.md)[]\>
 
-Defined in: [packages/agentos/src/media/images/providers/FalImageProvider.ts:357](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/media/images/providers/FalImageProvider.ts#L357)
+Defined in: [packages/agentos/src/media/images/providers/FalImageProvider.ts:357](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/media/images/providers/FalImageProvider.ts#L357)
 
 List available Flux models on the Fal.ai platform.
 

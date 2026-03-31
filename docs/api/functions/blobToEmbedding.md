@@ -2,7 +2,7 @@
 
 > **blobToEmbedding**(`blob`): `number`[]
 
-Defined in: [packages/agentos/src/rag/utils/vectorMath.ts:136](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/rag/utils/vectorMath.ts#L136)
+Defined in: [packages/agentos/src/rag/utils/vectorMath.ts:136](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/utils/vectorMath.ts#L136)
 
 Deserialize a Buffer back to number[].
 Creates a Float32Array view over the buffer without copying.

@@ -1,6 +1,6 @@
 # Class: GraphExpander
 
-Defined in: [packages/agentos/src/orchestration/planning/GraphExpander.ts:32](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/planning/GraphExpander.ts#L32)
+Defined in: [packages/agentos/src/orchestration/planning/GraphExpander.ts:32](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/planning/GraphExpander.ts#L32)
 
 Applies GraphPatch modifications atomically to a CompiledExecutionGraph.
 Checks guardrail thresholds before approving expansions in guardrailed mode.
@@ -11,7 +11,7 @@ Checks guardrail thresholds before approving expansions in guardrailed mode.
 
 > **new GraphExpander**(`thresholds`): `GraphExpander`
 
-Defined in: [packages/agentos/src/orchestration/planning/GraphExpander.ts:35](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/planning/GraphExpander.ts#L35)
+Defined in: [packages/agentos/src/orchestration/planning/GraphExpander.ts:35](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/planning/GraphExpander.ts#L35)
 
 #### Parameters
 
@@ -29,7 +29,7 @@ Defined in: [packages/agentos/src/orchestration/planning/GraphExpander.ts:35](ht
 
 > **applyPatch**(`graph`, `patch`): [`CompiledExecutionGraph`](../interfaces/CompiledExecutionGraph.md)
 
-Defined in: [packages/agentos/src/orchestration/planning/GraphExpander.ts:43](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/planning/GraphExpander.ts#L43)
+Defined in: [packages/agentos/src/orchestration/planning/GraphExpander.ts:43](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/planning/GraphExpander.ts#L43)
 
 Apply a patch to a graph, returning a new graph (immutable).
 Patches are applied atomically — all changes happen together.
@@ -54,7 +54,7 @@ Patches are applied atomically — all changes happen together.
 
 > **getExceededThreshold**(`state`): \{ `cap`: `number`; `threshold`: `string`; `value`: `number`; \} \| `null`
 
-Defined in: [packages/agentos/src/orchestration/planning/GraphExpander.ts:108](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/planning/GraphExpander.ts#L108)
+Defined in: [packages/agentos/src/orchestration/planning/GraphExpander.ts:108](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/planning/GraphExpander.ts#L108)
 
 Identify which specific threshold was exceeded.
 Returns null if no threshold is exceeded.
@@ -75,7 +75,7 @@ Returns null if no threshold is exceeded.
 
 > **shouldAutoApprove**(`autonomy`, `state`): `boolean`
 
-Defined in: [packages/agentos/src/orchestration/planning/GraphExpander.ts:85](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/planning/GraphExpander.ts#L85)
+Defined in: [packages/agentos/src/orchestration/planning/GraphExpander.ts:85](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/planning/GraphExpander.ts#L85)
 
 Determine whether an expansion should be auto-approved
 based on autonomy mode and resource thresholds.

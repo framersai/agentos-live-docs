@@ -1,6 +1,6 @@
 # Interface: SpeechSynthesisResult
 
-Defined in: [packages/agentos/src/speech/types.ts:98](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/speech/types.ts#L98)
+Defined in: [packages/agentos/src/speech/types.ts:98](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/speech/types.ts#L98)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/speech/types.ts:98](https://github.com/framers
 
 > **audioBuffer**: `Buffer`
 
-Defined in: [packages/agentos/src/speech/types.ts:99](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/speech/types.ts#L99)
+Defined in: [packages/agentos/src/speech/types.ts:99](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/speech/types.ts#L99)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [packages/agentos/src/speech/types.ts:99](https://github.com/framers
 
 > **cost**: `number`
 
-Defined in: [packages/agentos/src/speech/types.ts:101](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/speech/types.ts#L101)
+Defined in: [packages/agentos/src/speech/types.ts:101](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/speech/types.ts#L101)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: [packages/agentos/src/speech/types.ts:101](https://github.com/framer
 
 > `optional` **durationSeconds**: `number`
 
-Defined in: [packages/agentos/src/speech/types.ts:102](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/speech/types.ts#L102)
+Defined in: [packages/agentos/src/speech/types.ts:102](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/speech/types.ts#L102)
 
 ***
 
@@ -32,7 +32,7 @@ Defined in: [packages/agentos/src/speech/types.ts:102](https://github.com/framer
 
 > **mimeType**: `string`
 
-Defined in: [packages/agentos/src/speech/types.ts:100](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/speech/types.ts#L100)
+Defined in: [packages/agentos/src/speech/types.ts:100](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/speech/types.ts#L100)
 
 ***
 
@@ -40,7 +40,7 @@ Defined in: [packages/agentos/src/speech/types.ts:100](https://github.com/framer
 
 > `optional` **providerName**: `string`
 
-Defined in: [packages/agentos/src/speech/types.ts:105](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/speech/types.ts#L105)
+Defined in: [packages/agentos/src/speech/types.ts:105](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/speech/types.ts#L105)
 
 ***
 
@@ -48,7 +48,7 @@ Defined in: [packages/agentos/src/speech/types.ts:105](https://github.com/framer
 
 > `optional` **providerResponse**: `unknown`
 
-Defined in: [packages/agentos/src/speech/types.ts:103](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/speech/types.ts#L103)
+Defined in: [packages/agentos/src/speech/types.ts:103](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/speech/types.ts#L103)
 
 ***
 
@@ -56,7 +56,7 @@ Defined in: [packages/agentos/src/speech/types.ts:103](https://github.com/framer
 
 > `optional` **usage**: `object`
 
-Defined in: [packages/agentos/src/speech/types.ts:106](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/speech/types.ts#L106)
+Defined in: [packages/agentos/src/speech/types.ts:106](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/speech/types.ts#L106)
 
 #### Index Signature
 
@@ -76,4 +76,4 @@ Defined in: [packages/agentos/src/speech/types.ts:106](https://github.com/framer
 
 > `optional` **voiceUsed**: `string`
 
-Defined in: [packages/agentos/src/speech/types.ts:104](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/speech/types.ts#L104)
+Defined in: [packages/agentos/src/speech/types.ts:104](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/speech/types.ts#L104)

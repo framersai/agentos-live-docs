@@ -3,8 +3,6 @@ title: "Orchestration Guide"
 sidebar_position: 1
 ---
 
-# Orchestration Guide
-
 Hands-on walkthrough of AgentOS orchestration — from single-node graphs to multi-agent missions with voice, memory, and checkpointing.
 
 All three APIs (`AgentGraph`, `workflow()`, `mission()`) compile to the same `CompiledExecutionGraph` IR and run on the same `GraphRuntime`. You can compose them freely — a mission can embed a workflow as a subgraph step; a graph can invoke a compiled workflow as a node.

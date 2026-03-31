@@ -3,6 +3,79 @@ title: "Changelog"
 sidebar_position: 5
 ---
 
+## <small>0.1.157 (2026-03-31)</small>
+
+* fix: logger.warn signature — string not Record ([408b37d](https://github.com/framersai/agentos/commit/408b37d))
+* feat: expose cognitive mechanisms in agent() API + APA citations in README ([b3edd61](https://github.com/framersai/agentos/commit/b3edd61))
+* feat(reranking): export LlmJudgeReranker + RerankChainStage ([b4716e5](https://github.com/framersai/agentos/commit/b4716e5))
+* feat(reranking): LLM-as-judge reranker + rerankChain multi-stage pipeline ([e9e615c](https://github.com/framersai/agentos/commit/e9e615c))
+* docs: add Adaptive Intelligence & Metacognition section to README ([9a3dc33](https://github.com/framersai/agentos/commit/9a3dc33))
+* docs: complete README rewrite -- fix broken examples, real feature counts, streamlined structure ([d5a7208](https://github.com/framersai/agentos/commit/d5a7208))
+* docs: fix generateText example — honest about auto-detection (env var priority, not LLM-chosen) ([1cbcf69](https://github.com/framersai/agentos/commit/1cbcf69))
+* docs: generateText example — auto-detect best provider+model by default, show override as comment ([ff28f48](https://github.com/framersai/agentos/commit/ff28f48))
+
+## <small>0.1.156 (2026-03-30)</small>
+
+* fix(ci): add type assertions for TS 5.4 compatibility in humanNode builder and executor ([3877175](https://github.com/framersai/agentos/commit/3877175))
+
+## <small>0.1.155 (2026-03-30)</small>
+
+* feat: HITL guardrail override support + agency docs update + tests ([fe117e6](https://github.com/framersai/agentos/commit/fe117e6))
+* feat(hitl): add post-approval guardrail override for destructive actions ([ce2ee69](https://github.com/framersai/agentos/commit/ce2ee69))
+* feat(knowledge): add HITL FAQ, API, and guardrail-override corpus entries ([5cc3d2e](https://github.com/framersai/agentos/commit/5cc3d2e))
+* fix: strip changelog notes, vaporware diagram, and fake pseudo-code from architecture docs ([e06ec6b](https://github.com/framersai/agentos/commit/e06ec6b))
+* fix(ci): retrigger build ([3919254](https://github.com/framersai/agentos/commit/3919254))
+* docs: expand architecture doc to ~1200 lines with diagrams, code examples, tables ([889c811](https://github.com/framersai/agentos/commit/889c811))
+* docs: rewrite High-Level API intro — clean table, no changelog language ([9d45059](https://github.com/framersai/agentos/commit/9d45059)), closes [Hi#Level](https://github.com/Hi/issues/Level)
+* docs: strip 3000+ lines of vaporware from architecture doc ([03c12fb](https://github.com/framersai/agentos/commit/03c12fb))
+* docs: unified API reference — one import, quick reference table, no artificial levels ([db1f5fc](https://github.com/framersai/agentos/commit/db1f5fc))
+
+## <small>0.1.154 (2026-03-30)</small>
+
+* fix: remove all downstream references from AgentOS docs ([961c4af](https://github.com/framersai/agentos/commit/961c4af))
+
+## <small>0.1.153 (2026-03-30)</small>
+
+* docs: add llmJudge API reference and humanNode options table ([5427fc8](https://github.com/framersai/agentos/commit/5427fc8))
+* test(hitl): add unit + integration tests for llmJudge and humanNode options ([2bd74b8](https://github.com/framersai/agentos/commit/2bd74b8))
+* feat(hitl): add llmJudge() handler factory ([0f9a865](https://github.com/framersai/agentos/commit/0f9a865))
+* feat(orchestration): add humanNode autoAccept/autoReject/judge/onTimeout options ([6941058](https://github.com/framersai/agentos/commit/6941058))
+
+## <small>0.1.152 (2026-03-30)</small>
+
+* fix: remove docs.wunderland.sh links and Wunderland-specific language from agentos docs ([24fe36f](https://github.com/framersai/agentos/commit/24fe36f))
+
+## <small>0.1.151 (2026-03-30)</small>
+
+* feat(readme): add adaptive intelligence + emergent behaviors sections ([304fb79](https://github.com/framersai/agentos/commit/304fb79))
+* test(knowledge): add credential discovery tests + update QueryRouter docs ([720ae2f](https://github.com/framersai/agentos/commit/720ae2f))
+* docs: rewrite orchestration pages — authoritative tone, Mermaid diagrams, no hedging ([b5fd83c](https://github.com/framersai/agentos/commit/b5fd83c))
+
+## <small>0.1.150 (2026-03-29)</small>
+
+* feat(knowledge): add credential setup workflow entries to platform corpus ([71c922c](https://github.com/framersai/agentos/commit/71c922c))
+
+## <small>0.1.149 (2026-03-29)</small>
+
+* fix: reorder auto-detect priority (OpenAI first) + warn on Anthropic fallback ([646dab3](https://github.com/framersai/agentos/commit/646dab3))
+
+## <small>0.1.148 (2026-03-29)</small>
+
+* fix(examples): fix 3 broken examples — import path, provider notes, shutdown ([81c5062](https://github.com/framersai/agentos/commit/81c5062))
+
+## <small>0.1.147 (2026-03-29)</small>
+
+* fix(typecheck): use direct imports for SqliteExporter/Importer in tests ([bd855ba](https://github.com/framersai/agentos/commit/bd855ba))
+
+## <small>0.1.146 (2026-03-29)</small>
+
+* fix: remove eager SqliteImporter/Exporter barrel exports to avoid better-sqlite3 crash ([3242f31](https://github.com/framersai/agentos/commit/3242f31))
+
+## <small>0.1.145 (2026-03-29)</small>
+
+* fix(memory): prevent raw profanity/slurs from being stored as user facts ([c17b49f](https://github.com/framersai/agentos/commit/c17b49f))
+* docs: add content-policy-rewriter to guardrails table + ecosystem ([563be3f](https://github.com/framersai/agentos/commit/563be3f))
+
 ## <small>0.1.144 (2026-03-29)</small>
 
 * feat(query-router): capability recommendations + discovery engine integration ([1df5a12](https://github.com/framersai/agentos/commit/1df5a12))

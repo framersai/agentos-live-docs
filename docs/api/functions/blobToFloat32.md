@@ -2,7 +2,7 @@
 
 > **blobToFloat32**(`blob`): `Float32Array`
 
-Defined in: [packages/agentos/src/rag/utils/vectorMath.ts:153](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/rag/utils/vectorMath.ts#L153)
+Defined in: [packages/agentos/src/rag/utils/vectorMath.ts:153](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/utils/vectorMath.ts#L153)
 
 Create a Float32Array view over a Buffer without copying.
 Use this when you want to pass directly to distance functions

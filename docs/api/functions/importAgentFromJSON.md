@@ -2,7 +2,7 @@
 
 > **importAgentFromJSON**(`json`): `Agent`
 
-Defined in: [packages/agentos/src/api/agentExport.ts:333](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/agentExport.ts#L333)
+Defined in: [packages/agentos/src/api/agentExport.ts:333](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/agentExport.ts#L333)
 
 Imports an agent from a JSON string.
 

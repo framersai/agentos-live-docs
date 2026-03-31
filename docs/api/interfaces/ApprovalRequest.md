@@ -1,6 +1,6 @@
 # Interface: ApprovalRequest
 
-Defined in: [packages/agentos/src/api/types.ts:354](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/types.ts#L354)
+Defined in: [packages/agentos/src/api/types.ts:387](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/types.ts#L387)
 
 A pending approval request raised by the HITL subsystem.
 Passed to `HitlConfig.handler` and emitted on the `approvalRequested` callback.
@@ -11,7 +11,7 @@ Passed to `HitlConfig.handler` and emitted on the `approvalRequested` callback.
 
 > **action**: `string`
 
-Defined in: [packages/agentos/src/api/types.ts:370](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/types.ts#L370)
+Defined in: [packages/agentos/src/api/types.ts:403](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/types.ts#L403)
 
 Short action label (e.g. tool or agent name).
 
@@ -21,7 +21,7 @@ Short action label (e.g. tool or agent name).
 
 > **agent**: `string`
 
-Defined in: [packages/agentos/src/api/types.ts:368](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/types.ts#L368)
+Defined in: [packages/agentos/src/api/types.ts:401](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/types.ts#L401)
 
 Name of the agent that triggered the approval request.
 
@@ -31,7 +31,7 @@ Name of the agent that triggered the approval request.
 
 > **context**: `object`
 
-Defined in: [packages/agentos/src/api/types.ts:376](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/types.ts#L376)
+Defined in: [packages/agentos/src/api/types.ts:409](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/types.ts#L409)
 
 Snapshot of run context at the time the request was raised.
 
@@ -65,7 +65,7 @@ Cumulative token count up to this point.
 
 > **description**: `string`
 
-Defined in: [packages/agentos/src/api/types.ts:372](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/types.ts#L372)
+Defined in: [packages/agentos/src/api/types.ts:405](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/types.ts#L405)
 
 Human-readable description of what is being approved.
 
@@ -75,7 +75,7 @@ Human-readable description of what is being approved.
 
 > **details**: `Record`\<`string`, `unknown`\>
 
-Defined in: [packages/agentos/src/api/types.ts:374](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/types.ts#L374)
+Defined in: [packages/agentos/src/api/types.ts:407](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/types.ts#L407)
 
 Structured details about the pending action (tool args, agent config, etc.).
 
@@ -85,7 +85,7 @@ Structured details about the pending action (tool args, agent config, etc.).
 
 > **id**: `string`
 
-Defined in: [packages/agentos/src/api/types.ts:356](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/types.ts#L356)
+Defined in: [packages/agentos/src/api/types.ts:389](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/types.ts#L389)
 
 Unique identifier for this approval request.
 
@@ -95,7 +95,7 @@ Unique identifier for this approval request.
 
 > **type**: `"emergent"` \| `"tool"` \| `"agent"` \| `"strategy-override"` \| `"output"`
 
-Defined in: [packages/agentos/src/api/types.ts:366](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/types.ts#L366)
+Defined in: [packages/agentos/src/api/types.ts:399](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/types.ts#L399)
 
 What kind of action is awaiting approval.
 

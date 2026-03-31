@@ -1,6 +1,6 @@
 # Interface: UpscaleImageOptions
 
-Defined in: [packages/agentos/src/api/upscaleImage.ts:44](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/upscaleImage.ts#L44)
+Defined in: [packages/agentos/src/api/upscaleImage.ts:44](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/upscaleImage.ts#L44)
 
 Options for an [upscaleImage](../functions/upscaleImage.md) call.
 
@@ -20,7 +20,7 @@ const result = await upscaleImage({
 
 > `optional` **apiKey**: `string`
 
-Defined in: [packages/agentos/src/api/upscaleImage.ts:73](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/upscaleImage.ts#L73)
+Defined in: [packages/agentos/src/api/upscaleImage.ts:73](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/upscaleImage.ts#L73)
 
 Override the provider API key instead of reading from env vars.
 
@@ -30,7 +30,7 @@ Override the provider API key instead of reading from env vars.
 
 > `optional` **baseUrl**: `string`
 
-Defined in: [packages/agentos/src/api/upscaleImage.ts:75](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/upscaleImage.ts#L75)
+Defined in: [packages/agentos/src/api/upscaleImage.ts:75](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/upscaleImage.ts#L75)
 
 Override the provider base URL.
 
@@ -40,7 +40,7 @@ Override the provider base URL.
 
 > `optional` **height**: `number`
 
-Defined in: [packages/agentos/src/api/upscaleImage.ts:71](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/upscaleImage.ts#L71)
+Defined in: [packages/agentos/src/api/upscaleImage.ts:71](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/upscaleImage.ts#L71)
 
 Target height in pixels (alternative to `scale`).
 
@@ -50,7 +50,7 @@ Target height in pixels (alternative to `scale`).
 
 > **image**: `string` \| `Buffer`
 
-Defined in: [packages/agentos/src/api/upscaleImage.ts:59](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/upscaleImage.ts#L59)
+Defined in: [packages/agentos/src/api/upscaleImage.ts:59](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/upscaleImage.ts#L59)
 
 Source image as a base64 data URL, raw base64 string, `Buffer`,
 local file path, or HTTP/HTTPS URL.
@@ -61,7 +61,7 @@ local file path, or HTTP/HTTPS URL.
 
 > `optional` **model**: `string`
 
-Defined in: [packages/agentos/src/api/upscaleImage.ts:54](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/upscaleImage.ts#L54)
+Defined in: [packages/agentos/src/api/upscaleImage.ts:54](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/upscaleImage.ts#L54)
 
 Model identifier.  Most upscale providers use a fixed model so this is
 usually left unset.
@@ -72,7 +72,7 @@ usually left unset.
 
 > `optional` **provider**: `string`
 
-Defined in: [packages/agentos/src/api/upscaleImage.ts:49](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/upscaleImage.ts#L49)
+Defined in: [packages/agentos/src/api/upscaleImage.ts:49](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/upscaleImage.ts#L49)
 
 Provider name (e.g. `"stability"`, `"replicate"`, `"stable-diffusion-local"`).
 When omitted, auto-detection via env vars is attempted.
@@ -83,7 +83,7 @@ When omitted, auto-detection via env vars is attempted.
 
 > `optional` **providerOptions**: `Record`\<`string`, `unknown`\> \| [`ImageProviderOptionBag`](ImageProviderOptionBag.md)
 
-Defined in: [packages/agentos/src/api/upscaleImage.ts:77](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/upscaleImage.ts#L77)
+Defined in: [packages/agentos/src/api/upscaleImage.ts:77](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/upscaleImage.ts#L77)
 
 Arbitrary provider-specific options.
 
@@ -93,7 +93,7 @@ Arbitrary provider-specific options.
 
 > `optional` **scale**: `2` \| `4`
 
-Defined in: [packages/agentos/src/api/upscaleImage.ts:67](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/upscaleImage.ts#L67)
+Defined in: [packages/agentos/src/api/upscaleImage.ts:67](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/upscaleImage.ts#L67)
 
 Integer scale factor.  `2` doubles each dimension; `4` quadruples them.
 When both `scale` and `width`/`height` are provided, explicit dimensions
@@ -111,7 +111,7 @@ take precedence.
 
 > `optional` **usageLedger**: [`AgentOSUsageLedgerOptions`](AgentOSUsageLedgerOptions.md)
 
-Defined in: [packages/agentos/src/api/upscaleImage.ts:79](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/upscaleImage.ts#L79)
+Defined in: [packages/agentos/src/api/upscaleImage.ts:79](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/upscaleImage.ts#L79)
 
 Optional usage ledger configuration.
 
@@ -121,6 +121,6 @@ Optional usage ledger configuration.
 
 > `optional` **width**: `number`
 
-Defined in: [packages/agentos/src/api/upscaleImage.ts:69](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/upscaleImage.ts#L69)
+Defined in: [packages/agentos/src/api/upscaleImage.ts:69](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/upscaleImage.ts#L69)
 
 Target width in pixels (alternative to `scale`).

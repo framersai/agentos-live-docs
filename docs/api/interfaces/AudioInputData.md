@@ -1,6 +1,6 @@
 # Interface: AudioInputData
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:130](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/cognitive_substrate/IGMI.ts#L130)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:130](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/cognitive_substrate/IGMI.ts#L130)
 
 **`Export`**
 
@@ -16,7 +16,7 @@ AudioInputData
 
 > **data**: `string`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:132](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/cognitive_substrate/IGMI.ts#L132)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:132](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/cognitive_substrate/IGMI.ts#L132)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:132](https://gith
 
 > `optional` **languageCode**: `string`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:134](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/cognitive_substrate/IGMI.ts#L134)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:134](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/cognitive_substrate/IGMI.ts#L134)
 
 ***
 
@@ -32,7 +32,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:134](https://gith
 
 > `optional` **mimeType**: `string`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:133](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/cognitive_substrate/IGMI.ts#L133)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:133](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/cognitive_substrate/IGMI.ts#L133)
 
 ***
 
@@ -40,4 +40,4 @@ Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:133](https://gith
 
 > **type**: `"base64"` \| `"audio_url"` \| `"transcription"`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:131](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/cognitive_substrate/IGMI.ts#L131)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:131](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/cognitive_substrate/IGMI.ts#L131)

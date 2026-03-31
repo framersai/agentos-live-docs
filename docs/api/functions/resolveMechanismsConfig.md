@@ -2,7 +2,7 @@
 
 > **resolveMechanismsConfig**(`partial`): [`ResolvedMechanismsConfig`](../interfaces/ResolvedMechanismsConfig.md)
 
-Defined in: [packages/agentos/src/memory/mechanisms/defaults.ts:79](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/mechanisms/defaults.ts#L79)
+Defined in: [packages/agentos/src/memory/mechanisms/defaults.ts:79](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/mechanisms/defaults.ts#L79)
 
 Deep-merge partial user config with defaults.
 

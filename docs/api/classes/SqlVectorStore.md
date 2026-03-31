@@ -1,6 +1,6 @@
 # Class: SqlVectorStore
 
-Defined in: [packages/agentos/src/rag/vector\_stores/SqlVectorStore.ts:221](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/rag/vector_stores/SqlVectorStore.ts#L221)
+Defined in: [packages/agentos/src/rag/vector\_stores/SqlVectorStore.ts:221](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/vector_stores/SqlVectorStore.ts#L221)
 
 SQL-backed vector store implementation.
 
@@ -50,7 +50,7 @@ const results = await store.query('documents', queryEmbedding, { topK: 5 });
 
 > **new SqlVectorStore**(): `SqlVectorStore`
 
-Defined in: [packages/agentos/src/rag/vector\_stores/SqlVectorStore.ts:243](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/rag/vector_stores/SqlVectorStore.ts#L243)
+Defined in: [packages/agentos/src/rag/vector\_stores/SqlVectorStore.ts:243](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/vector_stores/SqlVectorStore.ts#L243)
 
 Constructs a SqlVectorStore instance.
 The store is not operational until `initialize()` is called.
@@ -65,7 +65,7 @@ The store is not operational until `initialize()` is called.
 
 > **checkHealth**(): `Promise`\<\{ `details?`: `any`; `isHealthy`: `boolean`; \}\>
 
-Defined in: [packages/agentos/src/rag/vector\_stores/SqlVectorStore.ts:1139](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/rag/vector_stores/SqlVectorStore.ts#L1139)
+Defined in: [packages/agentos/src/rag/vector\_stores/SqlVectorStore.ts:1139](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/vector_stores/SqlVectorStore.ts#L1139)
 
 Checks the health of the vector store.
 
@@ -85,7 +85,7 @@ Health status
 
 > **collectionExists**(`collectionName`): `Promise`\<`boolean`\>
 
-Defined in: [packages/agentos/src/rag/vector\_stores/SqlVectorStore.ts:423](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/rag/vector_stores/SqlVectorStore.ts#L423)
+Defined in: [packages/agentos/src/rag/vector\_stores/SqlVectorStore.ts:423](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/vector_stores/SqlVectorStore.ts#L423)
 
 Checks if a collection exists.
 
@@ -113,7 +113,7 @@ True if collection exists
 
 > **createCollection**(`collectionName`, `dimension`, `options?`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/rag/vector\_stores/SqlVectorStore.ts:376](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/rag/vector_stores/SqlVectorStore.ts#L376)
+Defined in: [packages/agentos/src/rag/vector\_stores/SqlVectorStore.ts:376](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/vector_stores/SqlVectorStore.ts#L376)
 
 Creates a new collection for storing vectors.
 
@@ -151,7 +151,7 @@ Creation options
 
 > **delete**(`collectionName`, `ids?`, `options?`): `Promise`\<[`DeleteResult`](../interfaces/DeleteResult.md)\>
 
-Defined in: [packages/agentos/src/rag/vector\_stores/SqlVectorStore.ts:1051](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/rag/vector_stores/SqlVectorStore.ts#L1051)
+Defined in: [packages/agentos/src/rag/vector\_stores/SqlVectorStore.ts:1051](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/vector_stores/SqlVectorStore.ts#L1051)
 
 Deletes documents from a collection.
 
@@ -191,7 +191,7 @@ Deletion result
 
 > **deleteCollection**(`collectionName`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/rag/vector\_stores/SqlVectorStore.ts:439](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/rag/vector_stores/SqlVectorStore.ts#L439)
+Defined in: [packages/agentos/src/rag/vector\_stores/SqlVectorStore.ts:439](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/vector_stores/SqlVectorStore.ts#L439)
 
 Deletes a collection and all its documents.
 
@@ -217,7 +217,7 @@ Collection to delete
 
 > **getStats**(`collectionName?`): `Promise`\<`Record`\<`string`, `any`\>\>
 
-Defined in: [packages/agentos/src/rag/vector\_stores/SqlVectorStore.ts:1200](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/rag/vector_stores/SqlVectorStore.ts#L1200)
+Defined in: [packages/agentos/src/rag/vector\_stores/SqlVectorStore.ts:1200](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/vector_stores/SqlVectorStore.ts#L1200)
 
 Gets statistics for a collection or the entire store.
 
@@ -245,7 +245,7 @@ Statistics
 
 > **hybridSearch**(`collectionName`, `queryEmbedding`, `queryText`, `options?`): `Promise`\<[`QueryResult`](../interfaces/QueryResult.md)\>
 
-Defined in: [packages/agentos/src/rag/vector\_stores/SqlVectorStore.ts:798](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/rag/vector_stores/SqlVectorStore.ts#L798)
+Defined in: [packages/agentos/src/rag/vector\_stores/SqlVectorStore.ts:798](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/vector_stores/SqlVectorStore.ts#L798)
 
 Performs hybrid search combining vector similarity with keyword matching.
 
@@ -302,7 +302,7 @@ const results = await store.hybridSearch(
 
 > **initialize**(`config`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/rag/vector\_stores/SqlVectorStore.ts:255](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/rag/vector_stores/SqlVectorStore.ts#L255)
+Defined in: [packages/agentos/src/rag/vector\_stores/SqlVectorStore.ts:255](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/vector_stores/SqlVectorStore.ts#L255)
 
 Initializes the vector store with the provided configuration.
 
@@ -334,7 +334,7 @@ If configuration is invalid or initialization fails
 
 > **query**(`collectionName`, `queryEmbedding`, `options?`): `Promise`\<[`QueryResult`](../interfaces/QueryResult.md)\>
 
-Defined in: [packages/agentos/src/rag/vector\_stores/SqlVectorStore.ts:625](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/rag/vector_stores/SqlVectorStore.ts#L625)
+Defined in: [packages/agentos/src/rag/vector\_stores/SqlVectorStore.ts:625](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/vector_stores/SqlVectorStore.ts#L625)
 
 Queries a collection for similar documents.
 
@@ -374,7 +374,7 @@ Query results sorted by similarity
 
 > **shutdown**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/rag/vector\_stores/SqlVectorStore.ts:1175](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/rag/vector_stores/SqlVectorStore.ts#L1175)
+Defined in: [packages/agentos/src/rag/vector\_stores/SqlVectorStore.ts:1175](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/vector_stores/SqlVectorStore.ts#L1175)
 
 Gracefully shuts down the vector store.
 
@@ -392,7 +392,7 @@ Gracefully shuts down the vector store.
 
 > **upsert**(`collectionName`, `documents`, `options?`): `Promise`\<[`UpsertResult`](../interfaces/UpsertResult.md)\>
 
-Defined in: [packages/agentos/src/rag/vector\_stores/SqlVectorStore.ts:499](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/rag/vector_stores/SqlVectorStore.ts#L499)
+Defined in: [packages/agentos/src/rag/vector\_stores/SqlVectorStore.ts:499](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/vector_stores/SqlVectorStore.ts#L499)
 
 Upserts documents into a collection.
 

@@ -1,6 +1,6 @@
 # Interface: ClassifyStartEvent
 
-Defined in: [packages/agentos/src/query-router/types.ts:841](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/query-router/types.ts#L841)
+Defined in: [packages/agentos/src/query-router/types.ts:855](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/query-router/types.ts#L855)
 
 Emitted when query classification begins.
 
@@ -10,7 +10,7 @@ Emitted when query classification begins.
 
 > **query**: `string`
 
-Defined in: [packages/agentos/src/query-router/types.ts:844](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/query-router/types.ts#L844)
+Defined in: [packages/agentos/src/query-router/types.ts:858](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/query-router/types.ts#L858)
 
 The raw user query being classified.
 
@@ -20,7 +20,7 @@ The raw user query being classified.
 
 > **timestamp**: `number`
 
-Defined in: [packages/agentos/src/query-router/types.ts:846](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/query-router/types.ts#L846)
+Defined in: [packages/agentos/src/query-router/types.ts:860](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/query-router/types.ts#L860)
 
 Timestamp when classification started.
 
@@ -30,4 +30,4 @@ Timestamp when classification started.
 
 > **type**: `"classify:start"`
 
-Defined in: [packages/agentos/src/query-router/types.ts:842](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/query-router/types.ts#L842)
+Defined in: [packages/agentos/src/query-router/types.ts:856](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/query-router/types.ts#L856)

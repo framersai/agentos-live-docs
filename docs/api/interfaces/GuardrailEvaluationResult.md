@@ -1,6 +1,6 @@
 # Interface: GuardrailEvaluationResult
 
-Defined in: [packages/agentos/src/safety/guardrails/IGuardrailService.ts:120](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/safety/guardrails/IGuardrailService.ts#L120)
+Defined in: [packages/agentos/src/safety/guardrails/IGuardrailService.ts:120](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/safety/guardrails/IGuardrailService.ts#L120)
 
 Result returned by a guardrail evaluation.
 
@@ -32,7 +32,7 @@ const result: GuardrailEvaluationResult = {
 
 > **action**: [`GuardrailAction`](../enumerations/GuardrailAction.md)
 
-Defined in: [packages/agentos/src/safety/guardrails/IGuardrailService.ts:122](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/safety/guardrails/IGuardrailService.ts#L122)
+Defined in: [packages/agentos/src/safety/guardrails/IGuardrailService.ts:122](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/safety/guardrails/IGuardrailService.ts#L122)
 
 The action AgentOS should take based on this evaluation
 
@@ -42,7 +42,7 @@ The action AgentOS should take based on this evaluation
 
 > `optional` **details**: `unknown`
 
-Defined in: [packages/agentos/src/safety/guardrails/IGuardrailService.ts:146](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/safety/guardrails/IGuardrailService.ts#L146)
+Defined in: [packages/agentos/src/safety/guardrails/IGuardrailService.ts:146](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/safety/guardrails/IGuardrailService.ts#L146)
 
 Detailed information about the evaluation (e.g., moderation scores,
 stack traces, matched patterns). Not shown to users.
@@ -53,7 +53,7 @@ stack traces, matched patterns). Not shown to users.
 
 > `optional` **metadata**: `Record`\<`string`, `unknown`\>
 
-Defined in: [packages/agentos/src/safety/guardrails/IGuardrailService.ts:140](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/safety/guardrails/IGuardrailService.ts#L140)
+Defined in: [packages/agentos/src/safety/guardrails/IGuardrailService.ts:140](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/safety/guardrails/IGuardrailService.ts#L140)
 
 Additional metadata for analytics, audit, or debugging.
 Persisted in response chunk metadata.
@@ -64,7 +64,7 @@ Persisted in response chunk metadata.
 
 > `optional` **modifiedText**: `string` \| `null`
 
-Defined in: [packages/agentos/src/safety/guardrails/IGuardrailService.ts:153](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/safety/guardrails/IGuardrailService.ts#L153)
+Defined in: [packages/agentos/src/safety/guardrails/IGuardrailService.ts:153](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/safety/guardrails/IGuardrailService.ts#L153)
 
 Replacement text when action is [GuardrailAction.SANITIZE](../enumerations/GuardrailAction.md#sanitize).
 For input evaluation: replaces textInput before orchestration.
@@ -76,7 +76,7 @@ For output evaluation: replaces textDelta (streaming) or finalResponseText (fina
 
 > `optional` **reason**: `string`
 
-Defined in: [packages/agentos/src/safety/guardrails/IGuardrailService.ts:128](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/safety/guardrails/IGuardrailService.ts#L128)
+Defined in: [packages/agentos/src/safety/guardrails/IGuardrailService.ts:128](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/safety/guardrails/IGuardrailService.ts#L128)
 
 Human-readable reason for the action.
 May be shown to end users or logged for audit.
@@ -87,7 +87,7 @@ May be shown to end users or logged for audit.
 
 > `optional` **reasonCode**: `string`
 
-Defined in: [packages/agentos/src/safety/guardrails/IGuardrailService.ts:134](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/safety/guardrails/IGuardrailService.ts#L134)
+Defined in: [packages/agentos/src/safety/guardrails/IGuardrailService.ts:134](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/safety/guardrails/IGuardrailService.ts#L134)
 
 Machine-readable code identifying the policy or rule triggered.
 Useful for analytics and automated handling.

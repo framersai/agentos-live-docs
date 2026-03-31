@@ -1,6 +1,6 @@
 # Interface: ITurnPlanner
 
-Defined in: [packages/agentos/src/orchestration/turn-planner/TurnPlanner.ts:99](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/turn-planner/TurnPlanner.ts#L99)
+Defined in: [packages/agentos/src/orchestration/turn-planner/TurnPlanner.ts:99](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/turn-planner/TurnPlanner.ts#L99)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/orchestration/turn-planner/TurnPlanner.ts:99](
 
 > `readonly` **plannerId**: `string`
 
-Defined in: [packages/agentos/src/orchestration/turn-planner/TurnPlanner.ts:100](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/turn-planner/TurnPlanner.ts#L100)
+Defined in: [packages/agentos/src/orchestration/turn-planner/TurnPlanner.ts:100](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/turn-planner/TurnPlanner.ts#L100)
 
 ## Methods
 
@@ -16,7 +16,7 @@ Defined in: [packages/agentos/src/orchestration/turn-planner/TurnPlanner.ts:100]
 
 > **isDiscoveryAvailable**(): `boolean`
 
-Defined in: [packages/agentos/src/orchestration/turn-planner/TurnPlanner.ts:102](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/turn-planner/TurnPlanner.ts#L102)
+Defined in: [packages/agentos/src/orchestration/turn-planner/TurnPlanner.ts:102](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/turn-planner/TurnPlanner.ts#L102)
 
 #### Returns
 
@@ -28,7 +28,7 @@ Defined in: [packages/agentos/src/orchestration/turn-planner/TurnPlanner.ts:102]
 
 > **planTurn**(`input`): `Promise`\<[`TurnPlan`](TurnPlan.md)\>
 
-Defined in: [packages/agentos/src/orchestration/turn-planner/TurnPlanner.ts:101](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/turn-planner/TurnPlanner.ts#L101)
+Defined in: [packages/agentos/src/orchestration/turn-planner/TurnPlanner.ts:101](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/turn-planner/TurnPlanner.ts#L101)
 
 #### Parameters
 

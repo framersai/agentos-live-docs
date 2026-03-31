@@ -1,6 +1,6 @@
 # Interface: ITool\<TInput, TOutput\>
 
-Defined in: [packages/agentos/src/core/tools/ITool.ts:90](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/core/tools/ITool.ts#L90)
+Defined in: [packages/agentos/src/core/tools/ITool.ts:90](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/tools/ITool.ts#L90)
 
 ## Interface
 
@@ -33,7 +33,7 @@ The type of the output data this tool produces upon successful execution. Defaul
 
 > `readonly` `optional` **category**: `string`
 
-Defined in: [packages/agentos/src/core/tools/ITool.ts:174](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/core/tools/ITool.ts#L174)
+Defined in: [packages/agentos/src/core/tools/ITool.ts:174](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/tools/ITool.ts#L174)
 
 **`Optional`**
 
@@ -47,7 +47,7 @@ aiding an LLM in selecting from a large set of tools.
 
 > `readonly` **description**: `string`
 
-Defined in: [packages/agentos/src/core/tools/ITool.ts:128](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/core/tools/ITool.ts#L128)
+Defined in: [packages/agentos/src/core/tools/ITool.ts:128](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/tools/ITool.ts#L128)
 
 A detailed, natural language description of what the tool does, its primary purpose,
 typical use cases, and any important considerations or limitations for its use.
@@ -61,7 +61,7 @@ for the LLM to grasp the tool's semantics.
 
 > `readonly` **displayName**: `string`
 
-Defined in: [packages/agentos/src/core/tools/ITool.ts:117](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/core/tools/ITool.ts#L117)
+Defined in: [packages/agentos/src/core/tools/ITool.ts:117](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/tools/ITool.ts#L117)
 
 A concise, human-readable title or display name for the tool.
 Used in user interfaces, logs, or when presenting tool options to developers or users.
@@ -78,7 +78,7 @@ Used in user interfaces, logs, or when presenting tool options to developers or 
 
 > `readonly` `optional` **hasSideEffects**: `boolean`
 
-Defined in: [packages/agentos/src/core/tools/ITool.ts:194](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/core/tools/ITool.ts#L194)
+Defined in: [packages/agentos/src/core/tools/ITool.ts:194](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/tools/ITool.ts#L194)
 
 **`Optional`**
 
@@ -93,7 +93,7 @@ with greater caution, potentially requiring explicit user confirmation.
 
 > `readonly` **id**: `string`
 
-Defined in: [packages/agentos/src/core/tools/ITool.ts:98](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/core/tools/ITool.ts#L98)
+Defined in: [packages/agentos/src/core/tools/ITool.ts:98](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/tools/ITool.ts#L98)
 
 A globally unique identifier for this specific tool (e.g., "web-search-engine-v1.2", "stock-price-fetcher").
 This ID is used for internal registration, management, and precise identification.
@@ -105,7 +105,7 @@ It's recommended to use a namespaced, versioned format (e.g., `vendor-toolname-v
 
 > `readonly` **inputSchema**: [`JSONSchemaObject`](../type-aliases/JSONSchemaObject.md)
 
-Defined in: [packages/agentos/src/core/tools/ITool.ts:140](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/core/tools/ITool.ts#L140)
+Defined in: [packages/agentos/src/core/tools/ITool.ts:140](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/tools/ITool.ts#L140)
 
 The JSON schema defining the structure, types, and constraints of the input arguments object
 that this tool expects. This schema is used by:
@@ -123,7 +123,7 @@ https://json-schema.org/
 
 > `readonly` **name**: `string`
 
-Defined in: [packages/agentos/src/core/tools/ITool.ts:108](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/core/tools/ITool.ts#L108)
+Defined in: [packages/agentos/src/core/tools/ITool.ts:108](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/tools/ITool.ts#L108)
 
 The functional name of the tool, as it should be presented to and used by an LLM in a tool call request
 (e.g., "searchWeb", "executePythonCode", "getWeatherForecast").
@@ -136,7 +136,7 @@ It should be concise, descriptive, and typically in camelCase or snake_case.
 
 > `readonly` `optional` **outputSchema**: [`JSONSchemaObject`](../type-aliases/JSONSchemaObject.md)
 
-Defined in: [packages/agentos/src/core/tools/ITool.ts:152](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/core/tools/ITool.ts#L152)
+Defined in: [packages/agentos/src/core/tools/ITool.ts:152](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/tools/ITool.ts#L152)
 
 **`Optional`**
 
@@ -152,7 +152,7 @@ in understanding what to expect back from the tool.
 
 > `readonly` `optional` **requiredCapabilities**: `string`[]
 
-Defined in: [packages/agentos/src/core/tools/ITool.ts:164](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/core/tools/ITool.ts#L164)
+Defined in: [packages/agentos/src/core/tools/ITool.ts:164](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/tools/ITool.ts#L164)
 
 **`Optional`**
 
@@ -173,7 +173,7 @@ permission mechanisms (e.g., user subscription tiers).
 
 > `readonly` `optional` **version**: `string`
 
-Defined in: [packages/agentos/src/core/tools/ITool.ts:183](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/core/tools/ITool.ts#L183)
+Defined in: [packages/agentos/src/core/tools/ITool.ts:183](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/tools/ITool.ts#L183)
 
 **`Optional`**
 
@@ -186,7 +186,7 @@ Useful for managing updates and compatibility.
 
 > **execute**(`args`, `context`): `Promise`\<[`ToolExecutionResult`](ToolExecutionResult.md)\<`TOutput`\>\>
 
-Defined in: [packages/agentos/src/core/tools/ITool.ts:214](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/core/tools/ITool.ts#L214)
+Defined in: [packages/agentos/src/core/tools/ITool.ts:214](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/tools/ITool.ts#L214)
 
 **`Async`**
 
@@ -230,7 +230,7 @@ The `ToolExecutor` should be prepared to catch these.
 
 > `optional` **shutdown**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/core/tools/ITool.ts:241](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/core/tools/ITool.ts#L241)
+Defined in: [packages/agentos/src/core/tools/ITool.ts:241](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/tools/ITool.ts#L241)
 
 **`Async`** **`Optional`**
 
@@ -251,7 +251,7 @@ A promise that resolves when the tool has completed its shutdown procedures.
 
 > `optional` **validateArgs**(`args`): `object`
 
-Defined in: [packages/agentos/src/core/tools/ITool.ts:228](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/core/tools/ITool.ts#L228)
+Defined in: [packages/agentos/src/core/tools/ITool.ts:228](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/tools/ITool.ts#L228)
 
 **`Optional`**
 

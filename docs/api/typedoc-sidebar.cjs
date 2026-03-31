@@ -224,6 +224,11 @@ const typedocSidebar = {
         },
         {
           type: "doc",
+          id: "api/classes/CitationVerifier",
+          label: "CitationVerifier"
+        },
+        {
+          type: "doc",
           id: "api/classes/CodeSandbox",
           label: "CodeSandbox"
         },
@@ -1104,16 +1109,6 @@ const typedocSidebar = {
         },
         {
           type: "doc",
-          id: "api/classes/SqliteExporter",
-          label: "SqliteExporter"
-        },
-        {
-          type: "doc",
-          id: "api/classes/SqliteImporter",
-          label: "SqliteImporter"
-        },
-        {
-          type: "doc",
           id: "api/classes/SqliteKnowledgeGraph",
           label: "SqliteKnowledgeGraph"
         },
@@ -1957,6 +1952,16 @@ const typedocSidebar = {
           type: "doc",
           id: "api/interfaces/CircuitBreakerStats",
           label: "CircuitBreakerStats"
+        },
+        {
+          type: "doc",
+          id: "api/interfaces/CitationVerifierConfig",
+          label: "CitationVerifierConfig"
+        },
+        {
+          type: "doc",
+          id: "api/interfaces/ClaimVerdict",
+          label: "ClaimVerdict"
         },
         {
           type: "doc",
@@ -2862,6 +2867,11 @@ const typedocSidebar = {
           type: "doc",
           id: "api/interfaces/GuardrailEvaluationResult",
           label: "GuardrailEvaluationResult"
+        },
+        {
+          type: "doc",
+          id: "api/interfaces/GuardrailHitlOverrideResult",
+          label: "GuardrailHitlOverrideResult"
         },
         {
           type: "doc",
@@ -5550,6 +5560,16 @@ const typedocSidebar = {
         },
         {
           type: "doc",
+          id: "api/interfaces/VerificationSource",
+          label: "VerificationSource"
+        },
+        {
+          type: "doc",
+          id: "api/interfaces/VerifiedResponse",
+          label: "VerifiedResponse"
+        },
+        {
+          type: "doc",
           id: "api/interfaces/VideoAnalysis",
           label: "VideoAnalysis"
         },
@@ -8125,6 +8145,11 @@ const typedocSidebar = {
           type: "doc",
           id: "api/functions/routerNode",
           label: "routerNode"
+        },
+        {
+          type: "doc",
+          id: "api/functions/runPostApprovalGuardrails",
+          label: "runPostApprovalGuardrails"
         },
         {
           type: "doc",

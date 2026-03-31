@@ -1,6 +1,6 @@
 # Interface: QueryOptions
 
-Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:126](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/core/vector-store/IVectorStore.ts#L126)
+Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:126](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/vector-store/IVectorStore.ts#L126)
 
 Options for a vector store query operation.
 
@@ -14,7 +14,7 @@ QueryOptions
 
 > `optional` **customParams**: `Record`\<`string`, `any`\>
 
-Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:134](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/core/vector-store/IVectorStore.ts#L134)
+Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:134](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/vector-store/IVectorStore.ts#L134)
 
 Provider-specific parameters for the query.
 
@@ -24,7 +24,7 @@ Provider-specific parameters for the query.
 
 > `optional` **filter**: [`MetadataFilter`](../type-aliases/MetadataFilter.md)
 
-Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:128](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/core/vector-store/IVectorStore.ts#L128)
+Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:128](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/vector-store/IVectorStore.ts#L128)
 
 Metadata filter to apply to the search. Only documents matching
 the filter will be considered.
@@ -35,7 +35,7 @@ the filter will be considered.
 
 > `optional` **includeEmbedding**: `boolean`
 
-Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:129](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/core/vector-store/IVectorStore.ts#L129)
+Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:129](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/vector-store/IVectorStore.ts#L129)
 
 Whether to include the embedding vector in the retrieved documents.
 
@@ -45,7 +45,7 @@ Whether to include the embedding vector in the retrieved documents.
 
 > `optional` **includeMetadata**: `boolean`
 
-Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:130](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/core/vector-store/IVectorStore.ts#L130)
+Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:130](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/vector-store/IVectorStore.ts#L130)
 
 Whether to include metadata in the retrieved documents.
 
@@ -55,7 +55,7 @@ Whether to include metadata in the retrieved documents.
 
 > `optional` **includeTextContent**: `boolean`
 
-Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:131](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/core/vector-store/IVectorStore.ts#L131)
+Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:131](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/vector-store/IVectorStore.ts#L131)
 
 Whether to include the `textContent` in the retrieved documents.
 
@@ -65,7 +65,7 @@ Whether to include the `textContent` in the retrieved documents.
 
 > `optional` **minSimilarityScore**: `number`
 
-Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:132](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/core/vector-store/IVectorStore.ts#L132)
+Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:132](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/vector-store/IVectorStore.ts#L132)
 
 Optional minimum similarity score (0-1, or specific to metric)
 for a document to be included in the results. Interpretation depends on the store's similarity metric.
@@ -76,7 +76,7 @@ for a document to be included in the results. Interpretation depends on the stor
 
 > `optional` **topK**: `number`
 
-Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:127](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/core/vector-store/IVectorStore.ts#L127)
+Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:127](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/vector-store/IVectorStore.ts#L127)
 
 The number of most similar documents to retrieve.
 
@@ -86,6 +86,6 @@ The number of most similar documents to retrieve.
 
 > `optional` **userId**: `string`
 
-Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:133](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/core/vector-store/IVectorStore.ts#L133)
+Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:133](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/vector-store/IVectorStore.ts#L133)
 
 Optional user ID, which might be used for multi-tenancy filters if the store supports it.

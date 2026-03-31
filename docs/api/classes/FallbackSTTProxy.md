@@ -1,6 +1,6 @@
 # Class: FallbackSTTProxy
 
-Defined in: [packages/agentos/src/speech/FallbackProxy.ts:89](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/speech/FallbackProxy.ts#L89)
+Defined in: [packages/agentos/src/speech/FallbackProxy.ts:89](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/speech/FallbackProxy.ts#L89)
 
 A [SpeechToTextProvider](../interfaces/SpeechToTextProvider.md) that wraps an ordered chain of STT providers
 and implements automatic failover.
@@ -52,7 +52,7 @@ const result = await proxy.transcribe(audio);
 
 > **new FallbackSTTProxy**(`chain`, `emitter`): `FallbackSTTProxy`
 
-Defined in: [packages/agentos/src/speech/FallbackProxy.ts:127](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/speech/FallbackProxy.ts#L127)
+Defined in: [packages/agentos/src/speech/FallbackProxy.ts:127](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/speech/FallbackProxy.ts#L127)
 
 Creates a new FallbackSTTProxy wrapping the given provider chain.
 
@@ -92,7 +92,7 @@ const proxy = new FallbackSTTProxy(
 
 > `readonly` **displayName**: `string`
 
-Defined in: [packages/agentos/src/speech/FallbackProxy.ts:100](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/speech/FallbackProxy.ts#L100)
+Defined in: [packages/agentos/src/speech/FallbackProxy.ts:100](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/speech/FallbackProxy.ts#L100)
 
 Human-readable name showing the full chain for debugging and logging.
 Format: `"Fallback STT (provider1 -> provider2 -> ...)"`.
@@ -107,7 +107,7 @@ Format: `"Fallback STT (provider1 -> provider2 -> ...)"`.
 
 > `readonly` **id**: `string`
 
-Defined in: [packages/agentos/src/speech/FallbackProxy.ts:94](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/speech/FallbackProxy.ts#L94)
+Defined in: [packages/agentos/src/speech/FallbackProxy.ts:94](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/speech/FallbackProxy.ts#L94)
 
 Unique identifier derived from the first provider in the chain.
 Falls back to `'fallback-stt'` for empty chains to avoid undefined access.
@@ -122,7 +122,7 @@ Falls back to `'fallback-stt'` for empty chains to avoid undefined access.
 
 > `readonly` **supportsStreaming**: `boolean`
 
-Defined in: [packages/agentos/src/speech/FallbackProxy.ts:108](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/speech/FallbackProxy.ts#L108)
+Defined in: [packages/agentos/src/speech/FallbackProxy.ts:108](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/speech/FallbackProxy.ts#L108)
 
 Whether the proxy supports streaming. Only `true` when the first
 (primary) provider supports streaming — fallback providers' streaming
@@ -139,7 +139,7 @@ is not supported.
 
 > **getProviderName**(): `string`
 
-Defined in: [packages/agentos/src/speech/FallbackProxy.ts:203](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/speech/FallbackProxy.ts#L203)
+Defined in: [packages/agentos/src/speech/FallbackProxy.ts:203](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/speech/FallbackProxy.ts#L203)
 
 Returns the human-readable name of the primary (first) provider in the chain.
 
@@ -165,7 +165,7 @@ proxy.getProviderName(); // 'OpenAI Whisper' (from the first chain entry)
 
 > **transcribe**(`audio`, `options?`): `Promise`\<[`SpeechTranscriptionResult`](../interfaces/SpeechTranscriptionResult.md)\>
 
-Defined in: [packages/agentos/src/speech/FallbackProxy.ts:159](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/speech/FallbackProxy.ts#L159)
+Defined in: [packages/agentos/src/speech/FallbackProxy.ts:159](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/speech/FallbackProxy.ts#L159)
 
 Attempt transcription using each provider in the chain in order.
 

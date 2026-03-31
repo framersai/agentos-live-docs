@@ -2,7 +2,7 @@
 
 > **resolveProviderChain**(`available`, `preferences?`): `string`[]
 
-Defined in: [packages/agentos/src/media/ProviderPreferences.ts:174](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/media/ProviderPreferences.ts#L174)
+Defined in: [packages/agentos/src/media/ProviderPreferences.ts:174](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/media/ProviderPreferences.ts#L174)
 
 Resolve a full provider chain from the available providers and preferences.
 

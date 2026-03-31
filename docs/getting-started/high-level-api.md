@@ -3,34 +3,38 @@ title: "High-Level API"
 sidebar_position: 3
 ---
 
-AgentOS now exposes three public layers from the root package:
+Everything is one import. Pick the function that fits your task:
 
-- High-level helpers: `generateText()`, `streamText()`, `generateImage()`, `generateVideo()`, `analyzeVideo()`, `generateMusic()`, `generateSFX()`, `performOCR()`, `agent()`, `agency()`
-- Standalone retrieval/runtime helpers: `QueryRouter`
-- Full runtime: `new AgentOS()` with `processRequest()`, personas, workflows, extensions, and chunk-level orchestration
+```typescript
+import {
+  generateText, streamText,        // Text generation
+  generateObject, streamObject,    // Structured output (Zod validated)
+  generateImage,                   // Image generation
+  generateVideo, analyzeVideo,     // Video generation & analysis
+  generateMusic, generateSFX,      // Audio generation
+  performOCR,                      // Vision / OCR
+  embedText,                       // Embeddings
+  agent,                           // Multi-turn agent sessions
+  agency,                          // Multi-agent teams
+} from '@framers/agentos';
+```
 
-Use the high-level API when you want the fastest path to text, image, video, audio, OCR, lightweight stateful sessions, small multi-agent teams, or standalone grounded Q&A over a markdown corpus. Use `AgentOS` directly when you need the full runtime.
+## Quick Reference
 
-When AgentOS observability is enabled, these helper APIs also emit opt-in OTEL spans and turn metrics. `generateText()` and `streamText()` attach provider/model/token usage and aggregated cost when the provider returns it; `generateImage()` does the same for image-generation usage.
+| Function | What it does | Example |
+|----------|-------------|---------|
+| `generateText()` | One-shot text generation | `await generateText({ provider: 'openai', prompt: '...' })` |
+| `streamText()` | Stream text in real-time | `for await (const d of streamText({...}).textStream) {}` |
+| `generateObject()` | Extract structured JSON (Zod) | `await generateObject({ schema: z.object({...}), prompt: '...' })` |
+| `generateImage()` | Generate images | `await generateImage({ provider: 'openai', prompt: '...' })` |
+| `generateVideo()` | Generate video from text/image | `await generateVideo({ prompt: '...' })` |
+| `generateMusic()` | Generate music | `await generateMusic({ prompt: '...' })` |
+| `performOCR()` | Extract text from images | `await performOCR({ imagePath: './doc.png' })` |
+| `embedText()` | Generate embeddings | `await embedText({ input: ['hello'] })` |
+| `agent()` | Multi-turn sessions with memory | `const a = agent({ provider: 'openai' })` |
+| `agency()` | Multi-agent teams | `const team = agency({ agents: {...}, strategy: 'parallel' })` |
 
-If you also want durable helper-level accounting, set `usageLedger.path`, set `usageLedger.enabled: true`, or export `AGENTOS_USAGE_LEDGER_PATH` / `WUNDERLAND_USAGE_LEDGER_PATH`. With `enabled: true`, helper usage lands in the shared home ledger at `~/.framers/usage-ledger.jsonl` unless you provide an explicit path.
-
-## When to use which
-
-| API               | Best for                                                                                        | Tradeoff                                  |
-| ----------------- | ----------------------------------------------------------------------------------------------- | ----------------------------------------- |
-| `generateText()`  | One-shot text or tool-calling turns                                                             | No persistent session state               |
-| `streamText()`    | Stream text or tool-calling results immediately                                                 | Stateless per call                        |
-| `generateImage()` | Provider-agnostic image generation from a single prompt                                         | Provider feature support varies           |
-| `generateVideo()` | Provider-agnostic text-to-video or image-to-video generation                                    | Provider duration/model support varies    |
-| `analyzeVideo()`  | Scene-aware video understanding with optional speech transcription                              | Requires ffmpeg/ffprobe on the host       |
-| `generateMusic()` | Provider-agnostic music generation with fallback across cloud and local backends                | Musical controls vary by provider         |
-| `generateSFX()`   | Provider-agnostic sound-effect generation with fallback across cloud and local backends         | Clip duration/format limits vary          |
-| `performOCR()`    | One-shot OCR / vision extraction without managing a `VisionPipeline`                            | Less control than a long-lived pipeline   |
-| `agent()`         | Lightweight multi-turn sessions with in-memory history                                          | Does not replace the full AgentOS runtime |
-| `agency()`        | Multi-agent teams with strategies, HITL, guardrails, and finalized stream semantics             | More coordination overhead                |
-| `QueryRouter`     | Tiered classify → retrieve → generate pipeline over local docs                                  | Not a full GraphRAG/web-research runtime by default |
-| `AgentOS`         | Personas, extensions, workflows, multi-agent orchestration, guardrails, HITL, runtime lifecycle | More setup, more control                  |
+All functions accept `provider` as a top-level key — no `'openai:gpt-4o'` colon syntax needed (though it still works for backwards compatibility).
 
 ## Provider Resolution
 
@@ -650,4 +654,4 @@ original process exits.
 - Keep low-level `AgentOS` examples in architecture, advanced usage, extensions, workflows, and runtime-control docs.
 - Document both layers explicitly. They are complementary, not competing.
 - Keep `generateImage()` provider-agnostic at the API boundary, but expose provider-specific knobs through `providerOptions` when needed.
-- Do not force libraries like Wunderland to adopt `agent()` unless the helper reaches feature parity with their runtime needs.
+- Do not force downstream libraries to adopt `agent()` unless the helper reaches feature parity with their runtime needs.

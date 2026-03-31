@@ -1,6 +1,6 @@
 # Interface: MemoryGraphConfig
 
-Defined in: [packages/agentos/src/memory/core/config.ts:81](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/core/config.ts#L81)
+Defined in: [packages/agentos/src/memory/core/config.ts:81](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/core/config.ts#L81)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/memory/core/config.ts:81](https://github.com/f
 
 > **activationThreshold**: `number`
 
-Defined in: [packages/agentos/src/memory/core/config.ts:89](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/core/config.ts#L89)
+Defined in: [packages/agentos/src/memory/core/config.ts:89](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/core/config.ts#L89)
 
 Minimum activation to continue spreading.
 
@@ -24,7 +24,7 @@ Minimum activation to continue spreading.
 
 > **backend**: `"graphology"` \| `"knowledge-graph"`
 
-Defined in: [packages/agentos/src/memory/core/config.ts:83](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/core/config.ts#L83)
+Defined in: [packages/agentos/src/memory/core/config.ts:83](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/core/config.ts#L83)
 
 Which backend to use.
 
@@ -40,7 +40,7 @@ Which backend to use.
 
 > **decayPerHop**: `number`
 
-Defined in: [packages/agentos/src/memory/core/config.ts:87](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/core/config.ts#L87)
+Defined in: [packages/agentos/src/memory/core/config.ts:87](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/core/config.ts#L87)
 
 Activation decay per hop.
 
@@ -56,7 +56,7 @@ Activation decay per hop.
 
 > **hebbianLearningRate**: `number`
 
-Defined in: [packages/agentos/src/memory/core/config.ts:91](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/core/config.ts#L91)
+Defined in: [packages/agentos/src/memory/core/config.ts:91](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/core/config.ts#L91)
 
 Hebbian learning rate for co-activation edge strengthening.
 
@@ -72,7 +72,7 @@ Hebbian learning rate for co-activation edge strengthening.
 
 > **maxDepth**: `number`
 
-Defined in: [packages/agentos/src/memory/core/config.ts:85](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/core/config.ts#L85)
+Defined in: [packages/agentos/src/memory/core/config.ts:85](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/core/config.ts#L85)
 
 Max hops for spreading activation.
 

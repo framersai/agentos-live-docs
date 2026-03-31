@@ -1,6 +1,6 @@
 # Interface: RetrieveVectorEvent
 
-Defined in: [packages/agentos/src/query-router/types.ts:887](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/query-router/types.ts#L887)
+Defined in: [packages/agentos/src/query-router/types.ts:901](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/query-router/types.ts#L901)
 
 Emitted when vector search results are available.
 
@@ -10,7 +10,7 @@ Emitted when vector search results are available.
 
 > **chunkCount**: `number`
 
-Defined in: [packages/agentos/src/query-router/types.ts:890](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/query-router/types.ts#L890)
+Defined in: [packages/agentos/src/query-router/types.ts:904](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/query-router/types.ts#L904)
 
 Number of chunks returned by vector search.
 
@@ -20,7 +20,7 @@ Number of chunks returned by vector search.
 
 > **durationMs**: `number`
 
-Defined in: [packages/agentos/src/query-router/types.ts:892](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/query-router/types.ts#L892)
+Defined in: [packages/agentos/src/query-router/types.ts:906](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/query-router/types.ts#L906)
 
 Duration of vector retrieval in milliseconds.
 
@@ -30,7 +30,7 @@ Duration of vector retrieval in milliseconds.
 
 > **timestamp**: `number`
 
-Defined in: [packages/agentos/src/query-router/types.ts:894](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/query-router/types.ts#L894)
+Defined in: [packages/agentos/src/query-router/types.ts:908](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/query-router/types.ts#L908)
 
 Timestamp of the event.
 
@@ -40,4 +40,4 @@ Timestamp of the event.
 
 > **type**: `"retrieve:vector"`
 
-Defined in: [packages/agentos/src/query-router/types.ts:888](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/query-router/types.ts#L888)
+Defined in: [packages/agentos/src/query-router/types.ts:902](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/query-router/types.ts#L902)

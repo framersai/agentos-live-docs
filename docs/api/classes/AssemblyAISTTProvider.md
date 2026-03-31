@@ -1,6 +1,6 @@
 # Class: AssemblyAISTTProvider
 
-Defined in: [packages/agentos/src/hearing/providers/AssemblyAISTTProvider.ts:202](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/hearing/providers/AssemblyAISTTProvider.ts#L202)
+Defined in: [packages/agentos/src/hearing/providers/AssemblyAISTTProvider.ts:202](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/hearing/providers/AssemblyAISTTProvider.ts#L202)
 
 Speech-to-text provider that uses the AssemblyAI async transcription API.
 
@@ -73,7 +73,7 @@ const result = await provider.transcribe(
 
 > **new AssemblyAISTTProvider**(`config`): `AssemblyAISTTProvider`
 
-Defined in: [packages/agentos/src/hearing/providers/AssemblyAISTTProvider.ts:231](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/hearing/providers/AssemblyAISTTProvider.ts#L231)
+Defined in: [packages/agentos/src/hearing/providers/AssemblyAISTTProvider.ts:231](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/hearing/providers/AssemblyAISTTProvider.ts#L231)
 
 Creates a new AssemblyAISTTProvider.
 
@@ -103,7 +103,7 @@ const provider = new AssemblyAISTTProvider({
 
 > `readonly` **displayName**: `"AssemblyAI"` = `'AssemblyAI'`
 
-Defined in: [packages/agentos/src/hearing/providers/AssemblyAISTTProvider.ts:207](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/hearing/providers/AssemblyAISTTProvider.ts#L207)
+Defined in: [packages/agentos/src/hearing/providers/AssemblyAISTTProvider.ts:207](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/hearing/providers/AssemblyAISTTProvider.ts#L207)
 
 Human-readable display name for UI and logging.
 
@@ -117,7 +117,7 @@ Human-readable display name for UI and logging.
 
 > `readonly` **id**: `"assemblyai"` = `'assemblyai'`
 
-Defined in: [packages/agentos/src/hearing/providers/AssemblyAISTTProvider.ts:204](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/hearing/providers/AssemblyAISTTProvider.ts#L204)
+Defined in: [packages/agentos/src/hearing/providers/AssemblyAISTTProvider.ts:204](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/hearing/providers/AssemblyAISTTProvider.ts#L204)
 
 Unique provider identifier used for registration and resolution.
 
@@ -131,7 +131,7 @@ Unique provider identifier used for registration and resolution.
 
 > `readonly` **supportsStreaming**: `false` = `false`
 
-Defined in: [packages/agentos/src/hearing/providers/AssemblyAISTTProvider.ts:214](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/hearing/providers/AssemblyAISTTProvider.ts#L214)
+Defined in: [packages/agentos/src/hearing/providers/AssemblyAISTTProvider.ts:214](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/hearing/providers/AssemblyAISTTProvider.ts#L214)
 
 Streaming is not supported by this provider's async pipeline.
 AssemblyAI does offer a separate real-time streaming API via WebSocket,
@@ -147,7 +147,7 @@ but that would be a different provider implementation.
 
 > **getProviderName**(): `string`
 
-Defined in: [packages/agentos/src/hearing/providers/AssemblyAISTTProvider.ts:245](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/hearing/providers/AssemblyAISTTProvider.ts#L245)
+Defined in: [packages/agentos/src/hearing/providers/AssemblyAISTTProvider.ts:245](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/hearing/providers/AssemblyAISTTProvider.ts#L245)
 
 Returns the human-readable provider name.
 
@@ -173,7 +173,7 @@ provider.getProviderName(); // 'AssemblyAI'
 
 > **transcribe**(`audio`, `options?`): `Promise`\<[`SpeechTranscriptionResult`](../interfaces/SpeechTranscriptionResult.md)\>
 
-Defined in: [packages/agentos/src/hearing/providers/AssemblyAISTTProvider.ts:278](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/hearing/providers/AssemblyAISTTProvider.ts#L278)
+Defined in: [packages/agentos/src/hearing/providers/AssemblyAISTTProvider.ts:278](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/hearing/providers/AssemblyAISTTProvider.ts#L278)
 
 Transcribes an audio buffer via the AssemblyAI three-step async pipeline:
 upload, submit, and poll.

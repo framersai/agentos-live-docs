@@ -1,6 +1,6 @@
 # Interface: LoopProgress
 
-Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:324](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/planner/IPlanningEngine.ts#L324)
+Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:324](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/planner/IPlanningEngine.ts#L324)
 
 Progress update during autonomous loop.
 
@@ -10,7 +10,7 @@ Progress update during autonomous loop.
 
 > **currentStep**: [`PlanStep`](PlanStep.md)
 
-Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:328](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/planner/IPlanningEngine.ts#L328)
+Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:328](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/planner/IPlanningEngine.ts#L328)
 
 Current step being executed
 
@@ -20,7 +20,7 @@ Current step being executed
 
 > **goalConfidence**: `number`
 
-Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:334](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/planner/IPlanningEngine.ts#L334)
+Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:334](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/planner/IPlanningEngine.ts#L334)
 
 Current confidence in goal achievement
 
@@ -30,7 +30,7 @@ Current confidence in goal achievement
 
 > **iteration**: `number`
 
-Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:326](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/planner/IPlanningEngine.ts#L326)
+Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:326](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/planner/IPlanningEngine.ts#L326)
 
 Current iteration
 
@@ -40,7 +40,7 @@ Current iteration
 
 > **observations**: `string`[]
 
-Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:332](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/planner/IPlanningEngine.ts#L332)
+Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:332](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/planner/IPlanningEngine.ts#L332)
 
 Accumulated observations
 
@@ -50,7 +50,7 @@ Accumulated observations
 
 > **progress**: `number`
 
-Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:330](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/planner/IPlanningEngine.ts#L330)
+Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:330](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/planner/IPlanningEngine.ts#L330)
 
 Overall progress (0-1)
 
@@ -60,6 +60,6 @@ Overall progress (0-1)
 
 > **tokensUsed**: `number`
 
-Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:336](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/planner/IPlanningEngine.ts#L336)
+Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:336](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/planner/IPlanningEngine.ts#L336)
 
 Tokens used so far

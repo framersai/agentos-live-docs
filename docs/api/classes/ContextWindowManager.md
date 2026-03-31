@@ -1,6 +1,6 @@
 # Class: ContextWindowManager
 
-Defined in: [packages/agentos/src/memory/pipeline/context/ContextWindowManager.ts:49](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/pipeline/context/ContextWindowManager.ts#L49)
+Defined in: [packages/agentos/src/memory/pipeline/context/ContextWindowManager.ts:49](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/pipeline/context/ContextWindowManager.ts#L49)
 
 ## Constructors
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/memory/pipeline/context/ContextWindowManager.t
 
 > **new ContextWindowManager**(`managerConfig`): `ContextWindowManager`
 
-Defined in: [packages/agentos/src/memory/pipeline/context/ContextWindowManager.ts:66](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/pipeline/context/ContextWindowManager.ts#L66)
+Defined in: [packages/agentos/src/memory/pipeline/context/ContextWindowManager.ts:66](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/pipeline/context/ContextWindowManager.ts#L66)
 
 #### Parameters
 
@@ -28,7 +28,7 @@ Defined in: [packages/agentos/src/memory/pipeline/context/ContextWindowManager.t
 
 > **get** **enabled**(): `boolean`
 
-Defined in: [packages/agentos/src/memory/pipeline/context/ContextWindowManager.ts:316](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/pipeline/context/ContextWindowManager.ts#L316)
+Defined in: [packages/agentos/src/memory/pipeline/context/ContextWindowManager.ts:316](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/pipeline/context/ContextWindowManager.ts#L316)
 
 Whether infinite context is enabled.
 
@@ -42,7 +42,7 @@ Whether infinite context is enabled.
 
 > **addMessage**(`role`, `content`): `void`
 
-Defined in: [packages/agentos/src/memory/pipeline/context/ContextWindowManager.ts:98](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/pipeline/context/ContextWindowManager.ts#L98)
+Defined in: [packages/agentos/src/memory/pipeline/context/ContextWindowManager.ts:98](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/pipeline/context/ContextWindowManager.ts#L98)
 
 Add a message to the tracked conversation.
 Call this for every message (user, assistant, system, tool).
@@ -67,7 +67,7 @@ Call this for every message (user, assistant, system, tool).
 
 > **beforeTurn**(`systemPromptTokens`, `memoryBudgetTokens`, `emotionalContext?`): `Promise`\<[`ContextMessage`](../interfaces/ContextMessage.md)[]\>
 
-Defined in: [packages/agentos/src/memory/pipeline/context/ContextWindowManager.ts:123](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/pipeline/context/ContextWindowManager.ts#L123)
+Defined in: [packages/agentos/src/memory/pipeline/context/ContextWindowManager.ts:123](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/pipeline/context/ContextWindowManager.ts#L123)
 
 Check whether compaction is needed and perform it if so.
 Call this BEFORE assembling the prompt for the LLM.
@@ -98,7 +98,7 @@ Returns the current message list (potentially compacted).
 
 > **clear**(): `void`
 
-Defined in: [packages/agentos/src/memory/pipeline/context/ContextWindowManager.ts:302](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/pipeline/context/ContextWindowManager.ts#L302)
+Defined in: [packages/agentos/src/memory/pipeline/context/ContextWindowManager.ts:302](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/pipeline/context/ContextWindowManager.ts#L302)
 
 Reset all state.
 
@@ -112,7 +112,7 @@ Reset all state.
 
 > **findTurnHistory**(`turnIndex`): [`CompactionEntry`](../interfaces/CompactionEntry.md)[]
 
-Defined in: [packages/agentos/src/memory/pipeline/context/ContextWindowManager.ts:260](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/pipeline/context/ContextWindowManager.ts#L260)
+Defined in: [packages/agentos/src/memory/pipeline/context/ContextWindowManager.ts:260](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/pipeline/context/ContextWindowManager.ts#L260)
 
 Find what happened to a specific turn.
 
@@ -132,7 +132,7 @@ Find what happened to a specific turn.
 
 > **formatTransparencyReport**(): `string`
 
-Defined in: [packages/agentos/src/memory/pipeline/context/ContextWindowManager.ts:268](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/pipeline/context/ContextWindowManager.ts#L268)
+Defined in: [packages/agentos/src/memory/pipeline/context/ContextWindowManager.ts:268](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/pipeline/context/ContextWindowManager.ts#L268)
 
 Format a transparency report for the agent's context.
 Includes: current state, recent compactions, summary chain.
@@ -147,7 +147,7 @@ Includes: current state, recent compactions, summary chain.
 
 > **getCompactionHistory**(): readonly [`CompactionEntry`](../interfaces/CompactionEntry.md)[]
 
-Defined in: [packages/agentos/src/memory/pipeline/context/ContextWindowManager.ts:227](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/pipeline/context/ContextWindowManager.ts#L227)
+Defined in: [packages/agentos/src/memory/pipeline/context/ContextWindowManager.ts:227](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/pipeline/context/ContextWindowManager.ts#L227)
 
 Get all compaction entries.
 
@@ -161,7 +161,7 @@ readonly [`CompactionEntry`](../interfaces/CompactionEntry.md)[]
 
 > **getConfig**(): `Readonly`\<[`InfiniteContextConfig`](../interfaces/InfiniteContextConfig.md)\>
 
-Defined in: [packages/agentos/src/memory/pipeline/context/ContextWindowManager.ts:321](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/pipeline/context/ContextWindowManager.ts#L321)
+Defined in: [packages/agentos/src/memory/pipeline/context/ContextWindowManager.ts:321](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/pipeline/context/ContextWindowManager.ts#L321)
 
 Current config (read-only).
 
@@ -175,7 +175,7 @@ Current config (read-only).
 
 > **getCurrentTokens**(): `number`
 
-Defined in: [packages/agentos/src/memory/pipeline/context/ContextWindowManager.ts:205](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/pipeline/context/ContextWindowManager.ts#L205)
+Defined in: [packages/agentos/src/memory/pipeline/context/ContextWindowManager.ts:205](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/pipeline/context/ContextWindowManager.ts#L205)
 
 Current total token estimate across all messages.
 
@@ -189,7 +189,7 @@ Current total token estimate across all messages.
 
 > **getCurrentTurn**(): `number`
 
-Defined in: [packages/agentos/src/memory/pipeline/context/ContextWindowManager.ts:210](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/pipeline/context/ContextWindowManager.ts#L210)
+Defined in: [packages/agentos/src/memory/pipeline/context/ContextWindowManager.ts:210](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/pipeline/context/ContextWindowManager.ts#L210)
 
 Current turn index.
 
@@ -203,7 +203,7 @@ Current turn index.
 
 > **getEngine**(): [`CompactionEngine`](CompactionEngine.md)
 
-Defined in: [packages/agentos/src/memory/pipeline/context/ContextWindowManager.ts:311](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/pipeline/context/ContextWindowManager.ts#L311)
+Defined in: [packages/agentos/src/memory/pipeline/context/ContextWindowManager.ts:311](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/pipeline/context/ContextWindowManager.ts#L311)
 
 Get the compaction engine (for strategy inspection/testing).
 
@@ -217,7 +217,7 @@ Get the compaction engine (for strategy inspection/testing).
 
 > **getLog**(): [`CompactionLog`](CompactionLog.md)
 
-Defined in: [packages/agentos/src/memory/pipeline/context/ContextWindowManager.ts:222](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/pipeline/context/ContextWindowManager.ts#L222)
+Defined in: [packages/agentos/src/memory/pipeline/context/ContextWindowManager.ts:222](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/pipeline/context/ContextWindowManager.ts#L222)
 
 Get the compaction log.
 
@@ -231,7 +231,7 @@ Get the compaction log.
 
 > **getMessages**(): readonly [`ContextMessage`](../interfaces/ContextMessage.md)[]
 
-Defined in: [packages/agentos/src/memory/pipeline/context/ContextWindowManager.ts:195](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/pipeline/context/ContextWindowManager.ts#L195)
+Defined in: [packages/agentos/src/memory/pipeline/context/ContextWindowManager.ts:195](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/pipeline/context/ContextWindowManager.ts#L195)
 
 Get all current messages (including any summary blocks).
 
@@ -245,7 +245,7 @@ readonly [`ContextMessage`](../interfaces/ContextMessage.md)[]
 
 > **getRawMessages**(): [`ContextMessage`](../interfaces/ContextMessage.md)[]
 
-Defined in: [packages/agentos/src/memory/pipeline/context/ContextWindowManager.ts:200](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/pipeline/context/ContextWindowManager.ts#L200)
+Defined in: [packages/agentos/src/memory/pipeline/context/ContextWindowManager.ts:200](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/pipeline/context/ContextWindowManager.ts#L200)
 
 Get only the raw (non-compacted) messages.
 
@@ -259,7 +259,7 @@ Get only the raw (non-compacted) messages.
 
 > **getStats**(): [`ContextWindowStats`](../interfaces/ContextWindowStats.md)
 
-Defined in: [packages/agentos/src/memory/pipeline/context/ContextWindowManager.ts:232](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/pipeline/context/ContextWindowManager.ts#L232)
+Defined in: [packages/agentos/src/memory/pipeline/context/ContextWindowManager.ts:232](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/pipeline/context/ContextWindowManager.ts#L232)
 
 Get aggregate stats.
 
@@ -273,7 +273,7 @@ Get aggregate stats.
 
 > **getSummaryChain**(): [`SummaryChainNode`](../interfaces/SummaryChainNode.md)[]
 
-Defined in: [packages/agentos/src/memory/pipeline/context/ContextWindowManager.ts:250](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/pipeline/context/ContextWindowManager.ts#L250)
+Defined in: [packages/agentos/src/memory/pipeline/context/ContextWindowManager.ts:250](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/pipeline/context/ContextWindowManager.ts#L250)
 
 Get the summary chain for UI display.
 
@@ -287,7 +287,7 @@ Get the summary chain for UI display.
 
 > **getSummaryContext**(): `string`
 
-Defined in: [packages/agentos/src/memory/pipeline/context/ContextWindowManager.ts:188](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/pipeline/context/ContextWindowManager.ts#L188)
+Defined in: [packages/agentos/src/memory/pipeline/context/ContextWindowManager.ts:188](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/pipeline/context/ContextWindowManager.ts#L188)
 
 Get the formatted summary chain for injection into the system prompt
 or as a conversation-history block.
@@ -302,7 +302,7 @@ or as a conversation-history block.
 
 > **searchHistory**(`keyword`): [`CompactionEntry`](../interfaces/CompactionEntry.md)[]
 
-Defined in: [packages/agentos/src/memory/pipeline/context/ContextWindowManager.ts:255](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/pipeline/context/ContextWindowManager.ts#L255)
+Defined in: [packages/agentos/src/memory/pipeline/context/ContextWindowManager.ts:255](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/pipeline/context/ContextWindowManager.ts#L255)
 
 Search the compaction log for a keyword.
 
@@ -322,7 +322,7 @@ Search the compaction log for a keyword.
 
 > **setMessages**(`messages`): `void`
 
-Defined in: [packages/agentos/src/memory/pipeline/context/ContextWindowManager.ts:215](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/pipeline/context/ContextWindowManager.ts#L215)
+Defined in: [packages/agentos/src/memory/pipeline/context/ContextWindowManager.ts:215](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/pipeline/context/ContextWindowManager.ts#L215)
 
 Replace the message list (e.g. after external manipulation).
 

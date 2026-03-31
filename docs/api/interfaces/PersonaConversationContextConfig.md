@@ -1,6 +1,6 @@
 # Interface: PersonaConversationContextConfig
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:90](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/cognitive_substrate/personas/IPersonaDefinition.ts#L90)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:90](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/cognitive_substrate/personas/IPersonaDefinition.ts#L90)
 
 Configuration for how the persona manages and utilizes conversation history.
 
@@ -14,7 +14,7 @@ PersonaConversationContextConfig
 
 > `optional` **includeSystemMessages**: `boolean`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:96](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/cognitive_substrate/personas/IPersonaDefinition.ts#L96)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:96](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/cognitive_substrate/personas/IPersonaDefinition.ts#L96)
 
 ***
 
@@ -22,7 +22,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefiniti
 
 > `optional` **includeToolResults**: `boolean`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:95](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/cognitive_substrate/personas/IPersonaDefinition.ts#L95)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:95](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/cognitive_substrate/personas/IPersonaDefinition.ts#L95)
 
 ***
 
@@ -30,7 +30,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefiniti
 
 > `optional` **maxMessages**: `number`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:91](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/cognitive_substrate/personas/IPersonaDefinition.ts#L91)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:91](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/cognitive_substrate/personas/IPersonaDefinition.ts#L91)
 
 ***
 
@@ -38,7 +38,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefiniti
 
 > `optional` **maxTokens**: `number`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:92](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/cognitive_substrate/personas/IPersonaDefinition.ts#L92)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:92](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/cognitive_substrate/personas/IPersonaDefinition.ts#L92)
 
 ***
 
@@ -46,7 +46,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefiniti
 
 > `optional` **overflowStrategy**: `"hybrid"` \| `"truncate"` \| `"summarize"`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:93](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/cognitive_substrate/personas/IPersonaDefinition.ts#L93)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:93](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/cognitive_substrate/personas/IPersonaDefinition.ts#L93)
 
 ***
 
@@ -54,4 +54,4 @@ Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefiniti
 
 > `optional` **summarizationTriggerTokens**: `number`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:94](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/cognitive_substrate/personas/IPersonaDefinition.ts#L94)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:94](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/cognitive_substrate/personas/IPersonaDefinition.ts#L94)

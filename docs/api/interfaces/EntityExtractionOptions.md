@@ -1,6 +1,6 @@
 # Interface: EntityExtractionOptions
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:451](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/structured/output/IStructuredOutputManager.ts#L451)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:451](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/structured/output/IStructuredOutputManager.ts#L451)
 
 Options for entity extraction from text.
 
@@ -10,7 +10,7 @@ Options for entity extraction from text.
 
 > **entitySchema**: [`JSONSchema`](JSONSchema.md)
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:456](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/structured/output/IStructuredOutputManager.ts#L456)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:456](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/structured/output/IStructuredOutputManager.ts#L456)
 
 Schema defining the entities to extract
 
@@ -20,7 +20,7 @@ Schema defining the entities to extract
 
 > `optional` **examples**: `object`[]
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:465](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/structured/output/IStructuredOutputManager.ts#L465)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:465](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/structured/output/IStructuredOutputManager.ts#L465)
 
 Examples of expected extractions
 
@@ -38,7 +38,7 @@ Examples of expected extractions
 
 > `optional` **extractAll**: `boolean`
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:474](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/structured/output/IStructuredOutputManager.ts#L474)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:474](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/structured/output/IStructuredOutputManager.ts#L474)
 
 Whether to extract all occurrences or just first
 
@@ -48,7 +48,7 @@ Whether to extract all occurrences or just first
 
 > `optional` **instructions**: `string`
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:462](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/structured/output/IStructuredOutputManager.ts#L462)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:462](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/structured/output/IStructuredOutputManager.ts#L462)
 
 Additional context or instructions
 
@@ -58,7 +58,7 @@ Additional context or instructions
 
 > `optional` **modelId**: `string`
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:471](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/structured/output/IStructuredOutputManager.ts#L471)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:471](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/structured/output/IStructuredOutputManager.ts#L471)
 
 Model ID to use
 
@@ -68,7 +68,7 @@ Model ID to use
 
 > `optional` **providerId**: `string`
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:468](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/structured/output/IStructuredOutputManager.ts#L468)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:468](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/structured/output/IStructuredOutputManager.ts#L468)
 
 LLM provider to use
 
@@ -78,7 +78,7 @@ LLM provider to use
 
 > **taskName**: `string`
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:459](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/structured/output/IStructuredOutputManager.ts#L459)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:459](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/structured/output/IStructuredOutputManager.ts#L459)
 
 Name for the extraction task
 
@@ -88,6 +88,6 @@ Name for the extraction task
 
 > **text**: `string`
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:453](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/structured/output/IStructuredOutputManager.ts#L453)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:453](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/structured/output/IStructuredOutputManager.ts#L453)
 
 Text to extract entities from

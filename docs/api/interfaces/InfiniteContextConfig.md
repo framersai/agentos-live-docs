@@ -1,6 +1,6 @@
 # Interface: InfiniteContextConfig
 
-Defined in: [packages/agentos/src/memory/pipeline/context/types.ts:16](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/pipeline/context/types.ts#L16)
+Defined in: [packages/agentos/src/memory/pipeline/context/types.ts:16](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/pipeline/context/types.ts#L16)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/memory/pipeline/context/types.ts:16](https://g
 
 > **compactionThreshold**: `number`
 
-Defined in: [packages/agentos/src/memory/pipeline/context/types.ts:22](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/pipeline/context/types.ts#L22)
+Defined in: [packages/agentos/src/memory/pipeline/context/types.ts:22](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/pipeline/context/types.ts#L22)
 
 Trigger compaction when context reaches this fraction of max tokens (0–1).
 
@@ -18,7 +18,7 @@ Trigger compaction when context reaches this fraction of max tokens (0–1).
 
 > **enabled**: `boolean`
 
-Defined in: [packages/agentos/src/memory/pipeline/context/types.ts:18](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/pipeline/context/types.ts#L18)
+Defined in: [packages/agentos/src/memory/pipeline/context/types.ts:18](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/pipeline/context/types.ts#L18)
 
 Enable infinite context window management.
 
@@ -28,7 +28,7 @@ Enable infinite context window management.
 
 > `optional` **llmInvoker**: (`prompt`) => `Promise`\<`string`\>
 
-Defined in: [packages/agentos/src/memory/pipeline/context/types.ts:34](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/pipeline/context/types.ts#L34)
+Defined in: [packages/agentos/src/memory/pipeline/context/types.ts:34](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/pipeline/context/types.ts#L34)
 
 LLM invoker for summarization. Falls back to Observer/Reflector invokers.
 
@@ -48,7 +48,7 @@ LLM invoker for summarization. Falls back to Observer/Reflector invokers.
 
 > **logRetention**: `number`
 
-Defined in: [packages/agentos/src/memory/pipeline/context/types.ts:28](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/pipeline/context/types.ts#L28)
+Defined in: [packages/agentos/src/memory/pipeline/context/types.ts:28](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/pipeline/context/types.ts#L28)
 
 Max compaction log entries retained in memory.
 
@@ -58,7 +58,7 @@ Max compaction log entries retained in memory.
 
 > **maxSummaryChainTokens**: `number`
 
-Defined in: [packages/agentos/src/memory/pipeline/context/types.ts:30](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/pipeline/context/types.ts#L30)
+Defined in: [packages/agentos/src/memory/pipeline/context/types.ts:30](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/pipeline/context/types.ts#L30)
 
 Token budget for the rolling summary chain header.
 
@@ -68,7 +68,7 @@ Token budget for the rolling summary chain header.
 
 > `optional` **modelId**: `string`
 
-Defined in: [packages/agentos/src/memory/pipeline/context/types.ts:36](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/pipeline/context/types.ts#L36)
+Defined in: [packages/agentos/src/memory/pipeline/context/types.ts:36](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/pipeline/context/types.ts#L36)
 
 Model ID for summarization calls.
 
@@ -78,7 +78,7 @@ Model ID for summarization calls.
 
 > **preserveRecentTurns**: `number`
 
-Defined in: [packages/agentos/src/memory/pipeline/context/types.ts:24](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/pipeline/context/types.ts#L24)
+Defined in: [packages/agentos/src/memory/pipeline/context/types.ts:24](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/pipeline/context/types.ts#L24)
 
 Never compact the most recent N turns.
 
@@ -88,7 +88,7 @@ Never compact the most recent N turns.
 
 > **strategy**: [`CompactionStrategy`](../type-aliases/CompactionStrategy.md)
 
-Defined in: [packages/agentos/src/memory/pipeline/context/types.ts:20](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/pipeline/context/types.ts#L20)
+Defined in: [packages/agentos/src/memory/pipeline/context/types.ts:20](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/pipeline/context/types.ts#L20)
 
 Compaction strategy to use.
 
@@ -98,7 +98,7 @@ Compaction strategy to use.
 
 > **targetCompressionRatio**: `number`
 
-Defined in: [packages/agentos/src/memory/pipeline/context/types.ts:32](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/pipeline/context/types.ts#L32)
+Defined in: [packages/agentos/src/memory/pipeline/context/types.ts:32](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/pipeline/context/types.ts#L32)
 
 Target compression ratio for summaries (e.g. 8 = 8:1).
 
@@ -108,6 +108,6 @@ Target compression ratio for summaries (e.g. 8 = 8:1).
 
 > **transparencyLevel**: [`TransparencyLevel`](../type-aliases/TransparencyLevel.md)
 
-Defined in: [packages/agentos/src/memory/pipeline/context/types.ts:26](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/pipeline/context/types.ts#L26)
+Defined in: [packages/agentos/src/memory/pipeline/context/types.ts:26](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/pipeline/context/types.ts#L26)
 
 Transparency logging level.

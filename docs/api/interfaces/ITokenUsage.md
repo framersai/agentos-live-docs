@@ -1,6 +1,6 @@
 # Interface: ITokenUsage
 
-Defined in: [packages/agentos/src/core/storage/IStorageAdapter.ts:124](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/core/storage/IStorageAdapter.ts#L124)
+Defined in: [packages/agentos/src/core/storage/IStorageAdapter.ts:124](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/storage/IStorageAdapter.ts#L124)
 
 Token usage statistics for LLM API calls.
 
@@ -24,7 +24,7 @@ const usage: ITokenUsage = {
 
 > **completionTokens**: `number`
 
-Defined in: [packages/agentos/src/core/storage/IStorageAdapter.ts:126](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/core/storage/IStorageAdapter.ts#L126)
+Defined in: [packages/agentos/src/core/storage/IStorageAdapter.ts:126](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/storage/IStorageAdapter.ts#L126)
 
 Number of tokens in the completion (output)
 
@@ -34,7 +34,7 @@ Number of tokens in the completion (output)
 
 > **promptTokens**: `number`
 
-Defined in: [packages/agentos/src/core/storage/IStorageAdapter.ts:125](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/core/storage/IStorageAdapter.ts#L125)
+Defined in: [packages/agentos/src/core/storage/IStorageAdapter.ts:125](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/storage/IStorageAdapter.ts#L125)
 
 Number of tokens in the prompt (input)
 
@@ -44,6 +44,6 @@ Number of tokens in the prompt (input)
 
 > **totalTokens**: `number`
 
-Defined in: [packages/agentos/src/core/storage/IStorageAdapter.ts:127](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/core/storage/IStorageAdapter.ts#L127)
+Defined in: [packages/agentos/src/core/storage/IStorageAdapter.ts:127](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/storage/IStorageAdapter.ts#L127)
 
 Total tokens used (prompt + completion)

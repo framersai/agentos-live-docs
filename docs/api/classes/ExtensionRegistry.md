@@ -1,6 +1,6 @@
 # Class: ExtensionRegistry\<TPayload\>
 
-Defined in: [packages/agentos/src/extensions/ExtensionRegistry.ts:22](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/extensions/ExtensionRegistry.ts#L22)
+Defined in: [packages/agentos/src/extensions/ExtensionRegistry.ts:22](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/extensions/ExtensionRegistry.ts#L22)
 
 Maintains layered stacks of descriptors for a particular extension kind.
 New registrations push onto the stack, allowing later descriptors to
@@ -18,7 +18,7 @@ override earlier ones while maintaining history for fallbacks or debugging.
 
 > **new ExtensionRegistry**\<`TPayload`\>(`kind`): `ExtensionRegistry`\<`TPayload`\>
 
-Defined in: [packages/agentos/src/extensions/ExtensionRegistry.ts:25](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/extensions/ExtensionRegistry.ts#L25)
+Defined in: [packages/agentos/src/extensions/ExtensionRegistry.ts:25](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/extensions/ExtensionRegistry.ts#L25)
 
 #### Parameters
 
@@ -36,7 +36,7 @@ Defined in: [packages/agentos/src/extensions/ExtensionRegistry.ts:25](https://gi
 
 > **clear**(`context?`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/extensions/ExtensionRegistry.ts:133](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/extensions/ExtensionRegistry.ts#L133)
+Defined in: [packages/agentos/src/extensions/ExtensionRegistry.ts:133](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/extensions/ExtensionRegistry.ts#L133)
 
 Clears all stacks, calling deactivate hooks for active descriptors.
 
@@ -56,7 +56,7 @@ Clears all stacks, calling deactivate hooks for active descriptors.
 
 > **getActive**(`id`): [`ActiveExtensionDescriptor`](../interfaces/ActiveExtensionDescriptor.md)\<`TPayload`\> \| `undefined`
 
-Defined in: [packages/agentos/src/extensions/ExtensionRegistry.ts:98](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/extensions/ExtensionRegistry.ts#L98)
+Defined in: [packages/agentos/src/extensions/ExtensionRegistry.ts:98](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/extensions/ExtensionRegistry.ts#L98)
 
 Returns the active descriptor for the provided id.
 
@@ -76,7 +76,7 @@ Returns the active descriptor for the provided id.
 
 > **listActive**(): [`ActiveExtensionDescriptor`](../interfaces/ActiveExtensionDescriptor.md)\<`TPayload`\>[]
 
-Defined in: [packages/agentos/src/extensions/ExtensionRegistry.ts:106](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/extensions/ExtensionRegistry.ts#L106)
+Defined in: [packages/agentos/src/extensions/ExtensionRegistry.ts:106](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/extensions/ExtensionRegistry.ts#L106)
 
 Lists all currently active descriptors for this registry.
 
@@ -90,7 +90,7 @@ Lists all currently active descriptors for this registry.
 
 > **listHistory**(`id`): [`ActiveExtensionDescriptor`](../interfaces/ActiveExtensionDescriptor.md)\<`TPayload`\>[]
 
-Defined in: [packages/agentos/src/extensions/ExtensionRegistry.ts:121](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/extensions/ExtensionRegistry.ts#L121)
+Defined in: [packages/agentos/src/extensions/ExtensionRegistry.ts:121](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/extensions/ExtensionRegistry.ts#L121)
 
 Returns the full stack history for a descriptor id.
 
@@ -110,7 +110,7 @@ Returns the full stack history for a descriptor id.
 
 > **register**(`descriptor`, `context?`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/extensions/ExtensionRegistry.ts:30](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/extensions/ExtensionRegistry.ts#L30)
+Defined in: [packages/agentos/src/extensions/ExtensionRegistry.ts:30](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/extensions/ExtensionRegistry.ts#L30)
 
 Registers a descriptor, making it the active entry for its id.
 
@@ -134,7 +134,7 @@ Registers a descriptor, making it the active entry for its id.
 
 > **unregister**(`id`, `context?`): `Promise`\<`boolean`\>
 
-Defined in: [packages/agentos/src/extensions/ExtensionRegistry.ts:61](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/extensions/ExtensionRegistry.ts#L61)
+Defined in: [packages/agentos/src/extensions/ExtensionRegistry.ts:61](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/extensions/ExtensionRegistry.ts#L61)
 
 Removes the active descriptor for an id. If older descriptors exist in the
 stack, they become active again.

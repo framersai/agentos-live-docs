@@ -1,6 +1,6 @@
 # Interface: AnalyzeVideoOptions
 
-Defined in: [packages/agentos/src/api/analyzeVideo.ts:35](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/analyzeVideo.ts#L35)
+Defined in: [packages/agentos/src/api/analyzeVideo.ts:35](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/analyzeVideo.ts#L35)
 
 Options for a [analyzeVideo](../functions/analyzeVideo.md) call.
 
@@ -12,7 +12,7 @@ At minimum, a video source (`videoUrl` or `videoBuffer`) is required.
 
 > `optional` **descriptionDetail**: [`DescriptionDetail`](../type-aliases/DescriptionDetail.md)
 
-Defined in: [packages/agentos/src/api/analyzeVideo.ts:72](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/analyzeVideo.ts#L72)
+Defined in: [packages/agentos/src/api/analyzeVideo.ts:72](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/analyzeVideo.ts#L72)
 
 How detailed scene descriptions should be.
 
@@ -28,7 +28,7 @@ How detailed scene descriptions should be.
 
 > `optional` **indexForRAG**: `boolean`
 
-Defined in: [packages/agentos/src/api/analyzeVideo.ts:86](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/analyzeVideo.ts#L86)
+Defined in: [packages/agentos/src/api/analyzeVideo.ts:86](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/analyzeVideo.ts#L86)
 
 Whether to index scene descriptions and transcripts into the
 RAG vector store for later retrieval.
@@ -45,7 +45,7 @@ false
 
 > `optional` **maxFrames**: `number`
 
-Defined in: [packages/agentos/src/api/analyzeVideo.ts:52](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/analyzeVideo.ts#L52)
+Defined in: [packages/agentos/src/api/analyzeVideo.ts:52](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/analyzeVideo.ts#L52)
 
 Maximum number of frames to sample for analysis.
 
@@ -55,7 +55,7 @@ Maximum number of frames to sample for analysis.
 
 > `optional` **maxScenes**: `number`
 
-Defined in: [packages/agentos/src/api/analyzeVideo.ts:79](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/analyzeVideo.ts#L79)
+Defined in: [packages/agentos/src/api/analyzeVideo.ts:79](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/analyzeVideo.ts#L79)
 
 Maximum number of scenes to detect.
 Prevents runaway analysis on very long videos.
@@ -72,7 +72,7 @@ Prevents runaway analysis on very long videos.
 
 > `optional` **model**: `string`
 
-Defined in: [packages/agentos/src/api/analyzeVideo.ts:49](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/analyzeVideo.ts#L49)
+Defined in: [packages/agentos/src/api/analyzeVideo.ts:49](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/analyzeVideo.ts#L49)
 
 Model identifier to use for the vision LLM analysis step.
 
@@ -82,7 +82,7 @@ Model identifier to use for the vision LLM analysis step.
 
 > `optional` **onProgress**: (`event`) => `void`
 
-Defined in: [packages/agentos/src/api/analyzeVideo.ts:91](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/analyzeVideo.ts#L91)
+Defined in: [packages/agentos/src/api/analyzeVideo.ts:91](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/analyzeVideo.ts#L91)
 
 Optional callback invoked as analysis progresses through phases.
 
@@ -102,7 +102,7 @@ Optional callback invoked as analysis progresses through phases.
 
 > `optional` **prompt**: `string`
 
-Defined in: [packages/agentos/src/api/analyzeVideo.ts:46](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/analyzeVideo.ts#L46)
+Defined in: [packages/agentos/src/api/analyzeVideo.ts:46](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/analyzeVideo.ts#L46)
 
 Text prompt / question to guide the analysis (e.g.
 "Describe the key actions in this video").
@@ -113,7 +113,7 @@ Text prompt / question to guide the analysis (e.g.
 
 > `optional` **providerOptions**: `Record`\<`string`, `unknown`\>
 
-Defined in: [packages/agentos/src/api/analyzeVideo.ts:94](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/analyzeVideo.ts#L94)
+Defined in: [packages/agentos/src/api/analyzeVideo.ts:94](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/analyzeVideo.ts#L94)
 
 Arbitrary provider-specific options.
 
@@ -123,7 +123,7 @@ Arbitrary provider-specific options.
 
 > `optional` **sceneThreshold**: `number`
 
-Defined in: [packages/agentos/src/api/analyzeVideo.ts:60](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/analyzeVideo.ts#L60)
+Defined in: [packages/agentos/src/api/analyzeVideo.ts:60](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/analyzeVideo.ts#L60)
 
 Threshold for scene change detection (0-1).
 Lower values detect more scene boundaries (more sensitive);
@@ -141,7 +141,7 @@ higher values only detect dramatic cuts.
 
 > `optional` **transcribeAudio**: `boolean`
 
-Defined in: [packages/agentos/src/api/analyzeVideo.ts:66](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/analyzeVideo.ts#L66)
+Defined in: [packages/agentos/src/api/analyzeVideo.ts:66](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/analyzeVideo.ts#L66)
 
 Whether to transcribe the audio track using the configured STT provider.
 
@@ -157,7 +157,7 @@ true
 
 > `optional` **usageLedger**: [`AgentOSUsageLedgerOptions`](AgentOSUsageLedgerOptions.md)
 
-Defined in: [packages/agentos/src/api/analyzeVideo.ts:97](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/analyzeVideo.ts#L97)
+Defined in: [packages/agentos/src/api/analyzeVideo.ts:97](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/analyzeVideo.ts#L97)
 
 Optional durable usage ledger configuration for accounting.
 
@@ -167,7 +167,7 @@ Optional durable usage ledger configuration for accounting.
 
 > `optional` **videoBuffer**: `Buffer`
 
-Defined in: [packages/agentos/src/api/analyzeVideo.ts:40](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/analyzeVideo.ts#L40)
+Defined in: [packages/agentos/src/api/analyzeVideo.ts:40](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/analyzeVideo.ts#L40)
 
 Raw video bytes. Mutually exclusive with `videoUrl`.
 
@@ -177,6 +177,6 @@ Raw video bytes. Mutually exclusive with `videoUrl`.
 
 > `optional` **videoUrl**: `string`
 
-Defined in: [packages/agentos/src/api/analyzeVideo.ts:37](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/analyzeVideo.ts#L37)
+Defined in: [packages/agentos/src/api/analyzeVideo.ts:37](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/analyzeVideo.ts#L37)
 
 URL of the video to analyse. Mutually exclusive with `videoBuffer`.

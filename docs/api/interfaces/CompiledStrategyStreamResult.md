@@ -1,6 +1,6 @@
 # Interface: CompiledStrategyStreamResult
 
-Defined in: [packages/agentos/src/api/types.ts:656](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/types.ts#L656)
+Defined in: [packages/agentos/src/api/types.ts:715](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/types.ts#L715)
 
 Internal stream result shape returned by compiled agency strategies.
 
@@ -17,7 +17,7 @@ This type exists for strategy authors. Most external callers should consume
 
 > `optional` **agentCalls**: `Promise`\<[`AgentCallRecord`](AgentCallRecord.md)[]\>
 
-Defined in: [packages/agentos/src/api/types.ts:671](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/types.ts#L671)
+Defined in: [packages/agentos/src/api/types.ts:730](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/types.ts#L730)
 
 Final per-agent ledger for the strategy run, when available.
 
@@ -27,7 +27,7 @@ Final per-agent ledger for the strategy run, when available.
 
 > `optional` **fullStream**: `AsyncIterable`\<[`AgencyStreamPart`](../type-aliases/AgencyStreamPart.md), `any`, `any`\>
 
-Defined in: [packages/agentos/src/api/types.ts:660](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/types.ts#L660)
+Defined in: [packages/agentos/src/api/types.ts:719](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/types.ts#L719)
 
 Structured live stream parts from the strategy.
 
@@ -37,7 +37,7 @@ Structured live stream parts from the strategy.
 
 > `optional` **text**: `Promise`\<`string`\>
 
-Defined in: [packages/agentos/src/api/types.ts:662](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/types.ts#L662)
+Defined in: [packages/agentos/src/api/types.ts:721](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/types.ts#L721)
 
 Final raw text assembled by the strategy, when available.
 
@@ -47,7 +47,7 @@ Final raw text assembled by the strategy, when available.
 
 > `optional` **textStream**: `AsyncIterable`\<`string`, `any`, `any`\>
 
-Defined in: [packages/agentos/src/api/types.ts:658](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/types.ts#L658)
+Defined in: [packages/agentos/src/api/types.ts:717](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/types.ts#L717)
 
 Raw live text chunks from the strategy.
 
@@ -57,6 +57,6 @@ Raw live text chunks from the strategy.
 
 > `optional` **usage**: `Promise`\<\{ `completionTokens`: `number`; `costUSD?`: `number`; `promptTokens`: `number`; `totalTokens`: `number`; \}\>
 
-Defined in: [packages/agentos/src/api/types.ts:664](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/types.ts#L664)
+Defined in: [packages/agentos/src/api/types.ts:723](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/types.ts#L723)
 
 Aggregate usage for the strategy run, when available.

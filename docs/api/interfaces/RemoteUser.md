@@ -1,6 +1,6 @@
 # Interface: RemoteUser
 
-Defined in: [packages/agentos/src/channels/types.ts:191](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/channels/types.ts#L191)
+Defined in: [packages/agentos/src/channels/types.ts:191](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/types.ts#L191)
 
 Identity of a remote user on an external platform.
 
@@ -10,7 +10,7 @@ Identity of a remote user on an external platform.
 
 > `optional` **avatarUrl**: `string`
 
-Defined in: [packages/agentos/src/channels/types.ts:199](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/channels/types.ts#L199)
+Defined in: [packages/agentos/src/channels/types.ts:199](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/types.ts#L199)
 
 Avatar URL if available.
 
@@ -20,7 +20,7 @@ Avatar URL if available.
 
 > `optional` **displayName**: `string`
 
-Defined in: [packages/agentos/src/channels/types.ts:195](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/channels/types.ts#L195)
+Defined in: [packages/agentos/src/channels/types.ts:195](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/types.ts#L195)
 
 Display name (may change).
 
@@ -30,7 +30,7 @@ Display name (may change).
 
 > **id**: `string`
 
-Defined in: [packages/agentos/src/channels/types.ts:193](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/channels/types.ts#L193)
+Defined in: [packages/agentos/src/channels/types.ts:193](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/types.ts#L193)
 
 Platform-native user ID.
 
@@ -40,6 +40,6 @@ Platform-native user ID.
 
 > `optional` **username**: `string`
 
-Defined in: [packages/agentos/src/channels/types.ts:197](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/channels/types.ts#L197)
+Defined in: [packages/agentos/src/channels/types.ts:197](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/types.ts#L197)
 
 Username/handle if available.

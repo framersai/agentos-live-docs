@@ -1,6 +1,6 @@
 # Class: AzureSpeechSTTProvider
 
-Defined in: [packages/agentos/src/hearing/providers/AzureSpeechSTTProvider.ts:156](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/hearing/providers/AzureSpeechSTTProvider.ts#L156)
+Defined in: [packages/agentos/src/hearing/providers/AzureSpeechSTTProvider.ts:156](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/hearing/providers/AzureSpeechSTTProvider.ts#L156)
 
 Speech-to-text provider that uses the Azure Cognitive Services Speech REST API.
 
@@ -71,7 +71,7 @@ console.log(result.text); // '' if no speech detected
 
 > **new AzureSpeechSTTProvider**(`config`): `AzureSpeechSTTProvider`
 
-Defined in: [packages/agentos/src/hearing/providers/AzureSpeechSTTProvider.ts:182](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/hearing/providers/AzureSpeechSTTProvider.ts#L182)
+Defined in: [packages/agentos/src/hearing/providers/AzureSpeechSTTProvider.ts:182](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/hearing/providers/AzureSpeechSTTProvider.ts#L182)
 
 Creates a new AzureSpeechSTTProvider.
 
@@ -102,7 +102,7 @@ const provider = new AzureSpeechSTTProvider({
 
 > `readonly` **displayName**: `"Azure Speech (STT)"` = `'Azure Speech (STT)'`
 
-Defined in: [packages/agentos/src/hearing/providers/AzureSpeechSTTProvider.ts:161](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/hearing/providers/AzureSpeechSTTProvider.ts#L161)
+Defined in: [packages/agentos/src/hearing/providers/AzureSpeechSTTProvider.ts:161](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/hearing/providers/AzureSpeechSTTProvider.ts#L161)
 
 Human-readable display name for UI and logging.
 
@@ -116,7 +116,7 @@ Human-readable display name for UI and logging.
 
 > `readonly` **id**: `"azure-speech-stt"` = `'azure-speech-stt'`
 
-Defined in: [packages/agentos/src/hearing/providers/AzureSpeechSTTProvider.ts:158](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/hearing/providers/AzureSpeechSTTProvider.ts#L158)
+Defined in: [packages/agentos/src/hearing/providers/AzureSpeechSTTProvider.ts:158](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/hearing/providers/AzureSpeechSTTProvider.ts#L158)
 
 Unique provider identifier used for registration and resolution.
 
@@ -130,7 +130,7 @@ Unique provider identifier used for registration and resolution.
 
 > `readonly` **supportsStreaming**: `false` = `false`
 
-Defined in: [packages/agentos/src/hearing/providers/AzureSpeechSTTProvider.ts:164](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/hearing/providers/AzureSpeechSTTProvider.ts#L164)
+Defined in: [packages/agentos/src/hearing/providers/AzureSpeechSTTProvider.ts:164](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/hearing/providers/AzureSpeechSTTProvider.ts#L164)
 
 This provider uses synchronous HTTP requests, not WebSocket streaming.
 
@@ -144,7 +144,7 @@ This provider uses synchronous HTTP requests, not WebSocket streaming.
 
 > **getProviderName**(): `string`
 
-Defined in: [packages/agentos/src/hearing/providers/AzureSpeechSTTProvider.ts:196](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/hearing/providers/AzureSpeechSTTProvider.ts#L196)
+Defined in: [packages/agentos/src/hearing/providers/AzureSpeechSTTProvider.ts:196](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/hearing/providers/AzureSpeechSTTProvider.ts#L196)
 
 Returns the human-readable provider name.
 
@@ -170,7 +170,7 @@ provider.getProviderName(); // 'Azure Speech (STT)'
 
 > **transcribe**(`audio`, `options?`): `Promise`\<[`SpeechTranscriptionResult`](../interfaces/SpeechTranscriptionResult.md)\>
 
-Defined in: [packages/agentos/src/hearing/providers/AzureSpeechSTTProvider.ts:226](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/hearing/providers/AzureSpeechSTTProvider.ts#L226)
+Defined in: [packages/agentos/src/hearing/providers/AzureSpeechSTTProvider.ts:226](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/hearing/providers/AzureSpeechSTTProvider.ts#L226)
 
 Transcribes an audio buffer using the Azure Speech recognition REST endpoint.
 

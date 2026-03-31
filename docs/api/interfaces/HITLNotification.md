@@ -1,6 +1,6 @@
 # Interface: HITLNotification
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:605](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/hitl/IHumanInteractionManager.ts#L605)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:605](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/hitl/IHumanInteractionManager.ts#L605)
 
 A notification sent to humans.
 
@@ -10,7 +10,7 @@ A notification sent to humans.
 
 > `optional` **actionUrl**: `string`
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:619](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/hitl/IHumanInteractionManager.ts#L619)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:619](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/hitl/IHumanInteractionManager.ts#L619)
 
 Deep link to handle the request
 
@@ -20,7 +20,7 @@ Deep link to handle the request
 
 > **agentId**: `string`
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:611](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/hitl/IHumanInteractionManager.ts#L611)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:611](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/hitl/IHumanInteractionManager.ts#L611)
 
 Agent ID
 
@@ -30,7 +30,7 @@ Agent ID
 
 > `optional` **expiresAt**: `Date`
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:617](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/hitl/IHumanInteractionManager.ts#L617)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:617](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/hitl/IHumanInteractionManager.ts#L617)
 
 Expiration time
 
@@ -40,7 +40,7 @@ Expiration time
 
 > **requestId**: `string`
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:609](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/hitl/IHumanInteractionManager.ts#L609)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:609](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/hitl/IHumanInteractionManager.ts#L609)
 
 Request ID
 
@@ -50,7 +50,7 @@ Request ID
 
 > **summary**: `string`
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:613](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/hitl/IHumanInteractionManager.ts#L613)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:613](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/hitl/IHumanInteractionManager.ts#L613)
 
 Summary
 
@@ -60,7 +60,7 @@ Summary
 
 > **type**: `"escalation"` \| `"checkpoint"` \| `"approval_required"` \| `"clarification_needed"` \| `"edit_requested"`
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:607](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/hitl/IHumanInteractionManager.ts#L607)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:607](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/hitl/IHumanInteractionManager.ts#L607)
 
 Notification type
 
@@ -70,6 +70,6 @@ Notification type
 
 > **urgency**: `"critical"` \| `"low"` \| `"medium"` \| `"high"`
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:615](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/hitl/IHumanInteractionManager.ts#L615)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:615](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/hitl/IHumanInteractionManager.ts#L615)
 
 Urgency

@@ -1,6 +1,6 @@
 # Interface: IStructuredOutputManager
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:624](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/structured/output/IStructuredOutputManager.ts#L624)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:624](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/structured/output/IStructuredOutputManager.ts#L624)
 
 Interface for the Structured Output Manager.
 
@@ -94,7 +94,7 @@ result.calls.forEach(call => {
 
 > **extractEntities**\<`T`\>(`options`): `Promise`\<[`EntityExtractionResult`](EntityExtractionResult.md)\<`T`\>\>
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:708](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/structured/output/IStructuredOutputManager.ts#L708)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:708](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/structured/output/IStructuredOutputManager.ts#L708)
 
 Extracts structured entities from unstructured text.
 
@@ -143,7 +143,7 @@ result.entities.forEach(person => {
 
 > **generate**\<`T`\>(`options`): `Promise`\<[`StructuredGenerationResult`](StructuredGenerationResult.md)\<`T`\>\>
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:655](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/structured/output/IStructuredOutputManager.ts#L655)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:655](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/structured/output/IStructuredOutputManager.ts#L655)
 
 Generates structured output conforming to the given schema.
 
@@ -194,7 +194,7 @@ if (result.success) {
 
 > **generateFunctionCalls**(`options`): `Promise`\<[`ParallelFunctionCallResult`](ParallelFunctionCallResult.md)\>
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:683](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/structured/output/IStructuredOutputManager.ts#L683)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:683](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/structured/output/IStructuredOutputManager.ts#L683)
 
 Generates parallel function/tool calls.
 
@@ -239,7 +239,7 @@ await Promise.all(result.calls.map(async call => {
 
 > **getSchema**(`name`): [`JSONSchema`](JSONSchema.md) \| `undefined`
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:807](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/structured/output/IStructuredOutputManager.ts#L807)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:807](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/structured/output/IStructuredOutputManager.ts#L807)
 
 Gets a registered schema by name.
 
@@ -263,7 +263,7 @@ Schema or undefined if not found
 
 > **getStatistics**(): [`StructuredOutputStats`](StructuredOutputStats.md)
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:814](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/structured/output/IStructuredOutputManager.ts#L814)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:814](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/structured/output/IStructuredOutputManager.ts#L814)
 
 Gets statistics about structured output operations.
 
@@ -279,7 +279,7 @@ Current statistics
 
 > **initialize**(`logger?`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:630](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/structured/output/IStructuredOutputManager.ts#L630)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:630](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/structured/output/IStructuredOutputManager.ts#L630)
 
 Initializes the manager with optional configuration.
 
@@ -301,7 +301,7 @@ Logger instance for debugging
 
 > **parseJSON**(`jsonString`): `unknown`
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:759](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/structured/output/IStructuredOutputManager.ts#L759)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:759](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/structured/output/IStructuredOutputManager.ts#L759)
 
 Parses JSON string with error recovery.
 
@@ -344,7 +344,7 @@ const data2 = manager.parseJSON('{"a": 1, "b": 2,}');
 
 > **recommendStrategy**(`providerId`, `modelId`, `schema`): [`StructuredOutputStrategy`](../type-aliases/StructuredOutputStrategy.md)
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:769](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/structured/output/IStructuredOutputManager.ts#L769)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:769](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/structured/output/IStructuredOutputManager.ts#L769)
 
 Determines the best strategy for a given provider/model.
 
@@ -380,7 +380,7 @@ Recommended strategy
 
 > **registerSchema**(`name`, `schema`): `void`
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:799](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/structured/output/IStructuredOutputManager.ts#L799)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:799](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/structured/output/IStructuredOutputManager.ts#L799)
 
 Registers a custom schema for reuse.
 
@@ -431,7 +431,7 @@ const orderSchema = {
 
 > **resetStatistics**(): `void`
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:819](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/structured/output/IStructuredOutputManager.ts#L819)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:819](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/structured/output/IStructuredOutputManager.ts#L819)
 
 Resets statistics counters.
 
@@ -445,7 +445,7 @@ Resets statistics counters.
 
 > **validate**(`data`, `schema`, `strict?`): [`ValidationIssue`](ValidationIssue.md)[]
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:733](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/structured/output/IStructuredOutputManager.ts#L733)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:733](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/structured/output/IStructuredOutputManager.ts#L733)
 
 Validates data against a JSON Schema.
 

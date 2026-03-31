@@ -1,6 +1,6 @@
 # Class: TopicExtractor
 
-Defined in: [packages/agentos/src/query-router/TopicExtractor.ts:58](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/query-router/TopicExtractor.ts#L58)
+Defined in: [packages/agentos/src/query-router/TopicExtractor.ts:58](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/query-router/TopicExtractor.ts#L58)
 
 Extracts a compact, deduplicated topic list from a set of corpus chunks.
 
@@ -32,7 +32,7 @@ const promptBlock = extractor.formatForPrompt(topics);
 
 > **extract**(`chunks`, `options?`): [`TopicEntry`](../interfaces/TopicEntry.md)[]
 
-Defined in: [packages/agentos/src/query-router/TopicExtractor.ts:70](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/query-router/TopicExtractor.ts#L70)
+Defined in: [packages/agentos/src/query-router/TopicExtractor.ts:70](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/query-router/TopicExtractor.ts#L70)
 
 Extract a deduplicated, sorted, and capped topic list from corpus chunks.
 
@@ -66,7 +66,7 @@ Alphabetically sorted array of unique [TopicEntry](../interfaces/TopicEntry.md) 
 
 > **formatForPrompt**(`topics`): `string`
 
-Defined in: [packages/agentos/src/query-router/TopicExtractor.ts:112](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/query-router/TopicExtractor.ts#L112)
+Defined in: [packages/agentos/src/query-router/TopicExtractor.ts:112](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/query-router/TopicExtractor.ts#L112)
 
 Format a topic list into a compact multi-line string suitable for
 injection into a classifier system prompt.

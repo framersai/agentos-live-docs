@@ -1,6 +1,6 @@
 # Interface: VideoAnalysisProgressEvent
 
-Defined in: [packages/agentos/src/media/video/types.ts:288](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/media/video/types.ts#L288)
+Defined in: [packages/agentos/src/media/video/types.ts:288](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/media/video/types.ts#L288)
 
 Progress event emitted during video analysis.
 
@@ -14,7 +14,7 @@ The analysis lifecycle flows through these phases in order:
 
 > `optional` **currentScene**: `number`
 
-Defined in: [packages/agentos/src/media/video/types.ts:315](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/media/video/types.ts#L315)
+Defined in: [packages/agentos/src/media/video/types.ts:315](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/media/video/types.ts#L315)
 
 0-based index of the scene currently being processed.
 Only meaningful during the `'describing'` and `'transcribing'` phases.
@@ -25,7 +25,7 @@ Only meaningful during the `'describing'` and `'transcribing'` phases.
 
 > `optional` **message**: `string`
 
-Defined in: [packages/agentos/src/media/video/types.ts:318](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/media/video/types.ts#L318)
+Defined in: [packages/agentos/src/media/video/types.ts:318](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/media/video/types.ts#L318)
 
 Human-readable status message for the current phase.
 
@@ -35,7 +35,7 @@ Human-readable status message for the current phase.
 
 > **phase**: `"transcribing"` \| `"extracting-frames"` \| `"detecting-scenes"` \| `"describing"` \| `"summarizing"`
 
-Defined in: [packages/agentos/src/media/video/types.ts:298](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/media/video/types.ts#L298)
+Defined in: [packages/agentos/src/media/video/types.ts:298](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/media/video/types.ts#L298)
 
 Current phase of the analysis pipeline.
 
@@ -51,7 +51,7 @@ Current phase of the analysis pipeline.
 
 > `optional` **progress**: `number`
 
-Defined in: [packages/agentos/src/media/video/types.ts:309](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/media/video/types.ts#L309)
+Defined in: [packages/agentos/src/media/video/types.ts:309](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/media/video/types.ts#L309)
 
 Estimated progress percentage (0-100) within the current phase.
 Not always available — depends on the phase and provider.

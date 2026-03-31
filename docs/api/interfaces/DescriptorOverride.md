@@ -1,6 +1,6 @@
 # Interface: DescriptorOverride
 
-Defined in: [packages/agentos/src/extensions/manifest.ts:39](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/extensions/manifest.ts#L39)
+Defined in: [packages/agentos/src/extensions/manifest.ts:39](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/extensions/manifest.ts#L39)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/extensions/manifest.ts:39](https://github.com/
 
 > `optional` **enabled**: `boolean`
 
-Defined in: [packages/agentos/src/extensions/manifest.ts:40](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/extensions/manifest.ts#L40)
+Defined in: [packages/agentos/src/extensions/manifest.ts:40](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/extensions/manifest.ts#L40)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [packages/agentos/src/extensions/manifest.ts:40](https://github.com/
 
 > `optional` **options**: `Record`\<`string`, `unknown`\>
 
-Defined in: [packages/agentos/src/extensions/manifest.ts:42](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/extensions/manifest.ts#L42)
+Defined in: [packages/agentos/src/extensions/manifest.ts:42](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/extensions/manifest.ts#L42)
 
 ***
 
@@ -24,4 +24,4 @@ Defined in: [packages/agentos/src/extensions/manifest.ts:42](https://github.com/
 
 > `optional` **priority**: `number`
 
-Defined in: [packages/agentos/src/extensions/manifest.ts:41](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/extensions/manifest.ts#L41)
+Defined in: [packages/agentos/src/extensions/manifest.ts:41](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/extensions/manifest.ts#L41)

@@ -1,6 +1,6 @@
 # Interface: HITLStatistics
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:350](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/hitl/IHumanInteractionManager.ts#L350)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:350](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/hitl/IHumanInteractionManager.ts#L350)
 
 Statistics about HITL interactions.
 
@@ -10,7 +10,7 @@ Statistics about HITL interactions.
 
 > **approvalRate**: `number`
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:354](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/hitl/IHumanInteractionManager.ts#L354)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:354](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/hitl/IHumanInteractionManager.ts#L354)
 
 Approval rate
 
@@ -20,7 +20,7 @@ Approval rate
 
 > **avgResponseTimeMs**: `number`
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:358](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/hitl/IHumanInteractionManager.ts#L358)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:358](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/hitl/IHumanInteractionManager.ts#L358)
 
 Average response time (ms)
 
@@ -30,7 +30,7 @@ Average response time (ms)
 
 > **escalationsByReason**: `Record`\<[`EscalationReason`](../type-aliases/EscalationReason.md), `number`\>
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:362](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/hitl/IHumanInteractionManager.ts#L362)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:362](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/hitl/IHumanInteractionManager.ts#L362)
 
 Escalations by reason
 
@@ -40,7 +40,7 @@ Escalations by reason
 
 > **pendingRequests**: `number`
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:364](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/hitl/IHumanInteractionManager.ts#L364)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:364](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/hitl/IHumanInteractionManager.ts#L364)
 
 Pending requests
 
@@ -50,7 +50,7 @@ Pending requests
 
 > **timedOutRequests**: `number`
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:366](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/hitl/IHumanInteractionManager.ts#L366)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:366](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/hitl/IHumanInteractionManager.ts#L366)
 
 Timed out requests
 
@@ -60,7 +60,7 @@ Timed out requests
 
 > **totalApprovalRequests**: `number`
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:352](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/hitl/IHumanInteractionManager.ts#L352)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:352](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/hitl/IHumanInteractionManager.ts#L352)
 
 Total approval requests
 
@@ -70,7 +70,7 @@ Total approval requests
 
 > **totalClarifications**: `number`
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:356](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/hitl/IHumanInteractionManager.ts#L356)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:356](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/hitl/IHumanInteractionManager.ts#L356)
 
 Total clarifications requested
 
@@ -80,6 +80,6 @@ Total clarifications requested
 
 > **totalEscalations**: `number`
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:360](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/hitl/IHumanInteractionManager.ts#L360)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:360](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/hitl/IHumanInteractionManager.ts#L360)
 
 Total escalations

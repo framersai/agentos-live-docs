@@ -1,6 +1,6 @@
 # Interface: VoiceCallTtsConfig
 
-Defined in: [packages/agentos/src/channels/telephony/types.ts:434](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/channels/telephony/types.ts#L434)
+Defined in: [packages/agentos/src/channels/telephony/types.ts:434](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/telephony/types.ts#L434)
 
 TTS configuration overrides for voice calls.
 
@@ -10,7 +10,7 @@ TTS configuration overrides for voice calls.
 
 > `optional` **options**: `Record`\<`string`, `unknown`\>
 
-Defined in: [packages/agentos/src/channels/telephony/types.ts:442](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/channels/telephony/types.ts#L442)
+Defined in: [packages/agentos/src/channels/telephony/types.ts:442](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/telephony/types.ts#L442)
 
 Provider-specific options.
 
@@ -20,7 +20,7 @@ Provider-specific options.
 
 > `optional` **provider**: [`TelephonyTtsProvider`](../type-aliases/TelephonyTtsProvider.md)
 
-Defined in: [packages/agentos/src/channels/telephony/types.ts:436](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/channels/telephony/types.ts#L436)
+Defined in: [packages/agentos/src/channels/telephony/types.ts:436](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/telephony/types.ts#L436)
 
 TTS provider to use.
 
@@ -30,7 +30,7 @@ TTS provider to use.
 
 > `optional` **speed**: `number`
 
-Defined in: [packages/agentos/src/channels/telephony/types.ts:440](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/channels/telephony/types.ts#L440)
+Defined in: [packages/agentos/src/channels/telephony/types.ts:440](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/telephony/types.ts#L440)
 
 Speed multiplier.
 
@@ -40,6 +40,6 @@ Speed multiplier.
 
 > `optional` **voice**: `string`
 
-Defined in: [packages/agentos/src/channels/telephony/types.ts:438](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/channels/telephony/types.ts#L438)
+Defined in: [packages/agentos/src/channels/telephony/types.ts:438](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/telephony/types.ts#L438)
 
 Voice ID / name.

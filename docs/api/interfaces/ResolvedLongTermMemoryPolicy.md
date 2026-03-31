@@ -1,6 +1,6 @@
 # Interface: ResolvedLongTermMemoryPolicy
 
-Defined in: [packages/agentos/src/core/conversation/LongTermMemoryPolicy.ts:52](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/core/conversation/LongTermMemoryPolicy.ts#L52)
+Defined in: [packages/agentos/src/core/conversation/LongTermMemoryPolicy.ts:52](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/conversation/LongTermMemoryPolicy.ts#L52)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/core/conversation/LongTermMemoryPolicy.ts:52](
 
 > **allowedCategories**: [`RollingSummaryMemoryCategory`](../type-aliases/RollingSummaryMemoryCategory.md)[] \| `null`
 
-Defined in: [packages/agentos/src/core/conversation/LongTermMemoryPolicy.ts:57](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/core/conversation/LongTermMemoryPolicy.ts#L57)
+Defined in: [packages/agentos/src/core/conversation/LongTermMemoryPolicy.ts:57](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/conversation/LongTermMemoryPolicy.ts#L57)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [packages/agentos/src/core/conversation/LongTermMemoryPolicy.ts:57](
 
 > **enabled**: `boolean`
 
-Defined in: [packages/agentos/src/core/conversation/LongTermMemoryPolicy.ts:53](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/core/conversation/LongTermMemoryPolicy.ts#L53)
+Defined in: [packages/agentos/src/core/conversation/LongTermMemoryPolicy.ts:53](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/conversation/LongTermMemoryPolicy.ts#L53)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: [packages/agentos/src/core/conversation/LongTermMemoryPolicy.ts:53](
 
 > **scopes**: `Record`\<[`LongTermMemoryScope`](../type-aliases/LongTermMemoryScope.md), `boolean`\>
 
-Defined in: [packages/agentos/src/core/conversation/LongTermMemoryPolicy.ts:54](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/core/conversation/LongTermMemoryPolicy.ts#L54)
+Defined in: [packages/agentos/src/core/conversation/LongTermMemoryPolicy.ts:54](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/conversation/LongTermMemoryPolicy.ts#L54)
 
 ***
 
@@ -32,7 +32,7 @@ Defined in: [packages/agentos/src/core/conversation/LongTermMemoryPolicy.ts:54](
 
 > **shareWithOrganization**: `boolean`
 
-Defined in: [packages/agentos/src/core/conversation/LongTermMemoryPolicy.ts:55](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/core/conversation/LongTermMemoryPolicy.ts#L55)
+Defined in: [packages/agentos/src/core/conversation/LongTermMemoryPolicy.ts:55](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/conversation/LongTermMemoryPolicy.ts#L55)
 
 ***
 
@@ -40,4 +40,4 @@ Defined in: [packages/agentos/src/core/conversation/LongTermMemoryPolicy.ts:55](
 
 > **storeAtomicDocs**: `boolean`
 
-Defined in: [packages/agentos/src/core/conversation/LongTermMemoryPolicy.ts:56](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/core/conversation/LongTermMemoryPolicy.ts#L56)
+Defined in: [packages/agentos/src/core/conversation/LongTermMemoryPolicy.ts:56](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/conversation/LongTermMemoryPolicy.ts#L56)

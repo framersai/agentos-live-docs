@@ -1,6 +1,6 @@
 # Interface: Review
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:184](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/marketplace/store/IMarketplace.ts#L184)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:184](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/marketplace/store/IMarketplace.ts#L184)
 
 User review
 
@@ -10,7 +10,7 @@ User review
 
 > **body**: `string`
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:200](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/marketplace/store/IMarketplace.ts#L200)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:200](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/marketplace/store/IMarketplace.ts#L200)
 
 Review text
 
@@ -20,7 +20,7 @@ Review text
 
 > **createdAt**: `string`
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:206](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/marketplace/store/IMarketplace.ts#L206)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:206](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/marketplace/store/IMarketplace.ts#L206)
 
 When the review was posted
 
@@ -30,7 +30,7 @@ When the review was posted
 
 > **helpfulVotes**: `number`
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:204](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/marketplace/store/IMarketplace.ts#L204)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:204](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/marketplace/store/IMarketplace.ts#L204)
 
 Helpful votes
 
@@ -40,7 +40,7 @@ Helpful votes
 
 > **id**: `string`
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:186](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/marketplace/store/IMarketplace.ts#L186)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:186](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/marketplace/store/IMarketplace.ts#L186)
 
 Review ID
 
@@ -50,7 +50,7 @@ Review ID
 
 > **itemId**: `string`
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:188](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/marketplace/store/IMarketplace.ts#L188)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:188](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/marketplace/store/IMarketplace.ts#L188)
 
 Item ID being reviewed
 
@@ -60,7 +60,7 @@ Item ID being reviewed
 
 > `optional` **publisherResponse**: `object`
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:208](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/marketplace/store/IMarketplace.ts#L208)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:208](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/marketplace/store/IMarketplace.ts#L208)
 
 Publisher's response
 
@@ -78,7 +78,7 @@ Publisher's response
 
 > **rating**: `number`
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:196](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/marketplace/store/IMarketplace.ts#L196)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:196](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/marketplace/store/IMarketplace.ts#L196)
 
 Rating (1-5)
 
@@ -88,7 +88,7 @@ Rating (1-5)
 
 > **reviewer**: `object`
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:190](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/marketplace/store/IMarketplace.ts#L190)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:190](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/marketplace/store/IMarketplace.ts#L190)
 
 Reviewer info
 
@@ -110,7 +110,7 @@ Reviewer info
 
 > `optional` **title**: `string`
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:198](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/marketplace/store/IMarketplace.ts#L198)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:198](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/marketplace/store/IMarketplace.ts#L198)
 
 Review title
 
@@ -120,6 +120,6 @@ Review title
 
 > **version**: `string`
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:202](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/marketplace/store/IMarketplace.ts#L202)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:202](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/marketplace/store/IMarketplace.ts#L202)
 
 Version reviewed

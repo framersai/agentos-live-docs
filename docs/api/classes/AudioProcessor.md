@@ -1,6 +1,6 @@
 # Class: AudioProcessor
 
-Defined in: [packages/agentos/src/hearing/AudioProcessor.ts:84](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/hearing/AudioProcessor.ts#L84)
+Defined in: [packages/agentos/src/hearing/AudioProcessor.ts:84](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/hearing/AudioProcessor.ts#L84)
 
 AudioProcessor - Central client-side audio processing pipeline using Web Audio APIs.
 Orchestrates EnvironmentalCalibrator (web-version) and AdaptiveVAD (logic-version).
@@ -15,7 +15,7 @@ Orchestrates EnvironmentalCalibrator (web-version) and AdaptiveVAD (logic-versio
 
 > **new AudioProcessor**(`config?`, `calibrationConfig?`, `vadConfig?`): `AudioProcessor`
 
-Defined in: [packages/agentos/src/hearing/AudioProcessor.ts:112](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/hearing/AudioProcessor.ts#L112)
+Defined in: [packages/agentos/src/hearing/AudioProcessor.ts:112](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/hearing/AudioProcessor.ts#L112)
 
 #### Parameters
 
@@ -160,7 +160,7 @@ v13.6.0, v12.17.0
 
 > **get** **isProcessing**(): `boolean`
 
-Defined in: [packages/agentos/src/hearing/AudioProcessor.ts:379](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/hearing/AudioProcessor.ts#L379)
+Defined in: [packages/agentos/src/hearing/AudioProcessor.ts:379](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/hearing/AudioProcessor.ts#L379)
 
 Returns true if the audio processor is currently capturing and processing audio.
 
@@ -248,7 +248,7 @@ v0.1.26
 
 > **dispose**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/hearing/AudioProcessor.ts:387](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/hearing/AudioProcessor.ts#L387)
+Defined in: [packages/agentos/src/hearing/AudioProcessor.ts:387](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/hearing/AudioProcessor.ts#L387)
 
 Cleanly dispose of all Web Audio API resources.
 
@@ -262,7 +262,7 @@ Cleanly dispose of all Web Audio API resources.
 
 > **emit**\<`U`\>(`event`, ...`args`): `boolean`
 
-Defined in: [packages/agentos/src/hearing/AudioProcessor.ts:108](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/hearing/AudioProcessor.ts#L108)
+Defined in: [packages/agentos/src/hearing/AudioProcessor.ts:108](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/hearing/AudioProcessor.ts#L108)
 
 Synchronously calls each of the listeners registered for the event named `eventName`, in the order they were registered, passing the supplied arguments
 to each.
@@ -373,7 +373,7 @@ v6.0.0
 
 > **getInternalState**(): `AudioProcessorState`
 
-Defined in: [packages/agentos/src/hearing/AudioProcessor.ts:372](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/hearing/AudioProcessor.ts#L372)
+Defined in: [packages/agentos/src/hearing/AudioProcessor.ts:372](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/hearing/AudioProcessor.ts#L372)
 
 Get current processing state.
 
@@ -410,7 +410,7 @@ v1.0.0
 
 > **initialize**(`stream`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/hearing/AudioProcessor.ts:221](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/hearing/AudioProcessor.ts#L221)
+Defined in: [packages/agentos/src/hearing/AudioProcessor.ts:221](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/hearing/AudioProcessor.ts#L221)
 
 Initialize the audio processing pipeline with a given MediaStream.
 
@@ -556,7 +556,7 @@ v10.0.0
 
 > **on**\<`U`\>(`event`, `listener`): `this`
 
-Defined in: [packages/agentos/src/hearing/AudioProcessor.ts:104](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/hearing/AudioProcessor.ts#L104)
+Defined in: [packages/agentos/src/hearing/AudioProcessor.ts:104](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/hearing/AudioProcessor.ts#L104)
 
 Adds the `listener` function to the end of the listeners array for the event
 named `eventName`. No checks are made to see if the `listener` has already
@@ -1033,7 +1033,7 @@ v0.3.5
 
 > **start**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/hearing/AudioProcessor.ts:286](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/hearing/AudioProcessor.ts#L286)
+Defined in: [packages/agentos/src/hearing/AudioProcessor.ts:286](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/hearing/AudioProcessor.ts#L286)
 
 Start processing audio. Must be called after initialize.
 Often requires user interaction to start AudioContext.
@@ -1048,7 +1048,7 @@ Often requires user interaction to start AudioContext.
 
 > **stop**(): `void`
 
-Defined in: [packages/agentos/src/hearing/AudioProcessor.ts:314](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/hearing/AudioProcessor.ts#L314)
+Defined in: [packages/agentos/src/hearing/AudioProcessor.ts:314](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/hearing/AudioProcessor.ts#L314)
 
 Stop processing audio.
 

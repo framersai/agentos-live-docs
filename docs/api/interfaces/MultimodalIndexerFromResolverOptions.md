@@ -1,6 +1,6 @@
 # Interface: MultimodalIndexerFromResolverOptions
 
-Defined in: [packages/agentos/src/rag/multimodal/createMultimodalIndexerFromResolver.ts:88](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/rag/multimodal/createMultimodalIndexerFromResolver.ts#L88)
+Defined in: [packages/agentos/src/rag/multimodal/createMultimodalIndexerFromResolver.ts:88](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/multimodal/createMultimodalIndexerFromResolver.ts#L88)
 
 Options for [createMultimodalIndexerFromResolver](../functions/createMultimodalIndexerFromResolver.md).
 
@@ -27,7 +27,7 @@ const opts: MultimodalIndexerFromResolverOptions = {
 
 > `optional` **config**: [`MultimodalIndexerConfig`](MultimodalIndexerConfig.md)
 
-Defined in: [packages/agentos/src/rag/multimodal/createMultimodalIndexerFromResolver.ts:130](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/rag/multimodal/createMultimodalIndexerFromResolver.ts#L130)
+Defined in: [packages/agentos/src/rag/multimodal/createMultimodalIndexerFromResolver.ts:130](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/multimodal/createMultimodalIndexerFromResolver.ts#L130)
 
 Optional indexer configuration overrides (collection name,
 image description prompt, etc.).
@@ -38,7 +38,7 @@ image description prompt, etc.).
 
 > **embeddingManager**: [`IEmbeddingManager`](IEmbeddingManager.md)
 
-Defined in: [packages/agentos/src/rag/multimodal/createMultimodalIndexerFromResolver.ts:118](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/rag/multimodal/createMultimodalIndexerFromResolver.ts#L118)
+Defined in: [packages/agentos/src/rag/multimodal/createMultimodalIndexerFromResolver.ts:118](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/multimodal/createMultimodalIndexerFromResolver.ts#L118)
 
 Embedding manager for generating vector representations.
 Required — passed through to the `MultimodalIndexer` constructor.
@@ -49,7 +49,7 @@ Required — passed through to the `MultimodalIndexer` constructor.
 
 > `optional` **resolver**: [`SpeechProviderResolver`](../classes/SpeechProviderResolver.md)
 
-Defined in: [packages/agentos/src/rag/multimodal/createMultimodalIndexerFromResolver.ts:94](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/rag/multimodal/createMultimodalIndexerFromResolver.ts#L94)
+Defined in: [packages/agentos/src/rag/multimodal/createMultimodalIndexerFromResolver.ts:94](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/multimodal/createMultimodalIndexerFromResolver.ts#L94)
 
 The speech provider resolver from the voice pipeline.
 Used to obtain the best available STT provider.
@@ -61,7 +61,7 @@ When omitted, audio indexing is unavailable.
 
 > **vectorStore**: [`IVectorStore`](IVectorStore.md)
 
-Defined in: [packages/agentos/src/rag/multimodal/createMultimodalIndexerFromResolver.ts:124](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/rag/multimodal/createMultimodalIndexerFromResolver.ts#L124)
+Defined in: [packages/agentos/src/rag/multimodal/createMultimodalIndexerFromResolver.ts:124](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/multimodal/createMultimodalIndexerFromResolver.ts#L124)
 
 Vector store for persistent document storage and search.
 Required — passed through to the `MultimodalIndexer` constructor.
@@ -72,7 +72,7 @@ Required — passed through to the `MultimodalIndexer` constructor.
 
 > `optional` **visionPipeline**: [`VisionPipeline`](../classes/VisionPipeline.md)
 
-Defined in: [packages/agentos/src/rag/multimodal/createMultimodalIndexerFromResolver.ts:105](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/rag/multimodal/createMultimodalIndexerFromResolver.ts#L105)
+Defined in: [packages/agentos/src/rag/multimodal/createMultimodalIndexerFromResolver.ts:105](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/multimodal/createMultimodalIndexerFromResolver.ts#L105)
 
 Vision pipeline for multi-tier image processing.
 When provided, it is wrapped as an `IVisionProvider` via
@@ -88,7 +88,7 @@ Mutually exclusive with `visionProvider` — if both are set,
 
 > `optional` **visionProvider**: [`IVisionProvider`](IVisionProvider.md)
 
-Defined in: [packages/agentos/src/rag/multimodal/createMultimodalIndexerFromResolver.ts:112](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/rag/multimodal/createMultimodalIndexerFromResolver.ts#L112)
+Defined in: [packages/agentos/src/rag/multimodal/createMultimodalIndexerFromResolver.ts:112](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/multimodal/createMultimodalIndexerFromResolver.ts#L112)
 
 Pre-built vision provider to use instead of a pipeline.
 Useful when the caller already has a configured LLMVisionProvider

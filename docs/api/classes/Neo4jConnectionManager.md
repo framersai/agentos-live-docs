@@ -1,6 +1,6 @@
 # Class: Neo4jConnectionManager
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/neo4j/Neo4jConnectionManager.ts:30](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/retrieval/graph/neo4j/Neo4jConnectionManager.ts#L30)
+Defined in: [packages/agentos/src/memory/retrieval/graph/neo4j/Neo4jConnectionManager.ts:30](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/neo4j/Neo4jConnectionManager.ts#L30)
 
 Shared Neo4j connection manager.
 
@@ -32,7 +32,7 @@ const knowledgeGraph = new Neo4jKnowledgeGraph({ connectionManager: mgr });
 
 > **get** **isInitialized**(): `boolean`
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/neo4j/Neo4jConnectionManager.ts:38](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/retrieval/graph/neo4j/Neo4jConnectionManager.ts#L38)
+Defined in: [packages/agentos/src/memory/retrieval/graph/neo4j/Neo4jConnectionManager.ts:38](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/neo4j/Neo4jConnectionManager.ts#L38)
 
 Whether initialize() has been called successfully
 
@@ -46,7 +46,7 @@ Whether initialize() has been called successfully
 
 > **checkHealth**(): `Promise`\<\{ `details?`: `any`; `isHealthy`: `boolean`; \}\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/neo4j/Neo4jConnectionManager.ts:97](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/retrieval/graph/neo4j/Neo4jConnectionManager.ts#L97)
+Defined in: [packages/agentos/src/memory/retrieval/graph/neo4j/Neo4jConnectionManager.ts:97](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/neo4j/Neo4jConnectionManager.ts#L97)
 
 Check Neo4j connectivity.
 
@@ -60,7 +60,7 @@ Check Neo4j connectivity.
 
 > **initialize**(`config`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/neo4j/Neo4jConnectionManager.ts:46](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/retrieval/graph/neo4j/Neo4jConnectionManager.ts#L46)
+Defined in: [packages/agentos/src/memory/retrieval/graph/neo4j/Neo4jConnectionManager.ts:46](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/neo4j/Neo4jConnectionManager.ts#L46)
 
 Initialize the connection manager.
 Dynamically imports neo4j-driver, creates the driver, and verifies connectivity.
@@ -81,7 +81,7 @@ Dynamically imports neo4j-driver, creates the driver, and verifies connectivity.
 
 > **session**(`mode?`): `any`
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/neo4j/Neo4jConnectionManager.ts:83](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/retrieval/graph/neo4j/Neo4jConnectionManager.ts#L83)
+Defined in: [packages/agentos/src/memory/retrieval/graph/neo4j/Neo4jConnectionManager.ts:83](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/neo4j/Neo4jConnectionManager.ts#L83)
 
 Create a session. Callers MUST close the session in a finally block.
 
@@ -103,7 +103,7 @@ Create a session. Callers MUST close the session in a finally block.
 
 > **shutdown**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/neo4j/Neo4jConnectionManager.ts:122](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/retrieval/graph/neo4j/Neo4jConnectionManager.ts#L122)
+Defined in: [packages/agentos/src/memory/retrieval/graph/neo4j/Neo4jConnectionManager.ts:122](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/neo4j/Neo4jConnectionManager.ts#L122)
 
 Gracefully close the driver and release all connection pool resources.
 

@@ -1,6 +1,6 @@
 # Class: HybridSearcher
 
-Defined in: [packages/agentos/src/rag/search/HybridSearcher.ts:113](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/rag/search/HybridSearcher.ts#L113)
+Defined in: [packages/agentos/src/rag/search/HybridSearcher.ts:113](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/search/HybridSearcher.ts#L113)
 
 Hybrid dense+sparse searcher combining vector embeddings with BM25.
 
@@ -40,7 +40,7 @@ const hybrid = new HybridSearcher(vectorStore, embeddingManager, bm25, {
 
 > **new HybridSearcher**(`vectorStore`, `embeddingManager`, `bm25Index`, `config?`): `HybridSearcher`
 
-Defined in: [packages/agentos/src/rag/search/HybridSearcher.ts:142](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/rag/search/HybridSearcher.ts#L142)
+Defined in: [packages/agentos/src/rag/search/HybridSearcher.ts:142](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/search/HybridSearcher.ts#L142)
 
 Creates a new HybridSearcher.
 
@@ -89,7 +89,7 @@ const searcher = new HybridSearcher(store, embeddings, bm25, {
 
 > **search**(`query`, `collectionName`, `topK?`, `queryOptions?`): `Promise`\<[`HybridResult`](../interfaces/HybridResult.md)[]\>
 
-Defined in: [packages/agentos/src/rag/search/HybridSearcher.ts:184](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/rag/search/HybridSearcher.ts#L184)
+Defined in: [packages/agentos/src/rag/search/HybridSearcher.ts:184](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/search/HybridSearcher.ts#L184)
 
 Searches both dense and sparse indexes, then fuses results.
 

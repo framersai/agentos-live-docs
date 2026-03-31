@@ -2,7 +2,7 @@
 
 > **wrapOutputGuardrails**(`service`, `context`, `stream`, `options`): `AsyncGenerator`\<[`AgentOSResponse`](../type-aliases/AgentOSResponse.md), `void`, `undefined`\>
 
-Defined in: [packages/agentos/src/safety/guardrails/guardrailDispatcher.ts:252](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/safety/guardrails/guardrailDispatcher.ts#L252)
+Defined in: [packages/agentos/src/safety/guardrails/guardrailDispatcher.ts:252](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/safety/guardrails/guardrailDispatcher.ts#L252)
 
 Wrap a response stream with guardrail filtering.
 

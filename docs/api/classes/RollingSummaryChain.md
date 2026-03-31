@@ -1,6 +1,6 @@
 # Class: RollingSummaryChain
 
-Defined in: [packages/agentos/src/memory/pipeline/context/RollingSummaryChain.ts:27](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/pipeline/context/RollingSummaryChain.ts#L27)
+Defined in: [packages/agentos/src/memory/pipeline/context/RollingSummaryChain.ts:27](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/pipeline/context/RollingSummaryChain.ts#L27)
 
 ## Constructors
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/memory/pipeline/context/RollingSummaryChain.ts
 
 > **new RollingSummaryChain**(`maxBudgetTokens?`, `llmInvoker?`): `RollingSummaryChain`
 
-Defined in: [packages/agentos/src/memory/pipeline/context/RollingSummaryChain.ts:32](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/pipeline/context/RollingSummaryChain.ts#L32)
+Defined in: [packages/agentos/src/memory/pipeline/context/RollingSummaryChain.ts:32](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/pipeline/context/RollingSummaryChain.ts#L32)
 
 #### Parameters
 
@@ -32,7 +32,7 @@ Defined in: [packages/agentos/src/memory/pipeline/context/RollingSummaryChain.ts
 
 > **get** **size**(): `number`
 
-Defined in: [packages/agentos/src/memory/pipeline/context/RollingSummaryChain.ts:133](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/pipeline/context/RollingSummaryChain.ts#L133)
+Defined in: [packages/agentos/src/memory/pipeline/context/RollingSummaryChain.ts:133](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/pipeline/context/RollingSummaryChain.ts#L133)
 
 ##### Returns
 
@@ -44,7 +44,7 @@ Defined in: [packages/agentos/src/memory/pipeline/context/RollingSummaryChain.ts
 
 > **addNodes**(`nodes`): `void`
 
-Defined in: [packages/agentos/src/memory/pipeline/context/RollingSummaryChain.ts:43](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/pipeline/context/RollingSummaryChain.ts#L43)
+Defined in: [packages/agentos/src/memory/pipeline/context/RollingSummaryChain.ts:43](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/pipeline/context/RollingSummaryChain.ts#L43)
 
 Add new leaf nodes from a compaction.
 
@@ -64,7 +64,7 @@ Add new leaf nodes from a compaction.
 
 > **clear**(): `void`
 
-Defined in: [packages/agentos/src/memory/pipeline/context/RollingSummaryChain.ts:229](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/pipeline/context/RollingSummaryChain.ts#L229)
+Defined in: [packages/agentos/src/memory/pipeline/context/RollingSummaryChain.ts:229](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/pipeline/context/RollingSummaryChain.ts#L229)
 
 Reset the chain.
 
@@ -78,7 +78,7 @@ Reset the chain.
 
 > **collapse**(): `Promise`\<[`SummaryChainNode`](../interfaces/SummaryChainNode.md)[]\>
 
-Defined in: [packages/agentos/src/memory/pipeline/context/RollingSummaryChain.ts:54](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/pipeline/context/RollingSummaryChain.ts#L54)
+Defined in: [packages/agentos/src/memory/pipeline/context/RollingSummaryChain.ts:54](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/pipeline/context/RollingSummaryChain.ts#L54)
 
 Collapse the chain if it exceeds the token budget.
 Merges the oldest leaf nodes into a higher-level summary.
@@ -94,7 +94,7 @@ Returns any newly created parent nodes.
 
 > **formatForPrompt**(): `string`
 
-Defined in: [packages/agentos/src/memory/pipeline/context/RollingSummaryChain.ts:88](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/pipeline/context/RollingSummaryChain.ts#L88)
+Defined in: [packages/agentos/src/memory/pipeline/context/RollingSummaryChain.ts:88](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/pipeline/context/RollingSummaryChain.ts#L88)
 
 Format the chain for inclusion in a prompt.
 
@@ -108,7 +108,7 @@ Format the chain for inclusion in a prompt.
 
 > **getActiveChain**(): [`SummaryChainNode`](../interfaces/SummaryChainNode.md)[]
 
-Defined in: [packages/agentos/src/memory/pipeline/context/RollingSummaryChain.ts:83](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/pipeline/context/RollingSummaryChain.ts#L83)
+Defined in: [packages/agentos/src/memory/pipeline/context/RollingSummaryChain.ts:83](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/pipeline/context/RollingSummaryChain.ts#L83)
 
 Get the active chain — top-level nodes without parents, sorted by turn range.
 
@@ -122,7 +122,7 @@ Get the active chain — top-level nodes without parents, sorted by turn range.
 
 > **getAllNodes**(): [`SummaryChainNode`](../interfaces/SummaryChainNode.md)[]
 
-Defined in: [packages/agentos/src/memory/pipeline/context/RollingSummaryChain.ts:120](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/pipeline/context/RollingSummaryChain.ts#L120)
+Defined in: [packages/agentos/src/memory/pipeline/context/RollingSummaryChain.ts:120](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/pipeline/context/RollingSummaryChain.ts#L120)
 
 Get all nodes (including absorbed children, for audit/UI).
 
@@ -136,7 +136,7 @@ Get all nodes (including absorbed children, for audit/UI).
 
 > **getCoveredRange**(): \[`number`, `number`\] \| `null`
 
-Defined in: [packages/agentos/src/memory/pipeline/context/RollingSummaryChain.ts:127](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/pipeline/context/RollingSummaryChain.ts#L127)
+Defined in: [packages/agentos/src/memory/pipeline/context/RollingSummaryChain.ts:127](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/pipeline/context/RollingSummaryChain.ts#L127)
 
 Get the full turn range covered by the chain.
 
@@ -150,7 +150,7 @@ Get the full turn range covered by the chain.
 
 > **getTotalTokens**(): `number`
 
-Defined in: [packages/agentos/src/memory/pipeline/context/RollingSummaryChain.ts:112](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/pipeline/context/RollingSummaryChain.ts#L112)
+Defined in: [packages/agentos/src/memory/pipeline/context/RollingSummaryChain.ts:112](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/pipeline/context/RollingSummaryChain.ts#L112)
 
 Total tokens across all active (non-absorbed) nodes.
 

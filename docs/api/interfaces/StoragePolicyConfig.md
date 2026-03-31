@@ -1,6 +1,6 @@
 # Interface: StoragePolicyConfig
 
-Defined in: [packages/agentos/src/provenance/types.ts:16](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/provenance/types.ts#L16)
+Defined in: [packages/agentos/src/provenance/types.ts:16](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/types.ts#L16)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/provenance/types.ts:16](https://github.com/fra
 
 > `optional` **exemptTables**: `string`[]
 
-Defined in: [packages/agentos/src/provenance/types.ts:22](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/provenance/types.ts#L22)
+Defined in: [packages/agentos/src/provenance/types.ts:22](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/types.ts#L22)
 
 Tables exempt from enforcement (e.g., cache, temp tables).
 
@@ -18,7 +18,7 @@ Tables exempt from enforcement (e.g., cache, temp tables).
 
 > **mode**: [`StoragePolicyMode`](../type-aliases/StoragePolicyMode.md)
 
-Defined in: [packages/agentos/src/provenance/types.ts:18](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/provenance/types.ts#L18)
+Defined in: [packages/agentos/src/provenance/types.ts:18](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/types.ts#L18)
 
 Which mode to enforce.
 
@@ -28,6 +28,6 @@ Which mode to enforce.
 
 > `optional` **protectedTables**: `string`[]
 
-Defined in: [packages/agentos/src/provenance/types.ts:20](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/provenance/types.ts#L20)
+Defined in: [packages/agentos/src/provenance/types.ts:20](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/types.ts#L20)
 
 Tables subject to policy enforcement. Empty array or undefined = all tables.

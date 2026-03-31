@@ -1,6 +1,6 @@
 # Interface: IMigrationTarget
 
-Defined in: [packages/agentos/src/rag/migration/types.ts:116](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/rag/migration/types.ts#L116)
+Defined in: [packages/agentos/src/rag/migration/types.ts:116](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/migration/types.ts#L116)
 
 Adapter for writing data to a migration target backend.
 Implementations exist for SQLite, Postgres, and Qdrant.
@@ -11,7 +11,7 @@ Implementations exist for SQLite, Postgres, and Qdrant.
 
 > **close**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/rag/migration/types.ts:133](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/rag/migration/types.ts#L133)
+Defined in: [packages/agentos/src/rag/migration/types.ts:133](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/migration/types.ts#L133)
 
 Close the connection and release resources.
 
@@ -25,7 +25,7 @@ Close the connection and release resources.
 
 > **ensureTable**(`table`, `sampleRow`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/rag/migration/types.ts:123](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/rag/migration/types.ts#L123)
+Defined in: [packages/agentos/src/rag/migration/types.ts:123](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/migration/types.ts#L123)
 
 Ensure the target schema/collection exists for a table.
 Creates it if it doesn't exist, using a sample row to infer column types.
@@ -54,7 +54,7 @@ A sample row to derive schema from.
 
 > **writeBatch**(`table`, `rows`): `Promise`\<`number`\>
 
-Defined in: [packages/agentos/src/rag/migration/types.ts:131](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/rag/migration/types.ts#L131)
+Defined in: [packages/agentos/src/rag/migration/types.ts:131](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/migration/types.ts#L131)
 
 Write a batch of rows to the target.
 Uses INSERT OR REPLACE / upsert semantics to handle duplicates.

@@ -1,6 +1,6 @@
 # Interface: GenerateVideoResult
 
-Defined in: [packages/agentos/src/api/generateVideo.ts:276](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/generateVideo.ts#L276)
+Defined in: [packages/agentos/src/api/generateVideo.ts:276](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/generateVideo.ts#L276)
 
 The result returned by [generateVideo](../functions/generateVideo.md).
 
@@ -12,7 +12,7 @@ Wraps the core [VideoResult](VideoResult.md) with a simpler, AI-SDK-style shape.
 
 > **created**: `number`
 
-Defined in: [packages/agentos/src/api/generateVideo.ts:282](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/generateVideo.ts#L282)
+Defined in: [packages/agentos/src/api/generateVideo.ts:282](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/generateVideo.ts#L282)
 
 Unix timestamp (ms) when the video was created.
 
@@ -22,7 +22,7 @@ Unix timestamp (ms) when the video was created.
 
 > **model**: `string`
 
-Defined in: [packages/agentos/src/api/generateVideo.ts:278](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/generateVideo.ts#L278)
+Defined in: [packages/agentos/src/api/generateVideo.ts:278](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/generateVideo.ts#L278)
 
 Model identifier reported by the provider.
 
@@ -32,7 +32,7 @@ Model identifier reported by the provider.
 
 > **provider**: `string`
 
-Defined in: [packages/agentos/src/api/generateVideo.ts:280](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/generateVideo.ts#L280)
+Defined in: [packages/agentos/src/api/generateVideo.ts:280](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/generateVideo.ts#L280)
 
 Provider identifier (e.g. `"runway"`, `"replicate"`, `"fal"`).
 
@@ -42,7 +42,7 @@ Provider identifier (e.g. `"runway"`, `"replicate"`, `"fal"`).
 
 > `optional` **usage**: [`VideoProviderUsage`](VideoProviderUsage.md)
 
-Defined in: [packages/agentos/src/api/generateVideo.ts:286](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/generateVideo.ts#L286)
+Defined in: [packages/agentos/src/api/generateVideo.ts:286](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/generateVideo.ts#L286)
 
 Usage / billing information, if available.
 
@@ -52,6 +52,6 @@ Usage / billing information, if available.
 
 > **videos**: [`GeneratedVideo`](GeneratedVideo.md)[]
 
-Defined in: [packages/agentos/src/api/generateVideo.ts:284](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/generateVideo.ts#L284)
+Defined in: [packages/agentos/src/api/generateVideo.ts:284](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/generateVideo.ts#L284)
 
 Array of generated video objects containing URLs or base64 data.

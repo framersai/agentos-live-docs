@@ -1,6 +1,6 @@
 # Interface: Agent
 
-Defined in: [packages/agentos/src/api/agent.ts:101](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/agent.ts#L101)
+Defined in: [packages/agentos/src/api/agent.ts:101](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/agent.ts#L101)
 
 A stateful agent instance returned by [agent](../functions/agent.md).
 
@@ -10,7 +10,7 @@ A stateful agent instance returned by [agent](../functions/agent.md).
 
 > **close**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/api/agent.ts:128](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/agent.ts#L128)
+Defined in: [packages/agentos/src/api/agent.ts:128](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/agent.ts#L128)
 
 Releases all in-memory session state held by this agent.
 
@@ -24,7 +24,7 @@ Releases all in-memory session state held by this agent.
 
 > **export**(`metadata?`): [`AgentExportConfig`](AgentExportConfig.md)
 
-Defined in: [packages/agentos/src/api/agent.ts:134](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/agent.ts#L134)
+Defined in: [packages/agentos/src/api/agent.ts:134](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/agent.ts#L134)
 
 Exports the agent's configuration as a portable object.
 
@@ -70,7 +70,7 @@ A portable [AgentExportConfig](AgentExportConfig.md) object.
 
 > **exportJSON**(`metadata?`): `string`
 
-Defined in: [packages/agentos/src/api/agent.ts:140](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/agent.ts#L140)
+Defined in: [packages/agentos/src/api/agent.ts:140](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/agent.ts#L140)
 
 Exports the agent's configuration as a pretty-printed JSON string.
 
@@ -116,7 +116,7 @@ JSON string.
 
 > **generate**(`prompt`, `opts?`): `Promise`\<[`GenerateTextResult`](GenerateTextResult.md)\>
 
-Defined in: [packages/agentos/src/api/agent.ts:109](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/agent.ts#L109)
+Defined in: [packages/agentos/src/api/agent.ts:109](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/agent.ts#L109)
 
 Generates a single reply without maintaining session history.
 
@@ -146,7 +146,7 @@ The complete generation result.
 
 > **session**(`id?`): [`AgentSession`](AgentSession.md)
 
-Defined in: [packages/agentos/src/api/agent.ts:124](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/agent.ts#L124)
+Defined in: [packages/agentos/src/api/agent.ts:124](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/agent.ts#L124)
 
 Returns (or creates) a named [AgentSession](AgentSession.md) with its own conversation history.
 
@@ -170,7 +170,7 @@ The session object for this ID.
 
 > **stream**(`prompt`, `opts?`): [`StreamTextResult`](StreamTextResult.md)
 
-Defined in: [packages/agentos/src/api/agent.ts:117](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/agent.ts#L117)
+Defined in: [packages/agentos/src/api/agent.ts:117](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/agent.ts#L117)
 
 Streams a single reply without maintaining session history.
 
@@ -200,7 +200,7 @@ A [StreamTextResult](StreamTextResult.md).
 
 > **usage**(`sessionId?`): `Promise`\<[`AgentOSUsageAggregate`](AgentOSUsageAggregate.md)\>
 
-Defined in: [packages/agentos/src/api/agent.ts:126](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/agent.ts#L126)
+Defined in: [packages/agentos/src/api/agent.ts:126](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/agent.ts#L126)
 
 Returns persisted usage totals for the whole agent or a single session.
 

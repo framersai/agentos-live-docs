@@ -1,6 +1,6 @@
 # Interface: MemoryView
 
-Defined in: [packages/agentos/src/orchestration/ir/types.ts:342](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/ir/types.ts#L342)
+Defined in: [packages/agentos/src/orchestration/ir/types.ts:380](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/ir/types.ts#L380)
 
 A read-only snapshot of memory state visible to a node during execution.
 Populated by the runtime before the node's executor is called; immutable thereafter.
@@ -11,7 +11,7 @@ Populated by the runtime before the node's executor is called; immutable thereaf
 
 > **pendingWrites**: readonly `object`[]
 
-Defined in: [packages/agentos/src/orchestration/ir/types.ts:356](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/ir/types.ts#L356)
+Defined in: [packages/agentos/src/orchestration/ir/types.ts:394](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/ir/types.ts#L394)
 
 Writes staged during this node's execution, not yet committed to the store.
 
@@ -21,7 +21,7 @@ Writes staged during this node's execution, not yet committed to the store.
 
 > **readLatencyMs**: `number`
 
-Defined in: [packages/agentos/src/orchestration/ir/types.ts:364](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/ir/types.ts#L364)
+Defined in: [packages/agentos/src/orchestration/ir/types.ts:402](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/ir/types.ts#L402)
 
 Wall-clock time in milliseconds spent on the memory read operation.
 
@@ -31,7 +31,7 @@ Wall-clock time in milliseconds spent on the memory read operation.
 
 > **totalTracesRead**: `number`
 
-Defined in: [packages/agentos/src/orchestration/ir/types.ts:362](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/ir/types.ts#L362)
+Defined in: [packages/agentos/src/orchestration/ir/types.ts:400](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/ir/types.ts#L400)
 
 Total number of traces that matched the read filter (before `maxTraces` capping).
 
@@ -41,6 +41,6 @@ Total number of traces that matched the read filter (before `maxTraces` capping)
 
 > **traces**: readonly `object`[]
 
-Defined in: [packages/agentos/src/orchestration/ir/types.ts:344](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/ir/types.ts#L344)
+Defined in: [packages/agentos/src/orchestration/ir/types.ts:382](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/ir/types.ts#L382)
 
 Traces retrieved according to the node's `MemoryPolicy.read` configuration.

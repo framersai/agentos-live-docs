@@ -1,6 +1,6 @@
 # Interface: PersonaPatch
 
-Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:189](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/workflows/WorkflowTypes.ts#L189)
+Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:189](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/workflows/WorkflowTypes.ts#L189)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:189](
 
 > `optional` **metadata**: `Record`\<`string`, `unknown`\>
 
-Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:192](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/workflows/WorkflowTypes.ts#L192)
+Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:192](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/workflows/WorkflowTypes.ts#L192)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:192](
 
 > `optional` **mood**: `string`
 
-Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:191](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/workflows/WorkflowTypes.ts#L191)
+Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:191](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/workflows/WorkflowTypes.ts#L191)
 
 ***
 
@@ -24,4 +24,4 @@ Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:191](
 
 > `optional` **personaTraits**: `Record`\<`string`, `unknown`\>
 
-Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:190](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/workflows/WorkflowTypes.ts#L190)
+Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:190](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/workflows/WorkflowTypes.ts#L190)

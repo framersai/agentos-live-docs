@@ -1,6 +1,6 @@
 # Interface: VerificationBundle
 
-Defined in: [packages/agentos/src/provenance/types.ts:324](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/provenance/types.ts#L324)
+Defined in: [packages/agentos/src/provenance/types.ts:324](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/types.ts#L324)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/provenance/types.ts:324](https://github.com/fr
 
 > **agentId**: `string`
 
-Defined in: [packages/agentos/src/provenance/types.ts:328](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/provenance/types.ts#L328)
+Defined in: [packages/agentos/src/provenance/types.ts:328](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/types.ts#L328)
 
 Agent instance ID.
 
@@ -18,7 +18,7 @@ Agent instance ID.
 
 > **anchors**: [`AnchorRecord`](AnchorRecord.md)[]
 
-Defined in: [packages/agentos/src/provenance/types.ts:334](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/provenance/types.ts#L334)
+Defined in: [packages/agentos/src/provenance/types.ts:334](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/types.ts#L334)
 
 Anchor records covering the events.
 
@@ -28,7 +28,7 @@ Anchor records covering the events.
 
 > **bundleHash**: `string`
 
-Defined in: [packages/agentos/src/provenance/types.ts:338](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/provenance/types.ts#L338)
+Defined in: [packages/agentos/src/provenance/types.ts:338](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/types.ts#L338)
 
 SHA-256 hash of the bundle contents.
 
@@ -38,7 +38,7 @@ SHA-256 hash of the bundle contents.
 
 > **bundleSignature**: `string`
 
-Defined in: [packages/agentos/src/provenance/types.ts:340](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/provenance/types.ts#L340)
+Defined in: [packages/agentos/src/provenance/types.ts:340](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/types.ts#L340)
 
 Ed25519 signature of the bundle hash.
 
@@ -48,7 +48,7 @@ Ed25519 signature of the bundle hash.
 
 > **events**: [`SignedEvent`](SignedEvent.md)[]
 
-Defined in: [packages/agentos/src/provenance/types.ts:332](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/provenance/types.ts#L332)
+Defined in: [packages/agentos/src/provenance/types.ts:332](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/types.ts#L332)
 
 Ordered list of signed events.
 
@@ -58,7 +58,7 @@ Ordered list of signed events.
 
 > **exportedAt**: `string`
 
-Defined in: [packages/agentos/src/provenance/types.ts:336](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/provenance/types.ts#L336)
+Defined in: [packages/agentos/src/provenance/types.ts:336](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/types.ts#L336)
 
 ISO 8601 export timestamp.
 
@@ -68,7 +68,7 @@ ISO 8601 export timestamp.
 
 > **publicKey**: `string`
 
-Defined in: [packages/agentos/src/provenance/types.ts:330](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/provenance/types.ts#L330)
+Defined in: [packages/agentos/src/provenance/types.ts:330](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/types.ts#L330)
 
 Base64-encoded Ed25519 public key of the agent.
 
@@ -78,6 +78,6 @@ Base64-encoded Ed25519 public key of the agent.
 
 > **version**: `string`
 
-Defined in: [packages/agentos/src/provenance/types.ts:326](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/provenance/types.ts#L326)
+Defined in: [packages/agentos/src/provenance/types.ts:326](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/types.ts#L326)
 
 Bundle format version.

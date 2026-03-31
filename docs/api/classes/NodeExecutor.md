@@ -1,6 +1,6 @@
 # Class: NodeExecutor
 
-Defined in: [packages/agentos/src/orchestration/runtime/NodeExecutor.ts:188](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/runtime/NodeExecutor.ts#L188)
+Defined in: [packages/agentos/src/orchestration/runtime/NodeExecutor.ts:188](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/runtime/NodeExecutor.ts#L188)
 
 Stateless executor that dispatches a `GraphNode` to the appropriate handler.
 
@@ -22,7 +22,7 @@ if (!result.success) console.error(result.error);
 
 > **new NodeExecutor**(`deps`): `NodeExecutor`
 
-Defined in: [packages/agentos/src/orchestration/runtime/NodeExecutor.ts:193](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/runtime/NodeExecutor.ts#L193)
+Defined in: [packages/agentos/src/orchestration/runtime/NodeExecutor.ts:193](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/runtime/NodeExecutor.ts#L193)
 
 #### Parameters
 
@@ -43,12 +43,17 @@ External service adapters. All fields are optional; missing services
 
 > **execute**(`node`, `state`): `Promise`\<[`NodeExecutionResult`](../interfaces/NodeExecutionResult.md)\>
 
-Defined in: [packages/agentos/src/orchestration/runtime/NodeExecutor.ts:209](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/runtime/NodeExecutor.ts#L209)
+Defined in: [packages/agentos/src/orchestration/runtime/NodeExecutor.ts:214](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/runtime/NodeExecutor.ts#L214)
 
 Execute `node` against the provided `state`, optionally racing against a timeout.
 
 If `node.timeout` is set, execution races against a timer that resolves with a
 `success: false` result after the specified number of milliseconds.
+
+For `human` nodes with an `onTimeout` directive, the timeout result is modified:
+- `'accept'` — auto-accept on timeout.
+- `'reject'` — auto-reject on timeout.
+- `'error'`  — standard timeout error (default behaviour for all node types).
 
 #### Parameters
 

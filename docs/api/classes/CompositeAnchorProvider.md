@@ -1,6 +1,6 @@
 # Class: CompositeAnchorProvider
 
-Defined in: [packages/agentos/src/provenance/anchoring/providers/CompositeAnchorProvider.ts:19](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/provenance/anchoring/providers/CompositeAnchorProvider.ts#L19)
+Defined in: [packages/agentos/src/provenance/anchoring/providers/CompositeAnchorProvider.ts:19](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/anchoring/providers/CompositeAnchorProvider.ts#L19)
 
 Interface for external anchor publishing backends.
 Implementations are called AFTER local anchor persistence.
@@ -15,7 +15,7 @@ Implementations are called AFTER local anchor persistence.
 
 > **new CompositeAnchorProvider**(`providers`): `CompositeAnchorProvider`
 
-Defined in: [packages/agentos/src/provenance/anchoring/providers/CompositeAnchorProvider.ts:24](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/provenance/anchoring/providers/CompositeAnchorProvider.ts#L24)
+Defined in: [packages/agentos/src/provenance/anchoring/providers/CompositeAnchorProvider.ts:24](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/anchoring/providers/CompositeAnchorProvider.ts#L24)
 
 #### Parameters
 
@@ -33,7 +33,7 @@ Defined in: [packages/agentos/src/provenance/anchoring/providers/CompositeAnchor
 
 > `readonly` **id**: `"composite"` = `'composite'`
 
-Defined in: [packages/agentos/src/provenance/anchoring/providers/CompositeAnchorProvider.ts:20](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/provenance/anchoring/providers/CompositeAnchorProvider.ts#L20)
+Defined in: [packages/agentos/src/provenance/anchoring/providers/CompositeAnchorProvider.ts:20](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/anchoring/providers/CompositeAnchorProvider.ts#L20)
 
 Unique provider identifier.
 
@@ -47,7 +47,7 @@ Unique provider identifier.
 
 > `readonly` **name**: `"Composite Provider"` = `'Composite Provider'`
 
-Defined in: [packages/agentos/src/provenance/anchoring/providers/CompositeAnchorProvider.ts:21](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/provenance/anchoring/providers/CompositeAnchorProvider.ts#L21)
+Defined in: [packages/agentos/src/provenance/anchoring/providers/CompositeAnchorProvider.ts:21](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/anchoring/providers/CompositeAnchorProvider.ts#L21)
 
 Human-readable display name.
 
@@ -63,7 +63,7 @@ Human-readable display name.
 
 > **get** **proofLevel**(): [`ProofLevel`](../type-aliases/ProofLevel.md)
 
-Defined in: [packages/agentos/src/provenance/anchoring/providers/CompositeAnchorProvider.ts:28](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/provenance/anchoring/providers/CompositeAnchorProvider.ts#L28)
+Defined in: [packages/agentos/src/provenance/anchoring/providers/CompositeAnchorProvider.ts:28](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/anchoring/providers/CompositeAnchorProvider.ts#L28)
 
 Proof level this provider advertises.
 
@@ -83,7 +83,7 @@ Proof level this provider advertises.
 
 > **dispose**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/provenance/anchoring/providers/CompositeAnchorProvider.ts:71](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/provenance/anchoring/providers/CompositeAnchorProvider.ts#L71)
+Defined in: [packages/agentos/src/provenance/anchoring/providers/CompositeAnchorProvider.ts:71](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/anchoring/providers/CompositeAnchorProvider.ts#L71)
 
 Optional: dispose of resources (connections, timers, etc.).
 
@@ -101,7 +101,7 @@ Optional: dispose of resources (connections, timers, etc.).
 
 > **publish**(`anchor`): `Promise`\<[`AnchorProviderResult`](../interfaces/AnchorProviderResult.md)\>
 
-Defined in: [packages/agentos/src/provenance/anchoring/providers/CompositeAnchorProvider.ts:37](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/provenance/anchoring/providers/CompositeAnchorProvider.ts#L37)
+Defined in: [packages/agentos/src/provenance/anchoring/providers/CompositeAnchorProvider.ts:37](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/anchoring/providers/CompositeAnchorProvider.ts#L37)
 
 Publish an anchor externally.
 Must not throw — failures are returned via AnchorProviderResult.success = false.
@@ -126,7 +126,7 @@ Must not throw — failures are returned via AnchorProviderResult.success = fals
 
 > **verify**(`anchor`): `Promise`\<`boolean`\>
 
-Defined in: [packages/agentos/src/provenance/anchoring/providers/CompositeAnchorProvider.ts:62](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/provenance/anchoring/providers/CompositeAnchorProvider.ts#L62)
+Defined in: [packages/agentos/src/provenance/anchoring/providers/CompositeAnchorProvider.ts:62](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/anchoring/providers/CompositeAnchorProvider.ts#L62)
 
 Optional: verify a previously published anchor against its external reference.
 

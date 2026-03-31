@@ -1,6 +1,6 @@
 # Class: ConsoleSpanExporter
 
-Defined in: [packages/agentos/src/evaluation/observability/Tracer.ts:140](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/evaluation/observability/Tracer.ts#L140)
+Defined in: [packages/agentos/src/evaluation/observability/Tracer.ts:140](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/evaluation/observability/Tracer.ts#L140)
 
 Simple console exporter for development.
 
@@ -14,7 +14,7 @@ Simple console exporter for development.
 
 > **new ConsoleSpanExporter**(`prefix?`): `ConsoleSpanExporter`
 
-Defined in: [packages/agentos/src/evaluation/observability/Tracer.ts:143](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/evaluation/observability/Tracer.ts#L143)
+Defined in: [packages/agentos/src/evaluation/observability/Tracer.ts:143](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/evaluation/observability/Tracer.ts#L143)
 
 #### Parameters
 
@@ -32,7 +32,7 @@ Defined in: [packages/agentos/src/evaluation/observability/Tracer.ts:143](https:
 
 > **export**(`spans`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/evaluation/observability/Tracer.ts:147](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/evaluation/observability/Tracer.ts#L147)
+Defined in: [packages/agentos/src/evaluation/observability/Tracer.ts:147](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/evaluation/observability/Tracer.ts#L147)
 
 Exports spans to a backend.
 
@@ -58,7 +58,7 @@ Spans to export
 
 > **shutdown**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/evaluation/observability/Tracer.ts:166](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/evaluation/observability/Tracer.ts#L166)
+Defined in: [packages/agentos/src/evaluation/observability/Tracer.ts:166](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/evaluation/observability/Tracer.ts#L166)
 
 Shuts down the exporter.
 

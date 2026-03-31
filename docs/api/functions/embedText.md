@@ -2,7 +2,7 @@
 
 > **embedText**(`opts`): `Promise`\<[`EmbedTextResult`](../interfaces/EmbedTextResult.md)\>
 
-Defined in: [packages/agentos/src/api/embedText.ts:299](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/embedText.ts#L299)
+Defined in: [packages/agentos/src/api/embedText.ts:299](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/embedText.ts#L299)
 
 Generates embedding vectors for one or more text inputs using a
 provider-agnostic `provider:model` string.

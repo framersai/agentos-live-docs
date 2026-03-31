@@ -1,6 +1,6 @@
 # Interface: PortableSandboxImplementation
 
-Defined in: [packages/agentos/src/emergent/ToolPackage.ts:21](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/emergent/ToolPackage.ts#L21)
+Defined in: [packages/agentos/src/emergent/ToolPackage.ts:21](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/emergent/ToolPackage.ts#L21)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/emergent/ToolPackage.ts:21](https://github.com
 
 > **allowlist**: [`SandboxAPI`](../type-aliases/SandboxAPI.md)[]
 
-Defined in: [packages/agentos/src/emergent/ToolPackage.ts:23](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/emergent/ToolPackage.ts#L23)
+Defined in: [packages/agentos/src/emergent/ToolPackage.ts:23](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/emergent/ToolPackage.ts#L23)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [packages/agentos/src/emergent/ToolPackage.ts:23](https://github.com
 
 > `optional` **code**: `string`
 
-Defined in: [packages/agentos/src/emergent/ToolPackage.ts:26](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/emergent/ToolPackage.ts#L26)
+Defined in: [packages/agentos/src/emergent/ToolPackage.ts:26](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/emergent/ToolPackage.ts#L26)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: [packages/agentos/src/emergent/ToolPackage.ts:26](https://github.com
 
 > **mode**: `"sandbox"`
 
-Defined in: [packages/agentos/src/emergent/ToolPackage.ts:22](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/emergent/ToolPackage.ts#L22)
+Defined in: [packages/agentos/src/emergent/ToolPackage.ts:22](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/emergent/ToolPackage.ts#L22)
 
 ***
 
@@ -32,7 +32,7 @@ Defined in: [packages/agentos/src/emergent/ToolPackage.ts:22](https://github.com
 
 > **redactedAtRest**: `boolean`
 
-Defined in: [packages/agentos/src/emergent/ToolPackage.ts:25](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/emergent/ToolPackage.ts#L25)
+Defined in: [packages/agentos/src/emergent/ToolPackage.ts:25](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/emergent/ToolPackage.ts#L25)
 
 ***
 
@@ -40,4 +40,4 @@ Defined in: [packages/agentos/src/emergent/ToolPackage.ts:25](https://github.com
 
 > **sourcePersisted**: `boolean`
 
-Defined in: [packages/agentos/src/emergent/ToolPackage.ts:24](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/emergent/ToolPackage.ts#L24)
+Defined in: [packages/agentos/src/emergent/ToolPackage.ts:24](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/emergent/ToolPackage.ts#L24)

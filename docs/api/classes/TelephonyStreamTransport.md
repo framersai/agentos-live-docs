@@ -1,6 +1,6 @@
 # Class: TelephonyStreamTransport
 
-Defined in: [packages/agentos/src/channels/telephony/TelephonyStreamTransport.ts:134](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/channels/telephony/TelephonyStreamTransport.ts#L134)
+Defined in: [packages/agentos/src/channels/telephony/TelephonyStreamTransport.ts:134](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/telephony/TelephonyStreamTransport.ts#L134)
 
 Adapts a telephony provider WebSocket media stream to the
 `IStreamTransport` interface consumed by the AgentOS voice pipeline.
@@ -59,7 +59,7 @@ transport.on('dtmf', ({ digit }) => {
 
 > **new TelephonyStreamTransport**(`ws`, `parser`, `config?`): `TelephonyStreamTransport`
 
-Defined in: [packages/agentos/src/channels/telephony/TelephonyStreamTransport.ts:183](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/channels/telephony/TelephonyStreamTransport.ts#L183)
+Defined in: [packages/agentos/src/channels/telephony/TelephonyStreamTransport.ts:183](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/telephony/TelephonyStreamTransport.ts#L183)
 
 Create a new telephony stream transport.
 
@@ -102,7 +102,7 @@ Optional configuration overrides.
 
 > `readonly` **id**: `string`
 
-Defined in: [packages/agentos/src/channels/telephony/TelephonyStreamTransport.ts:140](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/channels/telephony/TelephonyStreamTransport.ts#L140)
+Defined in: [packages/agentos/src/channels/telephony/TelephonyStreamTransport.ts:140](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/telephony/TelephonyStreamTransport.ts#L140)
 
 Stable UUID for this transport connection.
 
@@ -231,7 +231,7 @@ v13.6.0, v12.17.0
 
 > **get** **state**(): `"connecting"` \| `"open"` \| `"closed"` \| `"closing"`
 
-Defined in: [packages/agentos/src/channels/telephony/TelephonyStreamTransport.ts:153](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/channels/telephony/TelephonyStreamTransport.ts#L153)
+Defined in: [packages/agentos/src/channels/telephony/TelephonyStreamTransport.ts:153](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/telephony/TelephonyStreamTransport.ts#L153)
 
 Current connection lifecycle state.
 
@@ -336,7 +336,7 @@ v0.1.26
 
 > **close**(`code?`, `reason?`): `void`
 
-Defined in: [packages/agentos/src/channels/telephony/TelephonyStreamTransport.ts:336](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/channels/telephony/TelephonyStreamTransport.ts#L336)
+Defined in: [packages/agentos/src/channels/telephony/TelephonyStreamTransport.ts:336](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/telephony/TelephonyStreamTransport.ts#L336)
 
 Initiate graceful closure of the transport.
 
@@ -1128,7 +1128,7 @@ v0.1.26
 
 > **sendAudio**(`chunk`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/channels/telephony/TelephonyStreamTransport.ts:286](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/channels/telephony/TelephonyStreamTransport.ts#L286)
+Defined in: [packages/agentos/src/channels/telephony/TelephonyStreamTransport.ts:286](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/telephony/TelephonyStreamTransport.ts#L286)
 
 Send synthesised audio to the caller.
 
@@ -1161,7 +1161,7 @@ Encoded audio chunk from the TTS pipeline.
 
 > **sendControl**(`message`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/channels/telephony/TelephonyStreamTransport.ts:321](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/channels/telephony/TelephonyStreamTransport.ts#L321)
+Defined in: [packages/agentos/src/channels/telephony/TelephonyStreamTransport.ts:321](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/telephony/TelephonyStreamTransport.ts#L321)
 
 Send a JSON control message over the WebSocket.
 

@@ -1,6 +1,6 @@
 # Class: PdfLoader
 
-Defined in: [packages/agentos/src/memory/io/ingestion/PdfLoader.ts:93](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/io/ingestion/PdfLoader.ts#L93)
+Defined in: [packages/agentos/src/memory/io/ingestion/PdfLoader.ts:93](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/io/ingestion/PdfLoader.ts#L93)
 
 Document loader for PDF files.
 
@@ -35,7 +35,7 @@ const doc = await pdfLoader.load('/reports/q3.pdf');
 
 > **new PdfLoader**(`ocrLoader?`, `doclingLoader?`): `PdfLoader`
 
-Defined in: [packages/agentos/src/memory/io/ingestion/PdfLoader.ts:116](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/io/ingestion/PdfLoader.ts#L116)
+Defined in: [packages/agentos/src/memory/io/ingestion/PdfLoader.ts:116](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/io/ingestion/PdfLoader.ts#L116)
 
 Creates a new PdfLoader.
 
@@ -63,7 +63,7 @@ Optional Docling loader (for example from `createDoclingLoader()`).
 
 > `readonly` **supportedExtensions**: `string`[]
 
-Defined in: [packages/agentos/src/memory/io/ingestion/PdfLoader.ts:95](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/io/ingestion/PdfLoader.ts#L95)
+Defined in: [packages/agentos/src/memory/io/ingestion/PdfLoader.ts:95](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/io/ingestion/PdfLoader.ts#L95)
 
 File extensions this loader handles, each with a leading dot.
 
@@ -85,7 +85,7 @@ Used by [LoaderRegistry](LoaderRegistry.md) to route file paths to the correct l
 
 > **canLoad**(`source`): `boolean`
 
-Defined in: [packages/agentos/src/memory/io/ingestion/PdfLoader.ts:129](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/io/ingestion/PdfLoader.ts#L129)
+Defined in: [packages/agentos/src/memory/io/ingestion/PdfLoader.ts:129](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/io/ingestion/PdfLoader.ts#L129)
 
 Returns `true` when this loader is capable of handling `source`.
 
@@ -114,7 +114,7 @@ Absolute file path or raw bytes.
 
 > **load**(`source`, `options?`): `Promise`\<[`LoadedDocument`](../interfaces/LoadedDocument.md)\>
 
-Defined in: [packages/agentos/src/memory/io/ingestion/PdfLoader.ts:148](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/io/ingestion/PdfLoader.ts#L148)
+Defined in: [packages/agentos/src/memory/io/ingestion/PdfLoader.ts:148](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/io/ingestion/PdfLoader.ts#L148)
 
 Parses `source` and returns a normalised [LoadedDocument](../interfaces/LoadedDocument.md).
 

@@ -2,7 +2,7 @@
 
 > **recordAgentOSUsage**(`input`): `Promise`\<`boolean`\>
 
-Defined in: [packages/agentos/src/api/runtime/usageLedger.ts:180](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/runtime/usageLedger.ts#L180)
+Defined in: [packages/agentos/src/api/runtime/usageLedger.ts:180](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/runtime/usageLedger.ts#L180)
 
 ## Parameters
 

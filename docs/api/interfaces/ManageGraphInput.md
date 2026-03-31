@@ -1,6 +1,6 @@
 # Interface: ManageGraphInput
 
-Defined in: [packages/agentos/src/orchestration/tools/ManageGraphTool.ts:14](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/tools/ManageGraphTool.ts#L14)
+Defined in: [packages/agentos/src/orchestration/tools/ManageGraphTool.ts:14](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/tools/ManageGraphTool.ts#L14)
 
 Input args for the manage_graph tool call.
 
@@ -18,7 +18,7 @@ Input args for the manage_graph tool call.
 
 > **action**: `"spawn_agent"` \| `"remove_agent"` \| `"reassign_role"` \| `"add_tool"` \| `"fork_branch"`
 
-Defined in: [packages/agentos/src/orchestration/tools/ManageGraphTool.ts:16](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/tools/ManageGraphTool.ts#L16)
+Defined in: [packages/agentos/src/orchestration/tools/ManageGraphTool.ts:16](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/tools/ManageGraphTool.ts#L16)
 
 What graph modification to perform.
 
@@ -28,7 +28,7 @@ What graph modification to perform.
 
 > **reason**: `string`
 
-Defined in: [packages/agentos/src/orchestration/tools/ManageGraphTool.ts:20](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/tools/ManageGraphTool.ts#L20)
+Defined in: [packages/agentos/src/orchestration/tools/ManageGraphTool.ts:20](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/tools/ManageGraphTool.ts#L20)
 
 Why this modification is needed.
 
@@ -38,6 +38,6 @@ Why this modification is needed.
 
 > **spec**: `Record`\<`string`, `unknown`\>
 
-Defined in: [packages/agentos/src/orchestration/tools/ManageGraphTool.ts:18](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/tools/ManageGraphTool.ts#L18)
+Defined in: [packages/agentos/src/orchestration/tools/ManageGraphTool.ts:18](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/tools/ManageGraphTool.ts#L18)
 
 Specification for the modification (agent config, tool definition, etc.).

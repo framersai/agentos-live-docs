@@ -1,6 +1,6 @@
 # Interface: IPromptEngineUtilityAI
 
-Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:394](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/core/llm/IPromptEngine.ts#L394)
+Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:394](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/llm/IPromptEngine.ts#L394)
 
 Interface for utility AI services that assist the PromptEngine with complex
 content processing tasks like summarization and relevance analysis, specifically
@@ -17,7 +17,7 @@ IPromptEngineUtilityAI
 
 > `optional` **analyzeContentRelevance**(`content`, `executionContext`, `modelInfo`): `Promise`\<\{ `importanceScore`: `number`; `keywords?`: `string`[]; `relevanceScore`: `number`; `topics?`: `string`[]; \}\>
 
-Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:447](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/core/llm/IPromptEngine.ts#L447)
+Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:447](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/llm/IPromptEngine.ts#L447)
 
 Analyzes a piece of content for its relevance and importance within the current execution context.
 This can be used to prioritize which content to include or how to emphasize it.
@@ -54,7 +54,7 @@ Scores and extracted metadata.
 
 > **summarizeConversationHistory**(`messages`, `targetTokenCount`, `modelInfo`, `preserveImportantMessages?`): `Promise`\<\{ `finalTokenCount`: `number`; `messagesSummarized`: `number`; `originalTokenCount`: `number`; `summaryMessages`: `ConversationMessage`[]; \}\>
 
-Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:405](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/core/llm/IPromptEngine.ts#L405)
+Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:405](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/llm/IPromptEngine.ts#L405)
 
 Summarizes conversation history to fit within token constraints, attempting to preserve key information.
 
@@ -97,7 +97,7 @@ and metadata about the summarization.
 
 > **summarizeRAGContext**(`context`, `targetTokenCount`, `modelInfo`, `preserveSourceAttribution?`): `Promise`\<\{ `finalTokenCount`: `number`; `originalTokenCount`: `number`; `preservedSources?`: `string`[]; `summary`: `string`; \}\>
 
-Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:426](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/core/llm/IPromptEngine.ts#L426)
+Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:426](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/llm/IPromptEngine.ts#L426)
 
 Summarizes retrieved RAG context to fit token limits, ideally preserving source attribution if possible.
 

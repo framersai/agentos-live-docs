@@ -1,6 +1,6 @@
 # Interface: WorkflowProgressUpdate
 
-Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:176](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/workflows/WorkflowTypes.ts#L176)
+Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:176](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/workflows/WorkflowTypes.ts#L176)
 
 Payload streamed to clients describing workflow progress.
 
@@ -10,7 +10,7 @@ Payload streamed to clients describing workflow progress.
 
 > `optional` **recentEvents**: [`WorkflowEvent`](WorkflowEvent.md)[]
 
-Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:178](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/workflows/WorkflowTypes.ts#L178)
+Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:178](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/workflows/WorkflowTypes.ts#L178)
 
 ***
 
@@ -18,4 +18,4 @@ Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:178](
 
 > **workflow**: [`WorkflowInstance`](WorkflowInstance.md)
 
-Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:177](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/workflows/WorkflowTypes.ts#L177)
+Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:177](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/workflows/WorkflowTypes.ts#L177)

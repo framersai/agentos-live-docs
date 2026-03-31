@@ -1,6 +1,6 @@
 # Interface: AgencySeatRegistrationArgs
 
-Defined in: [packages/agentos/src/agents/agency/AgencyTypes.ts:188](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/agents/agency/AgencyTypes.ts#L188)
+Defined in: [packages/agentos/src/agents/agency/AgencyTypes.ts:188](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/agents/agency/AgencyTypes.ts#L188)
 
 Arguments for registering a GMI to an agency seat.
 
@@ -10,7 +10,7 @@ Arguments for registering a GMI to an agency seat.
 
 > **agencyId**: `string`
 
-Defined in: [packages/agentos/src/agents/agency/AgencyTypes.ts:190](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/agents/agency/AgencyTypes.ts#L190)
+Defined in: [packages/agentos/src/agents/agency/AgencyTypes.ts:190](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/agents/agency/AgencyTypes.ts#L190)
 
 Target agency
 
@@ -20,7 +20,7 @@ Target agency
 
 > **gmiInstanceId**: `string`
 
-Defined in: [packages/agentos/src/agents/agency/AgencyTypes.ts:194](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/agents/agency/AgencyTypes.ts#L194)
+Defined in: [packages/agentos/src/agents/agency/AgencyTypes.ts:194](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/agents/agency/AgencyTypes.ts#L194)
 
 GMI instance to assign
 
@@ -30,7 +30,7 @@ GMI instance to assign
 
 > `optional` **metadata**: `Record`\<`string`, `unknown`\>
 
-Defined in: [packages/agentos/src/agents/agency/AgencyTypes.ts:198](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/agents/agency/AgencyTypes.ts#L198)
+Defined in: [packages/agentos/src/agents/agency/AgencyTypes.ts:198](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/agents/agency/AgencyTypes.ts#L198)
 
 Seat-specific metadata
 
@@ -40,7 +40,7 @@ Seat-specific metadata
 
 > **personaId**: `string`
 
-Defined in: [packages/agentos/src/agents/agency/AgencyTypes.ts:196](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/agents/agency/AgencyTypes.ts#L196)
+Defined in: [packages/agentos/src/agents/agency/AgencyTypes.ts:196](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/agents/agency/AgencyTypes.ts#L196)
 
 Persona configuration
 
@@ -50,6 +50,6 @@ Persona configuration
 
 > **roleId**: `string`
 
-Defined in: [packages/agentos/src/agents/agency/AgencyTypes.ts:192](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/agents/agency/AgencyTypes.ts#L192)
+Defined in: [packages/agentos/src/agents/agency/AgencyTypes.ts:192](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/agents/agency/AgencyTypes.ts#L192)
 
 Role to fill

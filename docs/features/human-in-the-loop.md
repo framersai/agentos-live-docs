@@ -401,6 +401,119 @@ Please avoid these issues.
 `;
 ```
 
+## LLM-as-Judge Handlers
+
+### `hitl.llmJudge()` — Agency-Level
+
+The `hitl.llmJudge()` factory creates an HITL handler that delegates approval
+decisions to an LLM. The LLM evaluates the `ApprovalRequest` against a rubric
+and returns a structured `{ approved, confidence, reasoning }` response. When
+the confidence score falls below the threshold, the decision is escalated to a
+fallback handler.
+
+```typescript
+import { agency, hitl } from '@framers/agentos';
+
+const guarded = agency({
+  model: 'openai:gpt-4o',
+  agents: { worker: { instructions: 'Execute tasks.' } },
+  hitl: {
+    approvals: { beforeTool: ['delete-file', 'send-email'] },
+    handler: hitl.llmJudge({
+      model: 'gpt-4o-mini',
+      provider: 'openai',
+      criteria: 'Is this action safe, reversible, and aligned with the user intent?',
+      confidenceThreshold: 0.8,
+      fallback: hitl.cli(), // uncertain decisions go to human
+    }),
+  },
+});
+```
+
+| Option | Type | Default | Description |
+|---|---|---|---|
+| `model` | `string` | `'gpt-4o-mini'` | LLM model for evaluation |
+| `provider` | `string` | `'openai'` | LLM provider |
+| `criteria` | `string` | `'Evaluate whether this action is safe, relevant, and appropriate.'` | Custom rubric |
+| `confidenceThreshold` | `number` | `0.7` | Below this, delegate to fallback |
+| `fallback` | `HitlHandler` | `hitl.autoReject(...)` | Handler for low-confidence decisions |
+| `apiKey` | `string` | - | API key override |
+
+### `humanNode` Options — Graph-Level
+
+In the AgentGraph builder, `humanNode()` now supports automated resolution
+strategies that bypass the default human interrupt:
+
+```typescript
+import { humanNode } from '@framers/agentos/orchestration/builders/nodes';
+
+// Auto-accept (useful for tests/CI)
+humanNode({ prompt: 'Approve?', autoAccept: true });
+
+// Auto-reject with reason
+humanNode({ prompt: 'Approve?', autoReject: 'Blocked by policy' });
+
+// LLM judge with fallthrough to human interrupt
+humanNode({
+  prompt: 'Should we publish this content?',
+  judge: {
+    model: 'gpt-4o-mini',
+    criteria: 'Is the content appropriate and factually accurate?',
+    confidenceThreshold: 0.8,
+  },
+});
+
+// Auto-accept on timeout instead of erroring
+humanNode({
+  prompt: 'Approve deployment?',
+  timeout: 30_000,
+  onTimeout: 'accept', // 'accept' | 'reject' | 'error'
+});
+```
+
+**`humanNode` options:**
+
+| Option | Type | Default | Description |
+|---|---|---|---|
+| `prompt` | `string` | (required) | Message shown to the human operator |
+| `timeout` | `number` | - | Max milliseconds before timeout handling |
+| `autoAccept` | `boolean` | `false` | Auto-accept without human input |
+| `autoReject` | `boolean \| string` | `false` | Auto-reject; string value is the reason |
+| `judge.model` | `string` | `'gpt-4o-mini'` | LLM model for the judge |
+| `judge.provider` | `string` | `'openai'` | LLM provider |
+| `judge.criteria` | `string` | `'Is this action safe, relevant, and appropriate?'` | Evaluation criteria |
+| `judge.confidenceThreshold` | `number` | `0.7` | Below this, fall through to human interrupt |
+| `onTimeout` | `'accept' \| 'reject' \| 'error'` | `'error'` | Behaviour when timeout expires |
+
+### Example: Automated Testing Pipeline
+
+Use LLM judge to gate quality without blocking CI:
+
+```typescript
+import { AgentGraph, humanNode, gmiNode } from '@framers/agentos';
+
+const graph = new AgentGraph('test-pipeline');
+
+const generate = gmiNode({ instructions: 'Generate a product description.' });
+const review = humanNode({
+  prompt: 'Review the generated content for accuracy.',
+  judge: {
+    model: 'gpt-4o-mini',
+    criteria: 'Is this factually accurate, well-written, and free of hallucinations?',
+    confidenceThreshold: 0.85,
+  },
+  timeout: 10_000,
+  onTimeout: 'reject', // safety default: reject if judge hangs
+});
+const publish = gmiNode({ instructions: 'Format and publish the content.' });
+
+graph.addNode(generate);
+graph.addNode(review);
+graph.addNode(publish);
+graph.addEdge(generate.id, review.id);
+graph.addEdge(review.id, publish.id);
+```
+
 ## Troubleshooting
 
 ### Requests Timing Out
@@ -422,11 +535,155 @@ Please avoid these issues.
 2. Use appropriate severity levels to prioritize
 3. Consider pre-approved action patterns for common cases
 
+## Guardrail Override
+
+The guardrail override system adds a post-approval safety net to the HITL
+pipeline. Even after a tool call is approved -- whether by auto-approve, an
+LLM judge, or a human operator -- the configured guardrails run a final check
+against the tool call arguments. If any guardrail returns `action: 'block'`,
+the approval is overridden and the tool call is denied.
+
+### Flow
+
+```
+Tool call -> HITL handler -> approved?
+  YES -> Guardrail check (if enabled)
+    -> Guardrail PASS -> execute tool
+    -> Guardrail BLOCK -> DENY (override HITL approval)
+  NO -> deny tool
+```
+
+### Why?
+
+Auto-approve mode is convenient for development and CI, but it creates a
+blind spot: destructive commands like `rm -rf /`, `kill -9`, or `DROP TABLE`
+pass through without review. The guardrail override catches these patterns
+even in fully autonomous mode.
+
+### Configuration
+
+#### Agency-level (API)
+
+```typescript
+import { agency, hitl } from '@framers/agentos';
+
+const myAgency = agency({
+  model: 'openai:gpt-4o',
+  agents: { worker: { instructions: 'Execute tasks.' } },
+  hitl: {
+    approvals: { beforeTool: ['shell_execute'] },
+    handler: hitl.autoApprove(),
+
+    // Guardrail override is ON by default.
+    guardrailOverride: true,
+
+    // Default guardrails: ['pii-redaction', 'code-safety']
+    postApprovalGuardrails: ['pii-redaction', 'code-safety'],
+  },
+});
+```
+
+#### Graph-level (humanNode)
+
+```typescript
+import { humanNode } from '@framers/agentos/orchestration/builders/nodes';
+
+humanNode({
+  prompt: 'Deploy to production?',
+  autoAccept: true,
+  guardrailOverride: true, // even though auto-accepted, guardrails can block
+});
+```
+
+#### CLI
+
+```bash
+# Disable the post-approval safety net (full autonomy)
+wunderland chat --no-guardrail-override
+```
+
+#### agent.config.json
+
+```json
+{
+  "hitl": {
+    "mode": "auto-approve",
+    "guardrailOverride": false
+  }
+}
+```
+
+### Example: Auto-approve with guardrail catching `rm -rf`
+
+```typescript
+const myAgency = agency({
+  agents: { worker: { instructions: 'Execute shell commands.' } },
+  hitl: {
+    approvals: { beforeTool: ['shell_execute'] },
+    handler: hitl.autoApprove(), // approves everything
+    // But guardrails catch destructive patterns:
+    guardrailOverride: true,
+    postApprovalGuardrails: ['code-safety'],
+  },
+  on: {
+    guardrailHitlOverride: (event) => {
+      console.warn(
+        `[Safety] Guardrail "${event.guardrailId}" blocked tool "${event.toolName}": ${event.reason}`
+      );
+    },
+  },
+});
+
+// This tool call will be auto-approved by HITL, then blocked by code-safety:
+// [Guardrail] Overrode HITL approval for tool "shell_execute" -- code-safety: detected rm -rf pattern
+```
+
+### Built-in Guardrails
+
+| ID | Description |
+|---|---|
+| `code-safety` | Blocks destructive shell commands (`rm -rf`, `kill -9`, `DROP TABLE`, `mkfs`, `dd`, `format`, `shutdown`, etc.) |
+| `pii-redaction` | Blocks payloads containing unredacted SSNs or credit card numbers |
+
+### Disabling the Override
+
+Set `guardrailOverride: false` in the HITL config or pass `--no-guardrail-override`
+on the CLI. This gives full autonomy to the HITL handler's decision with no
+post-approval checks.
+
+### Events
+
+When a guardrail overrides an HITL approval, the `guardrailHitlOverride`
+callback fires:
+
+```typescript
+interface GuardrailHitlOverrideEvent {
+  guardrailId: string; // e.g., 'code-safety'
+  reason: string;      // e.g., 'detected destructive pattern: rm\\s+-rf\\s+\\/'
+  toolName: string;    // e.g., 'shell_execute'
+  timestamp: number;
+}
+```
+
+## FAQ
+
+### Can guardrails override HITL approvals?
+
+Yes. When `guardrailOverride` is enabled (the default), guardrails run a
+post-approval check on every approved tool call. If any guardrail detects a
+destructive pattern, the approval is vetoed and the tool call is denied.
+This applies regardless of how the approval was made -- auto-approve, LLM
+judge, or human operator.
+
+The flow is: HITL approves -> guardrails check -> execute (or block).
+
+To disable this behavior, set `guardrailOverride: false` in the HITL
+config or pass `--no-guardrail-override` on the CLI.
+
 ## Related Documentation
 
 - [Planning Engine](/features/planning-engine) - Autonomous goal pursuit
 - [Agent Communication](/features/agent-communication) - Inter-agent messaging
 - [Architecture](/architecture/system-architecture) - Full system overview
-
 
 

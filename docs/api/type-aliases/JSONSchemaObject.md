@@ -2,7 +2,7 @@
 
 > **JSONSchemaObject** = `Record`\<`string`, `any`\>
 
-Defined in: [packages/agentos/src/core/tools/ITool.ts:29](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/core/tools/ITool.ts#L29)
+Defined in: [packages/agentos/src/core/tools/ITool.ts:29](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/tools/ITool.ts#L29)
 
 Represents a JSON schema definition.
 This type is used to define the expected structure for tool inputs and outputs,

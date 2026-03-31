@@ -1,6 +1,6 @@
 # Class: MerkleTree
 
-Defined in: [packages/agentos/src/provenance/crypto/MerkleTree.ts:15](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/provenance/crypto/MerkleTree.ts#L15)
+Defined in: [packages/agentos/src/provenance/crypto/MerkleTree.ts:15](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/crypto/MerkleTree.ts#L15)
 
 ## Constructors
 
@@ -18,7 +18,7 @@ Defined in: [packages/agentos/src/provenance/crypto/MerkleTree.ts:15](https://gi
 
 > `static` **computeProof**(`leaves`, `leafIndex`, `algorithm?`): `MerkleProof`
 
-Defined in: [packages/agentos/src/provenance/crypto/MerkleTree.ts:49](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/provenance/crypto/MerkleTree.ts#L49)
+Defined in: [packages/agentos/src/provenance/crypto/MerkleTree.ts:49](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/crypto/MerkleTree.ts#L49)
 
 Compute a Merkle inclusion proof for a leaf at a given index.
 Returns the sibling hashes needed to reconstruct the root.
@@ -47,7 +47,7 @@ Returns the sibling hashes needed to reconstruct the root.
 
 > `static` **computeRoot**(`leaves`, `algorithm?`): `string`
 
-Defined in: [packages/agentos/src/provenance/crypto/MerkleTree.ts:21](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/provenance/crypto/MerkleTree.ts#L21)
+Defined in: [packages/agentos/src/provenance/crypto/MerkleTree.ts:21](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/crypto/MerkleTree.ts#L21)
 
 Compute the Merkle root of a list of leaf hashes.
 If the number of leaves is odd, the last leaf is duplicated.
@@ -73,7 +73,7 @@ Returns empty string for empty input.
 
 > `static` **verifyProof**(`proof`, `algorithm?`): `boolean`
 
-Defined in: [packages/agentos/src/provenance/crypto/MerkleTree.ts:94](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/provenance/crypto/MerkleTree.ts#L94)
+Defined in: [packages/agentos/src/provenance/crypto/MerkleTree.ts:94](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/crypto/MerkleTree.ts#L94)
 
 Verify a Merkle inclusion proof.
 

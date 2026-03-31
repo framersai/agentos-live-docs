@@ -1,6 +1,6 @@
 # Interface: ImageEditRequest
 
-Defined in: [packages/agentos/src/media/images/IImageProvider.ts:151](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/media/images/IImageProvider.ts#L151)
+Defined in: [packages/agentos/src/media/images/IImageProvider.ts:151](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/media/images/IImageProvider.ts#L151)
 
 Provider-level request for image editing.
 
@@ -13,7 +13,7 @@ Passed to [IImageProvider.editImage](IImageProvider.md#editimage) by the high-le
 
 > **image**: `Buffer`
 
-Defined in: [packages/agentos/src/media/images/IImageProvider.ts:155](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/media/images/IImageProvider.ts#L155)
+Defined in: [packages/agentos/src/media/images/IImageProvider.ts:155](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/media/images/IImageProvider.ts#L155)
 
 Source image as a raw `Buffer`.
 
@@ -23,7 +23,7 @@ Source image as a raw `Buffer`.
 
 > `optional` **mask**: `Buffer`
 
-Defined in: [packages/agentos/src/media/images/IImageProvider.ts:159](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/media/images/IImageProvider.ts#L159)
+Defined in: [packages/agentos/src/media/images/IImageProvider.ts:159](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/media/images/IImageProvider.ts#L159)
 
 Optional mask for inpainting (white = edit region, black = keep).
 
@@ -33,7 +33,7 @@ Optional mask for inpainting (white = edit region, black = keep).
 
 > `optional` **mode**: [`ImageEditMode`](../type-aliases/ImageEditMode.md)
 
-Defined in: [packages/agentos/src/media/images/IImageProvider.ts:161](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/media/images/IImageProvider.ts#L161)
+Defined in: [packages/agentos/src/media/images/IImageProvider.ts:161](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/media/images/IImageProvider.ts#L161)
 
 Editing mode. Defaults to `'img2img'`.
 
@@ -43,7 +43,7 @@ Editing mode. Defaults to `'img2img'`.
 
 > **modelId**: `string`
 
-Defined in: [packages/agentos/src/media/images/IImageProvider.ts:153](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/media/images/IImageProvider.ts#L153)
+Defined in: [packages/agentos/src/media/images/IImageProvider.ts:153](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/media/images/IImageProvider.ts#L153)
 
 Model identifier to use for the edit.
 
@@ -53,7 +53,7 @@ Model identifier to use for the edit.
 
 > `optional` **n**: `number`
 
-Defined in: [packages/agentos/src/media/images/IImageProvider.ts:174](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/media/images/IImageProvider.ts#L174)
+Defined in: [packages/agentos/src/media/images/IImageProvider.ts:174](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/media/images/IImageProvider.ts#L174)
 
 Number of output images.
 
@@ -63,7 +63,7 @@ Number of output images.
 
 > `optional` **negativePrompt**: `string`
 
-Defined in: [packages/agentos/src/media/images/IImageProvider.ts:168](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/media/images/IImageProvider.ts#L168)
+Defined in: [packages/agentos/src/media/images/IImageProvider.ts:168](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/media/images/IImageProvider.ts#L168)
 
 Negative prompt describing content to avoid.
 
@@ -73,7 +73,7 @@ Negative prompt describing content to avoid.
 
 > **prompt**: `string`
 
-Defined in: [packages/agentos/src/media/images/IImageProvider.ts:157](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/media/images/IImageProvider.ts#L157)
+Defined in: [packages/agentos/src/media/images/IImageProvider.ts:157](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/media/images/IImageProvider.ts#L157)
 
 Text prompt describing the desired changes.
 
@@ -83,7 +83,7 @@ Text prompt describing the desired changes.
 
 > `optional` **providerOptions**: `Record`\<`string`, `unknown`\> \| [`ImageProviderOptionBag`](ImageProviderOptionBag.md)
 
-Defined in: [packages/agentos/src/media/images/IImageProvider.ts:176](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/media/images/IImageProvider.ts#L176)
+Defined in: [packages/agentos/src/media/images/IImageProvider.ts:176](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/media/images/IImageProvider.ts#L176)
 
 Arbitrary provider-specific options.
 
@@ -93,7 +93,7 @@ Arbitrary provider-specific options.
 
 > `optional` **seed**: `number`
 
-Defined in: [packages/agentos/src/media/images/IImageProvider.ts:172](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/media/images/IImageProvider.ts#L172)
+Defined in: [packages/agentos/src/media/images/IImageProvider.ts:172](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/media/images/IImageProvider.ts#L172)
 
 Seed for reproducible output.
 
@@ -103,7 +103,7 @@ Seed for reproducible output.
 
 > `optional` **size**: `string`
 
-Defined in: [packages/agentos/src/media/images/IImageProvider.ts:170](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/media/images/IImageProvider.ts#L170)
+Defined in: [packages/agentos/src/media/images/IImageProvider.ts:170](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/media/images/IImageProvider.ts#L170)
 
 Desired output dimensions (e.g. `"1024x1024"`).
 
@@ -113,7 +113,7 @@ Desired output dimensions (e.g. `"1024x1024"`).
 
 > `optional` **strength**: `number`
 
-Defined in: [packages/agentos/src/media/images/IImageProvider.ts:166](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/media/images/IImageProvider.ts#L166)
+Defined in: [packages/agentos/src/media/images/IImageProvider.ts:166](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/media/images/IImageProvider.ts#L166)
 
 How much the output may deviate from the source.
 `0` = identical, `1` = completely redrawn.  Default `0.75`.

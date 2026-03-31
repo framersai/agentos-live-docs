@@ -1,6 +1,6 @@
 # Interface: AgentOSRuntimeSnapshot
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:722](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/AgentOS.ts#L722)
+Defined in: [packages/agentos/src/api/AgentOS.ts:722](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/AgentOS.ts#L722)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/api/AgentOS.ts:722](https://github.com/framers
 
 > **conversations**: `object`
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:742](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/AgentOS.ts#L742)
+Defined in: [packages/agentos/src/api/AgentOS.ts:742](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/AgentOS.ts#L742)
 
 #### activeCount
 
@@ -24,7 +24,7 @@ Defined in: [packages/agentos/src/api/AgentOS.ts:742](https://github.com/framers
 
 > **extensions**: `object`
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:736](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/AgentOS.ts#L736)
+Defined in: [packages/agentos/src/api/AgentOS.ts:736](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/AgentOS.ts#L736)
 
 #### guardrailCount
 
@@ -48,7 +48,7 @@ Defined in: [packages/agentos/src/api/AgentOS.ts:736](https://github.com/framers
 
 > **gmis**: `object`
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:746](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/AgentOS.ts#L746)
+Defined in: [packages/agentos/src/api/AgentOS.ts:746](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/AgentOS.ts#L746)
 
 #### activeCount
 
@@ -64,7 +64,7 @@ Defined in: [packages/agentos/src/api/AgentOS.ts:746](https://github.com/framers
 
 > **initialized**: `boolean`
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:723](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/AgentOS.ts#L723)
+Defined in: [packages/agentos/src/api/AgentOS.ts:723](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/AgentOS.ts#L723)
 
 ***
 
@@ -72,7 +72,7 @@ Defined in: [packages/agentos/src/api/AgentOS.ts:723](https://github.com/framers
 
 > **providers**: `object`
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:732](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/AgentOS.ts#L732)
+Defined in: [packages/agentos/src/api/AgentOS.ts:732](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/AgentOS.ts#L732)
 
 #### configured
 
@@ -88,7 +88,7 @@ Defined in: [packages/agentos/src/api/AgentOS.ts:732](https://github.com/framers
 
 > **services**: `object`
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:724](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/AgentOS.ts#L724)
+Defined in: [packages/agentos/src/api/AgentOS.ts:724](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/AgentOS.ts#L724)
 
 #### conversationManager
 

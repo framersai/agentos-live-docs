@@ -1,6 +1,6 @@
 # Interface: NormalizedCallBusy
 
-Defined in: [packages/agentos/src/channels/telephony/types.ts:298](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/channels/telephony/types.ts#L298)
+Defined in: [packages/agentos/src/channels/telephony/types.ts:298](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/telephony/types.ts#L298)
 
 The callee's line is busy.
 
@@ -14,7 +14,7 @@ The callee's line is busy.
 
 > **eventId**: `string`
 
-Defined in: [packages/agentos/src/channels/telephony/types.ts:266](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/channels/telephony/types.ts#L266)
+Defined in: [packages/agentos/src/channels/telephony/types.ts:266](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/telephony/types.ts#L266)
 
 Provider-assigned event ID for idempotency.
 
@@ -28,7 +28,7 @@ Provider-assigned event ID for idempotency.
 
 > **kind**: `"call-busy"`
 
-Defined in: [packages/agentos/src/channels/telephony/types.ts:299](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/channels/telephony/types.ts#L299)
+Defined in: [packages/agentos/src/channels/telephony/types.ts:299](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/telephony/types.ts#L299)
 
 ***
 
@@ -36,7 +36,7 @@ Defined in: [packages/agentos/src/channels/telephony/types.ts:299](https://githu
 
 > **providerCallId**: `string`
 
-Defined in: [packages/agentos/src/channels/telephony/types.ts:268](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/channels/telephony/types.ts#L268)
+Defined in: [packages/agentos/src/channels/telephony/types.ts:268](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/telephony/types.ts#L268)
 
 Provider-assigned call ID.
 
@@ -50,7 +50,7 @@ Provider-assigned call ID.
 
 > **timestamp**: `number`
 
-Defined in: [packages/agentos/src/channels/telephony/types.ts:270](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/channels/telephony/types.ts#L270)
+Defined in: [packages/agentos/src/channels/telephony/types.ts:270](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/telephony/types.ts#L270)
 
 Unix timestamp (ms).
 

@@ -2,7 +2,7 @@
 
 > **performOCR**(`opts`): `Promise`\<[`OCRResult`](../interfaces/OCRResult.md)\>
 
-Defined in: [packages/agentos/src/api/performOCR.ts:270](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/performOCR.ts#L270)
+Defined in: [packages/agentos/src/api/performOCR.ts:270](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/performOCR.ts#L270)
 
 Extract text from an image using AgentOS's progressive vision pipeline.
 

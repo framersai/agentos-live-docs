@@ -1,6 +1,6 @@
 # Interface: SpeechSessionTranscriptEvent
 
-Defined in: [packages/agentos/src/speech/types.ts:310](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/speech/types.ts#L310)
+Defined in: [packages/agentos/src/speech/types.ts:310](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/speech/types.ts#L310)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/speech/types.ts:310](https://github.com/framer
 
 > **capture**: [`SpeechSessionAudioCapture`](SpeechSessionAudioCapture.md)
 
-Defined in: [packages/agentos/src/speech/types.ts:312](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/speech/types.ts#L312)
+Defined in: [packages/agentos/src/speech/types.ts:312](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/speech/types.ts#L312)
 
 ***
 
@@ -16,4 +16,4 @@ Defined in: [packages/agentos/src/speech/types.ts:312](https://github.com/framer
 
 > **result**: [`SpeechTranscriptionResult`](SpeechTranscriptionResult.md)
 
-Defined in: [packages/agentos/src/speech/types.ts:311](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/speech/types.ts#L311)
+Defined in: [packages/agentos/src/speech/types.ts:311](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/speech/types.ts#L311)

@@ -1,6 +1,6 @@
 # Interface: StepExecutionContext
 
-Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:603](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/planner/IPlanningEngine.ts#L603)
+Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:603](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/planner/IPlanningEngine.ts#L603)
 
 Context for step execution.
 
@@ -10,7 +10,7 @@ Context for step execution.
 
 > `optional` **conversationContext**: `string`
 
-Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:609](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/planner/IPlanningEngine.ts#L609)
+Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:609](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/planner/IPlanningEngine.ts#L609)
 
 Conversation context
 
@@ -20,7 +20,7 @@ Conversation context
 
 > **previousResults**: `Map`\<`string`, [`PlanStepResult`](PlanStepResult.md)\>
 
-Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:605](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/planner/IPlanningEngine.ts#L605)
+Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:605](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/planner/IPlanningEngine.ts#L605)
 
 Results from previous steps
 
@@ -30,7 +30,7 @@ Results from previous steps
 
 > `optional` **retrieve**: (`query`) => `Promise`\<`string`[]\>
 
-Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:611](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/planner/IPlanningEngine.ts#L611)
+Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:611](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/planner/IPlanningEngine.ts#L611)
 
 RAG retrieval function
 
@@ -50,6 +50,6 @@ RAG retrieval function
 
 > **tools**: [`ITool`](ITool.md)\<`any`, `any`\>[]
 
-Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:607](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/planner/IPlanningEngine.ts#L607)
+Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:607](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/planner/IPlanningEngine.ts#L607)
 
 Available tools

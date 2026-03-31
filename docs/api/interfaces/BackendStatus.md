@@ -1,6 +1,6 @@
 # Interface: BackendStatus
 
-Defined in: [packages/agentos/src/rag/setup/types.ts:12](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/rag/setup/types.ts#L12)
+Defined in: [packages/agentos/src/rag/setup/types.ts:12](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/setup/types.ts#L12)
 
 Result of detecting a backend's availability.
 
@@ -10,7 +10,7 @@ Result of detecting a backend's availability.
 
 > `optional` **containerName**: `string`
 
-Defined in: [packages/agentos/src/rag/setup/types.ts:18](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/rag/setup/types.ts#L18)
+Defined in: [packages/agentos/src/rag/setup/types.ts:18](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/setup/types.ts#L18)
 
 Docker container name if running via Docker.
 
@@ -20,7 +20,7 @@ Docker container name if running via Docker.
 
 > `optional` **error**: `string`
 
-Defined in: [packages/agentos/src/rag/setup/types.ts:22](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/rag/setup/types.ts#L22)
+Defined in: [packages/agentos/src/rag/setup/types.ts:22](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/setup/types.ts#L22)
 
 Error message if status is 'error' or 'no_docker'.
 
@@ -30,7 +30,7 @@ Error message if status is 'error' or 'no_docker'.
 
 > `optional` **source**: `"manual"` \| `"docker-local"` \| `"env-var"` \| `"cloud"`
 
-Defined in: [packages/agentos/src/rag/setup/types.ts:20](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/rag/setup/types.ts#L20)
+Defined in: [packages/agentos/src/rag/setup/types.ts:20](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/setup/types.ts#L20)
 
 How the backend was discovered.
 
@@ -40,7 +40,7 @@ How the backend was discovered.
 
 > **status**: [`SetupStatus`](../type-aliases/SetupStatus.md)
 
-Defined in: [packages/agentos/src/rag/setup/types.ts:14](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/rag/setup/types.ts#L14)
+Defined in: [packages/agentos/src/rag/setup/types.ts:14](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/setup/types.ts#L14)
 
 Current status of the backend.
 
@@ -50,6 +50,6 @@ Current status of the backend.
 
 > `optional` **url**: `string`
 
-Defined in: [packages/agentos/src/rag/setup/types.ts:16](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/rag/setup/types.ts#L16)
+Defined in: [packages/agentos/src/rag/setup/types.ts:16](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/setup/types.ts#L16)
 
 URL/connection string if the backend is reachable.

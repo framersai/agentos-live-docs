@@ -2,7 +2,7 @@
 
 > **NodeExecutionMode** = `"single_turn"` \| `"react_bounded"` \| `"planner_controlled"`
 
-Defined in: [packages/agentos/src/orchestration/ir/types.ts:35](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/ir/types.ts#L35)
+Defined in: [packages/agentos/src/orchestration/ir/types.ts:35](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/ir/types.ts#L35)
 
 Controls how many LLM turns a node may consume per invocation.
 

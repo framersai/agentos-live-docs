@@ -2,7 +2,7 @@
 
 > **exportAgentConfig**(`agentInstance`, `metadata?`): [`AgentExportConfig`](../interfaces/AgentExportConfig.md)
 
-Defined in: [packages/agentos/src/api/agentExport.ts:167](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/agentExport.ts#L167)
+Defined in: [packages/agentos/src/api/agentExport.ts:167](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/agentExport.ts#L167)
 
 Exports an agent's configuration as a portable [AgentExportConfig](../interfaces/AgentExportConfig.md) object.
 

@@ -1,6 +1,6 @@
 # Interface: IStorageAdapter
 
-Defined in: [packages/agentos/src/core/storage/IStorageAdapter.ts:217](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/core/storage/IStorageAdapter.ts#L217)
+Defined in: [packages/agentos/src/core/storage/IStorageAdapter.ts:217](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/storage/IStorageAdapter.ts#L217)
 
 Core storage adapter interface for AgentOS persistence.
 
@@ -62,7 +62,7 @@ const messages = await storage.getMessages('conv-123', { limit: 10 });
 
 > **close**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/core/storage/IStorageAdapter.ts:260](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/core/storage/IStorageAdapter.ts#L260)
+Defined in: [packages/agentos/src/core/storage/IStorageAdapter.ts:260](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/storage/IStorageAdapter.ts#L260)
 
 Closes the storage adapter and releases resources.
 
@@ -94,7 +94,7 @@ process.on('SIGTERM', async () => {
 
 > **createConversation**(`conversation`): `Promise`\<[`IConversation`](IConversation.md)\>
 
-Defined in: [packages/agentos/src/core/storage/IStorageAdapter.ts:283](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/core/storage/IStorageAdapter.ts#L283)
+Defined in: [packages/agentos/src/core/storage/IStorageAdapter.ts:283](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/storage/IStorageAdapter.ts#L283)
 
 Creates a new conversation record.
 
@@ -135,7 +135,7 @@ const conversation = await storage.createConversation({
 
 > **deleteConversation**(`conversationId`): `Promise`\<`boolean`\>
 
-Defined in: [packages/agentos/src/core/storage/IStorageAdapter.ts:339](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/core/storage/IStorageAdapter.ts#L339)
+Defined in: [packages/agentos/src/core/storage/IStorageAdapter.ts:339](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/storage/IStorageAdapter.ts#L339)
 
 Deletes a conversation and all its messages.
 
@@ -171,7 +171,7 @@ if (deleted) {
 
 > **deleteMessage**(`messageId`): `Promise`\<`boolean`\>
 
-Defined in: [packages/agentos/src/core/storage/IStorageAdapter.ts:453](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/core/storage/IStorageAdapter.ts#L453)
+Defined in: [packages/agentos/src/core/storage/IStorageAdapter.ts:453](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/storage/IStorageAdapter.ts#L453)
 
 Deletes a specific message.
 
@@ -203,7 +203,7 @@ const deleted = await storage.deleteMessage('msg-456');
 
 > **deleteMessagesForConversation**(`conversationId`): `Promise`\<`number`\>
 
-Defined in: [packages/agentos/src/core/storage/IStorageAdapter.ts:469](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/core/storage/IStorageAdapter.ts#L469)
+Defined in: [packages/agentos/src/core/storage/IStorageAdapter.ts:469](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/storage/IStorageAdapter.ts#L469)
 
 Deletes all messages in a conversation.
 
@@ -236,7 +236,7 @@ console.log(`Deleted ${deletedCount} messages`);
 
 > **getConversation**(`conversationId`): `Promise`\<[`IConversation`](IConversation.md) \| `null`\>
 
-Defined in: [packages/agentos/src/core/storage/IStorageAdapter.ts:299](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/core/storage/IStorageAdapter.ts#L299)
+Defined in: [packages/agentos/src/core/storage/IStorageAdapter.ts:299](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/storage/IStorageAdapter.ts#L299)
 
 Retrieves a conversation by its ID.
 
@@ -269,7 +269,7 @@ if (conv) {
 
 > **getConversationTokenUsage**(`conversationId`): `Promise`\<[`ITokenUsage`](ITokenUsage.md)\>
 
-Defined in: [packages/agentos/src/core/storage/IStorageAdapter.ts:504](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/core/storage/IStorageAdapter.ts#L504)
+Defined in: [packages/agentos/src/core/storage/IStorageAdapter.ts:504](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/storage/IStorageAdapter.ts#L504)
 
 Calculates total token usage for a conversation.
 
@@ -303,7 +303,7 @@ console.log(`Cost estimate: $${usage.totalTokens * 0.00001}`);
 
 > **getMessage**(`messageId`): `Promise`\<[`IConversationMessage`](IConversationMessage.md) \| `null`\>
 
-Defined in: [packages/agentos/src/core/storage/IStorageAdapter.ts:409](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/core/storage/IStorageAdapter.ts#L409)
+Defined in: [packages/agentos/src/core/storage/IStorageAdapter.ts:409](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/storage/IStorageAdapter.ts#L409)
 
 Retrieves a single message by its ID.
 
@@ -336,7 +336,7 @@ if (msg) {
 
 > **getMessageCount**(`conversationId`): `Promise`\<`number`\>
 
-Defined in: [packages/agentos/src/core/storage/IStorageAdapter.ts:487](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/core/storage/IStorageAdapter.ts#L487)
+Defined in: [packages/agentos/src/core/storage/IStorageAdapter.ts:487](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/storage/IStorageAdapter.ts#L487)
 
 Counts total messages in a conversation.
 
@@ -369,7 +369,7 @@ console.log(`This conversation has ${count} messages`);
 
 > **getMessages**(`conversationId`, `options?`): `Promise`\<[`IConversationMessage`](IConversationMessage.md)[]\>
 
-Defined in: [packages/agentos/src/core/storage/IStorageAdapter.ts:438](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/core/storage/IStorageAdapter.ts#L438)
+Defined in: [packages/agentos/src/core/storage/IStorageAdapter.ts:438](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/storage/IStorageAdapter.ts#L438)
 
 Retrieves all messages for a conversation with optional filtering.
 
@@ -420,7 +420,7 @@ const assistantRecent = await storage.getMessages('conv-123', {
 
 > **initialize**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/core/storage/IStorageAdapter.ts:238](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/core/storage/IStorageAdapter.ts#L238)
+Defined in: [packages/agentos/src/core/storage/IStorageAdapter.ts:238](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/storage/IStorageAdapter.ts#L238)
 
 Initializes the storage adapter.
 
@@ -455,7 +455,7 @@ await storage.initialize(); // Sets up database schema
 
 > **listConversations**(`userId`, `options?`): `Promise`\<[`IConversation`](IConversation.md)[]\>
 
-Defined in: [packages/agentos/src/core/storage/IStorageAdapter.ts:366](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/core/storage/IStorageAdapter.ts#L366)
+Defined in: [packages/agentos/src/core/storage/IStorageAdapter.ts:366](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/storage/IStorageAdapter.ts#L366)
 
 Lists all conversations for a specific user.
 
@@ -517,7 +517,7 @@ const codingConvs = await storage.listConversations('user-123', {
 
 > **storeMessage**(`message`): `Promise`\<[`IConversationMessage`](IConversationMessage.md)\>
 
-Defined in: [packages/agentos/src/core/storage/IStorageAdapter.ts:393](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/core/storage/IStorageAdapter.ts#L393)
+Defined in: [packages/agentos/src/core/storage/IStorageAdapter.ts:393](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/storage/IStorageAdapter.ts#L393)
 
 Stores a new message in a conversation.
 
@@ -559,7 +559,7 @@ await storage.storeMessage({
 
 > **updateConversation**(`conversationId`, `updates`): `Promise`\<[`IConversation`](IConversation.md)\>
 
-Defined in: [packages/agentos/src/core/storage/IStorageAdapter.ts:320](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/core/storage/IStorageAdapter.ts#L320)
+Defined in: [packages/agentos/src/core/storage/IStorageAdapter.ts:320](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/storage/IStorageAdapter.ts#L320)
 
 Updates an existing conversation's metadata.
 

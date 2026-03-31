@@ -1,6 +1,6 @@
 # Interface: GraphNode
 
-Defined in: [packages/agentos/src/orchestration/ir/types.ts:399](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/ir/types.ts#L399)
+Defined in: [packages/agentos/src/orchestration/ir/types.ts:437](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/ir/types.ts#L437)
 
 A single vertex in the compiled execution graph.
 
@@ -12,7 +12,7 @@ Nodes are immutable once compiled; all runtime state lives in `GraphState`.
 
 > **checkpoint**: `"both"` \| `"none"` \| `"before"` \| `"after"`
 
-Defined in: [packages/agentos/src/orchestration/ir/types.ts:421](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/ir/types.ts#L421)
+Defined in: [packages/agentos/src/orchestration/ir/types.ts:459](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/ir/types.ts#L459)
 
 When the runtime should persist a checkpoint snapshot.
 - `before` — snapshot taken before executor runs (enables re-entry on crash).
@@ -26,7 +26,7 @@ When the runtime should persist a checkpoint snapshot.
 
 > `optional` **complexity**: `number`
 
-Defined in: [packages/agentos/src/orchestration/ir/types.ts:427](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/ir/types.ts#L427)
+Defined in: [packages/agentos/src/orchestration/ir/types.ts:465](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/ir/types.ts#L465)
 
 Optional planner-estimated node complexity (0-1).
 
@@ -36,7 +36,7 @@ Optional planner-estimated node complexity (0-1).
 
 > `optional` **discoveryPolicy**: [`DiscoveryPolicy`](DiscoveryPolicy.md)
 
-Defined in: [packages/agentos/src/orchestration/ir/types.ts:433](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/ir/types.ts#L433)
+Defined in: [packages/agentos/src/orchestration/ir/types.ts:471](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/ir/types.ts#L471)
 
 Dynamic capability discovery configuration applied before execution.
 
@@ -46,7 +46,7 @@ Dynamic capability discovery configuration applied before execution.
 
 > **effectClass**: [`EffectClass`](../type-aliases/EffectClass.md)
 
-Defined in: [packages/agentos/src/orchestration/ir/types.ts:409](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/ir/types.ts#L409)
+Defined in: [packages/agentos/src/orchestration/ir/types.ts:447](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/ir/types.ts#L447)
 
 Classifies the side-effects this node may produce.
 
@@ -56,7 +56,7 @@ Classifies the side-effects this node may produce.
 
 > **executionMode**: [`NodeExecutionMode`](../type-aliases/NodeExecutionMode.md)
 
-Defined in: [packages/agentos/src/orchestration/ir/types.ts:407](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/ir/types.ts#L407)
+Defined in: [packages/agentos/src/orchestration/ir/types.ts:445](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/ir/types.ts#L445)
 
 Controls the LLM turn budget for this node.
 
@@ -66,7 +66,7 @@ Controls the LLM turn budget for this node.
 
 > **executorConfig**: [`NodeExecutorConfig`](../type-aliases/NodeExecutorConfig.md)
 
-Defined in: [packages/agentos/src/orchestration/ir/types.ts:405](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/ir/types.ts#L405)
+Defined in: [packages/agentos/src/orchestration/ir/types.ts:443](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/ir/types.ts#L443)
 
 Full executor configuration; discriminated union determines runtime strategy.
 
@@ -76,7 +76,7 @@ Full executor configuration; discriminated union determines runtime strategy.
 
 > `optional` **guardrailPolicy**: [`GuardrailPolicy`](GuardrailPolicy.md)
 
-Defined in: [packages/agentos/src/orchestration/ir/types.ts:437](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/ir/types.ts#L437)
+Defined in: [packages/agentos/src/orchestration/ir/types.ts:475](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/ir/types.ts#L475)
 
 Declarative guardrails evaluated on input and/or output payloads.
 
@@ -86,7 +86,7 @@ Declarative guardrails evaluated on input and/or output payloads.
 
 > **id**: `string`
 
-Defined in: [packages/agentos/src/orchestration/ir/types.ts:401](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/ir/types.ts#L401)
+Defined in: [packages/agentos/src/orchestration/ir/types.ts:439](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/ir/types.ts#L439)
 
 Unique identifier within the parent `CompiledExecutionGraph`. Must not equal `START` or `END`.
 
@@ -96,7 +96,7 @@ Unique identifier within the parent `CompiledExecutionGraph`. Must not equal `ST
 
 > `optional` **inputSchema**: `Record`\<`string`, `unknown`\>
 
-Defined in: [packages/agentos/src/orchestration/ir/types.ts:423](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/ir/types.ts#L423)
+Defined in: [packages/agentos/src/orchestration/ir/types.ts:461](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/ir/types.ts#L461)
 
 JSON-Schema-compatible description of the expected input shape.
 
@@ -106,7 +106,7 @@ JSON-Schema-compatible description of the expected input shape.
 
 > `optional` **llm**: [`NodeLlmConfig`](NodeLlmConfig.md)
 
-Defined in: [packages/agentos/src/orchestration/ir/types.ts:429](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/ir/types.ts#L429)
+Defined in: [packages/agentos/src/orchestration/ir/types.ts:467](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/ir/types.ts#L467)
 
 Optional per-node LLM provider/model override.
 
@@ -116,7 +116,7 @@ Optional per-node LLM provider/model override.
 
 > `optional` **memoryPolicy**: [`MemoryPolicy`](MemoryPolicy.md)
 
-Defined in: [packages/agentos/src/orchestration/ir/types.ts:431](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/ir/types.ts#L431)
+Defined in: [packages/agentos/src/orchestration/ir/types.ts:469](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/ir/types.ts#L469)
 
 Memory read/write configuration applied by the runtime around execution.
 
@@ -126,7 +126,7 @@ Memory read/write configuration applied by the runtime around execution.
 
 > `optional` **outputSchema**: `Record`\<`string`, `unknown`\>
 
-Defined in: [packages/agentos/src/orchestration/ir/types.ts:425](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/ir/types.ts#L425)
+Defined in: [packages/agentos/src/orchestration/ir/types.ts:463](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/ir/types.ts#L463)
 
 JSON-Schema-compatible description of the expected output shape.
 
@@ -136,7 +136,7 @@ JSON-Schema-compatible description of the expected output shape.
 
 > `optional` **personaPolicy**: [`PersonaPolicy`](PersonaPolicy.md)
 
-Defined in: [packages/agentos/src/orchestration/ir/types.ts:435](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/ir/types.ts#L435)
+Defined in: [packages/agentos/src/orchestration/ir/types.ts:473](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/ir/types.ts#L473)
 
 Persona layer configuration injected into the prompt context.
 
@@ -146,7 +146,7 @@ Persona layer configuration injected into the prompt context.
 
 > `optional` **retryPolicy**: [`RetryPolicy`](RetryPolicy.md)
 
-Defined in: [packages/agentos/src/orchestration/ir/types.ts:413](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/ir/types.ts#L413)
+Defined in: [packages/agentos/src/orchestration/ir/types.ts:451](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/ir/types.ts#L451)
 
 Automatic retry configuration for transient failures.
 
@@ -156,7 +156,7 @@ Automatic retry configuration for transient failures.
 
 > `optional` **timeout**: `number`
 
-Defined in: [packages/agentos/src/orchestration/ir/types.ts:411](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/ir/types.ts#L411)
+Defined in: [packages/agentos/src/orchestration/ir/types.ts:449](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/ir/types.ts#L449)
 
 Maximum wall-clock execution time in milliseconds before the node is aborted.
 
@@ -166,6 +166,6 @@ Maximum wall-clock execution time in milliseconds before the node is aborted.
 
 > **type**: `"tool"` \| `"extension"` \| `"voice"` \| `"gmi"` \| `"human"` \| `"guardrail"` \| `"router"` \| `"subgraph"`
 
-Defined in: [packages/agentos/src/orchestration/ir/types.ts:403](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/ir/types.ts#L403)
+Defined in: [packages/agentos/src/orchestration/ir/types.ts:441](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/ir/types.ts#L441)
 
 Coarse type label kept in sync with `executorConfig.type` for fast switching.

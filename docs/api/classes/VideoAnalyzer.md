@@ -1,6 +1,6 @@
 # Class: VideoAnalyzer
 
-Defined in: [packages/agentos/src/media/video/VideoAnalyzer.ts:130](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/media/video/VideoAnalyzer.ts#L130)
+Defined in: [packages/agentos/src/media/video/VideoAnalyzer.ts:130](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/media/video/VideoAnalyzer.ts#L130)
 
 Structured video analysis pipeline that wires together scene detection,
 vision description, audio transcription, and LLM summarization.
@@ -22,7 +22,7 @@ arguments are passed as arrays, preventing shell injection.
 
 > **new VideoAnalyzer**(`deps?`): `VideoAnalyzer`
 
-Defined in: [packages/agentos/src/media/video/VideoAnalyzer.ts:157](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/media/video/VideoAnalyzer.ts#L157)
+Defined in: [packages/agentos/src/media/video/VideoAnalyzer.ts:157](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/media/video/VideoAnalyzer.ts#L157)
 
 Create a new VideoAnalyzer with optional injected dependencies.
 
@@ -49,7 +49,7 @@ Optional dependency overrides.
 
 > **analyze**(`request`): `Promise`\<[`VideoAnalysisRich`](../interfaces/VideoAnalysisRich.md)\>
 
-Defined in: [packages/agentos/src/media/video/VideoAnalyzer.ts:240](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/media/video/VideoAnalyzer.ts#L240)
+Defined in: [packages/agentos/src/media/video/VideoAnalyzer.ts:240](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/media/video/VideoAnalyzer.ts#L240)
 
 Run the full video analysis pipeline with scene detection, vision
 descriptions, optional audio transcription, and LLM summarization.
@@ -93,7 +93,7 @@ If the video buffer is empty or invalid.
 
 > **analyzeVideo**(`request`): `Promise`\<[`VideoAnalysis`](../interfaces/VideoAnalysis.md)\>
 
-Defined in: [packages/agentos/src/media/video/VideoAnalyzer.ts:178](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/media/video/VideoAnalyzer.ts#L178)
+Defined in: [packages/agentos/src/media/video/VideoAnalyzer.ts:178](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/media/video/VideoAnalyzer.ts#L178)
 
 Analyse a video and return structured understanding results.
 

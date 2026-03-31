@@ -1,6 +1,6 @@
 # Class: SelfEvaluateTool
 
-Defined in: [packages/agentos/src/emergent/SelfEvaluateTool.ts:187](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/emergent/SelfEvaluateTool.ts#L187)
+Defined in: [packages/agentos/src/emergent/SelfEvaluateTool.ts:187](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/emergent/SelfEvaluateTool.ts#L187)
 
 ITool implementation enabling agents to evaluate their own responses,
 adjust runtime parameters, and generate performance reports.
@@ -33,7 +33,7 @@ const result = await tool.execute({
 
 > **new SelfEvaluateTool**(`deps`): `SelfEvaluateTool`
 
-Defined in: [packages/agentos/src/emergent/SelfEvaluateTool.ts:253](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/emergent/SelfEvaluateTool.ts#L253)
+Defined in: [packages/agentos/src/emergent/SelfEvaluateTool.ts:253](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/emergent/SelfEvaluateTool.ts#L253)
 
 Create a new SelfEvaluateTool.
 
@@ -56,7 +56,7 @@ Injected dependencies including config, optional
 
 > `readonly` **category**: `"emergent"` = `'emergent'`
 
-Defined in: [packages/agentos/src/emergent/SelfEvaluateTool.ts:204](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/emergent/SelfEvaluateTool.ts#L204)
+Defined in: [packages/agentos/src/emergent/SelfEvaluateTool.ts:204](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/emergent/SelfEvaluateTool.ts#L204)
 
 **`Optional`**
 
@@ -74,7 +74,7 @@ aiding an LLM in selecting from a large set of tools.
 
 > `readonly` **description**: `string`
 
-Defined in: [packages/agentos/src/emergent/SelfEvaluateTool.ts:198](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/emergent/SelfEvaluateTool.ts#L198)
+Defined in: [packages/agentos/src/emergent/SelfEvaluateTool.ts:198](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/emergent/SelfEvaluateTool.ts#L198)
 
 A detailed, natural language description of what the tool does, its primary purpose,
 typical use cases, and any important considerations or limitations for its use.
@@ -92,7 +92,7 @@ for the LLM to grasp the tool's semantics.
 
 > `readonly` **displayName**: `"Self Evaluate"` = `'Self Evaluate'`
 
-Defined in: [packages/agentos/src/emergent/SelfEvaluateTool.ts:195](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/emergent/SelfEvaluateTool.ts#L195)
+Defined in: [packages/agentos/src/emergent/SelfEvaluateTool.ts:195](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/emergent/SelfEvaluateTool.ts#L195)
 
 A concise, human-readable title or display name for the tool.
 Used in user interfaces, logs, or when presenting tool options to developers or users.
@@ -113,7 +113,7 @@ Used in user interfaces, logs, or when presenting tool options to developers or 
 
 > `readonly` **hasSideEffects**: `true` = `true`
 
-Defined in: [packages/agentos/src/emergent/SelfEvaluateTool.ts:207](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/emergent/SelfEvaluateTool.ts#L207)
+Defined in: [packages/agentos/src/emergent/SelfEvaluateTool.ts:207](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/emergent/SelfEvaluateTool.ts#L207)
 
 **`Optional`**
 
@@ -132,7 +132,7 @@ with greater caution, potentially requiring explicit user confirmation.
 
 > `readonly` **id**: `"com.framers.emergent.self-evaluate"` = `'com.framers.emergent.self-evaluate'`
 
-Defined in: [packages/agentos/src/emergent/SelfEvaluateTool.ts:189](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/emergent/SelfEvaluateTool.ts#L189)
+Defined in: [packages/agentos/src/emergent/SelfEvaluateTool.ts:189](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/emergent/SelfEvaluateTool.ts#L189)
 
 A globally unique identifier for this specific tool (e.g., "web-search-engine-v1.2", "stock-price-fetcher").
 This ID is used for internal registration, management, and precise identification.
@@ -148,7 +148,7 @@ It's recommended to use a namespaced, versioned format (e.g., `vendor-toolname-v
 
 > `readonly` **inputSchema**: [`JSONSchemaObject`](../type-aliases/JSONSchemaObject.md)
 
-Defined in: [packages/agentos/src/emergent/SelfEvaluateTool.ts:210](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/emergent/SelfEvaluateTool.ts#L210)
+Defined in: [packages/agentos/src/emergent/SelfEvaluateTool.ts:210](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/emergent/SelfEvaluateTool.ts#L210)
 
 The JSON schema defining the structure, types, and constraints of the input arguments object
 that this tool expects. This schema is used by:
@@ -170,7 +170,7 @@ https://json-schema.org/
 
 > `readonly` **name**: `"self_evaluate"` = `'self_evaluate'`
 
-Defined in: [packages/agentos/src/emergent/SelfEvaluateTool.ts:192](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/emergent/SelfEvaluateTool.ts#L192)
+Defined in: [packages/agentos/src/emergent/SelfEvaluateTool.ts:192](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/emergent/SelfEvaluateTool.ts#L192)
 
 The functional name of the tool, as it should be presented to and used by an LLM in a tool call request
 (e.g., "searchWeb", "executePythonCode", "getWeatherForecast").
@@ -187,7 +187,7 @@ It should be concise, descriptive, and typically in camelCase or snake_case.
 
 > **execute**(`args`, `context`): `Promise`\<[`ToolExecutionResult`](../interfaces/ToolExecutionResult.md)\<`any`\>\>
 
-Defined in: [packages/agentos/src/emergent/SelfEvaluateTool.ts:268](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/emergent/SelfEvaluateTool.ts#L268)
+Defined in: [packages/agentos/src/emergent/SelfEvaluateTool.ts:268](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/emergent/SelfEvaluateTool.ts#L268)
 
 Execute the requested self-evaluation action.
 

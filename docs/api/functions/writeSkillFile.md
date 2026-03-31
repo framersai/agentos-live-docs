@@ -2,7 +2,7 @@
 
 > **writeSkillFile**(`tool`, `outputDir`): `Promise`\<`string`\>
 
-Defined in: [packages/agentos/src/emergent/SkillExporter.ts:340](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/emergent/SkillExporter.ts#L340)
+Defined in: [packages/agentos/src/emergent/SkillExporter.ts:340](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/emergent/SkillExporter.ts#L340)
 
 Writes a SKILL.md file to disk for an emergent tool.
 

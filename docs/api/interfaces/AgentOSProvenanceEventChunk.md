@@ -1,6 +1,6 @@
 # Interface: AgentOSProvenanceEventChunk
 
-Defined in: [packages/agentos/src/api/types/AgentOSResponse.ts:210](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/types/AgentOSResponse.ts#L210)
+Defined in: [packages/agentos/src/api/types/AgentOSResponse.ts:210](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/types/AgentOSResponse.ts#L210)
 
 ## Extends
 
@@ -12,7 +12,7 @@ Defined in: [packages/agentos/src/api/types/AgentOSResponse.ts:210](https://gith
 
 > **eventId**: `string`
 
-Defined in: [packages/agentos/src/api/types/AgentOSResponse.ts:213](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/types/AgentOSResponse.ts#L213)
+Defined in: [packages/agentos/src/api/types/AgentOSResponse.ts:213](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/types/AgentOSResponse.ts#L213)
 
 ***
 
@@ -20,7 +20,7 @@ Defined in: [packages/agentos/src/api/types/AgentOSResponse.ts:213](https://gith
 
 > **eventType**: `string`
 
-Defined in: [packages/agentos/src/api/types/AgentOSResponse.ts:212](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/types/AgentOSResponse.ts#L212)
+Defined in: [packages/agentos/src/api/types/AgentOSResponse.ts:212](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/types/AgentOSResponse.ts#L212)
 
 ***
 
@@ -28,7 +28,7 @@ Defined in: [packages/agentos/src/api/types/AgentOSResponse.ts:212](https://gith
 
 > **gmiInstanceId**: `string`
 
-Defined in: [packages/agentos/src/api/types/AgentOSResponse.ts:46](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/types/AgentOSResponse.ts#L46)
+Defined in: [packages/agentos/src/api/types/AgentOSResponse.ts:46](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/types/AgentOSResponse.ts#L46)
 
 #### Inherited from
 
@@ -40,7 +40,7 @@ Defined in: [packages/agentos/src/api/types/AgentOSResponse.ts:46](https://githu
 
 > **hash**: `string`
 
-Defined in: [packages/agentos/src/api/types/AgentOSResponse.ts:215](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/types/AgentOSResponse.ts#L215)
+Defined in: [packages/agentos/src/api/types/AgentOSResponse.ts:215](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/types/AgentOSResponse.ts#L215)
 
 ***
 
@@ -48,7 +48,7 @@ Defined in: [packages/agentos/src/api/types/AgentOSResponse.ts:215](https://gith
 
 > **isFinal**: `boolean`
 
-Defined in: [packages/agentos/src/api/types/AgentOSResponse.ts:48](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/types/AgentOSResponse.ts#L48)
+Defined in: [packages/agentos/src/api/types/AgentOSResponse.ts:48](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/types/AgentOSResponse.ts#L48)
 
 #### Inherited from
 
@@ -60,7 +60,7 @@ Defined in: [packages/agentos/src/api/types/AgentOSResponse.ts:48](https://githu
 
 > `optional` **metadata**: `Record`\<`string`, `any`\>
 
-Defined in: [packages/agentos/src/api/types/AgentOSResponse.ts:50](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/types/AgentOSResponse.ts#L50)
+Defined in: [packages/agentos/src/api/types/AgentOSResponse.ts:50](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/types/AgentOSResponse.ts#L50)
 
 #### Inherited from
 
@@ -72,7 +72,7 @@ Defined in: [packages/agentos/src/api/types/AgentOSResponse.ts:50](https://githu
 
 > `optional` **payload**: `Record`\<`string`, `unknown`\>
 
-Defined in: [packages/agentos/src/api/types/AgentOSResponse.ts:217](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/types/AgentOSResponse.ts#L217)
+Defined in: [packages/agentos/src/api/types/AgentOSResponse.ts:217](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/types/AgentOSResponse.ts#L217)
 
 ***
 
@@ -80,7 +80,7 @@ Defined in: [packages/agentos/src/api/types/AgentOSResponse.ts:217](https://gith
 
 > **personaId**: `string`
 
-Defined in: [packages/agentos/src/api/types/AgentOSResponse.ts:47](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/types/AgentOSResponse.ts#L47)
+Defined in: [packages/agentos/src/api/types/AgentOSResponse.ts:47](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/types/AgentOSResponse.ts#L47)
 
 #### Inherited from
 
@@ -92,7 +92,7 @@ Defined in: [packages/agentos/src/api/types/AgentOSResponse.ts:47](https://githu
 
 > **sequence**: `number`
 
-Defined in: [packages/agentos/src/api/types/AgentOSResponse.ts:214](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/types/AgentOSResponse.ts#L214)
+Defined in: [packages/agentos/src/api/types/AgentOSResponse.ts:214](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/types/AgentOSResponse.ts#L214)
 
 ***
 
@@ -100,7 +100,7 @@ Defined in: [packages/agentos/src/api/types/AgentOSResponse.ts:214](https://gith
 
 > `optional` **signature**: `string`
 
-Defined in: [packages/agentos/src/api/types/AgentOSResponse.ts:216](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/types/AgentOSResponse.ts#L216)
+Defined in: [packages/agentos/src/api/types/AgentOSResponse.ts:216](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/types/AgentOSResponse.ts#L216)
 
 ***
 
@@ -108,7 +108,7 @@ Defined in: [packages/agentos/src/api/types/AgentOSResponse.ts:216](https://gith
 
 > **streamId**: `string`
 
-Defined in: [packages/agentos/src/api/types/AgentOSResponse.ts:45](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/types/AgentOSResponse.ts#L45)
+Defined in: [packages/agentos/src/api/types/AgentOSResponse.ts:45](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/types/AgentOSResponse.ts#L45)
 
 #### Inherited from
 
@@ -120,7 +120,7 @@ Defined in: [packages/agentos/src/api/types/AgentOSResponse.ts:45](https://githu
 
 > **timestamp**: `string`
 
-Defined in: [packages/agentos/src/api/types/AgentOSResponse.ts:49](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/types/AgentOSResponse.ts#L49)
+Defined in: [packages/agentos/src/api/types/AgentOSResponse.ts:49](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/types/AgentOSResponse.ts#L49)
 
 #### Inherited from
 
@@ -132,7 +132,7 @@ Defined in: [packages/agentos/src/api/types/AgentOSResponse.ts:49](https://githu
 
 > **type**: [`PROVENANCE_EVENT`](../enumerations/AgentOSResponseChunkType.md#provenance_event)
 
-Defined in: [packages/agentos/src/api/types/AgentOSResponse.ts:211](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/types/AgentOSResponse.ts#L211)
+Defined in: [packages/agentos/src/api/types/AgentOSResponse.ts:211](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/types/AgentOSResponse.ts#L211)
 
 #### Overrides
 

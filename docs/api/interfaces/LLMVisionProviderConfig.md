@@ -1,6 +1,6 @@
 # Interface: LLMVisionProviderConfig
 
-Defined in: [packages/agentos/src/vision/providers/LLMVisionProvider.ts:51](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/vision/providers/LLMVisionProvider.ts#L51)
+Defined in: [packages/agentos/src/vision/providers/LLMVisionProvider.ts:51](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/vision/providers/LLMVisionProvider.ts#L51)
 
 Configuration for the LLM vision provider.
 
@@ -21,7 +21,7 @@ const config: LLMVisionProviderConfig = {
 
 > `optional` **apiKey**: `string`
 
-Defined in: [packages/agentos/src/vision/providers/LLMVisionProvider.ts:75](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/vision/providers/LLMVisionProvider.ts#L75)
+Defined in: [packages/agentos/src/vision/providers/LLMVisionProvider.ts:75](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/vision/providers/LLMVisionProvider.ts#L75)
 
 Override the API key instead of reading from environment variables.
 Useful for multi-tenant setups where each user has their own key.
@@ -32,7 +32,7 @@ Useful for multi-tenant setups where each user has their own key.
 
 > `optional` **baseUrl**: `string`
 
-Defined in: [packages/agentos/src/vision/providers/LLMVisionProvider.ts:80](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/vision/providers/LLMVisionProvider.ts#L80)
+Defined in: [packages/agentos/src/vision/providers/LLMVisionProvider.ts:80](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/vision/providers/LLMVisionProvider.ts#L80)
 
 Override the provider base URL (e.g. for Ollama or local proxies).
 
@@ -42,7 +42,7 @@ Override the provider base URL (e.g. for Ollama or local proxies).
 
 > `optional` **model**: `string`
 
-Defined in: [packages/agentos/src/vision/providers/LLMVisionProvider.ts:63](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/vision/providers/LLMVisionProvider.ts#L63)
+Defined in: [packages/agentos/src/vision/providers/LLMVisionProvider.ts:63](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/vision/providers/LLMVisionProvider.ts#L63)
 
 Model identifier. When omitted, the provider's default vision model
 is used.
@@ -59,7 +59,7 @@ is used.
 
 > `optional` **prompt**: `string`
 
-Defined in: [packages/agentos/src/vision/providers/LLMVisionProvider.ts:69](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/vision/providers/LLMVisionProvider.ts#L69)
+Defined in: [packages/agentos/src/vision/providers/LLMVisionProvider.ts:69](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/vision/providers/LLMVisionProvider.ts#L69)
 
 Custom prompt for image description. When omitted, a default prompt
 optimized for search indexing is used.
@@ -70,7 +70,7 @@ optimized for search indexing is used.
 
 > **provider**: `string`
 
-Defined in: [packages/agentos/src/vision/providers/LLMVisionProvider.ts:56](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/vision/providers/LLMVisionProvider.ts#L56)
+Defined in: [packages/agentos/src/vision/providers/LLMVisionProvider.ts:56](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/vision/providers/LLMVisionProvider.ts#L56)
 
 LLM provider name (e.g. 'openai', 'anthropic', 'google', 'ollama').
 Must be resolvable by the `generateText()` API.

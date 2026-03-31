@@ -1,6 +1,6 @@
 # Interface: IPromptEngine
 
-Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:470](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/core/llm/IPromptEngine.ts#L470)
+Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:470](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/llm/IPromptEngine.ts#L470)
 
 Core interface for the PromptEngine, responsible for intelligent and adaptive
 prompt construction based on rich contextual information and persona definitions.
@@ -20,7 +20,7 @@ IPromptEngine
 
 > **clearCache**(`selectivePattern?`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:615](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/core/llm/IPromptEngine.ts#L615)
+Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:615](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/llm/IPromptEngine.ts#L615)
 
 **`Async`**
 
@@ -50,7 +50,7 @@ A promise that resolves when the cache clearing operation is complete.
 
 > **constructPrompt**(`baseComponents`, `modelTargetInfo`, `executionContext?`, `templateName?`): `Promise`\<[`PromptEngineResult`](PromptEngineResult.md)\>
 
-Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:517](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/core/llm/IPromptEngine.ts#L517)
+Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:517](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/llm/IPromptEngine.ts#L517)
 
 **`Async`**
 
@@ -112,7 +112,7 @@ construction (e.g., template not found, critical component missing, tokenization
 
 > **estimateTokenCount**(`content`, `modelId?`): `Promise`\<`number`\>
 
-Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:556](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/core/llm/IPromptEngine.ts#L556)
+Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:556](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/llm/IPromptEngine.ts#L556)
 
 **`Async`**
 
@@ -147,7 +147,7 @@ A promise resolving to the estimated number of tokens.
 
 > **evaluateCriteria**(`criteria`, `context`): `Promise`\<`boolean`\>
 
-Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:540](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/core/llm/IPromptEngine.ts#L540)
+Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:540](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/llm/IPromptEngine.ts#L540)
 
 **`Async`**
 
@@ -190,7 +190,7 @@ a non-existent working memory key specified in a query).
 
 > **getEngineStatistics**(): `Promise`\<\{ `averageConstructionTimeMs`: `number`; `cacheStats`: \{ `currentSize`: `number`; `effectivenessRatio`: `number`; `hits`: `number`; `maxSize?`: `number`; `misses`: `number`; \}; `contextualElementUsage`: `Record`\<`string`, \{ `averageEvaluationTimeMs?`: `number`; `count`: `number`; \}\>; `errorRatePerType`: `Record`\<`string`, `number`\>; `performanceTimers`: `Record`\<`string`, \{ `averageTimeMs`: `number`; `count`: `number`; `totalTimeMs`: `number`; \}\>; `tokenCountingStats`: \{ `averageAccuracy?`: `number`; `operations`: `number`; \}; `totalPromptsConstructed`: `number`; \}\>
 
-Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:626](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/core/llm/IPromptEngine.ts#L626)
+Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:626](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/llm/IPromptEngine.ts#L626)
 
 **`Async`**
 
@@ -211,7 +211,7 @@ cache hit rate, error rates, and usage of contextual elements.
 
 > **initialize**(`config`, `utilityAI?`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:490](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/core/llm/IPromptEngine.ts#L490)
+Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:490](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/llm/IPromptEngine.ts#L490)
 
 **`Async`**
 
@@ -260,7 +260,7 @@ await engine.initialize(myAppConfig.promptEngine, myUtilityAIService);
 
 > **registerTemplate**(`templateName`, `templateFunction`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:572](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/core/llm/IPromptEngine.ts#L572)
+Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:572](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/llm/IPromptEngine.ts#L572)
 
 **`Async`**
 
@@ -301,7 +301,7 @@ If the `templateName` is invalid or `templateFunction` is not a function.
 
 > **validatePromptConfiguration**(`components`, `modelTargetInfo`, `executionContext?`): `Promise`\<\{ `issues`: `object`[]; `isValid`: `boolean`; `recommendations?`: `string`[]; \}\>
 
-Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:588](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/core/llm/IPromptEngine.ts#L588)
+Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:588](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/llm/IPromptEngine.ts#L588)
 
 **`Async`**
 

@@ -1,6 +1,6 @@
 # Interface: RequestExpansionInput
 
-Defined in: [packages/agentos/src/orchestration/tools/RequestExpansionTool.ts:13](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/tools/RequestExpansionTool.ts#L13)
+Defined in: [packages/agentos/src/orchestration/tools/RequestExpansionTool.ts:13](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/tools/RequestExpansionTool.ts#L13)
 
 Input args for the request_expansion tool call.
 
@@ -18,7 +18,7 @@ Input args for the request_expansion tool call.
 
 > **need**: `string`
 
-Defined in: [packages/agentos/src/orchestration/tools/RequestExpansionTool.ts:15](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/tools/RequestExpansionTool.ts#L15)
+Defined in: [packages/agentos/src/orchestration/tools/RequestExpansionTool.ts:15](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/tools/RequestExpansionTool.ts#L15)
 
 What capability or agent is needed and why.
 
@@ -28,6 +28,6 @@ What capability or agent is needed and why.
 
 > **urgency**: `"blocking"` \| `"would_improve"` \| `"nice_to_have"`
 
-Defined in: [packages/agentos/src/orchestration/tools/RequestExpansionTool.ts:17](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/tools/RequestExpansionTool.ts#L17)
+Defined in: [packages/agentos/src/orchestration/tools/RequestExpansionTool.ts:17](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/tools/RequestExpansionTool.ts#L17)
 
 How urgently this capability is needed.

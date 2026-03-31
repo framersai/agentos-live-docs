@@ -1,6 +1,6 @@
 # Interface: JSONSchema
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:94](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/structured/output/IStructuredOutputManager.ts#L94)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:94](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/structured/output/IStructuredOutputManager.ts#L94)
 
 Complete JSON Schema definition for structured outputs.
 
@@ -16,7 +16,7 @@ with OpenAI's structured output API and similar implementations.
 
 > `optional` **$defs**: `Record`\<`string`, `JSONSchema`\>
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:191](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/structured/output/IStructuredOutputManager.ts#L191)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:191](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/structured/output/IStructuredOutputManager.ts#L191)
 
 Schema definitions for $ref
 
@@ -26,7 +26,7 @@ Schema definitions for $ref
 
 > `optional` **$ref**: `string`
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:189](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/structured/output/IStructuredOutputManager.ts#L189)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:189](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/structured/output/IStructuredOutputManager.ts#L189)
 
 Reference to another schema
 
@@ -36,7 +36,7 @@ Reference to another schema
 
 > `optional` **additionalItems**: `boolean` \| `JSONSchema`
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:145](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/structured/output/IStructuredOutputManager.ts#L145)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:145](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/structured/output/IStructuredOutputManager.ts#L145)
 
 Schema for items after `items` tuple schemas
 
@@ -46,7 +46,7 @@ Schema for items after `items` tuple schemas
 
 > `optional` **additionalProperties**: `boolean` \| `JSONSchema`
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:157](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/structured/output/IStructuredOutputManager.ts#L157)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:157](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/structured/output/IStructuredOutputManager.ts#L157)
 
 Schema for properties not in `properties`
 
@@ -56,7 +56,7 @@ Schema for properties not in `properties`
 
 > `optional` **allOf**: `JSONSchema`[]
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:173](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/structured/output/IStructuredOutputManager.ts#L173)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:173](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/structured/output/IStructuredOutputManager.ts#L173)
 
 Must match all schemas
 
@@ -66,7 +66,7 @@ Must match all schemas
 
 > `optional` **anyOf**: `JSONSchema`[]
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:175](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/structured/output/IStructuredOutputManager.ts#L175)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:175](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/structured/output/IStructuredOutputManager.ts#L175)
 
 Must match at least one schema
 
@@ -76,7 +76,7 @@ Must match at least one schema
 
 > `optional` **const**: `unknown`
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:111](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/structured/output/IStructuredOutputManager.ts#L111)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:111](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/structured/output/IStructuredOutputManager.ts#L111)
 
 Constant value (must be exactly this)
 
@@ -86,7 +86,7 @@ Constant value (must be exactly this)
 
 > `optional` **contains**: `JSONSchema`
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:149](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/structured/output/IStructuredOutputManager.ts#L149)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:149](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/structured/output/IStructuredOutputManager.ts#L149)
 
 Schema that must validate at least one item
 
@@ -96,7 +96,7 @@ Schema that must validate at least one item
 
 > `optional` **default**: `unknown`
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:105](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/structured/output/IStructuredOutputManager.ts#L105)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:105](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/structured/output/IStructuredOutputManager.ts#L105)
 
 Default value if not provided
 
@@ -106,7 +106,7 @@ Default value if not provided
 
 > `optional` **dependentRequired**: `Record`\<`string`, `string`[]\>
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:167](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/structured/output/IStructuredOutputManager.ts#L167)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:167](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/structured/output/IStructuredOutputManager.ts#L167)
 
 Dependencies between properties
 
@@ -116,7 +116,7 @@ Dependencies between properties
 
 > `optional` **dependentSchemas**: `Record`\<`string`, `JSONSchema`\>
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:169](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/structured/output/IStructuredOutputManager.ts#L169)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:169](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/structured/output/IStructuredOutputManager.ts#L169)
 
 Schema dependencies
 
@@ -126,7 +126,7 @@ Schema dependencies
 
 > `optional` **deprecated**: `boolean`
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:201](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/structured/output/IStructuredOutputManager.ts#L201)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:201](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/structured/output/IStructuredOutputManager.ts#L201)
 
 Deprecation flag
 
@@ -136,7 +136,7 @@ Deprecation flag
 
 > `optional` **description**: `string`
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:102](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/structured/output/IStructuredOutputManager.ts#L102)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:102](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/structured/output/IStructuredOutputManager.ts#L102)
 
 Description of what the schema represents
 
@@ -146,7 +146,7 @@ Description of what the schema represents
 
 > `optional` **else**: `JSONSchema`
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:185](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/structured/output/IStructuredOutputManager.ts#L185)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:185](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/structured/output/IStructuredOutputManager.ts#L185)
 
 Schema if `if` fails
 
@@ -156,7 +156,7 @@ Schema if `if` fails
 
 > `optional` **enum**: `unknown`[]
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:108](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/structured/output/IStructuredOutputManager.ts#L108)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:108](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/structured/output/IStructuredOutputManager.ts#L108)
 
 Enumeration of allowed values
 
@@ -166,7 +166,7 @@ Enumeration of allowed values
 
 > `optional` **examples**: `unknown`[]
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:195](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/structured/output/IStructuredOutputManager.ts#L195)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:195](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/structured/output/IStructuredOutputManager.ts#L195)
 
 Examples of valid values
 
@@ -176,7 +176,7 @@ Examples of valid values
 
 > `optional` **exclusiveMaximum**: `number`
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:131](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/structured/output/IStructuredOutputManager.ts#L131)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:131](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/structured/output/IStructuredOutputManager.ts#L131)
 
 Maximum value (exclusive)
 
@@ -186,7 +186,7 @@ Maximum value (exclusive)
 
 > `optional` **exclusiveMinimum**: `number`
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:129](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/structured/output/IStructuredOutputManager.ts#L129)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:129](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/structured/output/IStructuredOutputManager.ts#L129)
 
 Minimum value (exclusive)
 
@@ -196,7 +196,7 @@ Minimum value (exclusive)
 
 > `optional` **format**: [`JSONSchemaStringFormat`](../type-aliases/JSONSchemaStringFormat.md)
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:121](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/structured/output/IStructuredOutputManager.ts#L121)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:121](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/structured/output/IStructuredOutputManager.ts#L121)
 
 String format validator
 
@@ -206,7 +206,7 @@ String format validator
 
 > `optional` **if**: `JSONSchema`
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:181](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/structured/output/IStructuredOutputManager.ts#L181)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:181](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/structured/output/IStructuredOutputManager.ts#L181)
 
 Conditional schema application
 
@@ -216,7 +216,7 @@ Conditional schema application
 
 > `optional` **items**: `JSONSchema` \| `JSONSchema`[]
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:137](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/structured/output/IStructuredOutputManager.ts#L137)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:137](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/structured/output/IStructuredOutputManager.ts#L137)
 
 Schema for array items
 
@@ -226,7 +226,7 @@ Schema for array items
 
 > `optional` **maximum**: `number`
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:127](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/structured/output/IStructuredOutputManager.ts#L127)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:127](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/structured/output/IStructuredOutputManager.ts#L127)
 
 Maximum value (inclusive)
 
@@ -236,7 +236,7 @@ Maximum value (inclusive)
 
 > `optional` **maxItems**: `number`
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:141](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/structured/output/IStructuredOutputManager.ts#L141)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:141](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/structured/output/IStructuredOutputManager.ts#L141)
 
 Maximum number of items
 
@@ -246,7 +246,7 @@ Maximum number of items
 
 > `optional` **maxLength**: `number`
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:117](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/structured/output/IStructuredOutputManager.ts#L117)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:117](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/structured/output/IStructuredOutputManager.ts#L117)
 
 Maximum string length
 
@@ -256,7 +256,7 @@ Maximum string length
 
 > `optional` **maxProperties**: `number`
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:163](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/structured/output/IStructuredOutputManager.ts#L163)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:163](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/structured/output/IStructuredOutputManager.ts#L163)
 
 Maximum number of properties
 
@@ -266,7 +266,7 @@ Maximum number of properties
 
 > `optional` **minimum**: `number`
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:125](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/structured/output/IStructuredOutputManager.ts#L125)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:125](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/structured/output/IStructuredOutputManager.ts#L125)
 
 Minimum value (inclusive)
 
@@ -276,7 +276,7 @@ Minimum value (inclusive)
 
 > `optional` **minItems**: `number`
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:139](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/structured/output/IStructuredOutputManager.ts#L139)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:139](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/structured/output/IStructuredOutputManager.ts#L139)
 
 Minimum number of items
 
@@ -286,7 +286,7 @@ Minimum number of items
 
 > `optional` **minLength**: `number`
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:115](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/structured/output/IStructuredOutputManager.ts#L115)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:115](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/structured/output/IStructuredOutputManager.ts#L115)
 
 Minimum string length
 
@@ -296,7 +296,7 @@ Minimum string length
 
 > `optional` **minProperties**: `number`
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:161](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/structured/output/IStructuredOutputManager.ts#L161)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:161](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/structured/output/IStructuredOutputManager.ts#L161)
 
 Minimum number of properties
 
@@ -306,7 +306,7 @@ Minimum number of properties
 
 > `optional` **multipleOf**: `number`
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:133](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/structured/output/IStructuredOutputManager.ts#L133)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:133](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/structured/output/IStructuredOutputManager.ts#L133)
 
 Value must be a multiple of this number
 
@@ -316,7 +316,7 @@ Value must be a multiple of this number
 
 > `optional` **not**: `JSONSchema`
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:179](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/structured/output/IStructuredOutputManager.ts#L179)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:179](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/structured/output/IStructuredOutputManager.ts#L179)
 
 Must not match this schema
 
@@ -326,7 +326,7 @@ Must not match this schema
 
 > `optional` **oneOf**: `JSONSchema`[]
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:177](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/structured/output/IStructuredOutputManager.ts#L177)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:177](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/structured/output/IStructuredOutputManager.ts#L177)
 
 Must match exactly one schema
 
@@ -336,7 +336,7 @@ Must match exactly one schema
 
 > `optional` **pattern**: `string`
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:119](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/structured/output/IStructuredOutputManager.ts#L119)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:119](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/structured/output/IStructuredOutputManager.ts#L119)
 
 Regex pattern the string must match
 
@@ -346,7 +346,7 @@ Regex pattern the string must match
 
 > `optional` **patternProperties**: `Record`\<`string`, `JSONSchema`\>
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:159](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/structured/output/IStructuredOutputManager.ts#L159)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:159](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/structured/output/IStructuredOutputManager.ts#L159)
 
 Pattern-based property schemas
 
@@ -356,7 +356,7 @@ Pattern-based property schemas
 
 > `optional` **prefixItems**: `JSONSchema`[]
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:147](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/structured/output/IStructuredOutputManager.ts#L147)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:147](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/structured/output/IStructuredOutputManager.ts#L147)
 
 Prefix items (for tuple validation)
 
@@ -366,7 +366,7 @@ Prefix items (for tuple validation)
 
 > `optional` **properties**: `Record`\<`string`, `JSONSchema`\>
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:153](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/structured/output/IStructuredOutputManager.ts#L153)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:153](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/structured/output/IStructuredOutputManager.ts#L153)
 
 Property definitions for object
 
@@ -376,7 +376,7 @@ Property definitions for object
 
 > `optional` **propertyNames**: `JSONSchema`
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:165](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/structured/output/IStructuredOutputManager.ts#L165)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:165](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/structured/output/IStructuredOutputManager.ts#L165)
 
 Property names must match this schema
 
@@ -386,7 +386,7 @@ Property names must match this schema
 
 > `optional` **readOnly**: `boolean`
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:197](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/structured/output/IStructuredOutputManager.ts#L197)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:197](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/structured/output/IStructuredOutputManager.ts#L197)
 
 Whether this value is read-only
 
@@ -396,7 +396,7 @@ Whether this value is read-only
 
 > `optional` **required**: `string`[]
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:155](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/structured/output/IStructuredOutputManager.ts#L155)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:155](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/structured/output/IStructuredOutputManager.ts#L155)
 
 Required property names
 
@@ -406,7 +406,7 @@ Required property names
 
 > `optional` **then**: `JSONSchema`
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:183](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/structured/output/IStructuredOutputManager.ts#L183)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:183](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/structured/output/IStructuredOutputManager.ts#L183)
 
 Schema if `if` passes
 
@@ -416,7 +416,7 @@ Schema if `if` passes
 
 > `optional` **title**: `string`
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:99](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/structured/output/IStructuredOutputManager.ts#L99)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:99](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/structured/output/IStructuredOutputManager.ts#L99)
 
 Human-readable title for the schema
 
@@ -426,7 +426,7 @@ Human-readable title for the schema
 
 > `optional` **type**: [`JSONSchemaType`](../type-aliases/JSONSchemaType.md) \| [`JSONSchemaType`](../type-aliases/JSONSchemaType.md)[]
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:96](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/structured/output/IStructuredOutputManager.ts#L96)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:96](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/structured/output/IStructuredOutputManager.ts#L96)
 
 The data type of the schema
 
@@ -436,7 +436,7 @@ The data type of the schema
 
 > `optional` **uniqueItems**: `boolean`
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:143](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/structured/output/IStructuredOutputManager.ts#L143)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:143](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/structured/output/IStructuredOutputManager.ts#L143)
 
 All items must be unique
 
@@ -446,6 +446,6 @@ All items must be unique
 
 > `optional` **writeOnly**: `boolean`
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:199](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/structured/output/IStructuredOutputManager.ts#L199)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:199](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/structured/output/IStructuredOutputManager.ts#L199)
 
 Whether this value is write-only

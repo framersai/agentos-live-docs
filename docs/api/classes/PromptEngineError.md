@@ -1,6 +1,6 @@
 # Class: PromptEngineError
 
-Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:652](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/core/llm/IPromptEngine.ts#L652)
+Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:652](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/llm/IPromptEngine.ts#L652)
 
 Custom error class for all errors originating from the PromptEngine.
 This allows for specific catching and handling of prompt construction failures.
@@ -15,7 +15,7 @@ This allows for specific catching and handling of prompt construction failures.
 
 > **new PromptEngineError**(`message`, `code`, `component?`, `details?`): `PromptEngineError`
 
-Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:686](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/core/llm/IPromptEngine.ts#L686)
+Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:686](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/llm/IPromptEngine.ts#L686)
 
 Creates an instance of PromptEngineError.
 
@@ -59,7 +59,7 @@ Additional context or the underlying error.
 
 > `readonly` **code**: `string`
 
-Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:659](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/core/llm/IPromptEngine.ts#L659)
+Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:659](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/llm/IPromptEngine.ts#L659)
 
 A specific error code for programmatic handling (e.g., 'TEMPLATE_NOT_FOUND', 'TOKEN_LIMIT_EXCEEDED_IRRECOVERABLY').
 
@@ -69,7 +69,7 @@ A specific error code for programmatic handling (e.g., 'TEMPLATE_NOT_FOUND', 'TO
 
 > `readonly` `optional` **component**: `string`
 
-Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:668](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/core/llm/IPromptEngine.ts#L668)
+Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:668](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/llm/IPromptEngine.ts#L668)
 
 Optional: The specific component or operation within the PromptEngine where the error occurred
 (e.g., 'TokenBudgeting', 'TemplateFormatting', 'ContextualElementSelection').
@@ -80,7 +80,7 @@ Optional: The specific component or operation within the PromptEngine where the 
 
 > `readonly` `optional` **details**: `unknown`
 
-Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:677](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/core/llm/IPromptEngine.ts#L677)
+Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:677](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/llm/IPromptEngine.ts#L677)
 
 Optional: Additional structured details about the error, which might include relevant
 data like modelId, offending component, or configuration issue.

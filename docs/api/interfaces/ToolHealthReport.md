@@ -1,6 +1,6 @@
 # Interface: ToolHealthReport
 
-Defined in: [packages/agentos/src/safety/runtime/ToolExecutionGuard.ts:30](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/safety/runtime/ToolExecutionGuard.ts#L30)
+Defined in: [packages/agentos/src/safety/runtime/ToolExecutionGuard.ts:30](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/safety/runtime/ToolExecutionGuard.ts#L30)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/safety/runtime/ToolExecutionGuard.ts:30](https
 
 > **avgDurationMs**: `number`
 
-Defined in: [packages/agentos/src/safety/runtime/ToolExecutionGuard.ts:35](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/safety/runtime/ToolExecutionGuard.ts#L35)
+Defined in: [packages/agentos/src/safety/runtime/ToolExecutionGuard.ts:35](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/safety/runtime/ToolExecutionGuard.ts#L35)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [packages/agentos/src/safety/runtime/ToolExecutionGuard.ts:35](https
 
 > **circuitState**: `"disabled"` \| [`CircuitState`](../type-aliases/CircuitState.md)
 
-Defined in: [packages/agentos/src/safety/runtime/ToolExecutionGuard.ts:36](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/safety/runtime/ToolExecutionGuard.ts#L36)
+Defined in: [packages/agentos/src/safety/runtime/ToolExecutionGuard.ts:36](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/safety/runtime/ToolExecutionGuard.ts#L36)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: [packages/agentos/src/safety/runtime/ToolExecutionGuard.ts:36](https
 
 > **failures**: `number`
 
-Defined in: [packages/agentos/src/safety/runtime/ToolExecutionGuard.ts:33](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/safety/runtime/ToolExecutionGuard.ts#L33)
+Defined in: [packages/agentos/src/safety/runtime/ToolExecutionGuard.ts:33](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/safety/runtime/ToolExecutionGuard.ts#L33)
 
 ***
 
@@ -32,7 +32,7 @@ Defined in: [packages/agentos/src/safety/runtime/ToolExecutionGuard.ts:33](https
 
 > **timeouts**: `number`
 
-Defined in: [packages/agentos/src/safety/runtime/ToolExecutionGuard.ts:34](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/safety/runtime/ToolExecutionGuard.ts#L34)
+Defined in: [packages/agentos/src/safety/runtime/ToolExecutionGuard.ts:34](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/safety/runtime/ToolExecutionGuard.ts#L34)
 
 ***
 
@@ -40,7 +40,7 @@ Defined in: [packages/agentos/src/safety/runtime/ToolExecutionGuard.ts:34](https
 
 > **toolName**: `string`
 
-Defined in: [packages/agentos/src/safety/runtime/ToolExecutionGuard.ts:31](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/safety/runtime/ToolExecutionGuard.ts#L31)
+Defined in: [packages/agentos/src/safety/runtime/ToolExecutionGuard.ts:31](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/safety/runtime/ToolExecutionGuard.ts#L31)
 
 ***
 
@@ -48,4 +48,4 @@ Defined in: [packages/agentos/src/safety/runtime/ToolExecutionGuard.ts:31](https
 
 > **totalCalls**: `number`
 
-Defined in: [packages/agentos/src/safety/runtime/ToolExecutionGuard.ts:32](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/safety/runtime/ToolExecutionGuard.ts#L32)
+Defined in: [packages/agentos/src/safety/runtime/ToolExecutionGuard.ts:32](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/safety/runtime/ToolExecutionGuard.ts#L32)

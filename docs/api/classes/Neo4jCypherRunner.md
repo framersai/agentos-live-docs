@@ -1,6 +1,6 @@
 # Class: Neo4jCypherRunner
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/neo4j/Neo4jCypherRunner.ts:16](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/retrieval/graph/neo4j/Neo4jCypherRunner.ts#L16)
+Defined in: [packages/agentos/src/memory/retrieval/graph/neo4j/Neo4jCypherRunner.ts:16](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/neo4j/Neo4jCypherRunner.ts#L16)
 
 Helper for running parameterized Cypher queries.
 
@@ -10,7 +10,7 @@ Helper for running parameterized Cypher queries.
 
 > **new Neo4jCypherRunner**(`connectionManager`): `Neo4jCypherRunner`
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/neo4j/Neo4jCypherRunner.ts:17](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/retrieval/graph/neo4j/Neo4jCypherRunner.ts#L17)
+Defined in: [packages/agentos/src/memory/retrieval/graph/neo4j/Neo4jCypherRunner.ts:17](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/neo4j/Neo4jCypherRunner.ts#L17)
 
 #### Parameters
 
@@ -28,7 +28,7 @@ Defined in: [packages/agentos/src/memory/retrieval/graph/neo4j/Neo4jCypherRunner
 
 > **read**\<`T`\>(`cypher`, `params?`): `Promise`\<`T`[]\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/neo4j/Neo4jCypherRunner.ts:23](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/retrieval/graph/neo4j/Neo4jCypherRunner.ts#L23)
+Defined in: [packages/agentos/src/memory/retrieval/graph/neo4j/Neo4jCypherRunner.ts:23](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/neo4j/Neo4jCypherRunner.ts#L23)
 
 Execute a read-only Cypher query with automatic session management.
 Returns result records mapped to plain objects.
@@ -59,7 +59,7 @@ Returns result records mapped to plain objects.
 
 > **write**\<`T`\>(`cypher`, `params?`): `Promise`\<`T`[]\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/neo4j/Neo4jCypherRunner.ts:40](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/retrieval/graph/neo4j/Neo4jCypherRunner.ts#L40)
+Defined in: [packages/agentos/src/memory/retrieval/graph/neo4j/Neo4jCypherRunner.ts:40](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/neo4j/Neo4jCypherRunner.ts#L40)
 
 Execute a write Cypher query with automatic session management.
 Returns result records mapped to plain objects.
@@ -90,7 +90,7 @@ Returns result records mapped to plain objects.
 
 > **writeTransaction**(`statements`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/neo4j/Neo4jCypherRunner.ts:71](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/retrieval/graph/neo4j/Neo4jCypherRunner.ts#L71)
+Defined in: [packages/agentos/src/memory/retrieval/graph/neo4j/Neo4jCypherRunner.ts:71](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/neo4j/Neo4jCypherRunner.ts#L71)
 
 Execute multiple write statements in a single transaction.
 
@@ -110,7 +110,7 @@ Execute multiple write statements in a single transaction.
 
 > **writeVoid**(`cypher`, `params?`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/neo4j/Neo4jCypherRunner.ts:56](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/retrieval/graph/neo4j/Neo4jCypherRunner.ts#L56)
+Defined in: [packages/agentos/src/memory/retrieval/graph/neo4j/Neo4jCypherRunner.ts:56](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/neo4j/Neo4jCypherRunner.ts#L56)
 
 Execute a write Cypher query that returns no results.
 

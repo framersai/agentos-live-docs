@@ -1,6 +1,6 @@
 # Class: EmergentJudge
 
-Defined in: [packages/agentos/src/emergent/EmergentJudge.ts:192](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/emergent/EmergentJudge.ts#L192)
+Defined in: [packages/agentos/src/emergent/EmergentJudge.ts:192](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/emergent/EmergentJudge.ts#L192)
 
 Evaluates forged tools for safety, correctness, and quality using LLM-as-judge.
 
@@ -40,7 +40,7 @@ if (promotion.approved) { registry.promote(tool.id, 'agent'); }
 
 > **new EmergentJudge**(`config`): `EmergentJudge`
 
-Defined in: [packages/agentos/src/emergent/EmergentJudge.ts:203](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/emergent/EmergentJudge.ts#L203)
+Defined in: [packages/agentos/src/emergent/EmergentJudge.ts:203](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/emergent/EmergentJudge.ts#L203)
 
 Create a new EmergentJudge instance.
 
@@ -64,7 +64,7 @@ Judge configuration specifying models and the LLM callback.
 
 > **reviewCreation**(`candidate`): `Promise`\<[`CreationVerdict`](../interfaces/CreationVerdict.md)\>
 
-Defined in: [packages/agentos/src/emergent/EmergentJudge.ts:230](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/emergent/EmergentJudge.ts#L230)
+Defined in: [packages/agentos/src/emergent/EmergentJudge.ts:230](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/emergent/EmergentJudge.ts#L230)
 
 Full code + test review for a newly forged tool.
 
@@ -101,7 +101,7 @@ A [CreationVerdict](../interfaces/CreationVerdict.md) indicating approval or rej
 
 > **reviewPromotion**(`tool`): `Promise`\<[`PromotionVerdict`](../interfaces/PromotionVerdict.md)\>
 
-Defined in: [packages/agentos/src/emergent/EmergentJudge.ts:337](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/emergent/EmergentJudge.ts#L337)
+Defined in: [packages/agentos/src/emergent/EmergentJudge.ts:337](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/emergent/EmergentJudge.ts#L337)
 
 Two-judge panel for tier promotion. Both must approve.
 
@@ -136,7 +136,7 @@ A [PromotionVerdict](../interfaces/PromotionVerdict.md) containing both sub-verd
 
 > **validateReuse**(`_toolId`, `output`, `schema`): [`ReuseVerdict`](../interfaces/ReuseVerdict.md)
 
-Defined in: [packages/agentos/src/emergent/EmergentJudge.ts:303](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/emergent/EmergentJudge.ts#L303)
+Defined in: [packages/agentos/src/emergent/EmergentJudge.ts:303](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/emergent/EmergentJudge.ts#L303)
 
 Pure schema validation on each reuse — no LLM call.
 

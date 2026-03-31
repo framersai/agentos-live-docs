@@ -1,6 +1,6 @@
 # Interface: RememberResult
 
-Defined in: [packages/agentos/src/memory/AgentMemory.ts:74](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/AgentMemory.ts#L74)
+Defined in: [packages/agentos/src/memory/AgentMemory.ts:74](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/AgentMemory.ts#L74)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/memory/AgentMemory.ts:74](https://github.com/f
 
 > **success**: `boolean`
 
-Defined in: [packages/agentos/src/memory/AgentMemory.ts:77](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/AgentMemory.ts#L77)
+Defined in: [packages/agentos/src/memory/AgentMemory.ts:77](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/AgentMemory.ts#L77)
 
 ***
 
@@ -16,6 +16,6 @@ Defined in: [packages/agentos/src/memory/AgentMemory.ts:77](https://github.com/f
 
 > `optional` **trace**: [`MemoryTrace`](MemoryTrace.md)
 
-Defined in: [packages/agentos/src/memory/AgentMemory.ts:76](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/AgentMemory.ts#L76)
+Defined in: [packages/agentos/src/memory/AgentMemory.ts:76](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/AgentMemory.ts#L76)
 
 The stored trace. Undefined when `success` is false.

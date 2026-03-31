@@ -1,6 +1,6 @@
 # Interface: HitlConfig
 
-Defined in: [packages/agentos/src/api/types.ts:199](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/types.ts#L199)
+Defined in: [packages/agentos/src/api/types.ts:205](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/types.ts#L205)
 
 Human-in-the-loop (HITL) configuration.
 Gates specific lifecycle events behind an async approval handler before
@@ -12,7 +12,7 @@ the agent proceeds.
 
 > `optional` **approvals**: `object`
 
-Defined in: [packages/agentos/src/api/types.ts:204](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/types.ts#L204)
+Defined in: [packages/agentos/src/api/types.ts:210](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/types.ts#L210)
 
 Declarative approval triggers.  All are opt-in; omitting a field means
 no pause at that lifecycle point.
@@ -49,11 +49,36 @@ Tool names whose invocations require approval before execution.
 
 ***
 
+### guardrailOverride?
+
+> `optional` **guardrailOverride**: `boolean`
+
+Defined in: [packages/agentos/src/api/types.ts:252](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/types.ts#L252)
+
+Run guardrails AFTER HITL approval to catch destructive actions.
+
+When enabled (default), even after a tool call is approved by the HITL
+handler (auto-approve, LLM judge, or human), the configured guardrails
+run a final safety check against the tool call arguments. If any
+guardrail returns `action: 'block'`, the approval is overridden and the
+tool call is denied.
+
+Set to `false` to disable this safety net and give full autonomy to the
+HITL handler's decision.
+
+#### Default
+
+```ts
+true
+```
+
+***
+
 ### handler()?
 
 > `optional` **handler**: (`request`) => `Promise`\<[`ApprovalDecision`](ApprovalDecision.md)\>
 
-Defined in: [packages/agentos/src/api/types.ts:221](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/types.ts#L221)
+Defined in: [packages/agentos/src/api/types.ts:227](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/types.ts#L227)
 
 Custom async handler invoked for every approval request.
 Must resolve to an `ApprovalDecision` within `timeoutMs` or the
@@ -75,7 +100,7 @@ Must resolve to an `ApprovalDecision` within `timeoutMs` or the
 
 > `optional` **onTimeout**: `"error"` \| `"reject"` \| `"approve"`
 
-Defined in: [packages/agentos/src/api/types.ts:230](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/types.ts#L230)
+Defined in: [packages/agentos/src/api/types.ts:236](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/types.ts#L236)
 
 Policy applied when the handler does not respond within `timeoutMs`.
 - `"reject"` — treat as denied; the action is blocked.
@@ -84,10 +109,30 @@ Policy applied when the handler does not respond within `timeoutMs`.
 
 ***
 
+### postApprovalGuardrails?
+
+> `optional` **postApprovalGuardrails**: `string`[]
+
+Defined in: [packages/agentos/src/api/types.ts:263](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/types.ts#L263)
+
+Guardrail IDs to run as a post-approval safety check.
+
+Only evaluated when [guardrailOverride](#guardrailoverride) is not `false`. These
+guardrails are invoked after the HITL handler approves a tool call and
+can veto the approval if they detect destructive patterns.
+
+#### Default
+
+```ts
+['pii-redaction', 'code-safety']
+```
+
+***
+
 ### timeoutMs?
 
 > `optional` **timeoutMs**: `number`
 
-Defined in: [packages/agentos/src/api/types.ts:223](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/types.ts#L223)
+Defined in: [packages/agentos/src/api/types.ts:229](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/types.ts#L229)
 
 Maximum milliseconds to wait for the handler to resolve. Defaults to `30_000`.

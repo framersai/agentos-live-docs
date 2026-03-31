@@ -1,6 +1,6 @@
 # Interface: SpeechSessionEventMap
 
-Defined in: [packages/agentos/src/speech/types.ts:332](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/speech/types.ts#L332)
+Defined in: [packages/agentos/src/speech/types.ts:332](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/speech/types.ts#L332)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/speech/types.ts:332](https://github.com/framer
 
 > **error**: (`event`) => `void`
 
-Defined in: [packages/agentos/src/speech/types.ts:343](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/speech/types.ts#L343)
+Defined in: [packages/agentos/src/speech/types.ts:343](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/speech/types.ts#L343)
 
 #### Parameters
 
@@ -26,7 +26,7 @@ Defined in: [packages/agentos/src/speech/types.ts:343](https://github.com/framer
 
 > **significant\_pause**: (`pauseDurationMs`) => `void`
 
-Defined in: [packages/agentos/src/speech/types.ts:337](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/speech/types.ts#L337)
+Defined in: [packages/agentos/src/speech/types.ts:337](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/speech/types.ts#L337)
 
 #### Parameters
 
@@ -44,7 +44,7 @@ Defined in: [packages/agentos/src/speech/types.ts:337](https://github.com/framer
 
 > **speech\_ended**: (`event`) => `void`
 
-Defined in: [packages/agentos/src/speech/types.ts:336](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/speech/types.ts#L336)
+Defined in: [packages/agentos/src/speech/types.ts:336](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/speech/types.ts#L336)
 
 #### Parameters
 
@@ -62,7 +62,7 @@ Defined in: [packages/agentos/src/speech/types.ts:336](https://github.com/framer
 
 > **speech\_started**: (`event`) => `void`
 
-Defined in: [packages/agentos/src/speech/types.ts:335](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/speech/types.ts#L335)
+Defined in: [packages/agentos/src/speech/types.ts:335](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/speech/types.ts#L335)
 
 #### Parameters
 
@@ -80,7 +80,7 @@ Defined in: [packages/agentos/src/speech/types.ts:335](https://github.com/framer
 
 > **state\_changed**: (`event`) => `void`
 
-Defined in: [packages/agentos/src/speech/types.ts:333](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/speech/types.ts#L333)
+Defined in: [packages/agentos/src/speech/types.ts:333](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/speech/types.ts#L333)
 
 #### Parameters
 
@@ -98,7 +98,7 @@ Defined in: [packages/agentos/src/speech/types.ts:333](https://github.com/framer
 
 > **synthesis\_completed**: (`event`) => `void`
 
-Defined in: [packages/agentos/src/speech/types.ts:342](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/speech/types.ts#L342)
+Defined in: [packages/agentos/src/speech/types.ts:342](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/speech/types.ts#L342)
 
 #### Parameters
 
@@ -116,7 +116,7 @@ Defined in: [packages/agentos/src/speech/types.ts:342](https://github.com/framer
 
 > **synthesis\_started**: (`event`) => `void`
 
-Defined in: [packages/agentos/src/speech/types.ts:341](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/speech/types.ts#L341)
+Defined in: [packages/agentos/src/speech/types.ts:341](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/speech/types.ts#L341)
 
 #### Parameters
 
@@ -134,7 +134,7 @@ Defined in: [packages/agentos/src/speech/types.ts:341](https://github.com/framer
 
 > **transcript\_final**: (`event`) => `void`
 
-Defined in: [packages/agentos/src/speech/types.ts:339](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/speech/types.ts#L339)
+Defined in: [packages/agentos/src/speech/types.ts:339](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/speech/types.ts#L339)
 
 #### Parameters
 
@@ -152,7 +152,7 @@ Defined in: [packages/agentos/src/speech/types.ts:339](https://github.com/framer
 
 > **utterance\_captured**: (`event`) => `void`
 
-Defined in: [packages/agentos/src/speech/types.ts:338](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/speech/types.ts#L338)
+Defined in: [packages/agentos/src/speech/types.ts:338](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/speech/types.ts#L338)
 
 #### Parameters
 
@@ -170,7 +170,7 @@ Defined in: [packages/agentos/src/speech/types.ts:338](https://github.com/framer
 
 > **vad\_result**: (`result`) => `void`
 
-Defined in: [packages/agentos/src/speech/types.ts:334](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/speech/types.ts#L334)
+Defined in: [packages/agentos/src/speech/types.ts:334](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/speech/types.ts#L334)
 
 #### Parameters
 
@@ -188,7 +188,7 @@ Defined in: [packages/agentos/src/speech/types.ts:334](https://github.com/framer
 
 > **wake\_word\_detected**: (`event`) => `void`
 
-Defined in: [packages/agentos/src/speech/types.ts:340](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/speech/types.ts#L340)
+Defined in: [packages/agentos/src/speech/types.ts:340](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/speech/types.ts#L340)
 
 #### Parameters
 

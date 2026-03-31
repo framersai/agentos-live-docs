@@ -1,6 +1,6 @@
 # Interface: MetacognitiveSignal
 
-Defined in: [packages/agentos/src/memory/mechanisms/types.ts:137](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/mechanisms/types.ts#L137)
+Defined in: [packages/agentos/src/memory/mechanisms/types.ts:137](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/mechanisms/types.ts#L137)
 
 Metacognitive signal produced by FOK detection.
 
@@ -10,7 +10,7 @@ Metacognitive signal produced by FOK detection.
 
 > **feelingOfKnowing**: `number`
 
-Defined in: [packages/agentos/src/memory/mechanisms/types.ts:141](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/mechanisms/types.ts#L141)
+Defined in: [packages/agentos/src/memory/mechanisms/types.ts:141](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/mechanisms/types.ts#L141)
 
 Feeling-of-knowing score, 0 (no idea) to 1 (certain it exists).
 
@@ -20,7 +20,7 @@ Feeling-of-knowing score, 0 (no idea) to 1 (certain it exists).
 
 > `optional` **partialInfo**: `string`
 
-Defined in: [packages/agentos/src/memory/mechanisms/types.ts:143](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/mechanisms/types.ts#L143)
+Defined in: [packages/agentos/src/memory/mechanisms/types.ts:143](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/mechanisms/types.ts#L143)
 
 Partial info: entities, emotion, approximate timeframe.
 
@@ -30,7 +30,7 @@ Partial info: entities, emotion, approximate timeframe.
 
 > **traceId**: `string`
 
-Defined in: [packages/agentos/src/memory/mechanisms/types.ts:139](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/mechanisms/types.ts#L139)
+Defined in: [packages/agentos/src/memory/mechanisms/types.ts:139](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/mechanisms/types.ts#L139)
 
 ***
 
@@ -38,4 +38,4 @@ Defined in: [packages/agentos/src/memory/mechanisms/types.ts:139](https://github
 
 > **type**: `"low_confidence"` \| `"tip_of_tongue"` \| `"high_confidence"`
 
-Defined in: [packages/agentos/src/memory/mechanisms/types.ts:138](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/mechanisms/types.ts#L138)
+Defined in: [packages/agentos/src/memory/mechanisms/types.ts:138](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/mechanisms/types.ts#L138)

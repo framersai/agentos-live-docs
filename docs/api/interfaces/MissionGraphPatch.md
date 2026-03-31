@@ -1,6 +1,6 @@
 # Interface: MissionGraphPatch
 
-Defined in: [packages/agentos/src/orchestration/events/GraphEvent.ts:20](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/events/GraphEvent.ts#L20)
+Defined in: [packages/agentos/src/orchestration/events/GraphEvent.ts:20](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/events/GraphEvent.ts#L20)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/orchestration/events/GraphEvent.ts:20](https:/
 
 > **addEdges**: [`GraphEdge`](GraphEdge.md)[]
 
-Defined in: [packages/agentos/src/orchestration/events/GraphEvent.ts:22](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/events/GraphEvent.ts#L22)
+Defined in: [packages/agentos/src/orchestration/events/GraphEvent.ts:22](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/events/GraphEvent.ts#L22)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [packages/agentos/src/orchestration/events/GraphEvent.ts:22](https:/
 
 > **addNodes**: [`GraphNode`](GraphNode.md)[]
 
-Defined in: [packages/agentos/src/orchestration/events/GraphEvent.ts:21](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/events/GraphEvent.ts#L21)
+Defined in: [packages/agentos/src/orchestration/events/GraphEvent.ts:21](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/events/GraphEvent.ts#L21)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: [packages/agentos/src/orchestration/events/GraphEvent.ts:21](https:/
 
 > **estimatedCostDelta**: `number`
 
-Defined in: [packages/agentos/src/orchestration/events/GraphEvent.ts:26](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/events/GraphEvent.ts#L26)
+Defined in: [packages/agentos/src/orchestration/events/GraphEvent.ts:26](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/events/GraphEvent.ts#L26)
 
 ***
 
@@ -32,7 +32,7 @@ Defined in: [packages/agentos/src/orchestration/events/GraphEvent.ts:26](https:/
 
 > **estimatedLatencyDelta**: `number`
 
-Defined in: [packages/agentos/src/orchestration/events/GraphEvent.ts:27](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/events/GraphEvent.ts#L27)
+Defined in: [packages/agentos/src/orchestration/events/GraphEvent.ts:27](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/events/GraphEvent.ts#L27)
 
 ***
 
@@ -40,7 +40,7 @@ Defined in: [packages/agentos/src/orchestration/events/GraphEvent.ts:27](https:/
 
 > **reason**: `string`
 
-Defined in: [packages/agentos/src/orchestration/events/GraphEvent.ts:25](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/events/GraphEvent.ts#L25)
+Defined in: [packages/agentos/src/orchestration/events/GraphEvent.ts:25](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/events/GraphEvent.ts#L25)
 
 ***
 
@@ -48,7 +48,7 @@ Defined in: [packages/agentos/src/orchestration/events/GraphEvent.ts:25](https:/
 
 > `optional` **removeNodes**: `string`[]
 
-Defined in: [packages/agentos/src/orchestration/events/GraphEvent.ts:23](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/events/GraphEvent.ts#L23)
+Defined in: [packages/agentos/src/orchestration/events/GraphEvent.ts:23](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/events/GraphEvent.ts#L23)
 
 ***
 
@@ -56,7 +56,7 @@ Defined in: [packages/agentos/src/orchestration/events/GraphEvent.ts:23](https:/
 
 > `optional` **rewireEdges**: `object`[]
 
-Defined in: [packages/agentos/src/orchestration/events/GraphEvent.ts:24](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/events/GraphEvent.ts#L24)
+Defined in: [packages/agentos/src/orchestration/events/GraphEvent.ts:24](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/events/GraphEvent.ts#L24)
 
 #### from
 

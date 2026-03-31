@@ -1,6 +1,6 @@
 # Interface: DiscoveryPolicy
 
-Defined in: [packages/agentos/src/orchestration/ir/types.ts:283](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/ir/types.ts#L283)
+Defined in: [packages/agentos/src/orchestration/ir/types.ts:321](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/ir/types.ts#L321)
 
 Controls dynamic capability discovery performed before or during node execution.
 
@@ -10,7 +10,7 @@ Controls dynamic capability discovery performed before or during node execution.
 
 > **enabled**: `boolean`
 
-Defined in: [packages/agentos/src/orchestration/ir/types.ts:284](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/ir/types.ts#L284)
+Defined in: [packages/agentos/src/orchestration/ir/types.ts:322](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/ir/types.ts#L322)
 
 Master switch; when false all other fields are ignored.
 
@@ -20,7 +20,7 @@ Master switch; when false all other fields are ignored.
 
 > `optional` **fallback**: `"error"` \| `"all"`
 
-Defined in: [packages/agentos/src/orchestration/ir/types.ts:288](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/ir/types.ts#L288)
+Defined in: [packages/agentos/src/orchestration/ir/types.ts:326](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/ir/types.ts#L326)
 
 Behaviour when discovery returns no results.
                        `'all'` injects the full capability list; `'error'` aborts the node.
@@ -31,7 +31,7 @@ Behaviour when discovery returns no results.
 
 > `optional` **kind**: `"tool"` \| `"skill"` \| `"extension"` \| `"any"`
 
-Defined in: [packages/agentos/src/orchestration/ir/types.ts:286](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/ir/types.ts#L286)
+Defined in: [packages/agentos/src/orchestration/ir/types.ts:324](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/ir/types.ts#L324)
 
 Restricts discovery to a specific capability kind.
 
@@ -41,7 +41,7 @@ Restricts discovery to a specific capability kind.
 
 > `optional` **maxResults**: `number`
 
-Defined in: [packages/agentos/src/orchestration/ir/types.ts:287](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/ir/types.ts#L287)
+Defined in: [packages/agentos/src/orchestration/ir/types.ts:325](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/ir/types.ts#L325)
 
 Maximum number of results injected into the node's context.
 
@@ -51,6 +51,6 @@ Maximum number of results injected into the node's context.
 
 > `optional` **query**: `string`
 
-Defined in: [packages/agentos/src/orchestration/ir/types.ts:285](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/ir/types.ts#L285)
+Defined in: [packages/agentos/src/orchestration/ir/types.ts:323](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/ir/types.ts#L323)
 
 Semantic query forwarded to `CapabilityDiscoveryEngine`.

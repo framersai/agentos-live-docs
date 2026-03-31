@@ -1,6 +1,6 @@
 # Class: SqlTaskOutcomeTelemetryStore
 
-Defined in: [packages/agentos/src/orchestration/turn-planner/SqlTaskOutcomeTelemetryStore.ts:50](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/turn-planner/SqlTaskOutcomeTelemetryStore.ts#L50)
+Defined in: [packages/agentos/src/orchestration/turn-planner/SqlTaskOutcomeTelemetryStore.ts:50](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/turn-planner/SqlTaskOutcomeTelemetryStore.ts#L50)
 
 SQL-backed persistence for `AgentOSOrchestrator` task outcome KPI windows.
 Uses `@framers/sql-storage-adapter` so the same store works across SQLite, Postgres, and WASM adapters.
@@ -15,7 +15,7 @@ Uses `@framers/sql-storage-adapter` so the same store works across SQLite, Postg
 
 > **new SqlTaskOutcomeTelemetryStore**(`config?`): `SqlTaskOutcomeTelemetryStore`
 
-Defined in: [packages/agentos/src/orchestration/turn-planner/SqlTaskOutcomeTelemetryStore.ts:56](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/turn-planner/SqlTaskOutcomeTelemetryStore.ts#L56)
+Defined in: [packages/agentos/src/orchestration/turn-planner/SqlTaskOutcomeTelemetryStore.ts:56](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/turn-planner/SqlTaskOutcomeTelemetryStore.ts#L56)
 
 #### Parameters
 
@@ -33,7 +33,7 @@ Defined in: [packages/agentos/src/orchestration/turn-planner/SqlTaskOutcomeTelem
 
 > **close**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/orchestration/turn-planner/SqlTaskOutcomeTelemetryStore.ts:69](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/turn-planner/SqlTaskOutcomeTelemetryStore.ts#L69)
+Defined in: [packages/agentos/src/orchestration/turn-planner/SqlTaskOutcomeTelemetryStore.ts:69](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/turn-planner/SqlTaskOutcomeTelemetryStore.ts#L69)
 
 #### Returns
 
@@ -45,7 +45,7 @@ Defined in: [packages/agentos/src/orchestration/turn-planner/SqlTaskOutcomeTelem
 
 > **initialize**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/orchestration/turn-planner/SqlTaskOutcomeTelemetryStore.ts:62](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/turn-planner/SqlTaskOutcomeTelemetryStore.ts#L62)
+Defined in: [packages/agentos/src/orchestration/turn-planner/SqlTaskOutcomeTelemetryStore.ts:62](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/turn-planner/SqlTaskOutcomeTelemetryStore.ts#L62)
 
 #### Returns
 
@@ -57,7 +57,7 @@ Defined in: [packages/agentos/src/orchestration/turn-planner/SqlTaskOutcomeTelem
 
 > **loadWindows**(): `Promise`\<`Record`\<`string`, [`TaskOutcomeKpiWindowEntry`](../type-aliases/TaskOutcomeKpiWindowEntry.md)[]\>\>
 
-Defined in: [packages/agentos/src/orchestration/turn-planner/SqlTaskOutcomeTelemetryStore.ts:76](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/turn-planner/SqlTaskOutcomeTelemetryStore.ts#L76)
+Defined in: [packages/agentos/src/orchestration/turn-planner/SqlTaskOutcomeTelemetryStore.ts:76](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/turn-planner/SqlTaskOutcomeTelemetryStore.ts#L76)
 
 #### Returns
 
@@ -73,7 +73,7 @@ Defined in: [packages/agentos/src/orchestration/turn-planner/SqlTaskOutcomeTelem
 
 > **saveWindow**(`scopeKey`, `entries`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/orchestration/turn-planner/SqlTaskOutcomeTelemetryStore.ts:102](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/turn-planner/SqlTaskOutcomeTelemetryStore.ts#L102)
+Defined in: [packages/agentos/src/orchestration/turn-planner/SqlTaskOutcomeTelemetryStore.ts:102](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/turn-planner/SqlTaskOutcomeTelemetryStore.ts#L102)
 
 #### Parameters
 

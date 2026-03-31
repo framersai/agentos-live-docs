@@ -1,6 +1,6 @@
 # Interface: RAGAuditCollectorOptions
 
-Defined in: [packages/agentos/src/rag/audit/RAGAuditCollector.ts:38](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/rag/audit/RAGAuditCollector.ts#L38)
+Defined in: [packages/agentos/src/rag/audit/RAGAuditCollector.ts:38](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/audit/RAGAuditCollector.ts#L38)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/rag/audit/RAGAuditCollector.ts:38](https://git
 
 > **query**: `string`
 
-Defined in: [packages/agentos/src/rag/audit/RAGAuditCollector.ts:40](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/rag/audit/RAGAuditCollector.ts#L40)
+Defined in: [packages/agentos/src/rag/audit/RAGAuditCollector.ts:40](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/audit/RAGAuditCollector.ts#L40)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [packages/agentos/src/rag/audit/RAGAuditCollector.ts:40](https://git
 
 > **requestId**: `string`
 
-Defined in: [packages/agentos/src/rag/audit/RAGAuditCollector.ts:39](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/rag/audit/RAGAuditCollector.ts#L39)
+Defined in: [packages/agentos/src/rag/audit/RAGAuditCollector.ts:39](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/audit/RAGAuditCollector.ts#L39)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: [packages/agentos/src/rag/audit/RAGAuditCollector.ts:39](https://git
 
 > `optional` **seedId**: `string`
 
-Defined in: [packages/agentos/src/rag/audit/RAGAuditCollector.ts:41](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/rag/audit/RAGAuditCollector.ts#L41)
+Defined in: [packages/agentos/src/rag/audit/RAGAuditCollector.ts:41](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/audit/RAGAuditCollector.ts#L41)
 
 ***
 
@@ -32,7 +32,7 @@ Defined in: [packages/agentos/src/rag/audit/RAGAuditCollector.ts:41](https://git
 
 > `optional` **sessionId**: `string`
 
-Defined in: [packages/agentos/src/rag/audit/RAGAuditCollector.ts:42](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/rag/audit/RAGAuditCollector.ts#L42)
+Defined in: [packages/agentos/src/rag/audit/RAGAuditCollector.ts:42](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/audit/RAGAuditCollector.ts#L42)
 
 ***
 
@@ -40,6 +40,6 @@ Defined in: [packages/agentos/src/rag/audit/RAGAuditCollector.ts:42](https://git
 
 > `optional` **usageLedger**: `UsageLedgerLike`
 
-Defined in: [packages/agentos/src/rag/audit/RAGAuditCollector.ts:44](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/rag/audit/RAGAuditCollector.ts#L44)
+Defined in: [packages/agentos/src/rag/audit/RAGAuditCollector.ts:44](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/audit/RAGAuditCollector.ts#L44)
 
 When provided, finalized audit data is pushed into the usage ledger for token/cost accounting.

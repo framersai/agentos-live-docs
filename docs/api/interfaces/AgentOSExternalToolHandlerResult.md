@@ -1,6 +1,6 @@
 # Interface: AgentOSExternalToolHandlerResult
 
-Defined in: [packages/agentos/src/api/runtime/processRequestWithExternalTools.ts:21](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/runtime/processRequestWithExternalTools.ts#L21)
+Defined in: [packages/agentos/src/api/runtime/processRequestWithExternalTools.ts:21](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/runtime/processRequestWithExternalTools.ts#L21)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/api/runtime/processRequestWithExternalTools.ts
 
 > `optional` **errorMessage**: `string`
 
-Defined in: [packages/agentos/src/api/runtime/processRequestWithExternalTools.ts:24](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/runtime/processRequestWithExternalTools.ts#L24)
+Defined in: [packages/agentos/src/api/runtime/processRequestWithExternalTools.ts:24](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/runtime/processRequestWithExternalTools.ts#L24)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [packages/agentos/src/api/runtime/processRequestWithExternalTools.ts
 
 > `optional` **isSuccess**: `boolean`
 
-Defined in: [packages/agentos/src/api/runtime/processRequestWithExternalTools.ts:23](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/runtime/processRequestWithExternalTools.ts#L23)
+Defined in: [packages/agentos/src/api/runtime/processRequestWithExternalTools.ts:23](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/runtime/processRequestWithExternalTools.ts#L23)
 
 ***
 
@@ -24,4 +24,4 @@ Defined in: [packages/agentos/src/api/runtime/processRequestWithExternalTools.ts
 
 > **toolOutput**: `unknown`
 
-Defined in: [packages/agentos/src/api/runtime/processRequestWithExternalTools.ts:22](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/runtime/processRequestWithExternalTools.ts#L22)
+Defined in: [packages/agentos/src/api/runtime/processRequestWithExternalTools.ts:22](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/runtime/processRequestWithExternalTools.ts#L22)

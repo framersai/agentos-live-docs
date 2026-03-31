@@ -1,6 +1,6 @@
 # Interface: WorkflowInvocationRequest
 
-Defined in: [packages/agentos/src/api/types/AgentOSInput.ts:44](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/types/AgentOSInput.ts#L44)
+Defined in: [packages/agentos/src/api/types/AgentOSInput.ts:44](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/types/AgentOSInput.ts#L44)
 
 Encapsulates all data and options for a single interaction turn with AgentOS.
 This structure is designed to be comprehensive, supporting multimodal inputs,
@@ -17,7 +17,7 @@ AgentOSInput
 
 > `optional` **context**: `Record`\<`string`, `unknown`\>
 
-Defined in: [packages/agentos/src/api/types/AgentOSInput.ts:48](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/types/AgentOSInput.ts#L48)
+Defined in: [packages/agentos/src/api/types/AgentOSInput.ts:48](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/types/AgentOSInput.ts#L48)
 
 ***
 
@@ -25,7 +25,7 @@ Defined in: [packages/agentos/src/api/types/AgentOSInput.ts:48](https://github.c
 
 > `optional` **conversationId**: `string`
 
-Defined in: [packages/agentos/src/api/types/AgentOSInput.ts:47](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/types/AgentOSInput.ts#L47)
+Defined in: [packages/agentos/src/api/types/AgentOSInput.ts:47](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/types/AgentOSInput.ts#L47)
 
 ***
 
@@ -33,7 +33,7 @@ Defined in: [packages/agentos/src/api/types/AgentOSInput.ts:47](https://github.c
 
 > **definitionId**: `string`
 
-Defined in: [packages/agentos/src/api/types/AgentOSInput.ts:45](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/types/AgentOSInput.ts#L45)
+Defined in: [packages/agentos/src/api/types/AgentOSInput.ts:45](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/types/AgentOSInput.ts#L45)
 
 ***
 
@@ -41,7 +41,7 @@ Defined in: [packages/agentos/src/api/types/AgentOSInput.ts:45](https://github.c
 
 > `optional` **metadata**: `Record`\<`string`, `unknown`\>
 
-Defined in: [packages/agentos/src/api/types/AgentOSInput.ts:50](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/types/AgentOSInput.ts#L50)
+Defined in: [packages/agentos/src/api/types/AgentOSInput.ts:50](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/types/AgentOSInput.ts#L50)
 
 ***
 
@@ -49,7 +49,7 @@ Defined in: [packages/agentos/src/api/types/AgentOSInput.ts:50](https://github.c
 
 > `optional` **roleAssignments**: `Record`\<`string`, `string`\>
 
-Defined in: [packages/agentos/src/api/types/AgentOSInput.ts:49](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/types/AgentOSInput.ts#L49)
+Defined in: [packages/agentos/src/api/types/AgentOSInput.ts:49](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/types/AgentOSInput.ts#L49)
 
 ***
 
@@ -57,4 +57,4 @@ Defined in: [packages/agentos/src/api/types/AgentOSInput.ts:49](https://github.c
 
 > `optional` **workflowId**: `string`
 
-Defined in: [packages/agentos/src/api/types/AgentOSInput.ts:46](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/types/AgentOSInput.ts#L46)
+Defined in: [packages/agentos/src/api/types/AgentOSInput.ts:46](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/types/AgentOSInput.ts#L46)

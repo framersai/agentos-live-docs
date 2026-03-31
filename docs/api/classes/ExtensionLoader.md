@@ -1,6 +1,6 @@
 # Class: ExtensionLoader
 
-Defined in: [packages/agentos/src/extensions/ExtensionLoader.ts:57](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/extensions/ExtensionLoader.ts#L57)
+Defined in: [packages/agentos/src/extensions/ExtensionLoader.ts:57](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/extensions/ExtensionLoader.ts#L57)
 
 Loads and manages extensions from various sources
 
@@ -10,7 +10,7 @@ Loads and manages extensions from various sources
 
 > **new ExtensionLoader**(`manager`, `config?`): `ExtensionLoader`
 
-Defined in: [packages/agentos/src/extensions/ExtensionLoader.ts:62](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/extensions/ExtensionLoader.ts#L62)
+Defined in: [packages/agentos/src/extensions/ExtensionLoader.ts:62](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/extensions/ExtensionLoader.ts#L62)
 
 #### Parameters
 
@@ -32,7 +32,7 @@ Defined in: [packages/agentos/src/extensions/ExtensionLoader.ts:62](https://gith
 
 > **getAvailableTools**(): `object`[]
 
-Defined in: [packages/agentos/src/extensions/ExtensionLoader.ts:340](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/extensions/ExtensionLoader.ts#L340)
+Defined in: [packages/agentos/src/extensions/ExtensionLoader.ts:340](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/extensions/ExtensionLoader.ts#L340)
 
 Get available tools from all loaded extensions
 
@@ -46,7 +46,7 @@ Get available tools from all loaded extensions
 
 > **getExtensionMetadata**(): `Map`\<`string`, `ExtensionMetadata`\>
 
-Defined in: [packages/agentos/src/extensions/ExtensionLoader.ts:333](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/extensions/ExtensionLoader.ts#L333)
+Defined in: [packages/agentos/src/extensions/ExtensionLoader.ts:333](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/extensions/ExtensionLoader.ts#L333)
 
 Get extension metadata
 
@@ -60,7 +60,7 @@ Get extension metadata
 
 > **getLoadedExtensions**(): `Map`\<`string`, [`ExtensionPack`](../interfaces/ExtensionPack.md)\>
 
-Defined in: [packages/agentos/src/extensions/ExtensionLoader.ts:326](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/extensions/ExtensionLoader.ts#L326)
+Defined in: [packages/agentos/src/extensions/ExtensionLoader.ts:326](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/extensions/ExtensionLoader.ts#L326)
 
 Get loaded extensions
 
@@ -74,7 +74,7 @@ Get loaded extensions
 
 > **initialize**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/extensions/ExtensionLoader.ts:82](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/extensions/ExtensionLoader.ts#L82)
+Defined in: [packages/agentos/src/extensions/ExtensionLoader.ts:82](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/extensions/ExtensionLoader.ts#L82)
 
 Initialize and load all configured extensions
 
@@ -88,7 +88,7 @@ Initialize and load all configured extensions
 
 > **loadExtension**(`packageName`): `Promise`\<[`ExtensionPack`](../interfaces/ExtensionPack.md) \| `null`\>
 
-Defined in: [packages/agentos/src/extensions/ExtensionLoader.ts:193](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/extensions/ExtensionLoader.ts#L193)
+Defined in: [packages/agentos/src/extensions/ExtensionLoader.ts:193](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/extensions/ExtensionLoader.ts#L193)
 
 Load a specific extension
 
@@ -108,7 +108,7 @@ Load a specific extension
 
 > **reload**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/extensions/ExtensionLoader.ts:368](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/extensions/ExtensionLoader.ts#L368)
+Defined in: [packages/agentos/src/extensions/ExtensionLoader.ts:368](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/extensions/ExtensionLoader.ts#L368)
 
 Reload all extensions
 
@@ -122,7 +122,7 @@ Reload all extensions
 
 > **searchNpmExtensions**(`query?`): `Promise`\<`ExtensionMetadata`[]\>
 
-Defined in: [packages/agentos/src/extensions/ExtensionLoader.ts:286](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/extensions/ExtensionLoader.ts#L286)
+Defined in: [packages/agentos/src/extensions/ExtensionLoader.ts:286](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/extensions/ExtensionLoader.ts#L286)
 
 Search npm for AgentOS extensions
 

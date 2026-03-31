@@ -1,6 +1,6 @@
 # Interface: GenerateMusicResult
 
-Defined in: [packages/agentos/src/api/generateMusic.ts:278](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/generateMusic.ts#L278)
+Defined in: [packages/agentos/src/api/generateMusic.ts:278](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/generateMusic.ts#L278)
 
 The result returned by [generateMusic](../functions/generateMusic.md).
 
@@ -12,7 +12,7 @@ Wraps the core [AudioResult](AudioResult.md) with a simpler, AI-SDK-style shape.
 
 > **audio**: [`GeneratedAudio`](GeneratedAudio.md)[]
 
-Defined in: [packages/agentos/src/api/generateMusic.ts:286](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/generateMusic.ts#L286)
+Defined in: [packages/agentos/src/api/generateMusic.ts:286](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/generateMusic.ts#L286)
 
 Array of generated audio objects containing URLs or base64 data.
 
@@ -22,7 +22,7 @@ Array of generated audio objects containing URLs or base64 data.
 
 > **created**: `number`
 
-Defined in: [packages/agentos/src/api/generateMusic.ts:284](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/generateMusic.ts#L284)
+Defined in: [packages/agentos/src/api/generateMusic.ts:284](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/generateMusic.ts#L284)
 
 Unix timestamp (seconds) when the audio was created.
 
@@ -32,7 +32,7 @@ Unix timestamp (seconds) when the audio was created.
 
 > **model**: `string`
 
-Defined in: [packages/agentos/src/api/generateMusic.ts:280](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/generateMusic.ts#L280)
+Defined in: [packages/agentos/src/api/generateMusic.ts:280](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/generateMusic.ts#L280)
 
 Model identifier reported by the provider.
 
@@ -42,7 +42,7 @@ Model identifier reported by the provider.
 
 > **provider**: `string`
 
-Defined in: [packages/agentos/src/api/generateMusic.ts:282](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/generateMusic.ts#L282)
+Defined in: [packages/agentos/src/api/generateMusic.ts:282](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/generateMusic.ts#L282)
 
 Provider identifier (e.g. `"suno"`, `"stable-audio"`).
 
@@ -52,6 +52,6 @@ Provider identifier (e.g. `"suno"`, `"stable-audio"`).
 
 > `optional` **usage**: [`AudioProviderUsage`](AudioProviderUsage.md)
 
-Defined in: [packages/agentos/src/api/generateMusic.ts:288](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/generateMusic.ts#L288)
+Defined in: [packages/agentos/src/api/generateMusic.ts:288](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/generateMusic.ts#L288)
 
 Usage / billing information, if available.

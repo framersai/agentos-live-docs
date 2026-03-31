@@ -1,6 +1,6 @@
 # Interface: AIModelProviderManagerConfig
 
-Defined in: [packages/agentos/src/core/llm/providers/AIModelProviderManager.ts:50](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/core/llm/providers/AIModelProviderManager.ts#L50)
+Defined in: [packages/agentos/src/core/llm/providers/AIModelProviderManager.ts:50](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/llm/providers/AIModelProviderManager.ts#L50)
 
 Configuration for the AIModelProviderManager itself.
 
@@ -14,4 +14,4 @@ AIModelProviderManagerConfig
 
 > **providers**: [`ProviderConfigEntry`](ProviderConfigEntry.md)[]
 
-Defined in: [packages/agentos/src/core/llm/providers/AIModelProviderManager.ts:51](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/core/llm/providers/AIModelProviderManager.ts#L51)
+Defined in: [packages/agentos/src/core/llm/providers/AIModelProviderManager.ts:51](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/llm/providers/AIModelProviderManager.ts#L51)

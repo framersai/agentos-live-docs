@@ -13,9 +13,9 @@ AgentOS memory ships as three concentric API tiers. Each tier wraps the one belo
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                     Wunderland CLI Layer                            │
-│  wunderland memory export/import/consolidate/health                 │
-│  (CLI flags, agent.config.json auto-wiring, preset skills)         │
+│                       CLI / Host Layer                              │
+│  Programmatic: Memory.export(), Memory.consolidate(), Memory.health│
+│  (agent.config.json auto-wiring, preset skills)                    │
 └──┬──────────────────────────────────────────────────────────────────┘
    │
 ┌──▼──────────────────────────────────────────────────────────────────┐
@@ -44,7 +44,7 @@ AgentOS memory ships as three concentric API tiers. Each tier wraps the one belo
 |-------|--------|----------|--------------|
 | **Memory** | `await Memory.create(config)` | Any TypeScript app, CLI tools, scripts, ingestion pipelines | No |
 | **AgentCognitiveMemory** | `CognitiveMemoryManager` or `AgentMemory.wrap()` | Agents with HEXACO personality, PAD mood, observer/reflector | Optional (Batch 2) |
-| **Wunderland CLI** | `wunderland memory <cmd>` | End-user interaction, shell scripts, CI pipelines | No |
+| **CLI / Host** | `Memory.export()`, `Memory.health()` | End-user interaction, shell scripts, CI pipelines | No |
 
 ---
 

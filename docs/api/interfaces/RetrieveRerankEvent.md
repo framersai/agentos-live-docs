@@ -1,6 +1,6 @@
 # Interface: RetrieveRerankEvent
 
-Defined in: [packages/agentos/src/query-router/types.ts:913](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/query-router/types.ts#L913)
+Defined in: [packages/agentos/src/query-router/types.ts:927](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/query-router/types.ts#L927)
 
 Emitted when reranking of retrieved chunks completes.
 
@@ -10,7 +10,7 @@ Emitted when reranking of retrieved chunks completes.
 
 > **durationMs**: `number`
 
-Defined in: [packages/agentos/src/query-router/types.ts:920](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/query-router/types.ts#L920)
+Defined in: [packages/agentos/src/query-router/types.ts:934](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/query-router/types.ts#L934)
 
 Duration of reranking in milliseconds.
 
@@ -20,7 +20,7 @@ Duration of reranking in milliseconds.
 
 > **inputCount**: `number`
 
-Defined in: [packages/agentos/src/query-router/types.ts:916](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/query-router/types.ts#L916)
+Defined in: [packages/agentos/src/query-router/types.ts:930](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/query-router/types.ts#L930)
 
 Number of chunks before reranking.
 
@@ -30,7 +30,7 @@ Number of chunks before reranking.
 
 > **outputCount**: `number`
 
-Defined in: [packages/agentos/src/query-router/types.ts:918](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/query-router/types.ts#L918)
+Defined in: [packages/agentos/src/query-router/types.ts:932](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/query-router/types.ts#L932)
 
 Number of chunks after reranking (may be fewer due to threshold filtering).
 
@@ -40,7 +40,7 @@ Number of chunks after reranking (may be fewer due to threshold filtering).
 
 > **timestamp**: `number`
 
-Defined in: [packages/agentos/src/query-router/types.ts:922](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/query-router/types.ts#L922)
+Defined in: [packages/agentos/src/query-router/types.ts:936](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/query-router/types.ts#L936)
 
 Timestamp of the event.
 
@@ -50,4 +50,4 @@ Timestamp of the event.
 
 > **type**: `"retrieve:rerank"`
 
-Defined in: [packages/agentos/src/query-router/types.ts:914](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/query-router/types.ts#L914)
+Defined in: [packages/agentos/src/query-router/types.ts:928](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/query-router/types.ts#L928)

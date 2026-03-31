@@ -1,6 +1,6 @@
 # Interface: IGuardrailService
 
-Defined in: [packages/agentos/src/safety/guardrails/IGuardrailService.ts:374](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/safety/guardrails/IGuardrailService.ts#L374)
+Defined in: [packages/agentos/src/safety/guardrails/IGuardrailService.ts:374](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/safety/guardrails/IGuardrailService.ts#L374)
 
 Contract for implementing custom guardrail logic.
 
@@ -81,7 +81,7 @@ class PIIRedactionGuardrail implements IGuardrailService {
 
 > `optional` **config**: [`GuardrailConfig`](GuardrailConfig.md)
 
-Defined in: [packages/agentos/src/safety/guardrails/IGuardrailService.ts:379](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/safety/guardrails/IGuardrailService.ts#L379)
+Defined in: [packages/agentos/src/safety/guardrails/IGuardrailService.ts:379](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/safety/guardrails/IGuardrailService.ts#L379)
 
 Configuration for evaluation behavior.
 Controls streaming vs final-only evaluation and rate limiting.
@@ -92,7 +92,7 @@ Controls streaming vs final-only evaluation and rate limiting.
 
 > `optional` **evaluateInput**(`payload`): `Promise`\<[`GuardrailEvaluationResult`](GuardrailEvaluationResult.md) \| `null`\>
 
-Defined in: [packages/agentos/src/safety/guardrails/IGuardrailService.ts:395](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/safety/guardrails/IGuardrailService.ts#L395)
+Defined in: [packages/agentos/src/safety/guardrails/IGuardrailService.ts:395](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/safety/guardrails/IGuardrailService.ts#L395)
 
 Evaluate user input before orchestration.
 
@@ -125,7 +125,7 @@ Evaluation result, or `null` to allow without action
 
 > `optional` **evaluateOutput**(`payload`): `Promise`\<[`GuardrailEvaluationResult`](GuardrailEvaluationResult.md) \| `null`\>
 
-Defined in: [packages/agentos/src/safety/guardrails/IGuardrailService.ts:412](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/safety/guardrails/IGuardrailService.ts#L412)
+Defined in: [packages/agentos/src/safety/guardrails/IGuardrailService.ts:412](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/safety/guardrails/IGuardrailService.ts#L412)
 
 Evaluate agent output before streaming to client.
 

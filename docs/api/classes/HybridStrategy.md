@@ -1,6 +1,6 @@
 # Class: HybridStrategy
 
-Defined in: [packages/agentos/src/memory/pipeline/context/strategies/HybridStrategy.ts:34](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/pipeline/context/strategies/HybridStrategy.ts#L34)
+Defined in: [packages/agentos/src/memory/pipeline/context/strategies/HybridStrategy.ts:34](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/pipeline/context/strategies/HybridStrategy.ts#L34)
 
 ## Implements
 
@@ -12,7 +12,7 @@ Defined in: [packages/agentos/src/memory/pipeline/context/strategies/HybridStrat
 
 > **new HybridStrategy**(`llmInvoker`, `observer?`, `reflector?`): `HybridStrategy`
 
-Defined in: [packages/agentos/src/memory/pipeline/context/strategies/HybridStrategy.ts:40](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/pipeline/context/strategies/HybridStrategy.ts#L40)
+Defined in: [packages/agentos/src/memory/pipeline/context/strategies/HybridStrategy.ts:40](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/pipeline/context/strategies/HybridStrategy.ts#L40)
 
 #### Parameters
 
@@ -38,7 +38,7 @@ Defined in: [packages/agentos/src/memory/pipeline/context/strategies/HybridStrat
 
 > `readonly` **name**: `"hybrid"`
 
-Defined in: [packages/agentos/src/memory/pipeline/context/strategies/HybridStrategy.ts:35](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/pipeline/context/strategies/HybridStrategy.ts#L35)
+Defined in: [packages/agentos/src/memory/pipeline/context/strategies/HybridStrategy.ts:35](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/pipeline/context/strategies/HybridStrategy.ts#L35)
 
 #### Implementation of
 
@@ -50,7 +50,7 @@ Defined in: [packages/agentos/src/memory/pipeline/context/strategies/HybridStrat
 
 > **compact**(`input`, `config`): `Promise`\<[`CompactionResult`](../interfaces/CompactionResult.md)\>
 
-Defined in: [packages/agentos/src/memory/pipeline/context/strategies/HybridStrategy.ts:50](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/pipeline/context/strategies/HybridStrategy.ts#L50)
+Defined in: [packages/agentos/src/memory/pipeline/context/strategies/HybridStrategy.ts:50](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/pipeline/context/strategies/HybridStrategy.ts#L50)
 
 #### Parameters
 

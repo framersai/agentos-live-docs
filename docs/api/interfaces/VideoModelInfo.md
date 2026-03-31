@@ -1,6 +1,6 @@
 # Interface: VideoModelInfo
 
-Defined in: [packages/agentos/src/media/video/types.ts:39](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/media/video/types.ts#L39)
+Defined in: [packages/agentos/src/media/video/types.ts:39](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/media/video/types.ts#L39)
 
 Describes a video model exposed by a provider.
 
@@ -10,7 +10,7 @@ Describes a video model exposed by a provider.
 
 > `optional` **capabilities**: (`"text-to-video"` \| `"image-to-video"`)[]
 
-Defined in: [packages/agentos/src/media/video/types.ts:51](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/media/video/types.ts#L51)
+Defined in: [packages/agentos/src/media/video/types.ts:51](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/media/video/types.ts#L51)
 
 Supported generation capabilities.
 
@@ -20,7 +20,7 @@ Supported generation capabilities.
 
 > `optional` **description**: `string`
 
-Defined in: [packages/agentos/src/media/video/types.ts:47](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/media/video/types.ts#L47)
+Defined in: [packages/agentos/src/media/video/types.ts:47](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/media/video/types.ts#L47)
 
 Short description of the model's capabilities.
 
@@ -30,7 +30,7 @@ Short description of the model's capabilities.
 
 > `optional` **displayName**: `string`
 
-Defined in: [packages/agentos/src/media/video/types.ts:45](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/media/video/types.ts#L45)
+Defined in: [packages/agentos/src/media/video/types.ts:45](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/media/video/types.ts#L45)
 
 Human-readable display name.
 
@@ -40,7 +40,7 @@ Human-readable display name.
 
 > `optional` **maxDurationSec**: `number`
 
-Defined in: [packages/agentos/src/media/video/types.ts:49](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/media/video/types.ts#L49)
+Defined in: [packages/agentos/src/media/video/types.ts:49](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/media/video/types.ts#L49)
 
 Maximum output duration in seconds.
 
@@ -50,7 +50,7 @@ Maximum output duration in seconds.
 
 > **modelId**: `string`
 
-Defined in: [packages/agentos/src/media/video/types.ts:41](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/media/video/types.ts#L41)
+Defined in: [packages/agentos/src/media/video/types.ts:41](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/media/video/types.ts#L41)
 
 Unique model identifier (e.g. `'gen-3-alpha'`).
 
@@ -60,6 +60,6 @@ Unique model identifier (e.g. `'gen-3-alpha'`).
 
 > **providerId**: `string`
 
-Defined in: [packages/agentos/src/media/video/types.ts:43](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/media/video/types.ts#L43)
+Defined in: [packages/agentos/src/media/video/types.ts:43](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/media/video/types.ts#L43)
 
 Provider that hosts this model.

@@ -1,6 +1,6 @@
 # Interface: LLMJudgeConfig
 
-Defined in: [packages/agentos/src/evaluation/LLMJudge.ts:17](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/evaluation/LLMJudge.ts#L17)
+Defined in: [packages/agentos/src/evaluation/LLMJudge.ts:17](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/evaluation/LLMJudge.ts#L17)
 
 Configuration for LLM Judge
 
@@ -10,7 +10,7 @@ Configuration for LLM Judge
 
 > **llmProvider**: [`AIModelProviderManager`](../classes/AIModelProviderManager.md)
 
-Defined in: [packages/agentos/src/evaluation/LLMJudge.ts:19](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/evaluation/LLMJudge.ts#L19)
+Defined in: [packages/agentos/src/evaluation/LLMJudge.ts:19](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/evaluation/LLMJudge.ts#L19)
 
 LLM provider manager
 
@@ -20,7 +20,7 @@ LLM provider manager
 
 > `optional` **modelId**: `string`
 
-Defined in: [packages/agentos/src/evaluation/LLMJudge.ts:21](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/evaluation/LLMJudge.ts#L21)
+Defined in: [packages/agentos/src/evaluation/LLMJudge.ts:21](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/evaluation/LLMJudge.ts#L21)
 
 Model to use for judging
 
@@ -30,7 +30,7 @@ Model to use for judging
 
 > `optional` **providerId**: `string`
 
-Defined in: [packages/agentos/src/evaluation/LLMJudge.ts:23](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/evaluation/LLMJudge.ts#L23)
+Defined in: [packages/agentos/src/evaluation/LLMJudge.ts:23](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/evaluation/LLMJudge.ts#L23)
 
 Provider ID
 
@@ -40,7 +40,7 @@ Provider ID
 
 > `optional` **systemPrompt**: `string`
 
-Defined in: [packages/agentos/src/evaluation/LLMJudge.ts:27](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/evaluation/LLMJudge.ts#L27)
+Defined in: [packages/agentos/src/evaluation/LLMJudge.ts:27](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/evaluation/LLMJudge.ts#L27)
 
 Custom system prompt for the judge
 
@@ -50,6 +50,6 @@ Custom system prompt for the judge
 
 > `optional` **temperature**: `number`
 
-Defined in: [packages/agentos/src/evaluation/LLMJudge.ts:25](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/evaluation/LLMJudge.ts#L25)
+Defined in: [packages/agentos/src/evaluation/LLMJudge.ts:25](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/evaluation/LLMJudge.ts#L25)
 
 Temperature for judging (lower = more consistent)

@@ -1,6 +1,6 @@
 # Interface: ExportedSpan
 
-Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:162](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/evaluation/observability/ITracer.ts#L162)
+Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:162](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/evaluation/observability/ITracer.ts#L162)
 
 Exported span data for serialization.
 
@@ -10,7 +10,7 @@ Exported span data for serialization.
 
 > **attributes**: [`SpanAttributes`](../type-aliases/SpanAttributes.md)
 
-Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:172](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/evaluation/observability/ITracer.ts#L172)
+Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:172](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/evaluation/observability/ITracer.ts#L172)
 
 ***
 
@@ -18,7 +18,7 @@ Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:172](https
 
 > `optional` **endTime**: `number`
 
-Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:169](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/evaluation/observability/ITracer.ts#L169)
+Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:169](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/evaluation/observability/ITracer.ts#L169)
 
 ***
 
@@ -26,7 +26,7 @@ Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:169](https
 
 > **events**: [`SpanEvent`](SpanEvent.md)[]
 
-Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:173](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/evaluation/observability/ITracer.ts#L173)
+Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:173](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/evaluation/observability/ITracer.ts#L173)
 
 ***
 
@@ -34,7 +34,7 @@ Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:173](https
 
 > **kind**: [`SpanKind`](../type-aliases/SpanKind.md)
 
-Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:167](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/evaluation/observability/ITracer.ts#L167)
+Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:167](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/evaluation/observability/ITracer.ts#L167)
 
 ***
 
@@ -42,7 +42,7 @@ Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:167](https
 
 > **links**: [`SpanLink`](SpanLink.md)[]
 
-Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:174](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/evaluation/observability/ITracer.ts#L174)
+Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:174](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/evaluation/observability/ITracer.ts#L174)
 
 ***
 
@@ -50,7 +50,7 @@ Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:174](https
 
 > **name**: `string`
 
-Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:166](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/evaluation/observability/ITracer.ts#L166)
+Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:166](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/evaluation/observability/ITracer.ts#L166)
 
 ***
 
@@ -58,7 +58,7 @@ Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:166](https
 
 > `optional` **parentSpanId**: `string`
 
-Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:165](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/evaluation/observability/ITracer.ts#L165)
+Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:165](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/evaluation/observability/ITracer.ts#L165)
 
 ***
 
@@ -66,7 +66,7 @@ Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:165](https
 
 > **spanId**: `string`
 
-Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:164](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/evaluation/observability/ITracer.ts#L164)
+Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:164](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/evaluation/observability/ITracer.ts#L164)
 
 ***
 
@@ -74,7 +74,7 @@ Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:164](https
 
 > **startTime**: `number`
 
-Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:168](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/evaluation/observability/ITracer.ts#L168)
+Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:168](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/evaluation/observability/ITracer.ts#L168)
 
 ***
 
@@ -82,7 +82,7 @@ Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:168](https
 
 > **status**: [`SpanStatus`](../type-aliases/SpanStatus.md)
 
-Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:170](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/evaluation/observability/ITracer.ts#L170)
+Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:170](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/evaluation/observability/ITracer.ts#L170)
 
 ***
 
@@ -90,7 +90,7 @@ Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:170](https
 
 > `optional` **statusMessage**: `string`
 
-Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:171](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/evaluation/observability/ITracer.ts#L171)
+Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:171](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/evaluation/observability/ITracer.ts#L171)
 
 ***
 
@@ -98,4 +98,4 @@ Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:171](https
 
 > **traceId**: `string`
 
-Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:163](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/evaluation/observability/ITracer.ts#L163)
+Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:163](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/evaluation/observability/ITracer.ts#L163)

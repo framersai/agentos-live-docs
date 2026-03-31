@@ -1,6 +1,6 @@
 # Interface: VariateImageOptions
 
-Defined in: [packages/agentos/src/api/variateImage.ts:45](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/variateImage.ts#L45)
+Defined in: [packages/agentos/src/api/variateImage.ts:45](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/variateImage.ts#L45)
 
 Options for a [variateImage](../functions/variateImage.md) call.
 
@@ -21,7 +21,7 @@ const result = await variateImage({
 
 > `optional` **apiKey**: `string`
 
-Defined in: [packages/agentos/src/api/variateImage.ts:80](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/variateImage.ts#L80)
+Defined in: [packages/agentos/src/api/variateImage.ts:80](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/variateImage.ts#L80)
 
 Override the provider API key.
 
@@ -31,7 +31,7 @@ Override the provider API key.
 
 > `optional` **baseUrl**: `string`
 
-Defined in: [packages/agentos/src/api/variateImage.ts:82](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/variateImage.ts#L82)
+Defined in: [packages/agentos/src/api/variateImage.ts:82](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/variateImage.ts#L82)
 
 Override the provider base URL.
 
@@ -41,7 +41,7 @@ Override the provider base URL.
 
 > **image**: `string` \| `Buffer`
 
-Defined in: [packages/agentos/src/api/variateImage.ts:60](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/variateImage.ts#L60)
+Defined in: [packages/agentos/src/api/variateImage.ts:60](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/variateImage.ts#L60)
 
 Source image as a base64 data URL, raw base64 string, `Buffer`,
 local file path, or HTTP/HTTPS URL.
@@ -52,7 +52,7 @@ local file path, or HTTP/HTTPS URL.
 
 > `optional` **model**: `string`
 
-Defined in: [packages/agentos/src/api/variateImage.ts:55](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/variateImage.ts#L55)
+Defined in: [packages/agentos/src/api/variateImage.ts:55](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/variateImage.ts#L55)
 
 Model identifier.  When omitted, the provider's default variation model
 is used (e.g. `dall-e-2` for OpenAI).
@@ -63,7 +63,7 @@ is used (e.g. `dall-e-2` for OpenAI).
 
 > `optional` **n**: `number`
 
-Defined in: [packages/agentos/src/api/variateImage.ts:65](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/variateImage.ts#L65)
+Defined in: [packages/agentos/src/api/variateImage.ts:65](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/variateImage.ts#L65)
 
 Number of variations to generate.
 
@@ -79,7 +79,7 @@ Number of variations to generate.
 
 > `optional` **provider**: `string`
 
-Defined in: [packages/agentos/src/api/variateImage.ts:50](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/variateImage.ts#L50)
+Defined in: [packages/agentos/src/api/variateImage.ts:50](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/variateImage.ts#L50)
 
 Provider name (e.g. `"openai"`, `"stability"`, `"stable-diffusion-local"`).
 When omitted, auto-detection via env vars is attempted.
@@ -90,7 +90,7 @@ When omitted, auto-detection via env vars is attempted.
 
 > `optional` **providerOptions**: `Record`\<`string`, `unknown`\> \| [`ImageProviderOptionBag`](ImageProviderOptionBag.md)
 
-Defined in: [packages/agentos/src/api/variateImage.ts:84](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/variateImage.ts#L84)
+Defined in: [packages/agentos/src/api/variateImage.ts:84](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/variateImage.ts#L84)
 
 Arbitrary provider-specific options.
 
@@ -100,7 +100,7 @@ Arbitrary provider-specific options.
 
 > `optional` **size**: `string`
 
-Defined in: [packages/agentos/src/api/variateImage.ts:78](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/variateImage.ts#L78)
+Defined in: [packages/agentos/src/api/variateImage.ts:78](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/variateImage.ts#L78)
 
 Desired output size (e.g. `"1024x1024"`).
 
@@ -110,7 +110,7 @@ Desired output size (e.g. `"1024x1024"`).
 
 > `optional` **usageLedger**: [`AgentOSUsageLedgerOptions`](AgentOSUsageLedgerOptions.md)
 
-Defined in: [packages/agentos/src/api/variateImage.ts:86](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/variateImage.ts#L86)
+Defined in: [packages/agentos/src/api/variateImage.ts:86](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/variateImage.ts#L86)
 
 Optional usage ledger configuration.
 
@@ -120,7 +120,7 @@ Optional usage ledger configuration.
 
 > `optional` **variance**: `number`
 
-Defined in: [packages/agentos/src/api/variateImage.ts:76](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/variateImage.ts#L76)
+Defined in: [packages/agentos/src/api/variateImage.ts:76](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/variateImage.ts#L76)
 
 How different from the original each variation should be.
 `0` = nearly identical, `1` = very different.

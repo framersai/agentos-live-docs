@@ -2,7 +2,7 @@
 
 > **exportAgentConfigJSON**(`agentInstance`, `metadata?`): `string`
 
-Defined in: [packages/agentos/src/api/agentExport.ts:211](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/agentExport.ts#L211)
+Defined in: [packages/agentos/src/api/agentExport.ts:211](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/agentExport.ts#L211)
 
 Exports an agent's configuration as a pretty-printed JSON string.
 

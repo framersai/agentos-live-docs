@@ -1,6 +1,6 @@
 # Interface: IImageProvider
 
-Defined in: [packages/agentos/src/media/images/IImageProvider.ts:236](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/media/images/IImageProvider.ts#L236)
+Defined in: [packages/agentos/src/media/images/IImageProvider.ts:236](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/media/images/IImageProvider.ts#L236)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/media/images/IImageProvider.ts:236](https://gi
 
 > `readonly` `optional` **defaultModelId**: `string`
 
-Defined in: [packages/agentos/src/media/images/IImageProvider.ts:239](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/media/images/IImageProvider.ts#L239)
+Defined in: [packages/agentos/src/media/images/IImageProvider.ts:239](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/media/images/IImageProvider.ts#L239)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [packages/agentos/src/media/images/IImageProvider.ts:239](https://gi
 
 > `readonly` **isInitialized**: `boolean`
 
-Defined in: [packages/agentos/src/media/images/IImageProvider.ts:238](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/media/images/IImageProvider.ts#L238)
+Defined in: [packages/agentos/src/media/images/IImageProvider.ts:238](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/media/images/IImageProvider.ts#L238)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: [packages/agentos/src/media/images/IImageProvider.ts:238](https://gi
 
 > `readonly` **providerId**: `string`
 
-Defined in: [packages/agentos/src/media/images/IImageProvider.ts:237](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/media/images/IImageProvider.ts#L237)
+Defined in: [packages/agentos/src/media/images/IImageProvider.ts:237](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/media/images/IImageProvider.ts#L237)
 
 ## Methods
 
@@ -32,7 +32,7 @@ Defined in: [packages/agentos/src/media/images/IImageProvider.ts:237](https://gi
 
 > `optional` **editImage**(`request`): `Promise`\<[`ImageGenerationResult`](ImageGenerationResult.md)\>
 
-Defined in: [packages/agentos/src/media/images/IImageProvider.ts:252](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/media/images/IImageProvider.ts#L252)
+Defined in: [packages/agentos/src/media/images/IImageProvider.ts:252](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/media/images/IImageProvider.ts#L252)
 
 Perform an image-to-image edit, inpainting, or outpainting operation.
 Providers that do not support editing should leave this `undefined`.
@@ -53,7 +53,7 @@ Providers that do not support editing should leave this `undefined`.
 
 > **generateImage**(`request`): `Promise`\<[`ImageGenerationResult`](ImageGenerationResult.md)\>
 
-Defined in: [packages/agentos/src/media/images/IImageProvider.ts:242](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/media/images/IImageProvider.ts#L242)
+Defined in: [packages/agentos/src/media/images/IImageProvider.ts:242](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/media/images/IImageProvider.ts#L242)
 
 #### Parameters
 
@@ -71,7 +71,7 @@ Defined in: [packages/agentos/src/media/images/IImageProvider.ts:242](https://gi
 
 > **initialize**(`config`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/media/images/IImageProvider.ts:241](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/media/images/IImageProvider.ts#L241)
+Defined in: [packages/agentos/src/media/images/IImageProvider.ts:241](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/media/images/IImageProvider.ts#L241)
 
 #### Parameters
 
@@ -89,7 +89,7 @@ Defined in: [packages/agentos/src/media/images/IImageProvider.ts:241](https://gi
 
 > `optional` **listAvailableModels**(): `Promise`\<[`ImageModelInfo`](ImageModelInfo.md)[]\>
 
-Defined in: [packages/agentos/src/media/images/IImageProvider.ts:243](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/media/images/IImageProvider.ts#L243)
+Defined in: [packages/agentos/src/media/images/IImageProvider.ts:243](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/media/images/IImageProvider.ts#L243)
 
 #### Returns
 
@@ -101,7 +101,7 @@ Defined in: [packages/agentos/src/media/images/IImageProvider.ts:243](https://gi
 
 > `optional` **shutdown**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/media/images/IImageProvider.ts:244](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/media/images/IImageProvider.ts#L244)
+Defined in: [packages/agentos/src/media/images/IImageProvider.ts:244](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/media/images/IImageProvider.ts#L244)
 
 #### Returns
 
@@ -113,7 +113,7 @@ Defined in: [packages/agentos/src/media/images/IImageProvider.ts:244](https://gi
 
 > `optional` **upscaleImage**(`request`): `Promise`\<[`ImageGenerationResult`](ImageGenerationResult.md)\>
 
-Defined in: [packages/agentos/src/media/images/IImageProvider.ts:258](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/media/images/IImageProvider.ts#L258)
+Defined in: [packages/agentos/src/media/images/IImageProvider.ts:258](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/media/images/IImageProvider.ts#L258)
 
 Upscale / super-resolve an image.
 Providers that do not support upscaling should leave this `undefined`.
@@ -134,7 +134,7 @@ Providers that do not support upscaling should leave this `undefined`.
 
 > `optional` **variateImage**(`request`): `Promise`\<[`ImageGenerationResult`](ImageGenerationResult.md)\>
 
-Defined in: [packages/agentos/src/media/images/IImageProvider.ts:264](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/media/images/IImageProvider.ts#L264)
+Defined in: [packages/agentos/src/media/images/IImageProvider.ts:264](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/media/images/IImageProvider.ts#L264)
 
 Generate visual variations of the supplied image.
 Providers that do not support variations should leave this `undefined`.

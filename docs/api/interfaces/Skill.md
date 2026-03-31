@@ -1,6 +1,6 @@
 # Interface: Skill
 
-Defined in: [packages/agentos/src/skills/types.ts:171](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/skills/types.ts#L171)
+Defined in: [packages/agentos/src/skills/types.ts:171](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/skills/types.ts#L171)
 
 Raw skill definition with name and content.
 
@@ -10,7 +10,7 @@ Raw skill definition with name and content.
 
 > **content**: `string`
 
-Defined in: [packages/agentos/src/skills/types.ts:179](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/skills/types.ts#L179)
+Defined in: [packages/agentos/src/skills/types.ts:179](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/skills/types.ts#L179)
 
 Full SKILL.md content (after frontmatter)
 
@@ -20,7 +20,7 @@ Full SKILL.md content (after frontmatter)
 
 > **description**: `string`
 
-Defined in: [packages/agentos/src/skills/types.ts:176](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/skills/types.ts#L176)
+Defined in: [packages/agentos/src/skills/types.ts:176](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/skills/types.ts#L176)
 
 Skill description from frontmatter or first paragraph
 
@@ -30,6 +30,6 @@ Skill description from frontmatter or first paragraph
 
 > **name**: `string`
 
-Defined in: [packages/agentos/src/skills/types.ts:173](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/skills/types.ts#L173)
+Defined in: [packages/agentos/src/skills/types.ts:173](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/skills/types.ts#L173)
 
 Unique skill name (folder name)

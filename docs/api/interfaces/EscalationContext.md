@@ -1,6 +1,6 @@
 # Interface: EscalationContext
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:217](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/hitl/IHumanInteractionManager.ts#L217)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:217](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/hitl/IHumanInteractionManager.ts#L217)
 
 Context for escalating to human control.
 
@@ -10,7 +10,7 @@ Context for escalating to human control.
 
 > **agentId**: `string`
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:225](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/hitl/IHumanInteractionManager.ts#L225)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:225](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/hitl/IHumanInteractionManager.ts#L225)
 
 Agent requesting escalation
 
@@ -20,7 +20,7 @@ Agent requesting escalation
 
 > **assessment**: `string`
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:231](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/hitl/IHumanInteractionManager.ts#L231)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:231](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/hitl/IHumanInteractionManager.ts#L231)
 
 Agent's assessment of the situation
 
@@ -30,7 +30,7 @@ Agent's assessment of the situation
 
 > **attemptedActions**: `string`[]
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:229](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/hitl/IHumanInteractionManager.ts#L229)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:229](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/hitl/IHumanInteractionManager.ts#L229)
 
 What agent has tried so far
 
@@ -40,7 +40,7 @@ What agent has tried so far
 
 > **currentState**: `Record`\<`string`, `unknown`\>
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:227](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/hitl/IHumanInteractionManager.ts#L227)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:227](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/hitl/IHumanInteractionManager.ts#L227)
 
 Current task/goal state
 
@@ -50,7 +50,7 @@ Current task/goal state
 
 > **escalatedAt**: `Date`
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:237](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/hitl/IHumanInteractionManager.ts#L237)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:237](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/hitl/IHumanInteractionManager.ts#L237)
 
 Timestamp
 
@@ -60,7 +60,7 @@ Timestamp
 
 > **escalationId**: `string`
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:219](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/hitl/IHumanInteractionManager.ts#L219)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:219](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/hitl/IHumanInteractionManager.ts#L219)
 
 Escalation identifier
 
@@ -70,7 +70,7 @@ Escalation identifier
 
 > **explanation**: `string`
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:223](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/hitl/IHumanInteractionManager.ts#L223)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:223](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/hitl/IHumanInteractionManager.ts#L223)
 
 Detailed explanation
 
@@ -80,7 +80,7 @@ Detailed explanation
 
 > **reason**: [`EscalationReason`](../type-aliases/EscalationReason.md)
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:221](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/hitl/IHumanInteractionManager.ts#L221)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:221](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/hitl/IHumanInteractionManager.ts#L221)
 
 Reason for escalation
 
@@ -90,7 +90,7 @@ Reason for escalation
 
 > `optional` **recommendations**: `string`[]
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:233](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/hitl/IHumanInteractionManager.ts#L233)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:233](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/hitl/IHumanInteractionManager.ts#L233)
 
 Recommended human actions
 
@@ -100,6 +100,6 @@ Recommended human actions
 
 > **urgency**: `"critical"` \| `"low"` \| `"medium"` \| `"high"`
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:235](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/hitl/IHumanInteractionManager.ts#L235)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:235](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/hitl/IHumanInteractionManager.ts#L235)
 
 Urgency level

@@ -1,6 +1,6 @@
 # Interface: RevisionRecord
 
-Defined in: [packages/agentos/src/provenance/types.ts:235](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/provenance/types.ts#L235)
+Defined in: [packages/agentos/src/provenance/types.ts:235](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/types.ts#L235)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/provenance/types.ts:235](https://github.com/fr
 
 > **eventId**: `string`
 
-Defined in: [packages/agentos/src/provenance/types.ts:247](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/provenance/types.ts#L247)
+Defined in: [packages/agentos/src/provenance/types.ts:247](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/types.ts#L247)
 
 Signed event ID that caused this revision.
 
@@ -18,7 +18,7 @@ Signed event ID that caused this revision.
 
 > **id**: `string`
 
-Defined in: [packages/agentos/src/provenance/types.ts:237](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/provenance/types.ts#L237)
+Defined in: [packages/agentos/src/provenance/types.ts:237](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/types.ts#L237)
 
 Unique revision ID.
 
@@ -28,7 +28,7 @@ Unique revision ID.
 
 > **recordId**: `string`
 
-Defined in: [packages/agentos/src/provenance/types.ts:241](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/provenance/types.ts#L241)
+Defined in: [packages/agentos/src/provenance/types.ts:241](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/types.ts#L241)
 
 Primary key of the revised record.
 
@@ -38,7 +38,7 @@ Primary key of the revised record.
 
 > **revisionNumber**: `number`
 
-Defined in: [packages/agentos/src/provenance/types.ts:243](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/provenance/types.ts#L243)
+Defined in: [packages/agentos/src/provenance/types.ts:243](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/types.ts#L243)
 
 Revision number (1-indexed, monotonically increasing per record).
 
@@ -48,7 +48,7 @@ Revision number (1-indexed, monotonically increasing per record).
 
 > **snapshot**: `string`
 
-Defined in: [packages/agentos/src/provenance/types.ts:245](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/provenance/types.ts#L245)
+Defined in: [packages/agentos/src/provenance/types.ts:245](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/types.ts#L245)
 
 Complete JSON snapshot of the record at this revision.
 
@@ -58,7 +58,7 @@ Complete JSON snapshot of the record at this revision.
 
 > **tableName**: `string`
 
-Defined in: [packages/agentos/src/provenance/types.ts:239](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/provenance/types.ts#L239)
+Defined in: [packages/agentos/src/provenance/types.ts:239](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/types.ts#L239)
 
 Table the revised record belongs to.
 
@@ -68,6 +68,6 @@ Table the revised record belongs to.
 
 > **timestamp**: `string`
 
-Defined in: [packages/agentos/src/provenance/types.ts:249](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/provenance/types.ts#L249)
+Defined in: [packages/agentos/src/provenance/types.ts:249](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/types.ts#L249)
 
 ISO 8601 timestamp.

@@ -1,6 +1,6 @@
 # Interface: SandboxedToolSpec
 
-Defined in: [packages/agentos/src/emergent/types.ts:134](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/emergent/types.ts#L134)
+Defined in: [packages/agentos/src/emergent/types.ts:134](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/emergent/types.ts#L134)
 
 Implementation specification for a tool whose logic is arbitrary code
 executed in a memory/time-bounded sandbox.
@@ -17,7 +17,7 @@ The engine calls `run(input)` and returns its resolved value as the tool output.
 
 > **allowlist**: [`SandboxAPI`](../type-aliases/SandboxAPI.md)[]
 
-Defined in: [packages/agentos/src/emergent/types.ts:156](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/emergent/types.ts#L156)
+Defined in: [packages/agentos/src/emergent/types.ts:156](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/emergent/types.ts#L156)
 
 Explicit allowlist of sandbox APIs the code may invoke.
 Any call to an API not in this list will throw at runtime.
@@ -28,7 +28,7 @@ Any call to an API not in this list will throw at runtime.
 
 > **code**: `string`
 
-Defined in: [packages/agentos/src/emergent/types.ts:150](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/emergent/types.ts#L150)
+Defined in: [packages/agentos/src/emergent/types.ts:150](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/emergent/types.ts#L150)
 
 The full source code of the sandboxed module.
 Must export or define an async `run` function as its entry point.
@@ -48,6 +48,6 @@ async function run(input) {
 
 > **mode**: `"sandbox"`
 
-Defined in: [packages/agentos/src/emergent/types.ts:136](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/emergent/types.ts#L136)
+Defined in: [packages/agentos/src/emergent/types.ts:136](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/emergent/types.ts#L136)
 
 Discriminant: always `'sandbox'` for sandboxed specs.

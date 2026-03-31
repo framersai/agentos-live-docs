@@ -1,6 +1,6 @@
 # Interface: ToolExecutionGuardConfig
 
-Defined in: [packages/agentos/src/safety/runtime/ToolExecutionGuard.ts:10](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/safety/runtime/ToolExecutionGuard.ts#L10)
+Defined in: [packages/agentos/src/safety/runtime/ToolExecutionGuard.ts:10](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/safety/runtime/ToolExecutionGuard.ts#L10)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/safety/runtime/ToolExecutionGuard.ts:10](https
 
 > `optional` **circuitBreakerConfig**: `Partial`\<`Omit`\<[`CircuitBreakerConfig`](CircuitBreakerConfig.md), `"name"`\>\>
 
-Defined in: [packages/agentos/src/safety/runtime/ToolExecutionGuard.ts:18](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/safety/runtime/ToolExecutionGuard.ts#L18)
+Defined in: [packages/agentos/src/safety/runtime/ToolExecutionGuard.ts:18](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/safety/runtime/ToolExecutionGuard.ts#L18)
 
 Circuit breaker config applied to each tool.
 
@@ -18,7 +18,7 @@ Circuit breaker config applied to each tool.
 
 > **defaultTimeoutMs**: `number`
 
-Defined in: [packages/agentos/src/safety/runtime/ToolExecutionGuard.ts:12](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/safety/runtime/ToolExecutionGuard.ts#L12)
+Defined in: [packages/agentos/src/safety/runtime/ToolExecutionGuard.ts:12](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/safety/runtime/ToolExecutionGuard.ts#L12)
 
 Default timeout per tool execution in ms.
 
@@ -34,7 +34,7 @@ Default timeout per tool execution in ms.
 
 > **enableCircuitBreaker**: `boolean`
 
-Defined in: [packages/agentos/src/safety/runtime/ToolExecutionGuard.ts:16](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/safety/runtime/ToolExecutionGuard.ts#L16)
+Defined in: [packages/agentos/src/safety/runtime/ToolExecutionGuard.ts:16](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/safety/runtime/ToolExecutionGuard.ts#L16)
 
 Whether to enable per-tool circuit breakers.
 
@@ -50,6 +50,6 @@ true
 
 > `optional` **toolTimeouts**: `Record`\<`string`, `number`\>
 
-Defined in: [packages/agentos/src/safety/runtime/ToolExecutionGuard.ts:14](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/safety/runtime/ToolExecutionGuard.ts#L14)
+Defined in: [packages/agentos/src/safety/runtime/ToolExecutionGuard.ts:14](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/safety/runtime/ToolExecutionGuard.ts#L14)
 
 Per-tool timeout overrides.

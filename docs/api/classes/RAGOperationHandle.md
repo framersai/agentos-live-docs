@@ -1,6 +1,6 @@
 # Class: RAGOperationHandle
 
-Defined in: [packages/agentos/src/rag/audit/RAGAuditCollector.ts:51](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/rag/audit/RAGAuditCollector.ts#L51)
+Defined in: [packages/agentos/src/rag/audit/RAGAuditCollector.ts:51](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/audit/RAGAuditCollector.ts#L51)
 
 Fluent handle for a single in-flight RAG operation.
 Call `.complete(resultsCount)` to finalize timing and add it to the collector.
@@ -11,7 +11,7 @@ Call `.complete(resultsCount)` to finalize timing and add it to the collector.
 
 > **new RAGOperationHandle**(`type`, `onComplete`): `RAGOperationHandle`
 
-Defined in: [packages/agentos/src/rag/audit/RAGAuditCollector.ts:57](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/rag/audit/RAGAuditCollector.ts#L57)
+Defined in: [packages/agentos/src/rag/audit/RAGAuditCollector.ts:57](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/audit/RAGAuditCollector.ts#L57)
 
 #### Parameters
 
@@ -33,7 +33,7 @@ Defined in: [packages/agentos/src/rag/audit/RAGAuditCollector.ts:57](https://git
 
 > **addSources**(`chunks`): `this`
 
-Defined in: [packages/agentos/src/rag/audit/RAGAuditCollector.ts:85](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/rag/audit/RAGAuditCollector.ts#L85)
+Defined in: [packages/agentos/src/rag/audit/RAGAuditCollector.ts:85](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/audit/RAGAuditCollector.ts#L85)
 
 #### Parameters
 
@@ -51,7 +51,7 @@ Defined in: [packages/agentos/src/rag/audit/RAGAuditCollector.ts:85](https://git
 
 > **complete**(`resultsCount`, `overrideDurationMs?`): [`RAGOperationEntry`](../interfaces/RAGOperationEntry.md)
 
-Defined in: [packages/agentos/src/rag/audit/RAGAuditCollector.ts:163](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/rag/audit/RAGAuditCollector.ts#L163)
+Defined in: [packages/agentos/src/rag/audit/RAGAuditCollector.ts:163](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/audit/RAGAuditCollector.ts#L163)
 
 Finalizes the operation, records duration, computes relevance score stats,
 and adds the entry to the parent collector.
@@ -80,7 +80,7 @@ Optional override for duration (when timing is measured externally).
 
 > **setCollectionIds**(`ids`): `this`
 
-Defined in: [packages/agentos/src/rag/audit/RAGAuditCollector.ts:130](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/rag/audit/RAGAuditCollector.ts#L130)
+Defined in: [packages/agentos/src/rag/audit/RAGAuditCollector.ts:130](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/audit/RAGAuditCollector.ts#L130)
 
 #### Parameters
 
@@ -98,7 +98,7 @@ Defined in: [packages/agentos/src/rag/audit/RAGAuditCollector.ts:130](https://gi
 
 > **setCost**(`costUSD`): `this`
 
-Defined in: [packages/agentos/src/rag/audit/RAGAuditCollector.ts:120](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/rag/audit/RAGAuditCollector.ts#L120)
+Defined in: [packages/agentos/src/rag/audit/RAGAuditCollector.ts:120](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/audit/RAGAuditCollector.ts#L120)
 
 #### Parameters
 
@@ -116,7 +116,7 @@ Defined in: [packages/agentos/src/rag/audit/RAGAuditCollector.ts:120](https://gi
 
 > **setDataSourceIds**(`ids`): `this`
 
-Defined in: [packages/agentos/src/rag/audit/RAGAuditCollector.ts:125](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/rag/audit/RAGAuditCollector.ts#L125)
+Defined in: [packages/agentos/src/rag/audit/RAGAuditCollector.ts:125](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/audit/RAGAuditCollector.ts#L125)
 
 #### Parameters
 
@@ -134,7 +134,7 @@ Defined in: [packages/agentos/src/rag/audit/RAGAuditCollector.ts:125](https://gi
 
 > **setGraphDetails**(`details`): `this`
 
-Defined in: [packages/agentos/src/rag/audit/RAGAuditCollector.ts:135](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/rag/audit/RAGAuditCollector.ts#L135)
+Defined in: [packages/agentos/src/rag/audit/RAGAuditCollector.ts:135](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/audit/RAGAuditCollector.ts#L135)
 
 #### Parameters
 
@@ -162,7 +162,7 @@ Defined in: [packages/agentos/src/rag/audit/RAGAuditCollector.ts:135](https://gi
 
 > **setHydeDetails**(`details`): `this`
 
-Defined in: [packages/agentos/src/rag/audit/RAGAuditCollector.ts:151](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/rag/audit/RAGAuditCollector.ts#L151)
+Defined in: [packages/agentos/src/rag/audit/RAGAuditCollector.ts:151](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/audit/RAGAuditCollector.ts#L151)
 
 Attach HyDE-specific metadata to this audit operation.
 
@@ -202,7 +202,7 @@ Number of adaptive threshold steps taken.
 
 > **setRerankDetails**(`details`): `this`
 
-Defined in: [packages/agentos/src/rag/audit/RAGAuditCollector.ts:140](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/rag/audit/RAGAuditCollector.ts#L140)
+Defined in: [packages/agentos/src/rag/audit/RAGAuditCollector.ts:140](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/audit/RAGAuditCollector.ts#L140)
 
 #### Parameters
 
@@ -230,7 +230,7 @@ Defined in: [packages/agentos/src/rag/audit/RAGAuditCollector.ts:140](https://gi
 
 > **setRetrievalMethod**(`method`): `this`
 
-Defined in: [packages/agentos/src/rag/audit/RAGAuditCollector.ts:80](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/rag/audit/RAGAuditCollector.ts#L80)
+Defined in: [packages/agentos/src/rag/audit/RAGAuditCollector.ts:80](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/audit/RAGAuditCollector.ts#L80)
 
 #### Parameters
 
@@ -248,7 +248,7 @@ Defined in: [packages/agentos/src/rag/audit/RAGAuditCollector.ts:80](https://git
 
 > **setTokenUsage**(`usage`): `this`
 
-Defined in: [packages/agentos/src/rag/audit/RAGAuditCollector.ts:115](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/rag/audit/RAGAuditCollector.ts#L115)
+Defined in: [packages/agentos/src/rag/audit/RAGAuditCollector.ts:115](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/audit/RAGAuditCollector.ts#L115)
 
 #### Parameters
 

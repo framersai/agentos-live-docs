@@ -1,6 +1,6 @@
 # Interface: SourceDiagnostics
 
-Defined in: [packages/agentos/src/rag/unified/types.ts:284](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/rag/unified/types.ts#L284)
+Defined in: [packages/agentos/src/rag/unified/types.ts:289](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/unified/types.ts#L289)
 
 Per-source diagnostics for a unified retrieval operation.
 
@@ -18,7 +18,7 @@ UnifiedRetrievalResult.sourceDiagnostics
 
 > **graph**: `object`
 
-Defined in: [packages/agentos/src/rag/unified/types.ts:290](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/rag/unified/types.ts#L290)
+Defined in: [packages/agentos/src/rag/unified/types.ts:295](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/unified/types.ts#L295)
 
 GraphRAG search diagnostics.
 
@@ -36,7 +36,7 @@ GraphRAG search diagnostics.
 
 > **hybrid**: `object`
 
-Defined in: [packages/agentos/src/rag/unified/types.ts:286](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/rag/unified/types.ts#L286)
+Defined in: [packages/agentos/src/rag/unified/types.ts:291](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/unified/types.ts#L291)
 
 Vector + BM25 hybrid search diagnostics.
 
@@ -54,7 +54,7 @@ Vector + BM25 hybrid search diagnostics.
 
 > **hyde**: `object`
 
-Defined in: [packages/agentos/src/rag/unified/types.ts:296](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/rag/unified/types.ts#L296)
+Defined in: [packages/agentos/src/rag/unified/types.ts:301](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/unified/types.ts#L301)
 
 HyDE hypothesis search diagnostics.
 
@@ -76,7 +76,7 @@ HyDE hypothesis search diagnostics.
 
 > **memory**: `object`
 
-Defined in: [packages/agentos/src/rag/unified/types.ts:292](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/rag/unified/types.ts#L292)
+Defined in: [packages/agentos/src/rag/unified/types.ts:297](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/unified/types.ts#L297)
 
 Cognitive memory search diagnostics.
 
@@ -94,7 +94,7 @@ Cognitive memory search diagnostics.
 
 > **multimodal**: `object`
 
-Defined in: [packages/agentos/src/rag/unified/types.ts:294](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/rag/unified/types.ts#L294)
+Defined in: [packages/agentos/src/rag/unified/types.ts:299](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/unified/types.ts#L299)
 
 Multimodal search diagnostics.
 
@@ -112,7 +112,7 @@ Multimodal search diagnostics.
 
 > **raptor**: `object`
 
-Defined in: [packages/agentos/src/rag/unified/types.ts:288](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/rag/unified/types.ts#L288)
+Defined in: [packages/agentos/src/rag/unified/types.ts:293](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/unified/types.ts#L293)
 
 RAPTOR tree search diagnostics.
 
@@ -130,7 +130,7 @@ RAPTOR tree search diagnostics.
 
 > **rerank**: `object`
 
-Defined in: [packages/agentos/src/rag/unified/types.ts:298](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/rag/unified/types.ts#L298)
+Defined in: [packages/agentos/src/rag/unified/types.ts:303](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/unified/types.ts#L303)
 
 Reranking diagnostics.
 
@@ -152,7 +152,7 @@ Reranking diagnostics.
 
 > **research**: `object`
 
-Defined in: [packages/agentos/src/rag/unified/types.ts:300](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/rag/unified/types.ts#L300)
+Defined in: [packages/agentos/src/rag/unified/types.ts:305](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/unified/types.ts#L305)
 
 Deep research diagnostics.
 

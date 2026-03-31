@@ -1,6 +1,6 @@
 # Class: SentenceBoundaryBuffer
 
-Defined in: [packages/agentos/src/safety/guardrails/SentenceBoundaryBuffer.ts:5](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/safety/guardrails/SentenceBoundaryBuffer.ts#L5)
+Defined in: [packages/agentos/src/safety/guardrails/SentenceBoundaryBuffer.ts:5](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/safety/guardrails/SentenceBoundaryBuffer.ts#L5)
 
 Buffers streaming TEXT_DELTA chunks and flushes at sentence boundaries.
 Includes the previous sentence as overlap context for safety evaluation.
@@ -21,7 +21,7 @@ Includes the previous sentence as overlap context for safety evaluation.
 
 > **flush**(): `string` \| `null`
 
-Defined in: [packages/agentos/src/safety/guardrails/SentenceBoundaryBuffer.ts:24](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/safety/guardrails/SentenceBoundaryBuffer.ts#L24)
+Defined in: [packages/agentos/src/safety/guardrails/SentenceBoundaryBuffer.ts:24](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/safety/guardrails/SentenceBoundaryBuffer.ts#L24)
 
 Flush remaining buffer content (call on stream end).
 
@@ -35,7 +35,7 @@ Flush remaining buffer content (call on stream end).
 
 > **push**(`chunk`): `string` \| `null`
 
-Defined in: [packages/agentos/src/safety/guardrails/SentenceBoundaryBuffer.ts:10](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/safety/guardrails/SentenceBoundaryBuffer.ts#L10)
+Defined in: [packages/agentos/src/safety/guardrails/SentenceBoundaryBuffer.ts:10](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/safety/guardrails/SentenceBoundaryBuffer.ts#L10)
 
 Push a chunk. Returns evaluation payload if sentence boundary detected, null otherwise.
 
@@ -55,7 +55,7 @@ Push a chunk. Returns evaluation payload if sentence boundary detected, null oth
 
 > **reset**(): `void`
 
-Defined in: [packages/agentos/src/safety/guardrails/SentenceBoundaryBuffer.ts:35](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/safety/guardrails/SentenceBoundaryBuffer.ts#L35)
+Defined in: [packages/agentos/src/safety/guardrails/SentenceBoundaryBuffer.ts:35](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/safety/guardrails/SentenceBoundaryBuffer.ts#L35)
 
 Reset all state.
 

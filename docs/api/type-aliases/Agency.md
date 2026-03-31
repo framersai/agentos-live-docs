@@ -2,7 +2,7 @@
 
 > **Agency** = `Agent`
 
-Defined in: [packages/agentos/src/api/types.ts:878](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/types.ts#L878)
+Defined in: [packages/agentos/src/api/types.ts:937](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/types.ts#L937)
 
 An `Agency` is structurally identical to an `Agent` but is returned by
 `agency()` and coordinates multiple underlying sub-agents.

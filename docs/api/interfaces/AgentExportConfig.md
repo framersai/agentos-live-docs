@@ -1,6 +1,6 @@
 # Interface: AgentExportConfig
 
-Defined in: [packages/agentos/src/api/agentExport.ts:49](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/agentExport.ts#L49)
+Defined in: [packages/agentos/src/api/agentExport.ts:49](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/agentExport.ts#L49)
 
 Portable agent configuration envelope.
 
@@ -14,7 +14,7 @@ variant (single agent vs. multi-agent agency).
 
 > `optional` **adaptive**: `boolean`
 
-Defined in: [packages/agentos/src/api/agentExport.ts:74](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/agentExport.ts#L74)
+Defined in: [packages/agentos/src/api/agentExport.ts:74](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/agentExport.ts#L74)
 
 Whether runtime strategy adaptation is enabled.
 
@@ -24,7 +24,7 @@ Whether runtime strategy adaptation is enabled.
 
 > `optional` **agents**: `Record`\<`string`, `BaseAgentConfig`\>
 
-Defined in: [packages/agentos/src/api/agentExport.ts:68](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/agentExport.ts#L68)
+Defined in: [packages/agentos/src/api/agentExport.ts:68](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/agentExport.ts#L68)
 
 Sub-agent roster keyed by agent name. Present for agency exports.
 
@@ -34,7 +34,7 @@ Sub-agent roster keyed by agent name. Present for agency exports.
 
 > **config**: `BaseAgentConfig`
 
-Defined in: [packages/agentos/src/api/agentExport.ts:63](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/agentExport.ts#L63)
+Defined in: [packages/agentos/src/api/agentExport.ts:63](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/agentExport.ts#L63)
 
 The full agent configuration.
 
@@ -44,7 +44,7 @@ The full agent configuration.
 
 > **exportedAt**: `string`
 
-Defined in: [packages/agentos/src/api/agentExport.ts:54](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/agentExport.ts#L54)
+Defined in: [packages/agentos/src/api/agentExport.ts:54](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/agentExport.ts#L54)
 
 ISO 8601 timestamp of when the export was created.
 
@@ -54,7 +54,7 @@ ISO 8601 timestamp of when the export was created.
 
 > `optional` **maxRounds**: `number`
 
-Defined in: [packages/agentos/src/api/agentExport.ts:77](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/agentExport.ts#L77)
+Defined in: [packages/agentos/src/api/agentExport.ts:77](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/agentExport.ts#L77)
 
 Maximum orchestration rounds for iterative strategies.
 
@@ -64,7 +64,7 @@ Maximum orchestration rounds for iterative strategies.
 
 > `optional` **metadata**: `object`
 
-Defined in: [packages/agentos/src/api/agentExport.ts:82](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/agentExport.ts#L82)
+Defined in: [packages/agentos/src/api/agentExport.ts:82](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/agentExport.ts#L82)
 
 Human-readable metadata about the export (name, author, tags, etc.).
 
@@ -98,7 +98,7 @@ Searchable tags for categorization.
 
 > `optional` **strategy**: [`AgencyStrategy`](../type-aliases/AgencyStrategy.md)
 
-Defined in: [packages/agentos/src/api/agentExport.ts:71](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/agentExport.ts#L71)
+Defined in: [packages/agentos/src/api/agentExport.ts:71](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/agentExport.ts#L71)
 
 Orchestration strategy. Present for agency exports.
 
@@ -108,7 +108,7 @@ Orchestration strategy. Present for agency exports.
 
 > **type**: `"agent"` \| `"agency"`
 
-Defined in: [packages/agentos/src/api/agentExport.ts:60](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/agentExport.ts#L60)
+Defined in: [packages/agentos/src/api/agentExport.ts:60](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/agentExport.ts#L60)
 
 Discriminator: `'agent'` for a single-agent export, `'agency'` for
 a multi-agent export that includes a sub-agent roster.
@@ -119,6 +119,6 @@ a multi-agent export that includes a sub-agent roster.
 
 > **version**: `"1.0.0"`
 
-Defined in: [packages/agentos/src/api/agentExport.ts:51](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/agentExport.ts#L51)
+Defined in: [packages/agentos/src/api/agentExport.ts:51](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/agentExport.ts#L51)
 
 Schema version for forward-compatible deserialization.

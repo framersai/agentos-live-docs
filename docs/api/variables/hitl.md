@@ -2,7 +2,7 @@
 
 > `const` **hitl**: `object`
 
-Defined in: [packages/agentos/src/api/hitl.ts:57](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/hitl.ts#L57)
+Defined in: [packages/agentos/src/api/hitl.ts:58](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/hitl.ts#L58)
 
 A collection of factory functions that produce [HitlHandler](../type-aliases/HitlHandler.md) instances
 for common approval patterns.
@@ -89,6 +89,114 @@ A [HitlHandler](../type-aliases/HitlHandler.md) that waits for interactive CLI i
 
 ```ts
 handler: hitl.cli()
+```
+
+### llmJudge()
+
+> **llmJudge**(`config?`): [`HitlHandler`](../type-aliases/HitlHandler.md)
+
+Creates an HITL handler that delegates approval decisions to an LLM judge.
+
+The LLM evaluates the approval request against configurable criteria and
+returns a structured approve/reject decision with reasoning. When the LLM's
+self-reported confidence falls below `confidenceThreshold`, the decision is
+delegated to a fallback handler (default: [hitl.autoReject](#autoreject)).
+
+#### Parameters
+
+##### config?
+
+LLM judge configuration.
+
+###### apiKey?
+
+`string`
+
+API key override.
+
+###### confidenceThreshold?
+
+`number`
+
+Confidence threshold — below this, escalate to fallback handler.
+
+**Default**
+
+```ts
+0.7
+```
+
+###### criteria?
+
+`string`
+
+Custom evaluation criteria/rubric.
+
+**Default**
+
+```ts
+'Evaluate whether this action is safe, relevant, and appropriate.'
+```
+
+###### fallback?
+
+[`HitlHandler`](../type-aliases/HitlHandler.md)
+
+Fallback handler when confidence is below threshold.
+
+**Default**
+
+```ts
+hitl.autoReject('LLM judge confidence too low')
+```
+
+###### model?
+
+`string`
+
+LLM model to use.
+
+**Default**
+
+```ts
+'gpt-4o-mini'
+```
+
+###### provider?
+
+`string`
+
+LLM provider.
+
+**Default**
+
+```ts
+'openai'
+```
+
+#### Returns
+
+[`HitlHandler`](../type-aliases/HitlHandler.md)
+
+A [HitlHandler](../type-aliases/HitlHandler.md) that auto-decides via LLM.
+
+#### Example
+
+```ts
+import { agency, hitl } from '@framers/agentos';
+
+const guarded = agency({
+  agents: { worker: { instructions: 'Execute tasks.' } },
+  hitl: {
+    approvals: { beforeTool: ['delete-file'] },
+    handler: hitl.llmJudge({
+      model: 'gpt-4o-mini',
+      criteria: 'Is this action safe and non-destructive?',
+      confidenceThreshold: 0.8,
+      fallback: hitl.cli(), // escalate uncertain decisions to human
+    }),
+  },
+});
 ```
 
 ### slack()

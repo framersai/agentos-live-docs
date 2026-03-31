@@ -1,6 +1,6 @@
 # Interface: PlanAdjustment
 
-Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:567](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/planner/IPlanningEngine.ts#L567)
+Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:567](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/planner/IPlanningEngine.ts#L567)
 
 A suggested adjustment to the plan.
 
@@ -10,7 +10,7 @@ A suggested adjustment to the plan.
 
 > `optional` **newStepData**: `Partial`\<[`PlanStep`](PlanStep.md)\>
 
-Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:573](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/planner/IPlanningEngine.ts#L573)
+Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:573](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/planner/IPlanningEngine.ts#L573)
 
 New step data (for add/modify)
 
@@ -20,7 +20,7 @@ New step data (for add/modify)
 
 > **reason**: `string`
 
-Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:575](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/planner/IPlanningEngine.ts#L575)
+Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:575](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/planner/IPlanningEngine.ts#L575)
 
 Reason for adjustment
 
@@ -30,7 +30,7 @@ Reason for adjustment
 
 > `optional` **targetStepId**: `string`
 
-Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:571](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/planner/IPlanningEngine.ts#L571)
+Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:571](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/planner/IPlanningEngine.ts#L571)
 
 Target step ID (for modify/remove)
 
@@ -40,6 +40,6 @@ Target step ID (for modify/remove)
 
 > **type**: `"add_step"` \| `"remove_step"` \| `"modify_step"` \| `"reorder"`
 
-Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:569](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/planner/IPlanningEngine.ts#L569)
+Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:569](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/planner/IPlanningEngine.ts#L569)
 
 Type of adjustment

@@ -1,6 +1,6 @@
 # Interface: IMemoryGraph
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/IMemoryGraph.ts:87](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/retrieval/graph/IMemoryGraph.ts#L87)
+Defined in: [packages/agentos/src/memory/retrieval/graph/IMemoryGraph.ts:87](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/IMemoryGraph.ts#L87)
 
 ## Methods
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/memory/retrieval/graph/IMemoryGraph.ts:87](htt
 
 > **addEdge**(`edge`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/IMemoryGraph.ts:97](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/retrieval/graph/IMemoryGraph.ts#L97)
+Defined in: [packages/agentos/src/memory/retrieval/graph/IMemoryGraph.ts:97](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/IMemoryGraph.ts#L97)
 
 #### Parameters
 
@@ -26,7 +26,7 @@ Defined in: [packages/agentos/src/memory/retrieval/graph/IMemoryGraph.ts:97](htt
 
 > **addNode**(`memoryId`, `metadata`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/IMemoryGraph.ts:92](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/retrieval/graph/IMemoryGraph.ts#L92)
+Defined in: [packages/agentos/src/memory/retrieval/graph/IMemoryGraph.ts:92](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/IMemoryGraph.ts#L92)
 
 #### Parameters
 
@@ -48,7 +48,7 @@ Defined in: [packages/agentos/src/memory/retrieval/graph/IMemoryGraph.ts:92](htt
 
 > **clear**(): `void`
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/IMemoryGraph.ts:119](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/retrieval/graph/IMemoryGraph.ts#L119)
+Defined in: [packages/agentos/src/memory/retrieval/graph/IMemoryGraph.ts:119](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/IMemoryGraph.ts#L119)
 
 #### Returns
 
@@ -60,7 +60,7 @@ Defined in: [packages/agentos/src/memory/retrieval/graph/IMemoryGraph.ts:119](ht
 
 > **detectClusters**(`minSize?`): `Promise`\<[`MemoryCluster`](MemoryCluster.md)[]\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/IMemoryGraph.ts:114](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/retrieval/graph/IMemoryGraph.ts#L114)
+Defined in: [packages/agentos/src/memory/retrieval/graph/IMemoryGraph.ts:114](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/IMemoryGraph.ts#L114)
 
 #### Parameters
 
@@ -78,7 +78,7 @@ Defined in: [packages/agentos/src/memory/retrieval/graph/IMemoryGraph.ts:114](ht
 
 > **edgeCount**(): `number`
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/IMemoryGraph.ts:118](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/retrieval/graph/IMemoryGraph.ts#L118)
+Defined in: [packages/agentos/src/memory/retrieval/graph/IMemoryGraph.ts:118](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/IMemoryGraph.ts#L118)
 
 #### Returns
 
@@ -90,7 +90,7 @@ Defined in: [packages/agentos/src/memory/retrieval/graph/IMemoryGraph.ts:118](ht
 
 > **getConflicts**(`memoryId`): [`MemoryEdge`](MemoryEdge.md)[]
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/IMemoryGraph.ts:111](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/retrieval/graph/IMemoryGraph.ts#L111)
+Defined in: [packages/agentos/src/memory/retrieval/graph/IMemoryGraph.ts:111](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/IMemoryGraph.ts#L111)
 
 #### Parameters
 
@@ -108,7 +108,7 @@ Defined in: [packages/agentos/src/memory/retrieval/graph/IMemoryGraph.ts:111](ht
 
 > **getEdges**(`memoryId`, `type?`): [`MemoryEdge`](MemoryEdge.md)[]
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/IMemoryGraph.ts:98](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/retrieval/graph/IMemoryGraph.ts#L98)
+Defined in: [packages/agentos/src/memory/retrieval/graph/IMemoryGraph.ts:98](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/IMemoryGraph.ts#L98)
 
 #### Parameters
 
@@ -130,7 +130,7 @@ Defined in: [packages/agentos/src/memory/retrieval/graph/IMemoryGraph.ts:98](htt
 
 > **hasNode**(`memoryId`): `boolean`
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/IMemoryGraph.ts:94](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/retrieval/graph/IMemoryGraph.ts#L94)
+Defined in: [packages/agentos/src/memory/retrieval/graph/IMemoryGraph.ts:94](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/IMemoryGraph.ts#L94)
 
 #### Parameters
 
@@ -148,7 +148,7 @@ Defined in: [packages/agentos/src/memory/retrieval/graph/IMemoryGraph.ts:94](htt
 
 > **initialize**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/IMemoryGraph.ts:89](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/retrieval/graph/IMemoryGraph.ts#L89)
+Defined in: [packages/agentos/src/memory/retrieval/graph/IMemoryGraph.ts:89](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/IMemoryGraph.ts#L89)
 
 Initialize the graph backend.
 
@@ -162,7 +162,7 @@ Initialize the graph backend.
 
 > **nodeCount**(): `number`
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/IMemoryGraph.ts:117](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/retrieval/graph/IMemoryGraph.ts#L117)
+Defined in: [packages/agentos/src/memory/retrieval/graph/IMemoryGraph.ts:117](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/IMemoryGraph.ts#L117)
 
 #### Returns
 
@@ -174,7 +174,7 @@ Defined in: [packages/agentos/src/memory/retrieval/graph/IMemoryGraph.ts:117](ht
 
 > **recordCoActivation**(`memoryIds`, `learningRate?`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/IMemoryGraph.ts:108](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/retrieval/graph/IMemoryGraph.ts#L108)
+Defined in: [packages/agentos/src/memory/retrieval/graph/IMemoryGraph.ts:108](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/IMemoryGraph.ts#L108)
 
 #### Parameters
 
@@ -196,7 +196,7 @@ Defined in: [packages/agentos/src/memory/retrieval/graph/IMemoryGraph.ts:108](ht
 
 > **removeEdge**(`sourceId`, `targetId`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/IMemoryGraph.ts:99](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/retrieval/graph/IMemoryGraph.ts#L99)
+Defined in: [packages/agentos/src/memory/retrieval/graph/IMemoryGraph.ts:99](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/IMemoryGraph.ts#L99)
 
 #### Parameters
 
@@ -218,7 +218,7 @@ Defined in: [packages/agentos/src/memory/retrieval/graph/IMemoryGraph.ts:99](htt
 
 > **removeNode**(`memoryId`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/IMemoryGraph.ts:93](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/retrieval/graph/IMemoryGraph.ts#L93)
+Defined in: [packages/agentos/src/memory/retrieval/graph/IMemoryGraph.ts:93](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/IMemoryGraph.ts#L93)
 
 #### Parameters
 
@@ -236,7 +236,7 @@ Defined in: [packages/agentos/src/memory/retrieval/graph/IMemoryGraph.ts:93](htt
 
 > **shutdown**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/IMemoryGraph.ts:120](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/retrieval/graph/IMemoryGraph.ts#L120)
+Defined in: [packages/agentos/src/memory/retrieval/graph/IMemoryGraph.ts:120](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/IMemoryGraph.ts#L120)
 
 #### Returns
 
@@ -248,7 +248,7 @@ Defined in: [packages/agentos/src/memory/retrieval/graph/IMemoryGraph.ts:120](ht
 
 > **spreadingActivation**(`seedIds`, `config?`): `Promise`\<[`ActivatedNode`](ActivatedNode.md)[]\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/IMemoryGraph.ts:102](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/retrieval/graph/IMemoryGraph.ts#L102)
+Defined in: [packages/agentos/src/memory/retrieval/graph/IMemoryGraph.ts:102](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/IMemoryGraph.ts#L102)
 
 #### Parameters
 

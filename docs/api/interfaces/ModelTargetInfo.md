@@ -1,6 +1,6 @@
 # Interface: ModelTargetInfo
 
-Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:154](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/core/llm/IPromptEngine.ts#L154)
+Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:154](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/llm/IPromptEngine.ts#L154)
 
 Information about the target AI model that affects prompt construction.
 This guides template selection, token limits, and capability-specific formatting.
@@ -15,7 +15,7 @@ ModelTargetInfo
 
 > `optional` **audioSupport**: `object`
 
-Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:192](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/core/llm/IPromptEngine.ts#L192)
+Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:192](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/llm/IPromptEngine.ts#L192)
 
 Audio input support configuration (more likely for pre-processing than direct model input).
 
@@ -33,7 +33,7 @@ Audio input support configuration (more likely for pre-processing than direct mo
 
 > **capabilities**: `string`[]
 
-Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:167](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/core/llm/IPromptEngine.ts#L167)
+Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:167](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/llm/IPromptEngine.ts#L167)
 
 A list of functional capabilities of the model (e.g., 'tool_use', 'vision_input', 'json_mode').
 
@@ -43,7 +43,7 @@ A list of functional capabilities of the model (e.g., 'tool_use', 'vision_input'
 
 > **maxContextTokens**: `number`
 
-Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:160](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/core/llm/IPromptEngine.ts#L160)
+Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:160](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/llm/IPromptEngine.ts#L160)
 
 Maximum context length in tokens supported by the model.
 
@@ -53,7 +53,7 @@ Maximum context length in tokens supported by the model.
 
 > **modelId**: `string`
 
-Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:156](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/core/llm/IPromptEngine.ts#L156)
+Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:156](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/llm/IPromptEngine.ts#L156)
 
 Unique identifier of the target model (e.g., "gpt-4o", "ollama/llama3").
 
@@ -63,7 +63,7 @@ Unique identifier of the target model (e.g., "gpt-4o", "ollama/llama3").
 
 > `optional` **optimalContextTokens**: `number`
 
-Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:165](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/core/llm/IPromptEngine.ts#L165)
+Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:165](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/llm/IPromptEngine.ts#L165)
 
 Optional: Optimal context length for best performance/cost-efficiency, if different from max.
 Prompts might be targeted to this length.
@@ -74,7 +74,7 @@ Prompts might be targeted to this length.
 
 > `optional` **optimizationHints**: `object`
 
-Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:197](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/core/llm/IPromptEngine.ts#L197)
+Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:197](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/llm/IPromptEngine.ts#L197)
 
 Model-specific hints for optimizing prompt construction or token budgeting.
 
@@ -96,7 +96,7 @@ Model-specific hints for optimizing prompt construction or token budgeting.
 
 > **promptFormatType**: `string`
 
-Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:175](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/core/llm/IPromptEngine.ts#L175)
+Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:175](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/llm/IPromptEngine.ts#L175)
 
 The type of prompt format the model expects.
 'openai_chat': Standard OpenAI chat completion format (array of messages).
@@ -110,7 +110,7 @@ The type of prompt format the model expects.
 
 > **providerId**: `string`
 
-Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:158](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/core/llm/IPromptEngine.ts#L158)
+Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:158](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/llm/IPromptEngine.ts#L158)
 
 Identifier of the provider hosting the model (e.g., "openai", "ollama").
 
@@ -120,7 +120,7 @@ Identifier of the provider hosting the model (e.g., "openai", "ollama").
 
 > **toolSupport**: `object`
 
-Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:177](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/core/llm/IPromptEngine.ts#L177)
+Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:177](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/llm/IPromptEngine.ts#L177)
 
 Configuration for tool/function calling support.
 
@@ -146,7 +146,7 @@ Maximum number of tools that can be defined or called in a single interaction.
 
 > `optional` **visionSupport**: `object`
 
-Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:185](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/core/llm/IPromptEngine.ts#L185)
+Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:185](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/llm/IPromptEngine.ts#L185)
 
 Vision input support configuration.
 

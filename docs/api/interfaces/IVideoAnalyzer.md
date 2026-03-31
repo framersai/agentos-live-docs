@@ -1,6 +1,6 @@
 # Interface: IVideoAnalyzer
 
-Defined in: [packages/agentos/src/media/video/IVideoAnalyzer.ts:26](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/media/video/IVideoAnalyzer.ts#L26)
+Defined in: [packages/agentos/src/media/video/IVideoAnalyzer.ts:26](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/media/video/IVideoAnalyzer.ts#L26)
 
 Abstraction over a video analysis / understanding backend.
 
@@ -15,7 +15,7 @@ expected to accept either a URL or a raw buffer and return a structured
 
 > **analyzeVideo**(`request`): `Promise`\<[`VideoAnalysis`](VideoAnalysis.md)\>
 
-Defined in: [packages/agentos/src/media/video/IVideoAnalyzer.ts:33](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/media/video/IVideoAnalyzer.ts#L33)
+Defined in: [packages/agentos/src/media/video/IVideoAnalyzer.ts:33](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/media/video/IVideoAnalyzer.ts#L33)
 
 Analyse a video and return structured understanding results.
 

@@ -1,6 +1,6 @@
 # Interface: AgentOSPendingExternalToolRequest
 
-Defined in: [packages/agentos/src/api/types/AgentOSExternalToolRequest.ts:7](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/types/AgentOSExternalToolRequest.ts#L7)
+Defined in: [packages/agentos/src/api/types/AgentOSExternalToolRequest.ts:7](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/types/AgentOSExternalToolRequest.ts#L7)
 
 Conversation-metadata snapshot describing an external tool pause that can be
 recovered after process restart.
@@ -11,7 +11,7 @@ recovered after process restart.
 
 > **conversationId**: `string`
 
-Defined in: [packages/agentos/src/api/types/AgentOSExternalToolRequest.ts:10](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/types/AgentOSExternalToolRequest.ts#L10)
+Defined in: [packages/agentos/src/api/types/AgentOSExternalToolRequest.ts:10](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/types/AgentOSExternalToolRequest.ts#L10)
 
 ***
 
@@ -19,7 +19,7 @@ Defined in: [packages/agentos/src/api/types/AgentOSExternalToolRequest.ts:10](ht
 
 > **gmiInstanceId**: `string`
 
-Defined in: [packages/agentos/src/api/types/AgentOSExternalToolRequest.ts:13](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/types/AgentOSExternalToolRequest.ts#L13)
+Defined in: [packages/agentos/src/api/types/AgentOSExternalToolRequest.ts:13](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/types/AgentOSExternalToolRequest.ts#L13)
 
 ***
 
@@ -27,7 +27,7 @@ Defined in: [packages/agentos/src/api/types/AgentOSExternalToolRequest.ts:13](ht
 
 > **personaId**: `string`
 
-Defined in: [packages/agentos/src/api/types/AgentOSExternalToolRequest.ts:12](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/types/AgentOSExternalToolRequest.ts#L12)
+Defined in: [packages/agentos/src/api/types/AgentOSExternalToolRequest.ts:12](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/types/AgentOSExternalToolRequest.ts#L12)
 
 ***
 
@@ -35,7 +35,7 @@ Defined in: [packages/agentos/src/api/types/AgentOSExternalToolRequest.ts:12](ht
 
 > `optional` **rationale**: `string`
 
-Defined in: [packages/agentos/src/api/types/AgentOSExternalToolRequest.ts:15](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/types/AgentOSExternalToolRequest.ts#L15)
+Defined in: [packages/agentos/src/api/types/AgentOSExternalToolRequest.ts:15](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/types/AgentOSExternalToolRequest.ts#L15)
 
 ***
 
@@ -43,7 +43,7 @@ Defined in: [packages/agentos/src/api/types/AgentOSExternalToolRequest.ts:15](ht
 
 > **requestedAt**: `string`
 
-Defined in: [packages/agentos/src/api/types/AgentOSExternalToolRequest.ts:16](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/types/AgentOSExternalToolRequest.ts#L16)
+Defined in: [packages/agentos/src/api/types/AgentOSExternalToolRequest.ts:16](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/types/AgentOSExternalToolRequest.ts#L16)
 
 ***
 
@@ -51,7 +51,7 @@ Defined in: [packages/agentos/src/api/types/AgentOSExternalToolRequest.ts:16](ht
 
 > **sessionId**: `string`
 
-Defined in: [packages/agentos/src/api/types/AgentOSExternalToolRequest.ts:9](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/types/AgentOSExternalToolRequest.ts#L9)
+Defined in: [packages/agentos/src/api/types/AgentOSExternalToolRequest.ts:9](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/types/AgentOSExternalToolRequest.ts#L9)
 
 ***
 
@@ -59,7 +59,7 @@ Defined in: [packages/agentos/src/api/types/AgentOSExternalToolRequest.ts:9](htt
 
 > **streamId**: `string`
 
-Defined in: [packages/agentos/src/api/types/AgentOSExternalToolRequest.ts:8](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/types/AgentOSExternalToolRequest.ts#L8)
+Defined in: [packages/agentos/src/api/types/AgentOSExternalToolRequest.ts:8](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/types/AgentOSExternalToolRequest.ts#L8)
 
 ***
 
@@ -67,7 +67,7 @@ Defined in: [packages/agentos/src/api/types/AgentOSExternalToolRequest.ts:8](htt
 
 > **toolCalls**: [`ToolCallRequest`](ToolCallRequest.md)[]
 
-Defined in: [packages/agentos/src/api/types/AgentOSExternalToolRequest.ts:14](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/types/AgentOSExternalToolRequest.ts#L14)
+Defined in: [packages/agentos/src/api/types/AgentOSExternalToolRequest.ts:14](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/types/AgentOSExternalToolRequest.ts#L14)
 
 ***
 
@@ -75,4 +75,4 @@ Defined in: [packages/agentos/src/api/types/AgentOSExternalToolRequest.ts:14](ht
 
 > **userId**: `string`
 
-Defined in: [packages/agentos/src/api/types/AgentOSExternalToolRequest.ts:11](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/types/AgentOSExternalToolRequest.ts#L11)
+Defined in: [packages/agentos/src/api/types/AgentOSExternalToolRequest.ts:11](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/types/AgentOSExternalToolRequest.ts#L11)

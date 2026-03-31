@@ -983,11 +983,24 @@ article img {
   }
 
   /* Prevent navbar overflow */
+  .navbar__inner {
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .navbar__items--left,
   .navbar__items--right {
+    min-width: 0;
     gap: 0.25rem !important;
   }
-  .navbar {
-    overflow: hidden !important;
+
+  .navbar-sidebar {
+    max-height: 100vh;
+  }
+
+  .navbar-sidebar__items {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
   }
 }
 .header-github-link::before {

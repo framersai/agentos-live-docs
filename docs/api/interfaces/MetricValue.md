@@ -1,6 +1,6 @@
 # Interface: MetricValue
 
-Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:32](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/evaluation/IEvaluator.ts#L32)
+Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:32](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/evaluation/IEvaluator.ts#L32)
 
 A single metric measurement.
 
@@ -10,7 +10,7 @@ A single metric measurement.
 
 > `optional` **confidence**: `number`
 
-Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:44](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/evaluation/IEvaluator.ts#L44)
+Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:44](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/evaluation/IEvaluator.ts#L44)
 
 Confidence in the measurement (0-1)
 
@@ -20,7 +20,7 @@ Confidence in the measurement (0-1)
 
 > `optional` **metadata**: `Record`\<`string`, `unknown`\>
 
-Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:48](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/evaluation/IEvaluator.ts#L48)
+Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:48](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/evaluation/IEvaluator.ts#L48)
 
 Additional context
 
@@ -30,7 +30,7 @@ Additional context
 
 > **name**: `string`
 
-Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:34](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/evaluation/IEvaluator.ts#L34)
+Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:34](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/evaluation/IEvaluator.ts#L34)
 
 Metric name
 
@@ -40,7 +40,7 @@ Metric name
 
 > **normalized**: `boolean`
 
-Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:40](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/evaluation/IEvaluator.ts#L40)
+Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:40](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/evaluation/IEvaluator.ts#L40)
 
 Whether value is normalized (0-1)
 
@@ -50,7 +50,7 @@ Whether value is normalized (0-1)
 
 > **timestamp**: `string`
 
-Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:46](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/evaluation/IEvaluator.ts#L46)
+Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:46](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/evaluation/IEvaluator.ts#L46)
 
 Timestamp
 
@@ -60,7 +60,7 @@ Timestamp
 
 > **type**: [`MetricType`](../type-aliases/MetricType.md)
 
-Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:36](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/evaluation/IEvaluator.ts#L36)
+Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:36](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/evaluation/IEvaluator.ts#L36)
 
 Metric type
 
@@ -70,7 +70,7 @@ Metric type
 
 > `optional` **unit**: `string`
 
-Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:42](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/evaluation/IEvaluator.ts#L42)
+Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:42](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/evaluation/IEvaluator.ts#L42)
 
 Unit of measurement
 
@@ -80,6 +80,6 @@ Unit of measurement
 
 > **value**: `number`
 
-Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:38](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/evaluation/IEvaluator.ts#L38)
+Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:38](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/evaluation/IEvaluator.ts#L38)
 
 Numeric value (0-1 for normalized, raw otherwise)

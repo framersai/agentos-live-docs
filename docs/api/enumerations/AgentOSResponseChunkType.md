@@ -1,6 +1,6 @@
 # Enumeration: AgentOSResponseChunkType
 
-Defined in: [packages/agentos/src/api/types/AgentOSResponse.ts:25](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/types/AgentOSResponse.ts#L25)
+Defined in: [packages/agentos/src/api/types/AgentOSResponse.ts:25](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/types/AgentOSResponse.ts#L25)
 
 ## Enumeration Members
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/api/types/AgentOSResponse.ts:25](https://githu
 
 > **AGENCY\_UPDATE**: `"agency_update"`
 
-Defined in: [packages/agentos/src/api/types/AgentOSResponse.ts:35](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/types/AgentOSResponse.ts#L35)
+Defined in: [packages/agentos/src/api/types/AgentOSResponse.ts:35](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/types/AgentOSResponse.ts#L35)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [packages/agentos/src/api/types/AgentOSResponse.ts:35](https://githu
 
 > **ERROR**: `"error"`
 
-Defined in: [packages/agentos/src/api/types/AgentOSResponse.ts:32](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/types/AgentOSResponse.ts#L32)
+Defined in: [packages/agentos/src/api/types/AgentOSResponse.ts:32](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/types/AgentOSResponse.ts#L32)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: [packages/agentos/src/api/types/AgentOSResponse.ts:32](https://githu
 
 > **FINAL\_RESPONSE**: `"final_response"`
 
-Defined in: [packages/agentos/src/api/types/AgentOSResponse.ts:31](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/types/AgentOSResponse.ts#L31)
+Defined in: [packages/agentos/src/api/types/AgentOSResponse.ts:31](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/types/AgentOSResponse.ts#L31)
 
 ***
 
@@ -32,7 +32,7 @@ Defined in: [packages/agentos/src/api/types/AgentOSResponse.ts:31](https://githu
 
 > **METADATA\_UPDATE**: `"metadata_update"`
 
-Defined in: [packages/agentos/src/api/types/AgentOSResponse.ts:33](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/types/AgentOSResponse.ts#L33)
+Defined in: [packages/agentos/src/api/types/AgentOSResponse.ts:33](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/types/AgentOSResponse.ts#L33)
 
 ***
 
@@ -40,7 +40,7 @@ Defined in: [packages/agentos/src/api/types/AgentOSResponse.ts:33](https://githu
 
 > **PROVENANCE\_EVENT**: `"provenance_event"`
 
-Defined in: [packages/agentos/src/api/types/AgentOSResponse.ts:36](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/types/AgentOSResponse.ts#L36)
+Defined in: [packages/agentos/src/api/types/AgentOSResponse.ts:36](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/types/AgentOSResponse.ts#L36)
 
 ***
 
@@ -48,7 +48,7 @@ Defined in: [packages/agentos/src/api/types/AgentOSResponse.ts:36](https://githu
 
 > **SYSTEM\_PROGRESS**: `"system_progress"`
 
-Defined in: [packages/agentos/src/api/types/AgentOSResponse.ts:27](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/types/AgentOSResponse.ts#L27)
+Defined in: [packages/agentos/src/api/types/AgentOSResponse.ts:27](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/types/AgentOSResponse.ts#L27)
 
 ***
 
@@ -56,7 +56,7 @@ Defined in: [packages/agentos/src/api/types/AgentOSResponse.ts:27](https://githu
 
 > **TEXT\_DELTA**: `"text_delta"`
 
-Defined in: [packages/agentos/src/api/types/AgentOSResponse.ts:26](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/types/AgentOSResponse.ts#L26)
+Defined in: [packages/agentos/src/api/types/AgentOSResponse.ts:26](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/types/AgentOSResponse.ts#L26)
 
 ***
 
@@ -64,7 +64,7 @@ Defined in: [packages/agentos/src/api/types/AgentOSResponse.ts:26](https://githu
 
 > **TOOL\_CALL\_REQUEST**: `"tool_call_request"`
 
-Defined in: [packages/agentos/src/api/types/AgentOSResponse.ts:28](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/types/AgentOSResponse.ts#L28)
+Defined in: [packages/agentos/src/api/types/AgentOSResponse.ts:28](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/types/AgentOSResponse.ts#L28)
 
 ***
 
@@ -72,7 +72,7 @@ Defined in: [packages/agentos/src/api/types/AgentOSResponse.ts:28](https://githu
 
 > **TOOL\_RESULT\_EMISSION**: `"tool_result_emission"`
 
-Defined in: [packages/agentos/src/api/types/AgentOSResponse.ts:29](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/types/AgentOSResponse.ts#L29)
+Defined in: [packages/agentos/src/api/types/AgentOSResponse.ts:29](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/types/AgentOSResponse.ts#L29)
 
 ***
 
@@ -80,7 +80,7 @@ Defined in: [packages/agentos/src/api/types/AgentOSResponse.ts:29](https://githu
 
 > **UI\_COMMAND**: `"ui_command"`
 
-Defined in: [packages/agentos/src/api/types/AgentOSResponse.ts:30](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/types/AgentOSResponse.ts#L30)
+Defined in: [packages/agentos/src/api/types/AgentOSResponse.ts:30](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/types/AgentOSResponse.ts#L30)
 
 ***
 
@@ -88,4 +88,4 @@ Defined in: [packages/agentos/src/api/types/AgentOSResponse.ts:30](https://githu
 
 > **WORKFLOW\_UPDATE**: `"workflow_update"`
 
-Defined in: [packages/agentos/src/api/types/AgentOSResponse.ts:34](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/api/types/AgentOSResponse.ts#L34)
+Defined in: [packages/agentos/src/api/types/AgentOSResponse.ts:34](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/types/AgentOSResponse.ts#L34)

@@ -1,6 +1,6 @@
 # Interface: ISpan
 
-Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:77](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/evaluation/observability/ITracer.ts#L77)
+Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:77](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/evaluation/observability/ITracer.ts#L77)
 
 Represents a single trace span.
 
@@ -10,7 +10,7 @@ Represents a single trace span.
 
 > **attributes**: [`SpanAttributes`](../type-aliases/SpanAttributes.md)
 
-Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:93](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/evaluation/observability/ITracer.ts#L93)
+Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:93](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/evaluation/observability/ITracer.ts#L93)
 
 Span attributes
 
@@ -20,7 +20,7 @@ Span attributes
 
 > **context**: [`TraceContext`](TraceContext.md)
 
-Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:81](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/evaluation/observability/ITracer.ts#L81)
+Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:81](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/evaluation/observability/ITracer.ts#L81)
 
 Trace context
 
@@ -30,7 +30,7 @@ Trace context
 
 > `optional` **endTime**: `number`
 
-Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:87](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/evaluation/observability/ITracer.ts#L87)
+Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:87](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/evaluation/observability/ITracer.ts#L87)
 
 End timestamp in milliseconds
 
@@ -40,7 +40,7 @@ End timestamp in milliseconds
 
 > **events**: [`SpanEvent`](SpanEvent.md)[]
 
-Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:95](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/evaluation/observability/ITracer.ts#L95)
+Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:95](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/evaluation/observability/ITracer.ts#L95)
 
 Span events
 
@@ -50,7 +50,7 @@ Span events
 
 > **kind**: [`SpanKind`](../type-aliases/SpanKind.md)
 
-Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:83](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/evaluation/observability/ITracer.ts#L83)
+Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:83](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/evaluation/observability/ITracer.ts#L83)
 
 Span kind
 
@@ -60,7 +60,7 @@ Span kind
 
 > **links**: [`SpanLink`](SpanLink.md)[]
 
-Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:97](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/evaluation/observability/ITracer.ts#L97)
+Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:97](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/evaluation/observability/ITracer.ts#L97)
 
 Links to other spans
 
@@ -70,7 +70,7 @@ Links to other spans
 
 > **name**: `string`
 
-Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:79](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/evaluation/observability/ITracer.ts#L79)
+Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:79](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/evaluation/observability/ITracer.ts#L79)
 
 Span name
 
@@ -80,7 +80,7 @@ Span name
 
 > **startTime**: `number`
 
-Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:85](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/evaluation/observability/ITracer.ts#L85)
+Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:85](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/evaluation/observability/ITracer.ts#L85)
 
 Start timestamp in milliseconds
 
@@ -90,7 +90,7 @@ Start timestamp in milliseconds
 
 > **status**: [`SpanStatus`](../type-aliases/SpanStatus.md)
 
-Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:89](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/evaluation/observability/ITracer.ts#L89)
+Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:89](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/evaluation/observability/ITracer.ts#L89)
 
 Span status
 
@@ -100,7 +100,7 @@ Span status
 
 > `optional` **statusMessage**: `string`
 
-Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:91](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/evaluation/observability/ITracer.ts#L91)
+Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:91](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/evaluation/observability/ITracer.ts#L91)
 
 Status message
 
@@ -110,7 +110,7 @@ Status message
 
 > **addEvent**(`name`, `attributes?`): `void`
 
-Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:117](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/evaluation/observability/ITracer.ts#L117)
+Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:117](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/evaluation/observability/ITracer.ts#L117)
 
 Records an event.
 
@@ -138,7 +138,7 @@ Event attributes
 
 > **end**(): `void`
 
-Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:135](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/evaluation/observability/ITracer.ts#L135)
+Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:135](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/evaluation/observability/ITracer.ts#L135)
 
 Ends the span.
 
@@ -152,7 +152,7 @@ Ends the span.
 
 > **isRecording**(): `boolean`
 
-Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:140](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/evaluation/observability/ITracer.ts#L140)
+Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:140](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/evaluation/observability/ITracer.ts#L140)
 
 Checks if the span is recording.
 
@@ -166,7 +166,7 @@ Checks if the span is recording.
 
 > **recordException**(`error`): `void`
 
-Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:130](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/evaluation/observability/ITracer.ts#L130)
+Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:130](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/evaluation/observability/ITracer.ts#L130)
 
 Records an exception.
 
@@ -188,7 +188,7 @@ The error object
 
 > **setAttribute**(`key`, `value`): `void`
 
-Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:104](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/evaluation/observability/ITracer.ts#L104)
+Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:104](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/evaluation/observability/ITracer.ts#L104)
 
 Sets an attribute on the span.
 
@@ -216,7 +216,7 @@ Attribute value
 
 > **setAttributes**(`attributes`): `void`
 
-Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:110](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/evaluation/observability/ITracer.ts#L110)
+Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:110](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/evaluation/observability/ITracer.ts#L110)
 
 Sets multiple attributes.
 
@@ -238,7 +238,7 @@ Attributes to set
 
 > **setStatus**(`status`, `message?`): `void`
 
-Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:124](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/evaluation/observability/ITracer.ts#L124)
+Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:124](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/evaluation/observability/ITracer.ts#L124)
 
 Sets the span status.
 

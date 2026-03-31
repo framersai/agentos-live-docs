@@ -1,6 +1,6 @@
 # Interface: PlanResult
 
-Defined in: [packages/agentos/src/orchestration/planning/types.ts:148](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/planning/types.ts#L148)
+Defined in: [packages/agentos/src/orchestration/planning/types.ts:148](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/planning/types.ts#L148)
 
 Result of the full planning pipeline.
 
@@ -10,7 +10,7 @@ Result of the full planning pipeline.
 
 > **allBranches**: [`CandidateBranch`](CandidateBranch.md)[]
 
-Defined in: [packages/agentos/src/orchestration/planning/types.ts:150](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/planning/types.ts#L150)
+Defined in: [packages/agentos/src/orchestration/planning/types.ts:150](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/planning/types.ts#L150)
 
 ***
 
@@ -18,7 +18,7 @@ Defined in: [packages/agentos/src/orchestration/planning/types.ts:150](https://g
 
 > **compiledGraph**: [`CompiledExecutionGraph`](CompiledExecutionGraph.md)
 
-Defined in: [packages/agentos/src/orchestration/planning/types.ts:152](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/planning/types.ts#L152)
+Defined in: [packages/agentos/src/orchestration/planning/types.ts:152](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/planning/types.ts#L152)
 
 ***
 
@@ -26,7 +26,7 @@ Defined in: [packages/agentos/src/orchestration/planning/types.ts:152](https://g
 
 > **refinements**: `string`[]
 
-Defined in: [packages/agentos/src/orchestration/planning/types.ts:151](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/planning/types.ts#L151)
+Defined in: [packages/agentos/src/orchestration/planning/types.ts:151](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/planning/types.ts#L151)
 
 ***
 
@@ -34,4 +34,4 @@ Defined in: [packages/agentos/src/orchestration/planning/types.ts:151](https://g
 
 > **selectedBranch**: [`CandidateBranch`](CandidateBranch.md)
 
-Defined in: [packages/agentos/src/orchestration/planning/types.ts:149](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/orchestration/planning/types.ts#L149)
+Defined in: [packages/agentos/src/orchestration/planning/types.ts:149](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/planning/types.ts#L149)

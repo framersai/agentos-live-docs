@@ -2,7 +2,7 @@
 
 > `const` **STATE\_ORDER**: readonly [`CallState`](../type-aliases/CallState.md)[]
 
-Defined in: [packages/agentos/src/channels/telephony/types.ts:133](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/channels/telephony/types.ts#L133)
+Defined in: [packages/agentos/src/channels/telephony/types.ts:133](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/telephony/types.ts#L133)
 
 Non-terminal state order for monotonic transition enforcement.
 

@@ -1,6 +1,6 @@
 # Interface: AgentOSLanguageConfig
 
-Defined in: [packages/agentos/src/nlp/language/LanguageService.ts:22](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/nlp/language/LanguageService.ts#L22)
+Defined in: [packages/agentos/src/nlp/language/LanguageService.ts:22](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/nlp/language/LanguageService.ts#L22)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/nlp/language/LanguageService.ts:22](https://gi
 
 > `optional` **autoDetect**: `boolean`
 
-Defined in: [packages/agentos/src/nlp/language/LanguageService.ts:27](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/nlp/language/LanguageService.ts#L27)
+Defined in: [packages/agentos/src/nlp/language/LanguageService.ts:27](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/nlp/language/LanguageService.ts#L27)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [packages/agentos/src/nlp/language/LanguageService.ts:27](https://gi
 
 > **defaultLanguage**: `string`
 
-Defined in: [packages/agentos/src/nlp/language/LanguageService.ts:23](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/nlp/language/LanguageService.ts#L23)
+Defined in: [packages/agentos/src/nlp/language/LanguageService.ts:23](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/nlp/language/LanguageService.ts#L23)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: [packages/agentos/src/nlp/language/LanguageService.ts:23](https://gi
 
 > `optional` **detectionProviderConfigs**: `object`[]
 
-Defined in: [packages/agentos/src/nlp/language/LanguageService.ts:30](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/nlp/language/LanguageService.ts#L30)
+Defined in: [packages/agentos/src/nlp/language/LanguageService.ts:30](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/nlp/language/LanguageService.ts#L30)
 
 Detection provider configs (ordered by priority).
 
@@ -46,7 +46,7 @@ Detection provider configs (ordered by priority).
 
 > `optional` **enableCaching**: `boolean`
 
-Defined in: [packages/agentos/src/nlp/language/LanguageService.ts:38](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/nlp/language/LanguageService.ts#L38)
+Defined in: [packages/agentos/src/nlp/language/LanguageService.ts:38](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/nlp/language/LanguageService.ts#L38)
 
 Optional caching of translation outputs.
 
@@ -56,7 +56,7 @@ Optional caching of translation outputs.
 
 > `optional` **enableCodeAwareTranslation**: `boolean`
 
-Defined in: [packages/agentos/src/nlp/language/LanguageService.ts:36](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/nlp/language/LanguageService.ts#L36)
+Defined in: [packages/agentos/src/nlp/language/LanguageService.ts:36](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/nlp/language/LanguageService.ts#L36)
 
 Enable partitioning of code blocks from prose during translation for better fidelity.
 
@@ -66,7 +66,7 @@ Enable partitioning of code blocks from prose during translation for better fide
 
 > `optional` **enablePivotNormalization**: `boolean`
 
-Defined in: [packages/agentos/src/nlp/language/LanguageService.ts:42](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/nlp/language/LanguageService.ts#L42)
+Defined in: [packages/agentos/src/nlp/language/LanguageService.ts:42](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/nlp/language/LanguageService.ts#L42)
 
 If true, attempt pivot normalization (source->pivot) before generation.
 
@@ -76,7 +76,7 @@ If true, attempt pivot normalization (source->pivot) before generation.
 
 > `optional` **fallbackLanguages**: `string`[]
 
-Defined in: [packages/agentos/src/nlp/language/LanguageService.ts:25](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/nlp/language/LanguageService.ts#L25)
+Defined in: [packages/agentos/src/nlp/language/LanguageService.ts:25](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/nlp/language/LanguageService.ts#L25)
 
 ***
 
@@ -84,7 +84,7 @@ Defined in: [packages/agentos/src/nlp/language/LanguageService.ts:25](https://gi
 
 > `optional` **maxDirectCharsPerTranslation**: `number`
 
-Defined in: [packages/agentos/src/nlp/language/LanguageService.ts:34](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/nlp/language/LanguageService.ts#L34)
+Defined in: [packages/agentos/src/nlp/language/LanguageService.ts:34](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/nlp/language/LanguageService.ts#L34)
 
 Maximum characters to attempt direct single-shot translation before chunking.
 
@@ -94,7 +94,7 @@ Maximum characters to attempt direct single-shot translation before chunking.
 
 > `optional` **pivotLanguage**: `string`
 
-Defined in: [packages/agentos/src/nlp/language/LanguageService.ts:26](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/nlp/language/LanguageService.ts#L26)
+Defined in: [packages/agentos/src/nlp/language/LanguageService.ts:26](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/nlp/language/LanguageService.ts#L26)
 
 ***
 
@@ -102,7 +102,7 @@ Defined in: [packages/agentos/src/nlp/language/LanguageService.ts:26](https://gi
 
 > `optional` **preferSourceLanguageResponses**: `boolean`
 
-Defined in: [packages/agentos/src/nlp/language/LanguageService.ts:28](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/nlp/language/LanguageService.ts#L28)
+Defined in: [packages/agentos/src/nlp/language/LanguageService.ts:28](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/nlp/language/LanguageService.ts#L28)
 
 ***
 
@@ -110,7 +110,7 @@ Defined in: [packages/agentos/src/nlp/language/LanguageService.ts:28](https://gi
 
 > **supportedLanguages**: `string`[]
 
-Defined in: [packages/agentos/src/nlp/language/LanguageService.ts:24](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/nlp/language/LanguageService.ts#L24)
+Defined in: [packages/agentos/src/nlp/language/LanguageService.ts:24](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/nlp/language/LanguageService.ts#L24)
 
 ***
 
@@ -118,7 +118,7 @@ Defined in: [packages/agentos/src/nlp/language/LanguageService.ts:24](https://gi
 
 > `optional` **translationCacheMaxEntries**: `number`
 
-Defined in: [packages/agentos/src/nlp/language/LanguageService.ts:40](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/nlp/language/LanguageService.ts#L40)
+Defined in: [packages/agentos/src/nlp/language/LanguageService.ts:40](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/nlp/language/LanguageService.ts#L40)
 
 Approximate max entries in translation cache (LRU).
 
@@ -128,7 +128,7 @@ Approximate max entries in translation cache (LRU).
 
 > `optional` **translationProviderConfigs**: `object`[]
 
-Defined in: [packages/agentos/src/nlp/language/LanguageService.ts:32](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/nlp/language/LanguageService.ts#L32)
+Defined in: [packages/agentos/src/nlp/language/LanguageService.ts:32](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/nlp/language/LanguageService.ts#L32)
 
 Translation provider configs.
 

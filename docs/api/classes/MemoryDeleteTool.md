@@ -1,6 +1,6 @@
 # Class: MemoryDeleteTool
 
-Defined in: [packages/agentos/src/memory/io/tools/MemoryDeleteTool.ts:62](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/io/tools/MemoryDeleteTool.ts#L62)
+Defined in: [packages/agentos/src/memory/io/tools/MemoryDeleteTool.ts:62](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/io/tools/MemoryDeleteTool.ts#L62)
 
 ITool implementation that soft-deletes a memory trace from the agent's
 SQLite brain database.
@@ -25,7 +25,7 @@ const result = await tool.execute(
 
 > **new MemoryDeleteTool**(`brain`): `MemoryDeleteTool`
 
-Defined in: [packages/agentos/src/memory/io/tools/MemoryDeleteTool.ts:103](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/io/tools/MemoryDeleteTool.ts#L103)
+Defined in: [packages/agentos/src/memory/io/tools/MemoryDeleteTool.ts:103](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/io/tools/MemoryDeleteTool.ts#L103)
 
 #### Parameters
 
@@ -45,7 +45,7 @@ The agent's shared SQLite brain database connection.
 
 > `readonly` **category**: `"memory"` = `'memory'`
 
-Defined in: [packages/agentos/src/memory/io/tools/MemoryDeleteTool.ts:79](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/io/tools/MemoryDeleteTool.ts#L79)
+Defined in: [packages/agentos/src/memory/io/tools/MemoryDeleteTool.ts:79](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/io/tools/MemoryDeleteTool.ts#L79)
 
 Logical category for discovery and grouping.
 
@@ -59,7 +59,7 @@ Logical category for discovery and grouping.
 
 > `readonly` **description**: `string`
 
-Defined in: [packages/agentos/src/memory/io/tools/MemoryDeleteTool.ts:73](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/io/tools/MemoryDeleteTool.ts#L73)
+Defined in: [packages/agentos/src/memory/io/tools/MemoryDeleteTool.ts:73](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/io/tools/MemoryDeleteTool.ts#L73)
 
 LLM-facing description.
 
@@ -73,7 +73,7 @@ LLM-facing description.
 
 > `readonly` **displayName**: `"Delete Memory"` = `'Delete Memory'`
 
-Defined in: [packages/agentos/src/memory/io/tools/MemoryDeleteTool.ts:70](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/io/tools/MemoryDeleteTool.ts#L70)
+Defined in: [packages/agentos/src/memory/io/tools/MemoryDeleteTool.ts:70](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/io/tools/MemoryDeleteTool.ts#L70)
 
 Human-readable display name.
 
@@ -87,7 +87,7 @@ Human-readable display name.
 
 > `readonly` **hasSideEffects**: `true` = `true`
 
-Defined in: [packages/agentos/src/memory/io/tools/MemoryDeleteTool.ts:82](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/io/tools/MemoryDeleteTool.ts#L82)
+Defined in: [packages/agentos/src/memory/io/tools/MemoryDeleteTool.ts:82](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/io/tools/MemoryDeleteTool.ts#L82)
 
 This tool writes to the database.
 
@@ -101,7 +101,7 @@ This tool writes to the database.
 
 > `readonly` **id**: `"memory-delete-v1"` = `'memory-delete-v1'`
 
-Defined in: [packages/agentos/src/memory/io/tools/MemoryDeleteTool.ts:64](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/io/tools/MemoryDeleteTool.ts#L64)
+Defined in: [packages/agentos/src/memory/io/tools/MemoryDeleteTool.ts:64](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/io/tools/MemoryDeleteTool.ts#L64)
 
 Globally unique tool identifier.
 
@@ -115,7 +115,7 @@ Globally unique tool identifier.
 
 > `readonly` **inputSchema**: [`JSONSchemaObject`](../type-aliases/JSONSchemaObject.md)
 
-Defined in: [packages/agentos/src/memory/io/tools/MemoryDeleteTool.ts:85](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/io/tools/MemoryDeleteTool.ts#L85)
+Defined in: [packages/agentos/src/memory/io/tools/MemoryDeleteTool.ts:85](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/io/tools/MemoryDeleteTool.ts#L85)
 
 JSON schema for input validation and LLM tool-call construction.
 
@@ -129,7 +129,7 @@ JSON schema for input validation and LLM tool-call construction.
 
 > `readonly` **name**: `"memory_delete"` = `'memory_delete'`
 
-Defined in: [packages/agentos/src/memory/io/tools/MemoryDeleteTool.ts:67](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/io/tools/MemoryDeleteTool.ts#L67)
+Defined in: [packages/agentos/src/memory/io/tools/MemoryDeleteTool.ts:67](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/io/tools/MemoryDeleteTool.ts#L67)
 
 LLM-facing tool name.
 
@@ -143,7 +143,7 @@ LLM-facing tool name.
 
 > **execute**(`args`, `_context`): `Promise`\<[`ToolExecutionResult`](../interfaces/ToolExecutionResult.md)\<`MemoryDeleteOutput`\>\>
 
-Defined in: [packages/agentos/src/memory/io/tools/MemoryDeleteTool.ts:120](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/io/tools/MemoryDeleteTool.ts#L120)
+Defined in: [packages/agentos/src/memory/io/tools/MemoryDeleteTool.ts:120](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/io/tools/MemoryDeleteTool.ts#L120)
 
 Set `deleted = 1` on the memory trace matching `traceId`.
 

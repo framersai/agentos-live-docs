@@ -1,6 +1,6 @@
 # Class: KeywordFeatureDetector
 
-Defined in: [packages/agentos/src/memory/core/encoding/ContentFeatureDetector.ts:100](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/core/encoding/ContentFeatureDetector.ts#L100)
+Defined in: [packages/agentos/src/memory/core/encoding/ContentFeatureDetector.ts:100](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/core/encoding/ContentFeatureDetector.ts#L100)
 
 ## Implements
 
@@ -22,7 +22,7 @@ Defined in: [packages/agentos/src/memory/core/encoding/ContentFeatureDetector.ts
 
 > **detect**(`text`): `Promise`\<[`ContentFeatures`](../interfaces/ContentFeatures.md)\>
 
-Defined in: [packages/agentos/src/memory/core/encoding/ContentFeatureDetector.ts:101](https://github.com/framersai/agentos/blob/563be3fc675f9de928227b5191763fc5aa7da9e9/src/memory/core/encoding/ContentFeatureDetector.ts#L101)
+Defined in: [packages/agentos/src/memory/core/encoding/ContentFeatureDetector.ts:101](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/core/encoding/ContentFeatureDetector.ts#L101)
 
 #### Parameters
 
