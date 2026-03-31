@@ -789,16 +789,12 @@ body {
   max-width: 100% !important;
   width: 100% !important;
 }
-/* Constrain content containers only — NOT the sidebar or navbar internals */
-.main-wrapper,
-.docMainContainer,
-[class*="docItemContainer"],
-.container,
+/* Constrain CONTENT containers only — NOT sidebar, navbar, or layout internals */
+.main-wrapper > .container,
+.main-wrapper > .docMainContainer,
 article,
 .markdown,
-.theme-doc-markdown,
-.col {
-  max-width: 100% !important;
+.theme-doc-markdown {
   overflow-x: hidden;
 }
 
@@ -1011,14 +1007,10 @@ code { word-break: break-word; }
 }
 .mermaid svg { height: auto; }
 
-/* -- Prevent ANY child from causing horizontal overflow ------------------- */
-.main-wrapper,
-.container,
-.col,
+/* -- Prevent doc content from causing horizontal overflow ----------------- */
 article,
 .markdown,
 .theme-doc-markdown {
-  max-width: 100%;
   overflow-x: hidden;
 }
 
