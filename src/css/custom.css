@@ -821,7 +821,7 @@ article,
 [data-theme='dark'] .navbar-sidebar__close { color: #e2e8f0; }
 [data-theme='dark'] .navbar-sidebar__back { color: #e2e8f0; }
 [data-theme='dark'] .navbar__toggle { color: #e2e8f0; }
-.navbar-sidebar__backdrop { background-color: rgba(0, 0, 0, 0.9) !important; }
+.navbar-sidebar__backdrop { background-color: rgba(0, 0, 0, 0.85) !important; }
 /* Hide search bar on mobile entirely — it causes overflow in the navbar */
 @media (max-width: 996px) {
   .navbar__search,
@@ -977,16 +977,14 @@ article img {
     display: none !important;
   }
 
-  /* Hide ALL right-side links on mobile — they're in the sidebar drawer */
-  .navbar__items--right .navbar__link,
-  .navbar__items--right .header-github-link {
+  /* Hide text links on mobile — keep GitHub icon + theme toggle visible */
+  .navbar__items--right .navbar__link:not(.header-github-link) {
     display: none !important;
   }
 
   /* Prevent navbar overflow */
   .navbar__items--right {
     gap: 0.25rem !important;
-    overflow: hidden;
   }
   .navbar {
     overflow: hidden !important;
