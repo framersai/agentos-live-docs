@@ -898,18 +898,29 @@ article,
 [data-theme='light'] .navbar-sidebar__backdrop { background-color: rgba(0, 0, 0, 0.3); }
 [data-theme='light'] .navbar__toggle { color: #1e293b; }
 
-/* Mobile sidebar */
-.navbar-sidebar {
-  z-index: 100 !important;
-  background-color: var(--ifm-background-color) !important;
-}
-.navbar-sidebar__backdrop {
-  z-index: 99 !important;
-  background-color: rgba(0, 0, 0, 0.85) !important;
-}
-/* Lock body scroll when sidebar is open */
-html:has(.navbar-sidebar--show) {
-  overflow: hidden !important;
+/* Mobile sidebar — force full-screen overlay */
+@media (max-width: 996px) {
+  .navbar-sidebar {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    z-index: 9999 !important;
+    background-color: var(--ifm-background-color) !important;
+    overflow-y: auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+  .navbar-sidebar__backdrop {
+    z-index: 9998 !important;
+    background-color: rgba(0, 0, 0, 0.85) !important;
+  }
+  html:has(.navbar-sidebar--show) {
+    overflow: hidden !important;
+  }
 }
 /* Hide search bar on mobile entirely — it causes overflow in the navbar */
 @media (max-width: 996px) {
