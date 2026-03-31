@@ -908,18 +908,35 @@ html:has(.navbar-sidebar--show) {
 .navbar-sidebar__brand {
   overflow: hidden !important;
   max-width: 100% !important;
+  width: 100% !important;
 }
 
-/* Hide GitHub icon and external links from sidebar brand bar */
-.navbar-sidebar__brand .header-github-link,
-.navbar-sidebar__brand .navbar__link[href*="github"],
-.navbar-sidebar__brand [class*="colorModeToggle"] ~ .header-github-link {
+/* Hide GitHub icon EVERYWHERE inside the sidebar — brand bar AND items */
+.navbar-sidebar .header-github-link {
+  display: none !important;
+  visibility: hidden !important;
+  width: 0 !important;
+  height: 0 !important;
+  overflow: hidden !important;
+  position: absolute !important;
+  left: -9999px !important;
+}
+
+/* Also hide any navbar__item that wraps the github link */
+.navbar-sidebar .navbar__item:has(.header-github-link) {
+  display: none !important;
+}
+
+/* Hide ALL external link icons inside sidebar */
+.navbar-sidebar [class*="iconExternalLink"],
+.navbar-sidebar .navbar__link svg[class*="external"] {
   display: none !important;
 }
 
 /* Sidebar items list — full-width with proper spacing */
 .navbar-sidebar .navbar-sidebar__items {
   overflow-x: hidden !important;
+  max-width: 100% !important;
 }
 
 .navbar-sidebar .menu__link,
