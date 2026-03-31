@@ -818,9 +818,21 @@ article,
     display: none !important;
   }
 
+  /* Move hamburger to the right side of the navbar */
   .navbar__toggle {
     color: var(--ifm-navbar-link-color);
-    margin-right: 0.25rem;
+    order: 999;
+    margin-left: auto;
+  }
+
+  /* Navbar inner needs to allow reordering */
+  .navbar__inner {
+    flex-wrap: nowrap;
+  }
+
+  /* Hide left-side items except brand on mobile */
+  .navbar__items:not(.navbar__items--right) > .navbar__item:not(.navbar__brand) {
+    display: none !important;
   }
 
   .navbar-sidebar__backdrop {
