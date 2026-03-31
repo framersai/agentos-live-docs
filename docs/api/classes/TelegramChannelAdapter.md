@@ -1,6 +1,6 @@
 # Class: TelegramChannelAdapter
 
-Defined in: [packages/agentos/src/channels/adapters/TelegramChannelAdapter.ts:67](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/adapters/TelegramChannelAdapter.ts#L67)
+Defined in: [packages/agentos/src/channels/adapters/TelegramChannelAdapter.ts:67](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/adapters/TelegramChannelAdapter.ts#L67)
 
 Channel adapter for Telegram using the Telegraf SDK.
 
@@ -22,7 +22,7 @@ editing, deletion.
 
 > **new TelegramChannelAdapter**(`retryConfig?`): `TelegramChannelAdapter`
 
-Defined in: [packages/agentos/src/channels/adapters/BaseChannelAdapter.ts:111](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/adapters/BaseChannelAdapter.ts#L111)
+Defined in: [packages/agentos/src/channels/adapters/BaseChannelAdapter.ts:111](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/adapters/BaseChannelAdapter.ts#L111)
 
 #### Parameters
 
@@ -44,7 +44,7 @@ Defined in: [packages/agentos/src/channels/adapters/BaseChannelAdapter.ts:111](h
 
 > `protected` **auth**: [`ChannelAuthConfig`](../interfaces/ChannelAuthConfig.md) & `object` \| `undefined`
 
-Defined in: [packages/agentos/src/channels/adapters/BaseChannelAdapter.ts:97](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/adapters/BaseChannelAdapter.ts#L97)
+Defined in: [packages/agentos/src/channels/adapters/BaseChannelAdapter.ts:97](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/adapters/BaseChannelAdapter.ts#L97)
 
 Stored auth config so `reconnect()` can re-use it.
 
@@ -58,7 +58,7 @@ Stored auth config so `reconnect()` can re-use it.
 
 > `readonly` **capabilities**: readonly [`ChannelCapability`](../type-aliases/ChannelCapability.md)[]
 
-Defined in: [packages/agentos/src/channels/adapters/TelegramChannelAdapter.ts:70](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/adapters/TelegramChannelAdapter.ts#L70)
+Defined in: [packages/agentos/src/channels/adapters/TelegramChannelAdapter.ts:70](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/adapters/TelegramChannelAdapter.ts#L70)
 
 Declared capabilities of this adapter.
 
@@ -72,7 +72,7 @@ Declared capabilities of this adapter.
 
 > `protected` **connectedSince**: `string` \| `undefined`
 
-Defined in: [packages/agentos/src/channels/adapters/BaseChannelAdapter.ts:92](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/adapters/BaseChannelAdapter.ts#L92)
+Defined in: [packages/agentos/src/channels/adapters/BaseChannelAdapter.ts:92](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/adapters/BaseChannelAdapter.ts#L92)
 
 #### Inherited from
 
@@ -84,7 +84,7 @@ Defined in: [packages/agentos/src/channels/adapters/BaseChannelAdapter.ts:92](ht
 
 > `readonly` **displayName**: `"Telegram"` = `'Telegram'`
 
-Defined in: [packages/agentos/src/channels/adapters/TelegramChannelAdapter.ts:69](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/adapters/TelegramChannelAdapter.ts#L69)
+Defined in: [packages/agentos/src/channels/adapters/TelegramChannelAdapter.ts:69](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/adapters/TelegramChannelAdapter.ts#L69)
 
 Human-readable display name (e.g., "WhatsApp Business").
 
@@ -98,7 +98,7 @@ Human-readable display name (e.g., "WhatsApp Business").
 
 > `protected` **errorMessage**: `string` \| `undefined`
 
-Defined in: [packages/agentos/src/channels/adapters/BaseChannelAdapter.ts:93](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/adapters/BaseChannelAdapter.ts#L93)
+Defined in: [packages/agentos/src/channels/adapters/BaseChannelAdapter.ts:93](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/adapters/BaseChannelAdapter.ts#L93)
 
 #### Inherited from
 
@@ -110,7 +110,7 @@ Defined in: [packages/agentos/src/channels/adapters/BaseChannelAdapter.ts:93](ht
 
 > `readonly` **platform**: [`ChannelPlatform`](../type-aliases/ChannelPlatform.md) = `'telegram'`
 
-Defined in: [packages/agentos/src/channels/adapters/TelegramChannelAdapter.ts:68](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/adapters/TelegramChannelAdapter.ts#L68)
+Defined in: [packages/agentos/src/channels/adapters/TelegramChannelAdapter.ts:68](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/adapters/TelegramChannelAdapter.ts#L68)
 
 Platform this adapter serves.
 
@@ -124,7 +124,7 @@ Platform this adapter serves.
 
 > `protected` **platformInfo**: `Record`\<`string`, `unknown`\> = `{}`
 
-Defined in: [packages/agentos/src/channels/adapters/BaseChannelAdapter.ts:94](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/adapters/BaseChannelAdapter.ts#L94)
+Defined in: [packages/agentos/src/channels/adapters/BaseChannelAdapter.ts:94](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/adapters/BaseChannelAdapter.ts#L94)
 
 #### Inherited from
 
@@ -136,7 +136,7 @@ Defined in: [packages/agentos/src/channels/adapters/BaseChannelAdapter.ts:94](ht
 
 > `protected` `readonly` **retryConfig**: [`RetryConfig`](../interfaces/RetryConfig.md)
 
-Defined in: [packages/agentos/src/channels/adapters/BaseChannelAdapter.ts:101](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/adapters/BaseChannelAdapter.ts#L101)
+Defined in: [packages/agentos/src/channels/adapters/BaseChannelAdapter.ts:101](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/adapters/BaseChannelAdapter.ts#L101)
 
 #### Inherited from
 
@@ -148,7 +148,7 @@ Defined in: [packages/agentos/src/channels/adapters/BaseChannelAdapter.ts:101](h
 
 > `protected` **status**: [`ChannelConnectionStatus`](../type-aliases/ChannelConnectionStatus.md) = `'disconnected'`
 
-Defined in: [packages/agentos/src/channels/adapters/BaseChannelAdapter.ts:91](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/adapters/BaseChannelAdapter.ts#L91)
+Defined in: [packages/agentos/src/channels/adapters/BaseChannelAdapter.ts:91](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/adapters/BaseChannelAdapter.ts#L91)
 
 #### Inherited from
 
@@ -160,7 +160,7 @@ Defined in: [packages/agentos/src/channels/adapters/BaseChannelAdapter.ts:91](ht
 
 > **addReaction**(`conversationId`, `messageId`, `emoji`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/channels/adapters/TelegramChannelAdapter.ts:336](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/adapters/TelegramChannelAdapter.ts#L336)
+Defined in: [packages/agentos/src/channels/adapters/TelegramChannelAdapter.ts:336](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/adapters/TelegramChannelAdapter.ts#L336)
 
 #### Parameters
 
@@ -186,7 +186,7 @@ Defined in: [packages/agentos/src/channels/adapters/TelegramChannelAdapter.ts:33
 
 > **deleteMessage**(`conversationId`, `messageId`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/channels/adapters/TelegramChannelAdapter.ts:326](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/adapters/TelegramChannelAdapter.ts#L326)
+Defined in: [packages/agentos/src/channels/adapters/TelegramChannelAdapter.ts:326](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/adapters/TelegramChannelAdapter.ts#L326)
 
 #### Parameters
 
@@ -208,7 +208,7 @@ Defined in: [packages/agentos/src/channels/adapters/TelegramChannelAdapter.ts:32
 
 > `protected` **doConnect**(`auth`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/channels/adapters/TelegramChannelAdapter.ts:104](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/adapters/TelegramChannelAdapter.ts#L104)
+Defined in: [packages/agentos/src/channels/adapters/TelegramChannelAdapter.ts:104](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/adapters/TelegramChannelAdapter.ts#L104)
 
 Establish the platform connection using the supplied credentials.
 Called by [initialize](#initialize) after state has been set to `connecting`.
@@ -234,7 +234,7 @@ Must throw on failure — the base class handles retry and state changes.
 
 > `protected` **doSendMessage**(`conversationId`, `content`): `Promise`\<[`ChannelSendResult`](../interfaces/ChannelSendResult.md)\>
 
-Defined in: [packages/agentos/src/channels/adapters/TelegramChannelAdapter.ts:203](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/adapters/TelegramChannelAdapter.ts#L203)
+Defined in: [packages/agentos/src/channels/adapters/TelegramChannelAdapter.ts:203](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/adapters/TelegramChannelAdapter.ts#L203)
 
 Deliver a message to the external platform.
 Called by [sendMessage](#sendmessage) only when the adapter is `connected`.
@@ -263,7 +263,7 @@ Called by [sendMessage](#sendmessage) only when the adapter is `connected`.
 
 > `protected` **doShutdown**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/channels/adapters/TelegramChannelAdapter.ts:288](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/adapters/TelegramChannelAdapter.ts#L288)
+Defined in: [packages/agentos/src/channels/adapters/TelegramChannelAdapter.ts:288](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/adapters/TelegramChannelAdapter.ts#L288)
 
 Release platform resources (close WebSocket, stop polling, etc.).
 Called by [shutdown](#shutdown) before the state transitions to `disconnected`.
@@ -282,7 +282,7 @@ Called by [shutdown](#shutdown) before the state transitions to `disconnected`.
 
 > **editMessage**(`conversationId`, `messageId`, `content`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/channels/adapters/TelegramChannelAdapter.ts:306](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/adapters/TelegramChannelAdapter.ts#L306)
+Defined in: [packages/agentos/src/channels/adapters/TelegramChannelAdapter.ts:306](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/adapters/TelegramChannelAdapter.ts#L306)
 
 #### Parameters
 
@@ -308,7 +308,7 @@ Defined in: [packages/agentos/src/channels/adapters/TelegramChannelAdapter.ts:30
 
 > `protected` **emit**(`event`): `void`
 
-Defined in: [packages/agentos/src/channels/adapters/BaseChannelAdapter.ts:265](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/adapters/BaseChannelAdapter.ts#L265)
+Defined in: [packages/agentos/src/channels/adapters/BaseChannelAdapter.ts:265](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/adapters/BaseChannelAdapter.ts#L265)
 
 Emit an event to all matching subscribers.
 Subclasses call this when the platform SDK receives an inbound event.
@@ -333,7 +333,7 @@ Subclasses call this when the platform SDK receives an inbound event.
 
 > `protected` **emitConnectionChange**(): `void`
 
-Defined in: [packages/agentos/src/channels/adapters/BaseChannelAdapter.ts:296](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/adapters/BaseChannelAdapter.ts#L296)
+Defined in: [packages/agentos/src/channels/adapters/BaseChannelAdapter.ts:296](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/adapters/BaseChannelAdapter.ts#L296)
 
 Convenience helper: emit a `connection_change` event with the current
 status. Called automatically by [setStatus](#setstatus).
@@ -352,7 +352,7 @@ status. Called automatically by [setStatus](#setstatus).
 
 > **getConnectionInfo**(): [`ChannelConnectionInfo`](../interfaces/ChannelConnectionInfo.md)
 
-Defined in: [packages/agentos/src/channels/adapters/BaseChannelAdapter.ts:205](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/adapters/BaseChannelAdapter.ts#L205)
+Defined in: [packages/agentos/src/channels/adapters/BaseChannelAdapter.ts:205](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/adapters/BaseChannelAdapter.ts#L205)
 
 Get the current connection status and metadata.
 
@@ -370,7 +370,7 @@ Get the current connection status and metadata.
 
 > `protected` **hasCapability**(`cap`): `boolean`
 
-Defined in: [packages/agentos/src/channels/adapters/BaseChannelAdapter.ts:312](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/adapters/BaseChannelAdapter.ts#L312)
+Defined in: [packages/agentos/src/channels/adapters/BaseChannelAdapter.ts:312](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/adapters/BaseChannelAdapter.ts#L312)
 
 Check whether this adapter declares a specific capability.
 
@@ -394,7 +394,7 @@ Check whether this adapter declares a specific capability.
 
 > **initialize**(`auth`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/channels/adapters/BaseChannelAdapter.ts:151](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/adapters/BaseChannelAdapter.ts#L151)
+Defined in: [packages/agentos/src/channels/adapters/BaseChannelAdapter.ts:151](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/adapters/BaseChannelAdapter.ts#L151)
 
 Initialize the adapter with auth credentials. If already connected this
 will shut down the existing connection first (idempotent).
@@ -419,7 +419,7 @@ will shut down the existing connection first (idempotent).
 
 > **on**(`handler`, `eventTypes?`): () => `void`
 
-Defined in: [packages/agentos/src/channels/adapters/BaseChannelAdapter.ts:248](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/adapters/BaseChannelAdapter.ts#L248)
+Defined in: [packages/agentos/src/channels/adapters/BaseChannelAdapter.ts:248](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/adapters/BaseChannelAdapter.ts#L248)
 
 Register an event handler. Returns an unsubscribe function.
 
@@ -451,7 +451,7 @@ Register an event handler. Returns an unsubscribe function.
 
 > **reconnect**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/channels/adapters/BaseChannelAdapter.ts:186](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/adapters/BaseChannelAdapter.ts#L186)
+Defined in: [packages/agentos/src/channels/adapters/BaseChannelAdapter.ts:186](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/adapters/BaseChannelAdapter.ts#L186)
 
 Manually trigger a reconnection attempt using stored credentials.
 Useful for UI-driven "reconnect" buttons.
@@ -470,7 +470,7 @@ Useful for UI-driven "reconnect" buttons.
 
 > **sendMessage**(`conversationId`, `content`): `Promise`\<[`ChannelSendResult`](../interfaces/ChannelSendResult.md)\>
 
-Defined in: [packages/agentos/src/channels/adapters/BaseChannelAdapter.ts:218](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/adapters/BaseChannelAdapter.ts#L218)
+Defined in: [packages/agentos/src/channels/adapters/BaseChannelAdapter.ts:218](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/adapters/BaseChannelAdapter.ts#L218)
 
 Send a message to a conversation on the external platform.
 
@@ -504,7 +504,7 @@ The platform-assigned message ID.
 
 > **sendTypingIndicator**(`conversationId`, `_isTyping`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/channels/adapters/TelegramChannelAdapter.ts:353](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/adapters/TelegramChannelAdapter.ts#L353)
+Defined in: [packages/agentos/src/channels/adapters/TelegramChannelAdapter.ts:353](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/adapters/TelegramChannelAdapter.ts#L353)
 
 Default stub — platforms that support typing indicators should override.
 
@@ -532,7 +532,7 @@ Default stub — platforms that support typing indicators should override.
 
 > `protected` **setStatus**(`newStatus`, `error?`): `void`
 
-Defined in: [packages/agentos/src/channels/adapters/BaseChannelAdapter.ts:319](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/adapters/BaseChannelAdapter.ts#L319)
+Defined in: [packages/agentos/src/channels/adapters/BaseChannelAdapter.ts:319](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/adapters/BaseChannelAdapter.ts#L319)
 
 Transition to a new connection status and emit an event.
 
@@ -560,7 +560,7 @@ Transition to a new connection status and emit an event.
 
 > **shutdown**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/channels/adapters/BaseChannelAdapter.ts:166](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/adapters/BaseChannelAdapter.ts#L166)
+Defined in: [packages/agentos/src/channels/adapters/BaseChannelAdapter.ts:166](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/adapters/BaseChannelAdapter.ts#L166)
 
 Gracefully shut down the adapter and release all resources.
 

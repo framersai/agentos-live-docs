@@ -1,6 +1,6 @@
 # Interface: SelfImprovementToolDeps
 
-Defined in: [packages/agentos/src/emergent/EmergentCapabilityEngine.ts:45](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/emergent/EmergentCapabilityEngine.ts#L45)
+Defined in: [packages/agentos/src/emergent/EmergentCapabilityEngine.ts:45](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/emergent/EmergentCapabilityEngine.ts#L45)
 
 Dependencies required to construct the four self-improvement tools.
 
@@ -14,7 +14,7 @@ wire each tool without hard-coupling to specific service implementations.
 
 > **executeTool**: (`name`, `args`, `context?`) => `Promise`\<`unknown`\>
 
-Defined in: [packages/agentos/src/emergent/EmergentCapabilityEngine.ts:79](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/emergent/EmergentCapabilityEngine.ts#L79)
+Defined in: [packages/agentos/src/emergent/EmergentCapabilityEngine.ts:79](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/emergent/EmergentCapabilityEngine.ts#L79)
 
 Executes a registered tool by name with the given arguments.
 
@@ -42,7 +42,7 @@ Executes a registered tool by name with the given arguments.
 
 > **getActiveSkills**: (`context?`) => `object`[]
 
-Defined in: [packages/agentos/src/emergent/EmergentCapabilityEngine.ts:56](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/emergent/EmergentCapabilityEngine.ts#L56)
+Defined in: [packages/agentos/src/emergent/EmergentCapabilityEngine.ts:56](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/emergent/EmergentCapabilityEngine.ts#L56)
 
 Returns the agent's currently active skills.
 
@@ -62,7 +62,7 @@ Returns the agent's currently active skills.
 
 > **getLockedSkills**: () => `string`[]
 
-Defined in: [packages/agentos/src/emergent/EmergentCapabilityEngine.ts:61](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/emergent/EmergentCapabilityEngine.ts#L61)
+Defined in: [packages/agentos/src/emergent/EmergentCapabilityEngine.ts:61](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/emergent/EmergentCapabilityEngine.ts#L61)
 
 Returns skill IDs that may not be disabled (core skills).
 
@@ -76,7 +76,7 @@ Returns skill IDs that may not be disabled (core skills).
 
 > **getPersonality**: () => `Record`\<`string`, `number`\>
 
-Defined in: [packages/agentos/src/emergent/EmergentCapabilityEngine.ts:47](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/emergent/EmergentCapabilityEngine.ts#L47)
+Defined in: [packages/agentos/src/emergent/EmergentCapabilityEngine.ts:47](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/emergent/EmergentCapabilityEngine.ts#L47)
 
 Returns the current HEXACO personality trait values as a trait→value map.
 
@@ -90,7 +90,7 @@ Returns the current HEXACO personality trait values as a trait→value map.
 
 > `optional` **getSessionParam**: (`param`, `context`) => `unknown`
 
-Defined in: [packages/agentos/src/emergent/EmergentCapabilityEngine.ts:92](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/emergent/EmergentCapabilityEngine.ts#L92)
+Defined in: [packages/agentos/src/emergent/EmergentCapabilityEngine.ts:92](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/emergent/EmergentCapabilityEngine.ts#L92)
 
 Optional host-level getter for session-scoped runtime params such as temperature.
 
@@ -114,7 +114,7 @@ Optional host-level getter for session-scoped runtime params such as temperature
 
 > **listTools**: () => `string`[]
 
-Defined in: [packages/agentos/src/emergent/EmergentCapabilityEngine.ts:86](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/emergent/EmergentCapabilityEngine.ts#L86)
+Defined in: [packages/agentos/src/emergent/EmergentCapabilityEngine.ts:86](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/emergent/EmergentCapabilityEngine.ts#L86)
 
 Returns the names of all currently registered tools.
 
@@ -128,7 +128,7 @@ Returns the names of all currently registered tools.
 
 > **loadSkill**: (`id`, `context?`) => `Promise`\<\{ `category`: `string`; `name`: `string`; `skillId`: `string`; \}\>
 
-Defined in: [packages/agentos/src/emergent/EmergentCapabilityEngine.ts:64](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/emergent/EmergentCapabilityEngine.ts#L64)
+Defined in: [packages/agentos/src/emergent/EmergentCapabilityEngine.ts:64](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/emergent/EmergentCapabilityEngine.ts#L64)
 
 Dynamically loads a skill by ID and returns its metadata.
 
@@ -152,7 +152,7 @@ Dynamically loads a skill by ID and returns its metadata.
 
 > `optional` **mutationStore**: [`PersonalityMutationStore`](../classes/PersonalityMutationStore.md)
 
-Defined in: [packages/agentos/src/emergent/EmergentCapabilityEngine.ts:53](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/emergent/EmergentCapabilityEngine.ts#L53)
+Defined in: [packages/agentos/src/emergent/EmergentCapabilityEngine.ts:53](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/emergent/EmergentCapabilityEngine.ts#L53)
 
 Durable store for personality mutations (used by AdaptPersonalityTool for persistence).
 
@@ -162,7 +162,7 @@ Durable store for personality mutations (used by AdaptPersonalityTool for persis
 
 > **searchSkills**: (`query`, `context?`) => `object`[]
 
-Defined in: [packages/agentos/src/emergent/EmergentCapabilityEngine.ts:73](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/emergent/EmergentCapabilityEngine.ts#L73)
+Defined in: [packages/agentos/src/emergent/EmergentCapabilityEngine.ts:73](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/emergent/EmergentCapabilityEngine.ts#L73)
 
 Searches the skill registry by query string, returning matching skill metadata.
 
@@ -186,7 +186,7 @@ Searches the skill registry by query string, returning matching skill metadata.
 
 > **setPersonality**: (`trait`, `value`) => `void`
 
-Defined in: [packages/agentos/src/emergent/EmergentCapabilityEngine.ts:50](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/emergent/EmergentCapabilityEngine.ts#L50)
+Defined in: [packages/agentos/src/emergent/EmergentCapabilityEngine.ts:50](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/emergent/EmergentCapabilityEngine.ts#L50)
 
 Sets a single HEXACO personality trait to the given value (already clamped).
 
@@ -210,7 +210,7 @@ Sets a single HEXACO personality trait to the given value (already clamped).
 
 > `optional` **setSessionParam**: (`param`, `value`, `context`) => `void`
 
-Defined in: [packages/agentos/src/emergent/EmergentCapabilityEngine.ts:98](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/emergent/EmergentCapabilityEngine.ts#L98)
+Defined in: [packages/agentos/src/emergent/EmergentCapabilityEngine.ts:98](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/emergent/EmergentCapabilityEngine.ts#L98)
 
 Optional host-level setter for session-scoped runtime params such as temperature.
 
@@ -238,7 +238,7 @@ Optional host-level setter for session-scoped runtime params such as temperature
 
 > `optional` **storeMemory**: (`trace`) => `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/emergent/EmergentCapabilityEngine.ts:89](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/emergent/EmergentCapabilityEngine.ts#L89)
+Defined in: [packages/agentos/src/emergent/EmergentCapabilityEngine.ts:89](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/emergent/EmergentCapabilityEngine.ts#L89)
 
 Optional callback for persisting self-improvement trace memories.
 
@@ -272,7 +272,7 @@ Optional callback for persisting self-improvement trace memories.
 
 > **unloadSkill**: (`id`, `context?`) => `void`
 
-Defined in: [packages/agentos/src/emergent/EmergentCapabilityEngine.ts:70](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/emergent/EmergentCapabilityEngine.ts#L70)
+Defined in: [packages/agentos/src/emergent/EmergentCapabilityEngine.ts:70](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/emergent/EmergentCapabilityEngine.ts#L70)
 
 Unloads (disables) a previously loaded skill.
 

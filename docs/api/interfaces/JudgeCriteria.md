@@ -1,6 +1,6 @@
 # Interface: JudgeCriteria
 
-Defined in: [packages/agentos/src/evaluation/LLMJudge.ts:33](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/evaluation/LLMJudge.ts#L33)
+Defined in: [packages/agentos/src/evaluation/LLMJudge.ts:33](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/evaluation/LLMJudge.ts#L33)
 
 Evaluation criteria for LLM judge
 
@@ -10,7 +10,7 @@ Evaluation criteria for LLM judge
 
 > **description**: `string`
 
-Defined in: [packages/agentos/src/evaluation/LLMJudge.ts:37](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/evaluation/LLMJudge.ts#L37)
+Defined in: [packages/agentos/src/evaluation/LLMJudge.ts:37](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/evaluation/LLMJudge.ts#L37)
 
 Description of what to evaluate
 
@@ -20,7 +20,7 @@ Description of what to evaluate
 
 > **name**: `string`
 
-Defined in: [packages/agentos/src/evaluation/LLMJudge.ts:35](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/evaluation/LLMJudge.ts#L35)
+Defined in: [packages/agentos/src/evaluation/LLMJudge.ts:35](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/evaluation/LLMJudge.ts#L35)
 
 Criterion name
 
@@ -30,7 +30,7 @@ Criterion name
 
 > `optional` **rubric**: `string`
 
-Defined in: [packages/agentos/src/evaluation/LLMJudge.ts:41](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/evaluation/LLMJudge.ts#L41)
+Defined in: [packages/agentos/src/evaluation/LLMJudge.ts:41](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/evaluation/LLMJudge.ts#L41)
 
 Rubric for scoring
 
@@ -40,6 +40,6 @@ Rubric for scoring
 
 > `optional` **weight**: `number`
 
-Defined in: [packages/agentos/src/evaluation/LLMJudge.ts:39](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/evaluation/LLMJudge.ts#L39)
+Defined in: [packages/agentos/src/evaluation/LLMJudge.ts:39](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/evaluation/LLMJudge.ts#L39)
 
 Weight (0-1)

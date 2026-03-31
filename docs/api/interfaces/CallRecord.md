@@ -1,6 +1,6 @@
 # Interface: CallRecord
 
-Defined in: [packages/agentos/src/channels/telephony/types.ts:193](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/telephony/types.ts#L193)
+Defined in: [packages/agentos/src/channels/telephony/types.ts:193](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/telephony/types.ts#L193)
 
 Full record of a voice call -- used for tracking, persistence, and status queries.
 
@@ -10,7 +10,7 @@ Full record of a voice call -- used for tracking, persistence, and status querie
 
 > **callId**: `string`
 
-Defined in: [packages/agentos/src/channels/telephony/types.ts:195](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/telephony/types.ts#L195)
+Defined in: [packages/agentos/src/channels/telephony/types.ts:195](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/telephony/types.ts#L195)
 
 Unique call identifier (UUID).
 
@@ -20,7 +20,7 @@ Unique call identifier (UUID).
 
 > **createdAt**: `number`
 
-Defined in: [packages/agentos/src/channels/telephony/types.ts:219](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/telephony/types.ts#L219)
+Defined in: [packages/agentos/src/channels/telephony/types.ts:219](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/telephony/types.ts#L219)
 
 Unix timestamp (ms) when the call was created.
 
@@ -30,7 +30,7 @@ Unix timestamp (ms) when the call was created.
 
 > **direction**: [`CallDirection`](../type-aliases/CallDirection.md)
 
-Defined in: [packages/agentos/src/channels/telephony/types.ts:203](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/telephony/types.ts#L203)
+Defined in: [packages/agentos/src/channels/telephony/types.ts:203](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/telephony/types.ts#L203)
 
 Call direction.
 
@@ -40,7 +40,7 @@ Call direction.
 
 > `optional` **endedAt**: `number`
 
-Defined in: [packages/agentos/src/channels/telephony/types.ts:221](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/telephony/types.ts#L221)
+Defined in: [packages/agentos/src/channels/telephony/types.ts:221](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/telephony/types.ts#L221)
 
 Unix timestamp (ms) when the call reached a terminal state.
 
@@ -50,7 +50,7 @@ Unix timestamp (ms) when the call reached a terminal state.
 
 > `optional` **errorMessage**: `string`
 
-Defined in: [packages/agentos/src/channels/telephony/types.ts:223](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/telephony/types.ts#L223)
+Defined in: [packages/agentos/src/channels/telephony/types.ts:223](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/telephony/types.ts#L223)
 
 Error message if state is 'error' or 'failed'.
 
@@ -60,7 +60,7 @@ Error message if state is 'error' or 'failed'.
 
 > **fromNumber**: `string`
 
-Defined in: [packages/agentos/src/channels/telephony/types.ts:207](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/telephony/types.ts#L207)
+Defined in: [packages/agentos/src/channels/telephony/types.ts:207](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/telephony/types.ts#L207)
 
 E.164 phone number of the caller.
 
@@ -70,7 +70,7 @@ E.164 phone number of the caller.
 
 > `optional` **metadata**: `Record`\<`string`, `unknown`\>
 
-Defined in: [packages/agentos/src/channels/telephony/types.ts:225](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/telephony/types.ts#L225)
+Defined in: [packages/agentos/src/channels/telephony/types.ts:225](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/telephony/types.ts#L225)
 
 Provider-specific metadata.
 
@@ -80,7 +80,7 @@ Provider-specific metadata.
 
 > **mode**: [`CallMode`](../type-aliases/CallMode.md)
 
-Defined in: [packages/agentos/src/channels/telephony/types.ts:205](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/telephony/types.ts#L205)
+Defined in: [packages/agentos/src/channels/telephony/types.ts:205](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/telephony/types.ts#L205)
 
 Call interaction mode.
 
@@ -90,7 +90,7 @@ Call interaction mode.
 
 > **processedEventIds**: `string`[]
 
-Defined in: [packages/agentos/src/channels/telephony/types.ts:215](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/telephony/types.ts#L215)
+Defined in: [packages/agentos/src/channels/telephony/types.ts:215](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/telephony/types.ts#L215)
 
 IDs of webhook events already processed (idempotency).
 
@@ -100,7 +100,7 @@ IDs of webhook events already processed (idempotency).
 
 > **provider**: [`VoiceProviderName`](../type-aliases/VoiceProviderName.md)
 
-Defined in: [packages/agentos/src/channels/telephony/types.ts:199](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/telephony/types.ts#L199)
+Defined in: [packages/agentos/src/channels/telephony/types.ts:199](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/telephony/types.ts#L199)
 
 Which provider is handling this call.
 
@@ -110,7 +110,7 @@ Which provider is handling this call.
 
 > `optional` **providerCallId**: `string`
 
-Defined in: [packages/agentos/src/channels/telephony/types.ts:197](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/telephony/types.ts#L197)
+Defined in: [packages/agentos/src/channels/telephony/types.ts:197](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/telephony/types.ts#L197)
 
 Provider-assigned call ID (e.g., Twilio CallSid).
 
@@ -120,7 +120,7 @@ Provider-assigned call ID (e.g., Twilio CallSid).
 
 > `optional` **seedId**: `string`
 
-Defined in: [packages/agentos/src/channels/telephony/types.ts:211](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/telephony/types.ts#L211)
+Defined in: [packages/agentos/src/channels/telephony/types.ts:211](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/telephony/types.ts#L211)
 
 Agent seed ID (if bound to a specific agent).
 
@@ -130,7 +130,7 @@ Agent seed ID (if bound to a specific agent).
 
 > **state**: [`CallState`](../type-aliases/CallState.md)
 
-Defined in: [packages/agentos/src/channels/telephony/types.ts:201](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/telephony/types.ts#L201)
+Defined in: [packages/agentos/src/channels/telephony/types.ts:201](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/telephony/types.ts#L201)
 
 Current state in the call lifecycle.
 
@@ -140,7 +140,7 @@ Current state in the call lifecycle.
 
 > `optional` **streamSid**: `string`
 
-Defined in: [packages/agentos/src/channels/telephony/types.ts:217](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/telephony/types.ts#L217)
+Defined in: [packages/agentos/src/channels/telephony/types.ts:217](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/telephony/types.ts#L217)
 
 Stream SID for media streams (Twilio-specific).
 
@@ -150,7 +150,7 @@ Stream SID for media streams (Twilio-specific).
 
 > **toNumber**: `string`
 
-Defined in: [packages/agentos/src/channels/telephony/types.ts:209](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/telephony/types.ts#L209)
+Defined in: [packages/agentos/src/channels/telephony/types.ts:209](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/telephony/types.ts#L209)
 
 E.164 phone number being called.
 
@@ -160,6 +160,6 @@ E.164 phone number being called.
 
 > **transcript**: [`TranscriptEntry`](TranscriptEntry.md)[]
 
-Defined in: [packages/agentos/src/channels/telephony/types.ts:213](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/telephony/types.ts#L213)
+Defined in: [packages/agentos/src/channels/telephony/types.ts:213](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/telephony/types.ts#L213)
 
 Conversation transcript.

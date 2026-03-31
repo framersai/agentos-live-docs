@@ -1,6 +1,6 @@
 # Interface: CircuitBreakerConfig
 
-Defined in: [packages/agentos/src/safety/runtime/CircuitBreaker.ts:10](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/safety/runtime/CircuitBreaker.ts#L10)
+Defined in: [packages/agentos/src/safety/runtime/CircuitBreaker.ts:10](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/safety/runtime/CircuitBreaker.ts#L10)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/safety/runtime/CircuitBreaker.ts:10](https://g
 
 > **cooldownMs**: `number`
 
-Defined in: [packages/agentos/src/safety/runtime/CircuitBreaker.ts:18](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/safety/runtime/CircuitBreaker.ts#L18)
+Defined in: [packages/agentos/src/safety/runtime/CircuitBreaker.ts:18](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/safety/runtime/CircuitBreaker.ts#L18)
 
 How long to stay open before trying half-open.
 
@@ -24,7 +24,7 @@ How long to stay open before trying half-open.
 
 > **failureThreshold**: `number`
 
-Defined in: [packages/agentos/src/safety/runtime/CircuitBreaker.ts:14](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/safety/runtime/CircuitBreaker.ts#L14)
+Defined in: [packages/agentos/src/safety/runtime/CircuitBreaker.ts:14](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/safety/runtime/CircuitBreaker.ts#L14)
 
 Number of failures before opening the circuit.
 
@@ -40,7 +40,7 @@ Number of failures before opening the circuit.
 
 > **failureWindowMs**: `number`
 
-Defined in: [packages/agentos/src/safety/runtime/CircuitBreaker.ts:16](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/safety/runtime/CircuitBreaker.ts#L16)
+Defined in: [packages/agentos/src/safety/runtime/CircuitBreaker.ts:16](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/safety/runtime/CircuitBreaker.ts#L16)
 
 Time window in ms to count failures.
 
@@ -56,7 +56,7 @@ Time window in ms to count failures.
 
 > **halfOpenSuccessThreshold**: `number`
 
-Defined in: [packages/agentos/src/safety/runtime/CircuitBreaker.ts:20](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/safety/runtime/CircuitBreaker.ts#L20)
+Defined in: [packages/agentos/src/safety/runtime/CircuitBreaker.ts:20](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/safety/runtime/CircuitBreaker.ts#L20)
 
 Number of successful probes in half-open before closing.
 
@@ -72,7 +72,7 @@ Number of successful probes in half-open before closing.
 
 > **name**: `string`
 
-Defined in: [packages/agentos/src/safety/runtime/CircuitBreaker.ts:12](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/safety/runtime/CircuitBreaker.ts#L12)
+Defined in: [packages/agentos/src/safety/runtime/CircuitBreaker.ts:12](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/safety/runtime/CircuitBreaker.ts#L12)
 
 Unique name for this breaker (for logging/metrics).
 
@@ -82,7 +82,7 @@ Unique name for this breaker (for logging/metrics).
 
 > `optional` **onStateChange**: (`from`, `to`, `name`) => `void`
 
-Defined in: [packages/agentos/src/safety/runtime/CircuitBreaker.ts:22](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/safety/runtime/CircuitBreaker.ts#L22)
+Defined in: [packages/agentos/src/safety/runtime/CircuitBreaker.ts:22](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/safety/runtime/CircuitBreaker.ts#L22)
 
 Optional callback when state transitions.
 

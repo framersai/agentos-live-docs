@@ -2,7 +2,7 @@
 
 > `const` **hitl**: `object`
 
-Defined in: [packages/agentos/src/api/hitl.ts:58](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/hitl.ts#L58)
+Defined in: [packages/agentos/src/api/hitl.ts:58](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/hitl.ts#L58)
 
 A collection of factory functions that produce [HitlHandler](../type-aliases/HitlHandler.md) instances
 for common approval patterns.

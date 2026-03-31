@@ -1,6 +1,6 @@
 # Class: QdrantSetup
 
-Defined in: [packages/agentos/src/rag/setup/QdrantSetup.ts:24](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/setup/QdrantSetup.ts#L24)
+Defined in: [packages/agentos/src/rag/setup/QdrantSetup.ts:24](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/rag/setup/QdrantSetup.ts#L24)
 
 ## Constructors
 
@@ -18,7 +18,7 @@ Defined in: [packages/agentos/src/rag/setup/QdrantSetup.ts:24](https://github.co
 
 > `static` **detect**(`config?`): `Promise`\<[`BackendStatus`](../interfaces/BackendStatus.md)\>
 
-Defined in: [packages/agentos/src/rag/setup/QdrantSetup.ts:36](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/setup/QdrantSetup.ts#L36)
+Defined in: [packages/agentos/src/rag/setup/QdrantSetup.ts:36](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/rag/setup/QdrantSetup.ts#L36)
 
 Detect and optionally provision a Qdrant instance.
 

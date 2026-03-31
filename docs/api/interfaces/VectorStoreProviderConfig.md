@@ -1,6 +1,6 @@
 # Interface: VectorStoreProviderConfig
 
-Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:29](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/vector-store/IVectorStore.ts#L29)
+Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:29](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/vector-store/IVectorStore.ts#L29)
 
 Base configuration for any vector store provider.
 Specific provider configurations (e.g., for Pinecone, Weaviate) should extend this.
@@ -22,7 +22,7 @@ VectorStoreProviderConfig
 
 > `optional` **customProps**: `Record`\<`string`, `any`\>
 
-Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:32](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/vector-store/IVectorStore.ts#L32)
+Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:32](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/vector-store/IVectorStore.ts#L32)
 
 Any other custom properties or
 configurations specific to this provider instance not covered by standard fields.
@@ -33,7 +33,7 @@ configurations specific to this provider instance not covered by standard fields
 
 > **id**: `string`
 
-Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:30](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/vector-store/IVectorStore.ts#L30)
+Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:30](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/vector-store/IVectorStore.ts#L30)
 
 A unique identifier for this specific provider instance
 (e.g., "pinecone-main-prod", "weaviate-dev-local"). This ID is used by the
@@ -45,7 +45,7 @@ VectorStoreManager to retrieve this provider.
 
 > **type**: `string`
 
-Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:31](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/vector-store/IVectorStore.ts#L31)
+Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:31](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/vector-store/IVectorStore.ts#L31)
 
 The type of the vector store provider
 (e.g., "pinecone", "weaviate", "in_memory", "lancedb"). This helps in

@@ -1,6 +1,6 @@
 # Interface: ElevenLabsTextToSpeechProviderConfig
 
-Defined in: [packages/agentos/src/speech/providers/ElevenLabsTextToSpeechProvider.ts:14](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/speech/providers/ElevenLabsTextToSpeechProvider.ts#L14)
+Defined in: [packages/agentos/src/speech/providers/ElevenLabsTextToSpeechProvider.ts:14](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/speech/providers/ElevenLabsTextToSpeechProvider.ts#L14)
 
 Configuration for the [ElevenLabsTextToSpeechProvider](../classes/ElevenLabsTextToSpeechProvider.md).
 
@@ -15,7 +15,7 @@ Configuration for the [ElevenLabsTextToSpeechProvider](../classes/ElevenLabsText
 
 > **apiKey**: `string`
 
-Defined in: [packages/agentos/src/speech/providers/ElevenLabsTextToSpeechProvider.ts:19](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/speech/providers/ElevenLabsTextToSpeechProvider.ts#L19)
+Defined in: [packages/agentos/src/speech/providers/ElevenLabsTextToSpeechProvider.ts:19](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/speech/providers/ElevenLabsTextToSpeechProvider.ts#L19)
 
 ElevenLabs API key used for authentication.
 Sent as the `xi-api-key` header value (not Bearer-style auth).
@@ -26,7 +26,7 @@ Sent as the `xi-api-key` header value (not Bearer-style auth).
 
 > `optional` **baseUrl**: `string`
 
-Defined in: [packages/agentos/src/speech/providers/ElevenLabsTextToSpeechProvider.ts:25](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/speech/providers/ElevenLabsTextToSpeechProvider.ts#L25)
+Defined in: [packages/agentos/src/speech/providers/ElevenLabsTextToSpeechProvider.ts:25](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/speech/providers/ElevenLabsTextToSpeechProvider.ts#L25)
 
 Base URL for the ElevenLabs API. Override for proxies or self-hosted instances.
 
@@ -42,7 +42,7 @@ Base URL for the ElevenLabs API. Override for proxies or self-hosted instances.
 
 > `optional` **fetchImpl**: \{(`input`, `init?`): `Promise`\<`Response`\>; (`input`, `init?`): `Promise`\<`Response`\>; \}
 
-Defined in: [packages/agentos/src/speech/providers/ElevenLabsTextToSpeechProvider.ts:43](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/speech/providers/ElevenLabsTextToSpeechProvider.ts#L43)
+Defined in: [packages/agentos/src/speech/providers/ElevenLabsTextToSpeechProvider.ts:43](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/speech/providers/ElevenLabsTextToSpeechProvider.ts#L43)
 
 Custom fetch implementation for dependency injection in tests.
 
@@ -98,7 +98,7 @@ globalThis.fetch
 
 > `optional` **model**: `string`
 
-Defined in: [packages/agentos/src/speech/providers/ElevenLabsTextToSpeechProvider.ts:37](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/speech/providers/ElevenLabsTextToSpeechProvider.ts#L37)
+Defined in: [packages/agentos/src/speech/providers/ElevenLabsTextToSpeechProvider.ts:37](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/speech/providers/ElevenLabsTextToSpeechProvider.ts#L37)
 
 Default model ID for synthesis.
 
@@ -114,7 +114,7 @@ Default model ID for synthesis.
 
 > `optional` **voiceId**: `string`
 
-Defined in: [packages/agentos/src/speech/providers/ElevenLabsTextToSpeechProvider.ts:31](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/speech/providers/ElevenLabsTextToSpeechProvider.ts#L31)
+Defined in: [packages/agentos/src/speech/providers/ElevenLabsTextToSpeechProvider.ts:31](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/speech/providers/ElevenLabsTextToSpeechProvider.ts#L31)
 
 Default voice ID. ElevenLabs uses opaque IDs (not human-readable names).
 

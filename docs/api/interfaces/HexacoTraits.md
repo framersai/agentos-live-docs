@@ -1,6 +1,6 @@
 # Interface: HexacoTraits
 
-Defined in: [packages/agentos/src/memory/core/config.ts:28](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/core/config.ts#L28)
+Defined in: [packages/agentos/src/memory/core/config.ts:28](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/core/config.ts#L28)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/memory/core/config.ts:28](https://github.com/f
 
 > `optional` **agreeableness**: `number`
 
-Defined in: [packages/agentos/src/memory/core/config.ts:32](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/core/config.ts#L32)
+Defined in: [packages/agentos/src/memory/core/config.ts:32](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/core/config.ts#L32)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [packages/agentos/src/memory/core/config.ts:32](https://github.com/f
 
 > `optional` **conscientiousness**: `number`
 
-Defined in: [packages/agentos/src/memory/core/config.ts:33](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/core/config.ts#L33)
+Defined in: [packages/agentos/src/memory/core/config.ts:33](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/core/config.ts#L33)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: [packages/agentos/src/memory/core/config.ts:33](https://github.com/f
 
 > `optional` **emotionality**: `number`
 
-Defined in: [packages/agentos/src/memory/core/config.ts:30](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/core/config.ts#L30)
+Defined in: [packages/agentos/src/memory/core/config.ts:30](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/core/config.ts#L30)
 
 ***
 
@@ -32,7 +32,7 @@ Defined in: [packages/agentos/src/memory/core/config.ts:30](https://github.com/f
 
 > `optional` **extraversion**: `number`
 
-Defined in: [packages/agentos/src/memory/core/config.ts:31](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/core/config.ts#L31)
+Defined in: [packages/agentos/src/memory/core/config.ts:31](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/core/config.ts#L31)
 
 ***
 
@@ -40,7 +40,7 @@ Defined in: [packages/agentos/src/memory/core/config.ts:31](https://github.com/f
 
 > `optional` **honesty**: `number`
 
-Defined in: [packages/agentos/src/memory/core/config.ts:29](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/core/config.ts#L29)
+Defined in: [packages/agentos/src/memory/core/config.ts:29](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/core/config.ts#L29)
 
 ***
 
@@ -48,4 +48,4 @@ Defined in: [packages/agentos/src/memory/core/config.ts:29](https://github.com/f
 
 > `optional` **openness**: `number`
 
-Defined in: [packages/agentos/src/memory/core/config.ts:34](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/core/config.ts#L34)
+Defined in: [packages/agentos/src/memory/core/config.ts:34](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/core/config.ts#L34)

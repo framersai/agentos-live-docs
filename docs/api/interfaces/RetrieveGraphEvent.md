@@ -1,6 +1,6 @@
 # Interface: RetrieveGraphEvent
 
-Defined in: [packages/agentos/src/query-router/types.ts:914](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/query-router/types.ts#L914)
+Defined in: [packages/agentos/src/query-router/types.ts:914](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/query-router/types.ts#L914)
 
 Emitted when graph traversal results are available.
 
@@ -10,7 +10,7 @@ Emitted when graph traversal results are available.
 
 > **durationMs**: `number`
 
-Defined in: [packages/agentos/src/query-router/types.ts:919](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/query-router/types.ts#L919)
+Defined in: [packages/agentos/src/query-router/types.ts:919](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/query-router/types.ts#L919)
 
 Duration of graph retrieval in milliseconds.
 
@@ -20,7 +20,7 @@ Duration of graph retrieval in milliseconds.
 
 > **entityCount**: `number`
 
-Defined in: [packages/agentos/src/query-router/types.ts:917](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/query-router/types.ts#L917)
+Defined in: [packages/agentos/src/query-router/types.ts:917](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/query-router/types.ts#L917)
 
 Number of entities discovered via graph traversal.
 
@@ -30,7 +30,7 @@ Number of entities discovered via graph traversal.
 
 > **timestamp**: `number`
 
-Defined in: [packages/agentos/src/query-router/types.ts:921](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/query-router/types.ts#L921)
+Defined in: [packages/agentos/src/query-router/types.ts:921](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/query-router/types.ts#L921)
 
 Timestamp of the event.
 
@@ -40,4 +40,4 @@ Timestamp of the event.
 
 > **type**: `"retrieve:graph"`
 
-Defined in: [packages/agentos/src/query-router/types.ts:915](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/query-router/types.ts#L915)
+Defined in: [packages/agentos/src/query-router/types.ts:915](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/query-router/types.ts#L915)

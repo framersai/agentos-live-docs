@@ -1,6 +1,6 @@
 # Interface: ConsolidationPipelineConfig
 
-Defined in: [packages/agentos/src/memory/pipeline/consolidation/ConsolidationPipeline.ts:43](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/pipeline/consolidation/ConsolidationPipeline.ts#L43)
+Defined in: [packages/agentos/src/memory/pipeline/consolidation/ConsolidationPipeline.ts:43](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/pipeline/consolidation/ConsolidationPipeline.ts#L43)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/memory/pipeline/consolidation/ConsolidationPip
 
 > **agentId**: `string`
 
-Defined in: [packages/agentos/src/memory/pipeline/consolidation/ConsolidationPipeline.ts:47](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/pipeline/consolidation/ConsolidationPipeline.ts#L47)
+Defined in: [packages/agentos/src/memory/pipeline/consolidation/ConsolidationPipeline.ts:47](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/pipeline/consolidation/ConsolidationPipeline.ts#L47)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [packages/agentos/src/memory/pipeline/consolidation/ConsolidationPip
 
 > `optional` **consolidation**: `Partial`\<[`ConsolidationConfig`](ConsolidationConfig.md)\>
 
-Defined in: [packages/agentos/src/memory/pipeline/consolidation/ConsolidationPipeline.ts:49](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/pipeline/consolidation/ConsolidationPipeline.ts#L49)
+Defined in: [packages/agentos/src/memory/pipeline/consolidation/ConsolidationPipeline.ts:49](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/pipeline/consolidation/ConsolidationPipeline.ts#L49)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: [packages/agentos/src/memory/pipeline/consolidation/ConsolidationPip
 
 > `optional` **decay**: `Partial`\<[`DecayConfig`](DecayConfig.md)\>
 
-Defined in: [packages/agentos/src/memory/pipeline/consolidation/ConsolidationPipeline.ts:48](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/pipeline/consolidation/ConsolidationPipeline.ts#L48)
+Defined in: [packages/agentos/src/memory/pipeline/consolidation/ConsolidationPipeline.ts:48](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/pipeline/consolidation/ConsolidationPipeline.ts#L48)
 
 ***
 
@@ -32,7 +32,7 @@ Defined in: [packages/agentos/src/memory/pipeline/consolidation/ConsolidationPip
 
 > `optional` **graph**: [`IMemoryGraph`](IMemoryGraph.md)
 
-Defined in: [packages/agentos/src/memory/pipeline/consolidation/ConsolidationPipeline.ts:45](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/pipeline/consolidation/ConsolidationPipeline.ts#L45)
+Defined in: [packages/agentos/src/memory/pipeline/consolidation/ConsolidationPipeline.ts:45](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/pipeline/consolidation/ConsolidationPipeline.ts#L45)
 
 ***
 
@@ -40,7 +40,7 @@ Defined in: [packages/agentos/src/memory/pipeline/consolidation/ConsolidationPip
 
 > `optional` **llmInvoker**: (`systemPrompt`, `userPrompt`) => `Promise`\<`string`\>
 
-Defined in: [packages/agentos/src/memory/pipeline/consolidation/ConsolidationPipeline.ts:51](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/pipeline/consolidation/ConsolidationPipeline.ts#L51)
+Defined in: [packages/agentos/src/memory/pipeline/consolidation/ConsolidationPipeline.ts:51](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/pipeline/consolidation/ConsolidationPipeline.ts#L51)
 
 LLM invoker for schema integration (optional).
 
@@ -64,7 +64,7 @@ LLM invoker for schema integration (optional).
 
 > `optional` **mechanismsEngine**: [`CognitiveMechanismsEngine`](../classes/CognitiveMechanismsEngine.md)
 
-Defined in: [packages/agentos/src/memory/pipeline/consolidation/ConsolidationPipeline.ts:53](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/pipeline/consolidation/ConsolidationPipeline.ts#L53)
+Defined in: [packages/agentos/src/memory/pipeline/consolidation/ConsolidationPipeline.ts:53](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/pipeline/consolidation/ConsolidationPipeline.ts#L53)
 
 Optional cognitive mechanisms engine for consolidation-time hooks.
 
@@ -74,7 +74,7 @@ Optional cognitive mechanisms engine for consolidation-time hooks.
 
 > **store**: [`MemoryStore`](../classes/MemoryStore.md)
 
-Defined in: [packages/agentos/src/memory/pipeline/consolidation/ConsolidationPipeline.ts:44](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/pipeline/consolidation/ConsolidationPipeline.ts#L44)
+Defined in: [packages/agentos/src/memory/pipeline/consolidation/ConsolidationPipeline.ts:44](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/pipeline/consolidation/ConsolidationPipeline.ts#L44)
 
 ***
 
@@ -82,4 +82,4 @@ Defined in: [packages/agentos/src/memory/pipeline/consolidation/ConsolidationPip
 
 > **traits**: [`HexacoTraits`](HexacoTraits.md)
 
-Defined in: [packages/agentos/src/memory/pipeline/consolidation/ConsolidationPipeline.ts:46](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/pipeline/consolidation/ConsolidationPipeline.ts#L46)
+Defined in: [packages/agentos/src/memory/pipeline/consolidation/ConsolidationPipeline.ts:46](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/pipeline/consolidation/ConsolidationPipeline.ts#L46)

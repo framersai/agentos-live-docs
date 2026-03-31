@@ -1,6 +1,6 @@
 # Interface: StandaloneMemoryDescriptorOptions
 
-Defined in: [packages/agentos/src/memory/io/extension/StandaloneMemoryExtension.ts:36](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/io/extension/StandaloneMemoryExtension.ts#L36)
+Defined in: [packages/agentos/src/memory/io/extension/StandaloneMemoryExtension.ts:36](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/io/extension/StandaloneMemoryExtension.ts#L36)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/memory/io/extension/StandaloneMemoryExtension.
 
 > `optional` **manageLifecycle**: `boolean`
 
-Defined in: [packages/agentos/src/memory/io/extension/StandaloneMemoryExtension.ts:42](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/io/extension/StandaloneMemoryExtension.ts#L42)
+Defined in: [packages/agentos/src/memory/io/extension/StandaloneMemoryExtension.ts:42](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/io/extension/StandaloneMemoryExtension.ts#L42)
 
 When true, the descriptor's `shutdown()` will close the configured
 `Memory` instance.
@@ -25,6 +25,6 @@ false
 
 > `optional` **overrides**: `Partial`\<[`MemoryProviderPayload`](MemoryProviderPayload.md)\>
 
-Defined in: [packages/agentos/src/memory/io/extension/StandaloneMemoryExtension.ts:47](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/io/extension/StandaloneMemoryExtension.ts#L47)
+Defined in: [packages/agentos/src/memory/io/extension/StandaloneMemoryExtension.ts:47](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/io/extension/StandaloneMemoryExtension.ts#L47)
 
 Optional payload overrides.

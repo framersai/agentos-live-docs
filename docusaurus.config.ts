@@ -12,10 +12,7 @@ const config: Config = {
   organizationName: 'framersai',
   projectName: 'agentos-live-docs',
   onBrokenLinks: 'warn',
-  clientModules: [
-    require.resolve('./src/mermaid-zoom.js'),
-    require.resolve('./src/navbar-mobile-sidebar.js'),
-  ],
+  clientModules: [require.resolve('./src/mermaid-zoom.js')],
   trailingSlash: false,
 
   headTags: [

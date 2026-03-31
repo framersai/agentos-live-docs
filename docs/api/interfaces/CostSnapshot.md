@@ -1,6 +1,6 @@
 # Interface: CostSnapshot
 
-Defined in: [packages/agentos/src/safety/runtime/CostGuard.ts:29](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/safety/runtime/CostGuard.ts#L29)
+Defined in: [packages/agentos/src/safety/runtime/CostGuard.ts:29](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/safety/runtime/CostGuard.ts#L29)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/safety/runtime/CostGuard.ts:29](https://github
 
 > **agentId**: `string`
 
-Defined in: [packages/agentos/src/safety/runtime/CostGuard.ts:30](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/safety/runtime/CostGuard.ts#L30)
+Defined in: [packages/agentos/src/safety/runtime/CostGuard.ts:30](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/safety/runtime/CostGuard.ts#L30)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [packages/agentos/src/safety/runtime/CostGuard.ts:30](https://github
 
 > **dailyCostUsd**: `number`
 
-Defined in: [packages/agentos/src/safety/runtime/CostGuard.ts:32](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/safety/runtime/CostGuard.ts#L32)
+Defined in: [packages/agentos/src/safety/runtime/CostGuard.ts:32](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/safety/runtime/CostGuard.ts#L32)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: [packages/agentos/src/safety/runtime/CostGuard.ts:32](https://github
 
 > **dailyLimit**: `number`
 
-Defined in: [packages/agentos/src/safety/runtime/CostGuard.ts:34](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/safety/runtime/CostGuard.ts#L34)
+Defined in: [packages/agentos/src/safety/runtime/CostGuard.ts:34](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/safety/runtime/CostGuard.ts#L34)
 
 ***
 
@@ -32,7 +32,7 @@ Defined in: [packages/agentos/src/safety/runtime/CostGuard.ts:34](https://github
 
 > **isDailyCapReached**: `boolean`
 
-Defined in: [packages/agentos/src/safety/runtime/CostGuard.ts:36](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/safety/runtime/CostGuard.ts#L36)
+Defined in: [packages/agentos/src/safety/runtime/CostGuard.ts:36](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/safety/runtime/CostGuard.ts#L36)
 
 ***
 
@@ -40,7 +40,7 @@ Defined in: [packages/agentos/src/safety/runtime/CostGuard.ts:36](https://github
 
 > **isSessionCapReached**: `boolean`
 
-Defined in: [packages/agentos/src/safety/runtime/CostGuard.ts:35](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/safety/runtime/CostGuard.ts#L35)
+Defined in: [packages/agentos/src/safety/runtime/CostGuard.ts:35](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/safety/runtime/CostGuard.ts#L35)
 
 ***
 
@@ -48,7 +48,7 @@ Defined in: [packages/agentos/src/safety/runtime/CostGuard.ts:35](https://github
 
 > **sessionCostUsd**: `number`
 
-Defined in: [packages/agentos/src/safety/runtime/CostGuard.ts:31](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/safety/runtime/CostGuard.ts#L31)
+Defined in: [packages/agentos/src/safety/runtime/CostGuard.ts:31](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/safety/runtime/CostGuard.ts#L31)
 
 ***
 
@@ -56,4 +56,4 @@ Defined in: [packages/agentos/src/safety/runtime/CostGuard.ts:31](https://github
 
 > **sessionLimit**: `number`
 
-Defined in: [packages/agentos/src/safety/runtime/CostGuard.ts:33](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/safety/runtime/CostGuard.ts#L33)
+Defined in: [packages/agentos/src/safety/runtime/CostGuard.ts:33](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/safety/runtime/CostGuard.ts#L33)

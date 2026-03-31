@@ -1,6 +1,6 @@
 # Interface: CommunicationChannelPayload
 
-Defined in: [packages/agentos/src/extensions/types.ts:323](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/extensions/types.ts#L323)
+Defined in: [packages/agentos/src/extensions/types.ts:323](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/extensions/types.ts#L323)
 
 Communication channel payload for custom inter-agent messaging.
 Channels handle message transport between agents (e.g., Redis pub/sub, WebSocket).
@@ -11,7 +11,7 @@ Channels handle message transport between agents (e.g., Redis pub/sub, WebSocket
 
 > `optional` **broadcast**: (`groupId`, `message`) => `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/extensions/types.ts:337](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/extensions/types.ts#L337)
+Defined in: [packages/agentos/src/extensions/types.ts:337](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/extensions/types.ts#L337)
 
 Broadcast to a group
 
@@ -35,7 +35,7 @@ Broadcast to a group
 
 > **description**: `string`
 
-Defined in: [packages/agentos/src/extensions/types.ts:327](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/extensions/types.ts#L327)
+Defined in: [packages/agentos/src/extensions/types.ts:327](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/extensions/types.ts#L327)
 
 Channel description
 
@@ -45,7 +45,7 @@ Channel description
 
 > **distributed**: `boolean`
 
-Defined in: [packages/agentos/src/extensions/types.ts:329](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/extensions/types.ts#L329)
+Defined in: [packages/agentos/src/extensions/types.ts:329](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/extensions/types.ts#L329)
 
 Whether this channel supports distributed communication
 
@@ -55,7 +55,7 @@ Whether this channel supports distributed communication
 
 > **initialize**: (`config`) => `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/extensions/types.ts:331](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/extensions/types.ts#L331)
+Defined in: [packages/agentos/src/extensions/types.ts:331](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/extensions/types.ts#L331)
 
 Initialize the channel
 
@@ -75,7 +75,7 @@ Initialize the channel
 
 > **name**: `string`
 
-Defined in: [packages/agentos/src/extensions/types.ts:325](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/extensions/types.ts#L325)
+Defined in: [packages/agentos/src/extensions/types.ts:325](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/extensions/types.ts#L325)
 
 Channel name (e.g., 'redis-pubsub', 'websocket', 'in-memory')
 
@@ -85,7 +85,7 @@ Channel name (e.g., 'redis-pubsub', 'websocket', 'in-memory')
 
 > **send**: (`targetId`, `message`) => `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/extensions/types.ts:333](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/extensions/types.ts#L333)
+Defined in: [packages/agentos/src/extensions/types.ts:333](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/extensions/types.ts#L333)
 
 Send a message
 
@@ -109,7 +109,7 @@ Send a message
 
 > `optional` **shutdown**: () => `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/extensions/types.ts:339](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/extensions/types.ts#L339)
+Defined in: [packages/agentos/src/extensions/types.ts:339](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/extensions/types.ts#L339)
 
 Cleanup/shutdown
 
@@ -123,7 +123,7 @@ Cleanup/shutdown
 
 > **subscribe**: (`targetId`, `handler`) => () => `void`
 
-Defined in: [packages/agentos/src/extensions/types.ts:335](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/extensions/types.ts#L335)
+Defined in: [packages/agentos/src/extensions/types.ts:335](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/extensions/types.ts#L335)
 
 Subscribe to messages
 

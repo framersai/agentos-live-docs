@@ -1,6 +1,6 @@
 # Class: MemoryReflectTool
 
-Defined in: [packages/agentos/src/memory/io/tools/MemoryReflectTool.ts:54](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/io/tools/MemoryReflectTool.ts#L54)
+Defined in: [packages/agentos/src/memory/io/tools/MemoryReflectTool.ts:54](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/io/tools/MemoryReflectTool.ts#L54)
 
 ITool implementation that triggers one full memory consolidation cycle via
 [()](ConsolidationLoop.md#run).
@@ -22,7 +22,7 @@ const result = await tool.execute({}, context);
 
 > **new MemoryReflectTool**(`brain`, `consolidation`): `MemoryReflectTool`
 
-Defined in: [packages/agentos/src/memory/io/tools/MemoryReflectTool.ts:101](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/io/tools/MemoryReflectTool.ts#L101)
+Defined in: [packages/agentos/src/memory/io/tools/MemoryReflectTool.ts:101](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/io/tools/MemoryReflectTool.ts#L101)
 
 #### Parameters
 
@@ -50,7 +50,7 @@ The [ConsolidationLoop](ConsolidationLoop.md) instance to invoke.
 
 > `readonly` **category**: `"memory"` = `'memory'`
 
-Defined in: [packages/agentos/src/memory/io/tools/MemoryReflectTool.ts:75](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/io/tools/MemoryReflectTool.ts#L75)
+Defined in: [packages/agentos/src/memory/io/tools/MemoryReflectTool.ts:75](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/io/tools/MemoryReflectTool.ts#L75)
 
 Logical category for discovery and grouping.
 
@@ -64,7 +64,7 @@ Logical category for discovery and grouping.
 
 > `readonly` **description**: `string`
 
-Defined in: [packages/agentos/src/memory/io/tools/MemoryReflectTool.ts:68](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/io/tools/MemoryReflectTool.ts#L68)
+Defined in: [packages/agentos/src/memory/io/tools/MemoryReflectTool.ts:68](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/io/tools/MemoryReflectTool.ts#L68)
 
 Description shown to the LLM. The consolidation steps are described
 explicitly so the model understands what "reflect" means operationally.
@@ -79,7 +79,7 @@ explicitly so the model understands what "reflect" means operationally.
 
 > `readonly` **displayName**: `"Reflect on Memory"` = `'Reflect on Memory'`
 
-Defined in: [packages/agentos/src/memory/io/tools/MemoryReflectTool.ts:62](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/io/tools/MemoryReflectTool.ts#L62)
+Defined in: [packages/agentos/src/memory/io/tools/MemoryReflectTool.ts:62](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/io/tools/MemoryReflectTool.ts#L62)
 
 Human-readable display name.
 
@@ -93,7 +93,7 @@ Human-readable display name.
 
 > `readonly` **hasSideEffects**: `true` = `true`
 
-Defined in: [packages/agentos/src/memory/io/tools/MemoryReflectTool.ts:81](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/io/tools/MemoryReflectTool.ts#L81)
+Defined in: [packages/agentos/src/memory/io/tools/MemoryReflectTool.ts:81](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/io/tools/MemoryReflectTool.ts#L81)
 
 Consolidation writes to the database (pruning, merging, inserting insights).
 Mark as having side effects so callers may request confirmation if needed.
@@ -108,7 +108,7 @@ Mark as having side effects so callers may request confirmation if needed.
 
 > `readonly` **id**: `"memory-reflect-v1"` = `'memory-reflect-v1'`
 
-Defined in: [packages/agentos/src/memory/io/tools/MemoryReflectTool.ts:56](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/io/tools/MemoryReflectTool.ts#L56)
+Defined in: [packages/agentos/src/memory/io/tools/MemoryReflectTool.ts:56](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/io/tools/MemoryReflectTool.ts#L56)
 
 Globally unique tool identifier.
 
@@ -122,7 +122,7 @@ Globally unique tool identifier.
 
 > `readonly` **inputSchema**: [`JSONSchemaObject`](../type-aliases/JSONSchemaObject.md)
 
-Defined in: [packages/agentos/src/memory/io/tools/MemoryReflectTool.ts:84](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/io/tools/MemoryReflectTool.ts#L84)
+Defined in: [packages/agentos/src/memory/io/tools/MemoryReflectTool.ts:84](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/io/tools/MemoryReflectTool.ts#L84)
 
 JSON schema for input validation and LLM tool-call construction.
 
@@ -136,7 +136,7 @@ JSON schema for input validation and LLM tool-call construction.
 
 > `readonly` **name**: `"memory_reflect"` = `'memory_reflect'`
 
-Defined in: [packages/agentos/src/memory/io/tools/MemoryReflectTool.ts:59](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/io/tools/MemoryReflectTool.ts#L59)
+Defined in: [packages/agentos/src/memory/io/tools/MemoryReflectTool.ts:59](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/io/tools/MemoryReflectTool.ts#L59)
 
 LLM-facing tool name.
 
@@ -150,7 +150,7 @@ LLM-facing tool name.
 
 > **execute**(`_args`, `_context`): `Promise`\<[`ToolExecutionResult`](../interfaces/ToolExecutionResult.md)\<[`MemoryConsolidationResult`](../interfaces/MemoryConsolidationResult.md)\>\>
 
-Defined in: [packages/agentos/src/memory/io/tools/MemoryReflectTool.ts:121](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/io/tools/MemoryReflectTool.ts#L121)
+Defined in: [packages/agentos/src/memory/io/tools/MemoryReflectTool.ts:121](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/io/tools/MemoryReflectTool.ts#L121)
 
 Run one full consolidation cycle and return the statistics.
 

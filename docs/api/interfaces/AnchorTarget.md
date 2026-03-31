@@ -1,6 +1,6 @@
 # Interface: AnchorTarget
 
-Defined in: [packages/agentos/src/provenance/types.ts:53](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/types.ts#L53)
+Defined in: [packages/agentos/src/provenance/types.ts:53](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/provenance/types.ts#L53)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/provenance/types.ts:53](https://github.com/fra
 
 > `optional` **endpoint**: `string`
 
-Defined in: [packages/agentos/src/provenance/types.ts:57](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/types.ts#L57)
+Defined in: [packages/agentos/src/provenance/types.ts:57](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/provenance/types.ts#L57)
 
 Endpoint or identifier for the anchor target.
 
@@ -18,7 +18,7 @@ Endpoint or identifier for the anchor target.
 
 > `optional` **options**: `Record`\<`string`, `unknown`\>
 
-Defined in: [packages/agentos/src/provenance/types.ts:59](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/types.ts#L59)
+Defined in: [packages/agentos/src/provenance/types.ts:59](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/provenance/types.ts#L59)
 
 Additional options specific to the anchor target type.
 
@@ -28,7 +28,7 @@ Additional options specific to the anchor target type.
 
 > `optional` **targets**: `AnchorTarget`[]
 
-Defined in: [packages/agentos/src/provenance/types.ts:61](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/types.ts#L61)
+Defined in: [packages/agentos/src/provenance/types.ts:61](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/provenance/types.ts#L61)
 
 For composite: list of sub-targets to publish to in parallel.
 
@@ -38,6 +38,6 @@ For composite: list of sub-targets to publish to in parallel.
 
 > **type**: `"custom"` \| `"none"` \| `"worm-snapshot"` \| `"rekor"` \| `"opentimestamps"` \| `"ethereum"` \| `"solana"` \| `"composite"`
 
-Defined in: [packages/agentos/src/provenance/types.ts:55](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/types.ts#L55)
+Defined in: [packages/agentos/src/provenance/types.ts:55](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/provenance/types.ts#L55)
 
 Type of external anchor (extensible).

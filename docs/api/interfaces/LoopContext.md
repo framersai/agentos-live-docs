@@ -1,6 +1,6 @@
 # Interface: LoopContext
 
-Defined in: [packages/agentos/src/orchestration/runtime/LoopController.ts:65](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/runtime/LoopController.ts#L65)
+Defined in: [packages/agentos/src/orchestration/runtime/LoopController.ts:65](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/runtime/LoopController.ts#L65)
 
 Execution context provided to the LoopController by the caller.
 Abstracts away the underlying LLM/GMI implementation so the loop logic
@@ -12,7 +12,7 @@ remains provider-agnostic.
 
 > **addToolResults**: (`results`) => `void`
 
-Defined in: [packages/agentos/src/orchestration/runtime/LoopController.ts:84](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/runtime/LoopController.ts#L84)
+Defined in: [packages/agentos/src/orchestration/runtime/LoopController.ts:84](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/runtime/LoopController.ts#L84)
 
 Feed tool results back into the conversation so the next `generateStream`
 call has access to them. Typically appends tool messages to the message list.
@@ -33,7 +33,7 @@ call has access to them. Typically appends tool messages to the message list.
 
 > **executeTool**: (`toolCall`) => `Promise`\<[`LoopToolCallResult`](LoopToolCallResult.md)\>
 
-Defined in: [packages/agentos/src/orchestration/runtime/LoopController.ts:78](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/runtime/LoopController.ts#L78)
+Defined in: [packages/agentos/src/orchestration/runtime/LoopController.ts:78](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/runtime/LoopController.ts#L78)
 
 Execute a single tool call and return its result.
 Implementations should never throw — instead return a result with
@@ -55,7 +55,7 @@ Implementations should never throw — instead return a result with
 
 > **generateStream**: () => `AsyncGenerator`\<`LoopChunk`, `LoopOutput`, `undefined`\>
 
-Defined in: [packages/agentos/src/orchestration/runtime/LoopController.ts:71](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/runtime/LoopController.ts#L71)
+Defined in: [packages/agentos/src/orchestration/runtime/LoopController.ts:71](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/runtime/LoopController.ts#L71)
 
 Async generator that streams chunks during a single LLM inference pass.
 Must return a `LoopOutput` as its generator return value (the value

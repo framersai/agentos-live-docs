@@ -1,6 +1,6 @@
 # Interface: PersonaStateOverlay
 
-Defined in: [packages/agentos/src/cognitive\_substrate/persona\_overlays/PersonaOverlayTypes.ts:7](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/cognitive_substrate/persona_overlays/PersonaOverlayTypes.ts#L7)
+Defined in: [packages/agentos/src/cognitive\_substrate/persona\_overlays/PersonaOverlayTypes.ts:7](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/persona_overlays/PersonaOverlayTypes.ts#L7)
 
 Captures the overlay state applied to a persona at runtime.
 
@@ -10,7 +10,7 @@ Captures the overlay state applied to a persona at runtime.
 
 > **appliedRules**: `string`[]
 
-Defined in: [packages/agentos/src/cognitive\_substrate/persona\_overlays/PersonaOverlayTypes.ts:9](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/cognitive_substrate/persona_overlays/PersonaOverlayTypes.ts#L9)
+Defined in: [packages/agentos/src/cognitive\_substrate/persona\_overlays/PersonaOverlayTypes.ts:9](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/persona_overlays/PersonaOverlayTypes.ts#L9)
 
 ***
 
@@ -18,7 +18,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/persona\_overlays/Persona
 
 > `optional` **metadata**: `Record`\<`string`, `unknown`\>
 
-Defined in: [packages/agentos/src/cognitive\_substrate/persona\_overlays/PersonaOverlayTypes.ts:11](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/cognitive_substrate/persona_overlays/PersonaOverlayTypes.ts#L11)
+Defined in: [packages/agentos/src/cognitive\_substrate/persona\_overlays/PersonaOverlayTypes.ts:11](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/persona_overlays/PersonaOverlayTypes.ts#L11)
 
 ***
 
@@ -26,7 +26,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/persona\_overlays/Persona
 
 > **patchedDefinition**: `Partial`\<[`IPersonaDefinition`](IPersonaDefinition.md)\>
 
-Defined in: [packages/agentos/src/cognitive\_substrate/persona\_overlays/PersonaOverlayTypes.ts:10](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/cognitive_substrate/persona_overlays/PersonaOverlayTypes.ts#L10)
+Defined in: [packages/agentos/src/cognitive\_substrate/persona\_overlays/PersonaOverlayTypes.ts:10](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/persona_overlays/PersonaOverlayTypes.ts#L10)
 
 ***
 
@@ -34,4 +34,4 @@ Defined in: [packages/agentos/src/cognitive\_substrate/persona\_overlays/Persona
 
 > **personaId**: `string`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/persona\_overlays/PersonaOverlayTypes.ts:8](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/cognitive_substrate/persona_overlays/PersonaOverlayTypes.ts#L8)
+Defined in: [packages/agentos/src/cognitive\_substrate/persona\_overlays/PersonaOverlayTypes.ts:8](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/persona_overlays/PersonaOverlayTypes.ts#L8)

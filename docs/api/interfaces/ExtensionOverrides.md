@@ -1,6 +1,6 @@
 # Interface: ExtensionOverrides
 
-Defined in: [packages/agentos/src/extensions/manifest.ts:33](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/extensions/manifest.ts#L33)
+Defined in: [packages/agentos/src/extensions/manifest.ts:33](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/extensions/manifest.ts#L33)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/extensions/manifest.ts:33](https://github.com/
 
 > `optional` **guardrails**: `Record`\<`string`, [`DescriptorOverride`](DescriptorOverride.md)\>
 
-Defined in: [packages/agentos/src/extensions/manifest.ts:35](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/extensions/manifest.ts#L35)
+Defined in: [packages/agentos/src/extensions/manifest.ts:35](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/extensions/manifest.ts#L35)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [packages/agentos/src/extensions/manifest.ts:35](https://github.com/
 
 > `optional` **responses**: `Record`\<`string`, [`DescriptorOverride`](DescriptorOverride.md)\>
 
-Defined in: [packages/agentos/src/extensions/manifest.ts:36](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/extensions/manifest.ts#L36)
+Defined in: [packages/agentos/src/extensions/manifest.ts:36](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/extensions/manifest.ts#L36)
 
 ***
 
@@ -24,4 +24,4 @@ Defined in: [packages/agentos/src/extensions/manifest.ts:36](https://github.com/
 
 > `optional` **tools**: `Record`\<`string`, [`DescriptorOverride`](DescriptorOverride.md)\>
 
-Defined in: [packages/agentos/src/extensions/manifest.ts:34](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/extensions/manifest.ts#L34)
+Defined in: [packages/agentos/src/extensions/manifest.ts:34](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/extensions/manifest.ts#L34)

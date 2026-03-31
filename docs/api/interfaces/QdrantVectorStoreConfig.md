@@ -1,6 +1,6 @@
 # Interface: QdrantVectorStoreConfig
 
-Defined in: [packages/agentos/src/rag/vector\_stores/QdrantVectorStore.ts:46](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/vector_stores/QdrantVectorStore.ts#L46)
+Defined in: [packages/agentos/src/rag/vector\_stores/QdrantVectorStore.ts:46](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/rag/vector_stores/QdrantVectorStore.ts#L46)
 
 Base configuration for any vector store provider.
 Specific provider configurations (e.g., for Pinecone, Weaviate) should extend this.
@@ -19,7 +19,7 @@ VectorStoreProviderConfig
 
 > `optional` **apiKey**: `string`
 
-Defined in: [packages/agentos/src/rag/vector\_stores/QdrantVectorStore.ts:51](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/vector_stores/QdrantVectorStore.ts#L51)
+Defined in: [packages/agentos/src/rag/vector\_stores/QdrantVectorStore.ts:51](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/rag/vector_stores/QdrantVectorStore.ts#L51)
 
 Optional API key for Qdrant Cloud or secured self-host deployments.
 
@@ -29,7 +29,7 @@ Optional API key for Qdrant Cloud or secured self-host deployments.
 
 > `optional` **bm25VectorName**: `string`
 
-Defined in: [packages/agentos/src/rag/vector\_stores/QdrantVectorStore.ts:58](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/vector_stores/QdrantVectorStore.ts#L58)
+Defined in: [packages/agentos/src/rag/vector\_stores/QdrantVectorStore.ts:58](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/rag/vector_stores/QdrantVectorStore.ts#L58)
 
 Named BM25 sparse vector field. Default: `bm25`.
 
@@ -39,7 +39,7 @@ Named BM25 sparse vector field. Default: `bm25`.
 
 > `optional` **customProps**: `Record`\<`string`, `any`\>
 
-Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:32](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/vector-store/IVectorStore.ts#L32)
+Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:32](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/vector-store/IVectorStore.ts#L32)
 
 Any other custom properties or
 configurations specific to this provider instance not covered by standard fields.
@@ -54,7 +54,7 @@ configurations specific to this provider instance not covered by standard fields
 
 > `optional` **denseVectorName**: `string`
 
-Defined in: [packages/agentos/src/rag/vector\_stores/QdrantVectorStore.ts:56](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/vector_stores/QdrantVectorStore.ts#L56)
+Defined in: [packages/agentos/src/rag/vector\_stores/QdrantVectorStore.ts:56](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/rag/vector_stores/QdrantVectorStore.ts#L56)
 
 Named dense vector field. Default: `dense`.
 
@@ -64,7 +64,7 @@ Named dense vector field. Default: `dense`.
 
 > `optional` **enableBm25**: `boolean`
 
-Defined in: [packages/agentos/src/rag/vector\_stores/QdrantVectorStore.ts:61](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/vector_stores/QdrantVectorStore.ts#L61)
+Defined in: [packages/agentos/src/rag/vector\_stores/QdrantVectorStore.ts:61](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/rag/vector_stores/QdrantVectorStore.ts#L61)
 
 Store BM25 sparse vectors and enable `hybridSearch()`. Default: true.
 
@@ -74,7 +74,7 @@ Store BM25 sparse vectors and enable `hybridSearch()`. Default: true.
 
 > `optional` **fetch**: \{(`input`, `init?`): `Promise`\<`Response`\>; (`input`, `init?`): `Promise`\<`Response`\>; \}
 
-Defined in: [packages/agentos/src/rag/vector\_stores/QdrantVectorStore.ts:64](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/vector_stores/QdrantVectorStore.ts#L64)
+Defined in: [packages/agentos/src/rag/vector\_stores/QdrantVectorStore.ts:64](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/rag/vector_stores/QdrantVectorStore.ts#L64)
 
 Optional custom fetch implementation (testing/edge). Defaults to global `fetch`.
 
@@ -124,7 +124,7 @@ Optional custom fetch implementation (testing/edge). Defaults to global `fetch`.
 
 > **id**: `string`
 
-Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:30](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/vector-store/IVectorStore.ts#L30)
+Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:30](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/vector-store/IVectorStore.ts#L30)
 
 A unique identifier for this specific provider instance
 (e.g., "pinecone-main-prod", "weaviate-dev-local"). This ID is used by the
@@ -140,7 +140,7 @@ VectorStoreManager to retrieve this provider.
 
 > `optional` **timeoutMs**: `number`
 
-Defined in: [packages/agentos/src/rag/vector\_stores/QdrantVectorStore.ts:53](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/vector_stores/QdrantVectorStore.ts#L53)
+Defined in: [packages/agentos/src/rag/vector\_stores/QdrantVectorStore.ts:53](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/rag/vector_stores/QdrantVectorStore.ts#L53)
 
 Request timeout in milliseconds. Default: 15_000.
 
@@ -150,7 +150,7 @@ Request timeout in milliseconds. Default: 15_000.
 
 > **type**: `"qdrant"`
 
-Defined in: [packages/agentos/src/rag/vector\_stores/QdrantVectorStore.ts:47](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/vector_stores/QdrantVectorStore.ts#L47)
+Defined in: [packages/agentos/src/rag/vector\_stores/QdrantVectorStore.ts:47](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/rag/vector_stores/QdrantVectorStore.ts#L47)
 
 The type of the vector store provider
 (e.g., "pinecone", "weaviate", "in_memory", "lancedb"). This helps in
@@ -166,6 +166,6 @@ selecting the correct implementation.
 
 > **url**: `string`
 
-Defined in: [packages/agentos/src/rag/vector\_stores/QdrantVectorStore.ts:49](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/vector_stores/QdrantVectorStore.ts#L49)
+Defined in: [packages/agentos/src/rag/vector\_stores/QdrantVectorStore.ts:49](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/rag/vector_stores/QdrantVectorStore.ts#L49)
 
 Base URL, e.g. `http://localhost:6333` or Qdrant Cloud endpoint.

@@ -1,6 +1,6 @@
 # Interface: NormalizedCallCompleted
 
-Defined in: [packages/agentos/src/channels/telephony/types.ts:284](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/telephony/types.ts#L284)
+Defined in: [packages/agentos/src/channels/telephony/types.ts:284](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/telephony/types.ts#L284)
 
 The call completed normally.
 
@@ -14,7 +14,7 @@ The call completed normally.
 
 > `optional` **duration**: `number`
 
-Defined in: [packages/agentos/src/channels/telephony/types.ts:287](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/telephony/types.ts#L287)
+Defined in: [packages/agentos/src/channels/telephony/types.ts:287](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/telephony/types.ts#L287)
 
 Call duration in seconds, if reported by the provider.
 
@@ -24,7 +24,7 @@ Call duration in seconds, if reported by the provider.
 
 > **eventId**: `string`
 
-Defined in: [packages/agentos/src/channels/telephony/types.ts:266](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/telephony/types.ts#L266)
+Defined in: [packages/agentos/src/channels/telephony/types.ts:266](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/telephony/types.ts#L266)
 
 Provider-assigned event ID for idempotency.
 
@@ -38,7 +38,7 @@ Provider-assigned event ID for idempotency.
 
 > **kind**: `"call-completed"`
 
-Defined in: [packages/agentos/src/channels/telephony/types.ts:285](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/telephony/types.ts#L285)
+Defined in: [packages/agentos/src/channels/telephony/types.ts:285](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/telephony/types.ts#L285)
 
 ***
 
@@ -46,7 +46,7 @@ Defined in: [packages/agentos/src/channels/telephony/types.ts:285](https://githu
 
 > **providerCallId**: `string`
 
-Defined in: [packages/agentos/src/channels/telephony/types.ts:268](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/telephony/types.ts#L268)
+Defined in: [packages/agentos/src/channels/telephony/types.ts:268](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/telephony/types.ts#L268)
 
 Provider-assigned call ID.
 
@@ -60,7 +60,7 @@ Provider-assigned call ID.
 
 > **timestamp**: `number`
 
-Defined in: [packages/agentos/src/channels/telephony/types.ts:270](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/telephony/types.ts#L270)
+Defined in: [packages/agentos/src/channels/telephony/types.ts:270](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/telephony/types.ts#L270)
 
 Unix timestamp (ms).
 

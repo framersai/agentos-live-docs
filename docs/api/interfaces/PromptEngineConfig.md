@@ -1,6 +1,6 @@
 # Interface: PromptEngineConfig
 
-Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:278](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/llm/IPromptEngine.ts#L278)
+Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:278](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/llm/IPromptEngine.ts#L278)
 
 Configuration options for the PromptEngine's behavior, optimization strategies,
 and integration with other services like IUtilityAI.
@@ -15,7 +15,7 @@ PromptEngineConfig
 
 > **availableTemplates**: `Record`\<`string`, [`PromptTemplateFunction`](../type-aliases/PromptTemplateFunction.md)\>
 
-Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:282](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/llm/IPromptEngine.ts#L282)
+Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:282](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/llm/IPromptEngine.ts#L282)
 
 A record of available prompt template functions, keyed by template name.
 
@@ -25,7 +25,7 @@ A record of available prompt template functions, keyed by template name.
 
 > **contextManagement**: `object`
 
-Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:298](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/llm/IPromptEngine.ts#L298)
+Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:298](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/llm/IPromptEngine.ts#L298)
 
 Configuration for managing retrieved context (e.g., from RAG).
 
@@ -51,7 +51,7 @@ Configuration for managing retrieved context (e.g., from RAG).
 
 > **contextualElementSelection**: `object`
 
-Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:305](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/llm/IPromptEngine.ts#L305)
+Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:305](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/llm/IPromptEngine.ts#L305)
 
 Configuration for selecting and applying contextual elements.
 
@@ -79,7 +79,7 @@ Max number of elements to apply per type.
 
 > `optional` **debugging**: `object`
 
-Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:320](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/llm/IPromptEngine.ts#L320)
+Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:320](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/llm/IPromptEngine.ts#L320)
 
 Debugging and logging settings.
 
@@ -101,7 +101,7 @@ Debugging and logging settings.
 
 > **defaultTemplateName**: `string`
 
-Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:280](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/llm/IPromptEngine.ts#L280)
+Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:280](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/llm/IPromptEngine.ts#L280)
 
 Default template name (from `availableTemplates`) to use if none is specified or inferable.
 
@@ -111,7 +111,7 @@ Default template name (from `availableTemplates`) to use if none is specified or
 
 > **historyManagement**: `object`
 
-Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:291](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/llm/IPromptEngine.ts#L291)
+Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:291](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/llm/IPromptEngine.ts#L291)
 
 Configuration for managing conversation history within prompts.
 
@@ -137,7 +137,7 @@ Configuration for managing conversation history within prompts.
 
 > **performance**: `object`
 
-Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:313](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/llm/IPromptEngine.ts#L313)
+Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:313](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/llm/IPromptEngine.ts#L313)
 
 Performance optimization settings.
 
@@ -159,7 +159,7 @@ Performance optimization settings.
 
 > **tokenCounting**: `object`
 
-Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:284](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/llm/IPromptEngine.ts#L284)
+Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:284](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/llm/IPromptEngine.ts#L284)
 
 Configuration for token counting strategies.
 
@@ -177,7 +177,7 @@ Configuration for token counting strategies.
 
 > `optional` **toolSchemaManifest**: `Record`\<`string`, \{ `disabledToolIds?`: `string`[]; `enabledToolIds?`: `string`[]; `modelOverrides?`: `Record`\<`string`, `string`[]\>; \}\>
 
-Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:349](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/llm/IPromptEngine.ts#L349)
+Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:349](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/llm/IPromptEngine.ts#L349)
 
 Optional tool schema registration manifest enabling per-persona and per-model enable/disable semantics.
 

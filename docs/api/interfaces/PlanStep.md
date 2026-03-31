@@ -1,6 +1,6 @@
 # Interface: PlanStep
 
-Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:42](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/planner/IPlanningEngine.ts#L42)
+Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:42](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/planner/IPlanningEngine.ts#L42)
 
 Represents a single step in an execution plan.
 Each step contains the reasoning, action, and expected outcome.
@@ -11,7 +11,7 @@ Each step contains the reasoning, action, and expected outcome.
 
 > **action**: [`PlanAction`](PlanAction.md)
 
-Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:48](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/planner/IPlanningEngine.ts#L48)
+Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:48](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/planner/IPlanningEngine.ts#L48)
 
 The action to take (tool call, reasoning, etc.)
 
@@ -21,7 +21,7 @@ The action to take (tool call, reasoning, etc.)
 
 > **confidence**: `number`
 
-Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:58](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/planner/IPlanningEngine.ts#L58)
+Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:58](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/planner/IPlanningEngine.ts#L58)
 
 Confidence score (0-1) in this step's success
 
@@ -31,7 +31,7 @@ Confidence score (0-1) in this step's success
 
 > **dependsOn**: `string`[]
 
-Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:54](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/planner/IPlanningEngine.ts#L54)
+Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:54](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/planner/IPlanningEngine.ts#L54)
 
 Dependencies on other step IDs
 
@@ -41,7 +41,7 @@ Dependencies on other step IDs
 
 > **estimatedTokens**: `number`
 
-Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:56](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/planner/IPlanningEngine.ts#L56)
+Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:56](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/planner/IPlanningEngine.ts#L56)
 
 Estimated token cost for this step
 
@@ -51,7 +51,7 @@ Estimated token cost for this step
 
 > **expectedOutcome**: `string`
 
-Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:52](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/planner/IPlanningEngine.ts#L52)
+Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:52](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/planner/IPlanningEngine.ts#L52)
 
 Expected outcome description
 
@@ -61,7 +61,7 @@ Expected outcome description
 
 > **index**: `number`
 
-Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:46](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/planner/IPlanningEngine.ts#L46)
+Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:46](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/planner/IPlanningEngine.ts#L46)
 
 Zero-based step index
 
@@ -71,7 +71,7 @@ Zero-based step index
 
 > **reasoning**: `string`
 
-Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:50](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/planner/IPlanningEngine.ts#L50)
+Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:50](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/planner/IPlanningEngine.ts#L50)
 
 Chain-of-thought reasoning for this step
 
@@ -81,7 +81,7 @@ Chain-of-thought reasoning for this step
 
 > **requiresHumanApproval**: `boolean`
 
-Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:60](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/planner/IPlanningEngine.ts#L60)
+Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:60](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/planner/IPlanningEngine.ts#L60)
 
 Whether this step requires human approval
 
@@ -91,7 +91,7 @@ Whether this step requires human approval
 
 > `optional` **result**: [`PlanStepResult`](PlanStepResult.md)
 
-Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:64](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/planner/IPlanningEngine.ts#L64)
+Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:64](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/planner/IPlanningEngine.ts#L64)
 
 Actual result after execution
 
@@ -101,7 +101,7 @@ Actual result after execution
 
 > **status**: [`PlanStepStatus`](../type-aliases/PlanStepStatus.md)
 
-Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:62](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/planner/IPlanningEngine.ts#L62)
+Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:62](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/planner/IPlanningEngine.ts#L62)
 
 Current execution status
 
@@ -111,6 +111,6 @@ Current execution status
 
 > **stepId**: `string`
 
-Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:44](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/planner/IPlanningEngine.ts#L44)
+Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:44](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/planner/IPlanningEngine.ts#L44)
 
 Unique step identifier

@@ -2,7 +2,7 @@
 
 > **analyzeVideo**(`opts`): `Promise`\<[`AnalyzeVideoResult`](../interfaces/AnalyzeVideoResult.md)\>
 
-Defined in: [packages/agentos/src/api/analyzeVideo.ts:199](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/analyzeVideo.ts#L199)
+Defined in: [packages/agentos/src/api/analyzeVideo.ts:199](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/analyzeVideo.ts#L199)
 
 Analyses a video and returns structured understanding results.
 

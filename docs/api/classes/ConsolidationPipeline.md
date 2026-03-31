@@ -1,6 +1,6 @@
 # Class: ConsolidationPipeline
 
-Defined in: [packages/agentos/src/memory/pipeline/consolidation/ConsolidationPipeline.ts:78](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/pipeline/consolidation/ConsolidationPipeline.ts#L78)
+Defined in: [packages/agentos/src/memory/pipeline/consolidation/ConsolidationPipeline.ts:78](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/pipeline/consolidation/ConsolidationPipeline.ts#L78)
 
 ## Constructors
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/memory/pipeline/consolidation/ConsolidationPip
 
 > **new ConsolidationPipeline**(`config`): `ConsolidationPipeline`
 
-Defined in: [packages/agentos/src/memory/pipeline/consolidation/ConsolidationPipeline.ts:85](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/pipeline/consolidation/ConsolidationPipeline.ts#L85)
+Defined in: [packages/agentos/src/memory/pipeline/consolidation/ConsolidationPipeline.ts:85](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/pipeline/consolidation/ConsolidationPipeline.ts#L85)
 
 #### Parameters
 
@@ -26,7 +26,7 @@ Defined in: [packages/agentos/src/memory/pipeline/consolidation/ConsolidationPip
 
 > **getLastRunAt**(): `number`
 
-Defined in: [packages/agentos/src/memory/pipeline/consolidation/ConsolidationPipeline.ts:172](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/pipeline/consolidation/ConsolidationPipeline.ts#L172)
+Defined in: [packages/agentos/src/memory/pipeline/consolidation/ConsolidationPipeline.ts:172](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/pipeline/consolidation/ConsolidationPipeline.ts#L172)
 
 Get timestamp of last consolidation run.
 
@@ -40,7 +40,7 @@ Get timestamp of last consolidation run.
 
 > **run**(): `Promise`\<[`ConsolidationResult`](../interfaces/ConsolidationResult.md)\>
 
-Defined in: [packages/agentos/src/memory/pipeline/consolidation/ConsolidationPipeline.ts:118](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/pipeline/consolidation/ConsolidationPipeline.ts#L118)
+Defined in: [packages/agentos/src/memory/pipeline/consolidation/ConsolidationPipeline.ts:118](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/pipeline/consolidation/ConsolidationPipeline.ts#L118)
 
 Run a single consolidation cycle.
 
@@ -54,7 +54,7 @@ Run a single consolidation cycle.
 
 > **start**(): `void`
 
-Defined in: [packages/agentos/src/memory/pipeline/consolidation/ConsolidationPipeline.ts:97](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/pipeline/consolidation/ConsolidationPipeline.ts#L97)
+Defined in: [packages/agentos/src/memory/pipeline/consolidation/ConsolidationPipeline.ts:97](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/pipeline/consolidation/ConsolidationPipeline.ts#L97)
 
 Start the periodic consolidation timer.
 
@@ -68,7 +68,7 @@ Start the periodic consolidation timer.
 
 > **stop**(): `void`
 
-Defined in: [packages/agentos/src/memory/pipeline/consolidation/ConsolidationPipeline.ts:108](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/pipeline/consolidation/ConsolidationPipeline.ts#L108)
+Defined in: [packages/agentos/src/memory/pipeline/consolidation/ConsolidationPipeline.ts:108](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/pipeline/consolidation/ConsolidationPipeline.ts#L108)
 
 Stop the periodic consolidation timer.
 

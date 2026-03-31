@@ -1,6 +1,6 @@
 # Class: NoneProvider
 
-Defined in: [packages/agentos/src/provenance/anchoring/providers/NoneProvider.ts:11](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/anchoring/providers/NoneProvider.ts#L11)
+Defined in: [packages/agentos/src/provenance/anchoring/providers/NoneProvider.ts:11](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/provenance/anchoring/providers/NoneProvider.ts#L11)
 
 Interface for external anchor publishing backends.
 Implementations are called AFTER local anchor persistence.
@@ -25,7 +25,7 @@ Implementations are called AFTER local anchor persistence.
 
 > `readonly` **id**: `"none"` = `'none'`
 
-Defined in: [packages/agentos/src/provenance/anchoring/providers/NoneProvider.ts:12](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/anchoring/providers/NoneProvider.ts#L12)
+Defined in: [packages/agentos/src/provenance/anchoring/providers/NoneProvider.ts:12](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/provenance/anchoring/providers/NoneProvider.ts#L12)
 
 Unique provider identifier.
 
@@ -39,7 +39,7 @@ Unique provider identifier.
 
 > `readonly` **name**: `"None (Local Only)"` = `'None (Local Only)'`
 
-Defined in: [packages/agentos/src/provenance/anchoring/providers/NoneProvider.ts:13](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/anchoring/providers/NoneProvider.ts#L13)
+Defined in: [packages/agentos/src/provenance/anchoring/providers/NoneProvider.ts:13](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/provenance/anchoring/providers/NoneProvider.ts#L13)
 
 Human-readable display name.
 
@@ -53,7 +53,7 @@ Human-readable display name.
 
 > `readonly` **proofLevel**: [`ProofLevel`](../type-aliases/ProofLevel.md) = `'verifiable'`
 
-Defined in: [packages/agentos/src/provenance/anchoring/providers/NoneProvider.ts:14](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/anchoring/providers/NoneProvider.ts#L14)
+Defined in: [packages/agentos/src/provenance/anchoring/providers/NoneProvider.ts:14](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/provenance/anchoring/providers/NoneProvider.ts#L14)
 
 Proof level this provider advertises.
 
@@ -67,7 +67,7 @@ Proof level this provider advertises.
 
 > **publish**(`_anchor`): `Promise`\<[`AnchorProviderResult`](../interfaces/AnchorProviderResult.md)\>
 
-Defined in: [packages/agentos/src/provenance/anchoring/providers/NoneProvider.ts:16](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/anchoring/providers/NoneProvider.ts#L16)
+Defined in: [packages/agentos/src/provenance/anchoring/providers/NoneProvider.ts:16](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/provenance/anchoring/providers/NoneProvider.ts#L16)
 
 Publish an anchor externally.
 Must not throw — failures are returned via AnchorProviderResult.success = false.

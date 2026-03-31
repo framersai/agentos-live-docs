@@ -1,6 +1,6 @@
 # Interface: VideoAnalyzeRequestRich
 
-Defined in: [packages/agentos/src/media/video/types.ts:420](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/media/video/types.ts#L420)
+Defined in: [packages/agentos/src/media/video/types.ts:420](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/video/types.ts#L420)
 
 Rich video analysis request with scene detection, transcription,
 and RAG indexing support.
@@ -27,7 +27,7 @@ const request: VideoAnalyzeRequestRich = {
 
 > `optional` **descriptionDetail**: [`DescriptionDetail`](../type-aliases/DescriptionDetail.md)
 
-Defined in: [packages/agentos/src/media/video/types.ts:454](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/media/video/types.ts#L454)
+Defined in: [packages/agentos/src/media/video/types.ts:454](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/video/types.ts#L454)
 
 How detailed scene descriptions should be.
 
@@ -43,7 +43,7 @@ How detailed scene descriptions should be.
 
 > `optional` **indexForRAG**: `boolean`
 
-Defined in: [packages/agentos/src/media/video/types.ts:475](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/media/video/types.ts#L475)
+Defined in: [packages/agentos/src/media/video/types.ts:475](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/video/types.ts#L475)
 
 Whether to index scene descriptions and transcripts into the
 RAG vector store for later retrieval.
@@ -60,7 +60,7 @@ false
 
 > `optional` **maxFrames**: `number`
 
-Defined in: [packages/agentos/src/media/video/types.ts:461](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/media/video/types.ts#L461)
+Defined in: [packages/agentos/src/media/video/types.ts:461](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/video/types.ts#L461)
 
 Maximum number of frames to sample from the extracted frame set.
 When the extracted frame count exceeds this value, frames are
@@ -72,7 +72,7 @@ evenly downsampled before scene detection and description.
 
 > `optional` **maxScenes**: `number`
 
-Defined in: [packages/agentos/src/media/video/types.ts:468](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/media/video/types.ts#L468)
+Defined in: [packages/agentos/src/media/video/types.ts:468](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/video/types.ts#L468)
 
 Maximum number of scenes to detect.
 Prevents runaway analysis on very long videos with many cuts.
@@ -89,7 +89,7 @@ Prevents runaway analysis on very long videos with many cuts.
 
 > `optional` **onProgress**: (`event`) => `void`
 
-Defined in: [packages/agentos/src/media/video/types.ts:482](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/media/video/types.ts#L482)
+Defined in: [packages/agentos/src/media/video/types.ts:482](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/video/types.ts#L482)
 
 Optional callback invoked as analysis progresses through phases.
 Called with a [VideoAnalysisProgressEvent](VideoAnalysisProgressEvent.md) at each phase
@@ -111,7 +111,7 @@ transition and when per-scene progress updates are available.
 
 > `optional` **prompt**: `string`
 
-Defined in: [packages/agentos/src/media/video/types.ts:432](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/media/video/types.ts#L432)
+Defined in: [packages/agentos/src/media/video/types.ts:432](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/video/types.ts#L432)
 
 Optional analysis prompt or question that should guide the final answer.
 When omitted, the analyzer produces a general-purpose summary.
@@ -122,7 +122,7 @@ When omitted, the analyzer produces a general-purpose summary.
 
 > `optional` **sceneThreshold**: `number`
 
-Defined in: [packages/agentos/src/media/video/types.ts:440](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/media/video/types.ts#L440)
+Defined in: [packages/agentos/src/media/video/types.ts:440](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/video/types.ts#L440)
 
 Threshold for scene change detection (0-1).
 Lower values detect more scene boundaries (more sensitive);
@@ -140,7 +140,7 @@ higher values only detect dramatic cuts.
 
 > `optional` **transcribeAudio**: `boolean`
 
-Defined in: [packages/agentos/src/media/video/types.ts:448](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/media/video/types.ts#L448)
+Defined in: [packages/agentos/src/media/video/types.ts:448](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/video/types.ts#L448)
 
 Whether to transcribe the audio track using Whisper.
 When enabled, each scene's transcript is populated and a
@@ -158,7 +158,7 @@ true
 
 > **video**: `string` \| `Buffer`
 
-Defined in: [packages/agentos/src/media/video/types.ts:426](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/media/video/types.ts#L426)
+Defined in: [packages/agentos/src/media/video/types.ts:426](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/video/types.ts#L426)
 
 Video to analyze — either a URL string or a raw Buffer.
 When a URL is provided, the pipeline downloads the video to a

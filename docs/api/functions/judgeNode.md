@@ -2,7 +2,7 @@
 
 > **judgeNode**(`config`, `policies?`): [`GraphNode`](../interfaces/GraphNode.md)
 
-Defined in: [packages/agentos/src/orchestration/builders/nodes.ts:186](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/builders/nodes.ts#L186)
+Defined in: [packages/agentos/src/orchestration/builders/nodes.ts:186](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/builders/nodes.ts#L186)
 
 Creates an LLM-as-judge evaluation node with structured rubric output.
 The judge is a gmiNode that enforces single_turn execution and structured JSON output.

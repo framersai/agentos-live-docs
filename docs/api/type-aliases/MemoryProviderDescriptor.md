@@ -2,7 +2,7 @@
 
 > **MemoryProviderDescriptor** = [`ExtensionDescriptor`](../interfaces/ExtensionDescriptor.md)\<[`MemoryProviderPayload`](../interfaces/MemoryProviderPayload.md)\> & `object`
 
-Defined in: [packages/agentos/src/extensions/types.ts:389](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/extensions/types.ts#L389)
+Defined in: [packages/agentos/src/extensions/types.ts:390](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/extensions/types.ts#L390)
 
 Memory provider extension descriptor
 

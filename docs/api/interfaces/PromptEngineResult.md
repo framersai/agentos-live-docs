@@ -1,6 +1,6 @@
 # Interface: PromptEngineResult
 
-Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:227](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/llm/IPromptEngine.ts#L227)
+Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:227](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/llm/IPromptEngine.ts#L227)
 
 Comprehensive result object returned by prompt construction, containing
 the formatted prompt, metadata, issues encountered, and optimization information.
@@ -15,7 +15,7 @@ PromptEngineResult
 
 > `optional` **cacheKey**: `string`
 
-Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:270](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/llm/IPromptEngine.ts#L270)
+Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:270](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/llm/IPromptEngine.ts#L270)
 
 An optional cache key if the result was retrieved from or stored in a cache.
 
@@ -25,7 +25,7 @@ An optional cache key if the result was retrieved from or stored in a cache.
 
 > `optional` **estimatedTokenCount**: `number`
 
-Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:236](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/llm/IPromptEngine.ts#L236)
+Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:236](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/llm/IPromptEngine.ts#L236)
 
 Estimated token count of the constructed prompt before precise provider counting.
 
@@ -35,7 +35,7 @@ Estimated token count of the constructed prompt before precise provider counting
 
 > `optional` **formattedToolSchemas**: `any`[]
 
-Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:234](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/llm/IPromptEngine.ts#L234)
+Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:234](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/llm/IPromptEngine.ts#L234)
 
 Formatted tool schemas compatible with the target model's API, if tools are used.
 The structure of `any[]` depends on `ModelTargetInfo.toolSupport.format`.
@@ -46,7 +46,7 @@ The structure of `any[]` depends on `ModelTargetInfo.toolSupport.format`.
 
 > `optional` **issues**: `object`[]
 
-Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:240](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/llm/IPromptEngine.ts#L240)
+Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:240](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/llm/IPromptEngine.ts#L240)
 
 Any issues (errors, warnings, info) encountered during prompt construction.
 
@@ -80,7 +80,7 @@ Any issues (errors, warnings, info) encountered during prompt construction.
 
 > **metadata**: `object`
 
-Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:259](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/llm/IPromptEngine.ts#L259)
+Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:259](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/llm/IPromptEngine.ts#L259)
 
 Performance metrics and metadata related to the prompt construction process.
 
@@ -118,7 +118,7 @@ Performance metrics and metadata related to the prompt construction process.
 
 > `optional` **modificationDetails**: `object`
 
-Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:251](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/llm/IPromptEngine.ts#L251)
+Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:251](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/llm/IPromptEngine.ts#L251)
 
 Details about modifications made during construction (e.g., which components were truncated).
 
@@ -148,7 +148,7 @@ Details about modifications made during construction (e.g., which components wer
 
 > **prompt**: [`FormattedPrompt`](../type-aliases/FormattedPrompt.md)
 
-Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:229](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/llm/IPromptEngine.ts#L229)
+Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:229](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/llm/IPromptEngine.ts#L229)
 
 The final formatted prompt ready for LLM consumption.
 
@@ -158,7 +158,7 @@ The final formatted prompt ready for LLM consumption.
 
 > `optional` **tokenCount**: `number`
 
-Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:238](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/llm/IPromptEngine.ts#L238)
+Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:238](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/llm/IPromptEngine.ts#L238)
 
 Precise token count, if available from a tokenizer or after construction.
 
@@ -168,6 +168,6 @@ Precise token count, if available from a tokenizer or after construction.
 
 > **wasTruncatedOrSummarized**: `boolean`
 
-Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:249](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/llm/IPromptEngine.ts#L249)
+Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:249](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/llm/IPromptEngine.ts#L249)
 
 Indicates if content was truncated or summarized to fit token limits.

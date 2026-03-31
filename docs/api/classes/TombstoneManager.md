@@ -1,6 +1,6 @@
 # Class: TombstoneManager
 
-Defined in: [packages/agentos/src/provenance/enforcement/TombstoneManager.ts:27](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/enforcement/TombstoneManager.ts#L27)
+Defined in: [packages/agentos/src/provenance/enforcement/TombstoneManager.ts:27](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/provenance/enforcement/TombstoneManager.ts#L27)
 
 ## Constructors
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/provenance/enforcement/TombstoneManager.ts:27]
 
 > **new TombstoneManager**(`storageAdapter`, `ledger?`, `tablePrefix?`): `TombstoneManager`
 
-Defined in: [packages/agentos/src/provenance/enforcement/TombstoneManager.ts:32](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/enforcement/TombstoneManager.ts#L32)
+Defined in: [packages/agentos/src/provenance/enforcement/TombstoneManager.ts:32](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/provenance/enforcement/TombstoneManager.ts#L32)
 
 #### Parameters
 
@@ -34,7 +34,7 @@ Defined in: [packages/agentos/src/provenance/enforcement/TombstoneManager.ts:32]
 
 > **createTombstone**(`tableName`, `whereClause`, `parameters?`, `reason?`, `initiator?`): `Promise`\<[`TombstoneRecord`](../interfaces/TombstoneRecord.md)[]\>
 
-Defined in: [packages/agentos/src/provenance/enforcement/TombstoneManager.ts:52](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/enforcement/TombstoneManager.ts#L52)
+Defined in: [packages/agentos/src/provenance/enforcement/TombstoneManager.ts:52](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/provenance/enforcement/TombstoneManager.ts#L52)
 
 Create a tombstone for records about to be deleted.
 Call this INSTEAD of executing the DELETE.
@@ -81,7 +81,7 @@ Who initiated the deletion (agent ID or 'human').
 
 > **getTombstone**(`tableName`, `recordId`): `Promise`\<[`TombstoneRecord`](../interfaces/TombstoneRecord.md) \| `null`\>
 
-Defined in: [packages/agentos/src/provenance/enforcement/TombstoneManager.ts:137](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/enforcement/TombstoneManager.ts#L137)
+Defined in: [packages/agentos/src/provenance/enforcement/TombstoneManager.ts:137](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/provenance/enforcement/TombstoneManager.ts#L137)
 
 Get the tombstone record for a specific record.
 
@@ -105,7 +105,7 @@ Get the tombstone record for a specific record.
 
 > **getTombstones**(`tableName?`): `Promise`\<[`TombstoneRecord`](../interfaces/TombstoneRecord.md)[]\>
 
-Defined in: [packages/agentos/src/provenance/enforcement/TombstoneManager.ts:159](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/enforcement/TombstoneManager.ts#L159)
+Defined in: [packages/agentos/src/provenance/enforcement/TombstoneManager.ts:159](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/provenance/enforcement/TombstoneManager.ts#L159)
 
 Get all tombstones for a table.
 
@@ -125,7 +125,7 @@ Get all tombstones for a table.
 
 > **isTombstoned**(`tableName`, `recordId`): `Promise`\<`boolean`\>
 
-Defined in: [packages/agentos/src/provenance/enforcement/TombstoneManager.ts:126](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/enforcement/TombstoneManager.ts#L126)
+Defined in: [packages/agentos/src/provenance/enforcement/TombstoneManager.ts:126](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/provenance/enforcement/TombstoneManager.ts#L126)
 
 Check if a record has been tombstoned.
 

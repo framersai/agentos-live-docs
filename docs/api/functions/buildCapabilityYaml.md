@@ -2,7 +2,7 @@
 
 > **buildCapabilityYaml**(`tool`): `string`
 
-Defined in: [packages/agentos/src/emergent/SkillExporter.ts:296](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/emergent/SkillExporter.ts#L296)
+Defined in: [packages/agentos/src/emergent/SkillExporter.ts:296](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/emergent/SkillExporter.ts#L296)
 
 Builds a CAPABILITY.yaml content string for an emergent tool.
 

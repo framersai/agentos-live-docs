@@ -1,6 +1,6 @@
 # Class: CompactionEngine
 
-Defined in: [packages/agentos/src/memory/pipeline/context/CompactionEngine.ts:22](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/pipeline/context/CompactionEngine.ts#L22)
+Defined in: [packages/agentos/src/memory/pipeline/context/CompactionEngine.ts:22](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/pipeline/context/CompactionEngine.ts#L22)
 
 ## Constructors
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/memory/pipeline/context/CompactionEngine.ts:22
 
 > **new CompactionEngine**(`llmInvoker`, `observer?`, `reflector?`): `CompactionEngine`
 
-Defined in: [packages/agentos/src/memory/pipeline/context/CompactionEngine.ts:25](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/pipeline/context/CompactionEngine.ts#L25)
+Defined in: [packages/agentos/src/memory/pipeline/context/CompactionEngine.ts:25](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/pipeline/context/CompactionEngine.ts#L25)
 
 #### Parameters
 
@@ -34,7 +34,7 @@ Defined in: [packages/agentos/src/memory/pipeline/context/CompactionEngine.ts:25
 
 > **compact**(`input`, `config`): `Promise`\<[`CompactionResult`](../interfaces/CompactionResult.md)\>
 
-Defined in: [packages/agentos/src/memory/pipeline/context/CompactionEngine.ts:42](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/pipeline/context/CompactionEngine.ts#L42)
+Defined in: [packages/agentos/src/memory/pipeline/context/CompactionEngine.ts:42](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/pipeline/context/CompactionEngine.ts#L42)
 
 Run compaction using the configured strategy.
 
@@ -58,7 +58,7 @@ Run compaction using the configured strategy.
 
 > **getAvailableStrategies**(): [`CompactionStrategy`](../type-aliases/CompactionStrategy.md)[]
 
-Defined in: [packages/agentos/src/memory/pipeline/context/CompactionEngine.ts:59](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/pipeline/context/CompactionEngine.ts#L59)
+Defined in: [packages/agentos/src/memory/pipeline/context/CompactionEngine.ts:59](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/pipeline/context/CompactionEngine.ts#L59)
 
 List available strategy names.
 
@@ -72,7 +72,7 @@ List available strategy names.
 
 > **getStrategy**(`name`): [`ICompactionStrategy`](../interfaces/ICompactionStrategy.md) \| `undefined`
 
-Defined in: [packages/agentos/src/memory/pipeline/context/CompactionEngine.ts:54](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/pipeline/context/CompactionEngine.ts#L54)
+Defined in: [packages/agentos/src/memory/pipeline/context/CompactionEngine.ts:54](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/pipeline/context/CompactionEngine.ts#L54)
 
 Get a specific strategy instance.
 

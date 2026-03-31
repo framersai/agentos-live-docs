@@ -2,7 +2,7 @@
 
 > **MetadataFilter** = `object`
 
-Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:89](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/vector-store/IVectorStore.ts#L89)
+Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:89](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/vector-store/IVectorStore.ts#L89)
 
 Defines a filter for document metadata. All top-level key-value pairs are implicitly ANDed.
 The value for a field can be a direct scalar match (implicit equality) or a `MetadataFieldCondition` object

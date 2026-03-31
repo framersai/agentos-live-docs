@@ -1,6 +1,6 @@
 # Interface: SpeechToTextProvider
 
-Defined in: [packages/agentos/src/speech/types.ts:135](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/speech/types.ts#L135)
+Defined in: [packages/agentos/src/speech/types.ts:135](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/speech/types.ts#L135)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/speech/types.ts:135](https://github.com/framer
 
 > `readonly` `optional` **displayName**: `string`
 
-Defined in: [packages/agentos/src/speech/types.ts:137](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/speech/types.ts#L137)
+Defined in: [packages/agentos/src/speech/types.ts:137](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/speech/types.ts#L137)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [packages/agentos/src/speech/types.ts:137](https://github.com/framer
 
 > `readonly` **id**: `string`
 
-Defined in: [packages/agentos/src/speech/types.ts:136](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/speech/types.ts#L136)
+Defined in: [packages/agentos/src/speech/types.ts:136](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/speech/types.ts#L136)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: [packages/agentos/src/speech/types.ts:136](https://github.com/framer
 
 > `readonly` `optional` **supportsStreaming**: `boolean`
 
-Defined in: [packages/agentos/src/speech/types.ts:138](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/speech/types.ts#L138)
+Defined in: [packages/agentos/src/speech/types.ts:138](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/speech/types.ts#L138)
 
 ## Methods
 
@@ -32,7 +32,7 @@ Defined in: [packages/agentos/src/speech/types.ts:138](https://github.com/framer
 
 > **getProviderName**(): `string`
 
-Defined in: [packages/agentos/src/speech/types.ts:143](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/speech/types.ts#L143)
+Defined in: [packages/agentos/src/speech/types.ts:143](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/speech/types.ts#L143)
 
 #### Returns
 
@@ -44,7 +44,7 @@ Defined in: [packages/agentos/src/speech/types.ts:143](https://github.com/framer
 
 > **transcribe**(`audio`, `options?`): `Promise`\<[`SpeechTranscriptionResult`](SpeechTranscriptionResult.md)\>
 
-Defined in: [packages/agentos/src/speech/types.ts:139](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/speech/types.ts#L139)
+Defined in: [packages/agentos/src/speech/types.ts:139](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/speech/types.ts#L139)
 
 #### Parameters
 

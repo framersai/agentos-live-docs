@@ -1,6 +1,6 @@
 # Interface: AgencyStreamResult
 
-Defined in: [packages/agentos/src/api/types.ts:764](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/types.ts#L764)
+Defined in: [packages/agentos/src/api/types.ts:764](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/types.ts#L764)
 
 Public stream result returned by `agency().stream(...)`.
 
@@ -39,7 +39,7 @@ console.log(await stream.text);
 
 > **agentCalls**: `Promise`\<[`AgentCallRecord`](AgentCallRecord.md)[]\>
 
-Defined in: [packages/agentos/src/api/types.ts:784](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/types.ts#L784)
+Defined in: [packages/agentos/src/api/types.ts:784](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/types.ts#L784)
 
 Final per-agent execution ledger for the streamed run.
 
@@ -49,7 +49,7 @@ Final per-agent execution ledger for the streamed run.
 
 > **finalTextStream**: `AsyncIterable`\<`string`\>
 
-Defined in: [packages/agentos/src/api/types.ts:796](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/types.ts#L796)
+Defined in: [packages/agentos/src/api/types.ts:796](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/types.ts#L796)
 
 Finalized approved-only text stream.
 
@@ -62,7 +62,7 @@ For most runs it emits a single finalized chunk.
 
 > **fullStream**: `AsyncIterable`\<[`AgencyStreamPart`](../type-aliases/AgencyStreamPart.md)\>
 
-Defined in: [packages/agentos/src/api/types.ts:773](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/types.ts#L773)
+Defined in: [packages/agentos/src/api/types.ts:773](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/types.ts#L773)
 
 Structured live + finalized event stream.
 
@@ -75,7 +75,7 @@ This includes raw text/tool/lifecycle events and also the finalized
 
 > **parsed**: `Promise`\<`unknown`\>
 
-Defined in: [packages/agentos/src/api/types.ts:789](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/types.ts#L789)
+Defined in: [packages/agentos/src/api/types.ts:789](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/types.ts#L789)
 
 Final structured payload; resolves to `undefined` when structured output
 was not configured for the run.
@@ -86,7 +86,7 @@ was not configured for the run.
 
 > **text**: `Promise`\<`string`\>
 
-Defined in: [packages/agentos/src/api/types.ts:775](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/types.ts#L775)
+Defined in: [packages/agentos/src/api/types.ts:775](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/types.ts#L775)
 
 Finalized scalar text after guardrails, HITL, and parsing hooks.
 
@@ -96,7 +96,7 @@ Finalized scalar text after guardrails, HITL, and parsing hooks.
 
 > **textStream**: `AsyncIterable`\<`string`\>
 
-Defined in: [packages/agentos/src/api/types.ts:766](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/types.ts#L766)
+Defined in: [packages/agentos/src/api/types.ts:766](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/types.ts#L766)
 
 Raw live text chunks from the underlying strategy.
 
@@ -106,6 +106,6 @@ Raw live text chunks from the underlying strategy.
 
 > **usage**: `Promise`\<\{ `completionTokens`: `number`; `costUSD?`: `number`; `promptTokens`: `number`; `totalTokens`: `number`; \}\>
 
-Defined in: [packages/agentos/src/api/types.ts:777](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/types.ts#L777)
+Defined in: [packages/agentos/src/api/types.ts:777](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/types.ts#L777)
 
 Final aggregate usage for the streamed run.

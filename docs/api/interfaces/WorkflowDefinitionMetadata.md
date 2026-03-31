@@ -1,6 +1,6 @@
 # Interface: WorkflowDefinitionMetadata
 
-Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:79](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/workflows/WorkflowTypes.ts#L79)
+Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:79](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/workflows/WorkflowTypes.ts#L79)
 
 ## Indexable
 
@@ -12,4 +12,4 @@ Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:79](h
 
 > `optional` **requiredSecrets**: `string`[]
 
-Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:80](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/workflows/WorkflowTypes.ts#L80)
+Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:80](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/workflows/WorkflowTypes.ts#L80)

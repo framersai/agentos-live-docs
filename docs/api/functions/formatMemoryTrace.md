@@ -2,7 +2,7 @@
 
 > **formatMemoryTrace**(`trace`, `style`): `string`
 
-Defined in: [packages/agentos/src/memory/core/prompt/MemoryFormatters.ts:105](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/core/prompt/MemoryFormatters.ts#L105)
+Defined in: [packages/agentos/src/memory/core/prompt/MemoryFormatters.ts:105](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/core/prompt/MemoryFormatters.ts#L105)
 
 Format a single memory trace according to the given style.
 

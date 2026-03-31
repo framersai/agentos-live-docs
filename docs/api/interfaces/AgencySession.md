@@ -1,6 +1,6 @@
 # Interface: AgencySession
 
-Defined in: [packages/agentos/src/agents/agency/AgencyTypes.ts:143](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/agents/agency/AgencyTypes.ts#L143)
+Defined in: [packages/agentos/src/agents/agency/AgencyTypes.ts:143](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/agents/agency/AgencyTypes.ts#L143)
 
 Represents a collective of GMIs collaborating under a single Agency identity.
 Agencies enable multi-agent workflows with shared context and memory.
@@ -11,7 +11,7 @@ Agencies enable multi-agent workflows with shared context and memory.
 
 > **agencyId**: `string`
 
-Defined in: [packages/agentos/src/agents/agency/AgencyTypes.ts:145](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/agents/agency/AgencyTypes.ts#L145)
+Defined in: [packages/agentos/src/agents/agency/AgencyTypes.ts:145](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/agents/agency/AgencyTypes.ts#L145)
 
 Unique agency identifier
 
@@ -21,7 +21,7 @@ Unique agency identifier
 
 > **conversationId**: `string`
 
-Defined in: [packages/agentos/src/agents/agency/AgencyTypes.ts:149](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/agents/agency/AgencyTypes.ts#L149)
+Defined in: [packages/agentos/src/agents/agency/AgencyTypes.ts:149](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/agents/agency/AgencyTypes.ts#L149)
 
 Conversation context for this agency
 
@@ -31,7 +31,7 @@ Conversation context for this agency
 
 > **createdAt**: `string`
 
-Defined in: [packages/agentos/src/agents/agency/AgencyTypes.ts:151](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/agents/agency/AgencyTypes.ts#L151)
+Defined in: [packages/agentos/src/agents/agency/AgencyTypes.ts:151](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/agents/agency/AgencyTypes.ts#L151)
 
 ISO timestamp of creation
 
@@ -41,7 +41,7 @@ ISO timestamp of creation
 
 > `optional` **memoryConfig**: [`AgencyMemoryConfig`](AgencyMemoryConfig.md)
 
-Defined in: [packages/agentos/src/agents/agency/AgencyTypes.ts:162](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/agents/agency/AgencyTypes.ts#L162)
+Defined in: [packages/agentos/src/agents/agency/AgencyTypes.ts:162](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/agents/agency/AgencyTypes.ts#L162)
 
 Shared memory configuration for this agency.
 
@@ -55,7 +55,7 @@ AgencyMemoryConfig
 
 > `optional` **metadata**: `Record`\<`string`, `unknown`\>
 
-Defined in: [packages/agentos/src/agents/agency/AgencyTypes.ts:157](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/agents/agency/AgencyTypes.ts#L157)
+Defined in: [packages/agentos/src/agents/agency/AgencyTypes.ts:157](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/agents/agency/AgencyTypes.ts#L157)
 
 Custom metadata
 
@@ -65,7 +65,7 @@ Custom metadata
 
 > **seats**: `Record`\<`string`, [`AgencySeatState`](AgencySeatState.md)\>
 
-Defined in: [packages/agentos/src/agents/agency/AgencyTypes.ts:155](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/agents/agency/AgencyTypes.ts#L155)
+Defined in: [packages/agentos/src/agents/agency/AgencyTypes.ts:155](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/agents/agency/AgencyTypes.ts#L155)
 
 GMI seats keyed by role ID
 
@@ -75,7 +75,7 @@ GMI seats keyed by role ID
 
 > **updatedAt**: `string`
 
-Defined in: [packages/agentos/src/agents/agency/AgencyTypes.ts:153](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/agents/agency/AgencyTypes.ts#L153)
+Defined in: [packages/agentos/src/agents/agency/AgencyTypes.ts:153](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/agents/agency/AgencyTypes.ts#L153)
 
 ISO timestamp of last update
 
@@ -85,6 +85,6 @@ ISO timestamp of last update
 
 > **workflowId**: `string`
 
-Defined in: [packages/agentos/src/agents/agency/AgencyTypes.ts:147](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/agents/agency/AgencyTypes.ts#L147)
+Defined in: [packages/agentos/src/agents/agency/AgencyTypes.ts:147](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/agents/agency/AgencyTypes.ts#L147)
 
 Associated workflow instance

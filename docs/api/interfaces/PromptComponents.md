@@ -1,6 +1,6 @@
 # Interface: PromptComponents
 
-Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:119](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/llm/IPromptEngine.ts#L119)
+Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:119](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/llm/IPromptEngine.ts#L119)
 
 Core components that form the foundation of any prompt construction.
 These are gathered from various sources (GMI state, user input, RAG) and then
@@ -16,7 +16,7 @@ PromptComponents
 
 > `optional` **assembledMemoryContext**: [`AssembledMemoryContext`](AssembledMemoryContext.md)
 
-Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:142](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/llm/IPromptEngine.ts#L142)
+Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:142](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/llm/IPromptEngine.ts#L142)
 
 Assembled cognitive memory context (personality-affected, token-budgeted). Merged with retrievedContext by the prompt template.
 
@@ -26,7 +26,7 @@ Assembled cognitive memory context (personality-affected, token-budgeted). Merge
 
 > `optional` **audioInput**: [`AudioInputData`](AudioInputData.md)
 
-Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:129](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/llm/IPromptEngine.ts#L129)
+Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:129](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/llm/IPromptEngine.ts#L129)
 
 Audio input data references if the model or a pre-processing step handles audio.
 
@@ -36,7 +36,7 @@ Audio input data references if the model or a pre-processing step handles audio.
 
 > `optional` **conversationHistory**: `ConversationMessage`[]
 
-Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:123](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/llm/IPromptEngine.ts#L123)
+Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:123](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/llm/IPromptEngine.ts#L123)
 
 Conversation history messages, typically an array of `Message` objects.
 
@@ -46,7 +46,7 @@ Conversation history messages, typically an array of `Message` objects.
 
 > `optional` **customComponents**: `Record`\<`string`, `unknown`\>
 
-Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:146](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/llm/IPromptEngine.ts#L146)
+Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:146](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/llm/IPromptEngine.ts#L146)
 
 Additional custom components that templates might use.
 
@@ -56,7 +56,7 @@ Additional custom components that templates might use.
 
 > `optional` **retrievedContext**: `string` \| `object`[]
 
-Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:138](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/llm/IPromptEngine.ts#L138)
+Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:138](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/llm/IPromptEngine.ts#L138)
 
 Retrieved context from a RAG system, to be incorporated into the prompt.
 
@@ -66,7 +66,7 @@ Retrieved context from a RAG system, to be incorporated into the prompt.
 
 > `optional` **systemPrompts**: `object`[]
 
-Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:121](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/llm/IPromptEngine.ts#L121)
+Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:121](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/llm/IPromptEngine.ts#L121)
 
 System-level prompts with optional priority ordering. Higher priority usually means placed earlier or given more weight.
 
@@ -88,7 +88,7 @@ System-level prompts with optional priority ordering. Higher priority usually me
 
 > `optional` **taskSpecificData**: `Record`\<`string`, `unknown`\>
 
-Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:144](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/llm/IPromptEngine.ts#L144)
+Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:144](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/llm/IPromptEngine.ts#L144)
 
 Task-specific data or parameters that need to be included in the prompt.
 
@@ -98,7 +98,7 @@ Task-specific data or parameters that need to be included in the prompt.
 
 > `optional` **tools**: [`ITool`](ITool.md)\<`any`, `any`\>[]
 
-Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:131](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/llm/IPromptEngine.ts#L131)
+Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:131](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/llm/IPromptEngine.ts#L131)
 
 Available tools and their schemas, for models that support function/tool calling.
 
@@ -108,7 +108,7 @@ Available tools and their schemas, for models that support function/tool calling
 
 > `optional` **toolSchemas**: `Record`\<`string`, `unknown`\>[]
 
-Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:136](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/llm/IPromptEngine.ts#L136)
+Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:136](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/llm/IPromptEngine.ts#L136)
 
 Pre-formatted tool/function schemas that should be forwarded to the model as-is.
 Useful when upstream logic has already normalized the schema definitions.
@@ -119,7 +119,7 @@ Useful when upstream logic has already normalized the schema definitions.
 
 > `optional` **userInput**: `string` \| `null`
 
-Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:125](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/llm/IPromptEngine.ts#L125)
+Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:125](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/llm/IPromptEngine.ts#L125)
 
 Current user input text.
 
@@ -129,6 +129,6 @@ Current user input text.
 
 > `optional` **visionInputs**: [`VisionInputData`](VisionInputData.md)[]
 
-Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:127](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/llm/IPromptEngine.ts#L127)
+Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:127](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/llm/IPromptEngine.ts#L127)
 
 Visual inputs (images) if the target model supports vision.

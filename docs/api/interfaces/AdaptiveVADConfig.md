@@ -1,6 +1,6 @@
 # Interface: AdaptiveVADConfig
 
-Defined in: [packages/agentos/src/hearing/AdaptiveVAD.ts:49](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/hearing/AdaptiveVAD.ts#L49)
+Defined in: [packages/agentos/src/hearing/AdaptiveVAD.ts:49](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/hearing/AdaptiveVAD.ts#L49)
 
 Configuration options for the AdaptiveVAD.
 
@@ -10,7 +10,7 @@ Configuration options for the AdaptiveVAD.
 
 > `optional` **energySmoothingFrames**: `number`
 
-Defined in: [packages/agentos/src/hearing/AdaptiveVAD.ts:74](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/hearing/AdaptiveVAD.ts#L74)
+Defined in: [packages/agentos/src/hearing/AdaptiveVAD.ts:74](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/hearing/AdaptiveVAD.ts#L74)
 
 Number of past frames to consider for smoothing energy calculations (if smoothing is applied).
 
@@ -26,7 +26,7 @@ Number of past frames to consider for smoothing energy calculations (if smoothin
 
 > `optional` **maxSilenceDurationMsInSpeech**: `number`
 
-Defined in: [packages/agentos/src/hearing/AdaptiveVAD.ts:61](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/hearing/AdaptiveVAD.ts#L61)
+Defined in: [packages/agentos/src/hearing/AdaptiveVAD.ts:61](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/hearing/AdaptiveVAD.ts#L61)
 
 Maximum duration of silence in milliseconds within a speech segment before it's considered ended.
 e.g., a pause between words.
@@ -43,7 +43,7 @@ e.g., a pause between words.
 
 > `optional` **minSpeechDurationMs**: `number`
 
-Defined in: [packages/agentos/src/hearing/AdaptiveVAD.ts:55](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/hearing/AdaptiveVAD.ts#L55)
+Defined in: [packages/agentos/src/hearing/AdaptiveVAD.ts:55](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/hearing/AdaptiveVAD.ts#L55)
 
 Minimum duration in milliseconds that a sound segment must have to be considered speech.
 Helps filter out very short, non-speech noises.
@@ -60,7 +60,7 @@ Helps filter out very short, non-speech noises.
 
 > `optional` **thresholdRatio**: `number`
 
-Defined in: [packages/agentos/src/hearing/AdaptiveVAD.ts:81](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/hearing/AdaptiveVAD.ts#L81)
+Defined in: [packages/agentos/src/hearing/AdaptiveVAD.ts:81](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/hearing/AdaptiveVAD.ts#L81)
 
 Ratio of speech_threshold / silence_threshold.
 Helps in creating a hysteresis effect.
@@ -78,7 +78,7 @@ speech_threshold = silence_threshold * thresholdRatio
 
 > `optional` **vadSensitivityFactor**: `number`
 
-Defined in: [packages/agentos/src/hearing/AdaptiveVAD.ts:69](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/hearing/AdaptiveVAD.ts#L69)
+Defined in: [packages/agentos/src/hearing/AdaptiveVAD.ts:69](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/hearing/AdaptiveVAD.ts#L69)
 
 Sensitivity adjustment factor, further fine-tunes thresholds from EnvironmentalCalibrator.
 Values > 1.0 make VAD less sensitive (require louder input for speech).

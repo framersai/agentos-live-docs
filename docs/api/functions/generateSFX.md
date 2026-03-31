@@ -2,7 +2,7 @@
 
 > **generateSFX**(`opts`): `Promise`\<[`GenerateSFXResult`](../interfaces/GenerateSFXResult.md)\>
 
-Defined in: [packages/agentos/src/api/generateSFX.ts:310](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/generateSFX.ts#L310)
+Defined in: [packages/agentos/src/api/generateSFX.ts:310](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/generateSFX.ts#L310)
 
 Generates a sound effect using a provider-agnostic interface.
 

@@ -1,6 +1,6 @@
 # Class: Neo4jGraphRAGEngine
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/Neo4jGraphRAGEngine.ts:78](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/graphrag/Neo4jGraphRAGEngine.ts#L78)
+Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/Neo4jGraphRAGEngine.ts:78](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/graph/graphrag/Neo4jGraphRAGEngine.ts#L78)
 
 ## Implements
 
@@ -12,7 +12,7 @@ Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/Neo4jGraphRAGE
 
 > **new Neo4jGraphRAGEngine**(`deps`): `Neo4jGraphRAGEngine`
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/Neo4jGraphRAGEngine.ts:84](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/graphrag/Neo4jGraphRAGEngine.ts#L84)
+Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/Neo4jGraphRAGEngine.ts:84](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/graph/graphrag/Neo4jGraphRAGEngine.ts#L84)
 
 #### Parameters
 
@@ -30,7 +30,7 @@ Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/Neo4jGraphRAGE
 
 > **clear**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/Neo4jGraphRAGEngine.ts:653](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/graphrag/Neo4jGraphRAGEngine.ts#L653)
+Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/Neo4jGraphRAGEngine.ts:653](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/graph/graphrag/Neo4jGraphRAGEngine.ts#L653)
 
 Clear all data
 
@@ -48,7 +48,7 @@ Clear all data
 
 > **getCommunities**(`level?`): `Promise`\<[`GraphCommunity`](../interfaces/GraphCommunity.md)[]\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/Neo4jGraphRAGEngine.ts:604](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/graphrag/Neo4jGraphRAGEngine.ts#L604)
+Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/Neo4jGraphRAGEngine.ts:604](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/graph/graphrag/Neo4jGraphRAGEngine.ts#L604)
 
 Get community hierarchy
 
@@ -72,7 +72,7 @@ Get community hierarchy
 
 > **getEntities**(`options?`): `Promise`\<[`GraphEntity`](../interfaces/GraphEntity.md)[]\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/Neo4jGraphRAGEngine.ts:562](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/graphrag/Neo4jGraphRAGEngine.ts#L562)
+Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/Neo4jGraphRAGEngine.ts:562](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/graph/graphrag/Neo4jGraphRAGEngine.ts#L562)
 
 Get all entities
 
@@ -102,7 +102,7 @@ Get all entities
 
 > **getRelationships**(`entityId`): `Promise`\<[`GraphRelationship`](../interfaces/GraphRelationship.md)[]\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/Neo4jGraphRAGEngine.ts:581](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/graphrag/Neo4jGraphRAGEngine.ts#L581)
+Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/Neo4jGraphRAGEngine.ts:581](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/graph/graphrag/Neo4jGraphRAGEngine.ts#L581)
 
 Get all relationships for an entity
 
@@ -126,7 +126,7 @@ Get all relationships for an entity
 
 > **getStats**(): `Promise`\<\{ `communityLevels`: `number`; `documentsIngested`: `number`; `totalCommunities`: `number`; `totalEntities`: `number`; `totalRelationships`: `number`; \}\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/Neo4jGraphRAGEngine.ts:624](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/graphrag/Neo4jGraphRAGEngine.ts#L624)
+Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/Neo4jGraphRAGEngine.ts:624](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/graph/graphrag/Neo4jGraphRAGEngine.ts#L624)
 
 Get statistics
 
@@ -144,7 +144,7 @@ Get statistics
 
 > **globalSearch**(`query`, `options?`): `Promise`\<[`GlobalSearchResult`](../interfaces/GlobalSearchResult.md)\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/Neo4jGraphRAGEngine.ts:278](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/graphrag/Neo4jGraphRAGEngine.ts#L278)
+Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/Neo4jGraphRAGEngine.ts:278](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/graph/graphrag/Neo4jGraphRAGEngine.ts#L278)
 
 Global search: answers broad questions using community summaries.
 Best for "What are the main themes?" type questions.
@@ -173,7 +173,7 @@ Best for "What are the main themes?" type questions.
 
 > **ingestDocuments**(`documents`): `Promise`\<\{ `communitiesDetected`: `number`; `documentsProcessed`: `number`; `entitiesExtracted`: `number`; `relationshipsExtracted`: `number`; \}\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/Neo4jGraphRAGEngine.ts:128](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/graphrag/Neo4jGraphRAGEngine.ts#L128)
+Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/Neo4jGraphRAGEngine.ts:128](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/graph/graphrag/Neo4jGraphRAGEngine.ts#L128)
 
 Ingest documents: extract entities/relationships, build graph,
 detect communities, generate summaries.
@@ -198,7 +198,7 @@ detect communities, generate summaries.
 
 > **initialize**(`config`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/Neo4jGraphRAGEngine.ts:86](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/graphrag/Neo4jGraphRAGEngine.ts#L86)
+Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/Neo4jGraphRAGEngine.ts:86](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/graph/graphrag/Neo4jGraphRAGEngine.ts#L86)
 
 Initialize the engine with configuration
 
@@ -222,7 +222,7 @@ Initialize the engine with configuration
 
 > **localSearch**(`query`, `options?`): `Promise`\<[`LocalSearchResult`](../interfaces/LocalSearchResult.md)\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/Neo4jGraphRAGEngine.ts:377](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/graphrag/Neo4jGraphRAGEngine.ts#L377)
+Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/Neo4jGraphRAGEngine.ts:377](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/graph/graphrag/Neo4jGraphRAGEngine.ts#L377)
 
 Local search: finds specific entities and their context.
 Best for "Tell me about X" type questions.
@@ -251,7 +251,7 @@ Best for "Tell me about X" type questions.
 
 > **removeDocuments**(`documentIds`): `Promise`\<\{ `communitiesDetected`: `number`; `documentsRemoved`: `number`; \}\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/Neo4jGraphRAGEngine.ts:238](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/graphrag/Neo4jGraphRAGEngine.ts#L238)
+Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/Neo4jGraphRAGEngine.ts:238](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/graph/graphrag/Neo4jGraphRAGEngine.ts#L238)
 
 Remove one or more previously-ingested documents from the graph.
 
@@ -279,7 +279,7 @@ deleted or moved out of indexed categories.
 
 > **shutdown**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/Neo4jGraphRAGEngine.ts:659](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/graphrag/Neo4jGraphRAGEngine.ts#L659)
+Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/Neo4jGraphRAGEngine.ts:659](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/graph/graphrag/Neo4jGraphRAGEngine.ts#L659)
 
 Shutdown and cleanup
 

@@ -1,6 +1,6 @@
 # Class: AutonomyGuard
 
-Defined in: [packages/agentos/src/provenance/enforcement/AutonomyGuard.ts:17](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/enforcement/AutonomyGuard.ts#L17)
+Defined in: [packages/agentos/src/provenance/enforcement/AutonomyGuard.ts:17](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/provenance/enforcement/AutonomyGuard.ts#L17)
 
 ## Constructors
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/provenance/enforcement/AutonomyGuard.ts:17](ht
 
 > **new AutonomyGuard**(`config`, `ledger?`): `AutonomyGuard`
 
-Defined in: [packages/agentos/src/provenance/enforcement/AutonomyGuard.ts:22](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/enforcement/AutonomyGuard.ts#L22)
+Defined in: [packages/agentos/src/provenance/enforcement/AutonomyGuard.ts:22](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/provenance/enforcement/AutonomyGuard.ts#L22)
 
 #### Parameters
 
@@ -30,7 +30,7 @@ Defined in: [packages/agentos/src/provenance/enforcement/AutonomyGuard.ts:22](ht
 
 > **checkHumanAction**(`actionType`, `details?`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/provenance/enforcement/AutonomyGuard.ts:35](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/enforcement/AutonomyGuard.ts#L35)
+Defined in: [packages/agentos/src/provenance/enforcement/AutonomyGuard.ts:35](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/provenance/enforcement/AutonomyGuard.ts#L35)
 
 Check if a human action is allowed under the current autonomy config.
 Throws ProvenanceViolationError if the action is blocked.
@@ -59,7 +59,7 @@ Optional details about the action
 
 > **isSealed**(): `boolean`
 
-Defined in: [packages/agentos/src/provenance/enforcement/AutonomyGuard.ts:123](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/enforcement/AutonomyGuard.ts#L123)
+Defined in: [packages/agentos/src/provenance/enforcement/AutonomyGuard.ts:123](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/provenance/enforcement/AutonomyGuard.ts#L123)
 
 Check if genesis has been recorded.
 
@@ -73,7 +73,7 @@ Check if genesis has been recorded.
 
 > **recordGenesis**(`genesisEventId`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/provenance/enforcement/AutonomyGuard.ts:115](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/enforcement/AutonomyGuard.ts#L115)
+Defined in: [packages/agentos/src/provenance/enforcement/AutonomyGuard.ts:115](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/provenance/enforcement/AutonomyGuard.ts#L115)
 
 Record the genesis event, marking the start of sealed autonomous operation.
 
@@ -93,7 +93,7 @@ Record the genesis event, marking the start of sealed autonomous operation.
 
 > **wouldAllow**(`actionType`): `boolean`
 
-Defined in: [packages/agentos/src/provenance/enforcement/AutonomyGuard.ts:131](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/enforcement/AutonomyGuard.ts#L131)
+Defined in: [packages/agentos/src/provenance/enforcement/AutonomyGuard.ts:131](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/provenance/enforcement/AutonomyGuard.ts#L131)
 
 Check whether a specific action type would be blocked.
 Returns true if the action is allowed, false if it would be blocked.

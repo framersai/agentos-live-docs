@@ -1,6 +1,6 @@
 # Interface: TaskContext
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:70](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/cognitive_substrate/IGMI.ts#L70)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:70](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/IGMI.ts#L70)
 
 Represents the contextual information about the task the GMI is currently handling.
 
@@ -18,7 +18,7 @@ TaskContext
 
 > `optional` **complexity**: `string`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:73](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/cognitive_substrate/IGMI.ts#L73)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:73](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/IGMI.ts#L73)
 
 ***
 
@@ -26,7 +26,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:73](https://githu
 
 > `optional` **domain**: `string`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:72](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/cognitive_substrate/IGMI.ts#L72)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:72](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/IGMI.ts#L72)
 
 ***
 
@@ -34,7 +34,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:72](https://githu
 
 > `optional` **goal**: `string`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:74](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/cognitive_substrate/IGMI.ts#L74)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:74](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/IGMI.ts#L74)
 
 ***
 
@@ -42,7 +42,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:74](https://githu
 
 > `optional` **progress**: `number`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:77](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/cognitive_substrate/IGMI.ts#L77)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:77](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/IGMI.ts#L77)
 
 ***
 
@@ -50,7 +50,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:77](https://githu
 
 > `optional` **requirements**: `string`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:76](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/cognitive_substrate/IGMI.ts#L76)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:76](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/IGMI.ts#L76)
 
 ***
 
@@ -58,7 +58,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:76](https://githu
 
 > `optional` **status**: `"not_started"` \| `"in_progress"` \| `"blocked"` \| `"requires_clarification"` \| `"completed"` \| `"failed"`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:75](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/cognitive_substrate/IGMI.ts#L75)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:75](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/IGMI.ts#L75)
 
 ***
 
@@ -66,4 +66,4 @@ Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:75](https://githu
 
 > **taskId**: `string`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:71](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/cognitive_substrate/IGMI.ts#L71)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:71](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/IGMI.ts#L71)

@@ -1,6 +1,6 @@
 # Interface: GuardrailContext
 
-Defined in: [packages/agentos/src/safety/guardrails/IGuardrailService.ts:76](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/safety/guardrails/IGuardrailService.ts#L76)
+Defined in: [packages/agentos/src/safety/guardrails/IGuardrailService.ts:76](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/safety/guardrails/IGuardrailService.ts#L76)
 
 Lightweight description of the conversational context for guardrail decisions.
 
@@ -24,7 +24,7 @@ const context: GuardrailContext = {
 
 > `optional` **conversationId**: `string`
 
-Defined in: [packages/agentos/src/safety/guardrails/IGuardrailService.ts:87](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/safety/guardrails/IGuardrailService.ts#L87)
+Defined in: [packages/agentos/src/safety/guardrails/IGuardrailService.ts:87](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/safety/guardrails/IGuardrailService.ts#L87)
 
 Conversation thread identifier
 
@@ -34,7 +34,7 @@ Conversation thread identifier
 
 > `optional` **metadata**: `Record`\<`string`, `unknown`\>
 
-Defined in: [packages/agentos/src/safety/guardrails/IGuardrailService.ts:93](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/safety/guardrails/IGuardrailService.ts#L93)
+Defined in: [packages/agentos/src/safety/guardrails/IGuardrailService.ts:93](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/safety/guardrails/IGuardrailService.ts#L93)
 
 Additional context for guardrail evaluation
 
@@ -44,7 +44,7 @@ Additional context for guardrail evaluation
 
 > `optional` **mode**: `string`
 
-Defined in: [packages/agentos/src/safety/guardrails/IGuardrailService.ts:90](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/safety/guardrails/IGuardrailService.ts#L90)
+Defined in: [packages/agentos/src/safety/guardrails/IGuardrailService.ts:90](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/safety/guardrails/IGuardrailService.ts#L90)
 
 Operating mode (e.g., 'debug', 'production')
 
@@ -54,7 +54,7 @@ Operating mode (e.g., 'debug', 'production')
 
 > `optional` **personaId**: `string`
 
-Defined in: [packages/agentos/src/safety/guardrails/IGuardrailService.ts:84](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/safety/guardrails/IGuardrailService.ts#L84)
+Defined in: [packages/agentos/src/safety/guardrails/IGuardrailService.ts:84](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/safety/guardrails/IGuardrailService.ts#L84)
 
 Active persona/agent identity (if applicable)
 
@@ -64,7 +64,7 @@ Active persona/agent identity (if applicable)
 
 > **sessionId**: `string`
 
-Defined in: [packages/agentos/src/safety/guardrails/IGuardrailService.ts:81](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/safety/guardrails/IGuardrailService.ts#L81)
+Defined in: [packages/agentos/src/safety/guardrails/IGuardrailService.ts:81](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/safety/guardrails/IGuardrailService.ts#L81)
 
 Current session identifier
 
@@ -74,6 +74,6 @@ Current session identifier
 
 > **userId**: `string`
 
-Defined in: [packages/agentos/src/safety/guardrails/IGuardrailService.ts:78](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/safety/guardrails/IGuardrailService.ts#L78)
+Defined in: [packages/agentos/src/safety/guardrails/IGuardrailService.ts:78](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/safety/guardrails/IGuardrailService.ts#L78)
 
 Unique identifier for the user making the request

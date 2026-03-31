@@ -1,6 +1,6 @@
 # Interface: ForgeToolInput
 
-Defined in: [packages/agentos/src/emergent/ForgeToolMetaTool.ts:35](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/emergent/ForgeToolMetaTool.ts#L35)
+Defined in: [packages/agentos/src/emergent/ForgeToolMetaTool.ts:35](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/emergent/ForgeToolMetaTool.ts#L35)
 
 Input arguments accepted by the `forge_tool` meta-tool.
 
@@ -21,7 +21,7 @@ satisfy the `ITool` generic constraint while retaining semantic clarity.
 
 > **description**: `string`
 
-Defined in: [packages/agentos/src/emergent/ForgeToolMetaTool.ts:40](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/emergent/ForgeToolMetaTool.ts#L40)
+Defined in: [packages/agentos/src/emergent/ForgeToolMetaTool.ts:40](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/emergent/ForgeToolMetaTool.ts#L40)
 
 Natural language description of the tool's purpose.
 
@@ -31,7 +31,7 @@ Natural language description of the tool's purpose.
 
 > **implementation**: \{ `mode`: `"compose"`; `steps`: `object`[]; \} \| \{ `allowlist`: `string`[]; `code`: `string`; `mode`: `"sandbox"`; \}
 
-Defined in: [packages/agentos/src/emergent/ForgeToolMetaTool.ts:52](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/emergent/ForgeToolMetaTool.ts#L52)
+Defined in: [packages/agentos/src/emergent/ForgeToolMetaTool.ts:52](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/emergent/ForgeToolMetaTool.ts#L52)
 
 Implementation specification — either compose (chain existing tools) or
 sandbox (arbitrary code). Discriminated on the `mode` field.
@@ -42,7 +42,7 @@ sandbox (arbitrary code). Discriminated on the `mode` field.
 
 > **inputSchema**: [`JSONSchemaObject`](../type-aliases/JSONSchemaObject.md)
 
-Defined in: [packages/agentos/src/emergent/ForgeToolMetaTool.ts:43](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/emergent/ForgeToolMetaTool.ts#L43)
+Defined in: [packages/agentos/src/emergent/ForgeToolMetaTool.ts:43](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/emergent/ForgeToolMetaTool.ts#L43)
 
 JSON Schema for the tool's input arguments.
 
@@ -52,7 +52,7 @@ JSON Schema for the tool's input arguments.
 
 > **name**: `string`
 
-Defined in: [packages/agentos/src/emergent/ForgeToolMetaTool.ts:37](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/emergent/ForgeToolMetaTool.ts#L37)
+Defined in: [packages/agentos/src/emergent/ForgeToolMetaTool.ts:37](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/emergent/ForgeToolMetaTool.ts#L37)
 
 Machine-readable name for the new tool.
 
@@ -62,7 +62,7 @@ Machine-readable name for the new tool.
 
 > `optional` **outputSchema**: [`JSONSchemaObject`](../type-aliases/JSONSchemaObject.md)
 
-Defined in: [packages/agentos/src/emergent/ForgeToolMetaTool.ts:46](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/emergent/ForgeToolMetaTool.ts#L46)
+Defined in: [packages/agentos/src/emergent/ForgeToolMetaTool.ts:46](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/emergent/ForgeToolMetaTool.ts#L46)
 
 JSON Schema for the tool's expected output (optional).
 
@@ -72,7 +72,7 @@ JSON Schema for the tool's expected output (optional).
 
 > **testCases**: `object`[]
 
-Defined in: [packages/agentos/src/emergent/ForgeToolMetaTool.ts:63](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/emergent/ForgeToolMetaTool.ts#L63)
+Defined in: [packages/agentos/src/emergent/ForgeToolMetaTool.ts:63](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/emergent/ForgeToolMetaTool.ts#L63)
 
 One or more test cases for the judge to evaluate.
 Each has an `input` object and optional `expectedOutput`.

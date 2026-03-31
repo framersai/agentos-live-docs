@@ -2,7 +2,7 @@
 
 > **buildFallbackChain**(`excludeProvider?`): [`FallbackProviderEntry`](../interfaces/FallbackProviderEntry.md)[]
 
-Defined in: [packages/agentos/src/api/generateText.ts:476](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/generateText.ts#L476)
+Defined in: [packages/agentos/src/api/generateText.ts:561](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/generateText.ts#L561)
 
 Auto-discovers available LLM providers from well-known environment variables
 and builds an ordered fallback chain.

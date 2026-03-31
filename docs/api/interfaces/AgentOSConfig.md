@@ -1,6 +1,6 @@
 # Interface: AgentOSConfig
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:407](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/AgentOS.ts#L407)
+Defined in: [packages/agentos/src/api/AgentOS.ts:407](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/AgentOS.ts#L407)
 
 ## Interface
 
@@ -18,7 +18,7 @@ sub-components and dependencies of the AgentOS platform.
 
 > `optional` **authService**: `IAuthService`
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:514](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/AgentOS.ts#L514)
+Defined in: [packages/agentos/src/api/AgentOS.ts:514](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/AgentOS.ts#L514)
 
 Optional authentication service implementing `IAuthService`. Provide via the auth extension or your own adapter.
 
@@ -28,7 +28,7 @@ Optional authentication service implementing `IAuthService`. Provide via the aut
 
 > **conversationManagerConfig**: [`ConversationManagerConfig`](ConversationManagerConfig.md)
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:489](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/AgentOS.ts#L489)
+Defined in: [packages/agentos/src/api/AgentOS.ts:489](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/AgentOS.ts#L489)
 
 Configuration for the [ConversationManager](../classes/ConversationManager.md).
 
@@ -38,7 +38,7 @@ Configuration for the [ConversationManager](../classes/ConversationManager.md).
 
 > **defaultPersonaId**: `string`
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:495](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/AgentOS.ts#L495)
+Defined in: [packages/agentos/src/api/AgentOS.ts:495](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/AgentOS.ts#L495)
 
 The default Persona ID to use if none is specified in an interaction.
 
@@ -48,7 +48,7 @@ The default Persona ID to use if none is specified in an interaction.
 
 > `optional` **emergent**: `boolean`
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:680](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/AgentOS.ts#L680)
+Defined in: [packages/agentos/src/api/AgentOS.ts:680](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/AgentOS.ts#L680)
 
 Enable emergent capability creation. When true, the agent gains access
 to the `forge_tool` meta-tool and can create new tools at runtime.
@@ -65,7 +65,7 @@ false
 
 > `optional` **emergentConfig**: `Partial`\<[`EmergentConfig`](EmergentConfig.md)\>
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:686](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/AgentOS.ts#L686)
+Defined in: [packages/agentos/src/api/AgentOS.ts:686](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/AgentOS.ts#L686)
 
 Configuration for the emergent capability engine.
 Only applies when `emergent: true`.
@@ -76,7 +76,7 @@ Only applies when `emergent: true`.
 
 > `optional` **extensionManifest**: [`ExtensionManifest`](ExtensionManifest.md)
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:608](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/AgentOS.ts#L608)
+Defined in: [packages/agentos/src/api/AgentOS.ts:608](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/AgentOS.ts#L608)
 
 Optional extension manifest describing packs to load.
 
@@ -86,7 +86,7 @@ Optional extension manifest describing packs to load.
 
 > `optional` **extensionOverrides**: [`ExtensionOverrides`](ExtensionOverrides.md)
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:610](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/AgentOS.ts#L610)
+Defined in: [packages/agentos/src/api/AgentOS.ts:610](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/AgentOS.ts#L610)
 
 Declarative overrides applied after packs are loaded.
 
@@ -96,7 +96,7 @@ Declarative overrides applied after packs are loaded.
 
 > `optional` **extensionSecrets**: `Record`\<`string`, `string`\>
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:520](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/AgentOS.ts#L520)
+Defined in: [packages/agentos/src/api/AgentOS.ts:520](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/AgentOS.ts#L520)
 
 Optional map of secretId -> value for extension/tool credentials.
 
@@ -106,7 +106,7 @@ Optional map of secretId -> value for extension/tool credentials.
 
 > `optional` **externalTools**: [`ExternalToolRegistry`](../type-aliases/ExternalToolRegistry.md)
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:562](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/AgentOS.ts#L562)
+Defined in: [packages/agentos/src/api/AgentOS.ts:562](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/AgentOS.ts#L562)
 
 Optional stable registry of host-managed external tools.
 
@@ -123,7 +123,7 @@ this configured registry by tool name.
 
 > **gmiManagerConfig**: [`GMIManagerConfig`](GMIManagerConfig.md)
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:409](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/AgentOS.ts#L409)
+Defined in: [packages/agentos/src/api/AgentOS.ts:409](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/AgentOS.ts#L409)
 
 Configuration for the [GMIManager](../classes/GMIManager.md).
 
@@ -133,7 +133,7 @@ Configuration for the [GMIManager](../classes/GMIManager.md).
 
 > `optional` **guardrailService**: [`IGuardrailService`](IGuardrailService.md)
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:518](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/AgentOS.ts#L518)
+Defined in: [packages/agentos/src/api/AgentOS.ts:518](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/AgentOS.ts#L518)
 
 Optional guardrail service implementation used for policy enforcement.
 
@@ -143,7 +143,7 @@ Optional guardrail service implementation used for policy enforcement.
 
 > `optional` **hitlManager**: [`IHumanInteractionManager`](IHumanInteractionManager.md)
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:485](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/AgentOS.ts#L485)
+Defined in: [packages/agentos/src/api/AgentOS.ts:485](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/AgentOS.ts#L485)
 
 Optional human-in-the-loop manager for approvals/clarifications.
 
@@ -153,7 +153,7 @@ Optional human-in-the-loop manager for approvals/clarifications.
 
 > `optional` **languageConfig**: [`AgentOSLanguageConfig`](AgentOSLanguageConfig.md)
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:643](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/AgentOS.ts#L643)
+Defined in: [packages/agentos/src/api/AgentOS.ts:643](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/AgentOS.ts#L643)
 
 Optional multilingual configuration enabling detection, negotiation, translation.
 
@@ -163,7 +163,7 @@ Optional multilingual configuration enabling detection, negotiation, translation
 
 > `optional` **longTermMemoryRetriever**: [`ILongTermMemoryRetriever`](ILongTermMemoryRetriever.md)
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:421](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/AgentOS.ts#L421)
+Defined in: [packages/agentos/src/api/AgentOS.ts:421](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/AgentOS.ts#L421)
 
 Optional retriever for injecting durable long-term memory context into prompts
 (e.g. user/org/persona memories stored in a RAG/KG).
@@ -174,7 +174,7 @@ Optional retriever for injecting durable long-term memory context into prompts
 
 > `optional` **manageRetrievalAugmentorLifecycle**: `boolean`
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:442](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/AgentOS.ts#L442)
+Defined in: [packages/agentos/src/api/AgentOS.ts:442](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/AgentOS.ts#L442)
 
 If true, AgentOS will call `retrievalAugmentor.shutdown()` during `AgentOS.shutdown()`.
 Default: false (caller manages lifecycle).
@@ -185,7 +185,7 @@ Default: false (caller manages lifecycle).
 
 > `optional` **memoryTools**: [`AgentOSMemoryToolsConfig`](AgentOSMemoryToolsConfig.md)
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:528](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/AgentOS.ts#L528)
+Defined in: [packages/agentos/src/api/AgentOS.ts:528](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/AgentOS.ts#L528)
 
 Optional standalone-memory tool registration.
 
@@ -199,7 +199,7 @@ the shared `ToolExecutor`/`ToolOrchestrator`.
 
 > **modelProviderManagerConfig**: [`AIModelProviderManagerConfig`](AIModelProviderManagerConfig.md)
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:493](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/AgentOS.ts#L493)
+Defined in: [packages/agentos/src/api/AgentOS.ts:493](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/AgentOS.ts#L493)
 
 Configuration for the [AIModelProviderManager](../classes/AIModelProviderManager.md).
 
@@ -209,7 +209,7 @@ Configuration for the [AIModelProviderManager](../classes/AIModelProviderManager
 
 > `optional` **observability**: [`AgentOSObservabilityConfig`](AgentOSObservabilityConfig.md)
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:692](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/AgentOS.ts#L692)
+Defined in: [packages/agentos/src/api/AgentOS.ts:692](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/AgentOS.ts#L692)
 
 Optional observability config for tracing, metrics, and log correlation.
 Default: disabled (opt-in).
@@ -220,7 +220,7 @@ Default: disabled (opt-in).
 
 > **orchestratorConfig**: [`AgentOSOrchestratorConfig`](AgentOSOrchestratorConfig.md)
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:411](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/AgentOS.ts#L411)
+Defined in: [packages/agentos/src/api/AgentOS.ts:411](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/AgentOS.ts#L411)
 
 Configuration for the [AgentOSOrchestrator](../classes/AgentOSOrchestrator.md).
 
@@ -230,7 +230,7 @@ Configuration for the [AgentOSOrchestrator](../classes/AgentOSOrchestrator.md).
 
 > `optional` **personaLoader**: `IPersonaLoader`
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:645](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/AgentOS.ts#L645)
+Defined in: [packages/agentos/src/api/AgentOS.ts:645](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/AgentOS.ts#L645)
 
 Optional custom persona loader (useful for browser/local runtimes).
 
@@ -240,7 +240,7 @@ Optional custom persona loader (useful for browser/local runtimes).
 
 > **prisma**: `PrismaClient`
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:512](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/AgentOS.ts#L512)
+Defined in: [packages/agentos/src/api/AgentOS.ts:512](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/AgentOS.ts#L512)
 
 An instance of the Prisma client for database interactions.
 
@@ -264,7 +264,7 @@ await agentos.initialize({
 
 > **promptEngineConfig**: [`PromptEngineConfig`](PromptEngineConfig.md)
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:481](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/AgentOS.ts#L481)
+Defined in: [packages/agentos/src/api/AgentOS.ts:481](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/AgentOS.ts#L481)
 
 Configuration for the prompt engine.
 
@@ -274,7 +274,7 @@ Configuration for the prompt engine.
 
 > `optional` **ragConfig**: `object`
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:457](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/AgentOS.ts#L457)
+Defined in: [packages/agentos/src/api/AgentOS.ts:457](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/AgentOS.ts#L457)
 
 Optional configuration for AgentOS-managed RAG subsystem initialization.
 
@@ -340,7 +340,7 @@ Vector store manager configuration (providers).
 
 > `optional` **registryConfig**: [`MultiRegistryConfig`](MultiRegistryConfig.md)
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:637](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/AgentOS.ts#L637)
+Defined in: [packages/agentos/src/api/AgentOS.ts:637](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/AgentOS.ts#L637)
 
 Optional registry configuration for loading extensions and personas from custom sources.
 Allows self-hosted registries and custom git repositories.
@@ -374,7 +374,7 @@ registryConfig: {
 
 > `optional` **retrievalAugmentor**: [`IRetrievalAugmentor`](IRetrievalAugmentor.md)
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:437](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/AgentOS.ts#L437)
+Defined in: [packages/agentos/src/api/AgentOS.ts:437](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/AgentOS.ts#L437)
 
 Optional retrieval augmentor enabling vector-based RAG and/or GraphRAG.
 When provided, it is passed into GMIs via the GMIManager.
@@ -391,7 +391,7 @@ Notes:
 
 > `optional` **rollingSummaryMemorySink**: [`IRollingSummaryMemorySink`](IRollingSummaryMemorySink.md)
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:416](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/AgentOS.ts#L416)
+Defined in: [packages/agentos/src/api/AgentOS.ts:416](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/AgentOS.ts#L416)
 
 Optional sink for persisting rolling-memory outputs (`summary_markdown` + `memory_json`)
 into an external long-term store (RAG / knowledge graph / database).
@@ -402,7 +402,7 @@ into an external long-term store (RAG / knowledge graph / database).
 
 > `optional` **schemaOnDemandTools**: `object`
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:574](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/AgentOS.ts#L574)
+Defined in: [packages/agentos/src/api/AgentOS.ts:574](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/AgentOS.ts#L574)
 
 Optional: enable schema-on-demand meta tools for lazy tool schema loading.
 
@@ -446,7 +446,7 @@ Default: true.
 
 > `optional` **standaloneMemory**: [`AgentOSStandaloneMemoryConfig`](AgentOSStandaloneMemoryConfig.md)
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:538](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/AgentOS.ts#L538)
+Defined in: [packages/agentos/src/api/AgentOS.ts:538](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/AgentOS.ts#L538)
 
 Optional unified standalone-memory bridge.
 
@@ -462,7 +462,7 @@ This derives one or more AgentOS integrations from a single standalone
 
 > `optional` **storageAdapter**: `StorageAdapter`
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:673](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/AgentOS.ts#L673)
+Defined in: [packages/agentos/src/api/AgentOS.ts:673](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/AgentOS.ts#L673)
 
 Optional cross-platform storage adapter for client-side persistence.
 Enables fully offline AgentOS in browsers (IndexedDB), desktop (SQLite), mobile (Capacitor).
@@ -496,7 +496,7 @@ await agentos.initialize({
 
 > **streamingManagerConfig**: [`StreamingManagerConfig`](StreamingManagerConfig.md)
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:491](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/AgentOS.ts#L491)
+Defined in: [packages/agentos/src/api/AgentOS.ts:491](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/AgentOS.ts#L491)
 
 Configuration for the internal streaming manager.
 
@@ -506,7 +506,7 @@ Configuration for the internal streaming manager.
 
 > `optional` **subscriptionService**: `ISubscriptionService`
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:516](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/AgentOS.ts#L516)
+Defined in: [packages/agentos/src/api/AgentOS.ts:516](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/AgentOS.ts#L516)
 
 Optional subscription service implementing `ISubscriptionService`. Provide via the auth extension or your own adapter.
 
@@ -516,7 +516,7 @@ Optional subscription service implementing `ISubscriptionService`. Provide via t
 
 > `optional` **taskOutcomeTelemetryStore**: [`ITaskOutcomeTelemetryStore`](ITaskOutcomeTelemetryStore.md)
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:426](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/AgentOS.ts#L426)
+Defined in: [packages/agentos/src/api/AgentOS.ts:426](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/AgentOS.ts#L426)
 
 Optional persistence store for task outcome KPI windows.
 When provided, rolling task-outcome telemetry survives orchestrator restarts.
@@ -527,7 +527,7 @@ When provided, rolling task-outcome telemetry survives orchestrator restarts.
 
 > **toolOrchestratorConfig**: [`ToolOrchestratorConfig`](ToolOrchestratorConfig.md)
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:483](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/AgentOS.ts#L483)
+Defined in: [packages/agentos/src/api/AgentOS.ts:483](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/AgentOS.ts#L483)
 
 Configuration for the tool orchestrator.
 
@@ -537,7 +537,7 @@ Configuration for the tool orchestrator.
 
 > **toolPermissionManagerConfig**: [`ToolPermissionManagerConfig`](ToolPermissionManagerConfig.md)
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:487](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/AgentOS.ts#L487)
+Defined in: [packages/agentos/src/api/AgentOS.ts:487](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/AgentOS.ts#L487)
 
 Configuration for the tool permission manager.
 
@@ -547,7 +547,7 @@ Configuration for the tool permission manager.
 
 > `optional` **tools**: [`AdaptableToolInput`](../type-aliases/AdaptableToolInput.md)
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:551](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/AgentOS.ts#L551)
+Defined in: [packages/agentos/src/api/AgentOS.ts:551](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/AgentOS.ts#L551)
 
 Optional runtime-level registered tools.
 
@@ -566,7 +566,7 @@ Accepts:
 
 > `optional` **turnPlanning**: [`AgentOSTurnPlanningConfig`](AgentOSTurnPlanningConfig.md)
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:597](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/AgentOS.ts#L597)
+Defined in: [packages/agentos/src/api/AgentOS.ts:597](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/AgentOS.ts#L597)
 
 Optional per-turn planning configuration.
 Defaults:
@@ -579,7 +579,7 @@ Defaults:
 
 > `optional` **utilityAIService**: `IUtilityAI` & [`IPromptEngineUtilityAI`](IPromptEngineUtilityAI.md)
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:606](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/AgentOS.ts#L606)
+Defined in: [packages/agentos/src/api/AgentOS.ts:606](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/AgentOS.ts#L606)
 
 Optional. An instance of a utility AI service.
 This service should conform to `IUtilityAI` for general utility tasks.
@@ -594,7 +594,7 @@ It's recommended that the concrete class for this service implements both interf
 
 > `optional` **workflowEngineConfig**: [`WorkflowEngineConfig`](WorkflowEngineConfig.md)
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:639](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/AgentOS.ts#L639)
+Defined in: [packages/agentos/src/api/AgentOS.ts:639](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/AgentOS.ts#L639)
 
 Optional workflow engine configuration.
 
@@ -604,6 +604,6 @@ Optional workflow engine configuration.
 
 > `optional` **workflowStore**: [`IWorkflowStore`](IWorkflowStore.md)
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:641](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/AgentOS.ts#L641)
+Defined in: [packages/agentos/src/api/AgentOS.ts:641](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/AgentOS.ts#L641)
 
 Optional workflow store implementation. Defaults to the in-memory store if omitted.

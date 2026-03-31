@@ -1,6 +1,6 @@
 # Class: ChatGptImporter
 
-Defined in: [packages/agentos/src/memory/io/ChatGptImporter.ts:94](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/io/ChatGptImporter.ts#L94)
+Defined in: [packages/agentos/src/memory/io/ChatGptImporter.ts:94](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/io/ChatGptImporter.ts#L94)
 
 Imports a ChatGPT `conversations.json` export into a `SqliteBrain`.
 
@@ -16,7 +16,7 @@ const result = await importer.import('/path/to/conversations.json');
 
 > **new ChatGptImporter**(`brain`): `ChatGptImporter`
 
-Defined in: [packages/agentos/src/memory/io/ChatGptImporter.ts:98](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/io/ChatGptImporter.ts#L98)
+Defined in: [packages/agentos/src/memory/io/ChatGptImporter.ts:98](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/io/ChatGptImporter.ts#L98)
 
 #### Parameters
 
@@ -36,7 +36,7 @@ The target `SqliteBrain` to import into.
 
 > **import**(`sourcePath`, `options?`): `Promise`\<[`ImportResult`](../interfaces/ImportResult.md)\>
 
-Defined in: [packages/agentos/src/memory/io/ChatGptImporter.ts:111](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/io/ChatGptImporter.ts#L111)
+Defined in: [packages/agentos/src/memory/io/ChatGptImporter.ts:111](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/io/ChatGptImporter.ts#L111)
 
 Parse `conversations.json` and import all conversations and message pairs.
 

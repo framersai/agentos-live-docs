@@ -1,6 +1,6 @@
 # Enumeration: RagMemoryCategory
 
-Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:20](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/IRetrievalAugmentor.ts#L20)
+Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:20](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/rag/IRetrievalAugmentor.ts#L20)
 
 Logical buckets that the RAG system can target.  These allow integrators to map different
 document types or knowledge sources to distinct vector store data sources and policies.
@@ -11,7 +11,7 @@ document types or knowledge sources to distinct vector store data sources and po
 
 > **EPISODIC\_CONTEXT**: `"episodic_context"`
 
-Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:24](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/IRetrievalAugmentor.ts#L24)
+Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:24](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/rag/IRetrievalAugmentor.ts#L24)
 
 ***
 
@@ -19,7 +19,7 @@ Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:24](https://github.
 
 > **GOAL\_ORIENTED\_MEMORY**: `"goal_oriented_memory"`
 
-Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:25](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/IRetrievalAugmentor.ts#L25)
+Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:25](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/rag/IRetrievalAugmentor.ts#L25)
 
 ***
 
@@ -27,7 +27,7 @@ Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:25](https://github.
 
 > **PERSONAL\_LLM\_EXPERIENCE**: `"personal_llm_experience"`
 
-Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:21](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/IRetrievalAugmentor.ts#L21)
+Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:21](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/rag/IRetrievalAugmentor.ts#L21)
 
 ***
 
@@ -35,7 +35,7 @@ Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:21](https://github.
 
 > **SHARED\_KNOWLEDGE\_BASE**: `"shared_knowledge_base"`
 
-Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:23](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/IRetrievalAugmentor.ts#L23)
+Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:23](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/rag/IRetrievalAugmentor.ts#L23)
 
 ***
 
@@ -43,4 +43,4 @@ Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:23](https://github.
 
 > **USER\_EXPLICIT\_MEMORY**: `"user_explicit_memory"`
 
-Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:22](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/IRetrievalAugmentor.ts#L22)
+Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:22](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/rag/IRetrievalAugmentor.ts#L22)

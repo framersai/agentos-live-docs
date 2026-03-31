@@ -1,6 +1,6 @@
 # Interface: SkillRequirements
 
-Defined in: [packages/agentos/src/skills/types.ts:75](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/skills/types.ts#L75)
+Defined in: [packages/agentos/src/skills/types.ts:75](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/skills/types.ts#L75)
 
 Requirements for a skill to be eligible.
 
@@ -10,7 +10,7 @@ Requirements for a skill to be eligible.
 
 > `optional` **anyBins**: `string`[]
 
-Defined in: [packages/agentos/src/skills/types.ts:80](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/skills/types.ts#L80)
+Defined in: [packages/agentos/src/skills/types.ts:80](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/skills/types.ts#L80)
 
 At least one of these binaries must be available
 
@@ -20,7 +20,7 @@ At least one of these binaries must be available
 
 > `optional` **bins**: `string`[]
 
-Defined in: [packages/agentos/src/skills/types.ts:77](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/skills/types.ts#L77)
+Defined in: [packages/agentos/src/skills/types.ts:77](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/skills/types.ts#L77)
 
 All of these binaries must be available
 
@@ -30,7 +30,7 @@ All of these binaries must be available
 
 > `optional` **config**: `string`[]
 
-Defined in: [packages/agentos/src/skills/types.ts:86](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/skills/types.ts#L86)
+Defined in: [packages/agentos/src/skills/types.ts:86](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/skills/types.ts#L86)
 
 Required config paths
 
@@ -40,6 +40,6 @@ Required config paths
 
 > `optional` **env**: `string`[]
 
-Defined in: [packages/agentos/src/skills/types.ts:83](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/skills/types.ts#L83)
+Defined in: [packages/agentos/src/skills/types.ts:83](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/skills/types.ts#L83)
 
 Required environment variables

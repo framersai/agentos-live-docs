@@ -1,6 +1,6 @@
 # Interface: ILanguageDetectionProviderConfig
 
-Defined in: [packages/agentos/src/nlp/language/interfaces.ts:28](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/nlp/language/interfaces.ts#L28)
+Defined in: [packages/agentos/src/nlp/language/interfaces.ts:28](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/nlp/language/interfaces.ts#L28)
 
 Configuration descriptor for a language detection provider.
 
@@ -10,7 +10,7 @@ Configuration descriptor for a language detection provider.
 
 > **id**: `string`
 
-Defined in: [packages/agentos/src/nlp/language/interfaces.ts:30](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/nlp/language/interfaces.ts#L30)
+Defined in: [packages/agentos/src/nlp/language/interfaces.ts:30](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/nlp/language/interfaces.ts#L30)
 
 Unique ID referenced in AgentOSConfig.languageConfig.detectionProviders.
 
@@ -20,7 +20,7 @@ Unique ID referenced in AgentOSConfig.languageConfig.detectionProviders.
 
 > `optional` **minConfidence**: `number`
 
-Defined in: [packages/agentos/src/nlp/language/interfaces.ts:36](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/nlp/language/interfaces.ts#L36)
+Defined in: [packages/agentos/src/nlp/language/interfaces.ts:36](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/nlp/language/interfaces.ts#L36)
 
 Minimum confidence threshold before a result is considered.
 
@@ -30,7 +30,7 @@ Minimum confidence threshold before a result is considered.
 
 > `optional` **params**: `Record`\<`string`, `unknown`\>
 
-Defined in: [packages/agentos/src/nlp/language/interfaces.ts:32](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/nlp/language/interfaces.ts#L32)
+Defined in: [packages/agentos/src/nlp/language/interfaces.ts:32](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/nlp/language/interfaces.ts#L32)
 
 Optional initialization parameters (API keys, model hints, etc.).
 
@@ -40,6 +40,6 @@ Optional initialization parameters (API keys, model hints, etc.).
 
 > `optional` **priority**: `number`
 
-Defined in: [packages/agentos/src/nlp/language/interfaces.ts:34](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/nlp/language/interfaces.ts#L34)
+Defined in: [packages/agentos/src/nlp/language/interfaces.ts:34](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/nlp/language/interfaces.ts#L34)
 
 Relative priority (lower executes earlier).

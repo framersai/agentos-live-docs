@@ -2,7 +2,7 @@
 
 > **exportAgentConfigYAML**(`agentInstance`, `metadata?`): `string`
 
-Defined in: [packages/agentos/src/api/agentExport.ts:233](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/agentExport.ts#L233)
+Defined in: [packages/agentos/src/api/agentExport.ts:57](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/agentExport.ts#L57)
 
 Exports an agent's configuration as a YAML string.
 
@@ -24,25 +24,17 @@ Optional human-readable metadata to attach.
 
 `string`
 
-Author identifier (person or system).
-
 #### description?
 
 `string`
-
-Free-text description of what this agent does.
 
 #### name?
 
 `string`
 
-Display name for the exported agent.
-
 #### tags?
 
 `string`[]
-
-Searchable tags for categorization.
 
 ## Returns
 

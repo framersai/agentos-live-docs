@@ -1,6 +1,6 @@
 # Interface: AzureSpeechTTSProviderConfig
 
-Defined in: [packages/agentos/src/speech/providers/AzureSpeechTTSProvider.ts:14](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/speech/providers/AzureSpeechTTSProvider.ts#L14)
+Defined in: [packages/agentos/src/speech/providers/AzureSpeechTTSProvider.ts:14](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/speech/providers/AzureSpeechTTSProvider.ts#L14)
 
 Configuration for the [AzureSpeechTTSProvider](../classes/AzureSpeechTTSProvider.md).
 
@@ -15,7 +15,7 @@ Configuration for the [AzureSpeechTTSProvider](../classes/AzureSpeechTTSProvider
 
 > `optional` **defaultVoice**: `string`
 
-Defined in: [packages/agentos/src/speech/providers/AzureSpeechTTSProvider.ts:39](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/speech/providers/AzureSpeechTTSProvider.ts#L39)
+Defined in: [packages/agentos/src/speech/providers/AzureSpeechTTSProvider.ts:39](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/speech/providers/AzureSpeechTTSProvider.ts#L39)
 
 Default voice name to use when none is specified per-request.
 Must be a valid Azure voice short-name (e.g. `'en-US-JennyNeural'`).
@@ -36,7 +36,7 @@ https://learn.microsoft.com/azure/ai-services/speech-service/language-support#pr
 
 > `optional` **fetchImpl**: \{(`input`, `init?`): `Promise`\<`Response`\>; (`input`, `init?`): `Promise`\<`Response`\>; \}
 
-Defined in: [packages/agentos/src/speech/providers/AzureSpeechTTSProvider.ts:45](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/speech/providers/AzureSpeechTTSProvider.ts#L45)
+Defined in: [packages/agentos/src/speech/providers/AzureSpeechTTSProvider.ts:45](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/speech/providers/AzureSpeechTTSProvider.ts#L45)
 
 Custom fetch implementation for dependency injection in tests.
 
@@ -92,7 +92,7 @@ globalThis.fetch
 
 > **key**: `string`
 
-Defined in: [packages/agentos/src/speech/providers/AzureSpeechTTSProvider.ts:21](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/speech/providers/AzureSpeechTTSProvider.ts#L21)
+Defined in: [packages/agentos/src/speech/providers/AzureSpeechTTSProvider.ts:21](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/speech/providers/AzureSpeechTTSProvider.ts#L21)
 
 Azure Cognitive Services subscription key.
 Sent as the `Ocp-Apim-Subscription-Key` header value.
@@ -105,7 +105,7 @@ See `AzureSpeechSTTProviderConfig.key` for the same pattern on STT.
 
 > **region**: `string`
 
-Defined in: [packages/agentos/src/speech/providers/AzureSpeechTTSProvider.ts:30](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/speech/providers/AzureSpeechTTSProvider.ts#L30)
+Defined in: [packages/agentos/src/speech/providers/AzureSpeechTTSProvider.ts:30](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/speech/providers/AzureSpeechTTSProvider.ts#L30)
 
 Azure region where the Speech resource is deployed, e.g. `'eastus'`,
 `'westeurope'`, `'southeastasia'`.

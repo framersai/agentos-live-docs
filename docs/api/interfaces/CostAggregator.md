@@ -1,6 +1,6 @@
 # Interface: CostAggregator
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:142](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/cognitive_substrate/IGMI.ts#L142)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:142](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/IGMI.ts#L142)
 
 **`Export`**
 
@@ -16,7 +16,7 @@ CostAggregator
 
 > `optional` **breakdown**: `object`[]
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:147](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/cognitive_substrate/IGMI.ts#L147)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:147](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/IGMI.ts#L147)
 
 #### completionTokens
 
@@ -48,7 +48,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:147](https://gith
 
 > **completionTokens**: `number`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:145](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/cognitive_substrate/IGMI.ts#L145)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:145](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/IGMI.ts#L145)
 
 ***
 
@@ -56,7 +56,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:145](https://gith
 
 > **promptTokens**: `number`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:144](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/cognitive_substrate/IGMI.ts#L144)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:144](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/IGMI.ts#L144)
 
 ***
 
@@ -64,7 +64,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:144](https://gith
 
 > `optional` **totalCostUSD**: `number`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:146](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/cognitive_substrate/IGMI.ts#L146)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:146](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/IGMI.ts#L146)
 
 ***
 
@@ -72,4 +72,4 @@ Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:146](https://gith
 
 > **totalTokens**: `number`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:143](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/cognitive_substrate/IGMI.ts#L143)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:143](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/IGMI.ts#L143)

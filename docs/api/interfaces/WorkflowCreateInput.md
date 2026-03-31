@@ -1,6 +1,6 @@
 # Interface: WorkflowCreateInput
 
-Defined in: [packages/agentos/src/orchestration/workflows/storage/IWorkflowStore.ts:12](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/workflows/storage/IWorkflowStore.ts#L12)
+Defined in: [packages/agentos/src/orchestration/workflows/storage/IWorkflowStore.ts:12](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/workflows/storage/IWorkflowStore.ts#L12)
 
 Input payload used when creating a workflow instance.
 
@@ -10,7 +10,7 @@ Input payload used when creating a workflow instance.
 
 > `optional` **context**: `Record`\<`string`, `unknown`\>
 
-Defined in: [packages/agentos/src/orchestration/workflows/storage/IWorkflowStore.ts:19](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/workflows/storage/IWorkflowStore.ts#L19)
+Defined in: [packages/agentos/src/orchestration/workflows/storage/IWorkflowStore.ts:19](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/workflows/storage/IWorkflowStore.ts#L19)
 
 ***
 
@@ -18,7 +18,7 @@ Defined in: [packages/agentos/src/orchestration/workflows/storage/IWorkflowStore
 
 > `optional` **conversationId**: `string`
 
-Defined in: [packages/agentos/src/orchestration/workflows/storage/IWorkflowStore.ts:18](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/workflows/storage/IWorkflowStore.ts#L18)
+Defined in: [packages/agentos/src/orchestration/workflows/storage/IWorkflowStore.ts:18](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/workflows/storage/IWorkflowStore.ts#L18)
 
 ***
 
@@ -26,7 +26,7 @@ Defined in: [packages/agentos/src/orchestration/workflows/storage/IWorkflowStore
 
 > **createdAt**: `string`
 
-Defined in: [packages/agentos/src/orchestration/workflows/storage/IWorkflowStore.ts:16](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/workflows/storage/IWorkflowStore.ts#L16)
+Defined in: [packages/agentos/src/orchestration/workflows/storage/IWorkflowStore.ts:16](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/workflows/storage/IWorkflowStore.ts#L16)
 
 ***
 
@@ -34,7 +34,7 @@ Defined in: [packages/agentos/src/orchestration/workflows/storage/IWorkflowStore
 
 > `optional` **createdByUserId**: `string`
 
-Defined in: [packages/agentos/src/orchestration/workflows/storage/IWorkflowStore.ts:17](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/workflows/storage/IWorkflowStore.ts#L17)
+Defined in: [packages/agentos/src/orchestration/workflows/storage/IWorkflowStore.ts:17](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/workflows/storage/IWorkflowStore.ts#L17)
 
 ***
 
@@ -42,7 +42,7 @@ Defined in: [packages/agentos/src/orchestration/workflows/storage/IWorkflowStore
 
 > **definitionId**: `string`
 
-Defined in: [packages/agentos/src/orchestration/workflows/storage/IWorkflowStore.ts:14](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/workflows/storage/IWorkflowStore.ts#L14)
+Defined in: [packages/agentos/src/orchestration/workflows/storage/IWorkflowStore.ts:14](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/workflows/storage/IWorkflowStore.ts#L14)
 
 ***
 
@@ -50,7 +50,7 @@ Defined in: [packages/agentos/src/orchestration/workflows/storage/IWorkflowStore
 
 > `optional` **definitionVersion**: `string`
 
-Defined in: [packages/agentos/src/orchestration/workflows/storage/IWorkflowStore.ts:15](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/workflows/storage/IWorkflowStore.ts#L15)
+Defined in: [packages/agentos/src/orchestration/workflows/storage/IWorkflowStore.ts:15](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/workflows/storage/IWorkflowStore.ts#L15)
 
 ***
 
@@ -58,7 +58,7 @@ Defined in: [packages/agentos/src/orchestration/workflows/storage/IWorkflowStore
 
 > `optional` **metadata**: `Record`\<`string`, `unknown`\>
 
-Defined in: [packages/agentos/src/orchestration/workflows/storage/IWorkflowStore.ts:21](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/workflows/storage/IWorkflowStore.ts#L21)
+Defined in: [packages/agentos/src/orchestration/workflows/storage/IWorkflowStore.ts:21](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/workflows/storage/IWorkflowStore.ts#L21)
 
 ***
 
@@ -66,7 +66,7 @@ Defined in: [packages/agentos/src/orchestration/workflows/storage/IWorkflowStore
 
 > `optional` **roleAssignments**: `Record`\<`string`, `string`\>
 
-Defined in: [packages/agentos/src/orchestration/workflows/storage/IWorkflowStore.ts:20](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/workflows/storage/IWorkflowStore.ts#L20)
+Defined in: [packages/agentos/src/orchestration/workflows/storage/IWorkflowStore.ts:20](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/workflows/storage/IWorkflowStore.ts#L20)
 
 ***
 
@@ -74,4 +74,4 @@ Defined in: [packages/agentos/src/orchestration/workflows/storage/IWorkflowStore
 
 > **workflowId**: `string`
 
-Defined in: [packages/agentos/src/orchestration/workflows/storage/IWorkflowStore.ts:13](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/workflows/storage/IWorkflowStore.ts#L13)
+Defined in: [packages/agentos/src/orchestration/workflows/storage/IWorkflowStore.ts:13](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/workflows/storage/IWorkflowStore.ts#L13)

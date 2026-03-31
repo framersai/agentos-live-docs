@@ -1,6 +1,6 @@
 # Class: GraphologyMemoryGraph
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/GraphologyMemoryGraph.ts:46](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/GraphologyMemoryGraph.ts#L46)
+Defined in: [packages/agentos/src/memory/retrieval/graph/GraphologyMemoryGraph.ts:46](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/graph/GraphologyMemoryGraph.ts#L46)
 
 ## Implements
 
@@ -22,7 +22,7 @@ Defined in: [packages/agentos/src/memory/retrieval/graph/GraphologyMemoryGraph.t
 
 > **addEdge**(`edge`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/GraphologyMemoryGraph.ts:83](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/GraphologyMemoryGraph.ts#L83)
+Defined in: [packages/agentos/src/memory/retrieval/graph/GraphologyMemoryGraph.ts:83](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/graph/GraphologyMemoryGraph.ts#L83)
 
 #### Parameters
 
@@ -44,7 +44,7 @@ Defined in: [packages/agentos/src/memory/retrieval/graph/GraphologyMemoryGraph.t
 
 > **addNode**(`memoryId`, `metadata`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/GraphologyMemoryGraph.ts:61](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/GraphologyMemoryGraph.ts#L61)
+Defined in: [packages/agentos/src/memory/retrieval/graph/GraphologyMemoryGraph.ts:61](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/graph/GraphologyMemoryGraph.ts#L61)
 
 #### Parameters
 
@@ -70,7 +70,7 @@ Defined in: [packages/agentos/src/memory/retrieval/graph/GraphologyMemoryGraph.t
 
 > **clear**(): `void`
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/GraphologyMemoryGraph.ts:258](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/GraphologyMemoryGraph.ts#L258)
+Defined in: [packages/agentos/src/memory/retrieval/graph/GraphologyMemoryGraph.ts:258](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/graph/GraphologyMemoryGraph.ts#L258)
 
 #### Returns
 
@@ -86,7 +86,7 @@ Defined in: [packages/agentos/src/memory/retrieval/graph/GraphologyMemoryGraph.t
 
 > **detectClusters**(`minSize?`): `Promise`\<[`MemoryCluster`](../interfaces/MemoryCluster.md)[]\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/GraphologyMemoryGraph.ts:195](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/GraphologyMemoryGraph.ts#L195)
+Defined in: [packages/agentos/src/memory/retrieval/graph/GraphologyMemoryGraph.ts:195](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/graph/GraphologyMemoryGraph.ts#L195)
 
 #### Parameters
 
@@ -108,7 +108,7 @@ Defined in: [packages/agentos/src/memory/retrieval/graph/GraphologyMemoryGraph.t
 
 > **edgeCount**(): `number`
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/GraphologyMemoryGraph.ts:254](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/GraphologyMemoryGraph.ts#L254)
+Defined in: [packages/agentos/src/memory/retrieval/graph/GraphologyMemoryGraph.ts:254](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/graph/GraphologyMemoryGraph.ts#L254)
 
 #### Returns
 
@@ -124,7 +124,7 @@ Defined in: [packages/agentos/src/memory/retrieval/graph/GraphologyMemoryGraph.t
 
 > **getConflicts**(`memoryId`): [`MemoryEdge`](../interfaces/MemoryEdge.md)[]
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/GraphologyMemoryGraph.ts:189](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/GraphologyMemoryGraph.ts#L189)
+Defined in: [packages/agentos/src/memory/retrieval/graph/GraphologyMemoryGraph.ts:189](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/graph/GraphologyMemoryGraph.ts#L189)
 
 #### Parameters
 
@@ -146,7 +146,7 @@ Defined in: [packages/agentos/src/memory/retrieval/graph/GraphologyMemoryGraph.t
 
 > **getEdges**(`memoryId`, `type?`): [`MemoryEdge`](../interfaces/MemoryEdge.md)[]
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/GraphologyMemoryGraph.ts:108](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/GraphologyMemoryGraph.ts#L108)
+Defined in: [packages/agentos/src/memory/retrieval/graph/GraphologyMemoryGraph.ts:108](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/graph/GraphologyMemoryGraph.ts#L108)
 
 #### Parameters
 
@@ -172,7 +172,7 @@ Defined in: [packages/agentos/src/memory/retrieval/graph/GraphologyMemoryGraph.t
 
 > **hasNode**(`memoryId`): `boolean`
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/GraphologyMemoryGraph.ts:77](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/GraphologyMemoryGraph.ts#L77)
+Defined in: [packages/agentos/src/memory/retrieval/graph/GraphologyMemoryGraph.ts:77](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/graph/GraphologyMemoryGraph.ts#L77)
 
 #### Parameters
 
@@ -194,7 +194,7 @@ Defined in: [packages/agentos/src/memory/retrieval/graph/GraphologyMemoryGraph.t
 
 > **initialize**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/GraphologyMemoryGraph.ts:49](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/GraphologyMemoryGraph.ts#L49)
+Defined in: [packages/agentos/src/memory/retrieval/graph/GraphologyMemoryGraph.ts:49](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/graph/GraphologyMemoryGraph.ts#L49)
 
 Initialize the graph backend.
 
@@ -212,7 +212,7 @@ Initialize the graph backend.
 
 > **nodeCount**(): `number`
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/GraphologyMemoryGraph.ts:250](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/GraphologyMemoryGraph.ts#L250)
+Defined in: [packages/agentos/src/memory/retrieval/graph/GraphologyMemoryGraph.ts:250](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/graph/GraphologyMemoryGraph.ts#L250)
 
 #### Returns
 
@@ -228,7 +228,7 @@ Defined in: [packages/agentos/src/memory/retrieval/graph/GraphologyMemoryGraph.t
 
 > **recordCoActivation**(`memoryIds`, `learningRate?`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/GraphologyMemoryGraph.ts:162](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/GraphologyMemoryGraph.ts#L162)
+Defined in: [packages/agentos/src/memory/retrieval/graph/GraphologyMemoryGraph.ts:162](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/graph/GraphologyMemoryGraph.ts#L162)
 
 #### Parameters
 
@@ -254,7 +254,7 @@ Defined in: [packages/agentos/src/memory/retrieval/graph/GraphologyMemoryGraph.t
 
 > **removeEdge**(`sourceId`, `targetId`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/GraphologyMemoryGraph.ts:128](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/GraphologyMemoryGraph.ts#L128)
+Defined in: [packages/agentos/src/memory/retrieval/graph/GraphologyMemoryGraph.ts:128](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/graph/GraphologyMemoryGraph.ts#L128)
 
 #### Parameters
 
@@ -280,7 +280,7 @@ Defined in: [packages/agentos/src/memory/retrieval/graph/GraphologyMemoryGraph.t
 
 > **removeNode**(`memoryId`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/GraphologyMemoryGraph.ts:70](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/GraphologyMemoryGraph.ts#L70)
+Defined in: [packages/agentos/src/memory/retrieval/graph/GraphologyMemoryGraph.ts:70](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/graph/GraphologyMemoryGraph.ts#L70)
 
 #### Parameters
 
@@ -302,7 +302,7 @@ Defined in: [packages/agentos/src/memory/retrieval/graph/GraphologyMemoryGraph.t
 
 > **shutdown**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/GraphologyMemoryGraph.ts:262](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/GraphologyMemoryGraph.ts#L262)
+Defined in: [packages/agentos/src/memory/retrieval/graph/GraphologyMemoryGraph.ts:262](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/graph/GraphologyMemoryGraph.ts#L262)
 
 #### Returns
 
@@ -318,7 +318,7 @@ Defined in: [packages/agentos/src/memory/retrieval/graph/GraphologyMemoryGraph.t
 
 > **spreadingActivation**(`seedIds`, `config?`): `Promise`\<[`ActivatedNode`](../interfaces/ActivatedNode.md)[]\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/GraphologyMemoryGraph.ts:138](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/GraphologyMemoryGraph.ts#L138)
+Defined in: [packages/agentos/src/memory/retrieval/graph/GraphologyMemoryGraph.ts:138](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/graph/GraphologyMemoryGraph.ts#L138)
 
 #### Parameters
 

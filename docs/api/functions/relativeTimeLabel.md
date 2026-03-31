@@ -2,7 +2,7 @@
 
 > **relativeTimeLabel**(`timestamp`, `now?`): `string`
 
-Defined in: [packages/agentos/src/memory/pipeline/observation/temporal.ts:72](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/pipeline/observation/temporal.ts#L72)
+Defined in: [packages/agentos/src/memory/pipeline/observation/temporal.ts:72](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/pipeline/observation/temporal.ts#L72)
 
 Produce a human-friendly label describing how long ago `timestamp` was
 relative to `now` (defaults to `Date.now()`).

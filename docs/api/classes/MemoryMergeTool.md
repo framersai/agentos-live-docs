@@ -1,6 +1,6 @@
 # Class: MemoryMergeTool
 
-Defined in: [packages/agentos/src/memory/io/tools/MemoryMergeTool.ts:90](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/io/tools/MemoryMergeTool.ts#L90)
+Defined in: [packages/agentos/src/memory/io/tools/MemoryMergeTool.ts:90](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/io/tools/MemoryMergeTool.ts#L90)
 
 ITool implementation that merges multiple memory traces into one.
 
@@ -27,7 +27,7 @@ const result = await tool.execute(
 
 > **new MemoryMergeTool**(`brain`): `MemoryMergeTool`
 
-Defined in: [packages/agentos/src/memory/io/tools/MemoryMergeTool.ts:134](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/io/tools/MemoryMergeTool.ts#L134)
+Defined in: [packages/agentos/src/memory/io/tools/MemoryMergeTool.ts:134](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/io/tools/MemoryMergeTool.ts#L134)
 
 #### Parameters
 
@@ -47,7 +47,7 @@ The agent's shared SQLite brain database connection.
 
 > `readonly` **category**: `"memory"` = `'memory'`
 
-Defined in: [packages/agentos/src/memory/io/tools/MemoryMergeTool.ts:107](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/io/tools/MemoryMergeTool.ts#L107)
+Defined in: [packages/agentos/src/memory/io/tools/MemoryMergeTool.ts:107](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/io/tools/MemoryMergeTool.ts#L107)
 
 Logical category for discovery and grouping.
 
@@ -61,7 +61,7 @@ Logical category for discovery and grouping.
 
 > `readonly` **description**: `string`
 
-Defined in: [packages/agentos/src/memory/io/tools/MemoryMergeTool.ts:101](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/io/tools/MemoryMergeTool.ts#L101)
+Defined in: [packages/agentos/src/memory/io/tools/MemoryMergeTool.ts:101](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/io/tools/MemoryMergeTool.ts#L101)
 
 LLM-facing description.
 
@@ -75,7 +75,7 @@ LLM-facing description.
 
 > `readonly` **displayName**: `"Merge Memories"` = `'Merge Memories'`
 
-Defined in: [packages/agentos/src/memory/io/tools/MemoryMergeTool.ts:98](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/io/tools/MemoryMergeTool.ts#L98)
+Defined in: [packages/agentos/src/memory/io/tools/MemoryMergeTool.ts:98](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/io/tools/MemoryMergeTool.ts#L98)
 
 Human-readable display name.
 
@@ -89,7 +89,7 @@ Human-readable display name.
 
 > `readonly` **hasSideEffects**: `true` = `true`
 
-Defined in: [packages/agentos/src/memory/io/tools/MemoryMergeTool.ts:110](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/io/tools/MemoryMergeTool.ts#L110)
+Defined in: [packages/agentos/src/memory/io/tools/MemoryMergeTool.ts:110](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/io/tools/MemoryMergeTool.ts#L110)
 
 This tool writes to the database.
 
@@ -103,7 +103,7 @@ This tool writes to the database.
 
 > `readonly` **id**: `"memory-merge-v1"` = `'memory-merge-v1'`
 
-Defined in: [packages/agentos/src/memory/io/tools/MemoryMergeTool.ts:92](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/io/tools/MemoryMergeTool.ts#L92)
+Defined in: [packages/agentos/src/memory/io/tools/MemoryMergeTool.ts:92](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/io/tools/MemoryMergeTool.ts#L92)
 
 Globally unique tool identifier.
 
@@ -117,7 +117,7 @@ Globally unique tool identifier.
 
 > `readonly` **inputSchema**: [`JSONSchemaObject`](../type-aliases/JSONSchemaObject.md)
 
-Defined in: [packages/agentos/src/memory/io/tools/MemoryMergeTool.ts:113](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/io/tools/MemoryMergeTool.ts#L113)
+Defined in: [packages/agentos/src/memory/io/tools/MemoryMergeTool.ts:113](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/io/tools/MemoryMergeTool.ts#L113)
 
 JSON schema for input validation and LLM tool-call construction.
 
@@ -131,7 +131,7 @@ JSON schema for input validation and LLM tool-call construction.
 
 > `readonly` **name**: `"memory_merge"` = `'memory_merge'`
 
-Defined in: [packages/agentos/src/memory/io/tools/MemoryMergeTool.ts:95](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/io/tools/MemoryMergeTool.ts#L95)
+Defined in: [packages/agentos/src/memory/io/tools/MemoryMergeTool.ts:95](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/io/tools/MemoryMergeTool.ts#L95)
 
 LLM-facing tool name.
 
@@ -145,7 +145,7 @@ LLM-facing tool name.
 
 > **execute**(`args`, `_context`): `Promise`\<[`ToolExecutionResult`](../interfaces/ToolExecutionResult.md)\<`MemoryMergeOutput`\>\>
 
-Defined in: [packages/agentos/src/memory/io/tools/MemoryMergeTool.ts:156](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/io/tools/MemoryMergeTool.ts#L156)
+Defined in: [packages/agentos/src/memory/io/tools/MemoryMergeTool.ts:156](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/io/tools/MemoryMergeTool.ts#L156)
 
 Merge the specified traces into one survivor.
 

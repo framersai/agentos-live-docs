@@ -1,6 +1,6 @@
 # Class: FallbackTTSProxy
 
-Defined in: [packages/agentos/src/speech/FallbackProxy.ts:239](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/speech/FallbackProxy.ts#L239)
+Defined in: [packages/agentos/src/speech/FallbackProxy.ts:239](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/speech/FallbackProxy.ts#L239)
 
 A [TextToSpeechProvider](../interfaces/TextToSpeechProvider.md) that wraps an ordered chain of TTS providers
 and implements automatic failover.
@@ -41,7 +41,7 @@ const audio = await proxy.synthesize('Hello world');
 
 > **new FallbackTTSProxy**(`chain`, `emitter`): `FallbackTTSProxy`
 
-Defined in: [packages/agentos/src/speech/FallbackProxy.ts:272](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/speech/FallbackProxy.ts#L272)
+Defined in: [packages/agentos/src/speech/FallbackProxy.ts:272](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/speech/FallbackProxy.ts#L272)
 
 Creates a new FallbackTTSProxy wrapping the given provider chain.
 
@@ -78,7 +78,7 @@ const proxy = new FallbackTTSProxy(
 
 > `readonly` **displayName**: `string`
 
-Defined in: [packages/agentos/src/speech/FallbackProxy.ts:250](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/speech/FallbackProxy.ts#L250)
+Defined in: [packages/agentos/src/speech/FallbackProxy.ts:250](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/speech/FallbackProxy.ts#L250)
 
 Human-readable name showing the full chain for debugging and logging.
 Format: `"Fallback TTS (provider1 -> provider2 -> ...)"`.
@@ -93,7 +93,7 @@ Format: `"Fallback TTS (provider1 -> provider2 -> ...)"`.
 
 > `readonly` **id**: `string`
 
-Defined in: [packages/agentos/src/speech/FallbackProxy.ts:244](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/speech/FallbackProxy.ts#L244)
+Defined in: [packages/agentos/src/speech/FallbackProxy.ts:244](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/speech/FallbackProxy.ts#L244)
 
 Unique identifier derived from the first provider in the chain.
 Falls back to `'fallback-tts'` for empty chains.
@@ -108,7 +108,7 @@ Falls back to `'fallback-tts'` for empty chains.
 
 > `readonly` **supportsStreaming**: `boolean`
 
-Defined in: [packages/agentos/src/speech/FallbackProxy.ts:256](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/speech/FallbackProxy.ts#L256)
+Defined in: [packages/agentos/src/speech/FallbackProxy.ts:256](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/speech/FallbackProxy.ts#L256)
 
 Whether the proxy supports streaming. Only reflects the first provider's
 capability — see `FallbackSTTProxy.supportsStreaming` for rationale.
@@ -123,7 +123,7 @@ capability — see `FallbackSTTProxy.supportsStreaming` for rationale.
 
 > **getProviderName**(): `string`
 
-Defined in: [packages/agentos/src/speech/FallbackProxy.ts:338](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/speech/FallbackProxy.ts#L338)
+Defined in: [packages/agentos/src/speech/FallbackProxy.ts:338](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/speech/FallbackProxy.ts#L338)
 
 Returns the human-readable name of the primary (first) provider.
 
@@ -149,7 +149,7 @@ proxy.getProviderName(); // 'ElevenLabs' (from the first chain entry)
 
 > **listAvailableVoices**(): `Promise`\<[`SpeechVoice`](../interfaces/SpeechVoice.md)[]\>
 
-Defined in: [packages/agentos/src/speech/FallbackProxy.ts:361](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/speech/FallbackProxy.ts#L361)
+Defined in: [packages/agentos/src/speech/FallbackProxy.ts:361](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/speech/FallbackProxy.ts#L361)
 
 Returns the voice list from the first provider in the chain that supports
 `listAvailableVoices()`.
@@ -184,7 +184,7 @@ const voices = await proxy.listAvailableVoices();
 
 > **synthesize**(`text`, `options?`): `Promise`\<[`SpeechSynthesisResult`](../interfaces/SpeechSynthesisResult.md)\>
 
-Defined in: [packages/agentos/src/speech/FallbackProxy.ts:299](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/speech/FallbackProxy.ts#L299)
+Defined in: [packages/agentos/src/speech/FallbackProxy.ts:299](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/speech/FallbackProxy.ts#L299)
 
 Attempt synthesis using each provider in the chain in order.
 

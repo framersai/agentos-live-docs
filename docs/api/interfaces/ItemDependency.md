@@ -1,6 +1,6 @@
 # Interface: ItemDependency
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:172](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/marketplace/store/IMarketplace.ts#L172)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:172](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/marketplace/store/IMarketplace.ts#L172)
 
 Item dependency
 
@@ -10,7 +10,7 @@ Item dependency
 
 > **itemId**: `string`
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:174](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/marketplace/store/IMarketplace.ts#L174)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:174](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/marketplace/store/IMarketplace.ts#L174)
 
 Dependency item ID
 
@@ -20,7 +20,7 @@ Dependency item ID
 
 > **optional**: `boolean`
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:178](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/marketplace/store/IMarketplace.ts#L178)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:178](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/marketplace/store/IMarketplace.ts#L178)
 
 Is this a required or optional dependency?
 
@@ -30,6 +30,6 @@ Is this a required or optional dependency?
 
 > **versionRange**: `string`
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:176](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/marketplace/store/IMarketplace.ts#L176)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:176](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/marketplace/store/IMarketplace.ts#L176)
 
 Required version range

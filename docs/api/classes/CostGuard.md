@@ -1,6 +1,6 @@
 # Class: CostGuard
 
-Defined in: [packages/agentos/src/safety/runtime/CostGuard.ts:64](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/safety/runtime/CostGuard.ts#L64)
+Defined in: [packages/agentos/src/safety/runtime/CostGuard.ts:64](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/safety/runtime/CostGuard.ts#L64)
 
 ## Constructors
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/safety/runtime/CostGuard.ts:64](https://github
 
 > **new CostGuard**(`config?`): `CostGuard`
 
-Defined in: [packages/agentos/src/safety/runtime/CostGuard.ts:69](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/safety/runtime/CostGuard.ts#L69)
+Defined in: [packages/agentos/src/safety/runtime/CostGuard.ts:69](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/safety/runtime/CostGuard.ts#L69)
 
 #### Parameters
 
@@ -26,7 +26,7 @@ Defined in: [packages/agentos/src/safety/runtime/CostGuard.ts:69](https://github
 
 > **canAfford**(`agentId`, `estimatedCostUsd`): `object`
 
-Defined in: [packages/agentos/src/safety/runtime/CostGuard.ts:73](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/safety/runtime/CostGuard.ts#L73)
+Defined in: [packages/agentos/src/safety/runtime/CostGuard.ts:73](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/safety/runtime/CostGuard.ts#L73)
 
 #### Parameters
 
@@ -60,7 +60,7 @@ Defined in: [packages/agentos/src/safety/runtime/CostGuard.ts:73](https://github
 
 > **getSnapshot**(`agentId`): [`CostSnapshot`](../interfaces/CostSnapshot.md)
 
-Defined in: [packages/agentos/src/safety/runtime/CostGuard.ts:139](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/safety/runtime/CostGuard.ts#L139)
+Defined in: [packages/agentos/src/safety/runtime/CostGuard.ts:139](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/safety/runtime/CostGuard.ts#L139)
 
 #### Parameters
 
@@ -78,7 +78,7 @@ Defined in: [packages/agentos/src/safety/runtime/CostGuard.ts:139](https://githu
 
 > **recordCost**(`agentId`, `costUsd`, `operationId?`, `metadata?`): [`CostRecord`](../interfaces/CostRecord.md)
 
-Defined in: [packages/agentos/src/safety/runtime/CostGuard.ts:108](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/safety/runtime/CostGuard.ts#L108)
+Defined in: [packages/agentos/src/safety/runtime/CostGuard.ts:108](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/safety/runtime/CostGuard.ts#L108)
 
 #### Parameters
 
@@ -108,7 +108,7 @@ Defined in: [packages/agentos/src/safety/runtime/CostGuard.ts:108](https://githu
 
 > **resetDailyAll**(): `void`
 
-Defined in: [packages/agentos/src/safety/runtime/CostGuard.ts:166](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/safety/runtime/CostGuard.ts#L166)
+Defined in: [packages/agentos/src/safety/runtime/CostGuard.ts:166](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/safety/runtime/CostGuard.ts#L166)
 
 #### Returns
 
@@ -120,7 +120,7 @@ Defined in: [packages/agentos/src/safety/runtime/CostGuard.ts:166](https://githu
 
 > **resetSession**(`agentId`): `void`
 
-Defined in: [packages/agentos/src/safety/runtime/CostGuard.ts:158](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/safety/runtime/CostGuard.ts#L158)
+Defined in: [packages/agentos/src/safety/runtime/CostGuard.ts:158](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/safety/runtime/CostGuard.ts#L158)
 
 #### Parameters
 
@@ -138,7 +138,7 @@ Defined in: [packages/agentos/src/safety/runtime/CostGuard.ts:158](https://githu
 
 > **setAgentLimits**(`agentId`, `overrides`): `void`
 
-Defined in: [packages/agentos/src/safety/runtime/CostGuard.ts:173](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/safety/runtime/CostGuard.ts#L173)
+Defined in: [packages/agentos/src/safety/runtime/CostGuard.ts:173](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/safety/runtime/CostGuard.ts#L173)
 
 #### Parameters
 

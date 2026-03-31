@@ -1,6 +1,6 @@
 # Interface: ObservationBufferConfig
 
-Defined in: [packages/agentos/src/memory/pipeline/observation/ObservationBuffer.ts:23](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/pipeline/observation/ObservationBuffer.ts#L23)
+Defined in: [packages/agentos/src/memory/pipeline/observation/ObservationBuffer.ts:23](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/pipeline/observation/ObservationBuffer.ts#L23)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/memory/pipeline/observation/ObservationBuffer.
 
 > **activationThresholdTokens**: `number`
 
-Defined in: [packages/agentos/src/memory/pipeline/observation/ObservationBuffer.ts:25](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/pipeline/observation/ObservationBuffer.ts#L25)
+Defined in: [packages/agentos/src/memory/pipeline/observation/ObservationBuffer.ts:25](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/pipeline/observation/ObservationBuffer.ts#L25)
 
 Token threshold before observer should be triggered.
 

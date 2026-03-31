@@ -1,6 +1,6 @@
 # Interface: GMICognitiveMemoryFactoryInput
 
-Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:62](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/cognitive_substrate/GMIManager.ts#L62)
+Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:62](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/GMIManager.ts#L62)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:62](https:/
 
 > **gmiInstanceId**: `string`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:63](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/cognitive_substrate/GMIManager.ts#L63)
+Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:63](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/GMIManager.ts#L63)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:63](https:/
 
 > **llmProviderManager**: [`AIModelProviderManager`](../classes/AIModelProviderManager.md)
 
-Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:68](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/cognitive_substrate/GMIManager.ts#L68)
+Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:68](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/GMIManager.ts#L68)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:68](https:/
 
 > **persona**: [`IPersonaDefinition`](IPersonaDefinition.md)
 
-Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:66](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/cognitive_substrate/GMIManager.ts#L66)
+Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:66](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/GMIManager.ts#L66)
 
 ***
 
@@ -32,7 +32,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:66](https:/
 
 > `optional` **retrievalAugmentor**: [`IRetrievalAugmentor`](IRetrievalAugmentor.md)
 
-Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:71](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/cognitive_substrate/GMIManager.ts#L71)
+Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:71](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/GMIManager.ts#L71)
 
 ***
 
@@ -40,7 +40,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:71](https:/
 
 > **sessionId**: `string`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:64](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/cognitive_substrate/GMIManager.ts#L64)
+Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:64](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/GMIManager.ts#L64)
 
 ***
 
@@ -48,7 +48,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:64](https:/
 
 > **toolOrchestrator**: `IToolOrchestrator`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:70](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/cognitive_substrate/GMIManager.ts#L70)
+Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:70](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/GMIManager.ts#L70)
 
 ***
 
@@ -56,7 +56,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:70](https:/
 
 > **userId**: `string`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:65](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/cognitive_substrate/GMIManager.ts#L65)
+Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:65](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/GMIManager.ts#L65)
 
 ***
 
@@ -64,7 +64,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:65](https:/
 
 > **utilityAI**: `IUtilityAI`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:69](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/cognitive_substrate/GMIManager.ts#L69)
+Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:69](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/GMIManager.ts#L69)
 
 ***
 
@@ -72,4 +72,4 @@ Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:69](https:/
 
 > **workingMemory**: `InMemoryWorkingMemory`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:67](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/cognitive_substrate/GMIManager.ts#L67)
+Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:67](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/GMIManager.ts#L67)

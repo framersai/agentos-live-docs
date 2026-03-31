@@ -1,6 +1,6 @@
 # Enumeration: GuardrailAction
 
-Defined in: [packages/agentos/src/safety/guardrails/IGuardrailService.ts:32](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/safety/guardrails/IGuardrailService.ts#L32)
+Defined in: [packages/agentos/src/safety/guardrails/IGuardrailService.ts:32](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/safety/guardrails/IGuardrailService.ts#L32)
 
 High-level outcome emitted by a guardrail evaluation.
 
@@ -36,7 +36,7 @@ return {
 
 > **ALLOW**: `"allow"`
 
-Defined in: [packages/agentos/src/safety/guardrails/IGuardrailService.ts:37](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/safety/guardrails/IGuardrailService.ts#L37)
+Defined in: [packages/agentos/src/safety/guardrails/IGuardrailService.ts:37](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/safety/guardrails/IGuardrailService.ts#L37)
 
 Allow the content to pass through unchanged.
 Use when content passes all policy checks.
@@ -47,7 +47,7 @@ Use when content passes all policy checks.
 
 > **BLOCK**: `"block"`
 
-Defined in: [packages/agentos/src/safety/guardrails/IGuardrailService.ts:57](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/safety/guardrails/IGuardrailService.ts#L57)
+Defined in: [packages/agentos/src/safety/guardrails/IGuardrailService.ts:57](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/safety/guardrails/IGuardrailService.ts#L57)
 
 Block the interaction entirely and return an error to the host.
 Use for policy violations, harmful content, or security threats.
@@ -59,7 +59,7 @@ Terminates the stream immediately when used in output evaluation.
 
 > **FLAG**: `"flag"`
 
-Defined in: [packages/agentos/src/safety/guardrails/IGuardrailService.ts:43](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/safety/guardrails/IGuardrailService.ts#L43)
+Defined in: [packages/agentos/src/safety/guardrails/IGuardrailService.ts:43](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/safety/guardrails/IGuardrailService.ts#L43)
 
 Allow the request/response but record metadata for analytics or audit.
 Content passes through, but the evaluation is logged for review.
@@ -70,7 +70,7 @@ Content passes through, but the evaluation is logged for review.
 
 > **SANITIZE**: `"sanitize"`
 
-Defined in: [packages/agentos/src/safety/guardrails/IGuardrailService.ts:50](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/safety/guardrails/IGuardrailService.ts#L50)
+Defined in: [packages/agentos/src/safety/guardrails/IGuardrailService.ts:50](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/safety/guardrails/IGuardrailService.ts#L50)
 
 Continue processing after replacing content with a sanitized version.
 Use for PII redaction, profanity filtering, or content modification.

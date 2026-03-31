@@ -1,6 +1,6 @@
 # Interface: GMIAgencyContextOptions
 
-Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:81](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/cognitive_substrate/GMIManager.ts#L81)
+Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:81](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/GMIManager.ts#L81)
 
 Options supplied when instantiating a GMI for an Agency seat.
 
@@ -10,7 +10,7 @@ Options supplied when instantiating a GMI for an Agency seat.
 
 > **agencyId**: `string`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:82](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/cognitive_substrate/GMIManager.ts#L82)
+Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:82](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/GMIManager.ts#L82)
 
 ***
 
@@ -18,7 +18,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:82](https:/
 
 > `optional` **evolutionContext**: [`PersonaEvolutionContext`](PersonaEvolutionContext.md)
 
-Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:86](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/cognitive_substrate/GMIManager.ts#L86)
+Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:86](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/GMIManager.ts#L86)
 
 ***
 
@@ -26,7 +26,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:86](https:/
 
 > `optional` **evolutionRules**: [`PersonaEvolutionRule`](PersonaEvolutionRule.md)[]
 
-Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:85](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/cognitive_substrate/GMIManager.ts#L85)
+Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:85](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/GMIManager.ts#L85)
 
 ***
 
@@ -34,7 +34,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:85](https:/
 
 > **roleId**: `string`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:83](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/cognitive_substrate/GMIManager.ts#L83)
+Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:83](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/GMIManager.ts#L83)
 
 ***
 
@@ -42,4 +42,4 @@ Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:83](https:/
 
 > `optional` **workflowId**: `string`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:84](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/cognitive_substrate/GMIManager.ts#L84)
+Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:84](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/GMIManager.ts#L84)

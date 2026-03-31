@@ -1,6 +1,6 @@
 # Interface: AgentKeyRecord
 
-Defined in: [packages/agentos/src/provenance/types.ts:277](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/types.ts#L277)
+Defined in: [packages/agentos/src/provenance/types.ts:277](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/provenance/types.ts#L277)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/provenance/types.ts:277](https://github.com/fr
 
 > **agentId**: `string`
 
-Defined in: [packages/agentos/src/provenance/types.ts:279](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/types.ts#L279)
+Defined in: [packages/agentos/src/provenance/types.ts:279](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/provenance/types.ts#L279)
 
 Agent instance ID.
 
@@ -18,7 +18,7 @@ Agent instance ID.
 
 > **createdAt**: `string`
 
-Defined in: [packages/agentos/src/provenance/types.ts:285](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/types.ts#L285)
+Defined in: [packages/agentos/src/provenance/types.ts:285](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/provenance/types.ts#L285)
 
 ISO 8601 creation timestamp.
 
@@ -28,7 +28,7 @@ ISO 8601 creation timestamp.
 
 > `optional` **encryptedPrivateKey**: `string`
 
-Defined in: [packages/agentos/src/provenance/types.ts:283](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/types.ts#L283)
+Defined in: [packages/agentos/src/provenance/types.ts:283](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/provenance/types.ts#L283)
 
 Encrypted private key (optional, for server-side storage).
 
@@ -38,7 +38,7 @@ Encrypted private key (optional, for server-side storage).
 
 > **keyAlgorithm**: `string`
 
-Defined in: [packages/agentos/src/provenance/types.ts:287](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/types.ts#L287)
+Defined in: [packages/agentos/src/provenance/types.ts:287](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/provenance/types.ts#L287)
 
 Key algorithm identifier.
 
@@ -48,6 +48,6 @@ Key algorithm identifier.
 
 > **publicKey**: `string`
 
-Defined in: [packages/agentos/src/provenance/types.ts:281](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/types.ts#L281)
+Defined in: [packages/agentos/src/provenance/types.ts:281](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/provenance/types.ts#L281)
 
 Base64-encoded Ed25519 public key.

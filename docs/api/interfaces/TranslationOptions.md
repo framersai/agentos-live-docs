@@ -1,6 +1,6 @@
 # Interface: TranslationOptions
 
-Defined in: [packages/agentos/src/nlp/language/interfaces.ts:76](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/nlp/language/interfaces.ts#L76)
+Defined in: [packages/agentos/src/nlp/language/interfaces.ts:76](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/nlp/language/interfaces.ts#L76)
 
 Options for translation calls.
 
@@ -10,7 +10,7 @@ Options for translation calls.
 
 > `optional` **abortSignal**: `AbortSignal`
 
-Defined in: [packages/agentos/src/nlp/language/interfaces.ts:83](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/nlp/language/interfaces.ts#L83)
+Defined in: [packages/agentos/src/nlp/language/interfaces.ts:83](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/nlp/language/interfaces.ts#L83)
 
 Abort controller for cancellation semantics.
 
@@ -20,7 +20,7 @@ Abort controller for cancellation semantics.
 
 > `optional` **domain**: [`TranslationDomain`](../type-aliases/TranslationDomain.md)
 
-Defined in: [packages/agentos/src/nlp/language/interfaces.ts:77](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/nlp/language/interfaces.ts#L77)
+Defined in: [packages/agentos/src/nlp/language/interfaces.ts:77](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/nlp/language/interfaces.ts#L77)
 
 ***
 
@@ -28,7 +28,7 @@ Defined in: [packages/agentos/src/nlp/language/interfaces.ts:77](https://github.
 
 > `optional` **preserveFormatting**: `boolean`
 
-Defined in: [packages/agentos/src/nlp/language/interfaces.ts:79](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/nlp/language/interfaces.ts#L79)
+Defined in: [packages/agentos/src/nlp/language/interfaces.ts:79](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/nlp/language/interfaces.ts#L79)
 
 Preserve markdown/code fencing.
 
@@ -38,7 +38,7 @@ Preserve markdown/code fencing.
 
 > `optional` **streamingCallback**: (`delta`) => `void`
 
-Defined in: [packages/agentos/src/nlp/language/interfaces.ts:81](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/nlp/language/interfaces.ts#L81)
+Defined in: [packages/agentos/src/nlp/language/interfaces.ts:81](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/nlp/language/interfaces.ts#L81)
 
 If streaming incremental translation is desired (phase 2).
 

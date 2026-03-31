@@ -1,6 +1,6 @@
 # Interface: PermissionCheckContext
 
-Defined in: [packages/agentos/src/core/tools/permissions/IToolPermissionManager.ts:47](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/tools/permissions/IToolPermissionManager.ts#L47)
+Defined in: [packages/agentos/src/core/tools/permissions/IToolPermissionManager.ts:47](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/tools/permissions/IToolPermissionManager.ts#L47)
 
 Represents the context required for making a permission decision for tool usage.
 This object aggregates all necessary information that the `IToolPermissionManager`
@@ -16,7 +16,7 @@ PermissionCheckContext
 
 > `optional` **gmiId**: `string`
 
-Defined in: [packages/agentos/src/core/tools/permissions/IToolPermissionManager.ts:52](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/tools/permissions/IToolPermissionManager.ts#L52)
+Defined in: [packages/agentos/src/core/tools/permissions/IToolPermissionManager.ts:52](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/tools/permissions/IToolPermissionManager.ts#L52)
 
 Optional. The unique identifier of the GMI instance making the request.
 Useful for logging or more granular GMI-specific rules.
@@ -27,7 +27,7 @@ Useful for logging or more granular GMI-specific rules.
 
 > **personaCapabilities**: `string`[]
 
-Defined in: [packages/agentos/src/core/tools/permissions/IToolPermissionManager.ts:50](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/tools/permissions/IToolPermissionManager.ts#L50)
+Defined in: [packages/agentos/src/core/tools/permissions/IToolPermissionManager.ts:50](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/tools/permissions/IToolPermissionManager.ts#L50)
 
 An array of capability strings (e.g., "filesystem:read", "api:weather")
 currently possessed by the active Persona.
@@ -38,7 +38,7 @@ currently possessed by the active Persona.
 
 > **personaId**: `string`
 
-Defined in: [packages/agentos/src/core/tools/permissions/IToolPermissionManager.ts:49](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/tools/permissions/IToolPermissionManager.ts#L49)
+Defined in: [packages/agentos/src/core/tools/permissions/IToolPermissionManager.ts:49](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/tools/permissions/IToolPermissionManager.ts#L49)
 
 The unique identifier of the active Persona within the GMI
 that is attempting to use the tool.
@@ -49,7 +49,7 @@ that is attempting to use the tool.
 
 > **tool**: [`ITool`](ITool.md)
 
-Defined in: [packages/agentos/src/core/tools/permissions/IToolPermissionManager.ts:48](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/tools/permissions/IToolPermissionManager.ts#L48)
+Defined in: [packages/agentos/src/core/tools/permissions/IToolPermissionManager.ts:48](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/tools/permissions/IToolPermissionManager.ts#L48)
 
 The actual `ITool` instance for which permission is being checked.
 This provides access to tool metadata like `id`, `name`, and `requiredCapabilities`.
@@ -60,7 +60,7 @@ This provides access to tool metadata like `id`, `name`, and `requiredCapabiliti
 
 > **userContext**: [`UserContext`](UserContext.md)
 
-Defined in: [packages/agentos/src/core/tools/permissions/IToolPermissionManager.ts:51](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/tools/permissions/IToolPermissionManager.ts#L51)
+Defined in: [packages/agentos/src/core/tools/permissions/IToolPermissionManager.ts:51](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/tools/permissions/IToolPermissionManager.ts#L51)
 
 The context of the end-user associated with the current request,
 which may include `userId`, preferences, skill level, etc.

@@ -1,6 +1,6 @@
 # Interface: IVideoGenerator
 
-Defined in: [packages/agentos/src/media/video/IVideoGenerator.ts:37](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/media/video/IVideoGenerator.ts#L37)
+Defined in: [packages/agentos/src/media/video/IVideoGenerator.ts:37](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/video/IVideoGenerator.ts#L37)
 
 Abstraction over a video generation backend (Runway, Pika, Kling, Luma,
 Stable Video, Google Veo, Replicate, etc.).
@@ -25,7 +25,7 @@ capability is available before invoking it.
 
 > `readonly` `optional` **defaultModelId**: `string`
 
-Defined in: [packages/agentos/src/media/video/IVideoGenerator.ts:45](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/media/video/IVideoGenerator.ts#L45)
+Defined in: [packages/agentos/src/media/video/IVideoGenerator.ts:45](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/video/IVideoGenerator.ts#L45)
 
 Default model used when the request omits `modelId`.
 
@@ -35,7 +35,7 @@ Default model used when the request omits `modelId`.
 
 > `readonly` **isInitialized**: `boolean`
 
-Defined in: [packages/agentos/src/media/video/IVideoGenerator.ts:42](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/media/video/IVideoGenerator.ts#L42)
+Defined in: [packages/agentos/src/media/video/IVideoGenerator.ts:42](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/video/IVideoGenerator.ts#L42)
 
 Whether [initialize](#initialize) has been called successfully.
 
@@ -45,7 +45,7 @@ Whether [initialize](#initialize) has been called successfully.
 
 > `readonly` **providerId**: `string`
 
-Defined in: [packages/agentos/src/media/video/IVideoGenerator.ts:39](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/media/video/IVideoGenerator.ts#L39)
+Defined in: [packages/agentos/src/media/video/IVideoGenerator.ts:39](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/video/IVideoGenerator.ts#L39)
 
 Unique identifier for this provider (e.g. `'runway'`, `'pika'`).
 
@@ -55,7 +55,7 @@ Unique identifier for this provider (e.g. `'runway'`, `'pika'`).
 
 > **generateVideo**(`request`): `Promise`\<[`VideoResult`](VideoResult.md)\>
 
-Defined in: [packages/agentos/src/media/video/IVideoGenerator.ts:61](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/media/video/IVideoGenerator.ts#L61)
+Defined in: [packages/agentos/src/media/video/IVideoGenerator.ts:61](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/video/IVideoGenerator.ts#L61)
 
 Generate a video from a text prompt.
 
@@ -79,7 +79,7 @@ A result envelope containing one or more generated videos.
 
 > `optional` **imageToVideo**(`request`): `Promise`\<[`VideoResult`](VideoResult.md)\>
 
-Defined in: [packages/agentos/src/media/video/IVideoGenerator.ts:73](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/media/video/IVideoGenerator.ts#L73)
+Defined in: [packages/agentos/src/media/video/IVideoGenerator.ts:73](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/video/IVideoGenerator.ts#L73)
 
 Generate a video from a source image and a motion prompt.
 
@@ -107,7 +107,7 @@ A result envelope containing one or more generated videos.
 
 > **initialize**(`config`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/media/video/IVideoGenerator.ts:53](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/media/video/IVideoGenerator.ts#L53)
+Defined in: [packages/agentos/src/media/video/IVideoGenerator.ts:53](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/video/IVideoGenerator.ts#L53)
 
 Initialise the provider with runtime configuration.
 
@@ -130,7 +130,7 @@ Provider-specific key/value pairs (API keys, endpoints,
 
 > `optional` **shutdown**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/media/video/IVideoGenerator.ts:87](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/media/video/IVideoGenerator.ts#L87)
+Defined in: [packages/agentos/src/media/video/IVideoGenerator.ts:87](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/video/IVideoGenerator.ts#L87)
 
 Release any resources held by the provider (HTTP connections, polling
 loops, temp files, etc.).
@@ -145,7 +145,7 @@ loops, temp files, etc.).
 
 > **supports**(`capability`): `boolean`
 
-Defined in: [packages/agentos/src/media/video/IVideoGenerator.ts:81](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/media/video/IVideoGenerator.ts#L81)
+Defined in: [packages/agentos/src/media/video/IVideoGenerator.ts:81](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/video/IVideoGenerator.ts#L81)
 
 Query whether this provider supports a given capability.
 

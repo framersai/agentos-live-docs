@@ -1,6 +1,6 @@
 # Interface: IAudioGenerator
 
-Defined in: [packages/agentos/src/media/audio/IAudioGenerator.ts:61](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/media/audio/IAudioGenerator.ts#L61)
+Defined in: [packages/agentos/src/media/audio/IAudioGenerator.ts:61](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/audio/IAudioGenerator.ts#L61)
 
 Abstraction over an audio generation backend (Suno, Udio, Stable Audio,
 ElevenLabs, Replicate, etc.).
@@ -39,7 +39,7 @@ await suno.shutdown?.();
 
 > `readonly` `optional` **defaultModelId**: `string`
 
-Defined in: [packages/agentos/src/media/audio/IAudioGenerator.ts:69](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/media/audio/IAudioGenerator.ts#L69)
+Defined in: [packages/agentos/src/media/audio/IAudioGenerator.ts:69](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/audio/IAudioGenerator.ts#L69)
 
 Default model used when the request omits `modelId`.
 
@@ -49,7 +49,7 @@ Default model used when the request omits `modelId`.
 
 > `readonly` **isInitialized**: `boolean`
 
-Defined in: [packages/agentos/src/media/audio/IAudioGenerator.ts:66](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/media/audio/IAudioGenerator.ts#L66)
+Defined in: [packages/agentos/src/media/audio/IAudioGenerator.ts:66](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/audio/IAudioGenerator.ts#L66)
 
 Whether [initialize](#initialize) has been called successfully.
 
@@ -59,7 +59,7 @@ Whether [initialize](#initialize) has been called successfully.
 
 > `readonly` **providerId**: `string`
 
-Defined in: [packages/agentos/src/media/audio/IAudioGenerator.ts:63](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/media/audio/IAudioGenerator.ts#L63)
+Defined in: [packages/agentos/src/media/audio/IAudioGenerator.ts:63](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/audio/IAudioGenerator.ts#L63)
 
 Unique identifier for this provider (e.g. `'suno'`, `'elevenlabs-sfx'`).
 
@@ -69,7 +69,7 @@ Unique identifier for this provider (e.g. `'suno'`, `'elevenlabs-sfx'`).
 
 > **generateMusic**(`request`): `Promise`\<[`AudioResult`](AudioResult.md)\>
 
-Defined in: [packages/agentos/src/media/audio/IAudioGenerator.ts:88](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/media/audio/IAudioGenerator.ts#L88)
+Defined in: [packages/agentos/src/media/audio/IAudioGenerator.ts:88](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/audio/IAudioGenerator.ts#L88)
 
 Generate music from a text prompt.
 
@@ -96,7 +96,7 @@ A result envelope containing one or more generated audio clips.
 
 > `optional` **generateSFX**(`request`): `Promise`\<[`AudioResult`](AudioResult.md)\>
 
-Defined in: [packages/agentos/src/media/audio/IAudioGenerator.ts:100](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/media/audio/IAudioGenerator.ts#L100)
+Defined in: [packages/agentos/src/media/audio/IAudioGenerator.ts:100](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/audio/IAudioGenerator.ts#L100)
 
 Generate a sound effect from a text prompt.
 
@@ -124,7 +124,7 @@ A result envelope containing one or more generated audio clips.
 
 > **initialize**(`config`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/media/audio/IAudioGenerator.ts:77](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/media/audio/IAudioGenerator.ts#L77)
+Defined in: [packages/agentos/src/media/audio/IAudioGenerator.ts:77](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/audio/IAudioGenerator.ts#L77)
 
 Initialise the provider with runtime configuration.
 
@@ -147,7 +147,7 @@ Provider-specific key/value pairs (API keys, endpoints,
 
 > `optional` **shutdown**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/media/audio/IAudioGenerator.ts:114](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/media/audio/IAudioGenerator.ts#L114)
+Defined in: [packages/agentos/src/media/audio/IAudioGenerator.ts:114](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/audio/IAudioGenerator.ts#L114)
 
 Release any resources held by the provider (HTTP connections, polling
 loops, temp files, etc.).
@@ -162,7 +162,7 @@ loops, temp files, etc.).
 
 > **supports**(`capability`): `boolean`
 
-Defined in: [packages/agentos/src/media/audio/IAudioGenerator.ts:108](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/media/audio/IAudioGenerator.ts#L108)
+Defined in: [packages/agentos/src/media/audio/IAudioGenerator.ts:108](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/audio/IAudioGenerator.ts#L108)
 
 Query whether this provider supports a given capability.
 

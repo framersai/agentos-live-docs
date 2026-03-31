@@ -1,6 +1,6 @@
 # Interface: AgencyMemoryConfig
 
-Defined in: [packages/agentos/src/agents/agency/AgencyTypes.ts:54](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/agents/agency/AgencyTypes.ts#L54)
+Defined in: [packages/agentos/src/agents/agency/AgencyTypes.ts:54](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/agents/agency/AgencyTypes.ts#L54)
 
 Configuration for agency-level shared RAG memory.
 Enables GMIs within an agency to share context and collaborate effectively.
@@ -11,7 +11,7 @@ Enables GMIs within an agency to share context and collaborate effectively.
 
 > `optional` **autoIngestCommunications**: `boolean`
 
-Defined in: [packages/agentos/src/agents/agency/AgencyTypes.ts:84](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/agents/agency/AgencyTypes.ts#L84)
+Defined in: [packages/agentos/src/agents/agency/AgencyTypes.ts:84](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/agents/agency/AgencyTypes.ts#L84)
 
 Automatically ingest cross-GMI communications to shared memory.
 
@@ -27,7 +27,7 @@ false
 
 > **enabled**: `boolean`
 
-Defined in: [packages/agentos/src/agents/agency/AgencyTypes.ts:60](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/agents/agency/AgencyTypes.ts#L60)
+Defined in: [packages/agentos/src/agents/agency/AgencyTypes.ts:60](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/agents/agency/AgencyTypes.ts#L60)
 
 Enable shared RAG memory for the agency.
 When enabled, all GMIs in the agency can read/write to shared collections.
@@ -44,7 +44,7 @@ false
 
 > `optional` **readRoles**: `string`[]
 
-Defined in: [packages/agentos/src/agents/agency/AgencyTypes.ts:78](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/agents/agency/AgencyTypes.ts#L78)
+Defined in: [packages/agentos/src/agents/agency/AgencyTypes.ts:78](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/agents/agency/AgencyTypes.ts#L78)
 
 Control which roles can read from shared memory.
 If empty/undefined, all roles can read.
@@ -55,7 +55,7 @@ If empty/undefined, all roles can read.
 
 > `optional` **retentionPolicy**: [`AgencyMemoryRetentionPolicy`](AgencyMemoryRetentionPolicy.md)
 
-Defined in: [packages/agentos/src/agents/agency/AgencyTypes.ts:89](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/agents/agency/AgencyTypes.ts#L89)
+Defined in: [packages/agentos/src/agents/agency/AgencyTypes.ts:89](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/agents/agency/AgencyTypes.ts#L89)
 
 Retention policy for shared memory documents.
 
@@ -65,7 +65,7 @@ Retention policy for shared memory documents.
 
 > `optional` **scoping**: [`AgencyMemoryScopingConfig`](AgencyMemoryScopingConfig.md)
 
-Defined in: [packages/agentos/src/agents/agency/AgencyTypes.ts:94](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/agents/agency/AgencyTypes.ts#L94)
+Defined in: [packages/agentos/src/agents/agency/AgencyTypes.ts:94](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/agents/agency/AgencyTypes.ts#L94)
 
 Memory scoping configuration.
 
@@ -75,7 +75,7 @@ Memory scoping configuration.
 
 > `optional` **sharedDataSourceId**: `string`
 
-Defined in: [packages/agentos/src/agents/agency/AgencyTypes.ts:66](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/agents/agency/AgencyTypes.ts#L66)
+Defined in: [packages/agentos/src/agents/agency/AgencyTypes.ts:66](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/agents/agency/AgencyTypes.ts#L66)
 
 Dedicated data source ID for agency shared memory.
 Auto-generated if not provided when enabled.
@@ -86,7 +86,7 @@ Auto-generated if not provided when enabled.
 
 > `optional` **writeRoles**: `string`[]
 
-Defined in: [packages/agentos/src/agents/agency/AgencyTypes.ts:72](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/agents/agency/AgencyTypes.ts#L72)
+Defined in: [packages/agentos/src/agents/agency/AgencyTypes.ts:72](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/agents/agency/AgencyTypes.ts#L72)
 
 Control which roles can write to shared memory.
 If empty/undefined, all roles can write.

@@ -764,6 +764,11 @@ const typedocSidebar = {
         },
         {
           type: "doc",
+          id: "api/classes/ModelRouter",
+          label: "ModelRouter"
+        },
+        {
+          type: "doc",
           id: "api/classes/MultimodalAggregator",
           label: "MultimodalAggregator"
         },
@@ -2725,6 +2730,16 @@ const typedocSidebar = {
         },
         {
           type: "doc",
+          id: "api/interfaces/GenerationHookContext",
+          label: "GenerationHookContext"
+        },
+        {
+          type: "doc",
+          id: "api/interfaces/GenerationHookResult",
+          label: "GenerationHookResult"
+        },
+        {
+          type: "doc",
           id: "api/interfaces/GlobalSearchResult",
           label: "GlobalSearchResult"
         },
@@ -3212,6 +3227,11 @@ const typedocSidebar = {
           type: "doc",
           id: "api/interfaces/IMigrationTarget",
           label: "IMigrationTarget"
+        },
+        {
+          type: "doc",
+          id: "api/interfaces/IModelRouter",
+          label: "IModelRouter"
         },
         {
           type: "doc",
@@ -3792,6 +3812,16 @@ const typedocSidebar = {
           type: "doc",
           id: "api/interfaces/ModelOption",
           label: "ModelOption"
+        },
+        {
+          type: "doc",
+          id: "api/interfaces/ModelRouteParams",
+          label: "ModelRouteParams"
+        },
+        {
+          type: "doc",
+          id: "api/interfaces/ModelRouteResult",
+          label: "ModelRouteResult"
         },
         {
           type: "doc",
@@ -5287,6 +5317,11 @@ const typedocSidebar = {
           type: "doc",
           id: "api/interfaces/TombstoneRecord",
           label: "TombstoneRecord"
+        },
+        {
+          type: "doc",
+          id: "api/interfaces/ToolCallHookInfo",
+          label: "ToolCallHookInfo"
         },
         {
           type: "doc",

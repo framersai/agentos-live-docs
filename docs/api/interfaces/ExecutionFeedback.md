@@ -1,6 +1,6 @@
 # Interface: ExecutionFeedback
 
-Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:270](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/planner/IPlanningEngine.ts#L270)
+Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:270](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/planner/IPlanningEngine.ts#L270)
 
 Feedback from plan execution used for refinement.
 
@@ -10,7 +10,7 @@ Feedback from plan execution used for refinement.
 
 > **details**: `string`
 
-Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:278](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/planner/IPlanningEngine.ts#L278)
+Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:278](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/planner/IPlanningEngine.ts#L278)
 
 Feedback details
 
@@ -20,7 +20,7 @@ Feedback details
 
 > **feedbackType**: [`FeedbackType`](../type-aliases/FeedbackType.md)
 
-Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:276](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/planner/IPlanningEngine.ts#L276)
+Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:276](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/planner/IPlanningEngine.ts#L276)
 
 Type of feedback
 
@@ -30,7 +30,7 @@ Type of feedback
 
 > **planId**: `string`
 
-Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:272](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/planner/IPlanningEngine.ts#L272)
+Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:272](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/planner/IPlanningEngine.ts#L272)
 
 Plan being executed
 
@@ -40,7 +40,7 @@ Plan being executed
 
 > **severity**: `"error"` \| `"critical"` \| `"warning"` \| `"info"`
 
-Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:282](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/planner/IPlanningEngine.ts#L282)
+Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:282](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/planner/IPlanningEngine.ts#L282)
 
 Severity of the issue
 
@@ -50,7 +50,7 @@ Severity of the issue
 
 > **stepId**: `string`
 
-Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:274](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/planner/IPlanningEngine.ts#L274)
+Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:274](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/planner/IPlanningEngine.ts#L274)
 
 Step that generated feedback
 
@@ -60,6 +60,6 @@ Step that generated feedback
 
 > `optional` **suggestedCorrection**: `string`
 
-Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:280](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/planner/IPlanningEngine.ts#L280)
+Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:280](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/planner/IPlanningEngine.ts#L280)
 
 Suggested correction

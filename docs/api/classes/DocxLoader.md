@@ -1,6 +1,6 @@
 # Class: DocxLoader
 
-Defined in: [packages/agentos/src/memory/io/ingestion/DocxLoader.ts:71](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/io/ingestion/DocxLoader.ts#L71)
+Defined in: [packages/agentos/src/memory/io/ingestion/DocxLoader.ts:71](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/io/ingestion/DocxLoader.ts#L71)
 
 Document loader for Microsoft Word (`.docx`) files.
 
@@ -38,7 +38,7 @@ console.log(doc.metadata.wordCount); // e.g. 1842
 
 > `readonly` **supportedExtensions**: `string`[]
 
-Defined in: [packages/agentos/src/memory/io/ingestion/DocxLoader.ts:73](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/io/ingestion/DocxLoader.ts#L73)
+Defined in: [packages/agentos/src/memory/io/ingestion/DocxLoader.ts:73](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/io/ingestion/DocxLoader.ts#L73)
 
 File extensions this loader handles, each with a leading dot.
 
@@ -60,7 +60,7 @@ Used by [LoaderRegistry](LoaderRegistry.md) to route file paths to the correct l
 
 > **canLoad**(`source`): `boolean`
 
-Defined in: [packages/agentos/src/memory/io/ingestion/DocxLoader.ts:80](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/io/ingestion/DocxLoader.ts#L80)
+Defined in: [packages/agentos/src/memory/io/ingestion/DocxLoader.ts:80](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/io/ingestion/DocxLoader.ts#L80)
 
 Returns `true` when this loader is capable of handling `source`.
 
@@ -89,7 +89,7 @@ Absolute file path or raw bytes.
 
 > **load**(`source`, `_options?`): `Promise`\<[`LoadedDocument`](../interfaces/LoadedDocument.md)\>
 
-Defined in: [packages/agentos/src/memory/io/ingestion/DocxLoader.ts:96](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/io/ingestion/DocxLoader.ts#L96)
+Defined in: [packages/agentos/src/memory/io/ingestion/DocxLoader.ts:96](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/io/ingestion/DocxLoader.ts#L96)
 
 Parses `source` and returns a normalised [LoadedDocument](../interfaces/LoadedDocument.md).
 

@@ -1,6 +1,6 @@
 # Interface: BuiltInAdaptiveVadProviderConfig
 
-Defined in: [packages/agentos/src/hearing/providers/BuiltInAdaptiveVadProvider.ts:17](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/hearing/providers/BuiltInAdaptiveVadProvider.ts#L17)
+Defined in: [packages/agentos/src/hearing/providers/BuiltInAdaptiveVadProvider.ts:17](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/hearing/providers/BuiltInAdaptiveVadProvider.ts#L17)
 
 Configuration for the [BuiltInAdaptiveVadProvider](../classes/BuiltInAdaptiveVadProvider.md).
 
@@ -19,7 +19,7 @@ See `CalibrationConfig` for environmental calibration settings.
 
 > `optional` **calibration**: [`CalibrationConfig`](CalibrationConfig.md)
 
-Defined in: [packages/agentos/src/hearing/providers/BuiltInAdaptiveVadProvider.ts:38](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/hearing/providers/BuiltInAdaptiveVadProvider.ts#L38)
+Defined in: [packages/agentos/src/hearing/providers/BuiltInAdaptiveVadProvider.ts:38](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/hearing/providers/BuiltInAdaptiveVadProvider.ts#L38)
 
 Environmental calibration settings. Controls how the noise floor and
 spectral profile are estimated from ambient audio.
@@ -32,7 +32,7 @@ See `CalibrationConfig` for available options.
 
 > `optional` **frameDurationMs**: `number`
 
-Defined in: [packages/agentos/src/hearing/providers/BuiltInAdaptiveVadProvider.ts:30](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/hearing/providers/BuiltInAdaptiveVadProvider.ts#L30)
+Defined in: [packages/agentos/src/hearing/providers/BuiltInAdaptiveVadProvider.ts:30](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/hearing/providers/BuiltInAdaptiveVadProvider.ts#L30)
 
 Duration of each audio frame in milliseconds. Determines the number
 of samples expected in each `processFrame()` call.
@@ -50,7 +50,7 @@ At 16kHz with 20ms frames, each frame is 320 samples.
 
 > `optional` **sampleRate**: `number`
 
-Defined in: [packages/agentos/src/hearing/providers/BuiltInAdaptiveVadProvider.ts:22](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/hearing/providers/BuiltInAdaptiveVadProvider.ts#L22)
+Defined in: [packages/agentos/src/hearing/providers/BuiltInAdaptiveVadProvider.ts:22](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/hearing/providers/BuiltInAdaptiveVadProvider.ts#L22)
 
 Audio sample rate in Hz. Must match the actual audio stream.
 
@@ -66,7 +66,7 @@ Audio sample rate in Hz. Must match the actual audio stream.
 
 > `optional` **vad**: [`AdaptiveVADConfig`](AdaptiveVADConfig.md)
 
-Defined in: [packages/agentos/src/hearing/providers/BuiltInAdaptiveVadProvider.ts:46](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/hearing/providers/BuiltInAdaptiveVadProvider.ts#L46)
+Defined in: [packages/agentos/src/hearing/providers/BuiltInAdaptiveVadProvider.ts:46](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/hearing/providers/BuiltInAdaptiveVadProvider.ts#L46)
 
 VAD algorithm configuration. Controls speech detection thresholds,
 minimum speech duration, hangover period, etc.

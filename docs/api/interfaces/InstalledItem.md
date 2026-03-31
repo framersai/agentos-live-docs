@@ -1,6 +1,6 @@
 # Interface: InstalledItem
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:286](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/marketplace/store/IMarketplace.ts#L286)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:286](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/marketplace/store/IMarketplace.ts#L286)
 
 Installed item record
 
@@ -10,7 +10,7 @@ Installed item record
 
 > **autoUpdate**: `boolean`
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:302](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/marketplace/store/IMarketplace.ts#L302)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:302](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/marketplace/store/IMarketplace.ts#L302)
 
 Auto-update enabled
 
@@ -20,7 +20,7 @@ Auto-update enabled
 
 > `optional` **config**: `Record`\<`string`, `unknown`\>
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:296](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/marketplace/store/IMarketplace.ts#L296)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:296](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/marketplace/store/IMarketplace.ts#L296)
 
 User-specific configuration
 
@@ -30,7 +30,7 @@ User-specific configuration
 
 > `optional` **error**: `string`
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:304](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/marketplace/store/IMarketplace.ts#L304)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:304](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/marketplace/store/IMarketplace.ts#L304)
 
 Installation error (if failed)
 
@@ -40,7 +40,7 @@ Installation error (if failed)
 
 > **installationId**: `string`
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:288](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/marketplace/store/IMarketplace.ts#L288)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:288](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/marketplace/store/IMarketplace.ts#L288)
 
 Installation ID
 
@@ -50,7 +50,7 @@ Installation ID
 
 > **installedAt**: `string`
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:298](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/marketplace/store/IMarketplace.ts#L298)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:298](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/marketplace/store/IMarketplace.ts#L298)
 
 When installed
 
@@ -60,7 +60,7 @@ When installed
 
 > **itemId**: `string`
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:290](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/marketplace/store/IMarketplace.ts#L290)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:290](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/marketplace/store/IMarketplace.ts#L290)
 
 Item ID
 
@@ -70,7 +70,7 @@ Item ID
 
 > **status**: [`InstallationStatus`](../type-aliases/InstallationStatus.md)
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:294](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/marketplace/store/IMarketplace.ts#L294)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:294](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/marketplace/store/IMarketplace.ts#L294)
 
 Installation status
 
@@ -80,7 +80,7 @@ Installation status
 
 > **updatedAt**: `string`
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:300](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/marketplace/store/IMarketplace.ts#L300)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:300](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/marketplace/store/IMarketplace.ts#L300)
 
 When last updated
 
@@ -90,6 +90,6 @@ When last updated
 
 > **version**: `string`
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:292](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/marketplace/store/IMarketplace.ts#L292)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:292](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/marketplace/store/IMarketplace.ts#L292)
 
 Installed version

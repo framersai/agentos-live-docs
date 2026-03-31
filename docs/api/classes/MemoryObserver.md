@@ -1,6 +1,6 @@
 # Class: MemoryObserver
 
-Defined in: [packages/agentos/src/memory/pipeline/observation/MemoryObserver.ts:106](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/pipeline/observation/MemoryObserver.ts#L106)
+Defined in: [packages/agentos/src/memory/pipeline/observation/MemoryObserver.ts:106](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/pipeline/observation/MemoryObserver.ts#L106)
 
 ## Constructors
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/memory/pipeline/observation/MemoryObserver.ts:
 
 > **new MemoryObserver**(`traits`, `config?`): `MemoryObserver`
 
-Defined in: [packages/agentos/src/memory/pipeline/observation/MemoryObserver.ts:120](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/pipeline/observation/MemoryObserver.ts#L120)
+Defined in: [packages/agentos/src/memory/pipeline/observation/MemoryObserver.ts:120](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/pipeline/observation/MemoryObserver.ts#L120)
 
 #### Parameters
 
@@ -30,7 +30,7 @@ Defined in: [packages/agentos/src/memory/pipeline/observation/MemoryObserver.ts:
 
 > **clear**(): `void`
 
-Defined in: [packages/agentos/src/memory/pipeline/observation/MemoryObserver.ts:276](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/pipeline/observation/MemoryObserver.ts#L276)
+Defined in: [packages/agentos/src/memory/pipeline/observation/MemoryObserver.ts:276](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/pipeline/observation/MemoryObserver.ts#L276)
 
 Reset the observer.
 
@@ -44,7 +44,7 @@ Reset the observer.
 
 > **compressIfNeeded**(): `Promise`\<[`CompressedObservation`](../interfaces/CompressedObservation.md)[] \| `null`\>
 
-Defined in: [packages/agentos/src/memory/pipeline/observation/MemoryObserver.ts:201](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/pipeline/observation/MemoryObserver.ts#L201)
+Defined in: [packages/agentos/src/memory/pipeline/observation/MemoryObserver.ts:201](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/pipeline/observation/MemoryObserver.ts#L201)
 
 Run compression if accumulated notes exceed the compression threshold.
 
@@ -64,7 +64,7 @@ Compressed observations if threshold was met, null otherwise.
 
 > **extractNotes**(`mood?`): `Promise`\<[`ObservationNote`](../interfaces/ObservationNote.md)[]\>
 
-Defined in: [packages/agentos/src/memory/pipeline/observation/MemoryObserver.ts:166](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/pipeline/observation/MemoryObserver.ts#L166)
+Defined in: [packages/agentos/src/memory/pipeline/observation/MemoryObserver.ts:166](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/pipeline/observation/MemoryObserver.ts#L166)
 
 Force extraction of observation notes from buffered messages.
 
@@ -84,7 +84,7 @@ Force extraction of observation notes from buffered messages.
 
 > **getAccumulatedCompressed**(): readonly [`CompressedObservation`](../interfaces/CompressedObservation.md)[]
 
-Defined in: [packages/agentos/src/memory/pipeline/observation/MemoryObserver.ts:261](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/pipeline/observation/MemoryObserver.ts#L261)
+Defined in: [packages/agentos/src/memory/pipeline/observation/MemoryObserver.ts:261](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/pipeline/observation/MemoryObserver.ts#L261)
 
 Get the accumulated compressed observations (read-only snapshot).
 
@@ -98,7 +98,7 @@ readonly [`CompressedObservation`](../interfaces/CompressedObservation.md)[]
 
 > **getAccumulatedCompressedCount**(): `number`
 
-Defined in: [packages/agentos/src/memory/pipeline/observation/MemoryObserver.ts:256](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/pipeline/observation/MemoryObserver.ts#L256)
+Defined in: [packages/agentos/src/memory/pipeline/observation/MemoryObserver.ts:256](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/pipeline/observation/MemoryObserver.ts#L256)
 
 Get the count of accumulated compressed observations awaiting reflection.
 
@@ -112,7 +112,7 @@ Get the count of accumulated compressed observations awaiting reflection.
 
 > **getAccumulatedNoteCount**(): `number`
 
-Defined in: [packages/agentos/src/memory/pipeline/observation/MemoryObserver.ts:251](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/pipeline/observation/MemoryObserver.ts#L251)
+Defined in: [packages/agentos/src/memory/pipeline/observation/MemoryObserver.ts:251](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/pipeline/observation/MemoryObserver.ts#L251)
 
 Get the count of accumulated raw notes awaiting compression.
 
@@ -126,7 +126,7 @@ Get the count of accumulated raw notes awaiting compression.
 
 > **getBuffer**(): [`ObservationBuffer`](ObservationBuffer.md)
 
-Defined in: [packages/agentos/src/memory/pipeline/observation/MemoryObserver.ts:241](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/pipeline/observation/MemoryObserver.ts#L241)
+Defined in: [packages/agentos/src/memory/pipeline/observation/MemoryObserver.ts:241](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/pipeline/observation/MemoryObserver.ts#L241)
 
 Get the underlying buffer for inspection.
 
@@ -140,7 +140,7 @@ Get the underlying buffer for inspection.
 
 > **observe**(`role`, `content`, `mood?`): `Promise`\<[`ObservationNote`](../interfaces/ObservationNote.md)[] \| `null`\>
 
-Defined in: [packages/agentos/src/memory/pipeline/observation/MemoryObserver.ts:150](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/pipeline/observation/MemoryObserver.ts#L150)
+Defined in: [packages/agentos/src/memory/pipeline/observation/MemoryObserver.ts:150](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/pipeline/observation/MemoryObserver.ts#L150)
 
 Feed a message into the observation buffer.
 Returns observation notes if the buffer has reached activation threshold.
@@ -169,7 +169,7 @@ Returns observation notes if the buffer has reached activation threshold.
 
 > **reflectIfNeeded**(): `Promise`\<[`Reflection`](../interfaces/Reflection.md)[] \| `null`\>
 
-Defined in: [packages/agentos/src/memory/pipeline/observation/MemoryObserver.ts:223](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/pipeline/observation/MemoryObserver.ts#L223)
+Defined in: [packages/agentos/src/memory/pipeline/observation/MemoryObserver.ts:223](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/pipeline/observation/MemoryObserver.ts#L223)
 
 Run reflection if accumulated compressed observations exceed the token threshold.
 
@@ -189,7 +189,7 @@ Reflections if threshold was met, null otherwise.
 
 > **setCompressionThreshold**(`threshold`): `void`
 
-Defined in: [packages/agentos/src/memory/pipeline/observation/MemoryObserver.ts:266](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/pipeline/observation/MemoryObserver.ts#L266)
+Defined in: [packages/agentos/src/memory/pipeline/observation/MemoryObserver.ts:266](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/pipeline/observation/MemoryObserver.ts#L266)
 
 Set the compression threshold (number of notes before compression triggers).
 
@@ -209,7 +209,7 @@ Set the compression threshold (number of notes before compression triggers).
 
 > **setReflectionThresholdTokens**(`threshold`): `void`
 
-Defined in: [packages/agentos/src/memory/pipeline/observation/MemoryObserver.ts:271](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/pipeline/observation/MemoryObserver.ts#L271)
+Defined in: [packages/agentos/src/memory/pipeline/observation/MemoryObserver.ts:271](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/pipeline/observation/MemoryObserver.ts#L271)
 
 Set the reflection token threshold (estimated tokens before reflection triggers).
 
@@ -229,7 +229,7 @@ Set the reflection token threshold (estimated tokens before reflection triggers)
 
 > **shouldActivate**(): `boolean`
 
-Defined in: [packages/agentos/src/memory/pipeline/observation/MemoryObserver.ts:246](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/pipeline/observation/MemoryObserver.ts#L246)
+Defined in: [packages/agentos/src/memory/pipeline/observation/MemoryObserver.ts:246](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/pipeline/observation/MemoryObserver.ts#L246)
 
 Check if observation should be triggered.
 

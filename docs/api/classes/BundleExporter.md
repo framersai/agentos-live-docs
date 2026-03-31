@@ -1,6 +1,6 @@
 # Class: BundleExporter
 
-Defined in: [packages/agentos/src/provenance/verification/BundleExporter.ts:32](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/verification/BundleExporter.ts#L32)
+Defined in: [packages/agentos/src/provenance/verification/BundleExporter.ts:32](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/provenance/verification/BundleExporter.ts#L32)
 
 ## Constructors
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/provenance/verification/BundleExporter.ts:32](
 
 > **new BundleExporter**(`ledger`, `keyManager`, `anchorStorage?`, `tablePrefix?`): `BundleExporter`
 
-Defined in: [packages/agentos/src/provenance/verification/BundleExporter.ts:38](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/verification/BundleExporter.ts#L38)
+Defined in: [packages/agentos/src/provenance/verification/BundleExporter.ts:38](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/provenance/verification/BundleExporter.ts#L38)
 
 #### Parameters
 
@@ -38,7 +38,7 @@ Defined in: [packages/agentos/src/provenance/verification/BundleExporter.ts:38](
 
 > **exportAsJSONL**(`fromSequence?`, `toSequence?`): `Promise`\<`string`\>
 
-Defined in: [packages/agentos/src/provenance/verification/BundleExporter.ts:131](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/verification/BundleExporter.ts#L131)
+Defined in: [packages/agentos/src/provenance/verification/BundleExporter.ts:131](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/provenance/verification/BundleExporter.ts#L131)
 
 Export a bundle as a JSONL string (one JSON object per line).
 Format:
@@ -66,7 +66,7 @@ Format:
 
 > **exportBundle**(`fromSequence?`, `toSequence?`): `Promise`\<[`VerificationBundle`](../interfaces/VerificationBundle.md)\>
 
-Defined in: [packages/agentos/src/provenance/verification/BundleExporter.ts:58](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/verification/BundleExporter.ts#L58)
+Defined in: [packages/agentos/src/provenance/verification/BundleExporter.ts:58](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/provenance/verification/BundleExporter.ts#L58)
 
 Export a verification bundle containing all events, anchors, and public key.
 The bundle is signed for tamper evidence.
@@ -97,7 +97,7 @@ A self-contained verification bundle.
 
 > `static` **importAndVerify**(`bundle`): `Promise`\<[`VerificationResult`](../interfaces/VerificationResult.md)\>
 
-Defined in: [packages/agentos/src/provenance/verification/BundleExporter.ts:170](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/verification/BundleExporter.ts#L170)
+Defined in: [packages/agentos/src/provenance/verification/BundleExporter.ts:170](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/provenance/verification/BundleExporter.ts#L170)
 
 Import and verify a bundle. Works completely offline (no DB required).
 
@@ -121,7 +121,7 @@ Verification result.
 
 > `static` **parseJSONL**(`jsonl`): [`VerificationBundle`](../interfaces/VerificationBundle.md)
 
-Defined in: [packages/agentos/src/provenance/verification/BundleExporter.ts:275](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/verification/BundleExporter.ts#L275)
+Defined in: [packages/agentos/src/provenance/verification/BundleExporter.ts:275](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/provenance/verification/BundleExporter.ts#L275)
 
 Parse a JSONL bundle string back into a VerificationBundle.
 

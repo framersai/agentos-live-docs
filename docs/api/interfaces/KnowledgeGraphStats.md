@@ -1,6 +1,6 @@
 # Interface: KnowledgeGraphStats
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts:282](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts#L282)
+Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts:282](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts#L282)
 
 Statistics about the knowledge graph
 
@@ -10,7 +10,7 @@ Statistics about the knowledge graph
 
 > **avgConfidence**: `number`
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts:288](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts#L288)
+Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts:288](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts#L288)
 
 ***
 
@@ -18,7 +18,7 @@ Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/IKnowledgeGra
 
 > **entitiesByType**: `Record`\<[`EntityType`](../type-aliases/EntityType.md), `number`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts:286](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts#L286)
+Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts:286](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts#L286)
 
 ***
 
@@ -26,7 +26,7 @@ Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/IKnowledgeGra
 
 > **newestEntry**: `string`
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts:290](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts#L290)
+Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts:290](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts#L290)
 
 ***
 
@@ -34,7 +34,7 @@ Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/IKnowledgeGra
 
 > **oldestEntry**: `string`
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts:289](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts#L289)
+Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts:289](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts#L289)
 
 ***
 
@@ -42,7 +42,7 @@ Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/IKnowledgeGra
 
 > **relationsByType**: `Record`\<[`RelationType`](../type-aliases/RelationType.md), `number`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts:287](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts#L287)
+Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts:287](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts#L287)
 
 ***
 
@@ -50,7 +50,7 @@ Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/IKnowledgeGra
 
 > **totalEntities**: `number`
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts:283](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts#L283)
+Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts:283](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts#L283)
 
 ***
 
@@ -58,7 +58,7 @@ Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/IKnowledgeGra
 
 > **totalMemories**: `number`
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts:285](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts#L285)
+Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts:285](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts#L285)
 
 ***
 
@@ -66,4 +66,4 @@ Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/IKnowledgeGra
 
 > **totalRelations**: `number`
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts:284](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts#L284)
+Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts:284](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts#L284)

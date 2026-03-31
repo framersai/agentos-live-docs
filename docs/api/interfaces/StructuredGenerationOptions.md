@@ -1,6 +1,6 @@
 # Interface: StructuredGenerationOptions
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:221](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/structured/output/IStructuredOutputManager.ts#L221)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:221](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/structured/output/IStructuredOutputManager.ts#L221)
 
 Options for structured output generation.
 
@@ -10,7 +10,7 @@ Options for structured output generation.
 
 > `optional` **customValidator**: (`data`) => [`ValidationIssue`](ValidationIssue.md)[]
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:265](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/structured/output/IStructuredOutputManager.ts#L265)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:265](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/structured/output/IStructuredOutputManager.ts#L265)
 
 Custom validation function for additional checks
 
@@ -30,7 +30,7 @@ Custom validation function for additional checks
 
 > `optional` **includeReasoning**: `boolean`
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:253](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/structured/output/IStructuredOutputManager.ts#L253)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:253](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/structured/output/IStructuredOutputManager.ts#L253)
 
 Whether to include reasoning/chain-of-thought before output
 
@@ -40,7 +40,7 @@ Whether to include reasoning/chain-of-thought before output
 
 > `optional` **maxRetries**: `number`
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:250](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/structured/output/IStructuredOutputManager.ts#L250)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:250](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/structured/output/IStructuredOutputManager.ts#L250)
 
 Number of retry attempts on validation failure
 
@@ -50,7 +50,7 @@ Number of retry attempts on validation failure
 
 > `optional` **maxTokens**: `number`
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:247](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/structured/output/IStructuredOutputManager.ts#L247)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:247](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/structured/output/IStructuredOutputManager.ts#L247)
 
 Maximum tokens to generate
 
@@ -60,7 +60,7 @@ Maximum tokens to generate
 
 > `optional` **modelId**: `string`
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:241](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/structured/output/IStructuredOutputManager.ts#L241)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:241](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/structured/output/IStructuredOutputManager.ts#L241)
 
 Model ID to use
 
@@ -70,7 +70,7 @@ Model ID to use
 
 > **prompt**: `string` \| `object`[]
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:223](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/structured/output/IStructuredOutputManager.ts#L223)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:223](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/structured/output/IStructuredOutputManager.ts#L223)
 
 The prompt or messages to send to the LLM
 
@@ -80,7 +80,7 @@ The prompt or messages to send to the LLM
 
 > `optional` **providerId**: `string`
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:238](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/structured/output/IStructuredOutputManager.ts#L238)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:238](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/structured/output/IStructuredOutputManager.ts#L238)
 
 LLM provider to use
 
@@ -90,7 +90,7 @@ LLM provider to use
 
 > **schema**: [`JSONSchema`](JSONSchema.md)
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:226](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/structured/output/IStructuredOutputManager.ts#L226)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:226](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/structured/output/IStructuredOutputManager.ts#L226)
 
 JSON Schema the output must conform to
 
@@ -100,7 +100,7 @@ JSON Schema the output must conform to
 
 > `optional` **schemaDescription**: `string`
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:232](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/structured/output/IStructuredOutputManager.ts#L232)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:232](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/structured/output/IStructuredOutputManager.ts#L232)
 
 Description of what output is expected
 
@@ -110,7 +110,7 @@ Description of what output is expected
 
 > **schemaName**: `string`
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:229](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/structured/output/IStructuredOutputManager.ts#L229)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:229](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/structured/output/IStructuredOutputManager.ts#L229)
 
 Human-readable name for the schema (used in function calling)
 
@@ -120,7 +120,7 @@ Human-readable name for the schema (used in function calling)
 
 > `optional` **strategy**: [`StructuredOutputStrategy`](../type-aliases/StructuredOutputStrategy.md)
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:235](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/structured/output/IStructuredOutputManager.ts#L235)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:235](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/structured/output/IStructuredOutputManager.ts#L235)
 
 Strategy for enforcing structure
 
@@ -130,7 +130,7 @@ Strategy for enforcing structure
 
 > `optional` **strict**: `boolean`
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:262](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/structured/output/IStructuredOutputManager.ts#L262)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:262](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/structured/output/IStructuredOutputManager.ts#L262)
 
 Whether to strictly enforce schema (fail on extra properties)
 
@@ -140,7 +140,7 @@ Whether to strictly enforce schema (fail on extra properties)
 
 > `optional` **systemPrompt**: `string`
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:256](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/structured/output/IStructuredOutputManager.ts#L256)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:256](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/structured/output/IStructuredOutputManager.ts#L256)
 
 Custom system prompt to prepend
 
@@ -150,7 +150,7 @@ Custom system prompt to prepend
 
 > `optional` **temperature**: `number`
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:244](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/structured/output/IStructuredOutputManager.ts#L244)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:244](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/structured/output/IStructuredOutputManager.ts#L244)
 
 Temperature for generation (0-2)
 
@@ -160,6 +160,6 @@ Temperature for generation (0-2)
 
 > `optional` **timeoutMs**: `number`
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:259](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/structured/output/IStructuredOutputManager.ts#L259)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:259](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/structured/output/IStructuredOutputManager.ts#L259)
 
 Timeout in milliseconds

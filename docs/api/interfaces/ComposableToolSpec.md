@@ -1,6 +1,6 @@
 # Interface: ComposableToolSpec
 
-Defined in: [packages/agentos/src/emergent/types.ts:113](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/emergent/types.ts#L113)
+Defined in: [packages/agentos/src/emergent/types.ts:113](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/emergent/types.ts#L113)
 
 Implementation specification for a tool built by composing existing tools.
 
@@ -13,7 +13,7 @@ reference expression system. The final step's output becomes the tool's output.
 
 > **mode**: `"compose"`
 
-Defined in: [packages/agentos/src/emergent/types.ts:115](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/emergent/types.ts#L115)
+Defined in: [packages/agentos/src/emergent/types.ts:115](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/emergent/types.ts#L115)
 
 Discriminant: always `'compose'` for composable specs.
 
@@ -23,7 +23,7 @@ Discriminant: always `'compose'` for composable specs.
 
 > **steps**: [`ComposableStep`](ComposableStep.md)[]
 
-Defined in: [packages/agentos/src/emergent/types.ts:121](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/emergent/types.ts#L121)
+Defined in: [packages/agentos/src/emergent/types.ts:121](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/emergent/types.ts#L121)
 
 Ordered list of pipeline steps.
 Must contain at least one step; the last step's output is the tool result.

@@ -1,6 +1,6 @@
 # Interface: VerificationResult
 
-Defined in: [packages/agentos/src/provenance/types.ts:294](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/types.ts#L294)
+Defined in: [packages/agentos/src/provenance/types.ts:294](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/provenance/types.ts#L294)
 
 ## Extended by
 
@@ -12,7 +12,7 @@ Defined in: [packages/agentos/src/provenance/types.ts:294](https://github.com/fr
 
 > `optional` **agentId**: `string`
 
-Defined in: [packages/agentos/src/provenance/types.ts:308](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/types.ts#L308)
+Defined in: [packages/agentos/src/provenance/types.ts:308](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/provenance/types.ts#L308)
 
 Agent ID of the verified chain.
 
@@ -22,7 +22,7 @@ Agent ID of the verified chain.
 
 > **errors**: [`VerificationError`](VerificationError.md)[]
 
-Defined in: [packages/agentos/src/provenance/types.ts:300](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/types.ts#L300)
+Defined in: [packages/agentos/src/provenance/types.ts:300](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/provenance/types.ts#L300)
 
 List of errors found.
 
@@ -32,7 +32,7 @@ List of errors found.
 
 > **eventsVerified**: `number`
 
-Defined in: [packages/agentos/src/provenance/types.ts:298](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/types.ts#L298)
+Defined in: [packages/agentos/src/provenance/types.ts:298](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/provenance/types.ts#L298)
 
 Number of events verified.
 
@@ -42,7 +42,7 @@ Number of events verified.
 
 > `optional` **firstSequence**: `number`
 
-Defined in: [packages/agentos/src/provenance/types.ts:304](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/types.ts#L304)
+Defined in: [packages/agentos/src/provenance/types.ts:304](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/provenance/types.ts#L304)
 
 First sequence number verified.
 
@@ -52,7 +52,7 @@ First sequence number verified.
 
 > `optional` **lastSequence**: `number`
 
-Defined in: [packages/agentos/src/provenance/types.ts:306](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/types.ts#L306)
+Defined in: [packages/agentos/src/provenance/types.ts:306](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/provenance/types.ts#L306)
 
 Last sequence number verified.
 
@@ -62,7 +62,7 @@ Last sequence number verified.
 
 > **valid**: `boolean`
 
-Defined in: [packages/agentos/src/provenance/types.ts:296](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/types.ts#L296)
+Defined in: [packages/agentos/src/provenance/types.ts:296](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/provenance/types.ts#L296)
 
 Whether all checks passed.
 
@@ -72,7 +72,7 @@ Whether all checks passed.
 
 > **verifiedAt**: `string`
 
-Defined in: [packages/agentos/src/provenance/types.ts:310](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/types.ts#L310)
+Defined in: [packages/agentos/src/provenance/types.ts:310](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/provenance/types.ts#L310)
 
 ISO 8601 timestamp of when verification was performed.
 
@@ -82,6 +82,6 @@ ISO 8601 timestamp of when verification was performed.
 
 > **warnings**: `string`[]
 
-Defined in: [packages/agentos/src/provenance/types.ts:302](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/types.ts#L302)
+Defined in: [packages/agentos/src/provenance/types.ts:302](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/provenance/types.ts#L302)
 
 Informational warnings (non-fatal).

@@ -1,6 +1,6 @@
 # Interface: RegistrySource
 
-Defined in: [packages/agentos/src/extensions/RegistryConfig.ts:18](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/extensions/RegistryConfig.ts#L18)
+Defined in: [packages/agentos/src/extensions/RegistryConfig.ts:18](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/extensions/RegistryConfig.ts#L18)
 
 Configuration for a single registry source
 
@@ -10,7 +10,7 @@ Configuration for a single registry source
 
 > `optional` **autoInstall**: `boolean`
 
-Defined in: [packages/agentos/src/extensions/RegistryConfig.ts:38](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/extensions/RegistryConfig.ts#L38)
+Defined in: [packages/agentos/src/extensions/RegistryConfig.ts:38](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/extensions/RegistryConfig.ts#L38)
 
 Whether to auto-install from npm if not present
 
@@ -20,7 +20,7 @@ Whether to auto-install from npm if not present
 
 > `optional` **branch**: `string`
 
-Defined in: [packages/agentos/src/extensions/RegistryConfig.ts:26](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/extensions/RegistryConfig.ts#L26)
+Defined in: [packages/agentos/src/extensions/RegistryConfig.ts:26](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/extensions/RegistryConfig.ts#L26)
 
 Optional branch/tag for git sources
 
@@ -30,7 +30,7 @@ Optional branch/tag for git sources
 
 > `optional` **cacheDuration**: `number`
 
-Defined in: [packages/agentos/src/extensions/RegistryConfig.ts:35](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/extensions/RegistryConfig.ts#L35)
+Defined in: [packages/agentos/src/extensions/RegistryConfig.ts:35](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/extensions/RegistryConfig.ts#L35)
 
 Cache duration in milliseconds (default: 1 hour)
 
@@ -40,7 +40,7 @@ Cache duration in milliseconds (default: 1 hour)
 
 > **location**: `string`
 
-Defined in: [packages/agentos/src/extensions/RegistryConfig.ts:23](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/extensions/RegistryConfig.ts#L23)
+Defined in: [packages/agentos/src/extensions/RegistryConfig.ts:23](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/extensions/RegistryConfig.ts#L23)
 
 Location (npm package name, GitHub repo, git URL, file path, or HTTP URL)
 
@@ -50,7 +50,7 @@ Location (npm package name, GitHub repo, git URL, file path, or HTTP URL)
 
 > `optional` **token**: `string`
 
-Defined in: [packages/agentos/src/extensions/RegistryConfig.ts:29](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/extensions/RegistryConfig.ts#L29)
+Defined in: [packages/agentos/src/extensions/RegistryConfig.ts:29](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/extensions/RegistryConfig.ts#L29)
 
 Optional authentication token for private sources
 
@@ -60,7 +60,7 @@ Optional authentication token for private sources
 
 > **type**: [`RegistrySourceType`](../type-aliases/RegistrySourceType.md)
 
-Defined in: [packages/agentos/src/extensions/RegistryConfig.ts:20](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/extensions/RegistryConfig.ts#L20)
+Defined in: [packages/agentos/src/extensions/RegistryConfig.ts:20](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/extensions/RegistryConfig.ts#L20)
 
 Type of registry source
 
@@ -70,6 +70,6 @@ Type of registry source
 
 > `optional` **verified**: `boolean`
 
-Defined in: [packages/agentos/src/extensions/RegistryConfig.ts:32](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/extensions/RegistryConfig.ts#L32)
+Defined in: [packages/agentos/src/extensions/RegistryConfig.ts:32](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/extensions/RegistryConfig.ts#L32)
 
 Whether this is a verified/trusted source

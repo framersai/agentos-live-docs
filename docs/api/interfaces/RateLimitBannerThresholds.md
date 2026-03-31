@@ -1,6 +1,6 @@
 # Interface: RateLimitBannerThresholds
 
-Defined in: [packages/agentos/src/core/rate-limiting/types.ts:51](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/rate-limiting/types.ts#L51)
+Defined in: [packages/agentos/src/core/rate-limiting/types.ts:51](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/rate-limiting/types.ts#L51)
 
 Banner threshold configuration for rate limit warnings.
 
@@ -10,7 +10,7 @@ Banner threshold configuration for rate limit warnings.
 
 > **criticalThreshold**: `number`
 
-Defined in: [packages/agentos/src/core/rate-limiting/types.ts:62](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/rate-limiting/types.ts#L62)
+Defined in: [packages/agentos/src/core/rate-limiting/types.ts:62](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/rate-limiting/types.ts#L62)
 
 Show critical banner when remaining requests drop below this percentage.
 
@@ -26,7 +26,7 @@ Show critical banner when remaining requests drop below this percentage.
 
 > **warningThreshold**: `number`
 
-Defined in: [packages/agentos/src/core/rate-limiting/types.ts:56](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/rate-limiting/types.ts#L56)
+Defined in: [packages/agentos/src/core/rate-limiting/types.ts:56](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/rate-limiting/types.ts#L56)
 
 Show warning banner when remaining requests drop below this percentage.
 

@@ -1,6 +1,6 @@
 # Interface: EpisodicMemory
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts:141](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts#L141)
+Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts:141](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts#L141)
 
 Represents an episodic memory (specific experience/event)
 
@@ -10,7 +10,7 @@ Represents an episodic memory (specific experience/event)
 
 > **accessCount**: `number`
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts:173](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts#L173)
+Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts:173](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts#L173)
 
 Access count (for decay/reinforcement)
 
@@ -20,7 +20,7 @@ Access count (for decay/reinforcement)
 
 > `optional` **context**: `Record`\<`string`, `unknown`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts:169](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts#L169)
+Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts:169](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts#L169)
 
 Raw context data
 
@@ -30,7 +30,7 @@ Raw context data
 
 > **createdAt**: `string`
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts:171](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts#L171)
+Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts:171](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts#L171)
 
 Creation timestamp
 
@@ -40,7 +40,7 @@ Creation timestamp
 
 > `optional` **description**: `string`
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts:149](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts#L149)
+Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts:149](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts#L149)
 
 Detailed description
 
@@ -50,7 +50,7 @@ Detailed description
 
 > `optional` **durationMs**: `number`
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts:163](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts#L163)
+Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts:163](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts#L163)
 
 Duration in milliseconds
 
@@ -60,7 +60,7 @@ Duration in milliseconds
 
 > `optional` **embedding**: `number`[]
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts:159](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts#L159)
+Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts:159](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts#L159)
 
 Vector embedding
 
@@ -70,7 +70,7 @@ Vector embedding
 
 > **entityIds**: `string`[]
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts:157](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts#L157)
+Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts:157](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts#L157)
 
 Associated entity IDs
 
@@ -80,7 +80,7 @@ Associated entity IDs
 
 > **id**: `string`
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts:143](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts#L143)
+Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts:143](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts#L143)
 
 Unique memory ID
 
@@ -90,7 +90,7 @@ Unique memory ID
 
 > **importance**: `number`
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts:155](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts#L155)
+Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts:155](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts#L155)
 
 Importance score (0-1)
 
@@ -100,7 +100,7 @@ Importance score (0-1)
 
 > `optional` **insights**: `string`[]
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts:167](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts#L167)
+Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts:167](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts#L167)
 
 Lessons learned
 
@@ -110,7 +110,7 @@ Lessons learned
 
 > **lastAccessedAt**: `string`
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts:175](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts#L175)
+Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts:175](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts#L175)
 
 Last accessed timestamp
 
@@ -120,7 +120,7 @@ Last accessed timestamp
 
 > **occurredAt**: `string`
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts:161](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts#L161)
+Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts:161](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts#L161)
 
 When did this happen?
 
@@ -130,7 +130,7 @@ When did this happen?
 
 > `optional` **outcome**: `"success"` \| `"failure"` \| `"partial"` \| `"unknown"`
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts:165](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts#L165)
+Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts:165](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts#L165)
 
 Outcome/result
 
@@ -140,7 +140,7 @@ Outcome/result
 
 > **participants**: `string`[]
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts:151](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts#L151)
+Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts:151](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts#L151)
 
 Participants (user IDs, GMI IDs)
 
@@ -150,7 +150,7 @@ Participants (user IDs, GMI IDs)
 
 > **summary**: `string`
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts:147](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts#L147)
+Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts:147](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts#L147)
 
 Summary of the episode
 
@@ -160,7 +160,7 @@ Summary of the episode
 
 > **type**: `"discovery"` \| `"success"` \| `"error"` \| `"conversation"` \| `"task"` \| `"interaction"`
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts:145](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts#L145)
+Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts:145](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts#L145)
 
 Memory type
 
@@ -170,6 +170,6 @@ Memory type
 
 > `optional` **valence**: `number`
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts:153](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts#L153)
+Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts:153](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts#L153)
 
 Emotional valence (-1 to 1, negative to positive)

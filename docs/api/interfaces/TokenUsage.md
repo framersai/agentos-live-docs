@@ -1,6 +1,6 @@
 # Interface: TokenUsage
 
-Defined in: [packages/agentos/src/api/generateText.ts:54](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/generateText.ts#L54)
+Defined in: [packages/agentos/src/api/generateText.ts:55](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/generateText.ts#L55)
 
 Token consumption figures reported by the provider for a single completion call.
 All values are approximate and provider-dependent.
@@ -11,7 +11,7 @@ All values are approximate and provider-dependent.
 
 > **completionTokens**: `number`
 
-Defined in: [packages/agentos/src/api/generateText.ts:58](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/generateText.ts#L58)
+Defined in: [packages/agentos/src/api/generateText.ts:59](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/generateText.ts#L59)
 
 Number of tokens in the model's response.
 
@@ -21,7 +21,7 @@ Number of tokens in the model's response.
 
 > `optional` **costUSD**: `number`
 
-Defined in: [packages/agentos/src/api/generateText.ts:62](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/generateText.ts#L62)
+Defined in: [packages/agentos/src/api/generateText.ts:63](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/generateText.ts#L63)
 
 Total cost reported by the provider across all steps, when available.
 
@@ -31,7 +31,7 @@ Total cost reported by the provider across all steps, when available.
 
 > **promptTokens**: `number`
 
-Defined in: [packages/agentos/src/api/generateText.ts:56](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/generateText.ts#L56)
+Defined in: [packages/agentos/src/api/generateText.ts:57](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/generateText.ts#L57)
 
 Number of tokens in the prompt / input sent to the model.
 
@@ -41,6 +41,6 @@ Number of tokens in the prompt / input sent to the model.
 
 > **totalTokens**: `number`
 
-Defined in: [packages/agentos/src/api/generateText.ts:60](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/generateText.ts#L60)
+Defined in: [packages/agentos/src/api/generateText.ts:61](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/generateText.ts#L61)
 
 Sum of `promptTokens` and `completionTokens`.

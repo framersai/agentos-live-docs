@@ -1,6 +1,6 @@
 # Interface: AzureSpeechSTTProviderConfig
 
-Defined in: [packages/agentos/src/hearing/providers/AzureSpeechSTTProvider.ts:14](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/hearing/providers/AzureSpeechSTTProvider.ts#L14)
+Defined in: [packages/agentos/src/hearing/providers/AzureSpeechSTTProvider.ts:14](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/hearing/providers/AzureSpeechSTTProvider.ts#L14)
 
 Configuration for the [AzureSpeechSTTProvider](../classes/AzureSpeechSTTProvider.md).
 
@@ -15,7 +15,7 @@ Configuration for the [AzureSpeechSTTProvider](../classes/AzureSpeechSTTProvider
 
 > `optional` **fetchImpl**: \{(`input`, `init?`): `Promise`\<`Response`\>; (`input`, `init?`): `Promise`\<`Response`\>; \}
 
-Defined in: [packages/agentos/src/hearing/providers/AzureSpeechSTTProvider.ts:38](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/hearing/providers/AzureSpeechSTTProvider.ts#L38)
+Defined in: [packages/agentos/src/hearing/providers/AzureSpeechSTTProvider.ts:38](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/hearing/providers/AzureSpeechSTTProvider.ts#L38)
 
 Custom fetch implementation for dependency injection in tests.
 
@@ -71,7 +71,7 @@ globalThis.fetch
 
 > **key**: `string`
 
-Defined in: [packages/agentos/src/hearing/providers/AzureSpeechSTTProvider.ts:21](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/hearing/providers/AzureSpeechSTTProvider.ts#L21)
+Defined in: [packages/agentos/src/hearing/providers/AzureSpeechSTTProvider.ts:21](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/hearing/providers/AzureSpeechSTTProvider.ts#L21)
 
 Azure Cognitive Services subscription key.
 Sent as the `Ocp-Apim-Subscription-Key` header — this is Azure's
@@ -84,7 +84,7 @@ Obtain from the Azure portal under your Speech resource's "Keys and Endpoint".
 
 > **region**: `string`
 
-Defined in: [packages/agentos/src/hearing/providers/AzureSpeechSTTProvider.ts:32](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/hearing/providers/AzureSpeechSTTProvider.ts#L32)
+Defined in: [packages/agentos/src/hearing/providers/AzureSpeechSTTProvider.ts:32](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/hearing/providers/AzureSpeechSTTProvider.ts#L32)
 
 Azure region where the Speech resource is deployed, e.g. `'eastus'`,
 `'westeurope'`, `'southeastasia'`.

@@ -1,6 +1,6 @@
 # Class: InMemoryStorageAdapter
 
-Defined in: [packages/agentos/src/core/storage/InMemoryStorageAdapter.ts:66](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/storage/InMemoryStorageAdapter.ts#L66)
+Defined in: [packages/agentos/src/core/storage/InMemoryStorageAdapter.ts:66](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/storage/InMemoryStorageAdapter.ts#L66)
 
 In-memory storage adapter for AgentOS.
 
@@ -50,7 +50,7 @@ await storage.close();
 
 > **new InMemoryStorageAdapter**(): `InMemoryStorageAdapter`
 
-Defined in: [packages/agentos/src/core/storage/InMemoryStorageAdapter.ts:82](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/storage/InMemoryStorageAdapter.ts#L82)
+Defined in: [packages/agentos/src/core/storage/InMemoryStorageAdapter.ts:82](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/storage/InMemoryStorageAdapter.ts#L82)
 
 Creates a new in-memory storage adapter.
 
@@ -72,7 +72,7 @@ const storage = new InMemoryStorageAdapter();
 
 > **close**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/core/storage/InMemoryStorageAdapter.ts:104](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/storage/InMemoryStorageAdapter.ts#L104)
+Defined in: [packages/agentos/src/core/storage/InMemoryStorageAdapter.ts:104](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/storage/InMemoryStorageAdapter.ts#L104)
 
 Closes the storage adapter and clears all data.
 
@@ -92,7 +92,7 @@ Closes the storage adapter and clears all data.
 
 > **createConversation**(`conversation`): `Promise`\<[`IConversation`](../interfaces/IConversation.md)\>
 
-Defined in: [packages/agentos/src/core/storage/InMemoryStorageAdapter.ts:120](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/storage/InMemoryStorageAdapter.ts#L120)
+Defined in: [packages/agentos/src/core/storage/InMemoryStorageAdapter.ts:120](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/storage/InMemoryStorageAdapter.ts#L120)
 
 Creates a new conversation.
 
@@ -124,7 +124,7 @@ If conversation with same ID already exists
 
 > **deleteConversation**(`conversationId`): `Promise`\<`boolean`\>
 
-Defined in: [packages/agentos/src/core/storage/InMemoryStorageAdapter.ts:179](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/storage/InMemoryStorageAdapter.ts#L179)
+Defined in: [packages/agentos/src/core/storage/InMemoryStorageAdapter.ts:179](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/storage/InMemoryStorageAdapter.ts#L179)
 
 Deletes a conversation and all its messages.
 
@@ -152,7 +152,7 @@ True if deleted, false if not found
 
 > **deleteMessage**(`messageId`): `Promise`\<`boolean`\>
 
-Defined in: [packages/agentos/src/core/storage/InMemoryStorageAdapter.ts:322](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/storage/InMemoryStorageAdapter.ts#L322)
+Defined in: [packages/agentos/src/core/storage/InMemoryStorageAdapter.ts:322](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/storage/InMemoryStorageAdapter.ts#L322)
 
 Deletes a message.
 
@@ -180,7 +180,7 @@ True if deleted
 
 > **deleteMessagesForConversation**(`conversationId`): `Promise`\<`number`\>
 
-Defined in: [packages/agentos/src/core/storage/InMemoryStorageAdapter.ts:350](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/storage/InMemoryStorageAdapter.ts#L350)
+Defined in: [packages/agentos/src/core/storage/InMemoryStorageAdapter.ts:350](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/storage/InMemoryStorageAdapter.ts#L350)
 
 Deletes all messages in a conversation.
 
@@ -208,7 +208,7 @@ Number of messages deleted
 
 > **getConversation**(`conversationId`): `Promise`\<[`IConversation`](../interfaces/IConversation.md) \| `null`\>
 
-Defined in: [packages/agentos/src/core/storage/InMemoryStorageAdapter.ts:141](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/storage/InMemoryStorageAdapter.ts#L141)
+Defined in: [packages/agentos/src/core/storage/InMemoryStorageAdapter.ts:141](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/storage/InMemoryStorageAdapter.ts#L141)
 
 Retrieves a conversation by ID.
 
@@ -236,7 +236,7 @@ The conversation or null
 
 > **getConversationTokenUsage**(`conversationId`): `Promise`\<[`ITokenUsage`](../interfaces/ITokenUsage.md)\>
 
-Defined in: [packages/agentos/src/core/storage/InMemoryStorageAdapter.ts:386](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/storage/InMemoryStorageAdapter.ts#L386)
+Defined in: [packages/agentos/src/core/storage/InMemoryStorageAdapter.ts:386](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/storage/InMemoryStorageAdapter.ts#L386)
 
 Calculates total token usage for a conversation.
 
@@ -264,7 +264,7 @@ Aggregated token usage
 
 > **getMessage**(`messageId`): `Promise`\<[`IConversationMessage`](../interfaces/IConversationMessage.md) \| `null`\>
 
-Defined in: [packages/agentos/src/core/storage/InMemoryStorageAdapter.ts:267](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/storage/InMemoryStorageAdapter.ts#L267)
+Defined in: [packages/agentos/src/core/storage/InMemoryStorageAdapter.ts:267](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/storage/InMemoryStorageAdapter.ts#L267)
 
 Retrieves a message by ID.
 
@@ -292,7 +292,7 @@ The message or null
 
 > **getMessageCount**(`conversationId`): `Promise`\<`number`\>
 
-Defined in: [packages/agentos/src/core/storage/InMemoryStorageAdapter.ts:373](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/storage/InMemoryStorageAdapter.ts#L373)
+Defined in: [packages/agentos/src/core/storage/InMemoryStorageAdapter.ts:373](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/storage/InMemoryStorageAdapter.ts#L373)
 
 Counts messages in a conversation.
 
@@ -320,7 +320,7 @@ Message count
 
 > **getMessages**(`conversationId`, `options?`): `Promise`\<[`IConversationMessage`](../interfaces/IConversationMessage.md)[]\>
 
-Defined in: [packages/agentos/src/core/storage/InMemoryStorageAdapter.ts:281](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/storage/InMemoryStorageAdapter.ts#L281)
+Defined in: [packages/agentos/src/core/storage/InMemoryStorageAdapter.ts:281](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/storage/InMemoryStorageAdapter.ts#L281)
 
 Retrieves messages for a conversation with filtering.
 
@@ -354,7 +354,7 @@ Array of messages
 
 > **initialize**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/core/storage/InMemoryStorageAdapter.ts:93](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/storage/InMemoryStorageAdapter.ts#L93)
+Defined in: [packages/agentos/src/core/storage/InMemoryStorageAdapter.ts:93](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/storage/InMemoryStorageAdapter.ts#L93)
 
 Initializes the storage adapter.
 
@@ -374,7 +374,7 @@ For in-memory adapter, this just sets the initialized flag.
 
 > **listConversations**(`userId`, `options?`): `Promise`\<[`IConversation`](../interfaces/IConversation.md)[]\>
 
-Defined in: [packages/agentos/src/core/storage/InMemoryStorageAdapter.ts:206](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/storage/InMemoryStorageAdapter.ts#L206)
+Defined in: [packages/agentos/src/core/storage/InMemoryStorageAdapter.ts:206](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/storage/InMemoryStorageAdapter.ts#L206)
 
 Lists conversations for a user.
 
@@ -418,7 +418,7 @@ Array of conversations
 
 > **storeMessage**(`message`): `Promise`\<[`IConversationMessage`](../interfaces/IConversationMessage.md)\>
 
-Defined in: [packages/agentos/src/core/storage/InMemoryStorageAdapter.ts:238](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/storage/InMemoryStorageAdapter.ts#L238)
+Defined in: [packages/agentos/src/core/storage/InMemoryStorageAdapter.ts:238](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/storage/InMemoryStorageAdapter.ts#L238)
 
 Stores a message.
 
@@ -450,7 +450,7 @@ If conversation doesn't exist
 
 > **updateConversation**(`conversationId`, `updates`): `Promise`\<[`IConversation`](../interfaces/IConversation.md)\>
 
-Defined in: [packages/agentos/src/core/storage/InMemoryStorageAdapter.ts:156](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/storage/InMemoryStorageAdapter.ts#L156)
+Defined in: [packages/agentos/src/core/storage/InMemoryStorageAdapter.ts:156](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/storage/InMemoryStorageAdapter.ts#L156)
 
 Updates a conversation.
 

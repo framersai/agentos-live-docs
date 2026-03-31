@@ -1,6 +1,6 @@
 # Interface: CompiledStrategy
 
-Defined in: [packages/agentos/src/api/types.ts:1136](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/types.ts#L1136)
+Defined in: [packages/agentos/src/api/types.ts:1136](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/types.ts#L1136)
 
 **`Internal`**
 
@@ -12,7 +12,7 @@ Compiled strategy interface used internally by the agency orchestrator.
 
 > **execute**(`prompt`, `opts?`): `Promise`\<`unknown`\>
 
-Defined in: [packages/agentos/src/api/types.ts:1143](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/types.ts#L1143)
+Defined in: [packages/agentos/src/api/types.ts:1143](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/types.ts#L1143)
 
 Execute the compiled strategy and return the aggregated result.
 
@@ -40,7 +40,7 @@ Optional per-call overrides.
 
 > **stream**(`prompt`, `opts?`): [`CompiledStrategyStreamResult`](CompiledStrategyStreamResult.md)
 
-Defined in: [packages/agentos/src/api/types.ts:1152](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/types.ts#L1152)
+Defined in: [packages/agentos/src/api/types.ts:1152](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/types.ts#L1152)
 
 Stream the compiled strategy execution.
 

@@ -1,6 +1,6 @@
 # Interface: VectorDocument
 
-Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:104](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/vector-store/IVectorStore.ts#L104)
+Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:104](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/vector-store/IVectorStore.ts#L104)
 
 Represents a document to be stored or retrieved from a vector store.
 
@@ -18,7 +18,7 @@ VectorDocument
 
 > **embedding**: `number`[]
 
-Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:106](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/vector-store/IVectorStore.ts#L106)
+Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:106](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/vector-store/IVectorStore.ts#L106)
 
 The vector embedding of the document's content.
 
@@ -28,7 +28,7 @@ The vector embedding of the document's content.
 
 > **id**: `string`
 
-Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:105](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/vector-store/IVectorStore.ts#L105)
+Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:105](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/vector-store/IVectorStore.ts#L105)
 
 A unique identifier for the document.
 
@@ -38,7 +38,7 @@ A unique identifier for the document.
 
 > `optional` **metadata**: `Record`\<`string`, [`MetadataValue`](../type-aliases/MetadataValue.md)\>
 
-Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:107](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/vector-store/IVectorStore.ts#L107)
+Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:107](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/vector-store/IVectorStore.ts#L107)
 
 A flexible key-value store for document metadata.
 Values can be scalars or arrays of scalars. Used for filtering and providing context.
@@ -49,7 +49,7 @@ Values can be scalars or arrays of scalars. Used for filtering and providing con
 
 > `optional` **textContent**: `string`
 
-Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:108](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/vector-store/IVectorStore.ts#L108)
+Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:108](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/vector-store/IVectorStore.ts#L108)
 
 Optional: The raw text content of the document.
 Some use cases might store this alongside the embedding, while others might fetch it from a primary store using the ID.

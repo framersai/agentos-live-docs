@@ -1,6 +1,6 @@
 # Class: PersonalityMutationStore
 
-Defined in: [packages/agentos/src/emergent/PersonalityMutationStore.ts:135](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/emergent/PersonalityMutationStore.ts#L135)
+Defined in: [packages/agentos/src/emergent/PersonalityMutationStore.ts:135](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/emergent/PersonalityMutationStore.ts#L135)
 
 SQLite-backed persistence layer for personality mutations with decay.
 
@@ -37,7 +37,7 @@ const { decayed, pruned } = await store.decayAll(0.05);
 
 > **new PersonalityMutationStore**(`db`): `PersonalityMutationStore`
 
-Defined in: [packages/agentos/src/emergent/PersonalityMutationStore.ts:151](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/emergent/PersonalityMutationStore.ts#L151)
+Defined in: [packages/agentos/src/emergent/PersonalityMutationStore.ts:151](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/emergent/PersonalityMutationStore.ts#L151)
 
 Create a new PersonalityMutationStore.
 
@@ -60,7 +60,7 @@ A storage adapter implementing the [IStorageAdapter](../interfaces/EmergentRegis
 
 > **decayAll**(`rate`): `Promise`\<[`DecayResult`](../interfaces/DecayResult.md)\>
 
-Defined in: [packages/agentos/src/emergent/PersonalityMutationStore.ts:317](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/emergent/PersonalityMutationStore.ts#L317)
+Defined in: [packages/agentos/src/emergent/PersonalityMutationStore.ts:317](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/emergent/PersonalityMutationStore.ts#L317)
 
 Decay all active mutations by the given rate and prune expired ones.
 
@@ -93,7 +93,7 @@ A [DecayResult](../interfaces/DecayResult.md) with counts of decayed and pruned 
 
 > **getEffectiveDeltas**(`agentId`): `Promise`\<`Record`\<`string`, `number`\>\>
 
-Defined in: [packages/agentos/src/emergent/PersonalityMutationStore.ts:287](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/emergent/PersonalityMutationStore.ts#L287)
+Defined in: [packages/agentos/src/emergent/PersonalityMutationStore.ts:287](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/emergent/PersonalityMutationStore.ts#L287)
 
 Compute the effective (strength-weighted) delta for each trait.
 
@@ -121,7 +121,7 @@ A map of trait name to effective delta (sum of `delta * strength`).
 
 > **loadForAgent**(`agentId`): `Promise`\<[`PersonalityMutation`](../interfaces/PersonalityMutation.md)[]\>
 
-Defined in: [packages/agentos/src/emergent/PersonalityMutationStore.ts:252](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/emergent/PersonalityMutationStore.ts#L252)
+Defined in: [packages/agentos/src/emergent/PersonalityMutationStore.ts:252](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/emergent/PersonalityMutationStore.ts#L252)
 
 Load all active mutations for a given agent.
 
@@ -148,7 +148,7 @@ An array of [PersonalityMutation](../interfaces/PersonalityMutation.md) records.
 
 > **record**(`input`): `Promise`\<`string`\>
 
-Defined in: [packages/agentos/src/emergent/PersonalityMutationStore.ts:215](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/emergent/PersonalityMutationStore.ts#L215)
+Defined in: [packages/agentos/src/emergent/PersonalityMutationStore.ts:215](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/emergent/PersonalityMutationStore.ts#L215)
 
 Record a new personality mutation.
 

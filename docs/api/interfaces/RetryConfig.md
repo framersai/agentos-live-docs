@@ -1,6 +1,6 @@
 # Interface: RetryConfig
 
-Defined in: [packages/agentos/src/channels/adapters/BaseChannelAdapter.ts:35](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/adapters/BaseChannelAdapter.ts#L35)
+Defined in: [packages/agentos/src/channels/adapters/BaseChannelAdapter.ts:35](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/adapters/BaseChannelAdapter.ts#L35)
 
 Options governing connection retry behaviour.
 
@@ -10,7 +10,7 @@ Options governing connection retry behaviour.
 
 > **baseDelayMs**: `number`
 
-Defined in: [packages/agentos/src/channels/adapters/BaseChannelAdapter.ts:39](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/adapters/BaseChannelAdapter.ts#L39)
+Defined in: [packages/agentos/src/channels/adapters/BaseChannelAdapter.ts:39](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/adapters/BaseChannelAdapter.ts#L39)
 
 Initial delay in milliseconds before the first retry. Default: 1000.
 
@@ -20,7 +20,7 @@ Initial delay in milliseconds before the first retry. Default: 1000.
 
 > **jitterFactor**: `number`
 
-Defined in: [packages/agentos/src/channels/adapters/BaseChannelAdapter.ts:43](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/adapters/BaseChannelAdapter.ts#L43)
+Defined in: [packages/agentos/src/channels/adapters/BaseChannelAdapter.ts:43](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/adapters/BaseChannelAdapter.ts#L43)
 
 Jitter factor (0-1) applied to each delay. Default: 0.25.
 
@@ -30,7 +30,7 @@ Jitter factor (0-1) applied to each delay. Default: 0.25.
 
 > **maxDelayMs**: `number`
 
-Defined in: [packages/agentos/src/channels/adapters/BaseChannelAdapter.ts:41](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/adapters/BaseChannelAdapter.ts#L41)
+Defined in: [packages/agentos/src/channels/adapters/BaseChannelAdapter.ts:41](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/adapters/BaseChannelAdapter.ts#L41)
 
 Upper-bound delay in milliseconds. Default: 30_000.
 
@@ -40,6 +40,6 @@ Upper-bound delay in milliseconds. Default: 30_000.
 
 > **maxRetries**: `number`
 
-Defined in: [packages/agentos/src/channels/adapters/BaseChannelAdapter.ts:37](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/adapters/BaseChannelAdapter.ts#L37)
+Defined in: [packages/agentos/src/channels/adapters/BaseChannelAdapter.ts:37](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/adapters/BaseChannelAdapter.ts#L37)
 
 Maximum number of retry attempts before giving up. Default: 5.

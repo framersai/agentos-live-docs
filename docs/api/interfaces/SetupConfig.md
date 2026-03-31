@@ -1,6 +1,6 @@
 # Interface: SetupConfig
 
-Defined in: [packages/agentos/src/rag/setup/types.ts:28](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/setup/types.ts#L28)
+Defined in: [packages/agentos/src/rag/setup/types.ts:28](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/rag/setup/types.ts#L28)
 
 Configuration for auto-setup operations.
 
@@ -10,7 +10,7 @@ Configuration for auto-setup operations.
 
 > `optional` **apiKey**: `string`
 
-Defined in: [packages/agentos/src/rag/setup/types.ts:36](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/setup/types.ts#L36)
+Defined in: [packages/agentos/src/rag/setup/types.ts:36](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/rag/setup/types.ts#L36)
 
 API key for cloud instances.
 
@@ -20,7 +20,7 @@ API key for cloud instances.
 
 > `optional` **imageTag**: `string`
 
-Defined in: [packages/agentos/src/rag/setup/types.ts:32](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/setup/types.ts#L32)
+Defined in: [packages/agentos/src/rag/setup/types.ts:32](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/rag/setup/types.ts#L32)
 
 Custom Docker image tag (e.g. 'v1.8.0').
 
@@ -30,7 +30,7 @@ Custom Docker image tag (e.g. 'v1.8.0').
 
 > `optional` **port**: `number`
 
-Defined in: [packages/agentos/src/rag/setup/types.ts:30](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/setup/types.ts#L30)
+Defined in: [packages/agentos/src/rag/setup/types.ts:30](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/rag/setup/types.ts#L30)
 
 Custom port override.
 
@@ -40,6 +40,6 @@ Custom port override.
 
 > `optional` **url**: `string`
 
-Defined in: [packages/agentos/src/rag/setup/types.ts:34](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/setup/types.ts#L34)
+Defined in: [packages/agentos/src/rag/setup/types.ts:34](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/rag/setup/types.ts#L34)
 
 Skip Docker and connect to this URL directly.

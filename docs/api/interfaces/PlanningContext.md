@@ -1,6 +1,6 @@
 # Interface: PlanningContext
 
-Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:210](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/planner/IPlanningEngine.ts#L210)
+Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:210](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/planner/IPlanningEngine.ts#L210)
 
 Context provided to the planning engine.
 
@@ -10,7 +10,7 @@ Context provided to the planning engine.
 
 > `optional` **capabilities**: `string`[]
 
-Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:222](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/planner/IPlanningEngine.ts#L222)
+Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:222](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/planner/IPlanningEngine.ts#L222)
 
 Available resources/capabilities
 
@@ -20,7 +20,7 @@ Available resources/capabilities
 
 > `optional` **conversationHistory**: `string`
 
-Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:212](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/planner/IPlanningEngine.ts#L212)
+Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:212](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/planner/IPlanningEngine.ts#L212)
 
 Current conversation/session context
 
@@ -30,7 +30,7 @@ Current conversation/session context
 
 > `optional` **domainContext**: `string`
 
-Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:220](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/planner/IPlanningEngine.ts#L220)
+Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:220](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/planner/IPlanningEngine.ts#L220)
 
 Domain-specific knowledge
 
@@ -40,7 +40,7 @@ Domain-specific knowledge
 
 > `optional` **failedApproaches**: `string`[]
 
-Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:218](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/planner/IPlanningEngine.ts#L218)
+Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:218](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/planner/IPlanningEngine.ts#L218)
 
 Previously failed approaches
 
@@ -50,7 +50,7 @@ Previously failed approaches
 
 > `optional` **retrievedContext**: `string`
 
-Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:214](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/planner/IPlanningEngine.ts#L214)
+Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:214](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/planner/IPlanningEngine.ts#L214)
 
 Retrieved relevant context
 
@@ -60,6 +60,6 @@ Retrieved relevant context
 
 > `optional` **userConstraints**: `string`[]
 
-Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:216](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/planner/IPlanningEngine.ts#L216)
+Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:216](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/planner/IPlanningEngine.ts#L216)
 
 User preferences/constraints

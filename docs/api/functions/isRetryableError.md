@@ -2,7 +2,7 @@
 
 > **isRetryableError**(`error`): `boolean`
 
-Defined in: [packages/agentos/src/api/generateText.ts:442](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/generateText.ts#L442)
+Defined in: [packages/agentos/src/api/generateText.ts:527](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/generateText.ts#L527)
 
 **`Internal`**
 

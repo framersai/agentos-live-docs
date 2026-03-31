@@ -1,6 +1,6 @@
 # Interface: MarketplaceSearchOptions
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:221](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/marketplace/store/IMarketplace.ts#L221)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:221](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/marketplace/store/IMarketplace.ts#L221)
 
 Search options for marketplace items
 
@@ -10,7 +10,7 @@ Search options for marketplace items
 
 > `optional` **categories**: `string`[]
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:227](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/marketplace/store/IMarketplace.ts#L227)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:227](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/marketplace/store/IMarketplace.ts#L227)
 
 Filter by categories
 
@@ -20,7 +20,7 @@ Filter by categories
 
 > `optional` **includeDeprecated**: `boolean`
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:247](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/marketplace/store/IMarketplace.ts#L247)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:247](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/marketplace/store/IMarketplace.ts#L247)
 
 Include deprecated items
 
@@ -30,7 +30,7 @@ Include deprecated items
 
 > `optional` **licenses**: `string`[]
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:237](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/marketplace/store/IMarketplace.ts#L237)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:237](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/marketplace/store/IMarketplace.ts#L237)
 
 Filter by license
 
@@ -40,7 +40,7 @@ Filter by license
 
 > `optional` **limit**: `number`
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:245](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/marketplace/store/IMarketplace.ts#L245)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:245](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/marketplace/store/IMarketplace.ts#L245)
 
 Results per page
 
@@ -50,7 +50,7 @@ Results per page
 
 > `optional` **minRating**: `number`
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:235](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/marketplace/store/IMarketplace.ts#L235)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:235](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/marketplace/store/IMarketplace.ts#L235)
 
 Minimum rating
 
@@ -60,7 +60,7 @@ Minimum rating
 
 > `optional` **offset**: `number`
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:243](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/marketplace/store/IMarketplace.ts#L243)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:243](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/marketplace/store/IMarketplace.ts#L243)
 
 Pagination offset
 
@@ -70,7 +70,7 @@ Pagination offset
 
 > `optional` **pricingModel**: (`"free"` \| `"one_time"` \| `"subscription"` \| `"usage_based"` \| `"freemium"`)[]
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:233](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/marketplace/store/IMarketplace.ts#L233)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:233](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/marketplace/store/IMarketplace.ts#L233)
 
 Filter by pricing model
 
@@ -80,7 +80,7 @@ Filter by pricing model
 
 > `optional` **publisherId**: `string`
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:231](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/marketplace/store/IMarketplace.ts#L231)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:231](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/marketplace/store/IMarketplace.ts#L231)
 
 Filter by publisher
 
@@ -90,7 +90,7 @@ Filter by publisher
 
 > `optional` **query**: `string`
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:223](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/marketplace/store/IMarketplace.ts#L223)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:223](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/marketplace/store/IMarketplace.ts#L223)
 
 Search query text
 
@@ -100,7 +100,7 @@ Search query text
 
 > `optional` **sortBy**: `"name"` \| `"relevance"` \| `"downloads"` \| `"rating"` \| `"newest"` \| `"updated"`
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:239](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/marketplace/store/IMarketplace.ts#L239)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:239](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/marketplace/store/IMarketplace.ts#L239)
 
 Sort by
 
@@ -110,7 +110,7 @@ Sort by
 
 > `optional` **sortDirection**: `"asc"` \| `"desc"`
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:241](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/marketplace/store/IMarketplace.ts#L241)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:241](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/marketplace/store/IMarketplace.ts#L241)
 
 Sort direction
 
@@ -120,7 +120,7 @@ Sort direction
 
 > `optional` **tags**: `string`[]
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:229](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/marketplace/store/IMarketplace.ts#L229)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:229](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/marketplace/store/IMarketplace.ts#L229)
 
 Filter by tags
 
@@ -130,6 +130,6 @@ Filter by tags
 
 > `optional` **types**: [`MarketplaceItemType`](../type-aliases/MarketplaceItemType.md)[]
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:225](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/marketplace/store/IMarketplace.ts#L225)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:225](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/marketplace/store/IMarketplace.ts#L225)
 
 Filter by item types

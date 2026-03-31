@@ -1,6 +1,6 @@
 # Interface: HydeConfig
 
-Defined in: [packages/agentos/src/rag/HydeRetriever.ts:24](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/HydeRetriever.ts#L24)
+Defined in: [packages/agentos/src/rag/HydeRetriever.ts:24](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/rag/HydeRetriever.ts#L24)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/rag/HydeRetriever.ts:24](https://github.com/fr
 
 > `optional` **adaptiveThreshold**: `boolean`
 
-Defined in: [packages/agentos/src/rag/HydeRetriever.ts:34](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/HydeRetriever.ts#L34)
+Defined in: [packages/agentos/src/rag/HydeRetriever.ts:34](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/rag/HydeRetriever.ts#L34)
 
 Use adaptive thresholding (step down when no results). Default: true.
 
@@ -18,7 +18,7 @@ Use adaptive thresholding (step down when no results). Default: true.
 
 > `optional` **enabled**: `boolean`
 
-Defined in: [packages/agentos/src/rag/HydeRetriever.ts:26](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/HydeRetriever.ts#L26)
+Defined in: [packages/agentos/src/rag/HydeRetriever.ts:26](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/rag/HydeRetriever.ts#L26)
 
 Enable HyDE retrieval. Default: false.
 
@@ -28,7 +28,7 @@ Enable HyDE retrieval. Default: false.
 
 > `optional` **fullAnswerGranularity**: `boolean`
 
-Defined in: [packages/agentos/src/rag/HydeRetriever.ts:40](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/HydeRetriever.ts#L40)
+Defined in: [packages/agentos/src/rag/HydeRetriever.ts:40](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/rag/HydeRetriever.ts#L40)
 
 Use full-answer granularity (recommended by research). Default: true.
 
@@ -38,7 +38,7 @@ Use full-answer granularity (recommended by research). Default: true.
 
 > `optional` **hypothesisCount**: `number`
 
-Defined in: [packages/agentos/src/rag/HydeRetriever.ts:55](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/HydeRetriever.ts#L55)
+Defined in: [packages/agentos/src/rag/HydeRetriever.ts:55](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/rag/HydeRetriever.ts#L55)
 
 Number of diverse hypothetical documents to generate per query.
 
@@ -59,7 +59,7 @@ Default: 3.
 
 > `optional` **hypothesisSystemPrompt**: `string`
 
-Defined in: [packages/agentos/src/rag/HydeRetriever.ts:38](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/HydeRetriever.ts#L38)
+Defined in: [packages/agentos/src/rag/HydeRetriever.ts:38](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/rag/HydeRetriever.ts#L38)
 
 Custom system prompt for hypothesis generation.
 
@@ -69,7 +69,7 @@ Custom system prompt for hypothesis generation.
 
 > `optional` **initialThreshold**: `number`
 
-Defined in: [packages/agentos/src/rag/HydeRetriever.ts:28](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/HydeRetriever.ts#L28)
+Defined in: [packages/agentos/src/rag/HydeRetriever.ts:28](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/rag/HydeRetriever.ts#L28)
 
 Initial similarity threshold. Default: 0.7.
 
@@ -79,7 +79,7 @@ Initial similarity threshold. Default: 0.7.
 
 > `optional` **maxHypothesisTokens**: `number`
 
-Defined in: [packages/agentos/src/rag/HydeRetriever.ts:36](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/HydeRetriever.ts#L36)
+Defined in: [packages/agentos/src/rag/HydeRetriever.ts:36](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/rag/HydeRetriever.ts#L36)
 
 Max tokens for hypothesis generation. Default: 200.
 
@@ -89,7 +89,7 @@ Max tokens for hypothesis generation. Default: 200.
 
 > `optional` **minThreshold**: `number`
 
-Defined in: [packages/agentos/src/rag/HydeRetriever.ts:30](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/HydeRetriever.ts#L30)
+Defined in: [packages/agentos/src/rag/HydeRetriever.ts:30](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/rag/HydeRetriever.ts#L30)
 
 Minimum threshold to step down to. Default: 0.3.
 
@@ -99,6 +99,6 @@ Minimum threshold to step down to. Default: 0.3.
 
 > `optional` **thresholdStep**: `number`
 
-Defined in: [packages/agentos/src/rag/HydeRetriever.ts:32](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/HydeRetriever.ts#L32)
+Defined in: [packages/agentos/src/rag/HydeRetriever.ts:32](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/rag/HydeRetriever.ts#L32)
 
 Step size for adaptive thresholding. Default: 0.1.

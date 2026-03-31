@@ -2,7 +2,7 @@
 
 > **generateText**(`opts`): `Promise`\<[`GenerateTextResult`](../interfaces/GenerateTextResult.md)\>
 
-Defined in: [packages/agentos/src/api/generateText.ts:542](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/generateText.ts#L542)
+Defined in: [packages/agentos/src/api/generateText.ts:627](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/generateText.ts#L627)
 
 Stateless text generation with optional multi-step tool calling.
 

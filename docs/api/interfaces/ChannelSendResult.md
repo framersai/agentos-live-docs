@@ -1,6 +1,6 @@
 # Interface: ChannelSendResult
 
-Defined in: [packages/agentos/src/channels/types.ts:229](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/types.ts#L229)
+Defined in: [packages/agentos/src/channels/types.ts:229](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/types.ts#L229)
 
 Send result from an adapter.
 
@@ -10,7 +10,7 @@ Send result from an adapter.
 
 > **messageId**: `string`
 
-Defined in: [packages/agentos/src/channels/types.ts:231](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/types.ts#L231)
+Defined in: [packages/agentos/src/channels/types.ts:231](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/types.ts#L231)
 
 Platform-assigned message ID for the sent message.
 
@@ -20,6 +20,6 @@ Platform-assigned message ID for the sent message.
 
 > `optional` **timestamp**: `string`
 
-Defined in: [packages/agentos/src/channels/types.ts:233](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/types.ts#L233)
+Defined in: [packages/agentos/src/channels/types.ts:233](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/types.ts#L233)
 
 Timestamp of the sent message.

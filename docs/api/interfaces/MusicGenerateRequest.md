@@ -1,6 +1,6 @@
 # Interface: MusicGenerateRequest
 
-Defined in: [packages/agentos/src/media/audio/types.ts:80](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/media/audio/types.ts#L80)
+Defined in: [packages/agentos/src/media/audio/types.ts:80](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/audio/types.ts#L80)
 
 Request payload for music generation from a text prompt.
 
@@ -23,7 +23,7 @@ const request: MusicGenerateRequest = {
 
 > `optional` **durationSec**: `number`
 
-Defined in: [packages/agentos/src/media/audio/types.ts:102](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/media/audio/types.ts#L102)
+Defined in: [packages/agentos/src/media/audio/types.ts:102](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/audio/types.ts#L102)
 
 Desired output duration in seconds.
 
@@ -36,7 +36,7 @@ Exceeding the limit may result in truncation or an error.
 
 > `optional` **modelId**: `string`
 
-Defined in: [packages/agentos/src/media/audio/types.ts:94](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/media/audio/types.ts#L94)
+Defined in: [packages/agentos/src/media/audio/types.ts:94](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/audio/types.ts#L94)
 
 Model identifier to use for generation.
 
@@ -48,7 +48,7 @@ When omitted the provider falls back to its [IAudioGenerator.defaultModelId](IAu
 
 > `optional` **n**: `number`
 
-Defined in: [packages/agentos/src/media/audio/types.ts:131](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/media/audio/types.ts#L131)
+Defined in: [packages/agentos/src/media/audio/types.ts:131](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/audio/types.ts#L131)
 
 Number of audio clips to generate.
 
@@ -64,7 +64,7 @@ Number of audio clips to generate.
 
 > `optional` **negativePrompt**: `string`
 
-Defined in: [packages/agentos/src/media/audio/types.ts:110](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/media/audio/types.ts#L110)
+Defined in: [packages/agentos/src/media/audio/types.ts:110](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/audio/types.ts#L110)
 
 Negative prompt describing musical elements to avoid.
 
@@ -77,7 +77,7 @@ silently ignored by the adapter.
 
 > `optional` **outputFormat**: [`AudioOutputFormat`](../type-aliases/AudioOutputFormat.md)
 
-Defined in: [packages/agentos/src/media/audio/types.ts:117](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/media/audio/types.ts#L117)
+Defined in: [packages/agentos/src/media/audio/types.ts:117](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/audio/types.ts#L117)
 
 Output audio format.
 
@@ -93,7 +93,7 @@ Output audio format.
 
 > **prompt**: `string`
 
-Defined in: [packages/agentos/src/media/audio/types.ts:87](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/media/audio/types.ts#L87)
+Defined in: [packages/agentos/src/media/audio/types.ts:87](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/audio/types.ts#L87)
 
 Text prompt describing the desired musical composition.
 
@@ -106,7 +106,7 @@ Include genre, mood, instrumentation, and tempo for best results.
 
 > `optional` **providerOptions**: `Record`\<`string`, `unknown`\>
 
-Defined in: [packages/agentos/src/media/audio/types.ts:137](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/media/audio/types.ts#L137)
+Defined in: [packages/agentos/src/media/audio/types.ts:137](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/audio/types.ts#L137)
 
 Arbitrary provider-specific options.
 
@@ -116,7 +116,7 @@ Arbitrary provider-specific options.
 
 > `optional` **seed**: `number`
 
-Defined in: [packages/agentos/src/media/audio/types.ts:124](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/media/audio/types.ts#L124)
+Defined in: [packages/agentos/src/media/audio/types.ts:124](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/audio/types.ts#L124)
 
 Seed for reproducible output.
 
@@ -128,6 +128,6 @@ Not all providers honour seeds — check provider documentation.
 
 > `optional` **userId**: `string`
 
-Defined in: [packages/agentos/src/media/audio/types.ts:134](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/media/audio/types.ts#L134)
+Defined in: [packages/agentos/src/media/audio/types.ts:134](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/audio/types.ts#L134)
 
 Identifier of the requesting user (for billing / rate limiting).

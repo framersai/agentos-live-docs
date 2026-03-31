@@ -1,6 +1,6 @@
 # Class: AIModelProviderManager
 
-Defined in: [packages/agentos/src/core/llm/providers/AIModelProviderManager.ts:58](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/llm/providers/AIModelProviderManager.ts#L58)
+Defined in: [packages/agentos/src/core/llm/providers/AIModelProviderManager.ts:58](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/llm/providers/AIModelProviderManager.ts#L58)
 
 ## Description
 
@@ -12,7 +12,7 @@ Manages and provides access to various configured AI model provider instances (`
 
 > **new AIModelProviderManager**(): `AIModelProviderManager`
 
-Defined in: [packages/agentos/src/core/llm/providers/AIModelProviderManager.ts:65](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/llm/providers/AIModelProviderManager.ts#L65)
+Defined in: [packages/agentos/src/core/llm/providers/AIModelProviderManager.ts:65](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/llm/providers/AIModelProviderManager.ts#L65)
 
 #### Returns
 
@@ -24,7 +24,7 @@ Defined in: [packages/agentos/src/core/llm/providers/AIModelProviderManager.ts:6
 
 > **isInitialized**: `boolean` = `false`
 
-Defined in: [packages/agentos/src/core/llm/providers/AIModelProviderManager.ts:63](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/llm/providers/AIModelProviderManager.ts#L63)
+Defined in: [packages/agentos/src/core/llm/providers/AIModelProviderManager.ts:63](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/llm/providers/AIModelProviderManager.ts#L63)
 
 ## Methods
 
@@ -32,7 +32,7 @@ Defined in: [packages/agentos/src/core/llm/providers/AIModelProviderManager.ts:6
 
 > **checkOverallHealth**(): `Promise`\<\{ `isOverallHealthy`: `boolean`; `providerDetails`: `object`[]; \}\>
 
-Defined in: [packages/agentos/src/core/llm/providers/AIModelProviderManager.ts:301](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/llm/providers/AIModelProviderManager.ts#L301)
+Defined in: [packages/agentos/src/core/llm/providers/AIModelProviderManager.ts:301](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/llm/providers/AIModelProviderManager.ts#L301)
 
 #### Returns
 
@@ -44,7 +44,7 @@ Defined in: [packages/agentos/src/core/llm/providers/AIModelProviderManager.ts:3
 
 > **getDefaultProvider**(): `IProvider` \| `undefined`
 
-Defined in: [packages/agentos/src/core/llm/providers/AIModelProviderManager.ts:210](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/llm/providers/AIModelProviderManager.ts#L210)
+Defined in: [packages/agentos/src/core/llm/providers/AIModelProviderManager.ts:210](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/llm/providers/AIModelProviderManager.ts#L210)
 
 #### Returns
 
@@ -56,7 +56,7 @@ Defined in: [packages/agentos/src/core/llm/providers/AIModelProviderManager.ts:2
 
 > **getModelInfo**(`modelId`, `providerId?`): `Promise`\<`ModelInfo` \| `undefined`\>
 
-Defined in: [packages/agentos/src/core/llm/providers/AIModelProviderManager.ts:278](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/llm/providers/AIModelProviderManager.ts#L278)
+Defined in: [packages/agentos/src/core/llm/providers/AIModelProviderManager.ts:278](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/llm/providers/AIModelProviderManager.ts#L278)
 
 #### Parameters
 
@@ -78,7 +78,7 @@ Defined in: [packages/agentos/src/core/llm/providers/AIModelProviderManager.ts:2
 
 > **getProvider**(`providerId`): `IProvider` \| `undefined`
 
-Defined in: [packages/agentos/src/core/llm/providers/AIModelProviderManager.ts:204](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/llm/providers/AIModelProviderManager.ts#L204)
+Defined in: [packages/agentos/src/core/llm/providers/AIModelProviderManager.ts:204](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/llm/providers/AIModelProviderManager.ts#L204)
 
 #### Parameters
 
@@ -96,7 +96,7 @@ Defined in: [packages/agentos/src/core/llm/providers/AIModelProviderManager.ts:2
 
 > **getProviderForModel**(`modelId`): `IProvider` \| `undefined`
 
-Defined in: [packages/agentos/src/core/llm/providers/AIModelProviderManager.ts:215](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/llm/providers/AIModelProviderManager.ts#L215)
+Defined in: [packages/agentos/src/core/llm/providers/AIModelProviderManager.ts:215](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/llm/providers/AIModelProviderManager.ts#L215)
 
 #### Parameters
 
@@ -114,7 +114,7 @@ Defined in: [packages/agentos/src/core/llm/providers/AIModelProviderManager.ts:2
 
 > **initialize**(`config`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/core/llm/providers/AIModelProviderManager.ts:84](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/llm/providers/AIModelProviderManager.ts#L84)
+Defined in: [packages/agentos/src/core/llm/providers/AIModelProviderManager.ts:84](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/llm/providers/AIModelProviderManager.ts#L84)
 
 #### Parameters
 
@@ -132,7 +132,7 @@ Defined in: [packages/agentos/src/core/llm/providers/AIModelProviderManager.ts:8
 
 > **listAllAvailableModels**(): `Promise`\<`ModelInfo`[]\>
 
-Defined in: [packages/agentos/src/core/llm/providers/AIModelProviderManager.ts:239](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/llm/providers/AIModelProviderManager.ts#L239)
+Defined in: [packages/agentos/src/core/llm/providers/AIModelProviderManager.ts:239](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/llm/providers/AIModelProviderManager.ts#L239)
 
 #### Returns
 
@@ -144,7 +144,7 @@ Defined in: [packages/agentos/src/core/llm/providers/AIModelProviderManager.ts:2
 
 > **shutdown**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/core/llm/providers/AIModelProviderManager.ts:333](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/llm/providers/AIModelProviderManager.ts#L333)
+Defined in: [packages/agentos/src/core/llm/providers/AIModelProviderManager.ts:333](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/llm/providers/AIModelProviderManager.ts#L333)
 
 #### Returns
 

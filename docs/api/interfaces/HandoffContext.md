@@ -1,6 +1,6 @@
 # Interface: HandoffContext
 
-Defined in: [packages/agentos/src/agents/agency/IAgentCommunicationBus.ts:141](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/agents/agency/IAgentCommunicationBus.ts#L141)
+Defined in: [packages/agentos/src/agents/agency/IAgentCommunicationBus.ts:141](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/agents/agency/IAgentCommunicationBus.ts#L141)
 
 Context for task handoff between agents.
 
@@ -10,7 +10,7 @@ Context for task handoff between agents.
 
 > **completedWork**: `string`[]
 
-Defined in: [packages/agentos/src/agents/agency/IAgentCommunicationBus.ts:149](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/agents/agency/IAgentCommunicationBus.ts#L149)
+Defined in: [packages/agentos/src/agents/agency/IAgentCommunicationBus.ts:149](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/agents/agency/IAgentCommunicationBus.ts#L149)
 
 Work completed so far
 
@@ -20,7 +20,7 @@ Work completed so far
 
 > **context**: `Record`\<`string`, `unknown`\>
 
-Defined in: [packages/agentos/src/agents/agency/IAgentCommunicationBus.ts:153](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/agents/agency/IAgentCommunicationBus.ts#L153)
+Defined in: [packages/agentos/src/agents/agency/IAgentCommunicationBus.ts:153](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/agents/agency/IAgentCommunicationBus.ts#L153)
 
 Relevant context/data
 
@@ -30,7 +30,7 @@ Relevant context/data
 
 > `optional` **deadline**: `Date`
 
-Defined in: [packages/agentos/src/agents/agency/IAgentCommunicationBus.ts:159](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/agents/agency/IAgentCommunicationBus.ts#L159)
+Defined in: [packages/agentos/src/agents/agency/IAgentCommunicationBus.ts:159](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/agents/agency/IAgentCommunicationBus.ts#L159)
 
 Deadline if any
 
@@ -40,7 +40,7 @@ Deadline if any
 
 > `optional` **instructions**: `string`
 
-Defined in: [packages/agentos/src/agents/agency/IAgentCommunicationBus.ts:157](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/agents/agency/IAgentCommunicationBus.ts#L157)
+Defined in: [packages/agentos/src/agents/agency/IAgentCommunicationBus.ts:157](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/agents/agency/IAgentCommunicationBus.ts#L157)
 
 Instructions for receiving agent
 
@@ -50,7 +50,7 @@ Instructions for receiving agent
 
 > **progress**: `number`
 
-Defined in: [packages/agentos/src/agents/agency/IAgentCommunicationBus.ts:147](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/agents/agency/IAgentCommunicationBus.ts#L147)
+Defined in: [packages/agentos/src/agents/agency/IAgentCommunicationBus.ts:147](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/agents/agency/IAgentCommunicationBus.ts#L147)
 
 Current progress (0-1)
 
@@ -60,7 +60,7 @@ Current progress (0-1)
 
 > **reason**: `"escalation"` \| `"timeout"` \| `"completion"` \| `"specialization"` \| `"capacity"`
 
-Defined in: [packages/agentos/src/agents/agency/IAgentCommunicationBus.ts:155](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/agents/agency/IAgentCommunicationBus.ts#L155)
+Defined in: [packages/agentos/src/agents/agency/IAgentCommunicationBus.ts:155](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/agents/agency/IAgentCommunicationBus.ts#L155)
 
 Reason for handoff
 
@@ -70,7 +70,7 @@ Reason for handoff
 
 > **remainingWork**: `string`[]
 
-Defined in: [packages/agentos/src/agents/agency/IAgentCommunicationBus.ts:151](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/agents/agency/IAgentCommunicationBus.ts#L151)
+Defined in: [packages/agentos/src/agents/agency/IAgentCommunicationBus.ts:151](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/agents/agency/IAgentCommunicationBus.ts#L151)
 
 Remaining work items
 
@@ -80,7 +80,7 @@ Remaining work items
 
 > **taskDescription**: `string`
 
-Defined in: [packages/agentos/src/agents/agency/IAgentCommunicationBus.ts:145](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/agents/agency/IAgentCommunicationBus.ts#L145)
+Defined in: [packages/agentos/src/agents/agency/IAgentCommunicationBus.ts:145](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/agents/agency/IAgentCommunicationBus.ts#L145)
 
 Task description
 
@@ -90,6 +90,6 @@ Task description
 
 > **taskId**: `string`
 
-Defined in: [packages/agentos/src/agents/agency/IAgentCommunicationBus.ts:143](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/agents/agency/IAgentCommunicationBus.ts#L143)
+Defined in: [packages/agentos/src/agents/agency/IAgentCommunicationBus.ts:143](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/agents/agency/IAgentCommunicationBus.ts#L143)
 
 Task being handed off

@@ -1,6 +1,6 @@
 # Interface: AgentKeySource
 
-Defined in: [packages/agentos/src/provenance/types.ts:42](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/types.ts#L42)
+Defined in: [packages/agentos/src/provenance/types.ts:42](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/provenance/types.ts#L42)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/provenance/types.ts:42](https://github.com/fra
 
 > `optional` **keyStorePath**: `string`
 
-Defined in: [packages/agentos/src/provenance/types.ts:50](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/types.ts#L50)
+Defined in: [packages/agentos/src/provenance/types.ts:50](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/provenance/types.ts#L50)
 
 Optional filesystem path for persisting generated keys.
 
@@ -18,7 +18,7 @@ Optional filesystem path for persisting generated keys.
 
 > `optional` **privateKeyBase64**: `string`
 
-Defined in: [packages/agentos/src/provenance/types.ts:46](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/types.ts#L46)
+Defined in: [packages/agentos/src/provenance/types.ts:46](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/provenance/types.ts#L46)
 
 For 'import': base64-encoded Ed25519 private key.
 
@@ -28,7 +28,7 @@ For 'import': base64-encoded Ed25519 private key.
 
 > `optional` **publicKeyBase64**: `string`
 
-Defined in: [packages/agentos/src/provenance/types.ts:48](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/types.ts#L48)
+Defined in: [packages/agentos/src/provenance/types.ts:48](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/provenance/types.ts#L48)
 
 For 'import': base64-encoded Ed25519 public key.
 
@@ -38,6 +38,6 @@ For 'import': base64-encoded Ed25519 public key.
 
 > **type**: `"generate"` \| `"import"`
 
-Defined in: [packages/agentos/src/provenance/types.ts:44](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/types.ts#L44)
+Defined in: [packages/agentos/src/provenance/types.ts:44](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/provenance/types.ts#L44)
 
 'generate' creates a new keypair; 'import' uses provided keys.

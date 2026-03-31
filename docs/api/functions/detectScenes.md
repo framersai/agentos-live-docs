@@ -2,7 +2,7 @@
 
 > **detectScenes**(`opts`): `AsyncGenerator`\<`SceneBoundary`\>
 
-Defined in: [packages/agentos/src/api/detectScenes.ts:115](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/detectScenes.ts#L115)
+Defined in: [packages/agentos/src/api/detectScenes.ts:115](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/detectScenes.ts#L115)
 
 Detects scene boundaries in a stream of video frames.
 

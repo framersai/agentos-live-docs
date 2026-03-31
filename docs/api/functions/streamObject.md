@@ -2,7 +2,7 @@
 
 > **streamObject**\<`T`\>(`opts`): [`StreamObjectResult`](../interfaces/StreamObjectResult.md)\<`output`\<`T`\>\>
 
-Defined in: [packages/agentos/src/api/streamObject.ts:344](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/streamObject.ts#L344)
+Defined in: [packages/agentos/src/api/streamObject.ts:344](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/streamObject.ts#L344)
 
 Streams a structured object by incrementally parsing JSON as the LLM
 produces tokens, then validates the final result against a Zod schema.

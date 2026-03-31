@@ -2,7 +2,7 @@
 
 > **validateAgentExport**(`config`): `object`
 
-Defined in: [packages/agentos/src/api/agentExport.ts:381](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/agentExport.ts#L381)
+Defined in: [packages/agentos/src/api/agentExport.ts:205](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/agentExport.ts#L205)
 
 Validates an export config object without importing it.
 

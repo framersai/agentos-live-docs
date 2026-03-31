@@ -1,6 +1,6 @@
 # Interface: QueryRouterResult
 
-Defined in: [packages/agentos/src/query-router/types.ts:267](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/query-router/types.ts#L267)
+Defined in: [packages/agentos/src/query-router/types.ts:267](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/query-router/types.ts#L267)
 
 Final result returned by the QueryRouter after classification, retrieval,
 and answer generation.
@@ -15,7 +15,7 @@ the fallback names that were activated during routing.
 
 > **answer**: `string`
 
-Defined in: [packages/agentos/src/query-router/types.ts:269](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/query-router/types.ts#L269)
+Defined in: [packages/agentos/src/query-router/types.ts:269](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/query-router/types.ts#L269)
 
 The generated answer text, grounded in retrieved sources.
 
@@ -25,7 +25,7 @@ The generated answer text, grounded in retrieved sources.
 
 > **classification**: [`ClassificationResult`](ClassificationResult.md)
 
-Defined in: [packages/agentos/src/query-router/types.ts:272](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/query-router/types.ts#L272)
+Defined in: [packages/agentos/src/query-router/types.ts:272](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/query-router/types.ts#L272)
 
 The classification result that determined routing behaviour.
 
@@ -35,7 +35,7 @@ The classification result that determined routing behaviour.
 
 > **durationMs**: `number`
 
-Defined in: [packages/agentos/src/query-router/types.ts:284](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/query-router/types.ts#L284)
+Defined in: [packages/agentos/src/query-router/types.ts:284](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/query-router/types.ts#L284)
 
 Total wall-clock duration of the entire query pipeline in milliseconds.
 
@@ -45,7 +45,7 @@ Total wall-clock duration of the entire query pipeline in milliseconds.
 
 > **fallbacksUsed**: `string`[]
 
-Defined in: [packages/agentos/src/query-router/types.ts:297](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/query-router/types.ts#L297)
+Defined in: [packages/agentos/src/query-router/types.ts:297](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/query-router/types.ts#L297)
 
 Names of fallback strategies that were activated during this query.
 Empty array if no fallbacks were needed.
@@ -62,7 +62,7 @@ Empty array if no fallbacks were needed.
 
 > `optional` **grounding**: [`VerifiedResponse`](VerifiedResponse.md)
 
-Defined in: [packages/agentos/src/query-router/types.ts:303](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/query-router/types.ts#L303)
+Defined in: [packages/agentos/src/query-router/types.ts:303](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/query-router/types.ts#L303)
 
 Citation verification results. Populated when deep research runs
 or when `verifyCitations` is explicitly requested in config or query options.
@@ -73,7 +73,7 @@ or when `verifyCitations` is explicitly requested in config or query options.
 
 > `optional` **recommendations**: `object`
 
-Defined in: [packages/agentos/src/query-router/types.ts:315](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/query-router/types.ts#L315)
+Defined in: [packages/agentos/src/query-router/types.ts:315](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/query-router/types.ts#L315)
 
 Recommended skills, tools, and extensions based on query analysis.
 
@@ -102,7 +102,7 @@ reasoning string explaining why the capability was recommended.
 
 > `optional` **researchSynthesis**: `string`
 
-Defined in: [packages/agentos/src/query-router/types.ts:281](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/query-router/types.ts#L281)
+Defined in: [packages/agentos/src/query-router/types.ts:281](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/query-router/types.ts#L281)
 
 Synthesized narrative from the deep research phase, when tier-3 routing
 exercised external or host-provided research.
@@ -113,7 +113,7 @@ exercised external or host-provided research.
 
 > **sources**: [`SourceCitation`](SourceCitation.md)[]
 
-Defined in: [packages/agentos/src/query-router/types.ts:275](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/query-router/types.ts#L275)
+Defined in: [packages/agentos/src/query-router/types.ts:275](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/query-router/types.ts#L275)
 
 Citations for the sources used in generating the answer.
 
@@ -123,7 +123,7 @@ Citations for the sources used in generating the answer.
 
 > **tiersUsed**: [`QueryTier`](../type-aliases/QueryTier.md)[]
 
-Defined in: [packages/agentos/src/query-router/types.ts:290](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/query-router/types.ts#L290)
+Defined in: [packages/agentos/src/query-router/types.ts:290](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/query-router/types.ts#L290)
 
 Which tiers were actually exercised during this query.
 

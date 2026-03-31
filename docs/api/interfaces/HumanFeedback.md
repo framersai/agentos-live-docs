@@ -1,6 +1,6 @@
 # Interface: HumanFeedback
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:322](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/hitl/IHumanInteractionManager.ts#L322)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:322](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/hitl/IHumanInteractionManager.ts#L322)
 
 Human feedback on agent performance.
 
@@ -10,7 +10,7 @@ Human feedback on agent performance.
 
 > **agentId**: `string`
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:326](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/hitl/IHumanInteractionManager.ts#L326)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:326](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/hitl/IHumanInteractionManager.ts#L326)
 
 Agent receiving feedback
 
@@ -18,9 +18,9 @@ Agent receiving feedback
 
 ### aspect
 
-> **aspect**: `"accuracy"` \| `"style"` \| `"communication"` \| `"other"` \| `"speed"` \| `"judgment"`
+> **aspect**: `"accuracy"` \| `"style"` \| `"communication"` \| `"speed"` \| `"other"` \| `"judgment"`
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:330](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/hitl/IHumanInteractionManager.ts#L330)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:330](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/hitl/IHumanInteractionManager.ts#L330)
 
 Specific aspect being addressed
 
@@ -30,7 +30,7 @@ Specific aspect being addressed
 
 > **content**: `string`
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:332](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/hitl/IHumanInteractionManager.ts#L332)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:332](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/hitl/IHumanInteractionManager.ts#L332)
 
 Detailed feedback
 
@@ -40,7 +40,7 @@ Detailed feedback
 
 > `optional` **context**: `Record`\<`string`, `unknown`\>
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:336](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/hitl/IHumanInteractionManager.ts#L336)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:336](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/hitl/IHumanInteractionManager.ts#L336)
 
 Context of the feedback
 
@@ -50,7 +50,7 @@ Context of the feedback
 
 > **feedbackId**: `string`
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:324](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/hitl/IHumanInteractionManager.ts#L324)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:324](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/hitl/IHumanInteractionManager.ts#L324)
 
 Feedback identifier
 
@@ -60,7 +60,7 @@ Feedback identifier
 
 > **feedbackType**: `"preference"` \| `"correction"` \| `"praise"` \| `"guidance"` \| `"complaint"`
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:328](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/hitl/IHumanInteractionManager.ts#L328)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:328](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/hitl/IHumanInteractionManager.ts#L328)
 
 Type of feedback
 
@@ -70,7 +70,7 @@ Type of feedback
 
 > **importance**: `number`
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:334](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/hitl/IHumanInteractionManager.ts#L334)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:334](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/hitl/IHumanInteractionManager.ts#L334)
 
 Severity/importance (1-5)
 
@@ -80,7 +80,7 @@ Severity/importance (1-5)
 
 > **providedAt**: `Date`
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:340](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/hitl/IHumanInteractionManager.ts#L340)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:340](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/hitl/IHumanInteractionManager.ts#L340)
 
 Timestamp
 
@@ -90,6 +90,6 @@ Timestamp
 
 > **providedBy**: `string`
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:338](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/hitl/IHumanInteractionManager.ts#L338)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:338](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/hitl/IHumanInteractionManager.ts#L338)
 
 Who provided feedback

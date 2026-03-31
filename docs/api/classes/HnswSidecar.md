@@ -1,6 +1,6 @@
 # Class: HnswSidecar
 
-Defined in: [packages/agentos/src/memory/retrieval/store/HnswSidecar.ts:57](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/store/HnswSidecar.ts#L57)
+Defined in: [packages/agentos/src/memory/retrieval/store/HnswSidecar.ts:57](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/store/HnswSidecar.ts#L57)
 
 Memory-specific HNSW sidecar that wraps the canonical HnswIndexSidecar.
 
@@ -14,7 +14,7 @@ shared RAG implementation.
 
 > **new HnswSidecar**(`config`): `HnswSidecar`
 
-Defined in: [packages/agentos/src/memory/retrieval/store/HnswSidecar.ts:63](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/store/HnswSidecar.ts#L63)
+Defined in: [packages/agentos/src/memory/retrieval/store/HnswSidecar.ts:63](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/store/HnswSidecar.ts#L63)
 
 #### Parameters
 
@@ -34,7 +34,7 @@ Defined in: [packages/agentos/src/memory/retrieval/store/HnswSidecar.ts:63](http
 
 > **get** **isActive**(): `boolean`
 
-Defined in: [packages/agentos/src/memory/retrieval/store/HnswSidecar.ts:77](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/store/HnswSidecar.ts#L77)
+Defined in: [packages/agentos/src/memory/retrieval/store/HnswSidecar.ts:77](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/store/HnswSidecar.ts#L77)
 
 Whether the HNSW index is currently active and queryable.
 
@@ -50,7 +50,7 @@ Whether the HNSW index is currently active and queryable.
 
 > **get** **size**(): `number`
 
-Defined in: [packages/agentos/src/memory/retrieval/store/HnswSidecar.ts:82](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/store/HnswSidecar.ts#L82)
+Defined in: [packages/agentos/src/memory/retrieval/store/HnswSidecar.ts:82](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/store/HnswSidecar.ts#L82)
 
 Number of vectors currently indexed.
 
@@ -64,7 +64,7 @@ Number of vectors currently indexed.
 
 > **add**(`traceId`, `embedding`, `_totalCount`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/store/HnswSidecar.ts:114](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/store/HnswSidecar.ts#L114)
+Defined in: [packages/agentos/src/memory/retrieval/store/HnswSidecar.ts:114](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/store/HnswSidecar.ts#L114)
 
 Add a vector to the index. If below threshold, does nothing.
 If threshold is crossed, caller should call rebuildFromData().
@@ -99,7 +99,7 @@ Current total trace count (unused, kept for API compat).
 
 > **destroy**(): `void`
 
-Defined in: [packages/agentos/src/memory/retrieval/store/HnswSidecar.ts:199](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/store/HnswSidecar.ts#L199)
+Defined in: [packages/agentos/src/memory/retrieval/store/HnswSidecar.ts:199](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/store/HnswSidecar.ts#L199)
 
 Delete index files from disk and deactivate.
 
@@ -113,7 +113,7 @@ Delete index files from disk and deactivate.
 
 > **init**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/store/HnswSidecar.ts:94](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/store/HnswSidecar.ts#L94)
+Defined in: [packages/agentos/src/memory/retrieval/store/HnswSidecar.ts:94](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/store/HnswSidecar.ts#L94)
 
 Initialize the sidecar. Loads existing index from disk if present.
 If hnswlib-node is not installed, silently stays inactive.
@@ -128,7 +128,7 @@ If hnswlib-node is not installed, silently stays inactive.
 
 > **query**(`embedding`, `topK`): [`HnswQueryResult`](../interfaces/HnswQueryResult.md)[]
 
-Defined in: [packages/agentos/src/memory/retrieval/store/HnswSidecar.ts:126](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/store/HnswSidecar.ts#L126)
+Defined in: [packages/agentos/src/memory/retrieval/store/HnswSidecar.ts:126](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/store/HnswSidecar.ts#L126)
 
 Query the HNSW index for top-K nearest neighbors.
 Returns trace IDs sorted by distance (closest first).
@@ -159,7 +159,7 @@ Array of { id, distance } sorted by distance ascending.
 
 > **rebuildFromData**(`data`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/store/HnswSidecar.ts:180](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/store/HnswSidecar.ts#L180)
+Defined in: [packages/agentos/src/memory/retrieval/store/HnswSidecar.ts:180](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/store/HnswSidecar.ts#L180)
 
 Rebuild the entire index from a set of id/embedding pairs.
 Called on first threshold crossing or when brain.hnsw is missing/corrupt.
@@ -183,7 +183,7 @@ Array of { id, embedding } to index.
 
 > **remove**(`traceId`): `void`
 
-Defined in: [packages/agentos/src/memory/retrieval/store/HnswSidecar.ts:168](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/store/HnswSidecar.ts#L168)
+Defined in: [packages/agentos/src/memory/retrieval/store/HnswSidecar.ts:168](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/store/HnswSidecar.ts#L168)
 
 Remove a trace from the index by marking its label as deleted.
 HNSW doesn't support true deletion — cleaned up on rebuild.
@@ -206,7 +206,7 @@ The trace ID to remove.
 
 > **saveToDisk**(): `void`
 
-Defined in: [packages/agentos/src/memory/retrieval/store/HnswSidecar.ts:192](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/store/HnswSidecar.ts#L192)
+Defined in: [packages/agentos/src/memory/retrieval/store/HnswSidecar.ts:192](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/store/HnswSidecar.ts#L192)
 
 Persist index and label map to disk.
 Called after rebuildFromData() and periodically after adds.

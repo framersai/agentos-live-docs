@@ -1,6 +1,6 @@
 # Interface: OpenAIImageProviderConfig
 
-Defined in: [packages/agentos/src/media/images/providers/OpenAIImageProvider.ts:16](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/media/images/providers/OpenAIImageProvider.ts#L16)
+Defined in: [packages/agentos/src/media/images/providers/OpenAIImageProvider.ts:16](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/images/providers/OpenAIImageProvider.ts#L16)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/media/images/providers/OpenAIImageProvider.ts:
 
 > **apiKey**: `string`
 
-Defined in: [packages/agentos/src/media/images/providers/OpenAIImageProvider.ts:17](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/media/images/providers/OpenAIImageProvider.ts#L17)
+Defined in: [packages/agentos/src/media/images/providers/OpenAIImageProvider.ts:17](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/images/providers/OpenAIImageProvider.ts#L17)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [packages/agentos/src/media/images/providers/OpenAIImageProvider.ts:
 
 > `optional` **baseURL**: `string`
 
-Defined in: [packages/agentos/src/media/images/providers/OpenAIImageProvider.ts:18](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/media/images/providers/OpenAIImageProvider.ts#L18)
+Defined in: [packages/agentos/src/media/images/providers/OpenAIImageProvider.ts:18](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/images/providers/OpenAIImageProvider.ts#L18)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: [packages/agentos/src/media/images/providers/OpenAIImageProvider.ts:
 
 > `optional` **defaultModelId**: `string`
 
-Defined in: [packages/agentos/src/media/images/providers/OpenAIImageProvider.ts:19](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/media/images/providers/OpenAIImageProvider.ts#L19)
+Defined in: [packages/agentos/src/media/images/providers/OpenAIImageProvider.ts:19](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/images/providers/OpenAIImageProvider.ts#L19)
 
 ***
 
@@ -32,4 +32,4 @@ Defined in: [packages/agentos/src/media/images/providers/OpenAIImageProvider.ts:
 
 > `optional` **organizationId**: `string`
 
-Defined in: [packages/agentos/src/media/images/providers/OpenAIImageProvider.ts:20](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/media/images/providers/OpenAIImageProvider.ts#L20)
+Defined in: [packages/agentos/src/media/images/providers/OpenAIImageProvider.ts:20](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/images/providers/OpenAIImageProvider.ts#L20)

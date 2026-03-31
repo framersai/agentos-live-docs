@@ -1,6 +1,6 @@
 # Interface: ObservationNote
 
-Defined in: [packages/agentos/src/memory/pipeline/observation/MemoryObserver.ts:36](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/pipeline/observation/MemoryObserver.ts#L36)
+Defined in: [packages/agentos/src/memory/pipeline/observation/MemoryObserver.ts:36](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/pipeline/observation/MemoryObserver.ts#L36)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/memory/pipeline/observation/MemoryObserver.ts:
 
 > **content**: `string`
 
-Defined in: [packages/agentos/src/memory/pipeline/observation/MemoryObserver.ts:41](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/pipeline/observation/MemoryObserver.ts#L41)
+Defined in: [packages/agentos/src/memory/pipeline/observation/MemoryObserver.ts:41](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/pipeline/observation/MemoryObserver.ts#L41)
 
 Short summary of the observation.
 
@@ -18,7 +18,7 @@ Short summary of the observation.
 
 > `optional` **emotionalContext**: `object`
 
-Defined in: [packages/agentos/src/memory/pipeline/observation/MemoryObserver.ts:47](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/pipeline/observation/MemoryObserver.ts#L47)
+Defined in: [packages/agentos/src/memory/pipeline/observation/MemoryObserver.ts:47](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/pipeline/observation/MemoryObserver.ts#L47)
 
 Emotional context at observation time.
 
@@ -36,7 +36,7 @@ Emotional context at observation time.
 
 > **entities**: `string`[]
 
-Defined in: [packages/agentos/src/memory/pipeline/observation/MemoryObserver.ts:45](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/pipeline/observation/MemoryObserver.ts#L45)
+Defined in: [packages/agentos/src/memory/pipeline/observation/MemoryObserver.ts:45](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/pipeline/observation/MemoryObserver.ts#L45)
 
 Entities mentioned.
 
@@ -46,7 +46,7 @@ Entities mentioned.
 
 > **id**: `string`
 
-Defined in: [packages/agentos/src/memory/pipeline/observation/MemoryObserver.ts:37](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/pipeline/observation/MemoryObserver.ts#L37)
+Defined in: [packages/agentos/src/memory/pipeline/observation/MemoryObserver.ts:37](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/pipeline/observation/MemoryObserver.ts#L37)
 
 ***
 
@@ -54,7 +54,7 @@ Defined in: [packages/agentos/src/memory/pipeline/observation/MemoryObserver.ts:
 
 > **importance**: `number`
 
-Defined in: [packages/agentos/src/memory/pipeline/observation/MemoryObserver.ts:43](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/pipeline/observation/MemoryObserver.ts#L43)
+Defined in: [packages/agentos/src/memory/pipeline/observation/MemoryObserver.ts:43](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/pipeline/observation/MemoryObserver.ts#L43)
 
 0-1 importance score.
 
@@ -64,7 +64,7 @@ Defined in: [packages/agentos/src/memory/pipeline/observation/MemoryObserver.ts:
 
 > `optional` **temporal**: `object`
 
-Defined in: [packages/agentos/src/memory/pipeline/observation/MemoryObserver.ts:50](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/pipeline/observation/MemoryObserver.ts#L50)
+Defined in: [packages/agentos/src/memory/pipeline/observation/MemoryObserver.ts:50](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/pipeline/observation/MemoryObserver.ts#L50)
 
 Three-date temporal metadata.
 
@@ -92,7 +92,7 @@ Human-friendly relative time label.
 
 > **timestamp**: `number`
 
-Defined in: [packages/agentos/src/memory/pipeline/observation/MemoryObserver.ts:48](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/pipeline/observation/MemoryObserver.ts#L48)
+Defined in: [packages/agentos/src/memory/pipeline/observation/MemoryObserver.ts:48](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/pipeline/observation/MemoryObserver.ts#L48)
 
 ***
 
@@ -100,6 +100,6 @@ Defined in: [packages/agentos/src/memory/pipeline/observation/MemoryObserver.ts:
 
 > **type**: `"preference"` \| `"correction"` \| `"emotional"` \| `"factual"` \| `"commitment"` \| `"creative"`
 
-Defined in: [packages/agentos/src/memory/pipeline/observation/MemoryObserver.ts:39](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/pipeline/observation/MemoryObserver.ts#L39)
+Defined in: [packages/agentos/src/memory/pipeline/observation/MemoryObserver.ts:39](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/pipeline/observation/MemoryObserver.ts#L39)
 
 Category of observation.

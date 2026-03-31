@@ -1,6 +1,6 @@
 # Interface: VisionPipelineConfig
 
-Defined in: [packages/agentos/src/vision/types.ts:303](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/vision/types.ts#L303)
+Defined in: [packages/agentos/src/vision/types.ts:303](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/vision/types.ts#L303)
 
 Configuration for the [VisionPipeline](../classes/VisionPipeline.md).
 
@@ -29,7 +29,7 @@ const config: VisionPipelineConfig = {
 
 > `optional` **cloudModel**: `string`
 
-Defined in: [packages/agentos/src/vision/types.ts:351](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/vision/types.ts#L351)
+Defined in: [packages/agentos/src/vision/types.ts:351](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/vision/types.ts#L351)
 
 Cloud model override. When unset, the provider's default vision model is used.
 
@@ -45,7 +45,7 @@ Cloud model override. When unset, the provider's default vision model is used.
 
 > `optional` **cloudProvider**: `string`
 
-Defined in: [packages/agentos/src/vision/types.ts:345](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/vision/types.ts#L345)
+Defined in: [packages/agentos/src/vision/types.ts:345](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/vision/types.ts#L345)
 
 Cloud vision LLM provider name for Tier 3 fallback.
 Must match a provider known to `generateText()` (e.g. 'openai', 'anthropic', 'google').
@@ -57,7 +57,7 @@ When unset, cloud vision is disabled.
 
 > `optional` **confidenceThreshold**: `number`
 
-Defined in: [packages/agentos/src/vision/types.ts:359](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/vision/types.ts#L359)
+Defined in: [packages/agentos/src/vision/types.ts:359](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/vision/types.ts#L359)
 
 Minimum confidence to accept an OCR result without escalating to cloud.
 Only applies to `'progressive'` strategy — if OCR confidence is below
@@ -75,7 +75,7 @@ this threshold, the pipeline escalates to the next tier.
 
 > `optional` **documentAI**: `boolean`
 
-Defined in: [packages/agentos/src/vision/types.ts:331](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/vision/types.ts#L331)
+Defined in: [packages/agentos/src/vision/types.ts:331](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/vision/types.ts#L331)
 
 Enable document understanding via Florence-2 (`@huggingface/transformers`).
 Produces structured [DocumentLayout](DocumentLayout.md) with semantic block detection.
@@ -92,7 +92,7 @@ false
 
 > `optional` **embedding**: `boolean`
 
-Defined in: [packages/agentos/src/vision/types.ts:338](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/vision/types.ts#L338)
+Defined in: [packages/agentos/src/vision/types.ts:338](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/vision/types.ts#L338)
 
 Enable CLIP image embeddings (`@huggingface/transformers`).
 Runs in parallel with other tiers — does not affect text extraction.
@@ -109,7 +109,7 @@ false
 
 > `optional` **handwriting**: `boolean`
 
-Defined in: [packages/agentos/src/vision/types.ts:324](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/vision/types.ts#L324)
+Defined in: [packages/agentos/src/vision/types.ts:324](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/vision/types.ts#L324)
 
 Enable handwriting recognition via TrOCR (`@huggingface/transformers`).
 Only triggered when OCR confidence is low and content appears handwritten.
@@ -126,7 +126,7 @@ false
 
 > `optional` **ocr**: `"none"` \| `"paddle"` \| `"tesseract"`
 
-Defined in: [packages/agentos/src/vision/types.ts:317](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/vision/types.ts#L317)
+Defined in: [packages/agentos/src/vision/types.ts:317](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/vision/types.ts#L317)
 
 OCR engine for Tier 1 text extraction.
 - `'paddle'` — PaddleOCR (via `ppu-paddle-ocr`). Best accuracy for most scripts.
@@ -145,7 +145,7 @@ OCR engine for Tier 1 text extraction.
 
 > `optional` **preprocessing**: [`VisionPreprocessingConfig`](VisionPreprocessingConfig.md)
 
-Defined in: [packages/agentos/src/vision/types.ts:366](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/vision/types.ts#L366)
+Defined in: [packages/agentos/src/vision/types.ts:366](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/vision/types.ts#L366)
 
 Image preprocessing options applied before any tier runs.
 Uses `sharp` for resizing, grayscale conversion, sharpening,
@@ -157,7 +157,7 @@ and normalization.
 
 > **strategy**: [`VisionStrategy`](../type-aliases/VisionStrategy.md)
 
-Defined in: [packages/agentos/src/vision/types.ts:308](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/vision/types.ts#L308)
+Defined in: [packages/agentos/src/vision/types.ts:308](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/vision/types.ts#L308)
 
 How to combine tiers.
 

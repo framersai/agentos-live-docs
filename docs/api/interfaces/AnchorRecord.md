@@ -1,6 +1,6 @@
 # Interface: AnchorRecord
 
-Defined in: [packages/agentos/src/provenance/types.ts:210](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/types.ts#L210)
+Defined in: [packages/agentos/src/provenance/types.ts:210](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/provenance/types.ts#L210)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/provenance/types.ts:210](https://github.com/fr
 
 > **eventCount**: `number`
 
-Defined in: [packages/agentos/src/provenance/types.ts:220](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/types.ts#L220)
+Defined in: [packages/agentos/src/provenance/types.ts:220](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/provenance/types.ts#L220)
 
 Number of events in this anchor.
 
@@ -18,7 +18,7 @@ Number of events in this anchor.
 
 > `optional` **externalRef**: `string`
 
-Defined in: [packages/agentos/src/provenance/types.ts:226](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/types.ts#L226)
+Defined in: [packages/agentos/src/provenance/types.ts:226](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/provenance/types.ts#L226)
 
 Optional external reference (IPFS CID, tx hash, etc.).
 
@@ -28,7 +28,7 @@ Optional external reference (IPFS CID, tx hash, etc.).
 
 > **id**: `string`
 
-Defined in: [packages/agentos/src/provenance/types.ts:212](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/types.ts#L212)
+Defined in: [packages/agentos/src/provenance/types.ts:212](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/provenance/types.ts#L212)
 
 Unique anchor ID.
 
@@ -38,7 +38,7 @@ Unique anchor ID.
 
 > **merkleRoot**: `string`
 
-Defined in: [packages/agentos/src/provenance/types.ts:214](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/types.ts#L214)
+Defined in: [packages/agentos/src/provenance/types.ts:214](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/provenance/types.ts#L214)
 
 Merkle root hash of events in [sequenceFrom, sequenceTo].
 
@@ -48,7 +48,7 @@ Merkle root hash of events in [sequenceFrom, sequenceTo].
 
 > `optional` **providerResults**: [`AnchorProviderResult`](AnchorProviderResult.md)[]
 
-Defined in: [packages/agentos/src/provenance/types.ts:228](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/types.ts#L228)
+Defined in: [packages/agentos/src/provenance/types.ts:228](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/provenance/types.ts#L228)
 
 Results from anchor providers (when multiple are composed).
 
@@ -58,7 +58,7 @@ Results from anchor providers (when multiple are composed).
 
 > **sequenceFrom**: `number`
 
-Defined in: [packages/agentos/src/provenance/types.ts:216](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/types.ts#L216)
+Defined in: [packages/agentos/src/provenance/types.ts:216](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/provenance/types.ts#L216)
 
 First event sequence in this anchor.
 
@@ -68,7 +68,7 @@ First event sequence in this anchor.
 
 > **sequenceTo**: `number`
 
-Defined in: [packages/agentos/src/provenance/types.ts:218](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/types.ts#L218)
+Defined in: [packages/agentos/src/provenance/types.ts:218](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/provenance/types.ts#L218)
 
 Last event sequence in this anchor.
 
@@ -78,7 +78,7 @@ Last event sequence in this anchor.
 
 > **signature**: `string`
 
-Defined in: [packages/agentos/src/provenance/types.ts:224](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/types.ts#L224)
+Defined in: [packages/agentos/src/provenance/types.ts:224](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/provenance/types.ts#L224)
 
 Ed25519 signature of the Merkle root.
 
@@ -88,6 +88,6 @@ Ed25519 signature of the Merkle root.
 
 > **timestamp**: `string`
 
-Defined in: [packages/agentos/src/provenance/types.ts:222](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/provenance/types.ts#L222)
+Defined in: [packages/agentos/src/provenance/types.ts:222](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/provenance/types.ts#L222)
 
 ISO 8601 timestamp.

@@ -1,6 +1,6 @@
 # Interface: RetrieveCompleteEvent
 
-Defined in: [packages/agentos/src/query-router/types.ts:942](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/query-router/types.ts#L942)
+Defined in: [packages/agentos/src/query-router/types.ts:942](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/query-router/types.ts#L942)
 
 Emitted when the entire retrieval phase completes.
 
@@ -10,7 +10,7 @@ Emitted when the entire retrieval phase completes.
 
 > **result**: [`RetrievalResult`](RetrievalResult.md)
 
-Defined in: [packages/agentos/src/query-router/types.ts:945](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/query-router/types.ts#L945)
+Defined in: [packages/agentos/src/query-router/types.ts:945](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/query-router/types.ts#L945)
 
 The aggregated retrieval result.
 
@@ -20,7 +20,7 @@ The aggregated retrieval result.
 
 > **timestamp**: `number`
 
-Defined in: [packages/agentos/src/query-router/types.ts:947](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/query-router/types.ts#L947)
+Defined in: [packages/agentos/src/query-router/types.ts:947](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/query-router/types.ts#L947)
 
 Timestamp when retrieval completed.
 
@@ -30,4 +30,4 @@ Timestamp when retrieval completed.
 
 > **type**: `"retrieve:complete"`
 
-Defined in: [packages/agentos/src/query-router/types.ts:943](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/query-router/types.ts#L943)
+Defined in: [packages/agentos/src/query-router/types.ts:943](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/query-router/types.ts#L943)

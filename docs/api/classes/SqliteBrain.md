@@ -1,6 +1,6 @@
 # Class: SqliteBrain
 
-Defined in: [packages/agentos/src/memory/retrieval/store/SqliteBrain.ts:292](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/store/SqliteBrain.ts#L292)
+Defined in: [packages/agentos/src/memory/retrieval/store/SqliteBrain.ts:292](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/store/SqliteBrain.ts#L292)
 
 Unified cross-platform connection manager for a single agent's persistent brain.
 
@@ -34,7 +34,7 @@ receive the `SqliteBrain` instance and call its async proxy methods
 
 > **get** **adapter**(): `StorageAdapter`
 
-Defined in: [packages/agentos/src/memory/retrieval/store/SqliteBrain.ts:433](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/store/SqliteBrain.ts#L433)
+Defined in: [packages/agentos/src/memory/retrieval/store/SqliteBrain.ts:433](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/store/SqliteBrain.ts#L433)
 
 Expose the raw storage adapter for advanced usage.
 
@@ -53,7 +53,7 @@ Primarily used by SqliteExporter (VACUUM INTO) and SqliteImporter
 
 > **get** **features**(): `StorageFeatures`
 
-Defined in: [packages/agentos/src/memory/retrieval/store/SqliteBrain.ts:442](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/store/SqliteBrain.ts#L442)
+Defined in: [packages/agentos/src/memory/retrieval/store/SqliteBrain.ts:442](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/store/SqliteBrain.ts#L442)
 
 Platform-aware feature bundle (dialect, FTS, BLOB codec, exporter).
 Consumers use this to generate cross-platform SQL instead of hardcoding
@@ -69,7 +69,7 @@ SQLite-specific syntax.
 
 > **all**\<`T`\>(`sql`, `params?`): `Promise`\<`T`[]\>
 
-Defined in: [packages/agentos/src/memory/retrieval/store/SqliteBrain.ts:401](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/store/SqliteBrain.ts#L401)
+Defined in: [packages/agentos/src/memory/retrieval/store/SqliteBrain.ts:401](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/store/SqliteBrain.ts#L401)
 
 Retrieve all rows matching the statement.
 
@@ -105,7 +105,7 @@ Array of matching rows (empty array if none).
 
 > **checkEmbeddingCompat**(`dimensions`): `Promise`\<`boolean`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/store/SqliteBrain.ts:545](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/store/SqliteBrain.ts#L545)
+Defined in: [packages/agentos/src/memory/retrieval/store/SqliteBrain.ts:558](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/store/SqliteBrain.ts#L558)
 
 Check whether a given embedding dimension is compatible with this brain.
 
@@ -136,7 +136,7 @@ The embedding vector length to check (e.g. 1536 for OpenAI ada-002).
 
 > **close**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/store/SqliteBrain.ts:564](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/store/SqliteBrain.ts#L564)
+Defined in: [packages/agentos/src/memory/retrieval/store/SqliteBrain.ts:577](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/store/SqliteBrain.ts#L577)
 
 Close the database connection.
 
@@ -154,7 +154,7 @@ an unconsumed WAL file.
 
 > **exec**(`sql`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/store/SqliteBrain.ts:410](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/store/SqliteBrain.ts#L410)
+Defined in: [packages/agentos/src/memory/retrieval/store/SqliteBrain.ts:410](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/store/SqliteBrain.ts#L410)
 
 Execute a script containing multiple SQL statements.
 
@@ -176,7 +176,7 @@ SQL script (semicolon-delimited statements).
 
 > **get**\<`T`\>(`sql`, `params?`): `Promise`\<`T` \| `null`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/store/SqliteBrain.ts:390](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/store/SqliteBrain.ts#L390)
+Defined in: [packages/agentos/src/memory/retrieval/store/SqliteBrain.ts:390](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/store/SqliteBrain.ts#L390)
 
 Retrieve a single row (or null if none found).
 
@@ -212,7 +212,7 @@ First matching row or null.
 
 > **getMeta**(`key`): `Promise`\<`string` \| `undefined`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/store/SqliteBrain.ts:507](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/store/SqliteBrain.ts#L507)
+Defined in: [packages/agentos/src/memory/retrieval/store/SqliteBrain.ts:520](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/store/SqliteBrain.ts#L520)
 
 Read a value from the `brain_meta` key-value store.
 
@@ -236,7 +236,7 @@ The stored string value, or `undefined` if the key does not exist.
 
 > **run**(`sql`, `params?`): `Promise`\<`StorageRunResult`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/store/SqliteBrain.ts:379](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/store/SqliteBrain.ts#L379)
+Defined in: [packages/agentos/src/memory/retrieval/store/SqliteBrain.ts:379](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/store/SqliteBrain.ts#L379)
 
 Execute a mutation statement (INSERT, UPDATE, DELETE).
 
@@ -266,7 +266,7 @@ Metadata about affected rows.
 
 > **setMeta**(`key`, `value`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/store/SqliteBrain.ts:525](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/store/SqliteBrain.ts#L525)
+Defined in: [packages/agentos/src/memory/retrieval/store/SqliteBrain.ts:538](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/store/SqliteBrain.ts#L538)
 
 Upsert a value into the `brain_meta` key-value store.
 
@@ -297,7 +297,7 @@ The string value to store.
 
 > **transaction**\<`T`\>(`fn`): `Promise`\<`T`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/store/SqliteBrain.ts:423](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/store/SqliteBrain.ts#L423)
+Defined in: [packages/agentos/src/memory/retrieval/store/SqliteBrain.ts:423](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/store/SqliteBrain.ts#L423)
 
 Execute a callback within a database transaction.
 
@@ -330,7 +330,7 @@ Result of the callback.
 
 > `static` **open**(`dbPath`): `Promise`\<`SqliteBrain`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/store/SqliteBrain.ts:341](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/retrieval/store/SqliteBrain.ts#L341)
+Defined in: [packages/agentos/src/memory/retrieval/store/SqliteBrain.ts:341](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/store/SqliteBrain.ts#L341)
 
 Create or open the agent's brain database at `dbPath`.
 

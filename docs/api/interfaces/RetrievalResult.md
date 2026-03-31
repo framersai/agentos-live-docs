@@ -1,6 +1,6 @@
 # Interface: RetrievalResult
 
-Defined in: [packages/agentos/src/query-router/types.ts:219](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/query-router/types.ts#L219)
+Defined in: [packages/agentos/src/query-router/types.ts:219](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/query-router/types.ts#L219)
 
 Aggregated result of the retrieval phase across all active retrieval
 strategies (vector search, graph traversal, deep research).
@@ -11,7 +11,7 @@ strategies (vector search, graph traversal, deep research).
 
 > **chunks**: [`RetrievedChunk`](RetrievedChunk.md)[]
 
-Defined in: [packages/agentos/src/query-router/types.ts:221](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/query-router/types.ts#L221)
+Defined in: [packages/agentos/src/query-router/types.ts:221](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/query-router/types.ts#L221)
 
 Retrieved content chunks, sorted by relevance (highest first).
 
@@ -21,7 +21,7 @@ Retrieved content chunks, sorted by relevance (highest first).
 
 > **durationMs**: `number`
 
-Defined in: [packages/agentos/src/query-router/types.ts:236](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/query-router/types.ts#L236)
+Defined in: [packages/agentos/src/query-router/types.ts:236](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/query-router/types.ts#L236)
 
 Wall-clock duration of the retrieval phase in milliseconds.
 
@@ -31,7 +31,7 @@ Wall-clock duration of the retrieval phase in milliseconds.
 
 > `optional` **graphEntities**: `object`[]
 
-Defined in: [packages/agentos/src/query-router/types.ts:227](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/query-router/types.ts#L227)
+Defined in: [packages/agentos/src/query-router/types.ts:227](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/query-router/types.ts#L227)
 
 Entities discovered via knowledge graph traversal.
 Present only when graph retrieval was used (tier >= 2).
@@ -54,7 +54,7 @@ Present only when graph retrieval was used (tier >= 2).
 
 > `optional` **researchSynthesis**: `string`
 
-Defined in: [packages/agentos/src/query-router/types.ts:233](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/query-router/types.ts#L233)
+Defined in: [packages/agentos/src/query-router/types.ts:233](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/query-router/types.ts#L233)
 
 Synthesized narrative from the deep research phase.
 Present only when research retrieval was used (tier 3).

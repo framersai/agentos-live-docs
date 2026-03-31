@@ -1,6 +1,6 @@
 # Interface: ChannelInfo
 
-Defined in: [packages/agentos/src/channels/types.ts:343](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/types.ts#L343)
+Defined in: [packages/agentos/src/channels/types.ts:343](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/types.ts#L343)
 
 Metadata about an available channel adapter.
 
@@ -10,7 +10,7 @@ Metadata about an available channel adapter.
 
 > **available**: `boolean`
 
-Defined in: [packages/agentos/src/channels/types.ts:353](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/types.ts#L353)
+Defined in: [packages/agentos/src/channels/types.ts:353](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/types.ts#L353)
 
 Whether the adapter's dependencies are installed.
 
@@ -20,7 +20,7 @@ Whether the adapter's dependencies are installed.
 
 > **capabilities**: [`ChannelCapability`](../type-aliases/ChannelCapability.md)[]
 
-Defined in: [packages/agentos/src/channels/types.ts:351](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/types.ts#L351)
+Defined in: [packages/agentos/src/channels/types.ts:351](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/types.ts#L351)
 
 Capabilities this adapter supports.
 
@@ -30,7 +30,7 @@ Capabilities this adapter supports.
 
 > **description**: `string`
 
-Defined in: [packages/agentos/src/channels/types.ts:349](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/types.ts#L349)
+Defined in: [packages/agentos/src/channels/types.ts:349](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/types.ts#L349)
 
 Description of the channel.
 
@@ -40,7 +40,7 @@ Description of the channel.
 
 > **displayName**: `string`
 
-Defined in: [packages/agentos/src/channels/types.ts:347](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/types.ts#L347)
+Defined in: [packages/agentos/src/channels/types.ts:347](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/types.ts#L347)
 
 Human-friendly display name (e.g., "WhatsApp Business").
 
@@ -50,7 +50,7 @@ Human-friendly display name (e.g., "WhatsApp Business").
 
 > `optional` **icon**: `string`
 
-Defined in: [packages/agentos/src/channels/types.ts:357](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/types.ts#L357)
+Defined in: [packages/agentos/src/channels/types.ts:357](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/types.ts#L357)
 
 Icon identifier or URL.
 
@@ -60,7 +60,7 @@ Icon identifier or URL.
 
 > **platform**: [`ChannelPlatform`](../type-aliases/ChannelPlatform.md)
 
-Defined in: [packages/agentos/src/channels/types.ts:345](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/types.ts#L345)
+Defined in: [packages/agentos/src/channels/types.ts:345](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/types.ts#L345)
 
 Platform identifier.
 
@@ -70,6 +70,6 @@ Platform identifier.
 
 > **requiredSecrets**: `string`[]
 
-Defined in: [packages/agentos/src/channels/types.ts:355](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/types.ts#L355)
+Defined in: [packages/agentos/src/channels/types.ts:355](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/types.ts#L355)
 
 Required secret IDs for this channel.

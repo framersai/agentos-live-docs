@@ -1,6 +1,6 @@
 # Interface: PlanMetadata
 
-Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:155](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/planner/IPlanningEngine.ts#L155)
+Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:155](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/planner/IPlanningEngine.ts#L155)
 
 Metadata about how a plan was generated.
 
@@ -10,7 +10,7 @@ Metadata about how a plan was generated.
 
 > **alternativesConsidered**: `number`
 
-Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:163](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/planner/IPlanningEngine.ts#L163)
+Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:163](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/planner/IPlanningEngine.ts#L163)
 
 Alternative plans considered
 
@@ -20,7 +20,7 @@ Alternative plans considered
 
 > **iterations**: `number`
 
-Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:159](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/planner/IPlanningEngine.ts#L159)
+Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:159](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/planner/IPlanningEngine.ts#L159)
 
 Planning iterations/refinements
 
@@ -30,7 +30,7 @@ Planning iterations/refinements
 
 > **modelId**: `string`
 
-Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:157](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/planner/IPlanningEngine.ts#L157)
+Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:157](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/planner/IPlanningEngine.ts#L157)
 
 Model used for planning
 
@@ -40,6 +40,6 @@ Model used for planning
 
 > **planningDurationMs**: `number`
 
-Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:161](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/planner/IPlanningEngine.ts#L161)
+Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:161](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/planner/IPlanningEngine.ts#L161)
 
 Time spent planning in ms

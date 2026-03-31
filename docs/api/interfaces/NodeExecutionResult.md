@@ -1,6 +1,6 @@
 # Interface: NodeExecutionResult
 
-Defined in: [packages/agentos/src/orchestration/runtime/NodeExecutor.ts:44](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/runtime/NodeExecutor.ts#L44)
+Defined in: [packages/agentos/src/orchestration/runtime/NodeExecutor.ts:44](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/runtime/NodeExecutor.ts#L44)
 
 The normalised result returned by every `NodeExecutor.execute()` call regardless
 of which executor variant was dispatched.
@@ -21,7 +21,7 @@ The runtime inspects these fields to decide the next graph step:
 
 > `optional` **artifactsUpdate**: `Record`\<`string`, `unknown`\>
 
-Defined in: [packages/agentos/src/orchestration/runtime/NodeExecutor.ts:56](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/runtime/NodeExecutor.ts#L56)
+Defined in: [packages/agentos/src/orchestration/runtime/NodeExecutor.ts:56](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/runtime/NodeExecutor.ts#L56)
 
 Partial update to merge into `GraphState.artifacts`.
 
@@ -31,7 +31,7 @@ Partial update to merge into `GraphState.artifacts`.
 
 > `optional` **error**: `string`
 
-Defined in: [packages/agentos/src/orchestration/runtime/NodeExecutor.ts:50](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/runtime/NodeExecutor.ts#L50)
+Defined in: [packages/agentos/src/orchestration/runtime/NodeExecutor.ts:50](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/runtime/NodeExecutor.ts#L50)
 
 Human-readable error description; populated only when `success` is `false`.
 
@@ -41,7 +41,7 @@ Human-readable error description; populated only when `success` is `false`.
 
 > `optional` **events**: [`GraphEvent`](../type-aliases/GraphEvent.md)[]
 
-Defined in: [packages/agentos/src/orchestration/runtime/NodeExecutor.ts:58](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/runtime/NodeExecutor.ts#L58)
+Defined in: [packages/agentos/src/orchestration/runtime/NodeExecutor.ts:58](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/runtime/NodeExecutor.ts#L58)
 
 Extra runtime events the executor wants to surface to callers.
 
@@ -51,7 +51,7 @@ Extra runtime events the executor wants to surface to callers.
 
 > `optional` **expansionRequests**: `object`[]
 
-Defined in: [packages/agentos/src/orchestration/runtime/NodeExecutor.ts:60](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/runtime/NodeExecutor.ts#L60)
+Defined in: [packages/agentos/src/orchestration/runtime/NodeExecutor.ts:60](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/runtime/NodeExecutor.ts#L60)
 
 Mission graph expansion requests emitted by this node's tool usage.
 
@@ -77,7 +77,7 @@ Mission graph expansion requests emitted by this node's tool usage.
 
 > `optional` **interrupt**: `boolean`
 
-Defined in: [packages/agentos/src/orchestration/runtime/NodeExecutor.ts:67](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/runtime/NodeExecutor.ts#L67)
+Defined in: [packages/agentos/src/orchestration/runtime/NodeExecutor.ts:67](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/runtime/NodeExecutor.ts#L67)
 
 When `true`, the runtime must suspend and await human resolution.
 
@@ -87,7 +87,7 @@ When `true`, the runtime must suspend and await human resolution.
 
 > `optional` **output**: `unknown`
 
-Defined in: [packages/agentos/src/orchestration/runtime/NodeExecutor.ts:48](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/runtime/NodeExecutor.ts#L48)
+Defined in: [packages/agentos/src/orchestration/runtime/NodeExecutor.ts:48](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/runtime/NodeExecutor.ts#L48)
 
 Arbitrary output produced by the node.
 
@@ -97,7 +97,7 @@ Arbitrary output produced by the node.
 
 > `optional` **routeTarget**: `string`
 
-Defined in: [packages/agentos/src/orchestration/runtime/NodeExecutor.ts:52](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/runtime/NodeExecutor.ts#L52)
+Defined in: [packages/agentos/src/orchestration/runtime/NodeExecutor.ts:52](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/runtime/NodeExecutor.ts#L52)
 
 Target node id returned by `router` or guardrail rerouting.
 
@@ -107,7 +107,7 @@ Target node id returned by `router` or guardrail rerouting.
 
 > `optional` **scratchUpdate**: `Record`\<`string`, `unknown`\>
 
-Defined in: [packages/agentos/src/orchestration/runtime/NodeExecutor.ts:54](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/runtime/NodeExecutor.ts#L54)
+Defined in: [packages/agentos/src/orchestration/runtime/NodeExecutor.ts:54](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/runtime/NodeExecutor.ts#L54)
 
 Partial update to merge into `GraphState.scratch`.
 
@@ -117,6 +117,6 @@ Partial update to merge into `GraphState.scratch`.
 
 > **success**: `boolean`
 
-Defined in: [packages/agentos/src/orchestration/runtime/NodeExecutor.ts:46](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/runtime/NodeExecutor.ts#L46)
+Defined in: [packages/agentos/src/orchestration/runtime/NodeExecutor.ts:46](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/runtime/NodeExecutor.ts#L46)
 
 Whether the node completed successfully.

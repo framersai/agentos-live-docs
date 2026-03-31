@@ -1,6 +1,6 @@
 # Interface: SpeechSessionSpeechEndedEvent
 
-Defined in: [packages/agentos/src/speech/types.ts:299](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/speech/types.ts#L299)
+Defined in: [packages/agentos/src/speech/types.ts:299](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/speech/types.ts#L299)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/speech/types.ts:299](https://github.com/framer
 
 > **durationMs**: `number`
 
-Defined in: [packages/agentos/src/speech/types.ts:302](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/speech/types.ts#L302)
+Defined in: [packages/agentos/src/speech/types.ts:302](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/speech/types.ts#L302)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [packages/agentos/src/speech/types.ts:302](https://github.com/framer
 
 > **timestamp**: `number`
 
-Defined in: [packages/agentos/src/speech/types.ts:300](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/speech/types.ts#L300)
+Defined in: [packages/agentos/src/speech/types.ts:300](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/speech/types.ts#L300)
 
 ***
 
@@ -24,4 +24,4 @@ Defined in: [packages/agentos/src/speech/types.ts:300](https://github.com/framer
 
 > **vad**: [`VADResult`](VADResult.md)
 
-Defined in: [packages/agentos/src/speech/types.ts:301](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/speech/types.ts#L301)
+Defined in: [packages/agentos/src/speech/types.ts:301](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/speech/types.ts#L301)

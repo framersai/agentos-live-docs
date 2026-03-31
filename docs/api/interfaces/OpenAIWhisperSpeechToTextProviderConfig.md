@@ -1,6 +1,6 @@
 # Interface: OpenAIWhisperSpeechToTextProviderConfig
 
-Defined in: [packages/agentos/src/hearing/providers/OpenAIWhisperSpeechToTextProvider.ts:16](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/hearing/providers/OpenAIWhisperSpeechToTextProvider.ts#L16)
+Defined in: [packages/agentos/src/hearing/providers/OpenAIWhisperSpeechToTextProvider.ts:16](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/hearing/providers/OpenAIWhisperSpeechToTextProvider.ts#L16)
 
 Configuration for the [OpenAIWhisperSpeechToTextProvider](../classes/OpenAIWhisperSpeechToTextProvider.md).
 
@@ -15,7 +15,7 @@ Configuration for the [OpenAIWhisperSpeechToTextProvider](../classes/OpenAIWhisp
 
 > **apiKey**: `string`
 
-Defined in: [packages/agentos/src/hearing/providers/OpenAIWhisperSpeechToTextProvider.ts:21](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/hearing/providers/OpenAIWhisperSpeechToTextProvider.ts#L21)
+Defined in: [packages/agentos/src/hearing/providers/OpenAIWhisperSpeechToTextProvider.ts:21](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/hearing/providers/OpenAIWhisperSpeechToTextProvider.ts#L21)
 
 OpenAI API key used for authentication.
 Sent as `Authorization: Bearer <apiKey>` in the request header.
@@ -26,7 +26,7 @@ Sent as `Authorization: Bearer <apiKey>` in the request header.
 
 > `optional` **baseUrl**: `string`
 
-Defined in: [packages/agentos/src/hearing/providers/OpenAIWhisperSpeechToTextProvider.ts:28](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/hearing/providers/OpenAIWhisperSpeechToTextProvider.ts#L28)
+Defined in: [packages/agentos/src/hearing/providers/OpenAIWhisperSpeechToTextProvider.ts:28](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/hearing/providers/OpenAIWhisperSpeechToTextProvider.ts#L28)
 
 Base URL for the OpenAI API. Override for proxies, Azure OpenAI, or
 compatible third-party endpoints.
@@ -43,7 +43,7 @@ compatible third-party endpoints.
 
 > `optional` **fetchImpl**: \{(`input`, `init?`): `Promise`\<`Response`\>; (`input`, `init?`): `Promise`\<`Response`\>; \}
 
-Defined in: [packages/agentos/src/hearing/providers/OpenAIWhisperSpeechToTextProvider.ts:40](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/hearing/providers/OpenAIWhisperSpeechToTextProvider.ts#L40)
+Defined in: [packages/agentos/src/hearing/providers/OpenAIWhisperSpeechToTextProvider.ts:40](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/hearing/providers/OpenAIWhisperSpeechToTextProvider.ts#L40)
 
 Custom fetch implementation for dependency injection in tests.
 
@@ -99,7 +99,7 @@ globalThis.fetch
 
 > `optional` **model**: `string`
 
-Defined in: [packages/agentos/src/hearing/providers/OpenAIWhisperSpeechToTextProvider.ts:34](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/hearing/providers/OpenAIWhisperSpeechToTextProvider.ts#L34)
+Defined in: [packages/agentos/src/hearing/providers/OpenAIWhisperSpeechToTextProvider.ts:34](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/hearing/providers/OpenAIWhisperSpeechToTextProvider.ts#L34)
 
 Default Whisper model to use for transcription.
 

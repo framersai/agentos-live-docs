@@ -2,7 +2,7 @@
 
 > **createRegisteredExternalToolHandler**(`agentos`, `input`, `options?`): [`AgentOSExternalToolHandler`](../type-aliases/AgentOSExternalToolHandler.md)
 
-Defined in: [packages/agentos/src/api/runtime/processRequestWithRegisteredTools.ts:129](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/runtime/processRequestWithRegisteredTools.ts#L129)
+Defined in: [packages/agentos/src/api/runtime/processRequestWithRegisteredTools.ts:129](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/runtime/processRequestWithRegisteredTools.ts#L129)
 
 Creates an external-tool handler that executes AgentOS-registered tools with
 the correct live-turn execution context, then optionally falls back to a

@@ -1,6 +1,6 @@
 # Interface: OCRResult
 
-Defined in: [packages/agentos/src/api/performOCR.ts:106](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/performOCR.ts#L106)
+Defined in: [packages/agentos/src/api/performOCR.ts:106](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/performOCR.ts#L106)
 
 Result returned by [performOCR](../functions/performOCR.md).
 
@@ -10,7 +10,7 @@ Result returned by [performOCR](../functions/performOCR.md).
 
 > `optional` **category**: `string`
 
-Defined in: [packages/agentos/src/api/performOCR.ts:124](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/performOCR.ts#L124)
+Defined in: [packages/agentos/src/api/performOCR.ts:124](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/performOCR.ts#L124)
 
 Content category detected by the pipeline (e.g. `'printed-text'`).
 
@@ -20,7 +20,7 @@ Content category detected by the pipeline (e.g. `'printed-text'`).
 
 > **confidence**: `number`
 
-Defined in: [packages/agentos/src/api/performOCR.ts:111](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/performOCR.ts#L111)
+Defined in: [packages/agentos/src/api/performOCR.ts:111](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/performOCR.ts#L111)
 
 Overall confidence score (0 = no confidence, 1 = certain).
 
@@ -30,7 +30,7 @@ Overall confidence score (0 = no confidence, 1 = certain).
 
 > **provider**: `string`
 
-Defined in: [packages/agentos/src/api/performOCR.ts:127](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/performOCR.ts#L127)
+Defined in: [packages/agentos/src/api/performOCR.ts:127](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/performOCR.ts#L127)
 
 Provider name that produced the winning result (e.g. `'paddle'`, `'openai'`).
 
@@ -40,7 +40,7 @@ Provider name that produced the winning result (e.g. `'paddle'`, `'openai'`).
 
 > `optional` **regions**: `object`[]
 
-Defined in: [packages/agentos/src/api/performOCR.ts:133](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/performOCR.ts#L133)
+Defined in: [packages/agentos/src/api/performOCR.ts:133](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/performOCR.ts#L133)
 
 Text regions with bounding boxes, when the winning tier provides
 spatial information. Not all tiers return region data.
@@ -79,7 +79,7 @@ spatial information. Not all tiers return region data.
 
 > **text**: `string`
 
-Defined in: [packages/agentos/src/api/performOCR.ts:108](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/performOCR.ts#L108)
+Defined in: [packages/agentos/src/api/performOCR.ts:108](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/performOCR.ts#L108)
 
 Extracted text content.
 
@@ -89,7 +89,7 @@ Extracted text content.
 
 > **tier**: [`VisionTier`](../type-aliases/VisionTier.md)
 
-Defined in: [packages/agentos/src/api/performOCR.ts:121](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/performOCR.ts#L121)
+Defined in: [packages/agentos/src/api/performOCR.ts:121](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/performOCR.ts#L121)
 
 Which processing tier produced the winning result.
 

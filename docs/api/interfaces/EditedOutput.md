@@ -1,6 +1,6 @@
 # Interface: EditedOutput
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:193](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/hitl/IHumanInteractionManager.ts#L193)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:193](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/hitl/IHumanInteractionManager.ts#L193)
 
 Human's edited version of draft output.
 
@@ -10,7 +10,7 @@ Human's edited version of draft output.
 
 > `optional` **changeSummary**: `string`
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:201](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/hitl/IHumanInteractionManager.ts#L201)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:201](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/hitl/IHumanInteractionManager.ts#L201)
 
 Summary of changes
 
@@ -20,7 +20,7 @@ Summary of changes
 
 > **draftId**: `string`
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:195](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/hitl/IHumanInteractionManager.ts#L195)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:195](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/hitl/IHumanInteractionManager.ts#L195)
 
 Original draft ID
 
@@ -30,7 +30,7 @@ Original draft ID
 
 > **editedAt**: `Date`
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:205](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/hitl/IHumanInteractionManager.ts#L205)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:205](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/hitl/IHumanInteractionManager.ts#L205)
 
 Timestamp
 
@@ -40,7 +40,7 @@ Timestamp
 
 > **editedBy**: `string`
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:203](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/hitl/IHumanInteractionManager.ts#L203)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:203](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/hitl/IHumanInteractionManager.ts#L203)
 
 Who edited
 
@@ -50,7 +50,7 @@ Who edited
 
 > **editedContent**: `string`
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:197](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/hitl/IHumanInteractionManager.ts#L197)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:197](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/hitl/IHumanInteractionManager.ts#L197)
 
 Edited content
 
@@ -60,7 +60,7 @@ Edited content
 
 > `optional` **feedback**: `string`
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:207](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/hitl/IHumanInteractionManager.ts#L207)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:207](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/hitl/IHumanInteractionManager.ts#L207)
 
 Feedback for agent improvement
 
@@ -70,6 +70,6 @@ Feedback for agent improvement
 
 > **hasSignificantChanges**: `boolean`
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:199](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/hitl/IHumanInteractionManager.ts#L199)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:199](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/hitl/IHumanInteractionManager.ts#L199)
 
 Whether significant changes were made

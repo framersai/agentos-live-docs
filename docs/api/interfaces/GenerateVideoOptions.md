@@ -1,6 +1,6 @@
 # Interface: GenerateVideoOptions
 
-Defined in: [packages/agentos/src/api/generateVideo.ts:203](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/generateVideo.ts#L203)
+Defined in: [packages/agentos/src/api/generateVideo.ts:203](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/generateVideo.ts#L203)
 
 Options for a [generateVideo](../functions/generateVideo.md) call.
 
@@ -14,7 +14,7 @@ found (`RUNWAY_API_KEY` -> `REPLICATE_API_TOKEN` -> `FAL_API_KEY`).
 
 > `optional` **apiKey**: `string`
 
-Defined in: [packages/agentos/src/api/generateVideo.ts:255](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/generateVideo.ts#L255)
+Defined in: [packages/agentos/src/api/generateVideo.ts:255](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/generateVideo.ts#L255)
 
 Override the provider API key instead of reading from env vars.
 
@@ -24,7 +24,7 @@ Override the provider API key instead of reading from env vars.
 
 > `optional` **aspectRatio**: [`VideoAspectRatio`](../type-aliases/VideoAspectRatio.md)
 
-Defined in: [packages/agentos/src/api/generateVideo.ts:231](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/generateVideo.ts#L231)
+Defined in: [packages/agentos/src/api/generateVideo.ts:231](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/generateVideo.ts#L231)
 
 Desired aspect ratio (e.g. `"16:9"`, `"9:16"`).
 
@@ -34,7 +34,7 @@ Desired aspect ratio (e.g. `"16:9"`, `"9:16"`).
 
 > `optional` **baseUrl**: `string`
 
-Defined in: [packages/agentos/src/api/generateVideo.ts:258](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/generateVideo.ts#L258)
+Defined in: [packages/agentos/src/api/generateVideo.ts:258](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/generateVideo.ts#L258)
 
 Override the provider base URL.
 
@@ -44,7 +44,7 @@ Override the provider base URL.
 
 > `optional` **durationSec**: `number`
 
-Defined in: [packages/agentos/src/api/generateVideo.ts:228](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/generateVideo.ts#L228)
+Defined in: [packages/agentos/src/api/generateVideo.ts:228](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/generateVideo.ts#L228)
 
 Desired output duration in seconds.
 
@@ -54,7 +54,7 @@ Desired output duration in seconds.
 
 > `optional` **image**: `Buffer`
 
-Defined in: [packages/agentos/src/api/generateVideo.ts:212](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/generateVideo.ts#L212)
+Defined in: [packages/agentos/src/api/generateVideo.ts:212](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/generateVideo.ts#L212)
 
 Source image for image-to-video generation. When provided, the
 request is dispatched to `imageToVideo()` instead of `generateVideo()`.
@@ -66,7 +66,7 @@ Accepts a raw `Buffer`.
 
 > `optional` **model**: `string`
 
-Defined in: [packages/agentos/src/api/generateVideo.ts:225](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/generateVideo.ts#L225)
+Defined in: [packages/agentos/src/api/generateVideo.ts:225](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/generateVideo.ts#L225)
 
 Model identifier within the provider (e.g. `"gen3a_turbo"`,
 `"klingai/kling-v1"`). When omitted, the provider's default model
@@ -78,7 +78,7 @@ is used.
 
 > `optional` **negativePrompt**: `string`
 
-Defined in: [packages/agentos/src/api/generateVideo.ts:237](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/generateVideo.ts#L237)
+Defined in: [packages/agentos/src/api/generateVideo.ts:237](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/generateVideo.ts#L237)
 
 Negative prompt describing content to avoid.
 
@@ -88,7 +88,7 @@ Negative prompt describing content to avoid.
 
 > `optional` **onProgress**: (`event`) => `void`
 
-Defined in: [packages/agentos/src/api/generateVideo.ts:252](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/generateVideo.ts#L252)
+Defined in: [packages/agentos/src/api/generateVideo.ts:252](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/generateVideo.ts#L252)
 
 Optional progress callback invoked during long-running generation.
 Called with a [VideoProgressEvent](VideoProgressEvent.md) at each status transition.
@@ -109,7 +109,7 @@ Called with a [VideoProgressEvent](VideoProgressEvent.md) at each status transit
 
 > **prompt**: `string`
 
-Defined in: [packages/agentos/src/api/generateVideo.ts:205](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/generateVideo.ts#L205)
+Defined in: [packages/agentos/src/api/generateVideo.ts:205](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/generateVideo.ts#L205)
 
 Text prompt describing the desired video content.
 
@@ -119,7 +119,7 @@ Text prompt describing the desired video content.
 
 > `optional` **provider**: `string`
 
-Defined in: [packages/agentos/src/api/generateVideo.ts:218](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/generateVideo.ts#L218)
+Defined in: [packages/agentos/src/api/generateVideo.ts:218](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/generateVideo.ts#L218)
 
 Explicit provider identifier (e.g. `"runway"`, `"replicate"`, `"fal"`).
 When omitted, auto-detection from environment variables is used.
@@ -130,7 +130,7 @@ When omitted, auto-detection from environment variables is used.
 
 > `optional` **providerPreferences**: [`MediaProviderPreference`](MediaProviderPreference.md)
 
-Defined in: [packages/agentos/src/api/generateVideo.ts:265](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/generateVideo.ts#L265)
+Defined in: [packages/agentos/src/api/generateVideo.ts:265](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/generateVideo.ts#L265)
 
 Provider preferences for reordering or filtering the fallback chain.
 When supplied, the available video providers are reordered according to
@@ -142,7 +142,7 @@ When supplied, the available video providers are reordered according to
 
 > `optional` **resolution**: `string`
 
-Defined in: [packages/agentos/src/api/generateVideo.ts:234](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/generateVideo.ts#L234)
+Defined in: [packages/agentos/src/api/generateVideo.ts:234](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/generateVideo.ts#L234)
 
 Desired output resolution (e.g. `"1280x720"`, `"720p"`).
 
@@ -152,7 +152,7 @@ Desired output resolution (e.g. `"1280x720"`, `"720p"`).
 
 > `optional` **seed**: `number`
 
-Defined in: [packages/agentos/src/api/generateVideo.ts:240](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/generateVideo.ts#L240)
+Defined in: [packages/agentos/src/api/generateVideo.ts:240](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/generateVideo.ts#L240)
 
 Random seed for reproducible generation (provider-dependent).
 
@@ -162,7 +162,7 @@ Random seed for reproducible generation (provider-dependent).
 
 > `optional` **timeoutMs**: `number`
 
-Defined in: [packages/agentos/src/api/generateVideo.ts:246](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/generateVideo.ts#L246)
+Defined in: [packages/agentos/src/api/generateVideo.ts:246](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/generateVideo.ts#L246)
 
 Maximum time in milliseconds to wait for generation to complete.
 Provider-dependent — not all providers honour client-side timeouts.
@@ -173,6 +173,6 @@ Provider-dependent — not all providers honour client-side timeouts.
 
 > `optional` **usageLedger**: [`AgentOSUsageLedgerOptions`](AgentOSUsageLedgerOptions.md)
 
-Defined in: [packages/agentos/src/api/generateVideo.ts:268](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/generateVideo.ts#L268)
+Defined in: [packages/agentos/src/api/generateVideo.ts:268](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/generateVideo.ts#L268)
 
 Optional durable usage ledger configuration for accounting.

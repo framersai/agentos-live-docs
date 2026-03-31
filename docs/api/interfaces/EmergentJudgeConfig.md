@@ -1,6 +1,6 @@
 # Interface: EmergentJudgeConfig
 
-Defined in: [packages/agentos/src/emergent/EmergentJudge.ts:101](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/emergent/EmergentJudge.ts#L101)
+Defined in: [packages/agentos/src/emergent/EmergentJudge.ts:101](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/emergent/EmergentJudge.ts#L101)
 
 Configuration for the [EmergentJudge](../classes/EmergentJudge.md).
 
@@ -13,7 +13,7 @@ making the judge model-agnostic and easily testable with mocks.
 
 > **generateText**: (`model`, `prompt`) => `Promise`\<`string`\>
 
-Defined in: [packages/agentos/src/emergent/EmergentJudge.ts:126](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/emergent/EmergentJudge.ts#L126)
+Defined in: [packages/agentos/src/emergent/EmergentJudge.ts:126](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/emergent/EmergentJudge.ts#L126)
 
 Callback that invokes an LLM to generate text from a prompt.
 The judge calls this for creation reviews and promotion panels.
@@ -44,7 +44,7 @@ The raw text response from the LLM.
 
 > **judgeModel**: `string`
 
-Defined in: [packages/agentos/src/emergent/EmergentJudge.ts:108](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/emergent/EmergentJudge.ts#L108)
+Defined in: [packages/agentos/src/emergent/EmergentJudge.ts:108](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/emergent/EmergentJudge.ts#L108)
 
 Model ID used for the single-pass creation review.
 Should be a fast, cost-efficient model since correctness is primarily
@@ -62,7 +62,7 @@ validated through test cases.
 
 > **promotionModel**: `string`
 
-Defined in: [packages/agentos/src/emergent/EmergentJudge.ts:116](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/emergent/EmergentJudge.ts#L116)
+Defined in: [packages/agentos/src/emergent/EmergentJudge.ts:116](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/emergent/EmergentJudge.ts#L116)
 
 Model ID used by both reviewers in the promotion panel.
 Should be a more capable model than `judgeModel` since promotion

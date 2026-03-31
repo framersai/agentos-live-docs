@@ -1,6 +1,6 @@
 # Interface: MechanismMetadata
 
-Defined in: [packages/agentos/src/memory/mechanisms/types.ts:154](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/mechanisms/types.ts#L154)
+Defined in: [packages/agentos/src/memory/mechanisms/types.ts:154](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/mechanisms/types.ts#L154)
 
 Optional metadata fields added to MemoryTrace.structuredData by mechanisms.
 
@@ -10,7 +10,7 @@ Optional metadata fields added to MemoryTrace.structuredData by mechanisms.
 
 > `optional` **cumulativeDrift**: `number`
 
-Defined in: [packages/agentos/src/memory/mechanisms/types.ts:156](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/mechanisms/types.ts#L156)
+Defined in: [packages/agentos/src/memory/mechanisms/types.ts:156](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/mechanisms/types.ts#L156)
 
 Reconsolidation: cumulative absolute PAD drift.
 
@@ -20,7 +20,7 @@ Reconsolidation: cumulative absolute PAD drift.
 
 > `optional` **driftHistory**: [`DriftEvent`](DriftEvent.md)[]
 
-Defined in: [packages/agentos/src/memory/mechanisms/types.ts:158](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/mechanisms/types.ts#L158)
+Defined in: [packages/agentos/src/memory/mechanisms/types.ts:158](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/mechanisms/types.ts#L158)
 
 Reconsolidation: audit trail of drift events.
 
@@ -30,7 +30,7 @@ Reconsolidation: audit trail of drift events.
 
 > `optional` **gisted**: `boolean`
 
-Defined in: [packages/agentos/src/memory/mechanisms/types.ts:160](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/mechanisms/types.ts#L160)
+Defined in: [packages/agentos/src/memory/mechanisms/types.ts:160](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/mechanisms/types.ts#L160)
 
 Temporal Gist: whether content has been compressed.
 
@@ -40,7 +40,7 @@ Temporal Gist: whether content has been compressed.
 
 > `optional` **lastSourceDecayAt**: `number`
 
-Defined in: [packages/agentos/src/memory/mechanisms/types.ts:170](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/mechanisms/types.ts#L170)
+Defined in: [packages/agentos/src/memory/mechanisms/types.ts:170](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/mechanisms/types.ts#L170)
 
 Source Confidence Decay: timestamp of last decay application.
 
@@ -50,7 +50,7 @@ Source Confidence Decay: timestamp of last decay application.
 
 > `optional` **originalContentHash**: `string`
 
-Defined in: [packages/agentos/src/memory/mechanisms/types.ts:162](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/mechanisms/types.ts#L162)
+Defined in: [packages/agentos/src/memory/mechanisms/types.ts:162](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/mechanisms/types.ts#L162)
 
 Temporal Gist: SHA-256 of original content before gisting.
 
@@ -60,7 +60,7 @@ Temporal Gist: SHA-256 of original content before gisting.
 
 > `optional` **reappraisalHistory**: `object`[]
 
-Defined in: [packages/agentos/src/memory/mechanisms/types.ts:172](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/mechanisms/types.ts#L172)
+Defined in: [packages/agentos/src/memory/mechanisms/types.ts:172](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/mechanisms/types.ts#L172)
 
 Emotion Regulation: audit trail of reappraisal events.
 
@@ -82,7 +82,7 @@ Emotion Regulation: audit trail of reappraisal events.
 
 > `optional` **schemaClusterId**: `string`
 
-Defined in: [packages/agentos/src/memory/mechanisms/types.ts:168](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/mechanisms/types.ts#L168)
+Defined in: [packages/agentos/src/memory/mechanisms/types.ts:168](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/mechanisms/types.ts#L168)
 
 Schema Encoding: ID of the matched cluster.
 
@@ -92,7 +92,7 @@ Schema Encoding: ID of the matched cluster.
 
 > `optional` **schemaCongruent**: `boolean`
 
-Defined in: [packages/agentos/src/memory/mechanisms/types.ts:164](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/mechanisms/types.ts#L164)
+Defined in: [packages/agentos/src/memory/mechanisms/types.ts:164](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/mechanisms/types.ts#L164)
 
 Schema Encoding: trace matched an existing schema cluster.
 
@@ -102,6 +102,6 @@ Schema Encoding: trace matched an existing schema cluster.
 
 > `optional` **schemaViolating**: `boolean`
 
-Defined in: [packages/agentos/src/memory/mechanisms/types.ts:166](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/memory/mechanisms/types.ts#L166)
+Defined in: [packages/agentos/src/memory/mechanisms/types.ts:166](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/mechanisms/types.ts#L166)
 
 Schema Encoding: trace violated all existing schemas (novel).

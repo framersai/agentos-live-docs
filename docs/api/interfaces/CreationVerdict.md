@@ -1,6 +1,6 @@
 # Interface: CreationVerdict
 
-Defined in: [packages/agentos/src/emergent/types.ts:245](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/emergent/types.ts#L245)
+Defined in: [packages/agentos/src/emergent/types.ts:245](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/emergent/types.ts#L245)
 
 Evaluation verdict produced by the LLM-as-judge after a tool is forged.
 
@@ -13,7 +13,7 @@ five evaluation dimensions. A tool is only registered when `approved` is `true`.
 
 > **approved**: `boolean`
 
-Defined in: [packages/agentos/src/emergent/types.ts:250](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/emergent/types.ts#L250)
+Defined in: [packages/agentos/src/emergent/types.ts:250](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/emergent/types.ts#L250)
 
 Whether the judge approves the tool for registration at its initial tier.
 `false` means the forge request is rejected and no tool is registered.
@@ -24,7 +24,7 @@ Whether the judge approves the tool for registration at its initial tier.
 
 > **bounded**: `number`
 
-Defined in: [packages/agentos/src/emergent/types.ts:284](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/emergent/types.ts#L284)
+Defined in: [packages/agentos/src/emergent/types.ts:284](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/emergent/types.ts#L284)
 
 Bounded execution score in the range [0, 1].
 Indicates whether the tool reliably completes within its declared
@@ -36,7 +36,7 @@ resource limits (memory, time). Scores derived from sandbox telemetry.
 
 > **confidence**: `number`
 
-Defined in: [packages/agentos/src/emergent/types.ts:256](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/emergent/types.ts#L256)
+Defined in: [packages/agentos/src/emergent/types.ts:256](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/emergent/types.ts#L256)
 
 Overall confidence the judge has in its verdict, in the range [0, 1].
 Low confidence may trigger a second judge pass or human review.
@@ -47,7 +47,7 @@ Low confidence may trigger a second judge pass or human review.
 
 > **correctness**: `number`
 
-Defined in: [packages/agentos/src/emergent/types.ts:270](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/emergent/types.ts#L270)
+Defined in: [packages/agentos/src/emergent/types.ts:270](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/emergent/types.ts#L270)
 
 Correctness score in the range [0, 1].
 Measures how well the tool's outputs match the expected outputs in the
@@ -59,7 +59,7 @@ declared test cases.
 
 > **determinism**: `number`
 
-Defined in: [packages/agentos/src/emergent/types.ts:277](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/emergent/types.ts#L277)
+Defined in: [packages/agentos/src/emergent/types.ts:277](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/emergent/types.ts#L277)
 
 Determinism score in the range [0, 1].
 Gauges whether repeated invocations with identical inputs produce
@@ -71,7 +71,7 @@ consistent outputs. Lower scores flag non-deterministic behaviour.
 
 > **reasoning**: `string`
 
-Defined in: [packages/agentos/src/emergent/types.ts:290](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/emergent/types.ts#L290)
+Defined in: [packages/agentos/src/emergent/types.ts:290](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/emergent/types.ts#L290)
 
 Free-text explanation of the verdict, including any failure reasons,
 flagged patterns, or suggestions for improvement.
@@ -82,7 +82,7 @@ flagged patterns, or suggestions for improvement.
 
 > **safety**: `number`
 
-Defined in: [packages/agentos/src/emergent/types.ts:263](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/emergent/types.ts#L263)
+Defined in: [packages/agentos/src/emergent/types.ts:263](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/emergent/types.ts#L263)
 
 Safety score in the range [0, 1].
 Assesses whether the tool's implementation could cause unintended harm,

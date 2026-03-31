@@ -1,6 +1,6 @@
 # Interface: AgentResponse
 
-Defined in: [packages/agentos/src/agents/agency/IAgentCommunicationBus.ts:117](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/agents/agency/IAgentCommunicationBus.ts#L117)
+Defined in: [packages/agentos/src/agents/agency/IAgentCommunicationBus.ts:117](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/agents/agency/IAgentCommunicationBus.ts#L117)
 
 Response to an agent request.
 
@@ -10,7 +10,7 @@ Response to an agent request.
 
 > **content**: `unknown`
 
-Defined in: [packages/agentos/src/agents/agency/IAgentCommunicationBus.ts:127](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/agents/agency/IAgentCommunicationBus.ts#L127)
+Defined in: [packages/agentos/src/agents/agency/IAgentCommunicationBus.ts:127](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/agents/agency/IAgentCommunicationBus.ts#L127)
 
 Response content
 
@@ -20,7 +20,7 @@ Response content
 
 > `optional` **error**: `string`
 
-Defined in: [packages/agentos/src/agents/agency/IAgentCommunicationBus.ts:129](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/agents/agency/IAgentCommunicationBus.ts#L129)
+Defined in: [packages/agentos/src/agents/agency/IAgentCommunicationBus.ts:129](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/agents/agency/IAgentCommunicationBus.ts#L129)
 
 Error details if status is 'error'
 
@@ -30,7 +30,7 @@ Error details if status is 'error'
 
 > **fromAgentId**: `string`
 
-Defined in: [packages/agentos/src/agents/agency/IAgentCommunicationBus.ts:123](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/agents/agency/IAgentCommunicationBus.ts#L123)
+Defined in: [packages/agentos/src/agents/agency/IAgentCommunicationBus.ts:123](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/agents/agency/IAgentCommunicationBus.ts#L123)
 
 Responding agent ID
 
@@ -40,7 +40,7 @@ Responding agent ID
 
 > **requestId**: `string`
 
-Defined in: [packages/agentos/src/agents/agency/IAgentCommunicationBus.ts:121](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/agents/agency/IAgentCommunicationBus.ts#L121)
+Defined in: [packages/agentos/src/agents/agency/IAgentCommunicationBus.ts:121](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/agents/agency/IAgentCommunicationBus.ts#L121)
 
 Original request ID
 
@@ -50,7 +50,7 @@ Original request ID
 
 > **respondedAt**: `Date`
 
-Defined in: [packages/agentos/src/agents/agency/IAgentCommunicationBus.ts:131](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/agents/agency/IAgentCommunicationBus.ts#L131)
+Defined in: [packages/agentos/src/agents/agency/IAgentCommunicationBus.ts:131](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/agents/agency/IAgentCommunicationBus.ts#L131)
 
 Timestamp
 
@@ -60,7 +60,7 @@ Timestamp
 
 > **responseId**: `string`
 
-Defined in: [packages/agentos/src/agents/agency/IAgentCommunicationBus.ts:119](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/agents/agency/IAgentCommunicationBus.ts#L119)
+Defined in: [packages/agentos/src/agents/agency/IAgentCommunicationBus.ts:119](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/agents/agency/IAgentCommunicationBus.ts#L119)
 
 Response identifier
 
@@ -70,6 +70,6 @@ Response identifier
 
 > **status**: `"success"` \| `"error"` \| `"timeout"` \| `"rejected"`
 
-Defined in: [packages/agentos/src/agents/agency/IAgentCommunicationBus.ts:125](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/agents/agency/IAgentCommunicationBus.ts#L125)
+Defined in: [packages/agentos/src/agents/agency/IAgentCommunicationBus.ts:125](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/agents/agency/IAgentCommunicationBus.ts#L125)
 
 Response status

@@ -1,6 +1,6 @@
 # Class: TelephonyStreamTransport
 
-Defined in: [packages/agentos/src/channels/telephony/TelephonyStreamTransport.ts:134](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/telephony/TelephonyStreamTransport.ts#L134)
+Defined in: [packages/agentos/src/channels/telephony/TelephonyStreamTransport.ts:134](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/telephony/TelephonyStreamTransport.ts#L134)
 
 Adapts a telephony provider WebSocket media stream to the
 `IStreamTransport` interface consumed by the AgentOS voice pipeline.
@@ -59,7 +59,7 @@ transport.on('dtmf', ({ digit }) => {
 
 > **new TelephonyStreamTransport**(`ws`, `parser`, `config?`): `TelephonyStreamTransport`
 
-Defined in: [packages/agentos/src/channels/telephony/TelephonyStreamTransport.ts:183](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/telephony/TelephonyStreamTransport.ts#L183)
+Defined in: [packages/agentos/src/channels/telephony/TelephonyStreamTransport.ts:183](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/telephony/TelephonyStreamTransport.ts#L183)
 
 Create a new telephony stream transport.
 
@@ -102,7 +102,7 @@ Optional configuration overrides.
 
 > `readonly` **id**: `string`
 
-Defined in: [packages/agentos/src/channels/telephony/TelephonyStreamTransport.ts:140](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/telephony/TelephonyStreamTransport.ts#L140)
+Defined in: [packages/agentos/src/channels/telephony/TelephonyStreamTransport.ts:140](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/telephony/TelephonyStreamTransport.ts#L140)
 
 Stable UUID for this transport connection.
 
@@ -116,7 +116,7 @@ Stable UUID for this transport connection.
 
 > `static` **captureRejections**: `boolean`
 
-Defined in: node\_modules/.pnpm/@types+node@20.19.23/node\_modules/@types/node/events.d.ts:426
+Defined in: apps/wilds-ai/node\_modules/.pnpm/@types+node@20.19.37/node\_modules/@types/node/events.d.ts:426
 
 Value: [boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type)
 
@@ -136,7 +136,7 @@ v13.4.0, v12.16.0
 
 > `readonly` `static` **captureRejectionSymbol**: *typeof* [`captureRejectionSymbol`](SpeechProviderResolver.md#capturerejectionsymbol)
 
-Defined in: node\_modules/.pnpm/@types+node@20.19.23/node\_modules/@types/node/events.d.ts:419
+Defined in: apps/wilds-ai/node\_modules/.pnpm/@types+node@20.19.37/node\_modules/@types/node/events.d.ts:419
 
 Value: `Symbol.for('nodejs.rejection')`
 
@@ -156,7 +156,7 @@ v13.4.0, v12.16.0
 
 > `static` **defaultMaxListeners**: `number`
 
-Defined in: node\_modules/.pnpm/@types+node@20.19.23/node\_modules/@types/node/events.d.ts:465
+Defined in: apps/wilds-ai/node\_modules/.pnpm/@types+node@20.19.37/node\_modules/@types/node/events.d.ts:465
 
 By default, a maximum of `10` listeners can be registered for any single
 event. This limit can be changed for individual `EventEmitter` instances
@@ -208,7 +208,7 @@ v0.11.2
 
 > `readonly` `static` **errorMonitor**: *typeof* [`errorMonitor`](SpeechProviderResolver.md#errormonitor)
 
-Defined in: node\_modules/.pnpm/@types+node@20.19.23/node\_modules/@types/node/events.d.ts:412
+Defined in: apps/wilds-ai/node\_modules/.pnpm/@types+node@20.19.37/node\_modules/@types/node/events.d.ts:412
 
 This symbol shall be used to install a listener for only monitoring `'error'` events. Listeners installed using this symbol are called before the regular `'error'` listeners are called.
 
@@ -231,7 +231,7 @@ v13.6.0, v12.17.0
 
 > **get** **state**(): `"connecting"` \| `"open"` \| `"closed"` \| `"closing"`
 
-Defined in: [packages/agentos/src/channels/telephony/TelephonyStreamTransport.ts:153](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/telephony/TelephonyStreamTransport.ts#L153)
+Defined in: [packages/agentos/src/channels/telephony/TelephonyStreamTransport.ts:153](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/telephony/TelephonyStreamTransport.ts#L153)
 
 Current connection lifecycle state.
 
@@ -254,7 +254,7 @@ Current connection lifecycle state.
 
 > `optional` **\[captureRejectionSymbol\]**\<`K`\>(`error`, `event`, ...`args`): `void`
 
-Defined in: node\_modules/.pnpm/@types+node@20.19.23/node\_modules/@types/node/events.d.ts:103
+Defined in: apps/wilds-ai/node\_modules/.pnpm/@types+node@20.19.37/node\_modules/@types/node/events.d.ts:103
 
 #### Type Parameters
 
@@ -294,7 +294,7 @@ Defined in: node\_modules/.pnpm/@types+node@20.19.23/node\_modules/@types/node/e
 
 > **addListener**\<`K`\>(`eventName`, `listener`): `this`
 
-Defined in: node\_modules/.pnpm/@types+node@20.19.23/node\_modules/@types/node/events.d.ts:643
+Defined in: apps/wilds-ai/node\_modules/.pnpm/@types+node@20.19.37/node\_modules/@types/node/events.d.ts:643
 
 Alias for `emitter.on(eventName, listener)`.
 
@@ -336,7 +336,7 @@ v0.1.26
 
 > **close**(`code?`, `reason?`): `void`
 
-Defined in: [packages/agentos/src/channels/telephony/TelephonyStreamTransport.ts:336](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/telephony/TelephonyStreamTransport.ts#L336)
+Defined in: [packages/agentos/src/channels/telephony/TelephonyStreamTransport.ts:336](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/telephony/TelephonyStreamTransport.ts#L336)
 
 Initiate graceful closure of the transport.
 
@@ -372,7 +372,7 @@ Optional human-readable close reason.
 
 > **emit**\<`K`\>(`eventName`, ...`args`): `boolean`
 
-Defined in: node\_modules/.pnpm/@types+node@20.19.23/node\_modules/@types/node/events.d.ts:905
+Defined in: apps/wilds-ai/node\_modules/.pnpm/@types+node@20.19.37/node\_modules/@types/node/events.d.ts:905
 
 Synchronously calls each of the listeners registered for the event named `eventName`, in the order they were registered, passing the supplied arguments
 to each.
@@ -450,7 +450,7 @@ v0.1.26
 
 > **eventNames**(): (`string` \| `symbol`)[]
 
-Defined in: node\_modules/.pnpm/@types+node@20.19.23/node\_modules/@types/node/events.d.ts:968
+Defined in: apps/wilds-ai/node\_modules/.pnpm/@types+node@20.19.37/node\_modules/@types/node/events.d.ts:968
 
 Returns an array listing the events for which the emitter has registered
 listeners. The values in the array are strings or `Symbol`s.
@@ -491,7 +491,7 @@ v6.0.0
 
 > **getMaxListeners**(): `number`
 
-Defined in: node\_modules/.pnpm/@types+node@20.19.23/node\_modules/@types/node/events.d.ts:820
+Defined in: apps/wilds-ai/node\_modules/.pnpm/@types+node@20.19.37/node\_modules/@types/node/events.d.ts:820
 
 Returns the current max listener value for the `EventEmitter` which is either
 set by `emitter.setMaxListeners(n)` or defaults to [EventEmitter.defaultMaxListeners](SpeechProviderResolver.md#defaultmaxlisteners).
@@ -518,7 +518,7 @@ v1.0.0
 
 > **listenerCount**\<`K`\>(`eventName`, `listener?`): `number`
 
-Defined in: node\_modules/.pnpm/@types+node@20.19.23/node\_modules/@types/node/events.d.ts:914
+Defined in: apps/wilds-ai/node\_modules/.pnpm/@types+node@20.19.37/node\_modules/@types/node/events.d.ts:914
 
 Returns the number of listeners listening for the event named `eventName`.
 If `listener` is provided, it will return how many times the listener is found
@@ -566,7 +566,7 @@ v3.2.0
 
 > **listeners**\<`K`\>(`eventName`): `Function`[]
 
-Defined in: node\_modules/.pnpm/@types+node@20.19.23/node\_modules/@types/node/events.d.ts:833
+Defined in: apps/wilds-ai/node\_modules/.pnpm/@types+node@20.19.37/node\_modules/@types/node/events.d.ts:833
 
 Returns a copy of the array of listeners for the event named `eventName`.
 
@@ -612,7 +612,7 @@ v0.1.26
 
 > **off**\<`K`\>(`eventName`, `listener`): `this`
 
-Defined in: node\_modules/.pnpm/@types+node@20.19.23/node\_modules/@types/node/events.d.ts:793
+Defined in: apps/wilds-ai/node\_modules/.pnpm/@types+node@20.19.37/node\_modules/@types/node/events.d.ts:793
 
 Alias for `emitter.removeListener()`.
 
@@ -654,7 +654,7 @@ v10.0.0
 
 > **on**\<`K`\>(`eventName`, `listener`): `this`
 
-Defined in: node\_modules/.pnpm/@types+node@20.19.23/node\_modules/@types/node/events.d.ts:675
+Defined in: apps/wilds-ai/node\_modules/.pnpm/@types+node@20.19.37/node\_modules/@types/node/events.d.ts:675
 
 Adds the `listener` function to the end of the listeners array for the event
 named `eventName`. No checks are made to see if the `listener` has already
@@ -725,7 +725,7 @@ v0.1.101
 
 > **once**\<`K`\>(`eventName`, `listener`): `this`
 
-Defined in: node\_modules/.pnpm/@types+node@20.19.23/node\_modules/@types/node/events.d.ts:705
+Defined in: apps/wilds-ai/node\_modules/.pnpm/@types+node@20.19.37/node\_modules/@types/node/events.d.ts:705
 
 Adds a **one-time** `listener` function for the event named `eventName`. The
 next time `eventName` is triggered, this listener is removed and then invoked.
@@ -794,7 +794,7 @@ v0.3.0
 
 > **prependListener**\<`K`\>(`eventName`, `listener`): `this`
 
-Defined in: node\_modules/.pnpm/@types+node@20.19.23/node\_modules/@types/node/events.d.ts:932
+Defined in: apps/wilds-ai/node\_modules/.pnpm/@types+node@20.19.37/node\_modules/@types/node/events.d.ts:932
 
 Adds the `listener` function to the _beginning_ of the listeners array for the
 event named `eventName`. No checks are made to see if the `listener` has
@@ -851,7 +851,7 @@ v6.0.0
 
 > **prependOnceListener**\<`K`\>(`eventName`, `listener`): `this`
 
-Defined in: node\_modules/.pnpm/@types+node@20.19.23/node\_modules/@types/node/events.d.ts:948
+Defined in: apps/wilds-ai/node\_modules/.pnpm/@types+node@20.19.37/node\_modules/@types/node/events.d.ts:948
 
 Adds a **one-time**`listener` function for the event named `eventName` to the _beginning_ of the listeners array. The next time `eventName` is triggered, this
 listener is removed, and then invoked.
@@ -906,7 +906,7 @@ v6.0.0
 
 > **rawListeners**\<`K`\>(`eventName`): `Function`[]
 
-Defined in: node\_modules/.pnpm/@types+node@20.19.23/node\_modules/@types/node/events.d.ts:864
+Defined in: apps/wilds-ai/node\_modules/.pnpm/@types+node@20.19.37/node\_modules/@types/node/events.d.ts:864
 
 Returns a copy of the array of listeners for the event named `eventName`,
 including any wrappers (such as those created by `.once()`).
@@ -970,7 +970,7 @@ v9.4.0
 
 > **removeAllListeners**(`eventName?`): `this`
 
-Defined in: node\_modules/.pnpm/@types+node@20.19.23/node\_modules/@types/node/events.d.ts:804
+Defined in: apps/wilds-ai/node\_modules/.pnpm/@types+node@20.19.37/node\_modules/@types/node/events.d.ts:804
 
 Removes all listeners, or those of the specified `eventName`.
 
@@ -1008,7 +1008,7 @@ v0.1.26
 
 > **removeListener**\<`K`\>(`eventName`, `listener`): `this`
 
-Defined in: node\_modules/.pnpm/@types+node@20.19.23/node\_modules/@types/node/events.d.ts:788
+Defined in: apps/wilds-ai/node\_modules/.pnpm/@types+node@20.19.37/node\_modules/@types/node/events.d.ts:788
 
 Removes the specified `listener` from the listener array for the event named `eventName`.
 
@@ -1128,7 +1128,7 @@ v0.1.26
 
 > **sendAudio**(`chunk`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/channels/telephony/TelephonyStreamTransport.ts:286](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/telephony/TelephonyStreamTransport.ts#L286)
+Defined in: [packages/agentos/src/channels/telephony/TelephonyStreamTransport.ts:286](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/telephony/TelephonyStreamTransport.ts#L286)
 
 Send synthesised audio to the caller.
 
@@ -1161,7 +1161,7 @@ Encoded audio chunk from the TTS pipeline.
 
 > **sendControl**(`message`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/channels/telephony/TelephonyStreamTransport.ts:321](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/channels/telephony/TelephonyStreamTransport.ts#L321)
+Defined in: [packages/agentos/src/channels/telephony/TelephonyStreamTransport.ts:321](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/telephony/TelephonyStreamTransport.ts#L321)
 
 Send a JSON control message over the WebSocket.
 
@@ -1189,7 +1189,7 @@ Server-to-client pipeline protocol message.
 
 > **setMaxListeners**(`n`): `this`
 
-Defined in: node\_modules/.pnpm/@types+node@20.19.23/node\_modules/@types/node/events.d.ts:814
+Defined in: apps/wilds-ai/node\_modules/.pnpm/@types+node@20.19.37/node\_modules/@types/node/events.d.ts:814
 
 By default `EventEmitter`s will print a warning if more than `10` listeners are
 added for a particular event. This is a useful default that helps finding
@@ -1226,7 +1226,7 @@ v0.3.5
 
 > `static` **addAbortListener**(`signal`, `resource`): `Disposable`
 
-Defined in: node\_modules/.pnpm/@types+node@20.19.23/node\_modules/@types/node/events.d.ts:404
+Defined in: apps/wilds-ai/node\_modules/.pnpm/@types+node@20.19.37/node\_modules/@types/node/events.d.ts:404
 
 **`Experimental`**
 
@@ -1290,7 +1290,7 @@ v20.5.0
 
 > `static` **getEventListeners**(`emitter`, `name`): `Function`[]
 
-Defined in: node\_modules/.pnpm/@types+node@20.19.23/node\_modules/@types/node/events.d.ts:325
+Defined in: apps/wilds-ai/node\_modules/.pnpm/@types+node@20.19.37/node\_modules/@types/node/events.d.ts:325
 
 Returns a copy of the array of listeners for the event named `eventName`.
 
@@ -1345,7 +1345,7 @@ v15.2.0, v14.17.0
 
 > `static` **getMaxListeners**(`emitter`): `number`
 
-Defined in: node\_modules/.pnpm/@types+node@20.19.23/node\_modules/@types/node/events.d.ts:354
+Defined in: apps/wilds-ai/node\_modules/.pnpm/@types+node@20.19.37/node\_modules/@types/node/events.d.ts:354
 
 Returns the currently set max amount of listeners.
 
@@ -1397,7 +1397,7 @@ v19.9.0
 
 > `static` **listenerCount**(`emitter`, `eventName`): `number`
 
-Defined in: node\_modules/.pnpm/@types+node@20.19.23/node\_modules/@types/node/events.d.ts:297
+Defined in: apps/wilds-ai/node\_modules/.pnpm/@types+node@20.19.37/node\_modules/@types/node/events.d.ts:297
 
 A class method that returns the number of listeners for the given `eventName` registered on the given `emitter`.
 
@@ -1449,7 +1449,7 @@ Since v3.2.0 - Use `listenerCount` instead.
 
 > `static` **on**(`emitter`, `eventName`, `options?`): `AsyncIterator`\<`any`[]\>
 
-Defined in: node\_modules/.pnpm/@types+node@20.19.23/node\_modules/@types/node/events.d.ts:270
+Defined in: apps/wilds-ai/node\_modules/.pnpm/@types+node@20.19.37/node\_modules/@types/node/events.d.ts:270
 
 ```js
 import { on, EventEmitter } from 'node:events';
@@ -1560,7 +1560,7 @@ v13.6.0, v12.16.0
 
 > `static` **on**(`emitter`, `eventName`, `options?`): `AsyncIterator`\<`any`[]\>
 
-Defined in: node\_modules/.pnpm/@types+node@20.19.23/node\_modules/@types/node/events.d.ts:275
+Defined in: apps/wilds-ai/node\_modules/.pnpm/@types+node@20.19.37/node\_modules/@types/node/events.d.ts:275
 
 ```js
 import { on, EventEmitter } from 'node:events';
@@ -1675,7 +1675,7 @@ v13.6.0, v12.16.0
 
 > `static` **once**(`emitter`, `eventName`, `options?`): `Promise`\<`any`[]\>
 
-Defined in: node\_modules/.pnpm/@types+node@20.19.23/node\_modules/@types/node/events.d.ts:184
+Defined in: apps/wilds-ai/node\_modules/.pnpm/@types+node@20.19.37/node\_modules/@types/node/events.d.ts:184
 
 Creates a `Promise` that is fulfilled when the `EventEmitter` emits the given
 event or that is rejected if the `EventEmitter` emits `'error'` while waiting.
@@ -1784,7 +1784,7 @@ v11.13.0, v10.16.0
 
 > `static` **once**(`emitter`, `eventName`, `options?`): `Promise`\<`any`[]\>
 
-Defined in: node\_modules/.pnpm/@types+node@20.19.23/node\_modules/@types/node/events.d.ts:189
+Defined in: apps/wilds-ai/node\_modules/.pnpm/@types+node@20.19.37/node\_modules/@types/node/events.d.ts:189
 
 Creates a `Promise` that is fulfilled when the `EventEmitter` emits the given
 event or that is rejected if the `EventEmitter` emits `'error'` while waiting.
@@ -1895,7 +1895,7 @@ v11.13.0, v10.16.0
 
 > `static` **setMaxListeners**(`n?`, ...`eventTargets`): `void`
 
-Defined in: node\_modules/.pnpm/@types+node@20.19.23/node\_modules/@types/node/events.d.ts:369
+Defined in: apps/wilds-ai/node\_modules/.pnpm/@types+node@20.19.37/node\_modules/@types/node/events.d.ts:369
 
 ```js
 import { setMaxListeners, EventEmitter } from 'node:events';

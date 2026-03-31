@@ -2,7 +2,7 @@
 
 > **wrapWithCrossAgentGuardrails**(`guardrails`, `crossAgentContext`, `guardrailContext`, `stream`, `options`): `AsyncGenerator`\<[`AgentOSResponse`](../type-aliases/AgentOSResponse.md), `void`, `undefined`\>
 
-Defined in: [packages/agentos/src/safety/guardrails/crossAgentGuardrailDispatcher.ts:227](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/safety/guardrails/crossAgentGuardrailDispatcher.ts#L227)
+Defined in: [packages/agentos/src/safety/guardrails/crossAgentGuardrailDispatcher.ts:227](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/safety/guardrails/crossAgentGuardrailDispatcher.ts#L227)
 
 Wrap an agent's output stream with cross-agent guardrail supervision.
 

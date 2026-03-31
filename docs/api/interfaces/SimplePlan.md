@@ -1,6 +1,6 @@
 # Interface: SimplePlan
 
-Defined in: [packages/agentos/src/orchestration/compiler/MissionCompiler.ts:116](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/compiler/MissionCompiler.ts#L116)
+Defined in: [packages/agentos/src/orchestration/compiler/MissionCompiler.ts:116](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/compiler/MissionCompiler.ts#L116)
 
 Minimal plan structure produced by the current stub planner. Each step maps
 1-to-1 to a `GraphNode` in the compiled IR.
@@ -11,7 +11,7 @@ Minimal plan structure produced by the current stub planner. Each step maps
 
 > **steps**: `object`[]
 
-Defined in: [packages/agentos/src/orchestration/compiler/MissionCompiler.ts:117](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/compiler/MissionCompiler.ts#L117)
+Defined in: [packages/agentos/src/orchestration/compiler/MissionCompiler.ts:117](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/compiler/MissionCompiler.ts#L117)
 
 #### action
 

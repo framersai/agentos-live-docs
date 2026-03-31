@@ -1,6 +1,6 @@
 # Interface: AgentOSUsageRecordInput
 
-Defined in: [packages/agentos/src/api/runtime/usageLedger.ts:53](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/runtime/usageLedger.ts#L53)
+Defined in: [packages/agentos/src/api/runtime/usageLedger.ts:53](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/runtime/usageLedger.ts#L53)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/api/runtime/usageLedger.ts:53](https://github.
 
 > `optional` **modelId**: `string`
 
-Defined in: [packages/agentos/src/api/runtime/usageLedger.ts:55](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/runtime/usageLedger.ts#L55)
+Defined in: [packages/agentos/src/api/runtime/usageLedger.ts:55](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/runtime/usageLedger.ts#L55)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [packages/agentos/src/api/runtime/usageLedger.ts:55](https://github.
 
 > `optional` **options**: [`AgentOSUsageLedgerOptions`](AgentOSUsageLedgerOptions.md)
 
-Defined in: [packages/agentos/src/api/runtime/usageLedger.ts:64](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/runtime/usageLedger.ts#L64)
+Defined in: [packages/agentos/src/api/runtime/usageLedger.ts:64](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/runtime/usageLedger.ts#L64)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: [packages/agentos/src/api/runtime/usageLedger.ts:64](https://github.
 
 > `optional` **providerId**: `string`
 
-Defined in: [packages/agentos/src/api/runtime/usageLedger.ts:54](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/runtime/usageLedger.ts#L54)
+Defined in: [packages/agentos/src/api/runtime/usageLedger.ts:54](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/runtime/usageLedger.ts#L54)
 
 ***
 
@@ -32,7 +32,7 @@ Defined in: [packages/agentos/src/api/runtime/usageLedger.ts:54](https://github.
 
 > `optional` **tenantId**: `string`
 
-Defined in: [packages/agentos/src/api/runtime/usageLedger.ts:57](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/runtime/usageLedger.ts#L57)
+Defined in: [packages/agentos/src/api/runtime/usageLedger.ts:57](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/runtime/usageLedger.ts#L57)
 
 ***
 
@@ -40,7 +40,7 @@ Defined in: [packages/agentos/src/api/runtime/usageLedger.ts:57](https://github.
 
 > `optional` **usage**: `object`
 
-Defined in: [packages/agentos/src/api/runtime/usageLedger.ts:58](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/runtime/usageLedger.ts#L58)
+Defined in: [packages/agentos/src/api/runtime/usageLedger.ts:58](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/runtime/usageLedger.ts#L58)
 
 #### completionTokens?
 
@@ -64,4 +64,4 @@ Defined in: [packages/agentos/src/api/runtime/usageLedger.ts:58](https://github.
 
 > `optional` **userId**: `string`
 
-Defined in: [packages/agentos/src/api/runtime/usageLedger.ts:56](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/runtime/usageLedger.ts#L56)
+Defined in: [packages/agentos/src/api/runtime/usageLedger.ts:56](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/runtime/usageLedger.ts#L56)

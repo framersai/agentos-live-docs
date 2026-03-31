@@ -1,6 +1,6 @@
 # Interface: ICodeSandbox
 
-Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:196](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/sandbox/executor/ICodeSandbox.ts#L196)
+Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:196](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/sandbox/executor/ICodeSandbox.ts#L196)
 
 Interface for the Code Execution Sandbox.
 
@@ -27,7 +27,7 @@ console.log(result.output?.stdout); // '{"result": 42}'
 
 > **dispose**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:267](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/sandbox/executor/ICodeSandbox.ts#L267)
+Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:267](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/sandbox/executor/ICodeSandbox.ts#L267)
 
 Disposes of the sandbox and cleans up resources.
 
@@ -41,7 +41,7 @@ Disposes of the sandbox and cleans up resources.
 
 > **execute**(`request`): `Promise`\<[`ExecutionResult`](ExecutionResult.md)\>
 
-Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:209](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/sandbox/executor/ICodeSandbox.ts#L209)
+Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:209](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/sandbox/executor/ICodeSandbox.ts#L209)
 
 Executes code in the sandbox.
 
@@ -65,7 +65,7 @@ Execution result
 
 > **getExecution**(`executionId`): `Promise`\<[`ExecutionResult`](ExecutionResult.md) \| `undefined`\>
 
-Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:223](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/sandbox/executor/ICodeSandbox.ts#L223)
+Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:223](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/sandbox/executor/ICodeSandbox.ts#L223)
 
 Gets the status of an execution.
 
@@ -89,7 +89,7 @@ Current execution result or undefined
 
 > **getStats**(): [`SandboxStats`](SandboxStats.md)
 
-Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:249](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/sandbox/executor/ICodeSandbox.ts#L249)
+Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:249](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/sandbox/executor/ICodeSandbox.ts#L249)
 
 Gets sandbox statistics.
 
@@ -105,7 +105,7 @@ Current statistics
 
 > **getSupportedLanguages**(): [`SandboxLanguage`](../type-aliases/SandboxLanguage.md)[]
 
-Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:243](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/sandbox/executor/ICodeSandbox.ts#L243)
+Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:243](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/sandbox/executor/ICodeSandbox.ts#L243)
 
 Gets supported languages.
 
@@ -121,7 +121,7 @@ Array of supported languages
 
 > **initialize**(`logger?`, `defaultConfig?`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:202](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/sandbox/executor/ICodeSandbox.ts#L202)
+Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:202](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/sandbox/executor/ICodeSandbox.ts#L202)
 
 Initializes the sandbox.
 
@@ -149,7 +149,7 @@ Default configuration
 
 > **isLanguageSupported**(`language`): `boolean`
 
-Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:237](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/sandbox/executor/ICodeSandbox.ts#L237)
+Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:237](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/sandbox/executor/ICodeSandbox.ts#L237)
 
 Checks if a language is supported.
 
@@ -173,7 +173,7 @@ Whether the language is supported
 
 > **kill**(`executionId`): `Promise`\<`boolean`\>
 
-Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:216](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/sandbox/executor/ICodeSandbox.ts#L216)
+Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:216](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/sandbox/executor/ICodeSandbox.ts#L216)
 
 Kills a running execution.
 
@@ -197,7 +197,7 @@ Whether the kill was successful
 
 > **listExecutions**(`limit?`): `Promise`\<[`ExecutionResult`](ExecutionResult.md)[]\>
 
-Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:230](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/sandbox/executor/ICodeSandbox.ts#L230)
+Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:230](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/sandbox/executor/ICodeSandbox.ts#L230)
 
 Lists recent executions.
 
@@ -221,7 +221,7 @@ Array of execution results
 
 > **resetStats**(): `void`
 
-Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:254](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/sandbox/executor/ICodeSandbox.ts#L254)
+Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:254](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/sandbox/executor/ICodeSandbox.ts#L254)
 
 Resets statistics.
 
@@ -235,7 +235,7 @@ Resets statistics.
 
 > **validateCode**(`language`, `code`): [`SecurityEvent`](SecurityEvent.md)[]
 
-Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:262](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/sandbox/executor/ICodeSandbox.ts#L262)
+Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:262](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/sandbox/executor/ICodeSandbox.ts#L262)
 
 Validates code for obvious security issues.
 

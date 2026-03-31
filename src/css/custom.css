@@ -792,38 +792,42 @@ article,
 
 /* -- Mobile navbar -------------------------------------------------------- */
 @media (max-width: 996px) {
-  /* Hide right-side links in the TOP BAR only — they still appear in the
-     sidebar drawer which Docusaurus manages automatically. */
-  .navbar > .navbar__inner > .navbar__items--right > .navbar__link {
-    display: none;
-  }
-
-  .navbar__search input,
-  [class*="searchBarContainer"] input {
-    width: 100px !important;
-    font-size: 0.8125rem;
-    padding: 0.3rem 0.5rem;
-  }
-
-  [class*="searchModal"],
-  [class*="searchResultsColumn"] {
-    max-width: 95vw !important;
-  }
-}
-
-/* -- Mobile sidebar — colors only, Docusaurus handles layout -------------- */
-[data-theme='dark'] .navbar__toggle { color: #e2e8f0; }
-/* Hide search bar on mobile entirely — it causes overflow in the navbar */
-@media (max-width: 996px) {
+  /* Strip the top bar down to brand, hamburger, theme toggle, and GitHub icon.
+     The expanded drawer is now a custom component with its own styles. */
   .navbar__search,
   [class*="searchBar"],
   .DocSearch,
   [class*="searchBarContainer"] {
     display: none !important;
   }
-}
+  .navbar__inner {
+    min-width: 0;
+    overflow: hidden;
+  }
 
-/* (duplicate overflow rule removed — see rule at top of mobile section) */
+  .navbar__items--left,
+  .navbar__items--right {
+    min-width: 0;
+  }
+
+  .navbar__items--right {
+    gap: 0.25rem !important;
+  }
+
+  .navbar__items--right .navbar__link:not(.header-github-link) {
+    display: none !important;
+  }
+
+  .navbar__toggle {
+    color: var(--ifm-navbar-link-color);
+    margin-right: 0.25rem;
+  }
+
+  .navbar-sidebar__backdrop {
+    background: rgba(2, 6, 23, 0.56) !important;
+    backdrop-filter: blur(8px);
+  }
+}
 
 /* -- Smooth scrolling ----------------------------------------------------- */
 html { scroll-behavior: smooth; }
@@ -950,48 +954,22 @@ article img {
   white-space: nowrap;
 }
 
-/* On mobile: show only icon, hide text and external-link arrow */
+/* On mobile: show only the icon in the TOP BAR, not inside the custom drawer */
 @media (max-width: 996px) {
-  .header-github-link {
+  .navbar__items--right .header-github-link {
     font-size: 0 !important;
     gap: 0;
     padding: 0.4rem !important;
   }
-  .header-github-link::before {
+  .navbar__items--right .header-github-link::before {
     width: 22px !important;
     height: 22px !important;
   }
   /* Hide the external link icon Docusaurus adds */
-  .header-github-link svg,
-  .header-github-link .iconExternalLink_node_modules,
-  .header-github-link [class*="iconExternalLink"] {
+  .navbar__items--right .header-github-link svg,
+  .navbar__items--right .header-github-link .iconExternalLink_node_modules,
+  .navbar__items--right .header-github-link [class*="iconExternalLink"] {
     display: none !important;
-  }
-
-  /* Hide text links on mobile — keep GitHub icon + theme toggle visible */
-  .navbar__items--right .navbar__link:not(.header-github-link) {
-    display: none !important;
-  }
-
-  /* Prevent navbar overflow */
-  .navbar__inner {
-    min-width: 0;
-    overflow: hidden;
-  }
-
-  .navbar__items--left,
-  .navbar__items--right {
-    min-width: 0;
-    gap: 0.25rem !important;
-  }
-
-  .navbar-sidebar {
-    max-height: 100vh;
-  }
-
-  .navbar-sidebar__items {
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
   }
 }
 .header-github-link::before {

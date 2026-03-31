@@ -1,6 +1,6 @@
 # Interface: EmbedTextResult
 
-Defined in: [packages/agentos/src/api/embedText.ts:98](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/embedText.ts#L98)
+Defined in: [packages/agentos/src/api/embedText.ts:98](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/embedText.ts#L98)
 
 The result returned by [embedText](../functions/embedText.md).
 
@@ -21,7 +21,7 @@ console.log(embeddings[0].length); // e.g. 1536
 
 > **embeddings**: `number`[][]
 
-Defined in: [packages/agentos/src/api/embedText.ts:104](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/embedText.ts#L104)
+Defined in: [packages/agentos/src/api/embedText.ts:104](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/embedText.ts#L104)
 
 One embedding vector per input string. Each vector is a plain `number[]`
 of floats whose dimensionality depends on the model (and the optional
@@ -33,7 +33,7 @@ of floats whose dimensionality depends on the model (and the optional
 
 > **model**: `string`
 
-Defined in: [packages/agentos/src/api/embedText.ts:107](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/embedText.ts#L107)
+Defined in: [packages/agentos/src/api/embedText.ts:107](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/embedText.ts#L107)
 
 Model identifier reported by the provider (may differ from the requested model).
 
@@ -43,7 +43,7 @@ Model identifier reported by the provider (may differ from the requested model).
 
 > **provider**: `string`
 
-Defined in: [packages/agentos/src/api/embedText.ts:110](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/embedText.ts#L110)
+Defined in: [packages/agentos/src/api/embedText.ts:110](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/embedText.ts#L110)
 
 Provider identifier used for the run.
 
@@ -53,7 +53,7 @@ Provider identifier used for the run.
 
 > **usage**: `object`
 
-Defined in: [packages/agentos/src/api/embedText.ts:117](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/api/embedText.ts#L117)
+Defined in: [packages/agentos/src/api/embedText.ts:117](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/embedText.ts#L117)
 
 Token usage for the embedding request.
 Most embedding APIs only report prompt tokens (the input); completion

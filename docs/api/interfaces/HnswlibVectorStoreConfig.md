@@ -1,6 +1,6 @@
 # Interface: HnswlibVectorStoreConfig
 
-Defined in: [packages/agentos/src/rag/vector\_stores/HnswlibVectorStore.ts:39](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/vector_stores/HnswlibVectorStore.ts#L39)
+Defined in: [packages/agentos/src/rag/vector\_stores/HnswlibVectorStore.ts:39](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/rag/vector_stores/HnswlibVectorStore.ts#L39)
 
 Configuration for HnswlibVectorStore
 
@@ -14,7 +14,7 @@ Configuration for HnswlibVectorStore
 
 > `optional` **customProps**: `Record`\<`string`, `any`\>
 
-Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:32](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/vector-store/IVectorStore.ts#L32)
+Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:32](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/vector-store/IVectorStore.ts#L32)
 
 Any other custom properties or
 configurations specific to this provider instance not covered by standard fields.
@@ -29,7 +29,7 @@ configurations specific to this provider instance not covered by standard fields
 
 > `optional` **defaultEmbeddingDimension**: `number`
 
-Defined in: [packages/agentos/src/rag/vector\_stores/HnswlibVectorStore.ts:44](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/vector_stores/HnswlibVectorStore.ts#L44)
+Defined in: [packages/agentos/src/rag/vector\_stores/HnswlibVectorStore.ts:44](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/rag/vector_stores/HnswlibVectorStore.ts#L44)
 
 Default embedding dimension for new collections
 
@@ -39,7 +39,7 @@ Default embedding dimension for new collections
 
 > `optional` **hnswEfConstruction**: `number`
 
-Defined in: [packages/agentos/src/rag/vector\_stores/HnswlibVectorStore.ts:50](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/vector_stores/HnswlibVectorStore.ts#L50)
+Defined in: [packages/agentos/src/rag/vector\_stores/HnswlibVectorStore.ts:50](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/rag/vector_stores/HnswlibVectorStore.ts#L50)
 
 HNSW efConstruction parameter (index build quality, default 200)
 
@@ -49,7 +49,7 @@ HNSW efConstruction parameter (index build quality, default 200)
 
 > `optional` **hnswEfSearch**: `number`
 
-Defined in: [packages/agentos/src/rag/vector\_stores/HnswlibVectorStore.ts:52](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/vector_stores/HnswlibVectorStore.ts#L52)
+Defined in: [packages/agentos/src/rag/vector\_stores/HnswlibVectorStore.ts:52](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/rag/vector_stores/HnswlibVectorStore.ts#L52)
 
 HNSW efSearch parameter (search quality, default 100)
 
@@ -59,7 +59,7 @@ HNSW efSearch parameter (search quality, default 100)
 
 > `optional` **hnswM**: `number`
 
-Defined in: [packages/agentos/src/rag/vector\_stores/HnswlibVectorStore.ts:48](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/vector_stores/HnswlibVectorStore.ts#L48)
+Defined in: [packages/agentos/src/rag/vector\_stores/HnswlibVectorStore.ts:48](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/rag/vector_stores/HnswlibVectorStore.ts#L48)
 
 HNSW M parameter (number of connections per node, default 16)
 
@@ -69,7 +69,7 @@ HNSW M parameter (number of connections per node, default 16)
 
 > **id**: `string`
 
-Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:30](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/core/vector-store/IVectorStore.ts#L30)
+Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:30](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/vector-store/IVectorStore.ts#L30)
 
 A unique identifier for this specific provider instance
 (e.g., "pinecone-main-prod", "weaviate-dev-local"). This ID is used by the
@@ -85,7 +85,7 @@ VectorStoreManager to retrieve this provider.
 
 > `optional` **persistDirectory**: `string`
 
-Defined in: [packages/agentos/src/rag/vector\_stores/HnswlibVectorStore.ts:42](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/vector_stores/HnswlibVectorStore.ts#L42)
+Defined in: [packages/agentos/src/rag/vector\_stores/HnswlibVectorStore.ts:42](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/rag/vector_stores/HnswlibVectorStore.ts#L42)
 
 Directory to persist index files. If not set, indexes are in-memory only.
 
@@ -95,7 +95,7 @@ Directory to persist index files. If not set, indexes are in-memory only.
 
 > `optional` **similarityMetric**: `"cosine"` \| `"euclidean"` \| `"dotproduct"`
 
-Defined in: [packages/agentos/src/rag/vector\_stores/HnswlibVectorStore.ts:46](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/vector_stores/HnswlibVectorStore.ts#L46)
+Defined in: [packages/agentos/src/rag/vector\_stores/HnswlibVectorStore.ts:46](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/rag/vector_stores/HnswlibVectorStore.ts#L46)
 
 Default similarity metric
 
@@ -105,7 +105,7 @@ Default similarity metric
 
 > **type**: `"hnswlib"`
 
-Defined in: [packages/agentos/src/rag/vector\_stores/HnswlibVectorStore.ts:40](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/rag/vector_stores/HnswlibVectorStore.ts#L40)
+Defined in: [packages/agentos/src/rag/vector\_stores/HnswlibVectorStore.ts:40](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/rag/vector_stores/HnswlibVectorStore.ts#L40)
 
 The type of the vector store provider
 (e.g., "pinecone", "weaviate", "in_memory", "lancedb"). This helps in

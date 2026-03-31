@@ -1,6 +1,6 @@
 # Interface: AgentOrchestratorConfig
 
-Defined in: [packages/agentos/src/orchestration/turn-planner/IAgentOrchestrator.ts:18](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/turn-planner/IAgentOrchestrator.ts#L18)
+Defined in: [packages/agentos/src/orchestration/turn-planner/IAgentOrchestrator.ts:18](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/turn-planner/IAgentOrchestrator.ts#L18)
 
 Configuration options for the AgentOrchestrator.
 
@@ -10,7 +10,7 @@ Configuration options for the AgentOrchestrator.
 
 > `optional` **defaultAgentTurnTimeoutMs**: `number`
 
-Defined in: [packages/agentos/src/orchestration/turn-planner/IAgentOrchestrator.ts:22](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/turn-planner/IAgentOrchestrator.ts#L22)
+Defined in: [packages/agentos/src/orchestration/turn-planner/IAgentOrchestrator.ts:22](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/turn-planner/IAgentOrchestrator.ts#L22)
 
 Default timeout in milliseconds for an agent's `processTurn` or `handleToolResult` method.
 
@@ -26,7 +26,7 @@ Default timeout in milliseconds for an agent's `processTurn` or `handleToolResul
 
 > `optional` **errorHandlingAgentId**: `string`
 
-Defined in: [packages/agentos/src/orchestration/turn-planner/IAgentOrchestrator.ts:27](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/turn-planner/IAgentOrchestrator.ts#L27)
+Defined in: [packages/agentos/src/orchestration/turn-planner/IAgentOrchestrator.ts:27](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/turn-planner/IAgentOrchestrator.ts#L27)
 
 ID of a default "Error Handling Agent" or a meta-agent to consult if an orchestrated agent
 enters an unrecoverable error state. If not set, orchestrator handles errors more directly.
@@ -37,7 +37,7 @@ enters an unrecoverable error state. If not set, orchestrator handles errors mor
 
 > `optional` **logToolCalls**: `boolean`
 
-Defined in: [packages/agentos/src/orchestration/turn-planner/IAgentOrchestrator.ts:29](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/turn-planner/IAgentOrchestrator.ts#L29)
+Defined in: [packages/agentos/src/orchestration/turn-planner/IAgentOrchestrator.ts:29](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/turn-planner/IAgentOrchestrator.ts#L29)
 
 If true, orchestrator logs detailed information about tool calls.
 
@@ -47,7 +47,7 @@ If true, orchestrator logs detailed information about tool calls.
 
 > `optional` **maxToolCallIterations**: `number`
 
-Defined in: [packages/agentos/src/orchestration/turn-planner/IAgentOrchestrator.ts:20](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/orchestration/turn-planner/IAgentOrchestrator.ts#L20)
+Defined in: [packages/agentos/src/orchestration/turn-planner/IAgentOrchestrator.ts:20](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/turn-planner/IAgentOrchestrator.ts#L20)
 
 Maximum number of sequential tool calls allowed in a single agent turn to prevent loops.
 

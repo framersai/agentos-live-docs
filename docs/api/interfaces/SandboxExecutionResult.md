@@ -1,6 +1,6 @@
 # Interface: SandboxExecutionResult
 
-Defined in: [packages/agentos/src/emergent/types.ts:205](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/emergent/types.ts#L205)
+Defined in: [packages/agentos/src/emergent/types.ts:205](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/emergent/types.ts#L205)
 
 Outcome of a single sandbox execution attempt.
 
@@ -10,7 +10,7 @@ Outcome of a single sandbox execution attempt.
 
 > `optional` **error**: `string`
 
-Defined in: [packages/agentos/src/emergent/types.ts:220](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/emergent/types.ts#L220)
+Defined in: [packages/agentos/src/emergent/types.ts:220](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/emergent/types.ts#L220)
 
 Human-readable error description, present when `success` is `false`.
 Includes timeout, memory-exceeded, and thrown-exception cases.
@@ -21,7 +21,7 @@ Includes timeout, memory-exceeded, and thrown-exception cases.
 
 > **executionTimeMs**: `number`
 
-Defined in: [packages/agentos/src/emergent/types.ts:226](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/emergent/types.ts#L226)
+Defined in: [packages/agentos/src/emergent/types.ts:226](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/emergent/types.ts#L226)
 
 Actual wall-clock execution time in milliseconds.
 Populated regardless of success/failure.
@@ -32,7 +32,7 @@ Populated regardless of success/failure.
 
 > **memoryUsedBytes**: `number`
 
-Defined in: [packages/agentos/src/emergent/types.ts:232](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/emergent/types.ts#L232)
+Defined in: [packages/agentos/src/emergent/types.ts:232](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/emergent/types.ts#L232)
 
 Peak heap memory used by the sandbox process in bytes.
 Populated when the runtime can measure it; otherwise `0`.
@@ -43,7 +43,7 @@ Populated when the runtime can measure it; otherwise `0`.
 
 > `optional` **output**: `unknown`
 
-Defined in: [packages/agentos/src/emergent/types.ts:214](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/emergent/types.ts#L214)
+Defined in: [packages/agentos/src/emergent/types.ts:214](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/emergent/types.ts#L214)
 
 The resolved return value of `run()`, present only when `success` is `true`.
 
@@ -53,6 +53,6 @@ The resolved return value of `run()`, present only when `success` is `true`.
 
 > **success**: `boolean`
 
-Defined in: [packages/agentos/src/emergent/types.ts:209](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/emergent/types.ts#L209)
+Defined in: [packages/agentos/src/emergent/types.ts:209](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/emergent/types.ts#L209)
 
 `true` when `run()` resolved without throwing and within resource limits.

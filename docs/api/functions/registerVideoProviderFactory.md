@@ -2,7 +2,7 @@
 
 > **registerVideoProviderFactory**(`providerId`, `factory`): `void`
 
-Defined in: [packages/agentos/src/media/video/index.ts:53](https://github.com/framersai/agentos/blob/209a2acfc5500076d28db827d413020016d1634e/src/media/video/index.ts#L53)
+Defined in: [packages/agentos/src/media/video/index.ts:53](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/video/index.ts#L53)
 
 Register a video provider factory for a given provider ID.
 
