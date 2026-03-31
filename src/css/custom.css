@@ -811,13 +811,17 @@ article,
   }
 }
 
-/* -- Mobile sidebar — colors only, no layout overrides -------------------- */
+/* -- Mobile sidebar — full-width + colors --------------------------------- */
+:root {
+  --ifm-navbar-sidebar-width: 100vw;
+}
 [data-theme='dark'] .navbar-sidebar { background-color: #0f172a; }
 [data-theme='dark'] .navbar-sidebar .menu__link,
 [data-theme='dark'] .navbar-sidebar .navbar__link { color: #e2e8f0; }
 [data-theme='dark'] .navbar-sidebar__close { color: #e2e8f0; }
 [data-theme='dark'] .navbar-sidebar__back { color: #e2e8f0; }
 [data-theme='dark'] .navbar__toggle { color: #e2e8f0; }
+.navbar-sidebar__backdrop { background-color: rgba(0, 0, 0, 0.9) !important; }
 /* Hide search bar on mobile entirely — it causes overflow in the navbar */
 @media (max-width: 996px) {
   .navbar__search,
