@@ -915,6 +915,13 @@ article,
 html:has(.navbar-sidebar--show) {
   overflow: hidden !important;
 }
+/* Hide search bar inside sidebar brand bar — it overflows on the right */
+.navbar-sidebar [class*="searchBar"],
+.navbar-sidebar .navbar__search,
+.navbar-sidebar .DocSearch,
+.navbar-sidebar [class*="searchBarContainer"] {
+  display: none !important;
+}
 
 /* (duplicate overflow rule removed — see rule at top of mobile section) */
 
