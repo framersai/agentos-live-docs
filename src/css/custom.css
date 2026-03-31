@@ -780,15 +780,7 @@ th { font-weight: 600; }
 [data-theme='dark'] ::-webkit-scrollbar-thumb { background: rgba(99, 102, 241, 0.2); border-radius: 3px; }
 [data-theme='dark'] ::-webkit-scrollbar-thumb:hover { background: rgba(99, 102, 241, 0.35); }
 
-/* -- Prevent horizontal scroll globally ----------------------------------- */
-html {
-  overflow-x: hidden !important;
-}
-body {
-  overflow-x: hidden !important;
-  max-width: 100% !important;
-  width: 100% !important;
-}
+/* -- Prevent horizontal scroll on content only ----------------------------- */
 /* Constrain CONTENT containers only — NOT sidebar, navbar, or layout internals */
 .main-wrapper > .container,
 .main-wrapper > .docMainContainer,
