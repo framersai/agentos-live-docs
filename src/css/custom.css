@@ -789,12 +789,17 @@ body {
   max-width: 100% !important;
   width: 100% !important;
 }
-* {
-  max-width: 100%;
-}
-/* Override the * rule for elements that NEED to be wider than parent */
-pre *, code *, svg *, table *, .mermaid *, canvas {
-  max-width: none;
+/* Constrain content containers only — NOT the sidebar or navbar internals */
+.main-wrapper,
+.docMainContainer,
+[class*="docItemContainer"],
+.container,
+article,
+.markdown,
+.theme-doc-markdown,
+.col {
+  max-width: 100% !important;
+  overflow-x: hidden;
 }
 
 /* -- Mobile navbar -------------------------------------------------------- */
@@ -950,10 +955,36 @@ html:has(.navbar-sidebar--show) {
   display: none !important;
 }
 
-/* Sidebar items list — full-width with proper spacing */
+/* Sidebar items list — must be visible, full height, full width */
 .navbar-sidebar .navbar-sidebar__items {
   overflow-x: hidden !important;
+  overflow-y: auto !important;
   max-width: 100% !important;
+  display: flex !important;
+  flex-grow: 1 !important;
+  height: auto !important;
+  min-height: 0 !important;
+  background-color: var(--ifm-background-color) !important;
+}
+
+/* Ensure the sidebar itself fills the viewport height */
+.navbar-sidebar {
+  display: flex !important;
+  flex-direction: column !important;
+  height: 100vh !important;
+  height: 100dvh !important;
+}
+
+/* Sidebar items container must show its children */
+.navbar-sidebar .navbar-sidebar__items .navbar-sidebar__item {
+  display: block !important;
+}
+.navbar-sidebar .menu {
+  display: block !important;
+  padding: 0.5rem 0 !important;
+}
+.navbar-sidebar .menu__list {
+  display: block !important;
 }
 
 .navbar-sidebar .menu__link,
