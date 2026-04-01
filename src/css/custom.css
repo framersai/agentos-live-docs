@@ -95,6 +95,12 @@ h2 { font-weight: 700; }
 
 .navbar__logo img { vertical-align: middle; }
 
+/* -- Global: prevent horizontal scroll ------------------------------------ */
+html, body {
+  overflow-x: hidden !important;
+  max-width: 100vw !important;
+}
+
 /* -- Hero -- Art Deco gradient (dark mode) -------------------------------- */
 .hero-agentos {
   padding: 5rem 2rem 4rem;
