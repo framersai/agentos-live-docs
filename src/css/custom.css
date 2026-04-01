@@ -840,46 +840,65 @@ article,
     backdrop-filter: blur(8px);
   }
 
-  /* Mobile sidebar drawer — ensure it's visible and full height */
-  .navbar-sidebar {
-    background: var(--ifm-navbar-background-color, rgba(2, 6, 23, 0.98)) !important;
+  /* ── Mobile hamburger drawer (Docusaurus CSS module classes) ────────────
+   * The drawer uses hashed classes like .drawer_XXXX — target via attribute
+   * selectors to survive class name regeneration across builds.
+   */
+
+  /* The fixed drawer panel itself */
+  [class*="drawer_"] {
     height: 100vh !important;
     max-height: 100vh !important;
     overflow-y: auto !important;
-    padding: 1rem 0 !important;
-    z-index: 100 !important;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 4rem !important;
   }
 
-  /* Show all sidebar items — undo the hiding from desktop */
+  [data-theme='dark'] [class*="drawer_"] {
+    background: #020617 !important;
+  }
+
+  /* All menu links inside the drawer */
+  [class*="drawer_"] .menu__link,
+  [class*="drawer_"] .menu__link--sublist {
+    display: flex !important;
+    padding: 0.85rem 1.25rem !important;
+    font-size: 0.95rem !important;
+    color: var(--ifm-menu-color) !important;
+    min-height: 2.75rem !important;
+  }
+
+  [class*="drawer_"] .menu__link:hover {
+    color: var(--ao-indigo-light, #818cf8) !important;
+    background: rgba(99, 102, 241, 0.08) !important;
+  }
+
+  /* Menu list — remove any max-height / overflow hidden */
+  [class*="drawer_"] .menu__list,
+  [class*="drawer_"] [class*="menuList_"] {
+    max-height: none !important;
+    overflow: visible !important;
+  }
+
+  /* Dropdown items inside drawer — show expanded */
+  [class*="drawer_"] [class*="dropdownNavbarItemMobile_"] .menu__list {
+    display: block !important;
+    max-height: none !important;
+  }
+
+  /* Also target the standard navbar-sidebar (older Docusaurus versions) */
+  .navbar-sidebar {
+    height: 100vh !important;
+    max-height: 100vh !important;
+    overflow-y: auto !important;
+  }
+
   .navbar-sidebar .navbar__item,
   .navbar-sidebar .navbar__link,
   .navbar-sidebar .menu__link {
     display: flex !important;
     padding: 0.75rem 1.25rem !important;
     font-size: 1rem !important;
-    color: var(--ifm-navbar-link-color) !important;
-  }
-
-  .navbar-sidebar .navbar__link:hover,
-  .navbar-sidebar .menu__link:hover {
-    color: var(--ao-indigo-light) !important;
-    background: rgba(99, 102, 241, 0.08) !important;
-  }
-
-  .navbar-sidebar .navbar-sidebar__brand {
-    padding: 0.5rem 1.25rem !important;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
-    margin-bottom: 0.5rem !important;
-  }
-
-  .navbar-sidebar .navbar-sidebar__items {
-    padding: 0 !important;
-  }
-
-  /* Close button styling */
-  .navbar-sidebar .clean-btn[aria-label="Close"] {
-    color: var(--ifm-navbar-link-color) !important;
-    font-size: 1.5rem !important;
   }
 }
 
