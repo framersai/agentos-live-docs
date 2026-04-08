@@ -95,6 +95,83 @@ Based on Tulving's long-term memory taxonomy with extensions:
 | `semantic` | General knowledge/facts | Learned facts, preferences, schemas | "User prefers TypeScript over Python" |
 | `procedural` | Skills and how-to | Workflows, tool usage patterns | "To deploy, run the deployment pipeline" |
 | `prospective` | Future intentions | Goals, reminders, planned actions | "Remind user about the PR review" |
+| `relational` | Trust signals and bonds | Vulnerability, boundary events, emotional connections | "User shared vulnerability about work stress — trust-building moment" |
+
+### Automatic Memory Type Decomposition
+
+The Observer→Reflector pipeline automatically classifies raw conversation into all 5 types. You don't need to manually tag memory types — the Reflector uses chain-of-thought reasoning and HEXACO personality bias to decompose each conversation exchange into the appropriate trace types.
+
+The pipeline works in three tiers:
+1. **Observer** — extracts typed observation notes (factual, emotional, commitment, preference, creative, correction) from buffered messages when a token threshold is reached
+2. **Compressor** — batches 50+ notes into dense compressed observations
+3. **Reflector** — consolidates observations into typed long-term traces (episodic, semantic, procedural, prospective, relational) with personality-biased conflict resolution
+
+Commitment notes (importance >= 0.5) are automatically registered as **prospective memory items** with heuristic trigger type inference (time-based, event-based, or context-based).
+
+### KnowledgeGraph (Default)
+
+The KnowledgeGraph is enabled by default when `CognitiveMemoryManager` is initialized. It provides:
+- **Spreading activation** (Collins & Quillian model) — related memories surface together
+- **Hebbian co-activation learning** — "neurons that fire together wire together"
+- **Conflict detection** — contradicting traces identified via CONTRADICTS edges
+- **Cluster detection** — connected components reveal memory themes
+- **Graph-boosted retrieval scoring** — retrieval scores are boosted by graph activation
+
+Set `graph: { disabled: true }` in `CognitiveMemoryConfig` to opt out.
+
+### HyDE Memory Retrieval
+
+A memory-specific Hypothetical Document Embedding retriever auto-attaches when an LLM invoker is available. For vague queries like "that thing about cats", it generates a hypothetical stored memory trace before embedding, improving recall via the generation effect.
+
+Opt-in per query: `retrieve({ hyde: true })`.
+
+### Prompt Assembly Guidance
+
+The `MemoryPromptAssembler` injects a personality-aware preamble that teaches the LLM how to use each memory type differently:
+- **Semantic** — background truth, don't announce
+- **Episodic** — weave in naturally, never list
+- **Prospective** — act on these, bring up naturally
+- **Relational** — modulate tone, never state explicitly
+- **Partial memories** (FOK) — express uncertainty: "I feel like we talked about..."
+
+Formatting style is HEXACO-driven: structured (high conscientiousness), narrative (high openness), emotional (high emotionality).
+
+### SqliteBrain Persistence
+
+Pass a `brain` field in `CognitiveMemoryConfig` to enable durable write-through persistence via `@framers/sql-storage-adapter`. The in-memory vector index remains the hot read path; SqliteBrain is the durable backing store that survives process restarts.
+
+```typescript
+import { SqliteBrain } from '@framers/agentos/memory';
+
+const brain = await SqliteBrain.open('./agent-brain.sqlite');
+const manager = new CognitiveMemoryManager();
+await manager.initialize({
+  // ... existing config ...
+  brain,  // enables durable persistence
+});
+```
+
+### Full AgentMemory API
+
+```typescript
+const memory = AgentMemory.wrap(manager);
+
+// Visualization & inspection
+const graph = await memory.getGraph();              // nodes, edges, clusters
+const dist = await memory.getStrengthDistribution(); // per-type stats
+const conflicts = await memory.getConflicts();       // contradicting traces
+const relational = await memory.getRelationalMemories();
+const working = await memory.getWorkingMemory();     // in-focus slots
+const stats = await memory.getObservationStats();    // pipeline health
+
+// Portability
+const snapshot = await memory.exportSnapshot();      // full state export
+await memory.importSnapshot(snapshot);               // restore from export
+
+// Devtools
+await memory.forceReflection();                      // trigger reflection cycle
+const items = await memory.getProspectiveItems();    // active reminders
+```
 
 ---
 
