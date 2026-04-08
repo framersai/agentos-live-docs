@@ -217,6 +217,59 @@ console.log(neighbors);
 
 ---
 
+## HyDE (Hypothetical Document Embedding)
+
+For vague or abstract queries ("that thing we discussed about deployment"), standard vector similarity often fails because the query embedding is far from the stored memory embedding. HyDE generates a hypothetical memory trace before searching:
+
+```typescript
+const results = await memory.retrieve({
+  query: 'that deployment thing from last week',
+  hyde: true, // Generate a hypothetical memory before searching
+});
+```
+
+When `hyde: true` and an LLM invoker is configured, the system:
+1. Generates a 1-2 sentence hypothesis of what a stored memory about this topic would look like
+2. Embeds the hypothesis (which is semantically closer to actual stored traces)
+3. Uses the hypothesis embedding for vector search
+
+HyDE auto-attaches when any `llmInvoker` is available (from observer, reflector, or feature detection config). It adds one LLM call per retrieval — use for important lookups where recall quality matters more than latency.
+
+---
+
+## Neural Reranking
+
+The cognitive scoring pipeline (vector similarity + decay + mood congruence + graph activation) can be augmented with a neural cross-encoder reranker for improved precision:
+
+```typescript
+import { RerankerService, CohereReranker } from '@framers/agentos/rag/reranking';
+
+const rerankerService = new RerankerService({
+  config: {
+    providers: [
+      { providerId: 'cohere', apiKey: process.env.COHERE_API_KEY!, defaultModelId: 'rerank-v3.5' },
+      { providerId: 'llm-judge' }, // Fallback when Cohere is unavailable
+    ],
+    defaultProviderId: 'cohere',
+  },
+});
+
+await manager.initialize({
+  // ... other config ...
+  rerankerService,
+});
+```
+
+When configured, the reranker runs after the cognitive scoring pipeline. Scores are blended:
+- **70% cognitive composite** (strength, similarity, recency, emotional congruence, graph activation, importance)
+- **30% neural reranker** (cross-encoder relevance score)
+
+This preserves the cognitive signals that make memory retrieval personality-aware and decay-sensitive, while letting the neural reranker boost results that the bi-encoder embedding similarity alone might rank lower.
+
+The reranker stage is non-critical — if Cohere or the LLM judge is unavailable, retrieval falls back to cognitive-only scoring.
+
+---
+
 ## Memory Consolidation
 
 Consolidation is a periodic background process (like sleep in humans) that:

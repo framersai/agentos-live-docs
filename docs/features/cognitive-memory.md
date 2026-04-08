@@ -85,6 +85,40 @@ User Message arrives
 
 ---
 
+## Durable Persistence via SqliteBrain
+
+By default, the cognitive memory system runs in-memory — all traces, graph edges, and observer state vanish on process restart. For production use, pass a `SqliteBrain` instance to enable write-through persistence:
+
+```typescript
+import { CognitiveMemoryManager, SqliteBrain } from '@framers/agentos/memory';
+
+const brain = await SqliteBrain.open('./agent-brain.sqlite');
+const manager = new CognitiveMemoryManager();
+await manager.initialize({
+  // ... other config ...
+  brain, // Enables durable write-through persistence
+});
+```
+
+### Write-Through Architecture
+
+- **Hot read path:** In-memory vector index (fast similarity search)
+- **Durable backing store:** SqliteBrain via sql-storage-adapter (survives restarts)
+- **Write-through:** Every `encode()`, `observe()`, and graph mutation writes to both paths
+- **Rehydration:** On initialization with an existing brain, traces are loaded from `memory_traces`, re-embedded into the vector index, and graph nodes/edges reconstructed from `knowledge_nodes`/`knowledge_edges`
+
+### Cross-Platform
+
+SqliteBrain uses sql-storage-adapter's `resolveStorageAdapter()`, so persistence works on:
+- **Node.js** — better-sqlite3 (native)
+- **Browser** — IndexedDB via sql.js (WASM)
+- **Mobile** — Capacitor SQLite
+- **Cloud** — PostgreSQL
+
+No code changes required across platforms.
+
+---
+
 ## Memory Types
 
 Based on Tulving's long-term memory taxonomy with extensions:
