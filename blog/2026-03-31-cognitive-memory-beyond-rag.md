@@ -1,6 +1,6 @@
 ---
 title: "Cognitive Memory for AI Agents: Beyond RAG"
-description: "Why retrieval-augmented generation isn't memory. How AgentOS implements 8 cognitive mechanisms from published neuroscience — Ebbinghaus decay, reconsolidation, retrieval-induced forgetting, and more."
+description: "Why retrieval-augmented generation isn't memory. How AgentOS implements 9 cognitive mechanisms from published neuroscience — Ebbinghaus decay, reconsolidation, retrieval-induced forgetting, emotion regulation, and more."
 authors: [agentos-team]
 tags: [memory, cognitive-science, rag, architecture]
 keywords: [ai agent memory, cognitive memory ai, rag alternatives, ebbinghaus decay ai, ai agent long term memory, reconsolidation, retrieval-induced forgetting]
@@ -11,7 +11,7 @@ RAG retrieves documents. It doesn't remember.
 
 A RAG system stores chunks in a vector database and fetches the most similar ones at query time. That's search, not memory. Human memory is fundamentally different: it decays, drifts emotionally, gets suppressed by competing memories, and consolidates during sleep. None of that happens in a vector DB.
 
-AgentOS implements 8 cognitive mechanisms from published cognitive science research to give agents something closer to actual memory. This post explains each mechanism, why it matters, and how to use it.
+AgentOS implements 9 cognitive mechanisms from published cognitive science research to give agents something closer to actual memory. This post explains each mechanism, why it matters, and how to use it.
 
 <!-- truncate -->
 
@@ -31,7 +31,7 @@ With cognitive memory:
 - Retrieving one memory suppresses similar competing ones (retrieval-induced forgetting)
 - Each memory tracks its source type and confidence level (source monitoring)
 
-## The 8 Mechanisms
+## The 9 Mechanisms
 
 ### 1. Ebbinghaus Decay (Ebbinghaus, 1885)
 
@@ -137,9 +137,62 @@ This lets the agent say "I have a vague memory about this but can't fully recall
 
 **Reference:** Nelson, T. O., & Narens, L. (1990). Metamemory: A theoretical framework and new findings. *Psychology of Learning and Motivation*, 26, 125-173.
 
+### 9. Emotion Regulation (Gross, 2002)
+
+High-arousal memories get dampened during consolidation cycles via cognitive reappraisal. Traces with arousal above the suppression threshold (0.8) have their emotional intensity gradually reduced:
+
+```typescript
+if (trace.arousal > 0.8) {
+  trace.arousal *= (1 - reappraisalRate); // default 0.15
+}
+```
+
+This models the well-documented finding that emotional memories lose their acute intensity over time while retaining their factual content. An agent recalling a heated argument from weeks ago remembers what happened without re-experiencing the full emotional intensity.
+
+**Reference:** Gross, J. J. (2002). Emotion regulation: Affective, cognitive, and social consequences. *Psychophysiology*, 39(3), 281-291.
+
+## Observer→Reflector Pipeline
+
+Raw conversation doesn't enter memory directly. Instead, a three-stage pipeline decomposes exchanges into typed traces:
+
+1. **Observer** — buffers conversation tokens until a threshold (30K tokens), then extracts dense observation notes (factual, emotional, commitment, preference, creative, correction) via chain-of-thought reasoning
+2. **Compressor** — batches 50+ notes into compressed observations
+3. **Reflector** — consolidates observations into typed long-term traces with personality-biased conflict resolution
+
+The pipeline automatically produces all 5 memory types:
+
+| Type | What it stores | Example |
+|---|---|---|
+| `episodic` | Autobiographical events | "Had a tense conversation about deadline changes" |
+| `semantic` | Factual knowledge | "User is a TypeScript developer in Portland" |
+| `procedural` | Skills and patterns | "User prefers concise answers with code examples" |
+| `prospective` | Future intentions | "User needs to submit the report by Friday" |
+| `relational` | Trust signals and bonds | "User shared vulnerability about work stress — trust-building moment" |
+
+The `relational` type is the newest addition, capturing trust ledger events, boundary moments, and emotional bond signals. These traces are personality-modulated — agents with high emotionality and agreeableness capture more relational nuance.
+
+## Durable Persistence
+
+Cognitive memory persists across process restarts via SqliteBrain, a write-through persistence layer backed by [sql-storage-adapter](https://github.com/framersai/sql-storage-adapter):
+
+- In-memory vector index is the hot read path (fast similarity search)
+- SqliteBrain is the durable backing store (traces, graph edges, prospective items, observer state)
+- On restart, traces are rehydrated from SQL, re-embedded into the vector index, and graph nodes/edges reconstructed
+- Cross-platform: Node.js (better-sqlite3), browser (IndexedDB/sql.js), mobile (Capacitor), cloud (PostgreSQL)
+
+## Neural Reranking for Memory Retrieval
+
+Memory retrieval now supports an optional neural reranking pass using Cohere rerank-v3.5 (primary) or an LLM-as-Judge fallback. After the cognitive scoring pipeline runs (vector similarity + Ebbinghaus strength + recency + emotional congruence + graph activation + importance), the reranker provides a second-pass cross-encoder score:
+
+```
+finalScore = 0.7 × cognitiveComposite + 0.3 × neuralRerankerScore
+```
+
+The 0.7/0.3 weighting preserves the cognitive signals (decay, mood congruence, graph activation) while letting the neural reranker boost semantically relevant results that bi-encoder embedding similarity alone might rank lower.
+
 ## HEXACO Modulation
 
-All 8 mechanisms are modulated by the agent's HEXACO personality traits:
+All 9 mechanisms are modulated by the agent's HEXACO personality traits:
 
 | Trait | Mechanism Effect |
 |---|---|
@@ -193,7 +246,7 @@ const assistant = agent({
 });
 ```
 
-All mechanisms are optional and independently configurable. When `cognitiveMechanisms` is `undefined`, the memory system works without cognitive mechanisms — standard encoding and retrieval with Ebbinghaus decay only.
+All 9 mechanisms are optional and independently configurable. When `cognitiveMechanisms` is `undefined`, the memory system works without cognitive mechanisms — standard encoding and retrieval with Ebbinghaus decay only.
 
 ## Why This Matters
 
@@ -207,12 +260,13 @@ RAG gives agents access to information. Cognitive memory gives them the ability 
 4. Cepeda, N. J., et al. (2006). Distributed practice in verbal recall tasks. *Review of Educational Research*, 76(3), 354-380.
 5. Ebbinghaus, H. (1885). *Über das Gedächtnis.* Duncker & Humblot.
 6. Ghosh, V. E., & Gilboa, A. (2014). What is a memory schema? *Neuropsychologia*, 53, 104-114.
-7. Hart, J. T. (1965). Memory and the feeling-of-knowing experience. *JEPLMC*, 56(3), 208-216.
-8. Johnson, M. K., Hashtroudi, S., & Lindsay, D. S. (1993). Source monitoring. *Psychological Bulletin*, 114(1), 3-28.
-9. Nader, K., Schafe, G. E., & Le Doux, J. E. (2000). Fear memories require protein synthesis. *Nature*, 406, 722-726.
-10. Nelson, T. O., & Narens, L. (1990). Metamemory: A theoretical framework. *Psychology of Learning and Motivation*, 26, 125-173.
-11. Reyna, V. F., & Brainerd, C. J. (1995). Fuzzy-trace theory. *Learning and Individual Differences*, 7(1), 1-75.
-12. Tse, D., et al. (2007). Schemas and memory consolidation. *Science*, 316(5821), 76-82.
+7. Gross, J. J. (2002). Emotion regulation: Affective, cognitive, and social consequences. *Psychophysiology*, 39(3), 281-291.
+8. Hart, J. T. (1965). Memory and the feeling-of-knowing experience. *JEPLMC*, 56(3), 208-216.
+9. Johnson, M. K., Hashtroudi, S., & Lindsay, D. S. (1993). Source monitoring. *Psychological Bulletin*, 114(1), 3-28.
+10. Nader, K., Schafe, G. E., & Le Doux, J. E. (2000). Fear memories require protein synthesis. *Nature*, 406, 722-726.
+11. Nelson, T. O., & Narens, L. (1990). Metamemory: A theoretical framework. *Psychology of Learning and Motivation*, 26, 125-173.
+12. Reyna, V. F., & Brainerd, C. J. (1995). Fuzzy-trace theory. *Learning and Individual Differences*, 7(1), 1-75.
+13. Tse, D., et al. (2007). Schemas and memory consolidation. *Science*, 316(5821), 76-82.
 
 ---
 

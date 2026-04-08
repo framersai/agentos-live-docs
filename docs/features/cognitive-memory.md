@@ -10,7 +10,7 @@ For the practical guide with usage examples and configuration, see [Cognitive Me
 > Personality-modulated, decay-aware memory grounded in cognitive science — replacing flat key-value memory with Ebbinghaus forgetting curves, Baddeley's working memory, spreading activation, and HEXACO-driven encoding biases.
 
 :::tip Cognitive Mechanisms
-The memory system now includes 8 optional neuroscience-grounded cognitive mechanisms (reconsolidation, retrieval-induced forgetting, involuntary recall, metacognitive FOK, temporal gist, schema encoding, source confidence decay, emotion regulation). All are HEXACO personality-modulated and individually configurable via `cognitiveMechanisms` on `CognitiveMemoryConfig`. See [Cognitive Mechanisms Implementation Guide](./COGNITIVE_MECHANISMS.md) for hook points, APIs, and testing.
+The memory system now includes 9 optional neuroscience-grounded cognitive mechanisms (reconsolidation, retrieval-induced forgetting, involuntary recall, metacognitive FOK, temporal gist, schema encoding, source confidence decay, emotion regulation, and Ebbinghaus decay with spaced repetition). All are HEXACO personality-modulated and individually configurable via `cognitiveMechanisms` on `CognitiveMemoryConfig`. See [Cognitive Mechanisms Implementation Guide](./COGNITIVE_MECHANISMS.md) for hook points, APIs, and testing.
 :::
 
 ---

@@ -88,3 +88,37 @@ const results = await service.rerankChain('quantum computing', chunks, [
   { provider: 'llm-judge', topK: 5 },
 ]);
 ```
+
+## Memory Retrieval Reranking
+
+The reranker chain also integrates with the [Cognitive Memory System](/features/cognitive-memory). When a `RerankerService` is passed to `CognitiveMemoryManager` via the `rerankerService` config field, it runs a neural reranking pass after the cognitive scoring pipeline:
+
+```typescript
+import { CognitiveMemoryManager } from '@framers/agentos/memory';
+import { RerankerService, CohereReranker } from '@framers/agentos/rag/reranking';
+
+const rerankerService = new RerankerService({
+  config: {
+    providers: [
+      { providerId: 'cohere', apiKey: process.env.COHERE_API_KEY!, defaultModelId: 'rerank-v3.5' },
+      { providerId: 'llm-judge' },
+    ],
+    defaultProviderId: 'cohere',
+  },
+});
+
+await manager.initialize({
+  // ... other config ...
+  rerankerService,
+});
+```
+
+The reranker scores are blended with the cognitive composite:
+
+```
+finalScore = 0.7 × cognitiveComposite + 0.3 × neuralRerankerScore
+```
+
+This preserves the personality-aware cognitive signals (Ebbinghaus decay, mood congruence, spreading activation, importance) while letting the cross-encoder boost results that bi-encoder embedding similarity alone might rank lower. The 0.7/0.3 weighting is fixed — the cognitive pipeline already accounts for 6 independent signals, and the reranker adds a 7th dimension of semantic relevance.
+
+The reranker stage is non-critical. If the provider is unavailable (no API key, service error), retrieval falls back to cognitive-only scoring with no degradation.
