@@ -45,7 +45,7 @@ const config: Config = {
     },
     {
       tagName: 'meta',
-      attributes: { name: 'author', content: 'Framers — https://frame.dev' },
+      attributes: { name: 'author', content: 'Manic Agency LLC — https://manic.agency' },
     },
     {
       tagName: 'script',
@@ -59,8 +59,24 @@ const config: Config = {
           'Official documentation for AgentOS — open-source TypeScript AI agent framework.',
         publisher: {
           '@type': 'Organization',
-          name: 'Framers',
-          url: 'https://frame.dev',
+          name: 'Manic Agency LLC',
+          url: 'https://manic.agency',
+          sameAs: [
+            'https://frame.dev',
+            'https://github.com/framersai',
+            'https://www.npmjs.com/package/@framers/agentos',
+            'https://discord.gg/VXXC4SJMKh',
+            'https://wilds.ai',
+          ],
+          knowsAbout: [
+            'AI agent framework',
+            'TypeScript AI runtime',
+            'multi-agent orchestration',
+            'cognitive memory',
+            'RAG pipeline',
+            'LLM providers',
+            'AI guardrails',
+          ],
         },
         potentialAction: {
           '@type': 'SearchAction',
@@ -291,9 +307,10 @@ const config: Config = {
         {
           title: 'Ecosystem',
           items: [
+            { label: 'Manic Agency', href: 'https://manic.agency' },
             { label: 'Frame.dev', href: 'https://frame.dev' },
             { label: 'AgentOS', href: 'https://agentos.sh' },
-            { label: 'RabbitHole', href: 'https://rabbithole.sh' },
+            { label: 'Wilds.ai', href: 'https://wilds.ai' },
             { label: 'Wunderland CLI', href: 'https://wunderland.sh' },
           ],
         },
@@ -301,7 +318,7 @@ const config: Config = {
           title: 'Community',
           items: [
             { label: 'GitHub', href: 'https://github.com/framersai/agentos' },
-            { label: 'Discord', href: 'https://discord.gg/6dUTvtQY' },
+            { label: 'Discord', href: 'https://discord.gg/VXXC4SJMKh' },
             { label: 'Twitter', href: 'https://x.com/rabbitholewun' },
             { label: 'LinkedIn', href: 'https://www.linkedin.com/company/manicinc' },
             { label: 'npm', href: 'https://www.npmjs.com/package/@framers/agentos' },
