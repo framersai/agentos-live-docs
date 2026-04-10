@@ -301,7 +301,7 @@ const config: Config = {
           title: 'Community',
           items: [
             { label: 'GitHub', href: 'https://github.com/framersai/agentos' },
-            { label: 'Discord', href: 'https://discord.com/invite/KxF9b6HY6h' },
+            { label: 'Discord', href: 'https://discord.gg/6dUTvtQY' },
             { label: 'Twitter', href: 'https://x.com/rabbitholewun' },
             { label: 'LinkedIn', href: 'https://www.linkedin.com/company/manicinc' },
             { label: 'npm', href: 'https://www.npmjs.com/package/@framers/agentos' },
