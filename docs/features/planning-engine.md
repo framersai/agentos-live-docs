@@ -131,7 +131,7 @@ import { PlanningEngine } from '@framers/agentos/planning/planner';
 
 const engine = new PlanningEngine({
   llmProvider: aiModelProviderManager,
-  defaultModelId: 'gpt-4-turbo',
+  defaultModelId: 'gpt-4o',
 });
 
 const plan = await engine.generatePlan(

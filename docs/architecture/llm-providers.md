@@ -259,7 +259,7 @@ export ANTHROPIC_API_KEY=sk-ant-...
 |-------|---------|--------|-------------|-------|
 | `claude-opus-4-20250514` | 200K | Yes | Yes | Most capable |
 | `claude-sonnet-4-20250514` | 200K | Yes | Yes | Best value |
-| `claude-haiku-3-5-20241022` | 200K | Yes | Yes | Fastest |
+| `claude-haiku-4-5-20251001` | 200K | Yes | Yes | Fastest |
 
 ### Google Gemini
 

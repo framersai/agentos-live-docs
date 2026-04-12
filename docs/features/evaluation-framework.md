@@ -247,7 +247,7 @@ import { LLMJudge, CRITERIA_PRESETS } from '@framers/agentos';
 
 const judge = new LLMJudge({
   llmProvider: aiModelProviderManager,
-  modelId: 'gpt-4-turbo',
+  modelId: 'gpt-4o',
   temperature: 0.1,
 });
 
