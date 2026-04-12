@@ -6,7 +6,7 @@ const config: Config = {
   title: 'AgentOS — Open-Source TypeScript AI Agent Runtime',
   tagline:
     'Open-source TypeScript runtime for autonomous AI agents — unified graph orchestration, cognitive memory, streaming guardrails, voice pipeline, 21 LLM providers.',
-  favicon: 'img/favicon.svg',
+  favicon: 'img/favicon.ico',
   url: 'https://docs.agentos.sh',
   baseUrl: '/',
   organizationName: 'framersai',
@@ -16,6 +16,32 @@ const config: Config = {
   trailingSlash: false,
 
   headTags: [
+    {
+      tagName: 'link',
+      attributes: {
+        rel: 'icon',
+        type: 'image/png',
+        sizes: '32x32',
+        href: '/img/favicon-32x32.png',
+      },
+    },
+    {
+      tagName: 'link',
+      attributes: {
+        rel: 'icon',
+        type: 'image/png',
+        sizes: '16x16',
+        href: '/img/favicon-16x16.png',
+      },
+    },
+    {
+      tagName: 'link',
+      attributes: {
+        rel: 'icon',
+        type: 'image/svg+xml',
+        href: '/img/favicon.svg',
+      },
+    },
     {
       tagName: 'meta',
       attributes: {
