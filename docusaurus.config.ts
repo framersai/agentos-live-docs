@@ -175,6 +175,21 @@ const config: Config = {
       },
     ],
     [
+      'docusaurus-plugin-typedoc',
+      {
+        id: 'paracosm',
+        entryPoints: ['../../apps/paracosm/src/engine/index.ts'],
+        tsconfig: '../../apps/paracosm/tsconfig.build.json',
+        out: 'docs/paracosm',
+        readme: 'none',
+        sidebar: {
+          autoConfiguration: true,
+          pretty: true,
+        },
+        skipErrorChecking: true,
+      },
+    ],
+    [
       '@docusaurus/plugin-client-redirects',
       {
         redirects: [
@@ -293,6 +308,11 @@ const config: Config = {
           label: 'API Reference',
         },
         {
+          to: '/paracosm/',
+          position: 'left',
+          label: 'Paracosm',
+        },
+        {
           to: '/blog',
           position: 'left',
           label: 'Blog',
@@ -328,6 +348,7 @@ const config: Config = {
             { label: 'Architecture', to: '/architecture/system-architecture' },
             { label: 'Feature Guides', to: '/getting-started/documentation-index' },
             { label: 'API Reference', to: '/api/' },
+            { label: 'Paracosm API', to: '/paracosm/' },
           ],
         },
         {
