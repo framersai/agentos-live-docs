@@ -91,7 +91,7 @@ const config: Config = {
             'https://frame.dev',
             'https://github.com/framersai',
             'https://www.npmjs.com/package/@framers/agentos',
-            'https://discord.gg/VXXC4SJMKh',
+            'https://discord.gg/3bYhhcrn',
             'https://wilds.ai',
           ],
           knowsAbout: [
@@ -344,7 +344,7 @@ const config: Config = {
           title: 'Community',
           items: [
             { label: 'GitHub', href: 'https://github.com/framersai/agentos' },
-            { label: 'Discord', href: 'https://discord.gg/VXXC4SJMKh' },
+            { label: 'Discord', href: 'https://discord.gg/3bYhhcrn' },
             { label: 'Twitter', href: 'https://x.com/rabbitholewun' },
             { label: 'LinkedIn', href: 'https://www.linkedin.com/company/manicinc' },
             { label: 'npm', href: 'https://www.npmjs.com/package/@framers/agentos' },

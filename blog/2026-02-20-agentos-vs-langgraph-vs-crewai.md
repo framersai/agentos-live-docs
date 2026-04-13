@@ -310,7 +310,7 @@ console.log(text);
 
 - [Documentation](https://docs.agentos.sh) — Getting started, API reference, architecture guides
 - [GitHub](https://github.com/framersai/agentos) — Source code, issues, contributing
-- [Discord](https://discord.gg/VXXC4SJMKh) — Community chat and support
+- [Discord](https://discord.gg/3bYhhcrn) — Community chat and support
 - [npm](https://www.npmjs.com/package/@framers/agentos) — Package registry
 
 ---

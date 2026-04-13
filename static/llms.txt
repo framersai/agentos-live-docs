@@ -10,7 +10,7 @@ This site hosts guides, API reference, architecture docs, and tutorials for buil
 - AgentOS Homepage: https://agentos.sh
 - npm: https://www.npmjs.com/package/@framers/agentos
 - GitHub: https://github.com/framersai/agentos
-- Discord: https://discord.gg/VXXC4SJMKh
+- Discord: https://discord.gg/3bYhhcrn
 
 ## Getting Started
 
