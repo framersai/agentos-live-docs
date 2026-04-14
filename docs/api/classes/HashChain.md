@@ -1,6 +1,6 @@
 # Class: HashChain
 
-Defined in: [packages/agentos/src/provenance/crypto/HashChain.ts:16](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/provenance/crypto/HashChain.ts#L16)
+Defined in: [packages/agentos/src/provenance/crypto/HashChain.ts:16](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/provenance/crypto/HashChain.ts#L16)
 
 ## Constructors
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/provenance/crypto/HashChain.ts:16](https://git
 
 > **new HashChain**(`initialHash?`, `initialSequence?`): `HashChain`
 
-Defined in: [packages/agentos/src/provenance/crypto/HashChain.ts:20](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/provenance/crypto/HashChain.ts#L20)
+Defined in: [packages/agentos/src/provenance/crypto/HashChain.ts:20](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/provenance/crypto/HashChain.ts#L20)
 
 #### Parameters
 
@@ -30,7 +30,7 @@ Defined in: [packages/agentos/src/provenance/crypto/HashChain.ts:20](https://git
 
 > **advance**(): `object`
 
-Defined in: [packages/agentos/src/provenance/crypto/HashChain.ts:42](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/provenance/crypto/HashChain.ts#L42)
+Defined in: [packages/agentos/src/provenance/crypto/HashChain.ts:42](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/provenance/crypto/HashChain.ts#L42)
 
 Advance the chain: increment sequence, return the new sequence and prevHash.
 
@@ -52,7 +52,7 @@ Advance the chain: increment sequence, return the new sequence and prevHash.
 
 > **getLastHash**(): `string`
 
-Defined in: [packages/agentos/src/provenance/crypto/HashChain.ts:35](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/provenance/crypto/HashChain.ts#L35)
+Defined in: [packages/agentos/src/provenance/crypto/HashChain.ts:35](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/provenance/crypto/HashChain.ts#L35)
 
 Get the hash of the last event in the chain.
 
@@ -66,7 +66,7 @@ Get the hash of the last event in the chain.
 
 > **getSequence**(): `number`
 
-Defined in: [packages/agentos/src/provenance/crypto/HashChain.ts:28](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/provenance/crypto/HashChain.ts#L28)
+Defined in: [packages/agentos/src/provenance/crypto/HashChain.ts:28](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/provenance/crypto/HashChain.ts#L28)
 
 Get the current sequence number.
 
@@ -80,7 +80,7 @@ Get the current sequence number.
 
 > **recordHash**(`hash`): `void`
 
-Defined in: [packages/agentos/src/provenance/crypto/HashChain.ts:53](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/provenance/crypto/HashChain.ts#L53)
+Defined in: [packages/agentos/src/provenance/crypto/HashChain.ts:53](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/provenance/crypto/HashChain.ts#L53)
 
 Record a hash as the new chain head (call after event is persisted).
 
@@ -100,7 +100,7 @@ Record a hash as the new chain head (call after event is persisted).
 
 > `static` **canonicalJSON**(`obj`): `string`
 
-Defined in: [packages/agentos/src/provenance/crypto/HashChain.ts:85](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/provenance/crypto/HashChain.ts#L85)
+Defined in: [packages/agentos/src/provenance/crypto/HashChain.ts:85](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/provenance/crypto/HashChain.ts#L85)
 
 Produce canonical JSON: keys sorted lexicographically at every level.
 
@@ -120,7 +120,7 @@ Produce canonical JSON: keys sorted lexicographically at every level.
 
 > `static` **computeEventHash**(`event`, `algorithm?`): `string`
 
-Defined in: [packages/agentos/src/provenance/crypto/HashChain.ts:61](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/provenance/crypto/HashChain.ts#L61)
+Defined in: [packages/agentos/src/provenance/crypto/HashChain.ts:61](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/provenance/crypto/HashChain.ts#L61)
 
 Compute the SHA-256 hash of an event's preimage.
 Preimage format: `${sequence}|${type}|${timestamp}|${agentId}|${prevHash}|${payloadHash}`
@@ -167,7 +167,7 @@ Preimage format: `${sequence}|${type}|${timestamp}|${agentId}|${prevHash}|${payl
 
 > `static` **computePayloadHash**(`payload`, `algorithm?`): `string`
 
-Defined in: [packages/agentos/src/provenance/crypto/HashChain.ts:77](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/provenance/crypto/HashChain.ts#L77)
+Defined in: [packages/agentos/src/provenance/crypto/HashChain.ts:77](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/provenance/crypto/HashChain.ts#L77)
 
 Compute the SHA-256 hash of a payload object using canonical JSON.
 Canonical = sorted keys recursively for deterministic output.
@@ -192,7 +192,7 @@ Canonical = sorted keys recursively for deterministic output.
 
 > `static` **hash**(`data`, `algorithm?`): `string`
 
-Defined in: [packages/agentos/src/provenance/crypto/HashChain.ts:103](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/provenance/crypto/HashChain.ts#L103)
+Defined in: [packages/agentos/src/provenance/crypto/HashChain.ts:103](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/provenance/crypto/HashChain.ts#L103)
 
 Compute a generic SHA-256 hash of a string.
 

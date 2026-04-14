@@ -1,6 +1,6 @@
 # Class: QueryClassifier
 
-Defined in: [packages/agentos/src/query-router/QueryClassifier.ts:492](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/query-router/QueryClassifier.ts#L492)
+Defined in: [packages/agentos/src/query-router/QueryClassifier.ts:492](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/query-router/QueryClassifier.ts#L492)
 
 Chain-of-thought LLM classifier that determines retrieval depth (T0-T3)
 and retrieval strategy (`none`/`simple`/`moderate`/`complex`) for each
@@ -32,7 +32,7 @@ console.log(result.strategy); // 'moderate'
 
 > **new QueryClassifier**(`config`): `QueryClassifier`
 
-Defined in: [packages/agentos/src/query-router/QueryClassifier.ts:510](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/query-router/QueryClassifier.ts#L510)
+Defined in: [packages/agentos/src/query-router/QueryClassifier.ts:510](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/query-router/QueryClassifier.ts#L510)
 
 Creates a new QueryClassifier instance.
 
@@ -54,7 +54,7 @@ Classifier configuration with model, provider, and thresholds.
 
 > **classify**(`query`, `conversationHistory?`, `_options?`): `Promise`\<[`ClassificationResult`](../interfaces/ClassificationResult.md)\>
 
-Defined in: [packages/agentos/src/query-router/QueryClassifier.ts:561](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/query-router/QueryClassifier.ts#L561)
+Defined in: [packages/agentos/src/query-router/QueryClassifier.ts:561](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/query-router/QueryClassifier.ts#L561)
 
 Classifies a user query into a retrieval tier and strategy.
 
@@ -98,7 +98,7 @@ A [ClassificationResult](../interfaces/ClassificationResult.md) with tier, strat
 
 > **classifyWithPlan**(`query`, `conversationHistory?`, `options?`): `Promise`\<\[[`ClassificationResult`](../interfaces/ClassificationResult.md), `ExecutionPlan`\]\>
 
-Defined in: [packages/agentos/src/query-router/QueryClassifier.ts:624](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/query-router/QueryClassifier.ts#L624)
+Defined in: [packages/agentos/src/query-router/QueryClassifier.ts:624](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/query-router/QueryClassifier.ts#L624)
 
 Classifies a query and produces a full [ExecutionPlan](../interfaces/ExecutionPlan.md).
 
@@ -162,7 +162,7 @@ const result = await unifiedRetriever.retrieve(query, plan);
 
 > **getCapabilityDiscoveryEngine**(): `CapabilityDiscoveryEngine` \| `null`
 
-Defined in: [packages/agentos/src/query-router/QueryClassifier.ts:540](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/query-router/QueryClassifier.ts#L540)
+Defined in: [packages/agentos/src/query-router/QueryClassifier.ts:540](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/query-router/QueryClassifier.ts#L540)
 
 Get the attached CapabilityDiscoveryEngine, if any.
 
@@ -178,7 +178,7 @@ The discovery engine instance, or `null` if not configured.
 
 > **setCapabilityDiscoveryEngine**(`engine`): `void`
 
-Defined in: [packages/agentos/src/query-router/QueryClassifier.ts:531](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/query-router/QueryClassifier.ts#L531)
+Defined in: [packages/agentos/src/query-router/QueryClassifier.ts:531](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/query-router/QueryClassifier.ts#L531)
 
 Attach a CapabilityDiscoveryEngine for Tier 0 capability summaries.
 

@@ -1,6 +1,6 @@
 # Interface: VisionPreprocessingConfig
 
-Defined in: [packages/agentos/src/vision/types.ts:261](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/vision/types.ts#L261)
+Defined in: [packages/agentos/src/vision/types.ts:261](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/vision/types.ts#L261)
 
 Preprocessing options applied to images before they enter the
 vision pipeline tiers. Uses `sharp` under the hood.
@@ -11,7 +11,7 @@ vision pipeline tiers. Uses `sharp` under the hood.
 
 > `optional` **grayscale**: `boolean`
 
-Defined in: [packages/agentos/src/vision/types.ts:263](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/vision/types.ts#L263)
+Defined in: [packages/agentos/src/vision/types.ts:263](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/vision/types.ts#L263)
 
 Convert to grayscale before OCR (improves contrast for printed text).
 
@@ -21,7 +21,7 @@ Convert to grayscale before OCR (improves contrast for printed text).
 
 > `optional` **normalize**: `boolean`
 
-Defined in: [packages/agentos/src/vision/types.ts:279](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/vision/types.ts#L279)
+Defined in: [packages/agentos/src/vision/types.ts:279](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/vision/types.ts#L279)
 
 Normalize brightness/contrast (histogram stretching).
 
@@ -31,7 +31,7 @@ Normalize brightness/contrast (histogram stretching).
 
 > `optional` **resize**: `object`
 
-Defined in: [packages/agentos/src/vision/types.ts:270](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/vision/types.ts#L270)
+Defined in: [packages/agentos/src/vision/types.ts:270](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/vision/types.ts#L270)
 
 Resize constraints. The image is scaled down proportionally
 so that neither dimension exceeds the specified maximum.
@@ -51,6 +51,6 @@ No upscaling is performed.
 
 > `optional` **sharpen**: `boolean`
 
-Defined in: [packages/agentos/src/vision/types.ts:276](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/vision/types.ts#L276)
+Defined in: [packages/agentos/src/vision/types.ts:276](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/vision/types.ts#L276)
 
 Apply unsharp-mask sharpening (helps blurry scans).

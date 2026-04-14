@@ -279,7 +279,7 @@ The streaming guardrail uses sentence-boundary buffering (splits on `. `, `? `, 
 
 ## Related Documentation
 
-- [Guardrails](/docs/features/guardrails)
-- [Extension Architecture](/docs/extensions/extension-architecture)
-- [Extensions Overview](/docs/extensions/overview)
-- [Safety Primitives](/docs/features/safety-primitives)
+- [Guardrails](/features/guardrails)
+- [Extension Architecture](/extensions/extension-architecture)
+- [Extensions Overview](/extensions/overview)
+- [Safety Primitives](/features/safety-primitives)

@@ -1,6 +1,6 @@
 # Interface: WorkflowExtensionExecutionContext
 
-Defined in: [packages/agentos/src/extensions/types.ts:202](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/extensions/types.ts#L202)
+Defined in: [packages/agentos/src/extensions/types.ts:202](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/extensions/types.ts#L202)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/extensions/types.ts:202](https://github.com/fr
 
 > **task**: [`WorkflowTaskDefinition`](WorkflowTaskDefinition.md)
 
-Defined in: [packages/agentos/src/extensions/types.ts:204](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/extensions/types.ts#L204)
+Defined in: [packages/agentos/src/extensions/types.ts:204](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/extensions/types.ts#L204)
 
 ***
 
@@ -16,4 +16,4 @@ Defined in: [packages/agentos/src/extensions/types.ts:204](https://github.com/fr
 
 > **workflow**: [`WorkflowInstance`](WorkflowInstance.md)
 
-Defined in: [packages/agentos/src/extensions/types.ts:203](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/extensions/types.ts#L203)
+Defined in: [packages/agentos/src/extensions/types.ts:203](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/extensions/types.ts#L203)

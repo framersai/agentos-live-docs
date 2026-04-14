@@ -1,6 +1,6 @@
 # Interface: PersonaRagDataSourceConfig
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:103](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/personas/IPersonaDefinition.ts#L103)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:103](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/personas/IPersonaDefinition.ts#L103)
 
 Configuration for a specific RAG (Retrieval Augmented Generation) data source
 
@@ -14,7 +14,7 @@ PersonaRagDataSourceConfig
 
 > **dataSourceNameOrId**: `string`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:105](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/personas/IPersonaDefinition.ts#L105)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:105](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/personas/IPersonaDefinition.ts#L105)
 
 ***
 
@@ -22,7 +22,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefiniti
 
 > `optional` **defaultFilterMetadata**: `Record`\<`string`, `any`\>
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:109](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/personas/IPersonaDefinition.ts#L109)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:109](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/personas/IPersonaDefinition.ts#L109)
 
 ***
 
@@ -30,7 +30,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefiniti
 
 > `optional` **defaultTopK**: `number`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:108](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/personas/IPersonaDefinition.ts#L108)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:108](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/personas/IPersonaDefinition.ts#L108)
 
 ***
 
@@ -38,7 +38,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefiniti
 
 > `optional` **displayName**: `string`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:107](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/personas/IPersonaDefinition.ts#L107)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:107](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/personas/IPersonaDefinition.ts#L107)
 
 ***
 
@@ -46,7 +46,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefiniti
 
 > **id**: `string`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:104](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/personas/IPersonaDefinition.ts#L104)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:104](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/personas/IPersonaDefinition.ts#L104)
 
 ***
 
@@ -54,7 +54,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefiniti
 
 > **isEnabled**: `boolean`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:106](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/personas/IPersonaDefinition.ts#L106)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:106](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/personas/IPersonaDefinition.ts#L106)
 
 ***
 
@@ -62,7 +62,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefiniti
 
 > `optional` **priority**: `number`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:110](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/personas/IPersonaDefinition.ts#L110)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:110](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/personas/IPersonaDefinition.ts#L110)
 
 ***
 
@@ -70,4 +70,4 @@ Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefiniti
 
 > `optional` **relevanceThreshold**: `number`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:111](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/personas/IPersonaDefinition.ts#L111)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:111](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/personas/IPersonaDefinition.ts#L111)

@@ -1,6 +1,6 @@
 # Interface: CallManagerEvent
 
-Defined in: [packages/agentos/src/channels/telephony/CallManager.ts:54](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/telephony/CallManager.ts#L54)
+Defined in: [packages/agentos/src/channels/telephony/CallManager.ts:54](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/channels/telephony/CallManager.ts#L54)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/channels/telephony/CallManager.ts:54](https://
 
 > **call**: [`CallRecord`](CallRecord.md)
 
-Defined in: [packages/agentos/src/channels/telephony/CallManager.ts:57](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/telephony/CallManager.ts#L57)
+Defined in: [packages/agentos/src/channels/telephony/CallManager.ts:57](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/channels/telephony/CallManager.ts#L57)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [packages/agentos/src/channels/telephony/CallManager.ts:57](https://
 
 > **callId**: `string`
 
-Defined in: [packages/agentos/src/channels/telephony/CallManager.ts:56](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/telephony/CallManager.ts#L56)
+Defined in: [packages/agentos/src/channels/telephony/CallManager.ts:56](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/channels/telephony/CallManager.ts#L56)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: [packages/agentos/src/channels/telephony/CallManager.ts:56](https://
 
 > `optional` **data**: `unknown`
 
-Defined in: [packages/agentos/src/channels/telephony/CallManager.ts:58](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/telephony/CallManager.ts#L58)
+Defined in: [packages/agentos/src/channels/telephony/CallManager.ts:58](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/channels/telephony/CallManager.ts#L58)
 
 ***
 
@@ -32,4 +32,4 @@ Defined in: [packages/agentos/src/channels/telephony/CallManager.ts:58](https://
 
 > **type**: [`CallManagerEventType`](../type-aliases/CallManagerEventType.md)
 
-Defined in: [packages/agentos/src/channels/telephony/CallManager.ts:55](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/telephony/CallManager.ts#L55)
+Defined in: [packages/agentos/src/channels/telephony/CallManager.ts:55](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/channels/telephony/CallManager.ts#L55)

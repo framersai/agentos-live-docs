@@ -1,6 +1,6 @@
 # Class: KnowledgeGraph
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/KnowledgeGraph.ts:48](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/graph/knowledge/KnowledgeGraph.ts#L48)
+Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/KnowledgeGraph.ts:48](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/retrieval/graph/knowledge/KnowledgeGraph.ts#L48)
 
 In-memory Knowledge Graph implementation
 
@@ -14,7 +14,7 @@ In-memory Knowledge Graph implementation
 
 > **new KnowledgeGraph**(`config?`): `KnowledgeGraph`
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/KnowledgeGraph.ts:64](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/graph/knowledge/KnowledgeGraph.ts#L64)
+Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/KnowledgeGraph.ts:64](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/retrieval/graph/knowledge/KnowledgeGraph.ts#L64)
 
 #### Parameters
 
@@ -32,7 +32,7 @@ Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/KnowledgeGrap
 
 > **clear**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/KnowledgeGraph.ts:746](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/graph/knowledge/KnowledgeGraph.ts#L746)
+Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/KnowledgeGraph.ts:746](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/retrieval/graph/knowledge/KnowledgeGraph.ts#L746)
 
 Clear all knowledge
 
@@ -50,7 +50,7 @@ Clear all knowledge
 
 > **decayMemories**(`decayFactor?`): `Promise`\<`number`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/KnowledgeGraph.ts:686](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/graph/knowledge/KnowledgeGraph.ts#L686)
+Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/KnowledgeGraph.ts:686](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/retrieval/graph/knowledge/KnowledgeGraph.ts#L686)
 
 Decay old memories (reduce importance over time)
 
@@ -74,7 +74,7 @@ Decay old memories (reduce importance over time)
 
 > **deleteEntity**(`id`): `Promise`\<`boolean`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/KnowledgeGraph.ts:173](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/graph/knowledge/KnowledgeGraph.ts#L173)
+Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/KnowledgeGraph.ts:173](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/retrieval/graph/knowledge/KnowledgeGraph.ts#L173)
 
 Delete an entity and its relations
 
@@ -98,7 +98,7 @@ Delete an entity and its relations
 
 > **deleteRelation**(`id`): `Promise`\<`boolean`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/KnowledgeGraph.ts:265](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/graph/knowledge/KnowledgeGraph.ts#L265)
+Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/KnowledgeGraph.ts:265](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/retrieval/graph/knowledge/KnowledgeGraph.ts#L265)
 
 Delete a relation
 
@@ -122,7 +122,7 @@ Delete a relation
 
 > **extractFromText**(`text`, `options?`): `Promise`\<\{ `entities`: [`KnowledgeEntity`](../interfaces/KnowledgeEntity.md)[]; `relations`: [`KnowledgeRelation`](../interfaces/KnowledgeRelation.md)[]; \}\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/KnowledgeGraph.ts:598](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/graph/knowledge/KnowledgeGraph.ts#L598)
+Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/KnowledgeGraph.ts:598](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/retrieval/graph/knowledge/KnowledgeGraph.ts#L598)
 
 Extract entities and relations from text
 
@@ -156,7 +156,7 @@ Extract entities and relations from text
 
 > **findPath**(`sourceId`, `targetId`, `maxDepth?`): `Promise`\<`object`[] \| `null`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/KnowledgeGraph.ts:461](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/graph/knowledge/KnowledgeGraph.ts#L461)
+Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/KnowledgeGraph.ts:461](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/retrieval/graph/knowledge/KnowledgeGraph.ts#L461)
 
 Find shortest path between two entities
 
@@ -188,7 +188,7 @@ Find shortest path between two entities
 
 > **getEntity**(`id`): `Promise`\<[`KnowledgeEntity`](../interfaces/KnowledgeEntity.md) \| `undefined`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/KnowledgeGraph.ts:123](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/graph/knowledge/KnowledgeGraph.ts#L123)
+Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/KnowledgeGraph.ts:123](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/retrieval/graph/knowledge/KnowledgeGraph.ts#L123)
 
 Get entity by ID
 
@@ -212,7 +212,7 @@ Get entity by ID
 
 > **getMemory**(`id`): `Promise`\<[`EpisodicMemory`](../interfaces/EpisodicMemory.md) \| `undefined`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/KnowledgeGraph.ts:311](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/graph/knowledge/KnowledgeGraph.ts#L311)
+Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/KnowledgeGraph.ts:311](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/retrieval/graph/knowledge/KnowledgeGraph.ts#L311)
 
 Get memory by ID
 
@@ -236,7 +236,7 @@ Get memory by ID
 
 > **getNeighborhood**(`entityId`, `depth?`): `Promise`\<\{ `entities`: [`KnowledgeEntity`](../interfaces/KnowledgeEntity.md)[]; `relations`: [`KnowledgeRelation`](../interfaces/KnowledgeRelation.md)[]; \}\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/KnowledgeGraph.ts:510](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/graph/knowledge/KnowledgeGraph.ts#L510)
+Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/KnowledgeGraph.ts:510](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/retrieval/graph/knowledge/KnowledgeGraph.ts#L510)
 
 Get neighborhood of an entity
 
@@ -264,7 +264,7 @@ Get neighborhood of an entity
 
 > **getRelations**(`entityId`, `options?`): `Promise`\<[`KnowledgeRelation`](../interfaces/KnowledgeRelation.md)[]\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/KnowledgeGraph.ts:234](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/graph/knowledge/KnowledgeGraph.ts#L234)
+Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/KnowledgeGraph.ts:234](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/retrieval/graph/knowledge/KnowledgeGraph.ts#L234)
 
 Get relations for an entity
 
@@ -298,7 +298,7 @@ Get relations for an entity
 
 > **getStats**(): `Promise`\<[`KnowledgeGraphStats`](../interfaces/KnowledgeGraphStats.md)\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/KnowledgeGraph.ts:712](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/graph/knowledge/KnowledgeGraph.ts#L712)
+Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/KnowledgeGraph.ts:712](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/retrieval/graph/knowledge/KnowledgeGraph.ts#L712)
 
 Get knowledge graph statistics
 
@@ -316,7 +316,7 @@ Get knowledge graph statistics
 
 > **initialize**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/KnowledgeGraph.ts:71](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/graph/knowledge/KnowledgeGraph.ts#L71)
+Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/KnowledgeGraph.ts:71](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/retrieval/graph/knowledge/KnowledgeGraph.ts#L71)
 
 Initialize the knowledge graph
 
@@ -334,7 +334,7 @@ Initialize the knowledge graph
 
 > **mergeEntities**(`entityIds`, `primaryId`): `Promise`\<[`KnowledgeEntity`](../interfaces/KnowledgeEntity.md)\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/KnowledgeGraph.ts:652](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/graph/knowledge/KnowledgeGraph.ts#L652)
+Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/KnowledgeGraph.ts:652](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/retrieval/graph/knowledge/KnowledgeGraph.ts#L652)
 
 Merge duplicate entities
 
@@ -362,7 +362,7 @@ Merge duplicate entities
 
 > **queryEntities**(`options?`): `Promise`\<[`KnowledgeEntity`](../interfaces/KnowledgeEntity.md)[]\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/KnowledgeGraph.ts:127](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/graph/knowledge/KnowledgeGraph.ts#L127)
+Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/KnowledgeGraph.ts:127](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/retrieval/graph/knowledge/KnowledgeGraph.ts#L127)
 
 Query entities
 
@@ -386,7 +386,7 @@ Query entities
 
 > **queryMemories**(`options?`): `Promise`\<[`EpisodicMemory`](../interfaces/EpisodicMemory.md)[]\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/KnowledgeGraph.ts:321](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/graph/knowledge/KnowledgeGraph.ts#L321)
+Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/KnowledgeGraph.ts:321](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/retrieval/graph/knowledge/KnowledgeGraph.ts#L321)
 
 Query episodic memories
 
@@ -436,7 +436,7 @@ Query episodic memories
 
 > **recallMemories**(`query`, `topK?`): `Promise`\<[`EpisodicMemory`](../interfaces/EpisodicMemory.md)[]\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/KnowledgeGraph.ts:363](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/graph/knowledge/KnowledgeGraph.ts#L363)
+Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/KnowledgeGraph.ts:363](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/retrieval/graph/knowledge/KnowledgeGraph.ts#L363)
 
 Recall relevant memories (updates access count)
 
@@ -464,7 +464,7 @@ Recall relevant memories (updates access count)
 
 > **recordMemory**(`memoryInput`): `Promise`\<[`EpisodicMemory`](../interfaces/EpisodicMemory.md)\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/KnowledgeGraph.ts:281](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/graph/knowledge/KnowledgeGraph.ts#L281)
+Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/KnowledgeGraph.ts:281](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/retrieval/graph/knowledge/KnowledgeGraph.ts#L281)
 
 Record an episodic memory
 
@@ -488,7 +488,7 @@ Record an episodic memory
 
 > **semanticSearch**(`options`): `Promise`\<[`SemanticSearchResult`](../interfaces/SemanticSearchResult.md)[]\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/KnowledgeGraph.ts:526](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/graph/knowledge/KnowledgeGraph.ts#L526)
+Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/KnowledgeGraph.ts:526](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/retrieval/graph/knowledge/KnowledgeGraph.ts#L526)
 
 Semantic search across entities and memories
 
@@ -512,7 +512,7 @@ Semantic search across entities and memories
 
 > **traverse**(`startEntityId`, `options?`): `Promise`\<[`TraversalResult`](../interfaces/TraversalResult.md)\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/KnowledgeGraph.ts:398](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/graph/knowledge/KnowledgeGraph.ts#L398)
+Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/KnowledgeGraph.ts:398](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/retrieval/graph/knowledge/KnowledgeGraph.ts#L398)
 
 Traverse the graph from a starting entity
 
@@ -540,7 +540,7 @@ Traverse the graph from a starting entity
 
 > **upsertEntity**(`entityInput`): `Promise`\<[`KnowledgeEntity`](../interfaces/KnowledgeEntity.md)\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/KnowledgeGraph.ts:79](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/graph/knowledge/KnowledgeGraph.ts#L79)
+Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/KnowledgeGraph.ts:79](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/retrieval/graph/knowledge/KnowledgeGraph.ts#L79)
 
 Add or update an entity
 
@@ -564,7 +564,7 @@ Add or update an entity
 
 > **upsertRelation**(`relationInput`): `Promise`\<[`KnowledgeRelation`](../interfaces/KnowledgeRelation.md)\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/KnowledgeGraph.ts:201](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/graph/knowledge/KnowledgeGraph.ts#L201)
+Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/KnowledgeGraph.ts:201](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/retrieval/graph/knowledge/KnowledgeGraph.ts#L201)
 
 Add or update a relation
 

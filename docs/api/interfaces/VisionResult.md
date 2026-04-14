@@ -1,6 +1,6 @@
 # Interface: VisionResult
 
-Defined in: [packages/agentos/src/vision/types.ts:224](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/vision/types.ts#L224)
+Defined in: [packages/agentos/src/vision/types.ts:224](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/vision/types.ts#L224)
 
 Aggregated result from the vision pipeline after all configured tiers
 have run. Contains the best extracted text, content classification,
@@ -34,7 +34,7 @@ for (const tr of result.tierResults) {
 
 > **category**: [`VisionContentCategory`](../type-aliases/VisionContentCategory.md)
 
-Defined in: [packages/agentos/src/vision/types.ts:232](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/vision/types.ts#L232)
+Defined in: [packages/agentos/src/vision/types.ts:232](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/vision/types.ts#L232)
 
 What kind of content was detected.
 
@@ -44,7 +44,7 @@ What kind of content was detected.
 
 > **confidence**: `number`
 
-Defined in: [packages/agentos/src/vision/types.ts:229](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/vision/types.ts#L229)
+Defined in: [packages/agentos/src/vision/types.ts:229](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/vision/types.ts#L229)
 
 Overall confidence score 0–1, taken from the winning tier.
 
@@ -54,7 +54,7 @@ Overall confidence score 0–1, taken from the winning tier.
 
 > **durationMs**: `number`
 
-Defined in: [packages/agentos/src/vision/types.ts:250](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/vision/types.ts#L250)
+Defined in: [packages/agentos/src/vision/types.ts:250](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/vision/types.ts#L250)
 
 Total wall-clock processing time in milliseconds.
 
@@ -64,7 +64,7 @@ Total wall-clock processing time in milliseconds.
 
 > `optional` **embedding**: `number`[]
 
-Defined in: [packages/agentos/src/vision/types.ts:241](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/vision/types.ts#L241)
+Defined in: [packages/agentos/src/vision/types.ts:241](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/vision/types.ts#L241)
 
 CLIP image embedding vector, when embedding tier is enabled.
 
@@ -74,7 +74,7 @@ CLIP image embedding vector, when embedding tier is enabled.
 
 > `optional` **layout**: [`DocumentLayout`](DocumentLayout.md)
 
-Defined in: [packages/agentos/src/vision/types.ts:244](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/vision/types.ts#L244)
+Defined in: [packages/agentos/src/vision/types.ts:244](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/vision/types.ts#L244)
 
 Structured document layout, when Florence-2 ran.
 
@@ -84,7 +84,7 @@ Structured document layout, when Florence-2 ran.
 
 > `optional` **regions**: [`VisionTextRegion`](VisionTextRegion.md)[]
 
-Defined in: [packages/agentos/src/vision/types.ts:247](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/vision/types.ts#L247)
+Defined in: [packages/agentos/src/vision/types.ts:247](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/vision/types.ts#L247)
 
 Bounding boxes for detected text regions from the winning tier.
 
@@ -94,7 +94,7 @@ Bounding boxes for detected text regions from the winning tier.
 
 > **text**: `string`
 
-Defined in: [packages/agentos/src/vision/types.ts:226](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/vision/types.ts#L226)
+Defined in: [packages/agentos/src/vision/types.ts:226](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/vision/types.ts#L226)
 
 Best extracted text (from OCR, handwriting, or vision description).
 
@@ -104,7 +104,7 @@ Best extracted text (from OCR, handwriting, or vision description).
 
 > **tierResults**: [`VisionTierResult`](VisionTierResult.md)[]
 
-Defined in: [packages/agentos/src/vision/types.ts:238](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/vision/types.ts#L238)
+Defined in: [packages/agentos/src/vision/types.ts:238](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/vision/types.ts#L238)
 
 Detailed results from each tier that ran, ordered by execution.
 
@@ -114,6 +114,6 @@ Detailed results from each tier that ran, ordered by execution.
 
 > **tiers**: [`VisionTier`](../type-aliases/VisionTier.md)[]
 
-Defined in: [packages/agentos/src/vision/types.ts:235](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/vision/types.ts#L235)
+Defined in: [packages/agentos/src/vision/types.ts:235](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/vision/types.ts#L235)
 
 Which tier(s) contributed to the final result.

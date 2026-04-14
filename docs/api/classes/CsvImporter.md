@@ -1,6 +1,6 @@
 # Class: CsvImporter
 
-Defined in: [packages/agentos/src/memory/io/CsvImporter.ts:34](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/io/CsvImporter.ts#L34)
+Defined in: [packages/agentos/src/memory/io/CsvImporter.ts:34](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/io/CsvImporter.ts#L34)
 
 Imports a flat CSV file into a `SqliteBrain`.
 
@@ -10,7 +10,7 @@ Imports a flat CSV file into a `SqliteBrain`.
 
 > **new CsvImporter**(`brain`): `CsvImporter`
 
-Defined in: [packages/agentos/src/memory/io/CsvImporter.ts:35](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/io/CsvImporter.ts#L35)
+Defined in: [packages/agentos/src/memory/io/CsvImporter.ts:35](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/io/CsvImporter.ts#L35)
 
 #### Parameters
 
@@ -28,7 +28,7 @@ Defined in: [packages/agentos/src/memory/io/CsvImporter.ts:35](https://github.co
 
 > **import**(`sourcePath`, `options?`): `Promise`\<[`ImportResult`](../interfaces/ImportResult.md)\>
 
-Defined in: [packages/agentos/src/memory/io/CsvImporter.ts:43](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/io/CsvImporter.ts#L43)
+Defined in: [packages/agentos/src/memory/io/CsvImporter.ts:43](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/io/CsvImporter.ts#L43)
 
 Read, parse, and import a CSV file.
 
@@ -56,7 +56,7 @@ Import summary with imported/skipped/error counts.
 
 > **importFromString**(`csvContent`, `options?`): `Promise`\<[`ImportResult`](../interfaces/ImportResult.md)\>
 
-Defined in: [packages/agentos/src/memory/io/CsvImporter.ts:64](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/io/CsvImporter.ts#L64)
+Defined in: [packages/agentos/src/memory/io/CsvImporter.ts:64](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/io/CsvImporter.ts#L64)
 
 Import a CSV string directly into the target brain without filesystem access.
 

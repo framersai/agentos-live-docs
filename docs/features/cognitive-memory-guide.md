@@ -217,59 +217,6 @@ console.log(neighbors);
 
 ---
 
-## HyDE (Hypothetical Document Embedding)
-
-For vague or abstract queries ("that thing we discussed about deployment"), standard vector similarity often fails because the query embedding is far from the stored memory embedding. HyDE generates a hypothetical memory trace before searching:
-
-```typescript
-const results = await memory.retrieve({
-  query: 'that deployment thing from last week',
-  hyde: true, // Generate a hypothetical memory before searching
-});
-```
-
-When `hyde: true` and an LLM invoker is configured, the system:
-1. Generates a 1-2 sentence hypothesis of what a stored memory about this topic would look like
-2. Embeds the hypothesis (which is semantically closer to actual stored traces)
-3. Uses the hypothesis embedding for vector search
-
-HyDE auto-attaches when any `llmInvoker` is available (from observer, reflector, or feature detection config). It adds one LLM call per retrieval — use for important lookups where recall quality matters more than latency.
-
----
-
-## Neural Reranking
-
-The cognitive scoring pipeline (vector similarity + decay + mood congruence + graph activation) can be augmented with a neural cross-encoder reranker for improved precision:
-
-```typescript
-import { RerankerService, CohereReranker } from '@framers/agentos/rag/reranking';
-
-const rerankerService = new RerankerService({
-  config: {
-    providers: [
-      { providerId: 'cohere', apiKey: process.env.COHERE_API_KEY!, defaultModelId: 'rerank-v3.5' },
-      { providerId: 'llm-judge' }, // Fallback when Cohere is unavailable
-    ],
-    defaultProviderId: 'cohere',
-  },
-});
-
-await manager.initialize({
-  // ... other config ...
-  rerankerService,
-});
-```
-
-When configured, the reranker runs after the cognitive scoring pipeline. Scores are blended:
-- **70% cognitive composite** (strength, similarity, recency, emotional congruence, graph activation, importance)
-- **30% neural reranker** (cross-encoder relevance score)
-
-This preserves the cognitive signals that make memory retrieval personality-aware and decay-sensitive, while letting the neural reranker boost results that the bi-encoder embedding similarity alone might rank lower.
-
-The reranker stage is non-critical — if Cohere or the LLM judge is unavailable, retrieval falls back to cognitive-only scoring.
-
----
-
 ## Memory Consolidation
 
 Consolidation is a periodic background process (like sleep in humans) that:
@@ -475,9 +422,67 @@ const memory = new CognitiveMemoryManager(config);
 
 ---
 
+## Long-Running Agents: Archive & Rehydration
+
+For agents that run across hundreds of sessions, `TemporalGist` compresses old memories to summaries after 60 days. Without the archive, this compression is destructive. With it, the original content is preserved in cold storage and available on demand.
+
+```ts
+import { SqlStorageMemoryArchive } from '@framers/agentos/memory/archive';
+
+// Share the brain's adapter — archive tables live in the same SQLite file
+const archive = new SqlStorageMemoryArchive(brain.adapter, brain.features);
+await archive.initialize();
+
+// Pass archive to CognitiveMemoryManager
+const manager = new CognitiveMemoryManager();
+await manager.initialize({
+  ...config,
+  archive,
+});
+
+// Later — the LLM sees a gisted memory and wants the original:
+const verbatim = await manager.rehydrate('mt_trace_abc123');
+// verbatim → "The ancient dragon Vex attacked the village of Millhaven at dawn..."
+```
+
+The archive uses the same `@framers/sql-storage-adapter` `StorageAdapter` contract as `SqliteBrain`. When shared, soul exports bundle one file. The `rehydrate_memory` LLM tool is opt-in via `MemoryToolsExtension({ includeRehydrate: true })`.
+
+Retention is usage-aware: if a trace has been rehydrated recently, the consolidation sweep keeps it regardless of age. Default retention: 365 days.
+
+---
+
+## Related Guides
+
+## Multi-Agent Memory: PerspectiveObserver
+
+When multiple agents witness the same event, each gets a first-person rewrite through their personality and relationships.
+
+```ts
+import { PerspectiveObserver } from '@framers/agentos/memory/pipeline/observation/PerspectiveObserver';
+
+const observer = new PerspectiveObserver({
+  llmInvoker: (sys, usr) => callHaiku(sys, usr),
+  importanceThreshold: 0.3,
+});
+
+const result = await observer.rewrite(
+  [{ eventId: 'evt_1', content: 'The dragon attacked the village.', ... }],
+  [
+    { agentId: 'lyra', agentName: 'Lyra', hexaco: { emotionality: 0.9, ... }, tier: 'important', ... },
+    { agentId: 'holt', agentName: 'Holt', hexaco: { emotionality: 0.2, ... }, tier: 'important', ... },
+  ],
+);
+// Lyra: "I watched in horror as flames consumed our home..."
+// Holt: "The beast attacked. Predictable. I assessed our defensive options."
+```
+
+Each `SubjectiveTrace` carries a `perspectiveMetadata` snapshot and an `originalEventHash` linking back to the archived objective event. Reconsolidation halves its drift rate for perspective-encoded traces.
+
+---
+
 ## Related Guides
 
 - [COGNITIVE_MEMORY.md](/features/cognitive-memory) — full architecture and internals reference
 - [WORKING_MEMORY.md](/features/working-memory) — detailed Baddeley working memory reference
-- [MEMORY_AUTO_INGEST.md](./MEMORY_AUTO_INGEST.md) — automatic memory ingestion from conversations
+- [MEMORY_AUTO_INGEST.md](/features/memory-auto-ingest) — automatic memory ingestion from conversations
 - [RAG_MEMORY_CONFIGURATION.md](/features/rag-memory) — vector store and RAG setup

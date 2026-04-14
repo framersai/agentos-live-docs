@@ -1,6 +1,6 @@
 # Interface: GuardrailPolicy
 
-Defined in: [packages/agentos/src/orchestration/ir/types.ts:350](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/ir/types.ts#L350)
+Defined in: [packages/agentos/src/orchestration/ir/types.ts:350](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/ir/types.ts#L350)
 
 Declarative guardrail policy attached to a node or edge.
 
@@ -10,7 +10,7 @@ Declarative guardrail policy attached to a node or edge.
 
 > `optional` **input**: `string`[]
 
-Defined in: [packages/agentos/src/orchestration/ir/types.ts:351](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/ir/types.ts#L351)
+Defined in: [packages/agentos/src/orchestration/ir/types.ts:351](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/ir/types.ts#L351)
 
 Guardrail ids evaluated against the node's incoming payload.
 
@@ -20,7 +20,7 @@ Guardrail ids evaluated against the node's incoming payload.
 
 > **onViolation**: `"block"` \| `"reroute"` \| `"warn"` \| `"sanitize"`
 
-Defined in: [packages/agentos/src/orchestration/ir/types.ts:353](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/ir/types.ts#L353)
+Defined in: [packages/agentos/src/orchestration/ir/types.ts:353](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/ir/types.ts#L353)
 
 Action taken when any guardrail fires.
 
@@ -30,7 +30,7 @@ Action taken when any guardrail fires.
 
 > `optional` **output**: `string`[]
 
-Defined in: [packages/agentos/src/orchestration/ir/types.ts:352](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/ir/types.ts#L352)
+Defined in: [packages/agentos/src/orchestration/ir/types.ts:352](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/ir/types.ts#L352)
 
 Guardrail ids evaluated against the node's outgoing payload.
 
@@ -40,6 +40,6 @@ Guardrail ids evaluated against the node's outgoing payload.
 
 > `optional` **rerouteTarget**: `string`
 
-Defined in: [packages/agentos/src/orchestration/ir/types.ts:354](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/ir/types.ts#L354)
+Defined in: [packages/agentos/src/orchestration/ir/types.ts:354](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/ir/types.ts#L354)
 
 Required when `onViolation` is `'reroute'`.

@@ -1,6 +1,6 @@
 # Interface: UsageLedgerOptions
 
-Defined in: [packages/agentos/src/core/utils/usage/UsageLedger.ts:41](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/utils/usage/UsageLedger.ts#L41)
+Defined in: [packages/agentos/src/core/utils/usage/UsageLedger.ts:41](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/utils/usage/UsageLedger.ts#L41)
 
 Options for UsageLedger behavior.
 
@@ -10,7 +10,7 @@ Options for UsageLedger behavior.
 
 > `optional` **includeInterimStreamingUsage**: `boolean`
 
-Defined in: [packages/agentos/src/core/utils/usage/UsageLedger.ts:43](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/utils/usage/UsageLedger.ts#L43)
+Defined in: [packages/agentos/src/core/utils/usage/UsageLedger.ts:43](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/utils/usage/UsageLedger.ts#L43)
 
 When true, interim streaming usage (non-final chunks) will contribute estimated tokens.
 
@@ -20,7 +20,7 @@ When true, interim streaming usage (non-final chunks) will contribute estimated 
 
 > `optional` **persistenceAdapter**: [`IUsageLedgerPersistence`](IUsageLedgerPersistence.md)
 
-Defined in: [packages/agentos/src/core/utils/usage/UsageLedger.ts:47](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/utils/usage/UsageLedger.ts#L47)
+Defined in: [packages/agentos/src/core/utils/usage/UsageLedger.ts:47](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/utils/usage/UsageLedger.ts#L47)
 
 Persistence adapter for durability (undefined => in-memory only).
 
@@ -30,6 +30,6 @@ Persistence adapter for durability (undefined => in-memory only).
 
 > `optional` **pricingFallbacks**: `Record`\<`string`, \{ `inputPer1M?`: `number`; `outputPer1M?`: `number`; `totalPer1M?`: `number`; \}\>
 
-Defined in: [packages/agentos/src/core/utils/usage/UsageLedger.ts:45](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/utils/usage/UsageLedger.ts#L45)
+Defined in: [packages/agentos/src/core/utils/usage/UsageLedger.ts:45](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/utils/usage/UsageLedger.ts#L45)
 
 Optional pricing fallback map: modelId -> { inputPer1M, outputPer1M }.

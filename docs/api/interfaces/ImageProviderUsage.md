@@ -1,6 +1,6 @@
 # Interface: ImageProviderUsage
 
-Defined in: [packages/agentos/src/media/images/IImageProvider.ts:14](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/images/IImageProvider.ts#L14)
+Defined in: [packages/agentos/src/media/images/IImageProvider.ts:14](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/IImageProvider.ts#L14)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/media/images/IImageProvider.ts:14](https://git
 
 > `optional` **completionTokens**: `number`
 
-Defined in: [packages/agentos/src/media/images/IImageProvider.ts:17](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/images/IImageProvider.ts#L17)
+Defined in: [packages/agentos/src/media/images/IImageProvider.ts:17](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/IImageProvider.ts#L17)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [packages/agentos/src/media/images/IImageProvider.ts:17](https://git
 
 > `optional` **promptTokens**: `number`
 
-Defined in: [packages/agentos/src/media/images/IImageProvider.ts:16](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/images/IImageProvider.ts#L16)
+Defined in: [packages/agentos/src/media/images/IImageProvider.ts:16](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/IImageProvider.ts#L16)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: [packages/agentos/src/media/images/IImageProvider.ts:16](https://git
 
 > `optional` **totalCostUSD**: `number`
 
-Defined in: [packages/agentos/src/media/images/IImageProvider.ts:19](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/images/IImageProvider.ts#L19)
+Defined in: [packages/agentos/src/media/images/IImageProvider.ts:19](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/IImageProvider.ts#L19)
 
 ***
 
@@ -32,7 +32,7 @@ Defined in: [packages/agentos/src/media/images/IImageProvider.ts:19](https://git
 
 > **totalImages**: `number`
 
-Defined in: [packages/agentos/src/media/images/IImageProvider.ts:15](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/images/IImageProvider.ts#L15)
+Defined in: [packages/agentos/src/media/images/IImageProvider.ts:15](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/IImageProvider.ts#L15)
 
 ***
 
@@ -40,4 +40,4 @@ Defined in: [packages/agentos/src/media/images/IImageProvider.ts:15](https://git
 
 > `optional` **totalTokens**: `number`
 
-Defined in: [packages/agentos/src/media/images/IImageProvider.ts:18](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/images/IImageProvider.ts#L18)
+Defined in: [packages/agentos/src/media/images/IImageProvider.ts:18](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/IImageProvider.ts#L18)

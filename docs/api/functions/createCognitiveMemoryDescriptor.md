@@ -2,7 +2,7 @@
 
 > **createCognitiveMemoryDescriptor**(`overrides?`): [`MemoryProviderDescriptor`](../type-aliases/MemoryProviderDescriptor.md)
 
-Defined in: [packages/agentos/src/memory/io/extension/CognitiveMemoryExtension.ts:102](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/io/extension/CognitiveMemoryExtension.ts#L102)
+Defined in: [packages/agentos/src/memory/io/extension/CognitiveMemoryExtension.ts:102](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/io/extension/CognitiveMemoryExtension.ts#L102)
 
 Create a MemoryProviderDescriptor for the cognitive memory system.
 

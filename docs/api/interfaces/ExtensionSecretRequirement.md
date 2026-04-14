@@ -1,6 +1,6 @@
 # Interface: ExtensionSecretRequirement
 
-Defined in: [packages/agentos/src/extensions/types.ts:81](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/extensions/types.ts#L81)
+Defined in: [packages/agentos/src/extensions/types.ts:81](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/extensions/types.ts#L81)
 
 Declares a dependency on a named secret (API key / credential).
 
@@ -10,7 +10,7 @@ Declares a dependency on a named secret (API key / credential).
 
 > `optional` **description**: `string`
 
-Defined in: [packages/agentos/src/extensions/types.ts:87](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/extensions/types.ts#L87)
+Defined in: [packages/agentos/src/extensions/types.ts:87](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/extensions/types.ts#L87)
 
 Optional context surfaced in tooling.
 
@@ -20,7 +20,7 @@ Optional context surfaced in tooling.
 
 > **id**: `string`
 
-Defined in: [packages/agentos/src/extensions/types.ts:83](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/extensions/types.ts#L83)
+Defined in: [packages/agentos/src/extensions/types.ts:83](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/extensions/types.ts#L83)
 
 Unique identifier matching the shared secret catalog.
 
@@ -30,6 +30,6 @@ Unique identifier matching the shared secret catalog.
 
 > `optional` **optional**: `boolean`
 
-Defined in: [packages/agentos/src/extensions/types.ts:85](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/extensions/types.ts#L85)
+Defined in: [packages/agentos/src/extensions/types.ts:85](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/extensions/types.ts#L85)
 
 When true the descriptor can still activate without this secret.

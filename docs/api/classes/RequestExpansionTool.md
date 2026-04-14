@@ -1,6 +1,6 @@
 # Class: RequestExpansionTool
 
-Defined in: [packages/agentos/src/orchestration/tools/RequestExpansionTool.ts:30](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/tools/RequestExpansionTool.ts#L30)
+Defined in: [packages/agentos/src/orchestration/tools/RequestExpansionTool.ts:30](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/tools/RequestExpansionTool.ts#L30)
 
 Tool available to all agent nodes in a mission graph.
 Calling this signals that the agent needs a capability it doesn't have.
@@ -25,7 +25,7 @@ Calling this signals that the agent needs a capability it doesn't have.
 
 > `readonly` **category**: `"orchestration"` = `'orchestration'`
 
-Defined in: [packages/agentos/src/orchestration/tools/RequestExpansionTool.ts:36](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/tools/RequestExpansionTool.ts#L36)
+Defined in: [packages/agentos/src/orchestration/tools/RequestExpansionTool.ts:36](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/tools/RequestExpansionTool.ts#L36)
 
 **`Optional`**
 
@@ -43,7 +43,7 @@ aiding an LLM in selecting from a large set of tools.
 
 > `readonly` **description**: `"Request additional agents or capabilities to complete your task. Use when you encounter a need that your current tools cannot fulfill. The mission planner will evaluate your request and may spawn new agents or forge new tools."` = `'Request additional agents or capabilities to complete your task. Use when you encounter a need that your current tools cannot fulfill. The mission planner will evaluate your request and may spawn new agents or forge new tools.'`
 
-Defined in: [packages/agentos/src/orchestration/tools/RequestExpansionTool.ts:34](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/tools/RequestExpansionTool.ts#L34)
+Defined in: [packages/agentos/src/orchestration/tools/RequestExpansionTool.ts:34](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/tools/RequestExpansionTool.ts#L34)
 
 A detailed, natural language description of what the tool does, its primary purpose,
 typical use cases, and any important considerations or limitations for its use.
@@ -61,7 +61,7 @@ for the LLM to grasp the tool's semantics.
 
 > `readonly` **displayName**: `"Request Expansion"` = `'Request Expansion'`
 
-Defined in: [packages/agentos/src/orchestration/tools/RequestExpansionTool.ts:33](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/tools/RequestExpansionTool.ts#L33)
+Defined in: [packages/agentos/src/orchestration/tools/RequestExpansionTool.ts:33](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/tools/RequestExpansionTool.ts#L33)
 
 A concise, human-readable title or display name for the tool.
 Used in user interfaces, logs, or when presenting tool options to developers or users.
@@ -82,7 +82,7 @@ Used in user interfaces, logs, or when presenting tool options to developers or 
 
 > `readonly` **hasSideEffects**: `true` = `true`
 
-Defined in: [packages/agentos/src/orchestration/tools/RequestExpansionTool.ts:37](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/tools/RequestExpansionTool.ts#L37)
+Defined in: [packages/agentos/src/orchestration/tools/RequestExpansionTool.ts:37](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/tools/RequestExpansionTool.ts#L37)
 
 **`Optional`**
 
@@ -101,7 +101,7 @@ with greater caution, potentially requiring explicit user confirmation.
 
 > `readonly` **id**: `"com.framers.orchestration.request-expansion"` = `'com.framers.orchestration.request-expansion'`
 
-Defined in: [packages/agentos/src/orchestration/tools/RequestExpansionTool.ts:31](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/tools/RequestExpansionTool.ts#L31)
+Defined in: [packages/agentos/src/orchestration/tools/RequestExpansionTool.ts:31](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/tools/RequestExpansionTool.ts#L31)
 
 A globally unique identifier for this specific tool (e.g., "web-search-engine-v1.2", "stock-price-fetcher").
 This ID is used for internal registration, management, and precise identification.
@@ -117,7 +117,7 @@ It's recommended to use a namespaced, versioned format (e.g., `vendor-toolname-v
 
 > `readonly` **inputSchema**: [`JSONSchemaObject`](../type-aliases/JSONSchemaObject.md)
 
-Defined in: [packages/agentos/src/orchestration/tools/RequestExpansionTool.ts:40](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/tools/RequestExpansionTool.ts#L40)
+Defined in: [packages/agentos/src/orchestration/tools/RequestExpansionTool.ts:40](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/tools/RequestExpansionTool.ts#L40)
 
 The JSON schema defining the structure, types, and constraints of the input arguments object
 that this tool expects. This schema is used by:
@@ -139,7 +139,7 @@ https://json-schema.org/
 
 > `readonly` **name**: `"request_expansion"` = `'request_expansion'`
 
-Defined in: [packages/agentos/src/orchestration/tools/RequestExpansionTool.ts:32](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/tools/RequestExpansionTool.ts#L32)
+Defined in: [packages/agentos/src/orchestration/tools/RequestExpansionTool.ts:32](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/tools/RequestExpansionTool.ts#L32)
 
 The functional name of the tool, as it should be presented to and used by an LLM in a tool call request
 (e.g., "searchWeb", "executePythonCode", "getWeatherForecast").
@@ -156,7 +156,7 @@ It should be concise, descriptive, and typically in camelCase or snake_case.
 
 > `readonly` **outputSchema**: [`JSONSchemaObject`](../type-aliases/JSONSchemaObject.md)
 
-Defined in: [packages/agentos/src/orchestration/tools/RequestExpansionTool.ts:57](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/tools/RequestExpansionTool.ts#L57)
+Defined in: [packages/agentos/src/orchestration/tools/RequestExpansionTool.ts:57](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/tools/RequestExpansionTool.ts#L57)
 
 **`Optional`**
 
@@ -176,7 +176,7 @@ in understanding what to expect back from the tool.
 
 > `readonly` **requiredPermissions**: `string`[] = `[]`
 
-Defined in: [packages/agentos/src/orchestration/tools/RequestExpansionTool.ts:38](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/tools/RequestExpansionTool.ts#L38)
+Defined in: [packages/agentos/src/orchestration/tools/RequestExpansionTool.ts:38](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/tools/RequestExpansionTool.ts#L38)
 
 ## Methods
 
@@ -184,7 +184,7 @@ Defined in: [packages/agentos/src/orchestration/tools/RequestExpansionTool.ts:38
 
 > **execute**(`args`, `_context`): `Promise`\<[`ToolExecutionResult`](../interfaces/ToolExecutionResult.md)\<[`RequestExpansionOutput`](../interfaces/RequestExpansionOutput.md)\>\>
 
-Defined in: [packages/agentos/src/orchestration/tools/RequestExpansionTool.ts:65](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/tools/RequestExpansionTool.ts#L65)
+Defined in: [packages/agentos/src/orchestration/tools/RequestExpansionTool.ts:65](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/tools/RequestExpansionTool.ts#L65)
 
 **`Async`**
 

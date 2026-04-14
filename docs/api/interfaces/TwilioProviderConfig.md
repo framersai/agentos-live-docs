@@ -1,6 +1,6 @@
 # Interface: TwilioProviderConfig
 
-Defined in: [packages/agentos/src/channels/telephony/types.ts:460](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/telephony/types.ts#L460)
+Defined in: [packages/agentos/src/channels/telephony/types.ts:460](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/channels/telephony/types.ts#L460)
 
 Provider-specific configuration.
 
@@ -10,7 +10,7 @@ Provider-specific configuration.
 
 > **accountSid**: `string`
 
-Defined in: [packages/agentos/src/channels/telephony/types.ts:461](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/telephony/types.ts#L461)
+Defined in: [packages/agentos/src/channels/telephony/types.ts:461](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/channels/telephony/types.ts#L461)
 
 ***
 
@@ -18,7 +18,7 @@ Defined in: [packages/agentos/src/channels/telephony/types.ts:461](https://githu
 
 > **authToken**: `string`
 
-Defined in: [packages/agentos/src/channels/telephony/types.ts:462](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/telephony/types.ts#L462)
+Defined in: [packages/agentos/src/channels/telephony/types.ts:462](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/channels/telephony/types.ts#L462)
 
 ***
 
@@ -26,4 +26,4 @@ Defined in: [packages/agentos/src/channels/telephony/types.ts:462](https://githu
 
 > **fromNumber**: `string`
 
-Defined in: [packages/agentos/src/channels/telephony/types.ts:463](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/telephony/types.ts#L463)
+Defined in: [packages/agentos/src/channels/telephony/types.ts:463](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/channels/telephony/types.ts#L463)

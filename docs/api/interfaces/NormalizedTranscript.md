@@ -1,6 +1,6 @@
 # Interface: NormalizedTranscript
 
-Defined in: [packages/agentos/src/channels/telephony/types.ts:325](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/telephony/types.ts#L325)
+Defined in: [packages/agentos/src/channels/telephony/types.ts:325](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/channels/telephony/types.ts#L325)
 
 A speech-to-text transcript segment (partial or final).
 
@@ -14,7 +14,7 @@ A speech-to-text transcript segment (partial or final).
 
 > **eventId**: `string`
 
-Defined in: [packages/agentos/src/channels/telephony/types.ts:266](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/telephony/types.ts#L266)
+Defined in: [packages/agentos/src/channels/telephony/types.ts:266](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/channels/telephony/types.ts#L266)
 
 Provider-assigned event ID for idempotency.
 
@@ -28,7 +28,7 @@ Provider-assigned event ID for idempotency.
 
 > **isFinal**: `boolean`
 
-Defined in: [packages/agentos/src/channels/telephony/types.ts:330](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/telephony/types.ts#L330)
+Defined in: [packages/agentos/src/channels/telephony/types.ts:330](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/channels/telephony/types.ts#L330)
 
 Whether this is a finalized transcript (vs. in-progress partial).
 
@@ -38,7 +38,7 @@ Whether this is a finalized transcript (vs. in-progress partial).
 
 > **kind**: `"transcript"`
 
-Defined in: [packages/agentos/src/channels/telephony/types.ts:326](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/telephony/types.ts#L326)
+Defined in: [packages/agentos/src/channels/telephony/types.ts:326](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/channels/telephony/types.ts#L326)
 
 ***
 
@@ -46,7 +46,7 @@ Defined in: [packages/agentos/src/channels/telephony/types.ts:326](https://githu
 
 > **providerCallId**: `string`
 
-Defined in: [packages/agentos/src/channels/telephony/types.ts:268](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/telephony/types.ts#L268)
+Defined in: [packages/agentos/src/channels/telephony/types.ts:268](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/channels/telephony/types.ts#L268)
 
 Provider-assigned call ID.
 
@@ -60,7 +60,7 @@ Provider-assigned call ID.
 
 > **text**: `string`
 
-Defined in: [packages/agentos/src/channels/telephony/types.ts:328](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/telephony/types.ts#L328)
+Defined in: [packages/agentos/src/channels/telephony/types.ts:328](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/channels/telephony/types.ts#L328)
 
 The transcribed text.
 
@@ -70,7 +70,7 @@ The transcribed text.
 
 > **timestamp**: `number`
 
-Defined in: [packages/agentos/src/channels/telephony/types.ts:270](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/telephony/types.ts#L270)
+Defined in: [packages/agentos/src/channels/telephony/types.ts:270](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/channels/telephony/types.ts#L270)
 
 Unix timestamp (ms).
 

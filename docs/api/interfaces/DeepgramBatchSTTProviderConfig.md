@@ -1,6 +1,6 @@
 # Interface: DeepgramBatchSTTProviderConfig
 
-Defined in: [packages/agentos/src/hearing/providers/DeepgramBatchSTTProvider.ts:14](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/hearing/providers/DeepgramBatchSTTProvider.ts#L14)
+Defined in: [packages/agentos/src/hearing/providers/DeepgramBatchSTTProvider.ts:15](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/hearing/providers/DeepgramBatchSTTProvider.ts#L15)
 
 Configuration for the [DeepgramBatchSTTProvider](../classes/DeepgramBatchSTTProvider.md).
 
@@ -14,7 +14,7 @@ Configuration for the [DeepgramBatchSTTProvider](../classes/DeepgramBatchSTTProv
 
 > **apiKey**: `string`
 
-Defined in: [packages/agentos/src/hearing/providers/DeepgramBatchSTTProvider.ts:19](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/hearing/providers/DeepgramBatchSTTProvider.ts#L19)
+Defined in: [packages/agentos/src/hearing/providers/DeepgramBatchSTTProvider.ts:20](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/hearing/providers/DeepgramBatchSTTProvider.ts#L20)
 
 Deepgram API key used for authentication.
 Sent as `Authorization: Token <apiKey>` in the request header.
@@ -25,7 +25,7 @@ Sent as `Authorization: Token <apiKey>` in the request header.
 
 > `optional` **fetchImpl**: \{(`input`, `init?`): `Promise`\<`Response`\>; (`input`, `init?`): `Promise`\<`Response`\>; \}
 
-Defined in: [packages/agentos/src/hearing/providers/DeepgramBatchSTTProvider.ts:41](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/hearing/providers/DeepgramBatchSTTProvider.ts#L41)
+Defined in: [packages/agentos/src/hearing/providers/DeepgramBatchSTTProvider.ts:42](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/hearing/providers/DeepgramBatchSTTProvider.ts#L42)
 
 Custom fetch implementation for dependency injection in tests.
 When omitted, the global `fetch` is used. This allows tests to
@@ -83,7 +83,7 @@ globalThis.fetch
 
 > `optional` **language**: `string`
 
-Defined in: [packages/agentos/src/hearing/providers/DeepgramBatchSTTProvider.ts:33](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/hearing/providers/DeepgramBatchSTTProvider.ts#L33)
+Defined in: [packages/agentos/src/hearing/providers/DeepgramBatchSTTProvider.ts:34](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/hearing/providers/DeepgramBatchSTTProvider.ts#L34)
 
 BCP-47 language code, e.g. `'en-US'`, `'fr-FR'`, `'de-DE'`.
 When omitted, Deepgram applies automatic language detection.
@@ -100,7 +100,7 @@ When omitted, Deepgram applies automatic language detection.
 
 > `optional` **model**: `string`
 
-Defined in: [packages/agentos/src/hearing/providers/DeepgramBatchSTTProvider.ts:26](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/hearing/providers/DeepgramBatchSTTProvider.ts#L26)
+Defined in: [packages/agentos/src/hearing/providers/DeepgramBatchSTTProvider.ts:27](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/hearing/providers/DeepgramBatchSTTProvider.ts#L27)
 
 Deepgram model to use for transcription.
 See https://developers.deepgram.com/docs/models for available models.

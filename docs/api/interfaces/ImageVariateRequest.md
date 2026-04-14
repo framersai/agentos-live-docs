@@ -1,6 +1,6 @@
 # Interface: ImageVariateRequest
 
-Defined in: [packages/agentos/src/media/images/IImageProvider.ts:214](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/images/IImageProvider.ts#L214)
+Defined in: [packages/agentos/src/media/images/IImageProvider.ts:278](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/IImageProvider.ts#L278)
 
 Provider-level request for generating image variations.
 
@@ -13,7 +13,7 @@ Passed to [IImageProvider.variateImage](IImageProvider.md#variateimage) by the h
 
 > **image**: `Buffer`
 
-Defined in: [packages/agentos/src/media/images/IImageProvider.ts:218](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/images/IImageProvider.ts#L218)
+Defined in: [packages/agentos/src/media/images/IImageProvider.ts:282](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/IImageProvider.ts#L282)
 
 Source image as a raw `Buffer`.
 
@@ -23,7 +23,7 @@ Source image as a raw `Buffer`.
 
 > **modelId**: `string`
 
-Defined in: [packages/agentos/src/media/images/IImageProvider.ts:216](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/images/IImageProvider.ts#L216)
+Defined in: [packages/agentos/src/media/images/IImageProvider.ts:280](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/IImageProvider.ts#L280)
 
 Model identifier to use for variation generation.
 
@@ -33,7 +33,7 @@ Model identifier to use for variation generation.
 
 > `optional` **n**: `number`
 
-Defined in: [packages/agentos/src/media/images/IImageProvider.ts:220](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/images/IImageProvider.ts#L220)
+Defined in: [packages/agentos/src/media/images/IImageProvider.ts:284](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/IImageProvider.ts#L284)
 
 Number of variations to generate.
 
@@ -43,7 +43,7 @@ Number of variations to generate.
 
 > `optional` **providerOptions**: `Record`\<`string`, `unknown`\> \| [`ImageProviderOptionBag`](ImageProviderOptionBag.md)
 
-Defined in: [packages/agentos/src/media/images/IImageProvider.ts:229](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/images/IImageProvider.ts#L229)
+Defined in: [packages/agentos/src/media/images/IImageProvider.ts:293](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/IImageProvider.ts#L293)
 
 Arbitrary provider-specific options.
 
@@ -53,7 +53,7 @@ Arbitrary provider-specific options.
 
 > `optional` **size**: `string`
 
-Defined in: [packages/agentos/src/media/images/IImageProvider.ts:227](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/images/IImageProvider.ts#L227)
+Defined in: [packages/agentos/src/media/images/IImageProvider.ts:291](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/IImageProvider.ts#L291)
 
 Desired output size (e.g. `"1024x1024"`).
 
@@ -63,7 +63,7 @@ Desired output size (e.g. `"1024x1024"`).
 
 > `optional` **variance**: `number`
 
-Defined in: [packages/agentos/src/media/images/IImageProvider.ts:225](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/images/IImageProvider.ts#L225)
+Defined in: [packages/agentos/src/media/images/IImageProvider.ts:289](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/IImageProvider.ts#L289)
 
 How different from the original (`0` = identical, `1` = very different).
 Default `0.5`.

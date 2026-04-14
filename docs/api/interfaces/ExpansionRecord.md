@@ -1,6 +1,6 @@
 # Interface: ExpansionRecord
 
-Defined in: [packages/agentos/src/orchestration/planning/types.ts:166](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/planning/types.ts#L166)
+Defined in: [packages/agentos/src/orchestration/planning/types.ts:166](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/planning/types.ts#L166)
 
 Record of an applied expansion for audit trail.
 
@@ -10,7 +10,7 @@ Record of an applied expansion for audit trail.
 
 > **approvedBy**: `"user"` \| `"auto"`
 
-Defined in: [packages/agentos/src/orchestration/planning/types.ts:169](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/planning/types.ts#L169)
+Defined in: [packages/agentos/src/orchestration/planning/types.ts:169](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/planning/types.ts#L169)
 
 ***
 
@@ -18,7 +18,7 @@ Defined in: [packages/agentos/src/orchestration/planning/types.ts:169](https://g
 
 > **checkpointIdBefore**: `string`
 
-Defined in: [packages/agentos/src/orchestration/planning/types.ts:171](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/planning/types.ts#L171)
+Defined in: [packages/agentos/src/orchestration/planning/types.ts:171](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/planning/types.ts#L171)
 
 ***
 
@@ -26,7 +26,7 @@ Defined in: [packages/agentos/src/orchestration/planning/types.ts:171](https://g
 
 > **patch**: [`MissionGraphPatch`](MissionGraphPatch.md)
 
-Defined in: [packages/agentos/src/orchestration/planning/types.ts:167](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/planning/types.ts#L167)
+Defined in: [packages/agentos/src/orchestration/planning/types.ts:167](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/planning/types.ts#L167)
 
 ***
 
@@ -34,7 +34,7 @@ Defined in: [packages/agentos/src/orchestration/planning/types.ts:167](https://g
 
 > **timestamp**: `number`
 
-Defined in: [packages/agentos/src/orchestration/planning/types.ts:170](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/planning/types.ts#L170)
+Defined in: [packages/agentos/src/orchestration/planning/types.ts:170](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/planning/types.ts#L170)
 
 ***
 
@@ -42,4 +42,4 @@ Defined in: [packages/agentos/src/orchestration/planning/types.ts:170](https://g
 
 > **trigger**: [`MissionExpansionTrigger`](../type-aliases/MissionExpansionTrigger.md)
 
-Defined in: [packages/agentos/src/orchestration/planning/types.ts:168](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/planning/types.ts#L168)
+Defined in: [packages/agentos/src/orchestration/planning/types.ts:168](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/planning/types.ts#L168)

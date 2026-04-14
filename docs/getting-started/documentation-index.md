@@ -52,7 +52,7 @@ sidebar_position: 1
 #### AI & LLM
 
 - [**Structured Output**](/features/structured-output) — JSON schema validation and structured generation
-- [**Streaming Semantics**](./STREAMING_SEMANTICS.md) — Raw live chunks vs finalized approved output across `textStream`, `fullStream`, `text`, and `finalTextStream`
+- [**Streaming Semantics**](/architecture/streaming-semantics) — Raw live chunks vs finalized approved output across `textStream`, `fullStream`, `text`, and `finalTextStream`
 - [**Evaluation Guide**](/features/evaluation-guide) — Test cases, graders, LLM-as-judge, A/B testing, experiment tracking
 - [**Evaluation Framework**](/features/evaluation-framework) — Testing, scoring, and quality assurance
 - [**Query Router**](/features/query-routing) — Tiered query classification, retrieval routing, keyword fallback, and grounded answer generation

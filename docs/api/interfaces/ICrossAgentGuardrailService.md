@@ -1,6 +1,6 @@
 # Interface: ICrossAgentGuardrailService
 
-Defined in: [packages/agentos/src/safety/guardrails/ICrossAgentGuardrailService.ts:127](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/safety/guardrails/ICrossAgentGuardrailService.ts#L127)
+Defined in: [packages/agentos/src/safety/guardrails/ICrossAgentGuardrailService.ts:127](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/safety/guardrails/ICrossAgentGuardrailService.ts#L127)
 
 Cross-agent guardrail service for multi-agent supervision.
 
@@ -65,7 +65,7 @@ class SensitiveDataGuardrail implements ICrossAgentGuardrailService {
 
 > `optional` **canInterruptOthers**: `boolean`
 
-Defined in: [packages/agentos/src/safety/guardrails/ICrossAgentGuardrailService.ts:158](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/safety/guardrails/ICrossAgentGuardrailService.ts#L158)
+Defined in: [packages/agentos/src/safety/guardrails/ICrossAgentGuardrailService.ts:158](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/safety/guardrails/ICrossAgentGuardrailService.ts#L158)
 
 Whether this guardrail can interrupt other agents' streams.
 
@@ -89,7 +89,7 @@ false
 
 > `optional` **config**: [`GuardrailConfig`](GuardrailConfig.md)
 
-Defined in: [packages/agentos/src/safety/guardrails/IGuardrailService.ts:379](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/safety/guardrails/IGuardrailService.ts#L379)
+Defined in: [packages/agentos/src/safety/guardrails/IGuardrailService.ts:379](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/safety/guardrails/IGuardrailService.ts#L379)
 
 Configuration for evaluation behavior.
 Controls streaming vs final-only evaluation and rate limiting.
@@ -104,7 +104,7 @@ Controls streaming vs final-only evaluation and rate limiting.
 
 > `optional` **observeAgentIds**: `string`[]
 
-Defined in: [packages/agentos/src/safety/guardrails/ICrossAgentGuardrailService.ts:143](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/safety/guardrails/ICrossAgentGuardrailService.ts#L143)
+Defined in: [packages/agentos/src/safety/guardrails/ICrossAgentGuardrailService.ts:143](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/safety/guardrails/ICrossAgentGuardrailService.ts#L143)
 
 Agent IDs this guardrail observes.
 
@@ -127,7 +127,7 @@ observeAgentIds = [];
 
 > `optional` **evaluateCrossAgentOutput**(`payload`): `Promise`\<[`GuardrailEvaluationResult`](GuardrailEvaluationResult.md) \| `null`\>
 
-Defined in: [packages/agentos/src/safety/guardrails/ICrossAgentGuardrailService.ts:175](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/safety/guardrails/ICrossAgentGuardrailService.ts#L175)
+Defined in: [packages/agentos/src/safety/guardrails/ICrossAgentGuardrailService.ts:175](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/safety/guardrails/ICrossAgentGuardrailService.ts#L175)
 
 Evaluate output from an observed agent.
 
@@ -161,7 +161,7 @@ Evaluation result, or `null` to allow without action
 
 > `optional` **evaluateInput**(`payload`): `Promise`\<[`GuardrailEvaluationResult`](GuardrailEvaluationResult.md) \| `null`\>
 
-Defined in: [packages/agentos/src/safety/guardrails/IGuardrailService.ts:395](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/safety/guardrails/IGuardrailService.ts#L395)
+Defined in: [packages/agentos/src/safety/guardrails/IGuardrailService.ts:395](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/safety/guardrails/IGuardrailService.ts#L395)
 
 Evaluate user input before orchestration.
 
@@ -198,7 +198,7 @@ Evaluation result, or `null` to allow without action
 
 > `optional` **evaluateOutput**(`payload`): `Promise`\<[`GuardrailEvaluationResult`](GuardrailEvaluationResult.md) \| `null`\>
 
-Defined in: [packages/agentos/src/safety/guardrails/IGuardrailService.ts:412](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/safety/guardrails/IGuardrailService.ts#L412)
+Defined in: [packages/agentos/src/safety/guardrails/IGuardrailService.ts:412](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/safety/guardrails/IGuardrailService.ts#L412)
 
 Evaluate agent output before streaming to client.
 

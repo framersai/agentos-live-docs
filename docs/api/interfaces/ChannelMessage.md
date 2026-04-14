@@ -1,6 +1,6 @@
 # Interface: ChannelMessage
 
-Defined in: [packages/agentos/src/channels/types.ts:205](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/types.ts#L205)
+Defined in: [packages/agentos/src/channels/types.ts:205](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/channels/types.ts#L205)
 
 Inbound message received from an external platform.
 
@@ -10,7 +10,7 @@ Inbound message received from an external platform.
 
 > **content**: [`MessageContentBlock`](../type-aliases/MessageContentBlock.md)[]
 
-Defined in: [packages/agentos/src/channels/types.ts:217](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/types.ts#L217)
+Defined in: [packages/agentos/src/channels/types.ts:217](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/channels/types.ts#L217)
 
 Message content.
 
@@ -20,7 +20,7 @@ Message content.
 
 > **conversationId**: `string`
 
-Defined in: [packages/agentos/src/channels/types.ts:211](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/types.ts#L211)
+Defined in: [packages/agentos/src/channels/types.ts:211](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/channels/types.ts#L211)
 
 Conversation/chat ID.
 
@@ -30,7 +30,7 @@ Conversation/chat ID.
 
 > **conversationType**: [`ConversationType`](../type-aliases/ConversationType.md)
 
-Defined in: [packages/agentos/src/channels/types.ts:213](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/types.ts#L213)
+Defined in: [packages/agentos/src/channels/types.ts:213](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/channels/types.ts#L213)
 
 Conversation type.
 
@@ -40,7 +40,7 @@ Conversation type.
 
 > **messageId**: `string`
 
-Defined in: [packages/agentos/src/channels/types.ts:207](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/types.ts#L207)
+Defined in: [packages/agentos/src/channels/types.ts:207](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/channels/types.ts#L207)
 
 Unique message ID assigned by the platform.
 
@@ -50,7 +50,7 @@ Unique message ID assigned by the platform.
 
 > **platform**: [`ChannelPlatform`](../type-aliases/ChannelPlatform.md)
 
-Defined in: [packages/agentos/src/channels/types.ts:209](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/types.ts#L209)
+Defined in: [packages/agentos/src/channels/types.ts:209](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/channels/types.ts#L209)
 
 Platform this message came from.
 
@@ -60,7 +60,7 @@ Platform this message came from.
 
 > `optional` **rawEvent**: `unknown`
 
-Defined in: [packages/agentos/src/channels/types.ts:225](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/types.ts#L225)
+Defined in: [packages/agentos/src/channels/types.ts:225](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/channels/types.ts#L225)
 
 Platform-specific raw data (for adapters that need pass-through).
 
@@ -70,7 +70,7 @@ Platform-specific raw data (for adapters that need pass-through).
 
 > `optional` **replyToMessageId**: `string`
 
-Defined in: [packages/agentos/src/channels/types.ts:223](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/types.ts#L223)
+Defined in: [packages/agentos/src/channels/types.ts:223](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/channels/types.ts#L223)
 
 Message being replied to, if this is a reply.
 
@@ -80,7 +80,7 @@ Message being replied to, if this is a reply.
 
 > **sender**: [`RemoteUser`](RemoteUser.md)
 
-Defined in: [packages/agentos/src/channels/types.ts:215](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/types.ts#L215)
+Defined in: [packages/agentos/src/channels/types.ts:215](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/channels/types.ts#L215)
 
 Who sent the message.
 
@@ -90,7 +90,7 @@ Who sent the message.
 
 > **text**: `string`
 
-Defined in: [packages/agentos/src/channels/types.ts:219](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/types.ts#L219)
+Defined in: [packages/agentos/src/channels/types.ts:219](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/channels/types.ts#L219)
 
 Raw text representation (convenience — extracted from content blocks).
 
@@ -100,6 +100,6 @@ Raw text representation (convenience — extracted from content blocks).
 
 > **timestamp**: `string`
 
-Defined in: [packages/agentos/src/channels/types.ts:221](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/types.ts#L221)
+Defined in: [packages/agentos/src/channels/types.ts:221](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/channels/types.ts#L221)
 
 ISO timestamp from the platform.

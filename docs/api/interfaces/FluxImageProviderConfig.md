@@ -1,6 +1,6 @@
 # Interface: FluxImageProviderConfig
 
-Defined in: [packages/agentos/src/media/images/providers/FluxImageProvider.ts:64](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/images/providers/FluxImageProvider.ts#L64)
+Defined in: [packages/agentos/src/media/images/providers/FluxImageProvider.ts:65](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/providers/FluxImageProvider.ts#L65)
 
 Configuration for the BFL (Black Forest Labs) image provider.
 
@@ -20,7 +20,7 @@ const config: FluxImageProviderConfig = {
 
 > **apiKey**: `string`
 
-Defined in: [packages/agentos/src/media/images/providers/FluxImageProvider.ts:69](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/images/providers/FluxImageProvider.ts#L69)
+Defined in: [packages/agentos/src/media/images/providers/FluxImageProvider.ts:70](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/providers/FluxImageProvider.ts#L70)
 
 BFL API key. Sent as `X-Key` header on all requests.
 Obtain from https://api.bfl.ml
@@ -31,7 +31,7 @@ Obtain from https://api.bfl.ml
 
 > `optional` **baseURL**: `string`
 
-Defined in: [packages/agentos/src/media/images/providers/FluxImageProvider.ts:75](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/images/providers/FluxImageProvider.ts#L75)
+Defined in: [packages/agentos/src/media/images/providers/FluxImageProvider.ts:76](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/providers/FluxImageProvider.ts#L76)
 
 Base URL for the BFL API. Override for testing or proxy setups.
 
@@ -47,7 +47,7 @@ Base URL for the BFL API. Override for testing or proxy setups.
 
 > `optional` **defaultModelId**: `string`
 
-Defined in: [packages/agentos/src/media/images/providers/FluxImageProvider.ts:81](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/images/providers/FluxImageProvider.ts#L81)
+Defined in: [packages/agentos/src/media/images/providers/FluxImageProvider.ts:82](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/providers/FluxImageProvider.ts#L82)
 
 Default Flux model to use when the request doesn't specify one.
 
@@ -63,7 +63,7 @@ Default Flux model to use when the request doesn't specify one.
 
 > `optional` **pollIntervalMs**: `number`
 
-Defined in: [packages/agentos/src/media/images/providers/FluxImageProvider.ts:87](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/images/providers/FluxImageProvider.ts#L87)
+Defined in: [packages/agentos/src/media/images/providers/FluxImageProvider.ts:88](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/providers/FluxImageProvider.ts#L88)
 
 Milliseconds between status polls while waiting for generation.
 
@@ -79,7 +79,7 @@ Milliseconds between status polls while waiting for generation.
 
 > `optional` **timeoutMs**: `number`
 
-Defined in: [packages/agentos/src/media/images/providers/FluxImageProvider.ts:93](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/images/providers/FluxImageProvider.ts#L93)
+Defined in: [packages/agentos/src/media/images/providers/FluxImageProvider.ts:94](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/providers/FluxImageProvider.ts#L94)
 
 Maximum milliseconds to wait for generation before timing out.
 

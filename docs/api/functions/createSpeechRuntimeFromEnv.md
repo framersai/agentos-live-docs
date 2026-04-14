@@ -2,7 +2,7 @@
 
 > **createSpeechRuntimeFromEnv**(`env?`, `config?`): [`SpeechRuntime`](../classes/SpeechRuntime.md)
 
-Defined in: [packages/agentos/src/speech/SpeechRuntime.ts:290](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/speech/SpeechRuntime.ts#L290)
+Defined in: [packages/agentos/src/speech/SpeechRuntime.ts:290](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/speech/SpeechRuntime.ts#L290)
 
 ## Parameters
 

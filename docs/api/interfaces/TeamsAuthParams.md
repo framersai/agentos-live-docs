@@ -1,6 +1,6 @@
 # Interface: TeamsAuthParams
 
-Defined in: [packages/agentos/src/channels/adapters/TeamsChannelAdapter.ts:55](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/adapters/TeamsChannelAdapter.ts#L55)
+Defined in: [packages/agentos/src/channels/adapters/TeamsChannelAdapter.ts:55](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/channels/adapters/TeamsChannelAdapter.ts#L55)
 
 Platform-specific authentication parameters for Microsoft Teams.
 
@@ -18,7 +18,7 @@ Platform-specific authentication parameters for Microsoft Teams.
 
 > **appPassword**: `string`
 
-Defined in: [packages/agentos/src/channels/adapters/TeamsChannelAdapter.ts:57](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/adapters/TeamsChannelAdapter.ts#L57)
+Defined in: [packages/agentos/src/channels/adapters/TeamsChannelAdapter.ts:57](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/channels/adapters/TeamsChannelAdapter.ts#L57)
 
 Bot application password (client secret).
 
@@ -28,7 +28,7 @@ Bot application password (client secret).
 
 > `optional` **serviceUrl**: `string`
 
-Defined in: [packages/agentos/src/channels/adapters/TeamsChannelAdapter.ts:61](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/adapters/TeamsChannelAdapter.ts#L61)
+Defined in: [packages/agentos/src/channels/adapters/TeamsChannelAdapter.ts:61](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/channels/adapters/TeamsChannelAdapter.ts#L61)
 
 Bot Framework service URL. Default: 'https://smba.trafficmanager.net/teams/'.
 
@@ -38,6 +38,6 @@ Bot Framework service URL. Default: 'https://smba.trafficmanager.net/teams/'.
 
 > `optional` **tenantId**: `string`
 
-Defined in: [packages/agentos/src/channels/adapters/TeamsChannelAdapter.ts:59](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/adapters/TeamsChannelAdapter.ts#L59)
+Defined in: [packages/agentos/src/channels/adapters/TeamsChannelAdapter.ts:59](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/channels/adapters/TeamsChannelAdapter.ts#L59)
 
 Azure AD tenant ID. Optional for multi-tenant bots.

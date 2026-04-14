@@ -1,6 +1,6 @@
 # Class: DockerDetector
 
-Defined in: [packages/agentos/src/rag/setup/DockerDetector.ts:12](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/rag/setup/DockerDetector.ts#L12)
+Defined in: [packages/agentos/src/rag/setup/DockerDetector.ts:12](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/setup/DockerDetector.ts#L12)
 
 ## Constructors
 
@@ -18,7 +18,7 @@ Defined in: [packages/agentos/src/rag/setup/DockerDetector.ts:12](https://github
 
 > `static` **getContainerState**(`name`): `"running"` \| `"stopped"` \| `"not_found"`
 
-Defined in: [packages/agentos/src/rag/setup/DockerDetector.ts:35](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/rag/setup/DockerDetector.ts#L35)
+Defined in: [packages/agentos/src/rag/setup/DockerDetector.ts:35](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/setup/DockerDetector.ts#L35)
 
 Check the state of a named Docker container.
 
@@ -43,7 +43,7 @@ Container name to inspect.
 
 > `static` **getHostPort**(`name`, `internalPort`): `number` \| `null`
 
-Defined in: [packages/agentos/src/rag/setup/DockerDetector.ts:127](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/rag/setup/DockerDetector.ts#L127)
+Defined in: [packages/agentos/src/rag/setup/DockerDetector.ts:127](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/setup/DockerDetector.ts#L127)
 
 Get the mapped host port for a container's internal port.
 Useful when the host port was dynamically assigned.
@@ -74,7 +74,7 @@ The host port number, or null if not found.
 
 > `static` **isDockerAvailable**(): `boolean`
 
-Defined in: [packages/agentos/src/rag/setup/DockerDetector.ts:19](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/rag/setup/DockerDetector.ts#L19)
+Defined in: [packages/agentos/src/rag/setup/DockerDetector.ts:19](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/setup/DockerDetector.ts#L19)
 
 Check if Docker is installed and the daemon is running.
 Runs `docker info` with a 5-second timeout.
@@ -91,7 +91,7 @@ True if Docker is available and responsive.
 
 > `static` **pullAndRun**(`opts`): `void`
 
-Defined in: [packages/agentos/src/rag/setup/DockerDetector.ts:68](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/rag/setup/DockerDetector.ts#L68)
+Defined in: [packages/agentos/src/rag/setup/DockerDetector.ts:68](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/setup/DockerDetector.ts#L68)
 
 Pull a Docker image and run a new container.
 
@@ -139,7 +139,7 @@ Volume mounts (e.g. ['data-vol:/data']).
 
 > `static` **startContainer**(`name`): `void`
 
-Defined in: [packages/agentos/src/rag/setup/DockerDetector.ts:55](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/rag/setup/DockerDetector.ts#L55)
+Defined in: [packages/agentos/src/rag/setup/DockerDetector.ts:55](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/setup/DockerDetector.ts#L55)
 
 Start a stopped container by name.
 
@@ -165,7 +165,7 @@ If the container cannot be started.
 
 > `static` **waitForHealthy**(`url`, `timeoutMs?`): `Promise`\<`boolean`\>
 
-Defined in: [packages/agentos/src/rag/setup/DockerDetector.ts:105](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/rag/setup/DockerDetector.ts#L105)
+Defined in: [packages/agentos/src/rag/setup/DockerDetector.ts:105](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/setup/DockerDetector.ts#L105)
 
 Poll a health check URL until it returns 200 or timeout is reached.
 Checks every 500ms.

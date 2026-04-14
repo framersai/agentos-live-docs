@@ -1,6 +1,6 @@
 # Interface: StableDiffusionLocalImageProviderOptions
 
-Defined in: [packages/agentos/src/media/images/IImageProvider.ts:75](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/images/IImageProvider.ts#L75)
+Defined in: [packages/agentos/src/media/images/IImageProvider.ts:104](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/IImageProvider.ts#L104)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/media/images/IImageProvider.ts:75](https://git
 
 > `optional` **batchSize**: `number`
 
-Defined in: [packages/agentos/src/media/images/IImageProvider.ts:91](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/images/IImageProvider.ts#L91)
+Defined in: [packages/agentos/src/media/images/IImageProvider.ts:120](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/IImageProvider.ts#L120)
 
 Number of images to generate (default 1).
 
@@ -18,7 +18,7 @@ Number of images to generate (default 1).
 
 > `optional` **cfgScale**: `number`
 
-Defined in: [packages/agentos/src/media/images/IImageProvider.ts:79](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/images/IImageProvider.ts#L79)
+Defined in: [packages/agentos/src/media/images/IImageProvider.ts:108](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/IImageProvider.ts#L108)
 
 Classifier-free guidance scale (default 7.5).
 
@@ -28,7 +28,7 @@ Classifier-free guidance scale (default 7.5).
 
 > `optional` **controlnet**: `Record`\<`string`, `unknown`\>
 
-Defined in: [packages/agentos/src/media/images/IImageProvider.ts:93](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/images/IImageProvider.ts#L93)
+Defined in: [packages/agentos/src/media/images/IImageProvider.ts:122](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/IImageProvider.ts#L122)
 
 ControlNet settings forwarded verbatim to the backend.
 
@@ -38,7 +38,7 @@ ControlNet settings forwarded verbatim to the backend.
 
 > `optional` **denoisingStrength**: `number`
 
-Defined in: [packages/agentos/src/media/images/IImageProvider.ts:99](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/images/IImageProvider.ts#L99)
+Defined in: [packages/agentos/src/media/images/IImageProvider.ts:128](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/IImageProvider.ts#L128)
 
 Denoising strength for high-res fix or img2img (default 0.7).
 
@@ -48,7 +48,7 @@ Denoising strength for high-res fix or img2img (default 0.7).
 
 > `optional` **height**: `number`
 
-Defined in: [packages/agentos/src/media/images/IImageProvider.ts:89](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/images/IImageProvider.ts#L89)
+Defined in: [packages/agentos/src/media/images/IImageProvider.ts:118](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/IImageProvider.ts#L118)
 
 Image height in pixels (default 512).
 
@@ -58,7 +58,7 @@ Image height in pixels (default 512).
 
 > `optional` **hrFix**: `boolean`
 
-Defined in: [packages/agentos/src/media/images/IImageProvider.ts:97](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/images/IImageProvider.ts#L97)
+Defined in: [packages/agentos/src/media/images/IImageProvider.ts:126](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/IImageProvider.ts#L126)
 
 Enable high-resolution fix (A1111 only).
 
@@ -68,7 +68,7 @@ Enable high-resolution fix (A1111 only).
 
 > `optional` **loras**: `object`[]
 
-Defined in: [packages/agentos/src/media/images/IImageProvider.ts:95](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/images/IImageProvider.ts#L95)
+Defined in: [packages/agentos/src/media/images/IImageProvider.ts:124](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/IImageProvider.ts#L124)
 
 LoRA models to apply.  Injected into the prompt as `<lora:name:weight>`.
 
@@ -86,7 +86,7 @@ LoRA models to apply.  Injected into the prompt as `<lora:name:weight>`.
 
 > `optional` **negativePrompt**: `string`
 
-Defined in: [packages/agentos/src/media/images/IImageProvider.ts:85](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/images/IImageProvider.ts#L85)
+Defined in: [packages/agentos/src/media/images/IImageProvider.ts:114](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/IImageProvider.ts#L114)
 
 Negative prompt.
 
@@ -96,7 +96,7 @@ Negative prompt.
 
 > `optional` **sampler**: `string`
 
-Defined in: [packages/agentos/src/media/images/IImageProvider.ts:83](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/images/IImageProvider.ts#L83)
+Defined in: [packages/agentos/src/media/images/IImageProvider.ts:112](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/IImageProvider.ts#L112)
 
 Sampler name (e.g. 'Euler a', 'DPM++ 2M Karras').
 
@@ -106,7 +106,7 @@ Sampler name (e.g. 'Euler a', 'DPM++ 2M Karras').
 
 > `optional` **seed**: `number`
 
-Defined in: [packages/agentos/src/media/images/IImageProvider.ts:81](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/images/IImageProvider.ts#L81)
+Defined in: [packages/agentos/src/media/images/IImageProvider.ts:110](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/IImageProvider.ts#L110)
 
 Random seed (-1 for random).
 
@@ -116,7 +116,7 @@ Random seed (-1 for random).
 
 > `optional` **steps**: `number`
 
-Defined in: [packages/agentos/src/media/images/IImageProvider.ts:77](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/images/IImageProvider.ts#L77)
+Defined in: [packages/agentos/src/media/images/IImageProvider.ts:106](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/IImageProvider.ts#L106)
 
 Number of inference steps (default 25).
 
@@ -126,6 +126,6 @@ Number of inference steps (default 25).
 
 > `optional` **width**: `number`
 
-Defined in: [packages/agentos/src/media/images/IImageProvider.ts:87](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/images/IImageProvider.ts#L87)
+Defined in: [packages/agentos/src/media/images/IImageProvider.ts:116](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/IImageProvider.ts#L116)
 
 Image width in pixels (default 512).

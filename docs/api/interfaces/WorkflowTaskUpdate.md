@@ -1,6 +1,6 @@
 # Interface: WorkflowTaskUpdate
 
-Defined in: [packages/agentos/src/orchestration/workflows/storage/IWorkflowStore.ts:37](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/workflows/storage/IWorkflowStore.ts#L37)
+Defined in: [packages/agentos/src/orchestration/workflows/storage/IWorkflowStore.ts:37](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/workflows/storage/IWorkflowStore.ts#L37)
 
 Atomic update payload for a task within a workflow.
 
@@ -10,7 +10,7 @@ Atomic update payload for a task within a workflow.
 
 > `optional` **assignedExecutorId**: `string`
 
-Defined in: [packages/agentos/src/orchestration/workflows/storage/IWorkflowStore.ts:40](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/workflows/storage/IWorkflowStore.ts#L40)
+Defined in: [packages/agentos/src/orchestration/workflows/storage/IWorkflowStore.ts:40](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/workflows/storage/IWorkflowStore.ts#L40)
 
 ***
 
@@ -18,7 +18,7 @@ Defined in: [packages/agentos/src/orchestration/workflows/storage/IWorkflowStore
 
 > `optional` **completedAt**: `string`
 
-Defined in: [packages/agentos/src/orchestration/workflows/storage/IWorkflowStore.ts:42](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/workflows/storage/IWorkflowStore.ts#L42)
+Defined in: [packages/agentos/src/orchestration/workflows/storage/IWorkflowStore.ts:42](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/workflows/storage/IWorkflowStore.ts#L42)
 
 ***
 
@@ -26,7 +26,7 @@ Defined in: [packages/agentos/src/orchestration/workflows/storage/IWorkflowStore
 
 > `optional` **error**: \{ `code?`: `string`; `details?`: `unknown`; `message`: `string`; \} \| `null`
 
-Defined in: [packages/agentos/src/orchestration/workflows/storage/IWorkflowStore.ts:44](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/workflows/storage/IWorkflowStore.ts#L44)
+Defined in: [packages/agentos/src/orchestration/workflows/storage/IWorkflowStore.ts:44](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/workflows/storage/IWorkflowStore.ts#L44)
 
 ***
 
@@ -34,7 +34,7 @@ Defined in: [packages/agentos/src/orchestration/workflows/storage/IWorkflowStore
 
 > `optional` **metadata**: `Record`\<`string`, `unknown`\>
 
-Defined in: [packages/agentos/src/orchestration/workflows/storage/IWorkflowStore.ts:49](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/workflows/storage/IWorkflowStore.ts#L49)
+Defined in: [packages/agentos/src/orchestration/workflows/storage/IWorkflowStore.ts:49](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/workflows/storage/IWorkflowStore.ts#L49)
 
 ***
 
@@ -42,7 +42,7 @@ Defined in: [packages/agentos/src/orchestration/workflows/storage/IWorkflowStore
 
 > `optional` **output**: `unknown`
 
-Defined in: [packages/agentos/src/orchestration/workflows/storage/IWorkflowStore.ts:43](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/workflows/storage/IWorkflowStore.ts#L43)
+Defined in: [packages/agentos/src/orchestration/workflows/storage/IWorkflowStore.ts:43](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/workflows/storage/IWorkflowStore.ts#L43)
 
 ***
 
@@ -50,7 +50,7 @@ Defined in: [packages/agentos/src/orchestration/workflows/storage/IWorkflowStore
 
 > `optional` **startedAt**: `string`
 
-Defined in: [packages/agentos/src/orchestration/workflows/storage/IWorkflowStore.ts:41](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/workflows/storage/IWorkflowStore.ts#L41)
+Defined in: [packages/agentos/src/orchestration/workflows/storage/IWorkflowStore.ts:41](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/workflows/storage/IWorkflowStore.ts#L41)
 
 ***
 
@@ -58,7 +58,7 @@ Defined in: [packages/agentos/src/orchestration/workflows/storage/IWorkflowStore
 
 > `optional` **status**: [`WorkflowTaskStatus`](../enumerations/WorkflowTaskStatus.md)
 
-Defined in: [packages/agentos/src/orchestration/workflows/storage/IWorkflowStore.ts:39](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/workflows/storage/IWorkflowStore.ts#L39)
+Defined in: [packages/agentos/src/orchestration/workflows/storage/IWorkflowStore.ts:39](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/workflows/storage/IWorkflowStore.ts#L39)
 
 ***
 
@@ -66,4 +66,4 @@ Defined in: [packages/agentos/src/orchestration/workflows/storage/IWorkflowStore
 
 > **taskId**: `string`
 
-Defined in: [packages/agentos/src/orchestration/workflows/storage/IWorkflowStore.ts:38](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/workflows/storage/IWorkflowStore.ts#L38)
+Defined in: [packages/agentos/src/orchestration/workflows/storage/IWorkflowStore.ts:38](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/workflows/storage/IWorkflowStore.ts#L38)

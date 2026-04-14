@@ -1,6 +1,6 @@
 # Interface: ImageToVideoRequest
 
-Defined in: [packages/agentos/src/media/video/types.ts:108](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/video/types.ts#L108)
+Defined in: [packages/agentos/src/media/video/types.ts:108](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/video/types.ts#L108)
 
 Request payload for image-to-video generation.
 
@@ -14,7 +14,7 @@ frame (or style reference) for the generated video.
 
 > `optional` **aspectRatio**: [`VideoAspectRatio`](../type-aliases/VideoAspectRatio.md)
 
-Defined in: [packages/agentos/src/media/video/types.ts:120](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/video/types.ts#L120)
+Defined in: [packages/agentos/src/media/video/types.ts:120](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/video/types.ts#L120)
 
 Desired aspect ratio.
 
@@ -24,7 +24,7 @@ Desired aspect ratio.
 
 > `optional` **durationSec**: `number`
 
-Defined in: [packages/agentos/src/media/video/types.ts:118](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/video/types.ts#L118)
+Defined in: [packages/agentos/src/media/video/types.ts:118](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/video/types.ts#L118)
 
 Desired output duration in seconds.
 
@@ -34,7 +34,7 @@ Desired output duration in seconds.
 
 > `optional` **fps**: `number`
 
-Defined in: [packages/agentos/src/media/video/types.ts:124](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/video/types.ts#L124)
+Defined in: [packages/agentos/src/media/video/types.ts:124](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/video/types.ts#L124)
 
 Frames per second for the output video.
 
@@ -44,7 +44,7 @@ Frames per second for the output video.
 
 > **image**: `Buffer`
 
-Defined in: [packages/agentos/src/media/video/types.ts:112](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/video/types.ts#L112)
+Defined in: [packages/agentos/src/media/video/types.ts:112](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/video/types.ts#L112)
 
 Source image as a raw `Buffer`.
 
@@ -54,7 +54,7 @@ Source image as a raw `Buffer`.
 
 > `optional` **modelId**: `string`
 
-Defined in: [packages/agentos/src/media/video/types.ts:110](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/video/types.ts#L110)
+Defined in: [packages/agentos/src/media/video/types.ts:110](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/video/types.ts#L110)
 
 Model identifier to use for generation.
 
@@ -64,7 +64,7 @@ Model identifier to use for generation.
 
 > `optional` **negativePrompt**: `string`
 
-Defined in: [packages/agentos/src/media/video/types.ts:116](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/video/types.ts#L116)
+Defined in: [packages/agentos/src/media/video/types.ts:116](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/video/types.ts#L116)
 
 Negative prompt describing content to avoid.
 
@@ -74,7 +74,7 @@ Negative prompt describing content to avoid.
 
 > `optional` **outputFormat**: [`VideoOutputFormat`](../type-aliases/VideoOutputFormat.md)
 
-Defined in: [packages/agentos/src/media/video/types.ts:122](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/video/types.ts#L122)
+Defined in: [packages/agentos/src/media/video/types.ts:122](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/video/types.ts#L122)
 
 Output container format. Defaults to `'mp4'`.
 
@@ -84,7 +84,7 @@ Output container format. Defaults to `'mp4'`.
 
 > **prompt**: `string`
 
-Defined in: [packages/agentos/src/media/video/types.ts:114](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/video/types.ts#L114)
+Defined in: [packages/agentos/src/media/video/types.ts:114](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/video/types.ts#L114)
 
 Text prompt describing the desired motion / narrative.
 
@@ -94,7 +94,7 @@ Text prompt describing the desired motion / narrative.
 
 > `optional` **providerOptions**: `Record`\<`string`, `unknown`\>
 
-Defined in: [packages/agentos/src/media/video/types.ts:130](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/video/types.ts#L130)
+Defined in: [packages/agentos/src/media/video/types.ts:130](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/video/types.ts#L130)
 
 Arbitrary provider-specific options.
 
@@ -104,7 +104,7 @@ Arbitrary provider-specific options.
 
 > `optional` **seed**: `number`
 
-Defined in: [packages/agentos/src/media/video/types.ts:126](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/video/types.ts#L126)
+Defined in: [packages/agentos/src/media/video/types.ts:126](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/video/types.ts#L126)
 
 Seed for reproducible output.
 
@@ -114,6 +114,6 @@ Seed for reproducible output.
 
 > `optional` **userId**: `string`
 
-Defined in: [packages/agentos/src/media/video/types.ts:128](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/video/types.ts#L128)
+Defined in: [packages/agentos/src/media/video/types.ts:128](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/video/types.ts#L128)
 
 Identifier of the requesting user.

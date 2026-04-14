@@ -18,6 +18,8 @@
 const fs = require('fs');
 const path = require('path');
 
+const DEFAULT_SKIPPED_TOP_LEVEL_DIRS = new Set(['assets', '__server', 'api', 'paracosm']);
+
 const NAMED_ENTITIES = {
   amp: '&',
   lt: '<',
@@ -31,14 +33,24 @@ const NAMED_ENTITIES = {
 };
 
 /** Recursively collect every .html file under `dir`, skipping assets/server dirs. */
-function collectHtmlFiles(dir) {
+function getSkippedTopLevelDirs() {
+  const raw = process.env.AGENTOS_DOCS_SEARCH_MANIFEST_SKIP_DIRS ?? '';
+  const extraDirs = raw
+    .split(',')
+    .map((dir) => dir.trim())
+    .filter(Boolean);
+
+  return new Set([...DEFAULT_SKIPPED_TOP_LEVEL_DIRS, ...extraDirs]);
+}
+
+/** Recursively collect every .html file under `dir`, skipping configured top-level dirs. */
+function collectHtmlFiles(dir, skippedTopLevelDirs = getSkippedTopLevelDirs(), depth = 0) {
   const results = [];
   for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
     const full = path.join(dir, entry.name);
     if (entry.isDirectory()) {
-      // Skip non-content directories
-      if (entry.name === 'assets' || entry.name === '__server') continue;
-      results.push(...collectHtmlFiles(full));
+      if (depth === 0 && skippedTopLevelDirs.has(entry.name)) continue;
+      results.push(...collectHtmlFiles(full, skippedTopLevelDirs, depth + 1));
     } else if (entry.name.endsWith('.html')) {
       results.push(full);
     }
@@ -138,4 +150,6 @@ function searchManifestPlugin(_context, _options) {
 }
 
 module.exports = searchManifestPlugin;
+module.exports.collectHtmlFiles = collectHtmlFiles;
+module.exports.getSkippedTopLevelDirs = getSkippedTopLevelDirs;
 module.exports.stripTags = stripTags;

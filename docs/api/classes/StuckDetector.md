@@ -1,6 +1,6 @@
 # Class: StuckDetector
 
-Defined in: [packages/agentos/src/safety/runtime/StuckDetector.ts:49](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/safety/runtime/StuckDetector.ts#L49)
+Defined in: [packages/agentos/src/safety/runtime/StuckDetector.ts:49](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/safety/runtime/StuckDetector.ts#L49)
 
 ## Constructors
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/safety/runtime/StuckDetector.ts:49](https://gi
 
 > **new StuckDetector**(`config?`): `StuckDetector`
 
-Defined in: [packages/agentos/src/safety/runtime/StuckDetector.ts:54](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/safety/runtime/StuckDetector.ts#L54)
+Defined in: [packages/agentos/src/safety/runtime/StuckDetector.ts:54](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/safety/runtime/StuckDetector.ts#L54)
 
 #### Parameters
 
@@ -26,7 +26,7 @@ Defined in: [packages/agentos/src/safety/runtime/StuckDetector.ts:54](https://gi
 
 > **clearAgent**(`agentId`): `void`
 
-Defined in: [packages/agentos/src/safety/runtime/StuckDetector.ts:101](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/safety/runtime/StuckDetector.ts#L101)
+Defined in: [packages/agentos/src/safety/runtime/StuckDetector.ts:101](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/safety/runtime/StuckDetector.ts#L101)
 
 #### Parameters
 
@@ -44,7 +44,7 @@ Defined in: [packages/agentos/src/safety/runtime/StuckDetector.ts:101](https://g
 
 > **clearAll**(): `void`
 
-Defined in: [packages/agentos/src/safety/runtime/StuckDetector.ts:106](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/safety/runtime/StuckDetector.ts#L106)
+Defined in: [packages/agentos/src/safety/runtime/StuckDetector.ts:106](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/safety/runtime/StuckDetector.ts#L106)
 
 #### Returns
 
@@ -56,7 +56,7 @@ Defined in: [packages/agentos/src/safety/runtime/StuckDetector.ts:106](https://g
 
 > **recordError**(`agentId`, `errorMessage`): [`StuckDetection`](../interfaces/StuckDetection.md)
 
-Defined in: [packages/agentos/src/safety/runtime/StuckDetector.ts:83](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/safety/runtime/StuckDetector.ts#L83)
+Defined in: [packages/agentos/src/safety/runtime/StuckDetector.ts:83](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/safety/runtime/StuckDetector.ts#L83)
 
 #### Parameters
 
@@ -78,7 +78,7 @@ Defined in: [packages/agentos/src/safety/runtime/StuckDetector.ts:83](https://gi
 
 > **recordOutput**(`agentId`, `output`): [`StuckDetection`](../interfaces/StuckDetection.md)
 
-Defined in: [packages/agentos/src/safety/runtime/StuckDetector.ts:58](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/safety/runtime/StuckDetector.ts#L58)
+Defined in: [packages/agentos/src/safety/runtime/StuckDetector.ts:58](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/safety/runtime/StuckDetector.ts#L58)
 
 #### Parameters
 

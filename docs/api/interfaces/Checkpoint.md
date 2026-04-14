@@ -1,6 +1,6 @@
 # Interface: Checkpoint
 
-Defined in: [packages/agentos/src/orchestration/checkpoint/ICheckpointStore.ts:24](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/checkpoint/ICheckpointStore.ts#L24)
+Defined in: [packages/agentos/src/orchestration/checkpoint/ICheckpointStore.ts:24](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/checkpoint/ICheckpointStore.ts#L24)
 
 A complete, serialisable snapshot of a graph run captured at a node boundary.
 
@@ -14,7 +14,7 @@ after a crash or perform time-travel debugging.
 
 > **graphId**: `string`
 
-Defined in: [packages/agentos/src/orchestration/checkpoint/ICheckpointStore.ts:28](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/checkpoint/ICheckpointStore.ts#L28)
+Defined in: [packages/agentos/src/orchestration/checkpoint/ICheckpointStore.ts:28](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/checkpoint/ICheckpointStore.ts#L28)
 
 Id of the `CompiledExecutionGraph` being executed.
 
@@ -24,7 +24,7 @@ Id of the `CompiledExecutionGraph` being executed.
 
 > **id**: `string`
 
-Defined in: [packages/agentos/src/orchestration/checkpoint/ICheckpointStore.ts:26](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/checkpoint/ICheckpointStore.ts#L26)
+Defined in: [packages/agentos/src/orchestration/checkpoint/ICheckpointStore.ts:26](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/checkpoint/ICheckpointStore.ts#L26)
 
 Unique checkpoint identifier (UUIDv4 assigned by the runtime).
 
@@ -34,7 +34,7 @@ Unique checkpoint identifier (UUIDv4 assigned by the runtime).
 
 > `optional` **memorySnapshot**: `object`
 
-Defined in: [packages/agentos/src/orchestration/checkpoint/ICheckpointStore.ts:55](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/checkpoint/ICheckpointStore.ts#L55)
+Defined in: [packages/agentos/src/orchestration/checkpoint/ICheckpointStore.ts:55](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/checkpoint/ICheckpointStore.ts#L55)
 
 Optional snapshot of the memory subsystem state at this checkpoint.
 When present the runtime can restore memory context without re-reading from the store.
@@ -57,7 +57,7 @@ Memory traces that were read before or during the checkpointed node.
 
 > **nodeId**: `string`
 
-Defined in: [packages/agentos/src/orchestration/checkpoint/ICheckpointStore.ts:32](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/checkpoint/ICheckpointStore.ts#L32)
+Defined in: [packages/agentos/src/orchestration/checkpoint/ICheckpointStore.ts:32](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/checkpoint/ICheckpointStore.ts#L32)
 
 Id of the node at whose boundary this checkpoint was captured.
 
@@ -67,7 +67,7 @@ Id of the node at whose boundary this checkpoint was captured.
 
 > **nodeResults**: `Record`\<`string`, \{ `durationMs`: `number`; `effectClass`: [`EffectClass`](../type-aliases/EffectClass.md); `output`: `unknown`; \}\>
 
-Defined in: [packages/agentos/src/orchestration/checkpoint/ICheckpointStore.ts:80](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/checkpoint/ICheckpointStore.ts#L80)
+Defined in: [packages/agentos/src/orchestration/checkpoint/ICheckpointStore.ts:80](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/checkpoint/ICheckpointStore.ts#L80)
 
 Results from every node that completed execution before this checkpoint was taken.
 Keyed by node id.
@@ -78,7 +78,7 @@ Keyed by node id.
 
 > **pendingEdges**: `string`[]
 
-Defined in: [packages/agentos/src/orchestration/checkpoint/ICheckpointStore.ts:103](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/checkpoint/ICheckpointStore.ts#L103)
+Defined in: [packages/agentos/src/orchestration/checkpoint/ICheckpointStore.ts:103](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/checkpoint/ICheckpointStore.ts#L103)
 
 Ids of edges that had been emitted but whose target nodes had not yet started.
 
@@ -88,7 +88,7 @@ Ids of edges that had been emitted but whose target nodes had not yet started.
 
 > **runId**: `string`
 
-Defined in: [packages/agentos/src/orchestration/checkpoint/ICheckpointStore.ts:30](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/checkpoint/ICheckpointStore.ts#L30)
+Defined in: [packages/agentos/src/orchestration/checkpoint/ICheckpointStore.ts:30](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/checkpoint/ICheckpointStore.ts#L30)
 
 Id of the graph run that produced this checkpoint.
 
@@ -98,7 +98,7 @@ Id of the graph run that produced this checkpoint.
 
 > `optional` **skippedNodes**: `string`[]
 
-Defined in: [packages/agentos/src/orchestration/checkpoint/ICheckpointStore.ts:100](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/checkpoint/ICheckpointStore.ts#L100)
+Defined in: [packages/agentos/src/orchestration/checkpoint/ICheckpointStore.ts:100](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/checkpoint/ICheckpointStore.ts#L100)
 
 Ordered list of node ids that were explicitly bypassed by routing decisions
 (for example, the non-selected arm of a conditional branch).
@@ -113,7 +113,7 @@ graphs: otherwise a resumed run cannot distinguish "not run yet" from
 
 > **state**: `object`
 
-Defined in: [packages/agentos/src/orchestration/checkpoint/ICheckpointStore.ts:40](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/checkpoint/ICheckpointStore.ts#L40)
+Defined in: [packages/agentos/src/orchestration/checkpoint/ICheckpointStore.ts:40](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/checkpoint/ICheckpointStore.ts#L40)
 
 Serialised `GraphState` partitions captured at the checkpoint boundary.
 `memory` is excluded because it is always rehydrated fresh on resume.
@@ -148,7 +148,7 @@ Node-to-node communication bag value at the checkpoint boundary.
 
 > **timestamp**: `number`
 
-Defined in: [packages/agentos/src/orchestration/checkpoint/ICheckpointStore.ts:34](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/checkpoint/ICheckpointStore.ts#L34)
+Defined in: [packages/agentos/src/orchestration/checkpoint/ICheckpointStore.ts:34](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/checkpoint/ICheckpointStore.ts#L34)
 
 Unix epoch milliseconds when the checkpoint was persisted.
 
@@ -158,6 +158,6 @@ Unix epoch milliseconds when the checkpoint was persisted.
 
 > **visitedNodes**: `string`[]
 
-Defined in: [packages/agentos/src/orchestration/checkpoint/ICheckpointStore.ts:90](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/checkpoint/ICheckpointStore.ts#L90)
+Defined in: [packages/agentos/src/orchestration/checkpoint/ICheckpointStore.ts:90](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/checkpoint/ICheckpointStore.ts#L90)
 
 Ordered list of node ids that had completed execution when this checkpoint was taken.

@@ -1,6 +1,6 @@
 # Interface: IChannelAdapter
 
-Defined in: [packages/agentos/src/channels/IChannelAdapter.ts:55](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/IChannelAdapter.ts#L55)
+Defined in: [packages/agentos/src/channels/IChannelAdapter.ts:55](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/channels/IChannelAdapter.ts#L55)
 
 Core adapter interface for external messaging channels.
 
@@ -35,7 +35,7 @@ class TelegramAdapter implements IChannelAdapter {
 
 > `readonly` **capabilities**: readonly [`ChannelCapability`](../type-aliases/ChannelCapability.md)[]
 
-Defined in: [packages/agentos/src/channels/IChannelAdapter.ts:65](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/IChannelAdapter.ts#L65)
+Defined in: [packages/agentos/src/channels/IChannelAdapter.ts:65](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/channels/IChannelAdapter.ts#L65)
 
 Declared capabilities of this adapter.
 
@@ -45,7 +45,7 @@ Declared capabilities of this adapter.
 
 > `readonly` **displayName**: `string`
 
-Defined in: [packages/agentos/src/channels/IChannelAdapter.ts:62](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/IChannelAdapter.ts#L62)
+Defined in: [packages/agentos/src/channels/IChannelAdapter.ts:62](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/channels/IChannelAdapter.ts#L62)
 
 Human-readable display name (e.g., "WhatsApp Business").
 
@@ -55,7 +55,7 @@ Human-readable display name (e.g., "WhatsApp Business").
 
 > `readonly` **platform**: [`ChannelPlatform`](../type-aliases/ChannelPlatform.md)
 
-Defined in: [packages/agentos/src/channels/IChannelAdapter.ts:59](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/IChannelAdapter.ts#L59)
+Defined in: [packages/agentos/src/channels/IChannelAdapter.ts:59](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/channels/IChannelAdapter.ts#L59)
 
 Platform this adapter serves.
 
@@ -65,7 +65,7 @@ Platform this adapter serves.
 
 > `optional` **addReaction**(`conversationId`, `messageId`, `emoji`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/channels/IChannelAdapter.ts:134](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/IChannelAdapter.ts#L134)
+Defined in: [packages/agentos/src/channels/IChannelAdapter.ts:134](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/channels/IChannelAdapter.ts#L134)
 
 Add a reaction to a message. Only available if adapter declares
 the `'reactions'` capability.
@@ -94,7 +94,7 @@ the `'reactions'` capability.
 
 > `optional` **deleteMessage**(`conversationId`, `messageId`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/channels/IChannelAdapter.ts:128](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/IChannelAdapter.ts#L128)
+Defined in: [packages/agentos/src/channels/IChannelAdapter.ts:128](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/channels/IChannelAdapter.ts#L128)
 
 Delete a previously sent message. Only available if adapter declares
 the `'deletion'` capability.
@@ -119,7 +119,7 @@ the `'deletion'` capability.
 
 > `optional` **editMessage**(`conversationId`, `messageId`, `content`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/channels/IChannelAdapter.ts:122](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/IChannelAdapter.ts#L122)
+Defined in: [packages/agentos/src/channels/IChannelAdapter.ts:122](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/channels/IChannelAdapter.ts#L122)
 
 Edit a previously sent message. Only available if adapter declares
 the `'editing'` capability.
@@ -148,7 +148,7 @@ the `'editing'` capability.
 
 > **getConnectionInfo**(): [`ChannelConnectionInfo`](ChannelConnectionInfo.md)
 
-Defined in: [packages/agentos/src/channels/IChannelAdapter.ts:85](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/IChannelAdapter.ts#L85)
+Defined in: [packages/agentos/src/channels/IChannelAdapter.ts:85](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/channels/IChannelAdapter.ts#L85)
 
 Get the current connection status and metadata.
 
@@ -162,7 +162,7 @@ Get the current connection status and metadata.
 
 > `optional` **getConversationInfo**(`conversationId`): `Promise`\<\{ `isGroup`: `boolean`; `memberCount?`: `number`; `metadata?`: `Record`\<`string`, `unknown`\>; `name?`: `string`; \}\>
 
-Defined in: [packages/agentos/src/channels/IChannelAdapter.ts:139](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/IChannelAdapter.ts#L139)
+Defined in: [packages/agentos/src/channels/IChannelAdapter.ts:139](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/channels/IChannelAdapter.ts#L139)
 
 Get conversation metadata (name, members, etc.). Useful for group chats.
 
@@ -182,7 +182,7 @@ Get conversation metadata (name, members, etc.). Useful for group chats.
 
 > **initialize**(`auth`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/channels/IChannelAdapter.ts:74](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/IChannelAdapter.ts#L74)
+Defined in: [packages/agentos/src/channels/IChannelAdapter.ts:74](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/channels/IChannelAdapter.ts#L74)
 
 Initialize the adapter with authentication credentials.
 Called once when the extension is activated. Must be idempotent —
@@ -204,7 +204,7 @@ calling initialize on an already-initialized adapter should reconnect.
 
 > **on**(`handler`, `eventTypes?`): () => `void`
 
-Defined in: [packages/agentos/src/channels/IChannelAdapter.ts:114](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/IChannelAdapter.ts#L114)
+Defined in: [packages/agentos/src/channels/IChannelAdapter.ts:114](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/channels/IChannelAdapter.ts#L114)
 
 Register a handler for channel events. Multiple handlers can be
 registered. Use `eventTypes` to filter which events to receive.
@@ -239,7 +239,7 @@ Unsubscribe function.
 
 > **sendMessage**(`conversationId`, `content`): `Promise`\<[`ChannelSendResult`](ChannelSendResult.md)\>
 
-Defined in: [packages/agentos/src/channels/IChannelAdapter.ts:96](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/IChannelAdapter.ts#L96)
+Defined in: [packages/agentos/src/channels/IChannelAdapter.ts:96](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/channels/IChannelAdapter.ts#L96)
 
 Send a message to a conversation on the external platform.
 
@@ -269,7 +269,7 @@ The platform-assigned message ID.
 
 > **sendTypingIndicator**(`conversationId`, `isTyping`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/channels/IChannelAdapter.ts:102](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/IChannelAdapter.ts#L102)
+Defined in: [packages/agentos/src/channels/IChannelAdapter.ts:102](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/channels/IChannelAdapter.ts#L102)
 
 Send a typing indicator to a conversation. Not all platforms support
 this — check `capabilities` for `'typing_indicator'`.
@@ -294,7 +294,7 @@ this — check `capabilities` for `'typing_indicator'`.
 
 > **shutdown**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/channels/IChannelAdapter.ts:80](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/IChannelAdapter.ts#L80)
+Defined in: [packages/agentos/src/channels/IChannelAdapter.ts:80](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/channels/IChannelAdapter.ts#L80)
 
 Gracefully shut down the adapter, closing connections and releasing
 resources. Called during extension deactivation or application shutdown.

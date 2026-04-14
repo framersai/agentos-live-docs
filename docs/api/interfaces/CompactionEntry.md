@@ -1,6 +1,6 @@
 # Interface: CompactionEntry
 
-Defined in: [packages/agentos/src/memory/pipeline/context/types.ts:64](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/pipeline/context/types.ts#L64)
+Defined in: [packages/agentos/src/memory/pipeline/context/types.ts:64](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/pipeline/context/types.ts#L64)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/memory/pipeline/context/types.ts:64](https://g
 
 > **compressionRatio**: `number`
 
-Defined in: [packages/agentos/src/memory/pipeline/context/types.ts:76](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/pipeline/context/types.ts#L76)
+Defined in: [packages/agentos/src/memory/pipeline/context/types.ts:76](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/pipeline/context/types.ts#L76)
 
 Compression ratio (inputTokens / outputTokens).
 
@@ -18,7 +18,7 @@ Compression ratio (inputTokens / outputTokens).
 
 > **droppedContent**: `string`[]
 
-Defined in: [packages/agentos/src/memory/pipeline/context/types.ts:80](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/pipeline/context/types.ts#L80)
+Defined in: [packages/agentos/src/memory/pipeline/context/types.ts:80](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/pipeline/context/types.ts#L80)
 
 Content fragments intentionally dropped (low importance).
 
@@ -28,7 +28,7 @@ Content fragments intentionally dropped (low importance).
 
 > **durationMs**: `number`
 
-Defined in: [packages/agentos/src/memory/pipeline/context/types.ts:90](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/pipeline/context/types.ts#L90)
+Defined in: [packages/agentos/src/memory/pipeline/context/types.ts:90](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/pipeline/context/types.ts#L90)
 
 Duration of the compaction operation in ms.
 
@@ -38,7 +38,7 @@ Duration of the compaction operation in ms.
 
 > `optional` **emotionalContext**: [`EmotionalContext`](EmotionalContext.md)
 
-Defined in: [packages/agentos/src/memory/pipeline/context/types.ts:88](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/pipeline/context/types.ts#L88)
+Defined in: [packages/agentos/src/memory/pipeline/context/types.ts:88](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/pipeline/context/types.ts#L88)
 
 Emotional context at time of compaction.
 
@@ -48,7 +48,7 @@ Emotional context at time of compaction.
 
 > **id**: `string`
 
-Defined in: [packages/agentos/src/memory/pipeline/context/types.ts:65](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/pipeline/context/types.ts#L65)
+Defined in: [packages/agentos/src/memory/pipeline/context/types.ts:65](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/pipeline/context/types.ts#L65)
 
 ***
 
@@ -56,7 +56,7 @@ Defined in: [packages/agentos/src/memory/pipeline/context/types.ts:65](https://g
 
 > **inputTokens**: `number`
 
-Defined in: [packages/agentos/src/memory/pipeline/context/types.ts:72](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/pipeline/context/types.ts#L72)
+Defined in: [packages/agentos/src/memory/pipeline/context/types.ts:72](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/pipeline/context/types.ts#L72)
 
 Token count of the raw messages before compaction.
 
@@ -66,7 +66,7 @@ Token count of the raw messages before compaction.
 
 > `optional` **observationNotes**: [`ObservationNote`](ObservationNote.md)[]
 
-Defined in: [packages/agentos/src/memory/pipeline/context/types.ts:86](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/pipeline/context/types.ts#L86)
+Defined in: [packages/agentos/src/memory/pipeline/context/types.ts:86](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/pipeline/context/types.ts#L86)
 
 Observation notes extracted during compaction (hybrid strategy).
 
@@ -76,7 +76,7 @@ Observation notes extracted during compaction (hybrid strategy).
 
 > **outputTokens**: `number`
 
-Defined in: [packages/agentos/src/memory/pipeline/context/types.ts:74](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/pipeline/context/types.ts#L74)
+Defined in: [packages/agentos/src/memory/pipeline/context/types.ts:74](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/pipeline/context/types.ts#L74)
 
 Token count of the produced summary.
 
@@ -86,7 +86,7 @@ Token count of the produced summary.
 
 > **preservedEntities**: `string`[]
 
-Defined in: [packages/agentos/src/memory/pipeline/context/types.ts:82](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/pipeline/context/types.ts#L82)
+Defined in: [packages/agentos/src/memory/pipeline/context/types.ts:82](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/pipeline/context/types.ts#L82)
 
 Named entities preserved in the summary.
 
@@ -96,7 +96,7 @@ Named entities preserved in the summary.
 
 > **strategy**: [`CompactionStrategy`](../type-aliases/CompactionStrategy.md)
 
-Defined in: [packages/agentos/src/memory/pipeline/context/types.ts:70](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/pipeline/context/types.ts#L70)
+Defined in: [packages/agentos/src/memory/pipeline/context/types.ts:70](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/pipeline/context/types.ts#L70)
 
 Strategy that produced this compaction.
 
@@ -106,7 +106,7 @@ Strategy that produced this compaction.
 
 > **summary**: `string`
 
-Defined in: [packages/agentos/src/memory/pipeline/context/types.ts:78](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/pipeline/context/types.ts#L78)
+Defined in: [packages/agentos/src/memory/pipeline/context/types.ts:78](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/pipeline/context/types.ts#L78)
 
 The summary text that replaced the raw messages.
 
@@ -116,7 +116,7 @@ The summary text that replaced the raw messages.
 
 > **timestamp**: `number`
 
-Defined in: [packages/agentos/src/memory/pipeline/context/types.ts:66](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/pipeline/context/types.ts#L66)
+Defined in: [packages/agentos/src/memory/pipeline/context/types.ts:66](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/pipeline/context/types.ts#L66)
 
 ***
 
@@ -124,7 +124,7 @@ Defined in: [packages/agentos/src/memory/pipeline/context/types.ts:66](https://g
 
 > **tracesCreated**: `string`[]
 
-Defined in: [packages/agentos/src/memory/pipeline/context/types.ts:84](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/pipeline/context/types.ts#L84)
+Defined in: [packages/agentos/src/memory/pipeline/context/types.ts:84](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/pipeline/context/types.ts#L84)
 
 Memory trace IDs created from this compaction.
 
@@ -134,6 +134,6 @@ Memory trace IDs created from this compaction.
 
 > **turnRange**: \[`number`, `number`\]
 
-Defined in: [packages/agentos/src/memory/pipeline/context/types.ts:68](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/pipeline/context/types.ts#L68)
+Defined in: [packages/agentos/src/memory/pipeline/context/types.ts:68](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/pipeline/context/types.ts#L68)
 
 Inclusive turn range that was compacted.

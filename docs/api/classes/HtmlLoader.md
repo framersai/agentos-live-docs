@@ -1,6 +1,6 @@
 # Class: HtmlLoader
 
-Defined in: [packages/agentos/src/memory/io/ingestion/HtmlLoader.ts:175](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/io/ingestion/HtmlLoader.ts#L175)
+Defined in: [packages/agentos/src/memory/io/ingestion/HtmlLoader.ts:175](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/io/ingestion/HtmlLoader.ts#L175)
 
 Basic document loader for HTML (`.html`, `.htm`) files.
 
@@ -47,7 +47,7 @@ console.log(doc.metadata.title); // e.g. 'Welcome to AgentOS'
 
 > `readonly` **supportedExtensions**: `string`[]
 
-Defined in: [packages/agentos/src/memory/io/ingestion/HtmlLoader.ts:177](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/io/ingestion/HtmlLoader.ts#L177)
+Defined in: [packages/agentos/src/memory/io/ingestion/HtmlLoader.ts:177](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/io/ingestion/HtmlLoader.ts#L177)
 
 File extensions this loader handles, each with a leading dot.
 
@@ -69,7 +69,7 @@ Used by [LoaderRegistry](LoaderRegistry.md) to route file paths to the correct l
 
 > **canLoad**(`source`): `boolean`
 
-Defined in: [packages/agentos/src/memory/io/ingestion/HtmlLoader.ts:184](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/io/ingestion/HtmlLoader.ts#L184)
+Defined in: [packages/agentos/src/memory/io/ingestion/HtmlLoader.ts:184](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/io/ingestion/HtmlLoader.ts#L184)
 
 Returns `true` when this loader is capable of handling `source`.
 
@@ -98,7 +98,7 @@ Absolute file path or raw bytes.
 
 > **load**(`source`, `_options?`): `Promise`\<[`LoadedDocument`](../interfaces/LoadedDocument.md)\>
 
-Defined in: [packages/agentos/src/memory/io/ingestion/HtmlLoader.ts:196](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/io/ingestion/HtmlLoader.ts#L196)
+Defined in: [packages/agentos/src/memory/io/ingestion/HtmlLoader.ts:196](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/io/ingestion/HtmlLoader.ts#L196)
 
 Parses `source` and returns a normalised [LoadedDocument](../interfaces/LoadedDocument.md).
 

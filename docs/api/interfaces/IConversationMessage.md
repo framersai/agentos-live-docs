@@ -1,6 +1,6 @@
 # Interface: IConversationMessage
 
-Defined in: [packages/agentos/src/core/storage/IStorageAdapter.ts:93](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/storage/IStorageAdapter.ts#L93)
+Defined in: [packages/agentos/src/core/storage/IStorageAdapter.ts:93](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/storage/IStorageAdapter.ts#L93)
 
 Represents a single message within a conversation.
 
@@ -38,7 +38,7 @@ const assistantMessage: IConversationMessage = {
 
 > **content**: `string`
 
-Defined in: [packages/agentos/src/core/storage/IStorageAdapter.ts:97](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/storage/IStorageAdapter.ts#L97)
+Defined in: [packages/agentos/src/core/storage/IStorageAdapter.ts:97](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/storage/IStorageAdapter.ts#L97)
 
 The text content of the message
 
@@ -48,7 +48,7 @@ The text content of the message
 
 > **conversationId**: `string`
 
-Defined in: [packages/agentos/src/core/storage/IStorageAdapter.ts:95](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/storage/IStorageAdapter.ts#L95)
+Defined in: [packages/agentos/src/core/storage/IStorageAdapter.ts:95](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/storage/IStorageAdapter.ts#L95)
 
 ID of the conversation this message belongs to
 
@@ -58,7 +58,7 @@ ID of the conversation this message belongs to
 
 > **id**: `string`
 
-Defined in: [packages/agentos/src/core/storage/IStorageAdapter.ts:94](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/storage/IStorageAdapter.ts#L94)
+Defined in: [packages/agentos/src/core/storage/IStorageAdapter.ts:94](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/storage/IStorageAdapter.ts#L94)
 
 Unique identifier for the message
 
@@ -68,7 +68,7 @@ Unique identifier for the message
 
 > `optional` **metadata**: `Record`\<`string`, `any`\>
 
-Defined in: [packages/agentos/src/core/storage/IStorageAdapter.ts:104](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/storage/IStorageAdapter.ts#L104)
+Defined in: [packages/agentos/src/core/storage/IStorageAdapter.ts:104](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/storage/IStorageAdapter.ts#L104)
 
 Additional metadata for extensibility
 
@@ -78,7 +78,7 @@ Additional metadata for extensibility
 
 > `optional` **model**: `string`
 
-Defined in: [packages/agentos/src/core/storage/IStorageAdapter.ts:99](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/storage/IStorageAdapter.ts#L99)
+Defined in: [packages/agentos/src/core/storage/IStorageAdapter.ts:99](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/storage/IStorageAdapter.ts#L99)
 
 LLM model used to generate this message (for assistant messages)
 
@@ -88,7 +88,7 @@ LLM model used to generate this message (for assistant messages)
 
 > `optional` **name**: `string`
 
-Defined in: [packages/agentos/src/core/storage/IStorageAdapter.ts:103](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/storage/IStorageAdapter.ts#L103)
+Defined in: [packages/agentos/src/core/storage/IStorageAdapter.ts:103](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/storage/IStorageAdapter.ts#L103)
 
 Name field for tool/function messages
 
@@ -98,7 +98,7 @@ Name field for tool/function messages
 
 > **role**: `"user"` \| `"tool"` \| `"system"` \| `"assistant"`
 
-Defined in: [packages/agentos/src/core/storage/IStorageAdapter.ts:96](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/storage/IStorageAdapter.ts#L96)
+Defined in: [packages/agentos/src/core/storage/IStorageAdapter.ts:96](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/storage/IStorageAdapter.ts#L96)
 
 Message role in conversation
 
@@ -108,7 +108,7 @@ Message role in conversation
 
 > **timestamp**: `number`
 
-Defined in: [packages/agentos/src/core/storage/IStorageAdapter.ts:98](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/storage/IStorageAdapter.ts#L98)
+Defined in: [packages/agentos/src/core/storage/IStorageAdapter.ts:98](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/storage/IStorageAdapter.ts#L98)
 
 Unix timestamp (milliseconds) when message was created
 
@@ -118,7 +118,7 @@ Unix timestamp (milliseconds) when message was created
 
 > `optional` **toolCallId**: `string`
 
-Defined in: [packages/agentos/src/core/storage/IStorageAdapter.ts:102](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/storage/IStorageAdapter.ts#L102)
+Defined in: [packages/agentos/src/core/storage/IStorageAdapter.ts:102](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/storage/IStorageAdapter.ts#L102)
 
 ID linking this message to a tool call response
 
@@ -128,7 +128,7 @@ ID linking this message to a tool call response
 
 > `optional` **toolCalls**: `any`[]
 
-Defined in: [packages/agentos/src/core/storage/IStorageAdapter.ts:101](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/storage/IStorageAdapter.ts#L101)
+Defined in: [packages/agentos/src/core/storage/IStorageAdapter.ts:101](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/storage/IStorageAdapter.ts#L101)
 
 Tool/function calls made in this message
 
@@ -138,6 +138,6 @@ Tool/function calls made in this message
 
 > `optional` **usage**: [`ITokenUsage`](ITokenUsage.md)
 
-Defined in: [packages/agentos/src/core/storage/IStorageAdapter.ts:100](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/storage/IStorageAdapter.ts#L100)
+Defined in: [packages/agentos/src/core/storage/IStorageAdapter.ts:100](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/storage/IStorageAdapter.ts#L100)
 
 Token usage statistics for this message

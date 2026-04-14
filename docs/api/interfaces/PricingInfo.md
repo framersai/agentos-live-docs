@@ -1,6 +1,6 @@
 # Interface: PricingInfo
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:114](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/marketplace/store/IMarketplace.ts#L114)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:114](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/marketplace/store/IMarketplace.ts#L114)
 
 Pricing information
 
@@ -10,7 +10,7 @@ Pricing information
 
 > `optional` **billingPeriod**: `"monthly"` \| `"yearly"`
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:122](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/marketplace/store/IMarketplace.ts#L122)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:122](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/marketplace/store/IMarketplace.ts#L122)
 
 Billing period for subscriptions
 
@@ -20,7 +20,7 @@ Billing period for subscriptions
 
 > `optional` **currency**: `string`
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:120](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/marketplace/store/IMarketplace.ts#L120)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:120](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/marketplace/store/IMarketplace.ts#L120)
 
 Currency code
 
@@ -30,7 +30,7 @@ Currency code
 
 > `optional` **freeTierLimits**: `Record`\<`string`, `number`\>
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:130](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/marketplace/store/IMarketplace.ts#L130)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:130](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/marketplace/store/IMarketplace.ts#L130)
 
 Free tier limits
 
@@ -40,7 +40,7 @@ Free tier limits
 
 > **model**: `"free"` \| `"one_time"` \| `"subscription"` \| `"usage_based"` \| `"freemium"`
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:116](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/marketplace/store/IMarketplace.ts#L116)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:116](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/marketplace/store/IMarketplace.ts#L116)
 
 Pricing model
 
@@ -50,7 +50,7 @@ Pricing model
 
 > `optional` **priceInCents**: `number`
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:118](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/marketplace/store/IMarketplace.ts#L118)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:118](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/marketplace/store/IMarketplace.ts#L118)
 
 Price in cents (for one_time or subscription)
 
@@ -60,7 +60,7 @@ Price in cents (for one_time or subscription)
 
 > `optional` **usageTiers**: `object`[]
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:124](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/marketplace/store/IMarketplace.ts#L124)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:124](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/marketplace/store/IMarketplace.ts#L124)
 
 Usage pricing tiers
 

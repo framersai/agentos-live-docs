@@ -283,6 +283,6 @@ const graph = new AgentGraph(...).compile({
 
 ## See Also
 
-- [AgentGraph](./agent-graph.md) — per-node checkpoint config, compile options
-- [workflow() DSL](./workflow-dsl.md) — `every_node` default policy
-- [Unified Orchestration](./unified-orchestration.md) — architecture overview
+- [AgentGraph](/features/agent-graph) — per-node checkpoint config, compile options
+- [workflow() DSL](/features/workflow-dsl) — `every_node` default policy
+- [Unified Orchestration](/features/unified-orchestration) — architecture overview

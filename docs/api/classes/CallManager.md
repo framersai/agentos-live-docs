@@ -1,6 +1,6 @@
 # Class: CallManager
 
-Defined in: [packages/agentos/src/channels/telephony/CallManager.ts:67](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/telephony/CallManager.ts#L67)
+Defined in: [packages/agentos/src/channels/telephony/CallManager.ts:67](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/channels/telephony/CallManager.ts#L67)
 
 ## Constructors
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/channels/telephony/CallManager.ts:67](https://
 
 > **new CallManager**(`config`): `CallManager`
 
-Defined in: [packages/agentos/src/channels/telephony/CallManager.ts:75](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/telephony/CallManager.ts#L75)
+Defined in: [packages/agentos/src/channels/telephony/CallManager.ts:75](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/channels/telephony/CallManager.ts#L75)
 
 #### Parameters
 
@@ -26,7 +26,7 @@ Defined in: [packages/agentos/src/channels/telephony/CallManager.ts:75](https://
 
 > **dispose**(): `void`
 
-Defined in: [packages/agentos/src/channels/telephony/CallManager.ts:552](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/telephony/CallManager.ts#L552)
+Defined in: [packages/agentos/src/channels/telephony/CallManager.ts:552](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/channels/telephony/CallManager.ts#L552)
 
 Clean up all state (for shutdown).
 
@@ -40,7 +40,7 @@ Clean up all state (for shutdown).
 
 > **findCallByProviderCallId**(`providerCallId`): [`CallRecord`](../interfaces/CallRecord.md) \| `undefined`
 
-Defined in: [packages/agentos/src/channels/telephony/CallManager.ts:422](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/telephony/CallManager.ts#L422)
+Defined in: [packages/agentos/src/channels/telephony/CallManager.ts:422](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/channels/telephony/CallManager.ts#L422)
 
 Find a call by provider-assigned call ID.
 
@@ -60,7 +60,7 @@ Find a call by provider-assigned call ID.
 
 > **getActiveCalls**(): [`CallRecord`](../interfaces/CallRecord.md)[]
 
-Defined in: [packages/agentos/src/channels/telephony/CallManager.ts:434](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/telephony/CallManager.ts#L434)
+Defined in: [packages/agentos/src/channels/telephony/CallManager.ts:434](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/channels/telephony/CallManager.ts#L434)
 
 Get all active (non-terminal) calls.
 
@@ -74,7 +74,7 @@ Get all active (non-terminal) calls.
 
 > **getCall**(`callId`): [`CallRecord`](../interfaces/CallRecord.md) \| `undefined`
 
-Defined in: [packages/agentos/src/channels/telephony/CallManager.ts:417](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/telephony/CallManager.ts#L417)
+Defined in: [packages/agentos/src/channels/telephony/CallManager.ts:417](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/channels/telephony/CallManager.ts#L417)
 
 Get a call by internal ID.
 
@@ -94,7 +94,7 @@ Get a call by internal ID.
 
 > **getProvider**(`name?`): [`IVoiceCallProvider`](../interfaces/IVoiceCallProvider.md) \| `undefined`
 
-Defined in: [packages/agentos/src/channels/telephony/CallManager.ts:91](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/telephony/CallManager.ts#L91)
+Defined in: [packages/agentos/src/channels/telephony/CallManager.ts:91](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/channels/telephony/CallManager.ts#L91)
 
 Get a registered provider by name.
 
@@ -114,7 +114,7 @@ Get a registered provider by name.
 
 > **handleInboundCall**(`params`): [`CallRecord`](../interfaces/CallRecord.md) \| `null`
 
-Defined in: [packages/agentos/src/channels/telephony/CallManager.ts:444](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/telephony/CallManager.ts#L444)
+Defined in: [packages/agentos/src/channels/telephony/CallManager.ts:444](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/channels/telephony/CallManager.ts#L444)
 
 Handle an inbound call based on the configured policy.
 Creates a CallRecord if the call is accepted.
@@ -153,7 +153,7 @@ Creates a CallRecord if the call is accepted.
 
 > **hangupCall**(`callId`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/channels/telephony/CallManager.ts:216](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/telephony/CallManager.ts#L216)
+Defined in: [packages/agentos/src/channels/telephony/CallManager.ts:216](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/channels/telephony/CallManager.ts#L216)
 
 Hang up a call. Transitions to 'hangup-bot' terminal state.
 
@@ -173,7 +173,7 @@ Hang up a call. Transitions to 'hangup-bot' terminal state.
 
 > **initiateCall**(`params`): `Promise`\<[`CallRecord`](../interfaces/CallRecord.md)\>
 
-Defined in: [packages/agentos/src/channels/telephony/CallManager.ts:133](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/telephony/CallManager.ts#L133)
+Defined in: [packages/agentos/src/channels/telephony/CallManager.ts:133](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/channels/telephony/CallManager.ts#L133)
 
 Initiate an outbound phone call.
 
@@ -218,7 +218,7 @@ to place the call, and returns the internal call ID.
 
 > **on**(`handler`): () => `void`
 
-Defined in: [packages/agentos/src/channels/telephony/CallManager.ts:102](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/telephony/CallManager.ts#L102)
+Defined in: [packages/agentos/src/channels/telephony/CallManager.ts:102](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/channels/telephony/CallManager.ts#L102)
 
 Register a handler for call events.
 
@@ -244,7 +244,7 @@ Unsubscribe function.
 
 > **processNormalizedEvent**(`event`): `void`
 
-Defined in: [packages/agentos/src/channels/telephony/CallManager.ts:281](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/telephony/CallManager.ts#L281)
+Defined in: [packages/agentos/src/channels/telephony/CallManager.ts:281](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/channels/telephony/CallManager.ts#L281)
 
 Process a single normalized call event.
 
@@ -264,7 +264,7 @@ Process a single normalized call event.
 
 > **processWebhook**(`providerName`, `ctx`): `void`
 
-Defined in: [packages/agentos/src/channels/telephony/CallManager.ts:256](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/telephony/CallManager.ts#L256)
+Defined in: [packages/agentos/src/channels/telephony/CallManager.ts:256](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/channels/telephony/CallManager.ts#L256)
 
 Process an incoming webhook from a telephony provider.
 
@@ -291,7 +291,7 @@ Idempotent — duplicate event IDs are silently skipped.
 
 > **registerProvider**(`provider`): `void`
 
-Defined in: [packages/agentos/src/channels/telephony/CallManager.ts:84](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/telephony/CallManager.ts#L84)
+Defined in: [packages/agentos/src/channels/telephony/CallManager.ts:84](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/channels/telephony/CallManager.ts#L84)
 
 Register a telephony provider.
 
@@ -311,7 +311,7 @@ Register a telephony provider.
 
 > **speakText**(`callId`, `text`): `void`
 
-Defined in: [packages/agentos/src/channels/telephony/CallManager.ts:239](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/telephony/CallManager.ts#L239)
+Defined in: [packages/agentos/src/channels/telephony/CallManager.ts:239](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/channels/telephony/CallManager.ts#L239)
 
 Add a bot speech entry to the transcript and transition to speaking.
 

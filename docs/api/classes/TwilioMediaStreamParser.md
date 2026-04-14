@@ -1,6 +1,6 @@
 # Class: TwilioMediaStreamParser
 
-Defined in: [packages/agentos/src/channels/telephony/parsers/TwilioMediaStreamParser.ts:69](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/telephony/parsers/TwilioMediaStreamParser.ts#L69)
+Defined in: [packages/agentos/src/channels/telephony/parsers/TwilioMediaStreamParser.ts:69](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/channels/telephony/parsers/TwilioMediaStreamParser.ts#L69)
 
 Parses the Twilio `<Connect><Stream>` WebSocket media stream protocol.
 
@@ -34,7 +34,7 @@ ready to receive media.
 
 > **formatConnected**(`_streamSid`): `string`
 
-Defined in: [packages/agentos/src/channels/telephony/parsers/TwilioMediaStreamParser.ts:220](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/telephony/parsers/TwilioMediaStreamParser.ts#L220)
+Defined in: [packages/agentos/src/channels/telephony/parsers/TwilioMediaStreamParser.ts:220](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/channels/telephony/parsers/TwilioMediaStreamParser.ts#L220)
 
 Generate the initial `connected` acknowledgment expected by Twilio
 immediately after the WebSocket connection is established.
@@ -67,7 +67,7 @@ JSON string: `{ event: 'connected', protocol: 'Call', version: '1.0.0' }`
 
 > **formatOutgoing**(`audio`, `streamSid`): `string`
 
-Defined in: [packages/agentos/src/channels/telephony/parsers/TwilioMediaStreamParser.ts:201](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/telephony/parsers/TwilioMediaStreamParser.ts#L201)
+Defined in: [packages/agentos/src/channels/telephony/parsers/TwilioMediaStreamParser.ts:201](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/channels/telephony/parsers/TwilioMediaStreamParser.ts#L201)
 
 Encode mu-law audio for transmission back to the Twilio stream.
 
@@ -105,7 +105,7 @@ JSON string conforming to the Twilio media-out envelope format:
 
 > **parseIncoming**(`data`): [`MediaStreamIncoming`](../type-aliases/MediaStreamIncoming.md) \| `null`
 
-Defined in: [packages/agentos/src/channels/telephony/parsers/TwilioMediaStreamParser.ts:88](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/telephony/parsers/TwilioMediaStreamParser.ts#L88)
+Defined in: [packages/agentos/src/channels/telephony/parsers/TwilioMediaStreamParser.ts:88](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/channels/telephony/parsers/TwilioMediaStreamParser.ts#L88)
 
 Parse a raw WebSocket frame from Twilio's media stream.
 

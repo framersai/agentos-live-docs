@@ -1,6 +1,6 @@
 # Interface: ExtendedMissionConfig
 
-Defined in: [packages/agentos/src/orchestration/planning/types.ts:186](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/planning/types.ts#L186)
+Defined in: [packages/agentos/src/orchestration/planning/types.ts:186](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/planning/types.ts#L186)
 
 Configuration produced by the extended MissionBuilder chain methods.
 
@@ -10,7 +10,7 @@ Configuration produced by the extended MissionBuilder chain methods.
 
 > **autonomy**: [`AutonomyMode`](../type-aliases/AutonomyMode.md)
 
-Defined in: [packages/agentos/src/orchestration/planning/types.ts:190](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/planning/types.ts#L190)
+Defined in: [packages/agentos/src/orchestration/planning/types.ts:190](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/planning/types.ts#L190)
 
 ***
 
@@ -18,7 +18,7 @@ Defined in: [packages/agentos/src/orchestration/planning/types.ts:190](https://g
 
 > **branchCount**: `number`
 
-Defined in: [packages/agentos/src/orchestration/planning/types.ts:195](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/planning/types.ts#L195)
+Defined in: [packages/agentos/src/orchestration/planning/types.ts:195](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/planning/types.ts#L195)
 
 ***
 
@@ -26,7 +26,7 @@ Defined in: [packages/agentos/src/orchestration/planning/types.ts:195](https://g
 
 > **costCap**: `number`
 
-Defined in: [packages/agentos/src/orchestration/planning/types.ts:193](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/planning/types.ts#L193)
+Defined in: [packages/agentos/src/orchestration/planning/types.ts:193](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/planning/types.ts#L193)
 
 ***
 
@@ -34,7 +34,7 @@ Defined in: [packages/agentos/src/orchestration/planning/types.ts:193](https://g
 
 > **goal**: `string`
 
-Defined in: [packages/agentos/src/orchestration/planning/types.ts:187](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/planning/types.ts#L187)
+Defined in: [packages/agentos/src/orchestration/planning/types.ts:187](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/planning/types.ts#L187)
 
 ***
 
@@ -42,7 +42,7 @@ Defined in: [packages/agentos/src/orchestration/planning/types.ts:187](https://g
 
 > `optional` **inputSchema**: `unknown`
 
-Defined in: [packages/agentos/src/orchestration/planning/types.ts:188](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/planning/types.ts#L188)
+Defined in: [packages/agentos/src/orchestration/planning/types.ts:188](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/planning/types.ts#L188)
 
 ***
 
@@ -50,7 +50,7 @@ Defined in: [packages/agentos/src/orchestration/planning/types.ts:188](https://g
 
 > **maxAgents**: `number`
 
-Defined in: [packages/agentos/src/orchestration/planning/types.ts:194](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/planning/types.ts#L194)
+Defined in: [packages/agentos/src/orchestration/planning/types.ts:194](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/planning/types.ts#L194)
 
 ***
 
@@ -58,7 +58,7 @@ Defined in: [packages/agentos/src/orchestration/planning/types.ts:194](https://g
 
 > **providerStrategy**: [`ProviderStrategyConfig`](ProviderStrategyConfig.md)
 
-Defined in: [packages/agentos/src/orchestration/planning/types.ts:191](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/planning/types.ts#L191)
+Defined in: [packages/agentos/src/orchestration/planning/types.ts:191](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/planning/types.ts#L191)
 
 ***
 
@@ -66,7 +66,7 @@ Defined in: [packages/agentos/src/orchestration/planning/types.ts:191](https://g
 
 > `optional` **returnsSchema**: `unknown`
 
-Defined in: [packages/agentos/src/orchestration/planning/types.ts:189](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/planning/types.ts#L189)
+Defined in: [packages/agentos/src/orchestration/planning/types.ts:189](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/planning/types.ts#L189)
 
 ***
 
@@ -74,4 +74,4 @@ Defined in: [packages/agentos/src/orchestration/planning/types.ts:189](https://g
 
 > **thresholds**: [`GuardrailThresholds`](GuardrailThresholds.md)
 
-Defined in: [packages/agentos/src/orchestration/planning/types.ts:192](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/planning/types.ts#L192)
+Defined in: [packages/agentos/src/orchestration/planning/types.ts:192](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/planning/types.ts#L192)

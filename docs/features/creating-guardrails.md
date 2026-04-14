@@ -1292,25 +1292,25 @@ describe('Integration: ParallelGuardrailDispatcher + MyGuardrail', () => {
 
 ### API documentation
 
-- [IGuardrailService](/docs/api) -- the full guardrail contract.
-- [GuardrailConfig](/docs/api) -- streaming, sanitization, and timeout configuration.
-- [GuardrailEvaluationResult](/docs/api) -- the result shape returned by evaluations.
-- [GuardrailAction](/docs/api) -- the four action types (ALLOW, FLAG, SANITIZE, BLOCK).
-- [AgentOSResponseChunkType](/docs/api) -- all chunk types your guardrail may encounter.
-- [ISharedServiceRegistry](/docs/api) -- lazy-loading shared service registry.
-- [ExtensionPack / ExtensionDescriptor](/docs/api) -- extension packaging types.
+- [IGuardrailService](/api) -- the full guardrail contract.
+- [GuardrailConfig](/api) -- streaming, sanitization, and timeout configuration.
+- [GuardrailEvaluationResult](/api) -- the result shape returned by evaluations.
+- [GuardrailAction](/api) -- the four action types (ALLOW, FLAG, SANITIZE, BLOCK).
+- [AgentOSResponseChunkType](/api) -- all chunk types your guardrail may encounter.
+- [ISharedServiceRegistry](/api) -- lazy-loading shared service registry.
+- [ExtensionPack / ExtensionDescriptor](/api) -- extension packaging types.
 
 ### Built-in guardrail packs (reference implementations)
 
-- [PII Redaction](/docs/extensions/built-in/pii-redaction) -- four-tier PII detection with sentence-boundary buffering.
-- [ML Content Classifiers](/docs/extensions/built-in/ml-classifiers) -- ONNX-based toxicity, prompt injection, and jailbreak detection.
-- [Topicality](/docs/extensions/built-in/topicality) -- embedding-based topic enforcement with drift tracking.
-- [Code Safety](/docs/extensions/built-in/code-safety) -- OWASP Top 10 code vulnerability scanning.
-- [Grounding Guard](/docs/extensions/built-in/grounding-guard) -- NLI cross-encoder + LLM-as-judge hallucination detection.
+- [PII Redaction](/extensions/built-in/pii-redaction) -- four-tier PII detection with sentence-boundary buffering.
+- [ML Content Classifiers](/extensions/built-in/ml-classifiers) -- ONNX-based toxicity, prompt injection, and jailbreak detection.
+- [Topicality](/extensions/built-in/topicality) -- embedding-based topic enforcement with drift tracking.
+- [Code Safety](/extensions/built-in/code-safety) -- OWASP Top 10 code vulnerability scanning.
+- [Grounding Guard](/extensions/built-in/grounding-guard) -- NLI cross-encoder + LLM-as-judge hallucination detection.
 
 ### Related documentation
 
-- [Guardrails Overview](/docs/features/guardrails) -- conceptual overview and configuration reference.
-- [Extension Architecture](/docs/extensions/extension-architecture) -- how extensions are loaded, activated, and composed.
-- [How Extensions Work](/docs/extensions/how-extensions-work) -- the extension runtime lifecycle.
-- [Safety Primitives](/docs/features/safety-primitives) -- broader safety architecture.
+- [Guardrails Overview](/features/guardrails) -- conceptual overview and configuration reference.
+- [Extension Architecture](/extensions/extension-architecture) -- how extensions are loaded, activated, and composed.
+- [How Extensions Work](/extensions/how-extensions-work) -- the extension runtime lifecycle.
+- [Safety Primitives](/features/safety-primitives) -- broader safety architecture.

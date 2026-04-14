@@ -1,6 +1,6 @@
 # Interface: ResearchStartEvent
 
-Defined in: [packages/agentos/src/query-router/types.ts:966](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/query-router/types.ts#L966)
+Defined in: [packages/agentos/src/query-router/types.ts:966](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/query-router/types.ts#L966)
 
 Emitted when deep research begins (tier 3 only).
 
@@ -10,7 +10,7 @@ Emitted when deep research begins (tier 3 only).
 
 > **maxIterations**: `number`
 
-Defined in: [packages/agentos/src/query-router/types.ts:971](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/query-router/types.ts#L971)
+Defined in: [packages/agentos/src/query-router/types.ts:971](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/query-router/types.ts#L971)
 
 Maximum number of research iterations configured.
 
@@ -20,7 +20,7 @@ Maximum number of research iterations configured.
 
 > **query**: `string`
 
-Defined in: [packages/agentos/src/query-router/types.ts:969](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/query-router/types.ts#L969)
+Defined in: [packages/agentos/src/query-router/types.ts:969](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/query-router/types.ts#L969)
 
 The original query being researched.
 
@@ -30,7 +30,7 @@ The original query being researched.
 
 > **timestamp**: `number`
 
-Defined in: [packages/agentos/src/query-router/types.ts:973](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/query-router/types.ts#L973)
+Defined in: [packages/agentos/src/query-router/types.ts:973](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/query-router/types.ts#L973)
 
 Timestamp when research started.
 
@@ -40,4 +40,4 @@ Timestamp when research started.
 
 > **type**: `"research:start"`
 
-Defined in: [packages/agentos/src/query-router/types.ts:967](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/query-router/types.ts#L967)
+Defined in: [packages/agentos/src/query-router/types.ts:967](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/query-router/types.ts#L967)

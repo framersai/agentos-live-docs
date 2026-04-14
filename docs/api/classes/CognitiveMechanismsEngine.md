@@ -1,8 +1,8 @@
 # Class: CognitiveMechanismsEngine
 
-Defined in: [packages/agentos/src/memory/mechanisms/CognitiveMechanismsEngine.ts:141](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/mechanisms/CognitiveMechanismsEngine.ts#L141)
+Defined in: [packages/agentos/src/memory/mechanisms/CognitiveMechanismsEngine.ts:148](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/mechanisms/CognitiveMechanismsEngine.ts#L148)
 
-Orchestrates 8 cognitive mechanisms across the memory pipeline lifecycle.
+Orchestrates 8 core cognitive mechanisms across the memory pipeline lifecycle.
 
 When `cognitiveMechanisms` config is present on `CognitiveMemoryConfig`,
 an instance is created during initialization. Existing pipeline files
@@ -19,7 +19,7 @@ skepticism, agreeableness → emotion regulation, extraversion → FOK surfacing
 
 > **new CognitiveMechanismsEngine**(`config`, `traits?`): `CognitiveMechanismsEngine`
 
-Defined in: [packages/agentos/src/memory/mechanisms/CognitiveMechanismsEngine.ts:147](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/mechanisms/CognitiveMechanismsEngine.ts#L147)
+Defined in: [packages/agentos/src/memory/mechanisms/CognitiveMechanismsEngine.ts:156](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/mechanisms/CognitiveMechanismsEngine.ts#L156)
 
 #### Parameters
 
@@ -41,7 +41,7 @@ Defined in: [packages/agentos/src/memory/mechanisms/CognitiveMechanismsEngine.ts
 
 > **getConfig**(): [`ResolvedMechanismsConfig`](../interfaces/ResolvedMechanismsConfig.md)
 
-Defined in: [packages/agentos/src/memory/mechanisms/CognitiveMechanismsEngine.ts:270](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/mechanisms/CognitiveMechanismsEngine.ts#L270)
+Defined in: [packages/agentos/src/memory/mechanisms/CognitiveMechanismsEngine.ts:293](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/mechanisms/CognitiveMechanismsEngine.ts#L293)
 
 Get resolved config for diagnostics.
 
@@ -55,7 +55,7 @@ Get resolved config for diagnostics.
 
 > **onAccess**(`trace`, `currentMood`): `void`
 
-Defined in: [packages/agentos/src/memory/mechanisms/CognitiveMechanismsEngine.ts:159](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/mechanisms/CognitiveMechanismsEngine.ts#L159)
+Defined in: [packages/agentos/src/memory/mechanisms/CognitiveMechanismsEngine.ts:170](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/mechanisms/CognitiveMechanismsEngine.ts#L170)
 
 Called by MemoryStore.recordAccess().
 Applies reconsolidation drift to the trace's emotional context.
@@ -78,9 +78,9 @@ Applies reconsolidation drift to the trace's emotional context.
 
 ### onConsolidation()
 
-> **onConsolidation**(`traces`, `llmFn?`): `Promise`\<\{ `gistedCount`: `number`; `regulatedCount`: `number`; `sourceDecayedCount`: `number`; \}\>
+> **onConsolidation**(`traces`, `llmFn?`): `Promise`\<\{ `driftProposals`: [`PersonalityDriftProposal`](../interfaces/PersonalityDriftProposal.md)[]; `gistedCount`: `number`; `regulatedCount`: `number`; `sourceDecayedCount`: `number`; \}\>
 
-Defined in: [packages/agentos/src/memory/mechanisms/CognitiveMechanismsEngine.ts:234](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/mechanisms/CognitiveMechanismsEngine.ts#L234)
+Defined in: [packages/agentos/src/memory/mechanisms/CognitiveMechanismsEngine.ts:245](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/mechanisms/CognitiveMechanismsEngine.ts#L245)
 
 Called by ConsolidationLoop.run() after step 5 (compact).
 Runs temporal gist, source confidence decay, and emotion regulation.
@@ -97,7 +97,7 @@ Runs temporal gist, source confidence decay, and emotion regulation.
 
 #### Returns
 
-`Promise`\<\{ `gistedCount`: `number`; `regulatedCount`: `number`; `sourceDecayedCount`: `number`; \}\>
+`Promise`\<\{ `driftProposals`: [`PersonalityDriftProposal`](../interfaces/PersonalityDriftProposal.md)[]; `gistedCount`: `number`; `regulatedCount`: `number`; `sourceDecayedCount`: `number`; \}\>
 
 ***
 
@@ -105,7 +105,7 @@ Runs temporal gist, source confidence decay, and emotion regulation.
 
 > **onEncoding**(`trace`, `traceEmbedding`): `void`
 
-Defined in: [packages/agentos/src/memory/mechanisms/CognitiveMechanismsEngine.ts:221](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/mechanisms/CognitiveMechanismsEngine.ts#L221)
+Defined in: [packages/agentos/src/memory/mechanisms/CognitiveMechanismsEngine.ts:232](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/mechanisms/CognitiveMechanismsEngine.ts#L232)
 
 Called by EncodingModel.encode().
 Classifies the trace as schema-congruent or schema-violating and adjusts
@@ -131,7 +131,7 @@ encoding strength accordingly.
 
 > **onPromptAssembly**(`allTraces`, `retrievedIds`): `object`
 
-Defined in: [packages/agentos/src/memory/mechanisms/CognitiveMechanismsEngine.ts:248](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/mechanisms/CognitiveMechanismsEngine.ts#L248)
+Defined in: [packages/agentos/src/memory/mechanisms/CognitiveMechanismsEngine.ts:271](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/mechanisms/CognitiveMechanismsEngine.ts#L271)
 
 Called by MemoryPromptAssembler.
 May inject an involuntary recall memory into the assembled context.
@@ -160,7 +160,7 @@ May inject an involuntary recall memory into the assembled context.
 
 > **onRetrieval**(`results`, `allCandidates`, `retrievalCutoff`, `queryEntities`): `object`
 
-Defined in: [packages/agentos/src/memory/mechanisms/CognitiveMechanismsEngine.ts:169](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/mechanisms/CognitiveMechanismsEngine.ts#L169)
+Defined in: [packages/agentos/src/memory/mechanisms/CognitiveMechanismsEngine.ts:180](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/mechanisms/CognitiveMechanismsEngine.ts#L180)
 
 Called by MemoryStore.query() after scoring.
 Applies retrieval-induced forgetting to competitors and detects FOK signals.
@@ -203,7 +203,7 @@ Suppressed trace IDs and metacognitive signals.
 
 > **setClusterCentroids**(`centroids`): `void`
 
-Defined in: [packages/agentos/src/memory/mechanisms/CognitiveMechanismsEngine.ts:265](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/mechanisms/CognitiveMechanismsEngine.ts#L265)
+Defined in: [packages/agentos/src/memory/mechanisms/CognitiveMechanismsEngine.ts:288](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/mechanisms/CognitiveMechanismsEngine.ts#L288)
 
 Update cluster centroids (called after consolidation derive step).
 

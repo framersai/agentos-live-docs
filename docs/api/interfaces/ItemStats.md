@@ -1,6 +1,6 @@
 # Interface: ItemStats
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:136](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/marketplace/store/IMarketplace.ts#L136)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:136](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/marketplace/store/IMarketplace.ts#L136)
 
 Item statistics
 
@@ -10,7 +10,7 @@ Item statistics
 
 > **activeInstalls**: `number`
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:142](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/marketplace/store/IMarketplace.ts#L142)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:142](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/marketplace/store/IMarketplace.ts#L142)
 
 Active installations
 
@@ -20,7 +20,7 @@ Active installations
 
 > **downloads**: `number`
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:138](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/marketplace/store/IMarketplace.ts#L138)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:138](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/marketplace/store/IMarketplace.ts#L138)
 
 Total downloads/installations
 
@@ -30,7 +30,7 @@ Total downloads/installations
 
 > `optional` **forks**: `number`
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:148](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/marketplace/store/IMarketplace.ts#L148)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:148](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/marketplace/store/IMarketplace.ts#L148)
 
 Number of forks
 
@@ -40,7 +40,7 @@ Number of forks
 
 > `optional` **githubStars**: `number`
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:146](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/marketplace/store/IMarketplace.ts#L146)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:146](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/marketplace/store/IMarketplace.ts#L146)
 
 GitHub stars (if linked)
 
@@ -50,7 +50,7 @@ GitHub stars (if linked)
 
 > **views**: `number`
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:144](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/marketplace/store/IMarketplace.ts#L144)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:144](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/marketplace/store/IMarketplace.ts#L144)
 
 Total views
 
@@ -60,6 +60,6 @@ Total views
 
 > **weeklyDownloads**: `number`
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:140](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/marketplace/store/IMarketplace.ts#L140)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:140](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/marketplace/store/IMarketplace.ts#L140)
 
 Weekly downloads

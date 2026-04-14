@@ -1,6 +1,6 @@
 # Interface: ICognitiveMemoryManager
 
-Defined in: [packages/agentos/src/memory/CognitiveMemoryManager.ts:71](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/CognitiveMemoryManager.ts#L71)
+Defined in: [packages/agentos/src/memory/CognitiveMemoryManager.ts:72](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/CognitiveMemoryManager.ts#L72)
 
 ## Methods
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/memory/CognitiveMemoryManager.ts:71](https://g
 
 > **assembleForPrompt**(`query`, `tokenBudget`, `mood`, `options?`): `Promise`\<[`AssembledMemoryContext`](AssembledMemoryContext.md)\>
 
-Defined in: [packages/agentos/src/memory/CognitiveMemoryManager.ts:98](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/CognitiveMemoryManager.ts#L98)
+Defined in: [packages/agentos/src/memory/CognitiveMemoryManager.ts:99](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/CognitiveMemoryManager.ts#L99)
 
 Assemble memory context for prompt injection within a token budget.
 
@@ -40,7 +40,7 @@ Assemble memory context for prompt injection within a token budget.
 
 > `optional` **checkProspective**(`context`): `Promise`\<[`ProspectiveMemoryItem`](ProspectiveMemoryItem.md)[]\>
 
-Defined in: [packages/agentos/src/memory/CognitiveMemoryManager.ts:113](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/CognitiveMemoryManager.ts#L113)
+Defined in: [packages/agentos/src/memory/CognitiveMemoryManager.ts:114](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/CognitiveMemoryManager.ts#L114)
 
 Check prospective memory triggers (Batch 2).
 
@@ -74,7 +74,7 @@ Check prospective memory triggers (Batch 2).
 
 > **encode**(`input`, `mood`, `gmiMood`, `options?`): `Promise`\<[`MemoryTrace`](MemoryTrace.md)\>
 
-Defined in: [packages/agentos/src/memory/CognitiveMemoryManager.ts:75](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/CognitiveMemoryManager.ts#L75)
+Defined in: [packages/agentos/src/memory/CognitiveMemoryManager.ts:76](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/CognitiveMemoryManager.ts#L76)
 
 Encode a new input into a memory trace. Called after each user message.
 
@@ -132,7 +132,7 @@ Encode a new input into a memory trace. Called after each user message.
 
 > **getConfig**(): [`CognitiveMemoryConfig`](CognitiveMemoryConfig.md)
 
-Defined in: [packages/agentos/src/memory/CognitiveMemoryManager.ts:146](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/CognitiveMemoryManager.ts#L146)
+Defined in: [packages/agentos/src/memory/CognitiveMemoryManager.ts:147](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/CognitiveMemoryManager.ts#L147)
 
 Get the resolved cognitive-memory runtime config.
 
@@ -146,7 +146,7 @@ Get the resolved cognitive-memory runtime config.
 
 > **getContextTransparencyReport**(): `string` \| `null`
 
-Defined in: [packages/agentos/src/memory/CognitiveMemoryManager.ts:170](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/CognitiveMemoryManager.ts#L170)
+Defined in: [packages/agentos/src/memory/CognitiveMemoryManager.ts:171](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/CognitiveMemoryManager.ts#L171)
 
 Get a human-readable compaction/transparency report when enabled.
 
@@ -160,7 +160,7 @@ Get a human-readable compaction/transparency report when enabled.
 
 > **getContextWindowStats**(): [`ContextWindowStats`](ContextWindowStats.md) \| `null`
 
-Defined in: [packages/agentos/src/memory/CognitiveMemoryManager.ts:167](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/CognitiveMemoryManager.ts#L167)
+Defined in: [packages/agentos/src/memory/CognitiveMemoryManager.ts:168](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/CognitiveMemoryManager.ts#L168)
 
 Get infinite-context runtime stats when enabled.
 
@@ -174,7 +174,7 @@ Get infinite-context runtime stats when enabled.
 
 > **getGraph**(): [`IMemoryGraph`](IMemoryGraph.md) \| `null`
 
-Defined in: [packages/agentos/src/memory/CognitiveMemoryManager.ts:149](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/CognitiveMemoryManager.ts#L149)
+Defined in: [packages/agentos/src/memory/CognitiveMemoryManager.ts:150](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/CognitiveMemoryManager.ts#L150)
 
 Get graph module when enabled.
 
@@ -188,7 +188,7 @@ Get graph module when enabled.
 
 > `optional` **getHydeRetriever**(): [`HydeRetriever`](../classes/HydeRetriever.md) \| `null`
 
-Defined in: [packages/agentos/src/memory/CognitiveMemoryManager.ts:164](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/CognitiveMemoryManager.ts#L164)
+Defined in: [packages/agentos/src/memory/CognitiveMemoryManager.ts:165](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/CognitiveMemoryManager.ts#L165)
 
 Get the HyDE retriever if configured, or `null`.
 
@@ -202,7 +202,7 @@ Get the HyDE retriever if configured, or `null`.
 
 > **getMemoryHealth**(): `Promise`\<[`MemoryHealthReport`](MemoryHealthReport.md)\>
 
-Defined in: [packages/agentos/src/memory/CognitiveMemoryManager.ts:137](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/CognitiveMemoryManager.ts#L137)
+Defined in: [packages/agentos/src/memory/CognitiveMemoryManager.ts:138](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/CognitiveMemoryManager.ts#L138)
 
 Get memory health diagnostics.
 
@@ -216,7 +216,7 @@ Get memory health diagnostics.
 
 > **getObserver**(): [`MemoryObserver`](../classes/MemoryObserver.md) \| `null`
 
-Defined in: [packages/agentos/src/memory/CognitiveMemoryManager.ts:152](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/CognitiveMemoryManager.ts#L152)
+Defined in: [packages/agentos/src/memory/CognitiveMemoryManager.ts:153](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/CognitiveMemoryManager.ts#L153)
 
 Get observer module when enabled.
 
@@ -230,7 +230,7 @@ Get observer module when enabled.
 
 > **getProspective**(): [`ProspectiveMemoryManager`](../classes/ProspectiveMemoryManager.md) \| `null`
 
-Defined in: [packages/agentos/src/memory/CognitiveMemoryManager.ts:155](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/CognitiveMemoryManager.ts#L155)
+Defined in: [packages/agentos/src/memory/CognitiveMemoryManager.ts:156](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/CognitiveMemoryManager.ts#L156)
 
 Get prospective-memory manager when enabled.
 
@@ -244,7 +244,7 @@ Get prospective-memory manager when enabled.
 
 > **getStore**(): [`MemoryStore`](../classes/MemoryStore.md)
 
-Defined in: [packages/agentos/src/memory/CognitiveMemoryManager.ts:140](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/CognitiveMemoryManager.ts#L140)
+Defined in: [packages/agentos/src/memory/CognitiveMemoryManager.ts:141](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/CognitiveMemoryManager.ts#L141)
 
 Access the underlying long-term memory store for diagnostics/devtools.
 
@@ -258,7 +258,7 @@ Access the underlying long-term memory store for diagnostics/devtools.
 
 > **getWorkingMemory**(): [`CognitiveWorkingMemory`](../classes/CognitiveWorkingMemory.md)
 
-Defined in: [packages/agentos/src/memory/CognitiveMemoryManager.ts:143](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/CognitiveMemoryManager.ts#L143)
+Defined in: [packages/agentos/src/memory/CognitiveMemoryManager.ts:144](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/CognitiveMemoryManager.ts#L144)
 
 Access the working-memory model for diagnostics/devtools.
 
@@ -272,7 +272,7 @@ Access the working-memory model for diagnostics/devtools.
 
 > **initialize**(`config`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/memory/CognitiveMemoryManager.ts:72](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/CognitiveMemoryManager.ts#L72)
+Defined in: [packages/agentos/src/memory/CognitiveMemoryManager.ts:73](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/CognitiveMemoryManager.ts#L73)
 
 #### Parameters
 
@@ -290,7 +290,7 @@ Defined in: [packages/agentos/src/memory/CognitiveMemoryManager.ts:72](https://g
 
 > `optional` **listProspective**(): `Promise`\<[`ProspectiveMemoryItem`](ProspectiveMemoryItem.md)[]\>
 
-Defined in: [packages/agentos/src/memory/CognitiveMemoryManager.ts:128](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/CognitiveMemoryManager.ts#L128)
+Defined in: [packages/agentos/src/memory/CognitiveMemoryManager.ts:129](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/CognitiveMemoryManager.ts#L129)
 
 List active prospective reminders.
 
@@ -304,7 +304,7 @@ List active prospective reminders.
 
 > `optional` **observe**(`role`, `content`, `mood?`): `Promise`\<[`ObservationNote`](ObservationNote.md)[] \| `null`\>
 
-Defined in: [packages/agentos/src/memory/CognitiveMemoryManager.ts:106](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/CognitiveMemoryManager.ts#L106)
+Defined in: [packages/agentos/src/memory/CognitiveMemoryManager.ts:107](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/CognitiveMemoryManager.ts#L107)
 
 Feed a message to the observer (Batch 2). Returns notes if threshold reached.
 
@@ -332,7 +332,7 @@ Feed a message to the observer (Batch 2). Returns notes if threshold reached.
 
 > `optional` **registerProspective**(`input`): `Promise`\<[`ProspectiveMemoryItem`](ProspectiveMemoryItem.md)\>
 
-Defined in: [packages/agentos/src/memory/CognitiveMemoryManager.ts:121](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/CognitiveMemoryManager.ts#L121)
+Defined in: [packages/agentos/src/memory/CognitiveMemoryManager.ts:122](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/CognitiveMemoryManager.ts#L122)
 
 Register a new prospective reminder/intention.
 
@@ -348,11 +348,43 @@ Register a new prospective reminder/intention.
 
 ***
 
+### rehydrate()?
+
+> `optional` **rehydrate**(`traceId`, `requestContext?`): `Promise`\<`string` \| `null`\>
+
+Defined in: [packages/agentos/src/memory/CognitiveMemoryManager.ts:182](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/CognitiveMemoryManager.ts#L182)
+
+Return the verbatim content that was archived when this trace was
+consolidated, or `null` if the trace is not gisted/archived or the
+archive is unreachable.
+
+#### Parameters
+
+##### traceId
+
+`string`
+
+The trace id to rehydrate.
+
+##### requestContext?
+
+`string`
+
+Optional caller hint for audit.
+
+#### Returns
+
+`Promise`\<`string` \| `null`\>
+
+The original verbatim content, or `null`.
+
+***
+
 ### removeProspective()?
 
 > `optional` **removeProspective**(`id`): `Promise`\<`boolean`\>
 
-Defined in: [packages/agentos/src/memory/CognitiveMemoryManager.ts:131](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/CognitiveMemoryManager.ts#L131)
+Defined in: [packages/agentos/src/memory/CognitiveMemoryManager.ts:132](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/CognitiveMemoryManager.ts#L132)
 
 Remove a prospective reminder.
 
@@ -372,7 +404,7 @@ Remove a prospective reminder.
 
 > **retrieve**(`query`, `mood`, `options?`): `Promise`\<[`CognitiveRetrievalResult`](CognitiveRetrievalResult.md)\>
 
-Defined in: [packages/agentos/src/memory/CognitiveMemoryManager.ts:91](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/CognitiveMemoryManager.ts#L91)
+Defined in: [packages/agentos/src/memory/CognitiveMemoryManager.ts:92](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/CognitiveMemoryManager.ts#L92)
 
 Retrieve relevant memories for a query. Called before prompt construction.
 
@@ -400,7 +432,7 @@ Retrieve relevant memories for a query. Called before prompt construction.
 
 > `optional` **runConsolidation**(): `Promise`\<[`ConsolidationResult`](ConsolidationResult.md)\>
 
-Defined in: [packages/agentos/src/memory/CognitiveMemoryManager.ts:134](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/CognitiveMemoryManager.ts#L134)
+Defined in: [packages/agentos/src/memory/CognitiveMemoryManager.ts:135](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/CognitiveMemoryManager.ts#L135)
 
 Run consolidation cycle (Batch 2).
 
@@ -414,7 +446,7 @@ Run consolidation cycle (Batch 2).
 
 > `optional` **setHydeRetriever**(`retriever`): `void`
 
-Defined in: [packages/agentos/src/memory/CognitiveMemoryManager.ts:161](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/CognitiveMemoryManager.ts#L161)
+Defined in: [packages/agentos/src/memory/CognitiveMemoryManager.ts:162](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/CognitiveMemoryManager.ts#L162)
 
 Attach a HyDE retriever for hypothesis-driven memory recall.
 Pass `null` to disable.
@@ -435,7 +467,7 @@ Pass `null` to disable.
 
 > **shutdown**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/memory/CognitiveMemoryManager.ts:173](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/CognitiveMemoryManager.ts#L173)
+Defined in: [packages/agentos/src/memory/CognitiveMemoryManager.ts:185](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/CognitiveMemoryManager.ts#L185)
 
 Shutdown and release resources.
 

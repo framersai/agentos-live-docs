@@ -1,14 +1,24 @@
 # Interface: ConsolidationResult
 
-Defined in: [packages/agentos/src/memory/pipeline/consolidation/ConsolidationPipeline.ts:26](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/pipeline/consolidation/ConsolidationPipeline.ts#L26)
+Defined in: [packages/agentos/src/memory/pipeline/consolidation/ConsolidationPipeline.ts:26](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/pipeline/consolidation/ConsolidationPipeline.ts#L26)
 
 ## Properties
+
+### archivedPruned
+
+> **archivedPruned**: `number`
+
+Defined in: [packages/agentos/src/memory/pipeline/consolidation/ConsolidationPipeline.ts:42](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/pipeline/consolidation/ConsolidationPipeline.ts#L42)
+
+Archived traces dropped by retention sweep.
+
+***
 
 ### conflictsResolved
 
 > **conflictsResolved**: `number`
 
-Defined in: [packages/agentos/src/memory/pipeline/consolidation/ConsolidationPipeline.ts:34](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/pipeline/consolidation/ConsolidationPipeline.ts#L34)
+Defined in: [packages/agentos/src/memory/pipeline/consolidation/ConsolidationPipeline.ts:34](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/pipeline/consolidation/ConsolidationPipeline.ts#L34)
 
 Conflicts resolved.
 
@@ -18,7 +28,7 @@ Conflicts resolved.
 
 > **durationMs**: `number`
 
-Defined in: [packages/agentos/src/memory/pipeline/consolidation/ConsolidationPipeline.ts:40](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/pipeline/consolidation/ConsolidationPipeline.ts#L40)
+Defined in: [packages/agentos/src/memory/pipeline/consolidation/ConsolidationPipeline.ts:40](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/pipeline/consolidation/ConsolidationPipeline.ts#L40)
 
 Duration in ms.
 
@@ -28,7 +38,7 @@ Duration in ms.
 
 > **edgesCreated**: `number`
 
-Defined in: [packages/agentos/src/memory/pipeline/consolidation/ConsolidationPipeline.ts:30](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/pipeline/consolidation/ConsolidationPipeline.ts#L30)
+Defined in: [packages/agentos/src/memory/pipeline/consolidation/ConsolidationPipeline.ts:30](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/pipeline/consolidation/ConsolidationPipeline.ts#L30)
 
 Co-activation edges created.
 
@@ -38,7 +48,7 @@ Co-activation edges created.
 
 > **prunedCount**: `number`
 
-Defined in: [packages/agentos/src/memory/pipeline/consolidation/ConsolidationPipeline.ts:28](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/pipeline/consolidation/ConsolidationPipeline.ts#L28)
+Defined in: [packages/agentos/src/memory/pipeline/consolidation/ConsolidationPipeline.ts:28](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/pipeline/consolidation/ConsolidationPipeline.ts#L28)
 
 Traces pruned (soft-deleted).
 
@@ -48,7 +58,7 @@ Traces pruned (soft-deleted).
 
 > **reinforcedCount**: `number`
 
-Defined in: [packages/agentos/src/memory/pipeline/consolidation/ConsolidationPipeline.ts:36](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/pipeline/consolidation/ConsolidationPipeline.ts#L36)
+Defined in: [packages/agentos/src/memory/pipeline/consolidation/ConsolidationPipeline.ts:36](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/pipeline/consolidation/ConsolidationPipeline.ts#L36)
 
 Traces reinforced via spaced repetition.
 
@@ -58,7 +68,7 @@ Traces reinforced via spaced repetition.
 
 > **schemasCreated**: `number`
 
-Defined in: [packages/agentos/src/memory/pipeline/consolidation/ConsolidationPipeline.ts:32](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/pipeline/consolidation/ConsolidationPipeline.ts#L32)
+Defined in: [packages/agentos/src/memory/pipeline/consolidation/ConsolidationPipeline.ts:32](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/pipeline/consolidation/ConsolidationPipeline.ts#L32)
 
 Schema nodes created from episodic clusters.
 
@@ -68,6 +78,6 @@ Schema nodes created from episodic clusters.
 
 > **totalProcessed**: `number`
 
-Defined in: [packages/agentos/src/memory/pipeline/consolidation/ConsolidationPipeline.ts:38](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/pipeline/consolidation/ConsolidationPipeline.ts#L38)
+Defined in: [packages/agentos/src/memory/pipeline/consolidation/ConsolidationPipeline.ts:38](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/pipeline/consolidation/ConsolidationPipeline.ts#L38)
 
 Total traces processed.

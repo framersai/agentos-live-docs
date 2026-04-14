@@ -1,6 +1,6 @@
 # Interface: LoopToolCallRequest
 
-Defined in: [packages/agentos/src/orchestration/runtime/LoopController.ts:94](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/runtime/LoopController.ts#L94)
+Defined in: [packages/agentos/src/orchestration/runtime/LoopController.ts:94](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/runtime/LoopController.ts#L94)
 
 A single tool invocation requested by the LLM.
 
@@ -10,7 +10,7 @@ A single tool invocation requested by the LLM.
 
 > **arguments**: `Record`\<`string`, `unknown`\>
 
-Defined in: [packages/agentos/src/orchestration/runtime/LoopController.ts:102](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/runtime/LoopController.ts#L102)
+Defined in: [packages/agentos/src/orchestration/runtime/LoopController.ts:102](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/runtime/LoopController.ts#L102)
 
 Parsed arguments to pass to the tool.
 
@@ -20,7 +20,7 @@ Parsed arguments to pass to the tool.
 
 > **id**: `string`
 
-Defined in: [packages/agentos/src/orchestration/runtime/LoopController.ts:96](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/runtime/LoopController.ts#L96)
+Defined in: [packages/agentos/src/orchestration/runtime/LoopController.ts:96](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/runtime/LoopController.ts#L96)
 
 Unique identifier for this tool call within a response (matches the tool result).
 
@@ -30,6 +30,6 @@ Unique identifier for this tool call within a response (matches the tool result)
 
 > **name**: `string`
 
-Defined in: [packages/agentos/src/orchestration/runtime/LoopController.ts:99](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/runtime/LoopController.ts#L99)
+Defined in: [packages/agentos/src/orchestration/runtime/LoopController.ts:99](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/runtime/LoopController.ts#L99)
 
 Name of the tool to invoke.

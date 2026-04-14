@@ -1,6 +1,6 @@
 # Class: ElevenLabsTextToSpeechProvider
 
-Defined in: [packages/agentos/src/speech/providers/ElevenLabsTextToSpeechProvider.ts:95](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/speech/providers/ElevenLabsTextToSpeechProvider.ts#L95)
+Defined in: [packages/agentos/src/speech/providers/ElevenLabsTextToSpeechProvider.ts:97](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/speech/providers/ElevenLabsTextToSpeechProvider.ts#L97)
 
 Text-to-speech provider that uses the ElevenLabs TTS API.
 
@@ -63,7 +63,7 @@ const result = await provider.synthesize('Hello world', {
 
 > **new ElevenLabsTextToSpeechProvider**(`config`): `ElevenLabsTextToSpeechProvider`
 
-Defined in: [packages/agentos/src/speech/providers/ElevenLabsTextToSpeechProvider.ts:125](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/speech/providers/ElevenLabsTextToSpeechProvider.ts#L125)
+Defined in: [packages/agentos/src/speech/providers/ElevenLabsTextToSpeechProvider.ts:130](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/speech/providers/ElevenLabsTextToSpeechProvider.ts#L130)
 
 Creates a new ElevenLabsTextToSpeechProvider.
 
@@ -95,7 +95,7 @@ const provider = new ElevenLabsTextToSpeechProvider({
 
 > `readonly` **displayName**: `"ElevenLabs"` = `'ElevenLabs'`
 
-Defined in: [packages/agentos/src/speech/providers/ElevenLabsTextToSpeechProvider.ts:100](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/speech/providers/ElevenLabsTextToSpeechProvider.ts#L100)
+Defined in: [packages/agentos/src/speech/providers/ElevenLabsTextToSpeechProvider.ts:102](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/speech/providers/ElevenLabsTextToSpeechProvider.ts#L102)
 
 Human-readable display name for UI and logging.
 
@@ -109,7 +109,7 @@ Human-readable display name for UI and logging.
 
 > `readonly` **id**: `"elevenlabs"` = `'elevenlabs'`
 
-Defined in: [packages/agentos/src/speech/providers/ElevenLabsTextToSpeechProvider.ts:97](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/speech/providers/ElevenLabsTextToSpeechProvider.ts#L97)
+Defined in: [packages/agentos/src/speech/providers/ElevenLabsTextToSpeechProvider.ts:99](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/speech/providers/ElevenLabsTextToSpeechProvider.ts#L99)
 
 Unique provider identifier used for registration and resolution.
 
@@ -123,7 +123,7 @@ Unique provider identifier used for registration and resolution.
 
 > `readonly` **supportsStreaming**: `true` = `true`
 
-Defined in: [packages/agentos/src/speech/providers/ElevenLabsTextToSpeechProvider.ts:106](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/speech/providers/ElevenLabsTextToSpeechProvider.ts#L106)
+Defined in: [packages/agentos/src/speech/providers/ElevenLabsTextToSpeechProvider.ts:108](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/speech/providers/ElevenLabsTextToSpeechProvider.ts#L108)
 
 Streaming is supported — ElevenLabs offers a WebSocket streaming endpoint,
 and even the REST endpoint can be consumed as a stream.
@@ -138,7 +138,7 @@ and even the REST endpoint can be consumed as a stream.
 
 > **getProviderName**(): `string`
 
-Defined in: [packages/agentos/src/speech/providers/ElevenLabsTextToSpeechProvider.ts:139](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/speech/providers/ElevenLabsTextToSpeechProvider.ts#L139)
+Defined in: [packages/agentos/src/speech/providers/ElevenLabsTextToSpeechProvider.ts:145](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/speech/providers/ElevenLabsTextToSpeechProvider.ts#L145)
 
 Returns the human-readable provider name.
 
@@ -164,7 +164,7 @@ provider.getProviderName(); // 'ElevenLabs'
 
 > **listAvailableVoices**(): `Promise`\<[`SpeechVoice`](../interfaces/SpeechVoice.md)[]\>
 
-Defined in: [packages/agentos/src/speech/providers/ElevenLabsTextToSpeechProvider.ts:261](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/speech/providers/ElevenLabsTextToSpeechProvider.ts#L261)
+Defined in: [packages/agentos/src/speech/providers/ElevenLabsTextToSpeechProvider.ts:275](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/speech/providers/ElevenLabsTextToSpeechProvider.ts#L275)
 
 Fetches the user's voice library from the ElevenLabs API.
 
@@ -199,7 +199,7 @@ const rachel = voices.find(v => v.name === 'Rachel');
 
 > **synthesize**(`text`, `options?`): `Promise`\<[`SpeechSynthesisResult`](../interfaces/SpeechSynthesisResult.md)\>
 
-Defined in: [packages/agentos/src/speech/providers/ElevenLabsTextToSpeechProvider.ts:167](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/speech/providers/ElevenLabsTextToSpeechProvider.ts#L167)
+Defined in: [packages/agentos/src/speech/providers/ElevenLabsTextToSpeechProvider.ts:173](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/speech/providers/ElevenLabsTextToSpeechProvider.ts#L173)
 
 Synthesizes speech from text using the ElevenLabs TTS API.
 

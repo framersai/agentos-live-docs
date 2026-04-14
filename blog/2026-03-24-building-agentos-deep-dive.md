@@ -32,20 +32,20 @@ This is how we built AgentOS — and what we learned the hard way.
 1. [Why We Built AgentOS](#why-we-built-agentos)
 2. [GMI: How an Agent Thinks](#gmi-how-an-agent-thinks)
 3. [Orchestration: Wiring the Machine](#orchestration-wiring-the-machine)
-4. [Memory That Thinks Like a Brain](#memory-that-thinks)
-5. [Document Ingestion Pipeline](#document-ingestion)
+4. [Memory That Thinks Like a Brain](#memory-that-thinks-like-a-brain)
+5. [Document Ingestion Pipeline](#document-ingestion-pipeline)
 6. [Three Layers of Defense](#three-layers-of-defense)
-7. [Tools, Discovery, and Self-Forging](#tools-discovery-forging)
-8. [Routing Queries Without Wasting Tokens](#routing-queries)
-9. [Voice: From Audio Frames to Conversation](#voice-pipeline)
-10. [Streaming and Real-Time Architecture](#streaming-realtime)
-11. [HEXACO: Personality as Architecture](#hexaco-personality)
-12. [37 Channels, One Gateway](#channels-gateway)
-13. [Graph Orchestration and Multi-Agent Coordination](#graph-orchestration)
-14. [Seeing, Hearing, Creating: Multimodal Generation](#multimodal-generation)
-15. [Provider-First: 16 LLMs, Zero Lock-In](#provider-first)
+7. [Tools, Discovery, and Self-Forging](#tools-discovery-and-self-forging)
+8. [Routing Queries Without Wasting Tokens](#routing-queries-without-wasting-tokens)
+9. [Voice: From Audio Frames to Conversation](#voice-from-audio-frames-to-conversation)
+10. [Streaming and Real-Time Architecture](#streaming-and-real-time-architecture)
+11. [HEXACO: Personality as Architecture](#hexaco-personality-as-architecture)
+12. [37 Channels, One Gateway](#37-channels-one-gateway)
+13. [Graph Orchestration and Multi-Agent Coordination](#graph-orchestration-and-multi-agent-coordination)
+14. [Seeing, Hearing, Creating: Multimodal Generation](#seeing-hearing-creating-multimodal-generation)
+15. [Provider-First: 16 LLMs, Zero Lock-In](#provider-first-16-llms-zero-lock-in)
 16. [Patterns Worth Stealing](#patterns-worth-stealing)
-17. [What Worked, What Didn't, What's Next](#lessons-learned)
+17. [What Worked, What Didn't, What's Next](#what-worked-what-didnt-whats-next)
 
 ---
 
@@ -65,7 +65,7 @@ AgentOS came out of those frustrations. A multi-layered platform that treats saf
 
 ### Four Tenets
 
-These rules govern every design decision in the codebase ([AgentOS.ts:14-34](packages/agentos/src/api/AgentOS.ts#L14-L34)):
+These rules govern every design decision in the codebase ([AgentOS.ts:14-34](https://github.com/framersai/agentos/blob/master/src/api/AgentOS.ts#L14-L34)):
 
 **Interface-driven design.** Every major component implements a contract: `IAgentOS`, `IGMI`, `IToolOrchestrator`, `IGuardrailService`. Swap implementations without breaking consumers. Mock anything for testing.
 
@@ -138,7 +138,7 @@ The Generalized Mind Instance is the thinking engine. Prompt construction, LLM i
 
 ### State Machine at the Core
 
-GMI is a state machine ([GMI.ts:66-116](packages/agentos/src/cognitive_substrate/GMI.ts#L66-L116)):
+GMI is a state machine ([GMI.ts:66-116](https://github.com/framersai/agentos/blob/master/src/cognitive_substrate/GMI.ts#L66-L116)):
 
 ```typescript
 export class GMI implements IGMI {
@@ -187,7 +187,7 @@ No ambiguity. No race conditions on lifecycle.
 
 ### Turn Processing: The Inner Loop
 
-The `processTurnStream` method ([GMI.ts:492-751](packages/agentos/src/cognitive_substrate/GMI.ts#L492-L751)) is where input becomes output. It runs as an async generator — streaming chunks to the caller in real time while aggregating a final summary:
+The `processTurnStream` method ([GMI.ts:492-751](https://github.com/framersai/agentos/blob/master/src/cognitive_substrate/GMI.ts#L492-L751)) is where input becomes output. It runs as an async generator — streaming chunks to the caller in real time while aggregating a final summary:
 
 ```typescript
 public async *processTurnStream(turnInput: GMITurnInput):
@@ -411,7 +411,7 @@ Five design decisions packed into one method:
 
 ### Self-Reflection: Meta-Cognitive Adaptation
 
-Every N turns, GMI reflects on its own performance ([GMI.ts:910-1043](packages/agentos/src/cognitive_substrate/GMI.ts#L910-L1043)). A meta-prompt gathers evidence — recent conversation, trace entries, current mood — and asks a separate LLM call to adjust:
+Every N turns, GMI reflects on its own performance ([GMI.ts:910-1043](https://github.com/framersai/agentos/blob/master/src/cognitive_substrate/GMI.ts#L910-L1043)). A meta-prompt gathers evidence — recent conversation, trace entries, current mood — and asks a separate LLM call to adjust:
 
 ```typescript
 public async _triggerAndProcessSelfReflection(): Promise<void> {
@@ -486,7 +486,7 @@ The two-stage JSON recovery (`parseJsonSafe` with `attemptFixWithLLM: true`) des
 
 ## Orchestration: Wiring the Machine
 
-`AgentOS` is the facade ([AgentOS.ts:324-357](packages/agentos/src/api/AgentOS.ts#L324-L357)). One class, one import, fourteen internal managers:
+`AgentOS` is the facade ([AgentOS.ts:324-357](https://github.com/framersai/agentos/blob/master/src/api/AgentOS.ts#L324-L357)). One class, one import, fourteen internal managers:
 
 ```typescript
 export class AgentOS implements IAgentOS {
@@ -513,7 +513,7 @@ External consumers import `AgentOS` and nothing else. Internal complexity stays 
 
 ### Initialization Order
 
-Startup is a 14-step sequence where order is load-bearing ([AgentOS.ts:372-518](packages/agentos/src/api/AgentOS.ts#L372-L518)):
+Startup is a 14-step sequence where order is load-bearing ([AgentOS.ts:372-518](https://github.com/framersai/agentos/blob/master/src/api/AgentOS.ts#L372-L518)):
 
 ```typescript
 public async initialize(config: AgentOSConfig): Promise<void> {
@@ -949,7 +949,7 @@ Every dependency is optional. If you only have a vector store, you get vector se
 
 ### Ebbinghaus Forgetting Curve
 
-Every memory trace has `stability` and `encodingStrength` fields governed by Ebbinghaus ([DecayModel.ts](packages/agentos/src/memory/decay/DecayModel.ts)):
+Every memory trace has `stability` and `encodingStrength` fields governed by Ebbinghaus ([DecayModel.ts](https://github.com/framersai/agentos/blob/master/src/memory/decay/DecayModel.ts)):
 
 ```typescript
 // S(t) = S₀ · e^(-Δt / stability)
@@ -1500,7 +1500,7 @@ Agents call `forge_tool` with a name, description, JSON Schema, implementation (
 
 ## Routing Queries Without Wasting Tokens
 
-A greeting doesn't need a multi-step research pipeline. A complex comparison doesn't deserve a single-hop vector lookup. The `QueryRouter` ([QueryRouter.ts](packages/agentos/src/query-router/QueryRouter.ts)) decides how much retrieval effort each query warrants.
+A greeting doesn't need a multi-step research pipeline. A complex comparison doesn't deserve a single-hop vector lookup. The `QueryRouter` ([QueryRouter.ts](https://github.com/framersai/agentos/blob/master/src/query-router/QueryRouter.ts)) decides how much retrieval effort each query warrants.
 
 ### Four Tiers
 
@@ -1775,7 +1775,7 @@ Most AI agents have generic, inconsistent personalities. One response they're ca
 
 ### Six Dimensions
 
-HEXACO defines personality across six dimensions, each 0.0-1.0 ([WunderlandSeed.ts:9-19](packages/wunderland/src/core/WunderlandSeed.ts#L9-L19)):
+HEXACO defines personality across six dimensions, each 0.0-1.0 ([WunderlandSeed.ts:9-19](https://github.com/manicinc/voice-chat-assistant/blob/master/packages/wunderland/src/core/WunderlandSeed.ts#L9-L19)):
 
 ```typescript
 interface HEXACOTraits {

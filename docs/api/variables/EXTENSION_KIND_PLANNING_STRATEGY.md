@@ -2,4 +2,4 @@
 
 > `const` **EXTENSION\_KIND\_PLANNING\_STRATEGY**: `"planning-strategy"` = `'planning-strategy'`
 
-Defined in: [packages/agentos/src/extensions/types.ts:167](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/extensions/types.ts#L167)
+Defined in: [packages/agentos/src/extensions/types.ts:167](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/extensions/types.ts#L167)

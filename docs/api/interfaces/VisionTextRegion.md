@@ -1,6 +1,6 @@
 # Interface: VisionTextRegion
 
-Defined in: [packages/agentos/src/vision/types.ts:116](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/vision/types.ts#L116)
+Defined in: [packages/agentos/src/vision/types.ts:116](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/vision/types.ts#L116)
 
 A detected text region within an image, with spatial coordinates
 and per-region confidence.
@@ -11,7 +11,7 @@ and per-region confidence.
 
 > **bbox**: `object`
 
-Defined in: [packages/agentos/src/vision/types.ts:127](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/vision/types.ts#L127)
+Defined in: [packages/agentos/src/vision/types.ts:127](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/vision/types.ts#L127)
 
 Bounding box in image coordinates (pixels).
 Origin is top-left corner of the image.
@@ -38,7 +38,7 @@ Origin is top-left corner of the image.
 
 > **confidence**: `number`
 
-Defined in: [packages/agentos/src/vision/types.ts:121](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/vision/types.ts#L121)
+Defined in: [packages/agentos/src/vision/types.ts:121](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/vision/types.ts#L121)
 
 Confidence score for this specific region (0–1).
 
@@ -48,6 +48,6 @@ Confidence score for this specific region (0–1).
 
 > **text**: `string`
 
-Defined in: [packages/agentos/src/vision/types.ts:118](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/vision/types.ts#L118)
+Defined in: [packages/agentos/src/vision/types.ts:118](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/vision/types.ts#L118)
 
 The text content within this region.

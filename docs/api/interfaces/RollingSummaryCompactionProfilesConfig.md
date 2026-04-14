@@ -1,6 +1,6 @@
 # Interface: RollingSummaryCompactionProfilesConfig
 
-Defined in: [packages/agentos/src/api/types/OrchestratorConfig.ts:26](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/types/OrchestratorConfig.ts#L26)
+Defined in: [packages/agentos/src/api/types/OrchestratorConfig.ts:26](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/api/types/OrchestratorConfig.ts#L26)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/api/types/OrchestratorConfig.ts:26](https://gi
 
 > `optional` **defaultProfileByMode**: `Record`\<`string`, `string`\>
 
-Defined in: [packages/agentos/src/api/types/OrchestratorConfig.ts:28](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/types/OrchestratorConfig.ts#L28)
+Defined in: [packages/agentos/src/api/types/OrchestratorConfig.ts:28](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/api/types/OrchestratorConfig.ts#L28)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [packages/agentos/src/api/types/OrchestratorConfig.ts:28](https://gi
 
 > **defaultProfileId**: `string`
 
-Defined in: [packages/agentos/src/api/types/OrchestratorConfig.ts:27](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/types/OrchestratorConfig.ts#L27)
+Defined in: [packages/agentos/src/api/types/OrchestratorConfig.ts:27](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/api/types/OrchestratorConfig.ts#L27)
 
 ***
 
@@ -24,4 +24,4 @@ Defined in: [packages/agentos/src/api/types/OrchestratorConfig.ts:27](https://gi
 
 > **profiles**: `Record`\<`string`, [`RollingSummaryCompactionProfileDefinition`](RollingSummaryCompactionProfileDefinition.md)\>
 
-Defined in: [packages/agentos/src/api/types/OrchestratorConfig.ts:29](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/types/OrchestratorConfig.ts#L29)
+Defined in: [packages/agentos/src/api/types/OrchestratorConfig.ts:29](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/api/types/OrchestratorConfig.ts#L29)

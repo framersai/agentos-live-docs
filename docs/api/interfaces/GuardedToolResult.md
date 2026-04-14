@@ -1,6 +1,6 @@
 # Interface: GuardedToolResult\<T\>
 
-Defined in: [packages/agentos/src/safety/runtime/ToolExecutionGuard.ts:21](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/safety/runtime/ToolExecutionGuard.ts#L21)
+Defined in: [packages/agentos/src/safety/runtime/ToolExecutionGuard.ts:21](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/safety/runtime/ToolExecutionGuard.ts#L21)
 
 ## Type Parameters
 
@@ -14,7 +14,7 @@ Defined in: [packages/agentos/src/safety/runtime/ToolExecutionGuard.ts:21](https
 
 > **durationMs**: `number`
 
-Defined in: [packages/agentos/src/safety/runtime/ToolExecutionGuard.ts:25](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/safety/runtime/ToolExecutionGuard.ts#L25)
+Defined in: [packages/agentos/src/safety/runtime/ToolExecutionGuard.ts:25](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/safety/runtime/ToolExecutionGuard.ts#L25)
 
 ***
 
@@ -22,7 +22,7 @@ Defined in: [packages/agentos/src/safety/runtime/ToolExecutionGuard.ts:25](https
 
 > `optional` **error**: `string`
 
-Defined in: [packages/agentos/src/safety/runtime/ToolExecutionGuard.ts:24](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/safety/runtime/ToolExecutionGuard.ts#L24)
+Defined in: [packages/agentos/src/safety/runtime/ToolExecutionGuard.ts:24](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/safety/runtime/ToolExecutionGuard.ts#L24)
 
 ***
 
@@ -30,7 +30,7 @@ Defined in: [packages/agentos/src/safety/runtime/ToolExecutionGuard.ts:24](https
 
 > `optional` **result**: `T`
 
-Defined in: [packages/agentos/src/safety/runtime/ToolExecutionGuard.ts:23](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/safety/runtime/ToolExecutionGuard.ts#L23)
+Defined in: [packages/agentos/src/safety/runtime/ToolExecutionGuard.ts:23](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/safety/runtime/ToolExecutionGuard.ts#L23)
 
 ***
 
@@ -38,7 +38,7 @@ Defined in: [packages/agentos/src/safety/runtime/ToolExecutionGuard.ts:23](https
 
 > **success**: `boolean`
 
-Defined in: [packages/agentos/src/safety/runtime/ToolExecutionGuard.ts:22](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/safety/runtime/ToolExecutionGuard.ts#L22)
+Defined in: [packages/agentos/src/safety/runtime/ToolExecutionGuard.ts:22](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/safety/runtime/ToolExecutionGuard.ts#L22)
 
 ***
 
@@ -46,7 +46,7 @@ Defined in: [packages/agentos/src/safety/runtime/ToolExecutionGuard.ts:22](https
 
 > **timedOut**: `boolean`
 
-Defined in: [packages/agentos/src/safety/runtime/ToolExecutionGuard.ts:26](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/safety/runtime/ToolExecutionGuard.ts#L26)
+Defined in: [packages/agentos/src/safety/runtime/ToolExecutionGuard.ts:26](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/safety/runtime/ToolExecutionGuard.ts#L26)
 
 ***
 
@@ -54,4 +54,4 @@ Defined in: [packages/agentos/src/safety/runtime/ToolExecutionGuard.ts:26](https
 
 > **toolName**: `string`
 
-Defined in: [packages/agentos/src/safety/runtime/ToolExecutionGuard.ts:27](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/safety/runtime/ToolExecutionGuard.ts#L27)
+Defined in: [packages/agentos/src/safety/runtime/ToolExecutionGuard.ts:27](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/safety/runtime/ToolExecutionGuard.ts#L27)

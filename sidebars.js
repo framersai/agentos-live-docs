@@ -46,6 +46,8 @@ const sidebars = {
         'architecture/skills-engine',
         'architecture/observability',
         'architecture/platform-support',
+        'architecture/streaming-semantics',
+        'architecture/oauth-auth',
       ],
     },
 
@@ -70,8 +72,10 @@ const sidebars = {
       label: 'Memory',
       items: [
         'features/cognitive-memory',
+        'features/cognitive-mechanisms',
         'features/working-memory',
         'features/memory-architecture',
+        'features/memory-auto-ingest',
         'features/memory-tools',
         'features/memory-import-export',
         'features/memory-scaling',
@@ -85,6 +89,7 @@ const sidebars = {
       label: 'RAG & Retrieval',
       items: [
         'features/rag-memory',
+        'features/hyde-retrieval',
         'features/deep-research',
         'features/query-routing',
         'features/multimodal-rag',

@@ -1,6 +1,12 @@
 # Interface: MemoryReflectionResult
 
-Defined in: [packages/agentos/src/memory/pipeline/observation/MemoryReflector.ts:24](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/pipeline/observation/MemoryReflector.ts#L24)
+Defined in: [packages/agentos/src/memory/pipeline/observation/MemoryReflector.ts:31](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/pipeline/observation/MemoryReflector.ts#L31)
+
+Result of a reflection cycle.
+
+Contains the consolidated long-term traces (typed as episodic, semantic,
+procedural, prospective, or relational), any superseded trace IDs, the
+consumed note IDs, and the compression ratio achieved.
 
 ## Properties
 
@@ -8,7 +14,7 @@ Defined in: [packages/agentos/src/memory/pipeline/observation/MemoryReflector.ts
 
 > **compressionRatio**: `number`
 
-Defined in: [packages/agentos/src/memory/pipeline/observation/MemoryReflector.ts:32](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/pipeline/observation/MemoryReflector.ts#L32)
+Defined in: [packages/agentos/src/memory/pipeline/observation/MemoryReflector.ts:46](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/pipeline/observation/MemoryReflector.ts#L46)
 
 Compression ratio achieved.
 
@@ -18,7 +24,7 @@ Compression ratio achieved.
 
 > **consumedNoteIds**: `string`[]
 
-Defined in: [packages/agentos/src/memory/pipeline/observation/MemoryReflector.ts:30](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/pipeline/observation/MemoryReflector.ts#L30)
+Defined in: [packages/agentos/src/memory/pipeline/observation/MemoryReflector.ts:44](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/pipeline/observation/MemoryReflector.ts#L44)
 
 IDs of observation notes that were consumed.
 
@@ -28,7 +34,7 @@ IDs of observation notes that were consumed.
 
 > **supersededTraceIds**: `string`[]
 
-Defined in: [packages/agentos/src/memory/pipeline/observation/MemoryReflector.ts:28](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/pipeline/observation/MemoryReflector.ts#L28)
+Defined in: [packages/agentos/src/memory/pipeline/observation/MemoryReflector.ts:42](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/pipeline/observation/MemoryReflector.ts#L42)
 
 IDs of existing traces that should be superseded.
 
@@ -36,8 +42,8 @@ IDs of existing traces that should be superseded.
 
 ### traces
 
-> **traces**: `Omit`\<[`MemoryTrace`](MemoryTrace.md), `"id"` \| `"updatedAt"` \| `"createdAt"` \| `"accessCount"` \| `"lastAccessedAt"` \| `"stability"` \| `"encodingStrength"` \| `"retrievalCount"` \| `"reinforcementInterval"`\>[]
+> **traces**: `Omit`\<[`MemoryTrace`](MemoryTrace.md), `"id"` \| `"updatedAt"` \| `"createdAt"` \| `"accessCount"` \| `"lastAccessedAt"` \| `"stability"` \| `"encodingStrength"` \| `"retrievalCount"` \| `"reinforcementInterval"`\> & `object`[]
 
-Defined in: [packages/agentos/src/memory/pipeline/observation/MemoryReflector.ts:26](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/pipeline/observation/MemoryReflector.ts#L26)
+Defined in: [packages/agentos/src/memory/pipeline/observation/MemoryReflector.ts:33](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/pipeline/observation/MemoryReflector.ts#L33)
 
 New long-term memory traces to store.

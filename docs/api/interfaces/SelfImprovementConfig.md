@@ -1,6 +1,6 @@
 # Interface: SelfImprovementConfig
 
-Defined in: [packages/agentos/src/emergent/SelfImprovementConfig.ts:29](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/emergent/SelfImprovementConfig.ts#L29)
+Defined in: [packages/agentos/src/emergent/SelfImprovementConfig.ts:29](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/emergent/SelfImprovementConfig.ts#L29)
 
 Configuration for bounded autonomous self-improvement.
 
@@ -19,7 +19,7 @@ sub-system settings provide additional fine-grained control.
 
 > **enabled**: `boolean`
 
-Defined in: [packages/agentos/src/emergent/SelfImprovementConfig.ts:35](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/emergent/SelfImprovementConfig.ts#L35)
+Defined in: [packages/agentos/src/emergent/SelfImprovementConfig.ts:35](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/emergent/SelfImprovementConfig.ts#L35)
 
 Master switch for all self-improvement tools.
 When `false`, no self-improvement tools are registered with the engine.
@@ -36,7 +36,7 @@ false
 
 > **personality**: `object`
 
-Defined in: [packages/agentos/src/emergent/SelfImprovementConfig.ts:44](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/emergent/SelfImprovementConfig.ts#L44)
+Defined in: [packages/agentos/src/emergent/SelfImprovementConfig.ts:44](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/emergent/SelfImprovementConfig.ts#L44)
 
 Configuration for bounded personality trait mutation.
 
@@ -96,7 +96,7 @@ true
 
 > **selfEval**: `object`
 
-Defined in: [packages/agentos/src/emergent/SelfImprovementConfig.ts:140](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/emergent/SelfImprovementConfig.ts#L140)
+Defined in: [packages/agentos/src/emergent/SelfImprovementConfig.ts:140](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/emergent/SelfImprovementConfig.ts#L140)
 
 Configuration for self-evaluation and strategy adjustment.
 
@@ -175,7 +175,7 @@ requests beyond this limit are rejected.
 
 > **skills**: `object`
 
-Defined in: [packages/agentos/src/emergent/SelfImprovementConfig.ts:80](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/emergent/SelfImprovementConfig.ts#L80)
+Defined in: [packages/agentos/src/emergent/SelfImprovementConfig.ts:80](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/emergent/SelfImprovementConfig.ts#L80)
 
 Configuration for runtime skill management.
 
@@ -221,7 +221,7 @@ true
 
 > **workflows**: `object`
 
-Defined in: [packages/agentos/src/emergent/SelfImprovementConfig.ts:111](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/emergent/SelfImprovementConfig.ts#L111)
+Defined in: [packages/agentos/src/emergent/SelfImprovementConfig.ts:111](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/emergent/SelfImprovementConfig.ts#L111)
 
 Configuration for runtime workflow composition.
 

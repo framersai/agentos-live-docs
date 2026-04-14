@@ -1,6 +1,6 @@
 # Interface: IRollingSummaryMemorySink
 
-Defined in: [packages/agentos/src/core/conversation/IRollingSummaryMemorySink.ts:45](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/conversation/IRollingSummaryMemorySink.ts#L45)
+Defined in: [packages/agentos/src/core/conversation/IRollingSummaryMemorySink.ts:45](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/conversation/IRollingSummaryMemorySink.ts#L45)
 
 Implement this interface to capture rolling-summary updates into a durable store.
 
@@ -14,7 +14,7 @@ Implementations should be:
 
 > **upsertRollingSummaryMemory**(`update`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/core/conversation/IRollingSummaryMemorySink.ts:46](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/conversation/IRollingSummaryMemorySink.ts#L46)
+Defined in: [packages/agentos/src/core/conversation/IRollingSummaryMemorySink.ts:46](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/conversation/IRollingSummaryMemorySink.ts#L46)
 
 #### Parameters
 

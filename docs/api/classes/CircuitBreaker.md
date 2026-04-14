@@ -1,6 +1,6 @@
 # Class: CircuitBreaker
 
-Defined in: [packages/agentos/src/safety/runtime/CircuitBreaker.ts:52](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/safety/runtime/CircuitBreaker.ts#L52)
+Defined in: [packages/agentos/src/safety/runtime/CircuitBreaker.ts:52](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/safety/runtime/CircuitBreaker.ts#L52)
 
 ## Constructors
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/safety/runtime/CircuitBreaker.ts:52](https://g
 
 > **new CircuitBreaker**(`config`): `CircuitBreaker`
 
-Defined in: [packages/agentos/src/safety/runtime/CircuitBreaker.ts:62](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/safety/runtime/CircuitBreaker.ts#L62)
+Defined in: [packages/agentos/src/safety/runtime/CircuitBreaker.ts:62](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/safety/runtime/CircuitBreaker.ts#L62)
 
 #### Parameters
 
@@ -26,7 +26,7 @@ Defined in: [packages/agentos/src/safety/runtime/CircuitBreaker.ts:62](https://g
 
 > **execute**\<`T`\>(`fn`): `Promise`\<`T`\>
 
-Defined in: [packages/agentos/src/safety/runtime/CircuitBreaker.ts:66](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/safety/runtime/CircuitBreaker.ts#L66)
+Defined in: [packages/agentos/src/safety/runtime/CircuitBreaker.ts:66](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/safety/runtime/CircuitBreaker.ts#L66)
 
 #### Type Parameters
 
@@ -50,7 +50,7 @@ Defined in: [packages/agentos/src/safety/runtime/CircuitBreaker.ts:66](https://g
 
 > **forceState**(`state`): `void`
 
-Defined in: [packages/agentos/src/safety/runtime/CircuitBreaker.ts:116](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/safety/runtime/CircuitBreaker.ts#L116)
+Defined in: [packages/agentos/src/safety/runtime/CircuitBreaker.ts:116](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/safety/runtime/CircuitBreaker.ts#L116)
 
 #### Parameters
 
@@ -68,7 +68,7 @@ Defined in: [packages/agentos/src/safety/runtime/CircuitBreaker.ts:116](https://
 
 > **getState**(): [`CircuitState`](../type-aliases/CircuitState.md)
 
-Defined in: [packages/agentos/src/safety/runtime/CircuitBreaker.ts:128](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/safety/runtime/CircuitBreaker.ts#L128)
+Defined in: [packages/agentos/src/safety/runtime/CircuitBreaker.ts:128](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/safety/runtime/CircuitBreaker.ts#L128)
 
 #### Returns
 
@@ -80,7 +80,7 @@ Defined in: [packages/agentos/src/safety/runtime/CircuitBreaker.ts:128](https://
 
 > **getStats**(): [`CircuitBreakerStats`](../interfaces/CircuitBreakerStats.md)
 
-Defined in: [packages/agentos/src/safety/runtime/CircuitBreaker.ts:139](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/safety/runtime/CircuitBreaker.ts#L139)
+Defined in: [packages/agentos/src/safety/runtime/CircuitBreaker.ts:139](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/safety/runtime/CircuitBreaker.ts#L139)
 
 #### Returns
 
@@ -92,7 +92,7 @@ Defined in: [packages/agentos/src/safety/runtime/CircuitBreaker.ts:139](https://
 
 > **recordFailure**(): `void`
 
-Defined in: [packages/agentos/src/safety/runtime/CircuitBreaker.ts:88](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/safety/runtime/CircuitBreaker.ts#L88)
+Defined in: [packages/agentos/src/safety/runtime/CircuitBreaker.ts:88](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/safety/runtime/CircuitBreaker.ts#L88)
 
 #### Returns
 
@@ -104,7 +104,7 @@ Defined in: [packages/agentos/src/safety/runtime/CircuitBreaker.ts:88](https://g
 
 > **recordSuccess**(): `void`
 
-Defined in: [packages/agentos/src/safety/runtime/CircuitBreaker.ts:105](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/safety/runtime/CircuitBreaker.ts#L105)
+Defined in: [packages/agentos/src/safety/runtime/CircuitBreaker.ts:105](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/safety/runtime/CircuitBreaker.ts#L105)
 
 #### Returns
 
@@ -116,7 +116,7 @@ Defined in: [packages/agentos/src/safety/runtime/CircuitBreaker.ts:105](https://
 
 > **reset**(): `void`
 
-Defined in: [packages/agentos/src/safety/runtime/CircuitBreaker.ts:120](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/safety/runtime/CircuitBreaker.ts#L120)
+Defined in: [packages/agentos/src/safety/runtime/CircuitBreaker.ts:120](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/safety/runtime/CircuitBreaker.ts#L120)
 
 #### Returns
 

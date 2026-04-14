@@ -247,7 +247,7 @@ export OPENAI_API_KEY=sk-...
 | `o3-mini` | 200K | No | Yes | Fast reasoning |
 | `gpt-image-1` | — | — | — | Image generation only |
 
-**OAuth support:** Use your ChatGPT subscription instead of an API key via the device code flow. See [OAuth Auth](./OAUTH_AUTH.md) for details.
+**OAuth support:** Use your ChatGPT subscription instead of an API key via the device code flow. See [OAuth Auth](/architecture/oauth-auth) for details.
 
 ### Anthropic
 
@@ -259,7 +259,7 @@ export ANTHROPIC_API_KEY=sk-ant-...
 |-------|---------|--------|-------------|-------|
 | `claude-opus-4-20250514` | 200K | Yes | Yes | Most capable |
 | `claude-sonnet-4-20250514` | 200K | Yes | Yes | Best value |
-| `claude-haiku-4-5-20251001` | 200K | Yes | Yes | Fastest |
+| `claude-haiku-3-5-20241022` | 200K | Yes | Yes | Fastest |
 
 ### Google Gemini
 

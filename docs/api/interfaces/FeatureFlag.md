@@ -1,6 +1,6 @@
 # Interface: FeatureFlag
 
-Defined in: [packages/agentos/src/core/tools/permissions/IToolPermissionManager.ts:25](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/tools/permissions/IToolPermissionManager.ts#L25)
+Defined in: [packages/agentos/src/core/tools/permissions/IToolPermissionManager.ts:25](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/tools/permissions/IToolPermissionManager.ts#L25)
 
 ## Interface
 
@@ -17,7 +17,7 @@ based on user subscriptions or specific entitlements.
 
 > `optional` **description**: `string`
 
-Defined in: [packages/agentos/src/core/tools/permissions/IToolPermissionManager.ts:27](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/tools/permissions/IToolPermissionManager.ts#L27)
+Defined in: [packages/agentos/src/core/tools/permissions/IToolPermissionManager.ts:27](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/tools/permissions/IToolPermissionManager.ts#L27)
 
 Optional. A human-readable description of the feature.
 
@@ -27,6 +27,6 @@ Optional. A human-readable description of the feature.
 
 > **flag**: `string`
 
-Defined in: [packages/agentos/src/core/tools/permissions/IToolPermissionManager.ts:26](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/tools/permissions/IToolPermissionManager.ts#L26)
+Defined in: [packages/agentos/src/core/tools/permissions/IToolPermissionManager.ts:26](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/tools/permissions/IToolPermissionManager.ts#L26)
 
 The unique string identifier for the feature flag (e.g., "CAN_USE_ADVANCED_SEARCH_TOOL").

@@ -1,6 +1,6 @@
 # Interface: ExtensionSecretDefinition
 
-Defined in: [packages/agentos/src/core/config/extensionSecrets.ts:3](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/config/extensionSecrets.ts#L3)
+Defined in: [packages/agentos/src/core/config/extensionSecrets.ts:3](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/config/extensionSecrets.ts#L3)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/core/config/extensionSecrets.ts:3](https://git
 
 > `optional` **description**: `string`
 
-Defined in: [packages/agentos/src/core/config/extensionSecrets.ts:6](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/config/extensionSecrets.ts#L6)
+Defined in: [packages/agentos/src/core/config/extensionSecrets.ts:6](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/config/extensionSecrets.ts#L6)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [packages/agentos/src/core/config/extensionSecrets.ts:6](https://git
 
 > `optional` **docsUrl**: `string`
 
-Defined in: [packages/agentos/src/core/config/extensionSecrets.ts:8](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/config/extensionSecrets.ts#L8)
+Defined in: [packages/agentos/src/core/config/extensionSecrets.ts:8](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/config/extensionSecrets.ts#L8)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: [packages/agentos/src/core/config/extensionSecrets.ts:8](https://git
 
 > `optional` **envVar**: `string`
 
-Defined in: [packages/agentos/src/core/config/extensionSecrets.ts:7](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/config/extensionSecrets.ts#L7)
+Defined in: [packages/agentos/src/core/config/extensionSecrets.ts:7](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/config/extensionSecrets.ts#L7)
 
 ***
 
@@ -32,7 +32,7 @@ Defined in: [packages/agentos/src/core/config/extensionSecrets.ts:7](https://git
 
 > **id**: `string`
 
-Defined in: [packages/agentos/src/core/config/extensionSecrets.ts:4](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/config/extensionSecrets.ts#L4)
+Defined in: [packages/agentos/src/core/config/extensionSecrets.ts:4](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/config/extensionSecrets.ts#L4)
 
 ***
 
@@ -40,7 +40,7 @@ Defined in: [packages/agentos/src/core/config/extensionSecrets.ts:4](https://git
 
 > **label**: `string`
 
-Defined in: [packages/agentos/src/core/config/extensionSecrets.ts:5](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/config/extensionSecrets.ts#L5)
+Defined in: [packages/agentos/src/core/config/extensionSecrets.ts:5](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/config/extensionSecrets.ts#L5)
 
 ***
 
@@ -48,7 +48,7 @@ Defined in: [packages/agentos/src/core/config/extensionSecrets.ts:5](https://git
 
 > `optional` **optional**: `boolean`
 
-Defined in: [packages/agentos/src/core/config/extensionSecrets.ts:9](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/config/extensionSecrets.ts#L9)
+Defined in: [packages/agentos/src/core/config/extensionSecrets.ts:9](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/config/extensionSecrets.ts#L9)
 
 ***
 
@@ -56,4 +56,4 @@ Defined in: [packages/agentos/src/core/config/extensionSecrets.ts:9](https://git
 
 > `optional` **providers**: `string`[]
 
-Defined in: [packages/agentos/src/core/config/extensionSecrets.ts:10](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/config/extensionSecrets.ts#L10)
+Defined in: [packages/agentos/src/core/config/extensionSecrets.ts:10](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/config/extensionSecrets.ts#L10)

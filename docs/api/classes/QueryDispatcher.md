@@ -1,6 +1,6 @@
 # Class: QueryDispatcher
 
-Defined in: [packages/agentos/src/query-router/QueryDispatcher.ts:173](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/query-router/QueryDispatcher.ts#L173)
+Defined in: [packages/agentos/src/query-router/QueryDispatcher.ts:173](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/query-router/QueryDispatcher.ts#L173)
 
 Routes classified queries to the strategy-appropriate retrieval pipeline.
 
@@ -36,7 +36,7 @@ const result = await dispatcher.dispatch('How does auth work?', 2);
 
 > **new QueryDispatcher**(`deps`): `QueryDispatcher`
 
-Defined in: [packages/agentos/src/query-router/QueryDispatcher.ts:177](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/query-router/QueryDispatcher.ts#L177)
+Defined in: [packages/agentos/src/query-router/QueryDispatcher.ts:177](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/query-router/QueryDispatcher.ts#L177)
 
 #### Parameters
 
@@ -54,7 +54,7 @@ Defined in: [packages/agentos/src/query-router/QueryDispatcher.ts:177](https://g
 
 > **dispatch**(`query`, `tier`, `suggestedSources?`): `Promise`\<[`RetrievalResult`](../interfaces/RetrievalResult.md)\>
 
-Defined in: [packages/agentos/src/query-router/QueryDispatcher.ts:257](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/query-router/QueryDispatcher.ts#L257)
+Defined in: [packages/agentos/src/query-router/QueryDispatcher.ts:257](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/query-router/QueryDispatcher.ts#L257)
 
 Dispatch a classified query to the tier-appropriate retrieval pipeline.
 
@@ -97,7 +97,7 @@ Aggregated retrieval result with chunks, optional synthesis,
 
 > **dispatchByStrategy**(`query`, `strategy`, `suggestedSources?`): `Promise`\<[`RetrievalResult`](../interfaces/RetrievalResult.md)\>
 
-Defined in: [packages/agentos/src/query-router/QueryDispatcher.ts:201](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/query-router/QueryDispatcher.ts#L201)
+Defined in: [packages/agentos/src/query-router/QueryDispatcher.ts:201](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/query-router/QueryDispatcher.ts#L201)
 
 Dispatch a query using the recommended retrieval strategy.
 

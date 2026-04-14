@@ -5,7 +5,7 @@ sidebar_position: 4
 
 `workflow()` is the sequential/pipeline authoring API in the Unified Orchestration Layer. It compiles to the same `CompiledExecutionGraph` IR as `AgentGraph` and `mission()`, but enforces that the result is a strict DAG — cycles are detected and rejected at compile time.
 
-Use `workflow()` when your steps are known upfront and execute in a well-defined order. For cyclic agent loops or complex graph structures, see [AgentGraph](./agent-graph.md). For goal-driven orchestration where steps emerge at runtime, see [mission()](./mission-api.md).
+Use `workflow()` when your steps are known upfront and execute in a well-defined order. For cyclic agent loops or complex graph structures, see [AgentGraph](/features/agent-graph). For goal-driven orchestration where steps emerge at runtime, see [mission()](/features/mission-api).
 
 ## Quick Start
 
@@ -161,7 +161,7 @@ wf.step('fetch', { tool: 'web_fetch' })
 Workflow validation failed: cycle detected involving nodes: fetch → process → fetch
 ```
 
-If you need agent loops, use [AgentGraph](./agent-graph.md) instead.
+If you need agent loops, use [AgentGraph](/features/agent-graph) instead.
 
 GMI steps inside `workflow()` always run in `single_turn` mode — the `executionMode` field in `gmi` config is accepted in the type but ignored at runtime. This is a deliberate design choice: workflow steps must be cost-bounded and deterministic.
 
@@ -278,7 +278,7 @@ const result2 = await onboarding.resume(savedCheckpointId);
 
 ## See Also
 
-- [AgentGraph](./agent-graph.md) — for cyclic graphs and full graph control
-- [mission() API](./mission-api.md) — for goal-driven orchestration
-- [Checkpointing](./checkpointing.md) — ICheckpointStore, resume semantics
-- [Unified Orchestration](./unified-orchestration.md) — architecture overview
+- [AgentGraph](/features/agent-graph) — for cyclic graphs and full graph control
+- [mission() API](/features/mission-api) — for goal-driven orchestration
+- [Checkpointing](/features/checkpointing) — ICheckpointStore, resume semantics
+- [Unified Orchestration](/features/unified-orchestration) — architecture overview

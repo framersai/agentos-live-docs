@@ -1,6 +1,6 @@
 # Interface: AgentOSInput
 
-Defined in: [packages/agentos/src/api/types/AgentOSInput.ts:79](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/types/AgentOSInput.ts#L79)
+Defined in: [packages/agentos/src/api/types/AgentOSInput.ts:79](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/api/types/AgentOSInput.ts#L79)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/api/types/AgentOSInput.ts:79](https://github.c
 
 > `optional` **agencyRequest**: [`AgencyInvocationRequest`](AgencyInvocationRequest.md)
 
-Defined in: [packages/agentos/src/api/types/AgentOSInput.ts:103](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/types/AgentOSInput.ts#L103)
+Defined in: [packages/agentos/src/api/types/AgentOSInput.ts:103](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/api/types/AgentOSInput.ts#L103)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [packages/agentos/src/api/types/AgentOSInput.ts:103](https://github.
 
 > `optional` **audioInput**: [`AudioInputData`](AudioInputData.md)
 
-Defined in: [packages/agentos/src/api/types/AgentOSInput.ts:86](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/types/AgentOSInput.ts#L86)
+Defined in: [packages/agentos/src/api/types/AgentOSInput.ts:86](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/api/types/AgentOSInput.ts#L86)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: [packages/agentos/src/api/types/AgentOSInput.ts:86](https://github.c
 
 > `optional` **conversationId**: `string`
 
-Defined in: [packages/agentos/src/api/types/AgentOSInput.ts:96](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/types/AgentOSInput.ts#L96)
+Defined in: [packages/agentos/src/api/types/AgentOSInput.ts:96](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/api/types/AgentOSInput.ts#L96)
 
 ***
 
@@ -32,7 +32,7 @@ Defined in: [packages/agentos/src/api/types/AgentOSInput.ts:96](https://github.c
 
 > `optional` **detectedLanguages**: `object`[]
 
-Defined in: [packages/agentos/src/api/types/AgentOSInput.ts:91](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/types/AgentOSInput.ts#L91)
+Defined in: [packages/agentos/src/api/types/AgentOSInput.ts:91](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/api/types/AgentOSInput.ts#L91)
 
 Optional detected languages supplied externally (highest confidence first).
 
@@ -50,7 +50,7 @@ Optional detected languages supplied externally (highest confidence first).
 
 > `optional` **disabledSessionSkillIds**: `string`[]
 
-Defined in: [packages/agentos/src/api/types/AgentOSInput.ts:107](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/types/AgentOSInput.ts#L107)
+Defined in: [packages/agentos/src/api/types/AgentOSInput.ts:107](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/api/types/AgentOSInput.ts#L107)
 
 ***
 
@@ -58,7 +58,7 @@ Defined in: [packages/agentos/src/api/types/AgentOSInput.ts:107](https://github.
 
 > `optional` **languageHint**: `string`
 
-Defined in: [packages/agentos/src/api/types/AgentOSInput.ts:89](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/types/AgentOSInput.ts#L89)
+Defined in: [packages/agentos/src/api/types/AgentOSInput.ts:89](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/api/types/AgentOSInput.ts#L89)
 
 Optional explicit language hint from UI (BCP-47 or ISO 639-1).
 
@@ -68,7 +68,7 @@ Optional explicit language hint from UI (BCP-47 or ISO 639-1).
 
 > `optional` **memoryControl**: [`AgentOSMemoryControl`](AgentOSMemoryControl.md)
 
-Defined in: [packages/agentos/src/api/types/AgentOSInput.ts:101](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/types/AgentOSInput.ts#L101)
+Defined in: [packages/agentos/src/api/types/AgentOSInput.ts:101](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/api/types/AgentOSInput.ts#L101)
 
 Optional memory control input. Stored in conversation metadata so settings persist across turns.
 Use this to disable long-term memory for a conversation or enable user/org scope when desired.
@@ -79,7 +79,7 @@ Use this to disable long-term memory for a conversation or enable user/org scope
 
 > `optional` **options**: [`ProcessingOptions`](ProcessingOptions.md)
 
-Defined in: [packages/agentos/src/api/types/AgentOSInput.ts:104](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/types/AgentOSInput.ts#L104)
+Defined in: [packages/agentos/src/api/types/AgentOSInput.ts:104](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/api/types/AgentOSInput.ts#L104)
 
 ***
 
@@ -87,7 +87,7 @@ Defined in: [packages/agentos/src/api/types/AgentOSInput.ts:104](https://github.
 
 > `optional` **organizationId**: `string`
 
-Defined in: [packages/agentos/src/api/types/AgentOSInput.ts:82](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/types/AgentOSInput.ts#L82)
+Defined in: [packages/agentos/src/api/types/AgentOSInput.ts:82](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/api/types/AgentOSInput.ts#L82)
 
 Optional organization context used for org-scoped memory + multi-tenant routing.
 
@@ -97,7 +97,7 @@ Optional organization context used for org-scoped memory + multi-tenant routing.
 
 > `optional` **selectedPersonaId**: `string`
 
-Defined in: [packages/agentos/src/api/types/AgentOSInput.ts:87](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/types/AgentOSInput.ts#L87)
+Defined in: [packages/agentos/src/api/types/AgentOSInput.ts:87](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/api/types/AgentOSInput.ts#L87)
 
 ***
 
@@ -105,7 +105,7 @@ Defined in: [packages/agentos/src/api/types/AgentOSInput.ts:87](https://github.c
 
 > **sessionId**: `string`
 
-Defined in: [packages/agentos/src/api/types/AgentOSInput.ts:83](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/types/AgentOSInput.ts#L83)
+Defined in: [packages/agentos/src/api/types/AgentOSInput.ts:83](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/api/types/AgentOSInput.ts#L83)
 
 ***
 
@@ -113,7 +113,7 @@ Defined in: [packages/agentos/src/api/types/AgentOSInput.ts:83](https://github.c
 
 > `optional` **skillPromptContext**: `string`
 
-Defined in: [packages/agentos/src/api/types/AgentOSInput.ts:106](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/types/AgentOSInput.ts#L106)
+Defined in: [packages/agentos/src/api/types/AgentOSInput.ts:106](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/api/types/AgentOSInput.ts#L106)
 
 ***
 
@@ -121,7 +121,7 @@ Defined in: [packages/agentos/src/api/types/AgentOSInput.ts:106](https://github.
 
 > `optional` **targetLanguage**: `string`
 
-Defined in: [packages/agentos/src/api/types/AgentOSInput.ts:93](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/types/AgentOSInput.ts#L93)
+Defined in: [packages/agentos/src/api/types/AgentOSInput.ts:93](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/api/types/AgentOSInput.ts#L93)
 
 Optional target language override (skips negotiation if supported).
 
@@ -131,7 +131,7 @@ Optional target language override (skips negotiation if supported).
 
 > **textInput**: `string` \| `null`
 
-Defined in: [packages/agentos/src/api/types/AgentOSInput.ts:84](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/types/AgentOSInput.ts#L84)
+Defined in: [packages/agentos/src/api/types/AgentOSInput.ts:84](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/api/types/AgentOSInput.ts#L84)
 
 ***
 
@@ -139,7 +139,7 @@ Defined in: [packages/agentos/src/api/types/AgentOSInput.ts:84](https://github.c
 
 > `optional` **userApiKeys**: `Record`\<`string`, `string`\>
 
-Defined in: [packages/agentos/src/api/types/AgentOSInput.ts:94](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/types/AgentOSInput.ts#L94)
+Defined in: [packages/agentos/src/api/types/AgentOSInput.ts:94](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/api/types/AgentOSInput.ts#L94)
 
 ***
 
@@ -147,7 +147,7 @@ Defined in: [packages/agentos/src/api/types/AgentOSInput.ts:94](https://github.c
 
 > `optional` **userContextOverride**: `Partial`\<[`UserContext`](UserContext.md)\>
 
-Defined in: [packages/agentos/src/api/types/AgentOSInput.ts:105](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/types/AgentOSInput.ts#L105)
+Defined in: [packages/agentos/src/api/types/AgentOSInput.ts:105](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/api/types/AgentOSInput.ts#L105)
 
 ***
 
@@ -155,7 +155,7 @@ Defined in: [packages/agentos/src/api/types/AgentOSInput.ts:105](https://github.
 
 > `optional` **userFeedback**: [`UserFeedbackPayload`](UserFeedbackPayload.md)
 
-Defined in: [packages/agentos/src/api/types/AgentOSInput.ts:95](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/types/AgentOSInput.ts#L95)
+Defined in: [packages/agentos/src/api/types/AgentOSInput.ts:95](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/api/types/AgentOSInput.ts#L95)
 
 ***
 
@@ -163,7 +163,7 @@ Defined in: [packages/agentos/src/api/types/AgentOSInput.ts:95](https://github.c
 
 > **userId**: `string`
 
-Defined in: [packages/agentos/src/api/types/AgentOSInput.ts:80](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/types/AgentOSInput.ts#L80)
+Defined in: [packages/agentos/src/api/types/AgentOSInput.ts:80](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/api/types/AgentOSInput.ts#L80)
 
 ***
 
@@ -171,7 +171,7 @@ Defined in: [packages/agentos/src/api/types/AgentOSInput.ts:80](https://github.c
 
 > `optional` **visionInputs**: [`VisionInputData`](VisionInputData.md)[]
 
-Defined in: [packages/agentos/src/api/types/AgentOSInput.ts:85](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/types/AgentOSInput.ts#L85)
+Defined in: [packages/agentos/src/api/types/AgentOSInput.ts:85](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/api/types/AgentOSInput.ts#L85)
 
 ***
 
@@ -179,4 +179,4 @@ Defined in: [packages/agentos/src/api/types/AgentOSInput.ts:85](https://github.c
 
 > `optional` **workflowRequest**: [`WorkflowInvocationRequest`](WorkflowInvocationRequest.md)
 
-Defined in: [packages/agentos/src/api/types/AgentOSInput.ts:102](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/types/AgentOSInput.ts#L102)
+Defined in: [packages/agentos/src/api/types/AgentOSInput.ts:102](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/api/types/AgentOSInput.ts#L102)

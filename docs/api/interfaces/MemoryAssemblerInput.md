@@ -1,6 +1,6 @@
 # Interface: MemoryAssemblerInput
 
-Defined in: [packages/agentos/src/memory/core/prompt/MemoryPromptAssembler.ts:56](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/core/prompt/MemoryPromptAssembler.ts#L56)
+Defined in: [packages/agentos/src/memory/core/prompt/MemoryPromptAssembler.ts:103](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/core/prompt/MemoryPromptAssembler.ts#L103)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/memory/core/prompt/MemoryPromptAssembler.ts:56
 
 > `optional` **allocation**: `Partial`\<[`MemoryBudgetAllocation`](MemoryBudgetAllocation.md)\>
 
-Defined in: [packages/agentos/src/memory/core/prompt/MemoryPromptAssembler.ts:60](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/core/prompt/MemoryPromptAssembler.ts#L60)
+Defined in: [packages/agentos/src/memory/core/prompt/MemoryPromptAssembler.ts:107](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/core/prompt/MemoryPromptAssembler.ts#L107)
 
 Budget allocation percentages.
 
@@ -18,7 +18,7 @@ Budget allocation percentages.
 
 > `optional` **allTraces**: [`MemoryTrace`](MemoryTrace.md)[]
 
-Defined in: [packages/agentos/src/memory/core/prompt/MemoryPromptAssembler.ts:82](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/core/prompt/MemoryPromptAssembler.ts#L82)
+Defined in: [packages/agentos/src/memory/core/prompt/MemoryPromptAssembler.ts:129](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/core/prompt/MemoryPromptAssembler.ts#L129)
 
 All available traces for involuntary recall pool.
 
@@ -28,7 +28,7 @@ All available traces for involuntary recall pool.
 
 > `optional` **graphContext**: `string`[]
 
-Defined in: [packages/agentos/src/memory/core/prompt/MemoryPromptAssembler.ts:72](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/core/prompt/MemoryPromptAssembler.ts#L72)
+Defined in: [packages/agentos/src/memory/core/prompt/MemoryPromptAssembler.ts:119](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/core/prompt/MemoryPromptAssembler.ts#L119)
 
 Graph association context (Batch 2).
 
@@ -38,7 +38,7 @@ Graph association context (Batch 2).
 
 > `optional` **mechanismsEngine**: [`CognitiveMechanismsEngine`](../classes/CognitiveMechanismsEngine.md)
 
-Defined in: [packages/agentos/src/memory/core/prompt/MemoryPromptAssembler.ts:80](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/core/prompt/MemoryPromptAssembler.ts#L80)
+Defined in: [packages/agentos/src/memory/core/prompt/MemoryPromptAssembler.ts:127](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/core/prompt/MemoryPromptAssembler.ts#L127)
 
 Optional cognitive mechanisms engine for involuntary recall.
 
@@ -48,7 +48,7 @@ Optional cognitive mechanisms engine for involuntary recall.
 
 > `optional` **observationNotes**: `string`[]
 
-Defined in: [packages/agentos/src/memory/core/prompt/MemoryPromptAssembler.ts:74](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/core/prompt/MemoryPromptAssembler.ts#L74)
+Defined in: [packages/agentos/src/memory/core/prompt/MemoryPromptAssembler.ts:121](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/core/prompt/MemoryPromptAssembler.ts#L121)
 
 Observation notes (Batch 2).
 
@@ -58,7 +58,7 @@ Observation notes (Batch 2).
 
 > `optional` **persistentMemoryText**: `string`
 
-Defined in: [packages/agentos/src/memory/core/prompt/MemoryPromptAssembler.ts:76](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/core/prompt/MemoryPromptAssembler.ts#L76)
+Defined in: [packages/agentos/src/memory/core/prompt/MemoryPromptAssembler.ts:123](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/core/prompt/MemoryPromptAssembler.ts#L123)
 
 Persistent markdown memory (MEMORY.md contents).
 
@@ -68,7 +68,7 @@ Persistent markdown memory (MEMORY.md contents).
 
 > `optional` **prospectiveAlerts**: `string`[]
 
-Defined in: [packages/agentos/src/memory/core/prompt/MemoryPromptAssembler.ts:70](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/core/prompt/MemoryPromptAssembler.ts#L70)
+Defined in: [packages/agentos/src/memory/core/prompt/MemoryPromptAssembler.ts:117](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/core/prompt/MemoryPromptAssembler.ts#L117)
 
 Prospective memory alerts (Batch 2).
 
@@ -78,7 +78,7 @@ Prospective memory alerts (Batch 2).
 
 > `optional` **retrievedTraces**: [`ScoredMemoryTrace`](ScoredMemoryTrace.md)[]
 
-Defined in: [packages/agentos/src/memory/core/prompt/MemoryPromptAssembler.ts:68](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/core/prompt/MemoryPromptAssembler.ts#L68)
+Defined in: [packages/agentos/src/memory/core/prompt/MemoryPromptAssembler.ts:115](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/core/prompt/MemoryPromptAssembler.ts#L115)
 
 Scored semantic/episodic traces from retrieval.
 
@@ -88,7 +88,7 @@ Scored semantic/episodic traces from retrieval.
 
 > **totalTokenBudget**: `number`
 
-Defined in: [packages/agentos/src/memory/core/prompt/MemoryPromptAssembler.ts:58](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/core/prompt/MemoryPromptAssembler.ts#L58)
+Defined in: [packages/agentos/src/memory/core/prompt/MemoryPromptAssembler.ts:105](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/core/prompt/MemoryPromptAssembler.ts#L105)
 
 Token budget for all memory context.
 
@@ -98,7 +98,7 @@ Token budget for all memory context.
 
 > **traits**: [`HexacoTraits`](HexacoTraits.md)
 
-Defined in: [packages/agentos/src/memory/core/prompt/MemoryPromptAssembler.ts:62](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/core/prompt/MemoryPromptAssembler.ts#L62)
+Defined in: [packages/agentos/src/memory/core/prompt/MemoryPromptAssembler.ts:109](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/core/prompt/MemoryPromptAssembler.ts#L109)
 
 HEXACO traits for formatting style selection.
 
@@ -108,6 +108,6 @@ HEXACO traits for formatting style selection.
 
 > `optional` **workingMemoryText**: `string`
 
-Defined in: [packages/agentos/src/memory/core/prompt/MemoryPromptAssembler.ts:66](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/core/prompt/MemoryPromptAssembler.ts#L66)
+Defined in: [packages/agentos/src/memory/core/prompt/MemoryPromptAssembler.ts:113](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/core/prompt/MemoryPromptAssembler.ts#L113)
 
 Working memory formatted string.

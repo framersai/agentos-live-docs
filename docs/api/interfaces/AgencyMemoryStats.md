@@ -1,6 +1,6 @@
 # Interface: AgencyMemoryStats
 
-Defined in: [packages/agentos/src/agents/agency/AgencyMemoryManager.ts:106](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/agents/agency/AgencyMemoryManager.ts#L106)
+Defined in: [packages/agentos/src/agents/agency/AgencyMemoryManager.ts:106](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/agents/agency/AgencyMemoryManager.ts#L106)
 
 Statistics for agency memory.
 
@@ -10,7 +10,7 @@ Statistics for agency memory.
 
 > **documentsByCategory**: `Record`\<`string`, `number`\>
 
-Defined in: [packages/agentos/src/agents/agency/AgencyMemoryManager.ts:114](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/agents/agency/AgencyMemoryManager.ts#L114)
+Defined in: [packages/agentos/src/agents/agency/AgencyMemoryManager.ts:114](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/agents/agency/AgencyMemoryManager.ts#L114)
 
 Documents by category
 
@@ -20,7 +20,7 @@ Documents by category
 
 > **documentsByRole**: `Record`\<`string`, `number`\>
 
-Defined in: [packages/agentos/src/agents/agency/AgencyMemoryManager.ts:112](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/agents/agency/AgencyMemoryManager.ts#L112)
+Defined in: [packages/agentos/src/agents/agency/AgencyMemoryManager.ts:112](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/agents/agency/AgencyMemoryManager.ts#L112)
 
 Documents by role
 
@@ -30,7 +30,7 @@ Documents by role
 
 > `optional` **lastIngestionAt**: `string`
 
-Defined in: [packages/agentos/src/agents/agency/AgencyMemoryManager.ts:116](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/agents/agency/AgencyMemoryManager.ts#L116)
+Defined in: [packages/agentos/src/agents/agency/AgencyMemoryManager.ts:116](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/agents/agency/AgencyMemoryManager.ts#L116)
 
 Last ingestion timestamp
 
@@ -40,7 +40,7 @@ Last ingestion timestamp
 
 > **totalChunks**: `number`
 
-Defined in: [packages/agentos/src/agents/agency/AgencyMemoryManager.ts:110](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/agents/agency/AgencyMemoryManager.ts#L110)
+Defined in: [packages/agentos/src/agents/agency/AgencyMemoryManager.ts:110](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/agents/agency/AgencyMemoryManager.ts#L110)
 
 Total chunks
 
@@ -50,6 +50,6 @@ Total chunks
 
 > **totalDocuments**: `number`
 
-Defined in: [packages/agentos/src/agents/agency/AgencyMemoryManager.ts:108](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/agents/agency/AgencyMemoryManager.ts#L108)
+Defined in: [packages/agentos/src/agents/agency/AgencyMemoryManager.ts:108](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/agents/agency/AgencyMemoryManager.ts#L108)
 
 Total documents in shared memory

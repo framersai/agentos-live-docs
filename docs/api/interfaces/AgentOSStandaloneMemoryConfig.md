@@ -1,6 +1,6 @@
 # Interface: AgentOSStandaloneMemoryConfig
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:362](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/AgentOS.ts#L362)
+Defined in: [packages/agentos/src/api/AgentOS.ts:362](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/api/AgentOS.ts#L362)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/api/AgentOS.ts:362](https://github.com/framers
 
 > `optional` **enabled**: `boolean`
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:367](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/AgentOS.ts#L367)
+Defined in: [packages/agentos/src/api/AgentOS.ts:367](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/api/AgentOS.ts#L367)
 
 Enable or disable standalone-memory integration.
 Default: true when this block is provided.
@@ -19,7 +19,7 @@ Default: true when this block is provided.
 
 > `optional` **longTermRetriever**: `boolean` \| [`StandaloneMemoryLongTermRetrieverOptions`](StandaloneMemoryLongTermRetrieverOptions.md)
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:392](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/AgentOS.ts#L392)
+Defined in: [packages/agentos/src/api/AgentOS.ts:392](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/api/AgentOS.ts#L392)
 
 When provided, AgentOS derives `longTermMemoryRetriever` from this
 standalone memory backend unless one was already supplied explicitly.
@@ -30,7 +30,7 @@ standalone memory backend unless one was already supplied explicitly.
 
 > `optional` **manageLifecycle**: `boolean`
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:380](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/AgentOS.ts#L380)
+Defined in: [packages/agentos/src/api/AgentOS.ts:380](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/api/AgentOS.ts#L380)
 
 If true, AgentOS closes the standalone memory backend during shutdown
 unless `memoryTools.manageLifecycle` already owns that lifecycle.
@@ -42,7 +42,7 @@ Default: false.
 
 > **memory**: `Pick`\<[`Memory`](../classes/Memory.md), `"remember"` \| `"recall"` \| `"forget"`\> & `Partial`\<`Pick`\<[`Memory`](../classes/Memory.md), `"createTools"` \| `"close"` \| `"health"`\>\>
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:372](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/AgentOS.ts#L372)
+Defined in: [packages/agentos/src/api/AgentOS.ts:372](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/api/AgentOS.ts#L372)
 
 Standalone memory backend used to derive one or more AgentOS integrations.
 
@@ -52,7 +52,7 @@ Standalone memory backend used to derive one or more AgentOS integrations.
 
 > `optional` **rollingSummarySink**: `boolean` \| [`StandaloneMemoryRollingSummarySinkOptions`](StandaloneMemoryRollingSummarySinkOptions.md)
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:398](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/AgentOS.ts#L398)
+Defined in: [packages/agentos/src/api/AgentOS.ts:398](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/api/AgentOS.ts#L398)
 
 When provided, AgentOS derives `rollingSummaryMemorySink` from this
 standalone memory backend unless one was already supplied explicitly.
@@ -63,7 +63,7 @@ standalone memory backend unless one was already supplied explicitly.
 
 > `optional` **tools**: `boolean` \| `Omit`\<[`AgentOSMemoryToolsConfig`](AgentOSMemoryToolsConfig.md), `"memory"` \| `"enabled"` \| `"manageLifecycle"`\>
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:386](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/AgentOS.ts#L386)
+Defined in: [packages/agentos/src/api/AgentOS.ts:386](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/api/AgentOS.ts#L386)
 
 When provided, AgentOS derives `memoryTools` from this standalone memory
 backend unless `memoryTools` was already supplied explicitly.

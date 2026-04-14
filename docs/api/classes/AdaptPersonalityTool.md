@@ -1,6 +1,6 @@
 # Class: AdaptPersonalityTool
 
-Defined in: [packages/agentos/src/emergent/AdaptPersonalityTool.ts:152](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/emergent/AdaptPersonalityTool.ts#L152)
+Defined in: [packages/agentos/src/emergent/AdaptPersonalityTool.ts:152](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/emergent/AdaptPersonalityTool.ts#L152)
 
 ITool implementation enabling agents to self-modify their HEXACO personality
 traits within per-session budgets.
@@ -31,7 +31,7 @@ const result = await tool.execute(
 
 > **new AdaptPersonalityTool**(`deps`): `AdaptPersonalityTool`
 
-Defined in: [packages/agentos/src/emergent/AdaptPersonalityTool.ts:209](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/emergent/AdaptPersonalityTool.ts#L209)
+Defined in: [packages/agentos/src/emergent/AdaptPersonalityTool.ts:209](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/emergent/AdaptPersonalityTool.ts#L209)
 
 Create a new AdaptPersonalityTool.
 
@@ -54,7 +54,7 @@ Injected dependencies including config, mutation store,
 
 > `readonly` **category**: `"emergent"` = `'emergent'`
 
-Defined in: [packages/agentos/src/emergent/AdaptPersonalityTool.ts:170](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/emergent/AdaptPersonalityTool.ts#L170)
+Defined in: [packages/agentos/src/emergent/AdaptPersonalityTool.ts:170](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/emergent/AdaptPersonalityTool.ts#L170)
 
 **`Optional`**
 
@@ -72,7 +72,7 @@ aiding an LLM in selecting from a large set of tools.
 
 > `readonly` **description**: `string`
 
-Defined in: [packages/agentos/src/emergent/AdaptPersonalityTool.ts:165](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/emergent/AdaptPersonalityTool.ts#L165)
+Defined in: [packages/agentos/src/emergent/AdaptPersonalityTool.ts:165](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/emergent/AdaptPersonalityTool.ts#L165)
 
 A detailed, natural language description of what the tool does, its primary purpose,
 typical use cases, and any important considerations or limitations for its use.
@@ -90,7 +90,7 @@ for the LLM to grasp the tool's semantics.
 
 > `readonly` **displayName**: `"Adapt Personality"` = `'Adapt Personality'`
 
-Defined in: [packages/agentos/src/emergent/AdaptPersonalityTool.ts:162](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/emergent/AdaptPersonalityTool.ts#L162)
+Defined in: [packages/agentos/src/emergent/AdaptPersonalityTool.ts:162](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/emergent/AdaptPersonalityTool.ts#L162)
 
 A concise, human-readable title or display name for the tool.
 Used in user interfaces, logs, or when presenting tool options to developers or users.
@@ -111,7 +111,7 @@ Used in user interfaces, logs, or when presenting tool options to developers or 
 
 > `readonly` **hasSideEffects**: `true` = `true`
 
-Defined in: [packages/agentos/src/emergent/AdaptPersonalityTool.ts:173](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/emergent/AdaptPersonalityTool.ts#L173)
+Defined in: [packages/agentos/src/emergent/AdaptPersonalityTool.ts:173](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/emergent/AdaptPersonalityTool.ts#L173)
 
 **`Optional`**
 
@@ -130,7 +130,7 @@ with greater caution, potentially requiring explicit user confirmation.
 
 > `readonly` **id**: `"com.framers.emergent.adapt-personality"` = `'com.framers.emergent.adapt-personality'`
 
-Defined in: [packages/agentos/src/emergent/AdaptPersonalityTool.ts:156](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/emergent/AdaptPersonalityTool.ts#L156)
+Defined in: [packages/agentos/src/emergent/AdaptPersonalityTool.ts:156](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/emergent/AdaptPersonalityTool.ts#L156)
 
 A globally unique identifier for this specific tool (e.g., "web-search-engine-v1.2", "stock-price-fetcher").
 This ID is used for internal registration, management, and precise identification.
@@ -146,7 +146,7 @@ It's recommended to use a namespaced, versioned format (e.g., `vendor-toolname-v
 
 > `readonly` **inputSchema**: [`JSONSchemaObject`](../type-aliases/JSONSchemaObject.md)
 
-Defined in: [packages/agentos/src/emergent/AdaptPersonalityTool.ts:176](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/emergent/AdaptPersonalityTool.ts#L176)
+Defined in: [packages/agentos/src/emergent/AdaptPersonalityTool.ts:176](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/emergent/AdaptPersonalityTool.ts#L176)
 
 The JSON schema defining the structure, types, and constraints of the input arguments object
 that this tool expects. This schema is used by:
@@ -168,7 +168,7 @@ https://json-schema.org/
 
 > `readonly` **name**: `"adapt_personality"` = `'adapt_personality'`
 
-Defined in: [packages/agentos/src/emergent/AdaptPersonalityTool.ts:159](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/emergent/AdaptPersonalityTool.ts#L159)
+Defined in: [packages/agentos/src/emergent/AdaptPersonalityTool.ts:159](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/emergent/AdaptPersonalityTool.ts#L159)
 
 The functional name of the tool, as it should be presented to and used by an LLM in a tool call request
 (e.g., "searchWeb", "executePythonCode", "getWeatherForecast").
@@ -185,7 +185,7 @@ It should be concise, descriptive, and typically in camelCase or snake_case.
 
 > **execute**(`args`, `context`): `Promise`\<[`ToolExecutionResult`](../interfaces/ToolExecutionResult.md)\<`AdaptPersonalityOutput`\>\>
 
-Defined in: [packages/agentos/src/emergent/AdaptPersonalityTool.ts:224](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/emergent/AdaptPersonalityTool.ts#L224)
+Defined in: [packages/agentos/src/emergent/AdaptPersonalityTool.ts:224](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/emergent/AdaptPersonalityTool.ts#L224)
 
 Apply a personality trait mutation within session budget constraints.
 

@@ -1,6 +1,6 @@
 # Class: AgentMemory
 
-Defined in: [packages/agentos/src/memory/AgentMemory.ts:113](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/AgentMemory.ts#L113)
+Defined in: [packages/agentos/src/memory/AgentMemory.ts:118](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/AgentMemory.ts#L118)
 
 High-level memory facade for AI agents.
 
@@ -14,7 +14,7 @@ storage details, and internal architecture.
 
 > **new AgentMemory**(`backend?`): `AgentMemory`
 
-Defined in: [packages/agentos/src/memory/AgentMemory.ts:118](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/AgentMemory.ts#L118)
+Defined in: [packages/agentos/src/memory/AgentMemory.ts:123](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/AgentMemory.ts#L123)
 
 #### Parameters
 
@@ -34,7 +34,7 @@ Defined in: [packages/agentos/src/memory/AgentMemory.ts:118](https://github.com/
 
 > **get** **isInitialized**(): `boolean`
 
-Defined in: [packages/agentos/src/memory/AgentMemory.ts:385](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/AgentMemory.ts#L385)
+Defined in: [packages/agentos/src/memory/AgentMemory.ts:825](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/AgentMemory.ts#L825)
 
 ##### Returns
 
@@ -48,7 +48,7 @@ Defined in: [packages/agentos/src/memory/AgentMemory.ts:385](https://github.com/
 
 > **get** **raw**(): [`ICognitiveMemoryManager`](../interfaces/ICognitiveMemoryManager.md)
 
-Defined in: [packages/agentos/src/memory/AgentMemory.ts:390](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/AgentMemory.ts#L390)
+Defined in: [packages/agentos/src/memory/AgentMemory.ts:830](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/AgentMemory.ts#L830)
 
 Access the underlying manager for advanced usage.
 
@@ -64,7 +64,7 @@ Access the underlying manager for advanced usage.
 
 > **get** **rawMemory**(): `StandaloneMemoryBackend` \| `undefined`
 
-Defined in: [packages/agentos/src/memory/AgentMemory.ts:401](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/AgentMemory.ts#L401)
+Defined in: [packages/agentos/src/memory/AgentMemory.ts:841](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/AgentMemory.ts#L841)
 
 Access the underlying standalone Memory facade for advanced usage.
 
@@ -78,7 +78,7 @@ Access the underlying standalone Memory facade for advanced usage.
 
 > **consolidate**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/memory/AgentMemory.ts:307](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/AgentMemory.ts#L307)
+Defined in: [packages/agentos/src/memory/AgentMemory.ts:312](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/AgentMemory.ts#L312)
 
 Run consolidation cycle.
 
@@ -92,7 +92,7 @@ Run consolidation cycle.
 
 > **export**(`outputPath`, `options?`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/memory/AgentMemory.ts:365](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/AgentMemory.ts#L365)
+Defined in: [packages/agentos/src/memory/AgentMemory.ts:370](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/AgentMemory.ts#L370)
 
 Export memory data. Available only when backed by the standalone
 SQLite-first Memory facade.
@@ -113,11 +113,30 @@ SQLite-first Memory facade.
 
 ***
 
+### exportSnapshot()
+
+> **exportSnapshot**(): `Promise`\<`CognitiveMemorySnapshot`\>
+
+Defined in: [packages/agentos/src/memory/AgentMemory.ts:710](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/AgentMemory.ts#L710)
+
+Export full memory state as a serializable snapshot.
+Used for companion portability across worlds in wilds-ai.
+
+#### Returns
+
+`Promise`\<`CognitiveMemorySnapshot`\>
+
+#### Throws
+
+When backed by standalone SQLite
+
+***
+
 ### feedback()
 
 > **feedback**(`traceId`, `signal`, `query?`): `void`
 
-Defined in: [packages/agentos/src/memory/AgentMemory.ts:377](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/AgentMemory.ts#L377)
+Defined in: [packages/agentos/src/memory/AgentMemory.ts:382](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/AgentMemory.ts#L382)
 
 Record used/ignored retrieval feedback. Available only when backed by the
 standalone SQLite-first Memory facade.
@@ -142,11 +161,116 @@ standalone SQLite-first Memory facade.
 
 ***
 
+### forceReflection()
+
+> **forceReflection**(): `Promise`\<\{ `superseded`: `number`; `traces`: `number`; \}\>
+
+Defined in: [packages/agentos/src/memory/AgentMemory.ts:675](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/AgentMemory.ts#L675)
+
+Force a reflection cycle (useful for testing / devtools).
+Triggers the Observer's note extraction and the Reflector's consolidation
+regardless of token thresholds.
+
+#### Returns
+
+`Promise`\<\{ `superseded`: `number`; `traces`: `number`; \}\>
+
+Reflection result with typed traces, or empty result if no observer
+
+#### Throws
+
+When backed by standalone SQLite
+
+***
+
+### getAssociations()
+
+> **getAssociations**(`seedTraceIds`, `opts?`): `Promise`\<`object`[]\>
+
+Defined in: [packages/agentos/src/memory/AgentMemory.ts:479](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/AgentMemory.ts#L479)
+
+Get spreading activation results from seed memories.
+Returns memories that are associatively connected to the seeds.
+
+#### Parameters
+
+##### seedTraceIds
+
+`string`[]
+
+IDs of seed traces to activate from
+
+##### opts?
+
+Optional depth and limit controls
+
+###### limit?
+
+`number`
+
+###### maxDepth?
+
+`number`
+
+#### Returns
+
+`Promise`\<`object`[]\>
+
+#### Throws
+
+When backed by standalone SQLite
+
+***
+
+### getClusters()
+
+> **getClusters**(`minSize?`): `Promise`\<`object`[]\>
+
+Defined in: [packages/agentos/src/memory/AgentMemory.ts:611](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/AgentMemory.ts#L611)
+
+Get clusters of strongly associated memories.
+
+#### Parameters
+
+##### minSize?
+
+`number`
+
+Minimum cluster size (default 3)
+
+#### Returns
+
+`Promise`\<`object`[]\>
+
+#### Throws
+
+When backed by standalone SQLite
+
+***
+
+### getConflicts()
+
+> **getConflicts**(): `Promise`\<`object`[]\>
+
+Defined in: [packages/agentos/src/memory/AgentMemory.ts:579](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/AgentMemory.ts#L579)
+
+Get pairs of contradicting memory traces.
+
+#### Returns
+
+`Promise`\<`object`[]\>
+
+#### Throws
+
+When backed by standalone SQLite
+
+***
+
 ### getContext()
 
 > **getContext**(`query`, `options?`): `Promise`\<[`AssembledMemoryContext`](../interfaces/AssembledMemoryContext.md)\>
 
-Defined in: [packages/agentos/src/memory/AgentMemory.ts:271](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/AgentMemory.ts#L271)
+Defined in: [packages/agentos/src/memory/AgentMemory.ts:276](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/AgentMemory.ts#L276)
 
 Get assembled memory context for prompt injection within a token budget.
 
@@ -168,11 +292,163 @@ Get assembled memory context for prompt injection within a token budget.
 
 ***
 
+### getGraph()
+
+> **getGraph**(): `Promise`\<`MemoryGraphSnapshot`\>
+
+Defined in: [packages/agentos/src/memory/AgentMemory.ts:401](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/AgentMemory.ts#L401)
+
+Get a serializable snapshot of the memory graph for visualization.
+Returns nodes (traces), edges (associations), clusters, and aggregate stats.
+
+#### Returns
+
+`Promise`\<`MemoryGraphSnapshot`\>
+
+Graph snapshot suitable for JSON serialization
+
+#### Throws
+
+When backed by standalone SQLite (requires CognitiveMemoryManager)
+
+***
+
+### getObservationStats()
+
+> **getObservationStats**(): `Promise`\<`ObservationPipelineStats`\>
+
+Defined in: [packages/agentos/src/memory/AgentMemory.ts:642](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/AgentMemory.ts#L642)
+
+Get observation pipeline stats (pending notes, compression ratio, reflection count).
+
+#### Returns
+
+`Promise`\<`ObservationPipelineStats`\>
+
+#### Throws
+
+When backed by standalone SQLite
+
+***
+
+### getProspectiveItems()
+
+> **getProspectiveItems**(): `Promise`\<[`ProspectiveMemoryItem`](../interfaces/ProspectiveMemoryItem.md)[]\>
+
+Defined in: [packages/agentos/src/memory/AgentMemory.ts:663](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/AgentMemory.ts#L663)
+
+Get active prospective memory items (reminders/intentions).
+Alias for `reminders()` with a more descriptive name.
+
+#### Returns
+
+`Promise`\<[`ProspectiveMemoryItem`](../interfaces/ProspectiveMemoryItem.md)[]\>
+
+***
+
+### getRelationalMemories()
+
+> **getRelationalMemories**(`opts?`): `Promise`\<[`ScoredMemoryTrace`](../interfaces/ScoredMemoryTrace.md)[]\>
+
+Defined in: [packages/agentos/src/memory/AgentMemory.ts:526](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/AgentMemory.ts#L526)
+
+Get relational memory traces (trust signals, boundaries, emotional bonds).
+Convenience wrapper around getTracesByType('relational').
+
+#### Parameters
+
+##### opts?
+
+###### limit?
+
+`number`
+
+#### Returns
+
+`Promise`\<[`ScoredMemoryTrace`](../interfaces/ScoredMemoryTrace.md)[]\>
+
+***
+
+### getStrengthDistribution()
+
+> **getStrengthDistribution**(): `Promise`\<`Record`\<[`MemoryType`](../type-aliases/MemoryType.md), `MemoryTypeStats`\>\>
+
+Defined in: [packages/agentos/src/memory/AgentMemory.ts:536](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/AgentMemory.ts#L536)
+
+Get memory strength distribution by type.
+Returns count, average strength, decaying count, and flashbulb count per type.
+
+#### Returns
+
+`Promise`\<`Record`\<[`MemoryType`](../type-aliases/MemoryType.md), `MemoryTypeStats`\>\>
+
+#### Throws
+
+When backed by standalone SQLite
+
+***
+
+### getTracesByType()
+
+> **getTracesByType**(`type`, `opts?`): `Promise`\<[`ScoredMemoryTrace`](../interfaces/ScoredMemoryTrace.md)[]\>
+
+Defined in: [packages/agentos/src/memory/AgentMemory.ts:505](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/AgentMemory.ts#L505)
+
+Get all traces filtered by memory type.
+
+#### Parameters
+
+##### type
+
+[`MemoryType`](../type-aliases/MemoryType.md)
+
+Memory type to filter by (episodic, semantic, procedural, prospective, relational)
+
+##### opts?
+
+Optional limit and minimum strength filter
+
+###### limit?
+
+`number`
+
+###### minStrength?
+
+`number`
+
+#### Returns
+
+`Promise`\<[`ScoredMemoryTrace`](../interfaces/ScoredMemoryTrace.md)[]\>
+
+#### Throws
+
+When backed by standalone SQLite
+
+***
+
+### getWorkingMemory()
+
+> **getWorkingMemory**(): `Promise`\<[`WorkingMemorySlot`](../interfaces/WorkingMemorySlot.md)[]\>
+
+Defined in: [packages/agentos/src/memory/AgentMemory.ts:628](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/AgentMemory.ts#L628)
+
+Get working memory slots — what's currently "in focus".
+
+#### Returns
+
+`Promise`\<[`WorkingMemorySlot`](../interfaces/WorkingMemorySlot.md)[]\>
+
+#### Throws
+
+When backed by standalone SQLite
+
+***
+
 ### health()
 
 > **health**(): `Promise`\<[`MemoryHealthReport`](../interfaces/MemoryHealthReport.md)\>
 
-Defined in: [packages/agentos/src/memory/AgentMemory.ts:317](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/AgentMemory.ts#L317)
+Defined in: [packages/agentos/src/memory/AgentMemory.ts:322](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/AgentMemory.ts#L322)
 
 Memory health diagnostics.
 
@@ -186,7 +462,7 @@ Memory health diagnostics.
 
 > **importFrom**(`source`, `options?`): `Promise`\<[`ImportResult`](../interfaces/ImportResult.md)\>
 
-Defined in: [packages/agentos/src/memory/AgentMemory.ts:353](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/AgentMemory.ts#L353)
+Defined in: [packages/agentos/src/memory/AgentMemory.ts:358](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/AgentMemory.ts#L358)
 
 Import previously exported memory data. Available only when backed by the
 standalone SQLite-first Memory facade.
@@ -207,11 +483,40 @@ standalone SQLite-first Memory facade.
 
 ***
 
+### importSnapshot()
+
+> **importSnapshot**(`snapshot`): `Promise`\<\{ `conflicts`: `number`; `imported`: `number`; \}\>
+
+Defined in: [packages/agentos/src/memory/AgentMemory.ts:776](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/AgentMemory.ts#L776)
+
+Import a memory snapshot (for character portability across worlds).
+Encodes each trace and registers prospective items.
+
+#### Parameters
+
+##### snapshot
+
+`CognitiveMemorySnapshot`
+
+Previously exported snapshot
+
+#### Returns
+
+`Promise`\<\{ `conflicts`: `number`; `imported`: `number`; \}\>
+
+Count of imported traces and conflicts detected
+
+#### Throws
+
+When backed by standalone SQLite
+
+***
+
 ### ingest()
 
 > **ingest**(`source`, `options?`): `Promise`\<[`IngestResult`](../interfaces/IngestResult.md)\>
 
-Defined in: [packages/agentos/src/memory/AgentMemory.ts:341](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/AgentMemory.ts#L341)
+Defined in: [packages/agentos/src/memory/AgentMemory.ts:346](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/AgentMemory.ts#L346)
 
 Ingest files, directories, or URLs. Available only when backed by the
 standalone SQLite-first Memory facade.
@@ -236,7 +541,7 @@ standalone SQLite-first Memory facade.
 
 > **initialize**(`config`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/memory/AgentMemory.ts:158](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/AgentMemory.ts#L158)
+Defined in: [packages/agentos/src/memory/AgentMemory.ts:163](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/AgentMemory.ts#L163)
 
 Initialize the cognitive-manager path. Only needed when constructing the
 legacy cognitive backend directly (not via `AgentMemory.wrap()` or
@@ -258,7 +563,7 @@ legacy cognitive backend directly (not via `AgentMemory.wrap()` or
 
 > **observe**(`role`, `content`): `Promise`\<[`ObservationNote`](../interfaces/ObservationNote.md)[] \| `null`\>
 
-Defined in: [packages/agentos/src/memory/AgentMemory.ts:257](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/AgentMemory.ts#L257)
+Defined in: [packages/agentos/src/memory/AgentMemory.ts:262](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/AgentMemory.ts#L262)
 
 Feed a conversation turn to the observational memory system.
 The Observer creates dense notes when the token threshold is reached.
@@ -290,7 +595,7 @@ await memory.observe('assistant', "Sure! The issue is in your useEffect...");
 
 > **recall**(`query`, `options?`): `Promise`\<[`RecallResult`](../interfaces/RecallResult.md)\>
 
-Defined in: [packages/agentos/src/memory/AgentMemory.ts:222](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/AgentMemory.ts#L222)
+Defined in: [packages/agentos/src/memory/AgentMemory.ts:227](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/AgentMemory.ts#L227)
 
 Recall memories relevant to a query.
 
@@ -323,7 +628,7 @@ for (const m of results.memories) {
 
 > **remember**(`content`, `options?`): `Promise`\<[`RememberResult`](../interfaces/RememberResult.md)\>
 
-Defined in: [packages/agentos/src/memory/AgentMemory.ts:175](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/AgentMemory.ts#L175)
+Defined in: [packages/agentos/src/memory/AgentMemory.ts:180](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/AgentMemory.ts#L180)
 
 Store information in long-term memory.
 
@@ -380,7 +685,7 @@ await memory.remember("Deploy by Friday", { type: 'prospective', tags: ['deadlin
 
 > **remind**(`input`): `Promise`\<[`ProspectiveMemoryItem`](../interfaces/ProspectiveMemoryItem.md) \| `null`\>
 
-Defined in: [packages/agentos/src/memory/AgentMemory.ts:285](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/AgentMemory.ts#L285)
+Defined in: [packages/agentos/src/memory/AgentMemory.ts:290](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/AgentMemory.ts#L290)
 
 Register a prospective memory (reminder/intention).
 
@@ -400,7 +705,7 @@ Register a prospective memory (reminder/intention).
 
 > **reminders**(): `Promise`\<[`ProspectiveMemoryItem`](../interfaces/ProspectiveMemoryItem.md)[]\>
 
-Defined in: [packages/agentos/src/memory/AgentMemory.ts:298](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/AgentMemory.ts#L298)
+Defined in: [packages/agentos/src/memory/AgentMemory.ts:303](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/AgentMemory.ts#L303)
 
 List active reminders.
 
@@ -414,7 +719,7 @@ List active reminders.
 
 > **search**(`query`, `options?`): `Promise`\<[`ScoredMemoryTrace`](../interfaces/ScoredMemoryTrace.md)[]\>
 
-Defined in: [packages/agentos/src/memory/AgentMemory.ts:244](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/AgentMemory.ts#L244)
+Defined in: [packages/agentos/src/memory/AgentMemory.ts:249](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/AgentMemory.ts#L249)
 
 Search memories (alias for recall with simpler return).
 
@@ -438,7 +743,7 @@ Search memories (alias for recall with simpler return).
 
 > **shutdown**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/memory/AgentMemory.ts:326](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/AgentMemory.ts#L326)
+Defined in: [packages/agentos/src/memory/AgentMemory.ts:331](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/AgentMemory.ts#L331)
 
 Shutdown and release resources.
 
@@ -452,7 +757,7 @@ Shutdown and release resources.
 
 > `static` **sqlite**(`config?`): `Promise`\<`AgentMemory`\>
 
-Defined in: [packages/agentos/src/memory/AgentMemory.ts:148](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/AgentMemory.ts#L148)
+Defined in: [packages/agentos/src/memory/AgentMemory.ts:153](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/AgentMemory.ts#L153)
 
 Create an initialized SQLite-backed AgentMemory for standalone usage.
 
@@ -472,7 +777,7 @@ Create an initialized SQLite-backed AgentMemory for standalone usage.
 
 > `static` **wrap**(`manager`): `AgentMemory`
 
-Defined in: [packages/agentos/src/memory/AgentMemory.ts:132](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/AgentMemory.ts#L132)
+Defined in: [packages/agentos/src/memory/AgentMemory.ts:137](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/AgentMemory.ts#L137)
 
 Create an AgentMemory wrapping an existing CognitiveMemoryManager.
 Use this in wunderland where the manager is already constructed.
@@ -493,7 +798,7 @@ Use this in wunderland where the manager is already constructed.
 
 > `static` **wrapMemory**(`memory`): `AgentMemory`
 
-Defined in: [packages/agentos/src/memory/AgentMemory.ts:141](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/AgentMemory.ts#L141)
+Defined in: [packages/agentos/src/memory/AgentMemory.ts:146](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/AgentMemory.ts#L146)
 
 Create an AgentMemory wrapping the standalone SQLite-first Memory facade.
 

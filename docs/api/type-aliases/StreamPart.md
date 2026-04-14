@@ -2,7 +2,7 @@
 
 > **StreamPart** = \{ `text`: `string`; `type`: `"text"`; \} \| \{ `args`: `unknown`; `toolName`: `string`; `type`: `"tool-call"`; \} \| \{ `result`: `unknown`; `toolName`: `string`; `type`: `"tool-result"`; \} \| \{ `error`: `Error`; `type`: `"error"`; \}
 
-Defined in: [packages/agentos/src/api/streamText.ts:42](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/streamText.ts#L42)
+Defined in: [packages/agentos/src/api/streamText.ts:48](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/api/streamText.ts#L48)
 
 A discriminated union representing a single event emitted by the
 `StreamTextResult.fullStream` iterable.

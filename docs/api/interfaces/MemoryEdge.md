@@ -1,6 +1,6 @@
 # Interface: MemoryEdge
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/IMemoryGraph.ts:42](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/graph/IMemoryGraph.ts#L42)
+Defined in: [packages/agentos/src/memory/retrieval/graph/IMemoryGraph.ts:42](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/retrieval/graph/IMemoryGraph.ts#L42)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/memory/retrieval/graph/IMemoryGraph.ts:42](htt
 
 > **createdAt**: `number`
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/IMemoryGraph.ts:47](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/graph/IMemoryGraph.ts#L47)
+Defined in: [packages/agentos/src/memory/retrieval/graph/IMemoryGraph.ts:47](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/retrieval/graph/IMemoryGraph.ts#L47)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [packages/agentos/src/memory/retrieval/graph/IMemoryGraph.ts:47](htt
 
 > **sourceId**: `string`
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/IMemoryGraph.ts:43](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/graph/IMemoryGraph.ts#L43)
+Defined in: [packages/agentos/src/memory/retrieval/graph/IMemoryGraph.ts:43](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/retrieval/graph/IMemoryGraph.ts#L43)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: [packages/agentos/src/memory/retrieval/graph/IMemoryGraph.ts:43](htt
 
 > **targetId**: `string`
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/IMemoryGraph.ts:44](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/graph/IMemoryGraph.ts#L44)
+Defined in: [packages/agentos/src/memory/retrieval/graph/IMemoryGraph.ts:44](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/retrieval/graph/IMemoryGraph.ts#L44)
 
 ***
 
@@ -32,7 +32,7 @@ Defined in: [packages/agentos/src/memory/retrieval/graph/IMemoryGraph.ts:44](htt
 
 > **type**: [`MemoryEdgeType`](../type-aliases/MemoryEdgeType.md)
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/IMemoryGraph.ts:45](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/graph/IMemoryGraph.ts#L45)
+Defined in: [packages/agentos/src/memory/retrieval/graph/IMemoryGraph.ts:45](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/retrieval/graph/IMemoryGraph.ts#L45)
 
 ***
 
@@ -40,4 +40,4 @@ Defined in: [packages/agentos/src/memory/retrieval/graph/IMemoryGraph.ts:45](htt
 
 > **weight**: `number`
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/IMemoryGraph.ts:46](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/retrieval/graph/IMemoryGraph.ts#L46)
+Defined in: [packages/agentos/src/memory/retrieval/graph/IMemoryGraph.ts:46](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/retrieval/graph/IMemoryGraph.ts#L46)

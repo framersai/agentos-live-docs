@@ -1,6 +1,6 @@
 # Interface: ContextWindowManagerConfig
 
-Defined in: [packages/agentos/src/memory/pipeline/context/ContextWindowManager.ts:34](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/pipeline/context/ContextWindowManager.ts#L34)
+Defined in: [packages/agentos/src/memory/pipeline/context/ContextWindowManager.ts:34](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/pipeline/context/ContextWindowManager.ts#L34)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/memory/pipeline/context/ContextWindowManager.t
 
 > **infiniteContext**: `Partial`\<[`InfiniteContextConfig`](InfiniteContextConfig.md)\>
 
-Defined in: [packages/agentos/src/memory/pipeline/context/ContextWindowManager.ts:38](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/pipeline/context/ContextWindowManager.ts#L38)
+Defined in: [packages/agentos/src/memory/pipeline/context/ContextWindowManager.ts:38](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/pipeline/context/ContextWindowManager.ts#L38)
 
 Infinite context configuration.
 
@@ -18,7 +18,7 @@ Infinite context configuration.
 
 > **llmInvoker**: (`prompt`) => `Promise`\<`string`\>
 
-Defined in: [packages/agentos/src/memory/pipeline/context/ContextWindowManager.ts:40](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/pipeline/context/ContextWindowManager.ts#L40)
+Defined in: [packages/agentos/src/memory/pipeline/context/ContextWindowManager.ts:40](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/pipeline/context/ContextWindowManager.ts#L40)
 
 LLM invoker for summarization.
 
@@ -38,7 +38,7 @@ LLM invoker for summarization.
 
 > **maxContextTokens**: `number`
 
-Defined in: [packages/agentos/src/memory/pipeline/context/ContextWindowManager.ts:36](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/pipeline/context/ContextWindowManager.ts#L36)
+Defined in: [packages/agentos/src/memory/pipeline/context/ContextWindowManager.ts:36](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/pipeline/context/ContextWindowManager.ts#L36)
 
 Maximum context window size in tokens.
 
@@ -48,7 +48,7 @@ Maximum context window size in tokens.
 
 > `optional` **observer**: [`MemoryObserver`](../classes/MemoryObserver.md)
 
-Defined in: [packages/agentos/src/memory/pipeline/context/ContextWindowManager.ts:42](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/pipeline/context/ContextWindowManager.ts#L42)
+Defined in: [packages/agentos/src/memory/pipeline/context/ContextWindowManager.ts:42](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/pipeline/context/ContextWindowManager.ts#L42)
 
 Optional: MemoryObserver for hybrid strategy.
 
@@ -58,7 +58,7 @@ Optional: MemoryObserver for hybrid strategy.
 
 > `optional` **onTracesCreated**: (`traces`) => `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/memory/pipeline/context/ContextWindowManager.ts:46](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/pipeline/context/ContextWindowManager.ts#L46)
+Defined in: [packages/agentos/src/memory/pipeline/context/ContextWindowManager.ts:46](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/pipeline/context/ContextWindowManager.ts#L46)
 
 Callback to encode traces into long-term memory.
 
@@ -78,6 +78,6 @@ Callback to encode traces into long-term memory.
 
 > `optional` **reflector**: [`MemoryReflector`](../classes/MemoryReflector.md)
 
-Defined in: [packages/agentos/src/memory/pipeline/context/ContextWindowManager.ts:44](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/pipeline/context/ContextWindowManager.ts#L44)
+Defined in: [packages/agentos/src/memory/pipeline/context/ContextWindowManager.ts:44](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/pipeline/context/ContextWindowManager.ts#L44)
 
 Optional: MemoryReflector for hybrid strategy.

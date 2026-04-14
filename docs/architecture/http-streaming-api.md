@@ -236,5 +236,5 @@ curl -N -X POST http://localhost:3777/chat \
 ## Related
 
 - [Chat Server](/architecture/chat-server) -- Full HTTP API reference (non-streaming)
-- [Deep Research](./deep-research.md) -- Research pipeline and query classification
-- [Security Pipeline](./security-pipeline.md) -- HITL approval system
+- [Deep Research](/features/deep-research) -- Research pipeline and query classification
+- [Security Pipeline](/features/human-in-the-loop) -- HITL approval system

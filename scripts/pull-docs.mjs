@@ -11,6 +11,7 @@
 import { readFileSync, writeFileSync, mkdirSync, existsSync, cpSync } from 'node:fs';
 import { resolve, dirname, basename } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { rewriteMarkdownLinks } from './pull-docs-links.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, '..');
@@ -177,10 +178,16 @@ const agentosGuides = [
     position: 5,
   },
   {
+    src: 'HYDE_RETRIEVAL.md',
+    dest: 'features/hyde-retrieval.md',
+    title: 'HyDE Retrieval',
+    position: 6,
+  },
+  {
     src: 'MULTIMODAL_RAG.md',
     dest: 'features/multimodal-rag.md',
     title: 'Multimodal RAG (Image + Audio)',
-    position: 6,
+    position: 7,
   },
   {
     src: 'SQL_STORAGE_QUICKSTART.md',
@@ -231,6 +238,18 @@ const agentosGuides = [
     position: 14,
   },
   {
+    src: 'STREAMING_SEMANTICS.md',
+    dest: 'architecture/streaming-semantics.md',
+    title: 'Streaming Semantics',
+    position: 10,
+  },
+  {
+    src: 'OAUTH_AUTH.md',
+    dest: 'architecture/oauth-auth.md',
+    title: 'OAuth Auth',
+    position: 11,
+  },
+  {
     src: 'VOICE_PIPELINE.md',
     dest: 'features/voice-pipeline.md',
     title: 'Voice Pipeline',
@@ -262,10 +281,16 @@ const agentosGuides = [
     position: 2,
   },
   {
+    src: 'COGNITIVE_MECHANISMS.md',
+    dest: 'features/cognitive-mechanisms.md',
+    title: 'Cognitive Mechanisms',
+    position: 3,
+  },
+  {
     src: 'WORKING_MEMORY.md',
     dest: 'features/working-memory.md',
     title: 'Working Memory',
-    position: 3,
+    position: 4,
   },
   // Memory System guides
   {
@@ -290,31 +315,37 @@ const agentosGuides = [
     src: 'MEMORY_CONSOLIDATION.md',
     dest: 'features/memory-consolidation.md',
     title: 'Self-Improving Memory',
+    position: 24,
+  },
+  {
+    src: 'MEMORY_AUTO_INGEST.md',
+    dest: 'features/memory-auto-ingest.md',
+    title: 'Memory Auto-Ingest',
     position: 23,
   },
   {
     src: 'MEMORY_TOOLS.md',
     dest: 'features/memory-tools.md',
     title: 'Agent Memory Tools',
-    position: 24,
+    position: 25,
   },
   {
     src: 'MEMORY_STORAGE.md',
     dest: 'features/memory-storage.md',
     title: 'SQLite Brain Storage',
-    position: 25,
+    position: 26,
   },
   {
     src: 'MEMORY_SCALING.md',
     dest: 'features/memory-scaling.md',
     title: 'Memory Scaling (4-Tier Vector Storage)',
-    position: 26,
+    position: 27,
   },
   {
     src: 'POSTGRES_BACKEND.md',
     dest: 'features/postgres-backend.md',
     title: 'Postgres + pgvector Backend',
-    position: 27,
+    position: 28,
   },
   {
     src: 'QDRANT_BACKEND.md',
@@ -748,11 +779,18 @@ const linkRewrites = {
   'IMAGE_GENERATION.md': '/features/image-generation',
   'DISCOVERY.md': '/features/discovery-guide',
   'CAPABILITY_DISCOVERY.md': '/features/capability-discovery',
+  'EMERGENT_CAPABILITIES.md': '/features/emergent-capabilities',
   'COST_OPTIMIZATION.md': '/features/cost-optimization',
+  'HYDE_RETRIEVAL.md': '/features/hyde-retrieval',
   'RECURSIVE_SELF_BUILDING_AGENTS.md': '/features/recursive-self-building',
   'VOICE_PIPELINE.md': '/features/voice-pipeline',
   'SPEECH_PROVIDERS.md': '/features/speech-providers',
   'TELEPHONY_PROVIDERS.md': '/features/telephony-providers',
+  'DEEP_RESEARCH.md': '/features/deep-research',
+  'STREAMING_SEMANTICS.md': '/architecture/streaming-semantics',
+  'OAUTH_AUTH.md': '/architecture/oauth-auth',
+  'COGNITIVE_MECHANISMS.md': '/features/cognitive-mechanisms',
+  'MEMORY_AUTO_INGEST.md': '/features/memory-auto-ingest',
   'CHANNELS.md': '/features/channels',
   'SOCIAL_POSTING.md': '/features/social-posting',
   'RFC_EXTENSION_STANDARDS.md': '/extensions/extension-standards',
@@ -813,6 +851,7 @@ const curatedLinkRewrites = Object.fromEntries(
 const exactLinkRewrites = {
   './api/index.html': '/api/',
   './docs/api/index.html': '/api/',
+  './security-pipeline.md': '/features/human-in-the-loop',
   '../src/core/tools/ITool.ts': '/api/interfaces/ITool',
   '../src/extensions/ExtensionManager.ts': '/api/classes/ExtensionManager',
 };
@@ -838,40 +877,6 @@ sidebar_position: ${position}
 ${withoutH1}`;
 }
 
-function rewriteLinks(content) {
-  return content.replace(/\[([^\]]*)\]\(([^)]+)\)/g, (match, text, hrefRaw) => {
-    const href = String(hrefRaw || '').trim();
-    if (!href) return match;
-
-    // Skip external URLs + anchors
-    if (
-      href.startsWith('http://') ||
-      href.startsWith('https://') ||
-      href.startsWith('#') ||
-      href.startsWith('mailto:')
-    ) {
-      return match;
-    }
-
-    const [hrefPathRaw, anchorRaw] = href.split('#');
-    const hrefPath = String(hrefPathRaw || '').trim();
-    const anchor = anchorRaw ? `#${anchorRaw}` : '';
-    const hrefNoTrailing = hrefPath.endsWith('/') ? hrefPath.slice(0, -1) : hrefPath;
-
-    const exact = exactLinkRewrites[hrefPath] || exactLinkRewrites[hrefNoTrailing];
-    if (exact) return `[${text}](${exact}${anchor})`;
-
-    const curated = curatedLinkRewrites[hrefPath] || curatedLinkRewrites[hrefNoTrailing];
-    if (curated) return `[${text}](${curated}${anchor})`;
-
-    const base = basename(hrefPath);
-    const rewritten = linkRewrites[base];
-    if (rewritten) return `[${text}](${rewritten}${anchor})`;
-
-    return match;
-  });
-}
-
 function stripBadgeHtml(content) {
   // Remove GitHub badge HTML that renders poorly in Docusaurus
   return content
@@ -883,7 +888,7 @@ function stripBadgeHtml(content) {
 function processMarkdown(content, title, position) {
   let result = content;
   result = stripBadgeHtml(result);
-  result = rewriteLinks(result);
+  result = rewriteMarkdownLinks(result, { linkRewrites, exactLinkRewrites, curatedLinkRewrites });
   result = injectFrontmatter(result, title, position);
   return result;
 }

@@ -9,7 +9,7 @@ Everything is one import. Pick the function that fits your task:
 import {
   generateText, streamText,        // Text generation
   generateObject, streamObject,    // Structured output (Zod validated)
-  generateImage,                   // Image generation
+  generateImage, transferStyle,    // Image generation & style transfer
   generateVideo, analyzeVideo,     // Video generation & analysis
   generateMusic, generateSFX,      // Audio generation
   performOCR,                      // Vision / OCR
@@ -26,7 +26,8 @@ import {
 | `generateText()` | One-shot text generation | `await generateText({ provider: 'openai', prompt: '...' })` |
 | `streamText()` | Stream text in real-time | `for await (const d of streamText({...}).textStream) {}` |
 | `generateObject()` | Extract structured JSON (Zod) | `await generateObject({ schema: z.object({...}), prompt: '...' })` |
-| `generateImage()` | Generate images | `await generateImage({ provider: 'openai', prompt: '...' })` |
+| `generateImage()` | Generate images (with character consistency) | `await generateImage({ provider: 'openai', prompt: '...' })` |
+| `transferStyle()` | Style transfer between images | `await transferStyle({ image: src, styleReference: ref, prompt: '...' })` |
 | `generateVideo()` | Generate video from text/image | `await generateVideo({ prompt: '...' })` |
 | `generateMusic()` | Generate music | `await generateMusic({ prompt: '...' })` |
 | `performOCR()` | Extract text from images | `await performOCR({ imagePath: './doc.png' })` |
@@ -226,7 +227,7 @@ Use:
 - `finalTextStream` or `text` for the finalized approved answer
 - `fullStream` when you also need structured events like `final-output`
 
-See [Agency API](/features/agency-api) and [Streaming Semantics](./STREAMING_SEMANTICS.md)
+See [Agency API](/features/agency-api) and [Streaming Semantics](/architecture/streaming-semantics)
 for the full contract.
 
 ## `QueryRouter`

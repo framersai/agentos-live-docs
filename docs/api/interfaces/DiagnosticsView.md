@@ -1,6 +1,6 @@
 # Interface: DiagnosticsView
 
-Defined in: [packages/agentos/src/orchestration/ir/types.ts:409](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/ir/types.ts#L409)
+Defined in: [packages/agentos/src/orchestration/ir/types.ts:409](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/ir/types.ts#L409)
 
 Accumulated diagnostic telemetry for an entire graph run.
 Appended to `GraphState.diagnostics` after each node completes.
@@ -11,7 +11,7 @@ Appended to `GraphState.diagnostics` after each node completes.
 
 > **checkpointsSaved**: `number`
 
-Defined in: [packages/agentos/src/orchestration/ir/types.ts:421](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/ir/types.ts#L421)
+Defined in: [packages/agentos/src/orchestration/ir/types.ts:421](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/ir/types.ts#L421)
 
 Number of checkpoint snapshots persisted during the run.
 
@@ -21,7 +21,7 @@ Number of checkpoint snapshots persisted during the run.
 
 > **discoveryResults**: `Record`\<`string`, \{ `latencyMs`: `number`; `query`: `string`; `toolsFound`: `string`[]; \}\>
 
-Defined in: [packages/agentos/src/orchestration/ir/types.ts:417](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/ir/types.ts#L417)
+Defined in: [packages/agentos/src/orchestration/ir/types.ts:417](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/ir/types.ts#L417)
 
 Results from each `DiscoveryPolicy`-triggered capability lookup.
 
@@ -31,7 +31,7 @@ Results from each `DiscoveryPolicy`-triggered capability lookup.
 
 > **guardrailResults**: `Record`\<`string`, \{ `action`: `string`; `guardrailId`: `string`; `latencyMs`: `number`; `passed`: `boolean`; \}\>
 
-Defined in: [packages/agentos/src/orchestration/ir/types.ts:419](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/ir/types.ts#L419)
+Defined in: [packages/agentos/src/orchestration/ir/types.ts:419](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/ir/types.ts#L419)
 
 Results from each guardrail evaluation.
 
@@ -41,7 +41,7 @@ Results from each guardrail evaluation.
 
 > **memoryReads**: `number`
 
-Defined in: [packages/agentos/src/orchestration/ir/types.ts:423](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/ir/types.ts#L423)
+Defined in: [packages/agentos/src/orchestration/ir/types.ts:423](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/ir/types.ts#L423)
 
 Number of memory read operations performed.
 
@@ -51,7 +51,7 @@ Number of memory read operations performed.
 
 > **memoryWrites**: `number`
 
-Defined in: [packages/agentos/src/orchestration/ir/types.ts:425](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/ir/types.ts#L425)
+Defined in: [packages/agentos/src/orchestration/ir/types.ts:425](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/ir/types.ts#L425)
 
 Number of memory write operations performed (including pending).
 
@@ -61,7 +61,7 @@ Number of memory write operations performed (including pending).
 
 > **nodeTimings**: `Record`\<`string`, \{ `endMs`: `number`; `startMs`: `number`; `tokensUsed`: `number`; \}\>
 
-Defined in: [packages/agentos/src/orchestration/ir/types.ts:415](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/ir/types.ts#L415)
+Defined in: [packages/agentos/src/orchestration/ir/types.ts:415](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/ir/types.ts#L415)
 
 Per-node timing and token attribution.
 
@@ -71,7 +71,7 @@ Per-node timing and token attribution.
 
 > **totalDurationMs**: `number`
 
-Defined in: [packages/agentos/src/orchestration/ir/types.ts:413](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/ir/types.ts#L413)
+Defined in: [packages/agentos/src/orchestration/ir/types.ts:413](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/ir/types.ts#L413)
 
 Wall-clock duration from graph start to the latest completed node.
 
@@ -81,6 +81,6 @@ Wall-clock duration from graph start to the latest completed node.
 
 > **totalTokensUsed**: `number`
 
-Defined in: [packages/agentos/src/orchestration/ir/types.ts:411](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/ir/types.ts#L411)
+Defined in: [packages/agentos/src/orchestration/ir/types.ts:411](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/ir/types.ts#L411)
 
 Cumulative LLM tokens consumed across all `gmi` nodes.

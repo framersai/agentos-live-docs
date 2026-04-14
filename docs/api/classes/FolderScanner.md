@@ -1,6 +1,6 @@
 # Class: FolderScanner
 
-Defined in: [packages/agentos/src/memory/io/ingestion/FolderScanner.ts:111](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/io/ingestion/FolderScanner.ts#L111)
+Defined in: [packages/agentos/src/memory/io/ingestion/FolderScanner.ts:111](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/io/ingestion/FolderScanner.ts#L111)
 
 Recursively scans a directory and loads every file whose extension has a
 registered loader in the supplied `LoaderRegistry`.
@@ -27,7 +27,7 @@ console.log(`Failed: ${result.failed.length}`);
 
 > **new FolderScanner**(`registry`): `FolderScanner`
 
-Defined in: [packages/agentos/src/memory/io/ingestion/FolderScanner.ts:116](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/io/ingestion/FolderScanner.ts#L116)
+Defined in: [packages/agentos/src/memory/io/ingestion/FolderScanner.ts:116](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/io/ingestion/FolderScanner.ts#L116)
 
 #### Parameters
 
@@ -48,7 +48,7 @@ The `LoaderRegistry` used to dispatch each file to
 
 > **scan**(`dirPath`, `options?`): `Promise`\<`FolderScanResult`\>
 
-Defined in: [packages/agentos/src/memory/io/ingestion/FolderScanner.ts:136](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/io/ingestion/FolderScanner.ts#L136)
+Defined in: [packages/agentos/src/memory/io/ingestion/FolderScanner.ts:136](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/io/ingestion/FolderScanner.ts#L136)
 
 Walk `dirPath` and load every matching file.
 

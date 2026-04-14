@@ -2,6 +2,9 @@ import { themes as prismThemes } from 'prism-react-renderer';
 import type { Config } from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
 
+const disableLocalSearch = process.env.AGENTOS_DOCS_DISABLE_LOCAL_SEARCH === '1';
+const disableSearchManifest = process.env.AGENTOS_DOCS_DISABLE_SEARCH_MANIFEST === '1';
+
 const config: Config = {
   title: 'AgentOS — Open-Source TypeScript AI Agent Runtime',
   tagline:
@@ -143,21 +146,28 @@ const config: Config = {
 
   themes: [
     '@docusaurus/theme-mermaid',
-    [
-      '@easyops-cn/docusaurus-search-local',
-      {
-        hashed: true,
-        language: ['en'],
-        indexBlog: false,
-        docsRouteBasePath: '/',
-        highlightSearchTermsOnTargetPage: true,
-      },
-    ],
+    ...(!disableLocalSearch
+      ? [
+          [
+            '@easyops-cn/docusaurus-search-local',
+            {
+              hashed: true,
+              language: ['en'],
+              indexBlog: false,
+              docsRouteBasePath: '/',
+              // Generated API/member pages dominate the index and make the
+              // build disproportionately expensive for marginal search value.
+              ignoreFiles: [/^api\/.+/, /^paracosm\/.+/],
+              highlightSearchTermsOnTargetPage: true,
+            },
+          ],
+        ]
+      : []),
   ],
 
   plugins: [
     // Lightweight search manifest for agentos.sh marketing-site DocSearch
-    './plugins/search-manifest.js',
+    ...(!disableSearchManifest ? ['./plugins/search-manifest.js'] : []),
     [
       'docusaurus-plugin-typedoc',
       {

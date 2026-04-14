@@ -1,6 +1,6 @@
 # Class: OpenAITextToSpeechProvider
 
-Defined in: [packages/agentos/src/speech/providers/OpenAITextToSpeechProvider.ts:132](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/speech/providers/OpenAITextToSpeechProvider.ts#L132)
+Defined in: [packages/agentos/src/speech/providers/OpenAITextToSpeechProvider.ts:134](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/speech/providers/OpenAITextToSpeechProvider.ts#L134)
 
 Text-to-speech provider that uses the OpenAI TTS API.
 
@@ -48,7 +48,7 @@ const result = await provider.synthesize('Hello!', { speed: 1.1 });
 
 > **new OpenAITextToSpeechProvider**(`config`): `OpenAITextToSpeechProvider`
 
-Defined in: [packages/agentos/src/speech/providers/OpenAITextToSpeechProvider.ts:161](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/speech/providers/OpenAITextToSpeechProvider.ts#L161)
+Defined in: [packages/agentos/src/speech/providers/OpenAITextToSpeechProvider.ts:166](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/speech/providers/OpenAITextToSpeechProvider.ts#L166)
 
 Creates a new OpenAITextToSpeechProvider.
 
@@ -79,7 +79,7 @@ const provider = new OpenAITextToSpeechProvider({
 
 > `readonly` **displayName**: `"OpenAI TTS"` = `'OpenAI TTS'`
 
-Defined in: [packages/agentos/src/speech/providers/OpenAITextToSpeechProvider.ts:137](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/speech/providers/OpenAITextToSpeechProvider.ts#L137)
+Defined in: [packages/agentos/src/speech/providers/OpenAITextToSpeechProvider.ts:139](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/speech/providers/OpenAITextToSpeechProvider.ts#L139)
 
 Human-readable display name for UI and logging.
 
@@ -93,7 +93,7 @@ Human-readable display name for UI and logging.
 
 > `readonly` **id**: `"openai-tts"` = `'openai-tts'`
 
-Defined in: [packages/agentos/src/speech/providers/OpenAITextToSpeechProvider.ts:134](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/speech/providers/OpenAITextToSpeechProvider.ts#L134)
+Defined in: [packages/agentos/src/speech/providers/OpenAITextToSpeechProvider.ts:136](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/speech/providers/OpenAITextToSpeechProvider.ts#L136)
 
 Unique provider identifier used for registration and resolution.
 
@@ -107,7 +107,7 @@ Unique provider identifier used for registration and resolution.
 
 > `readonly` **supportsStreaming**: `true` = `true`
 
-Defined in: [packages/agentos/src/speech/providers/OpenAITextToSpeechProvider.ts:143](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/speech/providers/OpenAITextToSpeechProvider.ts#L143)
+Defined in: [packages/agentos/src/speech/providers/OpenAITextToSpeechProvider.ts:145](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/speech/providers/OpenAITextToSpeechProvider.ts#L145)
 
 Streaming is supported — the OpenAI API streams audio bytes as they
 are generated, enabling low-latency playback pipelines.
@@ -122,7 +122,7 @@ are generated, enabling low-latency playback pipelines.
 
 > **getProviderName**(): `string`
 
-Defined in: [packages/agentos/src/speech/providers/OpenAITextToSpeechProvider.ts:175](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/speech/providers/OpenAITextToSpeechProvider.ts#L175)
+Defined in: [packages/agentos/src/speech/providers/OpenAITextToSpeechProvider.ts:181](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/speech/providers/OpenAITextToSpeechProvider.ts#L181)
 
 Returns the human-readable provider name.
 
@@ -148,7 +148,7 @@ provider.getProviderName(); // 'OpenAI TTS'
 
 > **listAvailableVoices**(): `Promise`\<[`SpeechVoice`](../interfaces/SpeechVoice.md)[]\>
 
-Defined in: [packages/agentos/src/speech/providers/OpenAITextToSpeechProvider.ts:259](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/speech/providers/OpenAITextToSpeechProvider.ts#L259)
+Defined in: [packages/agentos/src/speech/providers/OpenAITextToSpeechProvider.ts:265](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/speech/providers/OpenAITextToSpeechProvider.ts#L265)
 
 Returns the static list of available OpenAI TTS voices.
 
@@ -179,7 +179,7 @@ const defaultVoice = voices.find(v => v.isDefault); // 'nova'
 
 > **synthesize**(`text`, `options?`): `Promise`\<[`SpeechSynthesisResult`](../interfaces/SpeechSynthesisResult.md)\>
 
-Defined in: [packages/agentos/src/speech/providers/OpenAITextToSpeechProvider.ts:198](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/speech/providers/OpenAITextToSpeechProvider.ts#L198)
+Defined in: [packages/agentos/src/speech/providers/OpenAITextToSpeechProvider.ts:204](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/speech/providers/OpenAITextToSpeechProvider.ts#L204)
 
 Synthesizes speech from text using the OpenAI TTS API.
 

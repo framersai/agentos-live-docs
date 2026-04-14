@@ -1,6 +1,6 @@
 # Interface: PlanningOptions
 
-Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:184](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/planner/IPlanningEngine.ts#L184)
+Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:184](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/planner/IPlanningEngine.ts#L184)
 
 Configuration for plan generation.
 
@@ -10,7 +10,7 @@ Configuration for plan generation.
 
 > `optional` **allowToolUse**: `boolean`
 
-Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:192](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/planner/IPlanningEngine.ts#L192)
+Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:192](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/planner/IPlanningEngine.ts#L192)
 
 Allow tool usage in plan
 
@@ -20,7 +20,7 @@ Allow tool usage in plan
 
 > `optional` **availableTools**: [`ITool`](ITool.md)\<`any`, `any`\>[]
 
-Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:194](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/planner/IPlanningEngine.ts#L194)
+Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:194](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/planner/IPlanningEngine.ts#L194)
 
 Available tools for planning
 
@@ -30,7 +30,7 @@ Available tools for planning
 
 > `optional` **checkpointFrequency**: `number`
 
-Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:200](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/planner/IPlanningEngine.ts#L200)
+Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:200](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/planner/IPlanningEngine.ts#L200)
 
 Checkpoint frequency (every N steps)
 
@@ -40,7 +40,7 @@ Checkpoint frequency (every N steps)
 
 > `optional` **enableCheckpoints**: `boolean`
 
-Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:198](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/planner/IPlanningEngine.ts#L198)
+Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:198](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/planner/IPlanningEngine.ts#L198)
 
 Enable human checkpoints
 
@@ -50,7 +50,7 @@ Enable human checkpoints
 
 > `optional` **maxIterations**: `number`
 
-Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:188](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/planner/IPlanningEngine.ts#L188)
+Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:188](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/planner/IPlanningEngine.ts#L188)
 
 Maximum planning iterations
 
@@ -60,7 +60,7 @@ Maximum planning iterations
 
 > `optional` **maxSteps**: `number`
 
-Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:186](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/planner/IPlanningEngine.ts#L186)
+Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:186](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/planner/IPlanningEngine.ts#L186)
 
 Maximum steps allowed in plan
 
@@ -70,7 +70,7 @@ Maximum steps allowed in plan
 
 > `optional` **maxTotalTokens**: `number`
 
-Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:202](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/planner/IPlanningEngine.ts#L202)
+Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:202](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/planner/IPlanningEngine.ts#L202)
 
 Maximum tokens for entire plan execution
 
@@ -80,7 +80,7 @@ Maximum tokens for entire plan execution
 
 > `optional` **minConfidence**: `number`
 
-Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:190](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/planner/IPlanningEngine.ts#L190)
+Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:190](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/planner/IPlanningEngine.ts#L190)
 
 Minimum confidence threshold
 
@@ -90,7 +90,7 @@ Minimum confidence threshold
 
 > `optional` **planningTimeoutMs**: `number`
 
-Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:204](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/planner/IPlanningEngine.ts#L204)
+Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:204](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/planner/IPlanningEngine.ts#L204)
 
 Time limit for planning phase in ms
 
@@ -100,6 +100,6 @@ Time limit for planning phase in ms
 
 > `optional` **strategy**: [`PlanningStrategy`](../type-aliases/PlanningStrategy.md)
 
-Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:196](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/planner/IPlanningEngine.ts#L196)
+Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:196](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/planner/IPlanningEngine.ts#L196)
 
 Planning strategy to use

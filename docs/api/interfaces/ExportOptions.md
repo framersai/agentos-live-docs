@@ -1,6 +1,6 @@
 # Interface: ExportOptions
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:459](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/io/facade/types.ts#L459)
+Defined in: [packages/agentos/src/memory/io/facade/types.ts:459](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/io/facade/types.ts#L459)
 
 Options for exporting the memory store via `Memory.export()`.
 
@@ -10,7 +10,7 @@ Options for exporting the memory store via `Memory.export()`.
 
 > `optional` **format**: `"json"` \| `"markdown"` \| `"sqlite"` \| `"obsidian"`
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:468](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/io/facade/types.ts#L468)
+Defined in: [packages/agentos/src/memory/io/facade/types.ts:468](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/io/facade/types.ts#L468)
 
 Serialisation format for the export artifact.
 - `'sqlite'`   – copy of the SQLite file (binary).
@@ -30,7 +30,7 @@ Serialisation format for the export artifact.
 
 > `optional` **includeConversations**: `boolean`
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:482](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/io/facade/types.ts#L482)
+Defined in: [packages/agentos/src/memory/io/facade/types.ts:482](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/io/facade/types.ts#L482)
 
 Whether to include conversation turn traces in the export.
 
@@ -46,7 +46,7 @@ true
 
 > `optional` **includeEmbeddings**: `boolean`
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:476](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/io/facade/types.ts#L476)
+Defined in: [packages/agentos/src/memory/io/facade/types.ts:476](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/io/facade/types.ts#L476)
 
 Whether to include raw embedding vectors in the export.
 Embeddings dramatically increase file size but allow round-trip import

@@ -1,6 +1,6 @@
 # Interface: FalImageProviderConfig
 
-Defined in: [packages/agentos/src/media/images/providers/FalImageProvider.ts:56](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/images/providers/FalImageProvider.ts#L56)
+Defined in: [packages/agentos/src/media/images/providers/FalImageProvider.ts:58](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/providers/FalImageProvider.ts#L58)
 
 Configuration for the Fal.ai image provider.
 
@@ -19,7 +19,7 @@ const config: FalImageProviderConfig = {
 
 > **apiKey**: `string`
 
-Defined in: [packages/agentos/src/media/images/providers/FalImageProvider.ts:61](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/images/providers/FalImageProvider.ts#L61)
+Defined in: [packages/agentos/src/media/images/providers/FalImageProvider.ts:63](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/providers/FalImageProvider.ts#L63)
 
 Fal.ai API key. Sent as `Authorization: Key ${apiKey}`.
 Obtain from https://fal.ai/dashboard/keys
@@ -30,7 +30,7 @@ Obtain from https://fal.ai/dashboard/keys
 
 > `optional` **baseURL**: `string`
 
-Defined in: [packages/agentos/src/media/images/providers/FalImageProvider.ts:67](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/images/providers/FalImageProvider.ts#L67)
+Defined in: [packages/agentos/src/media/images/providers/FalImageProvider.ts:69](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/providers/FalImageProvider.ts#L69)
 
 Base URL for the Fal.ai queue API. Override for testing or proxy setups.
 
@@ -46,7 +46,7 @@ Base URL for the Fal.ai queue API. Override for testing or proxy setups.
 
 > `optional` **defaultModelId**: `string`
 
-Defined in: [packages/agentos/src/media/images/providers/FalImageProvider.ts:73](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/images/providers/FalImageProvider.ts#L73)
+Defined in: [packages/agentos/src/media/images/providers/FalImageProvider.ts:75](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/providers/FalImageProvider.ts#L75)
 
 Default model to use when the request doesn't specify one.
 
@@ -62,7 +62,7 @@ Default model to use when the request doesn't specify one.
 
 > `optional` **pollIntervalMs**: `number`
 
-Defined in: [packages/agentos/src/media/images/providers/FalImageProvider.ts:79](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/images/providers/FalImageProvider.ts#L79)
+Defined in: [packages/agentos/src/media/images/providers/FalImageProvider.ts:81](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/providers/FalImageProvider.ts#L81)
 
 Milliseconds between status polls while waiting for generation.
 
@@ -78,7 +78,7 @@ Milliseconds between status polls while waiting for generation.
 
 > `optional` **timeoutMs**: `number`
 
-Defined in: [packages/agentos/src/media/images/providers/FalImageProvider.ts:85](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/images/providers/FalImageProvider.ts#L85)
+Defined in: [packages/agentos/src/media/images/providers/FalImageProvider.ts:87](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/providers/FalImageProvider.ts#L87)
 
 Maximum milliseconds to wait for generation before timing out.
 

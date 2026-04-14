@@ -1,6 +1,6 @@
 # Class: ConversationManager
 
-Defined in: [packages/agentos/src/core/conversation/ConversationManager.ts:94](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/conversation/ConversationManager.ts#L94)
+Defined in: [packages/agentos/src/core/conversation/ConversationManager.ts:94](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/conversation/ConversationManager.ts#L94)
 
 ## Description
 
@@ -15,7 +15,7 @@ GMI interactions.
 
 > **new ConversationManager**(): `ConversationManager`
 
-Defined in: [packages/agentos/src/core/conversation/ConversationManager.ts:144](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/conversation/ConversationManager.ts#L144)
+Defined in: [packages/agentos/src/core/conversation/ConversationManager.ts:144](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/conversation/ConversationManager.ts#L144)
 
 Constructs a ConversationManager instance.
 Initialization via `initialize()` is required before use.
@@ -30,7 +30,7 @@ Initialization via `initialize()` is required before use.
 
 > `readonly` **managerId**: `string`
 
-Defined in: [packages/agentos/src/core/conversation/ConversationManager.ts:138](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/conversation/ConversationManager.ts#L138)
+Defined in: [packages/agentos/src/core/conversation/ConversationManager.ts:138](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/conversation/ConversationManager.ts#L138)
 
 Unique identifier for this ConversationManager instance.
 
@@ -40,7 +40,7 @@ Unique identifier for this ConversationManager instance.
 
 > **deleteConversation**(`conversationId`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/core/conversation/ConversationManager.ts:336](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/conversation/ConversationManager.ts#L336)
+Defined in: [packages/agentos/src/core/conversation/ConversationManager.ts:336](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/conversation/ConversationManager.ts#L336)
 
 **`Async`**
 
@@ -68,7 +68,7 @@ If the deletion fails.
 
 > **getConversation**(`conversationId`): `Promise`\<`ConversationContext` \| `null`\>
 
-Defined in: [packages/agentos/src/core/conversation/ConversationManager.ts:294](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/conversation/ConversationManager.ts#L294)
+Defined in: [packages/agentos/src/core/conversation/ConversationManager.ts:294](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/conversation/ConversationManager.ts#L294)
 
 Retrieves a ConversationContext if present in memory or persistent storage.
 Returns null when not found.
@@ -89,7 +89,7 @@ Returns null when not found.
 
 > **getConversationInfo**(`sessionId`): `Promise`\<`object`[]\>
 
-Defined in: [packages/agentos/src/core/conversation/ConversationManager.ts:368](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/conversation/ConversationManager.ts#L368)
+Defined in: [packages/agentos/src/core/conversation/ConversationManager.ts:368](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/conversation/ConversationManager.ts#L368)
 
 **`Async`**
 
@@ -116,7 +116,7 @@ Array with conversation info, or empty if not found.
 
 > **getLastActiveTimeForConversation**(`conversationId`): `Promise`\<`number` \| `undefined`\>
 
-Defined in: [packages/agentos/src/core/conversation/ConversationManager.ts:400](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/conversation/ConversationManager.ts#L400)
+Defined in: [packages/agentos/src/core/conversation/ConversationManager.ts:400](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/conversation/ConversationManager.ts#L400)
 
 **`Async`**
 
@@ -143,7 +143,7 @@ Timestamp of last activity (Unix epoch ms), or undefined if not found.
 
 > **getOrCreateConversationContext**(`conversationId?`, `userId?`, `gmiInstanceId?`, `activePersonaId?`, `initialMetadata?`, `overrideConfig?`): `Promise`\<`ConversationContext`\>
 
-Defined in: [packages/agentos/src/core/conversation/ConversationManager.ts:237](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/conversation/ConversationManager.ts#L237)
+Defined in: [packages/agentos/src/core/conversation/ConversationManager.ts:237](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/conversation/ConversationManager.ts#L237)
 
 **`Async`**
 
@@ -209,7 +209,7 @@ If essential parameters for creating a new context are missing or if an error oc
 
 > **initialize**(`config`, `utilityAIService?`, `storageAdapter?`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/core/conversation/ConversationManager.ts:163](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/conversation/ConversationManager.ts#L163)
+Defined in: [packages/agentos/src/core/conversation/ConversationManager.ts:163](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/conversation/ConversationManager.ts#L163)
 
 **`Async`**
 
@@ -226,7 +226,7 @@ Configuration for the manager.
 
 ##### utilityAIService?
 
-`IUtilityAI`
+[`IUtilityAI`](../interfaces/IUtilityAI.md)
 
 Optional IUtilityAI instance, primarily
 used by ConversationContext instances for features like summarization.
@@ -254,7 +254,7 @@ If configuration is invalid or dependencies are missing when required.
 
 > **listContextsForSession**(`sessionId`): `Promise`\<`object`[]\>
 
-Defined in: [packages/agentos/src/core/conversation/ConversationManager.ts:308](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/conversation/ConversationManager.ts#L308)
+Defined in: [packages/agentos/src/core/conversation/ConversationManager.ts:308](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/conversation/ConversationManager.ts#L308)
 
 Lists minimal context info for a given session. Currently returns a single entry
 matching the provided sessionId if found in memory or storage.
@@ -275,7 +275,7 @@ matching the provided sessionId if found in memory or storage.
 
 > **saveConversation**(`context`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/core/conversation/ConversationManager.ts:321](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/conversation/ConversationManager.ts#L321)
+Defined in: [packages/agentos/src/core/conversation/ConversationManager.ts:321](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/conversation/ConversationManager.ts#L321)
 
 **`Async`**
 
@@ -304,7 +304,7 @@ If the save operation fails.
 
 > **shutdown**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/core/conversation/ConversationManager.ts:801](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/conversation/ConversationManager.ts#L801)
+Defined in: [packages/agentos/src/core/conversation/ConversationManager.ts:801](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/conversation/ConversationManager.ts#L801)
 
 **`Async`**
 

@@ -1,6 +1,6 @@
 # Interface: IAgentCommunicationBus
 
-Defined in: [packages/agentos/src/agents/agency/IAgentCommunicationBus.ts:335](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/agents/agency/IAgentCommunicationBus.ts#L335)
+Defined in: [packages/agentos/src/agents/agency/IAgentCommunicationBus.ts:335](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/agents/agency/IAgentCommunicationBus.ts#L335)
 
 Interface for the AgentOS Agent Communication Bus.
 
@@ -45,7 +45,7 @@ await bus.sendToAgent('analyst-gmi', {
 
 > **acknowledgeMessage**(`messageId`, `agentId`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/agents/agency/IAgentCommunicationBus.ts:555](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/agents/agency/IAgentCommunicationBus.ts#L555)
+Defined in: [packages/agentos/src/agents/agency/IAgentCommunicationBus.ts:555](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/agents/agency/IAgentCommunicationBus.ts#L555)
 
 Acknowledges receipt of a message.
 
@@ -73,7 +73,7 @@ Acknowledging agent
 
 > **broadcast**(`agencyId`, `message`): `Promise`\<`DeliveryStatus`[]\>
 
-Defined in: [packages/agentos/src/agents/agency/IAgentCommunicationBus.ts:396](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/agents/agency/IAgentCommunicationBus.ts#L396)
+Defined in: [packages/agentos/src/agents/agency/IAgentCommunicationBus.ts:396](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/agents/agency/IAgentCommunicationBus.ts#L396)
 
 Broadcasts a message to all agents in an agency.
 
@@ -113,7 +113,7 @@ await bus.broadcast('agency-123', {
 
 > **broadcastToRoles**(`agencyId`, `roleIds`, `message`): `Promise`\<`DeliveryStatus`[]\>
 
-Defined in: [packages/agentos/src/agents/agency/IAgentCommunicationBus.ts:409](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/agents/agency/IAgentCommunicationBus.ts#L409)
+Defined in: [packages/agentos/src/agents/agency/IAgentCommunicationBus.ts:409](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/agents/agency/IAgentCommunicationBus.ts#L409)
 
 Broadcasts to specific roles within an agency.
 
@@ -149,7 +149,7 @@ Array of delivery statuses
 
 > **createTopic**(`topic`): `Promise`\<`MessageTopic`\>
 
-Defined in: [packages/agentos/src/agents/agency/IAgentCommunicationBus.ts:513](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/agents/agency/IAgentCommunicationBus.ts#L513)
+Defined in: [packages/agentos/src/agents/agency/IAgentCommunicationBus.ts:513](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/agents/agency/IAgentCommunicationBus.ts#L513)
 
 Creates a message topic.
 
@@ -173,7 +173,7 @@ Created topic
 
 > **getDeliveryStatus**(`messageId`): `Promise`\<`DeliveryStatus` \| `null`\>
 
-Defined in: [packages/agentos/src/agents/agency/IAgentCommunicationBus.ts:547](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/agents/agency/IAgentCommunicationBus.ts#L547)
+Defined in: [packages/agentos/src/agents/agency/IAgentCommunicationBus.ts:547](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/agents/agency/IAgentCommunicationBus.ts#L547)
 
 Gets the delivery status of a message.
 
@@ -197,7 +197,7 @@ Delivery status or null if not found
 
 > **getMessageHistory**(`agentId`, `options?`): `Promise`\<[`AgentMessage`](AgentMessage.md)[]\>
 
-Defined in: [packages/agentos/src/agents/agency/IAgentCommunicationBus.ts:583](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/agents/agency/IAgentCommunicationBus.ts#L583)
+Defined in: [packages/agentos/src/agents/agency/IAgentCommunicationBus.ts:583](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/agents/agency/IAgentCommunicationBus.ts#L583)
 
 Gets message history for an agent.
 
@@ -241,7 +241,7 @@ Message history
 
 > **getStatistics**(): `BusStatistics`
 
-Defined in: [packages/agentos/src/agents/agency/IAgentCommunicationBus.ts:574](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/agents/agency/IAgentCommunicationBus.ts#L574)
+Defined in: [packages/agentos/src/agents/agency/IAgentCommunicationBus.ts:574](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/agents/agency/IAgentCommunicationBus.ts#L574)
 
 Gets message bus statistics.
 
@@ -257,7 +257,7 @@ Current bus statistics
 
 > **handoff**(`fromAgentId`, `toAgentId`, `context`): `Promise`\<[`HandoffResult`](HandoffResult.md)\>
 
-Defined in: [packages/agentos/src/agents/agency/IAgentCommunicationBus.ts:468](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/agents/agency/IAgentCommunicationBus.ts#L468)
+Defined in: [packages/agentos/src/agents/agency/IAgentCommunicationBus.ts:468](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/agents/agency/IAgentCommunicationBus.ts#L468)
 
 Initiates a structured handoff between agents.
 Used for transferring task ownership with full context.
@@ -308,7 +308,7 @@ const result = await bus.handoff('analyst-gmi', 'reviewer-gmi', {
 
 > **publishToTopic**(`topicId`, `message`): `Promise`\<`DeliveryStatus`[]\>
 
-Defined in: [packages/agentos/src/agents/agency/IAgentCommunicationBus.ts:522](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/agents/agency/IAgentCommunicationBus.ts#L522)
+Defined in: [packages/agentos/src/agents/agency/IAgentCommunicationBus.ts:522](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/agents/agency/IAgentCommunicationBus.ts#L522)
 
 Publishes a message to a topic.
 
@@ -338,7 +338,7 @@ Delivery statuses for all subscribers
 
 > **requestResponse**(`targetAgentId`, `request`): `Promise`\<[`AgentResponse`](AgentResponse.md)\>
 
-Defined in: [packages/agentos/src/agents/agency/IAgentCommunicationBus.ts:440](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/agents/agency/IAgentCommunicationBus.ts#L440)
+Defined in: [packages/agentos/src/agents/agency/IAgentCommunicationBus.ts:440](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/agents/agency/IAgentCommunicationBus.ts#L440)
 
 Sends a request and waits for a response.
 Implements request-response pattern over async messaging.
@@ -383,7 +383,7 @@ if (response.status === 'success') {
 
 > **retryDelivery**(`messageId`): `Promise`\<`DeliveryStatus`\>
 
-Defined in: [packages/agentos/src/agents/agency/IAgentCommunicationBus.ts:563](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/agents/agency/IAgentCommunicationBus.ts#L563)
+Defined in: [packages/agentos/src/agents/agency/IAgentCommunicationBus.ts:563](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/agents/agency/IAgentCommunicationBus.ts#L563)
 
 Retries delivery of a failed message.
 
@@ -407,7 +407,7 @@ New delivery status
 
 > **sendToAgent**(`targetAgentId`, `message`): `Promise`\<`DeliveryStatus`\>
 
-Defined in: [packages/agentos/src/agents/agency/IAgentCommunicationBus.ts:356](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/agents/agency/IAgentCommunicationBus.ts#L356)
+Defined in: [packages/agentos/src/agents/agency/IAgentCommunicationBus.ts:356](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/agents/agency/IAgentCommunicationBus.ts#L356)
 
 Sends a message to a specific agent.
 
@@ -447,7 +447,7 @@ await bus.sendToAgent('researcher-gmi', {
 
 > **sendToRole**(`agencyId`, `targetRoleId`, `message`): `Promise`\<`DeliveryStatus`\>
 
-Defined in: [packages/agentos/src/agents/agency/IAgentCommunicationBus.ts:370](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/agents/agency/IAgentCommunicationBus.ts#L370)
+Defined in: [packages/agentos/src/agents/agency/IAgentCommunicationBus.ts:370](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/agents/agency/IAgentCommunicationBus.ts#L370)
 
 Sends a message to an agent by role.
 If multiple agents have the role, uses load balancing.
@@ -484,7 +484,7 @@ Delivery status
 
 > **subscribe**(`agentId`, `handler`, `options?`): `Unsubscribe`
 
-Defined in: [packages/agentos/src/agents/agency/IAgentCommunicationBus.ts:494](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/agents/agency/IAgentCommunicationBus.ts#L494)
+Defined in: [packages/agentos/src/agents/agency/IAgentCommunicationBus.ts:494](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/agents/agency/IAgentCommunicationBus.ts#L494)
 
 Subscribes an agent to receive messages.
 
@@ -533,7 +533,7 @@ const unsub = bus.subscribe('worker-gmi', async (msg) => {
 
 > **subscribeToTopic**(`agentId`, `topicId`, `handler`): `Unsubscribe`
 
-Defined in: [packages/agentos/src/agents/agency/IAgentCommunicationBus.ts:535](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/agents/agency/IAgentCommunicationBus.ts#L535)
+Defined in: [packages/agentos/src/agents/agency/IAgentCommunicationBus.ts:535](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/agents/agency/IAgentCommunicationBus.ts#L535)
 
 Subscribes an agent to a topic.
 
@@ -569,7 +569,7 @@ Unsubscribe function
 
 > **unsubscribeAll**(`agentId`): `void`
 
-Defined in: [packages/agentos/src/agents/agency/IAgentCommunicationBus.ts:501](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/agents/agency/IAgentCommunicationBus.ts#L501)
+Defined in: [packages/agentos/src/agents/agency/IAgentCommunicationBus.ts:501](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/agents/agency/IAgentCommunicationBus.ts#L501)
 
 Unsubscribes an agent from all messages.
 

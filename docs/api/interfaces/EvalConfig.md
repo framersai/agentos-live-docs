@@ -1,6 +1,6 @@
 # Interface: EvalConfig
 
-Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:198](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/evaluation/IEvaluator.ts#L198)
+Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:198](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/evaluation/IEvaluator.ts#L198)
 
 Configuration for an evaluation run.
 
@@ -10,7 +10,7 @@ Configuration for an evaluation run.
 
 > `optional` **concurrency**: `number`
 
-Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:200](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/evaluation/IEvaluator.ts#L200)
+Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:200](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/evaluation/IEvaluator.ts#L200)
 
 Maximum concurrent evaluations
 
@@ -20,7 +20,7 @@ Maximum concurrent evaluations
 
 > `optional` **continueOnError**: `boolean`
 
-Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:206](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/evaluation/IEvaluator.ts#L206)
+Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:206](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/evaluation/IEvaluator.ts#L206)
 
 Whether to continue on error
 
@@ -30,7 +30,7 @@ Whether to continue on error
 
 > `optional` **customScorers**: `Record`\<`string`, [`ScorerFunction`](../type-aliases/ScorerFunction.md)\>
 
-Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:213](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/evaluation/IEvaluator.ts#L213)
+Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:213](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/evaluation/IEvaluator.ts#L213)
 
 Custom scorers
 
@@ -40,7 +40,7 @@ Custom scorers
 
 > `optional` **retries**: `number`
 
-Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:204](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/evaluation/IEvaluator.ts#L204)
+Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:204](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/evaluation/IEvaluator.ts#L204)
 
 Number of retries on failure
 
@@ -50,7 +50,7 @@ Number of retries on failure
 
 > `optional` **thresholds**: `object`
 
-Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:208](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/evaluation/IEvaluator.ts#L208)
+Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:208](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/evaluation/IEvaluator.ts#L208)
 
 Scoring thresholds
 
@@ -68,6 +68,6 @@ Scoring thresholds
 
 > `optional` **timeoutMs**: `number`
 
-Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:202](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/evaluation/IEvaluator.ts#L202)
+Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:202](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/evaluation/IEvaluator.ts#L202)
 
 Timeout per test case (ms)

@@ -1,6 +1,6 @@
 # Interface: BuildLlmCallerOptions
 
-Defined in: [packages/agentos/src/orchestration/planning/buildLlmCaller.ts:26](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/planning/buildLlmCaller.ts#L26)
+Defined in: [packages/agentos/src/orchestration/planning/buildLlmCaller.ts:26](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/planning/buildLlmCaller.ts#L26)
 
 Options for building an LLM caller function.
 
@@ -13,7 +13,7 @@ If neither is provided, auto-detection from env vars kicks in.
 
 > `optional` **apiKey**: `string`
 
-Defined in: [packages/agentos/src/orchestration/planning/buildLlmCaller.ts:32](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/planning/buildLlmCaller.ts#L32)
+Defined in: [packages/agentos/src/orchestration/planning/buildLlmCaller.ts:32](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/planning/buildLlmCaller.ts#L32)
 
 API key override (not needed for CLI providers).
 
@@ -23,7 +23,7 @@ API key override (not needed for CLI providers).
 
 > `optional` **baseUrl**: `string`
 
-Defined in: [packages/agentos/src/orchestration/planning/buildLlmCaller.ts:34](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/planning/buildLlmCaller.ts#L34)
+Defined in: [packages/agentos/src/orchestration/planning/buildLlmCaller.ts:34](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/planning/buildLlmCaller.ts#L34)
 
 Base URL override (e.g. for OpenRouter, Ollama).
 
@@ -33,7 +33,7 @@ Base URL override (e.g. for OpenRouter, Ollama).
 
 > `optional` **maxTokens**: `number`
 
-Defined in: [packages/agentos/src/orchestration/planning/buildLlmCaller.ts:38](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/planning/buildLlmCaller.ts#L38)
+Defined in: [packages/agentos/src/orchestration/planning/buildLlmCaller.ts:38](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/planning/buildLlmCaller.ts#L38)
 
 Max tokens for planning calls. Default: 4096.
 
@@ -43,7 +43,7 @@ Max tokens for planning calls. Default: 4096.
 
 > `optional` **model**: `string`
 
-Defined in: [packages/agentos/src/orchestration/planning/buildLlmCaller.ts:30](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/planning/buildLlmCaller.ts#L30)
+Defined in: [packages/agentos/src/orchestration/planning/buildLlmCaller.ts:30](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/planning/buildLlmCaller.ts#L30)
 
 Model ID: 'gpt-4o', 'claude-opus-4-6', 'gemini-2.5-flash', etc.
 
@@ -53,7 +53,7 @@ Model ID: 'gpt-4o', 'claude-opus-4-6', 'gemini-2.5-flash', etc.
 
 > `optional` **provider**: `string`
 
-Defined in: [packages/agentos/src/orchestration/planning/buildLlmCaller.ts:28](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/planning/buildLlmCaller.ts#L28)
+Defined in: [packages/agentos/src/orchestration/planning/buildLlmCaller.ts:28](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/planning/buildLlmCaller.ts#L28)
 
 Provider ID: 'openai', 'anthropic', 'claude-code-cli', 'gemini-cli', etc.
 
@@ -63,6 +63,6 @@ Provider ID: 'openai', 'anthropic', 'claude-code-cli', 'gemini-cli', etc.
 
 > `optional` **temperature**: `number`
 
-Defined in: [packages/agentos/src/orchestration/planning/buildLlmCaller.ts:36](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/planning/buildLlmCaller.ts#L36)
+Defined in: [packages/agentos/src/orchestration/planning/buildLlmCaller.ts:36](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/planning/buildLlmCaller.ts#L36)
 
 Temperature for planning calls. Default: 0.3.

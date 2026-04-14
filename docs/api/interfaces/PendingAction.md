@@ -1,6 +1,6 @@
 # Interface: PendingAction
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:45](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/hitl/IHumanInteractionManager.ts#L45)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:45](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/hitl/IHumanInteractionManager.ts#L45)
 
 A pending action awaiting human approval.
 
@@ -10,7 +10,7 @@ A pending action awaiting human approval.
 
 > **actionId**: `string`
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:47](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/hitl/IHumanInteractionManager.ts#L47)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:47](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/hitl/IHumanInteractionManager.ts#L47)
 
 Unique action identifier
 
@@ -20,7 +20,7 @@ Unique action identifier
 
 > **agentId**: `string`
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:55](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/hitl/IHumanInteractionManager.ts#L55)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:55](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/hitl/IHumanInteractionManager.ts#L55)
 
 Agent requesting approval
 
@@ -30,7 +30,7 @@ Agent requesting approval
 
 > `optional` **alternatives**: [`AlternativeAction`](AlternativeAction.md)[]
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:69](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/hitl/IHumanInteractionManager.ts#L69)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:69](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/hitl/IHumanInteractionManager.ts#L69)
 
 Alternative actions available
 
@@ -40,7 +40,7 @@ Alternative actions available
 
 > `optional` **category**: `"system"` \| `"communication"` \| `"data_modification"` \| `"external_api"` \| `"financial"` \| `"other"`
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:53](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/hitl/IHumanInteractionManager.ts#L53)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:53](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/hitl/IHumanInteractionManager.ts#L53)
 
 Category of action
 
@@ -50,7 +50,7 @@ Category of action
 
 > **context**: `Record`\<`string`, `unknown`\>
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:57](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/hitl/IHumanInteractionManager.ts#L57)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:57](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/hitl/IHumanInteractionManager.ts#L57)
 
 Context/parameters of the action
 
@@ -60,7 +60,7 @@ Context/parameters of the action
 
 > **description**: `string`
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:49](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/hitl/IHumanInteractionManager.ts#L49)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:49](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/hitl/IHumanInteractionManager.ts#L49)
 
 Human-readable description of the action
 
@@ -70,7 +70,7 @@ Human-readable description of the action
 
 > `optional` **estimatedCost**: `object`
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:63](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/hitl/IHumanInteractionManager.ts#L63)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:63](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/hitl/IHumanInteractionManager.ts#L63)
 
 Estimated cost (if applicable)
 
@@ -88,7 +88,7 @@ Estimated cost (if applicable)
 
 > `optional` **potentialConsequences**: `string`[]
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:59](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/hitl/IHumanInteractionManager.ts#L59)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:59](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/hitl/IHumanInteractionManager.ts#L59)
 
 Potential consequences if approved
 
@@ -98,7 +98,7 @@ Potential consequences if approved
 
 > **requestedAt**: `Date`
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:65](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/hitl/IHumanInteractionManager.ts#L65)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:65](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/hitl/IHumanInteractionManager.ts#L65)
 
 Timestamp when request was made
 
@@ -108,7 +108,7 @@ Timestamp when request was made
 
 > **reversible**: `boolean`
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:61](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/hitl/IHumanInteractionManager.ts#L61)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:61](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/hitl/IHumanInteractionManager.ts#L61)
 
 Reversibility of the action
 
@@ -118,7 +118,7 @@ Reversibility of the action
 
 > **severity**: [`ActionSeverity`](../type-aliases/ActionSeverity.md)
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:51](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/hitl/IHumanInteractionManager.ts#L51)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:51](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/hitl/IHumanInteractionManager.ts#L51)
 
 Action severity/risk level
 
@@ -128,6 +128,6 @@ Action severity/risk level
 
 > `optional` **timeoutMs**: `number`
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:67](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/hitl/IHumanInteractionManager.ts#L67)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:67](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/hitl/IHumanInteractionManager.ts#L67)
 
 Timeout for approval (ms)

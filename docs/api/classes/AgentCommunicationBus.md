@@ -1,6 +1,6 @@
 # Class: AgentCommunicationBus
 
-Defined in: [packages/agentos/src/agents/agency/AgentCommunicationBus.ts:93](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/agents/agency/AgentCommunicationBus.ts#L93)
+Defined in: [packages/agentos/src/agents/agency/AgentCommunicationBus.ts:93](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/agents/agency/AgentCommunicationBus.ts#L93)
 
 Implementation of the Agent Communication Bus.
 
@@ -25,7 +25,7 @@ Features:
 
 > **new AgentCommunicationBus**(`config?`): `AgentCommunicationBus`
 
-Defined in: [packages/agentos/src/agents/agency/AgentCommunicationBus.ts:138](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/agents/agency/AgentCommunicationBus.ts#L138)
+Defined in: [packages/agentos/src/agents/agency/AgentCommunicationBus.ts:138](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/agents/agency/AgentCommunicationBus.ts#L138)
 
 Creates a new AgentCommunicationBus instance.
 
@@ -47,7 +47,7 @@ Bus configuration
 
 > **acknowledgeMessage**(`messageId`, `agentId`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/agents/agency/AgentCommunicationBus.ts:537](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/agents/agency/AgentCommunicationBus.ts#L537)
+Defined in: [packages/agentos/src/agents/agency/AgentCommunicationBus.ts:537](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/agents/agency/AgentCommunicationBus.ts#L537)
 
 Acknowledges receipt of a message.
 
@@ -75,7 +75,7 @@ Acknowledges receipt of a message.
 
 > **broadcast**(`agencyId`, `message`): `Promise`\<`DeliveryStatus`[]\>
 
-Defined in: [packages/agentos/src/agents/agency/AgentCommunicationBus.ts:215](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/agents/agency/AgentCommunicationBus.ts#L215)
+Defined in: [packages/agentos/src/agents/agency/AgentCommunicationBus.ts:215](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/agents/agency/AgentCommunicationBus.ts#L215)
 
 Broadcasts a message to all agents in an agency.
 
@@ -103,7 +103,7 @@ Broadcasts a message to all agents in an agency.
 
 > **broadcastToRoles**(`agencyId`, `roleIds`, `message`): `Promise`\<`DeliveryStatus`[]\>
 
-Defined in: [packages/agentos/src/agents/agency/AgentCommunicationBus.ts:240](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/agents/agency/AgentCommunicationBus.ts#L240)
+Defined in: [packages/agentos/src/agents/agency/AgentCommunicationBus.ts:240](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/agents/agency/AgentCommunicationBus.ts#L240)
 
 Broadcasts to specific roles within an agency.
 
@@ -135,7 +135,7 @@ Broadcasts to specific roles within an agency.
 
 > **createTopic**(`topic`): `Promise`\<`MessageTopic`\>
 
-Defined in: [packages/agentos/src/agents/agency/AgentCommunicationBus.ts:445](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/agents/agency/AgentCommunicationBus.ts#L445)
+Defined in: [packages/agentos/src/agents/agency/AgentCommunicationBus.ts:445](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/agents/agency/AgentCommunicationBus.ts#L445)
 
 Creates a message topic.
 
@@ -159,7 +159,7 @@ Creates a message topic.
 
 > **getDeliveryStatus**(`messageId`): `Promise`\<`DeliveryStatus` \| `null`\>
 
-Defined in: [packages/agentos/src/agents/agency/AgentCommunicationBus.ts:530](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/agents/agency/AgentCommunicationBus.ts#L530)
+Defined in: [packages/agentos/src/agents/agency/AgentCommunicationBus.ts:530](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/agents/agency/AgentCommunicationBus.ts#L530)
 
 Gets the delivery status of a message.
 
@@ -183,7 +183,7 @@ Gets the delivery status of a message.
 
 > **getMessageHistory**(`agentId`, `options?`): `Promise`\<[`AgentMessage`](../interfaces/AgentMessage.md)[]\>
 
-Defined in: [packages/agentos/src/agents/agency/AgentCommunicationBus.ts:590](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/agents/agency/AgentCommunicationBus.ts#L590)
+Defined in: [packages/agentos/src/agents/agency/AgentCommunicationBus.ts:590](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/agents/agency/AgentCommunicationBus.ts#L590)
 
 Gets message history for an agent.
 
@@ -225,7 +225,7 @@ Gets message history for an agent.
 
 > **getStatistics**(): `BusStatistics`
 
-Defined in: [packages/agentos/src/agents/agency/AgentCommunicationBus.ts:583](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/agents/agency/AgentCommunicationBus.ts#L583)
+Defined in: [packages/agentos/src/agents/agency/AgentCommunicationBus.ts:583](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/agents/agency/AgentCommunicationBus.ts#L583)
 
 Gets message bus statistics.
 
@@ -243,7 +243,7 @@ Gets message bus statistics.
 
 > **handoff**(`fromAgentId`, `toAgentId`, `context`): `Promise`\<[`HandoffResult`](../interfaces/HandoffResult.md)\>
 
-Defined in: [packages/agentos/src/agents/agency/AgentCommunicationBus.ts:344](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/agents/agency/AgentCommunicationBus.ts#L344)
+Defined in: [packages/agentos/src/agents/agency/AgentCommunicationBus.ts:344](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/agents/agency/AgentCommunicationBus.ts#L344)
 
 Initiates a structured handoff between agents.
 
@@ -275,7 +275,7 @@ Initiates a structured handoff between agents.
 
 > **publishToTopic**(`topicId`, `message`): `Promise`\<`DeliveryStatus`[]\>
 
-Defined in: [packages/agentos/src/agents/agency/AgentCommunicationBus.ts:461](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/agents/agency/AgentCommunicationBus.ts#L461)
+Defined in: [packages/agentos/src/agents/agency/AgentCommunicationBus.ts:461](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/agents/agency/AgentCommunicationBus.ts#L461)
 
 Publishes a message to a topic.
 
@@ -303,7 +303,7 @@ Publishes a message to a topic.
 
 > **registerAgent**(`agentId`, `agencyId`, `roleId`): `void`
 
-Defined in: [packages/agentos/src/agents/agency/AgentCommunicationBus.ts:630](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/agents/agency/AgentCommunicationBus.ts#L630)
+Defined in: [packages/agentos/src/agents/agency/AgentCommunicationBus.ts:630](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/agents/agency/AgentCommunicationBus.ts#L630)
 
 Registers an agent with an agency for routing.
 
@@ -331,7 +331,7 @@ Registers an agent with an agency for routing.
 
 > **requestResponse**(`targetAgentId`, `request`): `Promise`\<[`AgentResponse`](../interfaces/AgentResponse.md)\>
 
-Defined in: [packages/agentos/src/agents/agency/AgentCommunicationBus.ts:276](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/agents/agency/AgentCommunicationBus.ts#L276)
+Defined in: [packages/agentos/src/agents/agency/AgentCommunicationBus.ts:276](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/agents/agency/AgentCommunicationBus.ts#L276)
 
 Sends a request and waits for a response.
 
@@ -359,7 +359,7 @@ Sends a request and waits for a response.
 
 > **retryDelivery**(`messageId`): `Promise`\<`DeliveryStatus`\>
 
-Defined in: [packages/agentos/src/agents/agency/AgentCommunicationBus.ts:554](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/agents/agency/AgentCommunicationBus.ts#L554)
+Defined in: [packages/agentos/src/agents/agency/AgentCommunicationBus.ts:554](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/agents/agency/AgentCommunicationBus.ts#L554)
 
 Retries delivery of a failed message.
 
@@ -383,7 +383,7 @@ Retries delivery of a failed message.
 
 > **sendToAgent**(`targetAgentId`, `message`): `Promise`\<`DeliveryStatus`\>
 
-Defined in: [packages/agentos/src/agents/agency/AgentCommunicationBus.ts:160](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/agents/agency/AgentCommunicationBus.ts#L160)
+Defined in: [packages/agentos/src/agents/agency/AgentCommunicationBus.ts:160](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/agents/agency/AgentCommunicationBus.ts#L160)
 
 Sends a message to a specific agent.
 
@@ -411,7 +411,7 @@ Sends a message to a specific agent.
 
 > **sendToRole**(`agencyId`, `targetRoleId`, `message`): `Promise`\<`DeliveryStatus`\>
 
-Defined in: [packages/agentos/src/agents/agency/AgentCommunicationBus.ts:178](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/agents/agency/AgentCommunicationBus.ts#L178)
+Defined in: [packages/agentos/src/agents/agency/AgentCommunicationBus.ts:178](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/agents/agency/AgentCommunicationBus.ts#L178)
 
 Sends a message to an agent by role.
 
@@ -443,7 +443,7 @@ Sends a message to an agent by role.
 
 > **subscribe**(`agentId`, `handler`, `options?`): `Unsubscribe`
 
-Defined in: [packages/agentos/src/agents/agency/AgentCommunicationBus.ts:395](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/agents/agency/AgentCommunicationBus.ts#L395)
+Defined in: [packages/agentos/src/agents/agency/AgentCommunicationBus.ts:395](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/agents/agency/AgentCommunicationBus.ts#L395)
 
 Subscribes an agent to receive messages.
 
@@ -475,7 +475,7 @@ Subscribes an agent to receive messages.
 
 > **subscribeToTopic**(`agentId`, `topicId`, `handler`): `Unsubscribe`
 
-Defined in: [packages/agentos/src/agents/agency/AgentCommunicationBus.ts:502](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/agents/agency/AgentCommunicationBus.ts#L502)
+Defined in: [packages/agentos/src/agents/agency/AgentCommunicationBus.ts:502](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/agents/agency/AgentCommunicationBus.ts#L502)
 
 Subscribes an agent to a topic.
 
@@ -507,7 +507,7 @@ Subscribes an agent to a topic.
 
 > **unregisterAgent**(`agentId`): `void`
 
-Defined in: [packages/agentos/src/agents/agency/AgentCommunicationBus.ts:651](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/agents/agency/AgentCommunicationBus.ts#L651)
+Defined in: [packages/agentos/src/agents/agency/AgentCommunicationBus.ts:651](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/agents/agency/AgentCommunicationBus.ts#L651)
 
 Unregisters an agent from routing.
 
@@ -527,7 +527,7 @@ Unregisters an agent from routing.
 
 > **unsubscribeAll**(`agentId`): `void`
 
-Defined in: [packages/agentos/src/agents/agency/AgentCommunicationBus.ts:429](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/agents/agency/AgentCommunicationBus.ts#L429)
+Defined in: [packages/agentos/src/agents/agency/AgentCommunicationBus.ts:429](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/agents/agency/AgentCommunicationBus.ts#L429)
 
 Unsubscribes an agent from all messages.
 

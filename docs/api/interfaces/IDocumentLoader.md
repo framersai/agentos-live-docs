@@ -1,6 +1,6 @@
 # Interface: IDocumentLoader
 
-Defined in: [packages/agentos/src/memory/io/ingestion/IDocumentLoader.ts:32](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/io/ingestion/IDocumentLoader.ts#L32)
+Defined in: [packages/agentos/src/memory/io/ingestion/IDocumentLoader.ts:32](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/io/ingestion/IDocumentLoader.ts#L32)
 
 Unified interface for all document loaders in the AgentOS ingestion
 pipeline.
@@ -27,7 +27,7 @@ if (loader.canLoad('README.md')) {
 
 > `readonly` **supportedExtensions**: `string`[]
 
-Defined in: [packages/agentos/src/memory/io/ingestion/IDocumentLoader.ts:40](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/io/ingestion/IDocumentLoader.ts#L40)
+Defined in: [packages/agentos/src/memory/io/ingestion/IDocumentLoader.ts:40](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/io/ingestion/IDocumentLoader.ts#L40)
 
 File extensions this loader handles, each with a leading dot.
 
@@ -45,7 +45,7 @@ Used by [LoaderRegistry](../classes/LoaderRegistry.md) to route file paths to th
 
 > **canLoad**(`source`): `boolean`
 
-Defined in: [packages/agentos/src/memory/io/ingestion/IDocumentLoader.ts:65](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/io/ingestion/IDocumentLoader.ts#L65)
+Defined in: [packages/agentos/src/memory/io/ingestion/IDocumentLoader.ts:65](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/io/ingestion/IDocumentLoader.ts#L65)
 
 Returns `true` when this loader is capable of handling `source`.
 
@@ -70,7 +70,7 @@ Absolute file path or raw bytes.
 
 > **load**(`source`, `options?`): `Promise`\<[`LoadedDocument`](LoadedDocument.md)\>
 
-Defined in: [packages/agentos/src/memory/io/ingestion/IDocumentLoader.ts:55](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/io/ingestion/IDocumentLoader.ts#L55)
+Defined in: [packages/agentos/src/memory/io/ingestion/IDocumentLoader.ts:55](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/io/ingestion/IDocumentLoader.ts#L55)
 
 Parses `source` and returns a normalised [LoadedDocument](LoadedDocument.md).
 

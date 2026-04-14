@@ -175,7 +175,7 @@ For higher quality extraction, install `@framers/agentos-ext-grounding-guard` wh
 
 ## Related Features
 
-- [Grounding Guard](/docs/extensions/built-in/grounding-guard) — real-time NLI streaming verification (guardrail)
-- [Reranker Chain](/docs/features/reranker-chain) — multi-stage result ranking before citation
-- [Deep Research](/docs/features/deep-research) — automatic citation verification on synthesis
-- [Content Policy Rewriter](/docs/extensions/built-in/content-policy-rewriter) — content filtering guardrail
+- [Grounding Guard](/extensions/built-in/grounding-guard) — real-time NLI streaming verification (guardrail)
+- [Reranker Chain](/features/reranker-chain) — multi-stage result ranking before citation
+- [Deep Research](/features/deep-research) — automatic citation verification on synthesis
+- [Content Policy Rewriter](/extensions/built-in/content-policy-rewriter) — content filtering guardrail

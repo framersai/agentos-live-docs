@@ -1,6 +1,6 @@
 # Interface: StuckDetectorConfig
 
-Defined in: [packages/agentos/src/safety/runtime/StuckDetector.ts:8](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/safety/runtime/StuckDetector.ts#L8)
+Defined in: [packages/agentos/src/safety/runtime/StuckDetector.ts:8](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/safety/runtime/StuckDetector.ts#L8)
 
 ## File
 
@@ -18,7 +18,7 @@ the agent is flagged as stuck.
 
 > **errorRepetitionThreshold**: `number`
 
-Defined in: [packages/agentos/src/safety/runtime/StuckDetector.ts:12](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/safety/runtime/StuckDetector.ts#L12)
+Defined in: [packages/agentos/src/safety/runtime/StuckDetector.ts:12](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/safety/runtime/StuckDetector.ts#L12)
 
 Number of identical errors before declaring stuck.
 
@@ -34,7 +34,7 @@ Number of identical errors before declaring stuck.
 
 > **maxHistoryPerAgent**: `number`
 
-Defined in: [packages/agentos/src/safety/runtime/StuckDetector.ts:16](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/safety/runtime/StuckDetector.ts#L16)
+Defined in: [packages/agentos/src/safety/runtime/StuckDetector.ts:16](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/safety/runtime/StuckDetector.ts#L16)
 
 Maximum entries to track per agent.
 
@@ -50,7 +50,7 @@ Maximum entries to track per agent.
 
 > **repetitionThreshold**: `number`
 
-Defined in: [packages/agentos/src/safety/runtime/StuckDetector.ts:10](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/safety/runtime/StuckDetector.ts#L10)
+Defined in: [packages/agentos/src/safety/runtime/StuckDetector.ts:10](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/safety/runtime/StuckDetector.ts#L10)
 
 Number of identical outputs before declaring stuck.
 
@@ -66,7 +66,7 @@ Number of identical outputs before declaring stuck.
 
 > **windowMs**: `number`
 
-Defined in: [packages/agentos/src/safety/runtime/StuckDetector.ts:14](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/safety/runtime/StuckDetector.ts#L14)
+Defined in: [packages/agentos/src/safety/runtime/StuckDetector.ts:14](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/safety/runtime/StuckDetector.ts#L14)
 
 Time window in ms for detecting repetition.
 

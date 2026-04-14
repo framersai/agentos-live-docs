@@ -1,6 +1,6 @@
 # Class: HydeRetriever
 
-Defined in: [packages/agentos/src/rag/HydeRetriever.ts:166](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/rag/HydeRetriever.ts#L166)
+Defined in: [packages/agentos/src/rag/HydeRetriever.ts:166](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/HydeRetriever.ts#L166)
 
 HyDE retriever: generates a hypothetical answer, embeds it, and searches
 the vector store with adaptive thresholding.
@@ -11,7 +11,7 @@ the vector store with adaptive thresholding.
 
 > **new HydeRetriever**(`opts`): `HydeRetriever`
 
-Defined in: [packages/agentos/src/rag/HydeRetriever.ts:171](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/rag/HydeRetriever.ts#L171)
+Defined in: [packages/agentos/src/rag/HydeRetriever.ts:171](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/HydeRetriever.ts#L171)
 
 #### Parameters
 
@@ -41,7 +41,7 @@ Defined in: [packages/agentos/src/rag/HydeRetriever.ts:171](https://github.com/f
 
 > **get** **enabled**(): `boolean`
 
-Defined in: [packages/agentos/src/rag/HydeRetriever.ts:182](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/rag/HydeRetriever.ts#L182)
+Defined in: [packages/agentos/src/rag/HydeRetriever.ts:182](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/HydeRetriever.ts#L182)
 
 Whether HyDE is enabled.
 
@@ -55,7 +55,7 @@ Whether HyDE is enabled.
 
 > **generateHypothesis**(`query`): `Promise`\<\{ `hypothesis`: `string`; `latencyMs`: `number`; \}\>
 
-Defined in: [packages/agentos/src/rag/HydeRetriever.ts:202](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/rag/HydeRetriever.ts#L202)
+Defined in: [packages/agentos/src/rag/HydeRetriever.ts:202](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/HydeRetriever.ts#L202)
 
 Generate a hypothetical answer for a query.
 
@@ -75,7 +75,7 @@ Generate a hypothetical answer for a query.
 
 > **generateMultipleHypotheses**(`query`, `count?`): `Promise`\<\{ `hypotheses`: `string`[]; `latencyMs`: `number`; \}\>
 
-Defined in: [packages/agentos/src/rag/HydeRetriever.ts:243](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/rag/HydeRetriever.ts#L243)
+Defined in: [packages/agentos/src/rag/HydeRetriever.ts:243](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/HydeRetriever.ts#L243)
 
 Generate multiple hypothetical documents from different perspectives.
 
@@ -131,7 +131,7 @@ const { hypotheses, latencyMs } = await retriever.generateMultipleHypotheses(
 
 > **retrieve**(`opts`): `Promise`\<[`HydeRetrievalResult`](../interfaces/HydeRetrievalResult.md)\>
 
-Defined in: [packages/agentos/src/rag/HydeRetriever.ts:438](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/rag/HydeRetriever.ts#L438)
+Defined in: [packages/agentos/src/rag/HydeRetriever.ts:438](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/HydeRetriever.ts#L438)
 
 Embed the hypothesis and search the vector store.
 Uses adaptive thresholding: starts at initialThreshold, steps down
@@ -173,7 +173,7 @@ Pre-generated hypothesis (skip generation if provided).
 
 > **retrieveContext**(`opts`): `Promise`\<\{ `chunkCount`: `number`; `context`: `string`; `effectiveThreshold`: `number`; `hypothesis`: `string`; `latencyMs`: `number`; \}\>
 
-Defined in: [packages/agentos/src/rag/HydeRetriever.ts:531](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/rag/HydeRetriever.ts#L531)
+Defined in: [packages/agentos/src/rag/HydeRetriever.ts:531](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/HydeRetriever.ts#L531)
 
 Convenience: retrieve and format as augmented context string.
 
@@ -211,7 +211,7 @@ Convenience: retrieve and format as augmented context string.
 
 > **retrieveMulti**(`opts`): `Promise`\<[`HydeMultiRetrievalResult`](../interfaces/HydeMultiRetrievalResult.md)\>
 
-Defined in: [packages/agentos/src/rag/HydeRetriever.ts:356](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/rag/HydeRetriever.ts#L356)
+Defined in: [packages/agentos/src/rag/HydeRetriever.ts:356](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/HydeRetriever.ts#L356)
 
 Multi-hypothesis retrieval: generates N diverse hypotheses, searches with each,
 and merges results by deduplication (keeping the highest score per document).

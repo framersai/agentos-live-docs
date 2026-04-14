@@ -1,6 +1,6 @@
 # Interface: IMessageQueryOptions
 
-Defined in: [packages/agentos/src/core/storage/IStorageAdapter.ts:156](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/storage/IStorageAdapter.ts#L156)
+Defined in: [packages/agentos/src/core/storage/IStorageAdapter.ts:156](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/storage/IStorageAdapter.ts#L156)
 
 Options for querying conversation messages with filtering and pagination.
 
@@ -30,7 +30,7 @@ const recentOptions: IMessageQueryOptions = {
 
 > `optional` **limit**: `number`
 
-Defined in: [packages/agentos/src/core/storage/IStorageAdapter.ts:157](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/storage/IStorageAdapter.ts#L157)
+Defined in: [packages/agentos/src/core/storage/IStorageAdapter.ts:157](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/storage/IStorageAdapter.ts#L157)
 
 Maximum number of messages to return
 
@@ -40,7 +40,7 @@ Maximum number of messages to return
 
 > `optional` **offset**: `number`
 
-Defined in: [packages/agentos/src/core/storage/IStorageAdapter.ts:158](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/storage/IStorageAdapter.ts#L158)
+Defined in: [packages/agentos/src/core/storage/IStorageAdapter.ts:158](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/storage/IStorageAdapter.ts#L158)
 
 Number of messages to skip (for pagination)
 
@@ -50,7 +50,7 @@ Number of messages to skip (for pagination)
 
 > `optional` **order**: `"asc"` \| `"desc"`
 
-Defined in: [packages/agentos/src/core/storage/IStorageAdapter.ts:162](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/storage/IStorageAdapter.ts#L162)
+Defined in: [packages/agentos/src/core/storage/IStorageAdapter.ts:162](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/storage/IStorageAdapter.ts#L162)
 
 Sort order by timestamp (default: 'asc')
 
@@ -60,7 +60,7 @@ Sort order by timestamp (default: 'asc')
 
 > `optional` **roles**: (`"user"` \| `"tool"` \| `"system"` \| `"assistant"`)[]
 
-Defined in: [packages/agentos/src/core/storage/IStorageAdapter.ts:161](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/storage/IStorageAdapter.ts#L161)
+Defined in: [packages/agentos/src/core/storage/IStorageAdapter.ts:161](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/storage/IStorageAdapter.ts#L161)
 
 Filter by message roles
 
@@ -70,7 +70,7 @@ Filter by message roles
 
 > `optional` **since**: `number`
 
-Defined in: [packages/agentos/src/core/storage/IStorageAdapter.ts:159](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/storage/IStorageAdapter.ts#L159)
+Defined in: [packages/agentos/src/core/storage/IStorageAdapter.ts:159](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/storage/IStorageAdapter.ts#L159)
 
 Only return messages created after this timestamp
 
@@ -80,6 +80,6 @@ Only return messages created after this timestamp
 
 > `optional` **until**: `number`
 
-Defined in: [packages/agentos/src/core/storage/IStorageAdapter.ts:160](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/storage/IStorageAdapter.ts#L160)
+Defined in: [packages/agentos/src/core/storage/IStorageAdapter.ts:160](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/storage/IStorageAdapter.ts#L160)
 
 Only return messages created before this timestamp

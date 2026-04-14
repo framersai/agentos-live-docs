@@ -277,7 +277,7 @@ await performanceAgent.initialize({
 const customAgent = new AgentOS();
 await customAgent.initialize({
   performanceTier: 'custom',
-  defaultModel: 'claude-haiku-4-5',
+  defaultModel: 'claude-3-haiku',
   maxTokensPerTurn: 2000,
   cachingEnabled: true,
   // ... other options
@@ -348,7 +348,7 @@ const config: AgentOSConfig = {
     fallback: [
       {
         name: 'anthropic',
-        models: ['claude-haiku-4-5'],
+        models: ['claude-3-haiku'],
         apiKey: process.env.ANTHROPIC_API_KEY,
         // Use when primary fails or is expensive
         conditions: {

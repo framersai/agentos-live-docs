@@ -1,6 +1,6 @@
 # Class: InMemoryCheckpointStore
 
-Defined in: [packages/agentos/src/orchestration/checkpoint/InMemoryCheckpointStore.ts:50](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/checkpoint/InMemoryCheckpointStore.ts#L50)
+Defined in: [packages/agentos/src/orchestration/checkpoint/InMemoryCheckpointStore.ts:50](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/checkpoint/InMemoryCheckpointStore.ts#L50)
 
 In-memory `ICheckpointStore` implementation.
 
@@ -36,7 +36,7 @@ const restored = await store.latest(runId);
 
 > **delete**(`checkpointId`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/orchestration/checkpoint/InMemoryCheckpointStore.ts:102](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/checkpoint/InMemoryCheckpointStore.ts#L102)
+Defined in: [packages/agentos/src/orchestration/checkpoint/InMemoryCheckpointStore.ts:102](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/checkpoint/InMemoryCheckpointStore.ts#L102)
 
 Permanently remove a checkpoint from the store.
 
@@ -64,7 +64,7 @@ The checkpoint to remove.
 
 > **fork**(`checkpointId`, `patchState?`): `Promise`\<`string`\>
 
-Defined in: [packages/agentos/src/orchestration/checkpoint/InMemoryCheckpointStore.ts:107](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/checkpoint/InMemoryCheckpointStore.ts#L107)
+Defined in: [packages/agentos/src/orchestration/checkpoint/InMemoryCheckpointStore.ts:107](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/checkpoint/InMemoryCheckpointStore.ts#L107)
 
 Create a new run branching from an existing checkpoint.
 
@@ -102,7 +102,7 @@ The new `runId` for the forked run.
 
 > **get**(`checkpointId`): `Promise`\<[`Checkpoint`](../interfaces/Checkpoint.md) \| `null`\>
 
-Defined in: [packages/agentos/src/orchestration/checkpoint/InMemoryCheckpointStore.ts:60](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/checkpoint/InMemoryCheckpointStore.ts#L60)
+Defined in: [packages/agentos/src/orchestration/checkpoint/InMemoryCheckpointStore.ts:60](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/checkpoint/InMemoryCheckpointStore.ts#L60)
 
 Load a checkpoint by its unique checkpoint identifier.
 
@@ -130,7 +130,7 @@ The matching checkpoint, or `null` when none exists.
 
 > **latest**(`runId`): `Promise`\<[`Checkpoint`](../interfaces/Checkpoint.md) \| `null`\>
 
-Defined in: [packages/agentos/src/orchestration/checkpoint/InMemoryCheckpointStore.ts:78](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/checkpoint/InMemoryCheckpointStore.ts#L78)
+Defined in: [packages/agentos/src/orchestration/checkpoint/InMemoryCheckpointStore.ts:78](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/checkpoint/InMemoryCheckpointStore.ts#L78)
 
 Return the most recently persisted checkpoint for a run, or `null` when the run
 has no checkpoints.
@@ -157,7 +157,7 @@ The graph run identifier.
 
 > **list**(`graphId`, `options?`): `Promise`\<[`CheckpointMetadata`](../interfaces/CheckpointMetadata.md)[]\>
 
-Defined in: [packages/agentos/src/orchestration/checkpoint/InMemoryCheckpointStore.ts:83](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/checkpoint/InMemoryCheckpointStore.ts#L83)
+Defined in: [packages/agentos/src/orchestration/checkpoint/InMemoryCheckpointStore.ts:83](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/checkpoint/InMemoryCheckpointStore.ts#L83)
 
 List lightweight metadata descriptors for all checkpoints belonging to a graph.
 
@@ -195,7 +195,7 @@ Array of `CheckpointMetadata`, sorted by `timestamp` descending.
 
 > **load**(`runId`, `nodeId?`): `Promise`\<[`Checkpoint`](../interfaces/Checkpoint.md) \| `null`\>
 
-Defined in: [packages/agentos/src/orchestration/checkpoint/InMemoryCheckpointStore.ts:65](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/checkpoint/InMemoryCheckpointStore.ts#L65)
+Defined in: [packages/agentos/src/orchestration/checkpoint/InMemoryCheckpointStore.ts:65](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/checkpoint/InMemoryCheckpointStore.ts#L65)
 
 Load a checkpoint for the given `runId`.
 
@@ -233,7 +233,7 @@ The matching checkpoint, or `null` when none exists.
 
 > **save**(`checkpoint`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/orchestration/checkpoint/InMemoryCheckpointStore.ts:55](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/checkpoint/InMemoryCheckpointStore.ts#L55)
+Defined in: [packages/agentos/src/orchestration/checkpoint/InMemoryCheckpointStore.ts:55](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/checkpoint/InMemoryCheckpointStore.ts#L55)
 
 Persist a checkpoint snapshot.
 

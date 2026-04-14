@@ -1,6 +1,6 @@
 # Interface: TemporalConfig
 
-Defined in: [packages/agentos/src/rag/unified/types.ts:208](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/rag/unified/types.ts#L208)
+Defined in: [packages/agentos/src/rag/unified/types.ts:208](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/unified/types.ts#L208)
 
 Temporal preferences for result ordering.
 
@@ -14,7 +14,7 @@ RetrievalPlan.temporal
 
 > **maxAgeMs**: `number` \| `null`
 
-Defined in: [packages/agentos/src/rag/unified/types.ts:222](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/rag/unified/types.ts#L222)
+Defined in: [packages/agentos/src/rag/unified/types.ts:222](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/unified/types.ts#L222)
 
 Maximum age in milliseconds. Results older than this are excluded.
 `null` means no age limit.
@@ -31,7 +31,7 @@ null
 
 > **preferRecent**: `boolean`
 
-Defined in: [packages/agentos/src/rag/unified/types.ts:210](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/rag/unified/types.ts#L210)
+Defined in: [packages/agentos/src/rag/unified/types.ts:210](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/unified/types.ts#L210)
 
 Whether to boost recent results in scoring. Default: false.
 
@@ -41,7 +41,7 @@ Whether to boost recent results in scoring. Default: false.
 
 > **recencyBoost**: `number`
 
-Defined in: [packages/agentos/src/rag/unified/types.ts:216](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/rag/unified/types.ts#L216)
+Defined in: [packages/agentos/src/rag/unified/types.ts:216](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/unified/types.ts#L216)
 
 Multiplicative boost factor for recent results.
 1.0 means no boost. 2.0 means recent results can score up to 2x higher.

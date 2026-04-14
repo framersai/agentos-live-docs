@@ -1,6 +1,6 @@
 # Interface: ResolvedMechanismsConfig
 
-Defined in: [packages/agentos/src/memory/mechanisms/types.ts:238](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/mechanisms/types.ts#L238)
+Defined in: [packages/agentos/src/memory/mechanisms/types.ts:250](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/mechanisms/types.ts#L250)
 
 Fully resolved config with all fields required.
 
@@ -10,7 +10,7 @@ Fully resolved config with all fields required.
 
 > **emotionRegulation**: `ResolvedEmotionRegulationConfig`
 
-Defined in: [packages/agentos/src/memory/mechanisms/types.ts:246](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/mechanisms/types.ts#L246)
+Defined in: [packages/agentos/src/memory/mechanisms/types.ts:258](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/mechanisms/types.ts#L258)
 
 ***
 
@@ -18,7 +18,7 @@ Defined in: [packages/agentos/src/memory/mechanisms/types.ts:246](https://github
 
 > **involuntaryRecall**: `ResolvedInvoluntaryRecallConfig`
 
-Defined in: [packages/agentos/src/memory/mechanisms/types.ts:241](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/mechanisms/types.ts#L241)
+Defined in: [packages/agentos/src/memory/mechanisms/types.ts:253](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/mechanisms/types.ts#L253)
 
 ***
 
@@ -26,7 +26,7 @@ Defined in: [packages/agentos/src/memory/mechanisms/types.ts:241](https://github
 
 > **metacognitiveFOK**: `ResolvedMetacognitiveFOKConfig`
 
-Defined in: [packages/agentos/src/memory/mechanisms/types.ts:242](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/mechanisms/types.ts#L242)
+Defined in: [packages/agentos/src/memory/mechanisms/types.ts:254](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/mechanisms/types.ts#L254)
 
 ***
 
@@ -34,7 +34,7 @@ Defined in: [packages/agentos/src/memory/mechanisms/types.ts:242](https://github
 
 > **reconsolidation**: `ResolvedReconsolidationConfig`
 
-Defined in: [packages/agentos/src/memory/mechanisms/types.ts:239](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/mechanisms/types.ts#L239)
+Defined in: [packages/agentos/src/memory/mechanisms/types.ts:251](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/mechanisms/types.ts#L251)
 
 ***
 
@@ -42,7 +42,7 @@ Defined in: [packages/agentos/src/memory/mechanisms/types.ts:239](https://github
 
 > **retrievalInducedForgetting**: `ResolvedRIFConfig`
 
-Defined in: [packages/agentos/src/memory/mechanisms/types.ts:240](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/mechanisms/types.ts#L240)
+Defined in: [packages/agentos/src/memory/mechanisms/types.ts:252](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/mechanisms/types.ts#L252)
 
 ***
 
@@ -50,7 +50,7 @@ Defined in: [packages/agentos/src/memory/mechanisms/types.ts:240](https://github
 
 > **schemaEncoding**: `ResolvedSchemaEncodingConfig`
 
-Defined in: [packages/agentos/src/memory/mechanisms/types.ts:244](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/mechanisms/types.ts#L244)
+Defined in: [packages/agentos/src/memory/mechanisms/types.ts:256](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/mechanisms/types.ts#L256)
 
 ***
 
@@ -58,7 +58,7 @@ Defined in: [packages/agentos/src/memory/mechanisms/types.ts:244](https://github
 
 > **sourceConfidenceDecay**: `ResolvedSourceConfidenceDecayConfig`
 
-Defined in: [packages/agentos/src/memory/mechanisms/types.ts:245](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/mechanisms/types.ts#L245)
+Defined in: [packages/agentos/src/memory/mechanisms/types.ts:257](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/mechanisms/types.ts#L257)
 
 ***
 
@@ -66,4 +66,4 @@ Defined in: [packages/agentos/src/memory/mechanisms/types.ts:245](https://github
 
 > **temporalGist**: `ResolvedTemporalGistConfig`
 
-Defined in: [packages/agentos/src/memory/mechanisms/types.ts:243](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/mechanisms/types.ts#L243)
+Defined in: [packages/agentos/src/memory/mechanisms/types.ts:255](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/mechanisms/types.ts#L255)

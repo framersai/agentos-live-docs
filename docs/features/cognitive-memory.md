@@ -10,7 +10,7 @@ For the practical guide with usage examples and configuration, see [Cognitive Me
 > Personality-modulated, decay-aware memory grounded in cognitive science — replacing flat key-value memory with Ebbinghaus forgetting curves, Baddeley's working memory, spreading activation, and HEXACO-driven encoding biases.
 
 :::tip Cognitive Mechanisms
-The memory system now includes 9 optional neuroscience-grounded cognitive mechanisms (reconsolidation, retrieval-induced forgetting, involuntary recall, metacognitive FOK, temporal gist, schema encoding, source confidence decay, emotion regulation, and Ebbinghaus decay with spaced repetition). All are HEXACO personality-modulated and individually configurable via `cognitiveMechanisms` on `CognitiveMemoryConfig`. See [Cognitive Mechanisms Implementation Guide](./COGNITIVE_MECHANISMS.md) for hook points, APIs, and testing.
+The memory system now includes 8 optional neuroscience-grounded cognitive mechanisms (reconsolidation, retrieval-induced forgetting, involuntary recall, metacognitive FOK, temporal gist, schema encoding, source confidence decay, emotion regulation). All are HEXACO personality-modulated and individually configurable via `cognitiveMechanisms` on `CognitiveMemoryConfig`. See [Cognitive Mechanisms Implementation Guide](/features/cognitive-mechanisms) for hook points, APIs, and testing.
 :::
 
 ---
@@ -85,40 +85,6 @@ User Message arrives
 
 ---
 
-## Durable Persistence via SqliteBrain
-
-By default, the cognitive memory system runs in-memory — all traces, graph edges, and observer state vanish on process restart. For production use, pass a `SqliteBrain` instance to enable write-through persistence:
-
-```typescript
-import { CognitiveMemoryManager, SqliteBrain } from '@framers/agentos/memory';
-
-const brain = await SqliteBrain.open('./agent-brain.sqlite');
-const manager = new CognitiveMemoryManager();
-await manager.initialize({
-  // ... other config ...
-  brain, // Enables durable write-through persistence
-});
-```
-
-### Write-Through Architecture
-
-- **Hot read path:** In-memory vector index (fast similarity search)
-- **Durable backing store:** SqliteBrain via sql-storage-adapter (survives restarts)
-- **Write-through:** Every `encode()`, `observe()`, and graph mutation writes to both paths
-- **Rehydration:** On initialization with an existing brain, traces are loaded from `memory_traces`, re-embedded into the vector index, and graph nodes/edges reconstructed from `knowledge_nodes`/`knowledge_edges`
-
-### Cross-Platform
-
-SqliteBrain uses sql-storage-adapter's `resolveStorageAdapter()`, so persistence works on:
-- **Node.js** — better-sqlite3 (native)
-- **Browser** — IndexedDB via sql.js (WASM)
-- **Mobile** — Capacitor SQLite
-- **Cloud** — PostgreSQL
-
-No code changes required across platforms.
-
----
-
 ## Memory Types
 
 Based on Tulving's long-term memory taxonomy with extensions:
@@ -129,83 +95,6 @@ Based on Tulving's long-term memory taxonomy with extensions:
 | `semantic` | General knowledge/facts | Learned facts, preferences, schemas | "User prefers TypeScript over Python" |
 | `procedural` | Skills and how-to | Workflows, tool usage patterns | "To deploy, run the deployment pipeline" |
 | `prospective` | Future intentions | Goals, reminders, planned actions | "Remind user about the PR review" |
-| `relational` | Trust signals and bonds | Vulnerability, boundary events, emotional connections | "User shared vulnerability about work stress — trust-building moment" |
-
-### Automatic Memory Type Decomposition
-
-The Observer→Reflector pipeline automatically classifies raw conversation into all 5 types. You don't need to manually tag memory types — the Reflector uses chain-of-thought reasoning and HEXACO personality bias to decompose each conversation exchange into the appropriate trace types.
-
-The pipeline works in three tiers:
-1. **Observer** — extracts typed observation notes (factual, emotional, commitment, preference, creative, correction) from buffered messages when a token threshold is reached
-2. **Compressor** — batches 50+ notes into dense compressed observations
-3. **Reflector** — consolidates observations into typed long-term traces (episodic, semantic, procedural, prospective, relational) with personality-biased conflict resolution
-
-Commitment notes (importance >= 0.5) are automatically registered as **prospective memory items** with heuristic trigger type inference (time-based, event-based, or context-based).
-
-### KnowledgeGraph (Default)
-
-The KnowledgeGraph is enabled by default when `CognitiveMemoryManager` is initialized. It provides:
-- **Spreading activation** (Collins & Quillian model) — related memories surface together
-- **Hebbian co-activation learning** — "neurons that fire together wire together"
-- **Conflict detection** — contradicting traces identified via CONTRADICTS edges
-- **Cluster detection** — connected components reveal memory themes
-- **Graph-boosted retrieval scoring** — retrieval scores are boosted by graph activation
-
-Set `graph: { disabled: true }` in `CognitiveMemoryConfig` to opt out.
-
-### HyDE Memory Retrieval
-
-A memory-specific Hypothetical Document Embedding retriever auto-attaches when an LLM invoker is available. For vague queries like "that thing about cats", it generates a hypothetical stored memory trace before embedding, improving recall via the generation effect.
-
-Opt-in per query: `retrieve({ hyde: true })`.
-
-### Prompt Assembly Guidance
-
-The `MemoryPromptAssembler` injects a personality-aware preamble that teaches the LLM how to use each memory type differently:
-- **Semantic** — background truth, don't announce
-- **Episodic** — weave in naturally, never list
-- **Prospective** — act on these, bring up naturally
-- **Relational** — modulate tone, never state explicitly
-- **Partial memories** (FOK) — express uncertainty: "I feel like we talked about..."
-
-Formatting style is HEXACO-driven: structured (high conscientiousness), narrative (high openness), emotional (high emotionality).
-
-### SqliteBrain Persistence
-
-Pass a `brain` field in `CognitiveMemoryConfig` to enable durable write-through persistence via `@framers/sql-storage-adapter`. The in-memory vector index remains the hot read path; SqliteBrain is the durable backing store that survives process restarts.
-
-```typescript
-import { SqliteBrain } from '@framers/agentos/memory';
-
-const brain = await SqliteBrain.open('./agent-brain.sqlite');
-const manager = new CognitiveMemoryManager();
-await manager.initialize({
-  // ... existing config ...
-  brain,  // enables durable persistence
-});
-```
-
-### Full AgentMemory API
-
-```typescript
-const memory = AgentMemory.wrap(manager);
-
-// Visualization & inspection
-const graph = await memory.getGraph();              // nodes, edges, clusters
-const dist = await memory.getStrengthDistribution(); // per-type stats
-const conflicts = await memory.getConflicts();       // contradicting traces
-const relational = await memory.getRelationalMemories();
-const working = await memory.getWorkingMemory();     // in-focus slots
-const stats = await memory.getObservationStats();    // pipeline health
-
-// Portability
-const snapshot = await memory.exportSnapshot();      // full state export
-await memory.importSnapshot(snapshot);               // restore from export
-
-// Devtools
-await memory.forceReflection();                      // trigger reflection cycle
-const items = await memory.getProspectiveItems();    // active reminders
-```
 
 ---
 

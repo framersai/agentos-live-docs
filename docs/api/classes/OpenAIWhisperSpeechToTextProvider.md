@@ -1,6 +1,6 @@
 # Class: OpenAIWhisperSpeechToTextProvider
 
-Defined in: [packages/agentos/src/hearing/providers/OpenAIWhisperSpeechToTextProvider.ts:145](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/hearing/providers/OpenAIWhisperSpeechToTextProvider.ts#L145)
+Defined in: [packages/agentos/src/hearing/providers/OpenAIWhisperSpeechToTextProvider.ts:146](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/hearing/providers/OpenAIWhisperSpeechToTextProvider.ts#L146)
 
 Speech-to-text provider that uses the OpenAI Whisper transcription API.
 
@@ -51,9 +51,7 @@ const result = await provider.transcribe(
 
 > **new OpenAIWhisperSpeechToTextProvider**(`config`): `OpenAIWhisperSpeechToTextProvider`
 
-Defined in: [packages/agentos/src/hearing/providers/OpenAIWhisperSpeechToTextProvider.ts:172](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/hearing/providers/OpenAIWhisperSpeechToTextProvider.ts#L172)
-
-Creates a new OpenAIWhisperSpeechToTextProvider.
+Defined in: [packages/agentos/src/hearing/providers/OpenAIWhisperSpeechToTextProvider.ts:175](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/hearing/providers/OpenAIWhisperSpeechToTextProvider.ts#L175)
 
 #### Parameters
 
@@ -61,21 +59,9 @@ Creates a new OpenAIWhisperSpeechToTextProvider.
 
 [`OpenAIWhisperSpeechToTextProviderConfig`](../interfaces/OpenAIWhisperSpeechToTextProviderConfig.md)
 
-Provider configuration including API key and optional defaults.
-
 #### Returns
 
 `OpenAIWhisperSpeechToTextProvider`
-
-#### Example
-
-```ts
-const provider = new OpenAIWhisperSpeechToTextProvider({
-  apiKey: 'sk-xxxx',
-  baseUrl: 'https://api.openai.com/v1', // default
-  model: 'whisper-1', // default
-});
-```
 
 ## Properties
 
@@ -83,7 +69,7 @@ const provider = new OpenAIWhisperSpeechToTextProvider({
 
 > `readonly` **displayName**: `"OpenAI Whisper"` = `'OpenAI Whisper'`
 
-Defined in: [packages/agentos/src/hearing/providers/OpenAIWhisperSpeechToTextProvider.ts:150](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/hearing/providers/OpenAIWhisperSpeechToTextProvider.ts#L150)
+Defined in: [packages/agentos/src/hearing/providers/OpenAIWhisperSpeechToTextProvider.ts:151](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/hearing/providers/OpenAIWhisperSpeechToTextProvider.ts#L151)
 
 Human-readable display name for UI and logging.
 
@@ -97,7 +83,7 @@ Human-readable display name for UI and logging.
 
 > `readonly` **id**: `"openai-whisper"` = `'openai-whisper'`
 
-Defined in: [packages/agentos/src/hearing/providers/OpenAIWhisperSpeechToTextProvider.ts:147](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/hearing/providers/OpenAIWhisperSpeechToTextProvider.ts#L147)
+Defined in: [packages/agentos/src/hearing/providers/OpenAIWhisperSpeechToTextProvider.ts:148](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/hearing/providers/OpenAIWhisperSpeechToTextProvider.ts#L148)
 
 Unique provider identifier used for registration and resolution.
 
@@ -111,7 +97,7 @@ Unique provider identifier used for registration and resolution.
 
 > `readonly` **supportsStreaming**: `false` = `false`
 
-Defined in: [packages/agentos/src/hearing/providers/OpenAIWhisperSpeechToTextProvider.ts:153](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/hearing/providers/OpenAIWhisperSpeechToTextProvider.ts#L153)
+Defined in: [packages/agentos/src/hearing/providers/OpenAIWhisperSpeechToTextProvider.ts:154](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/hearing/providers/OpenAIWhisperSpeechToTextProvider.ts#L154)
 
 Whisper API is batch-only; streaming requires a WebSocket adapter.
 
@@ -125,7 +111,7 @@ Whisper API is batch-only; streaming requires a WebSocket adapter.
 
 > **getProviderName**(): `string`
 
-Defined in: [packages/agentos/src/hearing/providers/OpenAIWhisperSpeechToTextProvider.ts:186](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/hearing/providers/OpenAIWhisperSpeechToTextProvider.ts#L186)
+Defined in: [packages/agentos/src/hearing/providers/OpenAIWhisperSpeechToTextProvider.ts:190](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/hearing/providers/OpenAIWhisperSpeechToTextProvider.ts#L190)
 
 Returns the human-readable provider name.
 
@@ -151,7 +137,7 @@ provider.getProviderName(); // 'OpenAI Whisper'
 
 > **transcribe**(`audio`, `options?`): `Promise`\<[`SpeechTranscriptionResult`](../interfaces/SpeechTranscriptionResult.md)\>
 
-Defined in: [packages/agentos/src/hearing/providers/OpenAIWhisperSpeechToTextProvider.ts:212](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/hearing/providers/OpenAIWhisperSpeechToTextProvider.ts#L212)
+Defined in: [packages/agentos/src/hearing/providers/OpenAIWhisperSpeechToTextProvider.ts:216](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/hearing/providers/OpenAIWhisperSpeechToTextProvider.ts#L216)
 
 Transcribes an audio buffer using the OpenAI Whisper API.
 

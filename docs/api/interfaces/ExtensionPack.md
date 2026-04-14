@@ -1,6 +1,6 @@
 # Interface: ExtensionPack
 
-Defined in: [packages/agentos/src/extensions/manifest.ts:54](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/extensions/manifest.ts#L54)
+Defined in: [packages/agentos/src/extensions/manifest.ts:54](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/extensions/manifest.ts#L54)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/extensions/manifest.ts:54](https://github.com/
 
 > **descriptors**: [`ExtensionDescriptor`](ExtensionDescriptor.md)\<`unknown`\>[]
 
-Defined in: [packages/agentos/src/extensions/manifest.ts:57](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/extensions/manifest.ts#L57)
+Defined in: [packages/agentos/src/extensions/manifest.ts:57](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/extensions/manifest.ts#L57)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [packages/agentos/src/extensions/manifest.ts:57](https://github.com/
 
 > **name**: `string`
 
-Defined in: [packages/agentos/src/extensions/manifest.ts:55](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/extensions/manifest.ts#L55)
+Defined in: [packages/agentos/src/extensions/manifest.ts:55](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/extensions/manifest.ts#L55)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: [packages/agentos/src/extensions/manifest.ts:55](https://github.com/
 
 > `optional` **onActivate**: (`context`) => `void` \| `Promise`\<`void`\> \| () => `void` \| `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/extensions/manifest.ts:58](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/extensions/manifest.ts#L58)
+Defined in: [packages/agentos/src/extensions/manifest.ts:58](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/extensions/manifest.ts#L58)
 
 ***
 
@@ -32,7 +32,7 @@ Defined in: [packages/agentos/src/extensions/manifest.ts:58](https://github.com/
 
 > `optional` **onDeactivate**: (`context`) => `void` \| `Promise`\<`void`\> \| () => `void` \| `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/extensions/manifest.ts:59](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/extensions/manifest.ts#L59)
+Defined in: [packages/agentos/src/extensions/manifest.ts:59](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/extensions/manifest.ts#L59)
 
 ***
 
@@ -40,4 +40,4 @@ Defined in: [packages/agentos/src/extensions/manifest.ts:59](https://github.com/
 
 > `optional` **version**: `string`
 
-Defined in: [packages/agentos/src/extensions/manifest.ts:56](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/extensions/manifest.ts#L56)
+Defined in: [packages/agentos/src/extensions/manifest.ts:56](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/extensions/manifest.ts#L56)

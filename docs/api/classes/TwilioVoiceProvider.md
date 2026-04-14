@@ -1,6 +1,6 @@
 # Class: TwilioVoiceProvider
 
-Defined in: [packages/agentos/src/channels/telephony/providers/twilio.ts:103](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/telephony/providers/twilio.ts#L103)
+Defined in: [packages/agentos/src/channels/telephony/providers/twilio.ts:103](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/channels/telephony/providers/twilio.ts#L103)
 
 Twilio voice call provider.
 
@@ -26,7 +26,7 @@ const provider = new TwilioVoiceProvider({
 
 > **new TwilioVoiceProvider**(`config`): `TwilioVoiceProvider`
 
-Defined in: [packages/agentos/src/channels/telephony/providers/twilio.ts:122](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/telephony/providers/twilio.ts#L122)
+Defined in: [packages/agentos/src/channels/telephony/providers/twilio.ts:122](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/channels/telephony/providers/twilio.ts#L122)
 
 #### Parameters
 
@@ -46,7 +46,7 @@ Twilio credentials and optional overrides.
 
 > `readonly` **name**: `"twilio"`
 
-Defined in: [packages/agentos/src/channels/telephony/providers/twilio.ts:105](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/telephony/providers/twilio.ts#L105)
+Defined in: [packages/agentos/src/channels/telephony/providers/twilio.ts:105](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/channels/telephony/providers/twilio.ts#L105)
 
 Provider identifier, always `'twilio'`.
 
@@ -60,7 +60,7 @@ Provider identifier, always `'twilio'`.
 
 > **hangupCall**(`input`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/channels/telephony/providers/twilio.ts:302](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/telephony/providers/twilio.ts#L302)
+Defined in: [packages/agentos/src/channels/telephony/providers/twilio.ts:302](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/channels/telephony/providers/twilio.ts#L302)
 
 Hang up an active call by POSTing `Status=completed`.
 
@@ -90,7 +90,7 @@ Contains the Twilio `CallSid` to hang up.
 
 > **initiateCall**(`input`): `Promise`\<[`InitiateCallResult`](../interfaces/InitiateCallResult.md)\>
 
-Defined in: [packages/agentos/src/channels/telephony/providers/twilio.ts:260](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/telephony/providers/twilio.ts#L260)
+Defined in: [packages/agentos/src/channels/telephony/providers/twilio.ts:260](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/channels/telephony/providers/twilio.ts#L260)
 
 Initiate an outbound call via the Twilio Calls API.
 
@@ -127,7 +127,7 @@ Never throws; returns `{ success: false, error: '...' }` on failure.
 
 > **parseWebhookEvent**(`ctx`): [`WebhookParseResult`](../interfaces/WebhookParseResult.md)
 
-Defined in: [packages/agentos/src/channels/telephony/providers/twilio.ts:186](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/telephony/providers/twilio.ts#L186)
+Defined in: [packages/agentos/src/channels/telephony/providers/twilio.ts:186](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/channels/telephony/providers/twilio.ts#L186)
 
 Parse a Twilio webhook body into normalized [NormalizedCallEvent](../type-aliases/NormalizedCallEvent.md)s.
 
@@ -159,7 +159,7 @@ Parsed result containing zero or more normalized events.
 
 > **playTts**(`input`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/channels/telephony/providers/twilio.ts:327](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/telephony/providers/twilio.ts#L327)
+Defined in: [packages/agentos/src/channels/telephony/providers/twilio.ts:327](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/channels/telephony/providers/twilio.ts#L327)
 
 Inject TTS into a live call using a TwiML `<Say>` verb.
 
@@ -192,7 +192,7 @@ TTS parameters (text, voice, call ID).
 
 > **verifyWebhook**(`ctx`): [`WebhookVerificationResult`](../interfaces/WebhookVerificationResult.md)
 
-Defined in: [packages/agentos/src/channels/telephony/providers/twilio.ts:150](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/telephony/providers/twilio.ts#L150)
+Defined in: [packages/agentos/src/channels/telephony/providers/twilio.ts:150](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/channels/telephony/providers/twilio.ts#L150)
 
 Verify an incoming Twilio webhook request using HMAC-SHA1.
 

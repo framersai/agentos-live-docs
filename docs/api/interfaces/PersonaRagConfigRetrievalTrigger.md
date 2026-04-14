@@ -1,6 +1,6 @@
 # Interface: PersonaRagConfigRetrievalTrigger
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:138](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/personas/IPersonaDefinition.ts#L138)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:138](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/personas/IPersonaDefinition.ts#L138)
 
 Defines triggers for RAG retrieval.
 
@@ -14,7 +14,7 @@ PersonaRagConfigRetrievalTrigger
 
 > `optional` **customLogicFunctionName**: `string`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:143](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/personas/IPersonaDefinition.ts#L143)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:143](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/personas/IPersonaDefinition.ts#L143)
 
 ***
 
@@ -22,7 +22,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefiniti
 
 > `optional` **onIntentDetected**: `string`[]
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:140](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/personas/IPersonaDefinition.ts#L140)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:140](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/personas/IPersonaDefinition.ts#L140)
 
 ***
 
@@ -30,7 +30,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefiniti
 
 > `optional` **onMissingContextKeywords**: `string`[]
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:142](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/personas/IPersonaDefinition.ts#L142)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:142](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/personas/IPersonaDefinition.ts#L142)
 
 ***
 
@@ -38,7 +38,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefiniti
 
 > `optional` **onToolFailure**: `string`[]
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:141](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/personas/IPersonaDefinition.ts#L141)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:141](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/personas/IPersonaDefinition.ts#L141)
 
 ***
 
@@ -46,4 +46,4 @@ Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefiniti
 
 > `optional` **onUserQuery**: `boolean`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:139](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/personas/IPersonaDefinition.ts#L139)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:139](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/personas/IPersonaDefinition.ts#L139)

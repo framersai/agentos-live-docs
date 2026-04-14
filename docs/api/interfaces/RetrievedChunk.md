@@ -1,6 +1,6 @@
 # Interface: RetrievedChunk
 
-Defined in: [packages/agentos/src/query-router/types.ts:164](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/query-router/types.ts#L164)
+Defined in: [packages/agentos/src/query-router/types.ts:164](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/query-router/types.ts#L164)
 
 A single chunk of content retrieved during the retrieval phase.
 
@@ -10,7 +10,7 @@ A single chunk of content retrieved during the retrieval phase.
 
 > **content**: `string`
 
-Defined in: [packages/agentos/src/query-router/types.ts:169](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/query-router/types.ts#L169)
+Defined in: [packages/agentos/src/query-router/types.ts:169](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/query-router/types.ts#L169)
 
 The text content of the chunk.
 
@@ -20,7 +20,7 @@ The text content of the chunk.
 
 > **heading**: `string`
 
-Defined in: [packages/agentos/src/query-router/types.ts:172](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/query-router/types.ts#L172)
+Defined in: [packages/agentos/src/query-router/types.ts:172](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/query-router/types.ts#L172)
 
 Section heading or title the chunk belongs to, if available.
 
@@ -30,7 +30,7 @@ Section heading or title the chunk belongs to, if available.
 
 > **id**: `string`
 
-Defined in: [packages/agentos/src/query-router/types.ts:166](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/query-router/types.ts#L166)
+Defined in: [packages/agentos/src/query-router/types.ts:166](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/query-router/types.ts#L166)
 
 Unique identifier for the chunk (typically from the vector store).
 
@@ -40,7 +40,7 @@ Unique identifier for the chunk (typically from the vector store).
 
 > **matchType**: `"vector"` \| `"graph"` \| `"research"`
 
-Defined in: [packages/agentos/src/query-router/types.ts:189](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/query-router/types.ts#L189)
+Defined in: [packages/agentos/src/query-router/types.ts:189](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/query-router/types.ts#L189)
 
 Which retrieval method produced this chunk.
 - `'vector'` — Dense vector similarity search
@@ -53,7 +53,7 @@ Which retrieval method produced this chunk.
 
 > **relevanceScore**: `number`
 
-Defined in: [packages/agentos/src/query-router/types.ts:181](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/query-router/types.ts#L181)
+Defined in: [packages/agentos/src/query-router/types.ts:181](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/query-router/types.ts#L181)
 
 Relevance score (0 to 1) indicating how well this chunk matches
 the query. Higher is better.
@@ -64,6 +64,6 @@ the query. Higher is better.
 
 > **sourcePath**: `string`
 
-Defined in: [packages/agentos/src/query-router/types.ts:175](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/query-router/types.ts#L175)
+Defined in: [packages/agentos/src/query-router/types.ts:175](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/query-router/types.ts#L175)
 
 File path or document source path this chunk was extracted from.

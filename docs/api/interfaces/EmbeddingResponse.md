@@ -1,6 +1,6 @@
 # Interface: EmbeddingResponse
 
-Defined in: [packages/agentos/src/core/embeddings/IEmbeddingManager.ts:107](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/embeddings/IEmbeddingManager.ts#L107)
+Defined in: [packages/agentos/src/core/embeddings/IEmbeddingManager.ts:107](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/embeddings/IEmbeddingManager.ts#L107)
 
 Represents the response from an embedding generation request.
 This structure includes the generated embeddings, information about the model
@@ -17,7 +17,7 @@ EmbeddingResponse
 
 > **embeddings**: `number`[][]
 
-Defined in: [packages/agentos/src/core/embeddings/IEmbeddingManager.ts:117](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/embeddings/IEmbeddingManager.ts#L117)
+Defined in: [packages/agentos/src/core/embeddings/IEmbeddingManager.ts:117](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/embeddings/IEmbeddingManager.ts#L117)
 
 An array of embedding vectors. Each inner array (`number[]`) corresponds
 to an input text from the `EmbeddingRequest`. The order is preserved.
@@ -37,7 +37,7 @@ results are supported differently. The `errors` array should be checked.
 
 > `optional` **errors**: `object`[]
 
-Defined in: [packages/agentos/src/core/embeddings/IEmbeddingManager.ts:161](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/embeddings/IEmbeddingManager.ts#L161)
+Defined in: [packages/agentos/src/core/embeddings/IEmbeddingManager.ts:161](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/embeddings/IEmbeddingManager.ts#L161)
 
 **`Optional`**
 
@@ -69,7 +69,7 @@ errors: [{ textIndex: 1, message: "Content policy violation", details: { reason:
 
 > **modelId**: `string`
 
-Defined in: [packages/agentos/src/core/embeddings/IEmbeddingManager.ts:125](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/embeddings/IEmbeddingManager.ts#L125)
+Defined in: [packages/agentos/src/core/embeddings/IEmbeddingManager.ts:125](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/embeddings/IEmbeddingManager.ts#L125)
 
 The ID of the embedding model that was actually used to generate the embeddings.
 This is important for consistency, especially if model selection was dynamic.
@@ -86,7 +86,7 @@ This is important for consistency, especially if model selection was dynamic.
 
 > **providerId**: `string`
 
-Defined in: [packages/agentos/src/core/embeddings/IEmbeddingManager.ts:132](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/embeddings/IEmbeddingManager.ts#L132)
+Defined in: [packages/agentos/src/core/embeddings/IEmbeddingManager.ts:132](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/embeddings/IEmbeddingManager.ts#L132)
 
 The ID of the LLM provider that was used.
 
@@ -102,7 +102,7 @@ The ID of the LLM provider that was used.
 
 > **usage**: `object`
 
-Defined in: [packages/agentos/src/core/embeddings/IEmbeddingManager.ts:143](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/embeddings/IEmbeddingManager.ts#L143)
+Defined in: [packages/agentos/src/core/embeddings/IEmbeddingManager.ts:143](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/embeddings/IEmbeddingManager.ts#L143)
 
 Information about token usage and cost for the embedding generation.
 

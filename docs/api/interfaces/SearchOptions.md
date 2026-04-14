@@ -1,6 +1,6 @@
 # Interface: SearchOptions
 
-Defined in: [packages/agentos/src/memory/AgentMemory.ts:80](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/AgentMemory.ts#L80)
+Defined in: [packages/agentos/src/memory/AgentMemory.ts:85](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/AgentMemory.ts#L85)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/memory/AgentMemory.ts:80](https://github.com/f
 
 > `optional` **limit**: `number`
 
-Defined in: [packages/agentos/src/memory/AgentMemory.ts:82](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/AgentMemory.ts#L82)
+Defined in: [packages/agentos/src/memory/AgentMemory.ts:87](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/AgentMemory.ts#L87)
 
 Maximum results. Default: 10.
 
@@ -18,7 +18,7 @@ Maximum results. Default: 10.
 
 > `optional` **minConfidence**: `number`
 
-Defined in: [packages/agentos/src/memory/AgentMemory.ts:88](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/AgentMemory.ts#L88)
+Defined in: [packages/agentos/src/memory/AgentMemory.ts:93](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/AgentMemory.ts#L93)
 
 Minimum confidence. Default: 0.
 
@@ -28,7 +28,7 @@ Minimum confidence. Default: 0.
 
 > `optional` **tags**: `string`[]
 
-Defined in: [packages/agentos/src/memory/AgentMemory.ts:86](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/AgentMemory.ts#L86)
+Defined in: [packages/agentos/src/memory/AgentMemory.ts:91](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/AgentMemory.ts#L91)
 
 Tags filter.
 
@@ -38,6 +38,6 @@ Tags filter.
 
 > `optional` **types**: [`MemoryType`](../type-aliases/MemoryType.md)[]
 
-Defined in: [packages/agentos/src/memory/AgentMemory.ts:84](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/AgentMemory.ts#L84)
+Defined in: [packages/agentos/src/memory/AgentMemory.ts:89](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/AgentMemory.ts#L89)
 
 Memory type filter.

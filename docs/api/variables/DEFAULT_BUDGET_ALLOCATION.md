@@ -2,4 +2,4 @@
 
 > `const` **DEFAULT\_BUDGET\_ALLOCATION**: [`MemoryBudgetAllocation`](../interfaces/MemoryBudgetAllocation.md)
 
-Defined in: [packages/agentos/src/memory/core/config.ts:246](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/core/config.ts#L246)
+Defined in: [packages/agentos/src/memory/core/config.ts:322](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/core/config.ts#L322)

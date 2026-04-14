@@ -1,6 +1,6 @@
 # Interface: SpeechSessionUtteranceCapturedEvent
 
-Defined in: [packages/agentos/src/speech/types.ts:305](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/speech/types.ts#L305)
+Defined in: [packages/agentos/src/speech/types.ts:305](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/speech/types.ts#L305)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/speech/types.ts:305](https://github.com/framer
 
 > **capture**: [`SpeechSessionAudioCapture`](SpeechSessionAudioCapture.md)
 
-Defined in: [packages/agentos/src/speech/types.ts:307](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/speech/types.ts#L307)
+Defined in: [packages/agentos/src/speech/types.ts:307](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/speech/types.ts#L307)
 
 ***
 
@@ -16,4 +16,4 @@ Defined in: [packages/agentos/src/speech/types.ts:307](https://github.com/framer
 
 > **reason**: [`SpeechSessionBoundaryReason`](../type-aliases/SpeechSessionBoundaryReason.md)
 
-Defined in: [packages/agentos/src/speech/types.ts:306](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/speech/types.ts#L306)
+Defined in: [packages/agentos/src/speech/types.ts:306](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/speech/types.ts#L306)

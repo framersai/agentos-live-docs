@@ -300,8 +300,8 @@ Events carry the full context — node ID, timestamp, duration, token counts —
 
 ## Detailed Guides
 
-- **[AgentGraph](./agent-graph.md)** — Full API reference, node builders, edge types, subgraph composition, cycles
-- **[workflow() DSL](./workflow-dsl.md)** — Sequential pipelines, branching, parallel execution, compile-time validation
-- **[mission() API](./mission-api.md)** — Intent-driven orchestration, Tree of Thought planning, autonomy modes, provider strategies
-- **[Checkpointing](./checkpointing.md)** — `ICheckpointStore`, resume semantics, time-travel, fork/merge
+- **[AgentGraph](/features/agent-graph)** — Full API reference, node builders, edge types, subgraph composition, cycles
+- **[workflow() DSL](/features/workflow-dsl)** — Sequential pipelines, branching, parallel execution, compile-time validation
+- **[mission() API](/features/mission-api)** — Intent-driven orchestration, Tree of Thought planning, autonomy modes, provider strategies
+- **[Checkpointing](/features/checkpointing)** — `ICheckpointStore`, resume semantics, time-travel, fork/merge
 - **[Orchestration Guide](./orchestration-guide.md)** — Hands-on walkthrough with 15+ runnable examples

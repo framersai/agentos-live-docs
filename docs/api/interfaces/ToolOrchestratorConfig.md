@@ -1,6 +1,6 @@
 # Interface: ToolOrchestratorConfig
 
-Defined in: [packages/agentos/src/core/config/ToolOrchestratorConfig.ts:90](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/config/ToolOrchestratorConfig.ts#L90)
+Defined in: [packages/agentos/src/core/config/ToolOrchestratorConfig.ts:90](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/config/ToolOrchestratorConfig.ts#L90)
 
 ## Interface
 
@@ -18,7 +18,7 @@ logging levels, and integration points with other system components.
 
 > `optional` **customParameters**: `Record`\<`string`, `any`\>
 
-Defined in: [packages/agentos/src/core/config/ToolOrchestratorConfig.ts:98](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/config/ToolOrchestratorConfig.ts#L98)
+Defined in: [packages/agentos/src/core/config/ToolOrchestratorConfig.ts:98](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/config/ToolOrchestratorConfig.ts#L98)
 
 A flexible object to accommodate any other custom
 parameters or settings that specific `ToolOrchestrator` implementations or extensions might require.
@@ -30,7 +30,7 @@ This allows for extensibility without modifying the core interface.
 
 > `optional` **defaultToolCallTimeoutMs**: `number`
 
-Defined in: [packages/agentos/src/core/config/ToolOrchestratorConfig.ts:92](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/config/ToolOrchestratorConfig.ts#L92)
+Defined in: [packages/agentos/src/core/config/ToolOrchestratorConfig.ts:92](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/config/ToolOrchestratorConfig.ts#L92)
 
 Default timeout in milliseconds (default: 30 seconds)
 for a tool execution if the tool itself does not specify a more granular timeout or if the `ToolExecutor`
@@ -42,7 +42,7 @@ needs a fallback. (Note: Actual timeout enforcement is typically handled by the 
 
 > `optional` **globalDisabledTools**: `string`[]
 
-Defined in: [packages/agentos/src/core/config/ToolOrchestratorConfig.ts:95](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/config/ToolOrchestratorConfig.ts#L95)
+Defined in: [packages/agentos/src/core/config/ToolOrchestratorConfig.ts:95](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/config/ToolOrchestratorConfig.ts#L95)
 
 An array of tool names (`ITool.name`) or tool IDs (`ITool.id`)
 that are globally disabled. These tools will not be registered or, if already present, will not be
@@ -55,7 +55,7 @@ disable problematic or deprecated tools.
 
 > `optional` **hitl**: [`ToolOrchestratorHITLConfig`](ToolOrchestratorHITLConfig.md)
 
-Defined in: [packages/agentos/src/core/config/ToolOrchestratorConfig.ts:97](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/config/ToolOrchestratorConfig.ts#L97)
+Defined in: [packages/agentos/src/core/config/ToolOrchestratorConfig.ts:97](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/config/ToolOrchestratorConfig.ts#L97)
 
 ***
 
@@ -63,7 +63,7 @@ Defined in: [packages/agentos/src/core/config/ToolOrchestratorConfig.ts:97](http
 
 > `optional` **logToolCalls**: `boolean`
 
-Defined in: [packages/agentos/src/core/config/ToolOrchestratorConfig.ts:94](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/config/ToolOrchestratorConfig.ts#L94)
+Defined in: [packages/agentos/src/core/config/ToolOrchestratorConfig.ts:94](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/config/ToolOrchestratorConfig.ts#L94)
 
 If true (default), detailed information about tool calls (including requests,
 arguments, results, and any errors) will be logged by the orchestrator. This is highly beneficial for
@@ -75,7 +75,7 @@ debugging, auditing tool usage, and monitoring system behavior.
 
 > `optional` **maxConcurrentToolCalls**: `number`
 
-Defined in: [packages/agentos/src/core/config/ToolOrchestratorConfig.ts:93](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/config/ToolOrchestratorConfig.ts#L93)
+Defined in: [packages/agentos/src/core/config/ToolOrchestratorConfig.ts:93](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/config/ToolOrchestratorConfig.ts#L93)
 
 Maximum number of tool calls that the orchestrator, or more likely
 the underlying `ToolExecutor`, will attempt to process concurrently. This helps in managing system resources
@@ -87,7 +87,7 @@ and preventing overload from too many simultaneous tool executions. (Conceptual 
 
 > `optional` **orchestratorId**: `string`
 
-Defined in: [packages/agentos/src/core/config/ToolOrchestratorConfig.ts:91](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/config/ToolOrchestratorConfig.ts#L91)
+Defined in: [packages/agentos/src/core/config/ToolOrchestratorConfig.ts:91](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/config/ToolOrchestratorConfig.ts#L91)
 
 An optional unique identifier for this ToolOrchestrator instance.
 If not provided, one may be generated automatically (e.g., by the orchestrator's constructor).
@@ -100,7 +100,7 @@ in more complex or distributed setups.
 
 > `optional` **toolRegistrySettings**: [`ToolRegistrySettings`](ToolRegistrySettings.md)
 
-Defined in: [packages/agentos/src/core/config/ToolOrchestratorConfig.ts:96](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/config/ToolOrchestratorConfig.ts#L96)
+Defined in: [packages/agentos/src/core/config/ToolOrchestratorConfig.ts:96](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/config/ToolOrchestratorConfig.ts#L96)
 
 Configuration settings that specifically govern
 the behavior of the internal tool registry, such as dynamic registration allowance.

@@ -1,6 +1,6 @@
 # Interface: HumanInteractionManagerConfig
 
-Defined in: [packages/agentos/src/orchestration/hitl/HumanInteractionManager.ts:37](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/hitl/HumanInteractionManager.ts#L37)
+Defined in: [packages/agentos/src/orchestration/hitl/HumanInteractionManager.ts:37](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/hitl/HumanInteractionManager.ts#L37)
 
 Configuration for HumanInteractionManager.
 
@@ -10,7 +10,7 @@ Configuration for HumanInteractionManager.
 
 > `optional` **autoRejectOnTimeout**: `boolean`
 
-Defined in: [packages/agentos/src/orchestration/hitl/HumanInteractionManager.ts:47](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/hitl/HumanInteractionManager.ts#L47)
+Defined in: [packages/agentos/src/orchestration/hitl/HumanInteractionManager.ts:47](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/hitl/HumanInteractionManager.ts#L47)
 
 Auto-reject on timeout (vs returning timeout response)
 
@@ -20,7 +20,7 @@ Auto-reject on timeout (vs returning timeout response)
 
 > `optional` **defaultTimeoutMs**: `number`
 
-Defined in: [packages/agentos/src/orchestration/hitl/HumanInteractionManager.ts:41](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/hitl/HumanInteractionManager.ts#L41)
+Defined in: [packages/agentos/src/orchestration/hitl/HumanInteractionManager.ts:41](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/hitl/HumanInteractionManager.ts#L41)
 
 Default timeout for requests in ms
 
@@ -30,7 +30,7 @@ Default timeout for requests in ms
 
 > `optional` **logger**: [`ILogger`](ILogger.md)
 
-Defined in: [packages/agentos/src/orchestration/hitl/HumanInteractionManager.ts:39](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/hitl/HumanInteractionManager.ts#L39)
+Defined in: [packages/agentos/src/orchestration/hitl/HumanInteractionManager.ts:39](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/hitl/HumanInteractionManager.ts#L39)
 
 Logger instance
 
@@ -40,7 +40,7 @@ Logger instance
 
 > `optional` **maxPendingPerType**: `number`
 
-Defined in: [packages/agentos/src/orchestration/hitl/HumanInteractionManager.ts:45](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/hitl/HumanInteractionManager.ts#L45)
+Defined in: [packages/agentos/src/orchestration/hitl/HumanInteractionManager.ts:45](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/hitl/HumanInteractionManager.ts#L45)
 
 Maximum pending requests per type
 
@@ -50,6 +50,6 @@ Maximum pending requests per type
 
 > `optional` **notificationHandler**: [`HITLNotificationHandler`](../type-aliases/HITLNotificationHandler.md)
 
-Defined in: [packages/agentos/src/orchestration/hitl/HumanInteractionManager.ts:43](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/hitl/HumanInteractionManager.ts#L43)
+Defined in: [packages/agentos/src/orchestration/hitl/HumanInteractionManager.ts:43](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/hitl/HumanInteractionManager.ts#L43)
 
 Notification handler

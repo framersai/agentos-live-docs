@@ -419,4 +419,4 @@ Tools and skills are indexed into the **same** discovery graph but serve differe
 
 When a skill references a required tool, the graph creates a `DEPENDS_ON` edge. Searching for "search the web" finds both `tool:web_search` and `skill:web-search`, with the skill boosted by its graph connection. **You don't need a skill for every tool** -- most tools work well with just their schema.
 
-See [Capability Discovery](./capability-discovery.md) for full configuration, the relationship between all capability types, and best practices.
+See [Capability Discovery](/features/capability-discovery) for full configuration, the relationship between all capability types, and best practices.

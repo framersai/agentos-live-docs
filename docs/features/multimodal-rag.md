@@ -1,6 +1,6 @@
 ---
 title: "Multimodal RAG (Image + Audio)"
-sidebar_position: 6
+sidebar_position: 7
 ---
 
 AgentOS’ core RAG APIs are **text-first** (`EmbeddingManager` + `VectorStoreManager` + `RetrievalAugmentor`). Multimodal support (image/audio) is implemented as a composable pattern on top:

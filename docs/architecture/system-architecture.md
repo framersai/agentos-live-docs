@@ -11,7 +11,7 @@ For specific subsystem deep-dives, see:
 - [Tool Permissions](/architecture/tool-permissions)
 - [Extension Loading](/architecture/extension-loading)
 - [Skills Engine](/architecture/skills-engine)
-- [Provenance & Immutability](../features/provenance-immutability.md)
+- [Provenance & Immutability](/features/provenance-immutability)
 
 ---
 
@@ -165,7 +165,7 @@ src/
 │  grounding guard     │  capability discovery                │
 ├──────────────────────┴──────────────────────────────────────┤
 │  Memory & RAG                                               │
-│  4-tier memory · 8 cognitive mechanisms · HEXACO-modulated  │
+│  4-tier memory · 8 core cognitive mechanisms + optional drift │
 │  7 vector backends · HyDE · GraphRAG · hybrid retrieval     │
 ├─────────────────────────────────────────────────────────────┤
 │  LLM Providers (21)                                         │
@@ -723,7 +723,7 @@ Located in `memory/mechanisms/`, each mechanism is HEXACO-modulated:
 2. **Before prompt construction**: `assembleForPrompt()` retrieves and formats memory within a token budget
 3. **After response**: `MemoryObserver` feeds the response to the observer buffer for background consolidation
 
-For full details, see [Cognitive Memory](/features/cognitive-memory), [Cognitive Mechanisms](../memory/COGNITIVE_MECHANISMS.md), and [Memory Architecture](/features/memory-architecture).
+For full details, see [Cognitive Memory](/features/cognitive-memory), [Cognitive Mechanisms](/features/cognitive-mechanisms), and [Memory Architecture](/features/memory-architecture).
 
 ---
 
@@ -797,7 +797,7 @@ Pluggable providers in `rag/reranking/`:
 - **Cohere API** -- Cloud-hosted cross-encoder
 - **Transformers.js** -- Local cross-encoder ONNX model (no API calls)
 
-For configuration details, see [RAG Memory Configuration](/features/rag-memory) and [HyDE Retrieval](../memory/HYDE_RETRIEVAL.md).
+For configuration details, see [RAG Memory Configuration](/features/rag-memory) and [HyDE Retrieval](/features/hyde-retrieval).
 
 ---
 
@@ -1196,4 +1196,4 @@ When `emergent: true` is set in `AgentOSConfig`, the agent gains access to the `
 - `AdaptPersonalityTool` / `PersonalityMutationStore` -- Controlled personality adaptation within safety bounds (bounded parameter ranges, mutation logging)
 - `SelfEvaluateTool` -- Agent self-assessment using LLM-as-judge
 
-For details, see [Emergent Capabilities](./EMERGENT_CAPABILITIES.md) and [Recursive Self-Building Agents](/features/recursive-self-building).
+For details, see [Emergent Capabilities](/features/emergent-capabilities) and [Recursive Self-Building Agents](/features/recursive-self-building).

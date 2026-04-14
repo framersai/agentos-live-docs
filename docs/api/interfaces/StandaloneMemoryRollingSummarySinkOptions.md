@@ -1,6 +1,6 @@
 # Interface: StandaloneMemoryRollingSummarySinkOptions
 
-Defined in: [packages/agentos/src/memory/io/integration/StandaloneMemoryBridge.ts:85](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/io/integration/StandaloneMemoryBridge.ts#L85)
+Defined in: [packages/agentos/src/memory/io/integration/StandaloneMemoryBridge.ts:85](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/io/integration/StandaloneMemoryBridge.ts#L85)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/memory/io/integration/StandaloneMemoryBridge.t
 
 > `optional` **atomicDocImportance**: `number`
 
-Defined in: [packages/agentos/src/memory/io/integration/StandaloneMemoryBridge.ts:102](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/io/integration/StandaloneMemoryBridge.ts#L102)
+Defined in: [packages/agentos/src/memory/io/integration/StandaloneMemoryBridge.ts:102](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/io/integration/StandaloneMemoryBridge.ts#L102)
 
 Importance assigned to atomic `memory_json` item traces.
 
@@ -24,7 +24,7 @@ Importance assigned to atomic `memory_json` item traces.
 
 > `optional` **baseTags**: `string`[]
 
-Defined in: [packages/agentos/src/memory/io/integration/StandaloneMemoryBridge.ts:90](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/io/integration/StandaloneMemoryBridge.ts#L90)
+Defined in: [packages/agentos/src/memory/io/integration/StandaloneMemoryBridge.ts:90](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/io/integration/StandaloneMemoryBridge.ts#L90)
 
 Tags added to every persisted rolling-memory trace.
 
@@ -40,7 +40,7 @@ Tags added to every persisted rolling-memory trace.
 
 > `optional` **summaryImportance**: `number`
 
-Defined in: [packages/agentos/src/memory/io/integration/StandaloneMemoryBridge.ts:96](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/io/integration/StandaloneMemoryBridge.ts#L96)
+Defined in: [packages/agentos/src/memory/io/integration/StandaloneMemoryBridge.ts:96](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/io/integration/StandaloneMemoryBridge.ts#L96)
 
 Importance assigned to summary snapshot traces.
 

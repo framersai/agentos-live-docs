@@ -1,8 +1,6 @@
 ---
-title: "Emergent Capabilities: Runtime Tool Forging"
+title: "Emergent Capabilities"
 sidebar_position: 3
-description: "AgentOS agents forge new tools at runtime when no existing capability fits the task. Two creation modes (compose and sandbox), LLM-as-judge verification, and three-tier trust promotion."
-keywords: [emergent capabilities, runtime tool forging, self-improving agents, ai agent tools, compose mode, sandbox mode, llm as judge, tool promotion, agentos emergent]
 ---
 
 Agents with `emergent: true` can forge new tools at runtime when no existing capability fits the task. The agent calls the [`forge_tool`](/api/classes/ForgeToolMetaTool) meta-tool, which builds, tests, and judge-reviews the tool before making it available. The system is implemented across three core classes: [`EmergentCapabilityEngine`](/api/classes/EmergentCapabilityEngine), [`EmergentJudge`](/api/classes/EmergentJudge), and [`EmergentToolRegistry`](/api/classes/EmergentToolRegistry).

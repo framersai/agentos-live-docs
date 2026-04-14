@@ -2,7 +2,7 @@
 
 > **mission**(`name`): [`MissionBuilder`](../classes/MissionBuilder.md)
 
-Defined in: [packages/agentos/src/orchestration/builders/MissionBuilder.ts:53](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/builders/MissionBuilder.ts#L53)
+Defined in: [packages/agentos/src/orchestration/builders/MissionBuilder.ts:53](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/builders/MissionBuilder.ts#L53)
 
 Create a new `MissionBuilder` for the named mission.
 

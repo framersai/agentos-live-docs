@@ -280,7 +280,7 @@ available via:
 
 Use `textStream` for low-latency token UX and `finalTextStream` when the client
 must only ever see the approved answer. See
-[Streaming Semantics](./STREAMING_SEMANTICS.md) for the exact contract.
+[Streaming Semantics](/architecture/streaming-semantics) for the exact contract.
 
 ---
 
@@ -1002,6 +1002,6 @@ await contentPipeline.close();
 - [`docs/OBSERVABILITY.md`](/architecture/observability) — OTEL integration and trace event reference
 - [`docs/STRUCTURED_OUTPUT.md`](/features/structured-output) — Zod schema output and extraction patterns
 - [`docs/AGENT_GRAPH.md`](/features/agent-graph) — `AgentGraph` programmatic graph builder (advanced)
-- [`src/api/types.ts`](../src/api/types.ts) — canonical TypeScript type definitions
-- [`src/api/agency.ts`](../src/api/agency.ts) — `agency()` implementation
-- [`src/api/hitl.ts`](../src/api/hitl.ts) — HITL handler factories
+- [`src/api/types.ts`](https://github.com/framersai/agentos/blob/master/src/api/types.ts) — canonical TypeScript type definitions
+- [`src/api/agency.ts`](https://github.com/framersai/agentos/blob/master/src/api/agency.ts) — `agency()` implementation
+- [`src/api/hitl.ts`](https://github.com/framersai/agentos/blob/master/src/api/hitl.ts) — HITL handler factories

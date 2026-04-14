@@ -1,6 +1,6 @@
 # Class: OpenAIImageProvider
 
-Defined in: [packages/agentos/src/media/images/providers/OpenAIImageProvider.ts:32](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/images/providers/OpenAIImageProvider.ts#L32)
+Defined in: [packages/agentos/src/media/images/providers/OpenAIImageProvider.ts:33](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/providers/OpenAIImageProvider.ts#L33)
 
 ## Implements
 
@@ -22,7 +22,7 @@ Defined in: [packages/agentos/src/media/images/providers/OpenAIImageProvider.ts:
 
 > `optional` **defaultModelId**: `string`
 
-Defined in: [packages/agentos/src/media/images/providers/OpenAIImageProvider.ts:35](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/images/providers/OpenAIImageProvider.ts#L35)
+Defined in: [packages/agentos/src/media/images/providers/OpenAIImageProvider.ts:36](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/providers/OpenAIImageProvider.ts#L36)
 
 #### Implementation of
 
@@ -34,7 +34,7 @@ Defined in: [packages/agentos/src/media/images/providers/OpenAIImageProvider.ts:
 
 > **isInitialized**: `boolean` = `false`
 
-Defined in: [packages/agentos/src/media/images/providers/OpenAIImageProvider.ts:34](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/images/providers/OpenAIImageProvider.ts#L34)
+Defined in: [packages/agentos/src/media/images/providers/OpenAIImageProvider.ts:35](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/providers/OpenAIImageProvider.ts#L35)
 
 #### Implementation of
 
@@ -46,7 +46,7 @@ Defined in: [packages/agentos/src/media/images/providers/OpenAIImageProvider.ts:
 
 > `readonly` **providerId**: `"openai"` = `'openai'`
 
-Defined in: [packages/agentos/src/media/images/providers/OpenAIImageProvider.ts:33](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/images/providers/OpenAIImageProvider.ts#L33)
+Defined in: [packages/agentos/src/media/images/providers/OpenAIImageProvider.ts:34](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/providers/OpenAIImageProvider.ts#L34)
 
 #### Implementation of
 
@@ -58,7 +58,7 @@ Defined in: [packages/agentos/src/media/images/providers/OpenAIImageProvider.ts:
 
 > **editImage**(`request`): `Promise`\<[`ImageGenerationResult`](../interfaces/ImageGenerationResult.md)\>
 
-Defined in: [packages/agentos/src/media/images/providers/OpenAIImageProvider.ts:151](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/images/providers/OpenAIImageProvider.ts#L151)
+Defined in: [packages/agentos/src/media/images/providers/OpenAIImageProvider.ts:165](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/providers/OpenAIImageProvider.ts#L165)
 
 Edits an image using the OpenAI `/v1/images/edits` endpoint.
 
@@ -102,7 +102,7 @@ https://platform.openai.com/docs/api-reference/images/createEdit
 
 > **generateImage**(`request`): `Promise`\<[`ImageGenerationResult`](../interfaces/ImageGenerationResult.md)\>
 
-Defined in: [packages/agentos/src/media/images/providers/OpenAIImageProvider.ts:64](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/images/providers/OpenAIImageProvider.ts#L64)
+Defined in: [packages/agentos/src/media/images/providers/OpenAIImageProvider.ts:67](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/providers/OpenAIImageProvider.ts#L67)
 
 #### Parameters
 
@@ -124,7 +124,7 @@ Defined in: [packages/agentos/src/media/images/providers/OpenAIImageProvider.ts:
 
 > **initialize**(`config`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/media/images/providers/OpenAIImageProvider.ts:39](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/images/providers/OpenAIImageProvider.ts#L39)
+Defined in: [packages/agentos/src/media/images/providers/OpenAIImageProvider.ts:41](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/providers/OpenAIImageProvider.ts#L41)
 
 #### Parameters
 
@@ -146,7 +146,7 @@ Defined in: [packages/agentos/src/media/images/providers/OpenAIImageProvider.ts:
 
 > **listAvailableModels**(): `Promise`\<[`ImageModelInfo`](../interfaces/ImageModelInfo.md)[]\>
 
-Defined in: [packages/agentos/src/media/images/providers/OpenAIImageProvider.ts:286](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/images/providers/OpenAIImageProvider.ts#L286)
+Defined in: [packages/agentos/src/media/images/providers/OpenAIImageProvider.ts:300](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/providers/OpenAIImageProvider.ts#L300)
 
 #### Returns
 
@@ -162,7 +162,7 @@ Defined in: [packages/agentos/src/media/images/providers/OpenAIImageProvider.ts:
 
 > **variateImage**(`request`): `Promise`\<[`ImageGenerationResult`](../interfaces/ImageGenerationResult.md)\>
 
-Defined in: [packages/agentos/src/media/images/providers/OpenAIImageProvider.ts:233](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/images/providers/OpenAIImageProvider.ts#L233)
+Defined in: [packages/agentos/src/media/images/providers/OpenAIImageProvider.ts:247](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/providers/OpenAIImageProvider.ts#L247)
 
 Creates visual variations of an image using the OpenAI `/v1/images/variations` endpoint.
 

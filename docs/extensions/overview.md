@@ -44,28 +44,28 @@ All extensions are published to npm under the `@framers` scope.
 |---------|-------------|-----|
 | [`@framers/agentos-ext-web-search`](/extensions/built-in/web-search) | Multi-provider web search & fact-checking |  |
 | [`@framers/agentos-ext-web-browser`](/extensions/built-in/web-browser) | Browser automation & content extraction |  |
-| [`@framers/agentos-ext-web-scraper`](./registry/curated/research/web-scraper) | Progressive scraping with fetch, Playwright, stealth, recipes, and LLM fallback extraction |  |
+| [`@framers/agentos-ext-web-scraper`](https://github.com/framersai/agentos-extensions/tree/master/registry/curated/research/web-scraper) | Progressive scraping with fetch, Playwright, stealth, recipes, and LLM fallback extraction |  |
 | [`@framers/agentos-ext-news-search`](/extensions/built-in/news-search) | News article search via NewsAPI |  |
 | [`@framers/agentos-ext-giphy`](/extensions/built-in/giphy) | GIF & sticker search via Giphy API |  |
 | [`@framers/agentos-ext-image-search`](/extensions/built-in/image-search) | Stock photo search (Pexels, Unsplash, Pixabay) |  |
-| [`@framers/agentos-ext-letterboxd`](./registry/curated/media/letterboxd) | Letterboxd movie lookup with review extraction and direct page fallback |  |
-| [`@framers/agentos-ext-omdb`](./registry/curated/media/omdb) | Movie and TV metadata with IMDB, Rotten Tomatoes, and Metacritic ratings |  |
+| [`@framers/agentos-ext-letterboxd`](https://github.com/framersai/agentos-extensions/tree/master/registry/curated/media/letterboxd) | Letterboxd movie lookup with review extraction and direct page fallback |  |
+| [`@framers/agentos-ext-omdb`](https://github.com/framersai/agentos-extensions/tree/master/registry/curated/media/omdb) | Movie and TV metadata with IMDB, Rotten Tomatoes, and Metacritic ratings |  |
 | [`@framers/agentos-ext-voice-synthesis`](/extensions/built-in/voice-synthesis) | Text-to-speech via ElevenLabs |  |
 | [`@framers/agentos-ext-cli-executor`](/extensions/built-in/cli-executor) | Shell command execution & file management |  |
 | [`@framers/agentos-ext-auth`](/extensions/built-in/auth) | JWT authentication & subscription management |  |
-| [`@framers/agentos-ext-clearbit`](./registry/curated/integrations/clearbit) | Company and person enrichment via Clearbit |  |
+| [`@framers/agentos-ext-clearbit`](https://github.com/framersai/agentos-extensions/tree/master/registry/curated/integrations/clearbit) | Company and person enrichment via Clearbit |  |
 | [`@framers/agentos-ext-telegram`](/extensions/built-in/telegram) | Telegram Bot API integration |  |
 | [`@framers/agentos-ext-wunderbot-feeds`](https://www.npmjs.com/package/@framers/agentos-ext-wunderbot-feeds) | Wunderbot feed ingestion + social content pipeline integration |  |
 | [`@framers/agentos-ext-telegram-bot`](/extensions/built-in/telegram-bot) | Telegram bot communications handler |  |
 | [`@framers/agentos-ext-anchor-providers`](/extensions/built-in/anchor-providers) | Solana on-chain provenance anchoring |  |
 | [`@framers/agentos-ext-tip-ingestion`](https://www.npmjs.com/package/@framers/agentos-ext-tip-ingestion) | Tip content processing pipeline |  |
-| [`@framers/agentos-ext-browser-automation`](./registry/curated/system/browser-automation) | Full browser automation (Playwright) — 10 tools |  |
-| [`@framers/agentos-ext-deep-research`](./registry/curated/research/deep-research) | Multi-source research & investigation — 5 tools |  |
-| [`@framers/agentos-ext-content-extraction`](./registry/curated/research/content-extraction) | Content extraction (URLs, YouTube, PDF) — 5 tools |  |
-| [`@framers/agentos-ext-credential-vault`](./registry/curated/system/credential-vault) | Encrypted credential management — 5 tools |  |
-| [`@framers/agentos-ext-document-export`](./registry/curated/productivity/document-export) | Export reports and decks to PDF, DOCX, PPTX, XLSX, and CSV |  |
-| [`@framers/agentos-ext-widget-generator`](./registry/curated/productivity/widget-generator) | Generate self-contained interactive HTML widgets with file management |  |
-| [`@framers/agentos-ext-notifications`](./registry/curated/communications/notifications) | Multi-channel notification router — 3 tools |  |
+| [`@framers/agentos-ext-browser-automation`](https://github.com/framersai/agentos-extensions/tree/master/registry/curated/system/browser-automation) | Full browser automation (Playwright) — 10 tools |  |
+| [`@framers/agentos-ext-deep-research`](https://github.com/framersai/agentos-extensions/tree/master/registry/curated/research/deep-research) | Multi-source research & investigation — 5 tools |  |
+| [`@framers/agentos-ext-content-extraction`](https://github.com/framersai/agentos-extensions/tree/master/registry/curated/research/content-extraction) | Content extraction (URLs, YouTube, PDF) — 5 tools |  |
+| [`@framers/agentos-ext-credential-vault`](https://github.com/framersai/agentos-extensions/tree/master/registry/curated/system/credential-vault) | Encrypted credential management — 5 tools |  |
+| [`@framers/agentos-ext-document-export`](https://github.com/framersai/agentos-extensions/tree/master/registry/curated/productivity/document-export) | Export reports and decks to PDF, DOCX, PPTX, XLSX, and CSV |  |
+| [`@framers/agentos-ext-widget-generator`](https://github.com/framersai/agentos-extensions/tree/master/registry/curated/productivity/widget-generator) | Generate self-contained interactive HTML widgets with file management |  |
+| [`@framers/agentos-ext-notifications`](https://github.com/framersai/agentos-extensions/tree/master/registry/curated/communications/notifications) | Multi-channel notification router — 3 tools |  |
 
 ### Channel Adapters
 
@@ -76,22 +76,22 @@ All extensions are published to npm under the `@framers` scope.
 | [`@framers/agentos-ext-channel-discord`](/extensions/built-in/channel-discord) | Discord messaging channel (discord.js) |  |
 | [`@framers/agentos-ext-channel-slack`](/extensions/built-in/channel-slack) | Slack messaging channel (Bolt) |  |
 | [`@framers/agentos-ext-channel-webchat`](/extensions/built-in/channel-webchat) | Built-in WebChat channel (Socket.IO) |  |
-| [`@framers/agentos-ext-channel-twitter`](./registry/curated/channels/twitter) | Twitter/X social channel (twitter-api-v2) |  |
-| [`@framers/agentos-ext-channel-instagram`](./registry/curated/channels/instagram) | Instagram social channel (Graph API) |  |
-| [`@framers/agentos-ext-channel-reddit`](./registry/curated/channels/reddit) | Reddit social channel (snoowrap) |  |
-| [`@framers/agentos-ext-channel-youtube`](./registry/curated/channels/youtube) | YouTube social channel (googleapis) |  |
-| [`@framers/agentos-ext-channel-linkedin`](./registry/curated/channels/linkedin) | LinkedIn social channel (Marketing API) |  |
-| [`@framers/agentos-ext-channel-facebook`](./registry/curated/channels/facebook) | Facebook social channel (Meta Graph API) |  |
-| [`@framers/agentos-ext-channel-threads`](./registry/curated/channels/threads) | Threads social channel (Meta Graph API) |  |
-| [`@framers/agentos-ext-channel-bluesky`](./registry/curated/channels/bluesky) | Bluesky social channel (AT Protocol) |  |
-| [`@framers/agentos-ext-channel-mastodon`](./registry/curated/channels/mastodon) | Mastodon social channel (federated) |  |
-| [`@framers/agentos-ext-channel-farcaster`](./registry/curated/channels/farcaster) | Farcaster social channel (Neynar API) |  |
-| [`@framers/agentos-ext-channel-lemmy`](./registry/curated/channels/lemmy) | Lemmy federated social channel |  |
-| [`@framers/agentos-ext-channel-google-business`](./registry/curated/channels/google-business) | Google Business Profile channel |  |
-| [`@framers/agentos-ext-channel-blog-publisher`](./registry/curated/channels/blog-publisher) | Blog publisher (Dev.to, Hashnode, Medium, WordPress) |  |
-| [`@framers/agentos-ext-channel-pinterest`](./registry/curated/channels/pinterest) | Pinterest social channel (API v5) |  |
-| [`@framers/agentos-ext-channel-tiktok`](./registry/curated/channels/tiktok) | TikTok social channel (API for Business) |  |
-| [`@framers/agentos-ext-channel-email`](./registry/curated/channels/email) | Email messaging channel (nodemailer/imapflow) |  |
+| [`@framers/agentos-ext-channel-twitter`](https://github.com/framersai/agentos-extensions/tree/master/registry/curated/channels/twitter) | Twitter/X social channel (twitter-api-v2) |  |
+| [`@framers/agentos-ext-channel-instagram`](https://github.com/framersai/agentos-extensions/tree/master/registry/curated/channels/instagram) | Instagram social channel (Graph API) |  |
+| [`@framers/agentos-ext-channel-reddit`](https://github.com/framersai/agentos-extensions/tree/master/registry/curated/channels/reddit) | Reddit social channel (snoowrap) |  |
+| [`@framers/agentos-ext-channel-youtube`](https://github.com/framersai/agentos-extensions/tree/master/registry/curated/channels/youtube) | YouTube social channel (googleapis) |  |
+| [`@framers/agentos-ext-channel-linkedin`](https://github.com/framersai/agentos-extensions/tree/master/registry/curated/channels/linkedin) | LinkedIn social channel (Marketing API) |  |
+| [`@framers/agentos-ext-channel-facebook`](https://github.com/framersai/agentos-extensions/tree/master/registry/curated/channels/facebook) | Facebook social channel (Meta Graph API) |  |
+| [`@framers/agentos-ext-channel-threads`](https://github.com/framersai/agentos-extensions/tree/master/registry/curated/channels/threads) | Threads social channel (Meta Graph API) |  |
+| [`@framers/agentos-ext-channel-bluesky`](https://github.com/framersai/agentos-extensions/tree/master/registry/curated/channels/bluesky) | Bluesky social channel (AT Protocol) |  |
+| [`@framers/agentos-ext-channel-mastodon`](https://github.com/framersai/agentos-extensions/tree/master/registry/curated/channels/mastodon) | Mastodon social channel (federated) |  |
+| [`@framers/agentos-ext-channel-farcaster`](https://github.com/framersai/agentos-extensions/tree/master/registry/curated/channels/farcaster) | Farcaster social channel (Neynar API) |  |
+| [`@framers/agentos-ext-channel-lemmy`](https://github.com/framersai/agentos-extensions/tree/master/registry/curated/channels/lemmy) | Lemmy federated social channel |  |
+| [`@framers/agentos-ext-channel-google-business`](https://github.com/framersai/agentos-extensions/tree/master/registry/curated/channels/google-business) | Google Business Profile channel |  |
+| [`@framers/agentos-ext-channel-blog-publisher`](https://github.com/framersai/agentos-extensions/tree/master/registry/curated/channels/blog-publisher) | Blog publisher (Dev.to, Hashnode, Medium, WordPress) |  |
+| [`@framers/agentos-ext-channel-pinterest`](https://github.com/framersai/agentos-extensions/tree/master/registry/curated/channels/pinterest) | Pinterest social channel (API v5) |  |
+| [`@framers/agentos-ext-channel-tiktok`](https://github.com/framersai/agentos-extensions/tree/master/registry/curated/channels/tiktok) | TikTok social channel (API for Business) |  |
+| [`@framers/agentos-ext-channel-email`](https://github.com/framersai/agentos-extensions/tree/master/registry/curated/channels/email) | Email messaging channel (nodemailer/imapflow) |  |
 
 ## Two-Tier Extension Pattern
 
@@ -404,15 +404,22 @@ See [CONTRIBUTING.md](/extensions/contributing) for detailed guidelines.
 
 ## Links
 
-- **Website**: [frame.dev](https://frame.dev)
 - **AgentOS**: [agentos.sh](https://agentos.sh)
-- **Marketplace**: [vca.chat](https://vca.chat)
+- **AgentOS GitHub**: [github.com/framersai/agentos](https://github.com/framersai/agentos)
+- **Extensions GitHub**: [github.com/framersai/agentos-extensions](https://github.com/framersai/agentos-extensions)
+- **Mars Genesis Demo**: [github.com/framersai/mars-genesis-simulation](https://github.com/framersai/mars-genesis-simulation)
 - **npm**: [@framers](https://www.npmjs.com/org/framers)
 - **API Docs**: [framersai.github.io/agentos-extensions](https://framersai.github.io/agentos-extensions/)
-- **Contact**: team@frame.dev
+- **Discord**: [wilds.ai/discord](https://wilds.ai/discord)
+- **Website**: [frame.dev](https://frame.dev)
+- **Contact**: [team@frame.dev](mailto:team@frame.dev)
 
 ## License
 
 All extensions in this repository are MIT licensed.
+
+---
+
+
 
 

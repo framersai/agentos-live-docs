@@ -2,7 +2,7 @@
 
 > **exportToolAsSkill**(`tool`): `string`
 
-Defined in: [packages/agentos/src/emergent/SkillExporter.ts:149](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/emergent/SkillExporter.ts#L149)
+Defined in: [packages/agentos/src/emergent/SkillExporter.ts:149](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/emergent/SkillExporter.ts#L149)
 
 Converts an [EmergentTool](../interfaces/EmergentTool.md) into a SKILL.md markdown string.
 

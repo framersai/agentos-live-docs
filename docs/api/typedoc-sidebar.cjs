@@ -544,6 +544,11 @@ const typedocSidebar = {
         },
         {
           type: "doc",
+          id: "api/classes/HybridUtilityAI",
+          label: "HybridUtilityAI"
+        },
+        {
+          type: "doc",
           id: "api/classes/HydeRetriever",
           label: "HydeRetriever"
         },
@@ -636,6 +641,11 @@ const typedocSidebar = {
           type: "doc",
           id: "api/classes/LLMJudge",
           label: "LLMJudge"
+        },
+        {
+          type: "doc",
+          id: "api/classes/LLMUtilityAI",
+          label: "LLMUtilityAI"
         },
         {
           type: "doc",
@@ -914,6 +924,11 @@ const typedocSidebar = {
         },
         {
           type: "doc",
+          id: "api/classes/PolicyAwareImageRouter",
+          label: "PolicyAwareImageRouter"
+        },
+        {
+          type: "doc",
           id: "api/classes/PostgresSetup",
           label: "PostgresSetup"
         },
@@ -991,6 +1006,11 @@ const typedocSidebar = {
           type: "doc",
           id: "api/classes/RedditChannelAdapter",
           label: "RedditChannelAdapter"
+        },
+        {
+          type: "doc",
+          id: "api/classes/ReplicateFaceEmbeddingService",
+          label: "ReplicateFaceEmbeddingService"
         },
         {
           type: "doc",
@@ -1151,6 +1171,11 @@ const typedocSidebar = {
           type: "doc",
           id: "api/classes/StateManager",
           label: "StateManager"
+        },
+        {
+          type: "doc",
+          id: "api/classes/StatisticalUtilityAI",
+          label: "StatisticalUtilityAI"
         },
         {
           type: "doc",
@@ -1985,8 +2010,18 @@ const typedocSidebar = {
         },
         {
           type: "doc",
+          id: "api/interfaces/ClassificationOptions",
+          label: "ClassificationOptions"
+        },
+        {
+          type: "doc",
           id: "api/interfaces/ClassificationResult",
           label: "ClassificationResult"
+        },
+        {
+          type: "doc",
+          id: "api/interfaces/ClassificationScore",
+          label: "ClassificationScore"
         },
         {
           type: "doc",
@@ -2585,6 +2620,11 @@ const typedocSidebar = {
         },
         {
           type: "doc",
+          id: "api/interfaces/FaceEmbedding",
+          label: "FaceEmbedding"
+        },
+        {
+          type: "doc",
           id: "api/interfaces/FalImageProviderConfig",
           label: "FalImageProviderConfig"
         },
@@ -2995,6 +3035,11 @@ const typedocSidebar = {
         },
         {
           type: "doc",
+          id: "api/interfaces/HybridUtilityAIConfig",
+          label: "HybridUtilityAIConfig"
+        },
+        {
+          type: "doc",
           id: "api/interfaces/HydeConfig",
           label: "HydeConfig"
         },
@@ -3082,6 +3127,11 @@ const typedocSidebar = {
           type: "doc",
           id: "api/interfaces/IEvaluator",
           label: "IEvaluator"
+        },
+        {
+          type: "doc",
+          id: "api/interfaces/IFaceEmbeddingService",
+          label: "IFaceEmbeddingService"
         },
         {
           type: "doc",
@@ -3182,6 +3232,11 @@ const typedocSidebar = {
           type: "doc",
           id: "api/interfaces/ImageProviderOptionBag",
           label: "ImageProviderOptionBag"
+        },
+        {
+          type: "doc",
+          id: "api/interfaces/ImageProviderPreference",
+          label: "ImageProviderPreference"
         },
         {
           type: "doc",
@@ -3420,6 +3475,11 @@ const typedocSidebar = {
         },
         {
           type: "doc",
+          id: "api/interfaces/IUtilityAI",
+          label: "IUtilityAI"
+        },
+        {
+          type: "doc",
           id: "api/interfaces/IVectorStore",
           label: "IVectorStore"
         },
@@ -3475,6 +3535,11 @@ const typedocSidebar = {
         },
         {
           type: "doc",
+          id: "api/interfaces/KeywordExtractionOptions",
+          label: "KeywordExtractionOptions"
+        },
+        {
+          type: "doc",
           id: "api/interfaces/KnowledgeEntity",
           label: "KnowledgeEntity"
         },
@@ -3500,6 +3565,16 @@ const typedocSidebar = {
         },
         {
           type: "doc",
+          id: "api/interfaces/LanguageDetectionOptions",
+          label: "LanguageDetectionOptions"
+        },
+        {
+          type: "doc",
+          id: "api/interfaces/LanguageDetectionResult",
+          label: "LanguageDetectionResult"
+        },
+        {
+          type: "doc",
           id: "api/interfaces/LanguageNegotiationParams",
           label: "LanguageNegotiationParams"
         },
@@ -3522,6 +3597,11 @@ const typedocSidebar = {
           type: "doc",
           id: "api/interfaces/LLMJudgeConfig",
           label: "LLMJudgeConfig"
+        },
+        {
+          type: "doc",
+          id: "api/interfaces/LLMUtilityAIConfig",
+          label: "LLMUtilityAIConfig"
         },
         {
           type: "doc",
@@ -3870,6 +3950,11 @@ const typedocSidebar = {
         },
         {
           type: "doc",
+          id: "api/interfaces/NGramOptions",
+          label: "NGramOptions"
+        },
+        {
+          type: "doc",
           id: "api/interfaces/NodeExecutionResult",
           label: "NodeExecutionResult"
         },
@@ -4030,6 +4115,11 @@ const typedocSidebar = {
         },
         {
           type: "doc",
+          id: "api/interfaces/ParseJsonOptions",
+          label: "ParseJsonOptions"
+        },
+        {
+          type: "doc",
           id: "api/interfaces/PartiallyRetrievedTrace",
           label: "PartiallyRetrievedTrace"
         },
@@ -4075,6 +4165,11 @@ const typedocSidebar = {
         },
         {
           type: "doc",
+          id: "api/interfaces/PersonaDriftConfig",
+          label: "PersonaDriftConfig"
+        },
+        {
+          type: "doc",
           id: "api/interfaces/PersonaEvolutionContext",
           label: "PersonaEvolutionContext"
         },
@@ -4082,6 +4177,11 @@ const typedocSidebar = {
           type: "doc",
           id: "api/interfaces/PersonaEvolutionRule",
           label: "PersonaEvolutionRule"
+        },
+        {
+          type: "doc",
+          id: "api/interfaces/PersonalityDriftProposal",
+          label: "PersonalityDriftProposal"
         },
         {
           type: "doc",
@@ -4470,6 +4570,16 @@ const typedocSidebar = {
         },
         {
           type: "doc",
+          id: "api/interfaces/ReadabilityOptions",
+          label: "ReadabilityOptions"
+        },
+        {
+          type: "doc",
+          id: "api/interfaces/ReadabilityResult",
+          label: "ReadabilityResult"
+        },
+        {
+          type: "doc",
           id: "api/interfaces/ReasoningTrace",
           label: "ReasoningTrace"
         },
@@ -4530,6 +4640,11 @@ const typedocSidebar = {
         },
         {
           type: "doc",
+          id: "api/interfaces/RelationshipDriftInput",
+          label: "RelationshipDriftInput"
+        },
+        {
+          type: "doc",
           id: "api/interfaces/RememberOptions",
           label: "RememberOptions"
         },
@@ -4542,6 +4657,11 @@ const typedocSidebar = {
           type: "doc",
           id: "api/interfaces/RemoteUser",
           label: "RemoteUser"
+        },
+        {
+          type: "doc",
+          id: "api/interfaces/ReplicateFaceEmbeddingConfig",
+          label: "ReplicateFaceEmbeddingConfig"
         },
         {
           type: "doc",
@@ -4820,6 +4940,16 @@ const typedocSidebar = {
         },
         {
           type: "doc",
+          id: "api/interfaces/SentimentAnalysisOptions",
+          label: "SentimentAnalysisOptions"
+        },
+        {
+          type: "doc",
+          id: "api/interfaces/SentimentResult",
+          label: "SentimentResult"
+        },
+        {
+          type: "doc",
           id: "api/interfaces/SentimentTrackingConfig",
           label: "SentimentTrackingConfig"
         },
@@ -4852,6 +4982,11 @@ const typedocSidebar = {
           type: "doc",
           id: "api/interfaces/SilenceDetectorConfig",
           label: "SilenceDetectorConfig"
+        },
+        {
+          type: "doc",
+          id: "api/interfaces/SimilarityOptions",
+          label: "SimilarityOptions"
         },
         {
           type: "doc",
@@ -5185,6 +5320,16 @@ const typedocSidebar = {
         },
         {
           type: "doc",
+          id: "api/interfaces/StatisticalUtilityAIConfig",
+          label: "StatisticalUtilityAIConfig"
+        },
+        {
+          type: "doc",
+          id: "api/interfaces/StemmingOptions",
+          label: "StemmingOptions"
+        },
+        {
+          type: "doc",
           id: "api/interfaces/StepConfig",
           label: "StepConfig"
         },
@@ -5260,8 +5405,18 @@ const typedocSidebar = {
         },
         {
           type: "doc",
+          id: "api/interfaces/SummarizationOptions",
+          label: "SummarizationOptions"
+        },
+        {
+          type: "doc",
           id: "api/interfaces/SummaryChainNode",
           label: "SummaryChainNode"
+        },
+        {
+          type: "doc",
+          id: "api/interfaces/SystemContentBlock",
+          label: "SystemContentBlock"
         },
         {
           type: "doc",
@@ -5305,8 +5460,18 @@ const typedocSidebar = {
         },
         {
           type: "doc",
+          id: "api/interfaces/TextNormalizationOptions",
+          label: "TextNormalizationOptions"
+        },
+        {
+          type: "doc",
           id: "api/interfaces/TextToSpeechProvider",
           label: "TextToSpeechProvider"
+        },
+        {
+          type: "doc",
+          id: "api/interfaces/TokenizationOptions",
+          label: "TokenizationOptions"
         },
         {
           type: "doc",
@@ -5532,6 +5697,11 @@ const typedocSidebar = {
           type: "doc",
           id: "api/interfaces/UserFeedbackPayload",
           label: "UserFeedbackPayload"
+        },
+        {
+          type: "doc",
+          id: "api/interfaces/UtilityAIConfigBase",
+          label: "UtilityAIConfigBase"
         },
         {
           type: "doc",
@@ -6223,6 +6393,11 @@ const typedocSidebar = {
           type: "doc",
           id: "api/type-aliases/GuardrailDescriptor",
           label: "GuardrailDescriptor"
+        },
+        {
+          type: "doc",
+          id: "api/type-aliases/HEXACOTrait",
+          label: "HEXACOTrait"
         },
         {
           type: "doc",
@@ -7022,6 +7197,11 @@ const typedocSidebar = {
         },
         {
           type: "doc",
+          id: "api/variables/DEFAULT_PERSONA_DRIFT_CONFIG",
+          label: "DEFAULT_PERSONA_DRIFT_CONFIG"
+        },
+        {
+          type: "doc",
           id: "api/variables/DEFAULT_RATE_LIMIT_BANNER_THRESHOLDS",
           label: "DEFAULT_RATE_LIMIT_BANNER_THRESHOLDS"
         },
@@ -7265,6 +7445,11 @@ const typedocSidebar = {
           type: "doc",
           id: "api/functions/agent",
           label: "agent"
+        },
+        {
+          type: "doc",
+          id: "api/functions/analyzePersonaDrift",
+          label: "analyzePersonaDrift"
         },
         {
           type: "doc",

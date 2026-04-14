@@ -1,6 +1,6 @@
 # Interface: GenerateTextResult
 
-Defined in: [packages/agentos/src/api/generateText.ts:265](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/generateText.ts#L265)
+Defined in: [packages/agentos/src/api/generateText.ts:304](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/api/generateText.ts#L304)
 
 The completed result returned by [generateText](../functions/generateText.md).
 
@@ -10,7 +10,7 @@ The completed result returned by [generateText](../functions/generateText.md).
 
 > `optional` **agentCalls**: [`AgentCallRecord`](AgentCallRecord.md)[]
 
-Defined in: [packages/agentos/src/api/generateText.ts:288](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/generateText.ts#L288)
+Defined in: [packages/agentos/src/api/generateText.ts:327](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/api/generateText.ts#L327)
 
 Ordered records of every sub-agent call made during an `agency()` run.
 `undefined` for plain `generateText` / `agent()` calls.
@@ -21,7 +21,7 @@ Ordered records of every sub-agent call made during an `agency()` run.
 
 > **finishReason**: `"error"` \| `"length"` \| `"stop"` \| `"tool-calls"`
 
-Defined in: [packages/agentos/src/api/generateText.ts:283](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/generateText.ts#L283)
+Defined in: [packages/agentos/src/api/generateText.ts:322](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/api/generateText.ts#L322)
 
 Reason the model stopped generating.
 - `"stop"` — natural end of response.
@@ -35,7 +35,7 @@ Reason the model stopped generating.
 
 > **model**: `string`
 
-Defined in: [packages/agentos/src/api/generateText.ts:269](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/generateText.ts#L269)
+Defined in: [packages/agentos/src/api/generateText.ts:308](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/api/generateText.ts#L308)
 
 Resolved model identifier used for the run.
 
@@ -45,7 +45,7 @@ Resolved model identifier used for the run.
 
 > `optional` **parsed**: `unknown`
 
-Defined in: [packages/agentos/src/api/generateText.ts:298](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/generateText.ts#L298)
+Defined in: [packages/agentos/src/api/generateText.ts:337](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/api/generateText.ts#L337)
 
 Parsed structured output produced when `BaseAgentConfig.output` is a Zod
 schema.  `undefined` when no output schema is configured.
@@ -56,7 +56,7 @@ schema.  `undefined` when no output schema is configured.
 
 > `optional` **plan**: `Plan`
 
-Defined in: [packages/agentos/src/api/generateText.ts:303](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/generateText.ts#L303)
+Defined in: [packages/agentos/src/api/generateText.ts:342](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/api/generateText.ts#L342)
 
 The plan produced by the planning phase when `planning` is enabled.
 `undefined` when planning is disabled or was not requested.
@@ -67,7 +67,7 @@ The plan produced by the planning phase when `planning` is enabled.
 
 > **provider**: `string`
 
-Defined in: [packages/agentos/src/api/generateText.ts:267](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/generateText.ts#L267)
+Defined in: [packages/agentos/src/api/generateText.ts:306](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/api/generateText.ts#L306)
 
 Provider identifier used for the final run.
 
@@ -77,7 +77,7 @@ Provider identifier used for the final run.
 
 > **text**: `string`
 
-Defined in: [packages/agentos/src/api/generateText.ts:271](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/generateText.ts#L271)
+Defined in: [packages/agentos/src/api/generateText.ts:310](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/api/generateText.ts#L310)
 
 Final assistant text after all agentic steps have completed.
 
@@ -87,7 +87,7 @@ Final assistant text after all agentic steps have completed.
 
 > **toolCalls**: [`ToolCallRecord`](ToolCallRecord.md)[]
 
-Defined in: [packages/agentos/src/api/generateText.ts:275](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/generateText.ts#L275)
+Defined in: [packages/agentos/src/api/generateText.ts:314](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/api/generateText.ts#L314)
 
 Ordered list of every tool call made during the run.
 
@@ -97,7 +97,7 @@ Ordered list of every tool call made during the run.
 
 > `optional` **trace**: [`AgencyTraceEvent`](../type-aliases/AgencyTraceEvent.md)[]
 
-Defined in: [packages/agentos/src/api/generateText.ts:293](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/generateText.ts#L293)
+Defined in: [packages/agentos/src/api/generateText.ts:332](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/api/generateText.ts#L332)
 
 Structured trace events emitted during the run.
 Populated by the agency orchestrator; `undefined` for single-agent calls.
@@ -108,6 +108,6 @@ Populated by the agency orchestrator; `undefined` for single-agent calls.
 
 > **usage**: [`TokenUsage`](TokenUsage.md)
 
-Defined in: [packages/agentos/src/api/generateText.ts:273](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/generateText.ts#L273)
+Defined in: [packages/agentos/src/api/generateText.ts:312](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/api/generateText.ts#L312)
 
 Aggregated token usage across all steps.

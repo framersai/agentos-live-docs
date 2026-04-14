@@ -1,6 +1,6 @@
 # Interface: RateLimitInfoPublic
 
-Defined in: [packages/agentos/src/core/rate-limiting/types.ts:18](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/rate-limiting/types.ts#L18)
+Defined in: [packages/agentos/src/core/rate-limiting/types.ts:18](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/rate-limiting/types.ts#L18)
 
 Rate limit information for public (unauthenticated) users with IP-based limits.
 
@@ -10,7 +10,7 @@ Rate limit information for public (unauthenticated) users with IP-based limits.
 
 > **ip**: `string` \| `null`
 
-Defined in: [packages/agentos/src/core/rate-limiting/types.ts:20](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/rate-limiting/types.ts#L20)
+Defined in: [packages/agentos/src/core/rate-limiting/types.ts:20](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/rate-limiting/types.ts#L20)
 
 ***
 
@@ -18,7 +18,7 @@ Defined in: [packages/agentos/src/core/rate-limiting/types.ts:20](https://github
 
 > **limit**: `number`
 
-Defined in: [packages/agentos/src/core/rate-limiting/types.ts:22](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/rate-limiting/types.ts#L22)
+Defined in: [packages/agentos/src/core/rate-limiting/types.ts:22](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/rate-limiting/types.ts#L22)
 
 ***
 
@@ -26,7 +26,7 @@ Defined in: [packages/agentos/src/core/rate-limiting/types.ts:22](https://github
 
 > `optional` **message**: `string`
 
-Defined in: [packages/agentos/src/core/rate-limiting/types.ts:26](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/rate-limiting/types.ts#L26)
+Defined in: [packages/agentos/src/core/rate-limiting/types.ts:26](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/rate-limiting/types.ts#L26)
 
 ***
 
@@ -34,7 +34,7 @@ Defined in: [packages/agentos/src/core/rate-limiting/types.ts:26](https://github
 
 > **remaining**: `number`
 
-Defined in: [packages/agentos/src/core/rate-limiting/types.ts:23](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/rate-limiting/types.ts#L23)
+Defined in: [packages/agentos/src/core/rate-limiting/types.ts:23](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/rate-limiting/types.ts#L23)
 
 ***
 
@@ -42,7 +42,7 @@ Defined in: [packages/agentos/src/core/rate-limiting/types.ts:23](https://github
 
 > **resetAt**: `string` \| `Date` \| `null`
 
-Defined in: [packages/agentos/src/core/rate-limiting/types.ts:24](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/rate-limiting/types.ts#L24)
+Defined in: [packages/agentos/src/core/rate-limiting/types.ts:24](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/rate-limiting/types.ts#L24)
 
 ***
 
@@ -50,7 +50,7 @@ Defined in: [packages/agentos/src/core/rate-limiting/types.ts:24](https://github
 
 > `optional` **storeType**: `string`
 
-Defined in: [packages/agentos/src/core/rate-limiting/types.ts:25](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/rate-limiting/types.ts#L25)
+Defined in: [packages/agentos/src/core/rate-limiting/types.ts:25](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/rate-limiting/types.ts#L25)
 
 ***
 
@@ -58,7 +58,7 @@ Defined in: [packages/agentos/src/core/rate-limiting/types.ts:25](https://github
 
 > **tier**: `"public"`
 
-Defined in: [packages/agentos/src/core/rate-limiting/types.ts:19](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/rate-limiting/types.ts#L19)
+Defined in: [packages/agentos/src/core/rate-limiting/types.ts:19](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/rate-limiting/types.ts#L19)
 
 ***
 
@@ -66,4 +66,4 @@ Defined in: [packages/agentos/src/core/rate-limiting/types.ts:19](https://github
 
 > **used**: `number`
 
-Defined in: [packages/agentos/src/core/rate-limiting/types.ts:21](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/rate-limiting/types.ts#L21)
+Defined in: [packages/agentos/src/core/rate-limiting/types.ts:21](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/rate-limiting/types.ts#L21)

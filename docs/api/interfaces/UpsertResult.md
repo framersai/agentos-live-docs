@@ -1,6 +1,6 @@
 # Interface: UpsertResult
 
-Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:186](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/vector-store/IVectorStore.ts#L186)
+Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:186](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/vector-store/IVectorStore.ts#L186)
 
 The result of a vector store upsert operation.
 
@@ -14,7 +14,7 @@ UpsertResult
 
 > `optional` **errors**: `object`[]
 
-Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:190](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/vector-store/IVectorStore.ts#L190)
+Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:190](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/vector-store/IVectorStore.ts#L190)
 
 Detailed information about any failures.
 
@@ -36,7 +36,7 @@ Detailed information about any failures.
 
 > `optional` **failedCount**: `number`
 
-Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:189](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/vector-store/IVectorStore.ts#L189)
+Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:189](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/vector-store/IVectorStore.ts#L189)
 
 The number of documents that failed to upsert.
 
@@ -46,7 +46,7 @@ The number of documents that failed to upsert.
 
 > **upsertedCount**: `number`
 
-Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:187](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/vector-store/IVectorStore.ts#L187)
+Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:187](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/vector-store/IVectorStore.ts#L187)
 
 The number of documents successfully upserted.
 
@@ -56,6 +56,6 @@ The number of documents successfully upserted.
 
 > `optional` **upsertedIds**: `string`[]
 
-Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:188](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/vector-store/IVectorStore.ts#L188)
+Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:188](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/vector-store/IVectorStore.ts#L188)
 
 Optional array of IDs of the upserted documents.

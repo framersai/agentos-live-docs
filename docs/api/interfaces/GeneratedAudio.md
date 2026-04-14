@@ -1,6 +1,6 @@
 # Interface: GeneratedAudio
 
-Defined in: [packages/agentos/src/media/audio/types.ts:216](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/audio/types.ts#L216)
+Defined in: [packages/agentos/src/media/audio/types.ts:216](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/audio/types.ts#L216)
 
 A single generated audio artifact.
 
@@ -13,7 +13,7 @@ on the provider's response format.
 
 > `optional` **base64**: `string`
 
-Defined in: [packages/agentos/src/media/audio/types.ts:221](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/audio/types.ts#L221)
+Defined in: [packages/agentos/src/media/audio/types.ts:221](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/audio/types.ts#L221)
 
 Base64-encoded audio data.
 
@@ -23,7 +23,7 @@ Base64-encoded audio data.
 
 > `optional` **durationSec**: `number`
 
-Defined in: [packages/agentos/src/media/audio/types.ts:227](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/audio/types.ts#L227)
+Defined in: [packages/agentos/src/media/audio/types.ts:227](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/audio/types.ts#L227)
 
 Duration of the generated audio in seconds.
 
@@ -33,7 +33,7 @@ Duration of the generated audio in seconds.
 
 > `optional` **mimeType**: `string`
 
-Defined in: [packages/agentos/src/media/audio/types.ts:224](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/audio/types.ts#L224)
+Defined in: [packages/agentos/src/media/audio/types.ts:224](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/audio/types.ts#L224)
 
 MIME type of the audio (e.g. `'audio/mpeg'`, `'audio/wav'`).
 
@@ -43,7 +43,7 @@ MIME type of the audio (e.g. `'audio/mpeg'`, `'audio/wav'`).
 
 > `optional` **providerMetadata**: `Record`\<`string`, `unknown`\>
 
-Defined in: [packages/agentos/src/media/audio/types.ts:233](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/audio/types.ts#L233)
+Defined in: [packages/agentos/src/media/audio/types.ts:233](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/audio/types.ts#L233)
 
 Provider-specific metadata (job ID, generation params, etc.).
 
@@ -53,7 +53,7 @@ Provider-specific metadata (job ID, generation params, etc.).
 
 > `optional` **sampleRate**: `number`
 
-Defined in: [packages/agentos/src/media/audio/types.ts:230](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/audio/types.ts#L230)
+Defined in: [packages/agentos/src/media/audio/types.ts:230](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/audio/types.ts#L230)
 
 Sample rate in Hz (e.g. `44100`, `48000`).
 
@@ -63,6 +63,6 @@ Sample rate in Hz (e.g. `44100`, `48000`).
 
 > `optional` **url**: `string`
 
-Defined in: [packages/agentos/src/media/audio/types.ts:218](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/audio/types.ts#L218)
+Defined in: [packages/agentos/src/media/audio/types.ts:218](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/audio/types.ts#L218)
 
 Public URL where the audio can be downloaded.

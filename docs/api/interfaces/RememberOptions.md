@@ -1,6 +1,6 @@
 # Interface: RememberOptions
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:291](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/io/facade/types.ts#L291)
+Defined in: [packages/agentos/src/memory/io/facade/types.ts:291](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/io/facade/types.ts#L291)
 
 Options for storing a new memory trace via `Memory.remember()`.
 
@@ -10,7 +10,7 @@ Options for storing a new memory trace via `Memory.remember()`.
 
 > `optional` **entities**: `string`[]
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:320](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/io/facade/types.ts#L320)
+Defined in: [packages/agentos/src/memory/io/facade/types.ts:320](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/io/facade/types.ts#L320)
 
 Named entities extracted from or associated with this trace.
 
@@ -26,7 +26,7 @@ Named entities extracted from or associated with this trace.
 
 > `optional` **importance**: `number`
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:326](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/io/facade/types.ts#L326)
+Defined in: [packages/agentos/src/memory/io/facade/types.ts:326](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/io/facade/types.ts#L326)
 
 Manually supplied importance score (0–1).
 When omitted the encoding engine derives one automatically.
@@ -37,7 +37,7 @@ When omitted the encoding engine derives one automatically.
 
 > `optional` **scope**: `string`
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:302](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/io/facade/types.ts#L302)
+Defined in: [packages/agentos/src/memory/io/facade/types.ts:302](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/io/facade/types.ts#L302)
 
 Visibility scope of the trace.
 
@@ -53,7 +53,7 @@ Visibility scope of the trace.
 
 > `optional` **scopeId**: `string`
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:308](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/io/facade/types.ts#L308)
+Defined in: [packages/agentos/src/memory/io/facade/types.ts:308](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/io/facade/types.ts#L308)
 
 Identifier for the scope (e.g. thread ID, user ID).
 Required when `scope` is set.
@@ -64,7 +64,7 @@ Required when `scope` is set.
 
 > `optional` **tags**: `string`[]
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:314](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/io/facade/types.ts#L314)
+Defined in: [packages/agentos/src/memory/io/facade/types.ts:314](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/io/facade/types.ts#L314)
 
 Free-form tags for filtering and retrieval.
 
@@ -80,7 +80,7 @@ Free-form tags for filtering and retrieval.
 
 > `optional` **type**: `string`
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:296](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/io/facade/types.ts#L296)
+Defined in: [packages/agentos/src/memory/io/facade/types.ts:296](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/io/facade/types.ts#L296)
 
 Tulving memory type.
 

@@ -1,6 +1,6 @@
 # Interface: AnchorProvider
 
-Defined in: [packages/agentos/src/provenance/types.ts:104](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/provenance/types.ts#L104)
+Defined in: [packages/agentos/src/provenance/types.ts:104](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/provenance/types.ts#L104)
 
 Interface for external anchor publishing backends.
 Implementations are called AFTER local anchor persistence.
@@ -11,7 +11,7 @@ Implementations are called AFTER local anchor persistence.
 
 > `readonly` **id**: `string`
 
-Defined in: [packages/agentos/src/provenance/types.ts:106](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/provenance/types.ts#L106)
+Defined in: [packages/agentos/src/provenance/types.ts:106](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/provenance/types.ts#L106)
 
 Unique provider identifier.
 
@@ -21,7 +21,7 @@ Unique provider identifier.
 
 > `readonly` **name**: `string`
 
-Defined in: [packages/agentos/src/provenance/types.ts:108](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/provenance/types.ts#L108)
+Defined in: [packages/agentos/src/provenance/types.ts:108](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/provenance/types.ts#L108)
 
 Human-readable display name.
 
@@ -31,7 +31,7 @@ Human-readable display name.
 
 > `readonly` **proofLevel**: [`ProofLevel`](../type-aliases/ProofLevel.md)
 
-Defined in: [packages/agentos/src/provenance/types.ts:110](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/provenance/types.ts#L110)
+Defined in: [packages/agentos/src/provenance/types.ts:110](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/provenance/types.ts#L110)
 
 Proof level this provider advertises.
 
@@ -41,7 +41,7 @@ Proof level this provider advertises.
 
 > `optional` **dispose**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/provenance/types.ts:119](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/provenance/types.ts#L119)
+Defined in: [packages/agentos/src/provenance/types.ts:119](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/provenance/types.ts#L119)
 
 Optional: dispose of resources (connections, timers, etc.).
 
@@ -55,7 +55,7 @@ Optional: dispose of resources (connections, timers, etc.).
 
 > **publish**(`anchor`): `Promise`\<[`AnchorProviderResult`](AnchorProviderResult.md)\>
 
-Defined in: [packages/agentos/src/provenance/types.ts:115](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/provenance/types.ts#L115)
+Defined in: [packages/agentos/src/provenance/types.ts:115](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/provenance/types.ts#L115)
 
 Publish an anchor externally.
 Must not throw — failures are returned via AnchorProviderResult.success = false.
@@ -76,7 +76,7 @@ Must not throw — failures are returned via AnchorProviderResult.success = fals
 
 > `optional` **verify**(`anchor`): `Promise`\<`boolean`\>
 
-Defined in: [packages/agentos/src/provenance/types.ts:117](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/provenance/types.ts#L117)
+Defined in: [packages/agentos/src/provenance/types.ts:117](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/provenance/types.ts#L117)
 
 Optional: verify a previously published anchor against its external reference.
 

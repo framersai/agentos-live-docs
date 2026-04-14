@@ -1,6 +1,6 @@
 # Interface: EmergentConfig
 
-Defined in: [packages/agentos/src/emergent/types.ts:639](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/emergent/types.ts#L639)
+Defined in: [packages/agentos/src/emergent/types.ts:639](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/emergent/types.ts#L639)
 
 Configuration options for the Emergent Capability Engine.
 
@@ -13,7 +13,7 @@ Pass a partial object to override only the fields you need.
 
 > **allowSandboxTools**: `boolean`
 
-Defined in: [packages/agentos/src/emergent/types.ts:673](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/emergent/types.ts#L673)
+Defined in: [packages/agentos/src/emergent/types.ts:673](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/emergent/types.ts#L673)
 
 Whether sandboxed code tools may be forged at all.
 
@@ -36,7 +36,7 @@ false
 
 > **enabled**: `boolean`
 
-Defined in: [packages/agentos/src/emergent/types.ts:645](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/emergent/types.ts#L645)
+Defined in: [packages/agentos/src/emergent/types.ts:645](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/emergent/types.ts#L645)
 
 Master switch. When `false`, all forge / promote / execute requests are
 rejected immediately with a `"emergent capabilities disabled"` error.
@@ -53,7 +53,7 @@ false
 
 > **judgeModel**: `string`
 
-Defined in: [packages/agentos/src/emergent/types.ts:727](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/emergent/types.ts#L727)
+Defined in: [packages/agentos/src/emergent/types.ts:727](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/emergent/types.ts#L727)
 
 Model ID used by the single LLM judge at forge time ([CreationVerdict](CreationVerdict.md)).
 Should be a fast, cost-efficient model — correctness is handled by test cases.
@@ -70,7 +70,7 @@ Should be a fast, cost-efficient model — correctness is handled by test cases.
 
 > **maxAgentTools**: `number`
 
-Defined in: [packages/agentos/src/emergent/types.ts:659](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/emergent/types.ts#L659)
+Defined in: [packages/agentos/src/emergent/types.ts:659](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/emergent/types.ts#L659)
 
 Maximum number of agent-scoped emergent tools persisted per agent.
 Promotion from `'session'` to `'agent'` is blocked when this limit is reached.
@@ -87,7 +87,7 @@ Promotion from `'session'` to `'agent'` is blocked when this limit is reached.
 
 > **maxSessionTools**: `number`
 
-Defined in: [packages/agentos/src/emergent/types.ts:652](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/emergent/types.ts#L652)
+Defined in: [packages/agentos/src/emergent/types.ts:652](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/emergent/types.ts#L652)
 
 Maximum number of session-scoped emergent tools an agent may hold at once.
 Forge requests beyond this limit are rejected until older tools are evicted.
@@ -104,7 +104,7 @@ Forge requests beyond this limit are rejected until older tools are evicted.
 
 > **persistSandboxSource**: `boolean`
 
-Defined in: [packages/agentos/src/emergent/types.ts:688](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/emergent/types.ts#L688)
+Defined in: [packages/agentos/src/emergent/types.ts:688](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/emergent/types.ts#L688)
 
 Whether sandbox source code should be persisted at rest.
 
@@ -128,7 +128,7 @@ false
 
 > **promotionJudgeModel**: `string`
 
-Defined in: [packages/agentos/src/emergent/types.ts:734](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/emergent/types.ts#L734)
+Defined in: [packages/agentos/src/emergent/types.ts:734](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/emergent/types.ts#L734)
 
 Model ID used by both reviewers in the multi-reviewer promotion panel
 ([PromotionVerdict](PromotionVerdict.md)). Should be a more capable model than `judgeModel`.
@@ -145,7 +145,7 @@ Model ID used by both reviewers in the multi-reviewer promotion panel
 
 > **promotionThreshold**: `object`
 
-Defined in: [packages/agentos/src/emergent/types.ts:707](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/emergent/types.ts#L707)
+Defined in: [packages/agentos/src/emergent/types.ts:707](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/emergent/types.ts#L707)
 
 Thresholds that must be met before a tool is eligible for tier promotion.
 
@@ -180,7 +180,7 @@ Minimum total invocation count before promotion is considered.
 
 > **sandboxMemoryMB**: `number`
 
-Defined in: [packages/agentos/src/emergent/types.ts:695](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/emergent/types.ts#L695)
+Defined in: [packages/agentos/src/emergent/types.ts:695](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/emergent/types.ts#L695)
 
 Memory limit in megabytes for each sandboxed tool execution.
 Passed as `SandboxExecutionRequest.memoryMB`.
@@ -197,7 +197,7 @@ Passed as `SandboxExecutionRequest.memoryMB`.
 
 > **sandboxTimeoutMs**: `number`
 
-Defined in: [packages/agentos/src/emergent/types.ts:702](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/emergent/types.ts#L702)
+Defined in: [packages/agentos/src/emergent/types.ts:702](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/emergent/types.ts#L702)
 
 Wall-clock timeout in milliseconds for each sandboxed tool execution.
 Passed as `SandboxExecutionRequest.timeoutMs`.
@@ -214,7 +214,7 @@ Passed as `SandboxExecutionRequest.timeoutMs`.
 
 > `optional` **selfImprovement**: [`SelfImprovementConfig`](SelfImprovementConfig.md)
 
-Defined in: [packages/agentos/src/emergent/types.ts:743](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/emergent/types.ts#L743)
+Defined in: [packages/agentos/src/emergent/types.ts:743](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/emergent/types.ts#L743)
 
 Self-improvement configuration for bounded autonomous personality mutation,
 skill management, workflow composition, and self-evaluation.

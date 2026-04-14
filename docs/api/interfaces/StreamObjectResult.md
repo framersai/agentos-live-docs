@@ -1,6 +1,6 @@
 # Interface: StreamObjectResult\<T\>
 
-Defined in: [packages/agentos/src/api/streamObject.ts:122](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/streamObject.ts#L122)
+Defined in: [packages/agentos/src/api/streamObject.ts:122](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/api/streamObject.ts#L122)
 
 The result object returned immediately by [streamObject](../functions/streamObject.md).
 
@@ -21,7 +21,7 @@ The inferred type from the Zod schema.
 
 > **object**: `Promise`\<`T`\>
 
-Defined in: [packages/agentos/src/api/streamObject.ts:142](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/streamObject.ts#L142)
+Defined in: [packages/agentos/src/api/streamObject.ts:142](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/api/streamObject.ts#L142)
 
 Resolves to the final Zod-validated object when the stream completes.
 
@@ -35,7 +35,7 @@ When the final JSON fails validation.
 
 > **partialObjectStream**: `AsyncIterable`\<[`DeepPartial`](../type-aliases/DeepPartial.md)\<`T`\>\>
 
-Defined in: [packages/agentos/src/api/streamObject.ts:135](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/streamObject.ts#L135)
+Defined in: [packages/agentos/src/api/streamObject.ts:135](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/api/streamObject.ts#L135)
 
 Async iterable yielding partial objects as the LLM builds the JSON
 response token by token. Each yielded value has the same shape as `T`
@@ -55,7 +55,7 @@ for await (const partial of result.partialObjectStream) {
 
 > **text**: `Promise`\<`string`\>
 
-Defined in: [packages/agentos/src/api/streamObject.ts:145](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/streamObject.ts#L145)
+Defined in: [packages/agentos/src/api/streamObject.ts:145](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/api/streamObject.ts#L145)
 
 Resolves to the raw text when the stream completes.
 
@@ -65,6 +65,6 @@ Resolves to the raw text when the stream completes.
 
 > **usage**: `Promise`\<[`TokenUsage`](TokenUsage.md)\>
 
-Defined in: [packages/agentos/src/api/streamObject.ts:148](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/api/streamObject.ts#L148)
+Defined in: [packages/agentos/src/api/streamObject.ts:148](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/api/streamObject.ts#L148)
 
 Resolves to aggregated token usage when the stream completes.

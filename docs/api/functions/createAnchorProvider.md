@@ -2,7 +2,7 @@
 
 > **createAnchorProvider**(`target?`): [`AnchorProvider`](../interfaces/AnchorProvider.md)
 
-Defined in: [packages/agentos/src/provenance/anchoring/providers/createAnchorProvider.ts:56](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/provenance/anchoring/providers/createAnchorProvider.ts#L56)
+Defined in: [packages/agentos/src/provenance/anchoring/providers/createAnchorProvider.ts:56](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/provenance/anchoring/providers/createAnchorProvider.ts#L56)
 
 Create an AnchorProvider from an AnchorTarget configuration.
 Returns NoneProvider when target is undefined or type is 'none'.

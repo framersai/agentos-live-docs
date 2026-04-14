@@ -7,7 +7,7 @@ sidebar_position: 5
 
 Current status: `mission()` compiles to a fixed phase-ordered stub graph (`gather` → `process` → `deliver`) with anchors and mission-level policies applied on top. Planner config is accepted and preserved, but it does not yet change graph shape at runtime.
 
-Use `mission()` when you want a goal-centric builder API today, when you're prototyping around anchors and policies, or when you want a forward-compatible path to richer planner-backed compilation later. When the steps stabilise, call `.toWorkflow()` to export a fixed `CompiledExecutionGraph` and switch to [workflow()](./workflow-dsl.md) or [AgentGraph](./agent-graph.md) for production.
+Use `mission()` when you want a goal-centric builder API today, when you're prototyping around anchors and policies, or when you want a forward-compatible path to richer planner-backed compilation later. When the steps stabilise, call `.toWorkflow()` to export a fixed `CompiledExecutionGraph` and switch to [workflow()](/features/workflow-dsl) or [AgentGraph](/features/agent-graph) for production.
 
 ## Quick Start
 
@@ -268,7 +268,7 @@ const staticIR = deepResearch.toWorkflow();
 
 ## See Also
 
-- [AgentGraph](./agent-graph.md) — for explicit graph control
-- [workflow() DSL](./workflow-dsl.md) — for deterministic DAG pipelines
-- [Checkpointing](./checkpointing.md) — ICheckpointStore, resume semantics
-- [Unified Orchestration](./unified-orchestration.md) — architecture overview
+- [AgentGraph](/features/agent-graph) — for explicit graph control
+- [workflow() DSL](/features/workflow-dsl) — for deterministic DAG pipelines
+- [Checkpointing](/features/checkpointing) — ICheckpointStore, resume semantics
+- [Unified Orchestration](/features/unified-orchestration) — architecture overview

@@ -1,6 +1,6 @@
 ---
 title: "SQLite Brain Storage"
-sidebar_position: 25
+sidebar_position: 26
 ---
 
 > Every agent stores its entire memory in a single `brain.sqlite` file. The schema mirrors cognitive science models: Tulving's memory taxonomy, Collins & Quillian's semantic network, and Hebbian reinforcement signals.
@@ -40,11 +40,11 @@ The `SqliteBrain` class manages a single WAL-mode SQLite database that contains 
 │  memory_traces_  │  knowledge_edges │  document_chunks          │
 │    fts (FTS5)    │                  │  document_images          │
 ├──────────────────┼──────────────────┼───────────────────────────┤
-│  Conversations   │  Maintenance     │  Meta                     │
+│  Conversations   │  Maintenance     │  Meta / Archive           │
 │  ──────────────  │  ──────────────  │  ──────────────           │
 │  conversations   │  consolidation_  │  brain_meta               │
-│  messages        │    log           │                           │
-│                  │  retrieval_      │                           │
+│  messages        │    log           │  archived_traces          │
+│                  │  retrieval_      │  archive_access_log       │
 │                  │    feedback      │                           │
 └──────────────────┴──────────────────┴───────────────────────────┘
 ```
@@ -416,7 +416,8 @@ interface MemoryHealth {
 
 | File | Purpose |
 |------|---------|
-| `memory/store/SqliteBrain.ts` | Unified SQLite connection, DDL, meta helpers |
+| `memory/archive/SqlStorageMemoryArchive.ts` | IMemoryArchive impl (cold storage for verbatim content) |
+| `memory/store/SqliteBrain.ts` | Unified SQLite connection, DDL, meta helpers (includes archive DDL) |
 | `memory/store/SqliteKnowledgeGraph.ts` | IKnowledgeGraph over SQLite tables |
 | `memory/store/SqliteMemoryGraph.ts` | IMemoryGraph with spreading activation |
 | `memory/store/tracePersistence.ts` | FTS5 query builder, trace serialisation, hash utilities |

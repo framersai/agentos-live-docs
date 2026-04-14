@@ -1,6 +1,6 @@
 # Interface: CandidateBranch
 
-Defined in: [packages/agentos/src/orchestration/planning/types.ts:97](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/planning/types.ts#L97)
+Defined in: [packages/agentos/src/orchestration/planning/types.ts:97](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/planning/types.ts#L97)
 
 A single candidate decomposition from Phase 1.
 
@@ -10,7 +10,7 @@ A single candidate decomposition from Phase 1.
 
 > **branchId**: `string`
 
-Defined in: [packages/agentos/src/orchestration/planning/types.ts:98](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/planning/types.ts#L98)
+Defined in: [packages/agentos/src/orchestration/planning/types.ts:98](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/planning/types.ts#L98)
 
 ***
 
@@ -18,7 +18,7 @@ Defined in: [packages/agentos/src/orchestration/planning/types.ts:98](https://gi
 
 > **edges**: [`GraphEdge`](GraphEdge.md)[]
 
-Defined in: [packages/agentos/src/orchestration/planning/types.ts:102](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/planning/types.ts#L102)
+Defined in: [packages/agentos/src/orchestration/planning/types.ts:102](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/planning/types.ts#L102)
 
 ***
 
@@ -26,7 +26,7 @@ Defined in: [packages/agentos/src/orchestration/planning/types.ts:102](https://g
 
 > **estimatedCost**: `number`
 
-Defined in: [packages/agentos/src/orchestration/planning/types.ts:104](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/planning/types.ts#L104)
+Defined in: [packages/agentos/src/orchestration/planning/types.ts:104](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/planning/types.ts#L104)
 
 ***
 
@@ -34,7 +34,7 @@ Defined in: [packages/agentos/src/orchestration/planning/types.ts:104](https://g
 
 > **estimatedLatencyMs**: `number`
 
-Defined in: [packages/agentos/src/orchestration/planning/types.ts:105](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/planning/types.ts#L105)
+Defined in: [packages/agentos/src/orchestration/planning/types.ts:105](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/planning/types.ts#L105)
 
 ***
 
@@ -42,7 +42,7 @@ Defined in: [packages/agentos/src/orchestration/planning/types.ts:105](https://g
 
 > **nodes**: [`GraphNode`](GraphNode.md)[]
 
-Defined in: [packages/agentos/src/orchestration/planning/types.ts:101](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/planning/types.ts#L101)
+Defined in: [packages/agentos/src/orchestration/planning/types.ts:101](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/planning/types.ts#L101)
 
 ***
 
@@ -50,7 +50,7 @@ Defined in: [packages/agentos/src/orchestration/planning/types.ts:101](https://g
 
 > **providerAssignments**: [`NodeProviderAssignment`](NodeProviderAssignment.md)[]
 
-Defined in: [packages/agentos/src/orchestration/planning/types.ts:103](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/planning/types.ts#L103)
+Defined in: [packages/agentos/src/orchestration/planning/types.ts:103](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/planning/types.ts#L103)
 
 ***
 
@@ -58,7 +58,7 @@ Defined in: [packages/agentos/src/orchestration/planning/types.ts:103](https://g
 
 > **scores**: [`MissionEvalScores`](MissionEvalScores.md)
 
-Defined in: [packages/agentos/src/orchestration/planning/types.ts:106](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/planning/types.ts#L106)
+Defined in: [packages/agentos/src/orchestration/planning/types.ts:106](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/planning/types.ts#L106)
 
 ***
 
@@ -66,7 +66,7 @@ Defined in: [packages/agentos/src/orchestration/planning/types.ts:106](https://g
 
 > **strategy**: `string`
 
-Defined in: [packages/agentos/src/orchestration/planning/types.ts:99](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/planning/types.ts#L99)
+Defined in: [packages/agentos/src/orchestration/planning/types.ts:99](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/planning/types.ts#L99)
 
 ***
 
@@ -74,4 +74,4 @@ Defined in: [packages/agentos/src/orchestration/planning/types.ts:99](https://gi
 
 > **summary**: `string`
 
-Defined in: [packages/agentos/src/orchestration/planning/types.ts:100](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/planning/types.ts#L100)
+Defined in: [packages/agentos/src/orchestration/planning/types.ts:100](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/planning/types.ts#L100)

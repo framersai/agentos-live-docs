@@ -1,6 +1,6 @@
 # Interface: DeleteResult
 
-Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:218](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/vector-store/IVectorStore.ts#L218)
+Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:218](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/vector-store/IVectorStore.ts#L218)
 
 The result of a vector store delete operation.
 
@@ -14,7 +14,7 @@ DeleteResult
 
 > **deletedCount**: `number`
 
-Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:219](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/vector-store/IVectorStore.ts#L219)
+Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:219](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/vector-store/IVectorStore.ts#L219)
 
 The number of documents successfully deleted.
 
@@ -24,7 +24,7 @@ The number of documents successfully deleted.
 
 > `optional` **errors**: `object`[]
 
-Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:221](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/vector-store/IVectorStore.ts#L221)
+Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:221](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/vector-store/IVectorStore.ts#L221)
 
 Detailed information about any failures.
 
@@ -46,6 +46,6 @@ Detailed information about any failures.
 
 > `optional` **failedCount**: `number`
 
-Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:220](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/vector-store/IVectorStore.ts#L220)
+Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:220](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/vector-store/IVectorStore.ts#L220)
 
 The number of documents/operations that failed.

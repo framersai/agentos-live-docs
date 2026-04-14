@@ -1,6 +1,6 @@
 # Class: SemanticChunker
 
-Defined in: [packages/agentos/src/rag/chunking/SemanticChunker.ts:123](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/rag/chunking/SemanticChunker.ts#L123)
+Defined in: [packages/agentos/src/rag/chunking/SemanticChunker.ts:123](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/chunking/SemanticChunker.ts#L123)
 
 Semantic text chunker that splits on natural boundaries instead of
 fixed character counts.
@@ -33,7 +33,7 @@ const chunks = chunker.chunk(technicalDoc);
 
 > **new SemanticChunker**(`config?`): `SemanticChunker`
 
-Defined in: [packages/agentos/src/rag/chunking/SemanticChunker.ts:147](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/rag/chunking/SemanticChunker.ts#L147)
+Defined in: [packages/agentos/src/rag/chunking/SemanticChunker.ts:147](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/chunking/SemanticChunker.ts#L147)
 
 Creates a new SemanticChunker.
 
@@ -65,7 +65,7 @@ const chunker = new SemanticChunker({
 
 > **chunk**(`text`, `metadata?`): [`SemanticChunk`](../interfaces/SemanticChunk.md)[]
 
-Defined in: [packages/agentos/src/rag/chunking/SemanticChunker.ts:185](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/rag/chunking/SemanticChunker.ts#L185)
+Defined in: [packages/agentos/src/rag/chunking/SemanticChunker.ts:185](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/chunking/SemanticChunker.ts#L185)
 
 Splits text into semantically coherent chunks.
 

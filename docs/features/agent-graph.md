@@ -11,7 +11,7 @@ sidebar_position: 3
 > `gmi`, `extension`, and `subgraph` execution require a higher-level runtime bridge,
 > and discovery/personality edges are still partial unless those integrations are wired.
 
-Use `AgentGraph` when you need full control: complex conditional routing, agent loops that cycle back, memory-driven state machines, or subgraph composition. For linear pipelines, see [workflow()](./workflow-dsl.md). For goal-driven orchestration, see [mission()](./mission-api.md).
+Use `AgentGraph` when you need full control: complex conditional routing, agent loops that cycle back, memory-driven state machines, or subgraph composition. For linear pipelines, see [workflow()](/features/workflow-dsl). For goal-driven orchestration, see [mission()](/features/mission-api).
 
 ## Quick Start
 
@@ -430,6 +430,6 @@ const result2 = await graph.resume(savedCheckpointId);
 
 ## See Also
 
-- [workflow() DSL](./workflow-dsl.md) — simpler API for DAG pipelines
-- [Checkpointing](./checkpointing.md) — ICheckpointStore, resume, time-travel
-- [Unified Orchestration](./unified-orchestration.md) — architecture overview
+- [workflow() DSL](/features/workflow-dsl) — simpler API for DAG pipelines
+- [Checkpointing](/features/checkpointing) — ICheckpointStore, resume, time-travel
+- [Unified Orchestration](/features/unified-orchestration) — architecture overview

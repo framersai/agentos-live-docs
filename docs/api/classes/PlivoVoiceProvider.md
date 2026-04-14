@@ -1,6 +1,6 @@
 # Class: PlivoVoiceProvider
 
-Defined in: [packages/agentos/src/channels/telephony/providers/plivo.ts:120](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/telephony/providers/plivo.ts#L120)
+Defined in: [packages/agentos/src/channels/telephony/providers/plivo.ts:120](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/channels/telephony/providers/plivo.ts#L120)
 
 Plivo voice call provider.
 
@@ -26,7 +26,7 @@ const provider = new PlivoVoiceProvider({
 
 > **new PlivoVoiceProvider**(`config`): `PlivoVoiceProvider`
 
-Defined in: [packages/agentos/src/channels/telephony/providers/plivo.ts:139](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/telephony/providers/plivo.ts#L139)
+Defined in: [packages/agentos/src/channels/telephony/providers/plivo.ts:139](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/channels/telephony/providers/plivo.ts#L139)
 
 #### Parameters
 
@@ -46,7 +46,7 @@ Plivo credentials and optional overrides.
 
 > `readonly` **name**: `"plivo"`
 
-Defined in: [packages/agentos/src/channels/telephony/providers/plivo.ts:122](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/telephony/providers/plivo.ts#L122)
+Defined in: [packages/agentos/src/channels/telephony/providers/plivo.ts:122](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/channels/telephony/providers/plivo.ts#L122)
 
 Provider identifier, always `'plivo'`.
 
@@ -60,7 +60,7 @@ Provider identifier, always `'plivo'`.
 
 > **hangupCall**(`input`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/channels/telephony/providers/plivo.ts:311](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/telephony/providers/plivo.ts#L311)
+Defined in: [packages/agentos/src/channels/telephony/providers/plivo.ts:311](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/channels/telephony/providers/plivo.ts#L311)
 
 Hang up an active call using the Plivo Call DELETE endpoint.
 
@@ -90,7 +90,7 @@ Contains the Plivo `call_uuid` to hang up.
 
 > **initiateCall**(`input`): `Promise`\<[`InitiateCallResult`](../interfaces/InitiateCallResult.md)\>
 
-Defined in: [packages/agentos/src/channels/telephony/providers/plivo.ts:276](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/telephony/providers/plivo.ts#L276)
+Defined in: [packages/agentos/src/channels/telephony/providers/plivo.ts:276](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/channels/telephony/providers/plivo.ts#L276)
 
 Initiate an outbound call via the Plivo Call API.
 
@@ -125,7 +125,7 @@ Never throws; returns `{ success: false, error: '...' }` on failure.
 
 > **parseWebhookEvent**(`ctx`): [`WebhookParseResult`](../interfaces/WebhookParseResult.md)
 
-Defined in: [packages/agentos/src/channels/telephony/providers/plivo.ts:200](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/telephony/providers/plivo.ts#L200)
+Defined in: [packages/agentos/src/channels/telephony/providers/plivo.ts:200](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/channels/telephony/providers/plivo.ts#L200)
 
 Parse a Plivo webhook body into normalized [NormalizedCallEvent](../type-aliases/NormalizedCallEvent.md)s.
 
@@ -162,7 +162,7 @@ Parsed result containing zero or more normalized events.
 
 > **playTts**(`input`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/channels/telephony/providers/plivo.ts:330](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/telephony/providers/plivo.ts#L330)
+Defined in: [packages/agentos/src/channels/telephony/providers/plivo.ts:330](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/channels/telephony/providers/plivo.ts#L330)
 
 Speak text into a live call using the Plivo Speak API.
 
@@ -191,7 +191,7 @@ TTS parameters (text, optional voice, call ID).
 
 > **verifyWebhook**(`ctx`): [`WebhookVerificationResult`](../interfaces/WebhookVerificationResult.md)
 
-Defined in: [packages/agentos/src/channels/telephony/providers/plivo.ts:165](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/channels/telephony/providers/plivo.ts#L165)
+Defined in: [packages/agentos/src/channels/telephony/providers/plivo.ts:165](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/channels/telephony/providers/plivo.ts#L165)
 
 Verify an incoming Plivo webhook request using HMAC-SHA256 (v3 scheme).
 

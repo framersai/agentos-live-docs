@@ -1,6 +1,6 @@
 # Interface: IPersonaDefinition
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:370](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/personas/IPersonaDefinition.ts#L370)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:370](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/personas/IPersonaDefinition.ts#L370)
 
 The primary interface defining a complete Persona for a Generalized Mind Instance (GMI).
 
@@ -14,7 +14,7 @@ IPersonaDefinition
 
 > `optional` **activationKeywords**: `string`[]
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:453](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/personas/IPersonaDefinition.ts#L453)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:453](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/personas/IPersonaDefinition.ts#L453)
 
 Natural language keywords enabling auto-activation in multi-persona environments.
 
@@ -24,7 +24,7 @@ Natural language keywords enabling auto-activation in multi-persona environments
 
 > `optional` **allowedCapabilities**: `string`[]
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:408](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/personas/IPersonaDefinition.ts#L408)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:408](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/personas/IPersonaDefinition.ts#L408)
 
 Abstract capability flags enabling conditional UI / workflow features (e.g., 'web_search').
 
@@ -34,7 +34,7 @@ Abstract capability flags enabling conditional UI / workflow features (e.g., 'we
 
 > `optional` **allowedInputModalities**: (`"text"` \| `"audio_transcription"` \| `"vision_image_url"` \| `"vision_image_base64"`)[]
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:413](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/personas/IPersonaDefinition.ts#L413)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:413](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/personas/IPersonaDefinition.ts#L413)
 
 Whitelisted input modalities persona accepts (driver for validation in interaction layer).
 
@@ -44,7 +44,7 @@ Whitelisted input modalities persona accepts (driver for validation in interacti
 
 > `optional` **allowedOutputModalities**: (`"text"` \| `"audio_tts"` \| `"image_generation_tool_result"`)[]
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:415](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/personas/IPersonaDefinition.ts#L415)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:415](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/personas/IPersonaDefinition.ts#L415)
 
 Output modalities persona can produce (text, TTS synthesized, image generation results).
 
@@ -54,7 +54,7 @@ Output modalities persona can produce (text, TTS synthesized, image generation r
 
 > `optional` **avatarConfig**: [`PersonaAvatarConfig`](PersonaAvatarConfig.md)
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:419](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/personas/IPersonaDefinition.ts#L419)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:419](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/personas/IPersonaDefinition.ts#L419)
 
 Visual avatar / representation metadata (image URL, animation style).
 
@@ -64,7 +64,7 @@ Visual avatar / representation metadata (image URL, animation style).
 
 > **baseSystemPrompt**: `string` \| \{ `template`: `string`; `variables?`: `string`[]; \} \| `object`[]
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:389](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/personas/IPersonaDefinition.ts#L389)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:389](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/personas/IPersonaDefinition.ts#L389)
 
 Base system prompt (or structured template) establishing foundational directives.
 Supports:
@@ -78,7 +78,7 @@ Supports:
 
 > `optional` **cognitiveMemoryConfig**: [`CognitiveMemoryPersonaConfig`](CognitiveMemoryPersonaConfig.md)
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:433](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/personas/IPersonaDefinition.ts#L433)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:433](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/personas/IPersonaDefinition.ts#L433)
 
 Cognitive memory system per-persona overrides (encoding, decay, working memory capacity, etc.).
 
@@ -88,7 +88,7 @@ Cognitive memory system per-persona overrides (encoding, decay, working memory c
 
 > `optional` **contextualPromptElements**: [`ContextualPromptElement`](ContextualPromptElement.md)[]
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:446](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/personas/IPersonaDefinition.ts#L446)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:446](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/personas/IPersonaDefinition.ts#L446)
 
 Dynamic contextual prompt elements evaluated per turn for fine-grained adaptation.
 
@@ -98,7 +98,7 @@ Dynamic contextual prompt elements evaluated per turn for fine-grained adaptatio
 
 > `optional` **conversationContextConfig**: [`PersonaConversationContextConfig`](PersonaConversationContextConfig.md)
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:435](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/personas/IPersonaDefinition.ts#L435)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:435](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/personas/IPersonaDefinition.ts#L435)
 
 Conversation context override strategy (message importance heuristics, summarization triggers).
 
@@ -108,7 +108,7 @@ Conversation context override strategy (message importance heuristics, summariza
 
 > `optional` **costSavingStrategy**: `"always_cheapest"` \| `"balance_quality_cost"` \| `"prioritize_quality"` \| `"user_preference"`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:400](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/personas/IPersonaDefinition.ts#L400)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:400](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/personas/IPersonaDefinition.ts#L400)
 
 High-level cost strategy guiding router decisions.
 
@@ -118,7 +118,7 @@ High-level cost strategy guiding router decisions.
 
 > `optional` **customFields**: `Record`\<`string`, `any`\> & `object`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:462](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/personas/IPersonaDefinition.ts#L462)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:462](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/personas/IPersonaDefinition.ts#L462)
 
 Arbitrary extension fields and structured defaults for user/task contexts.
 
@@ -148,7 +148,7 @@ Initial inferred or declared user context values.
 
 > `optional` **defaultLanguage**: `string`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:426](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/personas/IPersonaDefinition.ts#L426)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:426](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/personas/IPersonaDefinition.ts#L426)
 
 Default output language (BCP‑47) used when user preference unspecified.
 
@@ -158,7 +158,7 @@ Default output language (BCP‑47) used when user preference unspecified.
 
 > `optional` **defaultModelCompletionOptions**: `Partial`\<`ModelCompletionOptions`\>
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:396](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/personas/IPersonaDefinition.ts#L396)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:396](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/personas/IPersonaDefinition.ts#L396)
 
 Baseline completion option overrides (temperature, maxTokens, presence penalties, etc.).
 
@@ -168,7 +168,7 @@ Baseline completion option overrides (temperature, maxTokens, presence penalties
 
 > `optional` **defaultModelId**: `string`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:392](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/personas/IPersonaDefinition.ts#L392)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:392](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/personas/IPersonaDefinition.ts#L392)
 
 Default model id to target for this persona's typical tasks (can be routed or overridden).
 
@@ -178,7 +178,7 @@ Default model id to target for this persona's typical tasks (can be routed or ov
 
 > `optional` **defaultProviderId**: `string`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:394](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/personas/IPersonaDefinition.ts#L394)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:394](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/personas/IPersonaDefinition.ts#L394)
 
 Preferred provider if same model family exists across vendors (helps routing heuristics).
 
@@ -188,7 +188,7 @@ Preferred provider if same model family exists across vendors (helps routing heu
 
 > **description**: `string`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:378](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/personas/IPersonaDefinition.ts#L378)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:378](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/personas/IPersonaDefinition.ts#L378)
 
 Rich description of goals, domain focus, and behavioral nuance.
 
@@ -198,7 +198,7 @@ Rich description of goals, domain focus, and behavioral nuance.
 
 > `optional` **embeddedTools**: [`ITool`](ITool.md)\<`any`, `any`\>[]
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:410](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/personas/IPersonaDefinition.ts#L410)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:410](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/personas/IPersonaDefinition.ts#L410)
 
 Inline tool instances embedded directly (rare; typically tools live in registry).
 
@@ -208,7 +208,7 @@ Inline tool instances embedded directly (rare; typically tools live in registry)
 
 > **id**: `string`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:372](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/personas/IPersonaDefinition.ts#L372)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:372](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/personas/IPersonaDefinition.ts#L372)
 
 Stable unique identifier for the persona (used for activation & persistence).
 
@@ -218,7 +218,7 @@ Stable unique identifier for the persona (used for activation & persistence).
 
 > `optional` **initialMemoryImprints**: `object`[]
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:460](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/personas/IPersonaDefinition.ts#L460)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:460](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/personas/IPersonaDefinition.ts#L460)
 
 Seed working memory imprints establishing initial context (preferences, calibration data).
 
@@ -240,7 +240,7 @@ Seed working memory imprints establishing initial context (preferences, calibrat
 
 > `optional` **isCreatorPersona**: `boolean`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:449](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/personas/IPersonaDefinition.ts#L449)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:449](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/personas/IPersonaDefinition.ts#L449)
 
 Allows persona to perform privileged creation/update of other personas.
 
@@ -250,7 +250,7 @@ Allows persona to perform privileged creation/update of other personas.
 
 > `optional` **isPublic**: `boolean`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:451](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/personas/IPersonaDefinition.ts#L451)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:451](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/personas/IPersonaDefinition.ts#L451)
 
 If true persona is globally discoverable subject to subscription tier gating.
 
@@ -260,7 +260,7 @@ If true persona is globally discoverable subject to subscription tier gating.
 
 > `optional` **label**: `string`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:376](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/personas/IPersonaDefinition.ts#L376)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:376](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/personas/IPersonaDefinition.ts#L376)
 
 Optional short label (e.g., abbreviation) for compact UI contexts.
 
@@ -270,7 +270,7 @@ Optional short label (e.g., abbreviation) for compact UI contexts.
 
 > `optional` **memoryConfig**: [`PersonaMemoryConfig`](PersonaMemoryConfig.md)
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:431](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/personas/IPersonaDefinition.ts#L431)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:431](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/personas/IPersonaDefinition.ts#L431)
 
 Memory subsystem tuning (retention horizons, summarization cadence, pinning rules).
 
@@ -280,7 +280,7 @@ Memory subsystem tuning (retention horizons, summarization cadence, pinning rule
 
 > `optional` **metaPrompts**: [`MetaPromptDefinition`](MetaPromptDefinition.md)[]
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:438](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/personas/IPersonaDefinition.ts#L438)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:438](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/personas/IPersonaDefinition.ts#L438)
 
 System or self-reflective prompts guiding meta-cognition, self-correction, or planning loops.
 
@@ -290,7 +290,7 @@ System or self-reflective prompts guiding meta-cognition, self-correction, or pl
 
 > `optional` **minSubscriptionTier**: `string`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:457](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/personas/IPersonaDefinition.ts#L457)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:457](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/personas/IPersonaDefinition.ts#L457)
 
 Minimum subscription tier required to access persona (e.g., 'pro', 'enterprise').
 
@@ -300,7 +300,7 @@ Minimum subscription tier required to access persona (e.g., 'pro', 'enterprise')
 
 > `optional` **modelTargetPreferences**: [`ModelTargetPreference`](ModelTargetPreference.md)[]
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:398](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/personas/IPersonaDefinition.ts#L398)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:398](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/personas/IPersonaDefinition.ts#L398)
 
 Ordered preferences describing desired model traits (cost/perf/latency) for dynamic selection.
 
@@ -310,7 +310,7 @@ Ordered preferences describing desired model traits (cost/perf/latency) for dyna
 
 > `optional` **moodAdaptation**: [`PersonaMoodAdaptationConfig`](PersonaMoodAdaptationConfig.md)
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:424](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/personas/IPersonaDefinition.ts#L424)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:424](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/personas/IPersonaDefinition.ts#L424)
 
 Rules controlling adaptive mood shifts & modulation of tone.
 
@@ -320,7 +320,7 @@ Rules controlling adaptive mood shifts & modulation of tone.
 
 > **name**: `string`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:374](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/personas/IPersonaDefinition.ts#L374)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:374](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/personas/IPersonaDefinition.ts#L374)
 
 Human-readable name surfaced in UI selection lists.
 
@@ -330,7 +330,7 @@ Human-readable name surfaced in UI selection lists.
 
 > `optional` **personalityTraits**: `Record`\<`string`, `any`\>
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:422](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/personas/IPersonaDefinition.ts#L422)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:422](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/personas/IPersonaDefinition.ts#L422)
 
 Arbitrary personality trait map (e.g., { humor_level: 0.7, pedagogical_style: 'socratic' }).
 
@@ -340,7 +340,7 @@ Arbitrary personality trait map (e.g., { humor_level: 0.7, pedagogical_style: 's
 
 > `optional` **promptEngineConfigOverrides**: `Partial`\<[`PromptEngineConfig`](PromptEngineConfig.md)\>
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:403](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/personas/IPersonaDefinition.ts#L403)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:403](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/personas/IPersonaDefinition.ts#L403)
 
 Partial overrides merged onto global PromptEngine configuration for persona specialization.
 
@@ -350,7 +350,7 @@ Partial overrides merged onto global PromptEngine configuration for persona spec
 
 > `optional` **requiredSecrets**: `string`[]
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:471](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/personas/IPersonaDefinition.ts#L471)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:471](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/personas/IPersonaDefinition.ts#L471)
 
 Named secrets (API keys, credentials) this persona depends on.
 
@@ -360,7 +360,7 @@ Named secrets (API keys, credentials) this persona depends on.
 
 > `optional` **sentimentTracking**: [`SentimentTrackingConfig`](SentimentTrackingConfig.md)
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:444](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/personas/IPersonaDefinition.ts#L444)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:444](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/personas/IPersonaDefinition.ts#L444)
 
 Sentiment tracking configuration. Controls whether the GMI analyzes user emotional state
 and triggers event-based metaprompts (frustration recovery, confusion clarification, etc.).
@@ -372,7 +372,7 @@ Opt-in: disabled by default. Turn_interval metaprompts (like self-reflection) al
 
 > `optional` **strengths**: `string`[]
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:455](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/personas/IPersonaDefinition.ts#L455)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:455](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/personas/IPersonaDefinition.ts#L455)
 
 Strength tag list aiding search & recommendation (e.g., ['typescript', 'design_reviews']).
 
@@ -382,7 +382,7 @@ Strength tag list aiding search & recommendation (e.g., ['typescript', 'design_r
 
 > `optional` **toolIds**: `string`[]
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:406](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/personas/IPersonaDefinition.ts#L406)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:406](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/personas/IPersonaDefinition.ts#L406)
 
 Referenced tool identifiers persona is permitted to invoke.
 
@@ -392,7 +392,7 @@ Referenced tool identifiers persona is permitted to invoke.
 
 > `optional` **uiInteractionStyle**: `"suggestive"` \| `"directive"` \| `"collaborative"` \| `"silent"`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:428](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/personas/IPersonaDefinition.ts#L428)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:428](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/personas/IPersonaDefinition.ts#L428)
 
 High-level interaction posture for UI behaviors (suggestive hints vs directive instructions).
 
@@ -402,7 +402,7 @@ High-level interaction posture for UI behaviors (suggestive hints vs directive i
 
 > **version**: `string`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:380](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/personas/IPersonaDefinition.ts#L380)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:380](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/personas/IPersonaDefinition.ts#L380)
 
 Semantic version of persona definition; bump on behavioral / config changes (e.g., '1.2.0').
 
@@ -412,6 +412,6 @@ Semantic version of persona definition; bump on behavioral / config changes (e.g
 
 > `optional` **voiceConfig**: [`PersonaVoiceConfig`](PersonaVoiceConfig.md)
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:417](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/personas/IPersonaDefinition.ts#L417)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:417](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/personas/IPersonaDefinition.ts#L417)
 
 Voice synthesis configuration (preferred voice id, style, speed).

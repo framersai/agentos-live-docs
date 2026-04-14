@@ -1,6 +1,6 @@
 # Class: StreamError
 
-Defined in: [packages/agentos/src/core/streaming/StreamingManager.ts:69](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/streaming/StreamingManager.ts#L69)
+Defined in: [packages/agentos/src/core/streaming/StreamingManager.ts:69](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/streaming/StreamingManager.ts#L69)
 
 Custom error class for errors originating from the StreamingManager.
 
@@ -14,7 +14,7 @@ Custom error class for errors originating from the StreamingManager.
 
 > **new StreamError**(`message`, `code`, `streamId?`, `clientId?`, `details?`): `StreamError`
 
-Defined in: [packages/agentos/src/core/streaming/StreamingManager.ts:94](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/streaming/StreamingManager.ts#L94)
+Defined in: [packages/agentos/src/core/streaming/StreamingManager.ts:94](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/streaming/StreamingManager.ts#L94)
 
 Creates an instance of StreamError.
 
@@ -64,7 +64,7 @@ Optional additional context or the underlying error.
 
 > `readonly` `optional` **cause**: `unknown`
 
-Defined in: [packages/agentos/src/core/utils/errors.ts:147](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/utils/errors.ts#L147)
+Defined in: [packages/agentos/dist/core/utils/errors.d.ts:70](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/dist/core/utils/errors.d.ts#L70)
 
 #### Inherited from
 
@@ -76,7 +76,7 @@ Defined in: [packages/agentos/src/core/utils/errors.ts:147](https://github.com/f
 
 > `readonly` `optional` **clientId**: `string`
 
-Defined in: [packages/agentos/src/core/streaming/StreamingManager.ts:84](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/streaming/StreamingManager.ts#L84)
+Defined in: [packages/agentos/src/core/streaming/StreamingManager.ts:84](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/streaming/StreamingManager.ts#L84)
 
 The ID of the client involved in the error, if applicable.
 
@@ -86,7 +86,7 @@ The ID of the client involved in the error, if applicable.
 
 > `readonly` **code**: `string`
 
-Defined in: [packages/agentos/src/core/utils/errors.ts:142](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/utils/errors.ts#L142)
+Defined in: [packages/agentos/dist/core/utils/errors.d.ts:65](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/dist/core/utils/errors.d.ts#L65)
 
 #### Inherited from
 
@@ -98,7 +98,7 @@ Defined in: [packages/agentos/src/core/utils/errors.ts:142](https://github.com/f
 
 > `readonly` `optional` **component**: `string`
 
-Defined in: [packages/agentos/src/core/utils/errors.ts:144](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/utils/errors.ts#L144)
+Defined in: [packages/agentos/dist/core/utils/errors.d.ts:67](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/dist/core/utils/errors.d.ts#L67)
 
 #### Inherited from
 
@@ -110,7 +110,7 @@ Defined in: [packages/agentos/src/core/utils/errors.ts:144](https://github.com/f
 
 > `readonly` `optional` **details**: `any`
 
-Defined in: [packages/agentos/src/core/utils/errors.ts:143](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/utils/errors.ts#L143)
+Defined in: [packages/agentos/dist/core/utils/errors.d.ts:66](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/dist/core/utils/errors.d.ts#L66)
 
 #### Inherited from
 
@@ -122,7 +122,7 @@ Defined in: [packages/agentos/src/core/utils/errors.ts:143](https://github.com/f
 
 > `readonly` `optional` **httpStatusCode**: `number`
 
-Defined in: [packages/agentos/src/core/utils/errors.ts:146](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/utils/errors.ts#L146)
+Defined in: [packages/agentos/dist/core/utils/errors.d.ts:69](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/dist/core/utils/errors.d.ts#L69)
 
 #### Inherited from
 
@@ -170,7 +170,7 @@ Defined in: node\_modules/.pnpm/typescript@5.6.3/node\_modules/typescript/lib/li
 
 > `readonly` `optional` **streamId**: `string`
 
-Defined in: [packages/agentos/src/core/streaming/StreamingManager.ts:76](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/streaming/StreamingManager.ts#L76)
+Defined in: [packages/agentos/src/core/streaming/StreamingManager.ts:76](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/streaming/StreamingManager.ts#L76)
 
 The ID of the stream involved in the error, if applicable.
 
@@ -180,7 +180,7 @@ The ID of the stream involved in the error, if applicable.
 
 > `readonly` **timestamp**: `string`
 
-Defined in: [packages/agentos/src/core/utils/errors.ts:145](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/utils/errors.ts#L145)
+Defined in: [packages/agentos/dist/core/utils/errors.d.ts:68](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/dist/core/utils/errors.d.ts#L68)
 
 #### Inherited from
 
@@ -192,7 +192,7 @@ Defined in: [packages/agentos/src/core/utils/errors.ts:145](https://github.com/f
 
 > `static` **stackTraceLimit**: `number`
 
-Defined in: apps/wilds-ai/node\_modules/.pnpm/@types+node@20.19.37/node\_modules/@types/node/globals.d.ts:68
+Defined in: node\_modules/.pnpm/@types+node@20.19.23/node\_modules/@types/node/globals.d.ts:68
 
 The `Error.stackTraceLimit` property specifies the number of stack frames
 collected by a stack trace (whether generated by `new Error().stack` or
@@ -214,7 +214,7 @@ not capture any frames.
 
 > **getHttpStatusCode**(): `number`
 
-Defined in: [packages/agentos/src/core/utils/errors.ts:168](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/utils/errors.ts#L168)
+Defined in: [packages/agentos/dist/core/utils/errors.d.ts:72](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/dist/core/utils/errors.d.ts#L72)
 
 #### Returns
 
@@ -230,7 +230,7 @@ Defined in: [packages/agentos/src/core/utils/errors.ts:168](https://github.com/f
 
 > **getUserFriendlyMessage**(): `string`
 
-Defined in: [packages/agentos/src/core/utils/errors.ts:176](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/utils/errors.ts#L176)
+Defined in: [packages/agentos/dist/core/utils/errors.d.ts:73](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/dist/core/utils/errors.d.ts#L73)
 
 #### Returns
 
@@ -246,7 +246,7 @@ Defined in: [packages/agentos/src/core/utils/errors.ts:176](https://github.com/f
 
 > **toJSON**(): `Record`\<`string`, `any`\>
 
-Defined in: [packages/agentos/src/core/utils/errors.ts:193](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/utils/errors.ts#L193)
+Defined in: [packages/agentos/dist/core/utils/errors.d.ts:75](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/dist/core/utils/errors.d.ts#L75)
 
 #### Returns
 
@@ -262,7 +262,7 @@ Defined in: [packages/agentos/src/core/utils/errors.ts:193](https://github.com/f
 
 > **toPlainObject**(): `Record`\<`string`, `any`\>
 
-Defined in: [packages/agentos/src/core/utils/errors.ts:180](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/utils/errors.ts#L180)
+Defined in: [packages/agentos/dist/core/utils/errors.d.ts:74](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/dist/core/utils/errors.d.ts#L74)
 
 #### Returns
 
@@ -278,7 +278,7 @@ Defined in: [packages/agentos/src/core/utils/errors.ts:180](https://github.com/f
 
 > `static` **captureStackTrace**(`targetObject`, `constructorOpt?`): `void`
 
-Defined in: apps/wilds-ai/node\_modules/.pnpm/@types+node@20.19.37/node\_modules/@types/node/globals.d.ts:52
+Defined in: node\_modules/.pnpm/@types+node@20.19.23/node\_modules/@types/node/globals.d.ts:52
 
 Creates a `.stack` property on `targetObject`, which when accessed returns
 a string representing the location in the code at which
@@ -348,7 +348,7 @@ a();
 
 > `static` **isGMIError**(`error`): `error is GMIError`
 
-Defined in: [packages/agentos/src/core/utils/errors.ts:197](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/utils/errors.ts#L197)
+Defined in: [packages/agentos/dist/core/utils/errors.d.ts:76](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/dist/core/utils/errors.d.ts#L76)
 
 #### Parameters
 
@@ -370,7 +370,7 @@ Defined in: [packages/agentos/src/core/utils/errors.ts:197](https://github.com/f
 
 > `static` **prepareStackTrace**(`err`, `stackTraces`): `any`
 
-Defined in: apps/wilds-ai/node\_modules/.pnpm/@types+node@20.19.37/node\_modules/@types/node/globals.d.ts:56
+Defined in: node\_modules/.pnpm/@types+node@20.19.23/node\_modules/@types/node/globals.d.ts:56
 
 #### Parameters
 
@@ -400,7 +400,7 @@ https://v8.dev/docs/stack-trace-api#customizing-stack-traces
 
 > `static` **wrap**(`error`, `code`, `message?`, `componentOrigin?`): `GMIError`
 
-Defined in: [packages/agentos/src/core/utils/errors.ts:201](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/core/utils/errors.ts#L201)
+Defined in: [packages/agentos/dist/core/utils/errors.d.ts:77](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/dist/core/utils/errors.d.ts#L77)
 
 #### Parameters
 

@@ -1,6 +1,6 @@
 # Interface: PersonaUtilityProcessingConfig
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:118](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/personas/IPersonaDefinition.ts#L118)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:118](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/personas/IPersonaDefinition.ts#L118)
 
 Configuration for how memory (e.g., conversation history, retrieved documents) is processed by utility AI.
 
@@ -14,7 +14,7 @@ PersonaUtilityProcessingConfig
 
 > **engine**: `"llm"` \| `"statistical"` \| `"none"`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:119](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/personas/IPersonaDefinition.ts#L119)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:119](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/personas/IPersonaDefinition.ts#L119)
 
 ***
 
@@ -22,7 +22,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefiniti
 
 > `optional` **llmConfig**: `object`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:120](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/personas/IPersonaDefinition.ts#L120)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:120](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/personas/IPersonaDefinition.ts#L120)
 
 #### maxOutputTokens?
 
@@ -46,7 +46,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefiniti
 
 > `optional` **statisticalConfig**: `object`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:126](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/personas/IPersonaDefinition.ts#L126)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:126](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/personas/IPersonaDefinition.ts#L126)
 
 #### keywordExtractionMethod?
 

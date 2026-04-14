@@ -1,6 +1,6 @@
 # Interface: ContextWindowStats
 
-Defined in: [packages/agentos/src/memory/pipeline/context/ContextWindowManager.ts:326](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/pipeline/context/ContextWindowManager.ts#L326)
+Defined in: [packages/agentos/src/memory/pipeline/context/ContextWindowManager.ts:326](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/pipeline/context/ContextWindowManager.ts#L326)
 
 ## Extends
 
@@ -12,7 +12,7 @@ Defined in: [packages/agentos/src/memory/pipeline/context/ContextWindowManager.t
 
 > **avgCompressionRatio**: `number`
 
-Defined in: [packages/agentos/src/memory/pipeline/context/CompactionLog.ts:178](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/pipeline/context/CompactionLog.ts#L178)
+Defined in: [packages/agentos/src/memory/pipeline/context/CompactionLog.ts:178](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/pipeline/context/CompactionLog.ts#L178)
 
 #### Inherited from
 
@@ -24,7 +24,7 @@ Defined in: [packages/agentos/src/memory/pipeline/context/CompactionLog.ts:178](
 
 > **avgDurationMs**: `number`
 
-Defined in: [packages/agentos/src/memory/pipeline/context/CompactionLog.ts:181](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/pipeline/context/CompactionLog.ts#L181)
+Defined in: [packages/agentos/src/memory/pipeline/context/CompactionLog.ts:181](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/pipeline/context/CompactionLog.ts#L181)
 
 #### Inherited from
 
@@ -36,7 +36,7 @@ Defined in: [packages/agentos/src/memory/pipeline/context/CompactionLog.ts:181](
 
 > **compactedMessageCount**: `number`
 
-Defined in: [packages/agentos/src/memory/pipeline/context/ContextWindowManager.ts:332](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/pipeline/context/ContextWindowManager.ts#L332)
+Defined in: [packages/agentos/src/memory/pipeline/context/ContextWindowManager.ts:332](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/pipeline/context/ContextWindowManager.ts#L332)
 
 ***
 
@@ -44,7 +44,7 @@ Defined in: [packages/agentos/src/memory/pipeline/context/ContextWindowManager.t
 
 > **currentTokens**: `number`
 
-Defined in: [packages/agentos/src/memory/pipeline/context/ContextWindowManager.ts:327](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/pipeline/context/ContextWindowManager.ts#L327)
+Defined in: [packages/agentos/src/memory/pipeline/context/ContextWindowManager.ts:327](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/pipeline/context/ContextWindowManager.ts#L327)
 
 ***
 
@@ -52,7 +52,7 @@ Defined in: [packages/agentos/src/memory/pipeline/context/ContextWindowManager.t
 
 > **currentTurn**: `number`
 
-Defined in: [packages/agentos/src/memory/pipeline/context/ContextWindowManager.ts:330](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/pipeline/context/ContextWindowManager.ts#L330)
+Defined in: [packages/agentos/src/memory/pipeline/context/ContextWindowManager.ts:330](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/pipeline/context/ContextWindowManager.ts#L330)
 
 ***
 
@@ -60,7 +60,7 @@ Defined in: [packages/agentos/src/memory/pipeline/context/ContextWindowManager.t
 
 > **enabled**: `boolean`
 
-Defined in: [packages/agentos/src/memory/pipeline/context/ContextWindowManager.ts:336](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/pipeline/context/ContextWindowManager.ts#L336)
+Defined in: [packages/agentos/src/memory/pipeline/context/ContextWindowManager.ts:336](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/pipeline/context/ContextWindowManager.ts#L336)
 
 ***
 
@@ -68,7 +68,7 @@ Defined in: [packages/agentos/src/memory/pipeline/context/ContextWindowManager.t
 
 > **maxTokens**: `number`
 
-Defined in: [packages/agentos/src/memory/pipeline/context/ContextWindowManager.ts:328](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/pipeline/context/ContextWindowManager.ts#L328)
+Defined in: [packages/agentos/src/memory/pipeline/context/ContextWindowManager.ts:328](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/pipeline/context/ContextWindowManager.ts#L328)
 
 ***
 
@@ -76,7 +76,7 @@ Defined in: [packages/agentos/src/memory/pipeline/context/ContextWindowManager.t
 
 > **messageCount**: `number`
 
-Defined in: [packages/agentos/src/memory/pipeline/context/ContextWindowManager.ts:331](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/pipeline/context/ContextWindowManager.ts#L331)
+Defined in: [packages/agentos/src/memory/pipeline/context/ContextWindowManager.ts:331](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/pipeline/context/ContextWindowManager.ts#L331)
 
 ***
 
@@ -84,7 +84,7 @@ Defined in: [packages/agentos/src/memory/pipeline/context/ContextWindowManager.t
 
 > **newestEntry**: [`CompactionEntry`](CompactionEntry.md) \| `undefined`
 
-Defined in: [packages/agentos/src/memory/pipeline/context/CompactionLog.ts:183](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/pipeline/context/CompactionLog.ts#L183)
+Defined in: [packages/agentos/src/memory/pipeline/context/CompactionLog.ts:183](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/pipeline/context/CompactionLog.ts#L183)
 
 #### Inherited from
 
@@ -96,7 +96,7 @@ Defined in: [packages/agentos/src/memory/pipeline/context/CompactionLog.ts:183](
 
 > **oldestEntry**: [`CompactionEntry`](CompactionEntry.md) \| `undefined`
 
-Defined in: [packages/agentos/src/memory/pipeline/context/CompactionLog.ts:182](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/pipeline/context/CompactionLog.ts#L182)
+Defined in: [packages/agentos/src/memory/pipeline/context/CompactionLog.ts:182](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/pipeline/context/CompactionLog.ts#L182)
 
 #### Inherited from
 
@@ -108,7 +108,7 @@ Defined in: [packages/agentos/src/memory/pipeline/context/CompactionLog.ts:182](
 
 > **strategy**: `string`
 
-Defined in: [packages/agentos/src/memory/pipeline/context/ContextWindowManager.ts:335](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/pipeline/context/ContextWindowManager.ts#L335)
+Defined in: [packages/agentos/src/memory/pipeline/context/ContextWindowManager.ts:335](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/pipeline/context/ContextWindowManager.ts#L335)
 
 ***
 
@@ -116,7 +116,7 @@ Defined in: [packages/agentos/src/memory/pipeline/context/ContextWindowManager.t
 
 > **summaryChainNodes**: `number`
 
-Defined in: [packages/agentos/src/memory/pipeline/context/ContextWindowManager.ts:333](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/pipeline/context/ContextWindowManager.ts#L333)
+Defined in: [packages/agentos/src/memory/pipeline/context/ContextWindowManager.ts:333](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/pipeline/context/ContextWindowManager.ts#L333)
 
 ***
 
@@ -124,7 +124,7 @@ Defined in: [packages/agentos/src/memory/pipeline/context/ContextWindowManager.t
 
 > **summaryChainTokens**: `number`
 
-Defined in: [packages/agentos/src/memory/pipeline/context/ContextWindowManager.ts:334](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/pipeline/context/ContextWindowManager.ts#L334)
+Defined in: [packages/agentos/src/memory/pipeline/context/ContextWindowManager.ts:334](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/pipeline/context/ContextWindowManager.ts#L334)
 
 ***
 
@@ -132,7 +132,7 @@ Defined in: [packages/agentos/src/memory/pipeline/context/ContextWindowManager.t
 
 > **totalCompactions**: `number`
 
-Defined in: [packages/agentos/src/memory/pipeline/context/CompactionLog.ts:175](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/pipeline/context/CompactionLog.ts#L175)
+Defined in: [packages/agentos/src/memory/pipeline/context/CompactionLog.ts:175](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/pipeline/context/CompactionLog.ts#L175)
 
 #### Inherited from
 
@@ -144,7 +144,7 @@ Defined in: [packages/agentos/src/memory/pipeline/context/CompactionLog.ts:175](
 
 > **totalEntitiesPreserved**: `number`
 
-Defined in: [packages/agentos/src/memory/pipeline/context/CompactionLog.ts:180](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/pipeline/context/CompactionLog.ts#L180)
+Defined in: [packages/agentos/src/memory/pipeline/context/CompactionLog.ts:180](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/pipeline/context/CompactionLog.ts#L180)
 
 #### Inherited from
 
@@ -156,7 +156,7 @@ Defined in: [packages/agentos/src/memory/pipeline/context/CompactionLog.ts:180](
 
 > **totalInputTokens**: `number`
 
-Defined in: [packages/agentos/src/memory/pipeline/context/CompactionLog.ts:176](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/pipeline/context/CompactionLog.ts#L176)
+Defined in: [packages/agentos/src/memory/pipeline/context/CompactionLog.ts:176](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/pipeline/context/CompactionLog.ts#L176)
 
 #### Inherited from
 
@@ -168,7 +168,7 @@ Defined in: [packages/agentos/src/memory/pipeline/context/CompactionLog.ts:176](
 
 > **totalOutputTokens**: `number`
 
-Defined in: [packages/agentos/src/memory/pipeline/context/CompactionLog.ts:177](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/pipeline/context/CompactionLog.ts#L177)
+Defined in: [packages/agentos/src/memory/pipeline/context/CompactionLog.ts:177](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/pipeline/context/CompactionLog.ts#L177)
 
 #### Inherited from
 
@@ -180,7 +180,7 @@ Defined in: [packages/agentos/src/memory/pipeline/context/CompactionLog.ts:177](
 
 > **totalTracesCreated**: `number`
 
-Defined in: [packages/agentos/src/memory/pipeline/context/CompactionLog.ts:179](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/pipeline/context/CompactionLog.ts#L179)
+Defined in: [packages/agentos/src/memory/pipeline/context/CompactionLog.ts:179](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/pipeline/context/CompactionLog.ts#L179)
 
 #### Inherited from
 
@@ -192,4 +192,4 @@ Defined in: [packages/agentos/src/memory/pipeline/context/CompactionLog.ts:179](
 
 > **utilization**: `number`
 
-Defined in: [packages/agentos/src/memory/pipeline/context/ContextWindowManager.ts:329](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/memory/pipeline/context/ContextWindowManager.ts#L329)
+Defined in: [packages/agentos/src/memory/pipeline/context/ContextWindowManager.ts:329](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/pipeline/context/ContextWindowManager.ts#L329)

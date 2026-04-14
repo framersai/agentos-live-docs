@@ -1,6 +1,6 @@
 # Interface: VideoProgressEvent
 
-Defined in: [packages/agentos/src/media/video/types.ts:252](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/video/types.ts#L252)
+Defined in: [packages/agentos/src/media/video/types.ts:252](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/video/types.ts#L252)
 
 Typed progress event emitted during video generation.
 
@@ -14,7 +14,7 @@ at any point).
 
 > `optional` **estimatedRemainingMs**: `number`
 
-Defined in: [packages/agentos/src/media/video/types.ts:275](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/video/types.ts#L275)
+Defined in: [packages/agentos/src/media/video/types.ts:275](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/video/types.ts#L275)
 
 Estimated time remaining in milliseconds.
 Only available when the provider reports ETA information.
@@ -25,7 +25,7 @@ Only available when the provider reports ETA information.
 
 > `optional` **message**: `string`
 
-Defined in: [packages/agentos/src/media/video/types.ts:278](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/video/types.ts#L278)
+Defined in: [packages/agentos/src/media/video/types.ts:278](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/video/types.ts#L278)
 
 Human-readable status message or error description.
 
@@ -35,7 +35,7 @@ Human-readable status message or error description.
 
 > `optional` **progress**: `number`
 
-Defined in: [packages/agentos/src/media/video/types.ts:269](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/video/types.ts#L269)
+Defined in: [packages/agentos/src/media/video/types.ts:269](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/video/types.ts#L269)
 
 Estimated progress percentage (0-100).
 Not all providers report granular progress; may remain undefined
@@ -47,7 +47,7 @@ until the final status transition.
 
 > **status**: `"failed"` \| `"queued"` \| `"processing"` \| `"downloading"` \| `"complete"`
 
-Defined in: [packages/agentos/src/media/video/types.ts:262](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/video/types.ts#L262)
+Defined in: [packages/agentos/src/media/video/types.ts:262](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/video/types.ts#L262)
 
 Current status of the generation job.
 

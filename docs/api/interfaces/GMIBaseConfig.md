@@ -1,6 +1,6 @@
 # Interface: GMIBaseConfig
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:162](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/IGMI.ts#L162)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:162](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/IGMI.ts#L162)
 
 Base configuration required to initialize a GMI instance.
 
@@ -14,7 +14,7 @@ GMIBaseConfig
 
 > `optional` **cognitiveMemory**: [`ICognitiveMemoryManager`](ICognitiveMemoryManager.md)
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:170](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/IGMI.ts#L170)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:170](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/IGMI.ts#L170)
 
 Cognitive memory system (personality-affected encoding/retrieval with Ebbinghaus decay).
 
@@ -24,7 +24,7 @@ Cognitive memory system (personality-affected encoding/retrieval with Ebbinghaus
 
 > `optional` **customSettings**: `Record`\<`string`, `any`\>
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:178](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/IGMI.ts#L178)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:178](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/IGMI.ts#L178)
 
 ***
 
@@ -32,7 +32,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:178](https://gith
 
 > `optional` **defaultLlmModelId**: `string`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:172](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/IGMI.ts#L172)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:172](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/IGMI.ts#L172)
 
 ***
 
@@ -40,7 +40,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:172](https://gith
 
 > `optional` **defaultLlmProviderId**: `string`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:171](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/IGMI.ts#L171)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:171](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/IGMI.ts#L171)
 
 ***
 
@@ -48,7 +48,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:171](https://gith
 
 > **llmProviderManager**: [`AIModelProviderManager`](../classes/AIModelProviderManager.md)
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:165](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/IGMI.ts#L165)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:165](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/IGMI.ts#L165)
 
 ***
 
@@ -56,7 +56,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:165](https://gith
 
 > `optional` **maxToolLoopIterations**: `number`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:177](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/IGMI.ts#L177)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:177](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/IGMI.ts#L177)
 
 Maximum number of tool-loop iterations before the safety break engages.
 Prevents runaway tool loops in `processTurnStream()`. Defaults to `5`.
@@ -67,7 +67,7 @@ Prevents runaway tool loops in `processTurnStream()`. Defaults to `5`.
 
 > **promptEngine**: [`IPromptEngine`](IPromptEngine.md)
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:164](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/IGMI.ts#L164)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:164](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/IGMI.ts#L164)
 
 ***
 
@@ -75,7 +75,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:164](https://gith
 
 > `optional` **retrievalAugmentor**: [`IRetrievalAugmentor`](IRetrievalAugmentor.md)
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:168](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/IGMI.ts#L168)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:168](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/IGMI.ts#L168)
 
 ***
 
@@ -83,15 +83,15 @@ Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:168](https://gith
 
 > **toolOrchestrator**: `IToolOrchestrator`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:167](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/IGMI.ts#L167)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:167](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/IGMI.ts#L167)
 
 ***
 
 ### utilityAI
 
-> **utilityAI**: `IUtilityAI`
+> **utilityAI**: [`IUtilityAI`](IUtilityAI.md)
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:166](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/IGMI.ts#L166)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:166](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/IGMI.ts#L166)
 
 ***
 
@@ -99,4 +99,4 @@ Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:166](https://gith
 
 > **workingMemory**: `IWorkingMemory`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:163](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/cognitive_substrate/IGMI.ts#L163)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:163](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/IGMI.ts#L163)

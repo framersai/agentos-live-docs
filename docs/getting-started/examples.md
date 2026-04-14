@@ -786,19 +786,19 @@ npx tsx examples/<file>.mjs
 
 | File | Description | Key APIs |
 |------|-------------|----------|
-| [`high-level-api.mjs`](../../examples/high-level-api.mjs) | One-shot text, streaming, image generation, agent sessions | `generateText`, `streamText`, `generateImage`, `agent` |
-| [`agency-graph.mjs`](../../examples/agency-graph.mjs) | Multi-agent agency with graph strategy | `agency`, graph edges, parallel execution |
-| [`agency-streaming.mjs`](../../examples/agency-streaming.mjs) | Streaming agency output with real-time chunks | `agency`, `onChunk` callbacks |
-| [`agent-graph.mjs`](../../examples/agent-graph.mjs) | AgentGraph runtime with typed nodes and edges | `AgentGraph`, node definitions, edge routing |
-| [`agent-communication-bus.mjs`](../../examples/agent-communication-bus.mjs) | Inter-agent messaging via communication bus | `AgentCommunicationBus`, pub/sub topics |
-| [`workflow-dsl.mjs`](../../examples/workflow-dsl.mjs) | Declarative workflow definitions | `workflow`, sequential/parallel/conditional steps |
-| [`mission-api.mjs`](../../examples/mission-api.mjs) | Self-expanding mission orchestration with planner | `mission`, goal decomposition, fact-checking |
-| [`multi-agent-workflow.mjs`](../../examples/multi-agent-workflow.mjs) | Coordinated multi-agent pipeline with handoffs | Multi-agent, handoff protocol |
-| [`query-router.mjs`](../../examples/query-router.mjs) | Intent-based routing to specialized agents | `QueryRouter`, route definitions |
-| [`query-router-host-hooks.mjs`](../../examples/query-router-host-hooks.mjs) | Query router with host lifecycle hooks | `QueryRouter`, `onRoute`, `onFallback` hooks |
-| [`generate-image.mjs`](../../examples/generate-image.mjs) | Image generation across providers | `generateImage`, provider selection |
-| [`agentos-config-tools.mjs`](../../examples/agentos-config-tools.mjs) | Full AgentOS runtime with tool registration | `AgentOS`, `processRequest`, custom tools |
-| [`schema-on-demand-local-module.mjs`](../../examples/schema-on-demand-local-module.mjs) | Dynamic extension loading from local modules | `createCuratedManifest`, lazy imports |
+| [`high-level-api.mjs`](https://github.com/framersai/agentos/blob/master/examples/high-level-api.mjs) | One-shot text, streaming, image generation, agent sessions | `generateText`, `streamText`, `generateImage`, `agent` |
+| [`agency-graph.mjs`](https://github.com/framersai/agentos/blob/master/examples/agency-graph.mjs) | Multi-agent agency with graph strategy | `agency`, graph edges, parallel execution |
+| [`agency-streaming.mjs`](https://github.com/framersai/agentos/blob/master/examples/agency-streaming.mjs) | Streaming agency output with real-time chunks | `agency`, `onChunk` callbacks |
+| [`agent-graph.mjs`](https://github.com/framersai/agentos/blob/master/examples/agent-graph.mjs) | AgentGraph runtime with typed nodes and edges | `AgentGraph`, node definitions, edge routing |
+| [`agent-communication-bus.mjs`](https://github.com/framersai/agentos/blob/master/examples/agent-communication-bus.mjs) | Inter-agent messaging via communication bus | `AgentCommunicationBus`, pub/sub topics |
+| [`workflow-dsl.mjs`](https://github.com/framersai/agentos/blob/master/examples/workflow-dsl.mjs) | Declarative workflow definitions | `workflow`, sequential/parallel/conditional steps |
+| [`mission-api.mjs`](https://github.com/framersai/agentos/blob/master/examples/mission-api.mjs) | Self-expanding mission orchestration with planner | `mission`, goal decomposition, fact-checking |
+| [`multi-agent-workflow.mjs`](https://github.com/framersai/agentos/blob/master/examples/multi-agent-workflow.mjs) | Coordinated multi-agent pipeline with handoffs | Multi-agent, handoff protocol |
+| [`query-router.mjs`](https://github.com/framersai/agentos/blob/master/examples/query-router.mjs) | Intent-based routing to specialized agents | `QueryRouter`, route definitions |
+| [`query-router-host-hooks.mjs`](https://github.com/framersai/agentos/blob/master/examples/query-router-host-hooks.mjs) | Query router with host lifecycle hooks | `QueryRouter`, `onRoute`, `onFallback` hooks |
+| [`generate-image.mjs`](https://github.com/framersai/agentos/blob/master/examples/generate-image.mjs) | Image generation across providers | `generateImage`, provider selection |
+| [`agentos-config-tools.mjs`](https://github.com/framersai/agentos/blob/master/examples/agentos-config-tools.mjs) | Full AgentOS runtime with tool registration | `AgentOS`, `processRequest`, custom tools |
+| [`schema-on-demand-local-module.mjs`](https://github.com/framersai/agentos/blob/master/examples/schema-on-demand-local-module.mjs) | Dynamic extension loading from local modules | `createCuratedManifest`, lazy imports |
 
 ---
 
@@ -810,7 +810,7 @@ npx tsx examples/<file>.mjs
 - [SOCIAL_POSTING.md](/features/social-posting) — social media publishing
 - [HIGH_LEVEL_API.md](/getting-started/high-level-api) — `AgentOS`, helper wrappers, and runtime tool registration
 - [COGNITIVE_MEMORY_GUIDE.md](/features/cognitive-memory-guide) — memory system
-- [COGNITIVE_MECHANISMS.md](../memory/COGNITIVE_MECHANISMS.md) — 8 neuroscience-backed mechanisms
+- [COGNITIVE_MECHANISMS.md](/features/cognitive-mechanisms) — 8 neuroscience-backed mechanisms
 - [IMAGE_GENERATION.md](/features/image-generation) — image provider setup
 - [EVALUATION.md](/features/evaluation-guide) — testing and benchmarking
 - [AGENCY_API.md](/features/agency-api) — full agency reference

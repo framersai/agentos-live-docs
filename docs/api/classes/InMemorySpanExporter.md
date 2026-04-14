@@ -1,6 +1,6 @@
 # Class: InMemorySpanExporter
 
-Defined in: [packages/agentos/src/evaluation/observability/Tracer.ts:178](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/evaluation/observability/Tracer.ts#L178)
+Defined in: [packages/agentos/src/evaluation/observability/Tracer.ts:178](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/evaluation/observability/Tracer.ts#L178)
 
 In-memory exporter that stores spans for retrieval.
 
@@ -14,7 +14,7 @@ In-memory exporter that stores spans for retrieval.
 
 > **new InMemorySpanExporter**(`maxSpans?`): `InMemorySpanExporter`
 
-Defined in: [packages/agentos/src/evaluation/observability/Tracer.ts:182](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/evaluation/observability/Tracer.ts#L182)
+Defined in: [packages/agentos/src/evaluation/observability/Tracer.ts:182](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/evaluation/observability/Tracer.ts#L182)
 
 #### Parameters
 
@@ -32,7 +32,7 @@ Defined in: [packages/agentos/src/evaluation/observability/Tracer.ts:182](https:
 
 > **clear**(): `void`
 
-Defined in: [packages/agentos/src/evaluation/observability/Tracer.ts:206](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/evaluation/observability/Tracer.ts#L206)
+Defined in: [packages/agentos/src/evaluation/observability/Tracer.ts:206](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/evaluation/observability/Tracer.ts#L206)
 
 #### Returns
 
@@ -44,7 +44,7 @@ Defined in: [packages/agentos/src/evaluation/observability/Tracer.ts:206](https:
 
 > **export**(`spans`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/evaluation/observability/Tracer.ts:186](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/evaluation/observability/Tracer.ts#L186)
+Defined in: [packages/agentos/src/evaluation/observability/Tracer.ts:186](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/evaluation/observability/Tracer.ts#L186)
 
 Exports spans to a backend.
 
@@ -70,7 +70,7 @@ Spans to export
 
 > **getSpans**(): [`ExportedSpan`](../interfaces/ExportedSpan.md)[]
 
-Defined in: [packages/agentos/src/evaluation/observability/Tracer.ts:194](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/evaluation/observability/Tracer.ts#L194)
+Defined in: [packages/agentos/src/evaluation/observability/Tracer.ts:194](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/evaluation/observability/Tracer.ts#L194)
 
 #### Returns
 
@@ -82,7 +82,7 @@ Defined in: [packages/agentos/src/evaluation/observability/Tracer.ts:194](https:
 
 > **getSpansByName**(`name`): [`ExportedSpan`](../interfaces/ExportedSpan.md)[]
 
-Defined in: [packages/agentos/src/evaluation/observability/Tracer.ts:198](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/evaluation/observability/Tracer.ts#L198)
+Defined in: [packages/agentos/src/evaluation/observability/Tracer.ts:198](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/evaluation/observability/Tracer.ts#L198)
 
 #### Parameters
 
@@ -100,7 +100,7 @@ Defined in: [packages/agentos/src/evaluation/observability/Tracer.ts:198](https:
 
 > **getSpansByTraceId**(`traceId`): [`ExportedSpan`](../interfaces/ExportedSpan.md)[]
 
-Defined in: [packages/agentos/src/evaluation/observability/Tracer.ts:202](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/evaluation/observability/Tracer.ts#L202)
+Defined in: [packages/agentos/src/evaluation/observability/Tracer.ts:202](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/evaluation/observability/Tracer.ts#L202)
 
 #### Parameters
 
@@ -118,7 +118,7 @@ Defined in: [packages/agentos/src/evaluation/observability/Tracer.ts:202](https:
 
 > **shutdown**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/evaluation/observability/Tracer.ts:210](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/evaluation/observability/Tracer.ts#L210)
+Defined in: [packages/agentos/src/evaluation/observability/Tracer.ts:210](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/evaluation/observability/Tracer.ts#L210)
 
 Shuts down the exporter.
 

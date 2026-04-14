@@ -1,6 +1,6 @@
 # Interface: SharedServiceOptions
 
-Defined in: [packages/agentos/src/extensions/ISharedServiceRegistry.ts:4](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/extensions/ISharedServiceRegistry.ts#L4)
+Defined in: [packages/agentos/src/extensions/ISharedServiceRegistry.ts:4](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/extensions/ISharedServiceRegistry.ts#L4)
 
 Cleanup and discovery metadata for a shared service.
 
@@ -10,7 +10,7 @@ Cleanup and discovery metadata for a shared service.
 
 > `optional` **dispose**: (`instance`) => `void` \| `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/extensions/ISharedServiceRegistry.ts:8](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/extensions/ISharedServiceRegistry.ts#L8)
+Defined in: [packages/agentos/src/extensions/ISharedServiceRegistry.ts:8](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/extensions/ISharedServiceRegistry.ts#L8)
 
 Cleanup callback invoked when the service is released.
 
@@ -30,6 +30,6 @@ Cleanup callback invoked when the service is released.
 
 > `optional` **tags**: `string`[]
 
-Defined in: [packages/agentos/src/extensions/ISharedServiceRegistry.ts:12](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/extensions/ISharedServiceRegistry.ts#L12)
+Defined in: [packages/agentos/src/extensions/ISharedServiceRegistry.ts:12](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/extensions/ISharedServiceRegistry.ts#L12)
 
 Optional tags describing the service for diagnostics or tooling.

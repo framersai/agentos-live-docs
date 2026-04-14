@@ -1,6 +1,6 @@
 # Interface: WakeWordProvider
 
-Defined in: [packages/agentos/src/speech/types.ts:178](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/speech/types.ts#L178)
+Defined in: [packages/agentos/src/speech/types.ts:178](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/speech/types.ts#L178)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/speech/types.ts:178](https://github.com/framer
 
 > `readonly` `optional` **displayName**: `string`
 
-Defined in: [packages/agentos/src/speech/types.ts:180](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/speech/types.ts#L180)
+Defined in: [packages/agentos/src/speech/types.ts:180](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/speech/types.ts#L180)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [packages/agentos/src/speech/types.ts:180](https://github.com/framer
 
 > `readonly` **id**: `string`
 
-Defined in: [packages/agentos/src/speech/types.ts:179](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/speech/types.ts#L179)
+Defined in: [packages/agentos/src/speech/types.ts:179](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/speech/types.ts#L179)
 
 ## Methods
 
@@ -24,7 +24,7 @@ Defined in: [packages/agentos/src/speech/types.ts:179](https://github.com/framer
 
 > **detect**(`frame`, `sampleRate`): [`WakeWordDetection`](WakeWordDetection.md) \| `Promise`\<[`WakeWordDetection`](WakeWordDetection.md) \| `null`\> \| `null`
 
-Defined in: [packages/agentos/src/speech/types.ts:181](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/speech/types.ts#L181)
+Defined in: [packages/agentos/src/speech/types.ts:181](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/speech/types.ts#L181)
 
 #### Parameters
 
@@ -46,7 +46,7 @@ Defined in: [packages/agentos/src/speech/types.ts:181](https://github.com/framer
 
 > `optional` **dispose**(): `void`
 
-Defined in: [packages/agentos/src/speech/types.ts:183](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/speech/types.ts#L183)
+Defined in: [packages/agentos/src/speech/types.ts:183](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/speech/types.ts#L183)
 
 #### Returns
 
@@ -58,7 +58,7 @@ Defined in: [packages/agentos/src/speech/types.ts:183](https://github.com/framer
 
 > `optional` **reset**(): `void`
 
-Defined in: [packages/agentos/src/speech/types.ts:182](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/speech/types.ts#L182)
+Defined in: [packages/agentos/src/speech/types.ts:182](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/speech/types.ts#L182)
 
 #### Returns
 

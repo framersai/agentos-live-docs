@@ -1,6 +1,6 @@
 # Interface: TurnCapabilityPlan
 
-Defined in: [packages/agentos/src/orchestration/turn-planner/TurnPlanner.ts:72](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/turn-planner/TurnPlanner.ts#L72)
+Defined in: [packages/agentos/src/orchestration/turn-planner/TurnPlanner.ts:72](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/turn-planner/TurnPlanner.ts#L72)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/orchestration/turn-planner/TurnPlanner.ts:72](
 
 > `optional` **category**: `string`
 
-Defined in: [packages/agentos/src/orchestration/turn-planner/TurnPlanner.ts:76](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/turn-planner/TurnPlanner.ts#L76)
+Defined in: [packages/agentos/src/orchestration/turn-planner/TurnPlanner.ts:76](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/turn-planner/TurnPlanner.ts#L76)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [packages/agentos/src/orchestration/turn-planner/TurnPlanner.ts:76](
 
 > **enabled**: `boolean`
 
-Defined in: [packages/agentos/src/orchestration/turn-planner/TurnPlanner.ts:73](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/turn-planner/TurnPlanner.ts#L73)
+Defined in: [packages/agentos/src/orchestration/turn-planner/TurnPlanner.ts:73](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/turn-planner/TurnPlanner.ts#L73)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: [packages/agentos/src/orchestration/turn-planner/TurnPlanner.ts:73](
 
 > `optional` **fallbackApplied**: `boolean`
 
-Defined in: [packages/agentos/src/orchestration/turn-planner/TurnPlanner.ts:81](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/turn-planner/TurnPlanner.ts#L81)
+Defined in: [packages/agentos/src/orchestration/turn-planner/TurnPlanner.ts:81](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/turn-planner/TurnPlanner.ts#L81)
 
 ***
 
@@ -32,7 +32,7 @@ Defined in: [packages/agentos/src/orchestration/turn-planner/TurnPlanner.ts:81](
 
 > `optional` **fallbackReason**: `string`
 
-Defined in: [packages/agentos/src/orchestration/turn-planner/TurnPlanner.ts:82](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/turn-planner/TurnPlanner.ts#L82)
+Defined in: [packages/agentos/src/orchestration/turn-planner/TurnPlanner.ts:82](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/turn-planner/TurnPlanner.ts#L82)
 
 ***
 
@@ -40,7 +40,7 @@ Defined in: [packages/agentos/src/orchestration/turn-planner/TurnPlanner.ts:82](
 
 > **kind**: `CapabilityKind` \| `"any"`
 
-Defined in: [packages/agentos/src/orchestration/turn-planner/TurnPlanner.ts:75](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/turn-planner/TurnPlanner.ts#L75)
+Defined in: [packages/agentos/src/orchestration/turn-planner/TurnPlanner.ts:75](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/turn-planner/TurnPlanner.ts#L75)
 
 ***
 
@@ -48,7 +48,7 @@ Defined in: [packages/agentos/src/orchestration/turn-planner/TurnPlanner.ts:75](
 
 > **onlyAvailable**: `boolean`
 
-Defined in: [packages/agentos/src/orchestration/turn-planner/TurnPlanner.ts:77](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/turn-planner/TurnPlanner.ts#L77)
+Defined in: [packages/agentos/src/orchestration/turn-planner/TurnPlanner.ts:77](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/turn-planner/TurnPlanner.ts#L77)
 
 ***
 
@@ -56,7 +56,7 @@ Defined in: [packages/agentos/src/orchestration/turn-planner/TurnPlanner.ts:77](
 
 > `optional` **promptContext**: `string`
 
-Defined in: [packages/agentos/src/orchestration/turn-planner/TurnPlanner.ts:79](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/turn-planner/TurnPlanner.ts#L79)
+Defined in: [packages/agentos/src/orchestration/turn-planner/TurnPlanner.ts:79](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/turn-planner/TurnPlanner.ts#L79)
 
 ***
 
@@ -64,7 +64,7 @@ Defined in: [packages/agentos/src/orchestration/turn-planner/TurnPlanner.ts:79](
 
 > **query**: `string`
 
-Defined in: [packages/agentos/src/orchestration/turn-planner/TurnPlanner.ts:74](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/turn-planner/TurnPlanner.ts#L74)
+Defined in: [packages/agentos/src/orchestration/turn-planner/TurnPlanner.ts:74](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/turn-planner/TurnPlanner.ts#L74)
 
 ***
 
@@ -72,7 +72,7 @@ Defined in: [packages/agentos/src/orchestration/turn-planner/TurnPlanner.ts:74](
 
 > `optional` **result**: `CapabilityDiscoveryResult`
 
-Defined in: [packages/agentos/src/orchestration/turn-planner/TurnPlanner.ts:80](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/turn-planner/TurnPlanner.ts#L80)
+Defined in: [packages/agentos/src/orchestration/turn-planner/TurnPlanner.ts:80](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/turn-planner/TurnPlanner.ts#L80)
 
 ***
 
@@ -80,4 +80,4 @@ Defined in: [packages/agentos/src/orchestration/turn-planner/TurnPlanner.ts:80](
 
 > **selectedToolNames**: `string`[]
 
-Defined in: [packages/agentos/src/orchestration/turn-planner/TurnPlanner.ts:78](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/orchestration/turn-planner/TurnPlanner.ts#L78)
+Defined in: [packages/agentos/src/orchestration/turn-planner/TurnPlanner.ts:78](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/turn-planner/TurnPlanner.ts#L78)

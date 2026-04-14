@@ -1,6 +1,6 @@
 # Class: EmbeddingManager
 
-Defined in: [packages/agentos/src/rag/EmbeddingManager.ts:52](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/rag/EmbeddingManager.ts#L52)
+Defined in: [packages/agentos/src/rag/EmbeddingManager.ts:52](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/EmbeddingManager.ts#L52)
 
 Implements the `IEmbeddingManager` interface to provide robust embedding generation services.
 
@@ -16,7 +16,7 @@ Implements the `IEmbeddingManager` interface to provide robust embedding generat
 
 > **new EmbeddingManager**(): `EmbeddingManager`
 
-Defined in: [packages/agentos/src/rag/EmbeddingManager.ts:64](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/rag/EmbeddingManager.ts#L64)
+Defined in: [packages/agentos/src/rag/EmbeddingManager.ts:64](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/EmbeddingManager.ts#L64)
 
 Constructs an EmbeddingManager instance.
 The manager is not operational until `initialize` is called.
@@ -31,7 +31,7 @@ The manager is not operational until `initialize` is called.
 
 > **checkHealth**(): `Promise`\<\{ `details?`: `any`; `isHealthy`: `boolean`; \}\>
 
-Defined in: [packages/agentos/src/rag/EmbeddingManager.ts:498](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/rag/EmbeddingManager.ts#L498)
+Defined in: [packages/agentos/src/rag/EmbeddingManager.ts:498](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/EmbeddingManager.ts#L498)
 
 **`Async`**
 
@@ -69,7 +69,7 @@ console.error("EmbeddingManager health check failed:", health.details);
 
 > **generateEmbeddings**(`request`): `Promise`\<[`EmbeddingResponse`](../interfaces/EmbeddingResponse.md)\>
 
-Defined in: [packages/agentos/src/rag/EmbeddingManager.ts:258](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/rag/EmbeddingManager.ts#L258)
+Defined in: [packages/agentos/src/rag/EmbeddingManager.ts:258](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/EmbeddingManager.ts#L258)
 
 **`Async`**
 
@@ -122,7 +122,7 @@ console.log(response.embeddings);
 
 > **getEmbeddingDimension**(`modelId?`): `Promise`\<`number`\>
 
-Defined in: [packages/agentos/src/rag/EmbeddingManager.ts:472](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/rag/EmbeddingManager.ts#L472)
+Defined in: [packages/agentos/src/rag/EmbeddingManager.ts:472](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/EmbeddingManager.ts#L472)
 
 **`Async`**
 
@@ -169,7 +169,7 @@ console.log(`Embeddings will have ${dimension} dimensions.`);
 
 > **getEmbeddingModelInfo**(`modelId?`): `Promise`\<`EmbeddingModelConfig` \| `undefined`\>
 
-Defined in: [packages/agentos/src/rag/EmbeddingManager.ts:456](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/rag/EmbeddingManager.ts#L456)
+Defined in: [packages/agentos/src/rag/EmbeddingManager.ts:456](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/EmbeddingManager.ts#L456)
 
 **`Async`**
 
@@ -217,7 +217,7 @@ console.log(`Model Dimensions: ${modelInfo.dimension}`);
 
 > **initialize**(`config`, `providerManager`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/rag/EmbeddingManager.ts:71](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/rag/EmbeddingManager.ts#L71)
+Defined in: [packages/agentos/src/rag/EmbeddingManager.ts:71](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/EmbeddingManager.ts#L71)
 
 **`Async`**
 
@@ -273,7 +273,7 @@ await manager.initialize(embeddingManagerConfig, aiModelProviderManager);
 
 > **shutdown**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/rag/EmbeddingManager.ts:538](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/rag/EmbeddingManager.ts#L538)
+Defined in: [packages/agentos/src/rag/EmbeddingManager.ts:538](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/EmbeddingManager.ts#L538)
 
 **`Async`**
 

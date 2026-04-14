@@ -1,6 +1,6 @@
 # Interface: SpeechTranscriptionOptions
 
-Defined in: [packages/agentos/src/speech/types.ts:65](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/speech/types.ts#L65)
+Defined in: [packages/agentos/src/speech/types.ts:65](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/speech/types.ts#L65)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/speech/types.ts:65](https://github.com/framers
 
 > `optional` **enableSpeakerDiarization**: `boolean`
 
-Defined in: [packages/agentos/src/speech/types.ts:71](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/speech/types.ts#L71)
+Defined in: [packages/agentos/src/speech/types.ts:71](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/speech/types.ts#L71)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [packages/agentos/src/speech/types.ts:71](https://github.com/framers
 
 > `optional` **language**: `string`
 
-Defined in: [packages/agentos/src/speech/types.ts:66](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/speech/types.ts#L66)
+Defined in: [packages/agentos/src/speech/types.ts:66](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/speech/types.ts#L66)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: [packages/agentos/src/speech/types.ts:66](https://github.com/framers
 
 > `optional` **model**: `string`
 
-Defined in: [packages/agentos/src/speech/types.ts:67](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/speech/types.ts#L67)
+Defined in: [packages/agentos/src/speech/types.ts:67](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/speech/types.ts#L67)
 
 ***
 
@@ -32,7 +32,7 @@ Defined in: [packages/agentos/src/speech/types.ts:67](https://github.com/framers
 
 > `optional` **numSpeakers**: `number`
 
-Defined in: [packages/agentos/src/speech/types.ts:72](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/speech/types.ts#L72)
+Defined in: [packages/agentos/src/speech/types.ts:72](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/speech/types.ts#L72)
 
 ***
 
@@ -40,7 +40,7 @@ Defined in: [packages/agentos/src/speech/types.ts:72](https://github.com/framers
 
 > `optional` **prompt**: `string`
 
-Defined in: [packages/agentos/src/speech/types.ts:68](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/speech/types.ts#L68)
+Defined in: [packages/agentos/src/speech/types.ts:68](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/speech/types.ts#L68)
 
 ***
 
@@ -48,7 +48,7 @@ Defined in: [packages/agentos/src/speech/types.ts:68](https://github.com/framers
 
 > `optional` **providerId**: `string`
 
-Defined in: [packages/agentos/src/speech/types.ts:74](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/speech/types.ts#L74)
+Defined in: [packages/agentos/src/speech/types.ts:74](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/speech/types.ts#L74)
 
 ***
 
@@ -56,7 +56,7 @@ Defined in: [packages/agentos/src/speech/types.ts:74](https://github.com/framers
 
 > `optional` **providerSpecificOptions**: `Record`\<`string`, `unknown`\>
 
-Defined in: [packages/agentos/src/speech/types.ts:73](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/speech/types.ts#L73)
+Defined in: [packages/agentos/src/speech/types.ts:73](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/speech/types.ts#L73)
 
 ***
 
@@ -64,7 +64,7 @@ Defined in: [packages/agentos/src/speech/types.ts:73](https://github.com/framers
 
 > `optional` **responseFormat**: [`SpeechResponseFormat`](../type-aliases/SpeechResponseFormat.md)
 
-Defined in: [packages/agentos/src/speech/types.ts:69](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/speech/types.ts#L69)
+Defined in: [packages/agentos/src/speech/types.ts:69](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/speech/types.ts#L69)
 
 ***
 
@@ -72,7 +72,7 @@ Defined in: [packages/agentos/src/speech/types.ts:69](https://github.com/framers
 
 > `optional` **stream**: `boolean`
 
-Defined in: [packages/agentos/src/speech/types.ts:75](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/speech/types.ts#L75)
+Defined in: [packages/agentos/src/speech/types.ts:75](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/speech/types.ts#L75)
 
 ***
 
@@ -80,4 +80,4 @@ Defined in: [packages/agentos/src/speech/types.ts:75](https://github.com/framers
 
 > `optional` **temperature**: `number`
 
-Defined in: [packages/agentos/src/speech/types.ts:70](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/speech/types.ts#L70)
+Defined in: [packages/agentos/src/speech/types.ts:70](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/speech/types.ts#L70)

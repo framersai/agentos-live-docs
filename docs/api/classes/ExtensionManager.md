@@ -1,6 +1,6 @@
 # Class: ExtensionManager
 
-Defined in: [packages/agentos/src/extensions/ExtensionManager.ts:66](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/extensions/ExtensionManager.ts#L66)
+Defined in: [packages/agentos/src/extensions/ExtensionManager.ts:66](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/extensions/ExtensionManager.ts#L66)
 
 Coordinates discovery and lifecycle management for extension packs. Packs
 emit descriptors which are registered into kind-specific registries.
@@ -11,7 +11,7 @@ emit descriptors which are registered into kind-specific registries.
 
 > **new ExtensionManager**(`options?`): `ExtensionManager`
 
-Defined in: [packages/agentos/src/extensions/ExtensionManager.ts:85](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/extensions/ExtensionManager.ts#L85)
+Defined in: [packages/agentos/src/extensions/ExtensionManager.ts:85](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/extensions/ExtensionManager.ts#L85)
 
 #### Parameters
 
@@ -29,7 +29,7 @@ Defined in: [packages/agentos/src/extensions/ExtensionManager.ts:85](https://git
 
 > **getRegistry**\<`TPayload`\>(`kind`): [`ExtensionRegistry`](ExtensionRegistry.md)\<`TPayload`\>
 
-Defined in: [packages/agentos/src/extensions/ExtensionManager.ts:298](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/extensions/ExtensionManager.ts#L298)
+Defined in: [packages/agentos/src/extensions/ExtensionManager.ts:298](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/extensions/ExtensionManager.ts#L298)
 
 Provides the registry for a particular kind, creating it if necessary.
 
@@ -55,7 +55,7 @@ Provides the registry for a particular kind, creating it if necessary.
 
 > **listLoadedPacks**(): `object`[]
 
-Defined in: [packages/agentos/src/extensions/ExtensionManager.ts:283](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/extensions/ExtensionManager.ts#L283)
+Defined in: [packages/agentos/src/extensions/ExtensionManager.ts:283](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/extensions/ExtensionManager.ts#L283)
 
 List pack metadata for packs loaded during this process lifetime.
 
@@ -69,7 +69,7 @@ List pack metadata for packs loaded during this process lifetime.
 
 > **loadManifest**(`context?`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/extensions/ExtensionManager.ts:103](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/extensions/ExtensionManager.ts#L103)
+Defined in: [packages/agentos/src/extensions/ExtensionManager.ts:103](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/extensions/ExtensionManager.ts#L103)
 
 Loads packs defined in the manifest, registering their descriptors in the
 appropriate registries. Supports factory-based packs as well as resolving
@@ -91,7 +91,7 @@ packs from `package` and `module` manifest entries.
 
 > **loadPackEntry**(`entry`, `lifecycleContext?`): `Promise`\<\{ `key`: `string`; `loaded`: `true`; `pack`: \{ `identifier?`: `string`; `name`: `string`; `version?`: `string`; \}; \} \| \{ `key?`: `string`; `loaded`: `false`; `reason`: `"disabled"` \| `"already_loaded"` \| `"unresolved"`; `skipped`: `true`; \} \| \{ `error`: `Error`; `key?`: `string`; `loaded`: `false`; `reason`: `"failed"`; `skipped`: `false`; `sourceName`: `string`; \}\>
 
-Defined in: [packages/agentos/src/extensions/ExtensionManager.ts:158](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/extensions/ExtensionManager.ts#L158)
+Defined in: [packages/agentos/src/extensions/ExtensionManager.ts:158](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/extensions/ExtensionManager.ts#L158)
 
 Load a single manifest entry at runtime, applying the same resolution,
 secret hydration, registration, and event emission logic as [loadManifest](#loadmanifest).
@@ -119,7 +119,7 @@ enable an extension pack mid-session.
 
 > **loadPackFromFactory**(`pack`, `identifier?`, `options?`, `lifecycleContext?`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/extensions/ExtensionManager.ts:129](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/extensions/ExtensionManager.ts#L129)
+Defined in: [packages/agentos/src/extensions/ExtensionManager.ts:129](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/extensions/ExtensionManager.ts#L129)
 
 Directly loads a pack instance (typically produced by an inline factory)
 and registers all of its descriptors.
@@ -152,7 +152,7 @@ and registers all of its descriptors.
 
 > **loadPackFromModule**(`moduleSpecifier`, `options?`, `identifier?`, `lifecycleContext?`): `Promise`\<\{ `key`: `string`; `loaded`: `true`; `pack`: \{ `identifier?`: `string`; `name`: `string`; `version?`: `string`; \}; \} \| \{ `key?`: `string`; `loaded`: `false`; `reason`: `"disabled"` \| `"already_loaded"` \| `"unresolved"`; `skipped`: `true`; \} \| \{ `error`: `Error`; `key?`: `string`; `loaded`: `false`; `reason`: `"failed"`; `skipped`: `false`; `sourceName`: `string`; \}\>
 
-Defined in: [packages/agentos/src/extensions/ExtensionManager.ts:262](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/extensions/ExtensionManager.ts#L262)
+Defined in: [packages/agentos/src/extensions/ExtensionManager.ts:262](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/extensions/ExtensionManager.ts#L262)
 
 Convenience: load an extension pack by local module specifier at runtime.
 
@@ -184,7 +184,7 @@ Convenience: load an extension pack by local module specifier at runtime.
 
 > **loadPackFromPackage**(`packageName`, `options?`, `identifier?`, `lifecycleContext?`): `Promise`\<\{ `key`: `string`; `loaded`: `true`; `pack`: \{ `identifier?`: `string`; `name`: `string`; `version?`: `string`; \}; \} \| \{ `key?`: `string`; `loaded`: `false`; `reason`: `"disabled"` \| `"already_loaded"` \| `"unresolved"`; `skipped`: `true`; \} \| \{ `error`: `Error`; `key?`: `string`; `loaded`: `false`; `reason`: `"failed"`; `skipped`: `false`; `sourceName`: `string`; \}\>
 
-Defined in: [packages/agentos/src/extensions/ExtensionManager.ts:241](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/extensions/ExtensionManager.ts#L241)
+Defined in: [packages/agentos/src/extensions/ExtensionManager.ts:241](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/extensions/ExtensionManager.ts#L241)
 
 Convenience: load an extension pack by npm package name at runtime.
 
@@ -216,7 +216,7 @@ Convenience: load an extension pack by npm package name at runtime.
 
 > **off**(`listener`): `void`
 
-Defined in: [packages/agentos/src/extensions/ExtensionManager.ts:121](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/extensions/ExtensionManager.ts#L121)
+Defined in: [packages/agentos/src/extensions/ExtensionManager.ts:121](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/extensions/ExtensionManager.ts#L121)
 
 #### Parameters
 
@@ -234,7 +234,7 @@ Defined in: [packages/agentos/src/extensions/ExtensionManager.ts:121](https://gi
 
 > **on**(`listener`): `void`
 
-Defined in: [packages/agentos/src/extensions/ExtensionManager.ts:117](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/extensions/ExtensionManager.ts#L117)
+Defined in: [packages/agentos/src/extensions/ExtensionManager.ts:117](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/extensions/ExtensionManager.ts#L117)
 
 Registers a listener for extension lifecycle events.
 
@@ -254,7 +254,7 @@ Registers a listener for extension lifecycle events.
 
 > **shutdown**(`context?`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/extensions/ExtensionManager.ts:313](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/extensions/ExtensionManager.ts#L313)
+Defined in: [packages/agentos/src/extensions/ExtensionManager.ts:313](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/extensions/ExtensionManager.ts#L313)
 
 Deactivates all loaded descriptors and extension packs.
 

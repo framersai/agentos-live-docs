@@ -1,6 +1,6 @@
 # Interface: ComposableStep
 
-Defined in: [packages/agentos/src/emergent/types.ts:70](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/emergent/types.ts#L70)
+Defined in: [packages/agentos/src/emergent/types.ts:70](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/emergent/types.ts#L70)
 
 A single step in a composable tool pipeline.
 
@@ -20,7 +20,7 @@ Reference expression syntax (resolved at runtime):
 
 > `optional` **condition**: `string`
 
-Defined in: [packages/agentos/src/emergent/types.ts:104](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/emergent/types.ts#L104)
+Defined in: [packages/agentos/src/emergent/types.ts:104](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/emergent/types.ts#L104)
 
 Optional JSONata / simple expression evaluated against `$prev` before
 executing this step. When the expression evaluates to falsy, the step is
@@ -38,7 +38,7 @@ skipped and its output is `null`.
 
 > **inputMapping**: `Record`\<`string`, `unknown`\>
 
-Defined in: [packages/agentos/src/emergent/types.ts:95](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/emergent/types.ts#L95)
+Defined in: [packages/agentos/src/emergent/types.ts:95](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/emergent/types.ts#L95)
 
 Input argument mapping for the tool invocation.
 Keys are the tool's argument names; values are literal values or reference
@@ -56,7 +56,7 @@ expressions (`$input`, `$prev`, `$steps.<name>`).
 
 > **name**: `string`
 
-Defined in: [packages/agentos/src/emergent/types.ts:76](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/emergent/types.ts#L76)
+Defined in: [packages/agentos/src/emergent/types.ts:76](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/emergent/types.ts#L76)
 
 Unique name for this step within the pipeline.
 Used for cross-step references via `$steps.<stepName>`.
@@ -73,7 +73,7 @@ Used for cross-step references via `$steps.<stepName>`.
 
 > **tool**: `string`
 
-Defined in: [packages/agentos/src/emergent/types.ts:83](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/emergent/types.ts#L83)
+Defined in: [packages/agentos/src/emergent/types.ts:83](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/emergent/types.ts#L83)
 
 The registered tool name to invoke for this step.
 Must match the `name` property of an `ITool` available to the agent.

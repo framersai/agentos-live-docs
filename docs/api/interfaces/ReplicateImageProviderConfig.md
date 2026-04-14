@@ -1,6 +1,6 @@
 # Interface: ReplicateImageProviderConfig
 
-Defined in: [packages/agentos/src/media/images/providers/ReplicateImageProvider.ts:16](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/images/providers/ReplicateImageProvider.ts#L16)
+Defined in: [packages/agentos/src/media/images/providers/ReplicateImageProvider.ts:17](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/providers/ReplicateImageProvider.ts#L17)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/media/images/providers/ReplicateImageProvider.
 
 > **apiKey**: `string`
 
-Defined in: [packages/agentos/src/media/images/providers/ReplicateImageProvider.ts:17](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/images/providers/ReplicateImageProvider.ts#L17)
+Defined in: [packages/agentos/src/media/images/providers/ReplicateImageProvider.ts:18](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/providers/ReplicateImageProvider.ts#L18)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [packages/agentos/src/media/images/providers/ReplicateImageProvider.
 
 > `optional` **baseURL**: `string`
 
-Defined in: [packages/agentos/src/media/images/providers/ReplicateImageProvider.ts:18](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/images/providers/ReplicateImageProvider.ts#L18)
+Defined in: [packages/agentos/src/media/images/providers/ReplicateImageProvider.ts:19](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/providers/ReplicateImageProvider.ts#L19)
 
 ***
 
@@ -24,4 +24,4 @@ Defined in: [packages/agentos/src/media/images/providers/ReplicateImageProvider.
 
 > `optional` **defaultModelId**: `string`
 
-Defined in: [packages/agentos/src/media/images/providers/ReplicateImageProvider.ts:19](https://github.com/framersai/agentos/blob/ac1e60f8857aef619a8160a2a7cfc7a63e5ee780/src/media/images/providers/ReplicateImageProvider.ts#L19)
+Defined in: [packages/agentos/src/media/images/providers/ReplicateImageProvider.ts:20](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/providers/ReplicateImageProvider.ts#L20)
