@@ -21,6 +21,25 @@ npm install @framers/agentos
 
 ---
 
+### [Paracosm](https://github.com/framersai/paracosm)
+**AI Agent Swarm Simulation Engine** — Define any scenario as JSON. Run it with AI commanders that have different HEXACO personalities. Same starting conditions, different decisions, divergent civilizations. Built on AgentOS.
+
+```bash
+npm install paracosm
+```
+
+**Features:**
+- Scenario compiler: JSON to runnable simulation (~$0.10, cached)
+- Emergent crisis generation from simulation state
+- Runtime tool forging with LLM-as-judge in sandboxed V8
+- HEXACO personality evolution over simulated years
+- Deterministic kernel for reproducible divergence
+- Live dashboard with SSE streaming, guided tour, agent chat
+
+**[Live Demo](https://paracosm.agentos.sh/sim)** · **[Landing Page](https://paracosm.agentos.sh)** · **[npm](https://www.npmjs.com/package/paracosm)** · **[API Docs](https://paracosm.agentos.sh/docs)**
+
+---
+
 ### [@framers/sql-storage-adapter](https://github.com/framersai/sql-storage-adapter)
 **SQL Storage** — Cross-platform SQL storage abstraction with automatic fallbacks. Supports SQLite, PostgreSQL, and in-memory storage.
 
