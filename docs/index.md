@@ -134,7 +134,9 @@ graph TB
 ### Capabilities & AI
 
 - [Capability Discovery](/features/capability-discovery) — Tiered semantic discovery (~90% token reduction)
-- [Emergent Capabilities](/features/emergent-capabilities) — Runtime tool creation, sandboxed execution, and LLM-as-judge verification
+- [Turn Planner](/features/turn-planner) — Per-turn execution policy, tool selection, and discovery integration
+- [Emergent Capabilities](/features/emergent-capabilities) — Runtime tool creation, self-improvement tools, sandboxed execution, and LLM-as-judge verification
+- [HEXACO Personality](/features/hexaco-personality) — 6-trait personality model, persona overlays, runtime mutation
 - [Deep Research](/features/deep-research) — Multi-source research pipeline with query classification
 - [Structured Output](/features/structured-output) — JSON schema validation
 - [Evaluation Framework](/features/evaluation-framework) — Testing and benchmarks
