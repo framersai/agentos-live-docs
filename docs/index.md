@@ -23,6 +23,12 @@ npm install @framers/agentos
 **[Live Demo](https://paracosm.agentos.sh/sim)** · **[GitHub](https://github.com/framersai/paracosm)** · **[npm](https://www.npmjs.com/package/paracosm)** · **[API Reference](/paracosm)**
 :::
 
+:::info Join the Community
+Questions, feedback, or want to share what you're building? Join us on Discord.
+
+**[Join Discord](https://wilds.ai/discord)**
+:::
+
 ## Architecture
 
 ```mermaid
