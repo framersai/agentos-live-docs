@@ -142,6 +142,14 @@ graph TB
 - [Evaluation Framework](/features/evaluation-framework) — Testing and benchmarks
 - [Cost Optimization](/features/cost-optimization) — Token usage and caching
 
+### Paracosm — AI Simulation Engine
+
+- [Paracosm API Reference](/paracosm) — TypeDoc API for the simulation engine
+- [Live Demo](https://paracosm.agentos.sh/sim) — Run Mars Genesis in your browser
+- [GitHub](https://github.com/framersai/paracosm) — Source code and scenario examples
+- [npm](https://www.npmjs.com/package/paracosm) — `npm install paracosm`
+- [Landing Page](https://paracosm.agentos.sh) — Overview, architecture, and FAQ
+
 ### Advanced
 
 - [Recursive Self-Building](/features/recursive-self-building) — Self-modifying agent patterns
