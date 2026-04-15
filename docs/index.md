@@ -17,6 +17,12 @@ Modular orchestration runtime for AI agent systems.
 npm install @framers/agentos
 ```
 
+:::tip Paracosm — AI Agent Swarm Simulation
+**[Paracosm](https://paracosm.agentos.sh)** is an AI agent swarm simulation engine built on AgentOS. Define any scenario as JSON, run it with AI commanders that have different HEXACO personalities, and watch their decisions diverge into measurably different outcomes.
+
+**[Live Demo](https://paracosm.agentos.sh/sim)** · **[GitHub](https://github.com/framersai/paracosm)** · **[npm](https://www.npmjs.com/package/paracosm)** · **[API Reference](/paracosm)**
+:::
+
 ## Architecture
 
 ```mermaid
@@ -143,7 +149,7 @@ graph TB
 
 - [Skills Overview](/skills/overview) — SKILL.md format, loading, and semantic discovery integration
 - [Skills Format](/skills/skill-format) — Authoring SKILL.md files
-- [Skills Extension](/skills/skills-extension) — Installing and managing skill packs
+- [@framers/agentos-skills](/skills/agentos-skills) — Curated SKILL.md content package
 - [Skills Registry](/skills/agentos-skills-registry) — Browsing and installing curated skills
 
 ### Extensions
