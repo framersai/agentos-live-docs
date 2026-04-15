@@ -1,233 +1,116 @@
 ---
-title: 'Skills Overview'
+title: "Skills Overview"
 sidebar_position: 1
 ---
 
-# Skills (SKILL.md)
+Skills are prompt-level capability modules for AgentOS. They are not runtime extensions; they teach an agent when and how to use tools, workflows, and external systems through `SKILL.md` content.
 
-Skills are **modular prompt modules** that extend what an AgentOS-based agent can do. Each skill lives in a folder containing a `SKILL.md` file:
+## The 3-Tier Skills Architecture
 
-- YAML frontmatter: metadata, requirements, install specs, invocation policy
-- Markdown body: instructions injected into an agent’s system prompt (or fetched on-demand)
+AgentOS skills are split into three public layers:
 
-## Skill Docs
+1. `@framers/agentos/skills`
+   The runtime engine. This is where `SkillLoader`, `SkillRegistry`, snapshots, and path helpers live.
+2. `@framers/agentos-skills`
+   The curated content package. It ships `SKILL.md` files plus the generated `registry.json` index.
+3. `@framers/agentos-skills-registry`
+   The catalog SDK. It provides query helpers, lazy loading, and factories over the curated content package.
 
-- Skill format: [`SKILL.md`](./skill-format)
-- Curated skills registry: [`@framers/agentos-skills-registry`](./agentos-skills-registry) (data + typed SDK + factories)
+## Start Here
+
+- Use [Skills (SKILL.md)](/skills/skill-format) to author and structure skills.
+- Use [`@framers/agentos-skills`](/skills/agentos-skills) when you need the curated content pack.
+- Use [`@framers/agentos-skills-registry`](/skills/agentos-skills-registry) when you need catalog search, lazy loading, or factories.
 
 ## Skills vs Extensions
 
-Skills and extensions solve different problems:
+- Extensions are runtime code: tools, guardrails, workflows, and providers.
+- Skills are prompt content: they explain operating procedures, decision rules, and tool-usage patterns to the model.
 
-- **Extensions**: runtime code (tools, guardrails, workflows) loaded into AgentOS via the extensions system.
-- **Skills**: prompt-level “how to” modules that teach an agent _when_ and _how_ to use tools and workflows.
+Both can participate in discovery, but they solve different layers of the system.
 
-```mermaid
-graph TD
-  A[AgentOS Runtime] --> B[Extensions]
-  B --> C[Tools/Guardrails/Workflows]
+## SkillRegistry API
 
-  A --> D[Skills]
-  D --> E[Prompt Snapshot]
-  E --> F[LLM Behavior]
-```
+The `SkillRegistry` class manages loaded skills at runtime. It scans directories, filters by platform and eligibility, and builds snapshots for agent context.
 
-## Loading Skills With `SkillRegistry`
+### Initialization
 
-Use `SkillRegistry` to load skills from one or more directories and compile them into a single prompt snapshot:
-
-```ts
+```typescript
 import { SkillRegistry } from '@framers/agentos/skills';
 
-const registry = new SkillRegistry();
-await registry.loadFromDirs(['./skills']);
-
-const snapshot = registry.buildSnapshot({ platform: process.platform, strict: true });
-console.log(snapshot.prompt);
-```
-
-## Curated Skills Packages
-
-The curated catalog ships as a single package:
-
-- `@framers/agentos-skills-registry`: SKILL.md files + registry.json + typed catalog + query helpers + factories
-
-It supports a lightweight import path:
-
-```ts
-import { searchSkills, getSkillsByCategory } from '@framers/agentos-skills-registry/catalog';
-```
-
-…and a factory path that lazy-loads `@framers/agentos` only when you call it:
-
-```ts
-import { createCuratedSkillSnapshot } from '@framers/agentos-skills-registry';
-
-const snapshot = await createCuratedSkillSnapshot({ skills: ['github', 'weather'] });
-```
-
-## On-Demand Skill Discovery (Lazy)
-
-If you don’t want to inject all skill prompt content up front, load the **skills tool extension**:
-
-- `@framers/agentos-skills` (via `SkillRegistry`): exposes `skills_list`, `skills_read`, `skills_status`, `skills_enable`, `skills_install`
-
-This enables a “lazy” flow where the model can:
-
-1. List/search skills (`skills_list`)
-2. Fetch a specific `SKILL.md` only when needed (`skills_read`)
-3. Enable a skill into a local skills directory (HITL-gated) (`skills_enable`)
-
-```mermaid
-sequenceDiagram
-  participant U as User
-  participant L as LLM
-  participant T as Tool (skills_*)
-  participant FS as Skills Dir
-
-  U->>L: "Help me automate GitHub releases"
-  L->>T: skills_list(query="github")
-  T-->>L: catalog matches
-  L->>T: skills_read(skill="github")
-  T-->>L: SKILL.md markdown
-  L->>T: skills_enable(skill="github", targetDir="./skills")  %% side-effects
-  T-->>FS: copy skill folder
-  T-->>L: enabled=true
-```
-
-## Capability Discovery Integration
-
-Beyond lazy loading, skills are fully indexed by the **Capability Discovery Engine** (`@framers/agentos/discovery`). This provides semantic search across all capabilities -- tools, skills, extensions, and channels -- using embedding similarity and graph re-ranking.
-
-Skills become `CapabilityDescriptor` entries with `kind: 'skill'` and are indexed alongside tools. The discovery engine’s graph tracks relationships between skills and their required tools (e.g., `skill:web-search` -> `DEPENDS_ON` -> `tool:web_search`), so searching for either surfaces both.
-
-**Skills vs extensions in discovery**: Skills are prompt-level modules (`SKILL.md`) that teach _when_ and _how_ to use tools. Extensions are runtime code (tools, guardrails, workflows) that provide callable actions. Both feed into the same discovery index, but you don’t need a skill for every tool -- many tools work fine with just their schema. Skills add value when a tool needs behavioral guidelines beyond its name and parameters.
-
-For Wunderland agents, `WunderlandDiscoveryManager` handles indexing automatically. For standalone AgentOS usage:
-
-```ts
-import { CapabilityDiscoveryEngine } from '@framers/agentos/discovery';
-
-const engine = new CapabilityDiscoveryEngine(config);
-await engine.initialize({
-  tools: toolMap,
-  skills: skillEntries,
+const registry = new SkillRegistry({
+  allowBundled: ['github', 'web-search', 'category:research'],  // optional allowlist
+  entries: {
+    'github': { enabled: true, apiKey: 'ghp_...' },
+    'deprecated-skill': { enabled: false },
+  },
 });
 
-const result = await engine.discover('search the web');
-// result.tier0: category summaries (~150 tokens)
-// result.tier1: top-5 semantic matches with summaries (~200 tokens)
-// result.tier2: full schemas for top matches (~1,500 tokens)
+// Load skills from multiple directories in precedence order
+const count = await registry.reload({
+  workspaceDir: './skills',                       // highest precedence
+  managedSkillsDir: '~/.agentos/skills',          // user-global
+  bundledSkillsDir: './node_modules/@framers/agentos-skills/registry/curated',
+  extraDirs: ['./custom-skills'],                 // lowest precedence
+});
+
+console.log(`Loaded ${count} skills`);
 ```
 
-## Full Usage Examples
+Loading precedence: workspace > managed > bundled > extra. First registered wins, so workspace skills override bundled skills with the same name.
 
-### AgentOS: Load skills + extensions together
+### Key Methods
 
-```ts
-import type { ITool } from '@framers/agentos';
-import { CapabilityDiscoveryEngine } from '@framers/agentos/discovery';
-import { createCuratedManifest } from '@framers/agentos-extensions-registry';
+| Method | Description |
+|--------|-------------|
+| `register(entry)` | Register a single skill. Returns `false` if already exists or blocked by config. |
+| `unregister(name)` | Remove a skill by name. |
+| `reload(options)` | Clear and re-scan all configured directories. |
+| `getByName(name)` | Look up a single skill. |
+| `listAll()` | All registered skills. |
+| `filterByPlatform(platform)` | Skills available on darwin/linux/win32. |
+| `filterByEligibility(context)` | Skills matching an eligibility context. |
+| `getUserInvocableSkills()` | Skills the user can invoke via slash commands. |
+| `getModelInvocableSkills()` | Skills the model can invoke autonomously. |
+| `buildSnapshot(options)` | Build a token-budgeted snapshot for agent context. |
+| `checkAllRequirements(hasBin)` | Check binary requirements for all skills. |
 
-// 1. Load skills from curated registry
-const { createCuratedSkillSnapshot } = await import('@framers/agentos-skills-registry');
-const skillSnapshot = await createCuratedSkillSnapshot({
-  skills: ['github', 'web-search', 'coding-agent'],
+### Snapshots for Agent Context
+
+```typescript
+const snapshot = registry.buildSnapshot({
+  platform: 'darwin',
+  strict: true,  // only include skills whose requirements are met (bins, env vars, config)
 });
 
-// 2. Load extensions (tools + voice)
-const manifest = await createCuratedManifest({
-  tools: ['web-search', 'web-browser', 'giphy'],
-  voice: ['speech-runtime'],
-});
+console.log(snapshot.prompt);          // formatted markdown for the system prompt
+console.log(snapshot.skills);          // [{name, primaryEnv}]
+console.log(snapshot.version);         // increments on any registration change
+```
 
-// 3. Collect ITool instances from resolved extension packs
-const tools = new Map<string, ITool>();
-for (const packEntry of manifest.packs) {
-  if (!('factory' in packEntry) || typeof packEntry.factory !== 'function') continue;
-  const extensionPack = await packEntry.factory();
-  for (const descriptor of extensionPack.descriptors) {
-    if (descriptor.kind === 'tool') {
-      tools.set(descriptor.payload.name, descriptor.payload as ITool);
-    }
-  }
+The `strict` mode evaluates each skill's `requires` block against the current environment: binary availability (PATH scan), environment variables, and config paths. Skills that fail any requirement check are excluded.
+
+### SkillsConfig
+
+```typescript
+interface SkillsConfig {
+  allowBundled?: string[];              // restrict which bundled skills load
+  entries?: Record<string, {
+    enabled?: boolean;                   // disable a specific skill
+    apiKey?: string;                     // inject a credential
+    env?: Record<string, string>;        // inject environment variables
+  }>;
 }
-
-// 4. Initialize discovery (indexes tools + skills for semantic search)
-const discovery = new CapabilityDiscoveryEngine();
-await discovery.initialize({ tools, skills: skillSnapshot.resolvedSkills });
-
-// 5. Inject skill prompt into system prompt
-const systemPrompt = `You are an AI assistant.\n\n${skillSnapshot.prompt}`;
 ```
 
-### AgentOS: Load ALL curated skills
+## How the Registry Auto-Updates
 
-```ts
-import { searchSkills } from '@framers/agentos-skills-registry/catalog';
-import { createCuratedSkillSnapshot } from '@framers/agentos-skills-registry';
+The skills registry updates automatically through three mechanisms:
 
-const allSkills = searchSkills(''); // empty query returns all
-const snapshot = await createCuratedSkillSnapshot({
-  skills: allSkills.map((skill) => skill.name),
-});
-console.log(`Loaded ${snapshot.skills.length} skills`);
-```
+1. **Reload on startup.** When the agent initializes, `SkillRegistry.reload()` scans all configured directories. Any new SKILL.md files added to those directories since the last startup are picked up automatically.
 
-### AgentOS: Load skills from local directories
+2. **SkillExporter bridges emergent tools.** When an emergent tool is promoted and exported via [`exportToolAsSkillPack()`](/features/emergent-capabilities#skill-export--forged-tools-to-skills), the resulting SKILL.md + CAPABILITY.yaml are written to a skills directory. On the next reload, the registry picks them up.
 
-```ts
-import { SkillRegistry } from '@framers/agentos/skills';
+3. **CapabilityManifestScanner hot-reload.** The [Capability Discovery Engine](/features/capability-discovery) watches for new CAPABILITY.yaml manifests via `fs.watch`. When a new manifest appears (e.g., from a skill export or package install), the discovery engine reindexes without requiring a full restart.
 
-const registry = new SkillRegistry();
-await registry.loadFromDirs(['./skills', './vendor-skills']);
-
-const snapshot = registry.buildSnapshot({ platform: process.platform, strict: true });
-console.log(`Loaded ${registry.count()} skills from disk`);
-console.log(snapshot.prompt); // inject into system prompt
-```
-
-### Wunderland: One-line setup with everything
-
-With the Wunderland library API, skills, extensions, and discovery are configured in a single call:
-
-```ts
-import { createWunderland } from 'wunderland';
-
-// Load specific skills + extensions
-const app = await createWunderland({
-  llm: { providerId: 'openai' },
-  tools: 'curated',
-  skills: ['github', 'web-search', 'coding-agent'],
-  extensions: {
-    tools: ['web-search', 'web-browser', 'giphy'],
-    voice: ['speech-runtime'],
-  },
-});
-
-// Or load everything at once
-const fullApp = await createWunderland({
-  llm: { providerId: 'openai' },
-  tools: 'curated',
-  skills: 'all', // all curated skills for the current platform
-  extensions: {
-    tools: ['web-search', 'web-browser', 'news-search', 'image-search', 'giphy', 'cli-executor'],
-    voice: ['speech-runtime'],
-  },
-});
-
-// Or use a preset (auto-configures skills + extensions)
-const presetApp = await createWunderland({
-  llm: { providerId: 'openai' },
-  preset: 'research-assistant',
-});
-```
-
-### Check what’s loaded
-
-```ts
-const diag = app.diagnostics();
-console.log('Tools:', diag.tools.names); // ['web_search', 'giphy_search', ...]
-console.log('Skills:', diag.skills.names); // ['github', 'web-search', ...]
-console.log('Discovery:', diag.discovery); // { initialized: true, capabilityCount: 25, ... }
-```
+The result: install a new `@framers/agentos-skills` version, export a forged tool as a skill pack, or drop a SKILL.md into your workspace skills directory, and the registry picks it up on the next initialization cycle.
