@@ -1,9 +1,11 @@
 ---
 title: "Emergent Capabilities"
-sidebar_position: 3
+sidebar_position: 2
 ---
 
 Agents with `emergent: true` can forge new tools at runtime when no existing capability fits the task. The agent calls the [`forge_tool`](/api/classes/ForgeToolMetaTool) meta-tool, which builds, tests, and judge-reviews the tool before making it available. The system is implemented across three core classes: [`EmergentCapabilityEngine`](/api/classes/EmergentCapabilityEngine), [`EmergentJudge`](/api/classes/EmergentJudge), and [`EmergentToolRegistry`](/api/classes/EmergentToolRegistry).
+
+Important: emergent tooling is a full runtime capability. Use `new AgentOS()` or another full runtime entry point that initializes `ToolOrchestrator` with emergent support. The lightweight `agent()` helper accepts `emergent` config for compatibility, but it does not activate `forge_tool` by itself.
 
 ## Quick Start
 
@@ -487,6 +489,114 @@ await importEmergentTool('./slugify.emergent-tool.yaml', { seedId: agentSeedId }
 - Raw sandbox source is redacted at rest by default
 - If no LLM is configured, all forge requests are rejected (fail-closed)
 
+## Self-Improvement Tools
+
+When `selfImprovement.enabled` is `true`, the engine registers four additional meta-tools that let agents modify their own behavior at runtime. All four are bounded by configurable limits to prevent runaway self-modification.
+
+### `adapt_personality` — HEXACO Trait Mutation
+
+Shifts a specific HEXACO dimension by a bounded delta. The six mutable traits: `openness`, `conscientiousness`, `emotionality`, `extraversion`, `agreeableness`, `honesty`.
+
+```typescript
+const agent = new AgentOS();
+await agent.initialize({
+  provider: 'anthropic',
+  emergent: true,
+  selfImprovement: {
+    enabled: true,
+    personality: {
+      maxDeltaPerSession: 0.15,  // max absolute shift per trait per session
+      persistWithDecay: true,     // mutations survive restarts but decay
+      decayRate: 0.05,            // 5% decay per consolidation cycle
+    },
+  },
+});
+```
+
+Every mutation requires a `reasoning` string (audit trail). Values are clamped to [0, 1]. Mutations that exceed the per-session budget are clamped to the remaining budget. When `persistWithDecay` is true, mutations are stored in the [`PersonalityMutationStore`](/api/classes/PersonalityMutationStore) and decay toward baseline over time via Ebbinghaus-style consolidation.
+
+### `manage_skills` — Runtime Skill Management
+
+Enables, disables, searches, and lists skills at runtime. Four actions: `enable`, `disable`, `search`, `list`.
+
+```typescript
+selfImprovement: {
+  enabled: true,
+  skills: {
+    allowlist: ['*'],                        // or ['category:research', 'web-search']
+    requireApprovalForNewCategories: true,    // HITL gate for unfamiliar categories
+  },
+}
+```
+
+Permission model:
+- `['*']` allows all skills unconditionally
+- `['category:X']` permits any skill in category X
+- `['skillId']` permits exact matches
+- Same-category expansion: if any skill in category X is active, other skills in X are auto-permitted
+- Locked skills (core skills) cannot be disabled
+
+### `self_evaluate` — Response Quality Scoring
+
+Three actions: `evaluate` (LLM-as-judge scores a response), `adjust` (tweak runtime parameters), `report` (aggregate session metrics).
+
+Evaluation scores four dimensions (0 to 1): `relevance`, `clarity`, `accuracy`, `helpfulness`. The judge can suggest adjustments to `temperature`, `verbosity`, or personality traits.
+
+```typescript
+selfImprovement: {
+  enabled: true,
+  selfEval: {
+    autoAdjust: true,                          // apply suggestions immediately
+    adjustableParams: ['temperature', 'verbosity', 'personality'],
+    maxEvaluationsPerSession: 10,              // cap LLM calls
+    evaluationModel: 'openai:gpt-4o-mini',     // optional model override
+  },
+}
+```
+
+### `create_workflow` — Runtime Workflow Composition
+
+Defines, runs, and lists multi-step tool workflows. Steps execute sequentially with reference resolution (`$input`, `$prev`, `$steps[N]`).
+
+```typescript
+selfImprovement: {
+  enabled: true,
+  workflows: {
+    maxSteps: 10,         // reject workflows exceeding this count
+    allowedTools: ['*'],  // or restrict to specific tool names
+  },
+}
+```
+
+Constraints:
+- `create_workflow` cannot appear as a step (prevents recursion)
+- Each step has a 30-second execution timeout
+- Only tools in `allowedTools` may be used
+
+## Skill Export — Forged Tools to Skills
+
+The [`SkillExporter`](/api/classes/SkillExporter) converts runtime-forged tools into the standard `SKILL.md` + `CAPABILITY.yaml` format used by the skills registry and capability discovery engine. This bridges emergent tools into the curated skills ecosystem.
+
+Three export levels:
+
+| Function | What it does |
+|----------|-------------|
+| `exportToolAsSkill(tool)` | In-memory conversion to SKILL.md markdown string |
+| `writeSkillFile(tool, dir)` | Writes a single SKILL.md to disk |
+| `exportToolAsSkillPack(tool, dir)` | Writes both SKILL.md and CAPABILITY.yaml (full capability directory ready for scanner pickup) |
+
+Once exported as a skill pack, the tool becomes discoverable by `CapabilityManifestScanner` and appears in capability discovery results alongside curated human-authored skills.
+
+```typescript
+import { exportToolAsSkillPack } from '@framers/agentos/emergent';
+
+// Export a proven agent-tier tool as a full skill pack
+await exportToolAsSkillPack(forgedTool, './skills/slugify');
+// Creates:
+//   ./skills/slugify/SKILL.md
+//   ./skills/slugify/CAPABILITY.yaml
+```
+
 ## Related
 
 - [Adaptive vs. Emergent Intelligence](https://agentos.sh/blog/adaptive-vs-emergent) -- how adaptive and emergent behavior differ in the AgentOS architecture
@@ -494,4 +604,4 @@ await importEmergentTool('./slugify.emergent-tool.yaml', { seedId: agentSeedId }
 - [Recursive Self-Building](/features/recursive-self-building) -- recursive tool creation and agent spawning
 - [Guardrails](/features/guardrails) -- safety mechanisms that constrain emergent behavior
 - [Agency API](/features/agency-api) -- multi-agent coordination strategies
-- **API Reference:** [`EmergentCapabilityEngine`](/api/classes/EmergentCapabilityEngine) | [`EmergentJudge`](/api/classes/EmergentJudge) | [`EmergentToolRegistry`](/api/classes/EmergentToolRegistry) | [`ForgeToolMetaTool`](/api/classes/ForgeToolMetaTool) | [`ComposableToolBuilder`](/api/classes/ComposableToolBuilder) | [`CodeSandbox`](/api/classes/CodeSandbox)
+- **API Reference:** [`EmergentCapabilityEngine`](/api/classes/EmergentCapabilityEngine) | [`EmergentJudge`](/api/classes/EmergentJudge) | [`EmergentToolRegistry`](/api/classes/EmergentToolRegistry) | [`ForgeToolMetaTool`](/api/classes/ForgeToolMetaTool) | [`ComposableToolBuilder`](/api/classes/ComposableToolBuilder) | [`CodeSandbox`](/api/classes/CodeSandbox) | [`AdaptPersonalityTool`](/api/classes/AdaptPersonalityTool) | [`ManageSkillsTool`](/api/classes/ManageSkillsTool) | [`SelfEvaluateTool`](/api/classes/SelfEvaluateTool) | [`CreateWorkflowTool`](/api/classes/CreateWorkflowTool) | [`SkillExporter`](/api/classes/SkillExporter)
