@@ -130,7 +130,14 @@ export default function NavbarMobileSidebar(): ReactNode {
             <NavbarLogo />
           </div>
           <div className={styles.headerActions}>
-            <NavbarColorModeToggle className={styles.colorModeToggle} />
+            {/* Wrap the color-mode toggle in a div that our CSS module
+                can target directly — some Docusaurus skin versions add
+                global overrides that hide ColorModeToggle instances
+                living outside `.navbar__items`, so we guard the drawer
+                instance with dedicated styling. */}
+            <div className={styles.colorModeToggle}>
+              <NavbarColorModeToggle />
+            </div>
             <CloseButton onClose={() => mobileSidebar.toggle()} />
           </div>
         </div>

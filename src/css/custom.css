@@ -824,6 +824,25 @@ article,
     display: none !important;
   }
 
+  /* Force the top-bar ColorModeToggle visible on mobile. Previously
+     Docusaurus's default display:none on mobile (or a global navbar
+     rule) could hide it, leaving users no way to switch themes without
+     opening the hamburger drawer first. Explicit visibility + touch-
+     friendly size. */
+  .navbar__items--right [class*="toggle_"],
+  .navbar__items--right [class*="colorModeToggle"],
+  .navbar__items--right [class*="toggleButton"] {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 2.2rem !important;
+    height: 2.2rem !important;
+    min-width: 2.2rem !important;
+    padding: 0 !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+
   /* Move hamburger to the right side of the navbar */
   .navbar__toggle {
     color: var(--ifm-navbar-link-color);

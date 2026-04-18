@@ -59,6 +59,52 @@
 
 .colorModeToggle {
   margin: 0;
+  /* Force visibility — some docusaurus skin versions / custom CSS rules
+     hide ColorModeToggle instances that live OUTSIDE navbar__items,
+     leaving the drawer without a theme switch. Set display/opacity/
+     dimensions explicitly so nothing from the global cascade can
+     accidentally hide it. */
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  width: 2.6rem !important;
+  height: 2.6rem !important;
+  border-radius: 999px !important;
+  background: rgba(99, 102, 241, 0.08) !important;
+  border: 1px solid rgba(99, 102, 241, 0.14) !important;
+  color: inherit !important;
+}
+.colorModeToggle:hover {
+  background: rgba(99, 102, 241, 0.14) !important;
+}
+:global([data-theme='dark']) .colorModeToggle {
+  background: rgba(129, 140, 248, 0.12) !important;
+  border-color: rgba(129, 140, 248, 0.18) !important;
+}
+:global([data-theme='dark']) .colorModeToggle:hover {
+  background: rgba(129, 140, 248, 0.18) !important;
+}
+/* Inner button — Docusaurus wraps ColorModeToggle in its own classes;
+   make sure the icon inside also respects the drawer's color. */
+.colorModeToggle :global(button),
+.colorModeToggle :global([class*="toggleButton"]) {
+  background: transparent !important;
+  border: none !important;
+  color: inherit !important;
+  width: 100% !important;
+  height: 100% !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+.colorModeToggle :global(svg) {
+  width: 1.2rem !important;
+  height: 1.2rem !important;
+  display: block !important;
+  opacity: 1 !important;
+  fill: currentColor !important;
 }
 
 .closeButton {
