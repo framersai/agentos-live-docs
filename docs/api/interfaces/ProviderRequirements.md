@@ -1,6 +1,6 @@
 # Interface: ProviderRequirements
 
-Defined in: [packages/agentos/src/speech/types.ts:220](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/speech/types.ts#L220)
+Defined in: [packages/agentos/src/speech/types.ts:220](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/speech/types.ts#L220)
 
 Requirements for provider resolution.
 
@@ -10,7 +10,7 @@ Requirements for provider resolution.
 
 > `optional` **features**: `string`[]
 
-Defined in: [packages/agentos/src/speech/types.ts:223](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/speech/types.ts#L223)
+Defined in: [packages/agentos/src/speech/types.ts:223](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/speech/types.ts#L223)
 
 ***
 
@@ -18,7 +18,7 @@ Defined in: [packages/agentos/src/speech/types.ts:223](https://github.com/framer
 
 > `optional` **local**: `boolean`
 
-Defined in: [packages/agentos/src/speech/types.ts:222](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/speech/types.ts#L222)
+Defined in: [packages/agentos/src/speech/types.ts:222](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/speech/types.ts#L222)
 
 ***
 
@@ -26,7 +26,7 @@ Defined in: [packages/agentos/src/speech/types.ts:222](https://github.com/framer
 
 > `optional` **preferredIds**: `string`[]
 
-Defined in: [packages/agentos/src/speech/types.ts:224](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/speech/types.ts#L224)
+Defined in: [packages/agentos/src/speech/types.ts:224](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/speech/types.ts#L224)
 
 ***
 
@@ -34,4 +34,4 @@ Defined in: [packages/agentos/src/speech/types.ts:224](https://github.com/framer
 
 > `optional` **streaming**: `boolean`
 
-Defined in: [packages/agentos/src/speech/types.ts:221](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/speech/types.ts#L221)
+Defined in: [packages/agentos/src/speech/types.ts:221](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/speech/types.ts#L221)

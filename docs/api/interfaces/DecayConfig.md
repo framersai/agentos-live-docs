@@ -1,6 +1,6 @@
 # Interface: DecayConfig
 
-Defined in: [packages/agentos/src/memory/core/config.ts:54](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/core/config.ts#L54)
+Defined in: [packages/agentos/src/memory/core/config.ts:54](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/core/config.ts#L54)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/memory/core/config.ts:54](https://github.com/f
 
 > **interferenceThreshold**: `number`
 
-Defined in: [packages/agentos/src/memory/core/config.ts:60](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/core/config.ts#L60)
+Defined in: [packages/agentos/src/memory/core/config.ts:60](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/core/config.ts#L60)
 
 Cosine similarity threshold for interference detection.
 
@@ -24,7 +24,7 @@ Cosine similarity threshold for interference detection.
 
 > **pruningThreshold**: `number`
 
-Defined in: [packages/agentos/src/memory/core/config.ts:56](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/core/config.ts#L56)
+Defined in: [packages/agentos/src/memory/core/config.ts:56](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/core/config.ts#L56)
 
 Minimum strength before a trace is soft-deleted.
 
@@ -40,7 +40,7 @@ Minimum strength before a trace is soft-deleted.
 
 > **recencyHalfLifeMs**: `number`
 
-Defined in: [packages/agentos/src/memory/core/config.ts:58](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/core/config.ts#L58)
+Defined in: [packages/agentos/src/memory/core/config.ts:58](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/core/config.ts#L58)
 
 Half-life for recency boost (ms).
 

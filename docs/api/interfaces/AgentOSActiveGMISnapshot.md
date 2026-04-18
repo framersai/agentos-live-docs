@@ -1,6 +1,6 @@
 # Interface: AgentOSActiveGMISnapshot
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:705](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/api/AgentOS.ts#L705)
+Defined in: [packages/agentos/src/api/AgentOS.ts:705](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/AgentOS.ts#L705)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/api/AgentOS.ts:705](https://github.com/framers
 
 > `optional` **cognitiveMemory**: `object`
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:713](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/api/AgentOS.ts#L713)
+Defined in: [packages/agentos/src/api/AgentOS.ts:713](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/AgentOS.ts#L713)
 
 #### activeTraces
 
@@ -36,7 +36,7 @@ Defined in: [packages/agentos/src/api/AgentOS.ts:713](https://github.com/framers
 
 > **createdAt**: `string`
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:709](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/api/AgentOS.ts#L709)
+Defined in: [packages/agentos/src/api/AgentOS.ts:709](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/AgentOS.ts#L709)
 
 ***
 
@@ -44,7 +44,7 @@ Defined in: [packages/agentos/src/api/AgentOS.ts:709](https://github.com/framers
 
 > **gmiId**: `string`
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:706](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/api/AgentOS.ts#L706)
+Defined in: [packages/agentos/src/api/AgentOS.ts:706](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/AgentOS.ts#L706)
 
 ***
 
@@ -52,7 +52,7 @@ Defined in: [packages/agentos/src/api/AgentOS.ts:706](https://github.com/framers
 
 > **hasCognitiveMemory**: `boolean`
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:710](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/api/AgentOS.ts#L710)
+Defined in: [packages/agentos/src/api/AgentOS.ts:710](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/AgentOS.ts#L710)
 
 ***
 
@@ -60,7 +60,7 @@ Defined in: [packages/agentos/src/api/AgentOS.ts:710](https://github.com/framers
 
 > **personaId**: `string`
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:707](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/api/AgentOS.ts#L707)
+Defined in: [packages/agentos/src/api/AgentOS.ts:707](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/AgentOS.ts#L707)
 
 ***
 
@@ -68,7 +68,7 @@ Defined in: [packages/agentos/src/api/AgentOS.ts:707](https://github.com/framers
 
 > **reasoningTraceEntries**: `number`
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:711](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/api/AgentOS.ts#L711)
+Defined in: [packages/agentos/src/api/AgentOS.ts:711](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/AgentOS.ts#L711)
 
 ***
 
@@ -76,7 +76,7 @@ Defined in: [packages/agentos/src/api/AgentOS.ts:711](https://github.com/framers
 
 > **state**: `string`
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:708](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/api/AgentOS.ts#L708)
+Defined in: [packages/agentos/src/api/AgentOS.ts:708](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/AgentOS.ts#L708)
 
 ***
 
@@ -84,4 +84,4 @@ Defined in: [packages/agentos/src/api/AgentOS.ts:708](https://github.com/framers
 
 > **workingMemoryKeys**: `number`
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:712](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/api/AgentOS.ts#L712)
+Defined in: [packages/agentos/src/api/AgentOS.ts:712](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/AgentOS.ts#L712)

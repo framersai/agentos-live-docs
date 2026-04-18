@@ -1,6 +1,6 @@
 # Interface: MemoryProviderPayload
 
-Defined in: [packages/agentos/src/extensions/types.ts:354](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/extensions/types.ts#L354)
+Defined in: [packages/agentos/src/extensions/types.ts:354](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/extensions/types.ts#L354)
 
 Memory provider payload for custom memory/storage backends.
 Providers handle storage and retrieval for agent memory, including
@@ -12,7 +12,7 @@ vector/conversational backends and cognitive memory systems.
 
 > `optional` **delete**: (`collectionId`, `ids`) => `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/extensions/types.ts:380](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/extensions/types.ts#L380)
+Defined in: [packages/agentos/src/extensions/types.ts:380](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/extensions/types.ts#L380)
 
 Delete data
 
@@ -36,7 +36,7 @@ Delete data
 
 > **description**: `string`
 
-Defined in: [packages/agentos/src/extensions/types.ts:358](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/extensions/types.ts#L358)
+Defined in: [packages/agentos/src/extensions/types.ts:358](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/extensions/types.ts#L358)
 
 Provider description
 
@@ -46,7 +46,7 @@ Provider description
 
 > `optional` **getStats**: () => `Promise`\<\{ `collections`: `number`; `documents`: `number`; `size`: `number`; \}\>
 
-Defined in: [packages/agentos/src/extensions/types.ts:382](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/extensions/types.ts#L382)
+Defined in: [packages/agentos/src/extensions/types.ts:382](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/extensions/types.ts#L382)
 
 Get provider statistics
 
@@ -60,7 +60,7 @@ Get provider statistics
 
 > **initialize**: (`config`) => `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/extensions/types.ts:370](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/extensions/types.ts#L370)
+Defined in: [packages/agentos/src/extensions/types.ts:370](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/extensions/types.ts#L370)
 
 Initialize the provider
 
@@ -80,7 +80,7 @@ Initialize the provider
 
 > **name**: `string`
 
-Defined in: [packages/agentos/src/extensions/types.ts:356](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/extensions/types.ts#L356)
+Defined in: [packages/agentos/src/extensions/types.ts:356](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/extensions/types.ts#L356)
 
 Provider name (e.g., 'pinecone', 'weaviate', 'qdrant', 'sql')
 
@@ -90,7 +90,7 @@ Provider name (e.g., 'pinecone', 'weaviate', 'qdrant', 'sql')
 
 > **query**: (`collectionId`, `query`, `options?`) => `Promise`\<`unknown`[]\>
 
-Defined in: [packages/agentos/src/extensions/types.ts:374](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/extensions/types.ts#L374)
+Defined in: [packages/agentos/src/extensions/types.ts:374](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/extensions/types.ts#L374)
 
 Query data
 
@@ -118,7 +118,7 @@ Query data
 
 > `optional` **shutdown**: () => `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/extensions/types.ts:384](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/extensions/types.ts#L384)
+Defined in: [packages/agentos/src/extensions/types.ts:384](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/extensions/types.ts#L384)
 
 Cleanup/shutdown
 
@@ -132,7 +132,7 @@ Cleanup/shutdown
 
 > **store**: (`collectionId`, `data`) => `Promise`\<`string`\>
 
-Defined in: [packages/agentos/src/extensions/types.ts:372](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/extensions/types.ts#L372)
+Defined in: [packages/agentos/src/extensions/types.ts:372](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/extensions/types.ts#L372)
 
 Store data
 
@@ -156,6 +156,6 @@ Store data
 
 > **supportedTypes**: (`"vector"` \| `"conversational"` \| `"episodic"` \| `"semantic"` \| `"procedural"` \| `"prospective"` \| `"relational"`)[]
 
-Defined in: [packages/agentos/src/extensions/types.ts:360](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/extensions/types.ts#L360)
+Defined in: [packages/agentos/src/extensions/types.ts:360](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/extensions/types.ts#L360)
 
 Memory types this provider supports

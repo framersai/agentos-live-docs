@@ -1,6 +1,6 @@
 # Interface: SentimentTrackingConfig
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:240](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/personas/IPersonaDefinition.ts#L240)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:240](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/personas/IPersonaDefinition.ts#L240)
 
 Configuration for sentiment-aware metaprompt tracking.
 Controls whether the GMI analyzes user sentiment and triggers
@@ -36,7 +36,7 @@ sentimentTracking: {
 
 > `optional` **consecutiveTurnsForTrigger**: `number`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:295](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/personas/IPersonaDefinition.ts#L295)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:295](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/personas/IPersonaDefinition.ts#L295)
 
 Number of consecutive turns with same sentiment pattern before triggering event.
 Prevents over-triggering on single outlier messages.
@@ -53,7 +53,7 @@ Prevents over-triggering on single outlier messages.
 
 > **enabled**: `boolean`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:247](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/personas/IPersonaDefinition.ts#L247)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:247](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/personas/IPersonaDefinition.ts#L247)
 
 Master switch: enables/disables sentiment analysis on user input.
 When false (default), no sentiment analysis runs and no events are emitted.
@@ -71,7 +71,7 @@ false
 
 > `optional` **frustrationThreshold**: `number`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:282](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/personas/IPersonaDefinition.ts#L282)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:282](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/personas/IPersonaDefinition.ts#L282)
 
 Sentiment score threshold below which frustration is detected.
 Score range: -1 (very negative) to 1 (very positive).
@@ -88,7 +88,7 @@ Score range: -1 (very negative) to 1 (very positive).
 
 > `optional` **historyWindow**: `number`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:275](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/personas/IPersonaDefinition.ts#L275)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:275](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/personas/IPersonaDefinition.ts#L275)
 
 Number of recent turns to keep in sentiment history (sliding window).
 Higher = better pattern detection, slightly more memory.
@@ -105,7 +105,7 @@ Higher = better pattern detection, slightly more memory.
 
 > `optional` **method**: `"llm"` \| `"lexicon_based"` \| `"trained_classifier"`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:256](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/personas/IPersonaDefinition.ts#L256)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:256](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/personas/IPersonaDefinition.ts#L256)
 
 Sentiment analysis method.
 - 'lexicon_based': Fast (~10-50ms), no LLM cost, basic accuracy (VADER-style)
@@ -124,7 +124,7 @@ Sentiment analysis method.
 
 > `optional` **modelId**: `string`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:262](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/personas/IPersonaDefinition.ts#L262)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:262](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/personas/IPersonaDefinition.ts#L262)
 
 Model ID for LLM-based or trained_classifier methods.
 Falls back to persona defaultModelId if not specified.
@@ -135,7 +135,7 @@ Falls back to persona defaultModelId if not specified.
 
 > `optional` **presets**: (`"all"` \| `"frustration_recovery"` \| `"confusion_clarification"` \| `"satisfaction_reinforcement"` \| `"error_recovery"` \| `"engagement_boost"`)[]
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:309](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/personas/IPersonaDefinition.ts#L309)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:309](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/personas/IPersonaDefinition.ts#L309)
 
 Which preset metaprompts to enable. Options:
 - 'frustration_recovery': Responds to user frustration
@@ -159,7 +159,7 @@ Only listed presets will be merged. Omit to enable none (use custom metaPrompts 
 
 > `optional` **providerId**: `string`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:268](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/personas/IPersonaDefinition.ts#L268)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:268](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/personas/IPersonaDefinition.ts#L268)
 
 Provider ID for LLM-based methods.
 Falls back to persona defaultProviderId if not specified.
@@ -170,7 +170,7 @@ Falls back to persona defaultProviderId if not specified.
 
 > `optional` **satisfactionThreshold**: `number`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:288](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/personas/IPersonaDefinition.ts#L288)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:288](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/personas/IPersonaDefinition.ts#L288)
 
 Sentiment score threshold above which satisfaction is detected.
 

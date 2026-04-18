@@ -1,6 +1,6 @@
 # Interface: UpscaleImageResult
 
-Defined in: [packages/agentos/src/api/upscaleImage.ts:85](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/api/upscaleImage.ts#L85)
+Defined in: [packages/agentos/src/api/upscaleImage.ts:85](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/upscaleImage.ts#L85)
 
 Result returned by [upscaleImage](../functions/upscaleImage.md).
 
@@ -10,7 +10,7 @@ Result returned by [upscaleImage](../functions/upscaleImage.md).
 
 > **image**: [`GeneratedImage`](GeneratedImage.md)
 
-Defined in: [packages/agentos/src/api/upscaleImage.ts:87](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/api/upscaleImage.ts#L87)
+Defined in: [packages/agentos/src/api/upscaleImage.ts:87](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/upscaleImage.ts#L87)
 
 The upscaled image.
 
@@ -20,7 +20,7 @@ The upscaled image.
 
 > **model**: `string`
 
-Defined in: [packages/agentos/src/api/upscaleImage.ts:91](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/api/upscaleImage.ts#L91)
+Defined in: [packages/agentos/src/api/upscaleImage.ts:91](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/upscaleImage.ts#L91)
 
 Model identifier.
 
@@ -30,7 +30,7 @@ Model identifier.
 
 > **provider**: `string`
 
-Defined in: [packages/agentos/src/api/upscaleImage.ts:89](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/api/upscaleImage.ts#L89)
+Defined in: [packages/agentos/src/api/upscaleImage.ts:89](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/upscaleImage.ts#L89)
 
 Provider identifier.
 
@@ -40,7 +40,7 @@ Provider identifier.
 
 > **usage**: `object`
 
-Defined in: [packages/agentos/src/api/upscaleImage.ts:93](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/api/upscaleImage.ts#L93)
+Defined in: [packages/agentos/src/api/upscaleImage.ts:93](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/upscaleImage.ts#L93)
 
 Token/credit usage reported by the provider.
 

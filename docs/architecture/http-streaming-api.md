@@ -1,6 +1,6 @@
 ---
 title: "HTTP Streaming API"
-sidebar_position: 7
+sidebar_position: 17
 ---
 
 The default `/chat` endpoint returns a single JSON response after the agent finishes thinking. That works fine for simple queries. But when an agent runs a 9-minute deep research pipeline or chains four tool calls back-to-back, the client stares at a spinner with no feedback.

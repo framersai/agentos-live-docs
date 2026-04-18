@@ -1,6 +1,6 @@
 ---
 title: "Provenance Guide"
-sidebar_position: 14
+sidebar_position: 11
 ---
 
 > From a simple signed hash chain to publicly-timestamped Merkle roots — choose the proof level your deployment needs.

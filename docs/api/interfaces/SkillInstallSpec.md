@@ -1,6 +1,6 @@
 # Interface: SkillInstallSpec
 
-Defined in: [packages/agentos/src/skills/types.ts:23](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/skills/types.ts#L23)
+Defined in: [packages/agentos/src/skills/types.ts:23](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/skills/types.ts#L23)
 
 Installation specification for a skill dependency.
 
@@ -10,7 +10,7 @@ Installation specification for a skill dependency.
 
 > `optional` **archive**: `string`
 
-Defined in: [packages/agentos/src/skills/types.ts:56](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/skills/types.ts#L56)
+Defined in: [packages/agentos/src/skills/types.ts:56](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/skills/types.ts#L56)
 
 Archive filename for extraction
 
@@ -20,7 +20,7 @@ Archive filename for extraction
 
 > `optional` **bins**: `string`[]
 
-Defined in: [packages/agentos/src/skills/types.ts:34](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/skills/types.ts#L34)
+Defined in: [packages/agentos/src/skills/types.ts:34](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/skills/types.ts#L34)
 
 Binary names that should exist after install
 
@@ -30,7 +30,7 @@ Binary names that should exist after install
 
 > `optional` **extract**: `boolean`
 
-Defined in: [packages/agentos/src/skills/types.ts:59](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/skills/types.ts#L59)
+Defined in: [packages/agentos/src/skills/types.ts:59](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/skills/types.ts#L59)
 
 Whether to extract the archive
 
@@ -40,7 +40,7 @@ Whether to extract the archive
 
 > `optional` **formula**: `string`
 
-Defined in: [packages/agentos/src/skills/types.ts:41](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/skills/types.ts#L41)
+Defined in: [packages/agentos/src/skills/types.ts:41](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/skills/types.ts#L41)
 
 Homebrew formula name
 
@@ -50,7 +50,7 @@ Homebrew formula name
 
 > `optional` **id**: `string`
 
-Defined in: [packages/agentos/src/skills/types.ts:25](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/skills/types.ts#L25)
+Defined in: [packages/agentos/src/skills/types.ts:25](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/skills/types.ts#L25)
 
 Unique identifier for this install spec
 
@@ -60,7 +60,7 @@ Unique identifier for this install spec
 
 > **kind**: [`SkillInstallKind`](../type-aliases/SkillInstallKind.md)
 
-Defined in: [packages/agentos/src/skills/types.ts:28](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/skills/types.ts#L28)
+Defined in: [packages/agentos/src/skills/types.ts:28](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/skills/types.ts#L28)
 
 Installation method
 
@@ -70,7 +70,7 @@ Installation method
 
 > `optional` **label**: `string`
 
-Defined in: [packages/agentos/src/skills/types.ts:31](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/skills/types.ts#L31)
+Defined in: [packages/agentos/src/skills/types.ts:31](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/skills/types.ts#L31)
 
 Human-readable label
 
@@ -80,7 +80,7 @@ Human-readable label
 
 > `optional` **module**: `string`
 
-Defined in: [packages/agentos/src/skills/types.ts:49](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/skills/types.ts#L49)
+Defined in: [packages/agentos/src/skills/types.ts:49](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/skills/types.ts#L49)
 
 Go module spec for `go install` (e.g. `golang.org/x/tools/cmd/goimports@latest`)
 
@@ -90,7 +90,7 @@ Go module spec for `go install` (e.g. `golang.org/x/tools/cmd/goimports@latest`)
 
 > `optional` **os**: readonly `string`[]
 
-Defined in: [packages/agentos/src/skills/types.ts:37](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/skills/types.ts#L37)
+Defined in: [packages/agentos/src/skills/types.ts:37](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/skills/types.ts#L37)
 
 Limit to specific OS platforms
 
@@ -100,7 +100,7 @@ Limit to specific OS platforms
 
 > `optional` **package**: `string`
 
-Defined in: [packages/agentos/src/skills/types.ts:45](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/skills/types.ts#L45)
+Defined in: [packages/agentos/src/skills/types.ts:45](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/skills/types.ts#L45)
 
 Package name (apt package, npm package, uv tool package)
 
@@ -110,7 +110,7 @@ Package name (apt package, npm package, uv tool package)
 
 > `optional` **stripComponents**: `number`
 
-Defined in: [packages/agentos/src/skills/types.ts:62](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/skills/types.ts#L62)
+Defined in: [packages/agentos/src/skills/types.ts:62](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/skills/types.ts#L62)
 
 Number of path components to strip during extraction
 
@@ -120,7 +120,7 @@ Number of path components to strip during extraction
 
 > `optional` **targetDir**: `string`
 
-Defined in: [packages/agentos/src/skills/types.ts:65](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/skills/types.ts#L65)
+Defined in: [packages/agentos/src/skills/types.ts:65](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/skills/types.ts#L65)
 
 Target directory for extracted files
 
@@ -130,6 +130,6 @@ Target directory for extracted files
 
 > `optional` **url**: `string`
 
-Defined in: [packages/agentos/src/skills/types.ts:53](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/skills/types.ts#L53)
+Defined in: [packages/agentos/src/skills/types.ts:53](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/skills/types.ts#L53)
 
 Download URL

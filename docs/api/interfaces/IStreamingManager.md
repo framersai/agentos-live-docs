@@ -1,6 +1,6 @@
 # Interface: IStreamingManager
 
-Defined in: [packages/agentos/src/core/streaming/StreamingManager.ts:115](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/streaming/StreamingManager.ts#L115)
+Defined in: [packages/agentos/src/core/streaming/StreamingManager.ts:115](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/streaming/StreamingManager.ts#L115)
 
 ## Interface
 
@@ -18,7 +18,7 @@ as well as handling client subscriptions and data distribution.
 
 > **closeStream**(`streamId`, `reason?`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/core/streaming/StreamingManager.ts:191](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/streaming/StreamingManager.ts#L191)
+Defined in: [packages/agentos/src/core/streaming/StreamingManager.ts:191](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/streaming/StreamingManager.ts#L191)
 
 **`Async`**
 
@@ -55,7 +55,7 @@ If the stream does not exist.
 
 > **createStream**(`requestedStreamId?`): `Promise`\<`string`\>
 
-Defined in: [packages/agentos/src/core/streaming/StreamingManager.ts:138](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/streaming/StreamingManager.ts#L138)
+Defined in: [packages/agentos/src/core/streaming/StreamingManager.ts:138](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/streaming/StreamingManager.ts#L138)
 
 Creates a new data stream and returns its unique ID.
 
@@ -85,7 +85,7 @@ or if a `requestedStreamId` is provided but already in use (and regeneration is 
 
 > **deregisterClient**(`streamId`, `clientId`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/core/streaming/StreamingManager.ts:164](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/streaming/StreamingManager.ts#L164)
+Defined in: [packages/agentos/src/core/streaming/StreamingManager.ts:164](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/streaming/StreamingManager.ts#L164)
 
 **`Async`**
 
@@ -122,7 +122,7 @@ If the stream or client does not exist within that stream.
 
 > **getActiveStreamIds**(): `Promise`\<`string`[]\>
 
-Defined in: [packages/agentos/src/core/streaming/StreamingManager.ts:213](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/streaming/StreamingManager.ts#L213)
+Defined in: [packages/agentos/src/core/streaming/StreamingManager.ts:213](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/streaming/StreamingManager.ts#L213)
 
 Retrieves a list of IDs for all currently active streams.
 
@@ -138,7 +138,7 @@ A promise resolving to an array of active stream IDs.
 
 > **getClientCountForStream**(`streamId`): `Promise`\<`number`\>
 
-Defined in: [packages/agentos/src/core/streaming/StreamingManager.ts:224](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/streaming/StreamingManager.ts#L224)
+Defined in: [packages/agentos/src/core/streaming/StreamingManager.ts:224](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/streaming/StreamingManager.ts#L224)
 
 **`Async`**
 
@@ -168,7 +168,7 @@ If the stream does not exist.
 
 > **handleStreamError**(`streamId`, `error`, `terminateStream?`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/core/streaming/StreamingManager.ts:205](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/streaming/StreamingManager.ts#L205)
+Defined in: [packages/agentos/src/core/streaming/StreamingManager.ts:205](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/streaming/StreamingManager.ts#L205)
 
 **`Async`**
 
@@ -211,7 +211,7 @@ If the stream does not exist.
 
 > **initialize**(`config`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/core/streaming/StreamingManager.ts:126](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/streaming/StreamingManager.ts#L126)
+Defined in: [packages/agentos/src/core/streaming/StreamingManager.ts:126](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/streaming/StreamingManager.ts#L126)
 
 **`Async`**
 
@@ -242,7 +242,7 @@ If configuration is invalid or initialization fails.
 
 > **pushChunk**(`streamId`, `chunk`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/core/streaming/StreamingManager.ts:178](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/streaming/StreamingManager.ts#L178)
+Defined in: [packages/agentos/src/core/streaming/StreamingManager.ts:178](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/streaming/StreamingManager.ts#L178)
 
 **`Async`**
 
@@ -280,7 +280,7 @@ and a client send fails.
 
 > **registerClient**(`streamId`, `client`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/core/streaming/StreamingManager.ts:151](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/streaming/StreamingManager.ts#L151)
+Defined in: [packages/agentos/src/core/streaming/StreamingManager.ts:151](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/streaming/StreamingManager.ts#L151)
 
 **`Async`**
 
@@ -317,7 +317,7 @@ or if the maximum number of clients for the stream is reached.
 
 > **shutdown**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/core/streaming/StreamingManager.ts:234](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/streaming/StreamingManager.ts#L234)
+Defined in: [packages/agentos/src/core/streaming/StreamingManager.ts:234](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/streaming/StreamingManager.ts#L234)
 
 **`Async`**
 

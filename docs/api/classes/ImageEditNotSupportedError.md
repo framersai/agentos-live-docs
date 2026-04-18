@@ -1,6 +1,6 @@
 # Class: ImageEditNotSupportedError
 
-Defined in: [packages/agentos/src/media/images/ImageOperationError.ts:26](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/ImageOperationError.ts#L26)
+Defined in: [packages/agentos/src/media/images/ImageOperationError.ts:26](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/images/ImageOperationError.ts#L26)
 
 Thrown when an image editing operation (img2img, inpaint, outpaint) is
 requested from a provider that does not implement `editImage`.
@@ -27,7 +27,7 @@ try {
 
 > **new ImageEditNotSupportedError**(`providerId`): `ImageEditNotSupportedError`
 
-Defined in: [packages/agentos/src/media/images/ImageOperationError.ts:30](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/ImageOperationError.ts#L30)
+Defined in: [packages/agentos/src/media/images/ImageOperationError.ts:30](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/images/ImageOperationError.ts#L30)
 
 #### Parameters
 
@@ -73,7 +73,7 @@ Defined in: node\_modules/.pnpm/typescript@5.6.3/node\_modules/typescript/lib/li
 
 > `readonly` **providerId**: `string`
 
-Defined in: [packages/agentos/src/media/images/ImageOperationError.ts:28](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/ImageOperationError.ts#L28)
+Defined in: [packages/agentos/src/media/images/ImageOperationError.ts:28](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/images/ImageOperationError.ts#L28)
 
 The provider that was asked to perform the edit.
 

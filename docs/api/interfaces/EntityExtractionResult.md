@@ -1,6 +1,6 @@
 # Interface: EntityExtractionResult\<T\>
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:480](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/structured/output/IStructuredOutputManager.ts#L480)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:480](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/structured/output/IStructuredOutputManager.ts#L480)
 
 Result of entity extraction.
 
@@ -16,7 +16,7 @@ Result of entity extraction.
 
 > `optional` **confidenceScores**: `number`[]
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:488](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/structured/output/IStructuredOutputManager.ts#L488)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:488](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/structured/output/IStructuredOutputManager.ts#L488)
 
 Confidence scores for each entity (0-1)
 
@@ -26,7 +26,7 @@ Confidence scores for each entity (0-1)
 
 > **entities**: `T`[]
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:485](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/structured/output/IStructuredOutputManager.ts#L485)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:485](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/structured/output/IStructuredOutputManager.ts#L485)
 
 Extracted entities
 
@@ -36,7 +36,7 @@ Extracted entities
 
 > `optional` **issues**: `string`[]
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:494](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/structured/output/IStructuredOutputManager.ts#L494)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:494](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/structured/output/IStructuredOutputManager.ts#L494)
 
 Any extraction issues
 
@@ -46,7 +46,7 @@ Any extraction issues
 
 > `optional` **sourceSpans**: `object`[]
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:491](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/structured/output/IStructuredOutputManager.ts#L491)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:491](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/structured/output/IStructuredOutputManager.ts#L491)
 
 Source text spans for each entity
 
@@ -68,7 +68,7 @@ Source text spans for each entity
 
 > **success**: `boolean`
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:482](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/structured/output/IStructuredOutputManager.ts#L482)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:482](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/structured/output/IStructuredOutputManager.ts#L482)
 
 Whether extraction succeeded
 
@@ -78,7 +78,7 @@ Whether extraction succeeded
 
 > `optional` **tokenUsage**: `object`
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:497](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/structured/output/IStructuredOutputManager.ts#L497)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:497](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/structured/output/IStructuredOutputManager.ts#L497)
 
 Token usage
 

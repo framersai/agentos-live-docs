@@ -1,6 +1,6 @@
 ---
 title: "Social Posting"
-sidebar_position: 24
+sidebar_position: 2
 ---
 
 > Schedule, adapt, and publish content across 18+ social platforms from a single API.

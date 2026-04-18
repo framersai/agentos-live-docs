@@ -1,6 +1,6 @@
 # Interface: IHumanInteractionManager
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:413](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/hitl/IHumanInteractionManager.ts#L413)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:413](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/hitl/IHumanInteractionManager.ts#L413)
 
 Interface for the AgentOS Human-in-the-Loop Manager.
 
@@ -48,7 +48,7 @@ const decision = await hitl.requestApproval({
 
 > **cancelRequest**(`requestId`, `reason`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:574](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/hitl/IHumanInteractionManager.ts#L574)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:574](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/hitl/IHumanInteractionManager.ts#L574)
 
 Cancels a pending request.
 
@@ -76,7 +76,7 @@ Cancellation reason
 
 > **checkpoint**(`checkpoint`): `Promise`\<[`CheckpointDecision`](CheckpointDecision.md)\>
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:515](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/hitl/IHumanInteractionManager.ts#L515)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:515](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/hitl/IHumanInteractionManager.ts#L515)
 
 Creates a checkpoint for human review during long-running tasks.
 
@@ -100,7 +100,7 @@ Human's checkpoint decision
 
 > **escalate**(`context`): `Promise`\<[`EscalationDecision`](../type-aliases/EscalationDecision.md)\>
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:495](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/hitl/IHumanInteractionManager.ts#L495)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:495](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/hitl/IHumanInteractionManager.ts#L495)
 
 Escalates a situation to human control.
 
@@ -124,7 +124,7 @@ Human's decision on how to proceed
 
 > **getFeedbackHistory**(`agentId`, `options?`): `Promise`\<[`HumanFeedback`](HumanFeedback.md)[]\>
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:542](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/hitl/IHumanInteractionManager.ts#L542)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:542](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/hitl/IHumanInteractionManager.ts#L542)
 
 Gets feedback history for an agent.
 
@@ -164,7 +164,7 @@ Feedback history
 
 > **getPendingRequests**(): `Promise`\<\{ `approvals`: [`PendingAction`](PendingAction.md)[]; `checkpoints`: [`WorkflowCheckpoint`](WorkflowCheckpoint.md)[]; `clarifications`: [`ClarificationRequest`](ClarificationRequest.md)[]; `edits`: [`DraftOutput`](DraftOutput.md)[]; `escalations`: [`EscalationContext`](EscalationContext.md)[]; \}\>
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:560](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/hitl/IHumanInteractionManager.ts#L560)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:560](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/hitl/IHumanInteractionManager.ts#L560)
 
 Gets all pending requests awaiting human response.
 
@@ -180,7 +180,7 @@ Pending requests by type
 
 > **getStatistics**(): [`HITLStatistics`](HITLStatistics.md)
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:585](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/hitl/IHumanInteractionManager.ts#L585)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:585](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/hitl/IHumanInteractionManager.ts#L585)
 
 Gets HITL interaction statistics.
 
@@ -196,7 +196,7 @@ Current statistics
 
 > **recordFeedback**(`feedback`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:533](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/hitl/IHumanInteractionManager.ts#L533)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:533](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/hitl/IHumanInteractionManager.ts#L533)
 
 Records human feedback for agent improvement.
 
@@ -218,7 +218,7 @@ The feedback to record
 
 > **requestApproval**(`action`): `Promise`\<`ApprovalDecision`\>
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:438](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/hitl/IHumanInteractionManager.ts#L438)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:438](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/hitl/IHumanInteractionManager.ts#L438)
 
 Requests human approval before executing an action.
 
@@ -257,7 +257,7 @@ const decision = await hitl.requestApproval({
 
 > **requestClarification**(`request`): `Promise`\<[`ClarificationResponse`](ClarificationResponse.md)\>
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:457](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/hitl/IHumanInteractionManager.ts#L457)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:457](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/hitl/IHumanInteractionManager.ts#L457)
 
 Requests clarification from a human for ambiguous situations.
 
@@ -281,7 +281,7 @@ Human's clarification response
 
 > **requestEdit**(`draft`): `Promise`\<[`EditedOutput`](EditedOutput.md)\>
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:476](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/hitl/IHumanInteractionManager.ts#L476)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:476](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/hitl/IHumanInteractionManager.ts#L476)
 
 Requests human review and potential editing of agent output.
 
@@ -305,7 +305,7 @@ Edited output (may be unchanged)
 
 > **setNotificationHandler**(`handler`): `void`
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:592](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/hitl/IHumanInteractionManager.ts#L592)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:592](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/hitl/IHumanInteractionManager.ts#L592)
 
 Sets the notification handler for outgoing requests.
 
@@ -327,7 +327,7 @@ Handler function
 
 > **submitApprovalDecision**(`decision`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:445](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/hitl/IHumanInteractionManager.ts#L445)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:445](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/hitl/IHumanInteractionManager.ts#L445)
 
 Submits an approval decision (typically called by UI/webhook handler).
 
@@ -349,7 +349,7 @@ The approval decision
 
 > **submitCheckpointDecision**(`decision`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:522](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/hitl/IHumanInteractionManager.ts#L522)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:522](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/hitl/IHumanInteractionManager.ts#L522)
 
 Submits a checkpoint decision.
 
@@ -371,7 +371,7 @@ The checkpoint decision
 
 > **submitClarification**(`response`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:464](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/hitl/IHumanInteractionManager.ts#L464)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:464](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/hitl/IHumanInteractionManager.ts#L464)
 
 Submits a clarification response.
 
@@ -393,7 +393,7 @@ The clarification response
 
 > **submitEdit**(`edited`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:483](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/hitl/IHumanInteractionManager.ts#L483)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:483](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/hitl/IHumanInteractionManager.ts#L483)
 
 Submits an edited output.
 
@@ -415,7 +415,7 @@ The edited output
 
 > **submitEscalationDecision**(`escalationId`, `decision`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:503](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/hitl/IHumanInteractionManager.ts#L503)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:503](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/hitl/IHumanInteractionManager.ts#L503)
 
 Submits an escalation decision.
 

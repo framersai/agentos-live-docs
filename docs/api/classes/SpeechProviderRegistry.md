@@ -1,6 +1,6 @@
 # Class: SpeechProviderRegistry
 
-Defined in: [packages/agentos/src/speech/SpeechProviderRegistry.ts:9](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/speech/SpeechProviderRegistry.ts#L9)
+Defined in: [packages/agentos/src/speech/SpeechProviderRegistry.ts:9](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/speech/SpeechProviderRegistry.ts#L9)
 
 ## Constructors
 
@@ -18,7 +18,7 @@ Defined in: [packages/agentos/src/speech/SpeechProviderRegistry.ts:9](https://gi
 
 > **getSttProvider**(`id`): [`SpeechToTextProvider`](../interfaces/SpeechToTextProvider.md) \| `undefined`
 
-Defined in: [packages/agentos/src/speech/SpeechProviderRegistry.ts:31](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/speech/SpeechProviderRegistry.ts#L31)
+Defined in: [packages/agentos/src/speech/SpeechProviderRegistry.ts:31](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/speech/SpeechProviderRegistry.ts#L31)
 
 #### Parameters
 
@@ -36,7 +36,7 @@ Defined in: [packages/agentos/src/speech/SpeechProviderRegistry.ts:31](https://g
 
 > **getTtsProvider**(`id`): [`TextToSpeechProvider`](../interfaces/TextToSpeechProvider.md) \| `undefined`
 
-Defined in: [packages/agentos/src/speech/SpeechProviderRegistry.ts:35](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/speech/SpeechProviderRegistry.ts#L35)
+Defined in: [packages/agentos/src/speech/SpeechProviderRegistry.ts:35](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/speech/SpeechProviderRegistry.ts#L35)
 
 #### Parameters
 
@@ -54,7 +54,7 @@ Defined in: [packages/agentos/src/speech/SpeechProviderRegistry.ts:35](https://g
 
 > **getVadProvider**(`id`): [`SpeechVadProvider`](../interfaces/SpeechVadProvider.md) \| `undefined`
 
-Defined in: [packages/agentos/src/speech/SpeechProviderRegistry.ts:39](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/speech/SpeechProviderRegistry.ts#L39)
+Defined in: [packages/agentos/src/speech/SpeechProviderRegistry.ts:39](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/speech/SpeechProviderRegistry.ts#L39)
 
 #### Parameters
 
@@ -72,7 +72,7 @@ Defined in: [packages/agentos/src/speech/SpeechProviderRegistry.ts:39](https://g
 
 > **getWakeWordProvider**(`id`): [`WakeWordProvider`](../interfaces/WakeWordProvider.md) \| `undefined`
 
-Defined in: [packages/agentos/src/speech/SpeechProviderRegistry.ts:43](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/speech/SpeechProviderRegistry.ts#L43)
+Defined in: [packages/agentos/src/speech/SpeechProviderRegistry.ts:43](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/speech/SpeechProviderRegistry.ts#L43)
 
 #### Parameters
 
@@ -90,7 +90,7 @@ Defined in: [packages/agentos/src/speech/SpeechProviderRegistry.ts:43](https://g
 
 > **list**(`kind`): ([`SpeechToTextProvider`](../interfaces/SpeechToTextProvider.md) \| [`TextToSpeechProvider`](../interfaces/TextToSpeechProvider.md) \| [`SpeechVadProvider`](../interfaces/SpeechVadProvider.md) \| [`WakeWordProvider`](../interfaces/WakeWordProvider.md))[]
 
-Defined in: [packages/agentos/src/speech/SpeechProviderRegistry.ts:47](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/speech/SpeechProviderRegistry.ts#L47)
+Defined in: [packages/agentos/src/speech/SpeechProviderRegistry.ts:47](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/speech/SpeechProviderRegistry.ts#L47)
 
 #### Parameters
 
@@ -108,7 +108,7 @@ Defined in: [packages/agentos/src/speech/SpeechProviderRegistry.ts:47](https://g
 
 > **registerSttProvider**(`provider`): `void`
 
-Defined in: [packages/agentos/src/speech/SpeechProviderRegistry.ts:15](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/speech/SpeechProviderRegistry.ts#L15)
+Defined in: [packages/agentos/src/speech/SpeechProviderRegistry.ts:15](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/speech/SpeechProviderRegistry.ts#L15)
 
 #### Parameters
 
@@ -126,7 +126,7 @@ Defined in: [packages/agentos/src/speech/SpeechProviderRegistry.ts:15](https://g
 
 > **registerTtsProvider**(`provider`): `void`
 
-Defined in: [packages/agentos/src/speech/SpeechProviderRegistry.ts:19](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/speech/SpeechProviderRegistry.ts#L19)
+Defined in: [packages/agentos/src/speech/SpeechProviderRegistry.ts:19](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/speech/SpeechProviderRegistry.ts#L19)
 
 #### Parameters
 
@@ -144,7 +144,7 @@ Defined in: [packages/agentos/src/speech/SpeechProviderRegistry.ts:19](https://g
 
 > **registerVadProvider**(`provider`): `void`
 
-Defined in: [packages/agentos/src/speech/SpeechProviderRegistry.ts:23](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/speech/SpeechProviderRegistry.ts#L23)
+Defined in: [packages/agentos/src/speech/SpeechProviderRegistry.ts:23](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/speech/SpeechProviderRegistry.ts#L23)
 
 #### Parameters
 
@@ -162,7 +162,7 @@ Defined in: [packages/agentos/src/speech/SpeechProviderRegistry.ts:23](https://g
 
 > **registerWakeWordProvider**(`provider`): `void`
 
-Defined in: [packages/agentos/src/speech/SpeechProviderRegistry.ts:27](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/speech/SpeechProviderRegistry.ts#L27)
+Defined in: [packages/agentos/src/speech/SpeechProviderRegistry.ts:27](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/speech/SpeechProviderRegistry.ts#L27)
 
 #### Parameters
 

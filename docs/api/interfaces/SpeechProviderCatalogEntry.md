@@ -1,6 +1,6 @@
 # Interface: SpeechProviderCatalogEntry
 
-Defined in: [packages/agentos/src/speech/types.ts:186](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/speech/types.ts#L186)
+Defined in: [packages/agentos/src/speech/types.ts:186](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/speech/types.ts#L186)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/speech/types.ts:186](https://github.com/framer
 
 > `optional` **available**: `boolean`
 
-Defined in: [packages/agentos/src/speech/types.ts:198](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/speech/types.ts#L198)
+Defined in: [packages/agentos/src/speech/types.ts:198](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/speech/types.ts#L198)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [packages/agentos/src/speech/types.ts:198](https://github.com/framer
 
 > `optional` **defaultModel**: `string`
 
-Defined in: [packages/agentos/src/speech/types.ts:195](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/speech/types.ts#L195)
+Defined in: [packages/agentos/src/speech/types.ts:195](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/speech/types.ts#L195)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: [packages/agentos/src/speech/types.ts:195](https://github.com/framer
 
 > `optional` **defaultVoice**: `string`
 
-Defined in: [packages/agentos/src/speech/types.ts:196](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/speech/types.ts#L196)
+Defined in: [packages/agentos/src/speech/types.ts:196](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/speech/types.ts#L196)
 
 ***
 
@@ -32,7 +32,7 @@ Defined in: [packages/agentos/src/speech/types.ts:196](https://github.com/framer
 
 > **description**: `string`
 
-Defined in: [packages/agentos/src/speech/types.ts:193](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/speech/types.ts#L193)
+Defined in: [packages/agentos/src/speech/types.ts:193](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/speech/types.ts#L193)
 
 ***
 
@@ -40,7 +40,7 @@ Defined in: [packages/agentos/src/speech/types.ts:193](https://github.com/framer
 
 > **envVars**: readonly `string`[]
 
-Defined in: [packages/agentos/src/speech/types.ts:190](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/speech/types.ts#L190)
+Defined in: [packages/agentos/src/speech/types.ts:190](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/speech/types.ts#L190)
 
 ***
 
@@ -48,7 +48,7 @@ Defined in: [packages/agentos/src/speech/types.ts:190](https://github.com/framer
 
 > `optional` **extensionName**: `string`
 
-Defined in: [packages/agentos/src/speech/types.ts:194](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/speech/types.ts#L194)
+Defined in: [packages/agentos/src/speech/types.ts:194](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/speech/types.ts#L194)
 
 ***
 
@@ -56,7 +56,7 @@ Defined in: [packages/agentos/src/speech/types.ts:194](https://github.com/framer
 
 > `optional` **features**: readonly `string`[]
 
-Defined in: [packages/agentos/src/speech/types.ts:197](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/speech/types.ts#L197)
+Defined in: [packages/agentos/src/speech/types.ts:197](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/speech/types.ts#L197)
 
 ***
 
@@ -64,7 +64,7 @@ Defined in: [packages/agentos/src/speech/types.ts:197](https://github.com/framer
 
 > **id**: `string`
 
-Defined in: [packages/agentos/src/speech/types.ts:187](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/speech/types.ts#L187)
+Defined in: [packages/agentos/src/speech/types.ts:187](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/speech/types.ts#L187)
 
 ***
 
@@ -72,7 +72,7 @@ Defined in: [packages/agentos/src/speech/types.ts:187](https://github.com/framer
 
 > **kind**: [`SpeechProviderKind`](../type-aliases/SpeechProviderKind.md)
 
-Defined in: [packages/agentos/src/speech/types.ts:188](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/speech/types.ts#L188)
+Defined in: [packages/agentos/src/speech/types.ts:188](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/speech/types.ts#L188)
 
 ***
 
@@ -80,7 +80,7 @@ Defined in: [packages/agentos/src/speech/types.ts:188](https://github.com/framer
 
 > **label**: `string`
 
-Defined in: [packages/agentos/src/speech/types.ts:189](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/speech/types.ts#L189)
+Defined in: [packages/agentos/src/speech/types.ts:189](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/speech/types.ts#L189)
 
 ***
 
@@ -88,7 +88,7 @@ Defined in: [packages/agentos/src/speech/types.ts:189](https://github.com/framer
 
 > **local**: `boolean`
 
-Defined in: [packages/agentos/src/speech/types.ts:191](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/speech/types.ts#L191)
+Defined in: [packages/agentos/src/speech/types.ts:191](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/speech/types.ts#L191)
 
 ***
 
@@ -96,4 +96,4 @@ Defined in: [packages/agentos/src/speech/types.ts:191](https://github.com/framer
 
 > `optional` **streaming**: `boolean`
 
-Defined in: [packages/agentos/src/speech/types.ts:192](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/speech/types.ts#L192)
+Defined in: [packages/agentos/src/speech/types.ts:192](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/speech/types.ts#L192)

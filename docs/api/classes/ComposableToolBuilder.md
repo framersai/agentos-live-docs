@@ -1,6 +1,6 @@
 # Class: ComposableToolBuilder
 
-Defined in: [packages/agentos/src/emergent/ComposableToolBuilder.ts:94](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/emergent/ComposableToolBuilder.ts#L94)
+Defined in: [packages/agentos/src/emergent/ComposableToolBuilder.ts:94](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/emergent/ComposableToolBuilder.ts#L94)
 
 Builds composite `ITool` instances by chaining existing tool invocations.
 
@@ -51,7 +51,7 @@ const result = await tool.execute({ topic: 'quantum computing' }, ctx);
 
 > **new ComposableToolBuilder**(`executeTool`, `options?`): `ComposableToolBuilder`
 
-Defined in: [packages/agentos/src/emergent/ComposableToolBuilder.ts:112](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/emergent/ComposableToolBuilder.ts#L112)
+Defined in: [packages/agentos/src/emergent/ComposableToolBuilder.ts:112](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/emergent/ComposableToolBuilder.ts#L112)
 
 #### Parameters
 
@@ -86,7 +86,7 @@ When true, unresolved reference expressions
 
 > `readonly` **strictMode**: `boolean`
 
-Defined in: [packages/agentos/src/emergent/ComposableToolBuilder.ts:100](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/emergent/ComposableToolBuilder.ts#L100)
+Defined in: [packages/agentos/src/emergent/ComposableToolBuilder.ts:100](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/emergent/ComposableToolBuilder.ts#L100)
 
 When true, unresolved `$`-prefixed reference expressions throw instead
 of silently passing through as literal strings. Useful for development
@@ -98,7 +98,7 @@ and testing to catch typos in inputMapping expressions early.
 
 > **build**(`name`, `description`, `inputSchema`, `spec`): [`ITool`](../interfaces/ITool.md)
 
-Defined in: [packages/agentos/src/emergent/ComposableToolBuilder.ts:150](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/emergent/ComposableToolBuilder.ts#L150)
+Defined in: [packages/agentos/src/emergent/ComposableToolBuilder.ts:150](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/emergent/ComposableToolBuilder.ts#L150)
 
 Build an `ITool`-compatible object from a [ComposableToolSpec](../interfaces/ComposableToolSpec.md).
 
@@ -155,7 +155,7 @@ const tool = builder.build(
 
 > **validate**(`spec`): `object`
 
-Defined in: [packages/agentos/src/emergent/ComposableToolBuilder.ts:238](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/emergent/ComposableToolBuilder.ts#L238)
+Defined in: [packages/agentos/src/emergent/ComposableToolBuilder.ts:238](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/emergent/ComposableToolBuilder.ts#L238)
 
 Validate a [ComposableToolSpec](../interfaces/ComposableToolSpec.md) before building.
 

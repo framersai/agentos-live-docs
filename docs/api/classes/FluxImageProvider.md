@@ -1,6 +1,6 @@
 # Class: FluxImageProvider
 
-Defined in: [packages/agentos/src/media/images/providers/FluxImageProvider.ts:200](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/providers/FluxImageProvider.ts#L200)
+Defined in: [packages/agentos/src/media/images/providers/FluxImageProvider.ts:200](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/images/providers/FluxImageProvider.ts#L200)
 
 Image generation provider connecting directly to the Black Forest Labs
 (BFL) API for Flux model access.
@@ -45,7 +45,7 @@ console.log(result.images[0].url);
 
 > `optional` **defaultModelId**: `string`
 
-Defined in: [packages/agentos/src/media/images/providers/FluxImageProvider.ts:208](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/providers/FluxImageProvider.ts#L208)
+Defined in: [packages/agentos/src/media/images/providers/FluxImageProvider.ts:208](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/images/providers/FluxImageProvider.ts#L208)
 
 #### Inherit Doc
 
@@ -59,7 +59,7 @@ Defined in: [packages/agentos/src/media/images/providers/FluxImageProvider.ts:20
 
 > **isInitialized**: `boolean` = `false`
 
-Defined in: [packages/agentos/src/media/images/providers/FluxImageProvider.ts:205](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/providers/FluxImageProvider.ts#L205)
+Defined in: [packages/agentos/src/media/images/providers/FluxImageProvider.ts:205](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/images/providers/FluxImageProvider.ts#L205)
 
 #### Inherit Doc
 
@@ -73,7 +73,7 @@ Defined in: [packages/agentos/src/media/images/providers/FluxImageProvider.ts:20
 
 > `readonly` **providerId**: `"bfl"` = `'bfl'`
 
-Defined in: [packages/agentos/src/media/images/providers/FluxImageProvider.ts:202](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/providers/FluxImageProvider.ts#L202)
+Defined in: [packages/agentos/src/media/images/providers/FluxImageProvider.ts:202](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/images/providers/FluxImageProvider.ts#L202)
 
 #### Inherit Doc
 
@@ -87,7 +87,7 @@ Defined in: [packages/agentos/src/media/images/providers/FluxImageProvider.ts:20
 
 > **generateImage**(`request`): `Promise`\<[`ImageGenerationResult`](../interfaces/ImageGenerationResult.md)\>
 
-Defined in: [packages/agentos/src/media/images/providers/FluxImageProvider.ts:277](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/providers/FluxImageProvider.ts#L277)
+Defined in: [packages/agentos/src/media/images/providers/FluxImageProvider.ts:277](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/images/providers/FluxImageProvider.ts#L277)
 
 Generate an image using the BFL Flux API.
 
@@ -136,7 +136,7 @@ const result = await provider.generateImage({
 
 > **initialize**(`config`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/media/images/providers/FluxImageProvider.ts:225](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/providers/FluxImageProvider.ts#L225)
+Defined in: [packages/agentos/src/media/images/providers/FluxImageProvider.ts:225](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/images/providers/FluxImageProvider.ts#L225)
 
 Initialize the provider with API credentials and optional configuration.
 
@@ -172,7 +172,7 @@ await provider.initialize({ apiKey: 'bfl_xxx' });
 
 > **listAvailableModels**(): `Promise`\<[`ImageModelInfo`](../interfaces/ImageModelInfo.md)[]\>
 
-Defined in: [packages/agentos/src/media/images/providers/FluxImageProvider.ts:342](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/providers/FluxImageProvider.ts#L342)
+Defined in: [packages/agentos/src/media/images/providers/FluxImageProvider.ts:342](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/images/providers/FluxImageProvider.ts#L342)
 
 List available Flux models on the BFL API.
 

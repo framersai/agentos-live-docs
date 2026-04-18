@@ -1,6 +1,6 @@
 ---
 title: "Self-Improving Memory"
-sidebar_position: 24
+sidebar_position: 6
 ---
 
 > Memory consolidation is the analogue of slow-wave sleep: background maintenance that prunes weak traces, merges duplicates, strengthens co-activated patterns, derives new insights, compacts old episodic traces, and rebuilds the search index.

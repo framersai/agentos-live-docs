@@ -1,6 +1,6 @@
 ---
 title: "Safety Primitives"
-sidebar_position: 5
+sidebar_position: 3
 ---
 
 Operational safety guards that prevent runaway agent loops, excessive spending, and stuck behavior. These are distinct from [Guardrails](/features/guardrails) which handle content safety (toxicity, PII, prompt injection) and **folder-level filesystem permissions**.

@@ -1,6 +1,6 @@
 # Class: ReadWorkingMemoryTool
 
-Defined in: [packages/agentos/src/memory/core/working/ReadWorkingMemoryTool.ts:15](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/core/working/ReadWorkingMemoryTool.ts#L15)
+Defined in: [packages/agentos/src/memory/core/working/ReadWorkingMemoryTool.ts:15](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/core/working/ReadWorkingMemoryTool.ts#L15)
 
 Tool that lets the agent explicitly read its persistent working memory.
 The memory is also injected into the system prompt automatically,
@@ -17,7 +17,7 @@ memory before deciding what to update.
 
 > **new ReadWorkingMemoryTool**(`memory`): `ReadWorkingMemoryTool`
 
-Defined in: [packages/agentos/src/memory/core/working/ReadWorkingMemoryTool.ts:30](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/core/working/ReadWorkingMemoryTool.ts#L30)
+Defined in: [packages/agentos/src/memory/core/working/ReadWorkingMemoryTool.ts:30](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/core/working/ReadWorkingMemoryTool.ts#L30)
 
 #### Parameters
 
@@ -35,7 +35,7 @@ Defined in: [packages/agentos/src/memory/core/working/ReadWorkingMemoryTool.ts:3
 
 > `readonly` **category**: `"memory"` = `'memory'`
 
-Defined in: [packages/agentos/src/memory/core/working/ReadWorkingMemoryTool.ts:23](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/core/working/ReadWorkingMemoryTool.ts#L23)
+Defined in: [packages/agentos/src/memory/core/working/ReadWorkingMemoryTool.ts:23](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/core/working/ReadWorkingMemoryTool.ts#L23)
 
 **`Optional`**
 
@@ -53,7 +53,7 @@ aiding an LLM in selecting from a large set of tools.
 
 > `readonly` **description**: `string`
 
-Defined in: [packages/agentos/src/memory/core/working/ReadWorkingMemoryTool.ts:19](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/core/working/ReadWorkingMemoryTool.ts#L19)
+Defined in: [packages/agentos/src/memory/core/working/ReadWorkingMemoryTool.ts:19](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/core/working/ReadWorkingMemoryTool.ts#L19)
 
 A detailed, natural language description of what the tool does, its primary purpose,
 typical use cases, and any important considerations or limitations for its use.
@@ -71,7 +71,7 @@ for the LLM to grasp the tool's semantics.
 
 > `readonly` **displayName**: `"Read Working Memory"` = `'Read Working Memory'`
 
-Defined in: [packages/agentos/src/memory/core/working/ReadWorkingMemoryTool.ts:18](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/core/working/ReadWorkingMemoryTool.ts#L18)
+Defined in: [packages/agentos/src/memory/core/working/ReadWorkingMemoryTool.ts:18](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/core/working/ReadWorkingMemoryTool.ts#L18)
 
 A concise, human-readable title or display name for the tool.
 Used in user interfaces, logs, or when presenting tool options to developers or users.
@@ -92,7 +92,7 @@ Used in user interfaces, logs, or when presenting tool options to developers or 
 
 > `readonly` **hasSideEffects**: `false` = `false`
 
-Defined in: [packages/agentos/src/memory/core/working/ReadWorkingMemoryTool.ts:24](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/core/working/ReadWorkingMemoryTool.ts#L24)
+Defined in: [packages/agentos/src/memory/core/working/ReadWorkingMemoryTool.ts:24](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/core/working/ReadWorkingMemoryTool.ts#L24)
 
 **`Optional`**
 
@@ -111,7 +111,7 @@ with greater caution, potentially requiring explicit user confirmation.
 
 > `readonly` **id**: `"read-working-memory-v1"` = `'read-working-memory-v1'`
 
-Defined in: [packages/agentos/src/memory/core/working/ReadWorkingMemoryTool.ts:16](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/core/working/ReadWorkingMemoryTool.ts#L16)
+Defined in: [packages/agentos/src/memory/core/working/ReadWorkingMemoryTool.ts:16](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/core/working/ReadWorkingMemoryTool.ts#L16)
 
 A globally unique identifier for this specific tool (e.g., "web-search-engine-v1.2", "stock-price-fetcher").
 This ID is used for internal registration, management, and precise identification.
@@ -127,7 +127,7 @@ It's recommended to use a namespaced, versioned format (e.g., `vendor-toolname-v
 
 > `readonly` **inputSchema**: [`JSONSchemaObject`](../type-aliases/JSONSchemaObject.md)
 
-Defined in: [packages/agentos/src/memory/core/working/ReadWorkingMemoryTool.ts:25](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/core/working/ReadWorkingMemoryTool.ts#L25)
+Defined in: [packages/agentos/src/memory/core/working/ReadWorkingMemoryTool.ts:25](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/core/working/ReadWorkingMemoryTool.ts#L25)
 
 The JSON schema defining the structure, types, and constraints of the input arguments object
 that this tool expects. This schema is used by:
@@ -149,7 +149,7 @@ https://json-schema.org/
 
 > `readonly` **name**: `"read_working_memory"` = `'read_working_memory'`
 
-Defined in: [packages/agentos/src/memory/core/working/ReadWorkingMemoryTool.ts:17](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/core/working/ReadWorkingMemoryTool.ts#L17)
+Defined in: [packages/agentos/src/memory/core/working/ReadWorkingMemoryTool.ts:17](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/core/working/ReadWorkingMemoryTool.ts#L17)
 
 The functional name of the tool, as it should be presented to and used by an LLM in a tool call request
 (e.g., "searchWeb", "executePythonCode", "getWeatherForecast").
@@ -166,7 +166,7 @@ It should be concise, descriptive, and typically in camelCase or snake_case.
 
 > **execute**(`_args`, `_context`): `Promise`\<[`ToolExecutionResult`](../interfaces/ToolExecutionResult.md)\<`ReadOutput`\>\>
 
-Defined in: [packages/agentos/src/memory/core/working/ReadWorkingMemoryTool.ts:32](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/core/working/ReadWorkingMemoryTool.ts#L32)
+Defined in: [packages/agentos/src/memory/core/working/ReadWorkingMemoryTool.ts:32](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/core/working/ReadWorkingMemoryTool.ts#L32)
 
 **`Async`**
 

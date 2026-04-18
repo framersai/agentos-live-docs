@@ -1,6 +1,6 @@
 # Class: MissionCompiler
 
-Defined in: [packages/agentos/src/orchestration/compiler/MissionCompiler.ts:159](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/compiler/MissionCompiler.ts#L159)
+Defined in: [packages/agentos/src/orchestration/compiler/MissionCompiler.ts:159](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/compiler/MissionCompiler.ts#L159)
 
 Static compiler that transforms a `MissionConfig` into a `CompiledExecutionGraph`.
 
@@ -36,7 +36,7 @@ const ir = MissionCompiler.compile({
 
 > `static` **compile**(`config`): [`CompiledExecutionGraph`](../interfaces/CompiledExecutionGraph.md)
 
-Defined in: [packages/agentos/src/orchestration/compiler/MissionCompiler.ts:175](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/compiler/MissionCompiler.ts#L175)
+Defined in: [packages/agentos/src/orchestration/compiler/MissionCompiler.ts:175](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/compiler/MissionCompiler.ts#L175)
 
 Compile a mission config into a `CompiledExecutionGraph`.
 

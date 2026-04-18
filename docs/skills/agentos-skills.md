@@ -1,67 +1,138 @@
 ---
-title: '@framers/agentos-skills'
-sidebar_position: 6
+title: "@framers/agentos-skills"
+sidebar_position: 3
 ---
+
+
 
 # @framers/agentos-skills
 
-The skills **content** package -- 69 curated SKILL.md prompt modules, a machine-readable registry index, and TypeScript type definitions. This package contains **no runtime code**.
+**Curated SKILL.md prompt modules for AgentOS** — 88 staff-verified skills with a machine-readable registry index.
+
+
 
 ```bash
 npm install @framers/agentos-skills
 ```
 
-## What It Does
+> **This is the content package.** It contains 88 curated SKILL.md files and
+> the auto-generated `registry.json` index — no runtime code, no dependencies.
+>
+> For the **catalog SDK** (query helpers, lazy loading, factory functions), see
+> [`@framers/agentos-skills-registry`](https://github.com/framersai/agentos-skills-registry).
+>
+> For the **runtime engine** (SkillLoader, SkillRegistry, path utilities), see
+> [`@framers/agentos`](https://github.com/framersai/agentos) (`@framers/agentos/skills`).
 
-`@framers/agentos-skills` is the **content-only** data package for the skills system:
+## What's Inside
 
-| Export                 | Description                                                        |
-| ---------------------- | ------------------------------------------------------------------ |
-| `registry/curated/`   | 69 curated SKILL.md files organized by category                    |
-| `registry.json`       | Machine-readable index of all skills with metadata                 |
-| `types.d.ts`          | TypeScript type definitions for skill entries and registry schema   |
+This package bundles **88 curated SKILL.md files** organized under `registry/curated/`:
 
-It ships no parser, no loader, and no registry runtime. Those live in the engine package.
+| Category       | Skills                                                                 |
+| -------------- | ---------------------------------------------------------------------- |
+| Developer      | `github`, `git`, `coding-agent`, `code-safety`, `structured-output`    |
+| Social         | `twitter-bot`, `instagram-bot`, `linkedin-bot`, `facebook-bot`, `threads-bot`, `bluesky-bot`, `mastodon-bot`, `youtube-bot`, `tiktok-bot`, `pinterest-bot`, `reddit-bot`, `blog-publisher`, `social-broadcast` |
+| Research       | `web-search`, `web-scraper`, `deep-research`, `summarize`, `company-research` |
+| Productivity   | `notion`, `obsidian`, `trello`, `apple-notes`, `apple-reminders`, `spotify-player` |
+| Communication  | `slack-helper`, `discord-helper`, `email-intelligence`                 |
+| Voice          | `voice-conversation`, `whisper-transcribe`, `streaming-stt-*`, `streaming-tts-*`, `vosk`, `piper`, `porcupine`, `openwakeword`, `diarization` |
+| Creative       | `image-gen`, `image-editing`, `audio-generation`, `video-generation`, `content-creator` |
+| AI/ML          | `vision-ocr`, `multimodal-rag`, `ml-content-classifier`, `endpoint-semantic`, `grounding-guard`, `topicality`, `emergent-tools`, `pii-redaction` |
+| Infrastructure | `cloud-ops`, `site-deploy`, `healthcheck`                              |
+| Security       | `1password`                                                            |
+| Other          | `memory-manager`, `account-manager`, `agent-config`, `seo-campaign`, `weather` |
 
-## How It Relates to Other Packages
+Each skill is a Markdown file with YAML frontmatter:
+
+```yaml
+---
+name: github
+version: '2.0.0'
+description: Full GitHub API integration
+author: Wunderland
+category: developer
+tags: [github, git, repository]
+requires_secrets: [github.token]
+requires_tools: [github_search, github_repo_list]
+metadata:
+  agentos:
+    emoji: "🐙"
+    primaryEnv: GITHUB_TOKEN
+    requires:
+      bins: ['gh']
+    install:
+      - id: brew-gh
+        kind: brew
+        formula: gh
+        bins: [gh]
+---
+
+# GitHub
+
+[Markdown instructions for the agent...]
+```
+
+## Ecosystem
 
 ```
-@framers/agentos/skills              <-- Runtime ENGINE (SkillLoader, SkillRegistry, parser)
-@framers/agentos-skills              <-- CONTENT (this package: 69 SKILL.md files + registry.json + types)
-@framers/agentos-skills-registry     <-- Catalog SDK (query helpers, factories, resolves content from here)
+@framers/agentos/skills               ← Engine (SkillLoader, SkillRegistry, path utils)
+@framers/agentos-skills               ← Content (you are here — 88 SKILL.md files + registry.json)
+@framers/agentos-skills-registry      ← Catalog SDK (SKILLS_CATALOG, query helpers, factories)
 ```
 
-The runtime engine lives in `@framers/agentos/src/skills/` and is re-exported as `@framers/agentos/skills`. The catalog SDK in `@framers/agentos-skills-registry` resolves content from this package via `createRequire()`.
+| Package                              | Role            | What                                                    | Runtime Code |
+| ------------------------------------ | --------------- | ------------------------------------------------------- | :----------: |
+| **@framers/agentos/skills**          | **Engine**      | SkillLoader, SkillRegistry, path utils                  |     Yes      |
+| **@framers/agentos-skills**          | **Content**     | 88 SKILL.md files + registry.json index                 |      No      |
+| **@framers/agentos-skills-registry** | **Catalog SDK** | SKILLS_CATALOG, query helpers, lazy loaders, factories  |     Yes      |
+
+> This layout mirrors the extensions ecosystem:
+> `@framers/agentos-extensions` (content) + `@framers/agentos-extensions-registry` (SDK).
 
 ## Usage
 
-For **runtime imports** (SkillLoader, SkillRegistry, etc.), import from the engine:
-
-```typescript
-import { SkillLoader, SkillRegistry } from '@framers/agentos/skills';
-
-// Load skills from a directory
-const skills = await SkillLoader.loadFromDirectory('~/.wunderland/skills');
-
-// Or use the registry
-const registry = new SkillRegistry();
-await registry.loadSkillsFromDir('~/.wunderland/skills');
-
-const skill = registry.get('deep-research');
-console.log(skill?.displayName, skill?.description);
-```
-
-For **content imports** (registry data, types), import from this package:
+### Direct JSON import
 
 ```typescript
 import registry from '@framers/agentos-skills/registry.json';
-import type { SkillRegistryEntry } from '@framers/agentos-skills/types';
 
-console.log(registry.skills.curated.length); // 69
+console.log(`${registry.stats.totalSkills} skills available`);
+for (const skill of registry.skills.curated) {
+  console.log(`  ${skill.metadata?.emoji ?? '📦'} ${skill.name} — ${skill.description}`);
+}
 ```
 
-## See Also
+### Via the catalog SDK (recommended)
 
-- [`@framers/agentos-skills-registry`](./agentos-skills-registry) -- catalog SDK with query helpers and factories
-- [Skills (SKILL.md)](./skill-format) -- how to write skills
-- [`@framers/agentos/skills`](/architecture/tool-calling-and-loading) -- the runtime engine
+```typescript
+import { searchSkills, loadSkillByName } from '@framers/agentos-skills-registry';
+
+const matches = searchSkills('github');
+const skill = await loadSkillByName('github');
+console.log(skill?.content); // SKILL.md body ready for prompt injection
+```
+
+### Via the runtime engine
+
+```typescript
+import { SkillRegistry } from '@framers/agentos/skills';
+
+const registry = new SkillRegistry();
+await registry.loadFromDirs(['/path/to/agentos-skills/registry/curated']);
+const snapshot = registry.buildSnapshot({ platform: 'darwin', strict: true });
+console.log(snapshot.prompt);
+```
+
+## Contributing
+
+See [CONTRIBUTING.md](/extensions/contributing) for guidelines on adding new skills.
+
+## License
+
+MIT
+
+---
+
+
+
+

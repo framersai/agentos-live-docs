@@ -2,7 +2,7 @@
 
 > **createExternalToolProxyTool**(`entry`): [`ITool`](../interfaces/ITool.md)\<`Record`\<`string`, `any`\>, `unknown`\>
 
-Defined in: [packages/agentos/src/api/runtime/externalToolRegistry.ts:297](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/api/runtime/externalToolRegistry.ts#L297)
+Defined in: [packages/agentos/src/api/runtime/externalToolRegistry.ts:342](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/runtime/externalToolRegistry.ts#L342)
 
 ## Parameters
 

@@ -1,6 +1,6 @@
 # Interface: EmotionalContext
 
-Defined in: [packages/agentos/src/memory/core/types.ts:56](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/core/types.ts#L56)
+Defined in: [packages/agentos/src/memory/core/types.ts:56](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/core/types.ts#L56)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/memory/core/types.ts:56](https://github.com/fr
 
 > **arousal**: `number`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:60](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/core/types.ts#L60)
+Defined in: [packages/agentos/src/memory/core/types.ts:60](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/core/types.ts#L60)
 
 Arousal dimension, 0 (calm) to 1 (excited).
 
@@ -18,7 +18,7 @@ Arousal dimension, 0 (calm) to 1 (excited).
 
 > **dominance**: `number`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:62](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/core/types.ts#L62)
+Defined in: [packages/agentos/src/memory/core/types.ts:62](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/core/types.ts#L62)
 
 Dominance dimension, -1 (submissive) to 1 (dominant).
 
@@ -28,7 +28,7 @@ Dominance dimension, -1 (submissive) to 1 (dominant).
 
 > **gmiMood**: `string`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:66](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/core/types.ts#L66)
+Defined in: [packages/agentos/src/memory/core/types.ts:66](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/core/types.ts#L66)
 
 GMIMood enum string at encoding time.
 
@@ -38,7 +38,7 @@ GMIMood enum string at encoding time.
 
 > **intensity**: `number`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:64](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/core/types.ts#L64)
+Defined in: [packages/agentos/src/memory/core/types.ts:64](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/core/types.ts#L64)
 
 Derived emotional intensity: |valence| * arousal.
 
@@ -48,6 +48,6 @@ Derived emotional intensity: |valence| * arousal.
 
 > **valence**: `number`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:58](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/core/types.ts#L58)
+Defined in: [packages/agentos/src/memory/core/types.ts:58](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/core/types.ts#L58)
 
 Pleasure / valence dimension, -1 (negative) to 1 (positive).

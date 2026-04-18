@@ -1,73 +1,82 @@
 ---
-sidebar_position: 30
+title: "Citation Verifier"
+sidebar_position: 16.1
 ---
 
-# Citation Verifier
+Verify claims in text against sources using semantic similarity. Supports web search fallback for unverifiable claims.
 
-Verify claims in agent responses against sources using semantic similarity with optional web fallback.
+## Installation
 
-## Overview
-
-The citation verifier decomposes text into atomic claims, embeds them alongside source documents, and uses cosine similarity to determine whether each claim is supported by a source. Claims that can't be verified against provided sources can optionally be checked via web search.
-
-**Package:** `@framers/agentos-ext-citation-verifier`
-
-## When Citations Are Verified
-
-| Research Depth | Automatic Verification | Config Override |
-|---|---|---|
-| `none` / `quick` | No | `verifyCitations: true` in config |
-| `moderate` | No | `verifyCitations: true` in config |
-| `deep` | **Yes** (automatic) | Always on |
-| On-demand | Agent calls `verify_citations` tool | N/A |
-
-## Tool: `verify_citations`
-
-```typescript
-verify_citations({
-  text: "The Earth orbits the Sun at ~150 million km.",
-  sources: [{ content: "Earth's orbital distance averages 149.6 million km." }],
-  webFallback: true
-})
+```bash
+npm install @framers/agentos-ext-citation-verifier
 ```
 
-### Parameters
+## Usage
+
+```typescript
+import { createExtensionPack } from '@framers/agentos-ext-citation-verifier';
+
+const pack = createExtensionPack({
+  config: {
+    embedFn: async (texts) => myEmbeddingProvider.embed(texts),
+  },
+});
+```
+
+## Tool: `verify_citations`
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `text` | string | Yes | Text containing claims to verify |
-| `sources` | array | No | Sources to check against |
-| `webFallback` | boolean | No | Search web for unverifiable claims |
+| `sources` | array | No | Sources to verify against (`{ title, content, url }`) |
+| `webFallback` | boolean | No | Search the web for unverifiable claims |
 
-### Output
+### Example
 
-```json
-{
-  "claims": [
-    {
-      "text": "The Earth orbits the Sun at ~150 million km.",
-      "verdict": "supported",
-      "confidence": 0.87,
-      "source": { "snippet": "Earth's orbital distance averages 149.6 million km." }
-    }
+```
+User: "Verify this research summary"
+Agent: verify_citations({
+  text: "The Earth's core temperature is approximately 5,400°C. Mars has two moons.",
+  sources: [
+    { content: "Earth's inner core reaches temperatures of 5,400°C.", url: "https://example.com/earth" }
   ],
-  "totalClaims": 1,
-  "supportedCount": 1,
-  "supportedRatio": 1.0,
-  "summary": "1/1 claims verified (100%)"
+  webFallback: true
+})
+Result: {
+  totalClaims: 2,
+  supportedCount: 1,        // "Earth's core" matched the source
+  unverifiableCount: 0,     // "Mars has two moons" verified via web
+  summary: "2/2 claims verified (100%)"
 }
 ```
 
+## How It Works
+
+1. **Claim extraction** — splits text into atomic factual claims using sentence boundaries
+2. **Batch embedding** — embeds all claims + all sources in one call
+3. **Cosine similarity matrix** — computes claim × source similarity
+4. **Verdict assignment**:
+   - `similarity >= 0.6` → **supported** (claim matches a source)
+   - `similarity 0.3-0.6` → **weak** (partial match)
+   - `similarity < 0.3` → **unverifiable** (no matching source)
+5. **Web fallback** — for unverifiable claims, searches the web via FactCheckTool
+
 ## Verdicts
 
-- **supported** (similarity >= 0.6) — claim matches a source
-- **weak** (similarity 0.3-0.6) — partial match, lower confidence
-- **unverifiable** (similarity < 0.3) — no source matches
-- **contradicted** — NLI model detects contradiction with source
+| Verdict | Meaning | Action |
+|---------|---------|--------|
+| `supported` | Claim semantically matches a source | Safe to present |
+| `weak` | Partial match, lower confidence | Present with caveat |
+| `unverifiable` | No source matches | Mark as "[unverified]" or search web |
+| `contradicted` | Source contradicts the claim (via NLI) | Do not present as fact |
 
-## Configuration
+## Integration with Deep Research
 
-```json title="agent.config.json"
+When using the `deep_research` tool with `depth: "deep"`, citation verification runs automatically on the synthesized output. No explicit `verify_citations` call needed.
+
+Configure in `agent.config.json`:
+
+```json
 {
   "queryRouter": {
     "verifyCitations": true
@@ -75,29 +84,19 @@ verify_citations({
 }
 ```
 
-When enabled, responses from `moderate` and `deep` research queries include a `grounding` field with per-claim verdicts.
+## Environment Variables
 
-## Core API (Programmatic)
-
-```typescript
-import { CitationVerifier } from '@framers/agentos';
-
-const verifier = new CitationVerifier({
-  embedFn: async (texts) => embeddingManager.embed(texts),
-  supportThreshold: 0.6,
-  unverifiableThreshold: 0.3,
-});
-
-const result = await verifier.verify(
-  "Tokyo has a population of 14 million.",
-  [{ content: "Greater Tokyo metropolitan area: 37 million. Tokyo proper: 14 million." }]
-);
-// result.claims[0].verdict === 'supported'
-```
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `SERPER_API_KEY` | No | Enables web fallback for unverifiable claims |
+| `TAVILY_API_KEY` | No | Alternative search provider for web fallback |
 
 ## Related
 
-- **`fact-grounding` skill** — instructs agents to verify claims before presenting
-- **`grounding-guard` guardrail** — real-time NLI streaming verification
-- **`fact_check` tool** — web-based single-claim verification
-- **Reranker chain** — multi-stage result ranking before citation
+- **Skill**: `fact-grounding` — instructs the agent to verify claims before presenting
+- **Guardrail**: `grounding-guard` — real-time NLI-based grounding (streaming)
+- **Tool**: `fact_check` — web-based fact verification (single claim)
+
+## License
+
+MIT

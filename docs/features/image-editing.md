@@ -1,6 +1,6 @@
 ---
 title: "Image Editing (Img2Img, Inpainting, Upscaling)"
-sidebar_position: 25
+sidebar_position: 2
 ---
 
 > Edit, upscale, and create variations of existing images across multiple providers with a unified API.

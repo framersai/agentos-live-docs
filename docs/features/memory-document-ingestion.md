@@ -1,6 +1,6 @@
 ---
 title: "Document Ingestion"
-sidebar_position: 21
+sidebar_position: 6
 ---
 
 > The Memory ingestion pipeline converts external documents into searchable memory traces. It handles format detection, multi-tier PDF extraction, four chunking strategies, folder scanning with glob patterns, and optional vision-LLM image captioning.

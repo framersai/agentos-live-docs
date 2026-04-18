@@ -1,6 +1,6 @@
 # Class: SpeechProviderResolver
 
-Defined in: [packages/agentos/src/speech/SpeechProviderResolver.ts:69](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/speech/SpeechProviderResolver.ts#L69)
+Defined in: [packages/agentos/src/speech/SpeechProviderResolver.ts:69](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/speech/SpeechProviderResolver.ts#L69)
 
 Central resolver for speech providers (STT, TTS, VAD, wake-word).
 
@@ -68,7 +68,7 @@ const stt = resolver.resolveSTT({ features: ['diarization'] });
 
 > **new SpeechProviderResolver**(`config?`, `env?`): `SpeechProviderResolver`
 
-Defined in: [packages/agentos/src/speech/SpeechProviderResolver.ts:95](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/speech/SpeechProviderResolver.ts#L95)
+Defined in: [packages/agentos/src/speech/SpeechProviderResolver.ts:95](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/speech/SpeechProviderResolver.ts#L95)
 
 Creates a new SpeechProviderResolver.
 
@@ -520,7 +520,7 @@ v0.1.26
 
 > **listProviders**(`kind`): [`ProviderRegistration`](../interfaces/ProviderRegistration.md)[]
 
-Defined in: [packages/agentos/src/speech/SpeechProviderResolver.ts:146](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/speech/SpeechProviderResolver.ts#L146)
+Defined in: [packages/agentos/src/speech/SpeechProviderResolver.ts:146](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/speech/SpeechProviderResolver.ts#L146)
 
 List all registrations for a given provider kind, sorted ascending by
 priority (lower number = higher priority = tried first).
@@ -890,7 +890,7 @@ v9.4.0
 
 > **refresh**(`extensionManager?`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/speech/SpeechProviderResolver.ts:307](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/speech/SpeechProviderResolver.ts#L307)
+Defined in: [packages/agentos/src/speech/SpeechProviderResolver.ts:307](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/speech/SpeechProviderResolver.ts#L307)
 
 Populate the resolver by registering core providers from the static catalog,
 optionally discovering extension providers, and applying user-configured
@@ -932,7 +932,7 @@ await resolver.refresh(extensionManager);
 
 > **register**(`reg`): `void`
 
-Defined in: [packages/agentos/src/speech/SpeechProviderResolver.ts:124](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/speech/SpeechProviderResolver.ts#L124)
+Defined in: [packages/agentos/src/speech/SpeechProviderResolver.ts:124](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/speech/SpeechProviderResolver.ts#L124)
 
 Register a provider, overwriting any existing registration with the same id.
 
@@ -1122,7 +1122,7 @@ v0.1.26
 
 > **resolveSTT**(`requirements?`): [`SpeechToTextProvider`](../interfaces/SpeechToTextProvider.md)
 
-Defined in: [packages/agentos/src/speech/SpeechProviderResolver.ts:179](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/speech/SpeechProviderResolver.ts#L179)
+Defined in: [packages/agentos/src/speech/SpeechProviderResolver.ts:179](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/speech/SpeechProviderResolver.ts#L179)
 
 Resolve the best STT provider matching optional [ProviderRequirements](../interfaces/ProviderRequirements.md).
 
@@ -1173,7 +1173,7 @@ const stt = resolver.resolveSTT({ preferredIds: ['deepgram-batch', 'openai-whisp
 
 > **resolveTTS**(`requirements?`): [`TextToSpeechProvider`](../interfaces/TextToSpeechProvider.md)
 
-Defined in: [packages/agentos/src/speech/SpeechProviderResolver.ts:217](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/speech/SpeechProviderResolver.ts#L217)
+Defined in: [packages/agentos/src/speech/SpeechProviderResolver.ts:217](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/speech/SpeechProviderResolver.ts#L217)
 
 Resolve the best TTS provider matching optional [ProviderRequirements](../interfaces/ProviderRequirements.md).
 
@@ -1218,7 +1218,7 @@ const result = await tts.synthesize('Hello!');
 
 > **resolveVAD**(): [`SpeechVadProvider`](../interfaces/SpeechVadProvider.md)
 
-Defined in: [packages/agentos/src/speech/SpeechProviderResolver.ts:249](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/speech/SpeechProviderResolver.ts#L249)
+Defined in: [packages/agentos/src/speech/SpeechProviderResolver.ts:249](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/speech/SpeechProviderResolver.ts#L249)
 
 Resolve the highest-priority configured VAD provider.
 
@@ -1249,7 +1249,7 @@ const decision = vad.processFrame(audioFrame);
 
 > **resolveWakeWord**(): [`WakeWordProvider`](../interfaces/WakeWordProvider.md) \| `null`
 
-Defined in: [packages/agentos/src/speech/SpeechProviderResolver.ts:274](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/speech/SpeechProviderResolver.ts#L274)
+Defined in: [packages/agentos/src/speech/SpeechProviderResolver.ts:274](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/speech/SpeechProviderResolver.ts#L274)
 
 Resolve the highest-priority configured wake-word provider, or `null`
 when none is registered.

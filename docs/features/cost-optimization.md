@@ -1,6 +1,6 @@
 ---
 title: "Cost Optimization"
-sidebar_position: 12
+sidebar_position: 3
 ---
 
 > Comprehensive guide for optimizing LLM costs, configuring performance tiers, and implementing sensible defaults across the AgentOS framework.

@@ -1,6 +1,6 @@
 # Class: MemoryReflector
 
-Defined in: [packages/agentos/src/memory/pipeline/observation/MemoryReflector.ts:146](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/pipeline/observation/MemoryReflector.ts#L146)
+Defined in: [packages/agentos/src/memory/pipeline/observation/MemoryReflector.ts:146](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/pipeline/observation/MemoryReflector.ts#L146)
 
 ## Constructors
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/memory/pipeline/observation/MemoryReflector.ts
 
 > **new MemoryReflector**(`traits`, `config?`): `MemoryReflector`
 
-Defined in: [packages/agentos/src/memory/pipeline/observation/MemoryReflector.ts:152](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/pipeline/observation/MemoryReflector.ts#L152)
+Defined in: [packages/agentos/src/memory/pipeline/observation/MemoryReflector.ts:152](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/pipeline/observation/MemoryReflector.ts#L152)
 
 #### Parameters
 
@@ -30,7 +30,7 @@ Defined in: [packages/agentos/src/memory/pipeline/observation/MemoryReflector.ts
 
 > **addNotes**(`notes`): `Promise`\<[`MemoryReflectionResult`](../interfaces/MemoryReflectionResult.md) \| `null`\>
 
-Defined in: [packages/agentos/src/memory/pipeline/observation/MemoryReflector.ts:169](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/pipeline/observation/MemoryReflector.ts#L169)
+Defined in: [packages/agentos/src/memory/pipeline/observation/MemoryReflector.ts:169](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/pipeline/observation/MemoryReflector.ts#L169)
 
 Add observation notes for future reflection.
 Returns a MemoryReflectionResult if the note threshold is reached.
@@ -51,7 +51,7 @@ Returns a MemoryReflectionResult if the note threshold is reached.
 
 > **clear**(): `void`
 
-Defined in: [packages/agentos/src/memory/pipeline/observation/MemoryReflector.ts:230](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/pipeline/observation/MemoryReflector.ts#L230)
+Defined in: [packages/agentos/src/memory/pipeline/observation/MemoryReflector.ts:230](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/pipeline/observation/MemoryReflector.ts#L230)
 
 Clear all pending notes.
 
@@ -65,7 +65,7 @@ Clear all pending notes.
 
 > **getPendingNoteCount**(): `number`
 
-Defined in: [packages/agentos/src/memory/pipeline/observation/MemoryReflector.ts:225](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/pipeline/observation/MemoryReflector.ts#L225)
+Defined in: [packages/agentos/src/memory/pipeline/observation/MemoryReflector.ts:225](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/pipeline/observation/MemoryReflector.ts#L225)
 
 Get pending note count.
 
@@ -79,7 +79,7 @@ Get pending note count.
 
 > **reflect**(`existingMemoryContext?`): `Promise`\<[`MemoryReflectionResult`](../interfaces/MemoryReflectionResult.md)\>
 
-Defined in: [packages/agentos/src/memory/pipeline/observation/MemoryReflector.ts:190](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/pipeline/observation/MemoryReflector.ts#L190)
+Defined in: [packages/agentos/src/memory/pipeline/observation/MemoryReflector.ts:190](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/pipeline/observation/MemoryReflector.ts#L190)
 
 Force reflection over all pending notes.
 
@@ -99,7 +99,7 @@ Force reflection over all pending notes.
 
 > **shouldActivate**(): `boolean`
 
-Defined in: [packages/agentos/src/memory/pipeline/observation/MemoryReflector.ts:179](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/pipeline/observation/MemoryReflector.ts#L179)
+Defined in: [packages/agentos/src/memory/pipeline/observation/MemoryReflector.ts:179](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/pipeline/observation/MemoryReflector.ts#L179)
 
 Whether accumulated notes exceed the reflection threshold.
 

@@ -1,6 +1,6 @@
 # Interface: Message
 
-Defined in: [packages/agentos/src/api/generateText.ts:43](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/api/generateText.ts#L43)
+Defined in: [packages/agentos/src/api/generateText.ts:46](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/generateText.ts#L46)
 
 A single chat message in a conversation history.
 Mirrors the OpenAI / Anthropic message shape accepted by provider adapters.
@@ -11,7 +11,7 @@ Mirrors the OpenAI / Anthropic message shape accepted by provider adapters.
 
 > **content**: `MessageContent`
 
-Defined in: [packages/agentos/src/api/generateText.ts:47](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/api/generateText.ts#L47)
+Defined in: [packages/agentos/src/api/generateText.ts:50](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/generateText.ts#L50)
 
 Content of the message. String for text-only, array for multimodal (images + text).
 
@@ -21,6 +21,6 @@ Content of the message. String for text-only, array for multimodal (images + tex
 
 > **role**: `"user"` \| `"tool"` \| `"system"` \| `"assistant"`
 
-Defined in: [packages/agentos/src/api/generateText.ts:45](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/api/generateText.ts#L45)
+Defined in: [packages/agentos/src/api/generateText.ts:48](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/generateText.ts#L48)
 
 Role of the message author.

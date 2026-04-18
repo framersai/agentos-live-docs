@@ -1,6 +1,6 @@
 # Interface: ILogger
 
-Defined in: [packages/agentos/src/core/logging/ILogger.ts:1](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/logging/ILogger.ts#L1)
+Defined in: [packages/agentos/src/core/logging/ILogger.ts:1](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/logging/ILogger.ts#L1)
 
 ## Methods
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/core/logging/ILogger.ts:1](https://github.com/
 
 > `optional` **child**(`bindings`): `ILogger`
 
-Defined in: [packages/agentos/src/core/logging/ILogger.ts:1](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/logging/ILogger.ts#L1)
+Defined in: [packages/agentos/src/core/logging/ILogger.ts:1](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/logging/ILogger.ts#L1)
 
 #### Parameters
 
@@ -26,7 +26,7 @@ Defined in: [packages/agentos/src/core/logging/ILogger.ts:1](https://github.com/
 
 > `optional` **debug**(`message`, `meta?`): `void`
 
-Defined in: [packages/agentos/src/core/logging/ILogger.ts:1](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/logging/ILogger.ts#L1)
+Defined in: [packages/agentos/src/core/logging/ILogger.ts:1](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/logging/ILogger.ts#L1)
 
 #### Parameters
 
@@ -48,7 +48,7 @@ Defined in: [packages/agentos/src/core/logging/ILogger.ts:1](https://github.com/
 
 > **error**(`message`, `meta?`): `void`
 
-Defined in: [packages/agentos/src/core/logging/ILogger.ts:1](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/logging/ILogger.ts#L1)
+Defined in: [packages/agentos/src/core/logging/ILogger.ts:1](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/logging/ILogger.ts#L1)
 
 #### Parameters
 
@@ -70,7 +70,7 @@ Defined in: [packages/agentos/src/core/logging/ILogger.ts:1](https://github.com/
 
 > **info**(`message`, `meta?`): `void`
 
-Defined in: [packages/agentos/src/core/logging/ILogger.ts:1](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/logging/ILogger.ts#L1)
+Defined in: [packages/agentos/src/core/logging/ILogger.ts:1](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/logging/ILogger.ts#L1)
 
 #### Parameters
 
@@ -92,7 +92,7 @@ Defined in: [packages/agentos/src/core/logging/ILogger.ts:1](https://github.com/
 
 > **warn**(`message`, `meta?`): `void`
 
-Defined in: [packages/agentos/src/core/logging/ILogger.ts:1](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/logging/ILogger.ts#L1)
+Defined in: [packages/agentos/src/core/logging/ILogger.ts:1](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/logging/ILogger.ts#L1)
 
 #### Parameters
 

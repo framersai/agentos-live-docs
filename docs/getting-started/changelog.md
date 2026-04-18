@@ -1,7 +1,54 @@
 ---
 title: "Changelog"
-sidebar_position: 5
+sidebar_position: 7
 ---
+
+## <small>0.1.227 (2026-04-18)</small>
+
+* fix(face): graceful synthetic embedding when Replicate InsightFace 422s ([63fb853](https://github.com/framersai/agentos/commit/63fb853))
+* Merge remote-tracking branch 'origin/master' ([d530634](https://github.com/framersai/agentos/commit/d530634))
+* docs: Paracosm feature guide with HEXACO, forge/reuse, cost safety, API, SSE ([6dcca61](https://github.com/framersai/agentos/commit/6dcca61))
+
+## <small>0.1.226 (2026-04-17)</small>
+
+* Merge branch 'master' of https://github.com/framersai/agentos ([7049828](https://github.com/framersai/agentos/commit/7049828))
+* feat(emergent): optional generateTextWithSystem callback for judge prompt caching ([8420324](https://github.com/framersai/agentos/commit/8420324))
+
+## <small>0.1.225 (2026-04-16)</small>
+
+* merge: integrate remote 0.1.224 release tag ([b8be2bf](https://github.com/framersai/agentos/commit/b8be2bf))
+* feat(anthropic): cache-aware estimateCost + surface cacheRead/CreationInputTokens ([ae63c16](https://github.com/framersai/agentos/commit/ae63c16))
+
+## <small>0.1.224 (2026-04-16)</small>
+
+* fix(api): correct ILogger signature on fallback telemetry calls ([8898c0c](https://github.com/framersai/agentos/commit/8898c0c))
+* feat(api): structured telemetry on provider fallback chain ([a802d0c](https://github.com/framersai/agentos/commit/a802d0c))
+* feat(generateObject): accept SystemContentBlock[] for prompt caching ([391779a](https://github.com/framersai/agentos/commit/391779a))
+
+## <small>0.1.223 (2026-04-16)</small>
+
+* feat: add fallback + JSON mode + retry cap to generateObject ([4c9dd9b](https://github.com/framersai/agentos/commit/4c9dd9b))
+* feat: default-on auto-fallback in generateText ([3292fbf](https://github.com/framersai/agentos/commit/3292fbf))
+* feat: default-on auto-fallback in streamText ([76369b3](https://github.com/framersai/agentos/commit/76369b3))
+
+## <small>0.1.222 (2026-04-15)</small>
+
+* chore: update gitignore and db ([b76b2f7](https://github.com/framersai/agentos/commit/b76b2f7))
+* feat: export extractJson from barrel for centralized LLM JSON extraction ([397210a](https://github.com/framersai/agentos/commit/397210a))
+* docs: add capability discovery, skills, and self-improvement tools to README feature table ([0809af1](https://github.com/framersai/agentos/commit/0809af1))
+* docs: add self-improvement tools and SkillExporter to emergent capabilities docs ([1965d06](https://github.com/framersai/agentos/commit/1965d06))
+
+## <small>0.1.221 (2026-04-15)</small>
+
+* fix: streamline Paracosm section in README ([d7e3034](https://github.com/framersai/agentos/commit/d7e3034))
+
+## <small>0.1.220 (2026-04-15)</small>
+
+* feat: update README to reference Paracosm instead of mars-genesis-simulation ([da1522e](https://github.com/framersai/agentos/commit/da1522e))
+* fix: align runtime contracts and docs publication ([a4bba1a](https://github.com/framersai/agentos/commit/a4bba1a))
+* docs: add Mars Genesis featured demo section, update Discord to wilds.ai ([6fd85d6](https://github.com/framersai/agentos/commit/6fd85d6))
+* docs: clarify cognitive mechanism count and persona drift as optional ([c3150c4](https://github.com/framersai/agentos/commit/c3150c4))
+* chore: update Discord invite link ([3d55abe](https://github.com/framersai/agentos/commit/3d55abe))
 
 ## <small>0.1.219 (2026-04-12)</small>
 

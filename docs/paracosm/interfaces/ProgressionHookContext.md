@@ -1,6 +1,6 @@
 # Interface: ProgressionHookContext
 
-Defined in: [types.ts:227](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/types.ts#L227)
+Defined in: [types.ts:234](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/types.ts#L234)
 
 Context passed to the scenario progression hook during between-turn advancement.
 
@@ -10,7 +10,7 @@ Context passed to the scenario progression hook during between-turn advancement.
 
 > **agents**: [`Agent`](Agent.md)[]
 
-Defined in: [types.ts:229](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/types.ts#L229)
+Defined in: [types.ts:236](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/types.ts#L236)
 
 All agents (mutable: the hook modifies health fields in place)
 
@@ -20,7 +20,7 @@ All agents (mutable: the hook modifies health fields in place)
 
 > **rng**: `object`
 
-Defined in: [types.ts:235](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/types.ts#L235)
+Defined in: [types.ts:242](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/types.ts#L242)
 
 Seeded RNG for deterministic random operations
 
@@ -90,7 +90,7 @@ readonly `T`[]
 
 > **startYear**: `number`
 
-Defined in: [types.ts:233](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/types.ts#L233)
+Defined in: [types.ts:240](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/types.ts#L240)
 
 ***
 
@@ -98,7 +98,7 @@ Defined in: [types.ts:233](https://github.com/framersai/paracosm/blob/ba2b881292
 
 > **turn**: `number`
 
-Defined in: [types.ts:232](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/types.ts#L232)
+Defined in: [types.ts:239](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/types.ts#L239)
 
 ***
 
@@ -106,7 +106,7 @@ Defined in: [types.ts:232](https://github.com/framersai/paracosm/blob/ba2b881292
 
 > **year**: `number`
 
-Defined in: [types.ts:231](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/types.ts#L231)
+Defined in: [types.ts:238](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/types.ts#L238)
 
 ***
 
@@ -114,4 +114,4 @@ Defined in: [types.ts:231](https://github.com/framersai/paracosm/blob/ba2b881292
 
 > **yearDelta**: `number`
 
-Defined in: [types.ts:230](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/types.ts#L230)
+Defined in: [types.ts:237](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/types.ts#L237)

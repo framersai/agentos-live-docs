@@ -1,6 +1,6 @@
 # Enumeration: GMIMood
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:26](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/IGMI.ts#L26)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:26](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/IGMI.ts#L26)
 
 Defines the possible moods a GMI can be in, influencing its behavior and responses.
 These moods can be adapted based on interaction context or self-reflection.
@@ -11,7 +11,7 @@ These moods can be adapted based on interaction context or self-reflection.
 
 > **ANALYTICAL**: `"analytical"`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:32](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/IGMI.ts#L32)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:32](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/IGMI.ts#L32)
 
 ***
 
@@ -19,7 +19,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:32](https://githu
 
 > **ASSERTIVE**: `"assertive"`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:31](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/IGMI.ts#L31)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:31](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/IGMI.ts#L31)
 
 ***
 
@@ -27,7 +27,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:31](https://githu
 
 > **CREATIVE**: `"creative"`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:34](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/IGMI.ts#L34)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:34](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/IGMI.ts#L34)
 
 ***
 
@@ -35,7 +35,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:34](https://githu
 
 > **CURIOUS**: `"curious"`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:30](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/IGMI.ts#L30)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:30](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/IGMI.ts#L30)
 
 ***
 
@@ -43,7 +43,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:30](https://githu
 
 > **EMPATHETIC**: `"empathetic"`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:29](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/IGMI.ts#L29)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:29](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/IGMI.ts#L29)
 
 ***
 
@@ -51,7 +51,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:29](https://githu
 
 > **FOCUSED**: `"focused"`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:28](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/IGMI.ts#L28)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:28](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/IGMI.ts#L28)
 
 ***
 
@@ -59,7 +59,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:28](https://githu
 
 > **FRUSTRATED**: `"frustrated"`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:33](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/IGMI.ts#L33)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:33](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/IGMI.ts#L33)
 
 ***
 
@@ -67,4 +67,4 @@ Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:33](https://githu
 
 > **NEUTRAL**: `"neutral"`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:27](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/IGMI.ts#L27)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:27](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/IGMI.ts#L27)

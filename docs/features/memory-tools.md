@@ -1,6 +1,6 @@
 ---
 title: "Agent Memory Tools"
-sidebar_position: 25
+sidebar_position: 6
 ---
 
 > Six ITool implementations let agents read, write, search, and consolidate their own memory traces at runtime. Register them as a pack or individually.

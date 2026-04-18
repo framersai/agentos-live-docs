@@ -1,6 +1,6 @@
 # Interface: TemporalMetadata
 
-Defined in: [packages/agentos/src/memory/pipeline/observation/temporal.ts:23](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/pipeline/observation/temporal.ts#L23)
+Defined in: [packages/agentos/src/memory/pipeline/observation/temporal.ts:23](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/pipeline/observation/temporal.ts#L23)
 
 Three-date temporal model attached to memory traces.
 
@@ -14,7 +14,7 @@ Three-date temporal model attached to memory traces.
 
 > `optional` **referencedAt**: `number`
 
-Defined in: [packages/agentos/src/memory/pipeline/observation/temporal.ts:25](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/pipeline/observation/temporal.ts#L25)
+Defined in: [packages/agentos/src/memory/pipeline/observation/temporal.ts:25](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/pipeline/observation/temporal.ts#L25)
 
 When the event this memory refers to actually happened (Unix ms).
 
@@ -24,7 +24,7 @@ When the event this memory refers to actually happened (Unix ms).
 
 > `optional` **relativeLabel**: `string`
 
-Defined in: [packages/agentos/src/memory/pipeline/observation/temporal.ts:27](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/pipeline/observation/temporal.ts#L27)
+Defined in: [packages/agentos/src/memory/pipeline/observation/temporal.ts:27](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/pipeline/observation/temporal.ts#L27)
 
 Human-friendly relative time label, e.g. "last Tuesday".
 
@@ -34,6 +34,6 @@ Human-friendly relative time label, e.g. "last Tuesday".
 
 > `optional` **span**: \[`number`, `number`\]
 
-Defined in: [packages/agentos/src/memory/pipeline/observation/temporal.ts:29](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/pipeline/observation/temporal.ts#L29)
+Defined in: [packages/agentos/src/memory/pipeline/observation/temporal.ts:29](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/pipeline/observation/temporal.ts#L29)
 
 Time span if this covers a period: [startMs, endMs].

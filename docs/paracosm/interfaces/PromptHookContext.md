@@ -1,6 +1,6 @@
 # Interface: PromptHookContext
 
-Defined in: [types.ts:239](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/types.ts#L239)
+Defined in: [types.ts:246](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/types.ts#L246)
 
 Context passed to the scenario department prompt hook.
 
@@ -10,7 +10,7 @@ Context passed to the scenario department prompt hook.
 
 > **department**: `string`
 
-Defined in: [types.ts:240](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/types.ts#L240)
+Defined in: [types.ts:247](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/types.ts#L247)
 
 ***
 
@@ -18,7 +18,7 @@ Defined in: [types.ts:240](https://github.com/framersai/paracosm/blob/ba2b881292
 
 > **researchPacket**: `object`
 
-Defined in: [types.ts:243](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/types.ts#L243)
+Defined in: [types.ts:250](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/types.ts#L250)
 
 #### canonicalFacts
 
@@ -38,7 +38,7 @@ Defined in: [types.ts:243](https://github.com/framersai/paracosm/blob/ba2b881292
 
 > **scenario**: [`Scenario`](Scenario.md)
 
-Defined in: [types.ts:242](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/types.ts#L242)
+Defined in: [types.ts:249](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/types.ts#L249)
 
 ***
 
@@ -46,4 +46,4 @@ Defined in: [types.ts:242](https://github.com/framersai/paracosm/blob/ba2b881292
 
 > **state**: [`SimulationState`](SimulationState.md)
 
-Defined in: [types.ts:241](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/types.ts#L241)
+Defined in: [types.ts:248](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/types.ts#L248)

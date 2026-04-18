@@ -1,6 +1,6 @@
 ---
 title: "Voice Pipeline"
-sidebar_position: 14
+sidebar_position: 1
 ---
 
 AgentOS provides a real-time streaming voice pipeline for building conversational voice agents. The pipeline handles bidirectional audio streaming, speech-to-text, turn-taking, text-to-speech, speaker diarization, and barge-in detection.

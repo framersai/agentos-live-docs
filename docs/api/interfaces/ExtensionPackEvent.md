@@ -1,6 +1,6 @@
 # Interface: ExtensionPackEvent
 
-Defined in: [packages/agentos/src/extensions/events.ts:14](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/extensions/events.ts#L14)
+Defined in: [packages/agentos/src/extensions/events.ts:14](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/extensions/events.ts#L14)
 
 ## Extends
 
@@ -12,7 +12,7 @@ Defined in: [packages/agentos/src/extensions/events.ts:14](https://github.com/fr
 
 > `optional` **error**: `Error`
 
-Defined in: [packages/agentos/src/extensions/events.ts:17](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/extensions/events.ts#L17)
+Defined in: [packages/agentos/src/extensions/events.ts:17](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/extensions/events.ts#L17)
 
 ***
 
@@ -20,7 +20,7 @@ Defined in: [packages/agentos/src/extensions/events.ts:17](https://github.com/fr
 
 > **source**: [`ExtensionSourceMetadata`](ExtensionSourceMetadata.md)
 
-Defined in: [packages/agentos/src/extensions/events.ts:16](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/extensions/events.ts#L16)
+Defined in: [packages/agentos/src/extensions/events.ts:16](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/extensions/events.ts#L16)
 
 ***
 
@@ -28,7 +28,7 @@ Defined in: [packages/agentos/src/extensions/events.ts:16](https://github.com/fr
 
 > **timestamp**: `string`
 
-Defined in: [packages/agentos/src/extensions/events.ts:11](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/extensions/events.ts#L11)
+Defined in: [packages/agentos/src/extensions/events.ts:11](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/extensions/events.ts#L11)
 
 #### Inherited from
 
@@ -40,7 +40,7 @@ Defined in: [packages/agentos/src/extensions/events.ts:11](https://github.com/fr
 
 > **type**: `"pack:loaded"` \| `"pack:failed"`
 
-Defined in: [packages/agentos/src/extensions/events.ts:15](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/extensions/events.ts#L15)
+Defined in: [packages/agentos/src/extensions/events.ts:15](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/extensions/events.ts#L15)
 
 #### Overrides
 

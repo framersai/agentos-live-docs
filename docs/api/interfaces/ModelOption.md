@@ -1,6 +1,6 @@
 # Interface: ModelOption
 
-Defined in: [packages/agentos/src/api/model.ts:219](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/api/model.ts#L219)
+Defined in: [packages/agentos/src/api/model.ts:219](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/model.ts#L219)
 
 Flexible model option accepted by the high-level API functions.
 
@@ -13,7 +13,7 @@ API key environment variable must be set for auto-detection.
 
 > `optional` **apiKey**: `string`
 
-Defined in: [packages/agentos/src/api/model.ts:234](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/api/model.ts#L234)
+Defined in: [packages/agentos/src/api/model.ts:234](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/model.ts#L234)
 
 API key override (takes precedence over environment variables).
 
@@ -23,7 +23,7 @@ API key override (takes precedence over environment variables).
 
 > `optional` **baseUrl**: `string`
 
-Defined in: [packages/agentos/src/api/model.ts:236](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/api/model.ts#L236)
+Defined in: [packages/agentos/src/api/model.ts:236](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/model.ts#L236)
 
 Base URL override (useful for local proxies or Ollama).
 
@@ -33,7 +33,7 @@ Base URL override (useful for local proxies or Ollama).
 
 > `optional` **model**: `string`
 
-Defined in: [packages/agentos/src/api/model.ts:232](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/api/model.ts#L232)
+Defined in: [packages/agentos/src/api/model.ts:232](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/model.ts#L232)
 
 Explicit model identifier.  Accepted in two formats:
 - `"provider:model"` — legacy format (e.g. `"openai:gpt-4o"`).  `provider` is ignored.
@@ -45,7 +45,7 @@ Explicit model identifier.  Accepted in two formats:
 
 > `optional` **provider**: `string`
 
-Defined in: [packages/agentos/src/api/model.ts:226](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/api/model.ts#L226)
+Defined in: [packages/agentos/src/api/model.ts:226](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/model.ts#L226)
 
 Provider name.  When set without `model`, the default model for the
 requested task is looked up in [PROVIDER\_DEFAULTS](../variables/PROVIDER_DEFAULTS.md).

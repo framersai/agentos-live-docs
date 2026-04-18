@@ -2,7 +2,7 @@
 
 > **generateImage**(`opts`): `Promise`\<[`GenerateImageResult`](../interfaces/GenerateImageResult.md)\>
 
-Defined in: [packages/agentos/src/api/generateImage.ts:255](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/api/generateImage.ts#L255)
+Defined in: [packages/agentos/src/api/generateImage.ts:255](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/generateImage.ts#L255)
 
 Generates one or more images using a provider-agnostic `provider:model` string.
 

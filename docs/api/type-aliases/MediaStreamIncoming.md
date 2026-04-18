@@ -2,7 +2,7 @@
 
 > **MediaStreamIncoming** = \{ `payload`: `Buffer`; `sequenceNumber?`: `number`; `streamSid`: `string`; `type`: `"audio"`; \} \| \{ `digit`: `string`; `durationMs?`: `number`; `streamSid`: `string`; `type`: `"dtmf"`; \} \| \{ `callSid`: `string`; `metadata?`: `Record`\<`string`, `unknown`\>; `streamSid`: `string`; `type`: `"start"`; \} \| \{ `streamSid`: `string`; `type`: `"stop"`; \} \| \{ `name`: `string`; `streamSid`: `string`; `type`: `"mark"`; \}
 
-Defined in: [packages/agentos/src/channels/telephony/MediaStreamParser.ts:126](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/channels/telephony/MediaStreamParser.ts#L126)
+Defined in: [packages/agentos/src/channels/telephony/MediaStreamParser.ts:126](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/channels/telephony/MediaStreamParser.ts#L126)
 
 Discriminated union of all normalised events that can arrive on a media
 stream WebSocket connection, regardless of the underlying telephony provider.

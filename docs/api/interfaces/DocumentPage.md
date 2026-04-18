@@ -1,6 +1,6 @@
 # Interface: DocumentPage
 
-Defined in: [packages/agentos/src/vision/types.ts:154](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/vision/types.ts#L154)
+Defined in: [packages/agentos/src/vision/types.ts:154](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/vision/types.ts#L154)
 
 A single page within a structured document layout.
 
@@ -10,7 +10,7 @@ A single page within a structured document layout.
 
 > **blocks**: [`LayoutBlock`](LayoutBlock.md)[]
 
-Defined in: [packages/agentos/src/vision/types.ts:165](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/vision/types.ts#L165)
+Defined in: [packages/agentos/src/vision/types.ts:165](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/vision/types.ts#L165)
 
 Semantic blocks detected on this page.
 
@@ -20,7 +20,7 @@ Semantic blocks detected on this page.
 
 > **height**: `number`
 
-Defined in: [packages/agentos/src/vision/types.ts:162](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/vision/types.ts#L162)
+Defined in: [packages/agentos/src/vision/types.ts:162](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/vision/types.ts#L162)
 
 Page height in pixels.
 
@@ -30,7 +30,7 @@ Page height in pixels.
 
 > **pageNumber**: `number`
 
-Defined in: [packages/agentos/src/vision/types.ts:156](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/vision/types.ts#L156)
+Defined in: [packages/agentos/src/vision/types.ts:156](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/vision/types.ts#L156)
 
 1-based page number.
 
@@ -40,6 +40,6 @@ Defined in: [packages/agentos/src/vision/types.ts:156](https://github.com/framer
 
 > **width**: `number`
 
-Defined in: [packages/agentos/src/vision/types.ts:159](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/vision/types.ts#L159)
+Defined in: [packages/agentos/src/vision/types.ts:159](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/vision/types.ts#L159)
 
 Page width in pixels.

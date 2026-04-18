@@ -1,6 +1,6 @@
 # Interface: RaptorResult
 
-Defined in: [packages/agentos/src/rag/raptor/RaptorTree.ts:105](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/raptor/RaptorTree.ts#L105)
+Defined in: [packages/agentos/src/rag/raptor/RaptorTree.ts:105](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/raptor/RaptorTree.ts#L105)
 
 A single RAPTOR search result with layer information.
 
@@ -14,7 +14,7 @@ RaptorResult
 
 > **id**: `string`
 
-Defined in: [packages/agentos/src/rag/raptor/RaptorTree.ts:107](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/raptor/RaptorTree.ts#L107)
+Defined in: [packages/agentos/src/rag/raptor/RaptorTree.ts:107](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/raptor/RaptorTree.ts#L107)
 
 Document/chunk identifier.
 
@@ -24,7 +24,7 @@ Document/chunk identifier.
 
 > **isSummary**: `boolean`
 
-Defined in: [packages/agentos/src/rag/raptor/RaptorTree.ts:115](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/raptor/RaptorTree.ts#L115)
+Defined in: [packages/agentos/src/rag/raptor/RaptorTree.ts:115](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/raptor/RaptorTree.ts#L115)
 
 Whether this is a summary node or an original leaf chunk.
 
@@ -34,7 +34,7 @@ Whether this is a summary node or an original leaf chunk.
 
 > **layer**: `number`
 
-Defined in: [packages/agentos/src/rag/raptor/RaptorTree.ts:113](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/raptor/RaptorTree.ts#L113)
+Defined in: [packages/agentos/src/rag/raptor/RaptorTree.ts:113](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/raptor/RaptorTree.ts#L113)
 
 Layer in the RAPTOR tree (0 = leaf, higher = more abstract).
 
@@ -44,7 +44,7 @@ Layer in the RAPTOR tree (0 = leaf, higher = more abstract).
 
 > `optional` **metadata**: `Record`\<`string`, `unknown`\>
 
-Defined in: [packages/agentos/src/rag/raptor/RaptorTree.ts:117](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/raptor/RaptorTree.ts#L117)
+Defined in: [packages/agentos/src/rag/raptor/RaptorTree.ts:117](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/raptor/RaptorTree.ts#L117)
 
 Optional metadata.
 
@@ -54,7 +54,7 @@ Optional metadata.
 
 > **score**: `number`
 
-Defined in: [packages/agentos/src/rag/raptor/RaptorTree.ts:111](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/raptor/RaptorTree.ts#L111)
+Defined in: [packages/agentos/src/rag/raptor/RaptorTree.ts:111](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/raptor/RaptorTree.ts#L111)
 
 Similarity score from vector search.
 
@@ -64,6 +64,6 @@ Similarity score from vector search.
 
 > **text**: `string`
 
-Defined in: [packages/agentos/src/rag/raptor/RaptorTree.ts:109](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/raptor/RaptorTree.ts#L109)
+Defined in: [packages/agentos/src/rag/raptor/RaptorTree.ts:109](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/raptor/RaptorTree.ts#L109)
 
 Text content.

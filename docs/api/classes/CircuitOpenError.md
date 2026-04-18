@@ -1,6 +1,6 @@
 # Class: CircuitOpenError
 
-Defined in: [packages/agentos/src/safety/runtime/CircuitBreaker.ts:35](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/safety/runtime/CircuitBreaker.ts#L35)
+Defined in: [packages/agentos/src/safety/runtime/CircuitBreaker.ts:35](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/safety/runtime/CircuitBreaker.ts#L35)
 
 ## Extends
 
@@ -12,7 +12,7 @@ Defined in: [packages/agentos/src/safety/runtime/CircuitBreaker.ts:35](https://g
 
 > **new CircuitOpenError**(`breakerName`, `cooldownRemainingMs`): `CircuitOpenError`
 
-Defined in: [packages/agentos/src/safety/runtime/CircuitBreaker.ts:36](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/safety/runtime/CircuitBreaker.ts#L36)
+Defined in: [packages/agentos/src/safety/runtime/CircuitBreaker.ts:36](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/safety/runtime/CircuitBreaker.ts#L36)
 
 #### Parameters
 
@@ -38,7 +38,7 @@ Defined in: [packages/agentos/src/safety/runtime/CircuitBreaker.ts:36](https://g
 
 > `readonly` **breakerName**: `string`
 
-Defined in: [packages/agentos/src/safety/runtime/CircuitBreaker.ts:37](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/safety/runtime/CircuitBreaker.ts#L37)
+Defined in: [packages/agentos/src/safety/runtime/CircuitBreaker.ts:37](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/safety/runtime/CircuitBreaker.ts#L37)
 
 ***
 
@@ -46,7 +46,7 @@ Defined in: [packages/agentos/src/safety/runtime/CircuitBreaker.ts:37](https://g
 
 > `readonly` **cooldownRemainingMs**: `number`
 
-Defined in: [packages/agentos/src/safety/runtime/CircuitBreaker.ts:38](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/safety/runtime/CircuitBreaker.ts#L38)
+Defined in: [packages/agentos/src/safety/runtime/CircuitBreaker.ts:38](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/safety/runtime/CircuitBreaker.ts#L38)
 
 ***
 

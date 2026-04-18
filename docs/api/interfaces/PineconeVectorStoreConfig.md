@@ -1,6 +1,6 @@
 # Interface: PineconeVectorStoreConfig
 
-Defined in: [packages/agentos/src/rag/vector\_stores/PineconeVectorStore.ts:42](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/vector_stores/PineconeVectorStore.ts#L42)
+Defined in: [packages/agentos/src/rag/vector\_stores/PineconeVectorStore.ts:42](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/vector_stores/PineconeVectorStore.ts#L42)
 
 Configuration specific to Pinecone.
 
@@ -14,7 +14,7 @@ Configuration specific to Pinecone.
 
 > **apiKey**: `string`
 
-Defined in: [packages/agentos/src/rag/vector\_stores/PineconeVectorStore.ts:45](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/vector_stores/PineconeVectorStore.ts#L45)
+Defined in: [packages/agentos/src/rag/vector\_stores/PineconeVectorStore.ts:45](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/vector_stores/PineconeVectorStore.ts#L45)
 
 Pinecone API key. Required.
 
@@ -24,7 +24,7 @@ Pinecone API key. Required.
 
 > `optional` **customProps**: `Record`\<`string`, `any`\>
 
-Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:32](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/vector-store/IVectorStore.ts#L32)
+Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:32](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/vector-store/IVectorStore.ts#L32)
 
 Any other custom properties or
 configurations specific to this provider instance not covered by standard fields.
@@ -39,7 +39,7 @@ configurations specific to this provider instance not covered by standard fields
 
 > `optional` **defaultDimension**: `number`
 
-Defined in: [packages/agentos/src/rag/vector\_stores/PineconeVectorStore.ts:55](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/vector_stores/PineconeVectorStore.ts#L55)
+Defined in: [packages/agentos/src/rag/vector\_stores/PineconeVectorStore.ts:55](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/vector_stores/PineconeVectorStore.ts#L55)
 
 Default embedding dimensions.
 
@@ -55,7 +55,7 @@ Default embedding dimensions.
 
 > **id**: `string`
 
-Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:30](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/vector-store/IVectorStore.ts#L30)
+Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:30](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/vector-store/IVectorStore.ts#L30)
 
 A unique identifier for this specific provider instance
 (e.g., "pinecone-main-prod", "weaviate-dev-local"). This ID is used by the
@@ -71,7 +71,7 @@ VectorStoreManager to retrieve this provider.
 
 > **indexHost**: `string`
 
-Defined in: [packages/agentos/src/rag/vector\_stores/PineconeVectorStore.ts:51](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/vector_stores/PineconeVectorStore.ts#L51)
+Defined in: [packages/agentos/src/rag/vector\_stores/PineconeVectorStore.ts:51](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/vector_stores/PineconeVectorStore.ts#L51)
 
 Pinecone index host URL (e.g. 'https://my-index-abc123.svc.aped-1234.pinecone.io').
 This is the Data Plane endpoint for a specific index — NOT the control plane URL.
@@ -83,7 +83,7 @@ Find it in the Pinecone console under your index details.
 
 > `optional` **namespace**: `string`
 
-Defined in: [packages/agentos/src/rag/vector\_stores/PineconeVectorStore.ts:53](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/vector_stores/PineconeVectorStore.ts#L53)
+Defined in: [packages/agentos/src/rag/vector\_stores/PineconeVectorStore.ts:53](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/vector_stores/PineconeVectorStore.ts#L53)
 
 Default namespace for operations.
 
@@ -99,7 +99,7 @@ Default namespace for operations.
 
 > **type**: `"pinecone"`
 
-Defined in: [packages/agentos/src/rag/vector\_stores/PineconeVectorStore.ts:43](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/vector_stores/PineconeVectorStore.ts#L43)
+Defined in: [packages/agentos/src/rag/vector\_stores/PineconeVectorStore.ts:43](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/vector_stores/PineconeVectorStore.ts#L43)
 
 The type of the vector store provider
 (e.g., "pinecone", "weaviate", "in_memory", "lancedb"). This helps in

@@ -1,6 +1,6 @@
 ---
 title: "Client-Side Storage"
-sidebar_position: 8
+sidebar_position: 11
 ---
 
 ## Overview

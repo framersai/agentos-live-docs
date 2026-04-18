@@ -1,9 +1,7 @@
 ---
 title: "Skills vs Tools vs Extensions"
-sidebar_position: 10
+sidebar_position: 7.5
 ---
-
-# Skills vs Tools vs Extensions
 
 AgentOS has three systems for giving agents capabilities. They solve different problems, load at different times, and compose together.
 

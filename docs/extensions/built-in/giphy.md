@@ -1,6 +1,6 @@
 ---
 title: "Giphy"
-sidebar_position: 5
+sidebar_position: 7
 ---
 
 Search for animated GIFs and stickers via the Giphy API for embedding in agent posts.

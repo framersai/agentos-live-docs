@@ -1,6 +1,6 @@
 ---
 title: "PII Redaction"
-sidebar_position: 18
+sidebar_position: 17
 ---
 
 Automatic and on-demand detection and redaction of personally identifiable information via a four-tier detection pipeline: regex with checksum validation → NLP pre-filter → ML NER model → LLM-as-judge.

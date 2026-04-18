@@ -1,6 +1,6 @@
 # Class: SqlStorageAdapter
 
-Defined in: [packages/agentos/src/core/storage/SqlStorageAdapter.ts:108](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/storage/SqlStorageAdapter.ts#L108)
+Defined in: [packages/agentos/src/core/storage/SqlStorageAdapter.ts:108](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/storage/SqlStorageAdapter.ts#L108)
 
 SQL storage adapter implementation for AgentOS.
 
@@ -53,7 +53,7 @@ await browserStorage.initialize();
 
 > **new SqlStorageAdapter**(`config?`): `SqlStorageAdapter`
 
-Defined in: [packages/agentos/src/core/storage/SqlStorageAdapter.ts:126](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/storage/SqlStorageAdapter.ts#L126)
+Defined in: [packages/agentos/src/core/storage/SqlStorageAdapter.ts:126](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/storage/SqlStorageAdapter.ts#L126)
 
 Creates a new SQL storage adapter instance.
 
@@ -84,7 +84,7 @@ const storage = new SqlStorageAdapter({
 
 > **close**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/core/storage/SqlStorageAdapter.ts:213](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/storage/SqlStorageAdapter.ts#L213)
+Defined in: [packages/agentos/src/core/storage/SqlStorageAdapter.ts:213](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/storage/SqlStorageAdapter.ts#L213)
 
 Closes the database connection and releases resources.
 
@@ -108,7 +108,7 @@ await storage.close();
 
 > **createConversation**(`conversation`): `Promise`\<[`IConversation`](../interfaces/IConversation.md)\>
 
-Defined in: [packages/agentos/src/core/storage/SqlStorageAdapter.ts:227](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/storage/SqlStorageAdapter.ts#L227)
+Defined in: [packages/agentos/src/core/storage/SqlStorageAdapter.ts:227](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/storage/SqlStorageAdapter.ts#L227)
 
 Creates a new conversation record.
 
@@ -140,7 +140,7 @@ If conversation with same ID exists or validation fails
 
 > **deleteConversation**(`conversationId`): `Promise`\<`boolean`\>
 
-Defined in: [packages/agentos/src/core/storage/SqlStorageAdapter.ts:316](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/storage/SqlStorageAdapter.ts#L316)
+Defined in: [packages/agentos/src/core/storage/SqlStorageAdapter.ts:316](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/storage/SqlStorageAdapter.ts#L316)
 
 Deletes a conversation and all its messages.
 
@@ -168,7 +168,7 @@ True if deleted, false if not found
 
 > **deleteMessage**(`messageId`): `Promise`\<`boolean`\>
 
-Defined in: [packages/agentos/src/core/storage/SqlStorageAdapter.ts:489](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/storage/SqlStorageAdapter.ts#L489)
+Defined in: [packages/agentos/src/core/storage/SqlStorageAdapter.ts:489](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/storage/SqlStorageAdapter.ts#L489)
 
 Deletes a specific message.
 
@@ -196,7 +196,7 @@ True if deleted
 
 > **deleteMessagesForConversation**(`conversationId`): `Promise`\<`number`\>
 
-Defined in: [packages/agentos/src/core/storage/SqlStorageAdapter.ts:502](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/storage/SqlStorageAdapter.ts#L502)
+Defined in: [packages/agentos/src/core/storage/SqlStorageAdapter.ts:502](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/storage/SqlStorageAdapter.ts#L502)
 
 Deletes all messages in a conversation.
 
@@ -224,7 +224,7 @@ Number of messages deleted
 
 > **getConversation**(`conversationId`): `Promise`\<[`IConversation`](../interfaces/IConversation.md) \| `null`\>
 
-Defined in: [packages/agentos/src/core/storage/SqlStorageAdapter.ts:255](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/storage/SqlStorageAdapter.ts#L255)
+Defined in: [packages/agentos/src/core/storage/SqlStorageAdapter.ts:255](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/storage/SqlStorageAdapter.ts#L255)
 
 Retrieves a conversation by ID.
 
@@ -252,7 +252,7 @@ The conversation or null if not found
 
 > **getConversationTokenUsage**(`conversationId`): `Promise`\<[`ITokenUsage`](../interfaces/ITokenUsage.md)\>
 
-Defined in: [packages/agentos/src/core/storage/SqlStorageAdapter.ts:537](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/storage/SqlStorageAdapter.ts#L537)
+Defined in: [packages/agentos/src/core/storage/SqlStorageAdapter.ts:537](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/storage/SqlStorageAdapter.ts#L537)
 
 Calculates total token usage for a conversation.
 
@@ -280,7 +280,7 @@ Aggregated token usage
 
 > **getMessage**(`messageId`): `Promise`\<[`IConversationMessage`](../interfaces/IConversationMessage.md) \| `null`\>
 
-Defined in: [packages/agentos/src/core/storage/SqlStorageAdapter.ts:422](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/storage/SqlStorageAdapter.ts#L422)
+Defined in: [packages/agentos/src/core/storage/SqlStorageAdapter.ts:422](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/storage/SqlStorageAdapter.ts#L422)
 
 Retrieves a message by ID.
 
@@ -308,7 +308,7 @@ The message or null
 
 > **getMessageCount**(`conversationId`): `Promise`\<`number`\>
 
-Defined in: [packages/agentos/src/core/storage/SqlStorageAdapter.ts:520](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/storage/SqlStorageAdapter.ts#L520)
+Defined in: [packages/agentos/src/core/storage/SqlStorageAdapter.ts:520](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/storage/SqlStorageAdapter.ts#L520)
 
 Counts messages in a conversation.
 
@@ -336,7 +336,7 @@ Message count
 
 > **getMessages**(`conversationId`, `options?`): `Promise`\<[`IConversationMessage`](../interfaces/IConversationMessage.md)[]\>
 
-Defined in: [packages/agentos/src/core/storage/SqlStorageAdapter.ts:441](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/storage/SqlStorageAdapter.ts#L441)
+Defined in: [packages/agentos/src/core/storage/SqlStorageAdapter.ts:441](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/storage/SqlStorageAdapter.ts#L441)
 
 Retrieves messages for a conversation with filtering.
 
@@ -370,7 +370,7 @@ Array of messages
 
 > **initialize**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/core/storage/SqlStorageAdapter.ts:153](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/storage/SqlStorageAdapter.ts#L153)
+Defined in: [packages/agentos/src/core/storage/SqlStorageAdapter.ts:153](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/storage/SqlStorageAdapter.ts#L153)
 
 Initializes the storage adapter and creates the database schema.
 
@@ -406,7 +406,7 @@ console.log('Storage ready!');
 
 > **listConversations**(`userId`, `options?`): `Promise`\<[`IConversation`](../interfaces/IConversation.md)[]\>
 
-Defined in: [packages/agentos/src/core/storage/SqlStorageAdapter.ts:334](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/storage/SqlStorageAdapter.ts#L334)
+Defined in: [packages/agentos/src/core/storage/SqlStorageAdapter.ts:334](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/storage/SqlStorageAdapter.ts#L334)
 
 Lists conversations for a user with optional filtering.
 
@@ -450,7 +450,7 @@ Array of conversations
 
 > **storeMessage**(`message`): `Promise`\<[`IConversationMessage`](../interfaces/IConversationMessage.md)\>
 
-Defined in: [packages/agentos/src/core/storage/SqlStorageAdapter.ts:373](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/storage/SqlStorageAdapter.ts#L373)
+Defined in: [packages/agentos/src/core/storage/SqlStorageAdapter.ts:373](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/storage/SqlStorageAdapter.ts#L373)
 
 Stores a message and updates conversation's lastActivity.
 
@@ -482,7 +482,7 @@ If conversation doesn't exist
 
 > **updateConversation**(`conversationId`, `updates`): `Promise`\<[`IConversation`](../interfaces/IConversation.md)\>
 
-Defined in: [packages/agentos/src/core/storage/SqlStorageAdapter.ts:278](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/storage/SqlStorageAdapter.ts#L278)
+Defined in: [packages/agentos/src/core/storage/SqlStorageAdapter.ts:278](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/storage/SqlStorageAdapter.ts#L278)
 
 Updates a conversation's fields.
 

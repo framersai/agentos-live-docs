@@ -1,6 +1,6 @@
 # Class: SandboxError
 
-Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:273](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/sandbox/executor/ICodeSandbox.ts#L273)
+Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:273](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/sandbox/executor/ICodeSandbox.ts#L273)
 
 Error thrown when sandbox execution fails.
 
@@ -14,7 +14,7 @@ Error thrown when sandbox execution fails.
 
 > **new SandboxError**(`message`, `status`, `executionId?`, `securityEvents?`): `SandboxError`
 
-Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:278](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/sandbox/executor/ICodeSandbox.ts#L278)
+Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:278](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/sandbox/executor/ICodeSandbox.ts#L278)
 
 #### Parameters
 
@@ -48,7 +48,7 @@ Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:278](https://
 
 > `readonly` `optional` **executionId**: `string`
 
-Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:274](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/sandbox/executor/ICodeSandbox.ts#L274)
+Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:274](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/sandbox/executor/ICodeSandbox.ts#L274)
 
 ***
 
@@ -80,7 +80,7 @@ Defined in: node\_modules/.pnpm/typescript@5.6.3/node\_modules/typescript/lib/li
 
 > `readonly` `optional` **securityEvents**: [`SecurityEvent`](../interfaces/SecurityEvent.md)[]
 
-Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:276](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/sandbox/executor/ICodeSandbox.ts#L276)
+Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:276](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/sandbox/executor/ICodeSandbox.ts#L276)
 
 ***
 
@@ -100,7 +100,7 @@ Defined in: node\_modules/.pnpm/typescript@5.6.3/node\_modules/typescript/lib/li
 
 > `readonly` **status**: [`ExecutionStatus`](../type-aliases/ExecutionStatus.md)
 
-Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:275](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/sandbox/executor/ICodeSandbox.ts#L275)
+Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:275](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/sandbox/executor/ICodeSandbox.ts#L275)
 
 ***
 

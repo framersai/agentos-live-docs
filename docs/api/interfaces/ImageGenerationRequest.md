@@ -1,6 +1,6 @@
 # Interface: ImageGenerationRequest
 
-Defined in: [packages/agentos/src/media/images/IImageProvider.ts:140](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/IImageProvider.ts#L140)
+Defined in: [packages/agentos/src/media/images/IImageProvider.ts:140](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/images/IImageProvider.ts#L140)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/media/images/IImageProvider.ts:140](https://gi
 
 > `optional` **aspectRatio**: `string`
 
-Defined in: [packages/agentos/src/media/images/IImageProvider.ts:146](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/IImageProvider.ts#L146)
+Defined in: [packages/agentos/src/media/images/IImageProvider.ts:146](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/images/IImageProvider.ts#L146)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [packages/agentos/src/media/images/IImageProvider.ts:146](https://gi
 
 > `optional` **background**: [`ImageBackground`](../type-aliases/ImageBackground.md)
 
-Defined in: [packages/agentos/src/media/images/IImageProvider.ts:148](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/IImageProvider.ts#L148)
+Defined in: [packages/agentos/src/media/images/IImageProvider.ts:148](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/images/IImageProvider.ts#L148)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: [packages/agentos/src/media/images/IImageProvider.ts:148](https://gi
 
 > `optional` **consistencyMode**: `"balanced"` \| `"strict"` \| `"loose"`
 
-Defined in: [packages/agentos/src/media/images/IImageProvider.ts:190](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/IImageProvider.ts#L190)
+Defined in: [packages/agentos/src/media/images/IImageProvider.ts:190](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/images/IImageProvider.ts#L190)
 
 Character consistency mode controlling identity preservation strength.
 
@@ -47,7 +47,7 @@ Character consistency mode controlling identity preservation strength.
 
 > `optional` **faceEmbedding**: `number`[]
 
-Defined in: [packages/agentos/src/media/images/IImageProvider.ts:176](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/IImageProvider.ts#L176)
+Defined in: [packages/agentos/src/media/images/IImageProvider.ts:176](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/images/IImageProvider.ts#L176)
 
 Pre-computed 512-dim face embedding vector for drift detection.
 
@@ -61,7 +61,7 @@ this anchor vector.
 
 > `optional` **modalities**: [`ImageModality`](../type-aliases/ImageModality.md)[]
 
-Defined in: [packages/agentos/src/media/images/IImageProvider.ts:143](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/IImageProvider.ts#L143)
+Defined in: [packages/agentos/src/media/images/IImageProvider.ts:143](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/images/IImageProvider.ts#L143)
 
 ***
 
@@ -69,7 +69,7 @@ Defined in: [packages/agentos/src/media/images/IImageProvider.ts:143](https://gi
 
 > `optional` **modelId**: `string`
 
-Defined in: [packages/agentos/src/media/images/IImageProvider.ts:141](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/IImageProvider.ts#L141)
+Defined in: [packages/agentos/src/media/images/IImageProvider.ts:141](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/images/IImageProvider.ts#L141)
 
 ***
 
@@ -77,7 +77,7 @@ Defined in: [packages/agentos/src/media/images/IImageProvider.ts:141](https://gi
 
 > `optional` **n**: `number`
 
-Defined in: [packages/agentos/src/media/images/IImageProvider.ts:144](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/IImageProvider.ts#L144)
+Defined in: [packages/agentos/src/media/images/IImageProvider.ts:144](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/images/IImageProvider.ts#L144)
 
 ***
 
@@ -85,7 +85,7 @@ Defined in: [packages/agentos/src/media/images/IImageProvider.ts:144](https://gi
 
 > `optional` **negativePrompt**: `string`
 
-Defined in: [packages/agentos/src/media/images/IImageProvider.ts:154](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/IImageProvider.ts#L154)
+Defined in: [packages/agentos/src/media/images/IImageProvider.ts:154](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/images/IImageProvider.ts#L154)
 
 ***
 
@@ -93,7 +93,7 @@ Defined in: [packages/agentos/src/media/images/IImageProvider.ts:154](https://gi
 
 > `optional` **outputCompression**: `number`
 
-Defined in: [packages/agentos/src/media/images/IImageProvider.ts:150](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/IImageProvider.ts#L150)
+Defined in: [packages/agentos/src/media/images/IImageProvider.ts:150](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/images/IImageProvider.ts#L150)
 
 ***
 
@@ -101,7 +101,7 @@ Defined in: [packages/agentos/src/media/images/IImageProvider.ts:150](https://gi
 
 > `optional` **outputFormat**: [`ImageOutputFormat`](../type-aliases/ImageOutputFormat.md)
 
-Defined in: [packages/agentos/src/media/images/IImageProvider.ts:149](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/IImageProvider.ts#L149)
+Defined in: [packages/agentos/src/media/images/IImageProvider.ts:149](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/images/IImageProvider.ts#L149)
 
 ***
 
@@ -109,7 +109,7 @@ Defined in: [packages/agentos/src/media/images/IImageProvider.ts:149](https://gi
 
 > **prompt**: `string`
 
-Defined in: [packages/agentos/src/media/images/IImageProvider.ts:142](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/IImageProvider.ts#L142)
+Defined in: [packages/agentos/src/media/images/IImageProvider.ts:142](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/images/IImageProvider.ts#L142)
 
 ***
 
@@ -117,7 +117,7 @@ Defined in: [packages/agentos/src/media/images/IImageProvider.ts:142](https://gi
 
 > `optional` **providerOptions**: `Record`\<`string`, `unknown`\> \| [`ImageProviderOptionBag`](ImageProviderOptionBag.md)
 
-Defined in: [packages/agentos/src/media/images/IImageProvider.ts:155](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/IImageProvider.ts#L155)
+Defined in: [packages/agentos/src/media/images/IImageProvider.ts:155](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/images/IImageProvider.ts#L155)
 
 ***
 
@@ -125,7 +125,7 @@ Defined in: [packages/agentos/src/media/images/IImageProvider.ts:155](https://gi
 
 > `optional` **quality**: `string`
 
-Defined in: [packages/agentos/src/media/images/IImageProvider.ts:147](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/IImageProvider.ts#L147)
+Defined in: [packages/agentos/src/media/images/IImageProvider.ts:147](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/images/IImageProvider.ts#L147)
 
 ***
 
@@ -133,7 +133,7 @@ Defined in: [packages/agentos/src/media/images/IImageProvider.ts:147](https://gi
 
 > `optional` **referenceImageUrl**: `string`
 
-Defined in: [packages/agentos/src/media/images/IImageProvider.ts:167](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/IImageProvider.ts#L167)
+Defined in: [packages/agentos/src/media/images/IImageProvider.ts:167](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/images/IImageProvider.ts#L167)
 
 Reference image URL or data URI for character/face consistency.
 
@@ -150,7 +150,7 @@ Providers that support identity preservation map this to model-specific inputs:
 
 > `optional` **responseFormat**: [`ImageResponseFormat`](../type-aliases/ImageResponseFormat.md)
 
-Defined in: [packages/agentos/src/media/images/IImageProvider.ts:151](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/IImageProvider.ts#L151)
+Defined in: [packages/agentos/src/media/images/IImageProvider.ts:151](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/images/IImageProvider.ts#L151)
 
 ***
 
@@ -158,7 +158,7 @@ Defined in: [packages/agentos/src/media/images/IImageProvider.ts:151](https://gi
 
 > `optional` **seed**: `number`
 
-Defined in: [packages/agentos/src/media/images/IImageProvider.ts:153](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/IImageProvider.ts#L153)
+Defined in: [packages/agentos/src/media/images/IImageProvider.ts:153](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/images/IImageProvider.ts#L153)
 
 ***
 
@@ -166,7 +166,7 @@ Defined in: [packages/agentos/src/media/images/IImageProvider.ts:153](https://gi
 
 > `optional` **size**: `string`
 
-Defined in: [packages/agentos/src/media/images/IImageProvider.ts:145](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/IImageProvider.ts#L145)
+Defined in: [packages/agentos/src/media/images/IImageProvider.ts:145](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/images/IImageProvider.ts#L145)
 
 ***
 
@@ -174,4 +174,4 @@ Defined in: [packages/agentos/src/media/images/IImageProvider.ts:145](https://gi
 
 > `optional` **userId**: `string`
 
-Defined in: [packages/agentos/src/media/images/IImageProvider.ts:152](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/IImageProvider.ts#L152)
+Defined in: [packages/agentos/src/media/images/IImageProvider.ts:152](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/images/IImageProvider.ts#L152)

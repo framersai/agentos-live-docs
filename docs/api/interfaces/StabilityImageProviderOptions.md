@@ -1,6 +1,6 @@
 # Interface: StabilityImageProviderOptions
 
-Defined in: [packages/agentos/src/media/images/IImageProvider.ts:44](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/IImageProvider.ts#L44)
+Defined in: [packages/agentos/src/media/images/IImageProvider.ts:44](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/images/IImageProvider.ts#L44)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/media/images/IImageProvider.ts:44](https://git
 
 > `optional` **aspectRatio**: `string`
 
-Defined in: [packages/agentos/src/media/images/IImageProvider.ts:53](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/IImageProvider.ts#L53)
+Defined in: [packages/agentos/src/media/images/IImageProvider.ts:53](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/images/IImageProvider.ts#L53)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [packages/agentos/src/media/images/IImageProvider.ts:53](https://git
 
 > `optional` **cfgScale**: `number`
 
-Defined in: [packages/agentos/src/media/images/IImageProvider.ts:49](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/IImageProvider.ts#L49)
+Defined in: [packages/agentos/src/media/images/IImageProvider.ts:49](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/images/IImageProvider.ts#L49)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: [packages/agentos/src/media/images/IImageProvider.ts:49](https://git
 
 > `optional` **engine**: `string`
 
-Defined in: [packages/agentos/src/media/images/IImageProvider.ts:45](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/IImageProvider.ts#L45)
+Defined in: [packages/agentos/src/media/images/IImageProvider.ts:45](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/images/IImageProvider.ts#L45)
 
 ***
 
@@ -32,7 +32,7 @@ Defined in: [packages/agentos/src/media/images/IImageProvider.ts:45](https://git
 
 > `optional` **extraFields**: `Record`\<`string`, `string` \| `number` \| `boolean`\>
 
-Defined in: [packages/agentos/src/media/images/IImageProvider.ts:55](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/IImageProvider.ts#L55)
+Defined in: [packages/agentos/src/media/images/IImageProvider.ts:55](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/images/IImageProvider.ts#L55)
 
 ***
 
@@ -40,7 +40,7 @@ Defined in: [packages/agentos/src/media/images/IImageProvider.ts:55](https://git
 
 > `optional` **negativePrompt**: `string`
 
-Defined in: [packages/agentos/src/media/images/IImageProvider.ts:46](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/IImageProvider.ts#L46)
+Defined in: [packages/agentos/src/media/images/IImageProvider.ts:46](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/images/IImageProvider.ts#L46)
 
 ***
 
@@ -48,7 +48,7 @@ Defined in: [packages/agentos/src/media/images/IImageProvider.ts:46](https://git
 
 > `optional` **outputFormat**: [`ImageOutputFormat`](../type-aliases/ImageOutputFormat.md)
 
-Defined in: [packages/agentos/src/media/images/IImageProvider.ts:54](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/IImageProvider.ts#L54)
+Defined in: [packages/agentos/src/media/images/IImageProvider.ts:54](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/images/IImageProvider.ts#L54)
 
 ***
 
@@ -56,7 +56,7 @@ Defined in: [packages/agentos/src/media/images/IImageProvider.ts:54](https://git
 
 > `optional` **samples**: `number`
 
-Defined in: [packages/agentos/src/media/images/IImageProvider.ts:51](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/IImageProvider.ts#L51)
+Defined in: [packages/agentos/src/media/images/IImageProvider.ts:51](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/images/IImageProvider.ts#L51)
 
 ***
 
@@ -64,7 +64,7 @@ Defined in: [packages/agentos/src/media/images/IImageProvider.ts:51](https://git
 
 > `optional` **seed**: `number`
 
-Defined in: [packages/agentos/src/media/images/IImageProvider.ts:47](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/IImageProvider.ts#L47)
+Defined in: [packages/agentos/src/media/images/IImageProvider.ts:47](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/images/IImageProvider.ts#L47)
 
 ***
 
@@ -72,7 +72,7 @@ Defined in: [packages/agentos/src/media/images/IImageProvider.ts:47](https://git
 
 > `optional` **steps**: `number`
 
-Defined in: [packages/agentos/src/media/images/IImageProvider.ts:50](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/IImageProvider.ts#L50)
+Defined in: [packages/agentos/src/media/images/IImageProvider.ts:50](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/images/IImageProvider.ts#L50)
 
 ***
 
@@ -80,7 +80,7 @@ Defined in: [packages/agentos/src/media/images/IImageProvider.ts:50](https://git
 
 > `optional` **strength**: `number`
 
-Defined in: [packages/agentos/src/media/images/IImageProvider.ts:52](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/IImageProvider.ts#L52)
+Defined in: [packages/agentos/src/media/images/IImageProvider.ts:52](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/images/IImageProvider.ts#L52)
 
 ***
 
@@ -88,4 +88,4 @@ Defined in: [packages/agentos/src/media/images/IImageProvider.ts:52](https://git
 
 > `optional` **stylePreset**: `string`
 
-Defined in: [packages/agentos/src/media/images/IImageProvider.ts:48](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/IImageProvider.ts#L48)
+Defined in: [packages/agentos/src/media/images/IImageProvider.ts:48](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/images/IImageProvider.ts#L48)

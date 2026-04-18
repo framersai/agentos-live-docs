@@ -2,7 +2,7 @@
 
 > **classifyOutcomeById**(`selectedOptionId`, `options`, `riskSuccessProbability`, `colony`, `rng`): [`TurnOutcome`](../type-aliases/TurnOutcome.md)
 
-Defined in: [core/progression.ts:98](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/core/progression.ts#L98)
+Defined in: [core/progression.ts:179](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/core/progression.ts#L179)
 
 Classify turn outcome using structured option ID.
 Preferred over text-based classifyOutcome.

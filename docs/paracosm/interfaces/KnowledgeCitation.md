@@ -1,6 +1,6 @@
 # Interface: KnowledgeCitation
 
-Defined in: [types.ts:175](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/types.ts#L175)
+Defined in: [types.ts:182](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/types.ts#L182)
 
 A single research citation with optional DOI.
 
@@ -10,7 +10,7 @@ A single research citation with optional DOI.
 
 > **claim**: `string`
 
-Defined in: [types.ts:176](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/types.ts#L176)
+Defined in: [types.ts:183](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/types.ts#L183)
 
 ***
 
@@ -18,7 +18,7 @@ Defined in: [types.ts:176](https://github.com/framersai/paracosm/blob/ba2b881292
 
 > `optional` **doi**: `string`
 
-Defined in: [types.ts:179](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/types.ts#L179)
+Defined in: [types.ts:186](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/types.ts#L186)
 
 ***
 
@@ -26,7 +26,7 @@ Defined in: [types.ts:179](https://github.com/framersai/paracosm/blob/ba2b881292
 
 > **source**: `string`
 
-Defined in: [types.ts:177](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/types.ts#L177)
+Defined in: [types.ts:184](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/types.ts#L184)
 
 ***
 
@@ -34,4 +34,4 @@ Defined in: [types.ts:177](https://github.com/framersai/paracosm/blob/ba2b881292
 
 > **url**: `string`
 
-Defined in: [types.ts:178](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/types.ts#L178)
+Defined in: [types.ts:185](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/types.ts#L185)

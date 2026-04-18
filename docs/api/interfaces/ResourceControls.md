@@ -1,6 +1,6 @@
 # Interface: ResourceControls
 
-Defined in: [packages/agentos/src/api/types.ts:537](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/api/types.ts#L537)
+Defined in: [packages/agentos/src/api/types.ts:537](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/types.ts#L537)
 
 Resource limits applied to the entire agency run.
 The `onLimitReached` policy determines whether a breach is fatal.
@@ -11,7 +11,7 @@ The `onLimitReached` policy determines whether a breach is fatal.
 
 > `optional` **maxAgentCalls**: `number`
 
-Defined in: [packages/agentos/src/api/types.ts:545](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/api/types.ts#L545)
+Defined in: [packages/agentos/src/api/types.ts:545](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/types.ts#L545)
 
 Maximum number of agent invocations (across all agents).
 
@@ -21,7 +21,7 @@ Maximum number of agent invocations (across all agents).
 
 > `optional` **maxCostUSD**: `number`
 
-Defined in: [packages/agentos/src/api/types.ts:541](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/api/types.ts#L541)
+Defined in: [packages/agentos/src/api/types.ts:541](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/types.ts#L541)
 
 Maximum USD cost cap across the entire run.
 
@@ -31,7 +31,7 @@ Maximum USD cost cap across the entire run.
 
 > `optional` **maxDurationMs**: `number`
 
-Defined in: [packages/agentos/src/api/types.ts:543](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/api/types.ts#L543)
+Defined in: [packages/agentos/src/api/types.ts:543](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/types.ts#L543)
 
 Wall-clock time budget for the run in milliseconds.
 
@@ -41,7 +41,7 @@ Wall-clock time budget for the run in milliseconds.
 
 > `optional` **maxEmergentAgents**: `number`
 
-Defined in: [packages/agentos/src/api/types.ts:549](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/api/types.ts#L549)
+Defined in: [packages/agentos/src/api/types.ts:549](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/types.ts#L549)
 
 Maximum number of emergent agents the orchestrator may synthesise.
 
@@ -51,7 +51,7 @@ Maximum number of emergent agents the orchestrator may synthesise.
 
 > `optional` **maxStepsPerAgent**: `number`
 
-Defined in: [packages/agentos/src/api/types.ts:547](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/api/types.ts#L547)
+Defined in: [packages/agentos/src/api/types.ts:547](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/types.ts#L547)
 
 Maximum steps per individual agent invocation.
 
@@ -61,7 +61,7 @@ Maximum steps per individual agent invocation.
 
 > `optional` **maxTotalTokens**: `number`
 
-Defined in: [packages/agentos/src/api/types.ts:539](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/api/types.ts#L539)
+Defined in: [packages/agentos/src/api/types.ts:539](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/types.ts#L539)
 
 Maximum total tokens (prompt + completion) across all agents and steps.
 
@@ -71,7 +71,7 @@ Maximum total tokens (prompt + completion) across all agents and steps.
 
 > `optional` **maxValidationRetries**: `number`
 
-Defined in: [packages/agentos/src/api/types.ts:561](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/api/types.ts#L561)
+Defined in: [packages/agentos/src/api/types.ts:561](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/types.ts#L561)
 
 Maximum number of retries when structured output validation fails.
 
@@ -89,7 +89,7 @@ disable retries entirely.
 
 > `optional` **onLimitReached**: `"error"` \| `"warn"` \| `"stop"`
 
-Defined in: [packages/agentos/src/api/types.ts:568](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/api/types.ts#L568)
+Defined in: [packages/agentos/src/api/types.ts:568](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/types.ts#L568)
 
 Action taken when any resource limit is breached.
 - `"stop"` — gracefully stop and return partial results.

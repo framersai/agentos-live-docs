@@ -1,6 +1,6 @@
 # Interface: EncodingConfig
 
-Defined in: [packages/agentos/src/memory/core/config.ts:41](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/core/config.ts#L41)
+Defined in: [packages/agentos/src/memory/core/config.ts:41](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/core/config.ts#L41)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/memory/core/config.ts:41](https://github.com/f
 
 > **baseStabilityMs**: `number`
 
-Defined in: [packages/agentos/src/memory/core/config.ts:51](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/core/config.ts#L51)
+Defined in: [packages/agentos/src/memory/core/config.ts:51](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/core/config.ts#L51)
 
 Base stability in ms (how long before strength halves).
 
@@ -24,7 +24,7 @@ Base stability in ms (how long before strength halves).
 
 > **baseStrength**: `number`
 
-Defined in: [packages/agentos/src/memory/core/config.ts:43](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/core/config.ts#L43)
+Defined in: [packages/agentos/src/memory/core/config.ts:43](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/core/config.ts#L43)
 
 Base encoding strength before personality modulation.
 
@@ -40,7 +40,7 @@ Base encoding strength before personality modulation.
 
 > **flashbulbStabilityMultiplier**: `number`
 
-Defined in: [packages/agentos/src/memory/core/config.ts:49](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/core/config.ts#L49)
+Defined in: [packages/agentos/src/memory/core/config.ts:49](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/core/config.ts#L49)
 
 Stability multiplier for flashbulb memories.
 
@@ -56,7 +56,7 @@ Stability multiplier for flashbulb memories.
 
 > **flashbulbStrengthMultiplier**: `number`
 
-Defined in: [packages/agentos/src/memory/core/config.ts:47](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/core/config.ts#L47)
+Defined in: [packages/agentos/src/memory/core/config.ts:47](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/core/config.ts#L47)
 
 Strength multiplier for flashbulb memories.
 
@@ -72,7 +72,7 @@ Strength multiplier for flashbulb memories.
 
 > **flashbulbThreshold**: `number`
 
-Defined in: [packages/agentos/src/memory/core/config.ts:45](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/core/config.ts#L45)
+Defined in: [packages/agentos/src/memory/core/config.ts:45](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/core/config.ts#L45)
 
 Emotional intensity threshold for flashbulb memory.
 

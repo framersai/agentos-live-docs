@@ -1,6 +1,6 @@
 # Interface: ScenarioWorldSchema
 
-Defined in: [types.ts:73](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/types.ts#L73)
+Defined in: [types.ts:80](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/types.ts#L80)
 
 Declares all world state variables for a scenario.
 
@@ -10,7 +10,7 @@ Declares all world state variables for a scenario.
 
 > **capacities**: `Record`\<`string`, [`WorldMetricSchema`](WorldMetricSchema.md)\>
 
-Defined in: [types.ts:75](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/types.ts#L75)
+Defined in: [types.ts:82](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/types.ts#L82)
 
 ***
 
@@ -18,7 +18,7 @@ Defined in: [types.ts:75](https://github.com/framersai/paracosm/blob/ba2b881292b
 
 > **environment**: `Record`\<`string`, [`WorldMetricSchema`](WorldMetricSchema.md)\>
 
-Defined in: [types.ts:78](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/types.ts#L78)
+Defined in: [types.ts:85](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/types.ts#L85)
 
 ***
 
@@ -26,7 +26,7 @@ Defined in: [types.ts:78](https://github.com/framersai/paracosm/blob/ba2b881292b
 
 > **metrics**: `Record`\<`string`, [`WorldMetricSchema`](WorldMetricSchema.md)\>
 
-Defined in: [types.ts:74](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/types.ts#L74)
+Defined in: [types.ts:81](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/types.ts#L81)
 
 ***
 
@@ -34,7 +34,7 @@ Defined in: [types.ts:74](https://github.com/framersai/paracosm/blob/ba2b881292b
 
 > **politics**: `Record`\<`string`, [`WorldMetricSchema`](WorldMetricSchema.md)\>
 
-Defined in: [types.ts:77](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/types.ts#L77)
+Defined in: [types.ts:84](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/types.ts#L84)
 
 ***
 
@@ -42,4 +42,4 @@ Defined in: [types.ts:77](https://github.com/framersai/paracosm/blob/ba2b881292b
 
 > **statuses**: `Record`\<`string`, [`WorldMetricSchema`](WorldMetricSchema.md)\>
 
-Defined in: [types.ts:76](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/types.ts#L76)
+Defined in: [types.ts:83](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/types.ts#L83)

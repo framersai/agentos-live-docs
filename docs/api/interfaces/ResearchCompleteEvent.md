@@ -1,6 +1,6 @@
 # Interface: ResearchCompleteEvent
 
-Defined in: [packages/agentos/src/query-router/types.ts:994](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/query-router/types.ts#L994)
+Defined in: [packages/agentos/src/query-router/types.ts:994](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/query-router/types.ts#L994)
 
 Emitted when deep research completes.
 
@@ -10,7 +10,7 @@ Emitted when deep research completes.
 
 > **durationMs**: `number`
 
-Defined in: [packages/agentos/src/query-router/types.ts:1001](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/query-router/types.ts#L1001)
+Defined in: [packages/agentos/src/query-router/types.ts:1001](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/query-router/types.ts#L1001)
 
 Duration of the research phase in milliseconds.
 
@@ -20,7 +20,7 @@ Duration of the research phase in milliseconds.
 
 > **iterationsUsed**: `number`
 
-Defined in: [packages/agentos/src/query-router/types.ts:997](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/query-router/types.ts#L997)
+Defined in: [packages/agentos/src/query-router/types.ts:997](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/query-router/types.ts#L997)
 
 Total number of research iterations performed.
 
@@ -30,7 +30,7 @@ Total number of research iterations performed.
 
 > **timestamp**: `number`
 
-Defined in: [packages/agentos/src/query-router/types.ts:1003](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/query-router/types.ts#L1003)
+Defined in: [packages/agentos/src/query-router/types.ts:1003](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/query-router/types.ts#L1003)
 
 Timestamp when research completed.
 
@@ -40,7 +40,7 @@ Timestamp when research completed.
 
 > **totalChunks**: `number`
 
-Defined in: [packages/agentos/src/query-router/types.ts:999](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/query-router/types.ts#L999)
+Defined in: [packages/agentos/src/query-router/types.ts:999](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/query-router/types.ts#L999)
 
 Total chunks gathered across all iterations.
 
@@ -50,4 +50,4 @@ Total chunks gathered across all iterations.
 
 > **type**: `"research:complete"`
 
-Defined in: [packages/agentos/src/query-router/types.ts:995](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/query-router/types.ts#L995)
+Defined in: [packages/agentos/src/query-router/types.ts:995](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/query-router/types.ts#L995)

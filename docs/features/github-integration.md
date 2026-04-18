@@ -1,9 +1,7 @@
 ---
-sidebar_label: GitHub Integration
-sidebar_position: 32
+title: "GitHub Integration"
+sidebar_position: 13.5
 ---
-
-# GitHub Integration
 
 The `@framers/agentos-ext-github` extension provides 26 GitHub tools that give agents full programmatic access to repositories, issues, pull requests, files, branches, releases, and CI/CD workflows. It also includes a `GitHubRepoIndexer` for RAG-ready codebase ingestion.
 

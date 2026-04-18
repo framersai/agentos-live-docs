@@ -1,6 +1,6 @@
 ---
 title: "AgentGraph"
-sidebar_position: 3
+sidebar_position: 5
 ---
 
 `AgentGraph` is the lowest-level authoring API in the Unified Orchestration Layer. It exposes explicit node and edge management, supports cycles, subgraph composition, and four edge types including the AgentOS-exclusive discovery and personality edges.

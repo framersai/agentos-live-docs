@@ -1,6 +1,6 @@
 # Interface: AlternativeAction
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:75](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/hitl/IHumanInteractionManager.ts#L75)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:75](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/hitl/IHumanInteractionManager.ts#L75)
 
 An alternative action that could be taken.
 
@@ -10,7 +10,7 @@ An alternative action that could be taken.
 
 > **alternativeId**: `string`
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:77](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/hitl/IHumanInteractionManager.ts#L77)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:77](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/hitl/IHumanInteractionManager.ts#L77)
 
 Alternative identifier
 
@@ -20,7 +20,7 @@ Alternative identifier
 
 > **description**: `string`
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:79](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/hitl/IHumanInteractionManager.ts#L79)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:79](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/hitl/IHumanInteractionManager.ts#L79)
 
 Description of alternative
 
@@ -30,6 +30,6 @@ Description of alternative
 
 > `optional` **tradeoffs**: `string`
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:81](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/hitl/IHumanInteractionManager.ts#L81)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:81](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/hitl/IHumanInteractionManager.ts#L81)
 
 Trade-offs of this alternative

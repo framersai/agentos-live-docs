@@ -1,6 +1,6 @@
 # Class: LoopController
 
-Defined in: [packages/agentos/src/orchestration/runtime/LoopController.ts:202](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/runtime/LoopController.ts#L202)
+Defined in: [packages/agentos/src/orchestration/runtime/LoopController.ts:202](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/runtime/LoopController.ts#L202)
 
 Configurable ReAct loop controller.
 
@@ -31,7 +31,7 @@ user or record an audit trace.
 
 > **execute**(`config`, `context`): `AsyncGenerator`\<[`LoopEvent`](../type-aliases/LoopEvent.md)\>
 
-Defined in: [packages/agentos/src/orchestration/runtime/LoopController.ts:211](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/runtime/LoopController.ts#L211)
+Defined in: [packages/agentos/src/orchestration/runtime/LoopController.ts:211](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/runtime/LoopController.ts#L211)
 
 Execute the ReAct loop and yield [LoopEvent](../type-aliases/LoopEvent.md)s.
 

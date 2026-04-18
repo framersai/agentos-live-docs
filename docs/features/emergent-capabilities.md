@@ -493,108 +493,36 @@ await importEmergentTool('./slugify.emergent-tool.yaml', { seedId: agentSeedId }
 
 When `selfImprovement.enabled` is `true`, the engine registers four additional meta-tools that let agents modify their own behavior at runtime. All four are bounded by configurable limits to prevent runaway self-modification.
 
-### `adapt_personality` — HEXACO Trait Mutation
+| Tool | What it does |
+|------|-------------|
+| `adapt_personality` | Shift HEXACO traits by bounded deltas with per-session budgets and Ebbinghaus decay |
+| `manage_skills` | Enable, disable, search, and list skills with allowlist-based permission gating |
+| `self_evaluate` | LLM-as-judge response scoring (relevance, clarity, accuracy, helpfulness) with parameter adjustment |
+| `create_workflow` | Compose multi-step tool pipelines at runtime with reference resolution ($input, $prev, $steps[N]) |
 
-Shifts a specific HEXACO dimension by a bounded delta. The six mutable traits: `openness`, `conscientiousness`, `emotionality`, `extraversion`, `agreeableness`, `honesty`.
+Configuration:
 
 ```typescript
-const agent = new AgentOS();
-await agent.initialize({
-  provider: 'anthropic',
-  emergent: true,
+{
   selfImprovement: {
     enabled: true,
-    personality: {
-      maxDeltaPerSession: 0.15,  // max absolute shift per trait per session
-      persistWithDecay: true,     // mutations survive restarts but decay
-      decayRate: 0.05,            // 5% decay per consolidation cycle
-    },
-  },
-});
-```
-
-Every mutation requires a `reasoning` string (audit trail). Values are clamped to [0, 1]. Mutations that exceed the per-session budget are clamped to the remaining budget. When `persistWithDecay` is true, mutations are stored in the [`PersonalityMutationStore`](/api/classes/PersonalityMutationStore) and decay toward baseline over time via Ebbinghaus-style consolidation.
-
-### `manage_skills` — Runtime Skill Management
-
-Enables, disables, searches, and lists skills at runtime. Four actions: `enable`, `disable`, `search`, `list`.
-
-```typescript
-selfImprovement: {
-  enabled: true,
-  skills: {
-    allowlist: ['*'],                        // or ['category:research', 'web-search']
-    requireApprovalForNewCategories: true,    // HITL gate for unfamiliar categories
+    personality: { maxDeltaPerSession: 0.15, persistWithDecay: true, decayRate: 0.05 },
+    skills: { allowlist: ['*'], requireApprovalForNewCategories: true },
+    workflows: { maxSteps: 10, allowedTools: ['*'] },
+    selfEval: { autoAdjust: true, adjustableParams: ['temperature', 'verbosity', 'personality'], maxEvaluationsPerSession: 10 },
   },
 }
 ```
 
-Permission model:
-- `['*']` allows all skills unconditionally
-- `['category:X']` permits any skill in category X
-- `['skillId']` permits exact matches
-- Same-category expansion: if any skill in category X is active, other skills in X are auto-permitted
-- Locked skills (core skills) cannot be disabled
+See [Emergent Capabilities](https://docs.agentos.sh/docs/features/emergent-capabilities#self-improvement-tools) for full documentation of each tool.
 
-### `self_evaluate` — Response Quality Scoring
+## Skill Export
 
-Three actions: `evaluate` (LLM-as-judge scores a response), `adjust` (tweak runtime parameters), `report` (aggregate session metrics).
-
-Evaluation scores four dimensions (0 to 1): `relevance`, `clarity`, `accuracy`, `helpfulness`. The judge can suggest adjustments to `temperature`, `verbosity`, or personality traits.
-
-```typescript
-selfImprovement: {
-  enabled: true,
-  selfEval: {
-    autoAdjust: true,                          // apply suggestions immediately
-    adjustableParams: ['temperature', 'verbosity', 'personality'],
-    maxEvaluationsPerSession: 10,              // cap LLM calls
-    evaluationModel: 'openai:gpt-4o-mini',     // optional model override
-  },
-}
-```
-
-### `create_workflow` — Runtime Workflow Composition
-
-Defines, runs, and lists multi-step tool workflows. Steps execute sequentially with reference resolution (`$input`, `$prev`, `$steps[N]`).
-
-```typescript
-selfImprovement: {
-  enabled: true,
-  workflows: {
-    maxSteps: 10,         // reject workflows exceeding this count
-    allowedTools: ['*'],  // or restrict to specific tool names
-  },
-}
-```
-
-Constraints:
-- `create_workflow` cannot appear as a step (prevents recursion)
-- Each step has a 30-second execution timeout
-- Only tools in `allowedTools` may be used
-
-## Skill Export — Forged Tools to Skills
-
-The [`SkillExporter`](/api/classes/SkillExporter) converts runtime-forged tools into the standard `SKILL.md` + `CAPABILITY.yaml` format used by the skills registry and capability discovery engine. This bridges emergent tools into the curated skills ecosystem.
-
-Three export levels:
-
-| Function | What it does |
-|----------|-------------|
-| `exportToolAsSkill(tool)` | In-memory conversion to SKILL.md markdown string |
-| `writeSkillFile(tool, dir)` | Writes a single SKILL.md to disk |
-| `exportToolAsSkillPack(tool, dir)` | Writes both SKILL.md and CAPABILITY.yaml (full capability directory ready for scanner pickup) |
-
-Once exported as a skill pack, the tool becomes discoverable by `CapabilityManifestScanner` and appears in capability discovery results alongside curated human-authored skills.
+The `SkillExporter` converts runtime-forged tools into `SKILL.md` + `CAPABILITY.yaml` format, bridging emergent tools into the curated skills ecosystem and capability discovery.
 
 ```typescript
 import { exportToolAsSkillPack } from '@framers/agentos/emergent';
-
-// Export a proven agent-tier tool as a full skill pack
 await exportToolAsSkillPack(forgedTool, './skills/slugify');
-// Creates:
-//   ./skills/slugify/SKILL.md
-//   ./skills/slugify/CAPABILITY.yaml
 ```
 
 ## Related

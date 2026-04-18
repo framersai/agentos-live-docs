@@ -1,6 +1,6 @@
 # Interface: NodePolicies
 
-Defined in: [packages/agentos/src/orchestration/builders/nodes.ts:4](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/builders/nodes.ts#L4)
+Defined in: [packages/agentos/src/orchestration/builders/nodes.ts:4](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/builders/nodes.ts#L4)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/orchestration/builders/nodes.ts:4](https://git
 
 > `optional` **checkpoint**: `"both"` \| `"none"` \| `"before"` \| `"after"`
 
-Defined in: [packages/agentos/src/orchestration/builders/nodes.ts:9](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/builders/nodes.ts#L9)
+Defined in: [packages/agentos/src/orchestration/builders/nodes.ts:9](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/builders/nodes.ts#L9)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [packages/agentos/src/orchestration/builders/nodes.ts:9](https://git
 
 > `optional` **discovery**: [`DiscoveryPolicy`](DiscoveryPolicy.md)
 
-Defined in: [packages/agentos/src/orchestration/builders/nodes.ts:6](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/builders/nodes.ts#L6)
+Defined in: [packages/agentos/src/orchestration/builders/nodes.ts:6](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/builders/nodes.ts#L6)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: [packages/agentos/src/orchestration/builders/nodes.ts:6](https://git
 
 > `optional` **effectClass**: [`EffectClass`](../type-aliases/EffectClass.md)
 
-Defined in: [packages/agentos/src/orchestration/builders/nodes.ts:10](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/builders/nodes.ts#L10)
+Defined in: [packages/agentos/src/orchestration/builders/nodes.ts:10](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/builders/nodes.ts#L10)
 
 ***
 
@@ -32,7 +32,7 @@ Defined in: [packages/agentos/src/orchestration/builders/nodes.ts:10](https://gi
 
 > `optional` **guardrails**: [`GuardrailPolicy`](GuardrailPolicy.md)
 
-Defined in: [packages/agentos/src/orchestration/builders/nodes.ts:8](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/builders/nodes.ts#L8)
+Defined in: [packages/agentos/src/orchestration/builders/nodes.ts:8](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/builders/nodes.ts#L8)
 
 ***
 
@@ -40,7 +40,7 @@ Defined in: [packages/agentos/src/orchestration/builders/nodes.ts:8](https://git
 
 > `optional` **memory**: [`MemoryPolicy`](MemoryPolicy.md)
 
-Defined in: [packages/agentos/src/orchestration/builders/nodes.ts:5](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/builders/nodes.ts#L5)
+Defined in: [packages/agentos/src/orchestration/builders/nodes.ts:5](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/builders/nodes.ts#L5)
 
 ***
 
@@ -48,4 +48,4 @@ Defined in: [packages/agentos/src/orchestration/builders/nodes.ts:5](https://git
 
 > `optional` **persona**: [`PersonaPolicy`](PersonaPolicy.md)
 
-Defined in: [packages/agentos/src/orchestration/builders/nodes.ts:7](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/builders/nodes.ts#L7)
+Defined in: [packages/agentos/src/orchestration/builders/nodes.ts:7](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/builders/nodes.ts#L7)

@@ -1,9 +1,7 @@
 ---
-sidebar_label: Video Pipeline
-sidebar_position: 28
+title: "Video Pipeline"
+sidebar_position: 6
 ---
-
-# Video Pipeline
 
 AgentOS provides a provider-agnostic video pipeline covering generation (text-to-video, image-to-video), analysis (scene detection, transcription, summarisation), and RAG-ready indexing. Three high-level API functions expose the full pipeline:
 

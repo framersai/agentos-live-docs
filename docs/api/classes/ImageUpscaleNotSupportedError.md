@@ -1,6 +1,6 @@
 # Class: ImageUpscaleNotSupportedError
 
-Defined in: [packages/agentos/src/media/images/ImageOperationError.ts:43](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/ImageOperationError.ts#L43)
+Defined in: [packages/agentos/src/media/images/ImageOperationError.ts:43](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/images/ImageOperationError.ts#L43)
 
 Thrown when an upscale operation is requested from a provider that does
 not implement `upscaleImage`.
@@ -19,7 +19,7 @@ not implement `upscaleImage`.
 
 > **new ImageUpscaleNotSupportedError**(`providerId`): `ImageUpscaleNotSupportedError`
 
-Defined in: [packages/agentos/src/media/images/ImageOperationError.ts:47](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/ImageOperationError.ts#L47)
+Defined in: [packages/agentos/src/media/images/ImageOperationError.ts:47](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/images/ImageOperationError.ts#L47)
 
 #### Parameters
 
@@ -65,7 +65,7 @@ Defined in: node\_modules/.pnpm/typescript@5.6.3/node\_modules/typescript/lib/li
 
 > `readonly` **providerId**: `string`
 
-Defined in: [packages/agentos/src/media/images/ImageOperationError.ts:45](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/ImageOperationError.ts#L45)
+Defined in: [packages/agentos/src/media/images/ImageOperationError.ts:45](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/images/ImageOperationError.ts#L45)
 
 The provider that was asked to perform the upscale.
 

@@ -1,6 +1,6 @@
 ---
 title: "Deep Research & Query Classification"
-sidebar_position: 14
+sidebar_position: 3
 ---
 
 Ask an agent "what's 2+2" and it should answer instantly. Ask it "what are the latest treatment options for drug-resistant tuberculosis" and it should go dig through medical literature, cross-reference sources, identify gaps, and come back with citations.

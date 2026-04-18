@@ -1,6 +1,6 @@
 # Interface: AgentOSUsageLedgerOptions
 
-Defined in: [packages/agentos/src/api/runtime/usageLedger.ts:15](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/api/runtime/usageLedger.ts#L15)
+Defined in: [packages/agentos/src/api/runtime/usageLedger.ts:15](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/runtime/usageLedger.ts#L15)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/api/runtime/usageLedger.ts:15](https://github.
 
 > `optional` **enabled**: `boolean`
 
-Defined in: [packages/agentos/src/api/runtime/usageLedger.ts:17](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/api/runtime/usageLedger.ts#L17)
+Defined in: [packages/agentos/src/api/runtime/usageLedger.ts:17](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/runtime/usageLedger.ts#L17)
 
 Enable persistence using the shared default path under `~/.framers/usage-ledger.jsonl`.
 
@@ -18,7 +18,7 @@ Enable persistence using the shared default path under `~/.framers/usage-ledger.
 
 > `optional` **path**: `string`
 
-Defined in: [packages/agentos/src/api/runtime/usageLedger.ts:19](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/api/runtime/usageLedger.ts#L19)
+Defined in: [packages/agentos/src/api/runtime/usageLedger.ts:19](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/runtime/usageLedger.ts#L19)
 
 Explicit path to the append-only JSONL ledger file.
 
@@ -28,7 +28,7 @@ Explicit path to the append-only JSONL ledger file.
 
 > `optional` **personaId**: `string`
 
-Defined in: [packages/agentos/src/api/runtime/usageLedger.ts:23](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/api/runtime/usageLedger.ts#L23)
+Defined in: [packages/agentos/src/api/runtime/usageLedger.ts:23](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/runtime/usageLedger.ts#L23)
 
 Optional persona identifier for callers layering persona-specific usage views.
 
@@ -38,7 +38,7 @@ Optional persona identifier for callers layering persona-specific usage views.
 
 > `optional` **sessionId**: `string`
 
-Defined in: [packages/agentos/src/api/runtime/usageLedger.ts:21](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/api/runtime/usageLedger.ts#L21)
+Defined in: [packages/agentos/src/api/runtime/usageLedger.ts:21](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/runtime/usageLedger.ts#L21)
 
 Session identifier used to group related helper calls. Defaults to `"global"`.
 
@@ -48,6 +48,6 @@ Session identifier used to group related helper calls. Defaults to `"global"`.
 
 > `optional` **source**: `string`
 
-Defined in: [packages/agentos/src/api/runtime/usageLedger.ts:25](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/api/runtime/usageLedger.ts#L25)
+Defined in: [packages/agentos/src/api/runtime/usageLedger.ts:25](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/runtime/usageLedger.ts#L25)
 
 Optional source label such as `"generateText"` or `"agent.session.stream"`.

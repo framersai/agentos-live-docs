@@ -1,6 +1,6 @@
 # Interface: AgencyUpsertArgs
 
-Defined in: [packages/agentos/src/agents/agency/AgencyTypes.ts:172](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/agents/agency/AgencyTypes.ts#L172)
+Defined in: [packages/agentos/src/agents/agency/AgencyTypes.ts:172](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/agents/agency/AgencyTypes.ts#L172)
 
 Arguments for creating or updating an agency session.
 
@@ -10,7 +10,7 @@ Arguments for creating or updating an agency session.
 
 > `optional` **agencyId**: `string`
 
-Defined in: [packages/agentos/src/agents/agency/AgencyTypes.ts:178](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/agents/agency/AgencyTypes.ts#L178)
+Defined in: [packages/agentos/src/agents/agency/AgencyTypes.ts:178](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/agents/agency/AgencyTypes.ts#L178)
 
 Explicit agency ID (auto-generated if omitted)
 
@@ -20,7 +20,7 @@ Explicit agency ID (auto-generated if omitted)
 
 > **conversationId**: `string`
 
-Defined in: [packages/agentos/src/agents/agency/AgencyTypes.ts:176](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/agents/agency/AgencyTypes.ts#L176)
+Defined in: [packages/agentos/src/agents/agency/AgencyTypes.ts:176](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/agents/agency/AgencyTypes.ts#L176)
 
 Conversation context
 
@@ -30,7 +30,7 @@ Conversation context
 
 > `optional` **memoryConfig**: [`AgencyMemoryConfig`](AgencyMemoryConfig.md)
 
-Defined in: [packages/agentos/src/agents/agency/AgencyTypes.ts:182](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/agents/agency/AgencyTypes.ts#L182)
+Defined in: [packages/agentos/src/agents/agency/AgencyTypes.ts:182](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/agents/agency/AgencyTypes.ts#L182)
 
 Shared memory configuration
 
@@ -40,7 +40,7 @@ Shared memory configuration
 
 > `optional` **metadata**: `Record`\<`string`, `unknown`\>
 
-Defined in: [packages/agentos/src/agents/agency/AgencyTypes.ts:180](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/agents/agency/AgencyTypes.ts#L180)
+Defined in: [packages/agentos/src/agents/agency/AgencyTypes.ts:180](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/agents/agency/AgencyTypes.ts#L180)
 
 Custom metadata
 
@@ -50,6 +50,6 @@ Custom metadata
 
 > **workflowId**: `string`
 
-Defined in: [packages/agentos/src/agents/agency/AgencyTypes.ts:174](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/agents/agency/AgencyTypes.ts#L174)
+Defined in: [packages/agentos/src/agents/agency/AgencyTypes.ts:174](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/agents/agency/AgencyTypes.ts#L174)
 
 Associated workflow instance

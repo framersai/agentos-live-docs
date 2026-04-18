@@ -2,7 +2,7 @@
 
 > **createVisionPipeline**(`config?`): `Promise`\<[`VisionPipeline`](../classes/VisionPipeline.md)\>
 
-Defined in: [packages/agentos/src/vision/index.ts:160](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/vision/index.ts#L160)
+Defined in: [packages/agentos/src/vision/index.ts:160](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/vision/index.ts#L160)
 
 Create a vision pipeline with sensible defaults by auto-detecting
 which providers are installed in the current environment.

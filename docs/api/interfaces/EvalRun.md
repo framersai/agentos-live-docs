@@ -1,6 +1,6 @@
 # Interface: EvalRun
 
-Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:133](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/evaluation/IEvaluator.ts#L133)
+Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:133](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/evaluation/IEvaluator.ts#L133)
 
 A complete evaluation run.
 
@@ -10,7 +10,7 @@ A complete evaluation run.
 
 > `optional` **agentId**: `string`
 
-Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:139](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/evaluation/IEvaluator.ts#L139)
+Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:139](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/evaluation/IEvaluator.ts#L139)
 
 Agent or persona being evaluated
 
@@ -20,7 +20,7 @@ Agent or persona being evaluated
 
 > **aggregateMetrics**: [`AggregateMetrics`](AggregateMetrics.md)
 
-Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:152](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/evaluation/IEvaluator.ts#L152)
+Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:152](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/evaluation/IEvaluator.ts#L152)
 
 Aggregate metrics
 
@@ -30,7 +30,7 @@ Aggregate metrics
 
 > `optional` **completedAt**: `string`
 
-Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:146](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/evaluation/IEvaluator.ts#L146)
+Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:146](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/evaluation/IEvaluator.ts#L146)
 
 Timestamp completed
 
@@ -40,7 +40,7 @@ Timestamp completed
 
 > `optional` **config**: [`EvalConfig`](EvalConfig.md)
 
-Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:154](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/evaluation/IEvaluator.ts#L154)
+Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:154](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/evaluation/IEvaluator.ts#L154)
 
 Configuration used
 
@@ -50,7 +50,7 @@ Configuration used
 
 > `optional` **metadata**: `Record`\<`string`, `unknown`\>
 
-Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:156](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/evaluation/IEvaluator.ts#L156)
+Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:156](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/evaluation/IEvaluator.ts#L156)
 
 Metadata
 
@@ -60,7 +60,7 @@ Metadata
 
 > `optional` **modelId**: `string`
 
-Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:142](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/evaluation/IEvaluator.ts#L142)
+Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:142](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/evaluation/IEvaluator.ts#L142)
 
 Model being used
 
@@ -70,7 +70,7 @@ Model being used
 
 > **name**: `string`
 
-Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:137](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/evaluation/IEvaluator.ts#L137)
+Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:137](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/evaluation/IEvaluator.ts#L137)
 
 Run name/description
 
@@ -80,7 +80,7 @@ Run name/description
 
 > `optional` **personaId**: `string`
 
-Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:140](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/evaluation/IEvaluator.ts#L140)
+Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:140](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/evaluation/IEvaluator.ts#L140)
 
 ***
 
@@ -88,7 +88,7 @@ Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:140](https://github.c
 
 > **results**: [`EvalTestResult`](EvalTestResult.md)[]
 
-Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:150](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/evaluation/IEvaluator.ts#L150)
+Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:150](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/evaluation/IEvaluator.ts#L150)
 
 Individual test results
 
@@ -98,7 +98,7 @@ Individual test results
 
 > **runId**: `string`
 
-Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:135](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/evaluation/IEvaluator.ts#L135)
+Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:135](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/evaluation/IEvaluator.ts#L135)
 
 Run ID
 
@@ -108,7 +108,7 @@ Run ID
 
 > **startedAt**: `string`
 
-Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:144](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/evaluation/IEvaluator.ts#L144)
+Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:144](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/evaluation/IEvaluator.ts#L144)
 
 Timestamp started
 
@@ -118,6 +118,6 @@ Timestamp started
 
 > **status**: `"completed"` \| `"failed"` \| `"pending"` \| `"running"`
 
-Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:148](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/evaluation/IEvaluator.ts#L148)
+Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:148](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/evaluation/IEvaluator.ts#L148)
 
 Status

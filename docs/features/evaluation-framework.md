@@ -1,6 +1,6 @@
 ---
 title: "Evaluation Framework"
-sidebar_position: 10
+sidebar_position: 4
 ---
 
 ## Overview

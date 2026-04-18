@@ -1,6 +1,6 @@
 # Interface: ScenarioHooks
 
-Defined in: [types.ts:253](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/types.ts#L253)
+Defined in: [types.ts:260](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/types.ts#L260)
 
 Lifecycle hooks that a scenario provides to inject domain-specific behavior
 into the generic engine. All hooks are optional.
@@ -11,7 +11,7 @@ into the generic engine. All hooks are optional.
 
 > `optional` **departmentPromptHook**: (`ctx`) => `string`[]
 
-Defined in: [types.ts:257](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/types.ts#L257)
+Defined in: [types.ts:264](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/types.ts#L264)
 
 Builds department-specific prompt context lines for LLM department agents
 
@@ -31,9 +31,9 @@ Builds department-specific prompt context lines for LLM department agents
 
 > `optional` **directorInstructions**: () => `string`
 
-Defined in: [types.ts:259](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/types.ts#L259)
+Defined in: [types.ts:266](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/types.ts#L266)
 
-Returns the Crisis Director's system instructions for this scenario
+Returns the Event Director's system instructions for this scenario
 
 #### Returns
 
@@ -45,9 +45,9 @@ Returns the Crisis Director's system instructions for this scenario
 
 > `optional` **directorPromptHook**: (`ctx`) => `string`
 
-Defined in: [types.ts:261](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/types.ts#L261)
+Defined in: [types.ts:268](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/types.ts#L268)
 
-Builds the Crisis Director's per-turn context prompt
+Builds the Event Director's per-turn context prompt
 
 #### Parameters
 
@@ -65,7 +65,7 @@ Builds the Crisis Director's per-turn context prompt
 
 > `optional` **fingerprintHook**: (`finalState`, `outcomeLog`, `leader`, `toolRegs`, `maxTurns`) => `Record`\<`string`, `string`\>
 
-Defined in: [types.ts:265](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/types.ts#L265)
+Defined in: [types.ts:272](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/types.ts#L272)
 
 Computes a timeline fingerprint classification from final simulation state
 
@@ -97,13 +97,13 @@ Computes a timeline fingerprint classification from final simulation state
 
 ***
 
-### getMilestoneCrisis()?
+### getMilestoneEvent()?
 
-> `optional` **getMilestoneCrisis**: (`turn`, `maxTurns`) => [`MilestoneCrisisDef`](MilestoneCrisisDef.md) \| `null`
+> `optional` **getMilestoneEvent**: (`turn`, `maxTurns`) => [`MilestoneEventDef`](MilestoneEventDef.md) \| `null`
 
-Defined in: [types.ts:267](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/types.ts#L267)
+Defined in: [types.ts:274](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/types.ts#L274)
 
-Returns a milestone crisis for narrative anchor turns (turn 1, final turn)
+Returns a milestone event for narrative anchor turns (turn 1, final turn)
 
 #### Parameters
 
@@ -117,7 +117,7 @@ Returns a milestone crisis for narrative anchor turns (turn 1, final turn)
 
 #### Returns
 
-[`MilestoneCrisisDef`](MilestoneCrisisDef.md) \| `null`
+[`MilestoneEventDef`](MilestoneEventDef.md) \| `null`
 
 ***
 
@@ -125,9 +125,9 @@ Returns a milestone crisis for narrative anchor turns (turn 1, final turn)
 
 > `optional` **politicsHook**: (`category`, `outcome`) => `Record`\<`string`, `number`\> \| `null`
 
-Defined in: [types.ts:269](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/types.ts#L269)
+Defined in: [types.ts:276](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/types.ts#L276)
 
-Returns politics deltas for political/social crises, null if not applicable
+Returns politics deltas for political/social events, null if not applicable
 
 #### Parameters
 
@@ -149,7 +149,7 @@ Returns politics deltas for political/social crises, null if not applicable
 
 > `optional` **progressionHook**: (`ctx`) => `void`
 
-Defined in: [types.ts:255](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/types.ts#L255)
+Defined in: [types.ts:262](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/types.ts#L262)
 
 Called during between-turn progression for scenario-specific health/field changes (e.g., radiation, bone density)
 
@@ -169,9 +169,9 @@ Called during between-turn progression for scenario-specific health/field change
 
 > `optional` **reactionContextHook**: (`colonist`, `ctx`) => `string`
 
-Defined in: [types.ts:263](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/types.ts#L263)
+Defined in: [types.ts:270](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/types.ts#L270)
 
-Returns location/identity/health phrasing for colonist reaction prompts
+Returns location/identity/health phrasing for agent reaction prompts
 
 #### Parameters
 

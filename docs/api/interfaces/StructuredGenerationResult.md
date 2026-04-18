@@ -1,6 +1,6 @@
 # Interface: StructuredGenerationResult\<T\>
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:326](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/structured/output/IStructuredOutputManager.ts#L326)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:326](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/structured/output/IStructuredOutputManager.ts#L326)
 
 Result of structured output generation.
 
@@ -18,7 +18,7 @@ The expected type of the parsed data
 
 > `optional` **data**: `T`
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:331](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/structured/output/IStructuredOutputManager.ts#L331)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:331](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/structured/output/IStructuredOutputManager.ts#L331)
 
 The parsed, validated data (if successful)
 
@@ -28,7 +28,7 @@ The parsed, validated data (if successful)
 
 > **latencyMs**: `number`
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:353](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/structured/output/IStructuredOutputManager.ts#L353)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:353](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/structured/output/IStructuredOutputManager.ts#L353)
 
 Generation latency in milliseconds
 
@@ -38,7 +38,7 @@ Generation latency in milliseconds
 
 > **modelId**: `string`
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:359](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/structured/output/IStructuredOutputManager.ts#L359)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:359](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/structured/output/IStructuredOutputManager.ts#L359)
 
 Model that was used
 
@@ -48,7 +48,7 @@ Model that was used
 
 > **providerId**: `string`
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:362](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/structured/output/IStructuredOutputManager.ts#L362)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:362](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/structured/output/IStructuredOutputManager.ts#L362)
 
 Provider that was used
 
@@ -58,7 +58,7 @@ Provider that was used
 
 > **rawOutput**: `string`
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:334](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/structured/output/IStructuredOutputManager.ts#L334)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:334](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/structured/output/IStructuredOutputManager.ts#L334)
 
 Raw string output from the LLM
 
@@ -68,7 +68,7 @@ Raw string output from the LLM
 
 > `optional` **reasoning**: `string`
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:356](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/structured/output/IStructuredOutputManager.ts#L356)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:356](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/structured/output/IStructuredOutputManager.ts#L356)
 
 Reasoning/chain-of-thought if requested
 
@@ -78,7 +78,7 @@ Reasoning/chain-of-thought if requested
 
 > **retryCount**: `number`
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:343](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/structured/output/IStructuredOutputManager.ts#L343)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:343](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/structured/output/IStructuredOutputManager.ts#L343)
 
 Number of retry attempts made
 
@@ -88,7 +88,7 @@ Number of retry attempts made
 
 > **strategyUsed**: [`StructuredOutputStrategy`](../type-aliases/StructuredOutputStrategy.md)
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:340](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/structured/output/IStructuredOutputManager.ts#L340)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:340](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/structured/output/IStructuredOutputManager.ts#L340)
 
 The strategy that was used
 
@@ -98,7 +98,7 @@ The strategy that was used
 
 > **success**: `boolean`
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:328](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/structured/output/IStructuredOutputManager.ts#L328)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:328](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/structured/output/IStructuredOutputManager.ts#L328)
 
 Whether generation and validation succeeded
 
@@ -108,7 +108,7 @@ Whether generation and validation succeeded
 
 > `optional` **tokenUsage**: `object`
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:346](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/structured/output/IStructuredOutputManager.ts#L346)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:346](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/structured/output/IStructuredOutputManager.ts#L346)
 
 Token usage statistics
 
@@ -130,6 +130,6 @@ Token usage statistics
 
 > `optional` **validationErrors**: [`ValidationIssue`](ValidationIssue.md)[]
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:337](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/structured/output/IStructuredOutputManager.ts#L337)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:337](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/structured/output/IStructuredOutputManager.ts#L337)
 
 Validation errors if any

@@ -1,6 +1,6 @@
 # Interface: EmbedTextOptions
 
-Defined in: [packages/agentos/src/api/embedText.ts:38](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/api/embedText.ts#L38)
+Defined in: [packages/agentos/src/api/embedText.ts:38](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/embedText.ts#L38)
 
 Options for an [embedText](../functions/embedText.md) call.
 
@@ -24,7 +24,7 @@ const opts: EmbedTextOptions = {
 
 > `optional` **apiKey**: `string`
 
-Defined in: [packages/agentos/src/api/embedText.ts:76](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/api/embedText.ts#L76)
+Defined in: [packages/agentos/src/api/embedText.ts:76](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/embedText.ts#L76)
 
 Override the API key instead of reading from environment variables.
 
@@ -34,7 +34,7 @@ Override the API key instead of reading from environment variables.
 
 > `optional` **baseUrl**: `string`
 
-Defined in: [packages/agentos/src/api/embedText.ts:79](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/api/embedText.ts#L79)
+Defined in: [packages/agentos/src/api/embedText.ts:79](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/embedText.ts#L79)
 
 Override the provider base URL (useful for local proxies or Ollama).
 
@@ -44,7 +44,7 @@ Override the provider base URL (useful for local proxies or Ollama).
 
 > `optional` **dimensions**: `number`
 
-Defined in: [packages/agentos/src/api/embedText.ts:73](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/api/embedText.ts#L73)
+Defined in: [packages/agentos/src/api/embedText.ts:73](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/embedText.ts#L73)
 
 Desired output dimensionality. Only honoured by models that support
 dimension reduction (e.g. OpenAI `text-embedding-3-*` with `dimensions`).
@@ -56,7 +56,7 @@ Ignored when the model has a fixed output size.
 
 > **input**: `string` \| `string`[]
 
-Defined in: [packages/agentos/src/api/embedText.ts:66](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/api/embedText.ts#L66)
+Defined in: [packages/agentos/src/api/embedText.ts:66](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/embedText.ts#L66)
 
 Text(s) to embed. Pass a single string for one embedding or an array
 for batch processing.
@@ -76,7 +76,7 @@ input: ['Hello world', 'Goodbye world']
 
 > `optional` **model**: `string`
 
-Defined in: [packages/agentos/src/api/embedText.ts:52](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/api/embedText.ts#L52)
+Defined in: [packages/agentos/src/api/embedText.ts:52](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/embedText.ts#L52)
 
 Model identifier. Accepts `"provider:model"` or plain model name with `provider`.
 
@@ -92,7 +92,7 @@ Model identifier. Accepts `"provider:model"` or plain model name with `provider`
 
 > `optional` **provider**: `string`
 
-Defined in: [packages/agentos/src/api/embedText.ts:45](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/api/embedText.ts#L45)
+Defined in: [packages/agentos/src/api/embedText.ts:45](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/embedText.ts#L45)
 
 Provider name. When supplied without `model`, the default embedding model
 for the provider is resolved automatically from the built-in defaults.
@@ -109,6 +109,6 @@ for the provider is resolved automatically from the built-in defaults.
 
 > `optional` **usageLedger**: [`AgentOSUsageLedgerOptions`](AgentOSUsageLedgerOptions.md)
 
-Defined in: [packages/agentos/src/api/embedText.ts:82](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/api/embedText.ts#L82)
+Defined in: [packages/agentos/src/api/embedText.ts:82](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/embedText.ts#L82)
 
 Optional durable usage ledger configuration for helper-level accounting.

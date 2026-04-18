@@ -1,14 +1,14 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { createRequire } from 'node:module';
 
 import { rewriteMarkdownLinks } from './pull-docs-links.mjs';
 
+const require = createRequire(import.meta.url);
+const { buildFilenameRewriteMap } = require('../../../packages/agentos/docs/publication-manifest.cjs');
+
 const options = {
-  linkRewrites: {
-    'DEEP_RESEARCH.md': '/features/deep-research',
-    'STREAMING_SEMANTICS.md': '/architecture/streaming-semantics',
-    'COGNITIVE_MECHANISMS.md': '/features/cognitive-mechanisms',
-  },
+  linkRewrites: buildFilenameRewriteMap(),
   exactLinkRewrites: {
     './security-pipeline.md': '/features/human-in-the-loop',
   },
@@ -16,12 +16,12 @@ const options = {
 };
 
 test('rewriteMarkdownLinks rewrites moved docs case-insensitively', () => {
-  const input = 'See [Deep Research](./deep-research.md) and [Streaming](./STREAMING_SEMANTICS.md).';
+  const input = 'See [Getting Started](./GETTING_STARTED.md), [Deep Research](./deep-research.md), and [Streaming](./STREAMING_SEMANTICS.md).';
   const output = rewriteMarkdownLinks(input, options);
 
   assert.equal(
     output,
-    'See [Deep Research](/features/deep-research) and [Streaming](/architecture/streaming-semantics).',
+    'See [Getting Started](/getting-started), [Deep Research](/features/deep-research), and [Streaming](/architecture/streaming-semantics).',
   );
 });
 

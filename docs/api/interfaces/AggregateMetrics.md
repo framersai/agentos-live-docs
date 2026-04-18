@@ -1,6 +1,6 @@
 # Interface: AggregateMetrics
 
-Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:162](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/evaluation/IEvaluator.ts#L162)
+Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:162](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/evaluation/IEvaluator.ts#L162)
 
 Aggregate metrics across a run.
 
@@ -10,7 +10,7 @@ Aggregate metrics across a run.
 
 > **avgLatencyMs**: `number`
 
-Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:176](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/evaluation/IEvaluator.ts#L176)
+Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:176](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/evaluation/IEvaluator.ts#L176)
 
 Average latency ms
 
@@ -20,7 +20,7 @@ Average latency ms
 
 > **avgScore**: `number`
 
-Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:172](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/evaluation/IEvaluator.ts#L172)
+Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:172](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/evaluation/IEvaluator.ts#L172)
 
 Average score (0-1)
 
@@ -30,7 +30,7 @@ Average score (0-1)
 
 > `optional` **byCategory**: `Record`\<`string`, \{ `avgScore`: `number`; `count`: `number`; `passRate`: `number`; \}\>
 
-Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:188](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/evaluation/IEvaluator.ts#L188)
+Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:188](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/evaluation/IEvaluator.ts#L188)
 
 Metrics by category
 
@@ -40,7 +40,7 @@ Metrics by category
 
 > **failedTests**: `number`
 
-Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:168](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/evaluation/IEvaluator.ts#L168)
+Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:168](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/evaluation/IEvaluator.ts#L168)
 
 Failed tests
 
@@ -50,7 +50,7 @@ Failed tests
 
 > **p50LatencyMs**: `number`
 
-Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:178](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/evaluation/IEvaluator.ts#L178)
+Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:178](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/evaluation/IEvaluator.ts#L178)
 
 P50 latency
 
@@ -60,7 +60,7 @@ P50 latency
 
 > **p95LatencyMs**: `number`
 
-Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:180](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/evaluation/IEvaluator.ts#L180)
+Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:180](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/evaluation/IEvaluator.ts#L180)
 
 P95 latency
 
@@ -70,7 +70,7 @@ P95 latency
 
 > **p99LatencyMs**: `number`
 
-Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:182](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/evaluation/IEvaluator.ts#L182)
+Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:182](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/evaluation/IEvaluator.ts#L182)
 
 P99 latency
 
@@ -80,7 +80,7 @@ P99 latency
 
 > **passedTests**: `number`
 
-Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:166](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/evaluation/IEvaluator.ts#L166)
+Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:166](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/evaluation/IEvaluator.ts#L166)
 
 Passed tests
 
@@ -90,7 +90,7 @@ Passed tests
 
 > **passRate**: `number`
 
-Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:170](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/evaluation/IEvaluator.ts#L170)
+Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:170](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/evaluation/IEvaluator.ts#L170)
 
 Pass rate (0-1)
 
@@ -100,7 +100,7 @@ Pass rate (0-1)
 
 > **scoreStdDev**: `number`
 
-Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:174](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/evaluation/IEvaluator.ts#L174)
+Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:174](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/evaluation/IEvaluator.ts#L174)
 
 Score standard deviation
 
@@ -110,7 +110,7 @@ Score standard deviation
 
 > **totalCostUsd**: `number`
 
-Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:186](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/evaluation/IEvaluator.ts#L186)
+Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:186](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/evaluation/IEvaluator.ts#L186)
 
 Total estimated cost
 
@@ -120,7 +120,7 @@ Total estimated cost
 
 > **totalTests**: `number`
 
-Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:164](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/evaluation/IEvaluator.ts#L164)
+Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:164](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/evaluation/IEvaluator.ts#L164)
 
 Total test cases
 
@@ -130,6 +130,6 @@ Total test cases
 
 > **totalTokens**: `number`
 
-Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:184](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/evaluation/IEvaluator.ts#L184)
+Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:184](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/evaluation/IEvaluator.ts#L184)
 
 Total tokens used

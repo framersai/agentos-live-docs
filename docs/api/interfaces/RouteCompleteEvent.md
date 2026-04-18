@@ -1,6 +1,6 @@
 # Interface: RouteCompleteEvent
 
-Defined in: [packages/agentos/src/query-router/types.ts:1035](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/query-router/types.ts#L1035)
+Defined in: [packages/agentos/src/query-router/types.ts:1035](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/query-router/types.ts#L1035)
 
 Emitted when the entire query routing pipeline completes.
 
@@ -10,7 +10,7 @@ Emitted when the entire query routing pipeline completes.
 
 > **durationMs**: `number`
 
-Defined in: [packages/agentos/src/query-router/types.ts:1040](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/query-router/types.ts#L1040)
+Defined in: [packages/agentos/src/query-router/types.ts:1040](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/query-router/types.ts#L1040)
 
 Total duration of the entire pipeline in milliseconds.
 
@@ -20,7 +20,7 @@ Total duration of the entire pipeline in milliseconds.
 
 > **result**: [`QueryRouterResult`](QueryRouterResult.md)
 
-Defined in: [packages/agentos/src/query-router/types.ts:1038](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/query-router/types.ts#L1038)
+Defined in: [packages/agentos/src/query-router/types.ts:1038](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/query-router/types.ts#L1038)
 
 The final query result.
 
@@ -30,7 +30,7 @@ The final query result.
 
 > **timestamp**: `number`
 
-Defined in: [packages/agentos/src/query-router/types.ts:1042](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/query-router/types.ts#L1042)
+Defined in: [packages/agentos/src/query-router/types.ts:1042](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/query-router/types.ts#L1042)
 
 Timestamp when routing completed.
 
@@ -40,4 +40,4 @@ Timestamp when routing completed.
 
 > **type**: `"route:complete"`
 
-Defined in: [packages/agentos/src/query-router/types.ts:1036](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/query-router/types.ts#L1036)
+Defined in: [packages/agentos/src/query-router/types.ts:1036](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/query-router/types.ts#L1036)

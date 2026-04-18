@@ -1,6 +1,6 @@
 # Interface: EncodingResult
 
-Defined in: [packages/agentos/src/memory/core/types.ts:172](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/core/types.ts#L172)
+Defined in: [packages/agentos/src/memory/core/types.ts:172](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/core/types.ts#L172)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/memory/core/types.ts:172](https://github.com/f
 
 > **importance**: `number`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:175](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/core/types.ts#L175)
+Defined in: [packages/agentos/src/memory/core/types.ts:175](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/core/types.ts#L175)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [packages/agentos/src/memory/core/types.ts:175](https://github.com/f
 
 > **initialStrength**: `number`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:173](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/core/types.ts#L173)
+Defined in: [packages/agentos/src/memory/core/types.ts:173](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/core/types.ts#L173)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: [packages/agentos/src/memory/core/types.ts:173](https://github.com/f
 
 > **isFlashbulb**: `boolean`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:176](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/core/types.ts#L176)
+Defined in: [packages/agentos/src/memory/core/types.ts:176](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/core/types.ts#L176)
 
 ***
 
@@ -32,4 +32,4 @@ Defined in: [packages/agentos/src/memory/core/types.ts:176](https://github.com/f
 
 > **stability**: `number`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:174](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/core/types.ts#L174)
+Defined in: [packages/agentos/src/memory/core/types.ts:174](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/core/types.ts#L174)

@@ -89,11 +89,6 @@ const typedocSidebar = {
         },
         {
           type: "doc",
-          id: "paracosm/interfaces/CrisisOptionDef",
-          label: "CrisisOptionDef"
-        },
-        {
-          type: "doc",
           id: "paracosm/interfaces/DepartmentDefinition",
           label: "DepartmentDefinition"
         },
@@ -106,6 +101,11 @@ const typedocSidebar = {
           type: "doc",
           id: "paracosm/interfaces/EventDefinition",
           label: "EventDefinition"
+        },
+        {
+          type: "doc",
+          id: "paracosm/interfaces/EventOptionDef",
+          label: "EventOptionDef"
         },
         {
           type: "doc",
@@ -154,8 +154,8 @@ const typedocSidebar = {
         },
         {
           type: "doc",
-          id: "paracosm/interfaces/MilestoneCrisisDef",
-          label: "MilestoneCrisisDef"
+          id: "paracosm/interfaces/MilestoneEventDef",
+          label: "MilestoneEventDef"
         },
         {
           type: "doc",

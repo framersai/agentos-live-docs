@@ -1,6 +1,6 @@
 # Interface: ScenarioLabels
 
-Defined in: [types.ts:21](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/types.ts#L21)
+Defined in: [types.ts:21](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/types.ts#L21)
 
 Human-readable labels for a scenario, used in UI and output naming.
 
@@ -10,9 +10,29 @@ Human-readable labels for a scenario, used in UI and output naming.
 
 > **currency**: `string`
 
-Defined in: [types.ts:31](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/types.ts#L31)
+Defined in: [types.ts:31](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/types.ts#L31)
 
 Currency unit (e.g., "credits")
+
+***
+
+### eventNoun?
+
+> `optional` **eventNoun**: `string`
+
+Defined in: [types.ts:33](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/types.ts#L33)
+
+What to call turn events (e.g., "crises", "events", "incidents", "scenarios"). Default: "events"
+
+***
+
+### eventNounSingular?
+
+> `optional` **eventNounSingular**: `string`
+
+Defined in: [types.ts:35](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/types.ts#L35)
+
+What to call a single turn event (e.g., "crisis", "event", "incident"). Default: "event"
 
 ***
 
@@ -20,7 +40,7 @@ Currency unit (e.g., "credits")
 
 > **name**: `string`
 
-Defined in: [types.ts:23](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/types.ts#L23)
+Defined in: [types.ts:23](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/types.ts#L23)
 
 Full display name (e.g., "Mars Genesis")
 
@@ -30,7 +50,7 @@ Full display name (e.g., "Mars Genesis")
 
 > **populationNoun**: `string`
 
-Defined in: [types.ts:27](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/types.ts#L27)
+Defined in: [types.ts:27](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/types.ts#L27)
 
 What to call population members (e.g., "colonists", "crew members")
 
@@ -40,7 +60,7 @@ What to call population members (e.g., "colonists", "crew members")
 
 > **settlementNoun**: `string`
 
-Defined in: [types.ts:29](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/types.ts#L29)
+Defined in: [types.ts:29](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/types.ts#L29)
 
 What to call the settlement (e.g., "colony", "outpost")
 
@@ -50,6 +70,6 @@ What to call the settlement (e.g., "colony", "outpost")
 
 > **shortName**: `string`
 
-Defined in: [types.ts:25](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/types.ts#L25)
+Defined in: [types.ts:25](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/types.ts#L25)
 
 Short identifier used in file names and localStorage keys

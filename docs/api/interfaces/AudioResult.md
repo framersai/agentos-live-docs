@@ -1,6 +1,6 @@
 # Interface: AudioResult
 
-Defined in: [packages/agentos/src/media/audio/types.ts:255](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/audio/types.ts#L255)
+Defined in: [packages/agentos/src/media/audio/types.ts:255](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/audio/types.ts#L255)
 
 Result envelope returned by [IAudioGenerator.generateMusic](IAudioGenerator.md#generatemusic) and
 [IAudioGenerator.generateSFX](IAudioGenerator.md#generatesfx).
@@ -27,7 +27,7 @@ const result: AudioResult = {
 
 > **audio**: [`GeneratedAudio`](GeneratedAudio.md)[]
 
-Defined in: [packages/agentos/src/media/audio/types.ts:266](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/audio/types.ts#L266)
+Defined in: [packages/agentos/src/media/audio/types.ts:266](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/audio/types.ts#L266)
 
 The generated audio clip(s).
 
@@ -37,7 +37,7 @@ The generated audio clip(s).
 
 > **created**: `number`
 
-Defined in: [packages/agentos/src/media/audio/types.ts:257](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/audio/types.ts#L257)
+Defined in: [packages/agentos/src/media/audio/types.ts:257](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/audio/types.ts#L257)
 
 Unix timestamp (seconds) when the result was created.
 
@@ -47,7 +47,7 @@ Unix timestamp (seconds) when the result was created.
 
 > **modelId**: `string`
 
-Defined in: [packages/agentos/src/media/audio/types.ts:260](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/audio/types.ts#L260)
+Defined in: [packages/agentos/src/media/audio/types.ts:260](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/audio/types.ts#L260)
 
 Model identifier that produced the result.
 
@@ -57,7 +57,7 @@ Model identifier that produced the result.
 
 > **providerId**: `string`
 
-Defined in: [packages/agentos/src/media/audio/types.ts:263](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/audio/types.ts#L263)
+Defined in: [packages/agentos/src/media/audio/types.ts:263](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/audio/types.ts#L263)
 
 Provider identifier that produced the result.
 
@@ -67,6 +67,6 @@ Provider identifier that produced the result.
 
 > `optional` **usage**: [`AudioProviderUsage`](AudioProviderUsage.md)
 
-Defined in: [packages/agentos/src/media/audio/types.ts:269](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/audio/types.ts#L269)
+Defined in: [packages/agentos/src/media/audio/types.ts:269](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/audio/types.ts#L269)
 
 Usage / billing information, if available.

@@ -1,6 +1,6 @@
 # Interface: PlanAction
 
-Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:82](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/planner/IPlanningEngine.ts#L82)
+Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:82](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/planner/IPlanningEngine.ts#L82)
 
 The type of action a plan step performs.
 
@@ -10,7 +10,7 @@ The type of action a plan step performs.
 
 > `optional` **content**: `string`
 
-Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:94](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/planner/IPlanningEngine.ts#L94)
+Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:94](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/planner/IPlanningEngine.ts#L94)
 
 Content for reasoning/synthesis steps
 
@@ -20,7 +20,7 @@ Content for reasoning/synthesis steps
 
 > `optional` **query**: `string`
 
-Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:92](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/planner/IPlanningEngine.ts#L92)
+Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:92](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/planner/IPlanningEngine.ts#L92)
 
 Query for information retrieval
 
@@ -30,7 +30,7 @@ Query for information retrieval
 
 > `optional` **subgoal**: `string`
 
-Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:90](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/planner/IPlanningEngine.ts#L90)
+Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:90](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/planner/IPlanningEngine.ts#L90)
 
 Sub-goal to pursue (if type is 'subgoal')
 
@@ -40,7 +40,7 @@ Sub-goal to pursue (if type is 'subgoal')
 
 > `optional` **toolArgs**: `Record`\<`string`, `unknown`\>
 
-Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:88](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/planner/IPlanningEngine.ts#L88)
+Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:88](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/planner/IPlanningEngine.ts#L88)
 
 Arguments for tool call
 
@@ -50,7 +50,7 @@ Arguments for tool call
 
 > `optional` **toolId**: `string`
 
-Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:86](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/planner/IPlanningEngine.ts#L86)
+Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:86](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/planner/IPlanningEngine.ts#L86)
 
 Tool to invoke (if type is 'tool_call')
 
@@ -60,6 +60,6 @@ Tool to invoke (if type is 'tool_call')
 
 > **type**: [`PlanActionType`](../type-aliases/PlanActionType.md)
 
-Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:84](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/planner/IPlanningEngine.ts#L84)
+Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:84](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/planner/IPlanningEngine.ts#L84)
 
 Action type

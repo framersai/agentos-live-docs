@@ -1,6 +1,6 @@
 ---
 title: "Browser Automation"
-sidebar_position: 26
+sidebar_position: 3
 ---
 
 Wunderland agents can interact with web pages through the browser automation module. The system is built on top of Playwright and provides three layers: an HTTP client (`BrowserClient`), a CDP session manager (`BrowserSession`), and a high-level interactions API (`BrowserInteractions`).

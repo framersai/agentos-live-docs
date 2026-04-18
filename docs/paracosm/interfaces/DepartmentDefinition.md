@@ -1,6 +1,6 @@
 # Interface: DepartmentDefinition
 
-Defined in: [types.ts:118](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/types.ts#L118)
+Defined in: [types.ts:125](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/types.ts#L125)
 
 Defines a department (analysis group) in the scenario.
 
@@ -10,7 +10,7 @@ Defines a department (analysis group) in the scenario.
 
 > **defaultModel**: `string`
 
-Defined in: [types.ts:123](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/types.ts#L123)
+Defined in: [types.ts:130](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/types.ts#L130)
 
 ***
 
@@ -18,7 +18,7 @@ Defined in: [types.ts:123](https://github.com/framersai/paracosm/blob/ba2b881292
 
 > **icon**: `string`
 
-Defined in: [types.ts:122](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/types.ts#L122)
+Defined in: [types.ts:129](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/types.ts#L129)
 
 ***
 
@@ -26,7 +26,7 @@ Defined in: [types.ts:122](https://github.com/framersai/paracosm/blob/ba2b881292
 
 > **id**: `string`
 
-Defined in: [types.ts:119](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/types.ts#L119)
+Defined in: [types.ts:126](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/types.ts#L126)
 
 ***
 
@@ -34,7 +34,7 @@ Defined in: [types.ts:119](https://github.com/framersai/paracosm/blob/ba2b881292
 
 > **instructions**: `string`
 
-Defined in: [types.ts:124](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/types.ts#L124)
+Defined in: [types.ts:131](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/types.ts#L131)
 
 ***
 
@@ -42,7 +42,7 @@ Defined in: [types.ts:124](https://github.com/framersai/paracosm/blob/ba2b881292
 
 > **label**: `string`
 
-Defined in: [types.ts:120](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/types.ts#L120)
+Defined in: [types.ts:127](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/types.ts#L127)
 
 ***
 
@@ -50,4 +50,4 @@ Defined in: [types.ts:120](https://github.com/framersai/paracosm/blob/ba2b881292
 
 > **role**: `string`
 
-Defined in: [types.ts:121](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/types.ts#L121)
+Defined in: [types.ts:128](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/types.ts#L128)

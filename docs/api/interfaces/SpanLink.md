@@ -1,6 +1,6 @@
 # Interface: SpanLink
 
-Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:67](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/evaluation/observability/ITracer.ts#L67)
+Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:67](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/evaluation/observability/ITracer.ts#L67)
 
 A link to another span.
 
@@ -10,7 +10,7 @@ A link to another span.
 
 > `optional` **attributes**: [`SpanAttributes`](../type-aliases/SpanAttributes.md)
 
-Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:71](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/evaluation/observability/ITracer.ts#L71)
+Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:71](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/evaluation/observability/ITracer.ts#L71)
 
 Link attributes
 
@@ -20,6 +20,6 @@ Link attributes
 
 > **context**: [`TraceContext`](TraceContext.md)
 
-Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:69](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/evaluation/observability/ITracer.ts#L69)
+Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:69](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/evaluation/observability/ITracer.ts#L69)
 
 Linked trace context

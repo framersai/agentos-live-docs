@@ -1,6 +1,6 @@
 # Class: ProvenanceViolationError
 
-Defined in: [packages/agentos/src/provenance/types.ts:347](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/provenance/types.ts#L347)
+Defined in: [packages/agentos/src/provenance/types.ts:347](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/provenance/types.ts#L347)
 
 ## Extends
 
@@ -12,7 +12,7 @@ Defined in: [packages/agentos/src/provenance/types.ts:347](https://github.com/fr
 
 > **new ProvenanceViolationError**(`message`, `options?`): `ProvenanceViolationError`
 
-Defined in: [packages/agentos/src/provenance/types.ts:352](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/provenance/types.ts#L352)
+Defined in: [packages/agentos/src/provenance/types.ts:352](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/provenance/types.ts#L352)
 
 #### Parameters
 
@@ -48,7 +48,7 @@ Defined in: [packages/agentos/src/provenance/types.ts:352](https://github.com/fr
 
 > `readonly` **code**: `string`
 
-Defined in: [packages/agentos/src/provenance/types.ts:348](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/provenance/types.ts#L348)
+Defined in: [packages/agentos/src/provenance/types.ts:348](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/provenance/types.ts#L348)
 
 ***
 
@@ -80,7 +80,7 @@ Defined in: node\_modules/.pnpm/typescript@5.6.3/node\_modules/typescript/lib/li
 
 > `readonly` `optional` **operation**: `string`
 
-Defined in: [packages/agentos/src/provenance/types.ts:350](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/provenance/types.ts#L350)
+Defined in: [packages/agentos/src/provenance/types.ts:350](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/provenance/types.ts#L350)
 
 ***
 
@@ -100,7 +100,7 @@ Defined in: node\_modules/.pnpm/typescript@5.6.3/node\_modules/typescript/lib/li
 
 > `readonly` `optional` **table**: `string`
 
-Defined in: [packages/agentos/src/provenance/types.ts:349](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/provenance/types.ts#L349)
+Defined in: [packages/agentos/src/provenance/types.ts:349](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/provenance/types.ts#L349)
 
 ***
 

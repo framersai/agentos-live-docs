@@ -1,6 +1,6 @@
 # Class: ToolTimeoutError
 
-Defined in: [packages/agentos/src/safety/runtime/ToolExecutionGuard.ts:39](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/safety/runtime/ToolExecutionGuard.ts#L39)
+Defined in: [packages/agentos/src/safety/runtime/ToolExecutionGuard.ts:39](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/safety/runtime/ToolExecutionGuard.ts#L39)
 
 ## Extends
 
@@ -12,7 +12,7 @@ Defined in: [packages/agentos/src/safety/runtime/ToolExecutionGuard.ts:39](https
 
 > **new ToolTimeoutError**(`toolName`, `timeoutMs`): `ToolTimeoutError`
 
-Defined in: [packages/agentos/src/safety/runtime/ToolExecutionGuard.ts:40](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/safety/runtime/ToolExecutionGuard.ts#L40)
+Defined in: [packages/agentos/src/safety/runtime/ToolExecutionGuard.ts:40](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/safety/runtime/ToolExecutionGuard.ts#L40)
 
 #### Parameters
 
@@ -74,7 +74,7 @@ Defined in: node\_modules/.pnpm/typescript@5.6.3/node\_modules/typescript/lib/li
 
 > `readonly` **timeoutMs**: `number`
 
-Defined in: [packages/agentos/src/safety/runtime/ToolExecutionGuard.ts:42](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/safety/runtime/ToolExecutionGuard.ts#L42)
+Defined in: [packages/agentos/src/safety/runtime/ToolExecutionGuard.ts:42](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/safety/runtime/ToolExecutionGuard.ts#L42)
 
 ***
 
@@ -82,7 +82,7 @@ Defined in: [packages/agentos/src/safety/runtime/ToolExecutionGuard.ts:42](https
 
 > `readonly` **toolName**: `string`
 
-Defined in: [packages/agentos/src/safety/runtime/ToolExecutionGuard.ts:41](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/safety/runtime/ToolExecutionGuard.ts#L41)
+Defined in: [packages/agentos/src/safety/runtime/ToolExecutionGuard.ts:41](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/safety/runtime/ToolExecutionGuard.ts#L41)
 
 ***
 

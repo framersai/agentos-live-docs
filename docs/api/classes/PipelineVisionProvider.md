@@ -1,6 +1,6 @@
 # Class: PipelineVisionProvider
 
-Defined in: [packages/agentos/src/vision/providers/PipelineVisionProvider.ts:70](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/vision/providers/PipelineVisionProvider.ts#L70)
+Defined in: [packages/agentos/src/vision/providers/PipelineVisionProvider.ts:70](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/vision/providers/PipelineVisionProvider.ts#L70)
 
 Adapts the full [VisionPipeline](VisionPipeline.md) to the narrow
 [IVisionProvider](../interfaces/IVisionProvider.md) interface used by the multimodal indexer.
@@ -36,7 +36,7 @@ console.log(result.layout);     // Florence-2 layout
 
 > **new PipelineVisionProvider**(`pipeline`): `PipelineVisionProvider`
 
-Defined in: [packages/agentos/src/vision/providers/PipelineVisionProvider.ts:93](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/vision/providers/PipelineVisionProvider.ts#L93)
+Defined in: [packages/agentos/src/vision/providers/PipelineVisionProvider.ts:93](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/vision/providers/PipelineVisionProvider.ts#L93)
 
 Create a new pipeline vision provider.
 
@@ -71,7 +71,7 @@ const provider = new PipelineVisionProvider(pipeline);
 
 > **describeImage**(`image`): `Promise`\<`string`\>
 
-Defined in: [packages/agentos/src/vision/providers/PipelineVisionProvider.ts:122](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/vision/providers/PipelineVisionProvider.ts#L122)
+Defined in: [packages/agentos/src/vision/providers/PipelineVisionProvider.ts:122](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/vision/providers/PipelineVisionProvider.ts#L122)
 
 Generate a text description of the provided image by running it
 through the full vision pipeline.
@@ -119,7 +119,7 @@ console.log(description);
 
 > **getPipeline**(): [`VisionPipeline`](VisionPipeline.md)
 
-Defined in: [packages/agentos/src/vision/providers/PipelineVisionProvider.ts:174](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/vision/providers/PipelineVisionProvider.ts#L174)
+Defined in: [packages/agentos/src/vision/providers/PipelineVisionProvider.ts:174](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/vision/providers/PipelineVisionProvider.ts#L174)
 
 Get a reference to the underlying pipeline for direct access.
 
@@ -145,7 +145,7 @@ const layout = await provider.getPipeline().analyzeLayout(image);
 
 > **processWithFullResult**(`image`): `Promise`\<[`VisionResult`](../interfaces/VisionResult.md)\>
 
-Defined in: [packages/agentos/src/vision/providers/PipelineVisionProvider.ts:156](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/vision/providers/PipelineVisionProvider.ts#L156)
+Defined in: [packages/agentos/src/vision/providers/PipelineVisionProvider.ts:156](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/vision/providers/PipelineVisionProvider.ts#L156)
 
 Process an image through the full pipeline and return the complete
 [VisionResult](../interfaces/VisionResult.md) — including embeddings, layout, confidence

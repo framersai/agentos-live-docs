@@ -1,6 +1,6 @@
 # Interface: PersonaEvolutionRule
 
-Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:195](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/workflows/WorkflowTypes.ts#L195)
+Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:195](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/workflows/WorkflowTypes.ts#L195)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:195](
 
 > `optional` **description**: `string`
 
-Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:197](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/workflows/WorkflowTypes.ts#L197)
+Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:197](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/workflows/WorkflowTypes.ts#L197)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:197](
 
 > **id**: `string`
 
-Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:196](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/workflows/WorkflowTypes.ts#L196)
+Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:196](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/workflows/WorkflowTypes.ts#L196)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:196](
 
 > `optional` **metadata**: `Record`\<`string`, `unknown`\>
 
-Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:200](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/workflows/WorkflowTypes.ts#L200)
+Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:200](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/workflows/WorkflowTypes.ts#L200)
 
 ***
 
@@ -32,7 +32,7 @@ Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:200](
 
 > **patch**: [`PersonaPatch`](PersonaPatch.md)
 
-Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:199](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/workflows/WorkflowTypes.ts#L199)
+Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:199](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/workflows/WorkflowTypes.ts#L199)
 
 ***
 
@@ -40,4 +40,4 @@ Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:199](
 
 > **trigger**: `string` \| `Record`\<`string`, `unknown`\>
 
-Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:198](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/workflows/WorkflowTypes.ts#L198)
+Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:198](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/workflows/WorkflowTypes.ts#L198)

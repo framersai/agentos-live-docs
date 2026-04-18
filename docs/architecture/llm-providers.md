@@ -1,6 +1,6 @@
 ---
 title: "LLM Providers"
-sidebar_position: 6
+sidebar_position: 11
 ---
 
 > Configure and switch between 11 LLM providers (including 2 CLI-based) with automatic detection, fallback, and cost-aware routing.

@@ -1,6 +1,6 @@
 # Class: QueryRouter
 
-Defined in: [packages/agentos/src/query-router/QueryRouter.ts:185](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/query-router/QueryRouter.ts#L185)
+Defined in: [packages/agentos/src/query-router/QueryRouter.ts:185](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/query-router/QueryRouter.ts#L185)
 
 Main orchestrator that wires together the QueryClassifier, QueryDispatcher,
 and QueryGenerator into a complete classify -> dispatch -> generate pipeline.
@@ -29,7 +29,7 @@ await router.close();
 
 > **new QueryRouter**(`config`): `QueryRouter`
 
-Defined in: [packages/agentos/src/query-router/QueryRouter.ts:265](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/query-router/QueryRouter.ts#L265)
+Defined in: [packages/agentos/src/query-router/QueryRouter.ts:265](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/query-router/QueryRouter.ts#L265)
 
 Creates a new QueryRouter instance.
 
@@ -54,7 +54,7 @@ Partial configuration; `knowledgeCorpus` is required.
 
 > **classify**(`query`, `conversationHistory?`, `options?`): `Promise`\<[`ClassificationResult`](../interfaces/ClassificationResult.md)\>
 
-Defined in: [packages/agentos/src/query-router/QueryRouter.ts:550](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/query-router/QueryRouter.ts#L550)
+Defined in: [packages/agentos/src/query-router/QueryRouter.ts:550](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/query-router/QueryRouter.ts#L550)
 
 Classify a query into a complexity tier without dispatching or generating.
 
@@ -95,7 +95,7 @@ If the router has not been initialised via [init](#init).
 
 > **close**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/query-router/QueryRouter.ts:813](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/query-router/QueryRouter.ts#L813)
+Defined in: [packages/agentos/src/query-router/QueryRouter.ts:813](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/query-router/QueryRouter.ts#L813)
 
 Tear down resources and release references.
 
@@ -114,7 +114,7 @@ further use.
 
 > **getCorpusStats**(): [`QueryRouterCorpusStats`](../interfaces/QueryRouterCorpusStats.md)
 
-Defined in: [packages/agentos/src/query-router/QueryRouter.ts:853](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/query-router/QueryRouter.ts#L853)
+Defined in: [packages/agentos/src/query-router/QueryRouter.ts:853](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/query-router/QueryRouter.ts#L853)
 
 Return lightweight corpus/index stats for observability and host startup
 logs.
@@ -132,7 +132,7 @@ corpus instead of only knowing that initialisation completed.
 
 > **getUnifiedRetriever**(): [`UnifiedRetriever`](UnifiedRetriever.md) \| `null`
 
-Defined in: [packages/agentos/src/query-router/QueryRouter.ts:314](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/query-router/QueryRouter.ts#L314)
+Defined in: [packages/agentos/src/query-router/QueryRouter.ts:314](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/query-router/QueryRouter.ts#L314)
 
 Get the attached UnifiedRetriever, or `null` if not configured.
 
@@ -148,7 +148,7 @@ The UnifiedRetriever instance, or `null`.
 
 > **init**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/query-router/QueryRouter.ts:368](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/query-router/QueryRouter.ts#L368)
+Defined in: [packages/agentos/src/query-router/QueryRouter.ts:368](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/query-router/QueryRouter.ts#L368)
 
 Initialise the router: load corpus from disk, extract topics, build
 keyword fallback index, embed the corpus into a vector store, and
@@ -171,7 +171,7 @@ KeywordFallback for all retrieval.
 
 > **retrieve**(`query`, `tier`): `Promise`\<[`RetrievalResult`](../interfaces/RetrievalResult.md)\>
 
-Defined in: [packages/agentos/src/query-router/QueryRouter.ts:597](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/query-router/QueryRouter.ts#L597)
+Defined in: [packages/agentos/src/query-router/QueryRouter.ts:597](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/query-router/QueryRouter.ts#L597)
 
 Retrieve context at a specific tier, bypassing the classifier.
 
@@ -208,7 +208,7 @@ If the router has not been initialised via [init](#init).
 
 > **route**(`query`, `conversationHistory?`, `options?`): `Promise`\<[`QueryRouterResult`](../interfaces/QueryRouterResult.md)\>
 
-Defined in: [packages/agentos/src/query-router/QueryRouter.ts:616](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/query-router/QueryRouter.ts#L616)
+Defined in: [packages/agentos/src/query-router/QueryRouter.ts:616](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/query-router/QueryRouter.ts#L616)
 
 Full end-to-end pipeline: classify -> dispatch -> generate.
 
@@ -252,7 +252,7 @@ If the router has not been initialised via [init](#init).
 
 > **setCapabilityDiscoveryEngine**(`engine`): `void`
 
-Defined in: [packages/agentos/src/query-router/QueryRouter.ts:343](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/query-router/QueryRouter.ts#L343)
+Defined in: [packages/agentos/src/query-router/QueryRouter.ts:343](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/query-router/QueryRouter.ts#L343)
 
 Attach a CapabilityDiscoveryEngine for capability-aware classification.
 
@@ -291,7 +291,7 @@ router.setCapabilityDiscoveryEngine(engine);
 
 > **setUnifiedRetriever**(`retriever`): `void`
 
-Defined in: [packages/agentos/src/query-router/QueryRouter.ts:303](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/query-router/QueryRouter.ts#L303)
+Defined in: [packages/agentos/src/query-router/QueryRouter.ts:303](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/query-router/QueryRouter.ts#L303)
 
 Attach a [UnifiedRetriever](UnifiedRetriever.md) for plan-based retrieval.
 

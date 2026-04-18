@@ -1,6 +1,6 @@
 # Interface: LanguageNegotiationParams
 
-Defined in: [packages/agentos/src/nlp/language/interfaces.ts:106](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/nlp/language/interfaces.ts#L106)
+Defined in: [packages/agentos/src/nlp/language/interfaces.ts:106](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/nlp/language/interfaces.ts#L106)
 
 Negotiation input parameters for the LanguageService.
 
@@ -10,7 +10,7 @@ Negotiation input parameters for the LanguageService.
 
 > **configDefault**: `string`
 
-Defined in: [packages/agentos/src/nlp/language/interfaces.ts:111](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/nlp/language/interfaces.ts#L111)
+Defined in: [packages/agentos/src/nlp/language/interfaces.ts:111](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/nlp/language/interfaces.ts#L111)
 
 ***
 
@@ -18,7 +18,7 @@ Defined in: [packages/agentos/src/nlp/language/interfaces.ts:111](https://github
 
 > `optional` **conversationPreferred**: `string`
 
-Defined in: [packages/agentos/src/nlp/language/interfaces.ts:109](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/nlp/language/interfaces.ts#L109)
+Defined in: [packages/agentos/src/nlp/language/interfaces.ts:109](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/nlp/language/interfaces.ts#L109)
 
 ***
 
@@ -26,7 +26,7 @@ Defined in: [packages/agentos/src/nlp/language/interfaces.ts:109](https://github
 
 > `optional` **detectedLanguages**: [`DetectedLanguageResult`](DetectedLanguageResult.md)[]
 
-Defined in: [packages/agentos/src/nlp/language/interfaces.ts:108](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/nlp/language/interfaces.ts#L108)
+Defined in: [packages/agentos/src/nlp/language/interfaces.ts:108](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/nlp/language/interfaces.ts#L108)
 
 ***
 
@@ -34,7 +34,7 @@ Defined in: [packages/agentos/src/nlp/language/interfaces.ts:108](https://github
 
 > `optional` **explicitUserLanguage**: `string`
 
-Defined in: [packages/agentos/src/nlp/language/interfaces.ts:107](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/nlp/language/interfaces.ts#L107)
+Defined in: [packages/agentos/src/nlp/language/interfaces.ts:107](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/nlp/language/interfaces.ts#L107)
 
 ***
 
@@ -42,7 +42,7 @@ Defined in: [packages/agentos/src/nlp/language/interfaces.ts:107](https://github
 
 > **fallbackChain**: `string`[]
 
-Defined in: [packages/agentos/src/nlp/language/interfaces.ts:113](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/nlp/language/interfaces.ts#L113)
+Defined in: [packages/agentos/src/nlp/language/interfaces.ts:113](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/nlp/language/interfaces.ts#L113)
 
 ***
 
@@ -50,7 +50,7 @@ Defined in: [packages/agentos/src/nlp/language/interfaces.ts:113](https://github
 
 > `optional` **personaDefault**: `string`
 
-Defined in: [packages/agentos/src/nlp/language/interfaces.ts:110](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/nlp/language/interfaces.ts#L110)
+Defined in: [packages/agentos/src/nlp/language/interfaces.ts:110](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/nlp/language/interfaces.ts#L110)
 
 ***
 
@@ -58,7 +58,7 @@ Defined in: [packages/agentos/src/nlp/language/interfaces.ts:110](https://github
 
 > `optional` **preferSourceLanguageResponses**: `boolean`
 
-Defined in: [packages/agentos/src/nlp/language/interfaces.ts:114](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/nlp/language/interfaces.ts#L114)
+Defined in: [packages/agentos/src/nlp/language/interfaces.ts:114](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/nlp/language/interfaces.ts#L114)
 
 ***
 
@@ -66,7 +66,7 @@ Defined in: [packages/agentos/src/nlp/language/interfaces.ts:114](https://github
 
 > **supported**: `string`[]
 
-Defined in: [packages/agentos/src/nlp/language/interfaces.ts:112](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/nlp/language/interfaces.ts#L112)
+Defined in: [packages/agentos/src/nlp/language/interfaces.ts:112](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/nlp/language/interfaces.ts#L112)
 
 ***
 
@@ -74,6 +74,6 @@ Defined in: [packages/agentos/src/nlp/language/interfaces.ts:112](https://github
 
 > `optional` **targetLanguage**: `string`
 
-Defined in: [packages/agentos/src/nlp/language/interfaces.ts:116](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/nlp/language/interfaces.ts#L116)
+Defined in: [packages/agentos/src/nlp/language/interfaces.ts:116](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/nlp/language/interfaces.ts#L116)
 
 Optional pre-specified target language override.

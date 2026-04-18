@@ -1,6 +1,6 @@
 # Class: AgencyRegistry
 
-Defined in: [packages/agentos/src/agents/agency/AgencyRegistry.ts:45](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/agents/agency/AgencyRegistry.ts#L45)
+Defined in: [packages/agentos/src/agents/agency/AgencyRegistry.ts:45](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/agents/agency/AgencyRegistry.ts#L45)
 
 Tracks the Agencies (multi-GMI collectives) active inside the AgentOS runtime.
 
@@ -36,7 +36,7 @@ registry.registerSeat({
 
 > **new AgencyRegistry**(`logger?`): `AgencyRegistry`
 
-Defined in: [packages/agentos/src/agents/agency/AgencyRegistry.ts:56](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/agents/agency/AgencyRegistry.ts#L56)
+Defined in: [packages/agentos/src/agents/agency/AgencyRegistry.ts:56](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/agents/agency/AgencyRegistry.ts#L56)
 
 Creates a new AgencyRegistry instance.
 
@@ -58,7 +58,7 @@ Optional logger for diagnostics
 
 > **appendSeatHistory**(`agencyId`, `roleId`, `entry`, `maxEntries?`): [`AgencySeatState`](../interfaces/AgencySeatState.md) \| `undefined`
 
-Defined in: [packages/agentos/src/agents/agency/AgencyRegistry.ts:192](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/agents/agency/AgencyRegistry.ts#L192)
+Defined in: [packages/agentos/src/agents/agency/AgencyRegistry.ts:192](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/agents/agency/AgencyRegistry.ts#L192)
 
 Appends a history entry to the specified seat and returns the updated state.
 
@@ -90,7 +90,7 @@ Appends a history entry to the specified seat and returns the updated state.
 
 > **getAgency**(`agencyId`): [`AgencySession`](../interfaces/AgencySession.md) \| `undefined`
 
-Defined in: [packages/agentos/src/agents/agency/AgencyRegistry.ts:125](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/agents/agency/AgencyRegistry.ts#L125)
+Defined in: [packages/agentos/src/agents/agency/AgencyRegistry.ts:125](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/agents/agency/AgencyRegistry.ts#L125)
 
 Retrieves an agency session by identifier.
 
@@ -114,7 +114,7 @@ The matching agency session or `undefined` when absent.
 
 > **getAgencyByWorkflow**(`workflowId`): [`AgencySession`](../interfaces/AgencySession.md) \| `undefined`
 
-Defined in: [packages/agentos/src/agents/agency/AgencyRegistry.ts:134](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/agents/agency/AgencyRegistry.ts#L134)
+Defined in: [packages/agentos/src/agents/agency/AgencyRegistry.ts:134](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/agents/agency/AgencyRegistry.ts#L134)
 
 Resolves the agency session associated with a workflow instance (if any).
 
@@ -138,7 +138,7 @@ The agency session mapped to the workflow, if present.
 
 > **mergeSeatMetadata**(`agencyId`, `roleId`, `metadata`): [`AgencySeatState`](../interfaces/AgencySeatState.md) \| `undefined`
 
-Defined in: [packages/agentos/src/agents/agency/AgencyRegistry.ts:210](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/agents/agency/AgencyRegistry.ts#L210)
+Defined in: [packages/agentos/src/agents/agency/AgencyRegistry.ts:210](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/agents/agency/AgencyRegistry.ts#L210)
 
 Merges metadata onto a seat without altering other properties.
 
@@ -166,7 +166,7 @@ Merges metadata onto a seat without altering other properties.
 
 > **registerSeat**(`args`): [`AgencySession`](../interfaces/AgencySession.md)
 
-Defined in: [packages/agentos/src/agents/agency/AgencyRegistry.ts:145](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/agents/agency/AgencyRegistry.ts#L145)
+Defined in: [packages/agentos/src/agents/agency/AgencyRegistry.ts:145](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/agents/agency/AgencyRegistry.ts#L145)
 
 Registers or updates a seat inside the agency.
 
@@ -194,7 +194,7 @@ When attempting to register against an unknown agency.
 
 > **removeAgency**(`agencyId`): `boolean`
 
-Defined in: [packages/agentos/src/agents/agency/AgencyRegistry.ts:175](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/agents/agency/AgencyRegistry.ts#L175)
+Defined in: [packages/agentos/src/agents/agency/AgencyRegistry.ts:175](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/agents/agency/AgencyRegistry.ts#L175)
 
 Removes an agency entirely (e.g., when the workflow reaches a terminal state).
 
@@ -218,7 +218,7 @@ Agency identifier to remove.
 
 > **upsertAgency**(`args`): [`AgencySession`](../interfaces/AgencySession.md)
 
-Defined in: [packages/agentos/src/agents/agency/AgencyRegistry.ts:76](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/agents/agency/AgencyRegistry.ts#L76)
+Defined in: [packages/agentos/src/agents/agency/AgencyRegistry.ts:76](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/agents/agency/AgencyRegistry.ts#L76)
 
 Creates or updates an agency session associated with a workflow.
 

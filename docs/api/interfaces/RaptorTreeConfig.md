@@ -1,6 +1,6 @@
 # Interface: RaptorTreeConfig
 
-Defined in: [packages/agentos/src/rag/raptor/RaptorTree.ts:39](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/raptor/RaptorTree.ts#L39)
+Defined in: [packages/agentos/src/rag/raptor/RaptorTree.ts:39](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/raptor/RaptorTree.ts#L39)
 
 Configuration for the RAPTOR tree.
 
@@ -14,7 +14,7 @@ RaptorTreeConfig
 
 > `optional` **clusterSize**: `number`
 
-Defined in: [packages/agentos/src/rag/raptor/RaptorTree.ts:59](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/raptor/RaptorTree.ts#L59)
+Defined in: [packages/agentos/src/rag/raptor/RaptorTree.ts:59](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/raptor/RaptorTree.ts#L59)
 
 Number of chunks per cluster. Default: 8.
 
@@ -24,7 +24,7 @@ Number of chunks per cluster. Default: 8.
 
 > `optional` **collectionName**: `string`
 
-Defined in: [packages/agentos/src/rag/raptor/RaptorTree.ts:56](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/raptor/RaptorTree.ts#L56)
+Defined in: [packages/agentos/src/rag/raptor/RaptorTree.ts:56](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/raptor/RaptorTree.ts#L56)
 
 Collection name in the vector store. Default: 'raptor-tree'.
 
@@ -34,7 +34,7 @@ Collection name in the vector store. Default: 'raptor-tree'.
 
 > **embeddingManager**: [`IEmbeddingManager`](IEmbeddingManager.md)
 
-Defined in: [packages/agentos/src/rag/raptor/RaptorTree.ts:50](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/raptor/RaptorTree.ts#L50)
+Defined in: [packages/agentos/src/rag/raptor/RaptorTree.ts:50](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/raptor/RaptorTree.ts#L50)
 
 Embedding manager for generating embeddings for clustering and storage.
 
@@ -44,7 +44,7 @@ Embedding manager for generating embeddings for clustering and storage.
 
 > **llmCaller**: (`prompt`) => `Promise`\<`string`\>
 
-Defined in: [packages/agentos/src/rag/raptor/RaptorTree.ts:47](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/raptor/RaptorTree.ts#L47)
+Defined in: [packages/agentos/src/rag/raptor/RaptorTree.ts:47](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/raptor/RaptorTree.ts#L47)
 
 LLM caller for generating summaries.
 Takes a prompt string and returns the LLM completion.
@@ -69,7 +69,7 @@ The generated summary text.
 
 > `optional` **maxDepth**: `number`
 
-Defined in: [packages/agentos/src/rag/raptor/RaptorTree.ts:62](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/raptor/RaptorTree.ts#L62)
+Defined in: [packages/agentos/src/rag/raptor/RaptorTree.ts:62](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/raptor/RaptorTree.ts#L62)
 
 Maximum tree depth (layers above leaf). Default: 4.
 
@@ -79,7 +79,7 @@ Maximum tree depth (layers above leaf). Default: 4.
 
 > `optional` **minChunksForLayer**: `number`
 
-Defined in: [packages/agentos/src/rag/raptor/RaptorTree.ts:65](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/raptor/RaptorTree.ts#L65)
+Defined in: [packages/agentos/src/rag/raptor/RaptorTree.ts:65](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/raptor/RaptorTree.ts#L65)
 
 Minimum number of chunks required to form a new summary layer. Default: 3.
 
@@ -89,6 +89,6 @@ Minimum number of chunks required to form a new summary layer. Default: 3.
 
 > **vectorStore**: [`IVectorStore`](IVectorStore.md)
 
-Defined in: [packages/agentos/src/rag/raptor/RaptorTree.ts:53](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/raptor/RaptorTree.ts#L53)
+Defined in: [packages/agentos/src/rag/raptor/RaptorTree.ts:53](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/raptor/RaptorTree.ts#L53)
 
 Vector store for persisting all layers of the tree.

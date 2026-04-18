@@ -1,6 +1,6 @@
 # Interface: SceneDescription
 
-Defined in: [packages/agentos/src/media/video/types.ts:338](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/video/types.ts#L338)
+Defined in: [packages/agentos/src/media/video/types.ts:338](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/video/types.ts#L338)
 
 A single scene detected within a video, with timestamps,
 description, and optional transcript.
@@ -20,7 +20,7 @@ frame data.
 
 > **confidence**: `number`
 
-Defined in: [packages/agentos/src/media/video/types.ts:385](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/video/types.ts#L385)
+Defined in: [packages/agentos/src/media/video/types.ts:385](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/video/types.ts#L385)
 
 Confidence score (0-1) for the scene boundary detection.
 Higher values indicate a more definitive visual discontinuity.
@@ -31,7 +31,7 @@ Higher values indicate a more definitive visual discontinuity.
 
 > **cutType**: `"hard-cut"` \| `"dissolve"` \| `"fade"` \| `"wipe"` \| `"gradual"` \| `"start"`
 
-Defined in: [packages/agentos/src/media/video/types.ts:361](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/video/types.ts#L361)
+Defined in: [packages/agentos/src/media/video/types.ts:361](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/video/types.ts#L361)
 
 Type of visual transition that marks the beginning of this scene.
 
@@ -48,7 +48,7 @@ Type of visual transition that marks the beginning of this scene.
 
 > **description**: `string`
 
-Defined in: [packages/agentos/src/media/video/types.ts:367](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/video/types.ts#L367)
+Defined in: [packages/agentos/src/media/video/types.ts:367](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/video/types.ts#L367)
 
 Natural-language description of the scene content, generated
 by a vision LLM from the key frame.
@@ -59,7 +59,7 @@ by a vision LLM from the key frame.
 
 > **durationSec**: `number`
 
-Defined in: [packages/agentos/src/media/video/types.ts:349](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/video/types.ts#L349)
+Defined in: [packages/agentos/src/media/video/types.ts:349](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/video/types.ts#L349)
 
 Duration of the scene in seconds (`endSec - startSec`).
 
@@ -69,7 +69,7 @@ Duration of the scene in seconds (`endSec - startSec`).
 
 > **endSec**: `number`
 
-Defined in: [packages/agentos/src/media/video/types.ts:346](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/video/types.ts#L346)
+Defined in: [packages/agentos/src/media/video/types.ts:346](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/video/types.ts#L346)
 
 End time of the scene in seconds from video start.
 
@@ -79,7 +79,7 @@ End time of the scene in seconds from video start.
 
 > **index**: `number`
 
-Defined in: [packages/agentos/src/media/video/types.ts:340](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/video/types.ts#L340)
+Defined in: [packages/agentos/src/media/video/types.ts:340](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/video/types.ts#L340)
 
 0-based scene index within the video.
 
@@ -89,7 +89,7 @@ Defined in: [packages/agentos/src/media/video/types.ts:340](https://github.com/f
 
 > `optional` **keyFrame**: `string`
 
-Defined in: [packages/agentos/src/media/video/types.ts:379](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/video/types.ts#L379)
+Defined in: [packages/agentos/src/media/video/types.ts:379](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/video/types.ts#L379)
 
 Base64-encoded key frame image (JPEG) representative of the scene.
 Typically the frame closest to the scene midpoint.
@@ -100,7 +100,7 @@ Typically the frame closest to the scene midpoint.
 
 > **startSec**: `number`
 
-Defined in: [packages/agentos/src/media/video/types.ts:343](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/video/types.ts#L343)
+Defined in: [packages/agentos/src/media/video/types.ts:343](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/video/types.ts#L343)
 
 Start time of the scene in seconds from video start.
 
@@ -110,7 +110,7 @@ Start time of the scene in seconds from video start.
 
 > `optional` **transcript**: `string`
 
-Defined in: [packages/agentos/src/media/video/types.ts:373](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/video/types.ts#L373)
+Defined in: [packages/agentos/src/media/video/types.ts:373](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/video/types.ts#L373)
 
 Transcript of speech/narration during this scene's time range.
 Only populated when audio transcription is enabled.

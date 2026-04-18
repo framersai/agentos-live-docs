@@ -1,6 +1,6 @@
 # Interface: MediaStreamParser
 
-Defined in: [packages/agentos/src/channels/telephony/MediaStreamParser.ts:63](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/channels/telephony/MediaStreamParser.ts#L63)
+Defined in: [packages/agentos/src/channels/telephony/MediaStreamParser.ts:63](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/channels/telephony/MediaStreamParser.ts#L63)
 
 Contract for parsing and formatting provider-specific WebSocket media
 stream messages.
@@ -26,7 +26,7 @@ The interface has three responsibilities:
 
 > `optional` **formatConnected**(`streamSid`): `string` \| `null`
 
-Defined in: [packages/agentos/src/channels/telephony/MediaStreamParser.ts:106](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/channels/telephony/MediaStreamParser.ts#L106)
+Defined in: [packages/agentos/src/channels/telephony/MediaStreamParser.ts:106](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/channels/telephony/MediaStreamParser.ts#L106)
 
 Generate the initial connection acknowledgment message, if the provider
 requires one immediately after the WebSocket handshake.
@@ -56,7 +56,7 @@ A JSON string to send as the first WS message, or `null` if the
 
 > **formatOutgoing**(`audio`, `streamSid`): `string` \| `Buffer`
 
-Defined in: [packages/agentos/src/channels/telephony/MediaStreamParser.ts:92](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/channels/telephony/MediaStreamParser.ts#L92)
+Defined in: [packages/agentos/src/channels/telephony/MediaStreamParser.ts:92](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/channels/telephony/MediaStreamParser.ts#L92)
 
 Encode mu-law audio for transmission back to the telephony provider.
 
@@ -93,7 +93,7 @@ A `Buffer` (for providers that accept raw binary) or a JSON
 
 > **parseIncoming**(`data`): [`MediaStreamIncoming`](../type-aliases/MediaStreamIncoming.md) \| `null`
 
-Defined in: [packages/agentos/src/channels/telephony/MediaStreamParser.ts:76](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/channels/telephony/MediaStreamParser.ts#L76)
+Defined in: [packages/agentos/src/channels/telephony/MediaStreamParser.ts:76](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/channels/telephony/MediaStreamParser.ts#L76)
 
 Parse a raw WebSocket message received from the telephony provider.
 

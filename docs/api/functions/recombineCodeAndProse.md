@@ -2,7 +2,7 @@
 
 > **recombineCodeAndProse**(`translatedProse`, `codeBlocks`): `string`
 
-Defined in: [packages/agentos/src/nlp/language/interfaces.ts:185](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/nlp/language/interfaces.ts#L185)
+Defined in: [packages/agentos/src/nlp/language/interfaces.ts:185](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/nlp/language/interfaces.ts#L185)
 
 Recombine partitioned content after translating prose only.
 

@@ -1,6 +1,6 @@
 # Class: MemoryUpdateTool
 
-Defined in: [packages/agentos/src/memory/io/tools/MemoryUpdateTool.ts:65](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/io/tools/MemoryUpdateTool.ts#L65)
+Defined in: [packages/agentos/src/memory/io/tools/MemoryUpdateTool.ts:65](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/io/tools/MemoryUpdateTool.ts#L65)
 
 ITool implementation that applies partial updates to an existing memory
 trace stored in the agent's SQLite brain database.
@@ -25,7 +25,7 @@ const result = await tool.execute(
 
 > **new MemoryUpdateTool**(`brain`): `MemoryUpdateTool`
 
-Defined in: [packages/agentos/src/memory/io/tools/MemoryUpdateTool.ts:110](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/io/tools/MemoryUpdateTool.ts#L110)
+Defined in: [packages/agentos/src/memory/io/tools/MemoryUpdateTool.ts:110](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/io/tools/MemoryUpdateTool.ts#L110)
 
 #### Parameters
 
@@ -45,7 +45,7 @@ The agent's shared SQLite brain database connection.
 
 > `readonly` **category**: `"memory"` = `'memory'`
 
-Defined in: [packages/agentos/src/memory/io/tools/MemoryUpdateTool.ts:81](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/io/tools/MemoryUpdateTool.ts#L81)
+Defined in: [packages/agentos/src/memory/io/tools/MemoryUpdateTool.ts:81](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/io/tools/MemoryUpdateTool.ts#L81)
 
 Logical category for discovery and grouping.
 
@@ -59,7 +59,7 @@ Logical category for discovery and grouping.
 
 > `readonly` **description**: `string`
 
-Defined in: [packages/agentos/src/memory/io/tools/MemoryUpdateTool.ts:76](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/io/tools/MemoryUpdateTool.ts#L76)
+Defined in: [packages/agentos/src/memory/io/tools/MemoryUpdateTool.ts:76](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/io/tools/MemoryUpdateTool.ts#L76)
 
 LLM-facing description.
 
@@ -73,7 +73,7 @@ LLM-facing description.
 
 > `readonly` **displayName**: `"Update Memory"` = `'Update Memory'`
 
-Defined in: [packages/agentos/src/memory/io/tools/MemoryUpdateTool.ts:73](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/io/tools/MemoryUpdateTool.ts#L73)
+Defined in: [packages/agentos/src/memory/io/tools/MemoryUpdateTool.ts:73](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/io/tools/MemoryUpdateTool.ts#L73)
 
 Human-readable display name.
 
@@ -87,7 +87,7 @@ Human-readable display name.
 
 > `readonly` **hasSideEffects**: `true` = `true`
 
-Defined in: [packages/agentos/src/memory/io/tools/MemoryUpdateTool.ts:84](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/io/tools/MemoryUpdateTool.ts#L84)
+Defined in: [packages/agentos/src/memory/io/tools/MemoryUpdateTool.ts:84](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/io/tools/MemoryUpdateTool.ts#L84)
 
 This tool writes to the database.
 
@@ -101,7 +101,7 @@ This tool writes to the database.
 
 > `readonly` **id**: `"memory-update-v1"` = `'memory-update-v1'`
 
-Defined in: [packages/agentos/src/memory/io/tools/MemoryUpdateTool.ts:67](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/io/tools/MemoryUpdateTool.ts#L67)
+Defined in: [packages/agentos/src/memory/io/tools/MemoryUpdateTool.ts:67](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/io/tools/MemoryUpdateTool.ts#L67)
 
 Globally unique tool identifier.
 
@@ -115,7 +115,7 @@ Globally unique tool identifier.
 
 > `readonly` **inputSchema**: [`JSONSchemaObject`](../type-aliases/JSONSchemaObject.md)
 
-Defined in: [packages/agentos/src/memory/io/tools/MemoryUpdateTool.ts:87](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/io/tools/MemoryUpdateTool.ts#L87)
+Defined in: [packages/agentos/src/memory/io/tools/MemoryUpdateTool.ts:87](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/io/tools/MemoryUpdateTool.ts#L87)
 
 JSON schema for input validation and LLM tool-call construction.
 
@@ -129,7 +129,7 @@ JSON schema for input validation and LLM tool-call construction.
 
 > `readonly` **name**: `"memory_update"` = `'memory_update'`
 
-Defined in: [packages/agentos/src/memory/io/tools/MemoryUpdateTool.ts:70](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/io/tools/MemoryUpdateTool.ts#L70)
+Defined in: [packages/agentos/src/memory/io/tools/MemoryUpdateTool.ts:70](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/io/tools/MemoryUpdateTool.ts#L70)
 
 LLM-facing tool name.
 
@@ -143,7 +143,7 @@ LLM-facing tool name.
 
 > **execute**(`args`, `_context`): `Promise`\<[`ToolExecutionResult`](../interfaces/ToolExecutionResult.md)\<`MemoryUpdateOutput`\>\>
 
-Defined in: [packages/agentos/src/memory/io/tools/MemoryUpdateTool.ts:134](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/io/tools/MemoryUpdateTool.ts#L134)
+Defined in: [packages/agentos/src/memory/io/tools/MemoryUpdateTool.ts:134](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/io/tools/MemoryUpdateTool.ts#L134)
 
 Update a memory trace identified by `traceId`.
 

@@ -1,6 +1,6 @@
 # Class: LLMJudge
 
-Defined in: [packages/agentos/src/evaluation/LLMJudge.ts:127](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/evaluation/LLMJudge.ts#L127)
+Defined in: [packages/agentos/src/evaluation/LLMJudge.ts:127](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/evaluation/LLMJudge.ts#L127)
 
 LLM-based judge for semantic evaluation
 
@@ -10,7 +10,7 @@ LLM-based judge for semantic evaluation
 
 > **new LLMJudge**(`config`): `LLMJudge`
 
-Defined in: [packages/agentos/src/evaluation/LLMJudge.ts:134](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/evaluation/LLMJudge.ts#L134)
+Defined in: [packages/agentos/src/evaluation/LLMJudge.ts:134](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/evaluation/LLMJudge.ts#L134)
 
 #### Parameters
 
@@ -28,7 +28,7 @@ Defined in: [packages/agentos/src/evaluation/LLMJudge.ts:134](https://github.com
 
 > **batchJudge**(`evaluations`, `criteria?`, `concurrency?`): `Promise`\<[`JudgmentResult`](../interfaces/JudgmentResult.md)[]\>
 
-Defined in: [packages/agentos/src/evaluation/LLMJudge.ts:263](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/evaluation/LLMJudge.ts#L263)
+Defined in: [packages/agentos/src/evaluation/LLMJudge.ts:263](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/evaluation/LLMJudge.ts#L263)
 
 Batch evaluate multiple outputs
 
@@ -56,7 +56,7 @@ Batch evaluate multiple outputs
 
 > **compare**(`input`, `outputA`, `outputB`, `criteria?`): `Promise`\<\{ `reasoning`: `string`; `scoreA`: `number`; `scoreB`: `number`; `winner`: `"A"` \| `"B"` \| `"tie"`; \}\>
 
-Defined in: [packages/agentos/src/evaluation/LLMJudge.ts:229](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/evaluation/LLMJudge.ts#L229)
+Defined in: [packages/agentos/src/evaluation/LLMJudge.ts:229](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/evaluation/LLMJudge.ts#L229)
 
 Compare two outputs and determine which is better
 
@@ -88,7 +88,7 @@ Compare two outputs and determine which is better
 
 > **createScorer**(`criteria?`): [`ScorerFunction`](../type-aliases/ScorerFunction.md)
 
-Defined in: [packages/agentos/src/evaluation/LLMJudge.ts:218](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/evaluation/LLMJudge.ts#L218)
+Defined in: [packages/agentos/src/evaluation/LLMJudge.ts:218](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/evaluation/LLMJudge.ts#L218)
 
 Create a scorer function for use with Evaluator
 
@@ -108,7 +108,7 @@ Create a scorer function for use with Evaluator
 
 > **judge**(`input`, `actualOutput`, `expectedOutput?`, `criteria?`): `Promise`\<[`JudgmentResult`](../interfaces/JudgmentResult.md)\>
 
-Defined in: [packages/agentos/src/evaluation/LLMJudge.ts:145](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/evaluation/LLMJudge.ts#L145)
+Defined in: [packages/agentos/src/evaluation/LLMJudge.ts:145](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/evaluation/LLMJudge.ts#L145)
 
 Judge an AI output against criteria
 

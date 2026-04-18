@@ -1,16 +1,9 @@
 ---
-sidebar_position: 26
+title: "Zip Files"
+sidebar_position: 16.5
 ---
 
-# Zip Files
-
 Create zip archives from local files for sharing via chat channels.
-
-## Overview
-
-The `zip_files` tool creates compressed zip archives from one or more local files. Designed to work with `local_file_search` and `send_file_to_channel` for end-to-end file relay workflows.
-
-**Package:** `@framers/agentos-ext-zip-files`
 
 ## Installation
 
@@ -18,31 +11,43 @@ The `zip_files` tool creates compressed zip archives from one or more local file
 npm install @framers/agentos-ext-zip-files
 ```
 
-## Tool Schema
+## Usage
+
+```typescript
+import { createExtensionPack } from '@framers/agentos-ext-zip-files';
+
+const pack = createExtensionPack();
+```
+
+## Tool: `zip_files`
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `files` | string[] | Yes | Array of absolute file paths |
-| `outputName` | string | No | Zip filename (without `.zip`) |
+| `files` | string[] | Yes | Array of absolute file paths to include |
+| `outputName` | string | No | Name for the zip (without `.zip` extension) |
 
-## Example
+### Example
 
 ```
-User: "Zip up my project files and send them to me"
-Agent:
-  1. local_file_search({ query: "project" })
-  2. zip_files({ files: ["/path/a.ts", "/path/b.ts"], outputName: "project-files" })
-  3. send_file_to_channel({ filePath: "/tmp/wunderland-zips/project-files.zip" })
+User: "Zip up my report files and send them to me"
+Tool calls:
+  1. local_file_search({ query: "report" })
+  2. zip_files({ files: ["/path/report.pdf", "/path/report-data.csv"], outputName: "reports" })
+  3. send_file_to_channel({ filePath: "/tmp/wunderland-zips/reports.zip" })
 ```
 
 ## Behavior
 
-- **Output:** `/tmp/wunderland-zips/<name>.zip`
-- **Compression:** zlib level 6
-- **Max input size:** 500 MB total
-- **Auto-cleanup:** Zips older than 1 hour deleted on each invocation
-- **Validation:** All input paths verified before archiving
+- Output directory: `/tmp/wunderland-zips/`
+- Compression: zlib level 6 (balanced speed/size)
+- Max total input size: 500 MB
+- Auto-cleanup: zips older than 1 hour are deleted on each invocation
+- Validates all input paths exist before creating the archive
 
 ## Dependencies
 
-Uses the `archiver` npm package for cross-platform zip creation.
+- `archiver` (npm) for cross-platform zip creation
+
+## License
+
+MIT

@@ -1,6 +1,6 @@
 # Interface: HydeMultiRetrievalResult
 
-Defined in: [packages/agentos/src/rag/HydeRetriever.ts:147](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/HydeRetriever.ts#L147)
+Defined in: [packages/agentos/src/rag/HydeRetriever.ts:147](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/HydeRetriever.ts#L147)
 
 Result from multi-hypothesis HyDE retrieval.
 
@@ -17,7 +17,7 @@ HydeMultiRetrievalResult
 
 > **hypotheses**: `string`[]
 
-Defined in: [packages/agentos/src/rag/HydeRetriever.ts:149](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/HydeRetriever.ts#L149)
+Defined in: [packages/agentos/src/rag/HydeRetriever.ts:149](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/HydeRetriever.ts#L149)
 
 All generated hypotheses.
 
@@ -27,7 +27,7 @@ All generated hypotheses.
 
 > **hypothesisCount**: `number`
 
-Defined in: [packages/agentos/src/rag/HydeRetriever.ts:153](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/HydeRetriever.ts#L153)
+Defined in: [packages/agentos/src/rag/HydeRetriever.ts:153](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/HydeRetriever.ts#L153)
 
 Number of hypotheses generated.
 
@@ -37,7 +37,7 @@ Number of hypotheses generated.
 
 > **hypothesisLatencyMs**: `number`
 
-Defined in: [packages/agentos/src/rag/HydeRetriever.ts:155](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/HydeRetriever.ts#L155)
+Defined in: [packages/agentos/src/rag/HydeRetriever.ts:155](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/HydeRetriever.ts#L155)
 
 Total time for all hypothesis generations (ms).
 
@@ -47,7 +47,7 @@ Total time for all hypothesis generations (ms).
 
 > **queryResult**: [`QueryResult`](QueryResult.md)
 
-Defined in: [packages/agentos/src/rag/HydeRetriever.ts:151](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/HydeRetriever.ts#L151)
+Defined in: [packages/agentos/src/rag/HydeRetriever.ts:151](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/HydeRetriever.ts#L151)
 
 Deduplicated query result (union of all hypothesis searches, highest score per doc).
 
@@ -57,6 +57,6 @@ Deduplicated query result (union of all hypothesis searches, highest score per d
 
 > **retrievalLatencyMs**: `number`
 
-Defined in: [packages/agentos/src/rag/HydeRetriever.ts:157](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/HydeRetriever.ts#L157)
+Defined in: [packages/agentos/src/rag/HydeRetriever.ts:157](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/HydeRetriever.ts#L157)
 
 Total time for all embedding + retrieval passes (ms).

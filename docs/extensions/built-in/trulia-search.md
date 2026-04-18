@@ -1,50 +1,67 @@
 ---
-sidebar_position: 29
+title: "Trulia Search"
+sidebar_position: 16.4
 ---
-
-# Trulia Property Search
 
 Search real estate properties on Trulia by location, price, bedrooms, and property type.
 
-## Overview
+## Installation
 
-Domain-specific real estate search tool. Uses the RapidAPI Trulia endpoint for structured data, with Firecrawl scrape as a fallback when no RapidAPI key is available.
+```bash
+npm install @framers/agentos-ext-trulia-search
+```
 
-**Package:** `@framers/agentos-ext-trulia-search`
+## Usage
 
-## Environment Variables
+```typescript
+import { createExtensionPack } from '@framers/agentos-ext-trulia-search';
 
-| Variable | Required | Description |
-|----------|----------|-------------|
-| `TRULIA_RAPIDAPI_KEY` | No | RapidAPI key for structured data |
-| `FIRECRAWL_API_KEY` | No | Firecrawl key for scrape fallback |
+const pack = createExtensionPack({
+  config: {
+    truliaRapidApiKey: process.env.TRULIA_RAPIDAPI_KEY,
+    firecrawlApiKey: process.env.FIRECRAWL_API_KEY, // fallback
+  },
+});
+```
 
-At least one is needed for results.
-
-## Tool Schema
+## Tool: `trulia_search`
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `location` | string | Yes | City/state or zip code |
+| `location` | string | Yes | City, state or zip code (e.g., "Austin, TX") |
 | `propertyType` | string | No | house, apartment, condo, townhouse, land |
-| `minPrice` | number | No | Minimum price |
-| `maxPrice` | number | No | Maximum price |
+| `minPrice` | number | No | Minimum price filter |
+| `maxPrice` | number | No | Maximum price filter |
 | `bedrooms` | number | No | Minimum bedrooms |
 | `bathrooms` | number | No | Minimum bathrooms |
-| `maxResults` | number | No | Max results (default: 20) |
+| `maxResults` | number | No | Maximum results (default: 20) |
 
-## Example
+### Example
 
 ```
-User: "Find 3-bedroom houses in Austin, TX under $400k"
-Agent: trulia_search({
+User: "Find 3-bedroom houses in Austin under $400k"
+Tool call: trulia_search({
   location: "Austin, TX",
   propertyType: "house",
   bedrooms: 3,
   maxPrice: 400000
 })
-Result: [
-  { address: "123 Main St", price: 350000, beds: 3, baths: 2, sqft: 1500 },
-  { address: "456 Oak Ave", price: 390000, beds: 3, baths: 2.5, sqft: 1800 }
-]
 ```
+
+## Data Sources
+
+1. **RapidAPI Trulia** (preferred) — structured property data via `TRULIA_RAPIDAPI_KEY`
+2. **Firecrawl scrape** (fallback) — scrapes trulia.com search results when no RapidAPI key is available. Requires `FIRECRAWL_API_KEY`.
+
+## Environment Variables
+
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `TRULIA_RAPIDAPI_KEY` | No | RapidAPI key for structured Trulia data |
+| `FIRECRAWL_API_KEY` | No | Firecrawl key for scrape fallback |
+
+At least one key is needed for results. Without either, the tool returns empty listings.
+
+## License
+
+MIT

@@ -7523,6 +7523,11 @@ const typedocSidebar = {
         },
         {
           type: "doc",
+          id: "api/functions/buildScopedExternalToolContextParts",
+          label: "buildScopedExternalToolContextParts"
+        },
+        {
+          type: "doc",
           id: "api/functions/buildSplitCallers",
           label: "buildSplitCallers"
         },
@@ -7815,6 +7820,11 @@ const typedocSidebar = {
           type: "doc",
           id: "api/functions/exportToolAsSkillPack",
           label: "exportToolAsSkillPack"
+        },
+        {
+          type: "doc",
+          id: "api/functions/extractJson",
+          label: "extractJson"
         },
         {
           type: "doc",
@@ -8165,6 +8175,11 @@ const typedocSidebar = {
           type: "doc",
           id: "api/functions/normalizeExternalToolRegistry",
           label: "normalizeExternalToolRegistry"
+        },
+        {
+          type: "doc",
+          id: "api/functions/normalizeOptionalString",
+          label: "normalizeOptionalString"
         },
         {
           type: "doc",

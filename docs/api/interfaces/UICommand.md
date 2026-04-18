@@ -1,6 +1,6 @@
 # Interface: UICommand
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:317](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/IGMI.ts#L317)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:317](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/IGMI.ts#L317)
 
 **`Export`**
 
@@ -16,7 +16,7 @@ UICommand
 
 > **commandId**: `string`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:318](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/IGMI.ts#L318)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:318](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/IGMI.ts#L318)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:318](https://gith
 
 > `optional` **metadata**: `Record`\<`string`, `any`\>
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:321](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/IGMI.ts#L321)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:321](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/IGMI.ts#L321)
 
 ***
 
@@ -32,7 +32,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:321](https://gith
 
 > **payload**: `Record`\<`string`, `any`\>
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:320](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/IGMI.ts#L320)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:320](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/IGMI.ts#L320)
 
 ***
 
@@ -40,4 +40,4 @@ Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:320](https://gith
 
 > `optional` **targetElementId**: `string`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:319](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/IGMI.ts#L319)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:319](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/IGMI.ts#L319)

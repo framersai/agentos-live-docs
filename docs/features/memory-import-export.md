@@ -1,6 +1,6 @@
 ---
 title: "Memory Import/Export"
-sidebar_position: 22
+sidebar_position: 7
 ---
 
 > The Memory I/O subsystem provides lossless round-trip serialisation across four export formats and six import formats. JSON round-trips traces, graph rows, documents, chunks, images, conversations, and messages, and trace deduplication is enabled by default on import.

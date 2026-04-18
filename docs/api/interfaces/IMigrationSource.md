@@ -1,6 +1,6 @@
 # Interface: IMigrationSource
 
-Defined in: [packages/agentos/src/rag/migration/types.ts:95](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/migration/types.ts#L95)
+Defined in: [packages/agentos/src/rag/migration/types.ts:95](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/migration/types.ts#L95)
 
 Adapter for reading data from a migration source backend.
 Implementations exist for SQLite, Postgres, and Qdrant.
@@ -11,7 +11,7 @@ Implementations exist for SQLite, Postgres, and Qdrant.
 
 > **close**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/rag/migration/types.ts:109](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/migration/types.ts#L109)
+Defined in: [packages/agentos/src/rag/migration/types.ts:109](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/migration/types.ts#L109)
 
 Close the connection and release resources.
 
@@ -25,7 +25,7 @@ Close the connection and release resources.
 
 > **countRows**(`table`): `Promise`\<`number`\>
 
-Defined in: [packages/agentos/src/rag/migration/types.ts:99](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/migration/types.ts#L99)
+Defined in: [packages/agentos/src/rag/migration/types.ts:99](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/migration/types.ts#L99)
 
 Count rows/points in a table.
 
@@ -45,7 +45,7 @@ Count rows/points in a table.
 
 > **listTables**(): `Promise`\<`string`[]\>
 
-Defined in: [packages/agentos/src/rag/migration/types.ts:97](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/migration/types.ts#L97)
+Defined in: [packages/agentos/src/rag/migration/types.ts:97](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/migration/types.ts#L97)
 
 List table/collection names available for migration.
 
@@ -59,7 +59,7 @@ List table/collection names available for migration.
 
 > **readBatch**(`table`, `offset`, `limit`): `Promise`\<`Record`\<`string`, `unknown`\>[]\>
 
-Defined in: [packages/agentos/src/rag/migration/types.ts:107](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/migration/types.ts#L107)
+Defined in: [packages/agentos/src/rag/migration/types.ts:107](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/migration/types.ts#L107)
 
 Read a batch of rows starting at offset.
 

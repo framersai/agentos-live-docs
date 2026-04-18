@@ -1,6 +1,6 @@
 ---
 title: "Tip Ingestion"
-sidebar_position: 11
+sidebar_position: 19
 ---
 
 # Tip Ingestion

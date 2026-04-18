@@ -1,6 +1,6 @@
 # Interface: RetrievedVectorDocument
 
-Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:145](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/vector-store/IVectorStore.ts#L145)
+Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:145](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/vector-store/IVectorStore.ts#L145)
 
 Represents a single document retrieved from a query, including its similarity score.
 
@@ -18,7 +18,7 @@ RetrievedVectorDocument
 
 > **embedding**: `number`[]
 
-Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:106](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/vector-store/IVectorStore.ts#L106)
+Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:106](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/vector-store/IVectorStore.ts#L106)
 
 The vector embedding of the document's content.
 
@@ -32,7 +32,7 @@ The vector embedding of the document's content.
 
 > **id**: `string`
 
-Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:105](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/vector-store/IVectorStore.ts#L105)
+Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:105](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/vector-store/IVectorStore.ts#L105)
 
 A unique identifier for the document.
 
@@ -46,7 +46,7 @@ A unique identifier for the document.
 
 > `optional` **metadata**: `Record`\<`string`, [`MetadataValue`](../type-aliases/MetadataValue.md)\>
 
-Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:107](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/vector-store/IVectorStore.ts#L107)
+Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:107](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/vector-store/IVectorStore.ts#L107)
 
 A flexible key-value store for document metadata.
 Values can be scalars or arrays of scalars. Used for filtering and providing context.
@@ -61,7 +61,7 @@ Values can be scalars or arrays of scalars. Used for filtering and providing con
 
 > **similarityScore**: `number`
 
-Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:146](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/vector-store/IVectorStore.ts#L146)
+Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:146](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/vector-store/IVectorStore.ts#L146)
 
 The similarity score of this document with respect to the query vector.
 The meaning of this score depends on the similarity metric used by the vector store (e.g., cosine similarity, Euclidean distance).
@@ -72,7 +72,7 @@ The meaning of this score depends on the similarity metric used by the vector st
 
 > `optional` **textContent**: `string`
 
-Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:108](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/vector-store/IVectorStore.ts#L108)
+Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:108](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/vector-store/IVectorStore.ts#L108)
 
 Optional: The raw text content of the document.
 Some use cases might store this alongside the embedding, while others might fetch it from a primary store using the ID.

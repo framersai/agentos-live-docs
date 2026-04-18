@@ -1,6 +1,6 @@
 # Interface: SimulationModelConfig
 
-Defined in: [types.ts:331](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/types.ts#L331)
+Defined in: [types.ts:340](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/types.ts#L340)
 
 Model assignments for different simulation roles.
 
@@ -10,7 +10,7 @@ Model assignments for different simulation roles.
 
 > `optional` **agentReactions**: `string`
 
-Defined in: [types.ts:336](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/types.ts#L336)
+Defined in: [types.ts:345](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/types.ts#L345)
 
 ***
 
@@ -18,7 +18,7 @@ Defined in: [types.ts:336](https://github.com/framersai/paracosm/blob/ba2b881292
 
 > **commander**: `string`
 
-Defined in: [types.ts:332](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/types.ts#L332)
+Defined in: [types.ts:341](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/types.ts#L341)
 
 ***
 
@@ -26,7 +26,7 @@ Defined in: [types.ts:332](https://github.com/framersai/paracosm/blob/ba2b881292
 
 > **departments**: `string`
 
-Defined in: [types.ts:333](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/types.ts#L333)
+Defined in: [types.ts:342](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/types.ts#L342)
 
 ***
 
@@ -34,7 +34,7 @@ Defined in: [types.ts:333](https://github.com/framersai/paracosm/blob/ba2b881292
 
 > **director**: `string`
 
-Defined in: [types.ts:335](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/types.ts#L335)
+Defined in: [types.ts:344](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/types.ts#L344)
 
 ***
 
@@ -42,4 +42,4 @@ Defined in: [types.ts:335](https://github.com/framersai/paracosm/blob/ba2b881292
 
 > **judge**: `string`
 
-Defined in: [types.ts:334](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/types.ts#L334)
+Defined in: [types.ts:343](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/types.ts#L343)

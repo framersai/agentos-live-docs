@@ -1,6 +1,6 @@
 ---
 title: "Channel: Discord"
-sidebar_position: 15
+sidebar_position: 12
 ---
 
 # Channel: Discord

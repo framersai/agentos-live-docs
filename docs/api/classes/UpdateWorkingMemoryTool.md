@@ -1,6 +1,6 @@
 # Class: UpdateWorkingMemoryTool
 
-Defined in: [packages/agentos/src/memory/core/working/UpdateWorkingMemoryTool.ts:18](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/core/working/UpdateWorkingMemoryTool.ts#L18)
+Defined in: [packages/agentos/src/memory/core/working/UpdateWorkingMemoryTool.ts:18](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/core/working/UpdateWorkingMemoryTool.ts#L18)
 
 Tool that lets the agent fully replace its persistent markdown working memory.
 The agent should call this whenever it learns new persistent context about the
@@ -16,7 +16,7 @@ user, session, or ongoing tasks that should survive across conversations.
 
 > **new UpdateWorkingMemoryTool**(`memory`): `UpdateWorkingMemoryTool`
 
-Defined in: [packages/agentos/src/memory/core/working/UpdateWorkingMemoryTool.ts:40](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/core/working/UpdateWorkingMemoryTool.ts#L40)
+Defined in: [packages/agentos/src/memory/core/working/UpdateWorkingMemoryTool.ts:40](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/core/working/UpdateWorkingMemoryTool.ts#L40)
 
 #### Parameters
 
@@ -34,7 +34,7 @@ Defined in: [packages/agentos/src/memory/core/working/UpdateWorkingMemoryTool.ts
 
 > `readonly` **category**: `"memory"` = `'memory'`
 
-Defined in: [packages/agentos/src/memory/core/working/UpdateWorkingMemoryTool.ts:27](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/core/working/UpdateWorkingMemoryTool.ts#L27)
+Defined in: [packages/agentos/src/memory/core/working/UpdateWorkingMemoryTool.ts:27](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/core/working/UpdateWorkingMemoryTool.ts#L27)
 
 **`Optional`**
 
@@ -52,7 +52,7 @@ aiding an LLM in selecting from a large set of tools.
 
 > `readonly` **description**: `string`
 
-Defined in: [packages/agentos/src/memory/core/working/UpdateWorkingMemoryTool.ts:22](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/core/working/UpdateWorkingMemoryTool.ts#L22)
+Defined in: [packages/agentos/src/memory/core/working/UpdateWorkingMemoryTool.ts:22](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/core/working/UpdateWorkingMemoryTool.ts#L22)
 
 A detailed, natural language description of what the tool does, its primary purpose,
 typical use cases, and any important considerations or limitations for its use.
@@ -70,7 +70,7 @@ for the LLM to grasp the tool's semantics.
 
 > `readonly` **displayName**: `"Update Working Memory"` = `'Update Working Memory'`
 
-Defined in: [packages/agentos/src/memory/core/working/UpdateWorkingMemoryTool.ts:21](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/core/working/UpdateWorkingMemoryTool.ts#L21)
+Defined in: [packages/agentos/src/memory/core/working/UpdateWorkingMemoryTool.ts:21](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/core/working/UpdateWorkingMemoryTool.ts#L21)
 
 A concise, human-readable title or display name for the tool.
 Used in user interfaces, logs, or when presenting tool options to developers or users.
@@ -91,7 +91,7 @@ Used in user interfaces, logs, or when presenting tool options to developers or 
 
 > `readonly` **hasSideEffects**: `true` = `true`
 
-Defined in: [packages/agentos/src/memory/core/working/UpdateWorkingMemoryTool.ts:28](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/core/working/UpdateWorkingMemoryTool.ts#L28)
+Defined in: [packages/agentos/src/memory/core/working/UpdateWorkingMemoryTool.ts:28](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/core/working/UpdateWorkingMemoryTool.ts#L28)
 
 **`Optional`**
 
@@ -110,7 +110,7 @@ with greater caution, potentially requiring explicit user confirmation.
 
 > `readonly` **id**: `"update-working-memory-v1"` = `'update-working-memory-v1'`
 
-Defined in: [packages/agentos/src/memory/core/working/UpdateWorkingMemoryTool.ts:19](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/core/working/UpdateWorkingMemoryTool.ts#L19)
+Defined in: [packages/agentos/src/memory/core/working/UpdateWorkingMemoryTool.ts:19](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/core/working/UpdateWorkingMemoryTool.ts#L19)
 
 A globally unique identifier for this specific tool (e.g., "web-search-engine-v1.2", "stock-price-fetcher").
 This ID is used for internal registration, management, and precise identification.
@@ -126,7 +126,7 @@ It's recommended to use a namespaced, versioned format (e.g., `vendor-toolname-v
 
 > `readonly` **inputSchema**: [`JSONSchemaObject`](../type-aliases/JSONSchemaObject.md)
 
-Defined in: [packages/agentos/src/memory/core/working/UpdateWorkingMemoryTool.ts:29](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/core/working/UpdateWorkingMemoryTool.ts#L29)
+Defined in: [packages/agentos/src/memory/core/working/UpdateWorkingMemoryTool.ts:29](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/core/working/UpdateWorkingMemoryTool.ts#L29)
 
 The JSON schema defining the structure, types, and constraints of the input arguments object
 that this tool expects. This schema is used by:
@@ -148,7 +148,7 @@ https://json-schema.org/
 
 > `readonly` **name**: `"update_working_memory"` = `'update_working_memory'`
 
-Defined in: [packages/agentos/src/memory/core/working/UpdateWorkingMemoryTool.ts:20](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/core/working/UpdateWorkingMemoryTool.ts#L20)
+Defined in: [packages/agentos/src/memory/core/working/UpdateWorkingMemoryTool.ts:20](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/core/working/UpdateWorkingMemoryTool.ts#L20)
 
 The functional name of the tool, as it should be presented to and used by an LLM in a tool call request
 (e.g., "searchWeb", "executePythonCode", "getWeatherForecast").
@@ -165,7 +165,7 @@ It should be concise, descriptive, and typically in camelCase or snake_case.
 
 > **execute**(`args`, `_context`): `Promise`\<[`ToolExecutionResult`](../interfaces/ToolExecutionResult.md)\<`UpdateOutput`\>\>
 
-Defined in: [packages/agentos/src/memory/core/working/UpdateWorkingMemoryTool.ts:42](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/core/working/UpdateWorkingMemoryTool.ts#L42)
+Defined in: [packages/agentos/src/memory/core/working/UpdateWorkingMemoryTool.ts:42](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/core/working/UpdateWorkingMemoryTool.ts#L42)
 
 **`Async`**
 

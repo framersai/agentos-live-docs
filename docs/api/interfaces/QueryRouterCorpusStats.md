@@ -1,6 +1,6 @@
 # Interface: QueryRouterCorpusStats
 
-Defined in: [packages/agentos/src/query-router/types.ts:355](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/query-router/types.ts#L355)
+Defined in: [packages/agentos/src/query-router/types.ts:355](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/query-router/types.ts#L355)
 
 Lightweight observability snapshot for router startup logs and host health
 checks.
@@ -13,7 +13,7 @@ Returned by `router.getCorpusStats()` after or before initialization.
 
 > **chunkCount**: `number`
 
-Defined in: [packages/agentos/src/query-router/types.ts:363](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/query-router/types.ts#L363)
+Defined in: [packages/agentos/src/query-router/types.ts:363](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/query-router/types.ts#L363)
 
 Number of loaded markdown chunks in the in-memory corpus.
 
@@ -23,7 +23,7 @@ Number of loaded markdown chunks in the in-memory corpus.
 
 > **configuredPathCount**: `number`
 
-Defined in: [packages/agentos/src/query-router/types.ts:360](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/query-router/types.ts#L360)
+Defined in: [packages/agentos/src/query-router/types.ts:360](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/query-router/types.ts#L360)
 
 Number of configured corpus directories.
 
@@ -33,7 +33,7 @@ Number of configured corpus directories.
 
 > **deepResearchEnabled**: `boolean`
 
-Defined in: [packages/agentos/src/query-router/types.ts:394](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/query-router/types.ts#L394)
+Defined in: [packages/agentos/src/query-router/types.ts:394](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/query-router/types.ts#L394)
 
 Whether deep research is enabled in config.
 
@@ -43,7 +43,7 @@ Whether deep research is enabled in config.
 
 > **deepResearchRuntimeMode**: [`QueryRouterToggleableRuntimeMode`](../type-aliases/QueryRouterToggleableRuntimeMode.md)
 
-Defined in: [packages/agentos/src/query-router/types.ts:403](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/query-router/types.ts#L403)
+Defined in: [packages/agentos/src/query-router/types.ts:403](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/query-router/types.ts#L403)
 
 Runtime truth for deep research.
 
@@ -53,7 +53,7 @@ Runtime truth for deep research.
 
 > **embeddingDimension**: `number`
 
-Defined in: [packages/agentos/src/query-router/types.ts:388](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/query-router/types.ts#L388)
+Defined in: [packages/agentos/src/query-router/types.ts:388](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/query-router/types.ts#L388)
 
 Embedding dimension for the active vector index, or `0` when inactive.
 
@@ -63,7 +63,7 @@ Embedding dimension for the active vector index, or `0` when inactive.
 
 > **embeddingStatus**: [`QueryRouterEmbeddingStatus`](../type-aliases/QueryRouterEmbeddingStatus.md)
 
-Defined in: [packages/agentos/src/query-router/types.ts:385](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/query-router/types.ts#L385)
+Defined in: [packages/agentos/src/query-router/types.ts:385](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/query-router/types.ts#L385)
 
 Whether corpus embeddings are active, missing credentials, or failed during init.
 
@@ -73,7 +73,7 @@ Whether corpus embeddings are active, missing credentials, or failed during init
 
 > **graphEnabled**: `boolean`
 
-Defined in: [packages/agentos/src/query-router/types.ts:391](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/query-router/types.ts#L391)
+Defined in: [packages/agentos/src/query-router/types.ts:391](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/query-router/types.ts#L391)
 
 Whether graph expansion is enabled in config.
 
@@ -83,7 +83,7 @@ Whether graph expansion is enabled in config.
 
 > **graphRuntimeMode**: [`QueryRouterToggleableRuntimeMode`](../type-aliases/QueryRouterToggleableRuntimeMode.md)
 
-Defined in: [packages/agentos/src/query-router/types.ts:397](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/query-router/types.ts#L397)
+Defined in: [packages/agentos/src/query-router/types.ts:397](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/query-router/types.ts#L397)
 
 Runtime truth for graph expansion.
 
@@ -93,7 +93,7 @@ Runtime truth for graph expansion.
 
 > **initialized**: `boolean`
 
-Defined in: [packages/agentos/src/query-router/types.ts:357](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/query-router/types.ts#L357)
+Defined in: [packages/agentos/src/query-router/types.ts:357](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/query-router/types.ts#L357)
 
 Whether `init()` has completed successfully.
 
@@ -103,7 +103,7 @@ Whether `init()` has completed successfully.
 
 > **platformKnowledge**: `object`
 
-Defined in: [packages/agentos/src/query-router/types.ts:372](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/query-router/types.ts#L372)
+Defined in: [packages/agentos/src/query-router/types.ts:372](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/query-router/types.ts#L372)
 
 Counts for the bundled platform knowledge corpus currently loaded in memory.
 
@@ -137,7 +137,7 @@ Counts for the bundled platform knowledge corpus currently loaded in memory.
 
 > **rerankRuntimeMode**: [`QueryRouterRuntimeMode`](../type-aliases/QueryRouterRuntimeMode.md)
 
-Defined in: [packages/agentos/src/query-router/types.ts:400](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/query-router/types.ts#L400)
+Defined in: [packages/agentos/src/query-router/types.ts:400](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/query-router/types.ts#L400)
 
 Runtime truth for reranking.
 
@@ -147,7 +147,7 @@ Runtime truth for reranking.
 
 > **retrievalMode**: [`QueryRouterRetrievalMode`](../type-aliases/QueryRouterRetrievalMode.md)
 
-Defined in: [packages/agentos/src/query-router/types.ts:382](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/query-router/types.ts#L382)
+Defined in: [packages/agentos/src/query-router/types.ts:382](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/query-router/types.ts#L382)
 
 Whether retrieval is vector-backed or keyword-only.
 
@@ -157,7 +157,7 @@ Whether retrieval is vector-backed or keyword-only.
 
 > **sourceCount**: `number`
 
-Defined in: [packages/agentos/src/query-router/types.ts:369](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/query-router/types.ts#L369)
+Defined in: [packages/agentos/src/query-router/types.ts:369](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/query-router/types.ts#L369)
 
 Number of unique source files represented in the loaded corpus.
 
@@ -167,6 +167,6 @@ Number of unique source files represented in the loaded corpus.
 
 > **topicCount**: `number`
 
-Defined in: [packages/agentos/src/query-router/types.ts:366](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/query-router/types.ts#L366)
+Defined in: [packages/agentos/src/query-router/types.ts:366](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/query-router/types.ts#L366)
 
 Number of extracted topic entries used by the classifier.

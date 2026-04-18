@@ -1,6 +1,6 @@
 ---
 title: "Immutable Agents"
-sidebar_position: 13
+sidebar_position: 8
 ---
 
 This doc describes the recommended end-to-end design for **immutable after setup** agents in AgentOS.

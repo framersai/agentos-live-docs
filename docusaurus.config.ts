@@ -295,7 +295,7 @@ const config: Config = {
             { label: 'Guardrails', to: '/features/guardrails' },
             { label: 'Voice Pipeline', to: '/features/voice-pipeline' },
             { label: 'Extensions', to: '/extensions/overview' },
-            { label: 'Skills', to: '/skills/skills-extension' },
+            { label: 'Skills', to: '/skills/overview' },
             {
               label: '─── Architecture ───',
               to: '/architecture/system-architecture',

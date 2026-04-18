@@ -1,6 +1,6 @@
 # Interface: RAGSourceAttribution
 
-Defined in: [packages/agentos/src/rag/audit/RAGAuditTypes.ts:85](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/audit/RAGAuditTypes.ts#L85)
+Defined in: [packages/agentos/src/rag/audit/RAGAuditTypes.ts:85](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/audit/RAGAuditTypes.ts#L85)
 
 Attribution to a specific source document/chunk.
 
@@ -10,7 +10,7 @@ Attribution to a specific source document/chunk.
 
 > **chunkId**: `string`
 
-Defined in: [packages/agentos/src/rag/audit/RAGAuditTypes.ts:86](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/audit/RAGAuditTypes.ts#L86)
+Defined in: [packages/agentos/src/rag/audit/RAGAuditTypes.ts:86](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/audit/RAGAuditTypes.ts#L86)
 
 ***
 
@@ -18,7 +18,7 @@ Defined in: [packages/agentos/src/rag/audit/RAGAuditTypes.ts:86](https://github.
 
 > **contentSnippet**: `string`
 
-Defined in: [packages/agentos/src/rag/audit/RAGAuditTypes.ts:91](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/audit/RAGAuditTypes.ts#L91)
+Defined in: [packages/agentos/src/rag/audit/RAGAuditTypes.ts:91](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/audit/RAGAuditTypes.ts#L91)
 
 First 200 characters of chunk content.
 
@@ -28,7 +28,7 @@ First 200 characters of chunk content.
 
 > `optional` **dataSourceId**: `string`
 
-Defined in: [packages/agentos/src/rag/audit/RAGAuditTypes.ts:95](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/audit/RAGAuditTypes.ts#L95)
+Defined in: [packages/agentos/src/rag/audit/RAGAuditTypes.ts:95](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/audit/RAGAuditTypes.ts#L95)
 
 Data source / collection this chunk came from.
 
@@ -38,7 +38,7 @@ Data source / collection this chunk came from.
 
 > **documentId**: `string`
 
-Defined in: [packages/agentos/src/rag/audit/RAGAuditTypes.ts:87](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/audit/RAGAuditTypes.ts#L87)
+Defined in: [packages/agentos/src/rag/audit/RAGAuditTypes.ts:87](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/audit/RAGAuditTypes.ts#L87)
 
 ***
 
@@ -46,7 +46,7 @@ Defined in: [packages/agentos/src/rag/audit/RAGAuditTypes.ts:87](https://github.
 
 > `optional` **metadata**: `Record`\<`string`, `unknown`\>
 
-Defined in: [packages/agentos/src/rag/audit/RAGAuditTypes.ts:97](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/audit/RAGAuditTypes.ts#L97)
+Defined in: [packages/agentos/src/rag/audit/RAGAuditTypes.ts:97](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/audit/RAGAuditTypes.ts#L97)
 
 Chunk metadata.
 
@@ -56,7 +56,7 @@ Chunk metadata.
 
 > **relevanceScore**: `number`
 
-Defined in: [packages/agentos/src/rag/audit/RAGAuditTypes.ts:93](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/audit/RAGAuditTypes.ts#L93)
+Defined in: [packages/agentos/src/rag/audit/RAGAuditTypes.ts:93](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/audit/RAGAuditTypes.ts#L93)
 
 Similarity/relevance score (0–1).
 
@@ -66,6 +66,6 @@ Similarity/relevance score (0–1).
 
 > `optional` **source**: `string`
 
-Defined in: [packages/agentos/src/rag/audit/RAGAuditTypes.ts:89](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/audit/RAGAuditTypes.ts#L89)
+Defined in: [packages/agentos/src/rag/audit/RAGAuditTypes.ts:89](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/audit/RAGAuditTypes.ts#L89)
 
 Original source pointer (URL, file path, etc.).

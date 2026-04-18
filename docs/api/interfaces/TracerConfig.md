@@ -1,6 +1,6 @@
 # Interface: TracerConfig
 
-Defined in: [packages/agentos/src/evaluation/observability/Tracer.ts:222](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/evaluation/observability/Tracer.ts#L222)
+Defined in: [packages/agentos/src/evaluation/observability/Tracer.ts:222](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/evaluation/observability/Tracer.ts#L222)
 
 Tracer configuration.
 
@@ -10,7 +10,7 @@ Tracer configuration.
 
 > `optional` **autoExport**: `boolean`
 
-Defined in: [packages/agentos/src/evaluation/observability/Tracer.ts:226](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/evaluation/observability/Tracer.ts#L226)
+Defined in: [packages/agentos/src/evaluation/observability/Tracer.ts:226](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/evaluation/observability/Tracer.ts#L226)
 
 Whether to auto-export on span end
 
@@ -20,7 +20,7 @@ Whether to auto-export on span end
 
 > `optional` **exportBatchSize**: `number`
 
-Defined in: [packages/agentos/src/evaluation/observability/Tracer.ts:228](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/evaluation/observability/Tracer.ts#L228)
+Defined in: [packages/agentos/src/evaluation/observability/Tracer.ts:228](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/evaluation/observability/Tracer.ts#L228)
 
 Batch size for export
 
@@ -30,7 +30,7 @@ Batch size for export
 
 > `optional` **exportIntervalMs**: `number`
 
-Defined in: [packages/agentos/src/evaluation/observability/Tracer.ts:230](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/evaluation/observability/Tracer.ts#L230)
+Defined in: [packages/agentos/src/evaluation/observability/Tracer.ts:230](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/evaluation/observability/Tracer.ts#L230)
 
 Export interval in ms
 
@@ -40,7 +40,7 @@ Export interval in ms
 
 > `optional` **maxBufferSize**: `number`
 
-Defined in: [packages/agentos/src/evaluation/observability/Tracer.ts:232](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/evaluation/observability/Tracer.ts#L232)
+Defined in: [packages/agentos/src/evaluation/observability/Tracer.ts:232](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/evaluation/observability/Tracer.ts#L232)
 
 Maximum spans to buffer
 
@@ -50,6 +50,6 @@ Maximum spans to buffer
 
 > `optional` **name**: `string`
 
-Defined in: [packages/agentos/src/evaluation/observability/Tracer.ts:224](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/evaluation/observability/Tracer.ts#L224)
+Defined in: [packages/agentos/src/evaluation/observability/Tracer.ts:224](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/evaluation/observability/Tracer.ts#L224)
 
 Tracer name

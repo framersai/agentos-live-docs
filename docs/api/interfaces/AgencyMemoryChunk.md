@@ -1,6 +1,6 @@
 # Interface: AgencyMemoryChunk
 
-Defined in: [packages/agentos/src/agents/agency/AgencyMemoryManager.ts:68](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/agents/agency/AgencyMemoryManager.ts#L68)
+Defined in: [packages/agentos/src/agents/agency/AgencyMemoryManager.ts:68](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/agents/agency/AgencyMemoryManager.ts#L68)
 
 Retrieved chunk from agency shared memory.
 
@@ -10,7 +10,7 @@ Retrieved chunk from agency shared memory.
 
 > **category**: `string`
 
-Defined in: [packages/agentos/src/agents/agency/AgencyMemoryManager.ts:82](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/agents/agency/AgencyMemoryManager.ts#L82)
+Defined in: [packages/agentos/src/agents/agency/AgencyMemoryManager.ts:82](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/agents/agency/AgencyMemoryManager.ts#L82)
 
 Document category
 
@@ -20,7 +20,7 @@ Document category
 
 > **chunkId**: `string`
 
-Defined in: [packages/agentos/src/agents/agency/AgencyMemoryManager.ts:70](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/agents/agency/AgencyMemoryManager.ts#L70)
+Defined in: [packages/agentos/src/agents/agency/AgencyMemoryManager.ts:70](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/agents/agency/AgencyMemoryManager.ts#L70)
 
 Chunk ID
 
@@ -30,7 +30,7 @@ Chunk ID
 
 > **content**: `string`
 
-Defined in: [packages/agentos/src/agents/agency/AgencyMemoryManager.ts:74](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/agents/agency/AgencyMemoryManager.ts#L74)
+Defined in: [packages/agentos/src/agents/agency/AgencyMemoryManager.ts:74](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/agents/agency/AgencyMemoryManager.ts#L74)
 
 Content text
 
@@ -40,7 +40,7 @@ Content text
 
 > **contributorGmiId**: `string`
 
-Defined in: [packages/agentos/src/agents/agency/AgencyMemoryManager.ts:78](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/agents/agency/AgencyMemoryManager.ts#L78)
+Defined in: [packages/agentos/src/agents/agency/AgencyMemoryManager.ts:78](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/agents/agency/AgencyMemoryManager.ts#L78)
 
 Contributing GMI
 
@@ -50,7 +50,7 @@ Contributing GMI
 
 > **contributorRoleId**: `string`
 
-Defined in: [packages/agentos/src/agents/agency/AgencyMemoryManager.ts:80](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/agents/agency/AgencyMemoryManager.ts#L80)
+Defined in: [packages/agentos/src/agents/agency/AgencyMemoryManager.ts:80](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/agents/agency/AgencyMemoryManager.ts#L80)
 
 Contributing role
 
@@ -60,7 +60,7 @@ Contributing role
 
 > **documentId**: `string`
 
-Defined in: [packages/agentos/src/agents/agency/AgencyMemoryManager.ts:72](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/agents/agency/AgencyMemoryManager.ts#L72)
+Defined in: [packages/agentos/src/agents/agency/AgencyMemoryManager.ts:72](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/agents/agency/AgencyMemoryManager.ts#L72)
 
 Document ID
 
@@ -70,7 +70,7 @@ Document ID
 
 > `optional` **metadata**: `Record`\<`string`, `unknown`\>
 
-Defined in: [packages/agentos/src/agents/agency/AgencyMemoryManager.ts:84](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/agents/agency/AgencyMemoryManager.ts#L84)
+Defined in: [packages/agentos/src/agents/agency/AgencyMemoryManager.ts:84](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/agents/agency/AgencyMemoryManager.ts#L84)
 
 Additional metadata
 
@@ -80,6 +80,6 @@ Additional metadata
 
 > **score**: `number`
 
-Defined in: [packages/agentos/src/agents/agency/AgencyMemoryManager.ts:76](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/agents/agency/AgencyMemoryManager.ts#L76)
+Defined in: [packages/agentos/src/agents/agency/AgencyMemoryManager.ts:76](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/agents/agency/AgencyMemoryManager.ts#L76)
 
 Similarity score

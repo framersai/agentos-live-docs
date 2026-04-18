@@ -1,6 +1,6 @@
 # Interface: RAGOperationEntry
 
-Defined in: [packages/agentos/src/rag/audit/RAGAuditTypes.ts:9](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/audit/RAGAuditTypes.ts#L9)
+Defined in: [packages/agentos/src/rag/audit/RAGAuditTypes.ts:9](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/audit/RAGAuditTypes.ts#L9)
 
 A single RAG operation within a request pipeline.
 
@@ -10,7 +10,7 @@ A single RAG operation within a request pipeline.
 
 > `optional` **collectionIds**: `string`[]
 
-Defined in: [packages/agentos/src/rag/audit/RAGAuditTypes.ts:57](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/audit/RAGAuditTypes.ts#L57)
+Defined in: [packages/agentos/src/rag/audit/RAGAuditTypes.ts:57](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/audit/RAGAuditTypes.ts#L57)
 
 Collection IDs involved in this operation.
 
@@ -20,7 +20,7 @@ Collection IDs involved in this operation.
 
 > **costUSD**: `number`
 
-Defined in: [packages/agentos/src/rag/audit/RAGAuditTypes.ts:45](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/audit/RAGAuditTypes.ts#L45)
+Defined in: [packages/agentos/src/rag/audit/RAGAuditTypes.ts:45](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/audit/RAGAuditTypes.ts#L45)
 
 Estimated cost in USD for this operation.
 
@@ -30,7 +30,7 @@ Estimated cost in USD for this operation.
 
 > `optional` **dataSourceIds**: `string`[]
 
-Defined in: [packages/agentos/src/rag/audit/RAGAuditTypes.ts:54](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/audit/RAGAuditTypes.ts#L54)
+Defined in: [packages/agentos/src/rag/audit/RAGAuditTypes.ts:54](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/audit/RAGAuditTypes.ts#L54)
 
 Data source IDs queried by this operation.
 
@@ -40,7 +40,7 @@ Data source IDs queried by this operation.
 
 > **durationMs**: `number`
 
-Defined in: [packages/agentos/src/rag/audit/RAGAuditTypes.ts:23](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/audit/RAGAuditTypes.ts#L23)
+Defined in: [packages/agentos/src/rag/audit/RAGAuditTypes.ts:23](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/audit/RAGAuditTypes.ts#L23)
 
 Duration in milliseconds.
 
@@ -50,7 +50,7 @@ Duration in milliseconds.
 
 > `optional` **graphDetails**: `object`
 
-Defined in: [packages/agentos/src/rag/audit/RAGAuditTypes.ts:60](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/audit/RAGAuditTypes.ts#L60)
+Defined in: [packages/agentos/src/rag/audit/RAGAuditTypes.ts:60](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/audit/RAGAuditTypes.ts#L60)
 
 Graph-specific details (for graph_local / graph_global operations).
 
@@ -72,7 +72,7 @@ Graph-specific details (for graph_local / graph_global operations).
 
 > `optional` **hydeDetails**: `object`
 
-Defined in: [packages/agentos/src/rag/audit/RAGAuditTypes.ts:74](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/audit/RAGAuditTypes.ts#L74)
+Defined in: [packages/agentos/src/rag/audit/RAGAuditTypes.ts:74](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/audit/RAGAuditTypes.ts#L74)
 
 HyDE-specific details (for hyde operations).
 
@@ -100,7 +100,7 @@ Number of adaptive threshold steps taken.
 
 > **operationId**: `string`
 
-Defined in: [packages/agentos/src/rag/audit/RAGAuditTypes.ts:10](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/audit/RAGAuditTypes.ts#L10)
+Defined in: [packages/agentos/src/rag/audit/RAGAuditTypes.ts:10](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/audit/RAGAuditTypes.ts#L10)
 
 ***
 
@@ -108,7 +108,7 @@ Defined in: [packages/agentos/src/rag/audit/RAGAuditTypes.ts:10](https://github.
 
 > **operationType**: `"embedding"` \| `"rerank"` \| `"hyde"` \| `"vector_query"` \| `"graph_local"` \| `"graph_global"` \| `"ingest"`
 
-Defined in: [packages/agentos/src/rag/audit/RAGAuditTypes.ts:11](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/audit/RAGAuditTypes.ts#L11)
+Defined in: [packages/agentos/src/rag/audit/RAGAuditTypes.ts:11](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/audit/RAGAuditTypes.ts#L11)
 
 ***
 
@@ -116,7 +116,7 @@ Defined in: [packages/agentos/src/rag/audit/RAGAuditTypes.ts:11](https://github.
 
 > `optional` **relevanceScores**: `object`
 
-Defined in: [packages/agentos/src/rag/audit/RAGAuditTypes.ts:51](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/audit/RAGAuditTypes.ts#L51)
+Defined in: [packages/agentos/src/rag/audit/RAGAuditTypes.ts:51](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/audit/RAGAuditTypes.ts#L51)
 
 Relevance score statistics across results.
 
@@ -138,7 +138,7 @@ Relevance score statistics across results.
 
 > `optional` **rerankDetails**: `object`
 
-Defined in: [packages/agentos/src/rag/audit/RAGAuditTypes.ts:67](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/audit/RAGAuditTypes.ts#L67)
+Defined in: [packages/agentos/src/rag/audit/RAGAuditTypes.ts:67](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/audit/RAGAuditTypes.ts#L67)
 
 Reranking-specific details (for rerank operations).
 
@@ -160,7 +160,7 @@ Reranking-specific details (for rerank operations).
 
 > **resultsCount**: `number`
 
-Defined in: [packages/agentos/src/rag/audit/RAGAuditTypes.ts:48](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/audit/RAGAuditTypes.ts#L48)
+Defined in: [packages/agentos/src/rag/audit/RAGAuditTypes.ts:48](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/audit/RAGAuditTypes.ts#L48)
 
 Number of results returned by this operation.
 
@@ -170,7 +170,7 @@ Number of results returned by this operation.
 
 > `optional` **retrievalMethod**: `object`
 
-Defined in: [packages/agentos/src/rag/audit/RAGAuditTypes.ts:26](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/audit/RAGAuditTypes.ts#L26)
+Defined in: [packages/agentos/src/rag/audit/RAGAuditTypes.ts:26](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/audit/RAGAuditTypes.ts#L26)
 
 Retrieval strategy details (for vector_query operations).
 
@@ -196,7 +196,7 @@ Retrieval strategy details (for vector_query operations).
 
 > **sources**: [`RAGSourceAttribution`](RAGSourceAttribution.md)[]
 
-Defined in: [packages/agentos/src/rag/audit/RAGAuditTypes.ts:34](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/audit/RAGAuditTypes.ts#L34)
+Defined in: [packages/agentos/src/rag/audit/RAGAuditTypes.ts:34](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/audit/RAGAuditTypes.ts#L34)
 
 Source documents/chunks that contributed to this operation's results.
 
@@ -206,7 +206,7 @@ Source documents/chunks that contributed to this operation's results.
 
 > **startedAt**: `string`
 
-Defined in: [packages/agentos/src/rag/audit/RAGAuditTypes.ts:21](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/audit/RAGAuditTypes.ts#L21)
+Defined in: [packages/agentos/src/rag/audit/RAGAuditTypes.ts:21](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/audit/RAGAuditTypes.ts#L21)
 
 ISO 8601 timestamp when the operation started.
 
@@ -216,7 +216,7 @@ ISO 8601 timestamp when the operation started.
 
 > **tokenUsage**: `object`
 
-Defined in: [packages/agentos/src/rag/audit/RAGAuditTypes.ts:37](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/audit/RAGAuditTypes.ts#L37)
+Defined in: [packages/agentos/src/rag/audit/RAGAuditTypes.ts:37](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/audit/RAGAuditTypes.ts#L37)
 
 Token usage breakdown for this operation.
 

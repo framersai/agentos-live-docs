@@ -1,6 +1,6 @@
 ---
 title: "Telephony Providers"
-sidebar_position: 16
+sidebar_position: 3
 ---
 
 AgentOS supports three telephony providers for outbound and inbound voice calls:

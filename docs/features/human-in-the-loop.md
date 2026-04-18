@@ -1,6 +1,6 @@
 ---
 title: "Human-in-the-Loop"
-sidebar_position: 2
+sidebar_position: 8
 ---
 
 ## Overview

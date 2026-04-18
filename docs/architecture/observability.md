@@ -1,6 +1,6 @@
 ---
 title: "Observability (OpenTelemetry)"
-sidebar_position: 3
+sidebar_position: 8
 ---
 
 > AgentOS provides **opt-in** OpenTelemetry (OTEL) spans, metrics, and log correlation/export hooks.

@@ -1,6 +1,6 @@
 ---
 title: "News Search"
-sidebar_position: 4
+sidebar_position: 3
 ---
 
 Search for recent news articles via NewsAPI with sorting and language filtering.

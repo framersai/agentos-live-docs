@@ -1,6 +1,6 @@
 ---
 title: "Memory Architecture Overview"
-sidebar_position: 20
+sidebar_position: 4
 ---
 
 > The AgentOS memory system is a composable, SQLite-first architecture that layers cognitive-science-inspired memory management atop a single-file brain database. Three progressive API tiers let you choose the right abstraction for your use case.

@@ -1,6 +1,6 @@
 # Interface: IngestOptions
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:385](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/io/facade/types.ts#L385)
+Defined in: [packages/agentos/src/memory/io/facade/types.ts:385](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/io/facade/types.ts#L385)
 
 Options controlling a document-ingestion job launched via `Memory.ingest()`.
 
@@ -10,7 +10,7 @@ Options controlling a document-ingestion job launched via `Memory.ingest()`.
 
 > `optional` **exclude**: `string`[]
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:402](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/io/facade/types.ts#L402)
+Defined in: [packages/agentos/src/memory/io/facade/types.ts:402](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/io/facade/types.ts#L402)
 
 Glob patterns for paths to exclude.
 
@@ -26,7 +26,7 @@ Glob patterns for paths to exclude.
 
 > `optional` **format**: `"markdown"` \| `"auto"` \| `"obsidian"`
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:411](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/io/facade/types.ts#L411)
+Defined in: [packages/agentos/src/memory/io/facade/types.ts:411](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/io/facade/types.ts#L411)
 
 Format hint for the ingested content.
 - `'auto'`      – detect from file extension / mime type.
@@ -45,7 +45,7 @@ Format hint for the ingested content.
 
 > `optional` **include**: `string`[]
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:396](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/io/facade/types.ts#L396)
+Defined in: [packages/agentos/src/memory/io/facade/types.ts:396](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/io/facade/types.ts#L396)
 
 Glob patterns for file types to include.
 
@@ -61,7 +61,7 @@ Glob patterns for file types to include.
 
 > `optional` **onProgress**: (`processed`, `total`, `current`) => `void`
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:420](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/io/facade/types.ts#L420)
+Defined in: [packages/agentos/src/memory/io/facade/types.ts:420](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/io/facade/types.ts#L420)
 
 Callback invoked as each file is processed.
 Useful for building progress UI.
@@ -96,7 +96,7 @@ path of the file currently being processed
 
 > `optional` **recursive**: `boolean`
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:390](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/io/facade/types.ts#L390)
+Defined in: [packages/agentos/src/memory/io/facade/types.ts:390](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/io/facade/types.ts#L390)
 
 Whether to recursively scan sub-directories when `source` is a directory.
 

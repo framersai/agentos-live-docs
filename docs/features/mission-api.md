@@ -1,6 +1,6 @@
 ---
 title: "mission() API"
-sidebar_position: 5
+sidebar_position: 3
 ---
 
 `mission()` is the goal-first authoring API in the Unified Orchestration Layer. Instead of declaring nodes and edges directly, you describe the mission intent and let the compiler build the execution graph.

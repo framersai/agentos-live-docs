@@ -1,6 +1,6 @@
 # Interface: TurnPlan
 
-Defined in: [packages/agentos/src/orchestration/turn-planner/TurnPlanner.ts:93](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/turn-planner/TurnPlanner.ts#L93)
+Defined in: [packages/agentos/src/orchestration/turn-planner/TurnPlanner.ts:93](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/turn-planner/TurnPlanner.ts#L93)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/orchestration/turn-planner/TurnPlanner.ts:93](
 
 > **capability**: [`TurnCapabilityPlan`](TurnCapabilityPlan.md)
 
-Defined in: [packages/agentos/src/orchestration/turn-planner/TurnPlanner.ts:95](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/turn-planner/TurnPlanner.ts#L95)
+Defined in: [packages/agentos/src/orchestration/turn-planner/TurnPlanner.ts:95](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/turn-planner/TurnPlanner.ts#L95)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [packages/agentos/src/orchestration/turn-planner/TurnPlanner.ts:95](
 
 > **diagnostics**: [`TurnPlanningDiagnostics`](TurnPlanningDiagnostics.md)
 
-Defined in: [packages/agentos/src/orchestration/turn-planner/TurnPlanner.ts:96](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/turn-planner/TurnPlanner.ts#L96)
+Defined in: [packages/agentos/src/orchestration/turn-planner/TurnPlanner.ts:96](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/turn-planner/TurnPlanner.ts#L96)
 
 ***
 
@@ -24,4 +24,4 @@ Defined in: [packages/agentos/src/orchestration/turn-planner/TurnPlanner.ts:96](
 
 > **policy**: [`TurnExecutionPolicy`](TurnExecutionPolicy.md)
 
-Defined in: [packages/agentos/src/orchestration/turn-planner/TurnPlanner.ts:94](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/turn-planner/TurnPlanner.ts#L94)
+Defined in: [packages/agentos/src/orchestration/turn-planner/TurnPlanner.ts:94](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/turn-planner/TurnPlanner.ts#L94)

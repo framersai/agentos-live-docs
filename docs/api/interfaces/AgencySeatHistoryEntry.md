@@ -1,6 +1,6 @@
 # Interface: AgencySeatHistoryEntry
 
-Defined in: [packages/agentos/src/agents/agency/AgencyTypes.ts:33](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/agents/agency/AgencyTypes.ts#L33)
+Defined in: [packages/agentos/src/agents/agency/AgencyTypes.ts:33](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/agents/agency/AgencyTypes.ts#L33)
 
 Single history entry for seat activity tracking.
 
@@ -10,7 +10,7 @@ Single history entry for seat activity tracking.
 
 > `optional` **metadata**: `Record`\<`string`, `unknown`\>
 
-Defined in: [packages/agentos/src/agents/agency/AgencyTypes.ts:43](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/agents/agency/AgencyTypes.ts#L43)
+Defined in: [packages/agentos/src/agents/agency/AgencyTypes.ts:43](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/agents/agency/AgencyTypes.ts#L43)
 
 Additional metadata
 
@@ -20,7 +20,7 @@ Additional metadata
 
 > `optional` **outputPreview**: `string`
 
-Defined in: [packages/agentos/src/agents/agency/AgencyTypes.ts:41](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/agents/agency/AgencyTypes.ts#L41)
+Defined in: [packages/agentos/src/agents/agency/AgencyTypes.ts:41](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/agents/agency/AgencyTypes.ts#L41)
 
 Preview of task output
 
@@ -30,7 +30,7 @@ Preview of task output
 
 > `optional` **status**: `"completed"` \| `"failed"` \| `"pending"` \| `"running"`
 
-Defined in: [packages/agentos/src/agents/agency/AgencyTypes.ts:39](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/agents/agency/AgencyTypes.ts#L39)
+Defined in: [packages/agentos/src/agents/agency/AgencyTypes.ts:39](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/agents/agency/AgencyTypes.ts#L39)
 
 Current status of the task
 
@@ -40,7 +40,7 @@ Current status of the task
 
 > `optional` **taskId**: `string`
 
-Defined in: [packages/agentos/src/agents/agency/AgencyTypes.ts:35](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/agents/agency/AgencyTypes.ts#L35)
+Defined in: [packages/agentos/src/agents/agency/AgencyTypes.ts:35](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/agents/agency/AgencyTypes.ts#L35)
 
 Associated task identifier
 
@@ -50,6 +50,6 @@ Associated task identifier
 
 > **timestamp**: `string`
 
-Defined in: [packages/agentos/src/agents/agency/AgencyTypes.ts:37](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/agents/agency/AgencyTypes.ts#L37)
+Defined in: [packages/agentos/src/agents/agency/AgencyTypes.ts:37](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/agents/agency/AgencyTypes.ts#L37)
 
 ISO timestamp of this entry

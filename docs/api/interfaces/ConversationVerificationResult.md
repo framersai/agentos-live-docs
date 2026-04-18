@@ -1,6 +1,6 @@
 # Interface: ConversationVerificationResult
 
-Defined in: [packages/agentos/src/provenance/verification/ConversationVerifier.ts:17](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/provenance/verification/ConversationVerifier.ts#L17)
+Defined in: [packages/agentos/src/provenance/verification/ConversationVerifier.ts:17](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/provenance/verification/ConversationVerifier.ts#L17)
 
 ## Extends
 
@@ -12,7 +12,7 @@ Defined in: [packages/agentos/src/provenance/verification/ConversationVerifier.t
 
 > `optional` **agentId**: `string`
 
-Defined in: [packages/agentos/src/provenance/types.ts:308](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/provenance/types.ts#L308)
+Defined in: [packages/agentos/src/provenance/types.ts:308](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/provenance/types.ts#L308)
 
 Agent ID of the verified chain.
 
@@ -26,7 +26,7 @@ Agent ID of the verified chain.
 
 > **conversationId**: `string`
 
-Defined in: [packages/agentos/src/provenance/verification/ConversationVerifier.ts:18](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/provenance/verification/ConversationVerifier.ts#L18)
+Defined in: [packages/agentos/src/provenance/verification/ConversationVerifier.ts:18](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/provenance/verification/ConversationVerifier.ts#L18)
 
 ***
 
@@ -34,7 +34,7 @@ Defined in: [packages/agentos/src/provenance/verification/ConversationVerifier.t
 
 > **errors**: [`VerificationError`](VerificationError.md)[]
 
-Defined in: [packages/agentos/src/provenance/types.ts:300](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/provenance/types.ts#L300)
+Defined in: [packages/agentos/src/provenance/types.ts:300](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/provenance/types.ts#L300)
 
 List of errors found.
 
@@ -48,7 +48,7 @@ List of errors found.
 
 > **eventsVerified**: `number`
 
-Defined in: [packages/agentos/src/provenance/types.ts:298](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/provenance/types.ts#L298)
+Defined in: [packages/agentos/src/provenance/types.ts:298](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/provenance/types.ts#L298)
 
 Number of events verified.
 
@@ -62,7 +62,7 @@ Number of events verified.
 
 > `optional` **firstSequence**: `number`
 
-Defined in: [packages/agentos/src/provenance/types.ts:304](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/provenance/types.ts#L304)
+Defined in: [packages/agentos/src/provenance/types.ts:304](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/provenance/types.ts#L304)
 
 First sequence number verified.
 
@@ -76,7 +76,7 @@ First sequence number verified.
 
 > **hasGenesis**: `boolean`
 
-Defined in: [packages/agentos/src/provenance/verification/ConversationVerifier.ts:20](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/provenance/verification/ConversationVerifier.ts#L20)
+Defined in: [packages/agentos/src/provenance/verification/ConversationVerifier.ts:20](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/provenance/verification/ConversationVerifier.ts#L20)
 
 ***
 
@@ -84,7 +84,7 @@ Defined in: [packages/agentos/src/provenance/verification/ConversationVerifier.t
 
 > **hasHumanInterventions**: `boolean`
 
-Defined in: [packages/agentos/src/provenance/verification/ConversationVerifier.ts:21](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/provenance/verification/ConversationVerifier.ts#L21)
+Defined in: [packages/agentos/src/provenance/verification/ConversationVerifier.ts:21](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/provenance/verification/ConversationVerifier.ts#L21)
 
 ***
 
@@ -92,7 +92,7 @@ Defined in: [packages/agentos/src/provenance/verification/ConversationVerifier.t
 
 > **humanInterventionCount**: `number`
 
-Defined in: [packages/agentos/src/provenance/verification/ConversationVerifier.ts:22](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/provenance/verification/ConversationVerifier.ts#L22)
+Defined in: [packages/agentos/src/provenance/verification/ConversationVerifier.ts:22](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/provenance/verification/ConversationVerifier.ts#L22)
 
 ***
 
@@ -100,7 +100,7 @@ Defined in: [packages/agentos/src/provenance/verification/ConversationVerifier.t
 
 > **isFullyAutonomous**: `boolean`
 
-Defined in: [packages/agentos/src/provenance/verification/ConversationVerifier.ts:23](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/provenance/verification/ConversationVerifier.ts#L23)
+Defined in: [packages/agentos/src/provenance/verification/ConversationVerifier.ts:23](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/provenance/verification/ConversationVerifier.ts#L23)
 
 ***
 
@@ -108,7 +108,7 @@ Defined in: [packages/agentos/src/provenance/verification/ConversationVerifier.t
 
 > `optional` **lastSequence**: `number`
 
-Defined in: [packages/agentos/src/provenance/types.ts:306](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/provenance/types.ts#L306)
+Defined in: [packages/agentos/src/provenance/types.ts:306](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/provenance/types.ts#L306)
 
 Last sequence number verified.
 
@@ -122,7 +122,7 @@ Last sequence number verified.
 
 > **messageCount**: `number`
 
-Defined in: [packages/agentos/src/provenance/verification/ConversationVerifier.ts:19](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/provenance/verification/ConversationVerifier.ts#L19)
+Defined in: [packages/agentos/src/provenance/verification/ConversationVerifier.ts:19](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/provenance/verification/ConversationVerifier.ts#L19)
 
 ***
 
@@ -130,7 +130,7 @@ Defined in: [packages/agentos/src/provenance/verification/ConversationVerifier.t
 
 > **valid**: `boolean`
 
-Defined in: [packages/agentos/src/provenance/types.ts:296](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/provenance/types.ts#L296)
+Defined in: [packages/agentos/src/provenance/types.ts:296](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/provenance/types.ts#L296)
 
 Whether all checks passed.
 
@@ -144,7 +144,7 @@ Whether all checks passed.
 
 > **verifiedAt**: `string`
 
-Defined in: [packages/agentos/src/provenance/types.ts:310](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/provenance/types.ts#L310)
+Defined in: [packages/agentos/src/provenance/types.ts:310](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/provenance/types.ts#L310)
 
 ISO 8601 timestamp of when verification was performed.
 
@@ -158,7 +158,7 @@ ISO 8601 timestamp of when verification was performed.
 
 > **warnings**: `string`[]
 
-Defined in: [packages/agentos/src/provenance/types.ts:302](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/provenance/types.ts#L302)
+Defined in: [packages/agentos/src/provenance/types.ts:302](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/provenance/types.ts#L302)
 
 Informational warnings (non-fatal).
 

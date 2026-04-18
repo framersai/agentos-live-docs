@@ -1,8 +1,7 @@
 ---
-sidebar_position: 42
+title: "Reranker Chain"
+sidebar_position: 4.6
 ---
-
-# Reranker Chain
 
 Configurable multi-stage reranking pipeline for search results and RAG retrieval.
 

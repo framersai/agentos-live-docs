@@ -1,6 +1,6 @@
 # Interface: VerificationError
 
-Defined in: [packages/agentos/src/provenance/types.ts:313](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/provenance/types.ts#L313)
+Defined in: [packages/agentos/src/provenance/types.ts:313](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/provenance/types.ts#L313)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/provenance/types.ts:313](https://github.com/fr
 
 > **code**: `string`
 
-Defined in: [packages/agentos/src/provenance/types.ts:319](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/provenance/types.ts#L319)
+Defined in: [packages/agentos/src/provenance/types.ts:319](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/provenance/types.ts#L319)
 
 Machine-readable error code.
 
@@ -18,7 +18,7 @@ Machine-readable error code.
 
 > **eventId**: `string`
 
-Defined in: [packages/agentos/src/provenance/types.ts:315](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/provenance/types.ts#L315)
+Defined in: [packages/agentos/src/provenance/types.ts:315](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/provenance/types.ts#L315)
 
 Event ID where the error was detected.
 
@@ -28,7 +28,7 @@ Event ID where the error was detected.
 
 > **message**: `string`
 
-Defined in: [packages/agentos/src/provenance/types.ts:321](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/provenance/types.ts#L321)
+Defined in: [packages/agentos/src/provenance/types.ts:321](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/provenance/types.ts#L321)
 
 Human-readable error message.
 
@@ -38,6 +38,6 @@ Human-readable error message.
 
 > **sequence**: `number`
 
-Defined in: [packages/agentos/src/provenance/types.ts:317](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/provenance/types.ts#L317)
+Defined in: [packages/agentos/src/provenance/types.ts:317](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/provenance/types.ts#L317)
 
 Sequence number of the problematic event.

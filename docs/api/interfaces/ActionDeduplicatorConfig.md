@@ -1,6 +1,6 @@
 # Interface: ActionDeduplicatorConfig
 
-Defined in: [packages/agentos/src/safety/runtime/ActionDeduplicator.ts:8](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/safety/runtime/ActionDeduplicator.ts#L8)
+Defined in: [packages/agentos/src/safety/runtime/ActionDeduplicator.ts:8](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/safety/runtime/ActionDeduplicator.ts#L8)
 
 ## File
 
@@ -18,7 +18,7 @@ Caller computes the key string — this class is intentionally generic.
 
 > **maxEntries**: `number`
 
-Defined in: [packages/agentos/src/safety/runtime/ActionDeduplicator.ts:12](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/safety/runtime/ActionDeduplicator.ts#L12)
+Defined in: [packages/agentos/src/safety/runtime/ActionDeduplicator.ts:12](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/safety/runtime/ActionDeduplicator.ts#L12)
 
 Maximum tracked entries before LRU eviction.
 
@@ -34,7 +34,7 @@ Maximum tracked entries before LRU eviction.
 
 > **windowMs**: `number`
 
-Defined in: [packages/agentos/src/safety/runtime/ActionDeduplicator.ts:10](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/safety/runtime/ActionDeduplicator.ts#L10)
+Defined in: [packages/agentos/src/safety/runtime/ActionDeduplicator.ts:10](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/safety/runtime/ActionDeduplicator.ts#L10)
 
 Time window in ms to track actions.
 

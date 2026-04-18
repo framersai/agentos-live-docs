@@ -1,6 +1,6 @@
 # Interface: AgentCore
 
-Defined in: [core/state.ts:38](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/core/state.ts#L38)
+Defined in: [core/state.ts:39](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/core/state.ts#L39)
 
 ## Properties
 
@@ -8,15 +8,15 @@ Defined in: [core/state.ts:38](https://github.com/framersai/paracosm/blob/ba2b88
 
 > **birthYear**: `number`
 
-Defined in: [core/state.ts:41](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/core/state.ts#L41)
+Defined in: [core/state.ts:42](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/core/state.ts#L42)
 
 ***
 
 ### department
 
-> **department**: [`Department`](../type-aliases/Department.md)
+> **department**: `string`
 
-Defined in: [core/state.ts:43](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/core/state.ts#L43)
+Defined in: [core/state.ts:44](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/core/state.ts#L44)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: [core/state.ts:43](https://github.com/framersai/paracosm/blob/ba2b88
 
 > **id**: `string`
 
-Defined in: [core/state.ts:39](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/core/state.ts#L39)
+Defined in: [core/state.ts:40](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/core/state.ts#L40)
 
 ***
 
@@ -32,7 +32,7 @@ Defined in: [core/state.ts:39](https://github.com/framersai/paracosm/blob/ba2b88
 
 > **marsborn**: `boolean`
 
-Defined in: [core/state.ts:42](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/core/state.ts#L42)
+Defined in: [core/state.ts:43](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/core/state.ts#L43)
 
 ***
 
@@ -40,7 +40,7 @@ Defined in: [core/state.ts:42](https://github.com/framersai/paracosm/blob/ba2b88
 
 > **name**: `string`
 
-Defined in: [core/state.ts:40](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/core/state.ts#L40)
+Defined in: [core/state.ts:41](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/core/state.ts#L41)
 
 ***
 
@@ -48,4 +48,4 @@ Defined in: [core/state.ts:40](https://github.com/framersai/paracosm/blob/ba2b88
 
 > **role**: `string`
 
-Defined in: [core/state.ts:44](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/core/state.ts#L44)
+Defined in: [core/state.ts:45](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/core/state.ts#L45)

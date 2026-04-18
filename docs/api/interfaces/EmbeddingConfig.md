@@ -1,6 +1,6 @@
 # Interface: EmbeddingConfig
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:19](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/io/facade/types.ts#L19)
+Defined in: [packages/agentos/src/memory/io/facade/types.ts:19](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/io/facade/types.ts#L19)
 
 Configuration for the embedding model used to encode memory content and
 document chunks into dense vectors.
@@ -11,7 +11,7 @@ document chunks into dense vectors.
 
 > `optional` **dimensions**: `number`
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:38](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/io/facade/types.ts#L38)
+Defined in: [packages/agentos/src/memory/io/facade/types.ts:38](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/io/facade/types.ts#L38)
 
 Dimensionality of produced vectors.
 Must match the dimensionality expected by the configured vector store.
@@ -28,7 +28,7 @@ Must match the dimensionality expected by the configured vector store.
 
 > `optional` **model**: `string`
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:31](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/io/facade/types.ts#L31)
+Defined in: [packages/agentos/src/memory/io/facade/types.ts:31](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/io/facade/types.ts#L31)
 
 Model name to use for generating embeddings.
 When omitted the provider's default model is used.
@@ -45,7 +45,7 @@ When omitted the provider's default model is used.
 
 > **provider**: `string`
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:24](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/io/facade/types.ts#L24)
+Defined in: [packages/agentos/src/memory/io/facade/types.ts:24](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/io/facade/types.ts#L24)
 
 Embedding provider identifier.
 

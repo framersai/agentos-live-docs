@@ -1,6 +1,6 @@
 # Interface: MigrationOptions
 
-Defined in: [packages/agentos/src/rag/migration/types.ts:49](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/migration/types.ts#L49)
+Defined in: [packages/agentos/src/rag/migration/types.ts:49](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/migration/types.ts#L49)
 
 Options for a migration operation.
 
@@ -10,7 +10,7 @@ Options for a migration operation.
 
 > `optional` **batchSize**: `number`
 
-Defined in: [packages/agentos/src/rag/migration/types.ts:55](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/migration/types.ts#L55)
+Defined in: [packages/agentos/src/rag/migration/types.ts:55](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/migration/types.ts#L55)
 
 Rows per batch for streaming reads/writes.
 
@@ -26,7 +26,7 @@ Rows per batch for streaming reads/writes.
 
 > `optional` **dryRun**: `boolean`
 
-Defined in: [packages/agentos/src/rag/migration/types.ts:64](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/migration/types.ts#L64)
+Defined in: [packages/agentos/src/rag/migration/types.ts:64](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/migration/types.ts#L64)
 
 If true, counts rows but does not write to target.
 
@@ -42,7 +42,7 @@ false
 
 > **from**: [`BackendConfig`](BackendConfig.md)
 
-Defined in: [packages/agentos/src/rag/migration/types.ts:51](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/migration/types.ts#L51)
+Defined in: [packages/agentos/src/rag/migration/types.ts:51](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/migration/types.ts#L51)
 
 Source backend configuration.
 
@@ -52,7 +52,7 @@ Source backend configuration.
 
 > `optional` **onProgress**: (`done`, `total`, `table`) => `void`
 
-Defined in: [packages/agentos/src/rag/migration/types.ts:62](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/migration/types.ts#L62)
+Defined in: [packages/agentos/src/rag/migration/types.ts:62](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/migration/types.ts#L62)
 
 Progress callback fired after each batch write.
 
@@ -86,6 +86,6 @@ Name of the table currently being migrated.
 
 > **to**: [`BackendConfig`](BackendConfig.md)
 
-Defined in: [packages/agentos/src/rag/migration/types.ts:53](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/migration/types.ts#L53)
+Defined in: [packages/agentos/src/rag/migration/types.ts:53](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/migration/types.ts#L53)
 
 Target backend configuration.

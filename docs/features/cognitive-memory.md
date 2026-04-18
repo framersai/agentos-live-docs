@@ -1,6 +1,6 @@
 ---
 title: "Cognitive Memory"
-sidebar_position: 2
+sidebar_position: 1
 ---
 
 :::tip See also

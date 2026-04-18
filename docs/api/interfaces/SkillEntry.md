@@ -1,6 +1,6 @@
 # Interface: SkillEntry
 
-Defined in: [packages/agentos/src/skills/types.ts:190](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/skills/types.ts#L190)
+Defined in: [packages/agentos/src/skills/types.ts:190](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/skills/types.ts#L190)
 
 Complete skill entry with all metadata.
 
@@ -10,7 +10,7 @@ Complete skill entry with all metadata.
 
 > **frontmatter**: [`ParsedSkillFrontmatter`](../type-aliases/ParsedSkillFrontmatter.md)
 
-Defined in: [packages/agentos/src/skills/types.ts:195](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/skills/types.ts#L195)
+Defined in: [packages/agentos/src/skills/types.ts:195](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/skills/types.ts#L195)
 
 Raw frontmatter values
 
@@ -20,7 +20,7 @@ Raw frontmatter values
 
 > `optional` **invocation**: [`SkillInvocationPolicy`](SkillInvocationPolicy.md)
 
-Defined in: [packages/agentos/src/skills/types.ts:201](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/skills/types.ts#L201)
+Defined in: [packages/agentos/src/skills/types.ts:201](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/skills/types.ts#L201)
 
 Invocation policy
 
@@ -30,7 +30,7 @@ Invocation policy
 
 > `optional` **metadata**: [`SkillMetadata`](SkillMetadata.md)
 
-Defined in: [packages/agentos/src/skills/types.ts:198](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/skills/types.ts#L198)
+Defined in: [packages/agentos/src/skills/types.ts:198](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/skills/types.ts#L198)
 
 Parsed AgentOS/Wunderland/OpenClaw metadata
 
@@ -40,7 +40,7 @@ Parsed AgentOS/Wunderland/OpenClaw metadata
 
 > **skill**: [`Skill`](Skill.md)
 
-Defined in: [packages/agentos/src/skills/types.ts:192](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/skills/types.ts#L192)
+Defined in: [packages/agentos/src/skills/types.ts:192](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/skills/types.ts#L192)
 
 Core skill data
 
@@ -50,7 +50,7 @@ Core skill data
 
 > `optional` **source**: `string`
 
-Defined in: [packages/agentos/src/skills/types.ts:207](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/skills/types.ts#L207)
+Defined in: [packages/agentos/src/skills/types.ts:207](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/skills/types.ts#L207)
 
 Optional source tag indicating where the skill was loaded from (e.g., "bundled", "workspace").
 
@@ -60,6 +60,6 @@ Optional source tag indicating where the skill was loaded from (e.g., "bundled",
 
 > `optional` **sourcePath**: `string`
 
-Defined in: [packages/agentos/src/skills/types.ts:204](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/skills/types.ts#L204)
+Defined in: [packages/agentos/src/skills/types.ts:204](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/skills/types.ts#L204)
 
 Source directory path

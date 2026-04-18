@@ -1,6 +1,6 @@
 ---
 title: "Channels"
-sidebar_position: 23
+sidebar_position: 1
 ---
 
 > Connect your agent to any messaging platform with a unified adapter interface.

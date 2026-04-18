@@ -1,6 +1,6 @@
 # Interface: ISpanExporter
 
-Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:180](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/evaluation/observability/ITracer.ts#L180)
+Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:180](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/evaluation/observability/ITracer.ts#L180)
 
 Span exporter interface.
 
@@ -10,7 +10,7 @@ Span exporter interface.
 
 > **export**(`spans`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:185](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/evaluation/observability/ITracer.ts#L185)
+Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:185](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/evaluation/observability/ITracer.ts#L185)
 
 Exports spans to a backend.
 
@@ -32,7 +32,7 @@ Spans to export
 
 > **shutdown**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:190](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/evaluation/observability/ITracer.ts#L190)
+Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:190](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/evaluation/observability/ITracer.ts#L190)
 
 Shuts down the exporter.
 

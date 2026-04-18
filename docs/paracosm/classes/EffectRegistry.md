@@ -1,6 +1,6 @@
 # Class: EffectRegistry
 
-Defined in: [effect-registry.ts:16](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/effect-registry.ts#L16)
+Defined in: [effect-registry.ts:33](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/effect-registry.ts#L33)
 
 ## Constructors
 
@@ -8,7 +8,7 @@ Defined in: [effect-registry.ts:16](https://github.com/framersai/paracosm/blob/b
 
 > **new EffectRegistry**(`categoryEffects`, `fallback?`): `EffectRegistry`
 
-Defined in: [effect-registry.ts:20](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/effect-registry.ts#L20)
+Defined in: [effect-registry.ts:37](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/effect-registry.ts#L37)
 
 #### Parameters
 
@@ -30,7 +30,7 @@ Defined in: [effect-registry.ts:20](https://github.com/framersai/paracosm/blob/b
 
 > **applyOutcome**(`category`, `outcome`, `modifiers`): `Record`\<`string`, `number`\>
 
-Defined in: [effect-registry.ts:32](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/effect-registry.ts#L32)
+Defined in: [effect-registry.ts:49](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/effect-registry.ts#L49)
 
 #### Parameters
 
@@ -56,7 +56,7 @@ Defined in: [effect-registry.ts:32](https://github.com/framersai/paracosm/blob/b
 
 > **getBaseEffect**(`category`): `Record`\<`string`, `number`\>
 
-Defined in: [effect-registry.ts:28](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/effect-registry.ts#L28)
+Defined in: [effect-registry.ts:45](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/effect-registry.ts#L45)
 
 #### Parameters
 

@@ -1,6 +1,6 @@
 # Interface: ProviderFallbackEvent
 
-Defined in: [packages/agentos/src/speech/FallbackProxy.ts:32](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/speech/FallbackProxy.ts#L32)
+Defined in: [packages/agentos/src/speech/FallbackProxy.ts:32](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/speech/FallbackProxy.ts#L32)
 
 Payload emitted on the `provider_fallback` event when a provider in the
 chain fails and the proxy advances to the next candidate.
@@ -29,7 +29,7 @@ resolver.on('provider_fallback', (event: ProviderFallbackEvent) => {
 
 > **error**: `unknown`
 
-Defined in: [packages/agentos/src/speech/FallbackProxy.ts:44](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/speech/FallbackProxy.ts#L44)
+Defined in: [packages/agentos/src/speech/FallbackProxy.ts:44](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/speech/FallbackProxy.ts#L44)
 
 The error thrown by the failing provider. Typed as `unknown` because
 providers may throw non-Error values (e.g. string messages, API response
@@ -41,7 +41,7 @@ objects). Callers should use `instanceof Error` before accessing `.message`.
 
 > **from**: `string`
 
-Defined in: [packages/agentos/src/speech/FallbackProxy.ts:34](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/speech/FallbackProxy.ts#L34)
+Defined in: [packages/agentos/src/speech/FallbackProxy.ts:34](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/speech/FallbackProxy.ts#L34)
 
 Unique identifier of the provider that failed.
 
@@ -51,7 +51,7 @@ Unique identifier of the provider that failed.
 
 > **kind**: `"stt"` \| `"tts"`
 
-Defined in: [packages/agentos/src/speech/FallbackProxy.ts:38](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/speech/FallbackProxy.ts#L38)
+Defined in: [packages/agentos/src/speech/FallbackProxy.ts:38](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/speech/FallbackProxy.ts#L38)
 
 Whether this is an STT or TTS fallback chain.
 
@@ -61,6 +61,6 @@ Whether this is an STT or TTS fallback chain.
 
 > **to**: `string`
 
-Defined in: [packages/agentos/src/speech/FallbackProxy.ts:36](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/speech/FallbackProxy.ts#L36)
+Defined in: [packages/agentos/src/speech/FallbackProxy.ts:36](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/speech/FallbackProxy.ts#L36)
 
 Unique identifier of the provider that will be tried next.

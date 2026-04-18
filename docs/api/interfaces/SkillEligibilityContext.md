@@ -1,6 +1,6 @@
 # Interface: SkillEligibilityContext
 
-Defined in: [packages/agentos/src/skills/types.ts:213](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/skills/types.ts#L213)
+Defined in: [packages/agentos/src/skills/types.ts:213](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/skills/types.ts#L213)
 
 Context for evaluating skill eligibility.
 
@@ -10,7 +10,7 @@ Context for evaluating skill eligibility.
 
 > **hasAnyBin**: (`bins`) => `boolean`
 
-Defined in: [packages/agentos/src/skills/types.ts:221](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/skills/types.ts#L221)
+Defined in: [packages/agentos/src/skills/types.ts:221](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/skills/types.ts#L221)
 
 Check if any of the binaries are available
 
@@ -30,7 +30,7 @@ Check if any of the binaries are available
 
 > **hasBin**: (`bin`) => `boolean`
 
-Defined in: [packages/agentos/src/skills/types.ts:218](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/skills/types.ts#L218)
+Defined in: [packages/agentos/src/skills/types.ts:218](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/skills/types.ts#L218)
 
 Check if a binary is available
 
@@ -50,7 +50,7 @@ Check if a binary is available
 
 > `optional` **hasEnv**: (`envVar`) => `boolean`
 
-Defined in: [packages/agentos/src/skills/types.ts:224](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/skills/types.ts#L224)
+Defined in: [packages/agentos/src/skills/types.ts:224](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/skills/types.ts#L224)
 
 Check if an environment variable is set
 
@@ -70,7 +70,7 @@ Check if an environment variable is set
 
 > `optional` **note**: `string`
 
-Defined in: [packages/agentos/src/skills/types.ts:227](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/skills/types.ts#L227)
+Defined in: [packages/agentos/src/skills/types.ts:227](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/skills/types.ts#L227)
 
 Additional note for filtering
 
@@ -80,6 +80,6 @@ Additional note for filtering
 
 > **platforms**: `string`[]
 
-Defined in: [packages/agentos/src/skills/types.ts:215](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/skills/types.ts#L215)
+Defined in: [packages/agentos/src/skills/types.ts:215](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/skills/types.ts#L215)
 
 Current platform(s)

@@ -1,6 +1,6 @@
 # Class: AzureSpeechTTSProvider
 
-Defined in: [packages/agentos/src/speech/providers/AzureSpeechTTSProvider.ts:211](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/speech/providers/AzureSpeechTTSProvider.ts#L211)
+Defined in: [packages/agentos/src/speech/providers/AzureSpeechTTSProvider.ts:211](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/speech/providers/AzureSpeechTTSProvider.ts#L211)
 
 Text-to-speech provider that uses the Azure Cognitive Services Speech REST API.
 
@@ -63,7 +63,7 @@ const result = await provider.synthesize('Hello world');
 
 > **new AzureSpeechTTSProvider**(`config`): `AzureSpeechTTSProvider`
 
-Defined in: [packages/agentos/src/speech/providers/AzureSpeechTTSProvider.ts:246](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/speech/providers/AzureSpeechTTSProvider.ts#L246)
+Defined in: [packages/agentos/src/speech/providers/AzureSpeechTTSProvider.ts:246](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/speech/providers/AzureSpeechTTSProvider.ts#L246)
 
 Creates a new AzureSpeechTTSProvider.
 
@@ -96,7 +96,7 @@ const provider = new AzureSpeechTTSProvider({
 
 > `readonly` **displayName**: `"Azure Speech (TTS)"` = `'Azure Speech (TTS)'`
 
-Defined in: [packages/agentos/src/speech/providers/AzureSpeechTTSProvider.ts:216](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/speech/providers/AzureSpeechTTSProvider.ts#L216)
+Defined in: [packages/agentos/src/speech/providers/AzureSpeechTTSProvider.ts:216](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/speech/providers/AzureSpeechTTSProvider.ts#L216)
 
 Human-readable display name for UI and logging.
 
@@ -110,7 +110,7 @@ Human-readable display name for UI and logging.
 
 > `readonly` **id**: `"azure-speech-tts"` = `'azure-speech-tts'`
 
-Defined in: [packages/agentos/src/speech/providers/AzureSpeechTTSProvider.ts:213](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/speech/providers/AzureSpeechTTSProvider.ts#L213)
+Defined in: [packages/agentos/src/speech/providers/AzureSpeechTTSProvider.ts:213](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/speech/providers/AzureSpeechTTSProvider.ts#L213)
 
 Unique provider identifier used for registration and resolution.
 
@@ -124,7 +124,7 @@ Unique provider identifier used for registration and resolution.
 
 > `readonly` **supportsStreaming**: `true` = `true`
 
-Defined in: [packages/agentos/src/speech/providers/AzureSpeechTTSProvider.ts:223](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/speech/providers/AzureSpeechTTSProvider.ts#L223)
+Defined in: [packages/agentos/src/speech/providers/AzureSpeechTTSProvider.ts:223](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/speech/providers/AzureSpeechTTSProvider.ts#L223)
 
 Marked as streaming-capable because the provider can be used within a
 streaming pipeline — though the actual HTTP request is a single
@@ -140,7 +140,7 @@ synchronous call that returns the complete audio buffer.
 
 > **getProviderName**(): `string`
 
-Defined in: [packages/agentos/src/speech/providers/AzureSpeechTTSProvider.ts:261](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/speech/providers/AzureSpeechTTSProvider.ts#L261)
+Defined in: [packages/agentos/src/speech/providers/AzureSpeechTTSProvider.ts:261](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/speech/providers/AzureSpeechTTSProvider.ts#L261)
 
 Returns the human-readable provider name.
 
@@ -166,7 +166,7 @@ provider.getProviderName(); // 'Azure Speech (TTS)'
 
 > **listAvailableVoices**(): `Promise`\<[`SpeechVoice`](../interfaces/SpeechVoice.md)[]\>
 
-Defined in: [packages/agentos/src/speech/providers/AzureSpeechTTSProvider.ts:353](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/speech/providers/AzureSpeechTTSProvider.ts#L353)
+Defined in: [packages/agentos/src/speech/providers/AzureSpeechTTSProvider.ts:353](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/speech/providers/AzureSpeechTTSProvider.ts#L353)
 
 Retrieves the list of available neural voices from the Azure region.
 
@@ -203,7 +203,7 @@ console.log(`Found ${englishVoices.length} English voices`);
 
 > **synthesize**(`text`, `options?`): `Promise`\<[`SpeechSynthesisResult`](../interfaces/SpeechSynthesisResult.md)\>
 
-Defined in: [packages/agentos/src/speech/providers/AzureSpeechTTSProvider.ts:288](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/speech/providers/AzureSpeechTTSProvider.ts#L288)
+Defined in: [packages/agentos/src/speech/providers/AzureSpeechTTSProvider.ts:288](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/speech/providers/AzureSpeechTTSProvider.ts#L288)
 
 Synthesizes speech from plain text using the Azure TTS REST endpoint.
 

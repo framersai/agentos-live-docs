@@ -1,6 +1,6 @@
 ---
 title: "RAG Memory Configuration"
-sidebar_position: 5
+sidebar_position: 1
 ---
 
 AgentOS provides three levels of memory API:

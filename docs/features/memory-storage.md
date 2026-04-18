@@ -1,6 +1,6 @@
 ---
 title: "SQLite Brain Storage"
-sidebar_position: 26
+sidebar_position: 12
 ---
 
 > Every agent stores its entire memory in a single `brain.sqlite` file. The schema mirrors cognitive science models: Tulving's memory taxonomy, Collins & Quillian's semantic network, and Hebbian reinforcement signals.

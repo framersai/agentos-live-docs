@@ -1,6 +1,6 @@
 # Class: NodeScheduler
 
-Defined in: [packages/agentos/src/orchestration/runtime/NodeScheduler.ts:23](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/runtime/NodeScheduler.ts#L23)
+Defined in: [packages/agentos/src/orchestration/runtime/NodeScheduler.ts:23](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/runtime/NodeScheduler.ts#L23)
 
 Schedules graph node execution by computing topological ordering, detecting
 structural issues (cycles, unreachable nodes), and determining which nodes
@@ -15,7 +15,7 @@ only reads the static graph structure provided at construction time.
 
 > **new NodeScheduler**(`nodes`, `edges`): `NodeScheduler`
 
-Defined in: [packages/agentos/src/orchestration/runtime/NodeScheduler.ts:39](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/runtime/NodeScheduler.ts#L39)
+Defined in: [packages/agentos/src/orchestration/runtime/NodeScheduler.ts:39](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/runtime/NodeScheduler.ts#L39)
 
 Constructs a NodeScheduler from a compiled graph's node and edge lists.
 
@@ -43,7 +43,7 @@ All directed edges, including those from/to START or END sentinels.
 
 > **getReadyNodes**(`completedNodeIds`, `skippedNodeIds?`): `string`[]
 
-Defined in: [packages/agentos/src/orchestration/runtime/NodeScheduler.ts:174](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/runtime/NodeScheduler.ts#L174)
+Defined in: [packages/agentos/src/orchestration/runtime/NodeScheduler.ts:174](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/runtime/NodeScheduler.ts#L174)
 
 Returns the ids of all real nodes that are eligible to execute next, given
 the set of nodes that have already finished (completed or skipped).
@@ -79,7 +79,7 @@ Array of node ids that can be dispatched for execution immediately.
 
 > **getUnreachableNodes**(): `string`[]
 
-Defined in: [packages/agentos/src/orchestration/runtime/NodeScheduler.ts:208](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/runtime/NodeScheduler.ts#L208)
+Defined in: [packages/agentos/src/orchestration/runtime/NodeScheduler.ts:208](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/runtime/NodeScheduler.ts#L208)
 
 Returns the ids of all real nodes that are not reachable from the START
 sentinel via a BFS traversal of the adjacency list.
@@ -101,7 +101,7 @@ Array of node ids that cannot be reached from START; empty for a
 
 > **hasCycles**(): `boolean`
 
-Defined in: [packages/agentos/src/orchestration/runtime/NodeScheduler.ts:153](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/runtime/NodeScheduler.ts#L153)
+Defined in: [packages/agentos/src/orchestration/runtime/NodeScheduler.ts:153](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/runtime/NodeScheduler.ts#L153)
 
 Returns `true` if the graph contains at least one directed cycle among the
 real nodes (sentinels are excluded from cycle detection).
@@ -122,7 +122,7 @@ DAG, so any shortfall indicates nodes trapped inside a cycle.
 
 > **topologicalSort**(): `string`[]
 
-Defined in: [packages/agentos/src/orchestration/runtime/NodeScheduler.ts:87](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/runtime/NodeScheduler.ts#L87)
+Defined in: [packages/agentos/src/orchestration/runtime/NodeScheduler.ts:87](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/runtime/NodeScheduler.ts#L87)
 
 Returns real node ids in a valid topological execution order using Kahn's
 algorithm (BFS over in-degree).

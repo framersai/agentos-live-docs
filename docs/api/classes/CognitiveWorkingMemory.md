@@ -1,6 +1,6 @@
 # Class: CognitiveWorkingMemory
 
-Defined in: [packages/agentos/src/memory/core/working/CognitiveWorkingMemory.ts:74](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/core/working/CognitiveWorkingMemory.ts#L74)
+Defined in: [packages/agentos/src/memory/core/working/CognitiveWorkingMemory.ts:74](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/core/working/CognitiveWorkingMemory.ts#L74)
 
 Cognitive working memory with Baddeley-inspired slot management.
 
@@ -18,7 +18,7 @@ while slot management is layered on top.
 
 > **new CognitiveWorkingMemory**(`backing`, `config?`): `CognitiveWorkingMemory`
 
-Defined in: [packages/agentos/src/memory/core/working/CognitiveWorkingMemory.ts:83](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/core/working/CognitiveWorkingMemory.ts#L83)
+Defined in: [packages/agentos/src/memory/core/working/CognitiveWorkingMemory.ts:83](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/core/working/CognitiveWorkingMemory.ts#L83)
 
 #### Parameters
 
@@ -40,7 +40,7 @@ Defined in: [packages/agentos/src/memory/core/working/CognitiveWorkingMemory.ts:
 
 > `readonly` **id**: `string`
 
-Defined in: [packages/agentos/src/memory/core/working/CognitiveWorkingMemory.ts:75](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/core/working/CognitiveWorkingMemory.ts#L75)
+Defined in: [packages/agentos/src/memory/core/working/CognitiveWorkingMemory.ts:75](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/core/working/CognitiveWorkingMemory.ts#L75)
 
 A unique identifier for this specific working memory instance.
 This ID may be correlated with a GMI instance or a user session.
@@ -55,7 +55,7 @@ This ID may be correlated with a GMI instance or a user session.
 
 > **clear**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/memory/core/working/CognitiveWorkingMemory.ts:114](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/core/working/CognitiveWorkingMemory.ts#L114)
+Defined in: [packages/agentos/src/memory/core/working/CognitiveWorkingMemory.ts:114](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/core/working/CognitiveWorkingMemory.ts#L114)
 
 **`Async`**
 
@@ -89,7 +89,7 @@ await workingMemory.clear(); // Session ended, wipe working memory.
 
 > **close**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/memory/core/working/CognitiveWorkingMemory.ts:127](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/core/working/CognitiveWorkingMemory.ts#L127)
+Defined in: [packages/agentos/src/memory/core/working/CognitiveWorkingMemory.ts:127](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/core/working/CognitiveWorkingMemory.ts#L127)
 
 **`Async`**
 
@@ -117,7 +117,7 @@ If closing fails.
 
 > **decayActivations**(): `Promise`\<`string`[]\>
 
-Defined in: [packages/agentos/src/memory/core/working/CognitiveWorkingMemory.ts:206](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/core/working/CognitiveWorkingMemory.ts#L206)
+Defined in: [packages/agentos/src/memory/core/working/CognitiveWorkingMemory.ts:206](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/core/working/CognitiveWorkingMemory.ts#L206)
 
 Apply per-turn activation decay to all slots.
 Slots that drop below minActivation become eviction candidates.
@@ -132,7 +132,7 @@ Slots that drop below minActivation become eviction candidates.
 
 > **delete**(`key`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/memory/core/working/CognitiveWorkingMemory.ts:106](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/core/working/CognitiveWorkingMemory.ts#L106)
+Defined in: [packages/agentos/src/memory/core/working/CognitiveWorkingMemory.ts:106](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/core/working/CognitiveWorkingMemory.ts#L106)
 
 **`Async`**
 
@@ -173,7 +173,7 @@ await workingMemory.delete('temporary_calculation_result');
 
 > **focus**(`traceId`, `initialActivation?`): `Promise`\<`string`\>
 
-Defined in: [packages/agentos/src/memory/core/working/CognitiveWorkingMemory.ts:161](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/core/working/CognitiveWorkingMemory.ts#L161)
+Defined in: [packages/agentos/src/memory/core/working/CognitiveWorkingMemory.ts:161](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/core/working/CognitiveWorkingMemory.ts#L161)
 
 Focus attention on a trace, adding it to working memory.
 If at capacity, the lowest-activation slot is evicted first.
@@ -200,7 +200,7 @@ The slot ID assigned to this trace.
 
 > **formatForPrompt**(): `string`
 
-Defined in: [packages/agentos/src/memory/core/working/CognitiveWorkingMemory.ts:235](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/core/working/CognitiveWorkingMemory.ts#L235)
+Defined in: [packages/agentos/src/memory/core/working/CognitiveWorkingMemory.ts:235](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/core/working/CognitiveWorkingMemory.ts#L235)
 
 Serialise current slots as a formatted string for prompt injection.
 
@@ -214,7 +214,7 @@ Serialise current slots as a formatted string for prompt injection.
 
 > **get**\<`T`\>(`key`): `Promise`\<`T` \| `undefined`\>
 
-Defined in: [packages/agentos/src/memory/core/working/CognitiveWorkingMemory.ts:102](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/core/working/CognitiveWorkingMemory.ts#L102)
+Defined in: [packages/agentos/src/memory/core/working/CognitiveWorkingMemory.ts:102](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/core/working/CognitiveWorkingMemory.ts#L102)
 
 **`Async`**
 
@@ -266,7 +266,7 @@ console.log(`Current mood is: ${currentMood}`);
 
 > **getAll**(): `Promise`\<`Record`\<`string`, `any`\>\>
 
-Defined in: [packages/agentos/src/memory/core/working/CognitiveWorkingMemory.ts:110](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/core/working/CognitiveWorkingMemory.ts#L110)
+Defined in: [packages/agentos/src/memory/core/working/CognitiveWorkingMemory.ts:110](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/core/working/CognitiveWorkingMemory.ts#L110)
 
 **`Async`**
 
@@ -302,7 +302,7 @@ console.log('Full working memory:', allMemoryContents);
 
 > **getCapacity**(): `number`
 
-Defined in: [packages/agentos/src/memory/core/working/CognitiveWorkingMemory.ts:141](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/core/working/CognitiveWorkingMemory.ts#L141)
+Defined in: [packages/agentos/src/memory/core/working/CognitiveWorkingMemory.ts:141](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/core/working/CognitiveWorkingMemory.ts#L141)
 
 Maximum slot capacity (personality-modulated).
 
@@ -316,7 +316,7 @@ Maximum slot capacity (personality-modulated).
 
 > **getSlot**(`slotId`): [`WorkingMemorySlot`](../interfaces/WorkingMemorySlot.md) \| `undefined`
 
-Defined in: [packages/agentos/src/memory/core/working/CognitiveWorkingMemory.ts:151](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/core/working/CognitiveWorkingMemory.ts#L151)
+Defined in: [packages/agentos/src/memory/core/working/CognitiveWorkingMemory.ts:151](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/core/working/CognitiveWorkingMemory.ts#L151)
 
 Get a specific slot by ID.
 
@@ -336,7 +336,7 @@ Get a specific slot by ID.
 
 > **getSlotCount**(): `number`
 
-Defined in: [packages/agentos/src/memory/core/working/CognitiveWorkingMemory.ts:136](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/core/working/CognitiveWorkingMemory.ts#L136)
+Defined in: [packages/agentos/src/memory/core/working/CognitiveWorkingMemory.ts:136](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/core/working/CognitiveWorkingMemory.ts#L136)
 
 Current number of occupied slots.
 
@@ -350,7 +350,7 @@ Current number of occupied slots.
 
 > **getSlots**(): [`WorkingMemorySlot`](../interfaces/WorkingMemorySlot.md)[]
 
-Defined in: [packages/agentos/src/memory/core/working/CognitiveWorkingMemory.ts:146](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/core/working/CognitiveWorkingMemory.ts#L146)
+Defined in: [packages/agentos/src/memory/core/working/CognitiveWorkingMemory.ts:146](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/core/working/CognitiveWorkingMemory.ts#L146)
 
 Get all active slots.
 
@@ -364,7 +364,7 @@ Get all active slots.
 
 > **getUtilization**(): `number`
 
-Defined in: [packages/agentos/src/memory/core/working/CognitiveWorkingMemory.ts:228](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/core/working/CognitiveWorkingMemory.ts#L228)
+Defined in: [packages/agentos/src/memory/core/working/CognitiveWorkingMemory.ts:228](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/core/working/CognitiveWorkingMemory.ts#L228)
 
 Get working memory utilisation (0-1).
 
@@ -378,7 +378,7 @@ Get working memory utilisation (0-1).
 
 > **has**(`key`): `Promise`\<`boolean`\>
 
-Defined in: [packages/agentos/src/memory/core/working/CognitiveWorkingMemory.ts:123](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/core/working/CognitiveWorkingMemory.ts#L123)
+Defined in: [packages/agentos/src/memory/core/working/CognitiveWorkingMemory.ts:123](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/core/working/CognitiveWorkingMemory.ts#L123)
 
 **`Async`**
 
@@ -420,7 +420,7 @@ if (await workingMemory.has('user_id')) {
 
 > **initialize**(`gmiInstanceId`, `config?`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/memory/core/working/CognitiveWorkingMemory.ts:94](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/core/working/CognitiveWorkingMemory.ts#L94)
+Defined in: [packages/agentos/src/memory/core/working/CognitiveWorkingMemory.ts:94](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/core/working/CognitiveWorkingMemory.ts#L94)
 
 **`Async`**
 
@@ -464,7 +464,7 @@ If initialization fails (e.g., cannot connect to a backing store).
 
 > **rehearse**(`slotId`): `void`
 
-Defined in: [packages/agentos/src/memory/core/working/CognitiveWorkingMemory.ts:195](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/core/working/CognitiveWorkingMemory.ts#L195)
+Defined in: [packages/agentos/src/memory/core/working/CognitiveWorkingMemory.ts:195](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/core/working/CognitiveWorkingMemory.ts#L195)
 
 Rehearse a slot (maintenance rehearsal), bumping its activation.
 
@@ -484,7 +484,7 @@ Rehearse a slot (maintenance rehearsal), bumping its activation.
 
 > **set**\<`T`\>(`key`, `value`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/memory/core/working/CognitiveWorkingMemory.ts:98](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/core/working/CognitiveWorkingMemory.ts#L98)
+Defined in: [packages/agentos/src/memory/core/working/CognitiveWorkingMemory.ts:98](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/core/working/CognitiveWorkingMemory.ts#L98)
 
 **`Async`**
 
@@ -539,7 +539,7 @@ await workingMemory.set('user_preferences', { theme: 'dark', notifications: fals
 
 > **size**(): `Promise`\<`number`\>
 
-Defined in: [packages/agentos/src/memory/core/working/CognitiveWorkingMemory.ts:119](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/core/working/CognitiveWorkingMemory.ts#L119)
+Defined in: [packages/agentos/src/memory/core/working/CognitiveWorkingMemory.ts:119](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/core/working/CognitiveWorkingMemory.ts#L119)
 
 **`Async`**
 

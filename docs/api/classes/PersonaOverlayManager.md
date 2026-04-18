@@ -1,6 +1,6 @@
 # Class: PersonaOverlayManager
 
-Defined in: [packages/agentos/src/cognitive\_substrate/persona\_overlays/PersonaOverlayManager.ts:13](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/persona_overlays/PersonaOverlayManager.ts#L13)
+Defined in: [packages/agentos/src/cognitive\_substrate/persona\_overlays/PersonaOverlayManager.ts:13](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/persona_overlays/PersonaOverlayManager.ts#L13)
 
 Applies evolution rules to personas and produces runtime overlays that can be persisted
 alongside workflow instances.
@@ -21,7 +21,7 @@ alongside workflow instances.
 
 > **applyRules**(`args`): [`PersonaStateOverlay`](../interfaces/PersonaStateOverlay.md)
 
-Defined in: [packages/agentos/src/cognitive\_substrate/persona\_overlays/PersonaOverlayManager.ts:19](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/persona_overlays/PersonaOverlayManager.ts#L19)
+Defined in: [packages/agentos/src/cognitive\_substrate/persona\_overlays/PersonaOverlayManager.ts:19](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/persona_overlays/PersonaOverlayManager.ts#L19)
 
 Evaluates the supplied rules against the context and returns an updated overlay.
 
@@ -45,7 +45,7 @@ Overlay capturing the persona patches that should be applied.
 
 > **resolvePersona**(`persona`, `overlay?`): [`IPersonaDefinition`](../interfaces/IPersonaDefinition.md)
 
-Defined in: [packages/agentos/src/cognitive\_substrate/persona\_overlays/PersonaOverlayManager.ts:72](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/persona_overlays/PersonaOverlayManager.ts#L72)
+Defined in: [packages/agentos/src/cognitive\_substrate/persona\_overlays/PersonaOverlayManager.ts:72](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/persona_overlays/PersonaOverlayManager.ts#L72)
 
 Merges the base persona definition with an overlay to produce the effective persona.
 
@@ -75,7 +75,7 @@ Persona definition with applied patches.
 
 > `protected` **shouldApplyRule**(`rule`, `context`): `boolean`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/persona\_overlays/PersonaOverlayManager.ts:97](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/persona_overlays/PersonaOverlayManager.ts#L97)
+Defined in: [packages/agentos/src/cognitive\_substrate/persona\_overlays/PersonaOverlayManager.ts:97](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/persona_overlays/PersonaOverlayManager.ts#L97)
 
 Determines whether a given rule should be applied. Placeholder implementation that
 always returns false until a trigger DSL is defined.

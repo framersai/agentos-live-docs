@@ -1,6 +1,6 @@
 # Interface: IEmbeddingManager
 
-Defined in: [packages/agentos/src/core/embeddings/IEmbeddingManager.ts:175](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/embeddings/IEmbeddingManager.ts#L175)
+Defined in: [packages/agentos/src/core/embeddings/IEmbeddingManager.ts:175](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/embeddings/IEmbeddingManager.ts#L175)
 
 ## Interface
 
@@ -19,7 +19,7 @@ managing caching and model selection strategies.
 
 > **checkHealth**(): `Promise`\<\{ `details?`: `any`; `isHealthy`: `boolean`; \}\>
 
-Defined in: [packages/agentos/src/core/embeddings/IEmbeddingManager.ts:286](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/embeddings/IEmbeddingManager.ts#L286)
+Defined in: [packages/agentos/src/core/embeddings/IEmbeddingManager.ts:286](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/embeddings/IEmbeddingManager.ts#L286)
 
 **`Async`**
 
@@ -53,7 +53,7 @@ console.error("EmbeddingManager health check failed:", health.details);
 
 > **generateEmbeddings**(`request`): `Promise`\<[`EmbeddingResponse`](EmbeddingResponse.md)\>
 
-Defined in: [packages/agentos/src/core/embeddings/IEmbeddingManager.ts:225](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/embeddings/IEmbeddingManager.ts#L225)
+Defined in: [packages/agentos/src/core/embeddings/IEmbeddingManager.ts:225](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/embeddings/IEmbeddingManager.ts#L225)
 
 **`Async`**
 
@@ -102,7 +102,7 @@ console.log(response.embeddings);
 
 > **getEmbeddingDimension**(`modelId?`): `Promise`\<`number`\>
 
-Defined in: [packages/agentos/src/core/embeddings/IEmbeddingManager.ts:266](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/embeddings/IEmbeddingManager.ts#L266)
+Defined in: [packages/agentos/src/core/embeddings/IEmbeddingManager.ts:266](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/embeddings/IEmbeddingManager.ts#L266)
 
 **`Async`**
 
@@ -145,7 +145,7 @@ console.log(`Embeddings will have ${dimension} dimensions.`);
 
 > **getEmbeddingModelInfo**(`modelId?`): `Promise`\<`EmbeddingModelConfig` \| `undefined`\>
 
-Defined in: [packages/agentos/src/core/embeddings/IEmbeddingManager.ts:245](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/embeddings/IEmbeddingManager.ts#L245)
+Defined in: [packages/agentos/src/core/embeddings/IEmbeddingManager.ts:245](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/embeddings/IEmbeddingManager.ts#L245)
 
 **`Async`**
 
@@ -189,7 +189,7 @@ console.log(`Model Dimensions: ${modelInfo.dimension}`);
 
 > **initialize**(`config`, `providerManager`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/core/embeddings/IEmbeddingManager.ts:197](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/embeddings/IEmbeddingManager.ts#L197)
+Defined in: [packages/agentos/src/core/embeddings/IEmbeddingManager.ts:197](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/embeddings/IEmbeddingManager.ts#L197)
 
 **`Async`**
 
@@ -241,7 +241,7 @@ await manager.initialize(embeddingManagerConfig, aiModelProviderManager);
 
 > `optional` **shutdown**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/core/embeddings/IEmbeddingManager.ts:298](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/embeddings/IEmbeddingManager.ts#L298)
+Defined in: [packages/agentos/src/core/embeddings/IEmbeddingManager.ts:298](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/embeddings/IEmbeddingManager.ts#L298)
 
 **`Async`**
 

@@ -1,6 +1,6 @@
 ---
 title: "Creating Custom Guardrails"
-sidebar_position: 8
+sidebar_position: 2
 ---
 
 This guide walks you through everything you need to create, package, test, and deploy a custom guardrail for AgentOS. By the end you will understand the full lifecycle -- from implementing the `IGuardrailService` interface to publishing a self-contained extension pack.

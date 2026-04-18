@@ -1,6 +1,6 @@
 ---
 title: "Multi-Agent Agency API"
-sidebar_position: 22
+sidebar_position: 12
 ---
 
 `agency()` is the high-level multi-agent factory in AgentOS.  It coordinates a

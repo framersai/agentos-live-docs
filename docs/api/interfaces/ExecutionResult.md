@@ -1,6 +1,6 @@
 # Interface: ExecutionResult
 
-Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:106](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/sandbox/executor/ICodeSandbox.ts#L106)
+Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:106](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/sandbox/executor/ICodeSandbox.ts#L106)
 
 Result of code execution.
 
@@ -10,7 +10,7 @@ Result of code execution.
 
 > **completedAt**: `string`
 
-Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:124](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/sandbox/executor/ICodeSandbox.ts#L124)
+Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:124](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/sandbox/executor/ICodeSandbox.ts#L124)
 
 Timestamp when execution completed
 
@@ -20,7 +20,7 @@ Timestamp when execution completed
 
 > `optional` **cpuTimeMs**: `number`
 
-Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:120](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/sandbox/executor/ICodeSandbox.ts#L120)
+Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:120](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/sandbox/executor/ICodeSandbox.ts#L120)
 
 CPU time used in milliseconds
 
@@ -30,7 +30,7 @@ CPU time used in milliseconds
 
 > **durationMs**: `number`
 
-Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:116](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/sandbox/executor/ICodeSandbox.ts#L116)
+Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:116](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/sandbox/executor/ICodeSandbox.ts#L116)
 
 Execution duration in milliseconds
 
@@ -40,7 +40,7 @@ Execution duration in milliseconds
 
 > `optional` **error**: `string`
 
-Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:114](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/sandbox/executor/ICodeSandbox.ts#L114)
+Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:114](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/sandbox/executor/ICodeSandbox.ts#L114)
 
 Error message if execution failed
 
@@ -50,7 +50,7 @@ Error message if execution failed
 
 > **executionId**: `string`
 
-Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:108](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/sandbox/executor/ICodeSandbox.ts#L108)
+Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:108](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/sandbox/executor/ICodeSandbox.ts#L108)
 
 Unique execution ID
 
@@ -60,7 +60,7 @@ Unique execution ID
 
 > `optional` **memoryUsedBytes**: `number`
 
-Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:118](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/sandbox/executor/ICodeSandbox.ts#L118)
+Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:118](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/sandbox/executor/ICodeSandbox.ts#L118)
 
 Memory used in bytes
 
@@ -70,7 +70,7 @@ Memory used in bytes
 
 > `optional` **output**: [`ExecutionOutput`](ExecutionOutput.md)
 
-Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:112](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/sandbox/executor/ICodeSandbox.ts#L112)
+Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:112](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/sandbox/executor/ICodeSandbox.ts#L112)
 
 Output from execution
 
@@ -80,7 +80,7 @@ Output from execution
 
 > `optional` **securityEvents**: [`SecurityEvent`](SecurityEvent.md)[]
 
-Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:132](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/sandbox/executor/ICodeSandbox.ts#L132)
+Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:132](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/sandbox/executor/ICodeSandbox.ts#L132)
 
 Security events detected
 
@@ -90,7 +90,7 @@ Security events detected
 
 > **startedAt**: `string`
 
-Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:122](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/sandbox/executor/ICodeSandbox.ts#L122)
+Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:122](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/sandbox/executor/ICodeSandbox.ts#L122)
 
 Timestamp when execution started
 
@@ -100,7 +100,7 @@ Timestamp when execution started
 
 > **status**: [`ExecutionStatus`](../type-aliases/ExecutionStatus.md)
 
-Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:110](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/sandbox/executor/ICodeSandbox.ts#L110)
+Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:110](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/sandbox/executor/ICodeSandbox.ts#L110)
 
 Execution status
 
@@ -110,7 +110,7 @@ Execution status
 
 > `optional` **truncated**: `object`
 
-Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:126](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/sandbox/executor/ICodeSandbox.ts#L126)
+Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:126](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/sandbox/executor/ICodeSandbox.ts#L126)
 
 Whether execution was truncated due to limits
 

@@ -352,8 +352,8 @@ const architectureMermaid = `flowchart TD
 
     subgraph TOOLS_LAYER["Tools & Extensions"]
         ORCH["ToolOrchestrator"]
-        EXT["107 Extensions"]
-        SKILLS["72 Curated Skills"]
+        EXT["Extension Packs"]
+        SKILLS["Curated Skills"]
         DISC["Capability Discovery<br/>3-Tier Semantic Search"]
         FORGE["Emergent Tool Forge<br/>Runtime Tool Creation"]
     end
@@ -367,10 +367,10 @@ const architectureMermaid = `flowchart TD
     end
 
     subgraph IO_LAYER["I/O Layer"]
-        VOICE["Voice Pipeline<br/>12 STT + 12 TTS Providers"]
-        CHAN["37 Channel Adapters<br/>Discord \u00B7 Slack \u00B7 Telegram \u00B7 Twitter"]
+        VOICE["Voice Pipeline<br/>STT \u00B7 TTS \u00B7 VAD"]
+        CHAN["Channel Adapters<br/>Discord \u00B7 Slack \u00B7 Telegram \u00B7 Twitter"]
         MEDIA["Media Generation<br/>Images \u00B7 Video \u00B7 Music \u00B7 SFX"]
-        LLM["21 LLM Providers<br/>Auto-Fallback Chains"]
+        LLM["LLM Providers<br/>Auto-Fallback Chains"]
     end
 
     API_LAYER ==> GMI_LAYER
@@ -396,7 +396,7 @@ function ArchitectureDiagram() {
   return (
     <section style={{ padding: '3rem 2rem 1rem', maxWidth: '960px', margin: '0 auto' }}>
       <h2 style={{ textAlign: 'center', marginBottom: '0.5rem' }}>System Architecture</h2>
-      <p style={{ textAlign: 'center', fontSize: '0.85rem', opacity: 0.6, marginBottom: '1rem' }}>Click diagram to expand. 8 subsystems, 16 providers, 107 extensions.</p>
+      <p style={{ textAlign: 'center', fontSize: '0.85rem', opacity: 0.6, marginBottom: '1rem' }}>Click diagram to expand. 8 subsystems, multi-provider runtime, extension packs.</p>
       <div style={{ overflow: 'auto' }}>
         <Mermaid value={architectureMermaid} />
       </div>
@@ -417,7 +417,7 @@ const features = [
   {
     title: 'Multimodal Provider API',
     description:
-      'Text, images, video, music, SFX, embeddings, and speech from one API. 21 cloud providers + local (Ollama, MusicGen, AudioGen). Auto-fallback chains with provider preferences for load balancing.',
+      'Text, images, video, music, SFX, embeddings, and speech from one API. Cloud and local backends share the same surface, with fallback chains and provider preferences for load balancing.',
     link: '/features/multimodal-rag',
   },
   {
@@ -435,7 +435,7 @@ const features = [
   {
     title: 'Voice & IVR Pipeline',
     description:
-      'Full-duplex voice with 3 endpoint detection modes, barge-in handling, 27 STT/TTS providers, diarization. Twilio/Telnyx/Plivo telephony bridging for production IVR.',
+      'Full-duplex voice with endpoint detection modes, barge-in handling, diarization, and Twilio/Telnyx/Plivo telephony bridging for production IVR.',
     link: '/features/voice-pipeline',
   },
   {
@@ -477,7 +477,7 @@ const features = [
   {
     title: 'Channels & Social',
     description:
-      'Telegram, Discord, Slack, WhatsApp, Twitter/X, LinkedIn, Bluesky, Mastodon, and 29 more. Multi-channel routing, social publishing, browser automation, and custom adapter APIs.',
+      'Telegram, Discord, Slack, WhatsApp, Twitter/X, LinkedIn, Bluesky, Mastodon, and custom adapters. Multi-channel routing, social publishing, browser automation, and adapter APIs.',
     link: '/features/channels',
   },
   {
@@ -493,9 +493,9 @@ const features = [
     link: '/features/video-pipeline',
   },
   {
-    title: '72 Curated Skills',
+    title: 'Curated Skills',
     description:
-      'SKILL.md prompt modules across 8 categories: information, developer-tools, communication, productivity, devops, media, security, creative. Semantic discovery finds the right skill per turn.',
+      'SKILL.md prompt modules for research, developer tools, communication, productivity, security, media, and creative workflows. Semantic discovery finds the right skill per turn.',
     link: '/skills/overview',
   },
   {

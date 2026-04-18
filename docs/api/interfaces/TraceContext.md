@@ -1,6 +1,6 @@
 # Interface: TraceContext
 
-Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:39](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/evaluation/observability/ITracer.ts#L39)
+Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:39](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/evaluation/observability/ITracer.ts#L39)
 
 Context for propagating trace information.
 
@@ -10,7 +10,7 @@ Context for propagating trace information.
 
 > `optional` **baggage**: `Record`\<`string`, `string`\>
 
-Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:49](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/evaluation/observability/ITracer.ts#L49)
+Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:49](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/evaluation/observability/ITracer.ts#L49)
 
 Baggage items
 
@@ -20,7 +20,7 @@ Baggage items
 
 > `optional` **parentSpanId**: `string`
 
-Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:45](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/evaluation/observability/ITracer.ts#L45)
+Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:45](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/evaluation/observability/ITracer.ts#L45)
 
 Parent span ID if exists
 
@@ -30,7 +30,7 @@ Parent span ID if exists
 
 > **spanId**: `string`
 
-Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:43](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/evaluation/observability/ITracer.ts#L43)
+Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:43](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/evaluation/observability/ITracer.ts#L43)
 
 Current span ID
 
@@ -40,7 +40,7 @@ Current span ID
 
 > **traceFlags**: `number`
 
-Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:47](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/evaluation/observability/ITracer.ts#L47)
+Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:47](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/evaluation/observability/ITracer.ts#L47)
 
 Trace flags (e.g., sampling)
 
@@ -50,6 +50,6 @@ Trace flags (e.g., sampling)
 
 > **traceId**: `string`
 
-Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:41](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/evaluation/observability/ITracer.ts#L41)
+Defined in: [packages/agentos/src/evaluation/observability/ITracer.ts:41](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/evaluation/observability/ITracer.ts#L41)
 
 Unique trace ID

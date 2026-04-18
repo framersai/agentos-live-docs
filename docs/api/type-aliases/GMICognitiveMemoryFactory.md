@@ -2,7 +2,7 @@
 
 > **GMICognitiveMemoryFactory** = (`input`) => `Promise`\<[`ICognitiveMemoryManager`](../interfaces/ICognitiveMemoryManager.md) \| `undefined`\> \| [`ICognitiveMemoryManager`](../interfaces/ICognitiveMemoryManager.md) \| `undefined`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:74](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/GMIManager.ts#L74)
+Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:74](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/GMIManager.ts#L74)
 
 ## Parameters
 

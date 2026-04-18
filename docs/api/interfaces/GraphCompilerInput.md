@@ -1,6 +1,6 @@
 # Interface: GraphCompilerInput
 
-Defined in: [packages/agentos/src/orchestration/compiler/GraphCompiler.ts:37](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/compiler/GraphCompiler.ts#L37)
+Defined in: [packages/agentos/src/orchestration/compiler/GraphCompiler.ts:37](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/compiler/GraphCompiler.ts#L37)
 
 Everything the compiler needs to produce a `CompiledExecutionGraph`.
 
@@ -10,7 +10,7 @@ Everything the compiler needs to produce a `CompiledExecutionGraph`.
 
 > **checkpointPolicy**: `"none"` \| `"every_node"` \| `"explicit"`
 
-Defined in: [packages/agentos/src/orchestration/compiler/GraphCompiler.ts:61](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/compiler/GraphCompiler.ts#L61)
+Defined in: [packages/agentos/src/orchestration/compiler/GraphCompiler.ts:61](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/compiler/GraphCompiler.ts#L61)
 
 Graph-wide default checkpoint persistence strategy.
 
@@ -20,7 +20,7 @@ Graph-wide default checkpoint persistence strategy.
 
 > **edges**: [`GraphEdge`](GraphEdge.md)[]
 
-Defined in: [packages/agentos/src/orchestration/compiler/GraphCompiler.ts:43](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/compiler/GraphCompiler.ts#L43)
+Defined in: [packages/agentos/src/orchestration/compiler/GraphCompiler.ts:43](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/compiler/GraphCompiler.ts#L43)
 
 All directed edges (including START / END connections).
 
@@ -30,7 +30,7 @@ All directed edges (including START / END connections).
 
 > **memoryConsistency**: [`MemoryConsistencyMode`](../type-aliases/MemoryConsistencyMode.md)
 
-Defined in: [packages/agentos/src/orchestration/compiler/GraphCompiler.ts:59](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/compiler/GraphCompiler.ts#L59)
+Defined in: [packages/agentos/src/orchestration/compiler/GraphCompiler.ts:59](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/compiler/GraphCompiler.ts#L59)
 
 Graph-wide memory isolation mode.
 
@@ -40,7 +40,7 @@ Graph-wide memory isolation mode.
 
 > **name**: `string`
 
-Defined in: [packages/agentos/src/orchestration/compiler/GraphCompiler.ts:39](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/compiler/GraphCompiler.ts#L39)
+Defined in: [packages/agentos/src/orchestration/compiler/GraphCompiler.ts:39](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/compiler/GraphCompiler.ts#L39)
 
 Human-readable name embedded in the compiled graph.
 
@@ -50,7 +50,7 @@ Human-readable name embedded in the compiled graph.
 
 > **nodes**: `Map`\<`string`, [`GraphNode`](GraphNode.md)\>
 
-Defined in: [packages/agentos/src/orchestration/compiler/GraphCompiler.ts:41](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/compiler/GraphCompiler.ts#L41)
+Defined in: [packages/agentos/src/orchestration/compiler/GraphCompiler.ts:41](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/compiler/GraphCompiler.ts#L41)
 
 All user-declared nodes keyed by their declared id.
 
@@ -60,7 +60,7 @@ All user-declared nodes keyed by their declared id.
 
 > **reducers**: [`StateReducers`](StateReducers.md)
 
-Defined in: [packages/agentos/src/orchestration/compiler/GraphCompiler.ts:57](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/compiler/GraphCompiler.ts#L57)
+Defined in: [packages/agentos/src/orchestration/compiler/GraphCompiler.ts:57](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/compiler/GraphCompiler.ts#L57)
 
 Field-level merge strategies forwarded unchanged to the IR.
 
@@ -70,7 +70,7 @@ Field-level merge strategies forwarded unchanged to the IR.
 
 > **stateSchema**: `object`
 
-Defined in: [packages/agentos/src/orchestration/compiler/GraphCompiler.ts:48](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/compiler/GraphCompiler.ts#L48)
+Defined in: [packages/agentos/src/orchestration/compiler/GraphCompiler.ts:48](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/compiler/GraphCompiler.ts#L48)
 
 Zod schema instances for the three GraphState generics.
 

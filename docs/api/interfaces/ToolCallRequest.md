@@ -1,6 +1,6 @@
 # Interface: ToolCallRequest
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:85](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/IGMI.ts#L85)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:85](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/IGMI.ts#L85)
 
 Describes a request from the LLM to call a specific tool/function.
 
@@ -14,7 +14,7 @@ ToolCallRequest
 
 > **arguments**: `Record`\<`string`, `any`\>
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:88](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/IGMI.ts#L88)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:88](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/IGMI.ts#L88)
 
 ***
 
@@ -22,7 +22,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:88](https://githu
 
 > **id**: `string`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:86](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/IGMI.ts#L86)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:86](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/IGMI.ts#L86)
 
 ***
 
@@ -30,4 +30,4 @@ Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:86](https://githu
 
 > **name**: `string`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:87](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/cognitive_substrate/IGMI.ts#L87)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:87](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/IGMI.ts#L87)

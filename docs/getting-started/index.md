@@ -302,4 +302,3 @@ Usage: { inputTokens: 312, outputTokens: 487, totalTokens: 799, estimatedCost: 0
 | Runtime-configured tools and full `AgentOS` setup | [HIGH_LEVEL_API.md](/getting-started/high-level-api)     |
 | Full API hierarchy                                | [AGENCY_API.md](/features/agency-api)             |
 | Architecture overview                             | [ARCHITECTURE.md](/architecture/system-architecture)         |
-| AI agent swarm simulation engine                  | [Paracosm](https://paracosm.agentos.sh) · [Live Demo](https://paracosm.agentos.sh/sim) · [npm](https://www.npmjs.com/package/paracosm) |

@@ -1,6 +1,6 @@
 # Class: CostCapExceededError
 
-Defined in: [packages/agentos/src/safety/runtime/CostGuard.ts:39](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/safety/runtime/CostGuard.ts#L39)
+Defined in: [packages/agentos/src/safety/runtime/CostGuard.ts:39](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/safety/runtime/CostGuard.ts#L39)
 
 ## Extends
 
@@ -12,7 +12,7 @@ Defined in: [packages/agentos/src/safety/runtime/CostGuard.ts:39](https://github
 
 > **new CostCapExceededError**(`agentId`, `capType`, `currentCost`, `limit`): `CostCapExceededError`
 
-Defined in: [packages/agentos/src/safety/runtime/CostGuard.ts:40](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/safety/runtime/CostGuard.ts#L40)
+Defined in: [packages/agentos/src/safety/runtime/CostGuard.ts:40](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/safety/runtime/CostGuard.ts#L40)
 
 #### Parameters
 
@@ -46,7 +46,7 @@ Defined in: [packages/agentos/src/safety/runtime/CostGuard.ts:40](https://github
 
 > `readonly` **agentId**: `string`
 
-Defined in: [packages/agentos/src/safety/runtime/CostGuard.ts:41](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/safety/runtime/CostGuard.ts#L41)
+Defined in: [packages/agentos/src/safety/runtime/CostGuard.ts:41](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/safety/runtime/CostGuard.ts#L41)
 
 ***
 
@@ -54,7 +54,7 @@ Defined in: [packages/agentos/src/safety/runtime/CostGuard.ts:41](https://github
 
 > `readonly` **capType**: [`CostCapType`](../type-aliases/CostCapType.md)
 
-Defined in: [packages/agentos/src/safety/runtime/CostGuard.ts:42](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/safety/runtime/CostGuard.ts#L42)
+Defined in: [packages/agentos/src/safety/runtime/CostGuard.ts:42](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/safety/runtime/CostGuard.ts#L42)
 
 ***
 
@@ -62,7 +62,7 @@ Defined in: [packages/agentos/src/safety/runtime/CostGuard.ts:42](https://github
 
 > `readonly` **currentCost**: `number`
 
-Defined in: [packages/agentos/src/safety/runtime/CostGuard.ts:43](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/safety/runtime/CostGuard.ts#L43)
+Defined in: [packages/agentos/src/safety/runtime/CostGuard.ts:43](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/safety/runtime/CostGuard.ts#L43)
 
 ***
 
@@ -70,7 +70,7 @@ Defined in: [packages/agentos/src/safety/runtime/CostGuard.ts:43](https://github
 
 > `readonly` **limit**: `number`
 
-Defined in: [packages/agentos/src/safety/runtime/CostGuard.ts:44](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/safety/runtime/CostGuard.ts#L44)
+Defined in: [packages/agentos/src/safety/runtime/CostGuard.ts:44](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/safety/runtime/CostGuard.ts#L44)
 
 ***
 

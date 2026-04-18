@@ -1,6 +1,6 @@
 # Interface: AgentSocial
 
-Defined in: [core/state.ts:65](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/core/state.ts#L65)
+Defined in: [core/state.ts:70](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/core/state.ts#L70)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [core/state.ts:65](https://github.com/framersai/paracosm/blob/ba2b88
 
 > **childrenIds**: `string`[]
 
-Defined in: [core/state.ts:67](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/core/state.ts#L67)
+Defined in: [core/state.ts:72](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/core/state.ts#L72)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [core/state.ts:67](https://github.com/framersai/paracosm/blob/ba2b88
 
 > **earthContacts**: `number`
 
-Defined in: [core/state.ts:69](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/core/state.ts#L69)
+Defined in: [core/state.ts:74](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/core/state.ts#L74)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: [core/state.ts:69](https://github.com/framersai/paracosm/blob/ba2b88
 
 > **friendIds**: `string`[]
 
-Defined in: [core/state.ts:68](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/core/state.ts#L68)
+Defined in: [core/state.ts:73](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/core/state.ts#L73)
 
 ***
 
@@ -32,4 +32,4 @@ Defined in: [core/state.ts:68](https://github.com/framersai/paracosm/blob/ba2b88
 
 > `optional` **partnerId**: `string`
 
-Defined in: [core/state.ts:66](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/core/state.ts#L66)
+Defined in: [core/state.ts:71](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/core/state.ts#L71)

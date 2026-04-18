@@ -1,6 +1,6 @@
 # Interface: CreateCollectionOptions
 
-Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:234](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/vector-store/IVectorStore.ts#L234)
+Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:234](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/vector-store/IVectorStore.ts#L234)
 
 Options for creating a new collection/index in the vector store.
 
@@ -14,7 +14,7 @@ CreateCollectionOptions
 
 > `optional` **overwriteIfExists**: `boolean`
 
-Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:236](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/vector-store/IVectorStore.ts#L236)
+Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:236](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/vector-store/IVectorStore.ts#L236)
 
 If a collection with the same name exists, should it be overwritten?
 
@@ -24,7 +24,7 @@ If a collection with the same name exists, should it be overwritten?
 
 > `optional` **providerSpecificParams**: `Record`\<`string`, `any`\>
 
-Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:239](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/vector-store/IVectorStore.ts#L239)
+Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:239](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/vector-store/IVectorStore.ts#L239)
 
 Any other parameters specific to the vector store provider
 for collection creation (e.g., indexing options, cloud region).
@@ -35,7 +35,7 @@ for collection creation (e.g., indexing options, cloud region).
 
 > `optional` **replicas**: `number`
 
-Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:237](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/vector-store/IVectorStore.ts#L237)
+Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:237](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/vector-store/IVectorStore.ts#L237)
 
 Number of replicas for the collection (if supported).
 
@@ -45,7 +45,7 @@ Number of replicas for the collection (if supported).
 
 > `optional` **shards**: `number`
 
-Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:238](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/vector-store/IVectorStore.ts#L238)
+Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:238](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/vector-store/IVectorStore.ts#L238)
 
 Number of shards for the collection (if supported).
 
@@ -55,6 +55,6 @@ Number of shards for the collection (if supported).
 
 > `optional` **similarityMetric**: `"cosine"` \| `"euclidean"` \| `"dotproduct"`
 
-Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:235](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/vector-store/IVectorStore.ts#L235)
+Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:235](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/vector-store/IVectorStore.ts#L235)
 
 The similarity metric for the collection.

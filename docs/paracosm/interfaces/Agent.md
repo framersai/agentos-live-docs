@@ -1,6 +1,6 @@
 # Interface: Agent
 
-Defined in: [core/state.ts:105](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/core/state.ts#L105)
+Defined in: [core/state.ts:110](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/core/state.ts#L110)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [core/state.ts:105](https://github.com/framersai/paracosm/blob/ba2b8
 
 > **career**: [`AgentCareer`](AgentCareer.md)
 
-Defined in: [core/state.ts:108](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/core/state.ts#L108)
+Defined in: [core/state.ts:113](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/core/state.ts#L113)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [core/state.ts:108](https://github.com/framersai/paracosm/blob/ba2b8
 
 > **core**: [`AgentCore`](AgentCore.md)
 
-Defined in: [core/state.ts:106](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/core/state.ts#L106)
+Defined in: [core/state.ts:111](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/core/state.ts#L111)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: [core/state.ts:106](https://github.com/framersai/paracosm/blob/ba2b8
 
 > **health**: [`AgentHealth`](AgentHealth.md)
 
-Defined in: [core/state.ts:107](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/core/state.ts#L107)
+Defined in: [core/state.ts:112](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/core/state.ts#L112)
 
 ***
 
@@ -32,7 +32,7 @@ Defined in: [core/state.ts:107](https://github.com/framersai/paracosm/blob/ba2b8
 
 > **hexaco**: [`HexacoProfile`](HexacoProfile.md)
 
-Defined in: [core/state.ts:111](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/core/state.ts#L111)
+Defined in: [core/state.ts:116](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/core/state.ts#L116)
 
 ***
 
@@ -40,7 +40,7 @@ Defined in: [core/state.ts:111](https://github.com/framersai/paracosm/blob/ba2b8
 
 > **hexacoHistory**: [`HexacoSnapshot`](HexacoSnapshot.md)[]
 
-Defined in: [core/state.ts:113](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/core/state.ts#L113)
+Defined in: [core/state.ts:118](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/core/state.ts#L118)
 
 ***
 
@@ -48,7 +48,7 @@ Defined in: [core/state.ts:113](https://github.com/framersai/paracosm/blob/ba2b8
 
 > **memory**: [`AgentMemory`](AgentMemory.md)
 
-Defined in: [core/state.ts:115](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/core/state.ts#L115)
+Defined in: [core/state.ts:120](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/core/state.ts#L120)
 
 Persistent memory that accumulates across turns
 
@@ -58,7 +58,7 @@ Persistent memory that accumulates across turns
 
 > **narrative**: [`AgentNarrative`](AgentNarrative.md)
 
-Defined in: [core/state.ts:110](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/core/state.ts#L110)
+Defined in: [core/state.ts:115](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/core/state.ts#L115)
 
 ***
 
@@ -66,7 +66,7 @@ Defined in: [core/state.ts:110](https://github.com/framersai/paracosm/blob/ba2b8
 
 > `optional` **promotion**: [`PromotionRecord`](PromotionRecord.md)
 
-Defined in: [core/state.ts:112](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/core/state.ts#L112)
+Defined in: [core/state.ts:117](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/core/state.ts#L117)
 
 ***
 
@@ -74,4 +74,4 @@ Defined in: [core/state.ts:112](https://github.com/framersai/paracosm/blob/ba2b8
 
 > **social**: [`AgentSocial`](AgentSocial.md)
 
-Defined in: [core/state.ts:109](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/core/state.ts#L109)
+Defined in: [core/state.ts:114](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/core/state.ts#L114)

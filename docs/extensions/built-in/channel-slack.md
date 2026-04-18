@@ -1,6 +1,6 @@
 ---
 title: "Channel: Slack"
-sidebar_position: 16
+sidebar_position: 13
 ---
 
 # Channel: Slack

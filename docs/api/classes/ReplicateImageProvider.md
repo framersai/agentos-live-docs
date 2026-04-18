@@ -1,6 +1,6 @@
 # Class: ReplicateImageProvider
 
-Defined in: [packages/agentos/src/media/images/providers/ReplicateImageProvider.ts:75](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/providers/ReplicateImageProvider.ts#L75)
+Defined in: [packages/agentos/src/media/images/providers/ReplicateImageProvider.ts:75](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/images/providers/ReplicateImageProvider.ts#L75)
 
 ## Implements
 
@@ -22,7 +22,7 @@ Defined in: [packages/agentos/src/media/images/providers/ReplicateImageProvider.
 
 > `optional` **defaultModelId**: `string`
 
-Defined in: [packages/agentos/src/media/images/providers/ReplicateImageProvider.ts:78](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/providers/ReplicateImageProvider.ts#L78)
+Defined in: [packages/agentos/src/media/images/providers/ReplicateImageProvider.ts:78](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/images/providers/ReplicateImageProvider.ts#L78)
 
 #### Implementation of
 
@@ -34,7 +34,7 @@ Defined in: [packages/agentos/src/media/images/providers/ReplicateImageProvider.
 
 > **isInitialized**: `boolean` = `false`
 
-Defined in: [packages/agentos/src/media/images/providers/ReplicateImageProvider.ts:77](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/providers/ReplicateImageProvider.ts#L77)
+Defined in: [packages/agentos/src/media/images/providers/ReplicateImageProvider.ts:77](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/images/providers/ReplicateImageProvider.ts#L77)
 
 #### Implementation of
 
@@ -46,7 +46,7 @@ Defined in: [packages/agentos/src/media/images/providers/ReplicateImageProvider.
 
 > `readonly` **providerId**: `"replicate"` = `'replicate'`
 
-Defined in: [packages/agentos/src/media/images/providers/ReplicateImageProvider.ts:76](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/providers/ReplicateImageProvider.ts#L76)
+Defined in: [packages/agentos/src/media/images/providers/ReplicateImageProvider.ts:76](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/images/providers/ReplicateImageProvider.ts#L76)
 
 #### Implementation of
 
@@ -58,7 +58,7 @@ Defined in: [packages/agentos/src/media/images/providers/ReplicateImageProvider.
 
 > **editImage**(`request`): `Promise`\<[`ImageGenerationResult`](../interfaces/ImageGenerationResult.md)\>
 
-Defined in: [packages/agentos/src/media/images/providers/ReplicateImageProvider.ts:249](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/providers/ReplicateImageProvider.ts#L249)
+Defined in: [packages/agentos/src/media/images/providers/ReplicateImageProvider.ts:249](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/images/providers/ReplicateImageProvider.ts#L249)
 
 Edits an image using a Replicate model that supports image-to-image input.
 
@@ -94,7 +94,7 @@ When the provider is not initialised or the API fails.
 
 > **generateImage**(`request`): `Promise`\<[`ImageGenerationResult`](../interfaces/ImageGenerationResult.md)\>
 
-Defined in: [packages/agentos/src/media/images/providers/ReplicateImageProvider.ts:105](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/providers/ReplicateImageProvider.ts#L105)
+Defined in: [packages/agentos/src/media/images/providers/ReplicateImageProvider.ts:105](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/images/providers/ReplicateImageProvider.ts#L105)
 
 #### Parameters
 
@@ -116,7 +116,7 @@ Defined in: [packages/agentos/src/media/images/providers/ReplicateImageProvider.
 
 > **initialize**(`config`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/media/images/providers/ReplicateImageProvider.ts:83](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/providers/ReplicateImageProvider.ts#L83)
+Defined in: [packages/agentos/src/media/images/providers/ReplicateImageProvider.ts:83](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/images/providers/ReplicateImageProvider.ts#L83)
 
 #### Parameters
 
@@ -138,7 +138,7 @@ Defined in: [packages/agentos/src/media/images/providers/ReplicateImageProvider.
 
 > **listAvailableModels**(): `Promise`\<[`ImageModelInfo`](../interfaces/ImageModelInfo.md)[]\>
 
-Defined in: [packages/agentos/src/media/images/providers/ReplicateImageProvider.ts:381](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/providers/ReplicateImageProvider.ts#L381)
+Defined in: [packages/agentos/src/media/images/providers/ReplicateImageProvider.ts:381](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/images/providers/ReplicateImageProvider.ts#L381)
 
 #### Returns
 
@@ -154,7 +154,7 @@ Defined in: [packages/agentos/src/media/images/providers/ReplicateImageProvider.
 
 > **upscaleImage**(`request`): `Promise`\<[`ImageGenerationResult`](../interfaces/ImageGenerationResult.md)\>
 
-Defined in: [packages/agentos/src/media/images/providers/ReplicateImageProvider.ts:329](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/providers/ReplicateImageProvider.ts#L329)
+Defined in: [packages/agentos/src/media/images/providers/ReplicateImageProvider.ts:329](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/images/providers/ReplicateImageProvider.ts#L329)
 
 Upscales an image using a Replicate upscaling model.
 

@@ -1,6 +1,6 @@
 # Interface: TaskDecomposition
 
-Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:232](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/planner/IPlanningEngine.ts#L232)
+Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:232](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/planner/IPlanningEngine.ts#L232)
 
 Result of decomposing a complex task into subtasks.
 
@@ -10,7 +10,7 @@ Result of decomposing a complex task into subtasks.
 
 > **executionOrder**: `string`[]
 
-Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:242](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/planner/IPlanningEngine.ts#L242)
+Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:242](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/planner/IPlanningEngine.ts#L242)
 
 Suggested execution order
 
@@ -20,7 +20,7 @@ Suggested execution order
 
 > **isComplete**: `boolean`
 
-Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:240](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/planner/IPlanningEngine.ts#L240)
+Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:240](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/planner/IPlanningEngine.ts#L240)
 
 Whether decomposition is complete
 
@@ -30,7 +30,7 @@ Whether decomposition is complete
 
 > **originalTask**: `string`
 
-Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:234](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/planner/IPlanningEngine.ts#L234)
+Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:234](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/planner/IPlanningEngine.ts#L234)
 
 Original task
 
@@ -40,7 +40,7 @@ Original task
 
 > **reasoning**: `string`
 
-Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:238](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/planner/IPlanningEngine.ts#L238)
+Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:238](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/planner/IPlanningEngine.ts#L238)
 
 Decomposition reasoning
 
@@ -50,6 +50,6 @@ Decomposition reasoning
 
 > **subtasks**: [`SubTask`](SubTask.md)[]
 
-Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:236](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/planner/IPlanningEngine.ts#L236)
+Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:236](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/planner/IPlanningEngine.ts#L236)
 
 Decomposed subtasks

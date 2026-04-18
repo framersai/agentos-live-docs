@@ -1,6 +1,6 @@
 # Interface: HnswSidecarConfig
 
-Defined in: [packages/agentos/src/memory/retrieval/store/HnswSidecar.ts:23](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/retrieval/store/HnswSidecar.ts#L23)
+Defined in: [packages/agentos/src/memory/retrieval/store/HnswSidecar.ts:23](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/retrieval/store/HnswSidecar.ts#L23)
 
 Configuration for the memory-specific HNSW sidecar wrapper.
 
@@ -10,7 +10,7 @@ Configuration for the memory-specific HNSW sidecar wrapper.
 
 > `optional` **autoThreshold**: `number`
 
-Defined in: [packages/agentos/src/memory/retrieval/store/HnswSidecar.ts:29](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/retrieval/store/HnswSidecar.ts#L29)
+Defined in: [packages/agentos/src/memory/retrieval/store/HnswSidecar.ts:29](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/retrieval/store/HnswSidecar.ts#L29)
 
 Auto-build threshold. Below this count, brute-force is used.
 
@@ -26,7 +26,7 @@ Auto-build threshold. Below this count, brute-force is used.
 
 > **dimensions**: `number`
 
-Defined in: [packages/agentos/src/memory/retrieval/store/HnswSidecar.ts:27](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/retrieval/store/HnswSidecar.ts#L27)
+Defined in: [packages/agentos/src/memory/retrieval/store/HnswSidecar.ts:27](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/retrieval/store/HnswSidecar.ts#L27)
 
 Embedding dimensions.
 
@@ -36,7 +36,7 @@ Embedding dimensions.
 
 > `optional` **efConstruction**: `number`
 
-Defined in: [packages/agentos/src/memory/retrieval/store/HnswSidecar.ts:33](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/retrieval/store/HnswSidecar.ts#L33)
+Defined in: [packages/agentos/src/memory/retrieval/store/HnswSidecar.ts:33](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/retrieval/store/HnswSidecar.ts#L33)
 
 HNSW efConstruction (build quality).
 
@@ -52,7 +52,7 @@ HNSW efConstruction (build quality).
 
 > `optional` **efSearch**: `number`
 
-Defined in: [packages/agentos/src/memory/retrieval/store/HnswSidecar.ts:35](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/retrieval/store/HnswSidecar.ts#L35)
+Defined in: [packages/agentos/src/memory/retrieval/store/HnswSidecar.ts:35](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/retrieval/store/HnswSidecar.ts#L35)
 
 HNSW efSearch (query quality).
 
@@ -68,7 +68,7 @@ HNSW efSearch (query quality).
 
 > `optional` **m**: `number`
 
-Defined in: [packages/agentos/src/memory/retrieval/store/HnswSidecar.ts:31](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/retrieval/store/HnswSidecar.ts#L31)
+Defined in: [packages/agentos/src/memory/retrieval/store/HnswSidecar.ts:31](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/retrieval/store/HnswSidecar.ts#L31)
 
 HNSW M parameter (connections per node).
 
@@ -84,6 +84,6 @@ HNSW M parameter (connections per node).
 
 > **sqlitePath**: `string`
 
-Defined in: [packages/agentos/src/memory/retrieval/store/HnswSidecar.ts:25](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/retrieval/store/HnswSidecar.ts#L25)
+Defined in: [packages/agentos/src/memory/retrieval/store/HnswSidecar.ts:25](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/retrieval/store/HnswSidecar.ts#L25)
 
 Path to brain.sqlite — HNSW file will be at same dir with .hnsw extension.

@@ -1,6 +1,6 @@
 # Class: MemorySearchTool
 
-Defined in: [packages/agentos/src/memory/io/tools/MemorySearchTool.ts:105](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/io/tools/MemorySearchTool.ts#L105)
+Defined in: [packages/agentos/src/memory/io/tools/MemorySearchTool.ts:105](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/io/tools/MemorySearchTool.ts#L105)
 
 ITool implementation that searches the agent's memory traces using FTS5.
 
@@ -24,7 +24,7 @@ const result = await tool.execute(
 
 > **new MemorySearchTool**(`brain`): `MemorySearchTool`
 
-Defined in: [packages/agentos/src/memory/io/tools/MemorySearchTool.ts:159](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/io/tools/MemorySearchTool.ts#L159)
+Defined in: [packages/agentos/src/memory/io/tools/MemorySearchTool.ts:159](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/io/tools/MemorySearchTool.ts#L159)
 
 #### Parameters
 
@@ -44,7 +44,7 @@ The agent's shared SQLite brain database connection.
 
 > `readonly` **category**: `"memory"` = `'memory'`
 
-Defined in: [packages/agentos/src/memory/io/tools/MemorySearchTool.ts:122](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/io/tools/MemorySearchTool.ts#L122)
+Defined in: [packages/agentos/src/memory/io/tools/MemorySearchTool.ts:122](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/io/tools/MemorySearchTool.ts#L122)
 
 Logical category for discovery and grouping.
 
@@ -58,7 +58,7 @@ Logical category for discovery and grouping.
 
 > `readonly` **description**: `string`
 
-Defined in: [packages/agentos/src/memory/io/tools/MemorySearchTool.ts:116](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/io/tools/MemorySearchTool.ts#L116)
+Defined in: [packages/agentos/src/memory/io/tools/MemorySearchTool.ts:116](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/io/tools/MemorySearchTool.ts#L116)
 
 LLM-facing description.
 
@@ -72,7 +72,7 @@ LLM-facing description.
 
 > `readonly` **displayName**: `"Search Memory"` = `'Search Memory'`
 
-Defined in: [packages/agentos/src/memory/io/tools/MemorySearchTool.ts:113](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/io/tools/MemorySearchTool.ts#L113)
+Defined in: [packages/agentos/src/memory/io/tools/MemorySearchTool.ts:113](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/io/tools/MemorySearchTool.ts#L113)
 
 Human-readable display name.
 
@@ -86,7 +86,7 @@ Human-readable display name.
 
 > `readonly` **hasSideEffects**: `false` = `false`
 
-Defined in: [packages/agentos/src/memory/io/tools/MemorySearchTool.ts:125](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/io/tools/MemorySearchTool.ts#L125)
+Defined in: [packages/agentos/src/memory/io/tools/MemorySearchTool.ts:125](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/io/tools/MemorySearchTool.ts#L125)
 
 This tool only reads from the database — no side effects.
 
@@ -100,7 +100,7 @@ This tool only reads from the database — no side effects.
 
 > `readonly` **id**: `"memory-search-v1"` = `'memory-search-v1'`
 
-Defined in: [packages/agentos/src/memory/io/tools/MemorySearchTool.ts:107](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/io/tools/MemorySearchTool.ts#L107)
+Defined in: [packages/agentos/src/memory/io/tools/MemorySearchTool.ts:107](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/io/tools/MemorySearchTool.ts#L107)
 
 Globally unique tool identifier.
 
@@ -114,7 +114,7 @@ Globally unique tool identifier.
 
 > `readonly` **inputSchema**: [`JSONSchemaObject`](../type-aliases/JSONSchemaObject.md)
 
-Defined in: [packages/agentos/src/memory/io/tools/MemorySearchTool.ts:128](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/io/tools/MemorySearchTool.ts#L128)
+Defined in: [packages/agentos/src/memory/io/tools/MemorySearchTool.ts:128](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/io/tools/MemorySearchTool.ts#L128)
 
 JSON schema for input validation and LLM tool-call construction.
 
@@ -128,7 +128,7 @@ JSON schema for input validation and LLM tool-call construction.
 
 > `readonly` **name**: `"memory_search"` = `'memory_search'`
 
-Defined in: [packages/agentos/src/memory/io/tools/MemorySearchTool.ts:110](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/io/tools/MemorySearchTool.ts#L110)
+Defined in: [packages/agentos/src/memory/io/tools/MemorySearchTool.ts:110](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/io/tools/MemorySearchTool.ts#L110)
 
 LLM-facing tool name.
 
@@ -142,7 +142,7 @@ LLM-facing tool name.
 
 > **execute**(`args`, `context`): `Promise`\<[`ToolExecutionResult`](../interfaces/ToolExecutionResult.md)\<`MemorySearchOutput`\>\>
 
-Defined in: [packages/agentos/src/memory/io/tools/MemorySearchTool.ts:189](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/io/tools/MemorySearchTool.ts#L189)
+Defined in: [packages/agentos/src/memory/io/tools/MemorySearchTool.ts:189](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/io/tools/MemorySearchTool.ts#L189)
 
 Run a full-text search against `memory_traces_fts` and join back to
 `memory_traces` for metadata.

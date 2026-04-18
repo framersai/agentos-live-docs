@@ -1,6 +1,6 @@
 # Interface: InitiateCallInput
 
-Defined in: [packages/agentos/src/channels/telephony/IVoiceCallProvider.ts:26](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/channels/telephony/IVoiceCallProvider.ts#L26)
+Defined in: [packages/agentos/src/channels/telephony/IVoiceCallProvider.ts:26](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/channels/telephony/IVoiceCallProvider.ts#L26)
 
 Parameters for initiating an outbound call.
 
@@ -10,7 +10,7 @@ Parameters for initiating an outbound call.
 
 > **callId**: `string`
 
-Defined in: [packages/agentos/src/channels/telephony/IVoiceCallProvider.ts:28](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/channels/telephony/IVoiceCallProvider.ts#L28)
+Defined in: [packages/agentos/src/channels/telephony/IVoiceCallProvider.ts:28](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/channels/telephony/IVoiceCallProvider.ts#L28)
 
 Internal call ID assigned by CallManager.
 
@@ -20,7 +20,7 @@ Internal call ID assigned by CallManager.
 
 > **fromNumber**: `string`
 
-Defined in: [packages/agentos/src/channels/telephony/IVoiceCallProvider.ts:30](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/channels/telephony/IVoiceCallProvider.ts#L30)
+Defined in: [packages/agentos/src/channels/telephony/IVoiceCallProvider.ts:30](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/channels/telephony/IVoiceCallProvider.ts#L30)
 
 E.164 phone number to call from.
 
@@ -30,7 +30,7 @@ E.164 phone number to call from.
 
 > `optional` **mediaStreamToken**: `string`
 
-Defined in: [packages/agentos/src/channels/telephony/IVoiceCallProvider.ts:46](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/channels/telephony/IVoiceCallProvider.ts#L46)
+Defined in: [packages/agentos/src/channels/telephony/IVoiceCallProvider.ts:46](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/channels/telephony/IVoiceCallProvider.ts#L46)
 
 Auth token appended to media stream URL for validation.
 
@@ -40,7 +40,7 @@ Auth token appended to media stream URL for validation.
 
 > `optional` **mediaStreamUrl**: `string`
 
-Defined in: [packages/agentos/src/channels/telephony/IVoiceCallProvider.ts:44](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/channels/telephony/IVoiceCallProvider.ts#L44)
+Defined in: [packages/agentos/src/channels/telephony/IVoiceCallProvider.ts:44](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/channels/telephony/IVoiceCallProvider.ts#L44)
 
 Media stream WebSocket URL (for 'conversation' mode).
 
@@ -50,7 +50,7 @@ Media stream WebSocket URL (for 'conversation' mode).
 
 > `optional` **message**: `string`
 
-Defined in: [packages/agentos/src/channels/telephony/IVoiceCallProvider.ts:36](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/channels/telephony/IVoiceCallProvider.ts#L36)
+Defined in: [packages/agentos/src/channels/telephony/IVoiceCallProvider.ts:36](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/channels/telephony/IVoiceCallProvider.ts#L36)
 
 Pre-composed message (for 'notify' mode).
 
@@ -60,7 +60,7 @@ Pre-composed message (for 'notify' mode).
 
 > **mode**: [`CallMode`](../type-aliases/CallMode.md)
 
-Defined in: [packages/agentos/src/channels/telephony/IVoiceCallProvider.ts:34](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/channels/telephony/IVoiceCallProvider.ts#L34)
+Defined in: [packages/agentos/src/channels/telephony/IVoiceCallProvider.ts:34](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/channels/telephony/IVoiceCallProvider.ts#L34)
 
 Call interaction mode.
 
@@ -70,7 +70,7 @@ Call interaction mode.
 
 > `optional` **notifyVoice**: `string`
 
-Defined in: [packages/agentos/src/channels/telephony/IVoiceCallProvider.ts:38](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/channels/telephony/IVoiceCallProvider.ts#L38)
+Defined in: [packages/agentos/src/channels/telephony/IVoiceCallProvider.ts:38](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/channels/telephony/IVoiceCallProvider.ts#L38)
 
 TTS voice to use for notify-mode messages.
 
@@ -80,7 +80,7 @@ TTS voice to use for notify-mode messages.
 
 > `optional` **statusCallbackUrl**: `string`
 
-Defined in: [packages/agentos/src/channels/telephony/IVoiceCallProvider.ts:42](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/channels/telephony/IVoiceCallProvider.ts#L42)
+Defined in: [packages/agentos/src/channels/telephony/IVoiceCallProvider.ts:42](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/channels/telephony/IVoiceCallProvider.ts#L42)
 
 Status callback URL for call state changes.
 
@@ -90,7 +90,7 @@ Status callback URL for call state changes.
 
 > **toNumber**: `string`
 
-Defined in: [packages/agentos/src/channels/telephony/IVoiceCallProvider.ts:32](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/channels/telephony/IVoiceCallProvider.ts#L32)
+Defined in: [packages/agentos/src/channels/telephony/IVoiceCallProvider.ts:32](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/channels/telephony/IVoiceCallProvider.ts#L32)
 
 E.164 phone number to call.
 
@@ -100,6 +100,6 @@ E.164 phone number to call.
 
 > **webhookUrl**: `string`
 
-Defined in: [packages/agentos/src/channels/telephony/IVoiceCallProvider.ts:40](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/channels/telephony/IVoiceCallProvider.ts#L40)
+Defined in: [packages/agentos/src/channels/telephony/IVoiceCallProvider.ts:40](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/channels/telephony/IVoiceCallProvider.ts#L40)
 
 Webhook URL the provider should call back to.

@@ -1,6 +1,6 @@
 # Class: RAGAuditCollector
 
-Defined in: [packages/agentos/src/rag/audit/RAGAuditCollector.ts:189](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/audit/RAGAuditCollector.ts#L189)
+Defined in: [packages/agentos/src/rag/audit/RAGAuditCollector.ts:189](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/audit/RAGAuditCollector.ts#L189)
 
 Request-scoped audit collector. Create one per `retrieveContext()` call.
 NOT a singleton — scoped to a single pipeline execution.
@@ -11,7 +11,7 @@ NOT a singleton — scoped to a single pipeline execution.
 
 > **new RAGAuditCollector**(`options`): `RAGAuditCollector`
 
-Defined in: [packages/agentos/src/rag/audit/RAGAuditCollector.ts:195](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/audit/RAGAuditCollector.ts#L195)
+Defined in: [packages/agentos/src/rag/audit/RAGAuditCollector.ts:195](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/audit/RAGAuditCollector.ts#L195)
 
 #### Parameters
 
@@ -29,7 +29,7 @@ Defined in: [packages/agentos/src/rag/audit/RAGAuditCollector.ts:195](https://gi
 
 > **finalize**(): [`RAGAuditTrail`](../interfaces/RAGAuditTrail.md)
 
-Defined in: [packages/agentos/src/rag/audit/RAGAuditCollector.ts:209](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/audit/RAGAuditCollector.ts#L209)
+Defined in: [packages/agentos/src/rag/audit/RAGAuditCollector.ts:209](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/audit/RAGAuditCollector.ts#L209)
 
 Finalize and return the complete audit trail with computed summary.
 
@@ -43,7 +43,7 @@ Finalize and return the complete audit trail with computed summary.
 
 > **startOperation**(`type`): [`RAGOperationHandle`](RAGOperationHandle.md)
 
-Defined in: [packages/agentos/src/rag/audit/RAGAuditCollector.ts:202](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/audit/RAGAuditCollector.ts#L202)
+Defined in: [packages/agentos/src/rag/audit/RAGAuditCollector.ts:202](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/audit/RAGAuditCollector.ts#L202)
 
 Start tracking a new operation. Returns a fluent handle.
 

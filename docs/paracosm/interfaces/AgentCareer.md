@@ -1,6 +1,6 @@
 # Interface: AgentCareer
 
-Defined in: [core/state.ts:57](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/core/state.ts#L57)
+Defined in: [core/state.ts:62](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/core/state.ts#L62)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [core/state.ts:57](https://github.com/framersai/paracosm/blob/ba2b88
 
 > **achievements**: `string`[]
 
-Defined in: [core/state.ts:61](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/core/state.ts#L61)
+Defined in: [core/state.ts:66](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/core/state.ts#L66)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [core/state.ts:61](https://github.com/framersai/paracosm/blob/ba2b88
 
 > `optional` **currentProject**: `string`
 
-Defined in: [core/state.ts:62](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/core/state.ts#L62)
+Defined in: [core/state.ts:67](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/core/state.ts#L67)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: [core/state.ts:62](https://github.com/framersai/paracosm/blob/ba2b88
 
 > **rank**: `"junior"` \| `"senior"` \| `"lead"` \| `"chief"`
 
-Defined in: [core/state.ts:60](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/core/state.ts#L60)
+Defined in: [core/state.ts:65](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/core/state.ts#L65)
 
 ***
 
@@ -32,7 +32,7 @@ Defined in: [core/state.ts:60](https://github.com/framersai/paracosm/blob/ba2b88
 
 > **specialization**: `string`
 
-Defined in: [core/state.ts:58](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/core/state.ts#L58)
+Defined in: [core/state.ts:63](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/core/state.ts#L63)
 
 ***
 
@@ -40,4 +40,4 @@ Defined in: [core/state.ts:58](https://github.com/framersai/paracosm/blob/ba2b88
 
 > **yearsExperience**: `number`
 
-Defined in: [core/state.ts:59](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/core/state.ts#L59)
+Defined in: [core/state.ts:64](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/core/state.ts#L64)

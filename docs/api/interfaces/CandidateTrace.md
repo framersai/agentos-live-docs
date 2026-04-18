@@ -1,6 +1,6 @@
 # Interface: CandidateTrace
 
-Defined in: [packages/agentos/src/memory/core/decay/RetrievalPriorityScorer.ts:88](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/core/decay/RetrievalPriorityScorer.ts#L88)
+Defined in: [packages/agentos/src/memory/core/decay/RetrievalPriorityScorer.ts:88](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/core/decay/RetrievalPriorityScorer.ts#L88)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/memory/core/decay/RetrievalPriorityScorer.ts:8
 
 > `optional` **graphActivation**: `number`
 
-Defined in: [packages/agentos/src/memory/core/decay/RetrievalPriorityScorer.ts:93](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/core/decay/RetrievalPriorityScorer.ts#L93)
+Defined in: [packages/agentos/src/memory/core/decay/RetrievalPriorityScorer.ts:93](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/core/decay/RetrievalPriorityScorer.ts#L93)
 
 Activation level from spreading activation (0-1). 0 if graph not available.
 
@@ -18,7 +18,7 @@ Activation level from spreading activation (0-1). 0 if graph not available.
 
 > **trace**: [`MemoryTrace`](MemoryTrace.md)
 
-Defined in: [packages/agentos/src/memory/core/decay/RetrievalPriorityScorer.ts:89](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/core/decay/RetrievalPriorityScorer.ts#L89)
+Defined in: [packages/agentos/src/memory/core/decay/RetrievalPriorityScorer.ts:89](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/core/decay/RetrievalPriorityScorer.ts#L89)
 
 ***
 
@@ -26,6 +26,6 @@ Defined in: [packages/agentos/src/memory/core/decay/RetrievalPriorityScorer.ts:8
 
 > **vectorSimilarity**: `number`
 
-Defined in: [packages/agentos/src/memory/core/decay/RetrievalPriorityScorer.ts:91](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/core/decay/RetrievalPriorityScorer.ts#L91)
+Defined in: [packages/agentos/src/memory/core/decay/RetrievalPriorityScorer.ts:91](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/core/decay/RetrievalPriorityScorer.ts#L91)
 
 Cosine similarity from vector search (0-1).

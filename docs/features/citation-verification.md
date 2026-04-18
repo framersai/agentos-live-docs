@@ -1,8 +1,7 @@
 ---
-sidebar_position: 45
+title: "Citation Verification"
+sidebar_position: 4.5
 ---
-
-# Citation Verification
 
 Decompose agent responses into atomic claims, verify each against sources using cosine similarity, and flag unsupported or contradicted statements.
 

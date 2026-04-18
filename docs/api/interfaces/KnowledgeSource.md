@@ -1,6 +1,6 @@
 # Interface: KnowledgeSource
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts:72](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts#L72)
+Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts:72](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts#L72)
 
 Source of knowledge
 
@@ -10,7 +10,7 @@ Source of knowledge
 
 > `optional` **method**: `string`
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts:80](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts#L80)
+Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts:80](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts#L80)
 
 Extraction method
 
@@ -20,7 +20,7 @@ Extraction method
 
 > `optional` **reference**: `string`
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts:76](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts#L76)
+Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts:76](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts#L76)
 
 Source reference (conversation ID, document ID, URL, etc.)
 
@@ -30,7 +30,7 @@ Source reference (conversation ID, document ID, URL, etc.)
 
 > **timestamp**: `string`
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts:78](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts#L78)
+Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts:78](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts#L78)
 
 Timestamp of extraction
 
@@ -40,6 +40,6 @@ Timestamp of extraction
 
 > **type**: `"conversation"` \| `"user_input"` \| `"rag_ingest"` \| `"web_search"` \| `"inference"` \| `"system"`
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts:74](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts#L74)
+Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts:74](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts#L74)
 
 Source type

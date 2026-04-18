@@ -1,6 +1,6 @@
 # Interface: AuditEntry
 
-Defined in: [packages/agentos/src/emergent/EmergentToolRegistry.ts:97](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/emergent/EmergentToolRegistry.ts#L97)
+Defined in: [packages/agentos/src/emergent/EmergentToolRegistry.ts:97](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/emergent/EmergentToolRegistry.ts#L97)
 
 A single entry in the emergent tool audit trail.
 
@@ -15,7 +15,7 @@ SQLite table.
 
 > `optional` **data**: `unknown`
 
-Defined in: [packages/agentos/src/emergent/EmergentToolRegistry.ts:105](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/emergent/EmergentToolRegistry.ts#L105)
+Defined in: [packages/agentos/src/emergent/EmergentToolRegistry.ts:105](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/emergent/EmergentToolRegistry.ts#L105)
 
 Optional structured data associated with the event.
 
@@ -25,7 +25,7 @@ Optional structured data associated with the event.
 
 > **eventType**: `string`
 
-Defined in: [packages/agentos/src/emergent/EmergentToolRegistry.ts:103](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/emergent/EmergentToolRegistry.ts#L103)
+Defined in: [packages/agentos/src/emergent/EmergentToolRegistry.ts:103](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/emergent/EmergentToolRegistry.ts#L103)
 
 Machine-readable event type (e.g., `'register'`, `'promote'`, `'demote'`).
 
@@ -35,7 +35,7 @@ Machine-readable event type (e.g., `'register'`, `'promote'`, `'demote'`).
 
 > **id**: `string`
 
-Defined in: [packages/agentos/src/emergent/EmergentToolRegistry.ts:99](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/emergent/EmergentToolRegistry.ts#L99)
+Defined in: [packages/agentos/src/emergent/EmergentToolRegistry.ts:99](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/emergent/EmergentToolRegistry.ts#L99)
 
 Unique identifier for this audit entry.
 
@@ -45,7 +45,7 @@ Unique identifier for this audit entry.
 
 > **timestamp**: `number`
 
-Defined in: [packages/agentos/src/emergent/EmergentToolRegistry.ts:107](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/emergent/EmergentToolRegistry.ts#L107)
+Defined in: [packages/agentos/src/emergent/EmergentToolRegistry.ts:107](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/emergent/EmergentToolRegistry.ts#L107)
 
 Unix epoch millisecond timestamp of when the event occurred.
 
@@ -55,6 +55,6 @@ Unix epoch millisecond timestamp of when the event occurred.
 
 > **toolId**: `string`
 
-Defined in: [packages/agentos/src/emergent/EmergentToolRegistry.ts:101](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/emergent/EmergentToolRegistry.ts#L101)
+Defined in: [packages/agentos/src/emergent/EmergentToolRegistry.ts:101](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/emergent/EmergentToolRegistry.ts#L101)
 
 The tool ID this event pertains to.

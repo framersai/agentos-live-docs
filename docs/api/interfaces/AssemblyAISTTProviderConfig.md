@@ -1,6 +1,6 @@
 # Interface: AssemblyAISTTProviderConfig
 
-Defined in: [packages/agentos/src/hearing/providers/AssemblyAISTTProvider.ts:15](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/hearing/providers/AssemblyAISTTProvider.ts#L15)
+Defined in: [packages/agentos/src/hearing/providers/AssemblyAISTTProvider.ts:15](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/hearing/providers/AssemblyAISTTProvider.ts#L15)
 
 Configuration for the [AssemblyAISTTProvider](../classes/AssemblyAISTTProvider.md).
 
@@ -14,7 +14,7 @@ Configuration for the [AssemblyAISTTProvider](../classes/AssemblyAISTTProvider.m
 
 > **apiKey**: `string`
 
-Defined in: [packages/agentos/src/hearing/providers/AssemblyAISTTProvider.ts:21](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/hearing/providers/AssemblyAISTTProvider.ts#L21)
+Defined in: [packages/agentos/src/hearing/providers/AssemblyAISTTProvider.ts:21](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/hearing/providers/AssemblyAISTTProvider.ts#L21)
 
 AssemblyAI API key used for authentication.
 Sent as the `Authorization` header value (without a prefix like "Bearer").
@@ -26,7 +26,7 @@ Obtain from https://www.assemblyai.com/dashboard/account
 
 > `optional` **fetchImpl**: \{(`input`, `init?`): `Promise`\<`Response`\>; (`input`, `init?`): `Promise`\<`Response`\>; \}
 
-Defined in: [packages/agentos/src/hearing/providers/AssemblyAISTTProvider.ts:28](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/hearing/providers/AssemblyAISTTProvider.ts#L28)
+Defined in: [packages/agentos/src/hearing/providers/AssemblyAISTTProvider.ts:28](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/hearing/providers/AssemblyAISTTProvider.ts#L28)
 
 Custom fetch implementation for dependency injection in tests.
 When omitted, the global `fetch` is used.

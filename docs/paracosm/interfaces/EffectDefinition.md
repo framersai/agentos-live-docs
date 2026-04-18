@@ -1,6 +1,6 @@
 # Interface: EffectDefinition
 
-Defined in: [types.ts:140](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/types.ts#L140)
+Defined in: [types.ts:147](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/types.ts#L147)
 
 Defines an effect category with base deltas applied on crisis outcomes.
 
@@ -10,7 +10,7 @@ Defines an effect category with base deltas applied on crisis outcomes.
 
 > **categoryDefaults**: `Record`\<`string`, `Record`\<`string`, `number`\>\>
 
-Defined in: [types.ts:145](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/types.ts#L145)
+Defined in: [types.ts:152](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/types.ts#L152)
 
 Maps crisis category to base colony system deltas
 
@@ -20,7 +20,7 @@ Maps crisis category to base colony system deltas
 
 > **id**: `string`
 
-Defined in: [types.ts:141](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/types.ts#L141)
+Defined in: [types.ts:148](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/types.ts#L148)
 
 ***
 
@@ -28,7 +28,7 @@ Defined in: [types.ts:141](https://github.com/framersai/paracosm/blob/ba2b881292
 
 > **label**: `string`
 
-Defined in: [types.ts:143](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/types.ts#L143)
+Defined in: [types.ts:150](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/types.ts#L150)
 
 ***
 
@@ -36,4 +36,4 @@ Defined in: [types.ts:143](https://github.com/framersai/paracosm/blob/ba2b881292
 
 > **type**: `string`
 
-Defined in: [types.ts:142](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/types.ts#L142)
+Defined in: [types.ts:149](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/types.ts#L149)

@@ -1,6 +1,6 @@
 # Interface: WorkingMemorySlot
 
-Defined in: [packages/agentos/src/memory/core/types.ts:141](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/core/types.ts#L141)
+Defined in: [packages/agentos/src/memory/core/types.ts:141](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/core/types.ts#L141)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/memory/core/types.ts:141](https://github.com/f
 
 > **activationLevel**: `number`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:146](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/core/types.ts#L146)
+Defined in: [packages/agentos/src/memory/core/types.ts:146](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/core/types.ts#L146)
 
 0-1 activation level; determines if slot is "in focus".
 
@@ -18,7 +18,7 @@ Defined in: [packages/agentos/src/memory/core/types.ts:146](https://github.com/f
 
 > **attentionWeight**: `number`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:152](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/core/types.ts#L152)
+Defined in: [packages/agentos/src/memory/core/types.ts:152](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/core/types.ts#L152)
 
 How much attention is allocated to this slot (0-1).
 
@@ -28,7 +28,7 @@ How much attention is allocated to this slot (0-1).
 
 > **enteredAt**: `number`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:148](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/core/types.ts#L148)
+Defined in: [packages/agentos/src/memory/core/types.ts:148](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/core/types.ts#L148)
 
 When this trace entered working memory (Unix ms).
 
@@ -38,7 +38,7 @@ When this trace entered working memory (Unix ms).
 
 > **rehearsalCount**: `number`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:150](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/core/types.ts#L150)
+Defined in: [packages/agentos/src/memory/core/types.ts:150](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/core/types.ts#L150)
 
 Maintenance rehearsal counter.
 
@@ -48,7 +48,7 @@ Maintenance rehearsal counter.
 
 > **slotId**: `string`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:142](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/core/types.ts#L142)
+Defined in: [packages/agentos/src/memory/core/types.ts:142](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/core/types.ts#L142)
 
 ***
 
@@ -56,6 +56,6 @@ Defined in: [packages/agentos/src/memory/core/types.ts:142](https://github.com/f
 
 > **traceId**: `string`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:144](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/core/types.ts#L144)
+Defined in: [packages/agentos/src/memory/core/types.ts:144](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/core/types.ts#L144)
 
 Reference to the underlying MemoryTrace (or a transient key).

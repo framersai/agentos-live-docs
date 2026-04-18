@@ -1,6 +1,6 @@
 # Interface: PolicyEffect
 
-Defined in: [core/kernel.ts:17](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/core/kernel.ts#L17)
+Defined in: [core/kernel.ts:17](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/core/kernel.ts#L17)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [core/kernel.ts:17](https://github.com/framersai/paracosm/blob/ba2b8
 
 > **description**: `string`
 
-Defined in: [core/kernel.ts:18](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/core/kernel.ts#L18)
+Defined in: [core/kernel.ts:18](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/core/kernel.ts#L18)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [core/kernel.ts:18](https://github.com/framersai/paracosm/blob/ba2b8
 
 > **events**: [`TurnEvent`](TurnEvent.md)[]
 
-Defined in: [core/kernel.ts:20](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/core/kernel.ts#L20)
+Defined in: [core/kernel.ts:20](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/core/kernel.ts#L20)
 
 ***
 
@@ -24,4 +24,4 @@ Defined in: [core/kernel.ts:20](https://github.com/framersai/paracosm/blob/ba2b8
 
 > **patches**: [`ColonyPatch`](ColonyPatch.md)
 
-Defined in: [core/kernel.ts:19](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/core/kernel.ts#L19)
+Defined in: [core/kernel.ts:19](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/core/kernel.ts#L19)

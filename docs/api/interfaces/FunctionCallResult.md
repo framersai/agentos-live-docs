@@ -1,6 +1,6 @@
 # Interface: FunctionCallResult
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:421](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/structured/output/IStructuredOutputManager.ts#L421)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:421](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/structured/output/IStructuredOutputManager.ts#L421)
 
 Result of a single function call.
 
@@ -10,7 +10,7 @@ Result of a single function call.
 
 > **arguments**: `Record`\<`string`, `unknown`\>
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:426](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/structured/output/IStructuredOutputManager.ts#L426)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:426](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/structured/output/IStructuredOutputManager.ts#L426)
 
 Arguments passed to the function
 
@@ -20,7 +20,7 @@ Arguments passed to the function
 
 > **argumentsValid**: `boolean`
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:429](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/structured/output/IStructuredOutputManager.ts#L429)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:429](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/structured/output/IStructuredOutputManager.ts#L429)
 
 Whether arguments validated against schema
 
@@ -30,7 +30,7 @@ Whether arguments validated against schema
 
 > **callId**: `string`
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:441](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/structured/output/IStructuredOutputManager.ts#L441)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:441](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/structured/output/IStructuredOutputManager.ts#L441)
 
 Unique ID for this call (for multi-turn conversations)
 
@@ -40,7 +40,7 @@ Unique ID for this call (for multi-turn conversations)
 
 > `optional` **executionError**: `string`
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:438](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/structured/output/IStructuredOutputManager.ts#L438)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:438](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/structured/output/IStructuredOutputManager.ts#L438)
 
 Error during execution (if any)
 
@@ -50,7 +50,7 @@ Error during execution (if any)
 
 > `optional` **executionResult**: `unknown`
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:435](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/structured/output/IStructuredOutputManager.ts#L435)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:435](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/structured/output/IStructuredOutputManager.ts#L435)
 
 Result of executing the function (if handler provided)
 
@@ -60,7 +60,7 @@ Result of executing the function (if handler provided)
 
 > **functionName**: `string`
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:423](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/structured/output/IStructuredOutputManager.ts#L423)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:423](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/structured/output/IStructuredOutputManager.ts#L423)
 
 Function that was called
 
@@ -70,6 +70,6 @@ Function that was called
 
 > `optional` **validationErrors**: [`ValidationIssue`](ValidationIssue.md)[]
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:432](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/structured/output/IStructuredOutputManager.ts#L432)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:432](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/structured/output/IStructuredOutputManager.ts#L432)
 
 Validation errors for arguments

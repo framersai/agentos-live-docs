@@ -1,6 +1,6 @@
 ---
 title: "Web Browser"
-sidebar_position: 3
+sidebar_position: 2
 ---
 
 Browser automation capabilities for AgentOS agents - navigate pages, scrape content, click elements, and capture screenshots.

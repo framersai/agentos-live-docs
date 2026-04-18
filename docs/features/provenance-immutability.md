@@ -1,6 +1,6 @@
 ---
 title: "Provenance & Immutability"
-sidebar_position: 14
+sidebar_position: 7
 ---
 
 AgentOS can optionally run with a provenance system that provides:

@@ -1,6 +1,6 @@
 ---
 title: "Evaluation Guide"
-sidebar_position: 10
+sidebar_position: 2
 ---
 
 > Author test cases, run graders, track experiments, and A/B test your agents with a single framework.

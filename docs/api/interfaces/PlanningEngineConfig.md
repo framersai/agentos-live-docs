@@ -1,6 +1,6 @@
 # Interface: PlanningEngineConfig
 
-Defined in: [packages/agentos/src/orchestration/planner/PlanningEngine.ts:59](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/planner/PlanningEngine.ts#L59)
+Defined in: [packages/agentos/src/orchestration/planner/PlanningEngine.ts:59](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/planner/PlanningEngine.ts#L59)
 
 Configuration for the PlanningEngine.
 
@@ -10,7 +10,7 @@ Configuration for the PlanningEngine.
 
 > `optional` **defaultModelId**: `string`
 
-Defined in: [packages/agentos/src/orchestration/planner/PlanningEngine.ts:63](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/planner/PlanningEngine.ts#L63)
+Defined in: [packages/agentos/src/orchestration/planner/PlanningEngine.ts:63](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/planner/PlanningEngine.ts#L63)
 
 Default model ID for planning
 
@@ -20,7 +20,7 @@ Default model ID for planning
 
 > `optional` **defaultOptions**: `Partial`\<[`PlanningOptions`](PlanningOptions.md)\>
 
-Defined in: [packages/agentos/src/orchestration/planner/PlanningEngine.ts:69](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/planner/PlanningEngine.ts#L69)
+Defined in: [packages/agentos/src/orchestration/planner/PlanningEngine.ts:69](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/planner/PlanningEngine.ts#L69)
 
 Default planning options
 
@@ -30,7 +30,7 @@ Default planning options
 
 > `optional` **defaultProviderId**: `string`
 
-Defined in: [packages/agentos/src/orchestration/planner/PlanningEngine.ts:65](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/planner/PlanningEngine.ts#L65)
+Defined in: [packages/agentos/src/orchestration/planner/PlanningEngine.ts:65](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/planner/PlanningEngine.ts#L65)
 
 Default provider ID
 
@@ -40,7 +40,7 @@ Default provider ID
 
 > **llmProvider**: [`AIModelProviderManager`](../classes/AIModelProviderManager.md)
 
-Defined in: [packages/agentos/src/orchestration/planner/PlanningEngine.ts:61](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/planner/PlanningEngine.ts#L61)
+Defined in: [packages/agentos/src/orchestration/planner/PlanningEngine.ts:61](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/planner/PlanningEngine.ts#L61)
 
 LLM provider manager for generating plans
 
@@ -50,6 +50,6 @@ LLM provider manager for generating plans
 
 > `optional` **logger**: [`ILogger`](ILogger.md)
 
-Defined in: [packages/agentos/src/orchestration/planner/PlanningEngine.ts:67](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/planner/PlanningEngine.ts#L67)
+Defined in: [packages/agentos/src/orchestration/planner/PlanningEngine.ts:67](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/planner/PlanningEngine.ts#L67)
 
 Logger instance

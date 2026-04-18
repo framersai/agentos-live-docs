@@ -1,6 +1,6 @@
 # Class: JsonExporter
 
-Defined in: [packages/agentos/src/memory/io/JsonExporter.ts:143](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/io/JsonExporter.ts#L143)
+Defined in: [packages/agentos/src/memory/io/JsonExporter.ts:143](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/io/JsonExporter.ts#L143)
 
 Exports a `SqliteBrain` to a structured JSON file.
 
@@ -16,7 +16,7 @@ await exporter.export('/path/to/export.json', { includeEmbeddings: false });
 
 > **new JsonExporter**(`brain`): `JsonExporter`
 
-Defined in: [packages/agentos/src/memory/io/JsonExporter.ts:147](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/io/JsonExporter.ts#L147)
+Defined in: [packages/agentos/src/memory/io/JsonExporter.ts:147](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/io/JsonExporter.ts#L147)
 
 #### Parameters
 
@@ -36,7 +36,7 @@ The `SqliteBrain` instance to read from.
 
 > **export**(`outputPath`, `options?`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/memory/io/JsonExporter.ts:163](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/io/JsonExporter.ts#L163)
+Defined in: [packages/agentos/src/memory/io/JsonExporter.ts:163](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/io/JsonExporter.ts#L163)
 
 Export the full brain state to a JSON file at `outputPath`.
 
@@ -64,7 +64,7 @@ Optional export configuration.
 
 > **exportToString**(`options?`): `Promise`\<`string`\>
 
-Defined in: [packages/agentos/src/memory/io/JsonExporter.ts:175](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/io/JsonExporter.ts#L175)
+Defined in: [packages/agentos/src/memory/io/JsonExporter.ts:175](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/io/JsonExporter.ts#L175)
 
 Export the full brain state as a JSON string without filesystem access.
 

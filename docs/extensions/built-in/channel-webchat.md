@@ -1,6 +1,6 @@
 ---
 title: "Channel: WebChat"
-sidebar_position: 17
+sidebar_position: 16
 ---
 
 # Channel: WebChat

@@ -1,6 +1,6 @@
 ---
 title: "Recursive Self-Building Agents"
-sidebar_position: 13
+sidebar_position: 5
 ---
 
 ## The Hypothesis

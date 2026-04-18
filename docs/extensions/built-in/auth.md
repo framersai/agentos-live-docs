@@ -1,6 +1,6 @@
 ---
 title: "Auth"
-sidebar_position: 1
+sidebar_position: 6
 ---
 
 Authentication and subscription management extension that integrates with AgentOS via the service injection pattern.

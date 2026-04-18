@@ -1,6 +1,6 @@
 # Interface: RollingSummaryMemoryUpdate
 
-Defined in: [packages/agentos/src/core/conversation/IRollingSummaryMemorySink.ts:11](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/conversation/IRollingSummaryMemorySink.ts#L11)
+Defined in: [packages/agentos/src/core/conversation/IRollingSummaryMemorySink.ts:11](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/conversation/IRollingSummaryMemorySink.ts#L11)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/core/conversation/IRollingSummaryMemorySink.ts
 
 > **conversationId**: `string`
 
-Defined in: [packages/agentos/src/core/conversation/IRollingSummaryMemorySink.ts:16](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/conversation/IRollingSummaryMemorySink.ts#L16)
+Defined in: [packages/agentos/src/core/conversation/IRollingSummaryMemorySink.ts:16](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/conversation/IRollingSummaryMemorySink.ts#L16)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [packages/agentos/src/core/conversation/IRollingSummaryMemorySink.ts
 
 > `optional` **memoryPolicy**: [`ResolvedLongTermMemoryPolicy`](ResolvedLongTermMemoryPolicy.md)
 
-Defined in: [packages/agentos/src/core/conversation/IRollingSummaryMemorySink.ts:26](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/conversation/IRollingSummaryMemorySink.ts#L26)
+Defined in: [packages/agentos/src/core/conversation/IRollingSummaryMemorySink.ts:26](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/conversation/IRollingSummaryMemorySink.ts#L26)
 
 Effective long-term memory policy for this conversation at the time of compaction.
 Implementations should respect this (e.g., allow per-conversation opt-out).
@@ -27,7 +27,7 @@ Implementations should respect this (e.g., allow per-conversation opt-out).
 
 > `optional` **mode**: `string`
 
-Defined in: [packages/agentos/src/core/conversation/IRollingSummaryMemorySink.ts:19](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/conversation/IRollingSummaryMemorySink.ts#L19)
+Defined in: [packages/agentos/src/core/conversation/IRollingSummaryMemorySink.ts:19](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/conversation/IRollingSummaryMemorySink.ts#L19)
 
 Optional routing mode (customFlags.mode, persona id, etc.).
 
@@ -37,7 +37,7 @@ Optional routing mode (customFlags.mode, persona id, etc.).
 
 > `optional` **organizationId**: `string`
 
-Defined in: [packages/agentos/src/core/conversation/IRollingSummaryMemorySink.ts:14](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/conversation/IRollingSummaryMemorySink.ts#L14)
+Defined in: [packages/agentos/src/core/conversation/IRollingSummaryMemorySink.ts:14](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/conversation/IRollingSummaryMemorySink.ts#L14)
 
 Optional organization context (multi-tenant / org-scoped memory).
 
@@ -47,7 +47,7 @@ Optional organization context (multi-tenant / org-scoped memory).
 
 > **personaId**: `string`
 
-Defined in: [packages/agentos/src/core/conversation/IRollingSummaryMemorySink.ts:17](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/conversation/IRollingSummaryMemorySink.ts#L17)
+Defined in: [packages/agentos/src/core/conversation/IRollingSummaryMemorySink.ts:17](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/conversation/IRollingSummaryMemorySink.ts#L17)
 
 ***
 
@@ -55,7 +55,7 @@ Defined in: [packages/agentos/src/core/conversation/IRollingSummaryMemorySink.ts
 
 > `optional` **profileId**: `string` \| `null`
 
-Defined in: [packages/agentos/src/core/conversation/IRollingSummaryMemorySink.ts:21](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/conversation/IRollingSummaryMemorySink.ts#L21)
+Defined in: [packages/agentos/src/core/conversation/IRollingSummaryMemorySink.ts:21](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/conversation/IRollingSummaryMemorySink.ts#L21)
 
 Compaction profile id used for this update (if profile routing is enabled).
 
@@ -65,7 +65,7 @@ Compaction profile id used for this update (if profile routing is enabled).
 
 > **sessionId**: `string`
 
-Defined in: [packages/agentos/src/core/conversation/IRollingSummaryMemorySink.ts:15](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/conversation/IRollingSummaryMemorySink.ts#L15)
+Defined in: [packages/agentos/src/core/conversation/IRollingSummaryMemorySink.ts:15](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/conversation/IRollingSummaryMemorySink.ts#L15)
 
 ***
 
@@ -73,7 +73,7 @@ Defined in: [packages/agentos/src/core/conversation/IRollingSummaryMemorySink.ts
 
 > **summaryJson**: `any`
 
-Defined in: [packages/agentos/src/core/conversation/IRollingSummaryMemorySink.ts:31](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/conversation/IRollingSummaryMemorySink.ts#L31)
+Defined in: [packages/agentos/src/core/conversation/IRollingSummaryMemorySink.ts:31](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/conversation/IRollingSummaryMemorySink.ts#L31)
 
 The structured memory JSON (`memory_json`) emitted by the compactor.
 
@@ -83,7 +83,7 @@ The structured memory JSON (`memory_json`) emitted by the compactor.
 
 > **summaryText**: `string`
 
-Defined in: [packages/agentos/src/core/conversation/IRollingSummaryMemorySink.ts:29](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/conversation/IRollingSummaryMemorySink.ts#L29)
+Defined in: [packages/agentos/src/core/conversation/IRollingSummaryMemorySink.ts:29](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/conversation/IRollingSummaryMemorySink.ts#L29)
 
 The rolling summary markdown (human-readable).
 
@@ -93,7 +93,7 @@ The rolling summary markdown (human-readable).
 
 > `optional` **summaryUpdatedAt**: `number` \| `null`
 
-Defined in: [packages/agentos/src/core/conversation/IRollingSummaryMemorySink.ts:35](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/conversation/IRollingSummaryMemorySink.ts#L35)
+Defined in: [packages/agentos/src/core/conversation/IRollingSummaryMemorySink.ts:35](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/conversation/IRollingSummaryMemorySink.ts#L35)
 
 When this summary snapshot was updated.
 
@@ -103,7 +103,7 @@ When this summary snapshot was updated.
 
 > `optional` **summaryUptoTimestamp**: `number` \| `null`
 
-Defined in: [packages/agentos/src/core/conversation/IRollingSummaryMemorySink.ts:33](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/conversation/IRollingSummaryMemorySink.ts#L33)
+Defined in: [packages/agentos/src/core/conversation/IRollingSummaryMemorySink.ts:33](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/conversation/IRollingSummaryMemorySink.ts#L33)
 
 Timestamp up to which messages are considered summarized.
 
@@ -113,4 +113,4 @@ Timestamp up to which messages are considered summarized.
 
 > **userId**: `string`
 
-Defined in: [packages/agentos/src/core/conversation/IRollingSummaryMemorySink.ts:12](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/conversation/IRollingSummaryMemorySink.ts#L12)
+Defined in: [packages/agentos/src/core/conversation/IRollingSummaryMemorySink.ts:12](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/conversation/IRollingSummaryMemorySink.ts#L12)

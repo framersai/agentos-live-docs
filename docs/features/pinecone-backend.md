@@ -1,6 +1,6 @@
 ---
 title: "Pinecone Backend"
-sidebar_position: 29
+sidebar_position: 15
 ---
 
 The Pinecone backend stores embeddings in [Pinecone](https://www.pinecone.io/), a fully managed vector database. This is the simplest backend to set up — no infrastructure to manage — but has limitations compared to self-hosted options.

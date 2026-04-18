@@ -474,42 +474,6 @@ const capabilityContext = engine.renderForPrompt(discoveryResult);
 
 ---
 
-## Neo4j Capability Graph
-
-For deployments with 1000+ capabilities where the in-memory graphology graph becomes impractical, the discovery engine supports a Neo4j-backed capability graph via `Neo4jCapabilityGraph`.
-
-```typescript
-import { Neo4jCapabilityGraph } from '@framers/agentos/discovery';
-import { Neo4jConnectionManager } from '@framers/agentos/memory';
-
-const connectionManager = new Neo4jConnectionManager({
-  uri: process.env.NEO4J_URI,
-  username: process.env.NEO4J_USERNAME,
-  password: process.env.NEO4J_PASSWORD,
-});
-
-const graph = new Neo4jCapabilityGraph(connectionManager);
-const engine = new CapabilityDiscoveryEngine(embeddingManager, vectorStore, {}, graph);
-```
-
-The Neo4j graph implements the same `ICapabilityGraph` interface as the in-memory graphology graph: `buildGraph()`, `getRelated()`, and `rerank()`. It uses Cypher queries for relationship traversal and stores capability nodes with `:Capability` labels and typed relationship edges.
-
-## Runtime Extension Loading
-
-The `load_capability_extension` meta-tool lets agents activate curated extension packs at runtime without a process restart. When capability discovery returns a loadable extension that is not yet active, the agent calls this tool to activate it.
-
-```
-Agent discovers "web-scraper" is available but not loaded
-  → Agent calls load_capability_extension({ extensionId: "web-scraper" })
-  → ToolOrchestrator.loadExtensionAtRuntime("web-scraper")
-  → Extension's tools are registered
-  → Agent can now use the web-scraper tools
-```
-
-The tool is registered automatically when capability discovery is initialized with a `ToolOrchestrator` that supports `loadExtensionAtRuntime()`.
-
----
-
 ## Source Files
 
 All source lives in `packages/agentos/src/discovery/`:
@@ -519,11 +483,9 @@ All source lives in `packages/agentos/src/discovery/`:
 | `types.ts` | All types, `DEFAULT_DISCOVERY_CONFIG` |
 | `CapabilityDiscoveryEngine.ts` | `CapabilityDiscoveryEngine` |
 | `CapabilityIndex.ts` | `CapabilityIndex` |
-| `CapabilityGraph.ts` | `CapabilityGraph` (in-memory graphology) |
-| `Neo4jCapabilityGraph.ts` | `Neo4jCapabilityGraph` (persistent Neo4j) |
+| `CapabilityGraph.ts` | `CapabilityGraph` |
 | `CapabilityContextAssembler.ts` | `CapabilityContextAssembler` |
 | `CapabilityEmbeddingStrategy.ts` | `CapabilityEmbeddingStrategy` |
 | `CapabilityManifestScanner.ts` | `CapabilityManifestScanner` |
 | `DiscoverCapabilitiesTool.ts` | `createDiscoverCapabilitiesTool()` |
-| `LoadCapabilityExtensionTool.ts` | `createLoadCapabilityExtensionTool()` |
 | `index.ts` | Barrel re-exports for `@framers/agentos/discovery` |

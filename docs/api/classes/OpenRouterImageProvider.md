@@ -1,6 +1,6 @@
 # Class: OpenRouterImageProvider
 
-Defined in: [packages/agentos/src/media/images/providers/OpenRouterImageProvider.ts:45](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/providers/OpenRouterImageProvider.ts#L45)
+Defined in: [packages/agentos/src/media/images/providers/OpenRouterImageProvider.ts:45](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/images/providers/OpenRouterImageProvider.ts#L45)
 
 ## Implements
 
@@ -22,7 +22,7 @@ Defined in: [packages/agentos/src/media/images/providers/OpenRouterImageProvider
 
 > `optional` **defaultModelId**: `string`
 
-Defined in: [packages/agentos/src/media/images/providers/OpenRouterImageProvider.ts:48](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/providers/OpenRouterImageProvider.ts#L48)
+Defined in: [packages/agentos/src/media/images/providers/OpenRouterImageProvider.ts:48](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/images/providers/OpenRouterImageProvider.ts#L48)
 
 #### Implementation of
 
@@ -34,7 +34,7 @@ Defined in: [packages/agentos/src/media/images/providers/OpenRouterImageProvider
 
 > **isInitialized**: `boolean` = `false`
 
-Defined in: [packages/agentos/src/media/images/providers/OpenRouterImageProvider.ts:47](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/providers/OpenRouterImageProvider.ts#L47)
+Defined in: [packages/agentos/src/media/images/providers/OpenRouterImageProvider.ts:47](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/images/providers/OpenRouterImageProvider.ts#L47)
 
 #### Implementation of
 
@@ -46,7 +46,7 @@ Defined in: [packages/agentos/src/media/images/providers/OpenRouterImageProvider
 
 > `readonly` **providerId**: `"openrouter"` = `'openrouter'`
 
-Defined in: [packages/agentos/src/media/images/providers/OpenRouterImageProvider.ts:46](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/providers/OpenRouterImageProvider.ts#L46)
+Defined in: [packages/agentos/src/media/images/providers/OpenRouterImageProvider.ts:46](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/images/providers/OpenRouterImageProvider.ts#L46)
 
 #### Implementation of
 
@@ -58,7 +58,7 @@ Defined in: [packages/agentos/src/media/images/providers/OpenRouterImageProvider
 
 > **generateImage**(`request`): `Promise`\<[`ImageGenerationResult`](../interfaces/ImageGenerationResult.md)\>
 
-Defined in: [packages/agentos/src/media/images/providers/OpenRouterImageProvider.ts:83](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/providers/OpenRouterImageProvider.ts#L83)
+Defined in: [packages/agentos/src/media/images/providers/OpenRouterImageProvider.ts:83](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/images/providers/OpenRouterImageProvider.ts#L83)
 
 #### Parameters
 
@@ -80,7 +80,7 @@ Defined in: [packages/agentos/src/media/images/providers/OpenRouterImageProvider
 
 > **initialize**(`config`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/media/images/providers/OpenRouterImageProvider.ts:53](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/providers/OpenRouterImageProvider.ts#L53)
+Defined in: [packages/agentos/src/media/images/providers/OpenRouterImageProvider.ts:53](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/images/providers/OpenRouterImageProvider.ts#L53)
 
 #### Parameters
 
@@ -102,7 +102,7 @@ Defined in: [packages/agentos/src/media/images/providers/OpenRouterImageProvider
 
 > **listAvailableModels**(): `Promise`\<[`ImageModelInfo`](../interfaces/ImageModelInfo.md)[]\>
 
-Defined in: [packages/agentos/src/media/images/providers/OpenRouterImageProvider.ts:166](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/providers/OpenRouterImageProvider.ts#L166)
+Defined in: [packages/agentos/src/media/images/providers/OpenRouterImageProvider.ts:166](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/images/providers/OpenRouterImageProvider.ts#L166)
 
 #### Returns
 

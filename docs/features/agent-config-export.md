@@ -1,6 +1,6 @@
 ---
 title: "Agent Config Export & Import"
-sidebar_position: 28
+sidebar_position: 9
 ---
 
 > Round-trip agent configurations between environments with secret redaction, schema validation, and CLI support.

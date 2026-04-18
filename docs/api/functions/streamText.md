@@ -2,7 +2,7 @@
 
 > **streamText**(`opts`): [`StreamTextResult`](../interfaces/StreamTextResult.md)
 
-Defined in: [packages/agentos/src/api/streamText.ts:122](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/api/streamText.ts#L122)
+Defined in: [packages/agentos/src/api/streamText.ts:126](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/streamText.ts#L126)
 
 Stateless streaming text generation with optional multi-step tool calling.
 

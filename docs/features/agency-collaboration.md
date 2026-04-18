@@ -1,6 +1,6 @@
 ---
 title: "Agency Collaboration"
-sidebar_position: 12
+sidebar_position: 3
 ---
 
 This example demonstrates how two GMIs (Generalized Mind Instances) collaborate in an AgentOS agency to research topics and communicate findings via Telegram.

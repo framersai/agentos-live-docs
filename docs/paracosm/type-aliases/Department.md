@@ -1,5 +1,7 @@
 # Type Alias: Department
 
-> **Department** = `"medical"` \| `"engineering"` \| `"agriculture"` \| `"science"` \| `"administration"` \| `"psychology"` \| `"governance"`
+> **Department** = `string`
 
-Defined in: [core/state.ts:1](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/core/state.ts#L1)
+Defined in: [core/state.ts:2](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/core/state.ts#L2)
+
+Department ID. Scenario-defined, not a fixed union.

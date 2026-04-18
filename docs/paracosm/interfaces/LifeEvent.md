@@ -1,6 +1,6 @@
 # Interface: LifeEvent
 
-Defined in: [core/state.ts:32](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/core/state.ts#L32)
+Defined in: [core/state.ts:33](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/core/state.ts#L33)
 
 ## Properties
 
@@ -8,15 +8,15 @@ Defined in: [core/state.ts:32](https://github.com/framersai/paracosm/blob/ba2b88
 
 > **event**: `string`
 
-Defined in: [core/state.ts:34](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/core/state.ts#L34)
+Defined in: [core/state.ts:35](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/core/state.ts#L35)
 
 ***
 
 ### source
 
-> **source**: [`Department`](../type-aliases/Department.md) \| `"kernel"` \| `"commander"`
+> **source**: `string`
 
-Defined in: [core/state.ts:35](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/core/state.ts#L35)
+Defined in: [core/state.ts:36](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/core/state.ts#L36)
 
 ***
 
@@ -24,4 +24,4 @@ Defined in: [core/state.ts:35](https://github.com/framersai/paracosm/blob/ba2b88
 
 > **year**: `number`
 
-Defined in: [core/state.ts:33](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/core/state.ts#L33)
+Defined in: [core/state.ts:34](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/core/state.ts#L34)

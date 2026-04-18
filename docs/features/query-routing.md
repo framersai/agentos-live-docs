@@ -1,6 +1,6 @@
 ---
 title: "Query Router"
-sidebar_position: 29
+sidebar_position: 4
 ---
 
 AgentOS includes a `QueryRouter` that turns one user question into a three-stage pipeline:

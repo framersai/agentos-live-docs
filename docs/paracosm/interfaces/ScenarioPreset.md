@@ -1,6 +1,6 @@
 # Interface: ScenarioPreset
 
-Defined in: [types.ts:214](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/types.ts#L214)
+Defined in: [types.ts:221](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/types.ts#L221)
 
 A product-level preset with pre-configured leaders, personnel, and starting state.
 
@@ -10,7 +10,7 @@ A product-level preset with pre-configured leaders, personnel, and starting stat
 
 > **id**: `string`
 
-Defined in: [types.ts:215](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/types.ts#L215)
+Defined in: [types.ts:222](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/types.ts#L222)
 
 ***
 
@@ -18,7 +18,7 @@ Defined in: [types.ts:215](https://github.com/framersai/paracosm/blob/ba2b881292
 
 > **label**: `string`
 
-Defined in: [types.ts:216](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/types.ts#L216)
+Defined in: [types.ts:223](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/types.ts#L223)
 
 ***
 
@@ -26,7 +26,7 @@ Defined in: [types.ts:216](https://github.com/framersai/paracosm/blob/ba2b881292
 
 > `optional` **leaders**: `object`[]
 
-Defined in: [types.ts:217](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/types.ts#L217)
+Defined in: [types.ts:224](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/types.ts#L224)
 
 #### archetype
 
@@ -50,7 +50,7 @@ Defined in: [types.ts:217](https://github.com/framersai/paracosm/blob/ba2b881292
 
 > `optional` **personnel**: `object`[]
 
-Defined in: [types.ts:218](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/types.ts#L218)
+Defined in: [types.ts:225](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/types.ts#L225)
 
 #### age
 
@@ -82,4 +82,4 @@ Defined in: [types.ts:218](https://github.com/framersai/paracosm/blob/ba2b881292
 
 > `optional` **startingState**: `Partial`\<[`WorldState`](WorldState.md)\>
 
-Defined in: [types.ts:219](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/types.ts#L219)
+Defined in: [types.ts:226](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/types.ts#L226)

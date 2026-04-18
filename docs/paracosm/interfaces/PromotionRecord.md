@@ -1,14 +1,14 @@
 # Interface: PromotionRecord
 
-Defined in: [core/state.ts:17](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/core/state.ts#L17)
+Defined in: [core/state.ts:18](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/core/state.ts#L18)
 
 ## Properties
 
 ### department
 
-> **department**: [`Department`](../type-aliases/Department.md)
+> **department**: `string`
 
-Defined in: [core/state.ts:18](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/core/state.ts#L18)
+Defined in: [core/state.ts:19](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/core/state.ts#L19)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [core/state.ts:18](https://github.com/framersai/paracosm/blob/ba2b88
 
 > **promotedBy**: `string`
 
-Defined in: [core/state.ts:21](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/core/state.ts#L21)
+Defined in: [core/state.ts:22](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/core/state.ts#L22)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: [core/state.ts:21](https://github.com/framersai/paracosm/blob/ba2b88
 
 > **role**: `string`
 
-Defined in: [core/state.ts:19](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/core/state.ts#L19)
+Defined in: [core/state.ts:20](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/core/state.ts#L20)
 
 ***
 
@@ -32,4 +32,4 @@ Defined in: [core/state.ts:19](https://github.com/framersai/paracosm/blob/ba2b88
 
 > **turnPromoted**: `number`
 
-Defined in: [core/state.ts:20](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/core/state.ts#L20)
+Defined in: [core/state.ts:21](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/core/state.ts#L21)

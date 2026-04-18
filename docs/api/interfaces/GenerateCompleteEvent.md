@@ -1,6 +1,6 @@
 # Interface: GenerateCompleteEvent
 
-Defined in: [packages/agentos/src/query-router/types.ts:1020](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/query-router/types.ts#L1020)
+Defined in: [packages/agentos/src/query-router/types.ts:1020](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/query-router/types.ts#L1020)
 
 Emitted when answer generation completes.
 
@@ -10,7 +10,7 @@ Emitted when answer generation completes.
 
 > **answerLength**: `number`
 
-Defined in: [packages/agentos/src/query-router/types.ts:1023](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/query-router/types.ts#L1023)
+Defined in: [packages/agentos/src/query-router/types.ts:1023](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/query-router/types.ts#L1023)
 
 Length of the generated answer in characters.
 
@@ -20,7 +20,7 @@ Length of the generated answer in characters.
 
 > **citationCount**: `number`
 
-Defined in: [packages/agentos/src/query-router/types.ts:1025](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/query-router/types.ts#L1025)
+Defined in: [packages/agentos/src/query-router/types.ts:1025](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/query-router/types.ts#L1025)
 
 Number of source citations in the answer.
 
@@ -30,7 +30,7 @@ Number of source citations in the answer.
 
 > **durationMs**: `number`
 
-Defined in: [packages/agentos/src/query-router/types.ts:1027](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/query-router/types.ts#L1027)
+Defined in: [packages/agentos/src/query-router/types.ts:1027](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/query-router/types.ts#L1027)
 
 Duration of generation in milliseconds.
 
@@ -40,7 +40,7 @@ Duration of generation in milliseconds.
 
 > **timestamp**: `number`
 
-Defined in: [packages/agentos/src/query-router/types.ts:1029](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/query-router/types.ts#L1029)
+Defined in: [packages/agentos/src/query-router/types.ts:1029](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/query-router/types.ts#L1029)
 
 Timestamp when generation completed.
 
@@ -50,4 +50,4 @@ Timestamp when generation completed.
 
 > **type**: `"generate:complete"`
 
-Defined in: [packages/agentos/src/query-router/types.ts:1021](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/query-router/types.ts#L1021)
+Defined in: [packages/agentos/src/query-router/types.ts:1021](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/query-router/types.ts#L1021)

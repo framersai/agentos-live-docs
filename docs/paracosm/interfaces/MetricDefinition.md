@@ -1,6 +1,6 @@
 # Interface: MetricDefinition
 
-Defined in: [types.ts:132](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/types.ts#L132)
+Defined in: [types.ts:139](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/types.ts#L139)
 
 Defines a derived metric displayed in the dashboard header.
 
@@ -10,7 +10,7 @@ Defines a derived metric displayed in the dashboard header.
 
 > **format**: `"number"` \| `"percent"` \| `"currency"` \| `"duration"`
 
-Defined in: [types.ts:136](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/types.ts#L136)
+Defined in: [types.ts:143](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/types.ts#L143)
 
 ***
 
@@ -18,7 +18,7 @@ Defined in: [types.ts:136](https://github.com/framersai/paracosm/blob/ba2b881292
 
 > **id**: `string`
 
-Defined in: [types.ts:133](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/types.ts#L133)
+Defined in: [types.ts:140](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/types.ts#L140)
 
 ***
 
@@ -26,7 +26,7 @@ Defined in: [types.ts:133](https://github.com/framersai/paracosm/blob/ba2b881292
 
 > **label**: `string`
 
-Defined in: [types.ts:134](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/types.ts#L134)
+Defined in: [types.ts:141](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/types.ts#L141)
 
 ***
 
@@ -34,4 +34,4 @@ Defined in: [types.ts:134](https://github.com/framersai/paracosm/blob/ba2b881292
 
 > **source**: `string`
 
-Defined in: [types.ts:135](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/types.ts#L135)
+Defined in: [types.ts:142](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/types.ts#L142)

@@ -1,6 +1,6 @@
 # Interface: IMarketplace
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:343](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/marketplace/store/IMarketplace.ts#L343)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:343](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/marketplace/store/IMarketplace.ts#L343)
 
 Interface for the Agent Marketplace
 
@@ -10,7 +10,7 @@ Interface for the Agent Marketplace
 
 > **checkUpdates**(): `Promise`\<`object`[]\>
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:435](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/marketplace/store/IMarketplace.ts#L435)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:435](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/marketplace/store/IMarketplace.ts#L435)
 
 Check for updates
 
@@ -24,7 +24,7 @@ Check for updates
 
 > **deleteReview**(`reviewId`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:474](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/marketplace/store/IMarketplace.ts#L474)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:474](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/marketplace/store/IMarketplace.ts#L474)
 
 Delete a review
 
@@ -44,7 +44,7 @@ Delete a review
 
 > **deprecate**(`itemId`, `reason`, `alternativeId?`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:457](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/marketplace/store/IMarketplace.ts#L457)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:457](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/marketplace/store/IMarketplace.ts#L457)
 
 Deprecate an item
 
@@ -72,7 +72,7 @@ Deprecate an item
 
 > **getByPublisher**(`publisherId`, `options?`): `Promise`\<[`MarketplaceSearchResult`](MarketplaceSearchResult.md)\>
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:386](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/marketplace/store/IMarketplace.ts#L386)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:386](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/marketplace/store/IMarketplace.ts#L386)
 
 Get items by publisher
 
@@ -96,7 +96,7 @@ Get items by publisher
 
 > **getDependencyTree**(`itemId`): `Promise`\<\{ `dependencies`: [`MarketplaceItem`](MarketplaceItem.md)[]; `item`: [`MarketplaceItem`](MarketplaceItem.md); \}\>
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:403](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/marketplace/store/IMarketplace.ts#L403)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:403](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/marketplace/store/IMarketplace.ts#L403)
 
 Get item dependencies tree
 
@@ -116,7 +116,7 @@ Get item dependencies tree
 
 > **getFeatured**(`type?`, `limit?`): `Promise`\<[`MarketplaceItem`](MarketplaceItem.md)[]\>
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:371](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/marketplace/store/IMarketplace.ts#L371)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:371](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/marketplace/store/IMarketplace.ts#L371)
 
 Get featured items
 
@@ -140,7 +140,7 @@ Get featured items
 
 > **getInstallation**(`installationId`): `Promise`\<[`InstalledItem`](InstalledItem.md) \| `undefined`\>
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:430](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/marketplace/store/IMarketplace.ts#L430)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:430](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/marketplace/store/IMarketplace.ts#L430)
 
 Get installation by ID
 
@@ -160,7 +160,7 @@ Get installation by ID
 
 > **getInstalled**(`options?`): `Promise`\<[`InstalledItem`](InstalledItem.md)[]\>
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:425](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/marketplace/store/IMarketplace.ts#L425)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:425](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/marketplace/store/IMarketplace.ts#L425)
 
 Get installed items
 
@@ -186,7 +186,7 @@ Get installed items
 
 > **getItem**(`itemId`): `Promise`\<[`MarketplaceItem`](MarketplaceItem.md) \| `undefined`\>
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:361](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/marketplace/store/IMarketplace.ts#L361)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:361](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/marketplace/store/IMarketplace.ts#L361)
 
 Get item by ID
 
@@ -206,7 +206,7 @@ Get item by ID
 
 > **getItemAnalytics**(`itemId`, `period?`): `Promise`\<\{ `activeInstalls`: `number`; `downloads`: `object`[]; `ratings`: `object`[]; `uninstalls`: `number`; `views`: `object`[]; \}\>
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:501](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/marketplace/store/IMarketplace.ts#L501)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:501](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/marketplace/store/IMarketplace.ts#L501)
 
 Get item analytics (for publishers)
 
@@ -230,7 +230,7 @@ Get item analytics (for publishers)
 
 > **getItems**(`itemIds`): `Promise`\<[`MarketplaceItem`](MarketplaceItem.md)[]\>
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:366](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/marketplace/store/IMarketplace.ts#L366)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:366](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/marketplace/store/IMarketplace.ts#L366)
 
 Get multiple items by ID
 
@@ -250,7 +250,7 @@ Get multiple items by ID
 
 > **getRecent**(`type?`, `limit?`): `Promise`\<[`MarketplaceItem`](MarketplaceItem.md)[]\>
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:381](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/marketplace/store/IMarketplace.ts#L381)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:381](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/marketplace/store/IMarketplace.ts#L381)
 
 Get recently added items
 
@@ -274,7 +274,7 @@ Get recently added items
 
 > **getReviews**(`itemId`, `options?`): `Promise`\<\{ `reviews`: [`Review`](Review.md)[]; `total`: `number`; \}\>
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:393](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/marketplace/store/IMarketplace.ts#L393)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:393](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/marketplace/store/IMarketplace.ts#L393)
 
 Get item reviews
 
@@ -308,7 +308,7 @@ Get item reviews
 
 > **getStats**(): `Promise`\<[`MarketplaceStats`](MarketplaceStats.md)\>
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:491](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/marketplace/store/IMarketplace.ts#L491)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:491](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/marketplace/store/IMarketplace.ts#L491)
 
 Get marketplace statistics
 
@@ -322,7 +322,7 @@ Get marketplace statistics
 
 > **getTrending**(`type?`, `period?`, `limit?`): `Promise`\<[`MarketplaceItem`](MarketplaceItem.md)[]\>
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:376](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/marketplace/store/IMarketplace.ts#L376)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:376](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/marketplace/store/IMarketplace.ts#L376)
 
 Get trending items
 
@@ -350,7 +350,7 @@ Get trending items
 
 > **getVersions**(`itemId`): `Promise`\<`object`[]\>
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:398](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/marketplace/store/IMarketplace.ts#L398)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:398](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/marketplace/store/IMarketplace.ts#L398)
 
 Get item versions
 
@@ -370,7 +370,7 @@ Get item versions
 
 > **initialize**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:349](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/marketplace/store/IMarketplace.ts#L349)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:349](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/marketplace/store/IMarketplace.ts#L349)
 
 Initialize the marketplace
 
@@ -384,7 +384,7 @@ Initialize the marketplace
 
 > **install**(`itemId`, `options?`): `Promise`\<[`InstallationResult`](InstallationResult.md)\>
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:410](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/marketplace/store/IMarketplace.ts#L410)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:410](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/marketplace/store/IMarketplace.ts#L410)
 
 Install an item
 
@@ -418,7 +418,7 @@ Install an item
 
 > **markReviewHelpful**(`reviewId`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:479](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/marketplace/store/IMarketplace.ts#L479)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:479](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/marketplace/store/IMarketplace.ts#L479)
 
 Mark review as helpful
 
@@ -438,7 +438,7 @@ Mark review as helpful
 
 > **publish**(`item`): `Promise`\<[`MarketplaceItem`](MarketplaceItem.md)\>
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:442](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/marketplace/store/IMarketplace.ts#L442)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:442](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/marketplace/store/IMarketplace.ts#L442)
 
 Publish a new item
 
@@ -458,7 +458,7 @@ Publish a new item
 
 > **publishVersion**(`itemId`, `version`, `options?`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:452](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/marketplace/store/IMarketplace.ts#L452)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:452](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/marketplace/store/IMarketplace.ts#L452)
 
 Publish a new version
 
@@ -492,7 +492,7 @@ Publish a new version
 
 > **recordView**(`itemId`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:496](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/marketplace/store/IMarketplace.ts#L496)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:496](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/marketplace/store/IMarketplace.ts#L496)
 
 Record item view (for analytics)
 
@@ -512,7 +512,7 @@ Record item view (for analytics)
 
 > **respondToReview**(`reviewId`, `response`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:484](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/marketplace/store/IMarketplace.ts#L484)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:484](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/marketplace/store/IMarketplace.ts#L484)
 
 Respond to a review (as publisher)
 
@@ -536,7 +536,7 @@ Respond to a review (as publisher)
 
 > **search**(`options?`): `Promise`\<[`MarketplaceSearchResult`](MarketplaceSearchResult.md)\>
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:356](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/marketplace/store/IMarketplace.ts#L356)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:356](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/marketplace/store/IMarketplace.ts#L356)
 
 Search marketplace items
 
@@ -556,7 +556,7 @@ Search marketplace items
 
 > **submitReview**(`itemId`, `review`): `Promise`\<[`Review`](Review.md)\>
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:464](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/marketplace/store/IMarketplace.ts#L464)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:464](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/marketplace/store/IMarketplace.ts#L464)
 
 Submit a review
 
@@ -590,7 +590,7 @@ Submit a review
 
 > **uninstall**(`installationId`): `Promise`\<\{ `error?`: `string`; `success`: `boolean`; \}\>
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:420](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/marketplace/store/IMarketplace.ts#L420)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:420](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/marketplace/store/IMarketplace.ts#L420)
 
 Uninstall an item
 
@@ -610,7 +610,7 @@ Uninstall an item
 
 > **update**(`installationId`, `options?`): `Promise`\<[`InstallationResult`](InstallationResult.md)\>
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:415](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/marketplace/store/IMarketplace.ts#L415)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:415](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/marketplace/store/IMarketplace.ts#L415)
 
 Update an installed item
 
@@ -640,7 +640,7 @@ Update an installed item
 
 > **updateItem**(`itemId`, `updates`): `Promise`\<[`MarketplaceItem`](MarketplaceItem.md)\>
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:447](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/marketplace/store/IMarketplace.ts#L447)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:447](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/marketplace/store/IMarketplace.ts#L447)
 
 Update a published item
 
@@ -664,7 +664,7 @@ Update a published item
 
 > **updateReview**(`reviewId`, `updates`): `Promise`\<[`Review`](Review.md)\>
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:469](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/marketplace/store/IMarketplace.ts#L469)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:469](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/marketplace/store/IMarketplace.ts#L469)
 
 Update a review
 

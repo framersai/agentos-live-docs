@@ -1,6 +1,6 @@
 # Class: MarkdownExporter
 
-Defined in: [packages/agentos/src/memory/io/MarkdownExporter.ts:63](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/io/MarkdownExporter.ts#L63)
+Defined in: [packages/agentos/src/memory/io/MarkdownExporter.ts:63](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/io/MarkdownExporter.ts#L63)
 
 Exports memory traces as Markdown files with YAML front-matter.
 
@@ -20,7 +20,7 @@ await exporter.export('/path/to/vault');
 
 > **new MarkdownExporter**(`brain`): `MarkdownExporter`
 
-Defined in: [packages/agentos/src/memory/io/MarkdownExporter.ts:67](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/io/MarkdownExporter.ts#L67)
+Defined in: [packages/agentos/src/memory/io/MarkdownExporter.ts:67](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/io/MarkdownExporter.ts#L67)
 
 #### Parameters
 
@@ -40,7 +40,7 @@ The `SqliteBrain` instance to read from.
 
 > `protected` `readonly` **brain**: [`SqliteBrain`](SqliteBrain.md)
 
-Defined in: [packages/agentos/src/memory/io/MarkdownExporter.ts:67](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/io/MarkdownExporter.ts#L67)
+Defined in: [packages/agentos/src/memory/io/MarkdownExporter.ts:67](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/io/MarkdownExporter.ts#L67)
 
 The `SqliteBrain` instance to read from.
 
@@ -50,7 +50,7 @@ The `SqliteBrain` instance to read from.
 
 > `protected` **buildFileContent**(`trace`): `string`
 
-Defined in: [packages/agentos/src/memory/io/MarkdownExporter.ts:103](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/io/MarkdownExporter.ts#L103)
+Defined in: [packages/agentos/src/memory/io/MarkdownExporter.ts:103](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/io/MarkdownExporter.ts#L103)
 
 Build the Markdown content for a single trace.
 
@@ -77,7 +77,7 @@ Full Markdown file content (front-matter + body).
 
 > **export**(`outputDir`, `_options?`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/memory/io/MarkdownExporter.ts:82](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/io/MarkdownExporter.ts#L82)
+Defined in: [packages/agentos/src/memory/io/MarkdownExporter.ts:82](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/io/MarkdownExporter.ts#L82)
 
 Export all memory traces as `.md` files into `outputDir`.
 
@@ -108,7 +108,7 @@ Optional export configuration (currently unused but
 
 > `protected` **traceRelativePath**(`trace`): `string`
 
-Defined in: [packages/agentos/src/memory/io/MarkdownExporter.ts:130](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/io/MarkdownExporter.ts#L130)
+Defined in: [packages/agentos/src/memory/io/MarkdownExporter.ts:130](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/io/MarkdownExporter.ts#L130)
 
 Determine the relative file path for a trace within the output directory.
 

@@ -1,6 +1,6 @@
 ---
 title: "Agent Communication"
-sidebar_position: 3
+sidebar_position: 4
 ---
 
 The Agent Communication Bus enables structured messaging between GMIs within an agency, supporting various communication patterns for multi-agent collaboration.

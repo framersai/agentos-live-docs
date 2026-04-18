@@ -1,6 +1,6 @@
 # Interface: AgentOSObservabilityConfig
 
-Defined in: [packages/agentos/src/evaluation/observability/otel.ts:4](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/evaluation/observability/otel.ts#L4)
+Defined in: [packages/agentos/src/evaluation/observability/otel.ts:4](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/evaluation/observability/otel.ts#L4)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/evaluation/observability/otel.ts:4](https://gi
 
 > `optional` **enabled**: `boolean`
 
-Defined in: [packages/agentos/src/evaluation/observability/otel.ts:9](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/evaluation/observability/otel.ts#L9)
+Defined in: [packages/agentos/src/evaluation/observability/otel.ts:9](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/evaluation/observability/otel.ts#L9)
 
 Master switch. When explicitly `false`, all AgentOS observability helpers are disabled
 regardless of environment variables.
@@ -19,7 +19,7 @@ regardless of environment variables.
 
 > `optional` **logging**: `object`
 
-Defined in: [packages/agentos/src/evaluation/observability/otel.ts:32](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/evaluation/observability/otel.ts#L32)
+Defined in: [packages/agentos/src/evaluation/observability/otel.ts:32](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/evaluation/observability/otel.ts#L32)
 
 #### exportToOtel?
 
@@ -60,7 +60,7 @@ Default: "@framers/agentos".
 
 > `optional` **metrics**: `object`
 
-Defined in: [packages/agentos/src/evaluation/observability/otel.ts:64](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/evaluation/observability/otel.ts#L64)
+Defined in: [packages/agentos/src/evaluation/observability/otel.ts:64](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/evaluation/observability/otel.ts#L64)
 
 #### enabled?
 
@@ -82,7 +82,7 @@ Default: "@framers/agentos".
 
 > `optional` **tracing**: `object`
 
-Defined in: [packages/agentos/src/evaluation/observability/otel.ts:11](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/evaluation/observability/otel.ts#L11)
+Defined in: [packages/agentos/src/evaluation/observability/otel.ts:11](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/evaluation/observability/otel.ts#L11)
 
 #### enabled?
 

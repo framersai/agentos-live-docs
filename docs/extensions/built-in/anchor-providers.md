@@ -1,6 +1,6 @@
 ---
 title: "Anchor Providers"
-sidebar_position: 10
+sidebar_position: 18
 ---
 
 External anchor providers for the [AgentOS](https://github.com/framersai/agentos) provenance system. Extends the built-in signed hash chain with external tamper-evidence backends — WORM storage, transparency logs, and blockchain timestamping.

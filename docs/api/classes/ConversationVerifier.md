@@ -1,6 +1,6 @@
 # Class: ConversationVerifier
 
-Defined in: [packages/agentos/src/provenance/verification/ConversationVerifier.ts:30](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/provenance/verification/ConversationVerifier.ts#L30)
+Defined in: [packages/agentos/src/provenance/verification/ConversationVerifier.ts:30](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/provenance/verification/ConversationVerifier.ts#L30)
 
 ## Constructors
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/provenance/verification/ConversationVerifier.t
 
 > **new ConversationVerifier**(`ledger`): `ConversationVerifier`
 
-Defined in: [packages/agentos/src/provenance/verification/ConversationVerifier.ts:33](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/provenance/verification/ConversationVerifier.ts#L33)
+Defined in: [packages/agentos/src/provenance/verification/ConversationVerifier.ts:33](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/provenance/verification/ConversationVerifier.ts#L33)
 
 #### Parameters
 
@@ -26,7 +26,7 @@ Defined in: [packages/agentos/src/provenance/verification/ConversationVerifier.t
 
 > **getProvenanceSummary**(`conversationId`): `Promise`\<\{ `chainLength`: `number`; `conversationId`: `string`; `hasGenesis`: `boolean`; `humanInterventions`: `number`; `lastEventTimestamp`: `string` \| `null`; `messageEvents`: `number`; `revisionEvents`: `number`; `tombstoneEvents`: `number`; `totalEvents`: `number`; \}\>
 
-Defined in: [packages/agentos/src/provenance/verification/ConversationVerifier.ts:138](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/provenance/verification/ConversationVerifier.ts#L138)
+Defined in: [packages/agentos/src/provenance/verification/ConversationVerifier.ts:138](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/provenance/verification/ConversationVerifier.ts#L138)
 
 Get a summary of provenance status for a conversation.
 Lighter than full verification - just counts and metadata.
@@ -47,7 +47,7 @@ Lighter than full verification - just counts and metadata.
 
 > **verifyConversation**(`conversationId`, `publicKeyBase64?`): `Promise`\<[`ConversationVerificationResult`](../interfaces/ConversationVerificationResult.md)\>
 
-Defined in: [packages/agentos/src/provenance/verification/ConversationVerifier.ts:44](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/provenance/verification/ConversationVerifier.ts#L44)
+Defined in: [packages/agentos/src/provenance/verification/ConversationVerifier.ts:44](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/provenance/verification/ConversationVerifier.ts#L44)
 
 Verify the provenance chain for a specific conversation.
 
@@ -77,7 +77,7 @@ Detailed verification result including conversation-specific metadata.
 
 > **verifyMessage**(`messageId`, `publicKeyBase64?`): `Promise`\<[`VerificationResult`](../interfaces/VerificationResult.md) & `object`\>
 
-Defined in: [packages/agentos/src/provenance/verification/ConversationVerifier.ts:97](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/provenance/verification/ConversationVerifier.ts#L97)
+Defined in: [packages/agentos/src/provenance/verification/ConversationVerifier.ts:97](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/provenance/verification/ConversationVerifier.ts#L97)
 
 Verify a single post/message within a conversation.
 Checks that the message event exists and its chain position is valid.

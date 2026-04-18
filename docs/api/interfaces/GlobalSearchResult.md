@@ -1,6 +1,6 @@
 # Interface: GlobalSearchResult
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/IGraphRAG.ts:108](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/retrieval/graph/graphrag/IGraphRAG.ts#L108)
+Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/IGraphRAG.ts:108](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/retrieval/graph/graphrag/IGraphRAG.ts#L108)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/IGraphRAG.ts:1
 
 > **answer**: `string`
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/IGraphRAG.ts:111](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/retrieval/graph/graphrag/IGraphRAG.ts#L111)
+Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/IGraphRAG.ts:111](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/retrieval/graph/graphrag/IGraphRAG.ts#L111)
 
 Aggregated answer from community summaries
 
@@ -18,7 +18,7 @@ Aggregated answer from community summaries
 
 > **communitySummaries**: `object`[]
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/IGraphRAG.ts:113](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/retrieval/graph/graphrag/IGraphRAG.ts#L113)
+Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/IGraphRAG.ts:113](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/retrieval/graph/graphrag/IGraphRAG.ts#L113)
 
 Community summaries used to generate the answer
 
@@ -48,7 +48,7 @@ Community summaries used to generate the answer
 
 > `optional` **diagnostics**: `object`
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/IGraphRAG.ts:122](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/retrieval/graph/graphrag/IGraphRAG.ts#L122)
+Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/IGraphRAG.ts:122](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/retrieval/graph/graphrag/IGraphRAG.ts#L122)
 
 #### embeddingTimeMs?
 
@@ -68,7 +68,7 @@ Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/IGraphRAG.ts:1
 
 > **query**: `string`
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/IGraphRAG.ts:109](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/retrieval/graph/graphrag/IGraphRAG.ts#L109)
+Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/IGraphRAG.ts:109](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/retrieval/graph/graphrag/IGraphRAG.ts#L109)
 
 ***
 
@@ -76,6 +76,6 @@ Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/IGraphRAG.ts:1
 
 > **totalCommunitiesSearched**: `number`
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/IGraphRAG.ts:121](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/retrieval/graph/graphrag/IGraphRAG.ts#L121)
+Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/IGraphRAG.ts:121](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/retrieval/graph/graphrag/IGraphRAG.ts#L121)
 
 Total communities searched

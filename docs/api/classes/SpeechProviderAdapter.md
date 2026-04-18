@@ -1,6 +1,6 @@
 # Class: SpeechProviderAdapter
 
-Defined in: [packages/agentos/src/rag/multimodal/SpeechProviderAdapter.ts:77](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/multimodal/SpeechProviderAdapter.ts#L77)
+Defined in: [packages/agentos/src/rag/multimodal/SpeechProviderAdapter.ts:77](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/multimodal/SpeechProviderAdapter.ts#L77)
 
 Bridges the voice-pipeline's `SpeechToTextProvider` to the multimodal
 indexer's `ISpeechToTextProvider` interface.
@@ -30,7 +30,7 @@ const text = await adapted.transcribe(audioBuffer, 'en');
 
 > **new SpeechProviderAdapter**(`provider`, `defaultMimeType?`): `SpeechProviderAdapter`
 
-Defined in: [packages/agentos/src/rag/multimodal/SpeechProviderAdapter.ts:109](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/multimodal/SpeechProviderAdapter.ts#L109)
+Defined in: [packages/agentos/src/rag/multimodal/SpeechProviderAdapter.ts:109](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/multimodal/SpeechProviderAdapter.ts#L109)
 
 Create a new adapter wrapping a voice-pipeline STT provider.
 
@@ -73,7 +73,7 @@ const mp3Adapter = new SpeechProviderAdapter(whisperProvider, 'audio/mpeg');
 
 > **getProviderName**(): `string`
 
-Defined in: [packages/agentos/src/rag/multimodal/SpeechProviderAdapter.ts:164](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/multimodal/SpeechProviderAdapter.ts#L164)
+Defined in: [packages/agentos/src/rag/multimodal/SpeechProviderAdapter.ts:164](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/multimodal/SpeechProviderAdapter.ts#L164)
 
 Get the display name of the underlying STT provider.
 
@@ -98,7 +98,7 @@ console.log(`STT via: ${adapter.getProviderName()}`); // "openai-whisper"
 
 > **transcribe**(`audio`, `language?`): `Promise`\<`string`\>
 
-Defined in: [packages/agentos/src/rag/multimodal/SpeechProviderAdapter.ts:140](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/multimodal/SpeechProviderAdapter.ts#L140)
+Defined in: [packages/agentos/src/rag/multimodal/SpeechProviderAdapter.ts:140](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/multimodal/SpeechProviderAdapter.ts#L140)
 
 Transcribe audio data to text.
 

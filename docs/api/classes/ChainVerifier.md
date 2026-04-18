@@ -1,6 +1,6 @@
 # Class: ChainVerifier
 
-Defined in: [packages/agentos/src/provenance/verification/ChainVerifier.ts:18](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/provenance/verification/ChainVerifier.ts#L18)
+Defined in: [packages/agentos/src/provenance/verification/ChainVerifier.ts:18](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/provenance/verification/ChainVerifier.ts#L18)
 
 ## Constructors
 
@@ -18,7 +18,7 @@ Defined in: [packages/agentos/src/provenance/verification/ChainVerifier.ts:18](h
 
 > `static` **isValid**(`events`, `publicKeyBase64?`): `Promise`\<`boolean`\>
 
-Defined in: [packages/agentos/src/provenance/verification/ChainVerifier.ts:196](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/provenance/verification/ChainVerifier.ts#L196)
+Defined in: [packages/agentos/src/provenance/verification/ChainVerifier.ts:196](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/provenance/verification/ChainVerifier.ts#L196)
 
 Quick integrity check - returns true/false without detailed errors.
 
@@ -42,7 +42,7 @@ Quick integrity check - returns true/false without detailed errors.
 
 > `static` **verify**(`events`, `publicKeyBase64?`, `hashAlgorithm?`): `Promise`\<[`VerificationResult`](../interfaces/VerificationResult.md)\>
 
-Defined in: [packages/agentos/src/provenance/verification/ChainVerifier.ts:36](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/provenance/verification/ChainVerifier.ts#L36)
+Defined in: [packages/agentos/src/provenance/verification/ChainVerifier.ts:36](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/provenance/verification/ChainVerifier.ts#L36)
 
 Verify an ordered array of signed events for chain integrity.
 
@@ -87,7 +87,7 @@ VerificationResult with validity status and any errors found.
 
 > `static` **verifySubChain**(`events`, `expectedStartPrevHash`, `publicKeyBase64?`): `Promise`\<[`VerificationResult`](../interfaces/VerificationResult.md)\>
 
-Defined in: [packages/agentos/src/provenance/verification/ChainVerifier.ts:208](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/provenance/verification/ChainVerifier.ts#L208)
+Defined in: [packages/agentos/src/provenance/verification/ChainVerifier.ts:208](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/provenance/verification/ChainVerifier.ts#L208)
 
 Verify a sub-chain (range of events) within a larger chain.
 The first event's prevHash is trusted as a starting point.

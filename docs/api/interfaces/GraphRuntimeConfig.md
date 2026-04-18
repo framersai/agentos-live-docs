@@ -1,6 +1,6 @@
 # Interface: GraphRuntimeConfig
 
-Defined in: [packages/agentos/src/orchestration/runtime/GraphRuntime.ts:44](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/runtime/GraphRuntime.ts#L44)
+Defined in: [packages/agentos/src/orchestration/runtime/GraphRuntime.ts:44](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/runtime/GraphRuntime.ts#L44)
 
 Dependencies required to construct a `GraphRuntime`.
 
@@ -10,7 +10,7 @@ Dependencies required to construct a `GraphRuntime`.
 
 > **checkpointStore**: [`ICheckpointStore`](ICheckpointStore.md)
 
-Defined in: [packages/agentos/src/orchestration/runtime/GraphRuntime.ts:46](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/runtime/GraphRuntime.ts#L46)
+Defined in: [packages/agentos/src/orchestration/runtime/GraphRuntime.ts:46](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/runtime/GraphRuntime.ts#L46)
 
 Persistence backend for checkpoint snapshots.
 
@@ -20,7 +20,7 @@ Persistence backend for checkpoint snapshots.
 
 > `optional` **discoveryEngine**: `object`
 
-Defined in: [packages/agentos/src/orchestration/runtime/GraphRuntime.ts:58](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/runtime/GraphRuntime.ts#L58)
+Defined in: [packages/agentos/src/orchestration/runtime/GraphRuntime.ts:58](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/runtime/GraphRuntime.ts#L58)
 
 Optional discovery engine for `discovery`-type edge routing.
 When present and an edge has a `discoveryQuery`, the engine is called to
@@ -50,7 +50,7 @@ resolve the target dynamically. Falls back to `discoveryFallback` when absent.
 
 > `optional` **expansionHandler**: [`GraphExpansionHandler`](GraphExpansionHandler.md)
 
-Defined in: [packages/agentos/src/orchestration/runtime/GraphRuntime.ts:50](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/runtime/GraphRuntime.ts#L50)
+Defined in: [packages/agentos/src/orchestration/runtime/GraphRuntime.ts:50](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/runtime/GraphRuntime.ts#L50)
 
 Optional mission graph expansion hook applied between node executions.
 
@@ -60,7 +60,7 @@ Optional mission graph expansion hook applied between node executions.
 
 > **nodeExecutor**: [`NodeExecutor`](../classes/NodeExecutor.md)
 
-Defined in: [packages/agentos/src/orchestration/runtime/GraphRuntime.ts:48](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/runtime/GraphRuntime.ts#L48)
+Defined in: [packages/agentos/src/orchestration/runtime/GraphRuntime.ts:48](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/runtime/GraphRuntime.ts#L48)
 
 Dispatcher that runs individual graph nodes.
 
@@ -70,7 +70,7 @@ Dispatcher that runs individual graph nodes.
 
 > `optional` **personaTraits**: `Record`\<`string`, `number`\>
 
-Defined in: [packages/agentos/src/orchestration/runtime/GraphRuntime.ts:66](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/runtime/GraphRuntime.ts#L66)
+Defined in: [packages/agentos/src/orchestration/runtime/GraphRuntime.ts:66](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/runtime/GraphRuntime.ts#L66)
 
 Optional persona trait values for `personality`-type edge routing.
 Keys are trait names (e.g. `'openness'`), values are 0–1 floats.
@@ -82,6 +82,6 @@ When absent, traits are read from `state.scratch._personaTraits` or default to 0
 
 > `optional` **reevalInterval**: `number`
 
-Defined in: [packages/agentos/src/orchestration/runtime/GraphRuntime.ts:52](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/runtime/GraphRuntime.ts#L52)
+Defined in: [packages/agentos/src/orchestration/runtime/GraphRuntime.ts:52](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/runtime/GraphRuntime.ts#L52)
 
 Optional periodic planner reevaluation cadence, in completed nodes.

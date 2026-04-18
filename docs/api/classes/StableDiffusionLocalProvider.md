@@ -1,6 +1,6 @@
 # Class: StableDiffusionLocalProvider
 
-Defined in: [packages/agentos/src/media/images/providers/StableDiffusionLocalProvider.ts:111](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/providers/StableDiffusionLocalProvider.ts#L111)
+Defined in: [packages/agentos/src/media/images/providers/StableDiffusionLocalProvider.ts:111](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/images/providers/StableDiffusionLocalProvider.ts#L111)
 
 ## Implements
 
@@ -12,7 +12,7 @@ Defined in: [packages/agentos/src/media/images/providers/StableDiffusionLocalPro
 
 > **new StableDiffusionLocalProvider**(`fetchImpl?`): `StableDiffusionLocalProvider`
 
-Defined in: [packages/agentos/src/media/images/providers/StableDiffusionLocalProvider.ts:125](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/providers/StableDiffusionLocalProvider.ts#L125)
+Defined in: [packages/agentos/src/media/images/providers/StableDiffusionLocalProvider.ts:125](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/images/providers/StableDiffusionLocalProvider.ts#L125)
 
 #### Parameters
 
@@ -30,7 +30,7 @@ Defined in: [packages/agentos/src/media/images/providers/StableDiffusionLocalPro
 
 > `optional` **defaultModelId**: `string`
 
-Defined in: [packages/agentos/src/media/images/providers/StableDiffusionLocalProvider.ts:114](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/providers/StableDiffusionLocalProvider.ts#L114)
+Defined in: [packages/agentos/src/media/images/providers/StableDiffusionLocalProvider.ts:114](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/images/providers/StableDiffusionLocalProvider.ts#L114)
 
 #### Implementation of
 
@@ -42,7 +42,7 @@ Defined in: [packages/agentos/src/media/images/providers/StableDiffusionLocalPro
 
 > **isInitialized**: `boolean` = `false`
 
-Defined in: [packages/agentos/src/media/images/providers/StableDiffusionLocalProvider.ts:113](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/providers/StableDiffusionLocalProvider.ts#L113)
+Defined in: [packages/agentos/src/media/images/providers/StableDiffusionLocalProvider.ts:113](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/images/providers/StableDiffusionLocalProvider.ts#L113)
 
 #### Implementation of
 
@@ -54,7 +54,7 @@ Defined in: [packages/agentos/src/media/images/providers/StableDiffusionLocalPro
 
 > `readonly` **providerId**: `"stable-diffusion-local"` = `'stable-diffusion-local'`
 
-Defined in: [packages/agentos/src/media/images/providers/StableDiffusionLocalProvider.ts:112](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/providers/StableDiffusionLocalProvider.ts#L112)
+Defined in: [packages/agentos/src/media/images/providers/StableDiffusionLocalProvider.ts:112](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/images/providers/StableDiffusionLocalProvider.ts#L112)
 
 #### Implementation of
 
@@ -66,7 +66,7 @@ Defined in: [packages/agentos/src/media/images/providers/StableDiffusionLocalPro
 
 > **editImage**(`request`): `Promise`\<[`ImageGenerationResult`](../interfaces/ImageGenerationResult.md)\>
 
-Defined in: [packages/agentos/src/media/images/providers/StableDiffusionLocalProvider.ts:464](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/providers/StableDiffusionLocalProvider.ts#L464)
+Defined in: [packages/agentos/src/media/images/providers/StableDiffusionLocalProvider.ts:464](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/images/providers/StableDiffusionLocalProvider.ts#L464)
 
 Edits an image using the A1111 `img2img` endpoint.
 
@@ -107,7 +107,7 @@ When the A1111 API returns an HTTP error.
 
 > **generateImage**(`request`): `Promise`\<[`ImageGenerationResult`](../interfaces/ImageGenerationResult.md)\>
 
-Defined in: [packages/agentos/src/media/images/providers/StableDiffusionLocalProvider.ts:204](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/providers/StableDiffusionLocalProvider.ts#L204)
+Defined in: [packages/agentos/src/media/images/providers/StableDiffusionLocalProvider.ts:204](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/images/providers/StableDiffusionLocalProvider.ts#L204)
 
 Generate one or more images from a text prompt.
 
@@ -137,7 +137,7 @@ When the provider has not been initialised.
 
 > **initialize**(`config`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/media/images/providers/StableDiffusionLocalProvider.ts:142](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/providers/StableDiffusionLocalProvider.ts#L142)
+Defined in: [packages/agentos/src/media/images/providers/StableDiffusionLocalProvider.ts:142](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/images/providers/StableDiffusionLocalProvider.ts#L142)
 
 Initialise the provider.
 
@@ -170,7 +170,7 @@ When no `baseURL` is supplied.
 
 > **listAvailableModels**(): `Promise`\<[`ImageModelInfo`](../interfaces/ImageModelInfo.md)[]\>
 
-Defined in: [packages/agentos/src/media/images/providers/StableDiffusionLocalProvider.ts:603](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/providers/StableDiffusionLocalProvider.ts#L603)
+Defined in: [packages/agentos/src/media/images/providers/StableDiffusionLocalProvider.ts:603](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/images/providers/StableDiffusionLocalProvider.ts#L603)
 
 Lists available checkpoint models from an A1111 backend.
 
@@ -191,7 +191,7 @@ array is returned in that case.
 
 > **shutdown**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/media/images/providers/StableDiffusionLocalProvider.ts:633](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/providers/StableDiffusionLocalProvider.ts#L633)
+Defined in: [packages/agentos/src/media/images/providers/StableDiffusionLocalProvider.ts:633](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/images/providers/StableDiffusionLocalProvider.ts#L633)
 
 Resets initialisation state.  The local backend keeps running independently.
 
@@ -209,7 +209,7 @@ Resets initialisation state.  The local backend keeps running independently.
 
 > **upscaleImage**(`request`): `Promise`\<[`ImageGenerationResult`](../interfaces/ImageGenerationResult.md)\>
 
-Defined in: [packages/agentos/src/media/images/providers/StableDiffusionLocalProvider.ts:547](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/images/providers/StableDiffusionLocalProvider.ts#L547)
+Defined in: [packages/agentos/src/media/images/providers/StableDiffusionLocalProvider.ts:547](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/images/providers/StableDiffusionLocalProvider.ts#L547)
 
 Upscales an image using the A1111 extras single-image endpoint.
 

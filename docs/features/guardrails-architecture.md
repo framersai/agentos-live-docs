@@ -1,9 +1,7 @@
 ---
-title: 'Guardrails Architecture'
-sidebar_position: 7
+title: "Guardrails Architecture"
+sidebar_position: 1.5
 ---
-
-# Guardrails Architecture
 
 Deep dive into how the guardrail system works internally.
 

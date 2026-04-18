@@ -69,7 +69,7 @@ sidebar_position: 1
 
 #### Channels & Social
 
-- [**Channels Guide**](/features/channels) — All 37 channels with setup for Discord, Slack, Telegram, Twitter, WhatsApp
+- [**Channels Guide**](/features/channels) — Multi-channel adapters with setup for Discord, Slack, Telegram, Twitter, and WhatsApp
 - [**Social Posting Guide**](/features/social-posting) — SocialPostManager, content adaptation, scheduling, analytics
 
 ### Platform & Infrastructure

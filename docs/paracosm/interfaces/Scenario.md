@@ -1,6 +1,6 @@
 # Interface: Scenario
 
-Defined in: [types.ts:298](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/types.ts#L298)
+Defined in: [types.ts:307](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/types.ts#L307)
 
 Legacy turn-based scenario (used by static SCENARIOS array and department context).
 
@@ -10,15 +10,15 @@ Legacy turn-based scenario (used by static SCENARIOS array and department contex
 
 > **crisis**: `string`
 
-Defined in: [types.ts:302](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/types.ts#L302)
+Defined in: [types.ts:311](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/types.ts#L311)
 
 ***
 
 ### options?
 
-> `optional` **options**: [`CrisisOptionDef`](CrisisOptionDef.md)[]
+> `optional` **options**: [`EventOptionDef`](EventOptionDef.md)[]
 
-Defined in: [types.ts:307](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/types.ts#L307)
+Defined in: [types.ts:316](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/types.ts#L316)
 
 ***
 
@@ -26,7 +26,7 @@ Defined in: [types.ts:307](https://github.com/framersai/paracosm/blob/ba2b881292
 
 > **researchKeywords**: `string`[]
 
-Defined in: [types.ts:303](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/types.ts#L303)
+Defined in: [types.ts:312](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/types.ts#L312)
 
 ***
 
@@ -34,7 +34,7 @@ Defined in: [types.ts:303](https://github.com/framersai/paracosm/blob/ba2b881292
 
 > **riskSuccessProbability**: `number`
 
-Defined in: [types.ts:306](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/types.ts#L306)
+Defined in: [types.ts:315](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/types.ts#L315)
 
 ***
 
@@ -42,7 +42,7 @@ Defined in: [types.ts:306](https://github.com/framersai/paracosm/blob/ba2b881292
 
 > **riskyOption**: `string`
 
-Defined in: [types.ts:305](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/types.ts#L305)
+Defined in: [types.ts:314](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/types.ts#L314)
 
 ***
 
@@ -50,7 +50,7 @@ Defined in: [types.ts:305](https://github.com/framersai/paracosm/blob/ba2b881292
 
 > **snapshotHints**: `Record`\<`string`, `unknown`\>
 
-Defined in: [types.ts:304](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/types.ts#L304)
+Defined in: [types.ts:313](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/types.ts#L313)
 
 ***
 
@@ -58,7 +58,7 @@ Defined in: [types.ts:304](https://github.com/framersai/paracosm/blob/ba2b881292
 
 > **title**: `string`
 
-Defined in: [types.ts:301](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/types.ts#L301)
+Defined in: [types.ts:310](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/types.ts#L310)
 
 ***
 
@@ -66,7 +66,7 @@ Defined in: [types.ts:301](https://github.com/framersai/paracosm/blob/ba2b881292
 
 > **turn**: `number`
 
-Defined in: [types.ts:299](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/types.ts#L299)
+Defined in: [types.ts:308](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/types.ts#L308)
 
 ***
 
@@ -74,4 +74,4 @@ Defined in: [types.ts:299](https://github.com/framersai/paracosm/blob/ba2b881292
 
 > **year**: `number`
 
-Defined in: [types.ts:300](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/types.ts#L300)
+Defined in: [types.ts:309](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/types.ts#L309)

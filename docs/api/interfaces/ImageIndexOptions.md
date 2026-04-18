@@ -1,6 +1,6 @@
 # Interface: ImageIndexOptions
 
-Defined in: [packages/agentos/src/rag/multimodal/types.ts:58](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/multimodal/types.ts#L58)
+Defined in: [packages/agentos/src/rag/multimodal/types.ts:58](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/multimodal/types.ts#L58)
 
 Options for indexing an image into the vector store.
 
@@ -23,7 +23,7 @@ const result = await indexer.indexImage({
 
 > `optional` **collection**: `string`
 
-Defined in: [packages/agentos/src/rag/multimodal/types.ts:78](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/multimodal/types.ts#L78)
+Defined in: [packages/agentos/src/rag/multimodal/types.ts:78](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/multimodal/types.ts#L78)
 
 Vector store collection to index into.
 
@@ -39,7 +39,7 @@ Vector store collection to index into.
 
 > **image**: `string` \| `Buffer`
 
-Defined in: [packages/agentos/src/rag/multimodal/types.ts:64](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/multimodal/types.ts#L64)
+Defined in: [packages/agentos/src/rag/multimodal/types.ts:64](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/multimodal/types.ts#L64)
 
 Image data as a URL string (file:// or https://) or a raw Buffer.
 - URL: Passed directly to the vision LLM for description.
@@ -51,7 +51,7 @@ Image data as a URL string (file:// or https://) or a raw Buffer.
 
 > `optional` **metadata**: `Record`\<`string`, `unknown`\>
 
-Defined in: [packages/agentos/src/rag/multimodal/types.ts:72](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/multimodal/types.ts#L72)
+Defined in: [packages/agentos/src/rag/multimodal/types.ts:72](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/multimodal/types.ts#L72)
 
 Optional metadata to attach to the indexed document.
 Stored alongside the embedding for filtering during search.

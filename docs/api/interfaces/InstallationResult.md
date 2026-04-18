@@ -1,6 +1,6 @@
 # Interface: InstallationResult
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:310](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/marketplace/store/IMarketplace.ts#L310)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:310](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/marketplace/store/IMarketplace.ts#L310)
 
 Installation result
 
@@ -10,7 +10,7 @@ Installation result
 
 > `optional` **dependenciesInstalled**: `string`[]
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:320](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/marketplace/store/IMarketplace.ts#L320)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:320](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/marketplace/store/IMarketplace.ts#L320)
 
 Dependencies installed
 
@@ -20,7 +20,7 @@ Dependencies installed
 
 > `optional` **error**: `string`
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:316](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/marketplace/store/IMarketplace.ts#L316)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:316](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/marketplace/store/IMarketplace.ts#L316)
 
 Error message if failed
 
@@ -30,7 +30,7 @@ Error message if failed
 
 > `optional` **installation**: [`InstalledItem`](InstalledItem.md)
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:314](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/marketplace/store/IMarketplace.ts#L314)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:314](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/marketplace/store/IMarketplace.ts#L314)
 
 Installation record
 
@@ -40,7 +40,7 @@ Installation record
 
 > **success**: `boolean`
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:312](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/marketplace/store/IMarketplace.ts#L312)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:312](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/marketplace/store/IMarketplace.ts#L312)
 
 Success status
 
@@ -50,6 +50,6 @@ Success status
 
 > `optional` **warnings**: `string`[]
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:318](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/marketplace/store/IMarketplace.ts#L318)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:318](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/marketplace/store/IMarketplace.ts#L318)
 
 Warnings

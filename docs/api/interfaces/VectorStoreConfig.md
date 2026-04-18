@@ -1,6 +1,6 @@
 # Interface: VectorStoreConfig
 
-Defined in: [packages/agentos/src/rag/setup/types.ts:43](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/setup/types.ts#L43)
+Defined in: [packages/agentos/src/rag/setup/types.ts:43](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/setup/types.ts#L43)
 
 Persisted vector store configuration at ~/.wunderland/vector-store.json.
 Written after successful auto-setup, read by all subsequent commands.
@@ -11,7 +11,7 @@ Written after successful auto-setup, read by all subsequent commands.
 
 > `optional` **connectionString**: `string`
 
-Defined in: [packages/agentos/src/rag/setup/types.ts:51](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/setup/types.ts#L51)
+Defined in: [packages/agentos/src/rag/setup/types.ts:51](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/setup/types.ts#L51)
 
 Postgres connection string.
 
@@ -21,7 +21,7 @@ Postgres connection string.
 
 > `optional` **containerName**: `string`
 
-Defined in: [packages/agentos/src/rag/setup/types.ts:55](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/setup/types.ts#L55)
+Defined in: [packages/agentos/src/rag/setup/types.ts:55](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/setup/types.ts#L55)
 
 Docker container name if applicable.
 
@@ -31,7 +31,7 @@ Docker container name if applicable.
 
 > `optional` **path**: `string`
 
-Defined in: [packages/agentos/src/rag/setup/types.ts:49](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/setup/types.ts#L49)
+Defined in: [packages/agentos/src/rag/setup/types.ts:49](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/setup/types.ts#L49)
 
 File path (for SQLite).
 
@@ -41,7 +41,7 @@ File path (for SQLite).
 
 > `optional` **setupAt**: `string`
 
-Defined in: [packages/agentos/src/rag/setup/types.ts:57](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/setup/types.ts#L57)
+Defined in: [packages/agentos/src/rag/setup/types.ts:57](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/setup/types.ts#L57)
 
 ISO timestamp of when setup was performed.
 
@@ -51,7 +51,7 @@ ISO timestamp of when setup was performed.
 
 > `optional` **source**: `string`
 
-Defined in: [packages/agentos/src/rag/setup/types.ts:53](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/setup/types.ts#L53)
+Defined in: [packages/agentos/src/rag/setup/types.ts:53](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/setup/types.ts#L53)
 
 How this config was created.
 
@@ -61,7 +61,7 @@ How this config was created.
 
 > **type**: `"postgres"` \| `"qdrant"` \| `"sqlite"`
 
-Defined in: [packages/agentos/src/rag/setup/types.ts:45](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/setup/types.ts#L45)
+Defined in: [packages/agentos/src/rag/setup/types.ts:45](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/setup/types.ts#L45)
 
 Backend type.
 
@@ -71,6 +71,6 @@ Backend type.
 
 > `optional` **url**: `string`
 
-Defined in: [packages/agentos/src/rag/setup/types.ts:47](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/rag/setup/types.ts#L47)
+Defined in: [packages/agentos/src/rag/setup/types.ts:47](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/setup/types.ts#L47)
 
 Connection URL (for Postgres/Qdrant).

@@ -1,6 +1,6 @@
 # Class: MemoryAddTool
 
-Defined in: [packages/agentos/src/memory/io/tools/MemoryAddTool.ts:77](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/io/tools/MemoryAddTool.ts#L77)
+Defined in: [packages/agentos/src/memory/io/tools/MemoryAddTool.ts:77](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/io/tools/MemoryAddTool.ts#L77)
 
 ITool implementation that stores a new memory trace in the agent's
 SQLite brain database.
@@ -25,7 +25,7 @@ const result = await tool.execute(
 
 > **new MemoryAddTool**(`brain`): `MemoryAddTool`
 
-Defined in: [packages/agentos/src/memory/io/tools/MemoryAddTool.ts:136](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/io/tools/MemoryAddTool.ts#L136)
+Defined in: [packages/agentos/src/memory/io/tools/MemoryAddTool.ts:136](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/io/tools/MemoryAddTool.ts#L136)
 
 #### Parameters
 
@@ -45,7 +45,7 @@ The agent's shared SQLite brain database connection.
 
 > `readonly` **category**: `"memory"` = `'memory'`
 
-Defined in: [packages/agentos/src/memory/io/tools/MemoryAddTool.ts:95](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/io/tools/MemoryAddTool.ts#L95)
+Defined in: [packages/agentos/src/memory/io/tools/MemoryAddTool.ts:95](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/io/tools/MemoryAddTool.ts#L95)
 
 Logical category for discovery and grouping.
 
@@ -59,7 +59,7 @@ Logical category for discovery and grouping.
 
 > `readonly` **description**: `"Store a new memory trace. The agent calls this to remember important facts, decisions, or observations."` = `'Store a new memory trace. The agent calls this to remember important facts, decisions, or observations.'`
 
-Defined in: [packages/agentos/src/memory/io/tools/MemoryAddTool.ts:91](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/io/tools/MemoryAddTool.ts#L91)
+Defined in: [packages/agentos/src/memory/io/tools/MemoryAddTool.ts:91](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/io/tools/MemoryAddTool.ts#L91)
 
 Description shown to the LLM when deciding which tool to invoke.
 Must be comprehensive enough for the model to understand when to call this.
@@ -74,7 +74,7 @@ Must be comprehensive enough for the model to understand when to call this.
 
 > `readonly` **displayName**: `"Add Memory"` = `'Add Memory'`
 
-Defined in: [packages/agentos/src/memory/io/tools/MemoryAddTool.ts:85](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/io/tools/MemoryAddTool.ts#L85)
+Defined in: [packages/agentos/src/memory/io/tools/MemoryAddTool.ts:85](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/io/tools/MemoryAddTool.ts#L85)
 
 Human-readable display name for UIs and logs.
 
@@ -88,7 +88,7 @@ Human-readable display name for UIs and logs.
 
 > `readonly` **hasSideEffects**: `true` = `true`
 
-Defined in: [packages/agentos/src/memory/io/tools/MemoryAddTool.ts:101](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/io/tools/MemoryAddTool.ts#L101)
+Defined in: [packages/agentos/src/memory/io/tools/MemoryAddTool.ts:101](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/io/tools/MemoryAddTool.ts#L101)
 
 This tool writes to the database.
 Callers may request confirmation before execution when `hasSideEffects = true`.
@@ -103,7 +103,7 @@ Callers may request confirmation before execution when `hasSideEffects = true`.
 
 > `readonly` **id**: `"memory-add-v1"` = `'memory-add-v1'`
 
-Defined in: [packages/agentos/src/memory/io/tools/MemoryAddTool.ts:79](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/io/tools/MemoryAddTool.ts#L79)
+Defined in: [packages/agentos/src/memory/io/tools/MemoryAddTool.ts:79](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/io/tools/MemoryAddTool.ts#L79)
 
 Globally unique tool identifier.
 
@@ -117,7 +117,7 @@ Globally unique tool identifier.
 
 > `readonly` **inputSchema**: [`JSONSchemaObject`](../type-aliases/JSONSchemaObject.md)
 
-Defined in: [packages/agentos/src/memory/io/tools/MemoryAddTool.ts:107](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/io/tools/MemoryAddTool.ts#L107)
+Defined in: [packages/agentos/src/memory/io/tools/MemoryAddTool.ts:107](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/io/tools/MemoryAddTool.ts#L107)
 
 JSON schema for input validation and LLM tool-call construction.
 All optional fields default gracefully inside `execute()`.
@@ -132,7 +132,7 @@ All optional fields default gracefully inside `execute()`.
 
 > `readonly` **name**: `"memory_add"` = `'memory_add'`
 
-Defined in: [packages/agentos/src/memory/io/tools/MemoryAddTool.ts:82](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/io/tools/MemoryAddTool.ts#L82)
+Defined in: [packages/agentos/src/memory/io/tools/MemoryAddTool.ts:82](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/io/tools/MemoryAddTool.ts#L82)
 
 LLM-facing tool name (snake_case, as the LLM will call it).
 
@@ -146,7 +146,7 @@ LLM-facing tool name (snake_case, as the LLM will call it).
 
 > **execute**(`args`, `context`): `Promise`\<[`ToolExecutionResult`](../interfaces/ToolExecutionResult.md)\<`MemoryAddOutput`\>\>
 
-Defined in: [packages/agentos/src/memory/io/tools/MemoryAddTool.ts:158](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/memory/io/tools/MemoryAddTool.ts#L158)
+Defined in: [packages/agentos/src/memory/io/tools/MemoryAddTool.ts:158](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/io/tools/MemoryAddTool.ts#L158)
 
 Insert a new memory trace row into `memory_traces`.
 

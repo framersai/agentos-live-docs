@@ -1,6 +1,6 @@
 # Interface: KnowledgeBundle
 
-Defined in: [types.ts:190](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/types.ts#L190)
+Defined in: [types.ts:197](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/types.ts#L197)
 
 Scenario-owned research knowledge organized by topic with crisis category mapping.
 
@@ -10,7 +10,7 @@ Scenario-owned research knowledge organized by topic with crisis category mappin
 
 > **categoryMapping**: `Record`\<`string`, `string`[]\>
 
-Defined in: [types.ts:193](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/types.ts#L193)
+Defined in: [types.ts:200](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/types.ts#L200)
 
 Maps crisis category to relevant topic IDs
 
@@ -20,4 +20,4 @@ Maps crisis category to relevant topic IDs
 
 > **topics**: `Record`\<`string`, [`KnowledgeTopic`](KnowledgeTopic.md)\>
 
-Defined in: [types.ts:191](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/types.ts#L191)
+Defined in: [types.ts:198](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/types.ts#L198)

@@ -1,6 +1,6 @@
 # Interface: RequestExpansionOutput
 
-Defined in: [packages/agentos/src/orchestration/tools/RequestExpansionTool.ts:21](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/tools/RequestExpansionTool.ts#L21)
+Defined in: [packages/agentos/src/orchestration/tools/RequestExpansionTool.ts:21](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/tools/RequestExpansionTool.ts#L21)
 
 Output returned to the calling agent.
 
@@ -10,7 +10,7 @@ Output returned to the calling agent.
 
 > **acknowledged**: `boolean`
 
-Defined in: [packages/agentos/src/orchestration/tools/RequestExpansionTool.ts:22](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/tools/RequestExpansionTool.ts#L22)
+Defined in: [packages/agentos/src/orchestration/tools/RequestExpansionTool.ts:22](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/tools/RequestExpansionTool.ts#L22)
 
 ***
 
@@ -18,4 +18,4 @@ Defined in: [packages/agentos/src/orchestration/tools/RequestExpansionTool.ts:22
 
 > **message**: `string`
 
-Defined in: [packages/agentos/src/orchestration/tools/RequestExpansionTool.ts:23](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/orchestration/tools/RequestExpansionTool.ts#L23)
+Defined in: [packages/agentos/src/orchestration/tools/RequestExpansionTool.ts:23](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/tools/RequestExpansionTool.ts#L23)

@@ -1,6 +1,6 @@
 # Interface: ColonyPatch
 
-Defined in: [core/kernel.ts:7](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/core/kernel.ts#L7)
+Defined in: [core/kernel.ts:7](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/core/kernel.ts#L7)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [core/kernel.ts:7](https://github.com/framersai/paracosm/blob/ba2b88
 
 > `optional` **agentUpdates**: `object`[]
 
-Defined in: [core/kernel.ts:10](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/core/kernel.ts#L10)
+Defined in: [core/kernel.ts:10](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/core/kernel.ts#L10)
 
 #### agentId
 
@@ -28,7 +28,7 @@ Defined in: [core/kernel.ts:10](https://github.com/framersai/paracosm/blob/ba2b8
 
 > `optional` **colony**: `Partial`\<[`WorldSystems`](WorldSystems.md)\>
 
-Defined in: [core/kernel.ts:8](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/core/kernel.ts#L8)
+Defined in: [core/kernel.ts:8](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/core/kernel.ts#L8)
 
 ***
 
@@ -36,4 +36,4 @@ Defined in: [core/kernel.ts:8](https://github.com/framersai/paracosm/blob/ba2b88
 
 > `optional` **politics**: `Partial`\<[`WorldPolitics`](WorldPolitics.md)\>
 
-Defined in: [core/kernel.ts:9](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/core/kernel.ts#L9)
+Defined in: [core/kernel.ts:9](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/core/kernel.ts#L9)

@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "pull-docs": "node scripts/pull-docs.mjs",
+    "verify:publication": "node --test scripts/publication-contract.test.mjs scripts/pull-docs-links.test.mjs && node scripts/pull-docs.mjs --check",
     "prebuild": "npm run pull-docs",
     "prestart": "npm run pull-docs",
     "docusaurus": "docusaurus",

@@ -1,6 +1,6 @@
 # Class: SharedServiceRegistry
 
-Defined in: [packages/agentos/src/extensions/SharedServiceRegistry.ts:6](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/extensions/SharedServiceRegistry.ts#L6)
+Defined in: [packages/agentos/src/extensions/SharedServiceRegistry.ts:6](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/extensions/SharedServiceRegistry.ts#L6)
 
 Thread-safe shared-service registry for extension lifecycle context.
 
@@ -24,7 +24,7 @@ Thread-safe shared-service registry for extension lifecycle context.
 
 > **getOrCreate**\<`T`\>(`serviceId`, `factory`, `options?`): `Promise`\<`T`\>
 
-Defined in: [packages/agentos/src/extensions/SharedServiceRegistry.ts:12](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/extensions/SharedServiceRegistry.ts#L12)
+Defined in: [packages/agentos/src/extensions/SharedServiceRegistry.ts:12](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/extensions/SharedServiceRegistry.ts#L12)
 
 Return an existing service or lazily create it once.
 
@@ -62,7 +62,7 @@ Return an existing service or lazily create it once.
 
 > **has**(`serviceId`): `boolean`
 
-Defined in: [packages/agentos/src/extensions/SharedServiceRegistry.ts:49](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/extensions/SharedServiceRegistry.ts#L49)
+Defined in: [packages/agentos/src/extensions/SharedServiceRegistry.ts:49](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/extensions/SharedServiceRegistry.ts#L49)
 
 Return true when a service has already been initialized.
 
@@ -86,7 +86,7 @@ Return true when a service has already been initialized.
 
 > **release**(`serviceId`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/extensions/SharedServiceRegistry.ts:53](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/extensions/SharedServiceRegistry.ts#L53)
+Defined in: [packages/agentos/src/extensions/SharedServiceRegistry.ts:53](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/extensions/SharedServiceRegistry.ts#L53)
 
 Dispose a specific service if it exists.
 
@@ -110,7 +110,7 @@ Dispose a specific service if it exists.
 
 > **releaseAll**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/extensions/SharedServiceRegistry.ts:74](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/extensions/SharedServiceRegistry.ts#L74)
+Defined in: [packages/agentos/src/extensions/SharedServiceRegistry.ts:74](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/extensions/SharedServiceRegistry.ts#L74)
 
 Dispose all registered services.
 

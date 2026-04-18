@@ -1,6 +1,6 @@
 # Interface: UsageDimensions
 
-Defined in: [packages/agentos/src/core/utils/usage/UsageLedger.ts:15](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/utils/usage/UsageLedger.ts#L15)
+Defined in: [packages/agentos/src/core/utils/usage/UsageLedger.ts:15](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/utils/usage/UsageLedger.ts#L15)
 
 Canonical key dimensions tracked for each usage record.
 
@@ -10,7 +10,7 @@ Canonical key dimensions tracked for each usage record.
 
 > `optional` **modelId**: `string`
 
-Defined in: [packages/agentos/src/core/utils/usage/UsageLedger.ts:19](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/utils/usage/UsageLedger.ts#L19)
+Defined in: [packages/agentos/src/core/utils/usage/UsageLedger.ts:19](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/utils/usage/UsageLedger.ts#L19)
 
 ***
 
@@ -18,7 +18,7 @@ Defined in: [packages/agentos/src/core/utils/usage/UsageLedger.ts:19](https://gi
 
 > `optional` **personaId**: `string`
 
-Defined in: [packages/agentos/src/core/utils/usage/UsageLedger.ts:17](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/utils/usage/UsageLedger.ts#L17)
+Defined in: [packages/agentos/src/core/utils/usage/UsageLedger.ts:17](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/utils/usage/UsageLedger.ts#L17)
 
 ***
 
@@ -26,7 +26,7 @@ Defined in: [packages/agentos/src/core/utils/usage/UsageLedger.ts:17](https://gi
 
 > `optional` **providerId**: `string`
 
-Defined in: [packages/agentos/src/core/utils/usage/UsageLedger.ts:18](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/utils/usage/UsageLedger.ts#L18)
+Defined in: [packages/agentos/src/core/utils/usage/UsageLedger.ts:18](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/utils/usage/UsageLedger.ts#L18)
 
 ***
 
@@ -34,4 +34,4 @@ Defined in: [packages/agentos/src/core/utils/usage/UsageLedger.ts:18](https://gi
 
 > **sessionId**: `string`
 
-Defined in: [packages/agentos/src/core/utils/usage/UsageLedger.ts:16](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/core/utils/usage/UsageLedger.ts#L16)
+Defined in: [packages/agentos/src/core/utils/usage/UsageLedger.ts:16](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/utils/usage/UsageLedger.ts#L16)

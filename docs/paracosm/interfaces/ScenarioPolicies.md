@@ -1,6 +1,6 @@
 # Interface: ScenarioPolicies
 
-Defined in: [types.ts:201](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/types.ts#L201)
+Defined in: [types.ts:208](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/types.ts#L208)
 
 Feature policies controlling what capabilities are enabled for a scenario.
 
@@ -10,7 +10,7 @@ Feature policies controlling what capabilities are enabled for a scenario.
 
 > **bulletin**: `object`
 
-Defined in: [types.ts:204](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/types.ts#L204)
+Defined in: [types.ts:211](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/types.ts#L211)
 
 #### enabled
 
@@ -22,7 +22,7 @@ Defined in: [types.ts:204](https://github.com/framersai/paracosm/blob/ba2b881292
 
 > **characterChat**: `object`
 
-Defined in: [types.ts:205](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/types.ts#L205)
+Defined in: [types.ts:212](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/types.ts#L212)
 
 #### enabled
 
@@ -34,7 +34,7 @@ Defined in: [types.ts:205](https://github.com/framersai/paracosm/blob/ba2b881292
 
 > **liveSearch**: `object`
 
-Defined in: [types.ts:203](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/types.ts#L203)
+Defined in: [types.ts:210](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/types.ts#L210)
 
 #### enabled
 
@@ -50,7 +50,7 @@ Defined in: [types.ts:203](https://github.com/framersai/paracosm/blob/ba2b881292
 
 > **sandbox**: `object`
 
-Defined in: [types.ts:206](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/types.ts#L206)
+Defined in: [types.ts:213](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/types.ts#L213)
 
 #### memoryMB
 
@@ -66,7 +66,7 @@ Defined in: [types.ts:206](https://github.com/framersai/paracosm/blob/ba2b881292
 
 > **toolForging**: `object`
 
-Defined in: [types.ts:202](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/types.ts#L202)
+Defined in: [types.ts:209](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/types.ts#L209)
 
 #### enabled
 

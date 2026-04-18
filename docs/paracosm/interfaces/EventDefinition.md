@@ -1,6 +1,6 @@
 # Interface: EventDefinition
 
-Defined in: [types.ts:149](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/types.ts#L149)
+Defined in: [types.ts:156](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/types.ts#L156)
 
 Defines an event type with render metadata for the dashboard.
 
@@ -10,7 +10,7 @@ Defines an event type with render metadata for the dashboard.
 
 > **color**: `string`
 
-Defined in: [types.ts:153](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/types.ts#L153)
+Defined in: [types.ts:160](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/types.ts#L160)
 
 ***
 
@@ -18,7 +18,7 @@ Defined in: [types.ts:153](https://github.com/framersai/paracosm/blob/ba2b881292
 
 > **icon**: `string`
 
-Defined in: [types.ts:152](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/types.ts#L152)
+Defined in: [types.ts:159](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/types.ts#L159)
 
 ***
 
@@ -26,7 +26,7 @@ Defined in: [types.ts:152](https://github.com/framersai/paracosm/blob/ba2b881292
 
 > **id**: `string`
 
-Defined in: [types.ts:150](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/types.ts#L150)
+Defined in: [types.ts:157](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/types.ts#L157)
 
 ***
 
@@ -34,4 +34,4 @@ Defined in: [types.ts:150](https://github.com/framersai/paracosm/blob/ba2b881292
 
 > **label**: `string`
 
-Defined in: [types.ts:151](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/types.ts#L151)
+Defined in: [types.ts:158](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/types.ts#L158)

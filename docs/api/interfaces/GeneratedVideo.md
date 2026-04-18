@@ -1,6 +1,6 @@
 # Interface: GeneratedVideo
 
-Defined in: [packages/agentos/src/media/video/types.ts:138](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/video/types.ts#L138)
+Defined in: [packages/agentos/src/media/video/types.ts:138](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/video/types.ts#L138)
 
 A single generated video artifact.
 
@@ -10,7 +10,7 @@ A single generated video artifact.
 
 > `optional` **base64**: `string`
 
-Defined in: [packages/agentos/src/media/video/types.ts:142](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/video/types.ts#L142)
+Defined in: [packages/agentos/src/media/video/types.ts:142](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/video/types.ts#L142)
 
 Base64-encoded video data.
 
@@ -20,7 +20,7 @@ Base64-encoded video data.
 
 > `optional` **durationSec**: `number`
 
-Defined in: [packages/agentos/src/media/video/types.ts:146](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/video/types.ts#L146)
+Defined in: [packages/agentos/src/media/video/types.ts:146](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/video/types.ts#L146)
 
 Duration of the generated video in seconds.
 
@@ -30,7 +30,7 @@ Duration of the generated video in seconds.
 
 > `optional` **height**: `number`
 
-Defined in: [packages/agentos/src/media/video/types.ts:150](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/video/types.ts#L150)
+Defined in: [packages/agentos/src/media/video/types.ts:150](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/video/types.ts#L150)
 
 Height in pixels.
 
@@ -40,7 +40,7 @@ Height in pixels.
 
 > `optional` **mimeType**: `string`
 
-Defined in: [packages/agentos/src/media/video/types.ts:144](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/video/types.ts#L144)
+Defined in: [packages/agentos/src/media/video/types.ts:144](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/video/types.ts#L144)
 
 MIME type of the video (e.g. `'video/mp4'`).
 
@@ -50,7 +50,7 @@ MIME type of the video (e.g. `'video/mp4'`).
 
 > `optional` **providerMetadata**: `Record`\<`string`, `unknown`\>
 
-Defined in: [packages/agentos/src/media/video/types.ts:154](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/video/types.ts#L154)
+Defined in: [packages/agentos/src/media/video/types.ts:154](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/video/types.ts#L154)
 
 Provider-specific metadata (job ID, generation params, etc.).
 
@@ -60,7 +60,7 @@ Provider-specific metadata (job ID, generation params, etc.).
 
 > `optional` **thumbnailUrl**: `string`
 
-Defined in: [packages/agentos/src/media/video/types.ts:152](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/video/types.ts#L152)
+Defined in: [packages/agentos/src/media/video/types.ts:152](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/video/types.ts#L152)
 
 Thumbnail / poster image URL.
 
@@ -70,7 +70,7 @@ Thumbnail / poster image URL.
 
 > `optional` **url**: `string`
 
-Defined in: [packages/agentos/src/media/video/types.ts:140](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/video/types.ts#L140)
+Defined in: [packages/agentos/src/media/video/types.ts:140](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/video/types.ts#L140)
 
 Public URL where the video can be downloaded.
 
@@ -80,6 +80,6 @@ Public URL where the video can be downloaded.
 
 > `optional` **width**: `number`
 
-Defined in: [packages/agentos/src/media/video/types.ts:148](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/media/video/types.ts#L148)
+Defined in: [packages/agentos/src/media/video/types.ts:148](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/video/types.ts#L148)
 
 Width in pixels.

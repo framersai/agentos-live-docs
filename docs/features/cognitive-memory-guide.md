@@ -1,6 +1,6 @@
 ---
 title: "Cognitive Memory Guide"
-sidebar_position: 1
+sidebar_position: 10
 ---
 
 > Personality-modulated, decay-aware memory grounded in cognitive science: Ebbinghaus forgetting curves, Baddeley's working memory, spreading activation, and HEXACO-driven encoding.

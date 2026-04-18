@@ -1,6 +1,6 @@
 # Interface: SimulationState
 
-Defined in: [core/state.ts:154](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/core/state.ts#L154)
+Defined in: [core/state.ts:209](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/core/state.ts#L209)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [core/state.ts:154](https://github.com/framersai/paracosm/blob/ba2b8
 
 > **agents**: [`Agent`](Agent.md)[]
 
-Defined in: [core/state.ts:157](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/core/state.ts#L157)
+Defined in: [core/state.ts:212](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/core/state.ts#L212)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [core/state.ts:157](https://github.com/framersai/paracosm/blob/ba2b8
 
 > **colony**: [`WorldSystems`](WorldSystems.md)
 
-Defined in: [core/state.ts:156](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/core/state.ts#L156)
+Defined in: [core/state.ts:211](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/core/state.ts#L211)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: [core/state.ts:156](https://github.com/framersai/paracosm/blob/ba2b8
 
 > **eventLog**: [`TurnEvent`](TurnEvent.md)[]
 
-Defined in: [core/state.ts:159](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/core/state.ts#L159)
+Defined in: [core/state.ts:214](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/core/state.ts#L214)
 
 ***
 
@@ -32,7 +32,7 @@ Defined in: [core/state.ts:159](https://github.com/framersai/paracosm/blob/ba2b8
 
 > **metadata**: [`SimulationMetadata`](SimulationMetadata.md)
 
-Defined in: [core/state.ts:155](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/core/state.ts#L155)
+Defined in: [core/state.ts:210](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/core/state.ts#L210)
 
 ***
 
@@ -40,4 +40,4 @@ Defined in: [core/state.ts:155](https://github.com/framersai/paracosm/blob/ba2b8
 
 > **politics**: [`WorldPolitics`](WorldPolitics.md)
 
-Defined in: [core/state.ts:158](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/core/state.ts#L158)
+Defined in: [core/state.ts:213](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/core/state.ts#L213)

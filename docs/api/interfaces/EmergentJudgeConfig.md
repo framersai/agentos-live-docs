@@ -1,6 +1,6 @@
 # Interface: EmergentJudgeConfig
 
-Defined in: [packages/agentos/src/emergent/EmergentJudge.ts:101](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/emergent/EmergentJudge.ts#L101)
+Defined in: [packages/agentos/src/emergent/EmergentJudge.ts:101](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/emergent/EmergentJudge.ts#L101)
 
 Configuration for the [EmergentJudge](../classes/EmergentJudge.md).
 
@@ -13,7 +13,7 @@ making the judge model-agnostic and easily testable with mocks.
 
 > **generateText**: (`model`, `prompt`) => `Promise`\<`string`\>
 
-Defined in: [packages/agentos/src/emergent/EmergentJudge.ts:126](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/emergent/EmergentJudge.ts#L126)
+Defined in: [packages/agentos/src/emergent/EmergentJudge.ts:126](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/emergent/EmergentJudge.ts#L126)
 
 Callback that invokes an LLM to generate text from a prompt.
 The judge calls this for creation reviews and promotion panels.
@@ -40,11 +40,57 @@ The raw text response from the LLM.
 
 ***
 
+### generateTextWithSystem()?
+
+> `optional` **generateTextWithSystem**: (`model`, `system`, `user`) => `Promise`\<`string`\>
+
+Defined in: [packages/agentos/src/emergent/EmergentJudge.ts:146](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/emergent/EmergentJudge.ts#L146)
+
+Optional structured callback that receives a stable `system` prefix and
+a candidate-specific `user` payload separately. When supplied, the
+judge prefers this path over [generateText](#generatetext) so hosts can attach
+provider-level prompt caching (e.g. Anthropic `cache_control: ephemeral`
+or OpenAI automatic prefix cache) to the shared rubric. A 10-20 call
+run on Anthropic sees ~25% judge cost reduction once the ~500-token
+rubric hits the cache on call 2+.
+
+Hosts that do not care about caching may omit this field; the judge
+falls back to concatenating `system + '\n\n' + user` and calling the
+legacy [generateText](#generatetext) path, which preserves behavior exactly.
+
+#### Parameters
+
+##### model
+
+`string`
+
+Model ID to use for generation.
+
+##### system
+
+`string`
+
+Stable rubric text. Safe to mark cacheable.
+
+##### user
+
+`string`
+
+Candidate-specific payload that varies per call.
+
+#### Returns
+
+`Promise`\<`string`\>
+
+The raw text response from the LLM.
+
+***
+
 ### judgeModel
 
 > **judgeModel**: `string`
 
-Defined in: [packages/agentos/src/emergent/EmergentJudge.ts:108](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/emergent/EmergentJudge.ts#L108)
+Defined in: [packages/agentos/src/emergent/EmergentJudge.ts:108](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/emergent/EmergentJudge.ts#L108)
 
 Model ID used for the single-pass creation review.
 Should be a fast, cost-efficient model since correctness is primarily
@@ -62,7 +108,7 @@ validated through test cases.
 
 > **promotionModel**: `string`
 
-Defined in: [packages/agentos/src/emergent/EmergentJudge.ts:116](https://github.com/framersai/agentos/blob/c3150c4c6250fd94284bfc6164282706975b97a8/src/emergent/EmergentJudge.ts#L116)
+Defined in: [packages/agentos/src/emergent/EmergentJudge.ts:116](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/emergent/EmergentJudge.ts#L116)
 
 Model ID used by both reviewers in the promotion panel.
 Should be a more capable model than `judgeModel` since promotion

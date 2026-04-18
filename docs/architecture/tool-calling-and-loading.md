@@ -1,6 +1,6 @@
 ---
 title: "Tool Calling & Lazy Loading"
-sidebar_position: 5
+sidebar_position: 10
 ---
 
 This guide explains how AgentOS wires **extensions (tools)** and **skills (prompt modules)** into a tool-calling agent loop, and what “lazy loading” means in practice.

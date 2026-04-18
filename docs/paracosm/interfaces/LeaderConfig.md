@@ -1,6 +1,6 @@
 # Interface: LeaderConfig
 
-Defined in: [types.ts:315](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/types.ts#L315)
+Defined in: [types.ts:324](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/types.ts#L324)
 
 Configuration for a simulation leader/commander.
 
@@ -10,7 +10,7 @@ Configuration for a simulation leader/commander.
 
 > **archetype**: `string`
 
-Defined in: [types.ts:317](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/types.ts#L317)
+Defined in: [types.ts:326](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/types.ts#L326)
 
 ***
 
@@ -18,7 +18,7 @@ Defined in: [types.ts:317](https://github.com/framersai/paracosm/blob/ba2b881292
 
 > **colony**: `string`
 
-Defined in: [types.ts:318](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/types.ts#L318)
+Defined in: [types.ts:327](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/types.ts#L327)
 
 ***
 
@@ -26,7 +26,7 @@ Defined in: [types.ts:318](https://github.com/framersai/paracosm/blob/ba2b881292
 
 > **hexaco**: [`HexacoProfile`](HexacoProfile.md)
 
-Defined in: [types.ts:319](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/types.ts#L319)
+Defined in: [types.ts:328](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/types.ts#L328)
 
 ***
 
@@ -34,7 +34,7 @@ Defined in: [types.ts:319](https://github.com/framersai/paracosm/blob/ba2b881292
 
 > **instructions**: `string`
 
-Defined in: [types.ts:320](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/types.ts#L320)
+Defined in: [types.ts:329](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/types.ts#L329)
 
 ***
 
@@ -42,4 +42,4 @@ Defined in: [types.ts:320](https://github.com/framersai/paracosm/blob/ba2b881292
 
 > **name**: `string`
 
-Defined in: [types.ts:316](https://github.com/framersai/paracosm/blob/ba2b881292b55c8a966fdea8cae3757f12921fdc/src/engine/types.ts#L316)
+Defined in: [types.ts:325](https://github.com/framersai/paracosm/blob/eeeeb9a6203f1c9ce9727b1467c133273b1cca3f/src/engine/types.ts#L325)
