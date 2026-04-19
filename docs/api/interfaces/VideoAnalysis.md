@@ -1,6 +1,6 @@
 # Interface: VideoAnalysis
 
-Defined in: [packages/agentos/src/media/video/types.ts:199](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/video/types.ts#L199)
+Defined in: [packages/agentos/src/media/video/types.ts:199](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/video/types.ts#L199)
 
 Structured result from video analysis.
 
@@ -10,7 +10,7 @@ Structured result from video analysis.
 
 > **description**: `string`
 
-Defined in: [packages/agentos/src/media/video/types.ts:201](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/video/types.ts#L201)
+Defined in: [packages/agentos/src/media/video/types.ts:201](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/video/types.ts#L201)
 
 Free-form textual description / answer from the analyser.
 
@@ -20,7 +20,7 @@ Free-form textual description / answer from the analyser.
 
 > `optional` **durationSec**: `number`
 
-Defined in: [packages/agentos/src/media/video/types.ts:209](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/video/types.ts#L209)
+Defined in: [packages/agentos/src/media/video/types.ts:209](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/video/types.ts#L209)
 
 Overall duration of the analysed video in seconds.
 
@@ -30,7 +30,7 @@ Overall duration of the analysed video in seconds.
 
 > `optional` **modelId**: `string`
 
-Defined in: [packages/agentos/src/media/video/types.ts:211](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/video/types.ts#L211)
+Defined in: [packages/agentos/src/media/video/types.ts:211](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/video/types.ts#L211)
 
 Model that produced the analysis.
 
@@ -40,7 +40,7 @@ Model that produced the analysis.
 
 > `optional` **objects**: `string`[]
 
-Defined in: [packages/agentos/src/media/video/types.ts:205](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/video/types.ts#L205)
+Defined in: [packages/agentos/src/media/video/types.ts:205](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/video/types.ts#L205)
 
 Detected objects / entities across the video.
 
@@ -50,7 +50,7 @@ Detected objects / entities across the video.
 
 > `optional` **providerId**: `string`
 
-Defined in: [packages/agentos/src/media/video/types.ts:213](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/video/types.ts#L213)
+Defined in: [packages/agentos/src/media/video/types.ts:213](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/video/types.ts#L213)
 
 Provider that produced the analysis.
 
@@ -60,7 +60,7 @@ Provider that produced the analysis.
 
 > `optional` **providerMetadata**: `Record`\<`string`, `unknown`\>
 
-Defined in: [packages/agentos/src/media/video/types.ts:215](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/video/types.ts#L215)
+Defined in: [packages/agentos/src/media/video/types.ts:215](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/video/types.ts#L215)
 
 Provider-specific metadata.
 
@@ -70,7 +70,7 @@ Provider-specific metadata.
 
 > `optional` **scenes**: [`VideoScene`](VideoScene.md)[]
 
-Defined in: [packages/agentos/src/media/video/types.ts:203](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/video/types.ts#L203)
+Defined in: [packages/agentos/src/media/video/types.ts:203](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/video/types.ts#L203)
 
 Detected scene segments with timestamps.
 
@@ -80,6 +80,6 @@ Detected scene segments with timestamps.
 
 > `optional` **text**: `string`[]
 
-Defined in: [packages/agentos/src/media/video/types.ts:207](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/video/types.ts#L207)
+Defined in: [packages/agentos/src/media/video/types.ts:207](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/video/types.ts#L207)
 
 Detected on-screen or spoken text (OCR / ASR).

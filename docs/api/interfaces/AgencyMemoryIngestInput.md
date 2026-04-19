@@ -1,6 +1,6 @@
 # Interface: AgencyMemoryIngestInput
 
-Defined in: [packages/agentos/src/agents/agency/AgencyMemoryManager.ts:50](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/agents/agency/AgencyMemoryManager.ts#L50)
+Defined in: [packages/agentos/src/agents/agency/AgencyMemoryManager.ts:50](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/agents/agency/AgencyMemoryManager.ts#L50)
 
 Input for ingesting documents to agency shared memory.
 
@@ -10,7 +10,7 @@ Input for ingesting documents to agency shared memory.
 
 > `optional` **category**: `"context"` \| `"summary"` \| `"finding"` \| `"decision"` \| `"communication"`
 
-Defined in: [packages/agentos/src/agents/agency/AgencyMemoryManager.ts:58](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/agents/agency/AgencyMemoryManager.ts#L58)
+Defined in: [packages/agentos/src/agents/agency/AgencyMemoryManager.ts:58](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/agents/agency/AgencyMemoryManager.ts#L58)
 
 Document category
 
@@ -20,7 +20,7 @@ Document category
 
 > **content**: `string`
 
-Defined in: [packages/agentos/src/agents/agency/AgencyMemoryManager.ts:52](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/agents/agency/AgencyMemoryManager.ts#L52)
+Defined in: [packages/agentos/src/agents/agency/AgencyMemoryManager.ts:52](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/agents/agency/AgencyMemoryManager.ts#L52)
 
 Document content
 
@@ -30,7 +30,7 @@ Document content
 
 > **contributorGmiId**: `string`
 
-Defined in: [packages/agentos/src/agents/agency/AgencyMemoryManager.ts:54](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/agents/agency/AgencyMemoryManager.ts#L54)
+Defined in: [packages/agentos/src/agents/agency/AgencyMemoryManager.ts:54](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/agents/agency/AgencyMemoryManager.ts#L54)
 
 GMI that contributed this content
 
@@ -40,7 +40,7 @@ GMI that contributed this content
 
 > **contributorRoleId**: `string`
 
-Defined in: [packages/agentos/src/agents/agency/AgencyMemoryManager.ts:56](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/agents/agency/AgencyMemoryManager.ts#L56)
+Defined in: [packages/agentos/src/agents/agency/AgencyMemoryManager.ts:56](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/agents/agency/AgencyMemoryManager.ts#L56)
 
 Role of the contributing GMI
 
@@ -50,7 +50,7 @@ Role of the contributing GMI
 
 > `optional` **embedding**: `number`[]
 
-Defined in: [packages/agentos/src/agents/agency/AgencyMemoryManager.ts:62](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/agents/agency/AgencyMemoryManager.ts#L62)
+Defined in: [packages/agentos/src/agents/agency/AgencyMemoryManager.ts:62](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/agents/agency/AgencyMemoryManager.ts#L62)
 
 Optional pre-computed embedding
 
@@ -60,6 +60,6 @@ Optional pre-computed embedding
 
 > `optional` **metadata**: `Record`\<`string`, `unknown`\>
 
-Defined in: [packages/agentos/src/agents/agency/AgencyMemoryManager.ts:60](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/agents/agency/AgencyMemoryManager.ts#L60)
+Defined in: [packages/agentos/src/agents/agency/AgencyMemoryManager.ts:60](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/agents/agency/AgencyMemoryManager.ts#L60)
 
 Additional metadata

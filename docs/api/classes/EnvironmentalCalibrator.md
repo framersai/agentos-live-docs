@@ -1,6 +1,6 @@
 # Class: EnvironmentalCalibrator
 
-Defined in: [packages/agentos/src/hearing/EnvironmentalCalibrator.ts:129](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/hearing/EnvironmentalCalibrator.ts#L129)
+Defined in: [packages/agentos/src/hearing/EnvironmentalCalibrator.ts:129](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/hearing/EnvironmentalCalibrator.ts#L129)
 
 EnvironmentalCalibrator (Web Version) - Adapts to acoustic environment in real-time
 using Web Audio APIs for initial calibration and processing raw frames for continuous updates.
@@ -15,7 +15,7 @@ using Web Audio APIs for initial calibration and processing raw frames for conti
 
 > **new EnvironmentalCalibrator**(`config?`): `EnvironmentalCalibrator`
 
-Defined in: [packages/agentos/src/hearing/EnvironmentalCalibrator.ts:161](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/hearing/EnvironmentalCalibrator.ts#L161)
+Defined in: [packages/agentos/src/hearing/EnvironmentalCalibrator.ts:161](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/hearing/EnvironmentalCalibrator.ts#L161)
 
 Creates a new EnvironmentalCalibrator instance.
 
@@ -200,7 +200,7 @@ v0.1.26
 
 > **calibrate**(`audioStream`): `Promise`\<[`NoiseProfile`](../interfaces/NoiseProfile.md)\>
 
-Defined in: [packages/agentos/src/hearing/EnvironmentalCalibrator.ts:190](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/hearing/EnvironmentalCalibrator.ts#L190)
+Defined in: [packages/agentos/src/hearing/EnvironmentalCalibrator.ts:190](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/hearing/EnvironmentalCalibrator.ts#L190)
 
 Performs initial environment calibration using a MediaStream.
 Sets up a temporary Web Audio pipeline to analyze the stream.
@@ -226,7 +226,7 @@ or rejects if calibration fails.
 
 > **continuousAdaptation**(`audioFrame`): `void`
 
-Defined in: [packages/agentos/src/hearing/EnvironmentalCalibrator.ts:360](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/hearing/EnvironmentalCalibrator.ts#L360)
+Defined in: [packages/agentos/src/hearing/EnvironmentalCalibrator.ts:360](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/hearing/EnvironmentalCalibrator.ts#L360)
 
 Processes a single audio frame for continuous adaptation after initial calibration.
 
@@ -248,7 +248,7 @@ A chunk of raw audio data (PCM).
 
 > **emit**\<`U`\>(`event`, ...`args`): `boolean`
 
-Defined in: [packages/agentos/src/hearing/EnvironmentalCalibrator.ts:131](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/hearing/EnvironmentalCalibrator.ts#L131)
+Defined in: [packages/agentos/src/hearing/EnvironmentalCalibrator.ts:131](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/hearing/EnvironmentalCalibrator.ts#L131)
 
 #### Type Parameters
 
@@ -309,7 +309,7 @@ v6.0.0
 
 > **getCurrentProfile**(): [`NoiseProfile`](../interfaces/NoiseProfile.md) \| `null`
 
-Defined in: [packages/agentos/src/hearing/EnvironmentalCalibrator.ts:489](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/hearing/EnvironmentalCalibrator.ts#L489)
+Defined in: [packages/agentos/src/hearing/EnvironmentalCalibrator.ts:489](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/hearing/EnvironmentalCalibrator.ts#L489)
 
 #### Returns
 
@@ -452,7 +452,7 @@ v10.0.0
 
 > **on**\<`U`\>(`event`, `listener`): `this`
 
-Defined in: [packages/agentos/src/hearing/EnvironmentalCalibrator.ts:130](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/hearing/EnvironmentalCalibrator.ts#L130)
+Defined in: [packages/agentos/src/hearing/EnvironmentalCalibrator.ts:130](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/hearing/EnvironmentalCalibrator.ts#L130)
 
 #### Type Parameters
 
@@ -541,7 +541,7 @@ v0.3.0
 
 > **onVoiceActivityDetected**(): `void`
 
-Defined in: [packages/agentos/src/hearing/EnvironmentalCalibrator.ts:484](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/hearing/EnvironmentalCalibrator.ts#L484)
+Defined in: [packages/agentos/src/hearing/EnvironmentalCalibrator.ts:484](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/hearing/EnvironmentalCalibrator.ts#L484)
 
 Records voice activity detection to reset backoff.
 

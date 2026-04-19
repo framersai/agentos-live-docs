@@ -1,6 +1,6 @@
 # Interface: ExtensionContext\<TOptions\>
 
-Defined in: [packages/agentos/src/extensions/types.ts:71](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/extensions/types.ts#L71)
+Defined in: [packages/agentos/src/extensions/types.ts:71](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/extensions/types.ts#L71)
 
 Context passed to extension-pack factory helpers (e.g. `createExtensionPack()`).
 
@@ -24,7 +24,7 @@ function for direct, programmatic consumption.
 
 > `optional` **getSecret**: (`secretId`) => `string` \| `undefined`
 
-Defined in: [packages/agentos/src/extensions/types.ts:57](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/extensions/types.ts#L57)
+Defined in: [packages/agentos/src/extensions/types.ts:57](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/extensions/types.ts#L57)
 
 Resolves a secret value registered with AgentOS / the host application.
 Returns `undefined` when a secret is not configured.
@@ -49,7 +49,7 @@ Returns `undefined` when a secret is not configured.
 
 > `optional` **logger**: [`ILogger`](ILogger.md)
 
-Defined in: [packages/agentos/src/extensions/types.ts:52](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/extensions/types.ts#L52)
+Defined in: [packages/agentos/src/extensions/types.ts:52](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/extensions/types.ts#L52)
 
 #### Inherited from
 
@@ -61,7 +61,7 @@ Defined in: [packages/agentos/src/extensions/types.ts:52](https://github.com/fra
 
 > `optional` **onActivate**: () => `void` \| `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/extensions/types.ts:74](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/extensions/types.ts#L74)
+Defined in: [packages/agentos/src/extensions/types.ts:74](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/extensions/types.ts#L74)
 
 #### Returns
 
@@ -73,7 +73,7 @@ Defined in: [packages/agentos/src/extensions/types.ts:74](https://github.com/fra
 
 > `optional` **onDeactivate**: () => `void` \| `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/extensions/types.ts:75](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/extensions/types.ts#L75)
+Defined in: [packages/agentos/src/extensions/types.ts:75](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/extensions/types.ts#L75)
 
 #### Returns
 
@@ -85,7 +85,7 @@ Defined in: [packages/agentos/src/extensions/types.ts:75](https://github.com/fra
 
 > `optional` **options**: `TOptions`
 
-Defined in: [packages/agentos/src/extensions/types.ts:73](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/extensions/types.ts#L73)
+Defined in: [packages/agentos/src/extensions/types.ts:73](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/extensions/types.ts#L73)
 
 ***
 
@@ -93,7 +93,7 @@ Defined in: [packages/agentos/src/extensions/types.ts:73](https://github.com/fra
 
 > `optional` **services**: [`ISharedServiceRegistry`](ISharedServiceRegistry.md)
 
-Defined in: [packages/agentos/src/extensions/types.ts:61](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/extensions/types.ts#L61)
+Defined in: [packages/agentos/src/extensions/types.ts:61](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/extensions/types.ts#L61)
 
 Shared singleton registry for lazy-loading heavyweight extension services.
 

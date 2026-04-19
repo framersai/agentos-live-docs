@@ -1,6 +1,6 @@
 # Interface: VideoFallbackEvent
 
-Defined in: [packages/agentos/src/media/video/FallbackVideoProxy.ts:60](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/video/FallbackVideoProxy.ts#L60)
+Defined in: [packages/agentos/src/media/video/FallbackVideoProxy.ts:60](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/video/FallbackVideoProxy.ts#L60)
 
 Payload emitted on the `video:generate:fallback` event when a provider in
 the chain fails and the proxy advances to the next candidate.
@@ -19,7 +19,7 @@ emitter.on('video:generate:fallback', (evt: VideoFallbackEvent) => {
 
 > **from**: `string`
 
-Defined in: [packages/agentos/src/media/video/FallbackVideoProxy.ts:64](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/video/FallbackVideoProxy.ts#L64)
+Defined in: [packages/agentos/src/media/video/FallbackVideoProxy.ts:64](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/video/FallbackVideoProxy.ts#L64)
 
 Identifier of the provider that failed.
 
@@ -29,7 +29,7 @@ Identifier of the provider that failed.
 
 > **reason**: `string`
 
-Defined in: [packages/agentos/src/media/video/FallbackVideoProxy.ts:68](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/video/FallbackVideoProxy.ts#L68)
+Defined in: [packages/agentos/src/media/video/FallbackVideoProxy.ts:68](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/video/FallbackVideoProxy.ts#L68)
 
 Human-readable reason for the fallback (error message or "not supported").
 
@@ -39,7 +39,7 @@ Human-readable reason for the fallback (error message or "not supported").
 
 > **to**: `string`
 
-Defined in: [packages/agentos/src/media/video/FallbackVideoProxy.ts:66](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/video/FallbackVideoProxy.ts#L66)
+Defined in: [packages/agentos/src/media/video/FallbackVideoProxy.ts:66](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/video/FallbackVideoProxy.ts#L66)
 
 Identifier of the provider that will be tried next.
 
@@ -49,6 +49,6 @@ Identifier of the provider that will be tried next.
 
 > **type**: `"video:generate:fallback"`
 
-Defined in: [packages/agentos/src/media/video/FallbackVideoProxy.ts:62](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/video/FallbackVideoProxy.ts#L62)
+Defined in: [packages/agentos/src/media/video/FallbackVideoProxy.ts:62](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/video/FallbackVideoProxy.ts#L62)
 
 The event discriminator. Always `'video:generate:fallback'`.

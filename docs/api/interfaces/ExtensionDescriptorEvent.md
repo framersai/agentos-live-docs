@@ -1,6 +1,6 @@
 # Interface: ExtensionDescriptorEvent\<TPayload\>
 
-Defined in: [packages/agentos/src/extensions/events.ts:20](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/extensions/events.ts#L20)
+Defined in: [packages/agentos/src/extensions/events.ts:20](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/extensions/events.ts#L20)
 
 ## Extends
 
@@ -18,7 +18,7 @@ Defined in: [packages/agentos/src/extensions/events.ts:20](https://github.com/fr
 
 > **descriptor**: [`ExtensionDescriptor`](ExtensionDescriptor.md)\<`TPayload`\>
 
-Defined in: [packages/agentos/src/extensions/events.ts:22](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/extensions/events.ts#L22)
+Defined in: [packages/agentos/src/extensions/events.ts:22](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/extensions/events.ts#L22)
 
 ***
 
@@ -26,7 +26,7 @@ Defined in: [packages/agentos/src/extensions/events.ts:22](https://github.com/fr
 
 > **kind**: `string`
 
-Defined in: [packages/agentos/src/extensions/events.ts:23](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/extensions/events.ts#L23)
+Defined in: [packages/agentos/src/extensions/events.ts:23](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/extensions/events.ts#L23)
 
 ***
 
@@ -34,7 +34,7 @@ Defined in: [packages/agentos/src/extensions/events.ts:23](https://github.com/fr
 
 > **timestamp**: `string`
 
-Defined in: [packages/agentos/src/extensions/events.ts:11](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/extensions/events.ts#L11)
+Defined in: [packages/agentos/src/extensions/events.ts:11](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/extensions/events.ts#L11)
 
 #### Inherited from
 
@@ -46,7 +46,7 @@ Defined in: [packages/agentos/src/extensions/events.ts:11](https://github.com/fr
 
 > **type**: `"descriptor:activated"` \| `"descriptor:deactivated"`
 
-Defined in: [packages/agentos/src/extensions/events.ts:21](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/extensions/events.ts#L21)
+Defined in: [packages/agentos/src/extensions/events.ts:21](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/extensions/events.ts#L21)
 
 #### Overrides
 

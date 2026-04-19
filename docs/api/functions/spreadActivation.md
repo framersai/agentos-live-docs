@@ -2,7 +2,7 @@
 
 > **spreadActivation**(`input`): `Promise`\<[`ActivatedNode`](../interfaces/ActivatedNode.md)[]\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/SpreadingActivation.ts:51](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/retrieval/graph/SpreadingActivation.ts#L51)
+Defined in: [packages/agentos/src/memory/retrieval/graph/SpreadingActivation.ts:51](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/retrieval/graph/SpreadingActivation.ts#L51)
 
 Run spreading activation from seed nodes.
 

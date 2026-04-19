@@ -1,6 +1,6 @@
 # Interface: WorkflowDescriptorPayload
 
-Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:184](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/workflows/WorkflowTypes.ts#L184)
+Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:184](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/workflows/WorkflowTypes.ts#L184)
 
 Descriptor payload stored in the extension registry for workflows.
 
@@ -10,7 +10,7 @@ Descriptor payload stored in the extension registry for workflows.
 
 > **definition**: [`WorkflowDefinition`](WorkflowDefinition.md)
 
-Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:185](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/workflows/WorkflowTypes.ts#L185)
+Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:185](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/workflows/WorkflowTypes.ts#L185)
 
 ***
 
@@ -18,4 +18,4 @@ Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:185](
 
 > `optional` **metadata**: `Record`\<`string`, `unknown`\>
 
-Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:186](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/workflows/WorkflowTypes.ts#L186)
+Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:186](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/workflows/WorkflowTypes.ts#L186)

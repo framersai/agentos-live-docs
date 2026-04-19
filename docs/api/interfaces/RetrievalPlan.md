@@ -1,6 +1,6 @@
 # Interface: RetrievalPlan
 
-Defined in: [packages/agentos/src/rag/unified/types.ts:53](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/unified/types.ts#L53)
+Defined in: [packages/agentos/src/rag/unified/types.ts:53](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/unified/types.ts#L53)
 
 Structured retrieval plan produced by the query classifier.
 
@@ -39,7 +39,7 @@ buildDefaultPlan for creating sensible defaults per strategy level
 
 > **confidence**: `number`
 
-Defined in: [packages/agentos/src/rag/unified/types.ts:153](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/unified/types.ts#L153)
+Defined in: [packages/agentos/src/rag/unified/types.ts:153](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/unified/types.ts#L153)
 
 Confidence score from the classifier (0 to 1).
 
@@ -52,7 +52,7 @@ Low confidence may trigger plan escalation in the router.
 
 > **deepResearch**: `boolean`
 
-Defined in: [packages/agentos/src/rag/unified/types.ts:145](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/unified/types.ts#L145)
+Defined in: [packages/agentos/src/rag/unified/types.ts:145](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/unified/types.ts#L145)
 
 Whether deep research mode is enabled.
 
@@ -66,7 +66,7 @@ strategy.
 
 > **graphConfig**: [`GraphTraversalConfig`](GraphTraversalConfig.md)
 
-Defined in: [packages/agentos/src/rag/unified/types.ts:125](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/unified/types.ts#L125)
+Defined in: [packages/agentos/src/rag/unified/types.ts:125](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/unified/types.ts#L125)
 
 Graph traversal configuration for GraphRAG source.
 
@@ -79,7 +79,7 @@ starting from seed chunks discovered by vector/BM25 search.
 
 > **hyde**: `object`
 
-Defined in: [packages/agentos/src/rag/unified/types.ts:82](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/unified/types.ts#L82)
+Defined in: [packages/agentos/src/rag/unified/types.ts:82](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/unified/types.ts#L82)
 
 HyDE (Hypothetical Document Embedding) configuration.
 
@@ -115,7 +115,7 @@ HydeRetriever
 
 > **memoryTypes**: [`MemoryTypeFilter`](../type-aliases/MemoryTypeFilter.md)[]
 
-Defined in: [packages/agentos/src/rag/unified/types.ts:101](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/unified/types.ts#L101)
+Defined in: [packages/agentos/src/rag/unified/types.ts:101](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/unified/types.ts#L101)
 
 Which cognitive memory types to consult.
 
@@ -130,7 +130,7 @@ Which cognitive memory types to consult.
 
 > **modalities**: [`ModalityFilter`](../type-aliases/ModalityFilter.md)[]
 
-Defined in: [packages/agentos/src/rag/unified/types.ts:109](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/unified/types.ts#L109)
+Defined in: [packages/agentos/src/rag/unified/types.ts:109](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/unified/types.ts#L109)
 
 Which content modalities to search in multimodal index.
 
@@ -143,7 +143,7 @@ non-text modalities are handled by the multimodal indexer.
 
 > **raptorLayers**: `number`[]
 
-Defined in: [packages/agentos/src/rag/unified/types.ts:136](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/unified/types.ts#L136)
+Defined in: [packages/agentos/src/rag/unified/types.ts:136](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/unified/types.ts#L136)
 
 Which RAPTOR tree layers to search.
 
@@ -159,7 +159,7 @@ An empty array searches all layers (default RAPTOR behaviour).
 
 > **reasoning**: `string`
 
-Defined in: [packages/agentos/src/rag/unified/types.ts:159](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/unified/types.ts#L159)
+Defined in: [packages/agentos/src/rag/unified/types.ts:159](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/unified/types.ts#L159)
 
 Human-readable reasoning from the classifier explaining why
 this plan was selected.
@@ -170,7 +170,7 @@ this plan was selected.
 
 > **sources**: [`RetrievalPlanSources`](RetrievalPlanSources.md)
 
-Defined in: [packages/agentos/src/rag/unified/types.ts:72](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/unified/types.ts#L72)
+Defined in: [packages/agentos/src/rag/unified/types.ts:72](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/unified/types.ts#L72)
 
 Which retrieval sources to query.
 
@@ -184,7 +184,7 @@ available at runtime regardless of these flags.
 
 > **strategy**: `RetrievalStrategy`
 
-Defined in: [packages/agentos/src/rag/unified/types.ts:63](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/unified/types.ts#L63)
+Defined in: [packages/agentos/src/rag/unified/types.ts:63](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/unified/types.ts#L63)
 
 Base retrieval strategy (determines overall pipeline depth).
 
@@ -200,7 +200,7 @@ Maps to the existing strategy tier system but carries richer config.
 
 > **temporal**: [`TemporalConfig`](TemporalConfig.md)
 
-Defined in: [packages/agentos/src/rag/unified/types.ts:117](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/unified/types.ts#L117)
+Defined in: [packages/agentos/src/rag/unified/types.ts:117](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/unified/types.ts#L117)
 
 Temporal preferences for result ordering and filtering.
 

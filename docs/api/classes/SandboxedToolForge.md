@@ -1,6 +1,6 @@
 # Class: SandboxedToolForge
 
-Defined in: [packages/agentos/src/emergent/SandboxedToolForge.ts:134](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/emergent/SandboxedToolForge.ts#L134)
+Defined in: [packages/agentos/src/emergent/SandboxedToolForge.ts:134](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/emergent/SandboxedToolForge.ts#L134)
 
 Runs agent-generated code in an isolated sandbox with strict resource limits.
 
@@ -39,7 +39,7 @@ console.log(result.output); // 5
 
 > **new SandboxedToolForge**(`config?`): `SandboxedToolForge`
 
-Defined in: [packages/agentos/src/emergent/SandboxedToolForge.ts:153](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/emergent/SandboxedToolForge.ts#L153)
+Defined in: [packages/agentos/src/emergent/SandboxedToolForge.ts:153](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/emergent/SandboxedToolForge.ts#L153)
 
 Create a new SandboxedToolForge instance.
 
@@ -62,7 +62,7 @@ Optional configuration overrides. All fields have sensible
 
 > **execute**(`request`): `Promise`\<[`SandboxExecutionResult`](../interfaces/SandboxExecutionResult.md)\>
 
-Defined in: [packages/agentos/src/emergent/SandboxedToolForge.ts:264](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/emergent/SandboxedToolForge.ts#L264)
+Defined in: [packages/agentos/src/emergent/SandboxedToolForge.ts:264](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/emergent/SandboxedToolForge.ts#L264)
 
 Execute agent-generated code in the sandbox.
 
@@ -115,7 +115,7 @@ const result = await forge.execute({
 
 > **validateCode**(`code`, `allowlist`): `object`
 
-Defined in: [packages/agentos/src/emergent/SandboxedToolForge.ts:192](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/emergent/SandboxedToolForge.ts#L192)
+Defined in: [packages/agentos/src/emergent/SandboxedToolForge.ts:192](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/emergent/SandboxedToolForge.ts#L192)
 
 Static analysis of code — reject dangerous patterns before execution.
 

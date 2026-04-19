@@ -1,6 +1,6 @@
 # Interface: ITokenUsage
 
-Defined in: [packages/agentos/src/core/storage/IStorageAdapter.ts:124](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/storage/IStorageAdapter.ts#L124)
+Defined in: [packages/agentos/src/core/storage/IStorageAdapter.ts:124](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/storage/IStorageAdapter.ts#L124)
 
 Token usage statistics for LLM API calls.
 
@@ -20,11 +20,36 @@ const usage: ITokenUsage = {
 
 ## Properties
 
+### cacheCreationTokens?
+
+> `optional` **cacheCreationTokens**: `number`
+
+Defined in: [packages/agentos/src/core/storage/IStorageAdapter.ts:140](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/storage/IStorageAdapter.ts#L140)
+
+Tokens written to the provider's prompt-prefix cache as a new entry
+(Anthropic `cache_creation_input_tokens`). Same undefined-vs-zero
+convention as `cacheReadTokens`.
+
+***
+
+### cacheReadTokens?
+
+> `optional` **cacheReadTokens**: `number`
+
+Defined in: [packages/agentos/src/core/storage/IStorageAdapter.ts:134](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/storage/IStorageAdapter.ts#L134)
+
+Tokens served from the provider's prompt-prefix cache (Anthropic
+`cache_read_input_tokens`). Optional — undefined when no aggregated
+message reported cache activity, so consumers can distinguish
+"provider did not report" from "zero hits".
+
+***
+
 ### completionTokens
 
 > **completionTokens**: `number`
 
-Defined in: [packages/agentos/src/core/storage/IStorageAdapter.ts:126](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/storage/IStorageAdapter.ts#L126)
+Defined in: [packages/agentos/src/core/storage/IStorageAdapter.ts:126](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/storage/IStorageAdapter.ts#L126)
 
 Number of tokens in the completion (output)
 
@@ -34,7 +59,7 @@ Number of tokens in the completion (output)
 
 > **promptTokens**: `number`
 
-Defined in: [packages/agentos/src/core/storage/IStorageAdapter.ts:125](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/storage/IStorageAdapter.ts#L125)
+Defined in: [packages/agentos/src/core/storage/IStorageAdapter.ts:125](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/storage/IStorageAdapter.ts#L125)
 
 Number of tokens in the prompt (input)
 
@@ -44,6 +69,6 @@ Number of tokens in the prompt (input)
 
 > **totalTokens**: `number`
 
-Defined in: [packages/agentos/src/core/storage/IStorageAdapter.ts:127](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/storage/IStorageAdapter.ts#L127)
+Defined in: [packages/agentos/src/core/storage/IStorageAdapter.ts:127](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/storage/IStorageAdapter.ts#L127)
 
 Total tokens used (prompt + completion)

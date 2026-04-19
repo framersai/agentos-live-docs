@@ -1,6 +1,6 @@
 # Interface: CalibrationConfig
 
-Defined in: [packages/agentos/src/hearing/EnvironmentalCalibrator.ts:47](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/hearing/EnvironmentalCalibrator.ts#L47)
+Defined in: [packages/agentos/src/hearing/EnvironmentalCalibrator.ts:47](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/hearing/EnvironmentalCalibrator.ts#L47)
 
 Configuration for environmental calibration using Web Audio APIs.
 
@@ -10,7 +10,7 @@ Configuration for environmental calibration using Web Audio APIs.
 
 > `optional` **backoffMultiplier**: `number`
 
-Defined in: [packages/agentos/src/hearing/EnvironmentalCalibrator.ts:75](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/hearing/EnvironmentalCalibrator.ts#L75)
+Defined in: [packages/agentos/src/hearing/EnvironmentalCalibrator.ts:75](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/hearing/EnvironmentalCalibrator.ts#L75)
 
 Multiplier for the exponential backoff strategy during continuous adaptation.
 
@@ -26,7 +26,7 @@ Multiplier for the exponential backoff strategy during continuous adaptation.
 
 > `optional` **calibrationBufferSize**: `number`
 
-Defined in: [packages/agentos/src/hearing/EnvironmentalCalibrator.ts:58](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/hearing/EnvironmentalCalibrator.ts#L58)
+Defined in: [packages/agentos/src/hearing/EnvironmentalCalibrator.ts:58](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/hearing/EnvironmentalCalibrator.ts#L58)
 
 Buffer size for the ScriptProcessorNode used during initial calibration.
 Affects how often audio data is analyzed during calibration.
@@ -43,7 +43,7 @@ Affects how often audio data is analyzed during calibration.
 
 > `optional` **enableFrequencyAnalysis**: `boolean`
 
-Defined in: [packages/agentos/src/hearing/EnvironmentalCalibrator.ts:100](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/hearing/EnvironmentalCalibrator.ts#L100)
+Defined in: [packages/agentos/src/hearing/EnvironmentalCalibrator.ts:100](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/hearing/EnvironmentalCalibrator.ts#L100)
 
 Enable frequency analysis using AnalyserNode during initial calibration.
 
@@ -59,7 +59,7 @@ true
 
 > `optional` **fftSize**: `number`
 
-Defined in: [packages/agentos/src/hearing/EnvironmentalCalibrator.ts:106](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/hearing/EnvironmentalCalibrator.ts#L106)
+Defined in: [packages/agentos/src/hearing/EnvironmentalCalibrator.ts:106](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/hearing/EnvironmentalCalibrator.ts#L106)
 
 FFT size for the AnalyserNode. Must be a power of 2.
 `frequencyBinCount` will be `fftSize / 2`.
@@ -76,7 +76,7 @@ FFT size for the AnalyserNode. Must be a power of 2.
 
 > `optional` **initialCalibrationMs**: `number`
 
-Defined in: [packages/agentos/src/hearing/EnvironmentalCalibrator.ts:52](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/hearing/EnvironmentalCalibrator.ts#L52)
+Defined in: [packages/agentos/src/hearing/EnvironmentalCalibrator.ts:52](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/hearing/EnvironmentalCalibrator.ts#L52)
 
 Duration in milliseconds for the initial calibration phase via MediaStream.
 
@@ -92,7 +92,7 @@ Duration in milliseconds for the initial calibration phase via MediaStream.
 
 > `optional` **initialUpdateIntervalMs**: `number`
 
-Defined in: [packages/agentos/src/hearing/EnvironmentalCalibrator.ts:70](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/hearing/EnvironmentalCalibrator.ts#L70)
+Defined in: [packages/agentos/src/hearing/EnvironmentalCalibrator.ts:70](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/hearing/EnvironmentalCalibrator.ts#L70)
 
 Initial interval in milliseconds for continuous adaptation checks if no voice activity.
 This applies when `processAudioFrame` is used for continuous updates.
@@ -109,7 +109,7 @@ This applies when `processAudioFrame` is used for continuous updates.
 
 > `optional` **maxBackoffIntervalMs**: `number`
 
-Defined in: [packages/agentos/src/hearing/EnvironmentalCalibrator.ts:80](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/hearing/EnvironmentalCalibrator.ts#L80)
+Defined in: [packages/agentos/src/hearing/EnvironmentalCalibrator.ts:80](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/hearing/EnvironmentalCalibrator.ts#L80)
 
 Maximum interval in milliseconds for continuous adaptation checks.
 
@@ -125,7 +125,7 @@ Maximum interval in milliseconds for continuous adaptation checks.
 
 > `optional` **minBackoffIntervalMs**: `number`
 
-Defined in: [packages/agentos/src/hearing/EnvironmentalCalibrator.ts:85](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/hearing/EnvironmentalCalibrator.ts#L85)
+Defined in: [packages/agentos/src/hearing/EnvironmentalCalibrator.ts:85](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/hearing/EnvironmentalCalibrator.ts#L85)
 
 Minimum interval in milliseconds for continuous adaptation checks after activity or change.
 
@@ -141,7 +141,7 @@ Minimum interval in milliseconds for continuous adaptation checks after activity
 
 > `optional` **minRmsSamplesForContinuousUpdate**: `number`
 
-Defined in: [packages/agentos/src/hearing/EnvironmentalCalibrator.ts:64](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/hearing/EnvironmentalCalibrator.ts#L64)
+Defined in: [packages/agentos/src/hearing/EnvironmentalCalibrator.ts:64](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/hearing/EnvironmentalCalibrator.ts#L64)
 
 Minimum number of RMS samples (from processed frames) required for a meaningful profile update
 during continuous adaptation (when `processAudioFrame` is called).
@@ -158,7 +158,7 @@ during continuous adaptation (when `processAudioFrame` is called).
 
 > `optional` **rmsHistoryBufferSize**: `number`
 
-Defined in: [packages/agentos/src/hearing/EnvironmentalCalibrator.ts:90](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/hearing/EnvironmentalCalibrator.ts#L90)
+Defined in: [packages/agentos/src/hearing/EnvironmentalCalibrator.ts:90](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/hearing/EnvironmentalCalibrator.ts#L90)
 
 Number of recent RMS values (from processed frames) to store in a buffer for continuous adaptation.
 
@@ -174,7 +174,7 @@ Number of recent RMS values (from processed frames) to store in a buffer for con
 
 > `optional` **sampleRate**: `number`
 
-Defined in: [packages/agentos/src/hearing/EnvironmentalCalibrator.ts:112](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/hearing/EnvironmentalCalibrator.ts#L112)
+Defined in: [packages/agentos/src/hearing/EnvironmentalCalibrator.ts:112](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/hearing/EnvironmentalCalibrator.ts#L112)
 
 Sample rate of the audio. The calibrator will try to use this for its internal AudioContext.
 If the input MediaStream has a different rate, resampling might occur or the stream's rate is used.
@@ -191,7 +191,7 @@ If the input MediaStream has a different rate, resampling might occur or the str
 
 > `optional` **thresholdSensitivityFactor**: `number`
 
-Defined in: [packages/agentos/src/hearing/EnvironmentalCalibrator.ts:95](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/hearing/EnvironmentalCalibrator.ts#L95)
+Defined in: [packages/agentos/src/hearing/EnvironmentalCalibrator.ts:95](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/hearing/EnvironmentalCalibrator.ts#L95)
 
 Sensitivity adjustment factor for calculating speech/silence thresholds.
 

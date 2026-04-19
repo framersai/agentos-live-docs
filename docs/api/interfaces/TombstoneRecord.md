@@ -1,6 +1,6 @@
 # Interface: TombstoneRecord
 
-Defined in: [packages/agentos/src/provenance/types.ts:256](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/provenance/types.ts#L256)
+Defined in: [packages/agentos/src/provenance/types.ts:256](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/provenance/types.ts#L256)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/provenance/types.ts:256](https://github.com/fr
 
 > **eventId**: `string`
 
-Defined in: [packages/agentos/src/provenance/types.ts:266](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/provenance/types.ts#L266)
+Defined in: [packages/agentos/src/provenance/types.ts:266](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/provenance/types.ts#L266)
 
 Signed event ID that caused the tombstone.
 
@@ -18,7 +18,7 @@ Signed event ID that caused the tombstone.
 
 > **id**: `string`
 
-Defined in: [packages/agentos/src/provenance/types.ts:258](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/provenance/types.ts#L258)
+Defined in: [packages/agentos/src/provenance/types.ts:258](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/provenance/types.ts#L258)
 
 Unique tombstone ID.
 
@@ -28,7 +28,7 @@ Unique tombstone ID.
 
 > **initiator**: `string`
 
-Defined in: [packages/agentos/src/provenance/types.ts:268](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/provenance/types.ts#L268)
+Defined in: [packages/agentos/src/provenance/types.ts:268](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/provenance/types.ts#L268)
 
 Who initiated the tombstone (agent ID or 'human').
 
@@ -38,7 +38,7 @@ Who initiated the tombstone (agent ID or 'human').
 
 > **reason**: `string`
 
-Defined in: [packages/agentos/src/provenance/types.ts:264](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/provenance/types.ts#L264)
+Defined in: [packages/agentos/src/provenance/types.ts:264](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/provenance/types.ts#L264)
 
 Reason for tombstoning.
 
@@ -48,7 +48,7 @@ Reason for tombstoning.
 
 > **recordId**: `string`
 
-Defined in: [packages/agentos/src/provenance/types.ts:262](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/provenance/types.ts#L262)
+Defined in: [packages/agentos/src/provenance/types.ts:262](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/provenance/types.ts#L262)
 
 Primary key of the tombstoned record.
 
@@ -58,7 +58,7 @@ Primary key of the tombstoned record.
 
 > **tableName**: `string`
 
-Defined in: [packages/agentos/src/provenance/types.ts:260](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/provenance/types.ts#L260)
+Defined in: [packages/agentos/src/provenance/types.ts:260](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/provenance/types.ts#L260)
 
 Table the tombstoned record belongs to.
 
@@ -68,6 +68,6 @@ Table the tombstoned record belongs to.
 
 > **timestamp**: `string`
 
-Defined in: [packages/agentos/src/provenance/types.ts:270](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/provenance/types.ts#L270)
+Defined in: [packages/agentos/src/provenance/types.ts:270](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/provenance/types.ts#L270)
 
 ISO 8601 timestamp.

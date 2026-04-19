@@ -1,6 +1,6 @@
 # Interface: DocumentMetadata
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:663](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/io/facade/types.ts#L663)
+Defined in: [packages/agentos/src/memory/io/facade/types.ts:663](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/io/facade/types.ts#L663)
 
 Arbitrary key-value metadata attached to a loaded document.
 Well-known fields are typed explicitly; any additional fields are allowed.
@@ -17,7 +17,7 @@ Any additional metadata fields from the source document.
 
 > `optional` **author**: `string`
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:668](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/io/facade/types.ts#L668)
+Defined in: [packages/agentos/src/memory/io/facade/types.ts:668](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/io/facade/types.ts#L668)
 
 Primary author of the document.
 
@@ -27,7 +27,7 @@ Primary author of the document.
 
 > `optional` **createdAt**: `string`
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:683](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/io/facade/types.ts#L683)
+Defined in: [packages/agentos/src/memory/io/facade/types.ts:683](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/io/facade/types.ts#L683)
 
 ISO 8601 creation timestamp.
 
@@ -37,7 +37,7 @@ ISO 8601 creation timestamp.
 
 > `optional` **language**: `string`
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:680](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/io/facade/types.ts#L680)
+Defined in: [packages/agentos/src/memory/io/facade/types.ts:680](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/io/facade/types.ts#L680)
 
 ISO 639-1 language code detected in the document.
 
@@ -53,7 +53,7 @@ ISO 639-1 language code detected in the document.
 
 > `optional` **modifiedAt**: `string`
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:686](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/io/facade/types.ts#L686)
+Defined in: [packages/agentos/src/memory/io/facade/types.ts:686](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/io/facade/types.ts#L686)
 
 ISO 8601 last-modified timestamp.
 
@@ -63,7 +63,7 @@ ISO 8601 last-modified timestamp.
 
 > `optional` **pageCount**: `number`
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:671](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/io/facade/types.ts#L671)
+Defined in: [packages/agentos/src/memory/io/facade/types.ts:671](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/io/facade/types.ts#L671)
 
 Number of pages (PDF/DOCX).
 
@@ -73,7 +73,7 @@ Number of pages (PDF/DOCX).
 
 > `optional` **source**: `string`
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:689](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/io/facade/types.ts#L689)
+Defined in: [packages/agentos/src/memory/io/facade/types.ts:689](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/io/facade/types.ts#L689)
 
 Original file path or URL the document was loaded from.
 
@@ -83,7 +83,7 @@ Original file path or URL the document was loaded from.
 
 > `optional` **title**: `string`
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:665](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/io/facade/types.ts#L665)
+Defined in: [packages/agentos/src/memory/io/facade/types.ts:665](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/io/facade/types.ts#L665)
 
 Document title extracted from front-matter or PDF info dict.
 
@@ -93,6 +93,6 @@ Document title extracted from front-matter or PDF info dict.
 
 > `optional` **wordCount**: `number`
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:674](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/io/facade/types.ts#L674)
+Defined in: [packages/agentos/src/memory/io/facade/types.ts:674](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/io/facade/types.ts#L674)
 
 Approximate word count of the full document text.

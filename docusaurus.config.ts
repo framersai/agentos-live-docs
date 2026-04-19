@@ -4,6 +4,7 @@ import type * as Preset from '@docusaurus/preset-classic';
 
 const disableLocalSearch = process.env.AGENTOS_DOCS_DISABLE_LOCAL_SEARCH === '1';
 const disableSearchManifest = process.env.AGENTOS_DOCS_DISABLE_SEARCH_MANIFEST === '1';
+const strictDocs = process.env.AGENTOS_DOCS_STRICT !== '0';
 
 const config: Config = {
   title: 'AgentOS — Open-Source TypeScript AI Agent Runtime',
@@ -14,7 +15,7 @@ const config: Config = {
   baseUrl: '/',
   organizationName: 'framersai',
   projectName: 'agentos-live-docs',
-  onBrokenLinks: 'warn',
+  onBrokenLinks: strictDocs ? 'throw' : 'warn',
   clientModules: [require.resolve('./src/mermaid-zoom.js')],
   trailingSlash: false,
 
@@ -140,7 +141,7 @@ const config: Config = {
     format: 'detect', // Allow CommonMark for TypeDoc-generated files (MDX v3 strict)
     mermaid: true,
     hooks: {
-      onBrokenMarkdownLinks: 'warn',
+      onBrokenMarkdownLinks: strictDocs ? 'throw' : 'warn',
     },
   },
 
@@ -188,7 +189,11 @@ const config: Config = {
       'docusaurus-plugin-typedoc',
       {
         id: 'paracosm',
-        entryPoints: ['../../apps/paracosm/src/engine/index.ts'],
+        entryPoints: [
+          '../../apps/paracosm/src/engine/index.ts',
+          '../../apps/paracosm/src/runtime/index.ts',
+          '../../apps/paracosm/src/engine/compiler/index.ts',
+        ],
         tsconfig: '../../apps/paracosm/tsconfig.build.json',
         out: 'docs/paracosm',
         readme: 'none',

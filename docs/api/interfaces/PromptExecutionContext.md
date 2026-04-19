@@ -1,6 +1,6 @@
 # Interface: PromptExecutionContext
 
-Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:76](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/llm/IPromptEngine.ts#L76)
+Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:76](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/llm/IPromptEngine.ts#L76)
 
 Comprehensive execution context that drives dynamic prompt construction.
 This context is assembled by the GMI and contains all relevant information
@@ -16,7 +16,7 @@ PromptExecutionContext
 
 > **activePersona**: [`IPersonaDefinition`](IPersonaDefinition.md)
 
-Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:78](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/llm/IPromptEngine.ts#L78)
+Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:78](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/llm/IPromptEngine.ts#L78)
 
 The currently active persona definition, guiding overall behavior and prompt structure.
 
@@ -26,7 +26,7 @@ The currently active persona definition, guiding overall behavior and prompt str
 
 > `optional` **conversationSignals**: `string`[]
 
-Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:92](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/llm/IPromptEngine.ts#L92)
+Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:92](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/llm/IPromptEngine.ts#L92)
 
 Signals detected in the conversation (e.g., 'user_confused', 'task_completed_successfully').
 
@@ -36,7 +36,7 @@ Signals detected in the conversation (e.g., 'user_confused', 'task_completed_suc
 
 > `optional` **currentMood**: `string`
 
-Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:82](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/llm/IPromptEngine.ts#L82)
+Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:82](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/llm/IPromptEngine.ts#L82)
 
 Current mood state of the GMI, which can influence tone and element selection.
 
@@ -46,7 +46,7 @@ Current mood state of the GMI, which can influence tone and element selection.
 
 > `optional` **customContext**: `Record`\<`string`, `unknown`\>
 
-Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:94](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/llm/IPromptEngine.ts#L94)
+Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:94](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/llm/IPromptEngine.ts#L94)
 
 Custom context flags for specialized prompting scenarios or A/B testing.
 
@@ -56,7 +56,7 @@ Custom context flags for specialized prompting scenarios or A/B testing.
 
 > `optional` **interactionHistorySummary**: `object`
 
-Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:98](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/llm/IPromptEngine.ts#L98)
+Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:98](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/llm/IPromptEngine.ts#L98)
 
 Historical interaction patterns that inform adaptation (e.g., preferred response styles).
 
@@ -82,7 +82,7 @@ Historical interaction patterns that inform adaptation (e.g., preferred response
 
 > `optional` **language**: `string`
 
-Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:90](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/llm/IPromptEngine.ts#L90)
+Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:90](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/llm/IPromptEngine.ts#L90)
 
 Target language for the response (BCP-47 code, e.g., 'en-US', 'fr-FR').
 
@@ -92,7 +92,7 @@ Target language for the response (BCP-47 code, e.g., 'en-US', 'fr-FR').
 
 > `optional` **sessionMetadata**: `object`
 
-Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:106](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/llm/IPromptEngine.ts#L106)
+Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:106](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/llm/IPromptEngine.ts#L106)
 
 Current session metadata (e.g., duration, number of turns).
 
@@ -114,7 +114,7 @@ Current session metadata (e.g., duration, number of turns).
 
 > `optional` **taskComplexity**: `string`
 
-Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:88](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/llm/IPromptEngine.ts#L88)
+Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:88](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/llm/IPromptEngine.ts#L88)
 
 Assessed complexity level of the current task (e.g., 'simple', 'complex').
 
@@ -124,7 +124,7 @@ Assessed complexity level of the current task (e.g., 'simple', 'complex').
 
 > `optional` **taskHint**: `string`
 
-Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:86](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/llm/IPromptEngine.ts#L86)
+Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:86](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/llm/IPromptEngine.ts#L86)
 
 Hint about the current task type (e.g., 'coding', 'writing', 'data_analysis').
 
@@ -134,7 +134,7 @@ Hint about the current task type (e.g., 'coding', 'writing', 'data_analysis').
 
 > `optional` **userPreferences**: `Record`\<`string`, `unknown`\>
 
-Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:96](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/llm/IPromptEngine.ts#L96)
+Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:96](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/llm/IPromptEngine.ts#L96)
 
 User-specific preferences that affect prompting (e.g., verbosity, preferred formats).
 
@@ -144,7 +144,7 @@ User-specific preferences that affect prompting (e.g., verbosity, preferred form
 
 > `optional` **userSkillLevel**: `string`
 
-Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:84](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/llm/IPromptEngine.ts#L84)
+Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:84](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/llm/IPromptEngine.ts#L84)
 
 Assessed or declared user skill level (e.g., 'beginner', 'expert') relevant to the task.
 
@@ -154,6 +154,6 @@ Assessed or declared user skill level (e.g., 'beginner', 'expert') relevant to t
 
 > **workingMemory**: `IWorkingMemory`
 
-Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:80](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/llm/IPromptEngine.ts#L80)
+Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:80](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/llm/IPromptEngine.ts#L80)
 
 Access to the GMI's working memory for dynamic value retrieval (e.g., user preferences, GMI traits).

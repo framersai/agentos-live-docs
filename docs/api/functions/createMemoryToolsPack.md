@@ -2,7 +2,7 @@
 
 > **createMemoryToolsPack**(`memory`, `options?`): [`ExtensionPack`](../interfaces/ExtensionPack.md)
 
-Defined in: [packages/agentos/src/memory/io/extension/MemoryToolsExtension.ts:96](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/io/extension/MemoryToolsExtension.ts#L96)
+Defined in: [packages/agentos/src/memory/io/extension/MemoryToolsExtension.ts:96](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/io/extension/MemoryToolsExtension.ts#L96)
 
 Create an `ExtensionPack` exposing the standalone memory editor tools.
 

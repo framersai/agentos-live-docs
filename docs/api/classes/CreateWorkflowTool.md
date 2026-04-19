@@ -1,6 +1,6 @@
 # Class: CreateWorkflowTool
 
-Defined in: [packages/agentos/src/emergent/CreateWorkflowTool.ts:143](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/emergent/CreateWorkflowTool.ts#L143)
+Defined in: [packages/agentos/src/emergent/CreateWorkflowTool.ts:143](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/emergent/CreateWorkflowTool.ts#L143)
 
 ITool implementation enabling agents to compose, execute, and list
 multi-step tool workflows at runtime.
@@ -36,7 +36,7 @@ const createResult = await tool.execute({
 
 > **new CreateWorkflowTool**(`deps`): `CreateWorkflowTool`
 
-Defined in: [packages/agentos/src/emergent/CreateWorkflowTool.ts:219](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/emergent/CreateWorkflowTool.ts#L219)
+Defined in: [packages/agentos/src/emergent/CreateWorkflowTool.ts:219](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/emergent/CreateWorkflowTool.ts#L219)
 
 Create a new CreateWorkflowTool.
 
@@ -59,7 +59,7 @@ Injected dependencies including config, tool executor,
 
 > `readonly` **category**: `"emergent"` = `'emergent'`
 
-Defined in: [packages/agentos/src/emergent/CreateWorkflowTool.ts:159](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/emergent/CreateWorkflowTool.ts#L159)
+Defined in: [packages/agentos/src/emergent/CreateWorkflowTool.ts:159](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/emergent/CreateWorkflowTool.ts#L159)
 
 **`Optional`**
 
@@ -77,7 +77,7 @@ aiding an LLM in selecting from a large set of tools.
 
 > `readonly` **description**: `string`
 
-Defined in: [packages/agentos/src/emergent/CreateWorkflowTool.ts:154](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/emergent/CreateWorkflowTool.ts#L154)
+Defined in: [packages/agentos/src/emergent/CreateWorkflowTool.ts:154](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/emergent/CreateWorkflowTool.ts#L154)
 
 A detailed, natural language description of what the tool does, its primary purpose,
 typical use cases, and any important considerations or limitations for its use.
@@ -95,7 +95,7 @@ for the LLM to grasp the tool's semantics.
 
 > `readonly` **displayName**: `"Create Workflow"` = `'Create Workflow'`
 
-Defined in: [packages/agentos/src/emergent/CreateWorkflowTool.ts:151](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/emergent/CreateWorkflowTool.ts#L151)
+Defined in: [packages/agentos/src/emergent/CreateWorkflowTool.ts:151](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/emergent/CreateWorkflowTool.ts#L151)
 
 A concise, human-readable title or display name for the tool.
 Used in user interfaces, logs, or when presenting tool options to developers or users.
@@ -116,7 +116,7 @@ Used in user interfaces, logs, or when presenting tool options to developers or 
 
 > `readonly` **hasSideEffects**: `true` = `true`
 
-Defined in: [packages/agentos/src/emergent/CreateWorkflowTool.ts:162](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/emergent/CreateWorkflowTool.ts#L162)
+Defined in: [packages/agentos/src/emergent/CreateWorkflowTool.ts:162](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/emergent/CreateWorkflowTool.ts#L162)
 
 **`Optional`**
 
@@ -135,7 +135,7 @@ with greater caution, potentially requiring explicit user confirmation.
 
 > `readonly` **id**: `"com.framers.emergent.create-workflow"` = `'com.framers.emergent.create-workflow'`
 
-Defined in: [packages/agentos/src/emergent/CreateWorkflowTool.ts:145](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/emergent/CreateWorkflowTool.ts#L145)
+Defined in: [packages/agentos/src/emergent/CreateWorkflowTool.ts:145](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/emergent/CreateWorkflowTool.ts#L145)
 
 A globally unique identifier for this specific tool (e.g., "web-search-engine-v1.2", "stock-price-fetcher").
 This ID is used for internal registration, management, and precise identification.
@@ -151,7 +151,7 @@ It's recommended to use a namespaced, versioned format (e.g., `vendor-toolname-v
 
 > `readonly` **inputSchema**: [`JSONSchemaObject`](../type-aliases/JSONSchemaObject.md)
 
-Defined in: [packages/agentos/src/emergent/CreateWorkflowTool.ts:165](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/emergent/CreateWorkflowTool.ts#L165)
+Defined in: [packages/agentos/src/emergent/CreateWorkflowTool.ts:165](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/emergent/CreateWorkflowTool.ts#L165)
 
 The JSON schema defining the structure, types, and constraints of the input arguments object
 that this tool expects. This schema is used by:
@@ -173,7 +173,7 @@ https://json-schema.org/
 
 > `readonly` **name**: `"create_workflow"` = `'create_workflow'`
 
-Defined in: [packages/agentos/src/emergent/CreateWorkflowTool.ts:148](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/emergent/CreateWorkflowTool.ts#L148)
+Defined in: [packages/agentos/src/emergent/CreateWorkflowTool.ts:148](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/emergent/CreateWorkflowTool.ts#L148)
 
 The functional name of the tool, as it should be presented to and used by an LLM in a tool call request
 (e.g., "searchWeb", "executePythonCode", "getWeatherForecast").
@@ -190,7 +190,7 @@ It should be concise, descriptive, and typically in camelCase or snake_case.
 
 > **execute**(`args`, `context`): `Promise`\<[`ToolExecutionResult`](../interfaces/ToolExecutionResult.md)\<`any`\>\>
 
-Defined in: [packages/agentos/src/emergent/CreateWorkflowTool.ts:234](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/emergent/CreateWorkflowTool.ts#L234)
+Defined in: [packages/agentos/src/emergent/CreateWorkflowTool.ts:234](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/emergent/CreateWorkflowTool.ts#L234)
 
 Execute the requested workflow action.
 

@@ -2,7 +2,7 @@
 
 > **euclideanDistance**(`a`, `b`): `number`
 
-Defined in: [packages/agentos/src/rag/utils/vectorMath.ts:103](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/utils/vectorMath.ts#L103)
+Defined in: [packages/agentos/src/rag/utils/vectorMath.ts:103](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/utils/vectorMath.ts#L103)
 
 Compute the Euclidean (L2) distance between two vectors.
 

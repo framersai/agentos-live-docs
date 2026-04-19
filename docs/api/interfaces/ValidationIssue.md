@@ -1,6 +1,6 @@
 # Interface: ValidationIssue
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:368](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/structured/output/IStructuredOutputManager.ts#L368)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:368](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/structured/output/IStructuredOutputManager.ts#L368)
 
 A single validation issue found during schema validation.
 
@@ -10,7 +10,7 @@ A single validation issue found during schema validation.
 
 > `optional` **actual**: `unknown`
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:382](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/structured/output/IStructuredOutputManager.ts#L382)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:382](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/structured/output/IStructuredOutputManager.ts#L382)
 
 Actual value that was found
 
@@ -20,7 +20,7 @@ Actual value that was found
 
 > `optional` **expected**: `unknown`
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:379](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/structured/output/IStructuredOutputManager.ts#L379)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:379](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/structured/output/IStructuredOutputManager.ts#L379)
 
 Expected value or constraint
 
@@ -30,7 +30,7 @@ Expected value or constraint
 
 > **keyword**: `string`
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:376](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/structured/output/IStructuredOutputManager.ts#L376)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:376](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/structured/output/IStructuredOutputManager.ts#L376)
 
 The keyword that failed validation
 
@@ -40,7 +40,7 @@ The keyword that failed validation
 
 > **message**: `string`
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:373](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/structured/output/IStructuredOutputManager.ts#L373)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:373](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/structured/output/IStructuredOutputManager.ts#L373)
 
 Error message describing the issue
 
@@ -50,7 +50,7 @@ Error message describing the issue
 
 > **path**: `string`
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:370](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/structured/output/IStructuredOutputManager.ts#L370)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:370](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/structured/output/IStructuredOutputManager.ts#L370)
 
 JSON Pointer path to the invalid value
 
@@ -60,6 +60,6 @@ JSON Pointer path to the invalid value
 
 > **severity**: `"error"` \| `"warning"`
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:385](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/structured/output/IStructuredOutputManager.ts#L385)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:385](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/structured/output/IStructuredOutputManager.ts#L385)
 
 Severity of the issue

@@ -1,6 +1,6 @@
 # Interface: RagRetrievalResult
 
-Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:233](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/IRetrievalAugmentor.ts#L233)
+Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:233](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/IRetrievalAugmentor.ts#L233)
 
 Retrieval result passed back to callers.
 
@@ -10,7 +10,7 @@ Retrieval result passed back to callers.
 
 > `optional` **auditTrail**: [`RAGAuditTrail`](RAGAuditTrail.md)
 
-Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:240](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/IRetrievalAugmentor.ts#L240)
+Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:240](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/IRetrievalAugmentor.ts#L240)
 
 Full audit trail when `includeAudit` was set on the retrieval options.
 
@@ -20,7 +20,7 @@ Full audit trail when `includeAudit` was set on the retrieval options.
 
 > **augmentedContext**: `string`
 
-Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:236](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/IRetrievalAugmentor.ts#L236)
+Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:236](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/IRetrievalAugmentor.ts#L236)
 
 ***
 
@@ -28,7 +28,7 @@ Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:236](https://github
 
 > `optional` **diagnostics**: [`RagRetrievalDiagnostics`](RagRetrievalDiagnostics.md)
 
-Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:238](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/IRetrievalAugmentor.ts#L238)
+Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:238](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/IRetrievalAugmentor.ts#L238)
 
 ***
 
@@ -36,7 +36,7 @@ Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:238](https://github
 
 > `optional` **queryEmbedding**: `number`[]
 
-Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:237](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/IRetrievalAugmentor.ts#L237)
+Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:237](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/IRetrievalAugmentor.ts#L237)
 
 ***
 
@@ -44,7 +44,7 @@ Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:237](https://github
 
 > **queryText**: `string`
 
-Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:234](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/IRetrievalAugmentor.ts#L234)
+Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:234](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/IRetrievalAugmentor.ts#L234)
 
 ***
 
@@ -52,4 +52,4 @@ Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:234](https://github
 
 > **retrievedChunks**: [`RagRetrievedChunk`](RagRetrievedChunk.md)[]
 
-Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:235](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/IRetrievalAugmentor.ts#L235)
+Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:235](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/IRetrievalAugmentor.ts#L235)

@@ -1,6 +1,6 @@
 # Class: KnowledgeGraphMemoryGraph
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/KnowledgeGraphMemoryGraph.ts:59](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/retrieval/graph/KnowledgeGraphMemoryGraph.ts#L59)
+Defined in: [packages/agentos/src/memory/retrieval/graph/KnowledgeGraphMemoryGraph.ts:59](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/retrieval/graph/KnowledgeGraphMemoryGraph.ts#L59)
 
 ## Implements
 
@@ -12,7 +12,7 @@ Defined in: [packages/agentos/src/memory/retrieval/graph/KnowledgeGraphMemoryGra
 
 > **new KnowledgeGraphMemoryGraph**(`kg`): `KnowledgeGraphMemoryGraph`
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/KnowledgeGraphMemoryGraph.ts:65](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/retrieval/graph/KnowledgeGraphMemoryGraph.ts#L65)
+Defined in: [packages/agentos/src/memory/retrieval/graph/KnowledgeGraphMemoryGraph.ts:65](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/retrieval/graph/KnowledgeGraphMemoryGraph.ts#L65)
 
 #### Parameters
 
@@ -30,7 +30,7 @@ Defined in: [packages/agentos/src/memory/retrieval/graph/KnowledgeGraphMemoryGra
 
 > **addEdge**(`edge`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/KnowledgeGraphMemoryGraph.ts:115](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/retrieval/graph/KnowledgeGraphMemoryGraph.ts#L115)
+Defined in: [packages/agentos/src/memory/retrieval/graph/KnowledgeGraphMemoryGraph.ts:115](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/retrieval/graph/KnowledgeGraphMemoryGraph.ts#L115)
 
 #### Parameters
 
@@ -52,7 +52,7 @@ Defined in: [packages/agentos/src/memory/retrieval/graph/KnowledgeGraphMemoryGra
 
 > **addNode**(`memoryId`, `metadata`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/KnowledgeGraphMemoryGraph.ts:82](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/retrieval/graph/KnowledgeGraphMemoryGraph.ts#L82)
+Defined in: [packages/agentos/src/memory/retrieval/graph/KnowledgeGraphMemoryGraph.ts:82](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/retrieval/graph/KnowledgeGraphMemoryGraph.ts#L82)
 
 #### Parameters
 
@@ -78,7 +78,7 @@ Defined in: [packages/agentos/src/memory/retrieval/graph/KnowledgeGraphMemoryGra
 
 > **clear**(): `void`
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/KnowledgeGraphMemoryGraph.ts:294](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/retrieval/graph/KnowledgeGraphMemoryGraph.ts#L294)
+Defined in: [packages/agentos/src/memory/retrieval/graph/KnowledgeGraphMemoryGraph.ts:294](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/retrieval/graph/KnowledgeGraphMemoryGraph.ts#L294)
 
 #### Returns
 
@@ -94,7 +94,7 @@ Defined in: [packages/agentos/src/memory/retrieval/graph/KnowledgeGraphMemoryGra
 
 > **detectClusters**(`minSize?`): `Promise`\<[`MemoryCluster`](../interfaces/MemoryCluster.md)[]\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/KnowledgeGraphMemoryGraph.ts:236](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/retrieval/graph/KnowledgeGraphMemoryGraph.ts#L236)
+Defined in: [packages/agentos/src/memory/retrieval/graph/KnowledgeGraphMemoryGraph.ts:236](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/retrieval/graph/KnowledgeGraphMemoryGraph.ts#L236)
 
 #### Parameters
 
@@ -116,7 +116,7 @@ Defined in: [packages/agentos/src/memory/retrieval/graph/KnowledgeGraphMemoryGra
 
 > **edgeCount**(): `number`
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/KnowledgeGraphMemoryGraph.ts:286](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/retrieval/graph/KnowledgeGraphMemoryGraph.ts#L286)
+Defined in: [packages/agentos/src/memory/retrieval/graph/KnowledgeGraphMemoryGraph.ts:286](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/retrieval/graph/KnowledgeGraphMemoryGraph.ts#L286)
 
 #### Returns
 
@@ -132,7 +132,7 @@ Defined in: [packages/agentos/src/memory/retrieval/graph/KnowledgeGraphMemoryGra
 
 > **getConflicts**(`memoryId`): [`MemoryEdge`](../interfaces/MemoryEdge.md)[]
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/KnowledgeGraphMemoryGraph.ts:230](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/retrieval/graph/KnowledgeGraphMemoryGraph.ts#L230)
+Defined in: [packages/agentos/src/memory/retrieval/graph/KnowledgeGraphMemoryGraph.ts:230](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/retrieval/graph/KnowledgeGraphMemoryGraph.ts#L230)
 
 #### Parameters
 
@@ -154,7 +154,7 @@ Defined in: [packages/agentos/src/memory/retrieval/graph/KnowledgeGraphMemoryGra
 
 > **getEdges**(`memoryId`, `type?`): [`MemoryEdge`](../interfaces/MemoryEdge.md)[]
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/KnowledgeGraphMemoryGraph.ts:142](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/retrieval/graph/KnowledgeGraphMemoryGraph.ts#L142)
+Defined in: [packages/agentos/src/memory/retrieval/graph/KnowledgeGraphMemoryGraph.ts:142](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/retrieval/graph/KnowledgeGraphMemoryGraph.ts#L142)
 
 #### Parameters
 
@@ -180,7 +180,7 @@ Defined in: [packages/agentos/src/memory/retrieval/graph/KnowledgeGraphMemoryGra
 
 > **hasNode**(`memoryId`): `boolean`
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/KnowledgeGraphMemoryGraph.ts:109](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/retrieval/graph/KnowledgeGraphMemoryGraph.ts#L109)
+Defined in: [packages/agentos/src/memory/retrieval/graph/KnowledgeGraphMemoryGraph.ts:109](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/retrieval/graph/KnowledgeGraphMemoryGraph.ts#L109)
 
 #### Parameters
 
@@ -202,7 +202,7 @@ Defined in: [packages/agentos/src/memory/retrieval/graph/KnowledgeGraphMemoryGra
 
 > **initialize**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/KnowledgeGraphMemoryGraph.ts:67](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/retrieval/graph/KnowledgeGraphMemoryGraph.ts#L67)
+Defined in: [packages/agentos/src/memory/retrieval/graph/KnowledgeGraphMemoryGraph.ts:67](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/retrieval/graph/KnowledgeGraphMemoryGraph.ts#L67)
 
 Initialize the graph backend.
 
@@ -220,7 +220,7 @@ Initialize the graph backend.
 
 > **nodeCount**(): `number`
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/KnowledgeGraphMemoryGraph.ts:282](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/retrieval/graph/KnowledgeGraphMemoryGraph.ts#L282)
+Defined in: [packages/agentos/src/memory/retrieval/graph/KnowledgeGraphMemoryGraph.ts:282](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/retrieval/graph/KnowledgeGraphMemoryGraph.ts#L282)
 
 #### Returns
 
@@ -236,7 +236,7 @@ Defined in: [packages/agentos/src/memory/retrieval/graph/KnowledgeGraphMemoryGra
 
 > **recordCoActivation**(`memoryIds`, `learningRate?`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/KnowledgeGraphMemoryGraph.ts:200](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/retrieval/graph/KnowledgeGraphMemoryGraph.ts#L200)
+Defined in: [packages/agentos/src/memory/retrieval/graph/KnowledgeGraphMemoryGraph.ts:200](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/retrieval/graph/KnowledgeGraphMemoryGraph.ts#L200)
 
 #### Parameters
 
@@ -262,7 +262,7 @@ Defined in: [packages/agentos/src/memory/retrieval/graph/KnowledgeGraphMemoryGra
 
 > **removeEdge**(`sourceId`, `targetId`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/KnowledgeGraphMemoryGraph.ts:148](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/retrieval/graph/KnowledgeGraphMemoryGraph.ts#L148)
+Defined in: [packages/agentos/src/memory/retrieval/graph/KnowledgeGraphMemoryGraph.ts:148](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/retrieval/graph/KnowledgeGraphMemoryGraph.ts#L148)
 
 #### Parameters
 
@@ -288,7 +288,7 @@ Defined in: [packages/agentos/src/memory/retrieval/graph/KnowledgeGraphMemoryGra
 
 > **removeNode**(`memoryId`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/KnowledgeGraphMemoryGraph.ts:103](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/retrieval/graph/KnowledgeGraphMemoryGraph.ts#L103)
+Defined in: [packages/agentos/src/memory/retrieval/graph/KnowledgeGraphMemoryGraph.ts:103](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/retrieval/graph/KnowledgeGraphMemoryGraph.ts#L103)
 
 #### Parameters
 
@@ -310,7 +310,7 @@ Defined in: [packages/agentos/src/memory/retrieval/graph/KnowledgeGraphMemoryGra
 
 > **shutdown**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/KnowledgeGraphMemoryGraph.ts:299](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/retrieval/graph/KnowledgeGraphMemoryGraph.ts#L299)
+Defined in: [packages/agentos/src/memory/retrieval/graph/KnowledgeGraphMemoryGraph.ts:299](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/retrieval/graph/KnowledgeGraphMemoryGraph.ts#L299)
 
 #### Returns
 
@@ -326,7 +326,7 @@ Defined in: [packages/agentos/src/memory/retrieval/graph/KnowledgeGraphMemoryGra
 
 > **spreadingActivation**(`seedIds`, `config?`): `Promise`\<[`ActivatedNode`](../interfaces/ActivatedNode.md)[]\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/KnowledgeGraphMemoryGraph.ts:172](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/retrieval/graph/KnowledgeGraphMemoryGraph.ts#L172)
+Defined in: [packages/agentos/src/memory/retrieval/graph/KnowledgeGraphMemoryGraph.ts:172](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/retrieval/graph/KnowledgeGraphMemoryGraph.ts#L172)
 
 #### Parameters
 

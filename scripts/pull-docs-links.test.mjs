@@ -25,6 +25,24 @@ test('rewriteMarkdownLinks rewrites moved docs case-insensitively', () => {
   );
 });
 
+test('rewriteMarkdownLinks rewrites uncensored content feature docs into the published route', () => {
+  const input = 'See [Uncensored Content](./UNCENSORED_CONTENT.md).';
+  const output = rewriteMarkdownLinks(input, options);
+
+  assert.equal(output, 'See [Uncensored Content](/features/uncensored-content).');
+});
+
+test('rewriteMarkdownLinks rewrites media guide crosslinks for published feature docs', () => {
+  const input =
+    'See [Character Consistency](./CHARACTER_CONSISTENCY.md) and [Style Transfer](./STYLE_TRANSFER.md).';
+  const output = rewriteMarkdownLinks(input, options);
+
+  assert.equal(
+    output,
+    'See [Character Consistency](/features/character-consistency) and [Style Transfer](/features/style-transfer).',
+  );
+});
+
 test('rewriteMarkdownLinks rewrites repo source links to public GitHub blob URLs', () => {
   const input = 'Read [AgentOS.ts](packages/agentos/src/api/AgentOS.ts#L14-L34) and [types](../src/api/types.ts).';
   const output = rewriteMarkdownLinks(input, options);

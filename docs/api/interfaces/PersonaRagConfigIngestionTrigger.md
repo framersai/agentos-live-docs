@@ -1,6 +1,6 @@
 # Interface: PersonaRagConfigIngestionTrigger
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:150](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/personas/IPersonaDefinition.ts#L150)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:150](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/personas/IPersonaDefinition.ts#L150)
 
 Defines triggers for RAG ingestion (e.g., summarizing turns into RAG).
 
@@ -14,7 +14,7 @@ PersonaRagConfigIngestionTrigger
 
 > `optional` **customLogicFunctionName**: `string`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:153](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/personas/IPersonaDefinition.ts#L153)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:153](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/personas/IPersonaDefinition.ts#L153)
 
 ***
 
@@ -22,7 +22,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefiniti
 
 > `optional` **onExplicitUserCommand**: `string`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:152](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/personas/IPersonaDefinition.ts#L152)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:152](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/personas/IPersonaDefinition.ts#L152)
 
 ***
 
@@ -30,4 +30,4 @@ Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefiniti
 
 > `optional` **onTurnSummary**: `boolean`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:151](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/personas/IPersonaDefinition.ts#L151)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:151](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/personas/IPersonaDefinition.ts#L151)

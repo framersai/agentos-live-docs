@@ -1,6 +1,6 @@
 # Interface: PerformOCROptions
 
-Defined in: [packages/agentos/src/api/performOCR.ts:49](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/performOCR.ts#L49)
+Defined in: [packages/agentos/src/api/performOCR.ts:49](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/performOCR.ts#L49)
 
 Options accepted by [performOCR](../functions/performOCR.md).
 
@@ -10,7 +10,7 @@ Options accepted by [performOCR](../functions/performOCR.md).
 
 > `optional` **apiKey**: `string`
 
-Defined in: [packages/agentos/src/api/performOCR.ts:100](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/performOCR.ts#L100)
+Defined in: [packages/agentos/src/api/performOCR.ts:100](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/performOCR.ts#L100)
 
 API key for the cloud provider. When omitted the key is read from the
 standard environment variable for the provider.
@@ -21,7 +21,7 @@ standard environment variable for the provider.
 
 > `optional` **confidenceThreshold**: `number`
 
-Defined in: [packages/agentos/src/api/performOCR.ts:81](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/performOCR.ts#L81)
+Defined in: [packages/agentos/src/api/performOCR.ts:81](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/performOCR.ts#L81)
 
 Minimum confidence threshold (0-1) to accept an OCR result from a local
 tier without escalating to the next tier.
@@ -40,7 +40,7 @@ Only meaningful for the `'progressive'` strategy.
 
 > **image**: `string` \| `Buffer`
 
-Defined in: [packages/agentos/src/api/performOCR.ts:58](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/performOCR.ts#L58)
+Defined in: [packages/agentos/src/api/performOCR.ts:58](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/performOCR.ts#L58)
 
 Image source. Accepts any of:
 - **File path** — absolute or relative filesystem path (e.g. `/tmp/scan.png`).
@@ -55,7 +55,7 @@ Image source. Accepts any of:
 
 > `optional` **model**: `string`
 
-Defined in: [packages/agentos/src/api/performOCR.ts:94](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/performOCR.ts#L94)
+Defined in: [packages/agentos/src/api/performOCR.ts:94](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/performOCR.ts#L94)
 
 Cloud LLM model override. When omitted the provider's default vision
 model is used (e.g. `gpt-4o` for OpenAI).
@@ -66,7 +66,7 @@ model is used (e.g. `gpt-4o` for OpenAI).
 
 > `optional` **provider**: `string`
 
-Defined in: [packages/agentos/src/api/performOCR.ts:88](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/performOCR.ts#L88)
+Defined in: [packages/agentos/src/api/performOCR.ts:88](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/performOCR.ts#L88)
 
 Cloud LLM provider for tier-3 fallback (e.g. `'openai'`, `'anthropic'`,
 `'google'`). When omitted the provider is auto-detected from environment
@@ -78,7 +78,7 @@ variables (`OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, etc.).
 
 > `optional` **strategy**: `"progressive"` \| `"local-only"` \| `"cloud-only"`
 
-Defined in: [packages/agentos/src/api/performOCR.ts:71](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/performOCR.ts#L71)
+Defined in: [packages/agentos/src/api/performOCR.ts:71](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/performOCR.ts#L71)
 
 Vision strategy controlling which tiers are used.
 

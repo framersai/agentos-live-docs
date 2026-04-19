@@ -1,6 +1,6 @@
 # Class: GraphCompiler
 
-Defined in: [packages/agentos/src/orchestration/compiler/GraphCompiler.ts:91](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/compiler/GraphCompiler.ts#L91)
+Defined in: [packages/agentos/src/orchestration/compiler/GraphCompiler.ts:91](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/compiler/GraphCompiler.ts#L91)
 
 Stateless compiler that transforms AgentGraph builder state into a `CompiledExecutionGraph`.
 
@@ -41,7 +41,7 @@ const ir = GraphCompiler.compile({
 
 > `static` **compile**(`input`): [`CompiledExecutionGraph`](../interfaces/CompiledExecutionGraph.md)
 
-Defined in: [packages/agentos/src/orchestration/compiler/GraphCompiler.ts:101](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/compiler/GraphCompiler.ts#L101)
+Defined in: [packages/agentos/src/orchestration/compiler/GraphCompiler.ts:101](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/compiler/GraphCompiler.ts#L101)
 
 Compile builder state into a `CompiledExecutionGraph` IR object.
 

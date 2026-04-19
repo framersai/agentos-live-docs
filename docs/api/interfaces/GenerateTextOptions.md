@@ -1,6 +1,6 @@
 # Interface: GenerateTextOptions
 
-Defined in: [packages/agentos/src/api/generateText.ts:194](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/generateText.ts#L194)
+Defined in: [packages/agentos/src/api/generateText.ts:200](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/generateText.ts#L200)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/api/generateText.ts:194](https://github.com/fr
 
 > `optional` **\_responseFormat**: `object`
 
-Defined in: [packages/agentos/src/api/generateText.ts:327](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/generateText.ts#L327)
+Defined in: [packages/agentos/src/api/generateText.ts:338](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/generateText.ts#L338)
 
 **`Internal`**
 
@@ -25,7 +25,7 @@ Not part of the public API. Use generateObject for structured output.
 
 > `optional` **apiKey**: `string`
 
-Defined in: [packages/agentos/src/api/generateText.ts:238](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/generateText.ts#L238)
+Defined in: [packages/agentos/src/api/generateText.ts:244](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/generateText.ts#L244)
 
 Override the API key instead of reading from environment variables.
 
@@ -35,7 +35,7 @@ Override the API key instead of reading from environment variables.
 
 > `optional` **baseUrl**: `string`
 
-Defined in: [packages/agentos/src/api/generateText.ts:240](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/generateText.ts#L240)
+Defined in: [packages/agentos/src/api/generateText.ts:246](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/generateText.ts#L246)
 
 Override the provider base URL (useful for local proxies or Ollama).
 
@@ -45,7 +45,7 @@ Override the provider base URL (useful for local proxies or Ollama).
 
 > `optional` **chainOfThought**: `string` \| `boolean`
 
-Defined in: [packages/agentos/src/api/generateText.ts:252](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/generateText.ts#L252)
+Defined in: [packages/agentos/src/api/generateText.ts:258](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/generateText.ts#L258)
 
 Chain-of-thought instruction prepended to the system prompt when tools
 are available.  Encourages the model to reason explicitly before choosing
@@ -61,7 +61,7 @@ an action.
 
 > `optional` **fallbackProviders**: [`FallbackProviderEntry`](FallbackProviderEntry.md)[]
 
-Defined in: [packages/agentos/src/api/generateText.ts:285](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/generateText.ts#L285)
+Defined in: [packages/agentos/src/api/generateText.ts:291](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/generateText.ts#L291)
 
 Ordered list of fallback providers to try when the primary provider fails
 with a retryable error (HTTP 402/429/5xx, network errors, auth failures).
@@ -88,11 +88,22 @@ const result = await generateText({
 
 ***
 
+### hostPolicy?
+
+> `optional` **hostPolicy**: [`HostLLMPolicy`](HostLLMPolicy.md)
+
+Defined in: [packages/agentos/src/api/generateText.ts:316](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/generateText.ts#L316)
+
+Host-level routing hints that can be forwarded into the model router
+without requiring callers to construct raw router params directly.
+
+***
+
 ### maxSteps?
 
 > `optional` **maxSteps**: `number`
 
-Defined in: [packages/agentos/src/api/generateText.ts:232](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/generateText.ts#L232)
+Defined in: [packages/agentos/src/api/generateText.ts:238](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/generateText.ts#L238)
 
 Maximum number of agentic steps (LLM calls) to execute before returning.
 Each tool-call round trip counts as one step. Defaults to `1`.
@@ -103,7 +114,7 @@ Each tool-call round trip counts as one step. Defaults to `1`.
 
 > `optional` **maxTokens**: `number`
 
-Defined in: [packages/agentos/src/api/generateText.ts:236](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/generateText.ts#L236)
+Defined in: [packages/agentos/src/api/generateText.ts:242](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/generateText.ts#L242)
 
 Hard cap on output tokens. Provider-dependent default applies when omitted.
 
@@ -113,7 +124,7 @@ Hard cap on output tokens. Provider-dependent default applies when omitted.
 
 > `optional` **messages**: [`Message`](Message.md)[]
 
-Defined in: [packages/agentos/src/api/generateText.ts:215](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/generateText.ts#L215)
+Defined in: [packages/agentos/src/api/generateText.ts:221](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/generateText.ts#L221)
 
 Full conversation history. Appended before `prompt` when both are supplied.
 
@@ -123,7 +134,7 @@ Full conversation history. Appended before `prompt` when both are supplied.
 
 > `optional` **model**: `string`
 
-Defined in: [packages/agentos/src/api/generateText.ts:209](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/generateText.ts#L209)
+Defined in: [packages/agentos/src/api/generateText.ts:215](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/generateText.ts#L215)
 
 Model identifier.  Accepted in two formats:
 - `"provider:model"` — legacy format (e.g. `"openai:gpt-4o"`), still fully supported.
@@ -137,7 +148,7 @@ Either `provider` or `model` (or an API key env var for auto-detection) is requi
 
 > `optional` **onAfterGeneration**: (`result`) => `Promise`\<`void` \| [`GenerationHookResult`](GenerationHookResult.md)\>
 
-Defined in: [packages/agentos/src/api/generateText.ts:317](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/generateText.ts#L317)
+Defined in: [packages/agentos/src/api/generateText.ts:328](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/generateText.ts#L328)
 
 Called after each LLM generation step.  Can check output against
 guardrails, redact PII, or transform the response.
@@ -159,7 +170,7 @@ Return a modified result to transform output, or void to pass through.
 
 > `optional` **onBeforeGeneration**: (`context`) => `Promise`\<`void` \| [`GenerationHookContext`](GenerationHookContext.md)\>
 
-Defined in: [packages/agentos/src/api/generateText.ts:311](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/generateText.ts#L311)
+Defined in: [packages/agentos/src/api/generateText.ts:322](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/generateText.ts#L322)
 
 Called before each LLM generation step.  Can inject memory context
 into messages, sanitize input via guardrails, or modify the prompt.
@@ -181,7 +192,7 @@ Return a modified context to transform input, or void to pass through.
 
 > `optional` **onBeforeToolExecution**: (`info`) => `Promise`\<[`ToolCallHookInfo`](ToolCallHookInfo.md) \| `null`\>
 
-Defined in: [packages/agentos/src/api/generateText.ts:322](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/generateText.ts#L322)
+Defined in: [packages/agentos/src/api/generateText.ts:333](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/generateText.ts#L333)
 
 Called before each tool execution.  Can modify arguments, apply
 permission checks, or return `null` to skip the tool call entirely.
@@ -202,7 +213,7 @@ permission checks, or return `null` to skip the tool call entirely.
 
 > `optional` **onFallback**: (`error`, `fallbackProvider`) => `void`
 
-Defined in: [packages/agentos/src/api/generateText.ts:293](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/generateText.ts#L293)
+Defined in: [packages/agentos/src/api/generateText.ts:299](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/generateText.ts#L299)
 
 Callback invoked when a fallback provider is about to be tried after the
 primary (or a previous fallback) failed.  Useful for logging or metrics.
@@ -231,7 +242,7 @@ The provider identifier being tried next.
 
 > `optional` **planning**: `boolean` \| `PlanningConfig`
 
-Defined in: [packages/agentos/src/api/generateText.ts:261](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/generateText.ts#L261)
+Defined in: [packages/agentos/src/api/generateText.ts:267](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/generateText.ts#L267)
 
 Enable plan-then-execute mode.  When `true` (or a PlanningConfig),
 an upfront LLM call decomposes the task into numbered steps before the
@@ -246,7 +257,7 @@ Set to `false` or omit to skip planning entirely (the default).
 
 > `optional` **prompt**: `string`
 
-Defined in: [packages/agentos/src/api/generateText.ts:211](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/generateText.ts#L211)
+Defined in: [packages/agentos/src/api/generateText.ts:217](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/generateText.ts#L217)
 
 Single user turn to append after any `messages`. Convenience alternative to building a `messages` array.
 
@@ -256,7 +267,7 @@ Single user turn to append after any `messages`. Convenience alternative to buil
 
 > `optional` **provider**: `string`
 
-Defined in: [packages/agentos/src/api/generateText.ts:201](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/generateText.ts#L201)
+Defined in: [packages/agentos/src/api/generateText.ts:207](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/generateText.ts#L207)
 
 Provider name.  When supplied without `model`, the default text model for
 the provider is resolved automatically from the built-in defaults registry.
@@ -273,7 +284,7 @@ the provider is resolved automatically from the built-in defaults registry.
 
 > `optional` **router**: [`IModelRouter`](IModelRouter.md)
 
-Defined in: [packages/agentos/src/api/generateText.ts:300](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/generateText.ts#L300)
+Defined in: [packages/agentos/src/api/generateText.ts:306](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/generateText.ts#L306)
 
 Optional model router for intelligent provider/model selection.
 When provided, the router's `selectModel()` is called before provider
@@ -286,7 +297,7 @@ If the router returns `null`, falls back to standard resolution.
 
 > `optional` **routerParams**: `Partial`\<[`ModelRouteParams`](ModelRouteParams.md)\>
 
-Defined in: [packages/agentos/src/api/generateText.ts:305](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/generateText.ts#L305)
+Defined in: [packages/agentos/src/api/generateText.ts:311](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/generateText.ts#L311)
 
 Routing hints passed to the model router.  Extracted automatically
 from system prompt and tool names when not provided.
@@ -297,7 +308,7 @@ from system prompt and tool names when not provided.
 
 > `optional` **system**: `string` \| [`SystemContentBlock`](SystemContentBlock.md)[]
 
-Defined in: [packages/agentos/src/api/generateText.ts:213](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/generateText.ts#L213)
+Defined in: [packages/agentos/src/api/generateText.ts:219](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/generateText.ts#L219)
 
 System prompt injected as the first message. Accepts a plain string or structured blocks with cache breakpoints.
 
@@ -307,7 +318,7 @@ System prompt injected as the first message. Accepts a plain string or structure
 
 > `optional` **temperature**: `number`
 
-Defined in: [packages/agentos/src/api/generateText.ts:234](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/generateText.ts#L234)
+Defined in: [packages/agentos/src/api/generateText.ts:240](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/generateText.ts#L240)
 
 Sampling temperature forwarded to the provider (0–2 for most providers).
 
@@ -317,7 +328,7 @@ Sampling temperature forwarded to the provider (0–2 for most providers).
 
 > `optional` **tools**: [`AdaptableToolInput`](../type-aliases/AdaptableToolInput.md)
 
-Defined in: [packages/agentos/src/api/generateText.ts:227](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/generateText.ts#L227)
+Defined in: [packages/agentos/src/api/generateText.ts:233](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/generateText.ts#L233)
 
 Tools the model may invoke.
 
@@ -335,6 +346,6 @@ tool error if the model invokes them without an executor.
 
 > `optional` **usageLedger**: [`AgentOSUsageLedgerOptions`](AgentOSUsageLedgerOptions.md)
 
-Defined in: [packages/agentos/src/api/generateText.ts:242](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/generateText.ts#L242)
+Defined in: [packages/agentos/src/api/generateText.ts:248](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/generateText.ts#L248)
 
 Optional durable usage ledger configuration for helper-level accounting.

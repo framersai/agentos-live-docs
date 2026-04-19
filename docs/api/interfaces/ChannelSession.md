@@ -1,6 +1,6 @@
 # Interface: ChannelSession
 
-Defined in: [packages/agentos/src/channels/types.ts:315](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/channels/types.ts#L315)
+Defined in: [packages/agentos/src/channels/types.ts:315](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/types.ts#L315)
 
 Active session between an agent and a remote conversation.
 
@@ -10,7 +10,7 @@ Active session between an agent and a remote conversation.
 
 > `optional` **context**: `Record`\<`string`, `unknown`\>
 
-Defined in: [packages/agentos/src/channels/types.ts:335](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/channels/types.ts#L335)
+Defined in: [packages/agentos/src/channels/types.ts:335](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/types.ts#L335)
 
 Session context data (for multi-turn state).
 
@@ -20,7 +20,7 @@ Session context data (for multi-turn state).
 
 > **conversationId**: `string`
 
-Defined in: [packages/agentos/src/channels/types.ts:323](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/channels/types.ts#L323)
+Defined in: [packages/agentos/src/channels/types.ts:323](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/types.ts#L323)
 
 Platform-native conversation ID.
 
@@ -30,7 +30,7 @@ Platform-native conversation ID.
 
 > **conversationType**: [`ConversationType`](../type-aliases/ConversationType.md)
 
-Defined in: [packages/agentos/src/channels/types.ts:325](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/channels/types.ts#L325)
+Defined in: [packages/agentos/src/channels/types.ts:325](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/types.ts#L325)
 
 Conversation type.
 
@@ -40,7 +40,7 @@ Conversation type.
 
 > **isActive**: `boolean`
 
-Defined in: [packages/agentos/src/channels/types.ts:333](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/channels/types.ts#L333)
+Defined in: [packages/agentos/src/channels/types.ts:333](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/types.ts#L333)
 
 Whether this session is active.
 
@@ -50,7 +50,7 @@ Whether this session is active.
 
 > **lastMessageAt**: `string`
 
-Defined in: [packages/agentos/src/channels/types.ts:329](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/channels/types.ts#L329)
+Defined in: [packages/agentos/src/channels/types.ts:329](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/types.ts#L329)
 
 Last message timestamp.
 
@@ -60,7 +60,7 @@ Last message timestamp.
 
 > **messageCount**: `number`
 
-Defined in: [packages/agentos/src/channels/types.ts:331](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/channels/types.ts#L331)
+Defined in: [packages/agentos/src/channels/types.ts:331](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/types.ts#L331)
 
 Total messages exchanged.
 
@@ -70,7 +70,7 @@ Total messages exchanged.
 
 > **platform**: [`ChannelPlatform`](../type-aliases/ChannelPlatform.md)
 
-Defined in: [packages/agentos/src/channels/types.ts:321](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/channels/types.ts#L321)
+Defined in: [packages/agentos/src/channels/types.ts:321](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/types.ts#L321)
 
 Platform.
 
@@ -80,7 +80,7 @@ Platform.
 
 > `optional` **remoteUser**: [`RemoteUser`](RemoteUser.md)
 
-Defined in: [packages/agentos/src/channels/types.ts:327](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/channels/types.ts#L327)
+Defined in: [packages/agentos/src/channels/types.ts:327](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/types.ts#L327)
 
 Remote user (for DMs).
 
@@ -90,7 +90,7 @@ Remote user (for DMs).
 
 > **seedId**: `string`
 
-Defined in: [packages/agentos/src/channels/types.ts:319](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/channels/types.ts#L319)
+Defined in: [packages/agentos/src/channels/types.ts:319](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/types.ts#L319)
 
 Agent seed ID.
 
@@ -100,6 +100,6 @@ Agent seed ID.
 
 > **sessionId**: `string`
 
-Defined in: [packages/agentos/src/channels/types.ts:317](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/channels/types.ts#L317)
+Defined in: [packages/agentos/src/channels/types.ts:317](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/types.ts#L317)
 
 Unique session ID.

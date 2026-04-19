@@ -1,6 +1,6 @@
 # Enumeration: GMIInteractionType
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:185](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/IGMI.ts#L185)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:185](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/IGMI.ts#L185)
 
 Defines the type of interaction or input being provided to the GMI.
 
@@ -10,7 +10,7 @@ Defines the type of interaction or input being provided to the GMI.
 
 > **LIFECYCLE\_EVENT**: `"lifecycle_event"`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:190](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/IGMI.ts#L190)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:190](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/IGMI.ts#L190)
 
 ***
 
@@ -18,7 +18,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:190](https://gith
 
 > **MULTIMODAL\_CONTENT**: `"multimodal_content"`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:187](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/IGMI.ts#L187)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:187](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/IGMI.ts#L187)
 
 ***
 
@@ -26,7 +26,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:187](https://gith
 
 > **SYSTEM\_MESSAGE**: `"system_message"`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:189](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/IGMI.ts#L189)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:189](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/IGMI.ts#L189)
 
 ***
 
@@ -34,7 +34,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:189](https://gith
 
 > **TEXT**: `"text"`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:186](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/IGMI.ts#L186)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:186](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/IGMI.ts#L186)
 
 ***
 
@@ -42,4 +42,4 @@ Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:186](https://gith
 
 > **TOOL\_RESPONSE**: `"tool_response"`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:188](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/IGMI.ts#L188)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:188](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/IGMI.ts#L188)

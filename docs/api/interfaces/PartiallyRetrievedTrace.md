@@ -1,6 +1,6 @@
 # Interface: PartiallyRetrievedTrace
 
-Defined in: [packages/agentos/src/memory/core/types.ts:224](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/core/types.ts#L224)
+Defined in: [packages/agentos/src/memory/core/types.ts:224](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/core/types.ts#L224)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/memory/core/types.ts:224](https://github.com/f
 
 > **confidence**: `number`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:226](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/core/types.ts#L226)
+Defined in: [packages/agentos/src/memory/core/types.ts:226](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/core/types.ts#L226)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [packages/agentos/src/memory/core/types.ts:226](https://github.com/f
 
 > **partialContent**: `string`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:227](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/core/types.ts#L227)
+Defined in: [packages/agentos/src/memory/core/types.ts:227](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/core/types.ts#L227)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: [packages/agentos/src/memory/core/types.ts:227](https://github.com/f
 
 > **suggestedCues**: `string`[]
 
-Defined in: [packages/agentos/src/memory/core/types.ts:228](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/core/types.ts#L228)
+Defined in: [packages/agentos/src/memory/core/types.ts:228](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/core/types.ts#L228)
 
 ***
 
@@ -32,4 +32,4 @@ Defined in: [packages/agentos/src/memory/core/types.ts:228](https://github.com/f
 
 > **traceId**: `string`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:225](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/core/types.ts#L225)
+Defined in: [packages/agentos/src/memory/core/types.ts:225](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/core/types.ts#L225)

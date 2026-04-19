@@ -1,6 +1,6 @@
 # Interface: ILanguageService
 
-Defined in: [packages/agentos/src/nlp/language/interfaces.ts:132](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/nlp/language/interfaces.ts#L132)
+Defined in: [packages/agentos/src/nlp/language/interfaces.ts:132](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/nlp/language/interfaces.ts#L132)
 
 High-level language orchestration service used by AgentOS runtime.
 
@@ -10,7 +10,7 @@ High-level language orchestration service used by AgentOS runtime.
 
 > **detectLanguages**(`text`): `Promise`\<[`DetectedLanguageResult`](DetectedLanguageResult.md)[]\>
 
-Defined in: [packages/agentos/src/nlp/language/interfaces.ts:137](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/nlp/language/interfaces.ts#L137)
+Defined in: [packages/agentos/src/nlp/language/interfaces.ts:137](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/nlp/language/interfaces.ts#L137)
 
 Perform language detection across configured providers & merge results.
 
@@ -30,7 +30,7 @@ Perform language detection across configured providers & merge results.
 
 > **initialize**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/nlp/language/interfaces.ts:134](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/nlp/language/interfaces.ts#L134)
+Defined in: [packages/agentos/src/nlp/language/interfaces.ts:134](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/nlp/language/interfaces.ts#L134)
 
 Initialize providers and internal caches.
 
@@ -44,7 +44,7 @@ Initialize providers and internal caches.
 
 > **maybeNormalizeForPivot**(`content`, `source`, `pivot?`): `Promise`\<\{ `normalized`: `string`; `providerId?`: `string`; \} \| `null`\>
 
-Defined in: [packages/agentos/src/nlp/language/interfaces.ts:143](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/nlp/language/interfaces.ts#L143)
+Defined in: [packages/agentos/src/nlp/language/interfaces.ts:143](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/nlp/language/interfaces.ts#L143)
 
 Optional normalization before prompt construction (pivot).
 
@@ -72,7 +72,7 @@ Optional normalization before prompt construction (pivot).
 
 > **maybeTranslateForDisplay**(`content`, `source`, `target`): `Promise`\<[`TranslationResult`](TranslationResult.md) \| `null`\>
 
-Defined in: [packages/agentos/src/nlp/language/interfaces.ts:146](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/nlp/language/interfaces.ts#L146)
+Defined in: [packages/agentos/src/nlp/language/interfaces.ts:146](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/nlp/language/interfaces.ts#L146)
 
 Translate post-generation to user display target (if differs).
 
@@ -100,7 +100,7 @@ Translate post-generation to user display target (if differs).
 
 > **negotiate**(`params`): [`LanguageNegotiationResult`](LanguageNegotiationResult.md)
 
-Defined in: [packages/agentos/src/nlp/language/interfaces.ts:140](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/nlp/language/interfaces.ts#L140)
+Defined in: [packages/agentos/src/nlp/language/interfaces.ts:140](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/nlp/language/interfaces.ts#L140)
 
 Determine target/pivot languages given negotiation inputs.
 
@@ -120,7 +120,7 @@ Determine target/pivot languages given negotiation inputs.
 
 > **shutdown**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/nlp/language/interfaces.ts:161](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/nlp/language/interfaces.ts#L161)
+Defined in: [packages/agentos/src/nlp/language/interfaces.ts:161](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/nlp/language/interfaces.ts#L161)
 
 Graceful shutdown for providers.
 
@@ -134,7 +134,7 @@ Graceful shutdown for providers.
 
 > **translateQueryForRag**(`query`, `source`, `pivot`): `Promise`\<[`TranslationResult`](TranslationResult.md) \| `null`\>
 
-Defined in: [packages/agentos/src/nlp/language/interfaces.ts:149](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/nlp/language/interfaces.ts#L149)
+Defined in: [packages/agentos/src/nlp/language/interfaces.ts:149](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/nlp/language/interfaces.ts#L149)
 
 Translate query for RAG pivot search.
 
@@ -162,7 +162,7 @@ Translate query for RAG pivot search.
 
 > **translateRagResults**(`results`, `target`): `Promise`\<`object`[]\>
 
-Defined in: [packages/agentos/src/nlp/language/interfaces.ts:152](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/nlp/language/interfaces.ts#L152)
+Defined in: [packages/agentos/src/nlp/language/interfaces.ts:152](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/nlp/language/interfaces.ts#L152)
 
 Translate retrieved RAG results back to target language.
 
@@ -186,7 +186,7 @@ Translate retrieved RAG results back to target language.
 
 > **translateToolArguments**(`args`, `source`, `toolLanguage`): `Promise`\<\{ `providerId?`: `string`; `translatedArgs`: `Record`\<`string`, `any`\>; \} \| `null`\>
 
-Defined in: [packages/agentos/src/nlp/language/interfaces.ts:155](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/nlp/language/interfaces.ts#L155)
+Defined in: [packages/agentos/src/nlp/language/interfaces.ts:155](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/nlp/language/interfaces.ts#L155)
 
 Wrap tool input translation logic.
 
@@ -214,7 +214,7 @@ Wrap tool input translation logic.
 
 > **translateToolResult**(`result`, `source`, `target`): `Promise`\<\{ `providerId?`: `string`; `translatedResult`: `any`; \} \| `null`\>
 
-Defined in: [packages/agentos/src/nlp/language/interfaces.ts:158](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/nlp/language/interfaces.ts#L158)
+Defined in: [packages/agentos/src/nlp/language/interfaces.ts:158](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/nlp/language/interfaces.ts#L158)
 
 Wrap tool result translation logic.
 

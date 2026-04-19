@@ -1,6 +1,6 @@
 # Class: ActionDeduplicator
 
-Defined in: [packages/agentos/src/safety/runtime/ActionDeduplicator.ts:27](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/safety/runtime/ActionDeduplicator.ts#L27)
+Defined in: [packages/agentos/src/safety/runtime/ActionDeduplicator.ts:27](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/safety/runtime/ActionDeduplicator.ts#L27)
 
 ## Constructors
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/safety/runtime/ActionDeduplicator.ts:27](https
 
 > **new ActionDeduplicator**(`config?`): `ActionDeduplicator`
 
-Defined in: [packages/agentos/src/safety/runtime/ActionDeduplicator.ts:31](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/safety/runtime/ActionDeduplicator.ts#L31)
+Defined in: [packages/agentos/src/safety/runtime/ActionDeduplicator.ts:31](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/safety/runtime/ActionDeduplicator.ts#L31)
 
 #### Parameters
 
@@ -28,7 +28,7 @@ Defined in: [packages/agentos/src/safety/runtime/ActionDeduplicator.ts:31](https
 
 > **get** **size**(): `number`
 
-Defined in: [packages/agentos/src/safety/runtime/ActionDeduplicator.ts:92](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/safety/runtime/ActionDeduplicator.ts#L92)
+Defined in: [packages/agentos/src/safety/runtime/ActionDeduplicator.ts:92](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/safety/runtime/ActionDeduplicator.ts#L92)
 
 ##### Returns
 
@@ -40,7 +40,7 @@ Defined in: [packages/agentos/src/safety/runtime/ActionDeduplicator.ts:92](https
 
 > **checkAndRecord**(`key`): `object`
 
-Defined in: [packages/agentos/src/safety/runtime/ActionDeduplicator.ts:70](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/safety/runtime/ActionDeduplicator.ts#L70)
+Defined in: [packages/agentos/src/safety/runtime/ActionDeduplicator.ts:70](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/safety/runtime/ActionDeduplicator.ts#L70)
 
 #### Parameters
 
@@ -66,7 +66,7 @@ Defined in: [packages/agentos/src/safety/runtime/ActionDeduplicator.ts:70](https
 
 > **cleanup**(): `number`
 
-Defined in: [packages/agentos/src/safety/runtime/ActionDeduplicator.ts:76](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/safety/runtime/ActionDeduplicator.ts#L76)
+Defined in: [packages/agentos/src/safety/runtime/ActionDeduplicator.ts:76](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/safety/runtime/ActionDeduplicator.ts#L76)
 
 #### Returns
 
@@ -78,7 +78,7 @@ Defined in: [packages/agentos/src/safety/runtime/ActionDeduplicator.ts:76](https
 
 > **clear**(): `void`
 
-Defined in: [packages/agentos/src/safety/runtime/ActionDeduplicator.ts:88](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/safety/runtime/ActionDeduplicator.ts#L88)
+Defined in: [packages/agentos/src/safety/runtime/ActionDeduplicator.ts:88](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/safety/runtime/ActionDeduplicator.ts#L88)
 
 #### Returns
 
@@ -90,7 +90,7 @@ Defined in: [packages/agentos/src/safety/runtime/ActionDeduplicator.ts:88](https
 
 > **isDuplicate**(`key`): `boolean`
 
-Defined in: [packages/agentos/src/safety/runtime/ActionDeduplicator.ts:35](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/safety/runtime/ActionDeduplicator.ts#L35)
+Defined in: [packages/agentos/src/safety/runtime/ActionDeduplicator.ts:35](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/safety/runtime/ActionDeduplicator.ts#L35)
 
 #### Parameters
 
@@ -108,7 +108,7 @@ Defined in: [packages/agentos/src/safety/runtime/ActionDeduplicator.ts:35](https
 
 > **record**(`key`): [`DeduplicatorEntry`](../interfaces/DeduplicatorEntry.md)
 
-Defined in: [packages/agentos/src/safety/runtime/ActionDeduplicator.ts:42](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/safety/runtime/ActionDeduplicator.ts#L42)
+Defined in: [packages/agentos/src/safety/runtime/ActionDeduplicator.ts:42](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/safety/runtime/ActionDeduplicator.ts#L42)
 
 #### Parameters
 

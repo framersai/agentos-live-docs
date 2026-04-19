@@ -1,6 +1,6 @@
 # Interface: SemanticSearchResult
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts:264](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts#L264)
+Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts:264](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts#L264)
 
 Semantic search result
 
@@ -10,7 +10,7 @@ Semantic search result
 
 > **item**: [`KnowledgeEntity`](KnowledgeEntity.md) \| [`EpisodicMemory`](EpisodicMemory.md)
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts:266](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts#L266)
+Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts:266](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts#L266)
 
 Matched entity or memory
 
@@ -20,7 +20,7 @@ Matched entity or memory
 
 > `optional` **relatedEntities**: [`KnowledgeEntity`](KnowledgeEntity.md)[]
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts:272](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts#L272)
+Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts:272](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts#L272)
 
 Related entities
 
@@ -30,7 +30,7 @@ Related entities
 
 > **similarity**: `number`
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts:270](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts#L270)
+Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts:270](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts#L270)
 
 Similarity score (0-1)
 
@@ -40,6 +40,6 @@ Similarity score (0-1)
 
 > **type**: `"memory"` \| `"entity"`
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts:268](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts#L268)
+Defined in: [packages/agentos/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts:268](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/retrieval/graph/knowledge/IKnowledgeGraph.ts#L268)
 
 Item type

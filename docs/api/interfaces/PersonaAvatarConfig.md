@@ -1,6 +1,6 @@
 # Interface: PersonaAvatarConfig
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:51](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/personas/IPersonaDefinition.ts#L51)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:51](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/personas/IPersonaDefinition.ts#L51)
 
 Defines the configuration for a persona's visual representation (avatar).
 
@@ -14,7 +14,7 @@ PersonaAvatarConfig
 
 > `optional` **descriptionForGeneration**: `string`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:54](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/personas/IPersonaDefinition.ts#L54)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:54](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/personas/IPersonaDefinition.ts#L54)
 
 ***
 
@@ -22,7 +22,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefiniti
 
 > `optional` **moodToAvatarStateMap**: `Record`\<`string`, \{ `generationPromptSuffix?`: `string`; `sourceUrl?`: `string`; \}\>
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:55](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/personas/IPersonaDefinition.ts#L55)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:55](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/personas/IPersonaDefinition.ts#L55)
 
 ***
 
@@ -30,7 +30,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefiniti
 
 > `optional` **sourceUrl**: `string`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:53](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/personas/IPersonaDefinition.ts#L53)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:53](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/personas/IPersonaDefinition.ts#L53)
 
 ***
 
@@ -38,4 +38,4 @@ Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefiniti
 
 > `optional` **type**: `"static_image"` \| `"animated_image"` \| `"realtime_generative_placeholder"`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:52](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/personas/IPersonaDefinition.ts#L52)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:52](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/personas/IPersonaDefinition.ts#L52)

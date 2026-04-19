@@ -1,6 +1,6 @@
 # Interface: ImageProviderOptionBag
 
-Defined in: [packages/agentos/src/media/images/IImageProvider.ts:131](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/images/IImageProvider.ts#L131)
+Defined in: [packages/agentos/src/media/images/IImageProvider.ts:131](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/images/IImageProvider.ts#L131)
 
 ## Indexable
 
@@ -12,7 +12,7 @@ Defined in: [packages/agentos/src/media/images/IImageProvider.ts:131](https://gi
 
 > `optional` **openai**: [`OpenAIImageProviderOptions`](OpenAIImageProviderOptions.md)
 
-Defined in: [packages/agentos/src/media/images/IImageProvider.ts:132](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/images/IImageProvider.ts#L132)
+Defined in: [packages/agentos/src/media/images/IImageProvider.ts:132](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/images/IImageProvider.ts#L132)
 
 ***
 
@@ -20,7 +20,7 @@ Defined in: [packages/agentos/src/media/images/IImageProvider.ts:132](https://gi
 
 > `optional` **openrouter**: [`OpenRouterImageProviderOptions`](OpenRouterImageProviderOptions.md)
 
-Defined in: [packages/agentos/src/media/images/IImageProvider.ts:133](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/images/IImageProvider.ts#L133)
+Defined in: [packages/agentos/src/media/images/IImageProvider.ts:133](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/images/IImageProvider.ts#L133)
 
 ***
 
@@ -28,7 +28,7 @@ Defined in: [packages/agentos/src/media/images/IImageProvider.ts:133](https://gi
 
 > `optional` **replicate**: [`ReplicateImageProviderOptions`](ReplicateImageProviderOptions.md)
 
-Defined in: [packages/agentos/src/media/images/IImageProvider.ts:135](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/images/IImageProvider.ts#L135)
+Defined in: [packages/agentos/src/media/images/IImageProvider.ts:135](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/images/IImageProvider.ts#L135)
 
 ***
 
@@ -36,7 +36,7 @@ Defined in: [packages/agentos/src/media/images/IImageProvider.ts:135](https://gi
 
 > `optional` **stability**: [`StabilityImageProviderOptions`](StabilityImageProviderOptions.md)
 
-Defined in: [packages/agentos/src/media/images/IImageProvider.ts:134](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/images/IImageProvider.ts#L134)
+Defined in: [packages/agentos/src/media/images/IImageProvider.ts:134](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/images/IImageProvider.ts#L134)
 
 ***
 
@@ -44,4 +44,4 @@ Defined in: [packages/agentos/src/media/images/IImageProvider.ts:134](https://gi
 
 > `optional` **stable-diffusion-local**: [`StableDiffusionLocalImageProviderOptions`](StableDiffusionLocalImageProviderOptions.md)
 
-Defined in: [packages/agentos/src/media/images/IImageProvider.ts:136](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/images/IImageProvider.ts#L136)
+Defined in: [packages/agentos/src/media/images/IImageProvider.ts:136](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/images/IImageProvider.ts#L136)

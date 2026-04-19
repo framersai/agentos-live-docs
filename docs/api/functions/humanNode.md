@@ -2,7 +2,7 @@
 
 > **humanNode**(`config`, `policies?`): [`GraphNode`](../interfaces/GraphNode.md)
 
-Defined in: [packages/agentos/src/orchestration/builders/nodes.ts:93](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/builders/nodes.ts#L93)
+Defined in: [packages/agentos/src/orchestration/builders/nodes.ts:93](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/builders/nodes.ts#L93)
 
 Creates a human-in-the-loop node that suspends execution until a human
 (or automated surrogate) provides a decision.

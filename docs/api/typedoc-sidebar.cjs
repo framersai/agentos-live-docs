@@ -444,6 +444,11 @@ const typedocSidebar = {
         },
         {
           type: "doc",
+          id: "api/classes/ForgeStatsAggregator",
+          label: "ForgeStatsAggregator"
+        },
+        {
+          type: "doc",
           id: "api/classes/ForgeToolMetaTool",
           label: "ForgeToolMetaTool"
         },
@@ -1920,6 +1925,11 @@ const typedocSidebar = {
         },
         {
           type: "doc",
+          id: "api/interfaces/CapturedForge",
+          label: "CapturedForge"
+        },
+        {
+          type: "doc",
           id: "api/interfaces/ChannelAuthConfig",
           label: "ChannelAuthConfig"
         },
@@ -2660,6 +2670,21 @@ const typedocSidebar = {
         },
         {
           type: "doc",
+          id: "api/interfaces/ForgeSchemaInferenceRequest",
+          label: "ForgeSchemaInferenceRequest"
+        },
+        {
+          type: "doc",
+          id: "api/interfaces/ForgeShapeRequest",
+          label: "ForgeShapeRequest"
+        },
+        {
+          type: "doc",
+          id: "api/interfaces/ForgeStats",
+          label: "ForgeStats"
+        },
+        {
+          type: "doc",
           id: "api/interfaces/ForgeTestCase",
           label: "ForgeTestCase"
         },
@@ -3012,6 +3037,11 @@ const typedocSidebar = {
           type: "doc",
           id: "api/interfaces/HnswSidecarConfig",
           label: "HnswSidecarConfig"
+        },
+        {
+          type: "doc",
+          id: "api/interfaces/HostLLMPolicy",
+          label: "HostLLMPolicy"
         },
         {
           type: "doc",
@@ -6030,6 +6060,11 @@ const typedocSidebar = {
         },
         {
           type: "doc",
+          id: "api/interfaces/WrapForgeToolOptions",
+          label: "WrapForgeToolOptions"
+        },
+        {
+          type: "doc",
           id: "api/interfaces/WriteResult",
           label: "WriteResult"
         }
@@ -6343,6 +6378,16 @@ const typedocSidebar = {
           type: "doc",
           id: "api/type-aliases/FeedbackType",
           label: "FeedbackType"
+        },
+        {
+          type: "doc",
+          id: "api/type-aliases/ForgeLogEvent",
+          label: "ForgeLogEvent"
+        },
+        {
+          type: "doc",
+          id: "api/type-aliases/ForgeRejectionCategory",
+          label: "ForgeRejectionCategory"
         },
         {
           type: "doc",
@@ -7548,6 +7593,11 @@ const typedocSidebar = {
         },
         {
           type: "doc",
+          id: "api/functions/classifyForgeRejection",
+          label: "classifyForgeRejection"
+        },
+        {
+          type: "doc",
           id: "api/functions/clearRecordedAgentOSUsage",
           label: "clearRecordedAgentOSUsage"
         },
@@ -7755,6 +7805,11 @@ const typedocSidebar = {
           type: "doc",
           id: "api/functions/embedText",
           label: "embedText"
+        },
+        {
+          type: "doc",
+          id: "api/functions/emptyForgeStats",
+          label: "emptyForgeStats"
         },
         {
           type: "doc",
@@ -8043,6 +8098,11 @@ const typedocSidebar = {
         },
         {
           type: "doc",
+          id: "api/functions/inferSchemaFromTestCases",
+          label: "inferSchemaFromTestCases"
+        },
+        {
+          type: "doc",
           id: "api/functions/isActionableToolCallRequestChunk",
           label: "isActionableToolCallRequestChunk"
         },
@@ -8175,6 +8235,11 @@ const typedocSidebar = {
           type: "doc",
           id: "api/functions/normalizeExternalToolRegistry",
           label: "normalizeExternalToolRegistry"
+        },
+        {
+          type: "doc",
+          id: "api/functions/normalizeHostLLMPolicy",
+          label: "normalizeHostLLMPolicy"
         },
         {
           type: "doc",
@@ -8508,6 +8573,11 @@ const typedocSidebar = {
         },
         {
           type: "doc",
+          id: "api/functions/validateForgeShape",
+          label: "validateForgeShape"
+        },
+        {
+          type: "doc",
           id: "api/functions/variateImage",
           label: "variateImage"
         },
@@ -8520,6 +8590,11 @@ const typedocSidebar = {
           type: "doc",
           id: "api/functions/workflow",
           label: "workflow"
+        },
+        {
+          type: "doc",
+          id: "api/functions/wrapForgeTool",
+          label: "wrapForgeTool"
         },
         {
           type: "doc",

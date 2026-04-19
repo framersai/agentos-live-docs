@@ -1,6 +1,6 @@
 # Class: PromptEngineError
 
-Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:652](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/llm/IPromptEngine.ts#L652)
+Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:652](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/llm/IPromptEngine.ts#L652)
 
 Custom error class for all errors originating from the PromptEngine.
 This allows for specific catching and handling of prompt construction failures.
@@ -15,7 +15,7 @@ This allows for specific catching and handling of prompt construction failures.
 
 > **new PromptEngineError**(`message`, `code`, `component?`, `details?`): `PromptEngineError`
 
-Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:686](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/llm/IPromptEngine.ts#L686)
+Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:686](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/llm/IPromptEngine.ts#L686)
 
 Creates an instance of PromptEngineError.
 
@@ -59,7 +59,7 @@ Additional context or the underlying error.
 
 > `readonly` **code**: `string`
 
-Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:659](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/llm/IPromptEngine.ts#L659)
+Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:659](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/llm/IPromptEngine.ts#L659)
 
 A specific error code for programmatic handling (e.g., 'TEMPLATE_NOT_FOUND', 'TOKEN_LIMIT_EXCEEDED_IRRECOVERABLY').
 
@@ -69,7 +69,7 @@ A specific error code for programmatic handling (e.g., 'TEMPLATE_NOT_FOUND', 'TO
 
 > `readonly` `optional` **component**: `string`
 
-Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:668](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/llm/IPromptEngine.ts#L668)
+Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:668](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/llm/IPromptEngine.ts#L668)
 
 Optional: The specific component or operation within the PromptEngine where the error occurred
 (e.g., 'TokenBudgeting', 'TemplateFormatting', 'ContextualElementSelection').
@@ -80,7 +80,7 @@ Optional: The specific component or operation within the PromptEngine where the 
 
 > `readonly` `optional` **details**: `unknown`
 
-Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:677](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/llm/IPromptEngine.ts#L677)
+Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:677](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/llm/IPromptEngine.ts#L677)
 
 Optional: Additional structured details about the error, which might include relevant
 data like modelId, offending component, or configuration issue.
@@ -91,7 +91,7 @@ data like modelId, offending component, or configuration issue.
 
 > **message**: `string`
 
-Defined in: node\_modules/.pnpm/typescript@5.6.3/node\_modules/typescript/lib/lib.es5.d.ts:1077
+Defined in: apps/agentos-live-docs/node\_modules/typescript/lib/lib.es5.d.ts:1077
 
 #### Inherited from
 
@@ -103,7 +103,7 @@ Defined in: node\_modules/.pnpm/typescript@5.6.3/node\_modules/typescript/lib/li
 
 > **name**: `string`
 
-Defined in: node\_modules/.pnpm/typescript@5.6.3/node\_modules/typescript/lib/lib.es5.d.ts:1076
+Defined in: apps/agentos-live-docs/node\_modules/typescript/lib/lib.es5.d.ts:1076
 
 #### Inherited from
 
@@ -115,7 +115,7 @@ Defined in: node\_modules/.pnpm/typescript@5.6.3/node\_modules/typescript/lib/li
 
 > `optional` **stack**: `string`
 
-Defined in: node\_modules/.pnpm/typescript@5.6.3/node\_modules/typescript/lib/lib.es5.d.ts:1078
+Defined in: apps/agentos-live-docs/node\_modules/typescript/lib/lib.es5.d.ts:1078
 
 #### Inherited from
 

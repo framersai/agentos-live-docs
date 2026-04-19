@@ -1,6 +1,6 @@
 # Interface: AgencySeatState
 
-Defined in: [packages/agentos/src/agents/agency/AgencyTypes.ts:15](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/agents/agency/AgencyTypes.ts#L15)
+Defined in: [packages/agentos/src/agents/agency/AgencyTypes.ts:15](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/agents/agency/AgencyTypes.ts#L15)
 
 Captures the runtime state of a single seat within an Agency.
 A seat represents a role filled by a specific GMI instance.
@@ -11,7 +11,7 @@ A seat represents a role filled by a specific GMI instance.
 
 > **attachedAt**: `string`
 
-Defined in: [packages/agentos/src/agents/agency/AgencyTypes.ts:23](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/agents/agency/AgencyTypes.ts#L23)
+Defined in: [packages/agentos/src/agents/agency/AgencyTypes.ts:23](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/agents/agency/AgencyTypes.ts#L23)
 
 ISO timestamp when GMI was attached to this seat
 
@@ -21,7 +21,7 @@ ISO timestamp when GMI was attached to this seat
 
 > **gmiInstanceId**: `string`
 
-Defined in: [packages/agentos/src/agents/agency/AgencyTypes.ts:19](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/agents/agency/AgencyTypes.ts#L19)
+Defined in: [packages/agentos/src/agents/agency/AgencyTypes.ts:19](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/agents/agency/AgencyTypes.ts#L19)
 
 GMI instance currently filling this seat
 
@@ -31,7 +31,7 @@ GMI instance currently filling this seat
 
 > `optional` **history**: [`AgencySeatHistoryEntry`](AgencySeatHistoryEntry.md)[]
 
-Defined in: [packages/agentos/src/agents/agency/AgencyTypes.ts:27](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/agents/agency/AgencyTypes.ts#L27)
+Defined in: [packages/agentos/src/agents/agency/AgencyTypes.ts:27](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/agents/agency/AgencyTypes.ts#L27)
 
 Historical record of seat activity
 
@@ -41,7 +41,7 @@ Historical record of seat activity
 
 > `optional` **metadata**: `Record`\<`string`, `unknown`\>
 
-Defined in: [packages/agentos/src/agents/agency/AgencyTypes.ts:25](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/agents/agency/AgencyTypes.ts#L25)
+Defined in: [packages/agentos/src/agents/agency/AgencyTypes.ts:25](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/agents/agency/AgencyTypes.ts#L25)
 
 Custom metadata for this seat
 
@@ -51,7 +51,7 @@ Custom metadata for this seat
 
 > **personaId**: `string`
 
-Defined in: [packages/agentos/src/agents/agency/AgencyTypes.ts:21](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/agents/agency/AgencyTypes.ts#L21)
+Defined in: [packages/agentos/src/agents/agency/AgencyTypes.ts:21](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/agents/agency/AgencyTypes.ts#L21)
 
 Persona configuration for this seat
 
@@ -61,6 +61,6 @@ Persona configuration for this seat
 
 > **roleId**: `string`
 
-Defined in: [packages/agentos/src/agents/agency/AgencyTypes.ts:17](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/agents/agency/AgencyTypes.ts#L17)
+Defined in: [packages/agentos/src/agents/agency/AgencyTypes.ts:17](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/agents/agency/AgencyTypes.ts#L17)
 
 Unique role identifier within the agency

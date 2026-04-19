@@ -1,6 +1,6 @@
 # Interface: TelnyxProviderConfig
 
-Defined in: [packages/agentos/src/channels/telephony/types.ts:466](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/channels/telephony/types.ts#L466)
+Defined in: [packages/agentos/src/channels/telephony/types.ts:466](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/telephony/types.ts#L466)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/channels/telephony/types.ts:466](https://githu
 
 > **apiKey**: `string`
 
-Defined in: [packages/agentos/src/channels/telephony/types.ts:467](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/channels/telephony/types.ts#L467)
+Defined in: [packages/agentos/src/channels/telephony/types.ts:467](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/telephony/types.ts#L467)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [packages/agentos/src/channels/telephony/types.ts:467](https://githu
 
 > **connectionId**: `string`
 
-Defined in: [packages/agentos/src/channels/telephony/types.ts:468](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/channels/telephony/types.ts#L468)
+Defined in: [packages/agentos/src/channels/telephony/types.ts:468](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/telephony/types.ts#L468)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: [packages/agentos/src/channels/telephony/types.ts:468](https://githu
 
 > **fromNumber**: `string`
 
-Defined in: [packages/agentos/src/channels/telephony/types.ts:470](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/channels/telephony/types.ts#L470)
+Defined in: [packages/agentos/src/channels/telephony/types.ts:470](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/telephony/types.ts#L470)
 
 ***
 
@@ -32,4 +32,4 @@ Defined in: [packages/agentos/src/channels/telephony/types.ts:470](https://githu
 
 > `optional` **publicKey**: `string`
 
-Defined in: [packages/agentos/src/channels/telephony/types.ts:469](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/channels/telephony/types.ts#L469)
+Defined in: [packages/agentos/src/channels/telephony/types.ts:469](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/telephony/types.ts#L469)

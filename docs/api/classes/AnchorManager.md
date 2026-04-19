@@ -1,6 +1,6 @@
 # Class: AnchorManager
 
-Defined in: [packages/agentos/src/provenance/anchoring/AnchorManager.ts:29](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/provenance/anchoring/AnchorManager.ts#L29)
+Defined in: [packages/agentos/src/provenance/anchoring/AnchorManager.ts:29](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/provenance/anchoring/AnchorManager.ts#L29)
 
 ## Constructors
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/provenance/anchoring/AnchorManager.ts:29](http
 
 > **new AnchorManager**(`storageAdapter`, `ledger`, `keyManager`, `config`, `tablePrefix?`, `provider?`): `AnchorManager`
 
-Defined in: [packages/agentos/src/provenance/anchoring/AnchorManager.ts:39](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/provenance/anchoring/AnchorManager.ts#L39)
+Defined in: [packages/agentos/src/provenance/anchoring/AnchorManager.ts:39](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/provenance/anchoring/AnchorManager.ts#L39)
 
 #### Parameters
 
@@ -46,7 +46,7 @@ Defined in: [packages/agentos/src/provenance/anchoring/AnchorManager.ts:39](http
 
 > **createAnchor**(`fromSequence`, `toSequence`): `Promise`\<[`AnchorRecord`](../interfaces/AnchorRecord.md)\>
 
-Defined in: [packages/agentos/src/provenance/anchoring/AnchorManager.ts:120](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/provenance/anchoring/AnchorManager.ts#L120)
+Defined in: [packages/agentos/src/provenance/anchoring/AnchorManager.ts:120](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/provenance/anchoring/AnchorManager.ts#L120)
 
 Force-create an anchor for a specific event range.
 
@@ -76,7 +76,7 @@ The new anchor record.
 
 > **createAnchorIfNeeded**(): `Promise`\<[`AnchorRecord`](../interfaces/AnchorRecord.md) \| `null`\>
 
-Defined in: [packages/agentos/src/provenance/anchoring/AnchorManager.ts:95](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/provenance/anchoring/AnchorManager.ts#L95)
+Defined in: [packages/agentos/src/provenance/anchoring/AnchorManager.ts:95](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/provenance/anchoring/AnchorManager.ts#L95)
 
 Create an anchor if there are enough new events since the last anchor.
 Returns the new anchor record, or null if no anchor was needed.
@@ -91,7 +91,7 @@ Returns the new anchor record, or null if no anchor was needed.
 
 > **getAllAnchors**(): `Promise`\<[`AnchorRecord`](../interfaces/AnchorRecord.md)[]\>
 
-Defined in: [packages/agentos/src/provenance/anchoring/AnchorManager.ts:226](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/provenance/anchoring/AnchorManager.ts#L226)
+Defined in: [packages/agentos/src/provenance/anchoring/AnchorManager.ts:226](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/provenance/anchoring/AnchorManager.ts#L226)
 
 Get all anchors (ordered by sequence range).
 
@@ -105,7 +105,7 @@ Get all anchors (ordered by sequence range).
 
 > **getAnchorForSequence**(`sequence`): `Promise`\<[`AnchorRecord`](../interfaces/AnchorRecord.md) \| `null`\>
 
-Defined in: [packages/agentos/src/provenance/anchoring/AnchorManager.ts:236](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/provenance/anchoring/AnchorManager.ts#L236)
+Defined in: [packages/agentos/src/provenance/anchoring/AnchorManager.ts:236](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/provenance/anchoring/AnchorManager.ts#L236)
 
 Get the anchor covering a specific sequence number.
 
@@ -125,7 +125,7 @@ Get the anchor covering a specific sequence number.
 
 > **getLastAnchor**(): `Promise`\<[`AnchorRecord`](../interfaces/AnchorRecord.md) \| `null`\>
 
-Defined in: [packages/agentos/src/provenance/anchoring/AnchorManager.ts:216](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/provenance/anchoring/AnchorManager.ts#L216)
+Defined in: [packages/agentos/src/provenance/anchoring/AnchorManager.ts:216](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/provenance/anchoring/AnchorManager.ts#L216)
 
 Get the most recent anchor.
 
@@ -139,7 +139,7 @@ Get the most recent anchor.
 
 > **getProvider**(): [`AnchorProvider`](../interfaces/AnchorProvider.md) \| `null`
 
-Defined in: [packages/agentos/src/provenance/anchoring/AnchorManager.ts:209](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/provenance/anchoring/AnchorManager.ts#L209)
+Defined in: [packages/agentos/src/provenance/anchoring/AnchorManager.ts:209](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/provenance/anchoring/AnchorManager.ts#L209)
 
 Get the current anchor provider, if any.
 
@@ -153,7 +153,7 @@ Get the current anchor provider, if any.
 
 > **isActive**(): `boolean`
 
-Defined in: [packages/agentos/src/provenance/anchoring/AnchorManager.ts:311](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/provenance/anchoring/AnchorManager.ts#L311)
+Defined in: [packages/agentos/src/provenance/anchoring/AnchorManager.ts:311](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/provenance/anchoring/AnchorManager.ts#L311)
 
 Check if the manager is currently running periodic anchoring.
 
@@ -167,7 +167,7 @@ Check if the manager is currently running periodic anchoring.
 
 > **start**(): `void`
 
-Defined in: [packages/agentos/src/provenance/anchoring/AnchorManager.ts:58](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/provenance/anchoring/AnchorManager.ts#L58)
+Defined in: [packages/agentos/src/provenance/anchoring/AnchorManager.ts:58](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/provenance/anchoring/AnchorManager.ts#L58)
 
 Start periodic anchoring at the configured interval.
 
@@ -181,7 +181,7 @@ Start periodic anchoring at the configured interval.
 
 > **stop**(): `void`
 
-Defined in: [packages/agentos/src/provenance/anchoring/AnchorManager.ts:82](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/provenance/anchoring/AnchorManager.ts#L82)
+Defined in: [packages/agentos/src/provenance/anchoring/AnchorManager.ts:82](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/provenance/anchoring/AnchorManager.ts#L82)
 
 Stop periodic anchoring.
 
@@ -195,7 +195,7 @@ Stop periodic anchoring.
 
 > **verifyAnchor**(`anchorId`): `Promise`\<\{ `anchor`: [`AnchorRecord`](../interfaces/AnchorRecord.md); `errors`: `string`[]; `valid`: `boolean`; \}\>
 
-Defined in: [packages/agentos/src/provenance/anchoring/AnchorManager.ts:249](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/provenance/anchoring/AnchorManager.ts#L249)
+Defined in: [packages/agentos/src/provenance/anchoring/AnchorManager.ts:249](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/provenance/anchoring/AnchorManager.ts#L249)
 
 Verify an anchor's Merkle root against the actual events.
 

@@ -1,6 +1,6 @@
 # Class: ChannelRouter
 
-Defined in: [packages/agentos/src/channels/ChannelRouter.ts:87](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/channels/ChannelRouter.ts#L87)
+Defined in: [packages/agentos/src/channels/ChannelRouter.ts:87](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/ChannelRouter.ts#L87)
 
 Central routing hub for all external messaging channels.
 
@@ -53,7 +53,7 @@ await router.sendMessage('cipher-001', 'telegram', '123456789', {
 
 > **addBinding**(`binding`): `void`
 
-Defined in: [packages/agentos/src/channels/ChannelRouter.ts:178](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/channels/ChannelRouter.ts#L178)
+Defined in: [packages/agentos/src/channels/ChannelRouter.ts:178](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/ChannelRouter.ts#L178)
 
 Add or update a channel binding.
 
@@ -73,7 +73,7 @@ Add or update a channel binding.
 
 > **broadcast**(`seedId`, `content`): `Promise`\<[`ChannelSendResult`](../interfaces/ChannelSendResult.md)[]\>
 
-Defined in: [packages/agentos/src/channels/ChannelRouter.ts:253](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/channels/ChannelRouter.ts#L253)
+Defined in: [packages/agentos/src/channels/ChannelRouter.ts:253](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/ChannelRouter.ts#L253)
 
 Broadcast a message from an agent to all auto-broadcast bindings.
 
@@ -97,7 +97,7 @@ Broadcast a message from an agent to all auto-broadcast bindings.
 
 > **getAdapter**(`platform`): [`IChannelAdapter`](../interfaces/IChannelAdapter.md) \| `undefined`
 
-Defined in: [packages/agentos/src/channels/ChannelRouter.ts:150](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/channels/ChannelRouter.ts#L150)
+Defined in: [packages/agentos/src/channels/ChannelRouter.ts:150](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/ChannelRouter.ts#L150)
 
 Get a registered adapter by platform.
 
@@ -117,7 +117,7 @@ Get a registered adapter by platform.
 
 > **getBindingsForConversation**(`platform`, `conversationId`): [`ChannelBindingConfig`](../interfaces/ChannelBindingConfig.md)[]
 
-Defined in: [packages/agentos/src/channels/ChannelRouter.ts:201](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/channels/ChannelRouter.ts#L201)
+Defined in: [packages/agentos/src/channels/ChannelRouter.ts:201](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/ChannelRouter.ts#L201)
 
 Get all bindings for a platform + conversation.
 
@@ -141,7 +141,7 @@ Get all bindings for a platform + conversation.
 
 > **getBindingsForSeed**(`seedId`): [`ChannelBindingConfig`](../interfaces/ChannelBindingConfig.md)[]
 
-Defined in: [packages/agentos/src/channels/ChannelRouter.ts:194](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/channels/ChannelRouter.ts#L194)
+Defined in: [packages/agentos/src/channels/ChannelRouter.ts:194](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/ChannelRouter.ts#L194)
 
 Get all bindings for a seed.
 
@@ -161,7 +161,7 @@ Get all bindings for a seed.
 
 > **getBroadcastBindings**(`seedId`): [`ChannelBindingConfig`](../interfaces/ChannelBindingConfig.md)[]
 
-Defined in: [packages/agentos/src/channels/ChannelRouter.ts:212](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/channels/ChannelRouter.ts#L212)
+Defined in: [packages/agentos/src/channels/ChannelRouter.ts:212](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/ChannelRouter.ts#L212)
 
 Get all auto-broadcast bindings for a seed (used when agent publishes a post).
 
@@ -181,7 +181,7 @@ Get all auto-broadcast bindings for a seed (used when agent publishes a post).
 
 > **getOrCreateSession**(`seedId`, `platform`, `conversationId`): [`ChannelSession`](../interfaces/ChannelSession.md)
 
-Defined in: [packages/agentos/src/channels/ChannelRouter.ts:296](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/channels/ChannelRouter.ts#L296)
+Defined in: [packages/agentos/src/channels/ChannelRouter.ts:296](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/ChannelRouter.ts#L296)
 
 Get or create a session for an agent + conversation.
 
@@ -209,7 +209,7 @@ Get or create a session for an agent + conversation.
 
 > **getSessionsForSeed**(`seedId`): [`ChannelSession`](../interfaces/ChannelSession.md)[]
 
-Defined in: [packages/agentos/src/channels/ChannelRouter.ts:324](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/channels/ChannelRouter.ts#L324)
+Defined in: [packages/agentos/src/channels/ChannelRouter.ts:324](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/ChannelRouter.ts#L324)
 
 Get active sessions for a seed.
 
@@ -229,7 +229,7 @@ Get active sessions for a seed.
 
 > **getStats**(): `object`
 
-Defined in: [packages/agentos/src/channels/ChannelRouter.ts:330](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/channels/ChannelRouter.ts#L330)
+Defined in: [packages/agentos/src/channels/ChannelRouter.ts:330](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/ChannelRouter.ts#L330)
 
 #### Returns
 
@@ -257,7 +257,7 @@ Defined in: [packages/agentos/src/channels/ChannelRouter.ts:330](https://github.
 
 > **listAdapters**(): [`ChannelInfo`](../interfaces/ChannelInfo.md)[]
 
-Defined in: [packages/agentos/src/channels/ChannelRouter.ts:157](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/channels/ChannelRouter.ts#L157)
+Defined in: [packages/agentos/src/channels/ChannelRouter.ts:157](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/ChannelRouter.ts#L157)
 
 List all registered adapters with their info.
 
@@ -271,7 +271,7 @@ List all registered adapters with their info.
 
 > **onMessage**(`handler`): () => `void`
 
-Defined in: [packages/agentos/src/channels/ChannelRouter.ts:223](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/channels/ChannelRouter.ts#L223)
+Defined in: [packages/agentos/src/channels/ChannelRouter.ts:223](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/ChannelRouter.ts#L223)
 
 Register a handler for inbound messages. Returns unsubscribe function.
 
@@ -295,7 +295,7 @@ Register a handler for inbound messages. Returns unsubscribe function.
 
 > **registerAdapter**(`adapter`, `options?`): `void`
 
-Defined in: [packages/agentos/src/channels/ChannelRouter.ts:111](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/channels/ChannelRouter.ts#L111)
+Defined in: [packages/agentos/src/channels/ChannelRouter.ts:111](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/ChannelRouter.ts#L111)
 
 Register a channel adapter. The router will subscribe to its events.
 
@@ -319,7 +319,7 @@ Register a channel adapter. The router will subscribe to its events.
 
 > **removeBinding**(`bindingId`): `void`
 
-Defined in: [packages/agentos/src/channels/ChannelRouter.ts:186](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/channels/ChannelRouter.ts#L186)
+Defined in: [packages/agentos/src/channels/ChannelRouter.ts:186](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/ChannelRouter.ts#L186)
 
 Remove a channel binding.
 
@@ -339,7 +339,7 @@ Remove a channel binding.
 
 > **sendMessage**(`seedId`, `platform`, `conversationId`, `content`): `Promise`\<[`ChannelSendResult`](../interfaces/ChannelSendResult.md)\>
 
-Defined in: [packages/agentos/src/channels/ChannelRouter.ts:231](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/channels/ChannelRouter.ts#L231)
+Defined in: [packages/agentos/src/channels/ChannelRouter.ts:231](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/ChannelRouter.ts#L231)
 
 Send a message from an agent to a specific conversation.
 
@@ -371,7 +371,7 @@ Send a message from an agent to a specific conversation.
 
 > **sendTypingIndicator**(`platform`, `conversationId`, `isTyping`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/channels/ChannelRouter.ts:280](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/channels/ChannelRouter.ts#L280)
+Defined in: [packages/agentos/src/channels/ChannelRouter.ts:280](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/ChannelRouter.ts#L280)
 
 Send a typing indicator for an agent on a channel.
 
@@ -399,7 +399,7 @@ Send a typing indicator for an agent on a channel.
 
 > **shutdown**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/channels/ChannelRouter.ts:351](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/channels/ChannelRouter.ts#L351)
+Defined in: [packages/agentos/src/channels/ChannelRouter.ts:351](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/ChannelRouter.ts#L351)
 
 Shut down all adapters and clear state.
 
@@ -413,7 +413,7 @@ Shut down all adapters and clear state.
 
 > **unregisterAdapter**(`platformKey`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/channels/ChannelRouter.ts:133](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/channels/ChannelRouter.ts#L133)
+Defined in: [packages/agentos/src/channels/ChannelRouter.ts:133](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/ChannelRouter.ts#L133)
 
 Unregister and shut down an adapter.
 

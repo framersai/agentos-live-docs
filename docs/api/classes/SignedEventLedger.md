@@ -1,6 +1,6 @@
 # Class: SignedEventLedger
 
-Defined in: [packages/agentos/src/provenance/ledger/SignedEventLedger.ts:32](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/provenance/ledger/SignedEventLedger.ts#L32)
+Defined in: [packages/agentos/src/provenance/ledger/SignedEventLedger.ts:32](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/provenance/ledger/SignedEventLedger.ts#L32)
 
 ## Constructors
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/provenance/ledger/SignedEventLedger.ts:32](htt
 
 > **new SignedEventLedger**(`storageAdapter`, `keyManager`, `agentId`, `config`, `tablePrefix?`): `SignedEventLedger`
 
-Defined in: [packages/agentos/src/provenance/ledger/SignedEventLedger.ts:44](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/provenance/ledger/SignedEventLedger.ts#L44)
+Defined in: [packages/agentos/src/provenance/ledger/SignedEventLedger.ts:44](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/provenance/ledger/SignedEventLedger.ts#L44)
 
 #### Parameters
 
@@ -42,7 +42,7 @@ Defined in: [packages/agentos/src/provenance/ledger/SignedEventLedger.ts:44](htt
 
 > **appendEvent**(`type`, `payload`): `Promise`\<[`SignedEvent`](../interfaces/SignedEvent.md)\>
 
-Defined in: [packages/agentos/src/provenance/ledger/SignedEventLedger.ts:86](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/provenance/ledger/SignedEventLedger.ts#L86)
+Defined in: [packages/agentos/src/provenance/ledger/SignedEventLedger.ts:86](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/provenance/ledger/SignedEventLedger.ts#L86)
 
 Append a new event to the ledger.
 Serialized via internal queue to maintain hash chain integrity.
@@ -67,7 +67,7 @@ Serialized via internal queue to maintain hash chain integrity.
 
 > **getAllEvents**(): `Promise`\<[`SignedEvent`](../interfaces/SignedEvent.md)[]\>
 
-Defined in: [packages/agentos/src/provenance/ledger/SignedEventLedger.ts:265](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/provenance/ledger/SignedEventLedger.ts#L265)
+Defined in: [packages/agentos/src/provenance/ledger/SignedEventLedger.ts:265](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/provenance/ledger/SignedEventLedger.ts#L265)
 
 Get all events for this agent (ordered by sequence).
 
@@ -81,7 +81,7 @@ Get all events for this agent (ordered by sequence).
 
 > **getChainState**(): `object`
 
-Defined in: [packages/agentos/src/provenance/ledger/SignedEventLedger.ts:278](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/provenance/ledger/SignedEventLedger.ts#L278)
+Defined in: [packages/agentos/src/provenance/ledger/SignedEventLedger.ts:278](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/provenance/ledger/SignedEventLedger.ts#L278)
 
 Get the current chain state (for diagnostics).
 
@@ -103,7 +103,7 @@ Get the current chain state (for diagnostics).
 
 > **getEvent**(`id`): `Promise`\<[`SignedEvent`](../interfaces/SignedEvent.md) \| `null`\>
 
-Defined in: [packages/agentos/src/provenance/ledger/SignedEventLedger.ts:173](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/provenance/ledger/SignedEventLedger.ts#L173)
+Defined in: [packages/agentos/src/provenance/ledger/SignedEventLedger.ts:173](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/provenance/ledger/SignedEventLedger.ts#L173)
 
 Get a single event by ID.
 
@@ -123,7 +123,7 @@ Get a single event by ID.
 
 > **getEventCount**(): `Promise`\<`number`\>
 
-Defined in: [packages/agentos/src/provenance/ledger/SignedEventLedger.ts:254](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/provenance/ledger/SignedEventLedger.ts#L254)
+Defined in: [packages/agentos/src/provenance/ledger/SignedEventLedger.ts:254](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/provenance/ledger/SignedEventLedger.ts#L254)
 
 Get the total number of events for this agent.
 
@@ -137,7 +137,7 @@ Get the total number of events for this agent.
 
 > **getEventsByPayloadFilter**(`filter`, `types?`): `Promise`\<[`SignedEvent`](../interfaces/SignedEvent.md)[]\>
 
-Defined in: [packages/agentos/src/provenance/ledger/SignedEventLedger.ts:210](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/provenance/ledger/SignedEventLedger.ts#L210)
+Defined in: [packages/agentos/src/provenance/ledger/SignedEventLedger.ts:210](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/provenance/ledger/SignedEventLedger.ts#L210)
 
 Get events matching a payload filter (searches JSON payload).
 
@@ -161,7 +161,7 @@ Get events matching a payload filter (searches JSON payload).
 
 > **getEventsByRange**(`fromSequence`, `toSequence`): `Promise`\<[`SignedEvent`](../interfaces/SignedEvent.md)[]\>
 
-Defined in: [packages/agentos/src/provenance/ledger/SignedEventLedger.ts:184](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/provenance/ledger/SignedEventLedger.ts#L184)
+Defined in: [packages/agentos/src/provenance/ledger/SignedEventLedger.ts:184](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/provenance/ledger/SignedEventLedger.ts#L184)
 
 Get events in a sequence range (inclusive).
 
@@ -185,7 +185,7 @@ Get events in a sequence range (inclusive).
 
 > **getEventsByType**(`type`): `Promise`\<[`SignedEvent`](../interfaces/SignedEvent.md)[]\>
 
-Defined in: [packages/agentos/src/provenance/ledger/SignedEventLedger.ts:197](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/provenance/ledger/SignedEventLedger.ts#L197)
+Defined in: [packages/agentos/src/provenance/ledger/SignedEventLedger.ts:197](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/provenance/ledger/SignedEventLedger.ts#L197)
 
 Get events by type.
 
@@ -205,7 +205,7 @@ Get events by type.
 
 > **getLatestEvent**(): `Promise`\<[`SignedEvent`](../interfaces/SignedEvent.md) \| `null`\>
 
-Defined in: [packages/agentos/src/provenance/ledger/SignedEventLedger.ts:241](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/provenance/ledger/SignedEventLedger.ts#L241)
+Defined in: [packages/agentos/src/provenance/ledger/SignedEventLedger.ts:241](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/provenance/ledger/SignedEventLedger.ts#L241)
 
 Get the latest event.
 
@@ -219,7 +219,7 @@ Get the latest event.
 
 > **initialize**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/provenance/ledger/SignedEventLedger.ts:62](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/provenance/ledger/SignedEventLedger.ts#L62)
+Defined in: [packages/agentos/src/provenance/ledger/SignedEventLedger.ts:62](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/provenance/ledger/SignedEventLedger.ts#L62)
 
 Initialize the ledger: load the last sequence number and hash from the DB.
 

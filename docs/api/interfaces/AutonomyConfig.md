@@ -1,6 +1,6 @@
 # Interface: AutonomyConfig
 
-Defined in: [packages/agentos/src/provenance/types.ts:126](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/provenance/types.ts#L126)
+Defined in: [packages/agentos/src/provenance/types.ts:126](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/provenance/types.ts#L126)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/provenance/types.ts:126](https://github.com/fr
 
 > **allowConfigEdits**: `boolean`
 
-Defined in: [packages/agentos/src/provenance/types.ts:130](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/provenance/types.ts#L130)
+Defined in: [packages/agentos/src/provenance/types.ts:130](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/provenance/types.ts#L130)
 
 Whether humans can edit agent configuration after genesis.
 
@@ -18,7 +18,7 @@ Whether humans can edit agent configuration after genesis.
 
 > `optional` **allowedHumanActions**: `string`[]
 
-Defined in: [packages/agentos/src/provenance/types.ts:134](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/provenance/types.ts#L134)
+Defined in: [packages/agentos/src/provenance/types.ts:134](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/provenance/types.ts#L134)
 
 Whitelist of specific human actions allowed even in restricted mode.
 
@@ -28,7 +28,7 @@ Whitelist of specific human actions allowed even in restricted mode.
 
 > **allowHumanPrompting**: `boolean`
 
-Defined in: [packages/agentos/src/provenance/types.ts:128](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/provenance/types.ts#L128)
+Defined in: [packages/agentos/src/provenance/types.ts:128](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/provenance/types.ts#L128)
 
 Whether human prompting is allowed after genesis.
 
@@ -38,7 +38,7 @@ Whether human prompting is allowed after genesis.
 
 > **allowToolChanges**: `boolean`
 
-Defined in: [packages/agentos/src/provenance/types.ts:132](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/provenance/types.ts#L132)
+Defined in: [packages/agentos/src/provenance/types.ts:132](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/provenance/types.ts#L132)
 
 Whether humans can add/remove tools after genesis.
 
@@ -48,6 +48,6 @@ Whether humans can add/remove tools after genesis.
 
 > `optional` **genesisEventId**: `string`
 
-Defined in: [packages/agentos/src/provenance/types.ts:136](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/provenance/types.ts#L136)
+Defined in: [packages/agentos/src/provenance/types.ts:136](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/provenance/types.ts#L136)
 
 Genesis event ID (set automatically on first sealed activation).

@@ -1,6 +1,6 @@
 # Class: GMIManagerError
 
-Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:40](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/GMIManager.ts#L40)
+Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:40](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/GMIManager.ts#L40)
 
 Custom error class for GMIManager-specific operational errors.
 
@@ -14,7 +14,7 @@ Custom error class for GMIManager-specific operational errors.
 
 > **new GMIManagerError**(`message`, `code`, `details?`): `GMIManagerError`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:41](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/GMIManager.ts#L41)
+Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:41](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/GMIManager.ts#L41)
 
 #### Parameters
 
@@ -44,7 +44,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:41](https:/
 
 > `readonly` `optional` **cause**: `unknown`
 
-Defined in: [packages/agentos/dist/core/utils/errors.d.ts:70](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/dist/core/utils/errors.d.ts#L70)
+Defined in: [packages/agentos/dist/core/utils/errors.d.ts:70](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/dist/core/utils/errors.d.ts#L70)
 
 #### Inherited from
 
@@ -56,7 +56,7 @@ Defined in: [packages/agentos/dist/core/utils/errors.d.ts:70](https://github.com
 
 > `readonly` **code**: `string`
 
-Defined in: [packages/agentos/dist/core/utils/errors.d.ts:65](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/dist/core/utils/errors.d.ts#L65)
+Defined in: [packages/agentos/dist/core/utils/errors.d.ts:65](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/dist/core/utils/errors.d.ts#L65)
 
 #### Inherited from
 
@@ -68,7 +68,7 @@ Defined in: [packages/agentos/dist/core/utils/errors.d.ts:65](https://github.com
 
 > `readonly` `optional` **component**: `string`
 
-Defined in: [packages/agentos/dist/core/utils/errors.d.ts:67](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/dist/core/utils/errors.d.ts#L67)
+Defined in: [packages/agentos/dist/core/utils/errors.d.ts:67](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/dist/core/utils/errors.d.ts#L67)
 
 #### Inherited from
 
@@ -80,7 +80,7 @@ Defined in: [packages/agentos/dist/core/utils/errors.d.ts:67](https://github.com
 
 > `readonly` `optional` **details**: `any`
 
-Defined in: [packages/agentos/dist/core/utils/errors.d.ts:66](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/dist/core/utils/errors.d.ts#L66)
+Defined in: [packages/agentos/dist/core/utils/errors.d.ts:66](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/dist/core/utils/errors.d.ts#L66)
 
 #### Inherited from
 
@@ -92,7 +92,7 @@ Defined in: [packages/agentos/dist/core/utils/errors.d.ts:66](https://github.com
 
 > `readonly` `optional` **httpStatusCode**: `number`
 
-Defined in: [packages/agentos/dist/core/utils/errors.d.ts:69](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/dist/core/utils/errors.d.ts#L69)
+Defined in: [packages/agentos/dist/core/utils/errors.d.ts:69](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/dist/core/utils/errors.d.ts#L69)
 
 #### Inherited from
 
@@ -104,7 +104,7 @@ Defined in: [packages/agentos/dist/core/utils/errors.d.ts:69](https://github.com
 
 > **message**: `string`
 
-Defined in: node\_modules/.pnpm/typescript@5.6.3/node\_modules/typescript/lib/lib.es5.d.ts:1077
+Defined in: apps/agentos-live-docs/node\_modules/typescript/lib/lib.es5.d.ts:1077
 
 #### Inherited from
 
@@ -116,7 +116,7 @@ Defined in: node\_modules/.pnpm/typescript@5.6.3/node\_modules/typescript/lib/li
 
 > **name**: `string`
 
-Defined in: node\_modules/.pnpm/typescript@5.6.3/node\_modules/typescript/lib/lib.es5.d.ts:1076
+Defined in: apps/agentos-live-docs/node\_modules/typescript/lib/lib.es5.d.ts:1076
 
 #### Inherited from
 
@@ -128,7 +128,7 @@ Defined in: node\_modules/.pnpm/typescript@5.6.3/node\_modules/typescript/lib/li
 
 > `optional` **stack**: `string`
 
-Defined in: node\_modules/.pnpm/typescript@5.6.3/node\_modules/typescript/lib/lib.es5.d.ts:1078
+Defined in: apps/agentos-live-docs/node\_modules/typescript/lib/lib.es5.d.ts:1078
 
 #### Inherited from
 
@@ -140,7 +140,7 @@ Defined in: node\_modules/.pnpm/typescript@5.6.3/node\_modules/typescript/lib/li
 
 > `readonly` **timestamp**: `string`
 
-Defined in: [packages/agentos/dist/core/utils/errors.d.ts:68](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/dist/core/utils/errors.d.ts#L68)
+Defined in: [packages/agentos/dist/core/utils/errors.d.ts:68](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/dist/core/utils/errors.d.ts#L68)
 
 #### Inherited from
 
@@ -174,7 +174,7 @@ not capture any frames.
 
 > **getHttpStatusCode**(): `number`
 
-Defined in: [packages/agentos/dist/core/utils/errors.d.ts:72](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/dist/core/utils/errors.d.ts#L72)
+Defined in: [packages/agentos/dist/core/utils/errors.d.ts:72](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/dist/core/utils/errors.d.ts#L72)
 
 #### Returns
 
@@ -190,7 +190,7 @@ Defined in: [packages/agentos/dist/core/utils/errors.d.ts:72](https://github.com
 
 > **getUserFriendlyMessage**(): `string`
 
-Defined in: [packages/agentos/dist/core/utils/errors.d.ts:73](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/dist/core/utils/errors.d.ts#L73)
+Defined in: [packages/agentos/dist/core/utils/errors.d.ts:73](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/dist/core/utils/errors.d.ts#L73)
 
 #### Returns
 
@@ -206,7 +206,7 @@ Defined in: [packages/agentos/dist/core/utils/errors.d.ts:73](https://github.com
 
 > **toJSON**(): `Record`\<`string`, `any`\>
 
-Defined in: [packages/agentos/dist/core/utils/errors.d.ts:75](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/dist/core/utils/errors.d.ts#L75)
+Defined in: [packages/agentos/dist/core/utils/errors.d.ts:75](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/dist/core/utils/errors.d.ts#L75)
 
 #### Returns
 
@@ -222,7 +222,7 @@ Defined in: [packages/agentos/dist/core/utils/errors.d.ts:75](https://github.com
 
 > **toPlainObject**(): `Record`\<`string`, `any`\>
 
-Defined in: [packages/agentos/dist/core/utils/errors.d.ts:74](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/dist/core/utils/errors.d.ts#L74)
+Defined in: [packages/agentos/dist/core/utils/errors.d.ts:74](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/dist/core/utils/errors.d.ts#L74)
 
 #### Returns
 
@@ -308,7 +308,7 @@ a();
 
 > `static` **isGMIError**(`error`): `error is GMIError`
 
-Defined in: [packages/agentos/dist/core/utils/errors.d.ts:76](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/dist/core/utils/errors.d.ts#L76)
+Defined in: [packages/agentos/dist/core/utils/errors.d.ts:76](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/dist/core/utils/errors.d.ts#L76)
 
 #### Parameters
 
@@ -360,7 +360,7 @@ https://v8.dev/docs/stack-trace-api#customizing-stack-traces
 
 > `static` **wrap**(`error`, `code`, `message?`, `componentOrigin?`): `GMIError`
 
-Defined in: [packages/agentos/dist/core/utils/errors.d.ts:77](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/dist/core/utils/errors.d.ts#L77)
+Defined in: [packages/agentos/dist/core/utils/errors.d.ts:77](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/dist/core/utils/errors.d.ts#L77)
 
 #### Parameters
 

@@ -1,6 +1,6 @@
 # Interface: BufferedMessage
 
-Defined in: [packages/agentos/src/memory/pipeline/observation/ObservationBuffer.ts:15](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/pipeline/observation/ObservationBuffer.ts#L15)
+Defined in: [packages/agentos/src/memory/pipeline/observation/ObservationBuffer.ts:15](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/pipeline/observation/ObservationBuffer.ts#L15)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/memory/pipeline/observation/ObservationBuffer.
 
 > **content**: `string`
 
-Defined in: [packages/agentos/src/memory/pipeline/observation/ObservationBuffer.ts:17](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/pipeline/observation/ObservationBuffer.ts#L17)
+Defined in: [packages/agentos/src/memory/pipeline/observation/ObservationBuffer.ts:17](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/pipeline/observation/ObservationBuffer.ts#L17)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [packages/agentos/src/memory/pipeline/observation/ObservationBuffer.
 
 > **role**: `"user"` \| `"tool"` \| `"system"` \| `"assistant"`
 
-Defined in: [packages/agentos/src/memory/pipeline/observation/ObservationBuffer.ts:16](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/pipeline/observation/ObservationBuffer.ts#L16)
+Defined in: [packages/agentos/src/memory/pipeline/observation/ObservationBuffer.ts:16](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/pipeline/observation/ObservationBuffer.ts#L16)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: [packages/agentos/src/memory/pipeline/observation/ObservationBuffer.
 
 > **timestamp**: `number`
 
-Defined in: [packages/agentos/src/memory/pipeline/observation/ObservationBuffer.ts:18](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/pipeline/observation/ObservationBuffer.ts#L18)
+Defined in: [packages/agentos/src/memory/pipeline/observation/ObservationBuffer.ts:18](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/pipeline/observation/ObservationBuffer.ts#L18)
 
 ***
 
@@ -32,6 +32,6 @@ Defined in: [packages/agentos/src/memory/pipeline/observation/ObservationBuffer.
 
 > **tokenEstimate**: `number`
 
-Defined in: [packages/agentos/src/memory/pipeline/observation/ObservationBuffer.ts:20](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/pipeline/observation/ObservationBuffer.ts#L20)
+Defined in: [packages/agentos/src/memory/pipeline/observation/ObservationBuffer.ts:20](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/pipeline/observation/ObservationBuffer.ts#L20)
 
 Cached token estimate for this message.

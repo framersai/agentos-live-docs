@@ -2,7 +2,7 @@
 
 > **DescriptionDetail** = `"brief"` \| `"detailed"` \| `"exhaustive"`
 
-Defined in: [packages/agentos/src/media/video/types.ts:399](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/video/types.ts#L399)
+Defined in: [packages/agentos/src/media/video/types.ts:399](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/video/types.ts#L399)
 
 Detail level for scene descriptions produced during video analysis.
 

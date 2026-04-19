@@ -1,6 +1,6 @@
 # Interface: ToolExecutionResult\<TOutput\>
 
-Defined in: [packages/agentos/src/core/tools/ITool.ts:49](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/tools/ITool.ts#L49)
+Defined in: [packages/agentos/src/core/tools/ITool.ts:49](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/tools/ITool.ts#L49)
 
 Defines the standardized outcome of a tool's execution.
 It captures whether the execution was successful, the resulting output data,
@@ -24,7 +24,7 @@ The expected type of the `output` data if the tool executes successfully. Defaul
 
 > `optional` **contentType**: `string`
 
-Defined in: [packages/agentos/src/core/tools/ITool.ts:53](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/tools/ITool.ts#L53)
+Defined in: [packages/agentos/src/core/tools/ITool.ts:53](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/tools/ITool.ts#L53)
 
 The MIME type of the `output` data.
 Defaults to "application/json". Other common types include "text/plain", "image/png", etc.
@@ -36,7 +36,7 @@ This helps consumers of the tool result to correctly interpret the output.
 
 > `optional` **details**: `Record`\<`string`, `any`\>
 
-Defined in: [packages/agentos/src/core/tools/ITool.ts:54](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/tools/ITool.ts#L54)
+Defined in: [packages/agentos/src/core/tools/ITool.ts:54](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/tools/ITool.ts#L54)
 
 An optional object for any additional details or metadata
 about the execution or error. This can include things like error codes, stack traces (for debugging),
@@ -48,7 +48,7 @@ performance metrics, or other contextual information.
 
 > `optional` **error**: `string`
 
-Defined in: [packages/agentos/src/core/tools/ITool.ts:52](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/tools/ITool.ts#L52)
+Defined in: [packages/agentos/src/core/tools/ITool.ts:52](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/tools/ITool.ts#L52)
 
 A human-readable error message if the execution failed (`success` is `false`).
 
@@ -58,7 +58,7 @@ A human-readable error message if the execution failed (`success` is `false`).
 
 > `optional` **output**: `TOutput`
 
-Defined in: [packages/agentos/src/core/tools/ITool.ts:51](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/tools/ITool.ts#L51)
+Defined in: [packages/agentos/src/core/tools/ITool.ts:51](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/tools/ITool.ts#L51)
 
 The output data from the tool if successful. The structure
 of this data should ideally conform to the tool's `outputSchema` (if defined).
@@ -69,6 +69,6 @@ of this data should ideally conform to the tool's `outputSchema` (if defined).
 
 > **success**: `boolean`
 
-Defined in: [packages/agentos/src/core/tools/ITool.ts:50](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/tools/ITool.ts#L50)
+Defined in: [packages/agentos/src/core/tools/ITool.ts:50](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/tools/ITool.ts#L50)
 
 Indicates whether the tool execution was successful. `true` for success, `false` for failure.

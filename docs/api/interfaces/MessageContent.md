@@ -1,6 +1,6 @@
 # Interface: MessageContent
 
-Defined in: [packages/agentos/src/channels/types.ts:179](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/channels/types.ts#L179)
+Defined in: [packages/agentos/src/channels/types.ts:179](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/types.ts#L179)
 
 Outbound message content — what the agent wants to send.
 
@@ -10,7 +10,7 @@ Outbound message content — what the agent wants to send.
 
 > **blocks**: [`MessageContentBlock`](../type-aliases/MessageContentBlock.md)[]
 
-Defined in: [packages/agentos/src/channels/types.ts:181](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/channels/types.ts#L181)
+Defined in: [packages/agentos/src/channels/types.ts:181](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/types.ts#L181)
 
 Content blocks to send. At minimum one 'text' block.
 
@@ -20,7 +20,7 @@ Content blocks to send. At minimum one 'text' block.
 
 > `optional` **platformOptions**: `Record`\<`string`, `unknown`\>
 
-Defined in: [packages/agentos/src/channels/types.ts:185](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/channels/types.ts#L185)
+Defined in: [packages/agentos/src/channels/types.ts:185](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/types.ts#L185)
 
 Platform-specific send options.
 
@@ -30,6 +30,6 @@ Platform-specific send options.
 
 > `optional` **replyToMessageId**: `string`
 
-Defined in: [packages/agentos/src/channels/types.ts:183](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/channels/types.ts#L183)
+Defined in: [packages/agentos/src/channels/types.ts:183](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/types.ts#L183)
 
 Reply to a specific message (platform threading).

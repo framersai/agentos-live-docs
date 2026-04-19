@@ -1,6 +1,6 @@
 # Interface: NormalizedDtmfReceived
 
-Defined in: [packages/agentos/src/channels/telephony/types.ts:368](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/channels/telephony/types.ts#L368)
+Defined in: [packages/agentos/src/channels/telephony/types.ts:368](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/telephony/types.ts#L368)
 
 DTMF (Dual-Tone Multi-Frequency) digit received during a call.
 
@@ -35,7 +35,7 @@ if (event.kind === 'call-dtmf') {
 
 > **digit**: `string`
 
-Defined in: [packages/agentos/src/channels/telephony/types.ts:376](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/channels/telephony/types.ts#L376)
+Defined in: [packages/agentos/src/channels/telephony/types.ts:376](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/telephony/types.ts#L376)
 
 The digit pressed by the caller.
 
@@ -48,7 +48,7 @@ Extended DTMF (rarely supported): `'A'`-`'D'`.
 
 > `optional` **durationMs**: `number`
 
-Defined in: [packages/agentos/src/channels/telephony/types.ts:383](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/channels/telephony/types.ts#L383)
+Defined in: [packages/agentos/src/channels/telephony/types.ts:383](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/telephony/types.ts#L383)
 
 How long the key was pressed in milliseconds, when available.
 
@@ -61,7 +61,7 @@ but Telnyx and Plivo webhook payloads typically omit it.
 
 > **eventId**: `string`
 
-Defined in: [packages/agentos/src/channels/telephony/types.ts:266](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/channels/telephony/types.ts#L266)
+Defined in: [packages/agentos/src/channels/telephony/types.ts:266](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/telephony/types.ts#L266)
 
 Provider-assigned event ID for idempotency.
 
@@ -75,7 +75,7 @@ Provider-assigned event ID for idempotency.
 
 > **kind**: `"call-dtmf"`
 
-Defined in: [packages/agentos/src/channels/telephony/types.ts:369](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/channels/telephony/types.ts#L369)
+Defined in: [packages/agentos/src/channels/telephony/types.ts:369](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/telephony/types.ts#L369)
 
 ***
 
@@ -83,7 +83,7 @@ Defined in: [packages/agentos/src/channels/telephony/types.ts:369](https://githu
 
 > **providerCallId**: `string`
 
-Defined in: [packages/agentos/src/channels/telephony/types.ts:268](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/channels/telephony/types.ts#L268)
+Defined in: [packages/agentos/src/channels/telephony/types.ts:268](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/telephony/types.ts#L268)
 
 Provider-assigned call ID.
 
@@ -97,7 +97,7 @@ Provider-assigned call ID.
 
 > **timestamp**: `number`
 
-Defined in: [packages/agentos/src/channels/telephony/types.ts:270](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/channels/telephony/types.ts#L270)
+Defined in: [packages/agentos/src/channels/telephony/types.ts:270](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/telephony/types.ts#L270)
 
 Unix timestamp (ms).
 

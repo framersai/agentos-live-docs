@@ -2,7 +2,7 @@
 
 > **convertMulawToPcm16**(`mulawBuffer`): `Buffer`
 
-Defined in: [packages/agentos/src/channels/telephony/telephony-audio.ts:95](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/channels/telephony/telephony-audio.ts#L95)
+Defined in: [packages/agentos/src/channels/telephony/telephony-audio.ts:95](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/telephony/telephony-audio.ts#L95)
 
 Convert mu-law 8kHz audio to PCM signed 16-bit LE.
 

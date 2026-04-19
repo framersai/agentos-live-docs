@@ -1,6 +1,6 @@
 # Class: SpeechSession
 
-Defined in: [packages/agentos/src/speech/SpeechSession.ts:19](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/speech/SpeechSession.ts#L19)
+Defined in: [packages/agentos/src/speech/SpeechSession.ts:19](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/speech/SpeechSession.ts#L19)
 
 ## Extends
 
@@ -12,7 +12,7 @@ Defined in: [packages/agentos/src/speech/SpeechSession.ts:19](https://github.com
 
 > **new SpeechSession**(`config?`, `providers?`): `SpeechSession`
 
-Defined in: [packages/agentos/src/speech/SpeechSession.ts:52](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/speech/SpeechSession.ts#L52)
+Defined in: [packages/agentos/src/speech/SpeechSession.ts:52](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/speech/SpeechSession.ts#L52)
 
 #### Parameters
 
@@ -225,7 +225,7 @@ v0.1.26
 
 > **close**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/speech/SpeechSession.ts:104](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/speech/SpeechSession.ts#L104)
+Defined in: [packages/agentos/src/speech/SpeechSession.ts:104](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/speech/SpeechSession.ts#L104)
 
 #### Returns
 
@@ -237,7 +237,7 @@ Defined in: [packages/agentos/src/speech/SpeechSession.ts:104](https://github.co
 
 > **emit**\<`U`\>(`event`, ...`args`): `boolean`
 
-Defined in: [packages/agentos/src/speech/SpeechSession.ts:45](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/speech/SpeechSession.ts#L45)
+Defined in: [packages/agentos/src/speech/SpeechSession.ts:45](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/speech/SpeechSession.ts#L45)
 
 Synchronously calls each of the listeners registered for the event named `eventName`, in the order they were registered, passing the supplied arguments
 to each.
@@ -348,7 +348,7 @@ v6.0.0
 
 > **flush**(`reason?`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/speech/SpeechSession.ts:100](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/speech/SpeechSession.ts#L100)
+Defined in: [packages/agentos/src/speech/SpeechSession.ts:100](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/speech/SpeechSession.ts#L100)
 
 #### Parameters
 
@@ -389,7 +389,7 @@ v1.0.0
 
 > **getState**(): [`SpeechSessionState`](../type-aliases/SpeechSessionState.md)
 
-Defined in: [packages/agentos/src/speech/SpeechSession.ts:76](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/speech/SpeechSession.ts#L76)
+Defined in: [packages/agentos/src/speech/SpeechSession.ts:76](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/speech/SpeechSession.ts#L76)
 
 #### Returns
 
@@ -401,7 +401,7 @@ Defined in: [packages/agentos/src/speech/SpeechSession.ts:76](https://github.com
 
 > **ingestFrame**(`frame`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/speech/SpeechSession.ts:111](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/speech/SpeechSession.ts#L111)
+Defined in: [packages/agentos/src/speech/SpeechSession.ts:111](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/speech/SpeechSession.ts#L111)
 
 #### Parameters
 
@@ -419,7 +419,7 @@ Defined in: [packages/agentos/src/speech/SpeechSession.ts:111](https://github.co
 
 > **interrupt**(): `void`
 
-Defined in: [packages/agentos/src/speech/SpeechSession.ts:207](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/speech/SpeechSession.ts#L207)
+Defined in: [packages/agentos/src/speech/SpeechSession.ts:207](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/speech/SpeechSession.ts#L207)
 
 #### Returns
 
@@ -555,7 +555,7 @@ v10.0.0
 
 > **on**\<`U`\>(`event`, `listener`): `this`
 
-Defined in: [packages/agentos/src/speech/SpeechSession.ts:38](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/speech/SpeechSession.ts#L38)
+Defined in: [packages/agentos/src/speech/SpeechSession.ts:38](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/speech/SpeechSession.ts#L38)
 
 Adds the `listener` function to the end of the listeners array for the event
 named `eventName`. No checks are made to see if the `listener` has already
@@ -1032,7 +1032,7 @@ v0.3.5
 
 > **speak**(`text`, `options?`): `Promise`\<[`SpeechSynthesisResult`](../interfaces/SpeechSynthesisResult.md)\>
 
-Defined in: [packages/agentos/src/speech/SpeechSession.ts:186](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/speech/SpeechSession.ts#L186)
+Defined in: [packages/agentos/src/speech/SpeechSession.ts:186](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/speech/SpeechSession.ts#L186)
 
 #### Parameters
 
@@ -1054,7 +1054,7 @@ Defined in: [packages/agentos/src/speech/SpeechSession.ts:186](https://github.co
 
 > **start**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/speech/SpeechSession.ts:80](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/speech/SpeechSession.ts#L80)
+Defined in: [packages/agentos/src/speech/SpeechSession.ts:80](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/speech/SpeechSession.ts#L80)
 
 #### Returns
 
@@ -1066,7 +1066,7 @@ Defined in: [packages/agentos/src/speech/SpeechSession.ts:80](https://github.com
 
 > **stop**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/speech/SpeechSession.ts:95](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/speech/SpeechSession.ts#L95)
+Defined in: [packages/agentos/src/speech/SpeechSession.ts:95](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/speech/SpeechSession.ts#L95)
 
 #### Returns
 
@@ -1078,7 +1078,7 @@ Defined in: [packages/agentos/src/speech/SpeechSession.ts:95](https://github.com
 
 > **transcribeAudio**(`audioBuffer`, `options?`, `captureOverride?`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/speech/SpeechSession.ts:153](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/speech/SpeechSession.ts#L153)
+Defined in: [packages/agentos/src/speech/SpeechSession.ts:153](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/speech/SpeechSession.ts#L153)
 
 #### Parameters
 

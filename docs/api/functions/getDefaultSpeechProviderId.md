@@ -2,7 +2,7 @@
 
 > **getDefaultSpeechProviderId**(`kind`): `string` \| `undefined`
 
-Defined in: [packages/agentos/src/speech/SpeechRuntime.ts:301](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/speech/SpeechRuntime.ts#L301)
+Defined in: [packages/agentos/src/speech/SpeechRuntime.ts:301](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/speech/SpeechRuntime.ts#L301)
 
 ## Parameters
 

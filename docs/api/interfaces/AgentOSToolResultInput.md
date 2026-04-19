@@ -1,6 +1,6 @@
 # Interface: AgentOSToolResultInput
 
-Defined in: [packages/agentos/src/api/types/AgentOSToolResult.ts:4](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/types/AgentOSToolResult.ts#L4)
+Defined in: [packages/agentos/src/api/types/AgentOSToolResult.ts:4](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/types/AgentOSToolResult.ts#L4)
 
 Host-provided result for one externally executed tool call.
 
@@ -10,7 +10,7 @@ Host-provided result for one externally executed tool call.
 
 > `optional` **errorMessage**: `string`
 
-Defined in: [packages/agentos/src/api/types/AgentOSToolResult.ts:9](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/types/AgentOSToolResult.ts#L9)
+Defined in: [packages/agentos/src/api/types/AgentOSToolResult.ts:9](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/types/AgentOSToolResult.ts#L9)
 
 ***
 
@@ -18,7 +18,7 @@ Defined in: [packages/agentos/src/api/types/AgentOSToolResult.ts:9](https://gith
 
 > **isSuccess**: `boolean`
 
-Defined in: [packages/agentos/src/api/types/AgentOSToolResult.ts:8](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/types/AgentOSToolResult.ts#L8)
+Defined in: [packages/agentos/src/api/types/AgentOSToolResult.ts:8](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/types/AgentOSToolResult.ts#L8)
 
 ***
 
@@ -26,7 +26,7 @@ Defined in: [packages/agentos/src/api/types/AgentOSToolResult.ts:8](https://gith
 
 > **toolCallId**: `string`
 
-Defined in: [packages/agentos/src/api/types/AgentOSToolResult.ts:5](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/types/AgentOSToolResult.ts#L5)
+Defined in: [packages/agentos/src/api/types/AgentOSToolResult.ts:5](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/types/AgentOSToolResult.ts#L5)
 
 ***
 
@@ -34,7 +34,7 @@ Defined in: [packages/agentos/src/api/types/AgentOSToolResult.ts:5](https://gith
 
 > **toolName**: `string`
 
-Defined in: [packages/agentos/src/api/types/AgentOSToolResult.ts:6](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/types/AgentOSToolResult.ts#L6)
+Defined in: [packages/agentos/src/api/types/AgentOSToolResult.ts:6](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/types/AgentOSToolResult.ts#L6)
 
 ***
 
@@ -42,4 +42,4 @@ Defined in: [packages/agentos/src/api/types/AgentOSToolResult.ts:6](https://gith
 
 > **toolOutput**: `any`
 
-Defined in: [packages/agentos/src/api/types/AgentOSToolResult.ts:7](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/types/AgentOSToolResult.ts#L7)
+Defined in: [packages/agentos/src/api/types/AgentOSToolResult.ts:7](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/types/AgentOSToolResult.ts#L7)

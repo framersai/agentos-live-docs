@@ -2,7 +2,7 @@
 
 > **importAgentFromYAML**(`yamlStr`): `Agent`
 
-Defined in: [packages/agentos/src/api/agentExport.ts:178](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/agentExport.ts#L178)
+Defined in: [packages/agentos/src/api/agentExport.ts:178](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/agentExport.ts#L178)
 
 Imports an agent from a YAML string.
 

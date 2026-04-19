@@ -1,6 +1,6 @@
 # Interface: IWorkflowStore
 
-Defined in: [packages/agentos/src/orchestration/workflows/storage/IWorkflowStore.ts:55](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/workflows/storage/IWorkflowStore.ts#L55)
+Defined in: [packages/agentos/src/orchestration/workflows/storage/IWorkflowStore.ts:55](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/workflows/storage/IWorkflowStore.ts#L55)
 
 Interface implemented by persistence layers capable of storing workflow state.
 
@@ -10,7 +10,7 @@ Interface implemented by persistence layers capable of storing workflow state.
 
 > **appendEvents**(`events`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/orchestration/workflows/storage/IWorkflowStore.ts:90](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/workflows/storage/IWorkflowStore.ts#L90)
+Defined in: [packages/agentos/src/orchestration/workflows/storage/IWorkflowStore.ts:90](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/workflows/storage/IWorkflowStore.ts#L90)
 
 Appends workflow events for auditing/streaming purposes.
 
@@ -30,7 +30,7 @@ Appends workflow events for auditing/streaming purposes.
 
 > **buildProgressUpdate**(`workflowId`, `sinceTimestamp?`): `Promise`\<[`WorkflowProgressUpdate`](WorkflowProgressUpdate.md) \| `null`\>
 
-Defined in: [packages/agentos/src/orchestration/workflows/storage/IWorkflowStore.ts:100](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/workflows/storage/IWorkflowStore.ts#L100)
+Defined in: [packages/agentos/src/orchestration/workflows/storage/IWorkflowStore.ts:100](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/workflows/storage/IWorkflowStore.ts#L100)
 
 Produces a payload representing the current workflow snapshot and optionally recent events.
 
@@ -54,7 +54,7 @@ Produces a payload representing the current workflow snapshot and optionally rec
 
 > **createInstance**(`data`, `initialTasks`): `Promise`\<[`WorkflowInstance`](WorkflowInstance.md)\>
 
-Defined in: [packages/agentos/src/orchestration/workflows/storage/IWorkflowStore.ts:59](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/workflows/storage/IWorkflowStore.ts#L59)
+Defined in: [packages/agentos/src/orchestration/workflows/storage/IWorkflowStore.ts:59](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/workflows/storage/IWorkflowStore.ts#L59)
 
 Persists a newly created workflow instance and its initial tasks snapshot.
 
@@ -78,7 +78,7 @@ Persists a newly created workflow instance and its initial tasks snapshot.
 
 > **getInstance**(`workflowId`): `Promise`\<[`WorkflowInstance`](WorkflowInstance.md) \| `null`\>
 
-Defined in: [packages/agentos/src/orchestration/workflows/storage/IWorkflowStore.ts:67](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/workflows/storage/IWorkflowStore.ts#L67)
+Defined in: [packages/agentos/src/orchestration/workflows/storage/IWorkflowStore.ts:67](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/workflows/storage/IWorkflowStore.ts#L67)
 
 Retrieves a workflow instance by identifier.
 
@@ -98,7 +98,7 @@ Retrieves a workflow instance by identifier.
 
 > **listInstances**(`options?`): `Promise`\<[`WorkflowInstance`](WorkflowInstance.md)[]\>
 
-Defined in: [packages/agentos/src/orchestration/workflows/storage/IWorkflowStore.ts:95](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/workflows/storage/IWorkflowStore.ts#L95)
+Defined in: [packages/agentos/src/orchestration/workflows/storage/IWorkflowStore.ts:95](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/workflows/storage/IWorkflowStore.ts#L95)
 
 Lists workflow instances matching the supplied filters.
 
@@ -118,7 +118,7 @@ Lists workflow instances matching the supplied filters.
 
 > **updateInstance**(`workflowId`, `patch`): `Promise`\<[`WorkflowInstance`](WorkflowInstance.md) \| `null`\>
 
-Defined in: [packages/agentos/src/orchestration/workflows/storage/IWorkflowStore.ts:72](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/workflows/storage/IWorkflowStore.ts#L72)
+Defined in: [packages/agentos/src/orchestration/workflows/storage/IWorkflowStore.ts:72](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/workflows/storage/IWorkflowStore.ts#L72)
 
 Applies a partial update to the workflow instance metadata/state.
 
@@ -142,7 +142,7 @@ Applies a partial update to the workflow instance metadata/state.
 
 > **updateTasks**(`workflowId`, `updates`): `Promise`\<[`WorkflowInstance`](WorkflowInstance.md) \| `null`\>
 
-Defined in: [packages/agentos/src/orchestration/workflows/storage/IWorkflowStore.ts:85](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/workflows/storage/IWorkflowStore.ts#L85)
+Defined in: [packages/agentos/src/orchestration/workflows/storage/IWorkflowStore.ts:85](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/workflows/storage/IWorkflowStore.ts#L85)
 
 Applies updates to one or more tasks within a workflow instance atomically.
 

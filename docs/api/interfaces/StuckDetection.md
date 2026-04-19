@@ -1,6 +1,6 @@
 # Interface: StuckDetection
 
-Defined in: [packages/agentos/src/safety/runtime/StuckDetector.ts:21](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/safety/runtime/StuckDetector.ts#L21)
+Defined in: [packages/agentos/src/safety/runtime/StuckDetector.ts:21](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/safety/runtime/StuckDetector.ts#L21)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/safety/runtime/StuckDetector.ts:21](https://gi
 
 > `optional` **details**: `string`
 
-Defined in: [packages/agentos/src/safety/runtime/StuckDetector.ts:24](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/safety/runtime/StuckDetector.ts#L24)
+Defined in: [packages/agentos/src/safety/runtime/StuckDetector.ts:24](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/safety/runtime/StuckDetector.ts#L24)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [packages/agentos/src/safety/runtime/StuckDetector.ts:24](https://gi
 
 > **isStuck**: `boolean`
 
-Defined in: [packages/agentos/src/safety/runtime/StuckDetector.ts:22](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/safety/runtime/StuckDetector.ts#L22)
+Defined in: [packages/agentos/src/safety/runtime/StuckDetector.ts:22](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/safety/runtime/StuckDetector.ts#L22)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: [packages/agentos/src/safety/runtime/StuckDetector.ts:22](https://gi
 
 > `optional` **reason**: [`StuckReason`](../type-aliases/StuckReason.md)
 
-Defined in: [packages/agentos/src/safety/runtime/StuckDetector.ts:23](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/safety/runtime/StuckDetector.ts#L23)
+Defined in: [packages/agentos/src/safety/runtime/StuckDetector.ts:23](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/safety/runtime/StuckDetector.ts#L23)
 
 ***
 
@@ -32,4 +32,4 @@ Defined in: [packages/agentos/src/safety/runtime/StuckDetector.ts:23](https://gi
 
 > `optional` **repetitionCount**: `number`
 
-Defined in: [packages/agentos/src/safety/runtime/StuckDetector.ts:25](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/safety/runtime/StuckDetector.ts#L25)
+Defined in: [packages/agentos/src/safety/runtime/StuckDetector.ts:25](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/safety/runtime/StuckDetector.ts#L25)

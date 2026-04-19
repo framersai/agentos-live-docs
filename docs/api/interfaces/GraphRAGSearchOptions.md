@@ -1,6 +1,6 @@
 # Interface: GraphRAGSearchOptions
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/IGraphRAG.ts:91](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/retrieval/graph/graphrag/IGraphRAG.ts#L91)
+Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/IGraphRAG.ts:91](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/retrieval/graph/graphrag/IGraphRAG.ts#L91)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/IGraphRAG.ts:9
 
 > `optional` **auditCollector**: [`RAGAuditCollector`](../classes/RAGAuditCollector.md)
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/IGraphRAG.ts:105](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/retrieval/graph/graphrag/IGraphRAG.ts#L105)
+Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/IGraphRAG.ts:105](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/retrieval/graph/graphrag/IGraphRAG.ts#L105)
 
 Optional audit collector for transparent RAG operation tracking.
 
@@ -18,7 +18,7 @@ Optional audit collector for transparent RAG operation tracking.
 
 > `optional` **communityLevels**: `number`[]
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/IGraphRAG.ts:97](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/retrieval/graph/graphrag/IGraphRAG.ts#L97)
+Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/IGraphRAG.ts:97](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/retrieval/graph/graphrag/IGraphRAG.ts#L97)
 
 Specific community levels to search
 
@@ -28,7 +28,7 @@ Specific community levels to search
 
 > `optional` **includeEntities**: `boolean`
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/IGraphRAG.ts:99](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/retrieval/graph/graphrag/IGraphRAG.ts#L99)
+Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/IGraphRAG.ts:99](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/retrieval/graph/graphrag/IGraphRAG.ts#L99)
 
 Include entity details in results
 
@@ -38,7 +38,7 @@ Include entity details in results
 
 > `optional` **includeRelationships**: `boolean`
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/IGraphRAG.ts:101](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/retrieval/graph/graphrag/IGraphRAG.ts#L101)
+Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/IGraphRAG.ts:101](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/retrieval/graph/graphrag/IGraphRAG.ts#L101)
 
 Include relationship details in results
 
@@ -48,7 +48,7 @@ Include relationship details in results
 
 > `optional` **metadataFilter**: `Record`\<`string`, [`MetadataValue`](../type-aliases/MetadataValue.md)\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/IGraphRAG.ts:103](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/retrieval/graph/graphrag/IGraphRAG.ts#L103)
+Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/IGraphRAG.ts:103](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/retrieval/graph/graphrag/IGraphRAG.ts#L103)
 
 Metadata filter for source documents
 
@@ -58,7 +58,7 @@ Metadata filter for source documents
 
 > `optional` **minRelevance**: `number`
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/IGraphRAG.ts:95](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/retrieval/graph/graphrag/IGraphRAG.ts#L95)
+Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/IGraphRAG.ts:95](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/retrieval/graph/graphrag/IGraphRAG.ts#L95)
 
 Minimum relevance score (0-1)
 
@@ -68,6 +68,6 @@ Minimum relevance score (0-1)
 
 > `optional` **topK**: `number`
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/IGraphRAG.ts:93](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/retrieval/graph/graphrag/IGraphRAG.ts#L93)
+Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/IGraphRAG.ts:93](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/retrieval/graph/graphrag/IGraphRAG.ts#L93)
 
 Maximum number of results

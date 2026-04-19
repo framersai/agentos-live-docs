@@ -1,6 +1,6 @@
 # Class: MultimodalIndexer
 
-Defined in: [packages/agentos/src/rag/multimodal/MultimodalIndexer.ts:128](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/multimodal/MultimodalIndexer.ts#L128)
+Defined in: [packages/agentos/src/rag/multimodal/MultimodalIndexer.ts:128](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/multimodal/MultimodalIndexer.ts#L128)
 
 Indexes non-text content (images, audio) into the vector store by
 generating text descriptions and embeddings.
@@ -55,7 +55,7 @@ const results = await indexer.search('cats on a beach');
 
 > **new MultimodalIndexer**(`deps`): `MultimodalIndexer`
 
-Defined in: [packages/agentos/src/rag/multimodal/MultimodalIndexer.ts:204](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/multimodal/MultimodalIndexer.ts#L204)
+Defined in: [packages/agentos/src/rag/multimodal/MultimodalIndexer.ts:204](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/multimodal/MultimodalIndexer.ts#L204)
 
 Create a new multimodal indexer.
 
@@ -138,7 +138,7 @@ const indexer = new MultimodalIndexer({
 
 > **createMemoryBridge**(`memoryManager?`, `options?`): `MultimodalMemoryBridge`
 
-Defined in: [packages/agentos/src/rag/multimodal/MultimodalIndexer.ts:598](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/multimodal/MultimodalIndexer.ts#L598)
+Defined in: [packages/agentos/src/rag/multimodal/MultimodalIndexer.ts:598](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/multimodal/MultimodalIndexer.ts#L598)
 
 Create a `MultimodalMemoryBridge` using this indexer's providers.
 
@@ -186,7 +186,7 @@ See `MultimodalMemoryBridge` for full documentation.
 
 > **indexAudio**(`opts`): `Promise`\<[`AudioIndexResult`](../interfaces/AudioIndexResult.md)\>
 
-Defined in: [packages/agentos/src/rag/multimodal/MultimodalIndexer.ts:394](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/multimodal/MultimodalIndexer.ts#L394)
+Defined in: [packages/agentos/src/rag/multimodal/MultimodalIndexer.ts:394](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/multimodal/MultimodalIndexer.ts#L394)
 
 Index an audio file by transcribing via STT, then embedding and
 storing the transcript.
@@ -234,7 +234,7 @@ console.log(result.transcript); // "Welcome to episode 42..."
 
 > **indexImage**(`opts`): `Promise`\<[`ImageIndexResult`](../interfaces/ImageIndexResult.md)\>
 
-Defined in: [packages/agentos/src/rag/multimodal/MultimodalIndexer.ts:301](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/multimodal/MultimodalIndexer.ts#L301)
+Defined in: [packages/agentos/src/rag/multimodal/MultimodalIndexer.ts:301](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/multimodal/MultimodalIndexer.ts#L301)
 
 Index an image by generating a text description via vision LLM,
 then embedding and storing the description.
@@ -281,7 +281,7 @@ console.log(result.description); // "A golden retriever playing fetch..."
 
 > **search**(`query`, `opts?`): `Promise`\<[`MultimodalSearchResult`](../interfaces/MultimodalSearchResult.md)[]\>
 
-Defined in: [packages/agentos/src/rag/multimodal/MultimodalIndexer.ts:482](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/multimodal/MultimodalIndexer.ts#L482)
+Defined in: [packages/agentos/src/rag/multimodal/MultimodalIndexer.ts:482](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/multimodal/MultimodalIndexer.ts#L482)
 
 Search across all modalities (text + image descriptions + audio transcripts).
 
@@ -332,7 +332,7 @@ const allResults = await indexer.search('machine learning tutorial');
 
 > **setHydeRetriever**(`retriever`): `void`
 
-Defined in: [packages/agentos/src/rag/multimodal/MultimodalIndexer.ts:273](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/multimodal/MultimodalIndexer.ts#L273)
+Defined in: [packages/agentos/src/rag/multimodal/MultimodalIndexer.ts:273](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/multimodal/MultimodalIndexer.ts#L273)
 
 Attach a HyDE retriever to enable hypothesis-driven multimodal search.
 

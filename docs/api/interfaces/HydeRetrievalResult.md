@@ -1,6 +1,6 @@
 # Interface: HydeRetrievalResult
 
-Defined in: [packages/agentos/src/rag/HydeRetriever.ts:122](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/HydeRetriever.ts#L122)
+Defined in: [packages/agentos/src/rag/HydeRetriever.ts:122](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/HydeRetriever.ts#L122)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/rag/HydeRetriever.ts:122](https://github.com/f
 
 > **effectiveThreshold**: `number`
 
-Defined in: [packages/agentos/src/rag/HydeRetriever.ts:130](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/HydeRetriever.ts#L130)
+Defined in: [packages/agentos/src/rag/HydeRetriever.ts:130](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/HydeRetriever.ts#L130)
 
 Final similarity threshold that produced results.
 
@@ -18,7 +18,7 @@ Final similarity threshold that produced results.
 
 > **hypothesis**: `string`
 
-Defined in: [packages/agentos/src/rag/HydeRetriever.ts:124](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/HydeRetriever.ts#L124)
+Defined in: [packages/agentos/src/rag/HydeRetriever.ts:124](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/HydeRetriever.ts#L124)
 
 The generated hypothesis used for embedding.
 
@@ -28,7 +28,7 @@ The generated hypothesis used for embedding.
 
 > **hypothesisEmbedding**: `number`[]
 
-Defined in: [packages/agentos/src/rag/HydeRetriever.ts:126](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/HydeRetriever.ts#L126)
+Defined in: [packages/agentos/src/rag/HydeRetriever.ts:126](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/HydeRetriever.ts#L126)
 
 The embedding of the hypothesis.
 
@@ -38,7 +38,7 @@ The embedding of the hypothesis.
 
 > **hypothesisLatencyMs**: `number`
 
-Defined in: [packages/agentos/src/rag/HydeRetriever.ts:134](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/HydeRetriever.ts#L134)
+Defined in: [packages/agentos/src/rag/HydeRetriever.ts:134](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/HydeRetriever.ts#L134)
 
 Time taken for hypothesis generation (ms).
 
@@ -48,7 +48,7 @@ Time taken for hypothesis generation (ms).
 
 > **queryResult**: [`QueryResult`](QueryResult.md)
 
-Defined in: [packages/agentos/src/rag/HydeRetriever.ts:128](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/HydeRetriever.ts#L128)
+Defined in: [packages/agentos/src/rag/HydeRetriever.ts:128](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/HydeRetriever.ts#L128)
 
 Vector store query result.
 
@@ -58,7 +58,7 @@ Vector store query result.
 
 > **retrievalLatencyMs**: `number`
 
-Defined in: [packages/agentos/src/rag/HydeRetriever.ts:136](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/HydeRetriever.ts#L136)
+Defined in: [packages/agentos/src/rag/HydeRetriever.ts:136](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/HydeRetriever.ts#L136)
 
 Time taken for embedding + retrieval (ms).
 
@@ -68,6 +68,6 @@ Time taken for embedding + retrieval (ms).
 
 > **thresholdSteps**: `number`
 
-Defined in: [packages/agentos/src/rag/HydeRetriever.ts:132](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/HydeRetriever.ts#L132)
+Defined in: [packages/agentos/src/rag/HydeRetriever.ts:132](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/HydeRetriever.ts#L132)
 
 Number of threshold steps taken (0 = first try worked).

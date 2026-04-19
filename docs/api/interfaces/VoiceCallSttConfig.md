@@ -1,6 +1,6 @@
 # Interface: VoiceCallSttConfig
 
-Defined in: [packages/agentos/src/channels/telephony/types.ts:446](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/channels/telephony/types.ts#L446)
+Defined in: [packages/agentos/src/channels/telephony/types.ts:446](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/telephony/types.ts#L446)
 
 STT configuration for voice calls.
 
@@ -10,7 +10,7 @@ STT configuration for voice calls.
 
 > `optional` **language**: `string`
 
-Defined in: [packages/agentos/src/channels/telephony/types.ts:450](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/channels/telephony/types.ts#L450)
+Defined in: [packages/agentos/src/channels/telephony/types.ts:450](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/telephony/types.ts#L450)
 
 Language hint for STT.
 
@@ -20,7 +20,7 @@ Language hint for STT.
 
 > `optional` **options**: `Record`\<`string`, `unknown`\>
 
-Defined in: [packages/agentos/src/channels/telephony/types.ts:452](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/channels/telephony/types.ts#L452)
+Defined in: [packages/agentos/src/channels/telephony/types.ts:452](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/telephony/types.ts#L452)
 
 Provider-specific options.
 
@@ -30,6 +30,6 @@ Provider-specific options.
 
 > `optional` **provider**: `string` & `object` \| `"openai-realtime"` \| `"whisper"`
 
-Defined in: [packages/agentos/src/channels/telephony/types.ts:448](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/channels/telephony/types.ts#L448)
+Defined in: [packages/agentos/src/channels/telephony/types.ts:448](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/telephony/types.ts#L448)
 
 STT provider (currently only 'openai-realtime' supported).

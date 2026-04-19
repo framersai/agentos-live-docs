@@ -1,6 +1,6 @@
 # Interface: TokenUsage
 
-Defined in: [packages/agentos/src/api/generateText.ts:85](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/generateText.ts#L85)
+Defined in: [packages/agentos/src/api/generateText.ts:91](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/generateText.ts#L91)
 
 Token consumption figures reported by the provider for a single completion call.
 All values are approximate and provider-dependent.
@@ -11,7 +11,7 @@ All values are approximate and provider-dependent.
 
 > `optional` **cacheCreationTokens**: `number`
 
-Defined in: [packages/agentos/src/api/generateText.ts:114](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/generateText.ts#L114)
+Defined in: [packages/agentos/src/api/generateText.ts:120](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/generateText.ts#L120)
 
 Tokens written to the provider's prompt-prefix cache as a new cache
 entry. Billed at the cache-creation rate (1.25× input price on
@@ -26,7 +26,7 @@ with a cache hit flip the numbers.
 
 > `optional` **cacheReadTokens**: `number`
 
-Defined in: [packages/agentos/src/api/generateText.ts:105](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/generateText.ts#L105)
+Defined in: [packages/agentos/src/api/generateText.ts:111](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/generateText.ts#L111)
 
 Tokens served from the provider's prompt-prefix cache. When present,
 these were billed at the cache-read rate (0.1× input price on
@@ -44,7 +44,7 @@ does via `cache_read_input_tokens`).
 
 > **completionTokens**: `number`
 
-Defined in: [packages/agentos/src/api/generateText.ts:89](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/generateText.ts#L89)
+Defined in: [packages/agentos/src/api/generateText.ts:95](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/generateText.ts#L95)
 
 Number of tokens in the model's response.
 
@@ -54,7 +54,7 @@ Number of tokens in the model's response.
 
 > `optional` **costUSD**: `number`
 
-Defined in: [packages/agentos/src/api/generateText.ts:93](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/generateText.ts#L93)
+Defined in: [packages/agentos/src/api/generateText.ts:99](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/generateText.ts#L99)
 
 Total cost reported by the provider across all steps, when available.
 
@@ -64,7 +64,7 @@ Total cost reported by the provider across all steps, when available.
 
 > **promptTokens**: `number`
 
-Defined in: [packages/agentos/src/api/generateText.ts:87](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/generateText.ts#L87)
+Defined in: [packages/agentos/src/api/generateText.ts:93](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/generateText.ts#L93)
 
 Number of tokens in the prompt / input sent to the model.
 
@@ -74,6 +74,6 @@ Number of tokens in the prompt / input sent to the model.
 
 > **totalTokens**: `number`
 
-Defined in: [packages/agentos/src/api/generateText.ts:91](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/generateText.ts#L91)
+Defined in: [packages/agentos/src/api/generateText.ts:97](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/generateText.ts#L97)
 
 Sum of `promptTokens` and `completionTokens`.

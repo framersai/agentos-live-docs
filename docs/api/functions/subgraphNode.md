@@ -2,7 +2,7 @@
 
 > **subgraphNode**(`compiledGraph`, `config?`): [`GraphNode`](../interfaces/GraphNode.md)
 
-Defined in: [packages/agentos/src/orchestration/builders/nodes.ts:217](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/builders/nodes.ts#L217)
+Defined in: [packages/agentos/src/orchestration/builders/nodes.ts:217](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/builders/nodes.ts#L217)
 
 ## Parameters
 

@@ -1,6 +1,6 @@
 # Interface: ClarificationResponse
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:149](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/hitl/IHumanInteractionManager.ts#L149)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:149](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/hitl/IHumanInteractionManager.ts#L149)
 
 Human's response to a clarification request.
 
@@ -10,7 +10,7 @@ Human's response to a clarification request.
 
 > `optional` **freeformResponse**: `string`
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:155](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/hitl/IHumanInteractionManager.ts#L155)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:155](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/hitl/IHumanInteractionManager.ts#L155)
 
 Free-form response
 
@@ -20,7 +20,7 @@ Free-form response
 
 > **requestId**: `string`
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:151](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/hitl/IHumanInteractionManager.ts#L151)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:151](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/hitl/IHumanInteractionManager.ts#L151)
 
 Original request ID
 
@@ -30,7 +30,7 @@ Original request ID
 
 > **respondedAt**: `Date`
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:159](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/hitl/IHumanInteractionManager.ts#L159)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:159](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/hitl/IHumanInteractionManager.ts#L159)
 
 Timestamp
 
@@ -40,7 +40,7 @@ Timestamp
 
 > **respondedBy**: `string`
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:157](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/hitl/IHumanInteractionManager.ts#L157)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:157](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/hitl/IHumanInteractionManager.ts#L157)
 
 Who responded
 
@@ -50,6 +50,6 @@ Who responded
 
 > `optional` **selectedOptionId**: `string`
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:153](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/hitl/IHumanInteractionManager.ts#L153)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:153](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/hitl/IHumanInteractionManager.ts#L153)
 
 Selected option ID (if applicable)

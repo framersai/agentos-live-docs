@@ -1,6 +1,6 @@
 # Interface: IVectorStoreManager
 
-Defined in: [packages/agentos/src/core/vector-store/IVectorStoreManager.ts:38](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/vector-store/IVectorStoreManager.ts#L38)
+Defined in: [packages/agentos/src/core/vector-store/IVectorStoreManager.ts:38](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/vector-store/IVectorStoreManager.ts#L38)
 
 ## Interface
 
@@ -19,7 +19,7 @@ based on the provided `VectorStoreManagerConfig` and `RagDataSourceConfig`.
 
 > **checkHealth**(`providerId?`): `Promise`\<[`VectorStoreManagerHealthReport`](VectorStoreManagerHealthReport.md)\>
 
-Defined in: [packages/agentos/src/core/vector-store/IVectorStoreManager.ts:120](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/vector-store/IVectorStoreManager.ts#L120)
+Defined in: [packages/agentos/src/core/vector-store/IVectorStoreManager.ts:120](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/vector-store/IVectorStoreManager.ts#L120)
 
 **`Async`**
 
@@ -47,7 +47,7 @@ A promise that resolves with a comprehensive health report.
 
 > **getDefaultProvider**(): [`IVectorStore`](IVectorStore.md)
 
-Defined in: [packages/agentos/src/core/vector-store/IVectorStoreManager.ts:77](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/vector-store/IVectorStoreManager.ts#L77)
+Defined in: [packages/agentos/src/core/vector-store/IVectorStoreManager.ts:77](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/vector-store/IVectorStoreManager.ts#L77)
 
 Retrieves the default IVectorStore provider instance as configured in `VectorStoreManagerConfig.defaultProviderId`.
 
@@ -68,7 +68,7 @@ or it failed to initialize.
 
 > **getProvider**(`providerId`): [`IVectorStore`](IVectorStore.md)
 
-Defined in: [packages/agentos/src/core/vector-store/IVectorStoreManager.ts:68](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/vector-store/IVectorStoreManager.ts#L68)
+Defined in: [packages/agentos/src/core/vector-store/IVectorStoreManager.ts:68](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/vector-store/IVectorStoreManager.ts#L68)
 
 Retrieves a specific, initialized IVectorStore provider instance by its configured ID.
 The provider ID corresponds to `VectorStoreProviderConfig.id`.
@@ -98,7 +98,7 @@ failed to initialize.
 
 > **getStoreForDataSource**(`dataSourceId`): `Promise`\<\{ `collectionName`: `string`; `dimension?`: `number`; `store`: [`IVectorStore`](IVectorStore.md); \}\>
 
-Defined in: [packages/agentos/src/core/vector-store/IVectorStoreManager.ts:91](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/vector-store/IVectorStoreManager.ts#L91)
+Defined in: [packages/agentos/src/core/vector-store/IVectorStoreManager.ts:91](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/vector-store/IVectorStoreManager.ts#L91)
 
 Retrieves an IVectorStore instance and the specific collection name within that store
 associated with a given logical RAG Data Source ID.
@@ -131,7 +131,7 @@ If the `dataSourceId` is not configured, or its associated provider is unavailab
 
 > **initialize**(`managerConfig`, `dataSourceConfigs`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/core/vector-store/IVectorStoreManager.ts:54](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/vector-store/IVectorStoreManager.ts#L54)
+Defined in: [packages/agentos/src/core/vector-store/IVectorStoreManager.ts:54](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/vector-store/IVectorStoreManager.ts#L54)
 
 **`Async`**
 
@@ -173,7 +173,7 @@ to a critical provider, or other setup errors.
 
 > **listDataSourceIds**(): `string`[]
 
-Defined in: [packages/agentos/src/core/vector-store/IVectorStoreManager.ts:108](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/vector-store/IVectorStoreManager.ts#L108)
+Defined in: [packages/agentos/src/core/vector-store/IVectorStoreManager.ts:108](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/vector-store/IVectorStoreManager.ts#L108)
 
 Lists the unique IDs of all logical RAG Data Sources configured.
 
@@ -189,7 +189,7 @@ An array of RAG Data Source IDs.
 
 > **listProviderIds**(): `string`[]
 
-Defined in: [packages/agentos/src/core/vector-store/IVectorStoreManager.ts:101](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/vector-store/IVectorStoreManager.ts#L101)
+Defined in: [packages/agentos/src/core/vector-store/IVectorStoreManager.ts:101](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/vector-store/IVectorStoreManager.ts#L101)
 
 Lists the unique IDs of all vector store providers configured and managed by this manager.
 
@@ -205,7 +205,7 @@ An array of provider IDs.
 
 > **shutdownAllProviders**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/core/vector-store/IVectorStoreManager.ts:129](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/vector-store/IVectorStoreManager.ts#L129)
+Defined in: [packages/agentos/src/core/vector-store/IVectorStoreManager.ts:129](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/vector-store/IVectorStoreManager.ts#L129)
 
 **`Async`**
 

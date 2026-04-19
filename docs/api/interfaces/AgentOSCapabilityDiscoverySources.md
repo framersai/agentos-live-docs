@@ -1,6 +1,6 @@
 # Interface: AgentOSCapabilityDiscoverySources
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:292](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/AgentOS.ts#L292)
+Defined in: [packages/agentos/src/api/AgentOS.ts:292](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/AgentOS.ts#L292)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/api/AgentOS.ts:292](https://github.com/framers
 
 > `optional` **channels**: `object`[]
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:295](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/AgentOS.ts#L295)
+Defined in: [packages/agentos/src/api/AgentOS.ts:295](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/AgentOS.ts#L295)
 
 #### capabilities?
 
@@ -36,7 +36,7 @@ Defined in: [packages/agentos/src/api/AgentOS.ts:295](https://github.com/framers
 
 > `optional` **extensions**: `object`[]
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:294](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/AgentOS.ts#L294)
+Defined in: [packages/agentos/src/api/AgentOS.ts:294](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/AgentOS.ts#L294)
 
 #### available?
 
@@ -72,7 +72,7 @@ Defined in: [packages/agentos/src/api/AgentOS.ts:294](https://github.com/framers
 
 > `optional` **manifests**: `CapabilityDescriptor`[]
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:296](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/AgentOS.ts#L296)
+Defined in: [packages/agentos/src/api/AgentOS.ts:296](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/AgentOS.ts#L296)
 
 ***
 
@@ -80,7 +80,7 @@ Defined in: [packages/agentos/src/api/AgentOS.ts:296](https://github.com/framers
 
 > `optional` **presetCoOccurrences**: `PresetCoOccurrence`[]
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:297](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/AgentOS.ts#L297)
+Defined in: [packages/agentos/src/api/AgentOS.ts:297](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/AgentOS.ts#L297)
 
 ***
 
@@ -88,7 +88,7 @@ Defined in: [packages/agentos/src/api/AgentOS.ts:297](https://github.com/framers
 
 > `optional` **skills**: `object`[]
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:293](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/AgentOS.ts#L293)
+Defined in: [packages/agentos/src/api/AgentOS.ts:293](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/AgentOS.ts#L293)
 
 #### category?
 

@@ -1,6 +1,6 @@
 # Interface: IRetrievalAugmentor
 
-Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:246](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/IRetrievalAugmentor.ts#L246)
+Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:246](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/IRetrievalAugmentor.ts#L246)
 
 Primary contract for the Retrieval Augmentor implementation.
 
@@ -10,7 +10,7 @@ Primary contract for the Retrieval Augmentor implementation.
 
 > `readonly` **augmenterId**: `string`
 
-Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:247](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/IRetrievalAugmentor.ts#L247)
+Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:247](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/IRetrievalAugmentor.ts#L247)
 
 ## Methods
 
@@ -18,7 +18,7 @@ Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:247](https://github
 
 > **checkHealth**(): `Promise`\<\{ `details?`: `Record`\<`string`, `unknown`\>; `isHealthy`: `boolean`; \}\>
 
-Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:276](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/IRetrievalAugmentor.ts#L276)
+Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:276](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/IRetrievalAugmentor.ts#L276)
 
 #### Returns
 
@@ -30,7 +30,7 @@ Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:276](https://github
 
 > **deleteDocuments**(`documentIds`, `dataSourceId?`, `options?`): `Promise`\<\{ `errors?`: `object`[]; `failureCount`: `number`; `successCount`: `number`; \}\>
 
-Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:265](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/IRetrievalAugmentor.ts#L265)
+Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:265](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/IRetrievalAugmentor.ts#L265)
 
 #### Parameters
 
@@ -58,7 +58,7 @@ Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:265](https://github
 
 > **ingestDocuments**(`documents`, `options?`): `Promise`\<[`RagIngestionResult`](RagIngestionResult.md)\>
 
-Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:255](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/IRetrievalAugmentor.ts#L255)
+Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:255](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/IRetrievalAugmentor.ts#L255)
 
 #### Parameters
 
@@ -80,7 +80,7 @@ Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:255](https://github
 
 > **initialize**(`config`, `embeddingManager`, `vectorStoreManager`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:249](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/IRetrievalAugmentor.ts#L249)
+Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:249](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/IRetrievalAugmentor.ts#L249)
 
 #### Parameters
 
@@ -106,7 +106,7 @@ Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:249](https://github
 
 > **retrieveContext**(`queryText`, `options?`): `Promise`\<[`RagRetrievalResult`](RagRetrievalResult.md)\>
 
-Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:260](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/IRetrievalAugmentor.ts#L260)
+Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:260](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/IRetrievalAugmentor.ts#L260)
 
 #### Parameters
 
@@ -128,7 +128,7 @@ Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:260](https://github
 
 > **shutdown**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:278](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/IRetrievalAugmentor.ts#L278)
+Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:278](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/IRetrievalAugmentor.ts#L278)
 
 #### Returns
 
@@ -140,7 +140,7 @@ Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:278](https://github
 
 > **updateDocuments**(`documents`, `options?`): `Promise`\<[`RagIngestionResult`](RagIngestionResult.md)\>
 
-Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:271](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/IRetrievalAugmentor.ts#L271)
+Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:271](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/IRetrievalAugmentor.ts#L271)
 
 #### Parameters
 

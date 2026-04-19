@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "pull-docs": "node scripts/pull-docs.mjs",
-    "verify:publication": "node --test scripts/publication-contract.test.mjs scripts/pull-docs-links.test.mjs && node scripts/pull-docs.mjs --check",
+    "verify:publication": "AGENTOS_DOCS_STRICT=1 node --test scripts/publication-contract.test.mjs scripts/pull-docs-links.test.mjs && AGENTOS_DOCS_STRICT=1 node scripts/pull-docs.mjs --check && AGENTOS_DOCS_STRICT=1 npm run build",
     "prebuild": "npm run pull-docs",
     "prestart": "npm run pull-docs",
     "docusaurus": "docusaurus",

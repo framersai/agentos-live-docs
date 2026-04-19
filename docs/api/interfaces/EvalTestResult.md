@@ -1,6 +1,6 @@
 # Interface: EvalTestResult
 
-Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:99](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/evaluation/IEvaluator.ts#L99)
+Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:99](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/evaluation/IEvaluator.ts#L99)
 
 Result of a single test case evaluation.
 
@@ -10,7 +10,7 @@ Result of a single test case evaluation.
 
 > **actualOutput**: `string`
 
-Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:111](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/evaluation/IEvaluator.ts#L111)
+Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:111](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/evaluation/IEvaluator.ts#L111)
 
 Actual agent output
 
@@ -20,7 +20,7 @@ Actual agent output
 
 > `optional` **costUsd**: `number`
 
-Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:123](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/evaluation/IEvaluator.ts#L123)
+Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:123](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/evaluation/IEvaluator.ts#L123)
 
 Estimated cost
 
@@ -30,7 +30,7 @@ Estimated cost
 
 > `optional` **error**: `string`
 
-Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:125](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/evaluation/IEvaluator.ts#L125)
+Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:125](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/evaluation/IEvaluator.ts#L125)
 
 Error if any
 
@@ -40,7 +40,7 @@ Error if any
 
 > `optional` **expectedOutput**: `string`
 
-Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:113](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/evaluation/IEvaluator.ts#L113)
+Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:113](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/evaluation/IEvaluator.ts#L113)
 
 Expected output
 
@@ -50,7 +50,7 @@ Expected output
 
 > **latencyMs**: `number`
 
-Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:115](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/evaluation/IEvaluator.ts#L115)
+Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:115](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/evaluation/IEvaluator.ts#L115)
 
 Latency in ms
 
@@ -60,7 +60,7 @@ Latency in ms
 
 > **metrics**: [`MetricValue`](MetricValue.md)[]
 
-Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:109](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/evaluation/IEvaluator.ts#L109)
+Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:109](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/evaluation/IEvaluator.ts#L109)
 
 Individual metric scores
 
@@ -70,7 +70,7 @@ Individual metric scores
 
 > **passed**: `boolean`
 
-Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:105](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/evaluation/IEvaluator.ts#L105)
+Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:105](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/evaluation/IEvaluator.ts#L105)
 
 Whether the test passed
 
@@ -80,7 +80,7 @@ Whether the test passed
 
 > **score**: `number`
 
-Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:107](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/evaluation/IEvaluator.ts#L107)
+Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:107](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/evaluation/IEvaluator.ts#L107)
 
 Overall score (0-1)
 
@@ -90,7 +90,7 @@ Overall score (0-1)
 
 > **testCaseId**: `string`
 
-Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:101](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/evaluation/IEvaluator.ts#L101)
+Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:101](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/evaluation/IEvaluator.ts#L101)
 
 Test case ID
 
@@ -100,7 +100,7 @@ Test case ID
 
 > **testCaseName**: `string`
 
-Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:103](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/evaluation/IEvaluator.ts#L103)
+Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:103](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/evaluation/IEvaluator.ts#L103)
 
 Test case name
 
@@ -110,7 +110,7 @@ Test case name
 
 > **timestamp**: `string`
 
-Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:127](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/evaluation/IEvaluator.ts#L127)
+Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:127](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/evaluation/IEvaluator.ts#L127)
 
 Timestamp
 
@@ -120,7 +120,7 @@ Timestamp
 
 > `optional` **tokenUsage**: `object`
 
-Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:117](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/evaluation/IEvaluator.ts#L117)
+Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:117](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/evaluation/IEvaluator.ts#L117)
 
 Token usage
 

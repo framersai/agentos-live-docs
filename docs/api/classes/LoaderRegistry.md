@@ -1,6 +1,6 @@
 # Class: LoaderRegistry
 
-Defined in: [packages/agentos/src/memory/io/ingestion/LoaderRegistry.ts:104](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/io/ingestion/LoaderRegistry.ts#L104)
+Defined in: [packages/agentos/src/memory/io/ingestion/LoaderRegistry.ts:104](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/io/ingestion/LoaderRegistry.ts#L104)
 
 Central registry mapping file extensions to [IDocumentLoader](../interfaces/IDocumentLoader.md)
 implementations.
@@ -40,7 +40,7 @@ console.log(doc.metadata.title);
 
 > **new LoaderRegistry**(): `LoaderRegistry`
 
-Defined in: [packages/agentos/src/memory/io/ingestion/LoaderRegistry.ts:130](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/io/ingestion/LoaderRegistry.ts#L130)
+Defined in: [packages/agentos/src/memory/io/ingestion/LoaderRegistry.ts:130](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/io/ingestion/LoaderRegistry.ts#L130)
 
 Creates a new registry pre-populated with the built-in loaders.
 
@@ -66,7 +66,7 @@ Registration order:
 
 > **getLoader**(`extensionOrPath`): [`IDocumentLoader`](../interfaces/IDocumentLoader.md) \| `undefined`
 
-Defined in: [packages/agentos/src/memory/io/ingestion/LoaderRegistry.ts:198](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/io/ingestion/LoaderRegistry.ts#L198)
+Defined in: [packages/agentos/src/memory/io/ingestion/LoaderRegistry.ts:198](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/io/ingestion/LoaderRegistry.ts#L198)
 
 Retrieve the loader registered for `extensionOrPath`.
 
@@ -101,7 +101,7 @@ const loader2 = registry.getLoader('README.md');
 
 > **getSupportedExtensions**(): `string`[]
 
-Defined in: [packages/agentos/src/memory/io/ingestion/LoaderRegistry.ts:215](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/io/ingestion/LoaderRegistry.ts#L215)
+Defined in: [packages/agentos/src/memory/io/ingestion/LoaderRegistry.ts:215](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/io/ingestion/LoaderRegistry.ts#L215)
 
 Return a sorted array of all extensions currently registered.
 
@@ -120,7 +120,7 @@ Sorted array of registered extension strings.
 
 > **loadFile**(`filePath`, `options?`): `Promise`\<[`LoadedDocument`](../interfaces/LoadedDocument.md)\>
 
-Defined in: [packages/agentos/src/memory/io/ingestion/LoaderRegistry.ts:239](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/io/ingestion/LoaderRegistry.ts#L239)
+Defined in: [packages/agentos/src/memory/io/ingestion/LoaderRegistry.ts:239](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/io/ingestion/LoaderRegistry.ts#L239)
 
 Convenience method: detect format from `filePath`, find the matching
 loader, and delegate to its `load()` method.
@@ -165,7 +165,7 @@ const doc = await registry.loadFile('/notes/architecture.md');
 
 > **register**(`loader`): `void`
 
-Defined in: [packages/agentos/src/memory/io/ingestion/LoaderRegistry.ts:172](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/io/ingestion/LoaderRegistry.ts#L172)
+Defined in: [packages/agentos/src/memory/io/ingestion/LoaderRegistry.ts:172](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/io/ingestion/LoaderRegistry.ts#L172)
 
 Register a loader for all extensions it declares.
 

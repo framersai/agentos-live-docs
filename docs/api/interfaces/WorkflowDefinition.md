@@ -1,6 +1,6 @@
 # Interface: WorkflowDefinition
 
-Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:87](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/workflows/WorkflowTypes.ts#L87)
+Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:87](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/workflows/WorkflowTypes.ts#L87)
 
 Declarative descriptor for a workflow definition.
 
@@ -10,7 +10,7 @@ Declarative descriptor for a workflow definition.
 
 > `optional` **description**: `string`
 
-Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:91](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/workflows/WorkflowTypes.ts#L91)
+Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:91](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/workflows/WorkflowTypes.ts#L91)
 
 ***
 
@@ -18,7 +18,7 @@ Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:91](h
 
 > **displayName**: `string`
 
-Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:90](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/workflows/WorkflowTypes.ts#L90)
+Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:90](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/workflows/WorkflowTypes.ts#L90)
 
 ***
 
@@ -26,7 +26,7 @@ Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:90](h
 
 > `optional` **finalOutputSchema**: [`JSONSchemaObject`](../type-aliases/JSONSchemaObject.md)
 
-Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:93](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/workflows/WorkflowTypes.ts#L93)
+Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:93](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/workflows/WorkflowTypes.ts#L93)
 
 ***
 
@@ -34,7 +34,7 @@ Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:93](h
 
 > `optional` **goalSchema**: [`JSONSchemaObject`](../type-aliases/JSONSchemaObject.md)
 
-Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:92](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/workflows/WorkflowTypes.ts#L92)
+Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:92](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/workflows/WorkflowTypes.ts#L92)
 
 ***
 
@@ -42,7 +42,7 @@ Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:92](h
 
 > **id**: `string`
 
-Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:88](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/workflows/WorkflowTypes.ts#L88)
+Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:88](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/workflows/WorkflowTypes.ts#L88)
 
 ***
 
@@ -50,7 +50,7 @@ Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:88](h
 
 > `optional` **metadata**: [`WorkflowDefinitionMetadata`](WorkflowDefinitionMetadata.md)
 
-Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:98](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/workflows/WorkflowTypes.ts#L98)
+Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:98](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/workflows/WorkflowTypes.ts#L98)
 
 ***
 
@@ -58,7 +58,7 @@ Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:98](h
 
 > `optional` **policyTags**: `string`[]
 
-Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:96](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/workflows/WorkflowTypes.ts#L96)
+Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:96](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/workflows/WorkflowTypes.ts#L96)
 
 ***
 
@@ -66,7 +66,7 @@ Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:96](h
 
 > `optional` **requiresConversationContext**: `boolean`
 
-Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:97](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/workflows/WorkflowTypes.ts#L97)
+Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:97](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/workflows/WorkflowTypes.ts#L97)
 
 ***
 
@@ -74,7 +74,7 @@ Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:97](h
 
 > `optional` **roles**: [`WorkflowRoleDefinition`](WorkflowRoleDefinition.md)[]
 
-Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:94](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/workflows/WorkflowTypes.ts#L94)
+Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:94](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/workflows/WorkflowTypes.ts#L94)
 
 ***
 
@@ -82,7 +82,7 @@ Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:94](h
 
 > **tasks**: [`WorkflowTaskDefinition`](WorkflowTaskDefinition.md)[]
 
-Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:95](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/workflows/WorkflowTypes.ts#L95)
+Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:95](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/workflows/WorkflowTypes.ts#L95)
 
 ***
 
@@ -90,4 +90,4 @@ Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:95](h
 
 > `optional` **version**: `string`
 
-Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:89](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/workflows/WorkflowTypes.ts#L89)
+Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:89](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/workflows/WorkflowTypes.ts#L89)

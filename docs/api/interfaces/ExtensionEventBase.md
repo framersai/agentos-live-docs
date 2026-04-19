@@ -1,6 +1,6 @@
 # Interface: ExtensionEventBase
 
-Defined in: [packages/agentos/src/extensions/events.ts:9](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/extensions/events.ts#L9)
+Defined in: [packages/agentos/src/extensions/events.ts:9](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/extensions/events.ts#L9)
 
 ## Extended by
 
@@ -13,7 +13,7 @@ Defined in: [packages/agentos/src/extensions/events.ts:9](https://github.com/fra
 
 > **timestamp**: `string`
 
-Defined in: [packages/agentos/src/extensions/events.ts:11](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/extensions/events.ts#L11)
+Defined in: [packages/agentos/src/extensions/events.ts:11](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/extensions/events.ts#L11)
 
 ***
 
@@ -21,4 +21,4 @@ Defined in: [packages/agentos/src/extensions/events.ts:11](https://github.com/fr
 
 > **type**: [`ExtensionEventType`](../type-aliases/ExtensionEventType.md)
 
-Defined in: [packages/agentos/src/extensions/events.ts:10](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/extensions/events.ts#L10)
+Defined in: [packages/agentos/src/extensions/events.ts:10](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/extensions/events.ts#L10)

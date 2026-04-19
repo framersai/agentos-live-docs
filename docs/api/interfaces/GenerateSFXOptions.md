@@ -1,6 +1,6 @@
 # Interface: GenerateSFXOptions
 
-Defined in: [packages/agentos/src/api/generateSFX.ts:208](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/generateSFX.ts#L208)
+Defined in: [packages/agentos/src/api/generateSFX.ts:208](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/generateSFX.ts#L208)
 
 Options for a [generateSFX](../functions/generateSFX.md) call.
 
@@ -15,7 +15,7 @@ At minimum, a `prompt` is required. The provider is resolved from
 
 > `optional` **apiKey**: `string`
 
-Defined in: [packages/agentos/src/api/generateSFX.ts:250](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/generateSFX.ts#L250)
+Defined in: [packages/agentos/src/api/generateSFX.ts:250](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/generateSFX.ts#L250)
 
 Override the provider API key instead of reading from env vars.
 
@@ -25,7 +25,7 @@ Override the provider API key instead of reading from env vars.
 
 > `optional` **durationSec**: `number`
 
-Defined in: [packages/agentos/src/api/generateSFX.ts:226](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/generateSFX.ts#L226)
+Defined in: [packages/agentos/src/api/generateSFX.ts:226](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/generateSFX.ts#L226)
 
 Desired output duration in seconds. SFX clips are typically 1-15s.
 
@@ -35,7 +35,7 @@ Desired output duration in seconds. SFX clips are typically 1-15s.
 
 > `optional` **model**: `string`
 
-Defined in: [packages/agentos/src/api/generateSFX.ts:223](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/generateSFX.ts#L223)
+Defined in: [packages/agentos/src/api/generateSFX.ts:223](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/generateSFX.ts#L223)
 
 Model identifier within the provider. When omitted, the provider's
 default model is used.
@@ -46,7 +46,7 @@ default model is used.
 
 > `optional` **n**: `number`
 
-Defined in: [packages/agentos/src/api/generateSFX.ts:241](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/generateSFX.ts#L241)
+Defined in: [packages/agentos/src/api/generateSFX.ts:241](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/generateSFX.ts#L241)
 
 Number of audio clips to generate. Defaults to 1.
 
@@ -56,7 +56,7 @@ Number of audio clips to generate. Defaults to 1.
 
 > `optional` **onProgress**: (`event`) => `void`
 
-Defined in: [packages/agentos/src/api/generateSFX.ts:247](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/generateSFX.ts#L247)
+Defined in: [packages/agentos/src/api/generateSFX.ts:247](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/generateSFX.ts#L247)
 
 Optional progress callback invoked during long-running generation.
 Called with an [AudioProgressEvent](AudioProgressEvent.md) at each status transition.
@@ -77,7 +77,7 @@ Called with an [AudioProgressEvent](AudioProgressEvent.md) at each status transi
 
 > `optional` **outputFormat**: [`AudioOutputFormat`](../type-aliases/AudioOutputFormat.md)
 
-Defined in: [packages/agentos/src/api/generateSFX.ts:229](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/generateSFX.ts#L229)
+Defined in: [packages/agentos/src/api/generateSFX.ts:229](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/generateSFX.ts#L229)
 
 Output audio format (e.g. `"mp3"`, `"wav"`). Defaults to provider default.
 
@@ -87,7 +87,7 @@ Output audio format (e.g. `"mp3"`, `"wav"`). Defaults to provider default.
 
 > **prompt**: `string`
 
-Defined in: [packages/agentos/src/api/generateSFX.ts:210](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/generateSFX.ts#L210)
+Defined in: [packages/agentos/src/api/generateSFX.ts:210](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/generateSFX.ts#L210)
 
 Text prompt describing the desired sound effect.
 
@@ -97,7 +97,7 @@ Text prompt describing the desired sound effect.
 
 > `optional` **provider**: `string`
 
-Defined in: [packages/agentos/src/api/generateSFX.ts:217](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/generateSFX.ts#L217)
+Defined in: [packages/agentos/src/api/generateSFX.ts:217](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/generateSFX.ts#L217)
 
 Explicit provider identifier (e.g. `"elevenlabs-sfx"`, `"stable-audio"`,
 `"audiogen-local"`). When omitted, auto-detection from environment
@@ -109,7 +109,7 @@ variables is used.
 
 > `optional` **providerOptions**: `Record`\<`string`, `unknown`\>
 
-Defined in: [packages/agentos/src/api/generateSFX.ts:256](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/generateSFX.ts#L256)
+Defined in: [packages/agentos/src/api/generateSFX.ts:256](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/generateSFX.ts#L256)
 
 Arbitrary provider-specific options.
 
@@ -119,7 +119,7 @@ Arbitrary provider-specific options.
 
 > `optional` **providerPreferences**: [`MediaProviderPreference`](MediaProviderPreference.md)
 
-Defined in: [packages/agentos/src/api/generateSFX.ts:263](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/generateSFX.ts#L263)
+Defined in: [packages/agentos/src/api/generateSFX.ts:263](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/generateSFX.ts#L263)
 
 Provider preferences for reordering or filtering the fallback chain.
 When supplied, the available providers are reordered according to
@@ -131,7 +131,7 @@ When supplied, the available providers are reordered according to
 
 > `optional` **seed**: `number`
 
-Defined in: [packages/agentos/src/api/generateSFX.ts:232](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/generateSFX.ts#L232)
+Defined in: [packages/agentos/src/api/generateSFX.ts:232](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/generateSFX.ts#L232)
 
 Random seed for reproducible generation (provider-dependent).
 
@@ -141,7 +141,7 @@ Random seed for reproducible generation (provider-dependent).
 
 > `optional` **timeoutMs**: `number`
 
-Defined in: [packages/agentos/src/api/generateSFX.ts:238](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/generateSFX.ts#L238)
+Defined in: [packages/agentos/src/api/generateSFX.ts:238](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/generateSFX.ts#L238)
 
 Maximum time in milliseconds to wait for generation to complete.
 Provider-dependent — polling providers enforce this directly.
@@ -152,7 +152,7 @@ Provider-dependent — polling providers enforce this directly.
 
 > `optional` **usageLedger**: [`AgentOSUsageLedgerOptions`](AgentOSUsageLedgerOptions.md)
 
-Defined in: [packages/agentos/src/api/generateSFX.ts:266](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/generateSFX.ts#L266)
+Defined in: [packages/agentos/src/api/generateSFX.ts:266](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/generateSFX.ts#L266)
 
 Optional durable usage ledger configuration for accounting.
 
@@ -162,6 +162,6 @@ Optional durable usage ledger configuration for accounting.
 
 > `optional` **userId**: `string`
 
-Defined in: [packages/agentos/src/api/generateSFX.ts:253](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/generateSFX.ts#L253)
+Defined in: [packages/agentos/src/api/generateSFX.ts:253](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/generateSFX.ts#L253)
 
 Optional user identifier forwarded to the provider for billing.

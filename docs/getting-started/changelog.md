@@ -3,6 +3,81 @@ title: "Changelog"
 sidebar_position: 7
 ---
 
+## <small>0.1.242 (2026-04-19)</small>
+
+* fix(openai): use max_completion_tokens for gpt-5 + o-series models ([675c004](https://github.com/framersai/agentos/commit/675c004))
+
+## <small>0.1.241 (2026-04-18)</small>
+
+* fix(replicate-image): editImage now routes unpinned models to modern endpoint ([5099f31](https://github.com/framersai/agentos/commit/5099f31))
+* feat(agent): expose per-call maxTokens on agent() config ([cfd0d6d](https://github.com/framersai/agentos/commit/cfd0d6d)), closes [hi#volume](https://github.com/hi/issues/volume)
+
+## <small>0.1.240 (2026-04-18)</small>
+
+* fix(api): autoDetectProvider prioritizes openrouter over openai ([6465974](https://github.com/framersai/agentos/commit/6465974))
+
+## <small>0.1.239 (2026-04-18)</small>
+
+* fix(agency): UsageTotals carries + accumulates cache-token fields ([89b99f2](https://github.com/framersai/agentos/commit/89b99f2))
+* test(storage): lock in SqlStorageAdapter cache-token migration ([d75b736](https://github.com/framersai/agentos/commit/d75b736))
+
+## <small>0.1.238 (2026-04-18)</small>
+
+* fix(storage): SqlStorageAdapter persists + aggregates cache tokens ([b78ade8](https://github.com/framersai/agentos/commit/b78ade8))
+
+## <small>0.1.237 (2026-04-18)</small>
+
+* fix(storage): ITokenUsage carries optional cache-token fields ([e2ab9ed](https://github.com/framersai/agentos/commit/e2ab9ed))
+
+## <small>0.1.236 (2026-04-18)</small>
+
+* fix(usage): UsageLedger forwards Anthropic cache-token counters ([7245b23](https://github.com/framersai/agentos/commit/7245b23))
+
+## <small>0.1.235 (2026-04-18)</small>
+
+* fix(emergent): wrap-forge-tool tests pass strict tsc ([b18bd21](https://github.com/framersai/agentos/commit/b18bd21))
+
+## <small>0.1.234 (2026-04-18)</small>
+
+* fix(strategies): propagate cache tokens in all agency accumulators ([2daa6a3](https://github.com/framersai/agentos/commit/2daa6a3))
+
+## <small>0.1.233 (2026-04-18)</small>
+
+* fix(api): streamText + streamObject propagate prompt-cache tokens ([2a78b66](https://github.com/framersai/agentos/commit/2a78b66))
+
+## <small>0.1.232 (2026-04-18)</small>
+
+* fix(api): generateObject propagates prompt-cache tokens ([cee0eaa](https://github.com/framersai/agentos/commit/cee0eaa))
+
+## <small>0.1.231 (2026-04-18)</small>
+
+* fix(voice-pipeline): resolve 2 lint errors unblocking CI ([43fd59a](https://github.com/framersai/agentos/commit/43fd59a))
+
+## <small>0.1.230 (2026-04-18)</small>
+
+* fix(emergent): strict build — cast LLM-origin args to ForgeToolInput ([52cad99](https://github.com/framersai/agentos/commit/52cad99))
+* feat(emergent): forge observability utilities ([42108b0](https://github.com/framersai/agentos/commit/42108b0))
+
+## <small>0.1.229 (2026-04-18)</small>
+
+* feat(api): first-class policyTier routing for editImage + generateImage ([00bd595](https://github.com/framersai/agentos/commit/00bd595))
+
+## <small>0.1.228 (2026-04-18)</small>
+
+* chore(build): rebuild dist for provider catalog updates ([e72831f](https://github.com/framersai/agentos/commit/e72831f))
+* feat(providers): add Claude Opus 4.7 + Sonnet 4.6 models + updated pricing ([625e0b2](https://github.com/framersai/agentos/commit/625e0b2))
+* feat(voice): all existing providers implement HealthyProvider ([3c2a4bc](https://github.com/framersai/agentos/commit/3c2a4bc))
+* feat(voice): AudioRingBuffer for mid-utterance failover replay ([ab2e41e](https://github.com/framersai/agentos/commit/ab2e41e))
+* feat(voice): createVoiceProvidersFromEnv batteries-included constructor ([ab9a130](https://github.com/framersai/agentos/commit/ab9a130))
+* feat(voice): export new resilience symbols from package barrel ([0a9401a](https://github.com/framersai/agentos/commit/0a9401a))
+* feat(voice): HealthyProvider trait + capability helpers ([122585e](https://github.com/framersai/agentos/commit/122585e))
+* feat(voice): per-provider CircuitBreaker with auth-permanent + cooldown recovery ([b2a58bd](https://github.com/framersai/agentos/commit/b2a58bd))
+* feat(voice): StreamingSTTChain with init-time fallback + mid-utterance failover ([f214cb6](https://github.com/framersai/agentos/commit/f214cb6))
+* feat(voice): StreamingTTSChain with init-time + mid-synthesis failover ([028ec7f](https://github.com/framersai/agentos/commit/028ec7f))
+* feat(voice): TranscriptDedupe for cross-provider overlap suppression ([271defd](https://github.com/framersai/agentos/commit/271defd))
+* feat(voice): VoiceMetricsReporter typed event bus with isolated listeners ([4c327a3](https://github.com/framersai/agentos/commit/4c327a3))
+* feat(voice): VoicePipelineError + AggregateVoiceError with structured classification ([be0f66a](https://github.com/framersai/agentos/commit/be0f66a))
+
 ## <small>0.1.227 (2026-04-18)</small>
 
 * fix(face): graceful synthetic embedding when Replicate InsightFace 422s ([63fb853](https://github.com/framersai/agentos/commit/63fb853))

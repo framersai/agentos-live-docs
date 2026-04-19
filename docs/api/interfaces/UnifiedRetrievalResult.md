@@ -1,6 +1,6 @@
 # Interface: UnifiedRetrievalResult
 
-Defined in: [packages/agentos/src/rag/unified/types.ts:256](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/unified/types.ts#L256)
+Defined in: [packages/agentos/src/rag/unified/types.ts:256](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/unified/types.ts#L256)
 
 Result returned by the UnifiedRetriever after executing a RetrievalPlan.
 
@@ -17,7 +17,7 @@ UnifiedRetriever.retrieve
 
 > **chunks**: [`RetrievedChunk`](RetrievedChunk.md)[]
 
-Defined in: [packages/agentos/src/rag/unified/types.ts:258](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/unified/types.ts#L258)
+Defined in: [packages/agentos/src/rag/unified/types.ts:258](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/unified/types.ts#L258)
 
 Merged and reranked content chunks, sorted by relevance (highest first).
 
@@ -27,7 +27,7 @@ Merged and reranked content chunks, sorted by relevance (highest first).
 
 > **durationMs**: `number`
 
-Defined in: [packages/agentos/src/rag/unified/types.ts:274](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/unified/types.ts#L274)
+Defined in: [packages/agentos/src/rag/unified/types.ts:274](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/unified/types.ts#L274)
 
 Total wall-clock duration of the retrieval in milliseconds.
 
@@ -37,7 +37,7 @@ Total wall-clock duration of the retrieval in milliseconds.
 
 > **memoryCacheHit**: `boolean`
 
-Defined in: [packages/agentos/src/rag/unified/types.ts:277](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/unified/types.ts#L277)
+Defined in: [packages/agentos/src/rag/unified/types.ts:277](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/unified/types.ts#L277)
 
 Whether a memory cache hit was used (episodic memory shortcut).
 
@@ -47,7 +47,7 @@ Whether a memory cache hit was used (episodic memory shortcut).
 
 > **plan**: [`RetrievalPlan`](RetrievalPlan.md)
 
-Defined in: [packages/agentos/src/rag/unified/types.ts:268](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/unified/types.ts#L268)
+Defined in: [packages/agentos/src/rag/unified/types.ts:268](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/unified/types.ts#L268)
 
 The plan that was executed to produce this result.
 
@@ -57,7 +57,7 @@ The plan that was executed to produce this result.
 
 > `optional` **researchSynthesis**: `string`
 
-Defined in: [packages/agentos/src/rag/unified/types.ts:265](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/unified/types.ts#L265)
+Defined in: [packages/agentos/src/rag/unified/types.ts:265](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/unified/types.ts#L265)
 
 Research synthesis narrative when deep research was performed.
 Present only when the plan's `deepResearch` flag was true and
@@ -69,6 +69,6 @@ a deep research callback was available.
 
 > **sourceDiagnostics**: [`SourceDiagnostics`](SourceDiagnostics.md)
 
-Defined in: [packages/agentos/src/rag/unified/types.ts:271](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/unified/types.ts#L271)
+Defined in: [packages/agentos/src/rag/unified/types.ts:271](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/unified/types.ts#L271)
 
 Per-source diagnostics showing contributions and timing.

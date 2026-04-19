@@ -1,6 +1,6 @@
 # Interface: ParallelFunctionCallResult
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:391](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/structured/output/IStructuredOutputManager.ts#L391)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:391](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/structured/output/IStructuredOutputManager.ts#L391)
 
 Result of parallel function calls.
 
@@ -10,7 +10,7 @@ Result of parallel function calls.
 
 > **calls**: [`FunctionCallResult`](FunctionCallResult.md)[]
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:396](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/structured/output/IStructuredOutputManager.ts#L396)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:396](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/structured/output/IStructuredOutputManager.ts#L396)
 
 Individual function call results
 
@@ -20,7 +20,7 @@ Individual function call results
 
 > **latencyMs**: `number`
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:409](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/structured/output/IStructuredOutputManager.ts#L409)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:409](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/structured/output/IStructuredOutputManager.ts#L409)
 
 Generation latency in milliseconds
 
@@ -30,7 +30,7 @@ Generation latency in milliseconds
 
 > **modelId**: `string`
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:412](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/structured/output/IStructuredOutputManager.ts#L412)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:412](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/structured/output/IStructuredOutputManager.ts#L412)
 
 Model that was used
 
@@ -40,7 +40,7 @@ Model that was used
 
 > **providerId**: `string`
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:415](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/structured/output/IStructuredOutputManager.ts#L415)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:415](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/structured/output/IStructuredOutputManager.ts#L415)
 
 Provider that was used
 
@@ -50,7 +50,7 @@ Provider that was used
 
 > **success**: `boolean`
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:393](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/structured/output/IStructuredOutputManager.ts#L393)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:393](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/structured/output/IStructuredOutputManager.ts#L393)
 
 Whether all function calls were successful
 
@@ -60,7 +60,7 @@ Whether all function calls were successful
 
 > `optional` **textContent**: `string`
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:399](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/structured/output/IStructuredOutputManager.ts#L399)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:399](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/structured/output/IStructuredOutputManager.ts#L399)
 
 Any content output alongside function calls
 
@@ -70,7 +70,7 @@ Any content output alongside function calls
 
 > `optional` **tokenUsage**: `object`
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:402](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/structured/output/IStructuredOutputManager.ts#L402)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:402](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/structured/output/IStructuredOutputManager.ts#L402)
 
 Token usage statistics
 

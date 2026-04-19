@@ -1,6 +1,6 @@
 # Interface: SemanticChunk
 
-Defined in: [packages/agentos/src/rag/chunking/SemanticChunker.ts:56](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/chunking/SemanticChunker.ts#L56)
+Defined in: [packages/agentos/src/rag/chunking/SemanticChunker.ts:56](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/chunking/SemanticChunker.ts#L56)
 
 A semantically coherent text chunk produced by the chunker.
 
@@ -14,7 +14,7 @@ SemanticChunk
 
 > **boundaryType**: [`BoundaryType`](../type-aliases/BoundaryType.md)
 
-Defined in: [packages/agentos/src/rag/chunking/SemanticChunker.ts:66](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/chunking/SemanticChunker.ts#L66)
+Defined in: [packages/agentos/src/rag/chunking/SemanticChunker.ts:66](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/chunking/SemanticChunker.ts#L66)
 
 Type of boundary that determined this chunk's split.
 
@@ -24,7 +24,7 @@ Type of boundary that determined this chunk's split.
 
 > **endOffset**: `number`
 
-Defined in: [packages/agentos/src/rag/chunking/SemanticChunker.ts:64](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/chunking/SemanticChunker.ts#L64)
+Defined in: [packages/agentos/src/rag/chunking/SemanticChunker.ts:64](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/chunking/SemanticChunker.ts#L64)
 
 Character offset in the original text where this chunk ends.
 
@@ -34,7 +34,7 @@ Character offset in the original text where this chunk ends.
 
 > **index**: `number`
 
-Defined in: [packages/agentos/src/rag/chunking/SemanticChunker.ts:60](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/chunking/SemanticChunker.ts#L60)
+Defined in: [packages/agentos/src/rag/chunking/SemanticChunker.ts:60](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/chunking/SemanticChunker.ts#L60)
 
 0-based sequence index within the chunked document.
 
@@ -44,7 +44,7 @@ Defined in: [packages/agentos/src/rag/chunking/SemanticChunker.ts:60](https://gi
 
 > `optional` **metadata**: `Record`\<`string`, `unknown`\>
 
-Defined in: [packages/agentos/src/rag/chunking/SemanticChunker.ts:68](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/chunking/SemanticChunker.ts#L68)
+Defined in: [packages/agentos/src/rag/chunking/SemanticChunker.ts:68](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/chunking/SemanticChunker.ts#L68)
 
 Pass-through metadata from the caller.
 
@@ -54,7 +54,7 @@ Pass-through metadata from the caller.
 
 > **startOffset**: `number`
 
-Defined in: [packages/agentos/src/rag/chunking/SemanticChunker.ts:62](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/chunking/SemanticChunker.ts#L62)
+Defined in: [packages/agentos/src/rag/chunking/SemanticChunker.ts:62](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/chunking/SemanticChunker.ts#L62)
 
 Character offset in the original text where this chunk begins.
 
@@ -64,6 +64,6 @@ Character offset in the original text where this chunk begins.
 
 > **text**: `string`
 
-Defined in: [packages/agentos/src/rag/chunking/SemanticChunker.ts:58](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/chunking/SemanticChunker.ts#L58)
+Defined in: [packages/agentos/src/rag/chunking/SemanticChunker.ts:58](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/chunking/SemanticChunker.ts#L58)
 
 The chunk text content (may include overlap prefix).

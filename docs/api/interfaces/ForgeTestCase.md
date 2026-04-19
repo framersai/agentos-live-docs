@@ -1,6 +1,6 @@
 # Interface: ForgeTestCase
 
-Defined in: [packages/agentos/src/emergent/types.ts:514](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/emergent/types.ts#L514)
+Defined in: [packages/agentos/src/emergent/types.ts:514](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/emergent/types.ts#L514)
 
 A single test case used by the LLM judge to evaluate a newly forged tool.
 
@@ -13,7 +13,7 @@ The judge invokes the tool with `input` and compares the result against
 
 > **expectedOutput**: `unknown`
 
-Defined in: [packages/agentos/src/emergent/types.ts:525](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/emergent/types.ts#L525)
+Defined in: [packages/agentos/src/emergent/types.ts:525](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/emergent/types.ts#L525)
 
 Expected output value used for correctness scoring.
 The judge uses this as a reference — partial matches may still score well.
@@ -24,7 +24,7 @@ The judge uses this as a reference — partial matches may still score well.
 
 > **input**: `Record`\<`string`, `unknown`\>
 
-Defined in: [packages/agentos/src/emergent/types.ts:519](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/emergent/types.ts#L519)
+Defined in: [packages/agentos/src/emergent/types.ts:519](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/emergent/types.ts#L519)
 
 Input arguments object passed to the tool's `run` / execution entry point.
 Must conform to the tool's declared `inputSchema`.

@@ -1,6 +1,6 @@
 # Interface: GMIManagerConfig
 
-Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:51](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/GMIManager.ts#L51)
+Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:51](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/GMIManager.ts#L51)
 
 Configuration options for the GMIManager.
 
@@ -10,7 +10,7 @@ Configuration options for the GMIManager.
 
 > `optional` **cognitiveMemoryFactory**: [`GMICognitiveMemoryFactory`](../type-aliases/GMICognitiveMemoryFactory.md)
 
-Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:59](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/GMIManager.ts#L59)
+Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:59](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/GMIManager.ts#L59)
 
 Optional per-GMI cognitive memory factory used by devtools and advanced runtimes.
 
@@ -20,7 +20,7 @@ Optional per-GMI cognitive memory factory used by devtools and advanced runtimes
 
 > `optional` **defaultGMIBaseConfigDefaults**: `Partial`\<`Pick`\<[`GMIBaseConfig`](GMIBaseConfig.md), `"defaultLlmProviderId"` \| `"defaultLlmModelId"` \| `"customSettings"`\>\>
 
-Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:55](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/GMIManager.ts#L55)
+Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:55](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/GMIManager.ts#L55)
 
 ***
 
@@ -28,7 +28,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:55](https:/
 
 > `optional` **defaultGMIInactivityCleanupMinutes**: `number`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:53](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/GMIManager.ts#L53)
+Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:53](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/GMIManager.ts#L53)
 
 ***
 
@@ -36,7 +36,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:53](https:/
 
 > `optional` **defaultWorkingMemoryType**: `string`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:54](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/GMIManager.ts#L54)
+Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:54](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/GMIManager.ts#L54)
 
 ***
 
@@ -44,7 +44,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:54](https:/
 
 > **personaLoaderConfig**: `PersonaLoaderConfig`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:52](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/GMIManager.ts#L52)
+Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:52](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/GMIManager.ts#L52)
 
 ***
 
@@ -52,6 +52,6 @@ Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:52](https:/
 
 > `optional` **personaValidationStrict**: `PersonaValidationStrictConfig`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:57](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/GMIManager.ts#L57)
+Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:57](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/GMIManager.ts#L57)
 
 Strict validation enforcement configuration (optional, defaults to permissive).

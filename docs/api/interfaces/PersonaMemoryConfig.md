@@ -1,6 +1,6 @@
 # Interface: PersonaMemoryConfig
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:180](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/personas/IPersonaDefinition.ts#L180)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:180](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/personas/IPersonaDefinition.ts#L180)
 
 Configuration for the persona's memory systems.
 
@@ -14,7 +14,7 @@ PersonaMemoryConfig
 
 > `optional` **conversationContext**: [`PersonaConversationContextConfig`](PersonaConversationContextConfig.md)
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:182](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/personas/IPersonaDefinition.ts#L182)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:182](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/personas/IPersonaDefinition.ts#L182)
 
 ***
 
@@ -22,7 +22,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefiniti
 
 > **enabled**: `boolean`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:181](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/personas/IPersonaDefinition.ts#L181)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:181](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/personas/IPersonaDefinition.ts#L181)
 
 ***
 
@@ -30,7 +30,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefiniti
 
 > `optional` **lifecycleConfig**: `object`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:211](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/personas/IPersonaDefinition.ts#L211)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:211](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/personas/IPersonaDefinition.ts#L211)
 
 #### negotiationEnabled?
 
@@ -42,7 +42,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefiniti
 
 > `optional` **ragConfig**: `object`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:183](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/personas/IPersonaDefinition.ts#L183)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:183](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/personas/IPersonaDefinition.ts#L183)
 
 #### dataSources?
 
@@ -118,7 +118,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefiniti
 
 > `optional` **workingMemoryProcessing**: `object`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:203](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/personas/IPersonaDefinition.ts#L203)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:203](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/personas/IPersonaDefinition.ts#L203)
 
 #### adaptationRules?
 

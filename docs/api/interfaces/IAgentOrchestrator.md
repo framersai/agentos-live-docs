@@ -1,6 +1,6 @@
 # Interface: IAgentOrchestrator
 
-Defined in: [packages/agentos/src/orchestration/turn-planner/IAgentOrchestrator.ts:39](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/turn-planner/IAgentOrchestrator.ts#L39)
+Defined in: [packages/agentos/src/orchestration/turn-planner/IAgentOrchestrator.ts:39](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/turn-planner/IAgentOrchestrator.ts#L39)
 
 ## Interface
 
@@ -16,7 +16,7 @@ Assuming AgentOrchestratorConfig here is the one intended for AgentOSOrchestrato
 
 > `readonly` **orchestratorId**: `string`
 
-Defined in: [packages/agentos/src/orchestration/turn-planner/IAgentOrchestrator.ts:41](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/turn-planner/IAgentOrchestrator.ts#L41)
+Defined in: [packages/agentos/src/orchestration/turn-planner/IAgentOrchestrator.ts:41](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/turn-planner/IAgentOrchestrator.ts#L41)
 
 A unique identifier for this orchestrator implementation.
 
@@ -26,7 +26,7 @@ A unique identifier for this orchestrator implementation.
 
 > **initialize**(`config`, `dependencies`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/orchestration/turn-planner/IAgentOrchestrator.ts:48](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/turn-planner/IAgentOrchestrator.ts#L48)
+Defined in: [packages/agentos/src/orchestration/turn-planner/IAgentOrchestrator.ts:48](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/turn-planner/IAgentOrchestrator.ts#L48)
 
 Initializes the agent orchestrator.
 
@@ -54,7 +54,7 @@ Other necessary services.
 
 > `optional` **initiateAgentHandoff**(`conversationContext`, `currentAgentOutput`, `nextAgentId`, `handoffData?`): `Promise`\<`AgentOutput`\>
 
-Defined in: [packages/agentos/src/orchestration/turn-planner/IAgentOrchestrator.ts:56](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/turn-planner/IAgentOrchestrator.ts#L56)
+Defined in: [packages/agentos/src/orchestration/turn-planner/IAgentOrchestrator.ts:56](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/turn-planner/IAgentOrchestrator.ts#L56)
 
 #### Parameters
 
@@ -84,7 +84,7 @@ Defined in: [packages/agentos/src/orchestration/turn-planner/IAgentOrchestrator.
 
 > **processAgentTurn**(`conversationContext`, `userInput`, `targetAgentId`): `Promise`\<`AgentOutput`\>
 
-Defined in: [packages/agentos/src/orchestration/turn-planner/IAgentOrchestrator.ts:50](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/turn-planner/IAgentOrchestrator.ts#L50)
+Defined in: [packages/agentos/src/orchestration/turn-planner/IAgentOrchestrator.ts:50](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/turn-planner/IAgentOrchestrator.ts#L50)
 
 #### Parameters
 

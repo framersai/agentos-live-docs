@@ -1,6 +1,6 @@
 # Interface: GMIHealthReport
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:465](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/IGMI.ts#L465)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:465](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/IGMI.ts#L465)
 
 A report on the GMI's health, including its sub-components.
 
@@ -14,7 +14,7 @@ GMIHealthReport
 
 > `optional` **activeTurnsProcessed**: `number`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:485](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/IGMI.ts#L485)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:485](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/IGMI.ts#L485)
 
 ***
 
@@ -22,7 +22,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:485](https://gith
 
 > **currentState**: [`GMIPrimeState`](../enumerations/GMIPrimeState.md)
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:470](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/IGMI.ts#L470)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:470](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/IGMI.ts#L470)
 
 ***
 
@@ -30,7 +30,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:470](https://gith
 
 > `optional` **dependenciesStatus**: `object`[]
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:478](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/IGMI.ts#L478)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:478](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/IGMI.ts#L478)
 
 #### componentName
 
@@ -50,7 +50,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:478](https://gith
 
 > **gmiId**: `string`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:466](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/IGMI.ts#L466)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:466](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/IGMI.ts#L466)
 
 ***
 
@@ -58,7 +58,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:466](https://gith
 
 > `optional` **memoryHealth**: `object`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:471](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/IGMI.ts#L471)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:471](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/IGMI.ts#L471)
 
 #### issues?
 
@@ -110,7 +110,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:471](https://gith
 
 > **overallStatus**: `"HEALTHY"` \| `"DEGRADED"` \| `"UNHEALTHY"` \| `"ERROR"`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:469](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/IGMI.ts#L469)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:469](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/IGMI.ts#L469)
 
 ***
 
@@ -118,7 +118,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:469](https://gith
 
 > **personaId**: `string`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:467](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/IGMI.ts#L467)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:467](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/IGMI.ts#L467)
 
 ***
 
@@ -126,7 +126,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:467](https://gith
 
 > `optional` **recentErrors**: [`ReasoningTraceEntry`](ReasoningTraceEntry.md)[]
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:483](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/IGMI.ts#L483)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:483](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/IGMI.ts#L483)
 
 ***
 
@@ -134,7 +134,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:483](https://gith
 
 > **timestamp**: `Date`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:468](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/IGMI.ts#L468)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:468](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/IGMI.ts#L468)
 
 ***
 
@@ -142,4 +142,4 @@ Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:468](https://gith
 
 > `optional` **uptimeSeconds**: `number`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:484](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/IGMI.ts#L484)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:484](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/IGMI.ts#L484)

@@ -1,6 +1,6 @@
 # Interface: ProvenanceSystemConfig
 
-Defined in: [packages/agentos/src/provenance/types.ts:143](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/provenance/types.ts#L143)
+Defined in: [packages/agentos/src/provenance/types.ts:143](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/provenance/types.ts#L143)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/provenance/types.ts:143](https://github.com/fr
 
 > **anchorBatchSize**: `number`
 
-Defined in: [packages/agentos/src/provenance/types.ts:150](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/provenance/types.ts#L150)
+Defined in: [packages/agentos/src/provenance/types.ts:150](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/provenance/types.ts#L150)
 
 Maximum events before a forced anchor is created. 0 = disabled.
 
@@ -18,7 +18,7 @@ Maximum events before a forced anchor is created. 0 = disabled.
 
 > **anchorIntervalMs**: `number`
 
-Defined in: [packages/agentos/src/provenance/types.ts:148](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/provenance/types.ts#L148)
+Defined in: [packages/agentos/src/provenance/types.ts:148](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/provenance/types.ts#L148)
 
 Anchoring interval in milliseconds. 0 = disabled.
 
@@ -28,7 +28,7 @@ Anchoring interval in milliseconds. 0 = disabled.
 
 > **autonomy**: [`AutonomyConfig`](AutonomyConfig.md)
 
-Defined in: [packages/agentos/src/provenance/types.ts:146](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/provenance/types.ts#L146)
+Defined in: [packages/agentos/src/provenance/types.ts:146](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/provenance/types.ts#L146)
 
 ***
 
@@ -36,7 +36,7 @@ Defined in: [packages/agentos/src/provenance/types.ts:146](https://github.com/fr
 
 > **provenance**: [`ProvenanceConfig`](ProvenanceConfig.md)
 
-Defined in: [packages/agentos/src/provenance/types.ts:145](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/provenance/types.ts#L145)
+Defined in: [packages/agentos/src/provenance/types.ts:145](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/provenance/types.ts#L145)
 
 ***
 
@@ -44,4 +44,4 @@ Defined in: [packages/agentos/src/provenance/types.ts:145](https://github.com/fr
 
 > **storagePolicy**: [`StoragePolicyConfig`](StoragePolicyConfig.md)
 
-Defined in: [packages/agentos/src/provenance/types.ts:144](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/provenance/types.ts#L144)
+Defined in: [packages/agentos/src/provenance/types.ts:144](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/provenance/types.ts#L144)

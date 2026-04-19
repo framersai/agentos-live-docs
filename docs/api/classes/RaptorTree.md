@@ -1,6 +1,6 @@
 # Class: RaptorTree
 
-Defined in: [packages/agentos/src/rag/raptor/RaptorTree.ts:267](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/raptor/RaptorTree.ts#L267)
+Defined in: [packages/agentos/src/rag/raptor/RaptorTree.ts:267](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/raptor/RaptorTree.ts#L267)
 
 RAPTOR — Recursive Abstractive Processing for Tree-Organized Retrieval.
 
@@ -42,7 +42,7 @@ for (const r of results) {
 
 > **new RaptorTree**(`config`): `RaptorTree`
 
-Defined in: [packages/agentos/src/rag/raptor/RaptorTree.ts:309](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/raptor/RaptorTree.ts#L309)
+Defined in: [packages/agentos/src/rag/raptor/RaptorTree.ts:309](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/raptor/RaptorTree.ts#L309)
 
 Creates a new RaptorTree.
 
@@ -77,7 +77,7 @@ const raptor = new RaptorTree({
 
 > **build**(`chunks`): `Promise`\<[`RaptorTreeStats`](../interfaces/RaptorTreeStats.md)\>
 
-Defined in: [packages/agentos/src/rag/raptor/RaptorTree.ts:356](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/raptor/RaptorTree.ts#L356)
+Defined in: [packages/agentos/src/rag/raptor/RaptorTree.ts:356](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/raptor/RaptorTree.ts#L356)
 
 Builds the RAPTOR tree from a set of leaf chunks.
 
@@ -129,7 +129,7 @@ console.log(`Tree has ${stats.totalLayers} layers`);
 
 > **getStats**(): [`RaptorTreeStats`](../interfaces/RaptorTreeStats.md)
 
-Defined in: [packages/agentos/src/rag/raptor/RaptorTree.ts:529](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/raptor/RaptorTree.ts#L529)
+Defined in: [packages/agentos/src/rag/raptor/RaptorTree.ts:529](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/raptor/RaptorTree.ts#L529)
 
 Returns statistics about the last tree build.
 
@@ -153,7 +153,7 @@ console.log(`Layers: ${stats.totalLayers}, Nodes: ${stats.totalNodes}`);
 
 > **search**(`query`, `topK?`): `Promise`\<[`RaptorResult`](../interfaces/RaptorResult.md)[]\>
 
-Defined in: [packages/agentos/src/rag/raptor/RaptorTree.ts:473](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/raptor/RaptorTree.ts#L473)
+Defined in: [packages/agentos/src/rag/raptor/RaptorTree.ts:473](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/raptor/RaptorTree.ts#L473)
 
 Searches ALL layers of the RAPTOR tree simultaneously.
 

@@ -1,6 +1,6 @@
 # Interface: OpenAIFunctionToolSchema
 
-Defined in: [packages/agentos/src/api/runtime/externalToolRegistry.ts:70](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/runtime/externalToolRegistry.ts#L70)
+Defined in: [packages/agentos/src/api/runtime/externalToolRegistry.ts:70](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/runtime/externalToolRegistry.ts#L70)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/api/runtime/externalToolRegistry.ts:70](https:
 
 > **function**: `object`
 
-Defined in: [packages/agentos/src/api/runtime/externalToolRegistry.ts:72](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/runtime/externalToolRegistry.ts#L72)
+Defined in: [packages/agentos/src/api/runtime/externalToolRegistry.ts:72](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/runtime/externalToolRegistry.ts#L72)
 
 #### description
 
@@ -28,4 +28,4 @@ Defined in: [packages/agentos/src/api/runtime/externalToolRegistry.ts:72](https:
 
 > **type**: `"function"`
 
-Defined in: [packages/agentos/src/api/runtime/externalToolRegistry.ts:71](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/runtime/externalToolRegistry.ts#L71)
+Defined in: [packages/agentos/src/api/runtime/externalToolRegistry.ts:71](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/runtime/externalToolRegistry.ts#L71)

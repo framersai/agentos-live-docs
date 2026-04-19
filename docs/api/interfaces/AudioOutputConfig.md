@@ -1,6 +1,6 @@
 # Interface: AudioOutputConfig
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:288](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/IGMI.ts#L288)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:288](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/IGMI.ts#L288)
 
 **`Export`**
 
@@ -16,7 +16,7 @@ AudioOutputConfig
 
 > `optional` **customParams**: `Record`\<`string`, `any`\>
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:295](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/IGMI.ts#L295)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:295](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/IGMI.ts#L295)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:295](https://gith
 
 > `optional` **format**: `string`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:293](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/IGMI.ts#L293)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:293](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/IGMI.ts#L293)
 
 ***
 
@@ -32,7 +32,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:293](https://gith
 
 > `optional` **languageCode**: `string`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:294](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/IGMI.ts#L294)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:294](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/IGMI.ts#L294)
 
 ***
 
@@ -40,7 +40,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:294](https://gith
 
 > **provider**: `string`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:289](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/IGMI.ts#L289)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:289](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/IGMI.ts#L289)
 
 ***
 
@@ -48,7 +48,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:289](https://gith
 
 > **textToSpeak**: `string`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:291](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/IGMI.ts#L291)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:291](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/IGMI.ts#L291)
 
 ***
 
@@ -56,7 +56,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:291](https://gith
 
 > `optional` **url**: `string`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:292](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/IGMI.ts#L292)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:292](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/IGMI.ts#L292)
 
 ***
 
@@ -64,4 +64,4 @@ Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:292](https://gith
 
 > `optional` **voiceId**: `string`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:290](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/IGMI.ts#L290)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:290](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/IGMI.ts#L290)

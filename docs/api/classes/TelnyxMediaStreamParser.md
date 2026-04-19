@@ -1,6 +1,6 @@
 # Class: TelnyxMediaStreamParser
 
-Defined in: [packages/agentos/src/channels/telephony/parsers/TelnyxMediaStreamParser.ts:56](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/channels/telephony/parsers/TelnyxMediaStreamParser.ts#L56)
+Defined in: [packages/agentos/src/channels/telephony/parsers/TelnyxMediaStreamParser.ts:56](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/telephony/parsers/TelnyxMediaStreamParser.ts#L56)
 
 Parses the Telnyx media stream WebSocket protocol.
 
@@ -38,7 +38,7 @@ handshake.
 
 > **formatConnected**(`_streamSid`): `null`
 
-Defined in: [packages/agentos/src/channels/telephony/parsers/TelnyxMediaStreamParser.ts:161](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/channels/telephony/parsers/TelnyxMediaStreamParser.ts#L161)
+Defined in: [packages/agentos/src/channels/telephony/parsers/TelnyxMediaStreamParser.ts:161](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/telephony/parsers/TelnyxMediaStreamParser.ts#L161)
 
 No explicit connection acknowledgment is required by Telnyx.
 
@@ -69,7 +69,7 @@ Always `null`.
 
 > **formatOutgoing**(`audio`, `_streamSid`): `Buffer`
 
-Defined in: [packages/agentos/src/channels/telephony/parsers/TelnyxMediaStreamParser.ts:148](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/channels/telephony/parsers/TelnyxMediaStreamParser.ts#L148)
+Defined in: [packages/agentos/src/channels/telephony/parsers/TelnyxMediaStreamParser.ts:148](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/telephony/parsers/TelnyxMediaStreamParser.ts#L148)
 
 Encode mu-law audio for transmission back to Telnyx.
 
@@ -108,7 +108,7 @@ The audio Buffer unchanged, ready to send as a binary WS frame.
 
 > **parseIncoming**(`data`): [`MediaStreamIncoming`](../type-aliases/MediaStreamIncoming.md) \| `null`
 
-Defined in: [packages/agentos/src/channels/telephony/parsers/TelnyxMediaStreamParser.ts:75](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/channels/telephony/parsers/TelnyxMediaStreamParser.ts#L75)
+Defined in: [packages/agentos/src/channels/telephony/parsers/TelnyxMediaStreamParser.ts:75](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/telephony/parsers/TelnyxMediaStreamParser.ts#L75)
 
 Parse a raw WebSocket frame from Telnyx's media stream.
 

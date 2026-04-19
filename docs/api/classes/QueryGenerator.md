@@ -1,6 +1,6 @@
 # Class: QueryGenerator
 
-Defined in: [packages/agentos/src/query-router/QueryGenerator.ts:136](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/query-router/QueryGenerator.ts#L136)
+Defined in: [packages/agentos/src/query-router/QueryGenerator.ts:136](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/query-router/QueryGenerator.ts#L136)
 
 Builds tier-appropriate prompts and generates LLM answers.
 
@@ -27,7 +27,7 @@ console.log(result.answer);
 
 > **new QueryGenerator**(`config`): `QueryGenerator`
 
-Defined in: [packages/agentos/src/query-router/QueryGenerator.ts:147](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/query-router/QueryGenerator.ts#L147)
+Defined in: [packages/agentos/src/query-router/QueryGenerator.ts:147](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/query-router/QueryGenerator.ts#L147)
 
 Create a new QueryGenerator instance.
 
@@ -50,7 +50,7 @@ Generator configuration specifying models, provider,
 
 > **generate**(`query`, `tier`, `chunks`, `researchSynthesis?`): `Promise`\<`GenerateResult`\>
 
-Defined in: [packages/agentos/src/query-router/QueryGenerator.ts:167](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/query-router/QueryGenerator.ts#L167)
+Defined in: [packages/agentos/src/query-router/QueryGenerator.ts:167](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/query-router/QueryGenerator.ts#L167)
 
 Generate an answer for the given query at the specified complexity tier.
 

@@ -1,6 +1,6 @@
 # Interface: EvalCriteria
 
-Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:83](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/evaluation/IEvaluator.ts#L83)
+Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:83](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/evaluation/IEvaluator.ts#L83)
 
 Evaluation criteria for a test case.
 
@@ -10,7 +10,7 @@ Evaluation criteria for a test case.
 
 > **description**: `string`
 
-Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:87](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/evaluation/IEvaluator.ts#L87)
+Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:87](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/evaluation/IEvaluator.ts#L87)
 
 Description
 
@@ -20,7 +20,7 @@ Description
 
 > **name**: `string`
 
-Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:85](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/evaluation/IEvaluator.ts#L85)
+Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:85](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/evaluation/IEvaluator.ts#L85)
 
 Criteria name
 
@@ -30,7 +30,7 @@ Criteria name
 
 > **scorer**: `string`
 
-Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:91](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/evaluation/IEvaluator.ts#L91)
+Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:91](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/evaluation/IEvaluator.ts#L91)
 
 Scoring function name
 
@@ -40,7 +40,7 @@ Scoring function name
 
 > `optional` **threshold**: `number`
 
-Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:93](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/evaluation/IEvaluator.ts#L93)
+Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:93](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/evaluation/IEvaluator.ts#L93)
 
 Minimum passing score
 
@@ -50,6 +50,6 @@ Minimum passing score
 
 > **weight**: `number`
 
-Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:89](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/evaluation/IEvaluator.ts#L89)
+Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:89](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/evaluation/IEvaluator.ts#L89)
 
 Weight in final score (0-1)

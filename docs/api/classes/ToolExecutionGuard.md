@@ -1,6 +1,6 @@
 # Class: ToolExecutionGuard
 
-Defined in: [packages/agentos/src/safety/runtime/ToolExecutionGuard.ts:62](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/safety/runtime/ToolExecutionGuard.ts#L62)
+Defined in: [packages/agentos/src/safety/runtime/ToolExecutionGuard.ts:62](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/safety/runtime/ToolExecutionGuard.ts#L62)
 
 ## Constructors
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/safety/runtime/ToolExecutionGuard.ts:62](https
 
 > **new ToolExecutionGuard**(`config?`): `ToolExecutionGuard`
 
-Defined in: [packages/agentos/src/safety/runtime/ToolExecutionGuard.ts:66](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/safety/runtime/ToolExecutionGuard.ts#L66)
+Defined in: [packages/agentos/src/safety/runtime/ToolExecutionGuard.ts:66](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/safety/runtime/ToolExecutionGuard.ts#L66)
 
 #### Parameters
 
@@ -26,7 +26,7 @@ Defined in: [packages/agentos/src/safety/runtime/ToolExecutionGuard.ts:66](https
 
 > **execute**\<`T`\>(`toolName`, `fn`): `Promise`\<[`GuardedToolResult`](../interfaces/GuardedToolResult.md)\<`T`\>\>
 
-Defined in: [packages/agentos/src/safety/runtime/ToolExecutionGuard.ts:70](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/safety/runtime/ToolExecutionGuard.ts#L70)
+Defined in: [packages/agentos/src/safety/runtime/ToolExecutionGuard.ts:70](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/safety/runtime/ToolExecutionGuard.ts#L70)
 
 #### Type Parameters
 
@@ -54,7 +54,7 @@ Defined in: [packages/agentos/src/safety/runtime/ToolExecutionGuard.ts:70](https
 
 > **getAllToolHealth**(): [`ToolHealthReport`](../interfaces/ToolHealthReport.md)[]
 
-Defined in: [packages/agentos/src/safety/runtime/ToolExecutionGuard.ts:147](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/safety/runtime/ToolExecutionGuard.ts#L147)
+Defined in: [packages/agentos/src/safety/runtime/ToolExecutionGuard.ts:147](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/safety/runtime/ToolExecutionGuard.ts#L147)
 
 #### Returns
 
@@ -66,7 +66,7 @@ Defined in: [packages/agentos/src/safety/runtime/ToolExecutionGuard.ts:147](http
 
 > **getToolHealth**(`toolName`): [`ToolHealthReport`](../interfaces/ToolHealthReport.md)
 
-Defined in: [packages/agentos/src/safety/runtime/ToolExecutionGuard.ts:120](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/safety/runtime/ToolExecutionGuard.ts#L120)
+Defined in: [packages/agentos/src/safety/runtime/ToolExecutionGuard.ts:120](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/safety/runtime/ToolExecutionGuard.ts#L120)
 
 #### Parameters
 
@@ -84,7 +84,7 @@ Defined in: [packages/agentos/src/safety/runtime/ToolExecutionGuard.ts:120](http
 
 > **resetAll**(): `void`
 
-Defined in: [packages/agentos/src/safety/runtime/ToolExecutionGuard.ts:162](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/safety/runtime/ToolExecutionGuard.ts#L162)
+Defined in: [packages/agentos/src/safety/runtime/ToolExecutionGuard.ts:162](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/safety/runtime/ToolExecutionGuard.ts#L162)
 
 #### Returns
 
@@ -96,7 +96,7 @@ Defined in: [packages/agentos/src/safety/runtime/ToolExecutionGuard.ts:162](http
 
 > **resetTool**(`toolName`): `void`
 
-Defined in: [packages/agentos/src/safety/runtime/ToolExecutionGuard.ts:151](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/safety/runtime/ToolExecutionGuard.ts#L151)
+Defined in: [packages/agentos/src/safety/runtime/ToolExecutionGuard.ts:151](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/safety/runtime/ToolExecutionGuard.ts#L151)
 
 #### Parameters
 

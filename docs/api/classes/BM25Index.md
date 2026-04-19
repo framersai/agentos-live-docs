@@ -1,6 +1,6 @@
 # Class: BM25Index
 
-Defined in: [packages/agentos/src/rag/search/BM25Index.ts:152](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/search/BM25Index.ts#L152)
+Defined in: [packages/agentos/src/rag/search/BM25Index.ts:152](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/search/BM25Index.ts#L152)
 
 BM25 sparse keyword index for hybrid retrieval.
 
@@ -39,7 +39,7 @@ const results = await hybrid.search('What does error TS2304 mean?');
 
 > **new BM25Index**(`config?`): `BM25Index`
 
-Defined in: [packages/agentos/src/rag/search/BM25Index.ts:203](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/search/BM25Index.ts#L203)
+Defined in: [packages/agentos/src/rag/search/BM25Index.ts:203](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/search/BM25Index.ts#L203)
 
 Creates a new BM25 index.
 
@@ -71,7 +71,7 @@ const shortDocIndex = new BM25Index({ k1: 1.5, b: 0.5 });
 
 > **addDocument**(`id`, `text`, `metadata?`): `void`
 
-Defined in: [packages/agentos/src/rag/search/BM25Index.ts:298](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/search/BM25Index.ts#L298)
+Defined in: [packages/agentos/src/rag/search/BM25Index.ts:298](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/search/BM25Index.ts#L298)
 
 Adds a single document to the BM25 index.
 
@@ -120,7 +120,7 @@ index.addDocument('changelog', 'v2.0: Added BM25 hybrid search', { version: '2.0
 
 > **addDocuments**(`docs`): `void`
 
-Defined in: [packages/agentos/src/rag/search/BM25Index.ts:352](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/search/BM25Index.ts#L352)
+Defined in: [packages/agentos/src/rag/search/BM25Index.ts:352](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/search/BM25Index.ts#L352)
 
 Adds multiple documents to the index in a single batch.
 
@@ -154,7 +154,7 @@ index.addDocuments([
 
 > **getStats**(): [`BM25Stats`](../interfaces/BM25Stats.md)
 
-Defined in: [packages/agentos/src/rag/search/BM25Index.ts:465](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/search/BM25Index.ts#L465)
+Defined in: [packages/agentos/src/rag/search/BM25Index.ts:465](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/search/BM25Index.ts#L465)
 
 Returns current index statistics.
 
@@ -178,7 +178,7 @@ console.log(`${stats.documentCount} docs, ${stats.termCount} unique terms`);
 
 > **removeDocument**(`id`): `boolean`
 
-Defined in: [packages/agentos/src/rag/search/BM25Index.ts:436](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/search/BM25Index.ts#L436)
+Defined in: [packages/agentos/src/rag/search/BM25Index.ts:436](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/search/BM25Index.ts#L436)
 
 Removes a document from the index by its ID.
 
@@ -212,7 +212,7 @@ console.log(removed ? 'Removed' : 'Not found');
 
 > **search**(`query`, `topK?`): [`BM25Result`](../interfaces/BM25Result.md)[]
 
-Defined in: [packages/agentos/src/rag/search/BM25Index.ts:380](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/search/BM25Index.ts#L380)
+Defined in: [packages/agentos/src/rag/search/BM25Index.ts:380](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/search/BM25Index.ts#L380)
 
 Searches the BM25 index for documents matching the query.
 

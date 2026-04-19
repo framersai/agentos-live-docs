@@ -2,7 +2,7 @@
 
 > **createDoclingLoader**(): [`IDocumentLoader`](../interfaces/IDocumentLoader.md) \| `null`
 
-Defined in: [packages/agentos/src/memory/io/ingestion/DoclingLoader.ts:276](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/io/ingestion/DoclingLoader.ts#L276)
+Defined in: [packages/agentos/src/memory/io/ingestion/DoclingLoader.ts:276](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/io/ingestion/DoclingLoader.ts#L276)
 
 Checks whether `python3 -m docling` is available in the current environment
 and, if so, returns a new Docling-backed loader instance; otherwise returns

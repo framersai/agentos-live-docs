@@ -1,6 +1,6 @@
 # Interface: IPlanningEngine
 
-Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:393](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/planner/IPlanningEngine.ts#L393)
+Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:393](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/planner/IPlanningEngine.ts#L393)
 
 Interface for the AgentOS Planning Engine.
 
@@ -42,7 +42,7 @@ for (const step of plan.steps) {
 
 > **decomposeTask**(`task`, `depth?`): `Promise`\<[`TaskDecomposition`](TaskDecomposition.md)\>
 
-Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:428](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/planner/IPlanningEngine.ts#L428)
+Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:428](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/planner/IPlanningEngine.ts#L428)
 
 Decomposes a complex task into simpler subtasks.
 
@@ -72,7 +72,7 @@ Task decomposition result
 
 > **executeStep**(`step`, `context?`): `Promise`\<[`PlanStepResult`](PlanStepResult.md)\>
 
-Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:472](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/planner/IPlanningEngine.ts#L472)
+Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:472](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/planner/IPlanningEngine.ts#L472)
 
 Executes a single plan step.
 
@@ -102,7 +102,7 @@ Step execution result
 
 > **generatePlan**(`goal`, `context?`, `options?`): `Promise`\<[`ExecutionPlan`](ExecutionPlan.md)\>
 
-Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:415](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/planner/IPlanningEngine.ts#L415)
+Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:415](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/planner/IPlanningEngine.ts#L415)
 
 Generates a multi-step execution plan from a high-level goal.
 
@@ -148,7 +148,7 @@ const plan = await engine.generatePlan(
 
 > **getExecutionState**(`planId`): [`ExecutionState`](ExecutionState.md) \| `null`
 
-Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:515](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/planner/IPlanningEngine.ts#L515)
+Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:515](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/planner/IPlanningEngine.ts#L515)
 
 Gets the current execution state for a plan.
 
@@ -172,7 +172,7 @@ Current execution state or null if not found
 
 > **refinePlan**(`plan`, `feedback`): `Promise`\<[`ExecutionPlan`](ExecutionPlan.md)\>
 
-Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:450](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/planner/IPlanningEngine.ts#L450)
+Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:450](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/planner/IPlanningEngine.ts#L450)
 
 Refines an existing plan based on execution feedback.
 Uses self-reflection to identify issues and generate corrections.
@@ -203,7 +203,7 @@ Refined execution plan
 
 > **reflect**(`plan`, `executionState`): `Promise`\<[`ReflectionResult`](ReflectionResult.md)\>
 
-Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:459](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/planner/IPlanningEngine.ts#L459)
+Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:459](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/planner/IPlanningEngine.ts#L459)
 
 Performs self-reflection on plan execution state.
 
@@ -233,7 +233,7 @@ Reflection insights and suggested adjustments
 
 > **restoreCheckpoint**(`checkpointId`): `Promise`\<\{ `plan`: [`ExecutionPlan`](ExecutionPlan.md); `state`: [`ExecutionState`](ExecutionState.md); \}\>
 
-Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:507](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/planner/IPlanningEngine.ts#L507)
+Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:507](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/planner/IPlanningEngine.ts#L507)
 
 Restores execution state from a checkpoint.
 
@@ -257,7 +257,7 @@ Restored execution state
 
 > **runAutonomousLoop**(`goal`, `options?`): `AsyncGenerator`\<[`LoopProgress`](LoopProgress.md), [`ExecutionSummary`](ExecutionSummary.md), `undefined`\>
 
-Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:483](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/planner/IPlanningEngine.ts#L483)
+Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:483](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/planner/IPlanningEngine.ts#L483)
 
 Runs an autonomous goal pursuit loop.
 Yields progress updates and handles self-correction automatically.
@@ -292,7 +292,7 @@ Progress updates including current step and observations
 
 > **saveCheckpoint**(`plan`, `state`): `Promise`\<`string`\>
 
-Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:499](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/planner/IPlanningEngine.ts#L499)
+Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:499](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/planner/IPlanningEngine.ts#L499)
 
 Saves current execution state for checkpointing/rollback.
 
@@ -322,7 +322,7 @@ Checkpoint identifier
 
 > **validatePlan**(`plan`): `Promise`\<[`PlanValidationResult`](PlanValidationResult.md)\>
 
-Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:436](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/planner/IPlanningEngine.ts#L436)
+Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:436](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/planner/IPlanningEngine.ts#L436)
 
 Validates a plan for feasibility and completeness.
 

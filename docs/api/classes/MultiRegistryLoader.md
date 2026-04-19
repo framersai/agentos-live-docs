@@ -1,6 +1,6 @@
 # Class: MultiRegistryLoader
 
-Defined in: [packages/agentos/src/extensions/MultiRegistryLoader.ts:18](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/extensions/MultiRegistryLoader.ts#L18)
+Defined in: [packages/agentos/src/extensions/MultiRegistryLoader.ts:18](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/extensions/MultiRegistryLoader.ts#L18)
 
 Loader that supports multiple registries (npm, GitHub, git, file, URL)
 
@@ -10,7 +10,7 @@ Loader that supports multiple registries (npm, GitHub, git, file, URL)
 
 > **new MultiRegistryLoader**(`manager`, `config`): `MultiRegistryLoader`
 
-Defined in: [packages/agentos/src/extensions/MultiRegistryLoader.ts:22](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/extensions/MultiRegistryLoader.ts#L22)
+Defined in: [packages/agentos/src/extensions/MultiRegistryLoader.ts:22](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/extensions/MultiRegistryLoader.ts#L22)
 
 #### Parameters
 
@@ -32,7 +32,7 @@ Defined in: [packages/agentos/src/extensions/MultiRegistryLoader.ts:22](https://
 
 > **clearCache**(): `void`
 
-Defined in: [packages/agentos/src/extensions/MultiRegistryLoader.ts:208](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/extensions/MultiRegistryLoader.ts#L208)
+Defined in: [packages/agentos/src/extensions/MultiRegistryLoader.ts:208](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/extensions/MultiRegistryLoader.ts#L208)
 
 Clear cache
 
@@ -46,7 +46,7 @@ Clear cache
 
 > **getCacheStats**(): `object`
 
-Defined in: [packages/agentos/src/extensions/MultiRegistryLoader.ts:215](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/extensions/MultiRegistryLoader.ts#L215)
+Defined in: [packages/agentos/src/extensions/MultiRegistryLoader.ts:215](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/extensions/MultiRegistryLoader.ts#L215)
 
 Get cache statistics
 
@@ -68,7 +68,7 @@ Get cache statistics
 
 > **loadExtension**(`kind`, `extensionId`): `Promise`\<[`ExtensionPack`](../interfaces/ExtensionPack.md) \| `null`\>
 
-Defined in: [packages/agentos/src/extensions/MultiRegistryLoader.ts:32](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/extensions/MultiRegistryLoader.ts#L32)
+Defined in: [packages/agentos/src/extensions/MultiRegistryLoader.ts:32](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/extensions/MultiRegistryLoader.ts#L32)
 
 Load an extension of a specific kind from the appropriate registry
 
@@ -92,7 +92,7 @@ Load an extension of a specific kind from the appropriate registry
 
 > **loadFromSource**(`source`, `resourceId`): `Promise`\<[`ExtensionPack`](../interfaces/ExtensionPack.md) \| `null`\>
 
-Defined in: [packages/agentos/src/extensions/MultiRegistryLoader.ts:48](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/extensions/MultiRegistryLoader.ts#L48)
+Defined in: [packages/agentos/src/extensions/MultiRegistryLoader.ts:48](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/extensions/MultiRegistryLoader.ts#L48)
 
 Load from a specific registry source
 

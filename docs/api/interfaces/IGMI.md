@@ -1,6 +1,6 @@
 # Interface: IGMI
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:511](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/IGMI.ts#L511)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:511](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/IGMI.ts#L511)
 
 ## Interface
 
@@ -16,7 +16,7 @@ Defines the contract for a Generalized Mind Instance (GMI).
 
 > `readonly` **creationTimestamp**: `Date`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:513](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/IGMI.ts#L513)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:513](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/IGMI.ts#L513)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:513](https://gith
 
 > `readonly` **gmiId**: `string`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:512](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/IGMI.ts#L512)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:512](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/IGMI.ts#L512)
 
 ## Methods
 
@@ -32,7 +32,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:512](https://gith
 
 > **\_triggerAndProcessSelfReflection**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:552](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/IGMI.ts#L552)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:552](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/IGMI.ts#L552)
 
 #### Returns
 
@@ -44,7 +44,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:552](https://gith
 
 > **analyzeAndReportMemoryHealth**(): `Promise`\<\{ `issues?`: `object`[]; `lifecycleManagerStats?`: \{ `details?`: `any`; `isHealthy`: `boolean`; \}; `overallStatus`: `"DEGRADED"` \| `"ERROR"` \| `"OPERATIONAL"` \| `"LIMITED"`; `ragSystemStats?`: \{ `details?`: `any`; `isHealthy`: `boolean`; \}; `workingMemoryStats?`: \{\[`key`: `string`\]: `any`; `itemCount`: `number`; \}; \} \| `undefined`\>
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:554](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/IGMI.ts#L554)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:554](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/IGMI.ts#L554)
 
 #### Returns
 
@@ -56,7 +56,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:554](https://gith
 
 > **getCognitiveMemoryManager**(): [`ICognitiveMemoryManager`](ICognitiveMemoryManager.md) \| `undefined`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:551](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/IGMI.ts#L551)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:551](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/IGMI.ts#L551)
 
 #### Returns
 
@@ -68,7 +68,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:551](https://gith
 
 > **getCurrentPrimaryPersonaId**(): `string`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:517](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/IGMI.ts#L517)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:517](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/IGMI.ts#L517)
 
 #### Returns
 
@@ -80,7 +80,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:517](https://gith
 
 > **getCurrentState**(): [`GMIPrimeState`](../enumerations/GMIPrimeState.md)
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:519](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/IGMI.ts#L519)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:519](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/IGMI.ts#L519)
 
 #### Returns
 
@@ -92,7 +92,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:519](https://gith
 
 > **getGMIId**(): `string`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:518](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/IGMI.ts#L518)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:518](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/IGMI.ts#L518)
 
 #### Returns
 
@@ -104,7 +104,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:518](https://gith
 
 > **getOverallHealth**(): `Promise`\<[`GMIHealthReport`](GMIHealthReport.md)\>
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:555](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/IGMI.ts#L555)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:555](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/IGMI.ts#L555)
 
 #### Returns
 
@@ -116,7 +116,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:555](https://gith
 
 > **getPersona**(): [`IPersonaDefinition`](IPersonaDefinition.md)
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:516](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/IGMI.ts#L516)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:516](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/IGMI.ts#L516)
 
 #### Returns
 
@@ -128,7 +128,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:516](https://gith
 
 > **getReasoningTrace**(): `Readonly`\<[`ReasoningTrace`](ReasoningTrace.md)\>
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:549](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/IGMI.ts#L549)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:549](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/IGMI.ts#L549)
 
 #### Returns
 
@@ -140,7 +140,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:549](https://gith
 
 > **getWorkingMemorySnapshot**(): `Promise`\<`Record`\<`string`, `any`\>\>
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:550](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/IGMI.ts#L550)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:550](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/IGMI.ts#L550)
 
 #### Returns
 
@@ -152,7 +152,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:550](https://gith
 
 > **handleToolResult**(`toolCallId`, `toolName`, `resultPayload`, `userId`, `userApiKeys?`): `Promise`\<[`GMIOutput`](GMIOutput.md)\>
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:522](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/IGMI.ts#L522)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:522](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/IGMI.ts#L522)
 
 #### Parameters
 
@@ -186,7 +186,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:522](https://gith
 
 > `optional` **handleToolResults**(`toolResults`, `userId`, `userApiKeys?`): `Promise`\<[`GMIOutput`](GMIOutput.md)\>
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:530](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/IGMI.ts#L530)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:530](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/IGMI.ts#L530)
 
 #### Parameters
 
@@ -212,7 +212,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:530](https://gith
 
 > `optional` **hydrateConversationHistory**(`conversationHistory`): `void`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:536](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/IGMI.ts#L536)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:536](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/IGMI.ts#L536)
 
 #### Parameters
 
@@ -230,7 +230,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:536](https://gith
 
 > `optional` **hydrateTurnContext**(`context`): `void`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:540](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/IGMI.ts#L540)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:540](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/IGMI.ts#L540)
 
 #### Parameters
 
@@ -258,7 +258,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:540](https://gith
 
 > **initialize**(`persona`, `config`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:515](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/IGMI.ts#L515)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:515](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/IGMI.ts#L515)
 
 #### Parameters
 
@@ -280,7 +280,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:515](https://gith
 
 > **onMemoryLifecycleEvent**(`event`): `Promise`\<[`LifecycleActionResponse`](LifecycleActionResponse.md)\>
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:553](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/IGMI.ts#L553)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:553](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/IGMI.ts#L553)
 
 #### Parameters
 
@@ -298,7 +298,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:553](https://gith
 
 > **processTurnStream**(`turnInput`): `AsyncGenerator`\<[`GMIOutputChunk`](GMIOutputChunk.md), [`GMIOutput`](GMIOutput.md), `undefined`\>
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:520](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/IGMI.ts#L520)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:520](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/IGMI.ts#L520)
 
 #### Parameters
 
@@ -316,7 +316,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:520](https://gith
 
 > **shutdown**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:556](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/cognitive_substrate/IGMI.ts#L556)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:556](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/IGMI.ts#L556)
 
 #### Returns
 

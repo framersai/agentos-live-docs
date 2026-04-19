@@ -1,6 +1,6 @@
 # Class: PineconeVectorStore
 
-Defined in: [packages/agentos/src/rag/vector\_stores/PineconeVectorStore.ts:62](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/vector_stores/PineconeVectorStore.ts#L62)
+Defined in: [packages/agentos/src/rag/vector\_stores/PineconeVectorStore.ts:62](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/vector_stores/PineconeVectorStore.ts#L62)
 
 ## Interface
 
@@ -21,7 +21,7 @@ Implementations will wrap specific clients (e.g., Pinecone client, Weaviate clie
 
 > **new PineconeVectorStore**(`config`): `PineconeVectorStore`
 
-Defined in: [packages/agentos/src/rag/vector\_stores/PineconeVectorStore.ts:66](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/vector_stores/PineconeVectorStore.ts#L66)
+Defined in: [packages/agentos/src/rag/vector\_stores/PineconeVectorStore.ts:66](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/vector_stores/PineconeVectorStore.ts#L66)
 
 #### Parameters
 
@@ -39,7 +39,7 @@ Defined in: [packages/agentos/src/rag/vector\_stores/PineconeVectorStore.ts:66](
 
 > **checkHealth**(): `Promise`\<\{ `details?`: `any`; `isHealthy`: `boolean`; \}\>
 
-Defined in: [packages/agentos/src/rag/vector\_stores/PineconeVectorStore.ts:109](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/vector_stores/PineconeVectorStore.ts#L109)
+Defined in: [packages/agentos/src/rag/vector\_stores/PineconeVectorStore.ts:109](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/vector_stores/PineconeVectorStore.ts#L109)
 
 IVectorStore-compliant health check.
 
@@ -57,7 +57,7 @@ IVectorStore-compliant health check.
 
 > **close**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/rag/vector\_stores/PineconeVectorStore.ts:89](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/vector_stores/PineconeVectorStore.ts#L89)
+Defined in: [packages/agentos/src/rag/vector\_stores/PineconeVectorStore.ts:89](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/vector_stores/PineconeVectorStore.ts#L89)
 
 No-op — Pinecone is cloud-managed.
 
@@ -71,7 +71,7 @@ No-op — Pinecone is cloud-managed.
 
 > **createCollection**(`_name`, `_dimension`, `_options?`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/rag/vector\_stores/PineconeVectorStore.ts:122](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/vector_stores/PineconeVectorStore.ts#L122)
+Defined in: [packages/agentos/src/rag/vector\_stores/PineconeVectorStore.ts:122](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/vector_stores/PineconeVectorStore.ts#L122)
 
 Create a "collection" — in Pinecone this maps to a namespace.
 Namespaces are created implicitly on first upsert, so this is a no-op.
@@ -104,7 +104,7 @@ Namespaces are created implicitly on first upsert, so this is a no-op.
 
 > **delete**(`collectionName`, `ids?`, `options?`): `Promise`\<[`DeleteResult`](../interfaces/DeleteResult.md)\>
 
-Defined in: [packages/agentos/src/rag/vector\_stores/PineconeVectorStore.ts:362](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/vector_stores/PineconeVectorStore.ts#L362)
+Defined in: [packages/agentos/src/rag/vector\_stores/PineconeVectorStore.ts:362](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/vector_stores/PineconeVectorStore.ts#L362)
 
 Delete vectors by ID or delete all in namespace.
 
@@ -136,7 +136,7 @@ Delete vectors by ID or delete all in namespace.
 
 > **dropCollection**(`name`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/rag/vector\_stores/PineconeVectorStore.ts:134](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/vector_stores/PineconeVectorStore.ts#L134)
+Defined in: [packages/agentos/src/rag/vector\_stores/PineconeVectorStore.ts:134](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/vector_stores/PineconeVectorStore.ts#L134)
 
 Drop a "collection" — deletes all vectors in the namespace.
 
@@ -156,7 +156,7 @@ Drop a "collection" — deletes all vectors in the namespace.
 
 > **healthCheck**(): `Promise`\<`boolean`\>
 
-Defined in: [packages/agentos/src/rag/vector\_stores/PineconeVectorStore.ts:99](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/vector_stores/PineconeVectorStore.ts#L99)
+Defined in: [packages/agentos/src/rag/vector\_stores/PineconeVectorStore.ts:99](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/vector_stores/PineconeVectorStore.ts#L99)
 
 Health check — verify index is reachable (legacy).
 
@@ -170,7 +170,7 @@ Health check — verify index is reachable (legacy).
 
 > **hybridSearch**(`collectionName`, `queryEmbedding`, `_queryText`, `options?`): `Promise`\<[`QueryResult`](../interfaces/QueryResult.md)\>
 
-Defined in: [packages/agentos/src/rag/vector\_stores/PineconeVectorStore.ts:278](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/vector_stores/PineconeVectorStore.ts#L278)
+Defined in: [packages/agentos/src/rag/vector\_stores/PineconeVectorStore.ts:278](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/vector_stores/PineconeVectorStore.ts#L278)
 
 Hybrid search is not natively supported by Pinecone in a single call.
 Falls back to dense-only query. For true hybrid search, use Postgres
@@ -208,7 +208,7 @@ or Qdrant backends which support server-side RRF fusion.
 
 > **initialize**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/rag/vector\_stores/PineconeVectorStore.ts:75](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/vector_stores/PineconeVectorStore.ts#L75)
+Defined in: [packages/agentos/src/rag/vector\_stores/PineconeVectorStore.ts:75](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/vector_stores/PineconeVectorStore.ts#L75)
 
 Verify connectivity by calling the describe index stats endpoint.
 
@@ -226,7 +226,7 @@ Verify connectivity by calling the describe index stats endpoint.
 
 > **query**(`collectionName`, `queryEmbedding`, `options?`): `Promise`\<[`QueryResult`](../interfaces/QueryResult.md)\>
 
-Defined in: [packages/agentos/src/rag/vector\_stores/PineconeVectorStore.ts:209](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/vector_stores/PineconeVectorStore.ts#L209)
+Defined in: [packages/agentos/src/rag/vector\_stores/PineconeVectorStore.ts:209](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/vector_stores/PineconeVectorStore.ts#L209)
 
 Query for top-K nearest neighbors via Pinecone's query endpoint.
 Supports metadata filtering via Pinecone's native filter syntax.
@@ -259,7 +259,7 @@ Supports metadata filtering via Pinecone's native filter syntax.
 
 > **shutdown**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/rag/vector\_stores/PineconeVectorStore.ts:94](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/vector_stores/PineconeVectorStore.ts#L94)
+Defined in: [packages/agentos/src/rag/vector\_stores/PineconeVectorStore.ts:94](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/vector_stores/PineconeVectorStore.ts#L94)
 
 Gracefully shut down the store (alias for close).
 
@@ -277,7 +277,7 @@ Gracefully shut down the store (alias for close).
 
 > **upsert**(`collectionName`, `documents`, `options?`): `Promise`\<[`UpsertResult`](../interfaces/UpsertResult.md)\>
 
-Defined in: [packages/agentos/src/rag/vector\_stores/PineconeVectorStore.ts:151](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/vector_stores/PineconeVectorStore.ts#L151)
+Defined in: [packages/agentos/src/rag/vector\_stores/PineconeVectorStore.ts:151](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/vector_stores/PineconeVectorStore.ts#L151)
 
 Upsert vectors into Pinecone.
 Batches automatically in chunks of 100 (Pinecone's max batch size).

@@ -1,6 +1,6 @@
 # Interface: AgentOSOrchestratorConfig
 
-Defined in: [packages/agentos/src/api/types/OrchestratorConfig.ts:111](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/types/OrchestratorConfig.ts#L111)
+Defined in: [packages/agentos/src/api/types/OrchestratorConfig.ts:111](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/types/OrchestratorConfig.ts#L111)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/api/types/OrchestratorConfig.ts:111](https://g
 
 > `optional` **adaptiveExecution**: [`AgentOSAdaptiveExecutionConfig`](AgentOSAdaptiveExecutionConfig.md)
 
-Defined in: [packages/agentos/src/api/types/OrchestratorConfig.ts:123](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/types/OrchestratorConfig.ts#L123)
+Defined in: [packages/agentos/src/api/types/OrchestratorConfig.ts:123](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/types/OrchestratorConfig.ts#L123)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [packages/agentos/src/api/types/OrchestratorConfig.ts:123](https://g
 
 > `optional` **defaultAgentTurnTimeoutMs**: `number`
 
-Defined in: [packages/agentos/src/api/types/OrchestratorConfig.ts:113](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/types/OrchestratorConfig.ts#L113)
+Defined in: [packages/agentos/src/api/types/OrchestratorConfig.ts:113](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/types/OrchestratorConfig.ts#L113)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: [packages/agentos/src/api/types/OrchestratorConfig.ts:113](https://g
 
 > `optional` **enableConversationalPersistence**: `boolean`
 
-Defined in: [packages/agentos/src/api/types/OrchestratorConfig.ts:114](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/types/OrchestratorConfig.ts#L114)
+Defined in: [packages/agentos/src/api/types/OrchestratorConfig.ts:114](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/types/OrchestratorConfig.ts#L114)
 
 ***
 
@@ -32,7 +32,7 @@ Defined in: [packages/agentos/src/api/types/OrchestratorConfig.ts:114](https://g
 
 > `optional` **longTermMemoryRecall**: [`AgentOSLongTermMemoryRecallConfig`](AgentOSLongTermMemoryRecallConfig.md)
 
-Defined in: [packages/agentos/src/api/types/OrchestratorConfig.ts:120](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/types/OrchestratorConfig.ts#L120)
+Defined in: [packages/agentos/src/api/types/OrchestratorConfig.ts:120](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/types/OrchestratorConfig.ts#L120)
 
 ***
 
@@ -40,7 +40,7 @@ Defined in: [packages/agentos/src/api/types/OrchestratorConfig.ts:120](https://g
 
 > `optional` **maxToolCallIterations**: `number`
 
-Defined in: [packages/agentos/src/api/types/OrchestratorConfig.ts:112](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/types/OrchestratorConfig.ts#L112)
+Defined in: [packages/agentos/src/api/types/OrchestratorConfig.ts:112](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/types/OrchestratorConfig.ts#L112)
 
 ***
 
@@ -48,7 +48,7 @@ Defined in: [packages/agentos/src/api/types/OrchestratorConfig.ts:112](https://g
 
 > `optional` **promptProfileConfig**: `PromptProfileConfig` \| `null`
 
-Defined in: [packages/agentos/src/api/types/OrchestratorConfig.ts:115](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/types/OrchestratorConfig.ts#L115)
+Defined in: [packages/agentos/src/api/types/OrchestratorConfig.ts:115](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/types/OrchestratorConfig.ts#L115)
 
 ***
 
@@ -56,7 +56,7 @@ Defined in: [packages/agentos/src/api/types/OrchestratorConfig.ts:115](https://g
 
 > `optional` **rollingSummaryCompactionConfig**: `RollingSummaryCompactionConfig` \| `null`
 
-Defined in: [packages/agentos/src/api/types/OrchestratorConfig.ts:116](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/types/OrchestratorConfig.ts#L116)
+Defined in: [packages/agentos/src/api/types/OrchestratorConfig.ts:116](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/types/OrchestratorConfig.ts#L116)
 
 ***
 
@@ -64,7 +64,7 @@ Defined in: [packages/agentos/src/api/types/OrchestratorConfig.ts:116](https://g
 
 > `optional` **rollingSummaryCompactionProfilesConfig**: [`RollingSummaryCompactionProfilesConfig`](RollingSummaryCompactionProfilesConfig.md) \| `null`
 
-Defined in: [packages/agentos/src/api/types/OrchestratorConfig.ts:117](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/types/OrchestratorConfig.ts#L117)
+Defined in: [packages/agentos/src/api/types/OrchestratorConfig.ts:117](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/types/OrchestratorConfig.ts#L117)
 
 ***
 
@@ -72,7 +72,7 @@ Defined in: [packages/agentos/src/api/types/OrchestratorConfig.ts:117](https://g
 
 > `optional` **rollingSummaryStateKey**: `string`
 
-Defined in: [packages/agentos/src/api/types/OrchestratorConfig.ts:119](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/types/OrchestratorConfig.ts#L119)
+Defined in: [packages/agentos/src/api/types/OrchestratorConfig.ts:119](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/types/OrchestratorConfig.ts#L119)
 
 ***
 
@@ -80,7 +80,7 @@ Defined in: [packages/agentos/src/api/types/OrchestratorConfig.ts:119](https://g
 
 > `optional` **rollingSummarySystemPrompt**: `string`
 
-Defined in: [packages/agentos/src/api/types/OrchestratorConfig.ts:118](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/types/OrchestratorConfig.ts#L118)
+Defined in: [packages/agentos/src/api/types/OrchestratorConfig.ts:118](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/types/OrchestratorConfig.ts#L118)
 
 ***
 
@@ -88,7 +88,7 @@ Defined in: [packages/agentos/src/api/types/OrchestratorConfig.ts:118](https://g
 
 > `optional` **taskOutcomeTelemetry**: [`AgentOSTaskOutcomeTelemetryConfig`](AgentOSTaskOutcomeTelemetryConfig.md)
 
-Defined in: [packages/agentos/src/api/types/OrchestratorConfig.ts:122](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/types/OrchestratorConfig.ts#L122)
+Defined in: [packages/agentos/src/api/types/OrchestratorConfig.ts:122](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/types/OrchestratorConfig.ts#L122)
 
 ***
 
@@ -96,4 +96,4 @@ Defined in: [packages/agentos/src/api/types/OrchestratorConfig.ts:122](https://g
 
 > `optional` **tenantRouting**: [`AgentOSTenantRoutingConfig`](AgentOSTenantRoutingConfig.md)
 
-Defined in: [packages/agentos/src/api/types/OrchestratorConfig.ts:121](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/types/OrchestratorConfig.ts#L121)
+Defined in: [packages/agentos/src/api/types/OrchestratorConfig.ts:121](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/types/OrchestratorConfig.ts#L121)

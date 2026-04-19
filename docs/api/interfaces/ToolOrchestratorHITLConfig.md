@@ -1,6 +1,6 @@
 # Interface: ToolOrchestratorHITLConfig
 
-Defined in: [packages/agentos/src/core/config/ToolOrchestratorConfig.ts:34](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/config/ToolOrchestratorConfig.ts#L34)
+Defined in: [packages/agentos/src/core/config/ToolOrchestratorConfig.ts:34](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/config/ToolOrchestratorConfig.ts#L34)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/core/config/ToolOrchestratorConfig.ts:34](http
 
 > `optional` **approvalTimeoutMs**: `number`
 
-Defined in: [packages/agentos/src/core/config/ToolOrchestratorConfig.ts:53](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/config/ToolOrchestratorConfig.ts#L53)
+Defined in: [packages/agentos/src/core/config/ToolOrchestratorConfig.ts:53](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/config/ToolOrchestratorConfig.ts#L53)
 
 Optional per-approval timeout (ms). If omitted, the HITL manager's default timeout is used.
 
@@ -18,7 +18,7 @@ Optional per-approval timeout (ms). If omitted, the HITL manager's default timeo
 
 > `optional` **autoApproveWhenNoManager**: `boolean`
 
-Defined in: [packages/agentos/src/core/config/ToolOrchestratorConfig.ts:58](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/config/ToolOrchestratorConfig.ts#L58)
+Defined in: [packages/agentos/src/core/config/ToolOrchestratorConfig.ts:58](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/config/ToolOrchestratorConfig.ts#L58)
 
 If true, ToolOrchestrator will execute side-effect tools even if no HITL manager was provided.
 Default: false.
@@ -29,7 +29,7 @@ Default: false.
 
 > `optional` **defaultSideEffectsSeverity**: `"critical"` \| `"low"` \| `"medium"` \| `"high"`
 
-Defined in: [packages/agentos/src/core/config/ToolOrchestratorConfig.ts:49](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/config/ToolOrchestratorConfig.ts#L49)
+Defined in: [packages/agentos/src/core/config/ToolOrchestratorConfig.ts:49](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/config/ToolOrchestratorConfig.ts#L49)
 
 Default severity for side-effect tool approvals.
 Default: 'high'.
@@ -40,7 +40,7 @@ Default: 'high'.
 
 > `optional` **enabled**: `boolean`
 
-Defined in: [packages/agentos/src/core/config/ToolOrchestratorConfig.ts:39](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/config/ToolOrchestratorConfig.ts#L39)
+Defined in: [packages/agentos/src/core/config/ToolOrchestratorConfig.ts:39](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/config/ToolOrchestratorConfig.ts#L39)
 
 Enable HITL gating inside the ToolOrchestrator.
 Default: false.
@@ -51,7 +51,7 @@ Default: false.
 
 > `optional` **requireApprovalForSideEffects**: `boolean`
 
-Defined in: [packages/agentos/src/core/config/ToolOrchestratorConfig.ts:44](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/config/ToolOrchestratorConfig.ts#L44)
+Defined in: [packages/agentos/src/core/config/ToolOrchestratorConfig.ts:44](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/config/ToolOrchestratorConfig.ts#L44)
 
 If true, tools with `tool.hasSideEffects === true` require an approval before execution.
 Default: true (when HITL is enabled).

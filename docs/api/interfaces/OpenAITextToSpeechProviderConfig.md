@@ -1,6 +1,6 @@
 # Interface: OpenAITextToSpeechProviderConfig
 
-Defined in: [packages/agentos/src/speech/providers/OpenAITextToSpeechProvider.ts:16](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/speech/providers/OpenAITextToSpeechProvider.ts#L16)
+Defined in: [packages/agentos/src/speech/providers/OpenAITextToSpeechProvider.ts:16](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/speech/providers/OpenAITextToSpeechProvider.ts#L16)
 
 Configuration for the [OpenAITextToSpeechProvider](../classes/OpenAITextToSpeechProvider.md).
 
@@ -15,7 +15,7 @@ Configuration for the [OpenAITextToSpeechProvider](../classes/OpenAITextToSpeech
 
 > **apiKey**: `string`
 
-Defined in: [packages/agentos/src/speech/providers/OpenAITextToSpeechProvider.ts:21](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/speech/providers/OpenAITextToSpeechProvider.ts#L21)
+Defined in: [packages/agentos/src/speech/providers/OpenAITextToSpeechProvider.ts:21](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/speech/providers/OpenAITextToSpeechProvider.ts#L21)
 
 OpenAI API key used for authentication.
 Sent as `Authorization: Bearer <apiKey>`.
@@ -26,7 +26,7 @@ Sent as `Authorization: Bearer <apiKey>`.
 
 > `optional` **baseUrl**: `string`
 
-Defined in: [packages/agentos/src/speech/providers/OpenAITextToSpeechProvider.ts:28](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/speech/providers/OpenAITextToSpeechProvider.ts#L28)
+Defined in: [packages/agentos/src/speech/providers/OpenAITextToSpeechProvider.ts:28](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/speech/providers/OpenAITextToSpeechProvider.ts#L28)
 
 Base URL for the OpenAI API. Override for proxies, Azure OpenAI, or
 compatible third-party endpoints.
@@ -43,7 +43,7 @@ compatible third-party endpoints.
 
 > `optional` **fetchImpl**: \{(`input`, `init?`): `Promise`\<`Response`\>; (`input`, `init?`): `Promise`\<`Response`\>; \}
 
-Defined in: [packages/agentos/src/speech/providers/OpenAITextToSpeechProvider.ts:46](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/speech/providers/OpenAITextToSpeechProvider.ts#L46)
+Defined in: [packages/agentos/src/speech/providers/OpenAITextToSpeechProvider.ts:46](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/speech/providers/OpenAITextToSpeechProvider.ts#L46)
 
 Custom fetch implementation for dependency injection in tests.
 
@@ -99,7 +99,7 @@ globalThis.fetch
 
 > `optional` **model**: `string`
 
-Defined in: [packages/agentos/src/speech/providers/OpenAITextToSpeechProvider.ts:34](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/speech/providers/OpenAITextToSpeechProvider.ts#L34)
+Defined in: [packages/agentos/src/speech/providers/OpenAITextToSpeechProvider.ts:34](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/speech/providers/OpenAITextToSpeechProvider.ts#L34)
 
 Default TTS model. `tts-1` is optimized for real-time, `tts-1-hd` for quality.
 
@@ -115,7 +115,7 @@ Default TTS model. `tts-1` is optimized for real-time, `tts-1-hd` for quality.
 
 > `optional` **voice**: `string`
 
-Defined in: [packages/agentos/src/speech/providers/OpenAITextToSpeechProvider.ts:40](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/speech/providers/OpenAITextToSpeechProvider.ts#L40)
+Defined in: [packages/agentos/src/speech/providers/OpenAITextToSpeechProvider.ts:40](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/speech/providers/OpenAITextToSpeechProvider.ts#L40)
 
 Default voice identifier. See `OPENAI_VOICES` for available options.
 

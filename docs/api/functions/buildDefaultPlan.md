@@ -2,7 +2,7 @@
 
 > **buildDefaultPlan**(`strategy`, `overrides?`): [`RetrievalPlan`](../interfaces/RetrievalPlan.md)
 
-Defined in: [packages/agentos/src/rag/unified/types.ts:364](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/unified/types.ts#L364)
+Defined in: [packages/agentos/src/rag/unified/types.ts:364](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/unified/types.ts#L364)
 
 Creates a sensible default [RetrievalPlan](../interfaces/RetrievalPlan.md) for a given strategy level.
 

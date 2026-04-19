@@ -1,6 +1,6 @@
 # Class: AgentKeyManager
 
-Defined in: [packages/agentos/src/provenance/crypto/AgentKeyManager.ts:33](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/provenance/crypto/AgentKeyManager.ts#L33)
+Defined in: [packages/agentos/src/provenance/crypto/AgentKeyManager.ts:33](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/provenance/crypto/AgentKeyManager.ts#L33)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/provenance/crypto/AgentKeyManager.ts:33](https
 
 > `readonly` **agentId**: `string`
 
-Defined in: [packages/agentos/src/provenance/crypto/AgentKeyManager.ts:36](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/provenance/crypto/AgentKeyManager.ts#L36)
+Defined in: [packages/agentos/src/provenance/crypto/AgentKeyManager.ts:36](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/provenance/crypto/AgentKeyManager.ts#L36)
 
 ## Methods
 
@@ -16,7 +16,7 @@ Defined in: [packages/agentos/src/provenance/crypto/AgentKeyManager.ts:36](https
 
 > **getPrivateKeyBase64**(): `string`
 
-Defined in: [packages/agentos/src/provenance/crypto/AgentKeyManager.ts:188](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/provenance/crypto/AgentKeyManager.ts#L188)
+Defined in: [packages/agentos/src/provenance/crypto/AgentKeyManager.ts:188](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/provenance/crypto/AgentKeyManager.ts#L188)
 
 Get the base64-encoded private key (for persistence).
 
@@ -30,7 +30,7 @@ Get the base64-encoded private key (for persistence).
 
 > **getPublicKeyBase64**(): `string`
 
-Defined in: [packages/agentos/src/provenance/crypto/AgentKeyManager.ts:181](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/provenance/crypto/AgentKeyManager.ts#L181)
+Defined in: [packages/agentos/src/provenance/crypto/AgentKeyManager.ts:181](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/provenance/crypto/AgentKeyManager.ts#L181)
 
 Get the base64-encoded public key.
 
@@ -44,7 +44,7 @@ Get the base64-encoded public key.
 
 > **sign**(`data`): `Promise`\<`string`\>
 
-Defined in: [packages/agentos/src/provenance/crypto/AgentKeyManager.ts:90](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/provenance/crypto/AgentKeyManager.ts#L90)
+Defined in: [packages/agentos/src/provenance/crypto/AgentKeyManager.ts:90](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/provenance/crypto/AgentKeyManager.ts#L90)
 
 Sign data and return a base64-encoded signature.
 
@@ -64,7 +64,7 @@ Sign data and return a base64-encoded signature.
 
 > **toKeySource**(): [`AgentKeySource`](../interfaces/AgentKeySource.md)
 
-Defined in: [packages/agentos/src/provenance/crypto/AgentKeyManager.ts:195](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/provenance/crypto/AgentKeyManager.ts#L195)
+Defined in: [packages/agentos/src/provenance/crypto/AgentKeyManager.ts:195](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/provenance/crypto/AgentKeyManager.ts#L195)
 
 Export as an AgentKeySource for serialization.
 
@@ -78,7 +78,7 @@ Export as an AgentKeySource for serialization.
 
 > **verify**(`data`, `signatureBase64`, `publicKeyBase64?`): `Promise`\<`boolean`\>
 
-Defined in: [packages/agentos/src/provenance/crypto/AgentKeyManager.ts:114](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/provenance/crypto/AgentKeyManager.ts#L114)
+Defined in: [packages/agentos/src/provenance/crypto/AgentKeyManager.ts:114](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/provenance/crypto/AgentKeyManager.ts#L114)
 
 Verify a signature against data using a public key.
 Can verify using this instance's key or a provided external key.
@@ -107,7 +107,7 @@ Can verify using this instance's key or a provided external key.
 
 > `static` **fromKeySource**(`agentId`, `source`): `Promise`\<`AgentKeyManager`\>
 
-Defined in: [packages/agentos/src/provenance/crypto/AgentKeyManager.ts:73](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/provenance/crypto/AgentKeyManager.ts#L73)
+Defined in: [packages/agentos/src/provenance/crypto/AgentKeyManager.ts:73](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/provenance/crypto/AgentKeyManager.ts#L73)
 
 Create from an imported key source configuration.
 
@@ -131,7 +131,7 @@ Create from an imported key source configuration.
 
 > `static` **generate**(`agentId`): `Promise`\<`AgentKeyManager`\>
 
-Defined in: [packages/agentos/src/provenance/crypto/AgentKeyManager.ts:51](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/provenance/crypto/AgentKeyManager.ts#L51)
+Defined in: [packages/agentos/src/provenance/crypto/AgentKeyManager.ts:51](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/provenance/crypto/AgentKeyManager.ts#L51)
 
 Generate a new Ed25519 keypair.
 
@@ -151,7 +151,7 @@ Generate a new Ed25519 keypair.
 
 > `static` **verifySignature**(`data`, `signatureBase64`, `publicKeyBase64`): `Promise`\<`boolean`\>
 
-Defined in: [packages/agentos/src/provenance/crypto/AgentKeyManager.ts:147](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/provenance/crypto/AgentKeyManager.ts#L147)
+Defined in: [packages/agentos/src/provenance/crypto/AgentKeyManager.ts:147](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/provenance/crypto/AgentKeyManager.ts#L147)
 
 Static verification using only a public key (no instance needed).
 

@@ -1,6 +1,6 @@
 # Class: BuiltInAdaptiveVadProvider
 
-Defined in: [packages/agentos/src/hearing/providers/BuiltInAdaptiveVadProvider.ts:92](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/hearing/providers/BuiltInAdaptiveVadProvider.ts#L92)
+Defined in: [packages/agentos/src/hearing/providers/BuiltInAdaptiveVadProvider.ts:92](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/hearing/providers/BuiltInAdaptiveVadProvider.ts#L92)
 
 Built-in voice activity detection (VAD) provider backed by the
 `AdaptiveVAD` engine and `EnvironmentalCalibrator`.
@@ -57,7 +57,7 @@ if (decision.isSpeech) {
 
 > **new BuiltInAdaptiveVadProvider**(`config?`): `BuiltInAdaptiveVadProvider`
 
-Defined in: [packages/agentos/src/hearing/providers/BuiltInAdaptiveVadProvider.ts:133](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/hearing/providers/BuiltInAdaptiveVadProvider.ts#L133)
+Defined in: [packages/agentos/src/hearing/providers/BuiltInAdaptiveVadProvider.ts:133](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/hearing/providers/BuiltInAdaptiveVadProvider.ts#L133)
 
 Creates a new BuiltInAdaptiveVadProvider.
 
@@ -97,7 +97,7 @@ const vad = new BuiltInAdaptiveVadProvider({
 
 > `readonly` **displayName**: `"AgentOS Adaptive VAD"` = `'AgentOS Adaptive VAD'`
 
-Defined in: [packages/agentos/src/hearing/providers/BuiltInAdaptiveVadProvider.ts:97](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/hearing/providers/BuiltInAdaptiveVadProvider.ts#L97)
+Defined in: [packages/agentos/src/hearing/providers/BuiltInAdaptiveVadProvider.ts:97](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/hearing/providers/BuiltInAdaptiveVadProvider.ts#L97)
 
 Human-readable display name for UI and logging.
 
@@ -111,7 +111,7 @@ Human-readable display name for UI and logging.
 
 > `readonly` **id**: `"agentos-adaptive-vad"` = `'agentos-adaptive-vad'`
 
-Defined in: [packages/agentos/src/hearing/providers/BuiltInAdaptiveVadProvider.ts:94](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/hearing/providers/BuiltInAdaptiveVadProvider.ts#L94)
+Defined in: [packages/agentos/src/hearing/providers/BuiltInAdaptiveVadProvider.ts:94](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/hearing/providers/BuiltInAdaptiveVadProvider.ts#L94)
 
 Unique provider identifier used for registration and resolution.
 
@@ -125,7 +125,7 @@ Unique provider identifier used for registration and resolution.
 
 > **getNoiseProfile**(): [`NoiseProfile`](../interfaces/NoiseProfile.md) \| `null`
 
-Defined in: [packages/agentos/src/hearing/providers/BuiltInAdaptiveVadProvider.ts:207](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/hearing/providers/BuiltInAdaptiveVadProvider.ts#L207)
+Defined in: [packages/agentos/src/hearing/providers/BuiltInAdaptiveVadProvider.ts:207](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/hearing/providers/BuiltInAdaptiveVadProvider.ts#L207)
 
 Returns the current environmental noise profile estimated by the calibrator.
 
@@ -158,7 +158,7 @@ if (profile) {
 
 > **processFrame**(`frame`): [`SpeechVadDecision`](../interfaces/SpeechVadDecision.md)
 
-Defined in: [packages/agentos/src/hearing/providers/BuiltInAdaptiveVadProvider.ts:162](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/hearing/providers/BuiltInAdaptiveVadProvider.ts#L162)
+Defined in: [packages/agentos/src/hearing/providers/BuiltInAdaptiveVadProvider.ts:162](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/hearing/providers/BuiltInAdaptiveVadProvider.ts#L162)
 
 Process a single audio frame and return a speech/non-speech decision.
 
@@ -202,7 +202,7 @@ console.log(decision.isSpeech, decision.confidence);
 
 > **reset**(): `void`
 
-Defined in: [packages/agentos/src/hearing/providers/BuiltInAdaptiveVadProvider.ts:186](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/hearing/providers/BuiltInAdaptiveVadProvider.ts#L186)
+Defined in: [packages/agentos/src/hearing/providers/BuiltInAdaptiveVadProvider.ts:186](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/hearing/providers/BuiltInAdaptiveVadProvider.ts#L186)
 
 Reset the VAD state for a new audio session.
 

@@ -1,6 +1,6 @@
 # Interface: AgencyMemoryRetentionPolicy
 
-Defined in: [packages/agentos/src/agents/agency/AgencyTypes.ts:100](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/agents/agency/AgencyTypes.ts#L100)
+Defined in: [packages/agentos/src/agents/agency/AgencyTypes.ts:100](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/agents/agency/AgencyTypes.ts#L100)
 
 Retention policy for agency shared memory.
 
@@ -10,7 +10,7 @@ Retention policy for agency shared memory.
 
 > `optional` **evictionStrategy**: `"oldest_first"` \| `"least_accessed"` \| `"lowest_importance"`
 
-Defined in: [packages/agentos/src/agents/agency/AgencyTypes.ts:108](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/agents/agency/AgencyTypes.ts#L108)
+Defined in: [packages/agentos/src/agents/agency/AgencyTypes.ts:108](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/agents/agency/AgencyTypes.ts#L108)
 
 Strategy for eviction when limits are reached
 
@@ -20,7 +20,7 @@ Strategy for eviction when limits are reached
 
 > `optional` **maxAgeDays**: `number`
 
-Defined in: [packages/agentos/src/agents/agency/AgencyTypes.ts:102](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/agents/agency/AgencyTypes.ts#L102)
+Defined in: [packages/agentos/src/agents/agency/AgencyTypes.ts:102](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/agents/agency/AgencyTypes.ts#L102)
 
 Maximum age of documents in days before eviction
 
@@ -30,7 +30,7 @@ Maximum age of documents in days before eviction
 
 > `optional` **maxDocuments**: `number`
 
-Defined in: [packages/agentos/src/agents/agency/AgencyTypes.ts:104](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/agents/agency/AgencyTypes.ts#L104)
+Defined in: [packages/agentos/src/agents/agency/AgencyTypes.ts:104](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/agents/agency/AgencyTypes.ts#L104)
 
 Maximum number of documents to retain
 
@@ -40,6 +40,6 @@ Maximum number of documents to retain
 
 > `optional` **maxStorageBytes**: `number`
 
-Defined in: [packages/agentos/src/agents/agency/AgencyTypes.ts:106](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/agents/agency/AgencyTypes.ts#L106)
+Defined in: [packages/agentos/src/agents/agency/AgencyTypes.ts:106](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/agents/agency/AgencyTypes.ts#L106)
 
 Maximum total storage in bytes

@@ -1,6 +1,6 @@
 # Class: SkillRegistry
 
-Defined in: [packages/agentos/src/skills/SkillRegistry.ts:54](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/skills/SkillRegistry.ts#L54)
+Defined in: [packages/agentos/src/skills/SkillRegistry.ts:54](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/skills/SkillRegistry.ts#L54)
 
 Skill Registry for managing loaded skills at runtime.
 
@@ -10,7 +10,7 @@ Skill Registry for managing loaded skills at runtime.
 
 > **new SkillRegistry**(`config?`): `SkillRegistry`
 
-Defined in: [packages/agentos/src/skills/SkillRegistry.ts:59](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/skills/SkillRegistry.ts#L59)
+Defined in: [packages/agentos/src/skills/SkillRegistry.ts:59](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/skills/SkillRegistry.ts#L59)
 
 #### Parameters
 
@@ -30,7 +30,7 @@ Defined in: [packages/agentos/src/skills/SkillRegistry.ts:59](https://github.com
 
 > **get** **size**(): `number`
 
-Defined in: [packages/agentos/src/skills/SkillRegistry.ts:142](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/skills/SkillRegistry.ts#L142)
+Defined in: [packages/agentos/src/skills/SkillRegistry.ts:142](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/skills/SkillRegistry.ts#L142)
 
 Get the count of registered skills.
 
@@ -44,7 +44,7 @@ Get the count of registered skills.
 
 > **buildCommandSpecs**(`options?`): [`SkillCommandSpec`](../interfaces/SkillCommandSpec.md)[]
 
-Defined in: [packages/agentos/src/skills/SkillRegistry.ts:346](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/skills/SkillRegistry.ts#L346)
+Defined in: [packages/agentos/src/skills/SkillRegistry.ts:346](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/skills/SkillRegistry.ts#L346)
 
 Build command specifications for all skills.
 
@@ -74,7 +74,7 @@ Build command specifications for all skills.
 
 > **buildPrompt**(`entries`): `string`
 
-Defined in: [packages/agentos/src/skills/SkillRegistry.ts:321](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/skills/SkillRegistry.ts#L321)
+Defined in: [packages/agentos/src/skills/SkillRegistry.ts:321](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/skills/SkillRegistry.ts#L321)
 
 Format skills into a prompt for LLM context.
 
@@ -94,7 +94,7 @@ Format skills into a prompt for LLM context.
 
 > **buildSnapshot**(`options?`): [`SkillSnapshot`](../interfaces/SkillSnapshot.md)
 
-Defined in: [packages/agentos/src/skills/SkillRegistry.ts:261](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/skills/SkillRegistry.ts#L261)
+Defined in: [packages/agentos/src/skills/SkillRegistry.ts:261](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/skills/SkillRegistry.ts#L261)
 
 Build a skill snapshot for agent context.
 
@@ -137,7 +137,7 @@ This is useful for "only show runnable skills" behavior.
 
 > **checkAllRequirements**(`hasBin`): `Map`\<`string`, \{ `met`: `boolean`; `missing`: `string`[]; \}\>
 
-Defined in: [packages/agentos/src/skills/SkillRegistry.ts:387](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/skills/SkillRegistry.ts#L387)
+Defined in: [packages/agentos/src/skills/SkillRegistry.ts:387](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/skills/SkillRegistry.ts#L387)
 
 Check requirements for all registered skills.
 
@@ -157,7 +157,7 @@ Check requirements for all registered skills.
 
 > **clear**(): `void`
 
-Defined in: [packages/agentos/src/skills/SkillRegistry.ts:116](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/skills/SkillRegistry.ts#L116)
+Defined in: [packages/agentos/src/skills/SkillRegistry.ts:116](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/skills/SkillRegistry.ts#L116)
 
 Clear all registered skills.
 
@@ -171,7 +171,7 @@ Clear all registered skills.
 
 > **filterByEligibility**(`context`): [`SkillEntry`](../interfaces/SkillEntry.md)[]
 
-Defined in: [packages/agentos/src/skills/SkillRegistry.ts:236](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/skills/SkillRegistry.ts#L236)
+Defined in: [packages/agentos/src/skills/SkillRegistry.ts:236](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/skills/SkillRegistry.ts#L236)
 
 Get skills filtered by eligibility context.
 
@@ -191,7 +191,7 @@ Get skills filtered by eligibility context.
 
 > **filterByPlatform**(`platform`): [`SkillEntry`](../interfaces/SkillEntry.md)[]
 
-Defined in: [packages/agentos/src/skills/SkillRegistry.ts:229](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/skills/SkillRegistry.ts#L229)
+Defined in: [packages/agentos/src/skills/SkillRegistry.ts:229](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/skills/SkillRegistry.ts#L229)
 
 Get skills filtered by platform.
 
@@ -211,7 +211,7 @@ Get skills filtered by platform.
 
 > **getByName**(`name`): [`SkillEntry`](../interfaces/SkillEntry.md) \| `undefined`
 
-Defined in: [packages/agentos/src/skills/SkillRegistry.ts:128](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/skills/SkillRegistry.ts#L128)
+Defined in: [packages/agentos/src/skills/SkillRegistry.ts:128](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/skills/SkillRegistry.ts#L128)
 
 Get a skill by name.
 
@@ -231,7 +231,7 @@ Get a skill by name.
 
 > **getModelInvocableSkills**(): [`SkillEntry`](../interfaces/SkillEntry.md)[]
 
-Defined in: [packages/agentos/src/skills/SkillRegistry.ts:250](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/skills/SkillRegistry.ts#L250)
+Defined in: [packages/agentos/src/skills/SkillRegistry.ts:250](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/skills/SkillRegistry.ts#L250)
 
 Get skills that can be invoked by the model.
 
@@ -245,7 +245,7 @@ Get skills that can be invoked by the model.
 
 > **getSkillsWithMissingRequirements**(`hasBin`): `object`[]
 
-Defined in: [packages/agentos/src/skills/SkillRegistry.ts:400](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/skills/SkillRegistry.ts#L400)
+Defined in: [packages/agentos/src/skills/SkillRegistry.ts:400](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/skills/SkillRegistry.ts#L400)
 
 Get skills with unmet requirements.
 
@@ -265,7 +265,7 @@ Get skills with unmet requirements.
 
 > **getUserInvocableSkills**(): [`SkillEntry`](../interfaces/SkillEntry.md)[]
 
-Defined in: [packages/agentos/src/skills/SkillRegistry.ts:243](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/skills/SkillRegistry.ts#L243)
+Defined in: [packages/agentos/src/skills/SkillRegistry.ts:243](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/skills/SkillRegistry.ts#L243)
 
 Get skills that can be invoked by users.
 
@@ -279,7 +279,7 @@ Get skills that can be invoked by users.
 
 > **has**(`name`): `boolean`
 
-Defined in: [packages/agentos/src/skills/SkillRegistry.ts:149](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/skills/SkillRegistry.ts#L149)
+Defined in: [packages/agentos/src/skills/SkillRegistry.ts:149](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/skills/SkillRegistry.ts#L149)
 
 Check if a skill is registered.
 
@@ -299,7 +299,7 @@ Check if a skill is registered.
 
 > **listAll**(): [`SkillEntry`](../interfaces/SkillEntry.md)[]
 
-Defined in: [packages/agentos/src/skills/SkillRegistry.ts:135](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/skills/SkillRegistry.ts#L135)
+Defined in: [packages/agentos/src/skills/SkillRegistry.ts:135](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/skills/SkillRegistry.ts#L135)
 
 List all registered skills.
 
@@ -313,7 +313,7 @@ List all registered skills.
 
 > **loadFromDir**(`dir`, `options?`): `Promise`\<`number`\>
 
-Defined in: [packages/agentos/src/skills/SkillRegistry.ts:173](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/skills/SkillRegistry.ts#L173)
+Defined in: [packages/agentos/src/skills/SkillRegistry.ts:173](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/skills/SkillRegistry.ts#L173)
 
 Load skills from a single directory, optionally tagging the source.
 
@@ -339,7 +339,7 @@ Load skills from a single directory, optionally tagging the source.
 
 > **loadFromDirs**(`dirs`): `Promise`\<`number`\>
 
-Defined in: [packages/agentos/src/skills/SkillRegistry.ts:160](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/skills/SkillRegistry.ts#L160)
+Defined in: [packages/agentos/src/skills/SkillRegistry.ts:160](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/skills/SkillRegistry.ts#L160)
 
 Load skills from one or more directories.
 
@@ -359,7 +359,7 @@ Load skills from one or more directories.
 
 > **register**(`entry`): `boolean`
 
-Defined in: [packages/agentos/src/skills/SkillRegistry.ts:72](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/skills/SkillRegistry.ts#L72)
+Defined in: [packages/agentos/src/skills/SkillRegistry.ts:72](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/skills/SkillRegistry.ts#L72)
 
 Register a skill entry.
 
@@ -381,7 +381,7 @@ Whether the skill was registered (false if already exists)
 
 > **reload**(`options`): `Promise`\<`number`\>
 
-Defined in: [packages/agentos/src/skills/SkillRegistry.ts:190](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/skills/SkillRegistry.ts#L190)
+Defined in: [packages/agentos/src/skills/SkillRegistry.ts:190](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/skills/SkillRegistry.ts#L190)
 
 Reload all skills from configured directories.
 
@@ -401,7 +401,7 @@ Reload all skills from configured directories.
 
 > **unregister**(`name`): `boolean`
 
-Defined in: [packages/agentos/src/skills/SkillRegistry.ts:105](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/skills/SkillRegistry.ts#L105)
+Defined in: [packages/agentos/src/skills/SkillRegistry.ts:105](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/skills/SkillRegistry.ts#L105)
 
 Unregister a skill by name.
 

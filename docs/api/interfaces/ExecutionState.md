@@ -1,6 +1,6 @@
 # Interface: ExecutionState
 
-Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:581](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/planner/IPlanningEngine.ts#L581)
+Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:581](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/planner/IPlanningEngine.ts#L581)
 
 Current state of plan execution.
 
@@ -10,7 +10,7 @@ Current state of plan execution.
 
 > **completedSteps**: `string`[]
 
-Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:587](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/planner/IPlanningEngine.ts#L587)
+Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:587](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/planner/IPlanningEngine.ts#L587)
 
 Completed step IDs
 
@@ -20,7 +20,7 @@ Completed step IDs
 
 > **currentStepIndex**: `number`
 
-Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:585](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/planner/IPlanningEngine.ts#L585)
+Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:585](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/planner/IPlanningEngine.ts#L585)
 
 Current step index
 
@@ -30,7 +30,7 @@ Current step index
 
 > **failedSteps**: `string`[]
 
-Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:589](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/planner/IPlanningEngine.ts#L589)
+Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:589](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/planner/IPlanningEngine.ts#L589)
 
 Failed step IDs
 
@@ -40,7 +40,7 @@ Failed step IDs
 
 > **lastUpdatedAt**: `Date`
 
-Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:597](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/planner/IPlanningEngine.ts#L597)
+Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:597](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/planner/IPlanningEngine.ts#L597)
 
 Last update timestamp
 
@@ -50,7 +50,7 @@ Last update timestamp
 
 > **planId**: `string`
 
-Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:583](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/planner/IPlanningEngine.ts#L583)
+Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:583](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/planner/IPlanningEngine.ts#L583)
 
 Plan being executed
 
@@ -60,7 +60,7 @@ Plan being executed
 
 > **results**: `Map`\<`string`, [`PlanStepResult`](PlanStepResult.md)\>
 
-Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:591](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/planner/IPlanningEngine.ts#L591)
+Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:591](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/planner/IPlanningEngine.ts#L591)
 
 Accumulated results
 
@@ -70,7 +70,7 @@ Accumulated results
 
 > **startedAt**: `Date`
 
-Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:595](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/planner/IPlanningEngine.ts#L595)
+Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:595](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/planner/IPlanningEngine.ts#L595)
 
 Start timestamp
 
@@ -80,6 +80,6 @@ Start timestamp
 
 > **tokensUsed**: `number`
 
-Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:593](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/planner/IPlanningEngine.ts#L593)
+Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:593](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/planner/IPlanningEngine.ts#L593)
 
 Total tokens used

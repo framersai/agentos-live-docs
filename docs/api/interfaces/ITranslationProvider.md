@@ -1,6 +1,6 @@
 # Interface: ITranslationProvider
 
-Defined in: [packages/agentos/src/nlp/language/interfaces.ts:97](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/nlp/language/interfaces.ts#L97)
+Defined in: [packages/agentos/src/nlp/language/interfaces.ts:97](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/nlp/language/interfaces.ts#L97)
 
 Pluggable translation provider interface.
 
@@ -10,7 +10,7 @@ Pluggable translation provider interface.
 
 > `readonly` **id**: `string`
 
-Defined in: [packages/agentos/src/nlp/language/interfaces.ts:98](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/nlp/language/interfaces.ts#L98)
+Defined in: [packages/agentos/src/nlp/language/interfaces.ts:98](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/nlp/language/interfaces.ts#L98)
 
 ***
 
@@ -18,7 +18,7 @@ Defined in: [packages/agentos/src/nlp/language/interfaces.ts:98](https://github.
 
 > `readonly` **isInitialized**: `boolean`
 
-Defined in: [packages/agentos/src/nlp/language/interfaces.ts:99](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/nlp/language/interfaces.ts#L99)
+Defined in: [packages/agentos/src/nlp/language/interfaces.ts:99](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/nlp/language/interfaces.ts#L99)
 
 ## Methods
 
@@ -26,7 +26,7 @@ Defined in: [packages/agentos/src/nlp/language/interfaces.ts:99](https://github.
 
 > **initialize**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/nlp/language/interfaces.ts:100](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/nlp/language/interfaces.ts#L100)
+Defined in: [packages/agentos/src/nlp/language/interfaces.ts:100](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/nlp/language/interfaces.ts#L100)
 
 #### Returns
 
@@ -38,7 +38,7 @@ Defined in: [packages/agentos/src/nlp/language/interfaces.ts:100](https://github
 
 > `optional` **shutdown**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/nlp/language/interfaces.ts:102](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/nlp/language/interfaces.ts#L102)
+Defined in: [packages/agentos/src/nlp/language/interfaces.ts:102](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/nlp/language/interfaces.ts#L102)
 
 #### Returns
 
@@ -50,7 +50,7 @@ Defined in: [packages/agentos/src/nlp/language/interfaces.ts:102](https://github
 
 > **translate**(`input`, `source`, `target`, `options?`): `Promise`\<[`TranslationResult`](TranslationResult.md)\>
 
-Defined in: [packages/agentos/src/nlp/language/interfaces.ts:101](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/nlp/language/interfaces.ts#L101)
+Defined in: [packages/agentos/src/nlp/language/interfaces.ts:101](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/nlp/language/interfaces.ts#L101)
 
 #### Parameters
 

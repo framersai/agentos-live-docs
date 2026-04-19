@@ -2,7 +2,7 @@
 
 > **JSONSchemaType** = `"string"` \| `"number"` \| `"integer"` \| `"boolean"` \| `"array"` \| `"object"` \| `"null"`
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:61](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/structured/output/IStructuredOutputManager.ts#L61)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:61](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/structured/output/IStructuredOutputManager.ts#L61)
 
 JSON Schema type definitions for structured output validation.
 Follows JSON Schema Draft 2020-12 specification.

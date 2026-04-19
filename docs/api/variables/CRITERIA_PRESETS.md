@@ -2,7 +2,7 @@
 
 > `const` **CRITERIA\_PRESETS**: `object`
 
-Defined in: [packages/agentos/src/evaluation/LLMJudge.ts:295](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/evaluation/LLMJudge.ts#L295)
+Defined in: [packages/agentos/src/evaluation/LLMJudge.ts:295](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/evaluation/LLMJudge.ts#L295)
 
 Pre-built criteria sets for common use cases
 

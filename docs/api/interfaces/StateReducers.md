@@ -1,6 +1,6 @@
 # Interface: StateReducers
 
-Defined in: [packages/agentos/src/orchestration/ir/types.ts:596](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/ir/types.ts#L596)
+Defined in: [packages/agentos/src/orchestration/ir/types.ts:596](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/ir/types.ts#L596)
 
 Maps dot-notation field paths in `GraphState.scratch` / `GraphState.artifacts` to
 either a `BuiltinReducer` name or a custom `ReducerFn`.

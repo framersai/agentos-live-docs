@@ -1,6 +1,6 @@
 # Interface: ClassificationResult
 
-Defined in: [packages/agentos/src/query-router/types.ts:106](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/query-router/types.ts#L106)
+Defined in: [packages/agentos/src/query-router/types.ts:106](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/query-router/types.ts#L106)
 
 Result of classifying a user query into a complexity tier.
 Produced by the [QueryClassifier](../classes/QueryClassifier.md).
@@ -11,7 +11,7 @@ Produced by the [QueryClassifier](../classes/QueryClassifier.md).
 
 > **confidence**: `number`
 
-Defined in: [packages/agentos/src/query-router/types.ts:129](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/query-router/types.ts#L129)
+Defined in: [packages/agentos/src/query-router/types.ts:129](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/query-router/types.ts#L129)
 
 Confidence score for the classification (0 to 1).
 A score below the configured threshold may trigger fallback behaviour.
@@ -22,7 +22,7 @@ A score below the configured threshold may trigger fallback behaviour.
 
 > **internalKnowledgeSufficient**: `boolean`
 
-Defined in: [packages/agentos/src/query-router/types.ts:142](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/query-router/types.ts#L142)
+Defined in: [packages/agentos/src/query-router/types.ts:142](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/query-router/types.ts#L142)
 
 Whether the agent's internal knowledge is likely sufficient to answer
 without any retrieval. When `true` and tier is 0, the router may skip
@@ -34,7 +34,7 @@ retrieval entirely.
 
 > **reasoning**: `string`
 
-Defined in: [packages/agentos/src/query-router/types.ts:135](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/query-router/types.ts#L135)
+Defined in: [packages/agentos/src/query-router/types.ts:135](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/query-router/types.ts#L135)
 
 Human-readable reasoning explaining why this tier was chosen.
 Useful for debugging and audit trails.
@@ -45,7 +45,7 @@ Useful for debugging and audit trails.
 
 > **strategy**: `RetrievalStrategy`
 
-Defined in: [packages/agentos/src/query-router/types.ts:123](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/query-router/types.ts#L123)
+Defined in: [packages/agentos/src/query-router/types.ts:123](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/query-router/types.ts#L123)
 
 Retrieval strategy recommendation from the LLM-as-judge classifier.
 
@@ -64,7 +64,7 @@ RetrievalStrategy
 
 > **suggestedSources**: (`"vector"` \| `"graph"` \| `"research"`)[]
 
-Defined in: [packages/agentos/src/query-router/types.ts:148](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/query-router/types.ts#L148)
+Defined in: [packages/agentos/src/query-router/types.ts:148](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/query-router/types.ts#L148)
 
 Suggested source types to consult for this query.
 
@@ -80,7 +80,7 @@ Suggested source types to consult for this query.
 
 > **tier**: [`QueryTier`](../type-aliases/QueryTier.md)
 
-Defined in: [packages/agentos/src/query-router/types.ts:111](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/query-router/types.ts#L111)
+Defined in: [packages/agentos/src/query-router/types.ts:111](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/query-router/types.ts#L111)
 
 The assigned complexity tier.
 
@@ -94,7 +94,7 @@ QueryTier
 
 > **toolsNeeded**: `string`[]
 
-Defined in: [packages/agentos/src/query-router/types.ts:154](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/query-router/types.ts#L154)
+Defined in: [packages/agentos/src/query-router/types.ts:154](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/query-router/types.ts#L154)
 
 Tool names the classifier believes are needed to answer this query.
 Empty array if no tools are required.

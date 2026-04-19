@@ -2,7 +2,7 @@
 
 > **isCrossAgentGuardrail**(`service`): `service is ICrossAgentGuardrailService`
 
-Defined in: [packages/agentos/src/safety/guardrails/ICrossAgentGuardrailService.ts:186](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/safety/guardrails/ICrossAgentGuardrailService.ts#L186)
+Defined in: [packages/agentos/src/safety/guardrails/ICrossAgentGuardrailService.ts:186](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/safety/guardrails/ICrossAgentGuardrailService.ts#L186)
 
 Type guard to check if a guardrail service is a cross-agent guardrail.
 

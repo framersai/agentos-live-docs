@@ -1,6 +1,6 @@
 # Interface: SFXGenerateRequest
 
-Defined in: [packages/agentos/src/media/audio/types.ts:154](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/audio/types.ts#L154)
+Defined in: [packages/agentos/src/media/audio/types.ts:154](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/audio/types.ts#L154)
 
 Request payload for sound-effect generation from a text prompt.
 
@@ -22,7 +22,7 @@ const request: SFXGenerateRequest = {
 
 > `optional` **durationSec**: `number`
 
-Defined in: [packages/agentos/src/media/audio/types.ts:176](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/audio/types.ts#L176)
+Defined in: [packages/agentos/src/media/audio/types.ts:176](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/audio/types.ts#L176)
 
 Desired output duration in seconds.
 
@@ -35,7 +35,7 @@ their own limits.
 
 > `optional` **modelId**: `string`
 
-Defined in: [packages/agentos/src/media/audio/types.ts:168](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/audio/types.ts#L168)
+Defined in: [packages/agentos/src/media/audio/types.ts:168](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/audio/types.ts#L168)
 
 Model identifier to use for generation.
 
@@ -47,7 +47,7 @@ When omitted the provider falls back to its [IAudioGenerator.defaultModelId](IAu
 
 > `optional` **n**: `number`
 
-Defined in: [packages/agentos/src/media/audio/types.ts:197](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/audio/types.ts#L197)
+Defined in: [packages/agentos/src/media/audio/types.ts:197](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/audio/types.ts#L197)
 
 Number of audio clips to generate.
 
@@ -63,7 +63,7 @@ Number of audio clips to generate.
 
 > `optional` **outputFormat**: [`AudioOutputFormat`](../type-aliases/AudioOutputFormat.md)
 
-Defined in: [packages/agentos/src/media/audio/types.ts:183](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/audio/types.ts#L183)
+Defined in: [packages/agentos/src/media/audio/types.ts:183](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/audio/types.ts#L183)
 
 Output audio format.
 
@@ -79,7 +79,7 @@ Output audio format.
 
 > **prompt**: `string`
 
-Defined in: [packages/agentos/src/media/audio/types.ts:161](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/audio/types.ts#L161)
+Defined in: [packages/agentos/src/media/audio/types.ts:161](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/audio/types.ts#L161)
 
 Text prompt describing the desired sound effect.
 
@@ -92,7 +92,7 @@ Be specific about the sound, its environment, and any layering
 
 > `optional` **providerOptions**: `Record`\<`string`, `unknown`\>
 
-Defined in: [packages/agentos/src/media/audio/types.ts:203](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/audio/types.ts#L203)
+Defined in: [packages/agentos/src/media/audio/types.ts:203](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/audio/types.ts#L203)
 
 Arbitrary provider-specific options.
 
@@ -102,7 +102,7 @@ Arbitrary provider-specific options.
 
 > `optional` **seed**: `number`
 
-Defined in: [packages/agentos/src/media/audio/types.ts:190](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/audio/types.ts#L190)
+Defined in: [packages/agentos/src/media/audio/types.ts:190](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/audio/types.ts#L190)
 
 Seed for reproducible output.
 
@@ -114,6 +114,6 @@ Not all providers honour seeds — check provider documentation.
 
 > `optional` **userId**: `string`
 
-Defined in: [packages/agentos/src/media/audio/types.ts:200](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/audio/types.ts#L200)
+Defined in: [packages/agentos/src/media/audio/types.ts:200](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/audio/types.ts#L200)
 
 Identifier of the requesting user (for billing / rate limiting).

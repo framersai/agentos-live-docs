@@ -1,6 +1,6 @@
 # Interface: CompressedObservation
 
-Defined in: [packages/agentos/src/memory/pipeline/observation/ObservationCompressor.ts:35](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/pipeline/observation/ObservationCompressor.ts#L35)
+Defined in: [packages/agentos/src/memory/pipeline/observation/ObservationCompressor.ts:35](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/pipeline/observation/ObservationCompressor.ts#L35)
 
 A compressed observation produced by merging multiple raw
 [ObservationNote](ObservationNote.md) objects into a single dense summary.
@@ -11,7 +11,7 @@ A compressed observation produced by merging multiple raw
 
 > **entities**: `string`[]
 
-Defined in: [packages/agentos/src/memory/pipeline/observation/ObservationCompressor.ts:54](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/pipeline/observation/ObservationCompressor.ts#L54)
+Defined in: [packages/agentos/src/memory/pipeline/observation/ObservationCompressor.ts:54](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/pipeline/observation/ObservationCompressor.ts#L54)
 
 Union of key entities across all source observations.
 
@@ -21,7 +21,7 @@ Union of key entities across all source observations.
 
 > **id**: `string`
 
-Defined in: [packages/agentos/src/memory/pipeline/observation/ObservationCompressor.ts:37](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/pipeline/observation/ObservationCompressor.ts#L37)
+Defined in: [packages/agentos/src/memory/pipeline/observation/ObservationCompressor.ts:37](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/pipeline/observation/ObservationCompressor.ts#L37)
 
 Unique identifier for this compressed observation.
 
@@ -31,7 +31,7 @@ Unique identifier for this compressed observation.
 
 > **importance**: `number`
 
-Defined in: [packages/agentos/src/memory/pipeline/observation/ObservationCompressor.ts:56](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/pipeline/observation/ObservationCompressor.ts#L56)
+Defined in: [packages/agentos/src/memory/pipeline/observation/ObservationCompressor.ts:56](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/pipeline/observation/ObservationCompressor.ts#L56)
 
 Average importance score of the source observations (0-1).
 
@@ -41,7 +41,7 @@ Average importance score of the source observations (0-1).
 
 > **priority**: [`CompressionPriority`](../type-aliases/CompressionPriority.md)
 
-Defined in: [packages/agentos/src/memory/pipeline/observation/ObservationCompressor.ts:41](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/pipeline/observation/ObservationCompressor.ts#L41)
+Defined in: [packages/agentos/src/memory/pipeline/observation/ObservationCompressor.ts:41](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/pipeline/observation/ObservationCompressor.ts#L41)
 
 Triage priority.
 
@@ -51,7 +51,7 @@ Triage priority.
 
 > **sourceIds**: `string`[]
 
-Defined in: [packages/agentos/src/memory/pipeline/observation/ObservationCompressor.ts:52](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/pipeline/observation/ObservationCompressor.ts#L52)
+Defined in: [packages/agentos/src/memory/pipeline/observation/ObservationCompressor.ts:52](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/pipeline/observation/ObservationCompressor.ts#L52)
 
 IDs of the source [ObservationNote](ObservationNote.md) objects that were compressed.
 
@@ -61,7 +61,7 @@ IDs of the source [ObservationNote](ObservationNote.md) objects that were compre
 
 > **summary**: `string`
 
-Defined in: [packages/agentos/src/memory/pipeline/observation/ObservationCompressor.ts:39](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/pipeline/observation/ObservationCompressor.ts#L39)
+Defined in: [packages/agentos/src/memory/pipeline/observation/ObservationCompressor.ts:39](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/pipeline/observation/ObservationCompressor.ts#L39)
 
 Dense summary of multiple observations (1-3 sentences).
 
@@ -71,7 +71,7 @@ Dense summary of multiple observations (1-3 sentences).
 
 > **temporal**: `object`
 
-Defined in: [packages/agentos/src/memory/pipeline/observation/ObservationCompressor.ts:43](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/pipeline/observation/ObservationCompressor.ts#L43)
+Defined in: [packages/agentos/src/memory/pipeline/observation/ObservationCompressor.ts:43](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/pipeline/observation/ObservationCompressor.ts#L43)
 
 Three-date temporal metadata.
 

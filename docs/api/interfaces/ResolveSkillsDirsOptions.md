@@ -1,6 +1,6 @@
 # Interface: ResolveSkillsDirsOptions
 
-Defined in: [packages/agentos/src/skills/paths.ts:13](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/skills/paths.ts#L13)
+Defined in: [packages/agentos/src/skills/paths.ts:13](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/skills/paths.ts#L13)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/skills/paths.ts:13](https://github.com/framers
 
 > `optional` **cwd**: `string`
 
-Defined in: [packages/agentos/src/skills/paths.ts:15](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/skills/paths.ts#L15)
+Defined in: [packages/agentos/src/skills/paths.ts:15](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/skills/paths.ts#L15)
 
 Base directory used to resolve relative --skills-dir entries. Default: process.cwd()
 
@@ -18,7 +18,7 @@ Base directory used to resolve relative --skills-dir entries. Default: process.c
 
 > `optional` **env**: `ProcessEnv`
 
-Defined in: [packages/agentos/src/skills/paths.ts:19](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/skills/paths.ts#L19)
+Defined in: [packages/agentos/src/skills/paths.ts:19](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/skills/paths.ts#L19)
 
 Environment variables to consult. Default: process.env
 
@@ -28,7 +28,7 @@ Environment variables to consult. Default: process.env
 
 > `optional` **includeAgentosSkillsDir**: `boolean`
 
-Defined in: [packages/agentos/src/skills/paths.ts:22](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/skills/paths.ts#L22)
+Defined in: [packages/agentos/src/skills/paths.ts:22](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/skills/paths.ts#L22)
 
 Include `AGENTOS_SKILLS_DIR` if set. Default: true
 
@@ -38,7 +38,7 @@ Include `AGENTOS_SKILLS_DIR` if set. Default: true
 
 > `optional` **includeCodexHomeSkillsDir**: `boolean`
 
-Defined in: [packages/agentos/src/skills/paths.ts:24](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/skills/paths.ts#L24)
+Defined in: [packages/agentos/src/skills/paths.ts:24](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/skills/paths.ts#L24)
 
 Include `$CODEX_HOME/skills` if CODEX_HOME is set. Default: true
 
@@ -48,7 +48,7 @@ Include `$CODEX_HOME/skills` if CODEX_HOME is set. Default: true
 
 > `optional` **includeCwdSkillsDir**: `boolean`
 
-Defined in: [packages/agentos/src/skills/paths.ts:28](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/skills/paths.ts#L28)
+Defined in: [packages/agentos/src/skills/paths.ts:28](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/skills/paths.ts#L28)
 
 Include `<cwd>/skills`. Default: true
 
@@ -58,7 +58,7 @@ Include `<cwd>/skills`. Default: true
 
 > `optional` **includeHomeCodexSkillsDir**: `boolean`
 
-Defined in: [packages/agentos/src/skills/paths.ts:26](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/skills/paths.ts#L26)
+Defined in: [packages/agentos/src/skills/paths.ts:26](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/skills/paths.ts#L26)
 
 Include `~/.codex/skills`. Default: true
 
@@ -68,6 +68,6 @@ Include `~/.codex/skills`. Default: true
 
 > `optional` **skillsDirFlag**: `string`
 
-Defined in: [packages/agentos/src/skills/paths.ts:17](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/skills/paths.ts#L17)
+Defined in: [packages/agentos/src/skills/paths.ts:17](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/skills/paths.ts#L17)
 
 Comma-separated list of additional skills directories (e.g. CLI flag).

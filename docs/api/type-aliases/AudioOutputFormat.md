@@ -2,6 +2,6 @@
 
 > **AudioOutputFormat** = `"mp3"` \| `"wav"` \| `"flac"` \| `"ogg"` \| `"aac"`
 
-Defined in: [packages/agentos/src/media/audio/types.ts:38](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/audio/types.ts#L38)
+Defined in: [packages/agentos/src/media/audio/types.ts:38](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/audio/types.ts#L38)
 
 Output audio container/codec format.

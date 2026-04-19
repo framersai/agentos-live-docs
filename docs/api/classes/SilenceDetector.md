@@ -1,6 +1,6 @@
 # Class: SilenceDetector
 
-Defined in: [packages/agentos/src/hearing/SilenceDetector.ts:65](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/hearing/SilenceDetector.ts#L65)
+Defined in: [packages/agentos/src/hearing/SilenceDetector.ts:65](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/hearing/SilenceDetector.ts#L65)
 
 SilenceDetector - Interprets VAD events to detect meaningful conversational silences.
 
@@ -14,7 +14,7 @@ SilenceDetector - Interprets VAD events to detect meaningful conversational sile
 
 > **new SilenceDetector**(`config?`): `SilenceDetector`
 
-Defined in: [packages/agentos/src/hearing/SilenceDetector.ts:86](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/hearing/SilenceDetector.ts#L86)
+Defined in: [packages/agentos/src/hearing/SilenceDetector.ts:86](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/hearing/SilenceDetector.ts#L86)
 
 Creates a new SilenceDetector instance.
 
@@ -227,7 +227,7 @@ v0.1.26
 
 > **dispose**(): `void`
 
-Defined in: [packages/agentos/src/hearing/SilenceDetector.ts:256](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/hearing/SilenceDetector.ts#L256)
+Defined in: [packages/agentos/src/hearing/SilenceDetector.ts:256](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/hearing/SilenceDetector.ts#L256)
 
 Call this when the component is being destroyed to clean up timers.
 
@@ -241,7 +241,7 @@ Call this when the component is being destroyed to clean up timers.
 
 > **emit**\<`U`\>(`event`, ...`args`): `boolean`
 
-Defined in: [packages/agentos/src/hearing/SilenceDetector.ts:78](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/hearing/SilenceDetector.ts#L78)
+Defined in: [packages/agentos/src/hearing/SilenceDetector.ts:78](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/hearing/SilenceDetector.ts#L78)
 
 Synchronously calls each of the listeners registered for the event named `eventName`, in the order they were registered, passing the supplied arguments
 to each.
@@ -375,7 +375,7 @@ v1.0.0
 
 > **handleNoVoiceActivity**(`_vadResult`): `void`
 
-Defined in: [packages/agentos/src/hearing/SilenceDetector.ts:136](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/hearing/SilenceDetector.ts#L136)
+Defined in: [packages/agentos/src/hearing/SilenceDetector.ts:136](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/hearing/SilenceDetector.ts#L136)
 
 Handles the `no_voice_activity` event from AdaptiveVAD.
 Call this for every frame VAD identifies as non-speech.
@@ -398,7 +398,7 @@ The VAD result for the non-speech frame.
 
 > **handleSpeechEnd**(`_vadResult`, `_speechDurationMs`): `void`
 
-Defined in: [packages/agentos/src/hearing/SilenceDetector.ts:164](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/hearing/SilenceDetector.ts#L164)
+Defined in: [packages/agentos/src/hearing/SilenceDetector.ts:164](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/hearing/SilenceDetector.ts#L164)
 
 Handles the `speech_end` event from AdaptiveVAD.
 This signifies VAD has determined a speech segment is over due to its internal pause limits.
@@ -427,7 +427,7 @@ The duration of the speech segment as determined by VAD.
 
 > **handleSpeechStart**(`_vadResult`): `void`
 
-Defined in: [packages/agentos/src/hearing/SilenceDetector.ts:111](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/hearing/SilenceDetector.ts#L111)
+Defined in: [packages/agentos/src/hearing/SilenceDetector.ts:111](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/hearing/SilenceDetector.ts#L111)
 
 Handles the `speech_start` event from AdaptiveVAD.
 
@@ -449,7 +449,7 @@ The VAD result associated with speech start.
 
 > **handleVoiceActivity**(`_vadResult`): `void`
 
-Defined in: [packages/agentos/src/hearing/SilenceDetector.ts:123](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/hearing/SilenceDetector.ts#L123)
+Defined in: [packages/agentos/src/hearing/SilenceDetector.ts:123](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/hearing/SilenceDetector.ts#L123)
 
 Handles the `voice_activity` event from AdaptiveVAD.
 Call this for every frame VAD identifies as speech.
@@ -596,7 +596,7 @@ v10.0.0
 
 > **on**\<`U`\>(`event`, `listener`): `this`
 
-Defined in: [packages/agentos/src/hearing/SilenceDetector.ts:74](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/hearing/SilenceDetector.ts#L74)
+Defined in: [packages/agentos/src/hearing/SilenceDetector.ts:74](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/hearing/SilenceDetector.ts#L74)
 
 Adds the `listener` function to the end of the listeners array for the event
 named `eventName`. No checks are made to see if the `listener` has already
@@ -1040,7 +1040,7 @@ v0.1.26
 
 > **reset**(): `void`
 
-Defined in: [packages/agentos/src/hearing/SilenceDetector.ts:246](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/hearing/SilenceDetector.ts#L246)
+Defined in: [packages/agentos/src/hearing/SilenceDetector.ts:246](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/hearing/SilenceDetector.ts#L246)
 
 Resets the SilenceDetector's internal state.
 Should be called when a conversation or voice session is fully reset.

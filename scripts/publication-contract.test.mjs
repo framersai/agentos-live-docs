@@ -168,7 +168,7 @@ test('publication verification scripts are wired into the docs packages', () => 
 
   assert.equal(
     liveDocsPackage.scripts['verify:publication'],
-    'node --test scripts/publication-contract.test.mjs scripts/pull-docs-links.test.mjs && node scripts/pull-docs.mjs --check',
+    'AGENTOS_DOCS_STRICT=1 node --test scripts/publication-contract.test.mjs scripts/pull-docs-links.test.mjs && AGENTOS_DOCS_STRICT=1 node scripts/pull-docs.mjs --check && AGENTOS_DOCS_STRICT=1 npm run build',
   );
   assert.equal(
     agentosPackage.scripts['docs:verify'],
@@ -176,4 +176,11 @@ test('publication verification scripts are wired into the docs packages', () => 
   );
   assert.match(docusaurusConfig, /to: '\/skills\/overview'/);
   assert.doesNotMatch(docusaurusConfig, /skills\/skills-extension/);
+});
+
+test('production docs config throws on broken links and markdown drift', () => {
+  const docusaurusConfig = readFileSync(resolve(MONO_ROOT, 'apps/agentos-live-docs/docusaurus.config.ts'), 'utf8');
+
+  assert.match(docusaurusConfig, /onBrokenLinks:\s*strictDocs \? 'throw' : 'warn'/);
+  assert.match(docusaurusConfig, /onBrokenMarkdownLinks:\s*strictDocs \? 'throw' : 'warn'/);
 });

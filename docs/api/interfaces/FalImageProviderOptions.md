@@ -1,6 +1,6 @@
 # Interface: FalImageProviderOptions
 
-Defined in: [packages/agentos/src/media/images/providers/FalImageProvider.ts:157](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/images/providers/FalImageProvider.ts#L157)
+Defined in: [packages/agentos/src/media/images/providers/FalImageProvider.ts:157](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/images/providers/FalImageProvider.ts#L157)
 
 Provider-specific options for Fal.ai image generation.
 
@@ -25,7 +25,7 @@ const result = await provider.generateImage({
 
 > `optional` **enable\_safety\_checker**: `boolean`
 
-Defined in: [packages/agentos/src/media/images/providers/FalImageProvider.ts:169](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/images/providers/FalImageProvider.ts#L169)
+Defined in: [packages/agentos/src/media/images/providers/FalImageProvider.ts:169](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/images/providers/FalImageProvider.ts#L169)
 
 Whether to enable the safety checker. Default: true.
 
@@ -35,7 +35,7 @@ Whether to enable the safety checker. Default: true.
 
 > `optional` **guidance\_scale**: `number`
 
-Defined in: [packages/agentos/src/media/images/providers/FalImageProvider.ts:167](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/images/providers/FalImageProvider.ts#L167)
+Defined in: [packages/agentos/src/media/images/providers/FalImageProvider.ts:167](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/images/providers/FalImageProvider.ts#L167)
 
 Guidance scale for classifier-free guidance.
 
@@ -45,7 +45,7 @@ Guidance scale for classifier-free guidance.
 
 > `optional` **image\_size**: `string`
 
-Defined in: [packages/agentos/src/media/images/providers/FalImageProvider.ts:161](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/images/providers/FalImageProvider.ts#L161)
+Defined in: [packages/agentos/src/media/images/providers/FalImageProvider.ts:161](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/images/providers/FalImageProvider.ts#L161)
 
 Image size string (e.g. 'landscape_16_9', 'square_hd', 'portrait_4_3').
 
@@ -55,7 +55,7 @@ Image size string (e.g. 'landscape_16_9', 'square_hd', 'portrait_4_3').
 
 > `optional` **num\_images**: `number`
 
-Defined in: [packages/agentos/src/media/images/providers/FalImageProvider.ts:159](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/images/providers/FalImageProvider.ts#L159)
+Defined in: [packages/agentos/src/media/images/providers/FalImageProvider.ts:159](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/images/providers/FalImageProvider.ts#L159)
 
 Number of images to generate. Default: 1.
 
@@ -65,7 +65,7 @@ Number of images to generate. Default: 1.
 
 > `optional` **num\_inference\_steps**: `number`
 
-Defined in: [packages/agentos/src/media/images/providers/FalImageProvider.ts:165](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/images/providers/FalImageProvider.ts#L165)
+Defined in: [packages/agentos/src/media/images/providers/FalImageProvider.ts:165](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/images/providers/FalImageProvider.ts#L165)
 
 Number of inference steps.
 
@@ -75,6 +75,6 @@ Number of inference steps.
 
 > `optional` **seed**: `number`
 
-Defined in: [packages/agentos/src/media/images/providers/FalImageProvider.ts:163](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/images/providers/FalImageProvider.ts#L163)
+Defined in: [packages/agentos/src/media/images/providers/FalImageProvider.ts:163](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/images/providers/FalImageProvider.ts#L163)
 
 Random seed for reproducible generation.

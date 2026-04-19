@@ -1,6 +1,6 @@
 # Interface: GuardrailInputOutcome
 
-Defined in: [packages/agentos/src/safety/guardrails/guardrailDispatcher.ts:85](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/safety/guardrails/guardrailDispatcher.ts#L85)
+Defined in: [packages/agentos/src/safety/guardrails/guardrailDispatcher.ts:85](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/safety/guardrails/guardrailDispatcher.ts#L85)
 
 Result of running input guardrails.
 
@@ -13,7 +13,7 @@ Check `evaluation.action` to determine if processing should continue.
 
 > `optional` **evaluation**: [`GuardrailEvaluationResult`](GuardrailEvaluationResult.md) \| `null`
 
-Defined in: [packages/agentos/src/safety/guardrails/guardrailDispatcher.ts:90](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/safety/guardrails/guardrailDispatcher.ts#L90)
+Defined in: [packages/agentos/src/safety/guardrails/guardrailDispatcher.ts:90](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/safety/guardrails/guardrailDispatcher.ts#L90)
 
 The last evaluation result (for backwards compatibility)
 
@@ -23,7 +23,7 @@ The last evaluation result (for backwards compatibility)
 
 > `optional` **evaluations**: [`GuardrailEvaluationResult`](GuardrailEvaluationResult.md)[]
 
-Defined in: [packages/agentos/src/safety/guardrails/guardrailDispatcher.ts:93](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/safety/guardrails/guardrailDispatcher.ts#L93)
+Defined in: [packages/agentos/src/safety/guardrails/guardrailDispatcher.ts:93](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/safety/guardrails/guardrailDispatcher.ts#L93)
 
 All evaluation results from all guardrails
 
@@ -33,6 +33,6 @@ All evaluation results from all guardrails
 
 > **sanitizedInput**: [`AgentOSInput`](AgentOSInput.md)
 
-Defined in: [packages/agentos/src/safety/guardrails/guardrailDispatcher.ts:87](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/safety/guardrails/guardrailDispatcher.ts#L87)
+Defined in: [packages/agentos/src/safety/guardrails/guardrailDispatcher.ts:87](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/safety/guardrails/guardrailDispatcher.ts#L87)
 
 Input after all sanitization (may be modified from original)

@@ -1,6 +1,6 @@
 # Interface: WhatsAppAuthParams
 
-Defined in: [packages/agentos/src/channels/adapters/WhatsAppChannelAdapter.ts:65](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/channels/adapters/WhatsAppChannelAdapter.ts#L65)
+Defined in: [packages/agentos/src/channels/adapters/WhatsAppChannelAdapter.ts:65](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/adapters/WhatsAppChannelAdapter.ts#L65)
 
 Platform-specific parameters for WhatsApp connections.
 
@@ -18,7 +18,7 @@ Platform-specific parameters for WhatsApp connections.
 
 > `optional` **accountSid**: `string`
 
-Defined in: [packages/agentos/src/channels/adapters/WhatsAppChannelAdapter.ts:71](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/channels/adapters/WhatsAppChannelAdapter.ts#L71)
+Defined in: [packages/agentos/src/channels/adapters/WhatsAppChannelAdapter.ts:71](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/adapters/WhatsAppChannelAdapter.ts#L71)
 
 Twilio Account SID.
 
@@ -28,7 +28,7 @@ Twilio Account SID.
 
 > `optional` **apiVersion**: `string`
 
-Defined in: [packages/agentos/src/channels/adapters/WhatsAppChannelAdapter.ts:83](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/channels/adapters/WhatsAppChannelAdapter.ts#L83)
+Defined in: [packages/agentos/src/channels/adapters/WhatsAppChannelAdapter.ts:83](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/adapters/WhatsAppChannelAdapter.ts#L83)
 
 Graph API version (default: 'v21.0').
 
@@ -38,7 +38,7 @@ Graph API version (default: 'v21.0').
 
 > `optional` **authToken**: `string`
 
-Defined in: [packages/agentos/src/channels/adapters/WhatsAppChannelAdapter.ts:73](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/channels/adapters/WhatsAppChannelAdapter.ts#L73)
+Defined in: [packages/agentos/src/channels/adapters/WhatsAppChannelAdapter.ts:73](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/adapters/WhatsAppChannelAdapter.ts#L73)
 
 Twilio Auth Token. If provided, overrides credential.
 
@@ -48,7 +48,7 @@ Twilio Auth Token. If provided, overrides credential.
 
 > `optional` **businessApiToken**: `string`
 
-Defined in: [packages/agentos/src/channels/adapters/WhatsAppChannelAdapter.ts:79](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/channels/adapters/WhatsAppChannelAdapter.ts#L79)
+Defined in: [packages/agentos/src/channels/adapters/WhatsAppChannelAdapter.ts:79](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/adapters/WhatsAppChannelAdapter.ts#L79)
 
 WhatsApp Business API access token. If provided, overrides credential.
 
@@ -58,7 +58,7 @@ WhatsApp Business API access token. If provided, overrides credential.
 
 > `optional` **phoneNumber**: `string`
 
-Defined in: [packages/agentos/src/channels/adapters/WhatsAppChannelAdapter.ts:75](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/channels/adapters/WhatsAppChannelAdapter.ts#L75)
+Defined in: [packages/agentos/src/channels/adapters/WhatsAppChannelAdapter.ts:75](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/adapters/WhatsAppChannelAdapter.ts#L75)
 
 Twilio WhatsApp-enabled phone number (e.g., 'whatsapp:+14155238886').
 
@@ -68,7 +68,7 @@ Twilio WhatsApp-enabled phone number (e.g., 'whatsapp:+14155238886').
 
 > `optional` **phoneNumberId**: `string`
 
-Defined in: [packages/agentos/src/channels/adapters/WhatsAppChannelAdapter.ts:81](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/channels/adapters/WhatsAppChannelAdapter.ts#L81)
+Defined in: [packages/agentos/src/channels/adapters/WhatsAppChannelAdapter.ts:81](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/adapters/WhatsAppChannelAdapter.ts#L81)
 
 Phone Number ID from the WhatsApp Business Platform.
 
@@ -78,7 +78,7 @@ Phone Number ID from the WhatsApp Business Platform.
 
 > `optional` **provider**: `string`
 
-Defined in: [packages/agentos/src/channels/adapters/WhatsAppChannelAdapter.ts:67](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/channels/adapters/WhatsAppChannelAdapter.ts#L67)
+Defined in: [packages/agentos/src/channels/adapters/WhatsAppChannelAdapter.ts:67](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/adapters/WhatsAppChannelAdapter.ts#L67)
 
 Provider backend: 'twilio' or 'cloud-api'. Defaults to 'twilio'.
 
@@ -88,6 +88,6 @@ Provider backend: 'twilio' or 'cloud-api'. Defaults to 'twilio'.
 
 > `optional` **verifyToken**: `string`
 
-Defined in: [packages/agentos/src/channels/adapters/WhatsAppChannelAdapter.ts:85](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/channels/adapters/WhatsAppChannelAdapter.ts#L85)
+Defined in: [packages/agentos/src/channels/adapters/WhatsAppChannelAdapter.ts:85](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/adapters/WhatsAppChannelAdapter.ts#L85)
 
 Verify token for webhook validation.

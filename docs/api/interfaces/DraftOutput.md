@@ -1,6 +1,6 @@
 # Interface: DraftOutput
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:169](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/hitl/IHumanInteractionManager.ts#L169)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:169](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/hitl/IHumanInteractionManager.ts#L169)
 
 Draft output for human review/editing.
 
@@ -10,7 +10,7 @@ Draft output for human review/editing.
 
 > **agentId**: `string`
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:177](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/hitl/IHumanInteractionManager.ts#L177)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:177](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/hitl/IHumanInteractionManager.ts#L177)
 
 Agent that generated it
 
@@ -20,7 +20,7 @@ Agent that generated it
 
 > **confidence**: `number`
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:183](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/hitl/IHumanInteractionManager.ts#L183)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:183](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/hitl/IHumanInteractionManager.ts#L183)
 
 Agent's confidence in the output
 
@@ -30,7 +30,7 @@ Agent's confidence in the output
 
 > **content**: `string`
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:175](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/hitl/IHumanInteractionManager.ts#L175)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:175](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/hitl/IHumanInteractionManager.ts#L175)
 
 The draft content
 
@@ -40,7 +40,7 @@ The draft content
 
 > **contentType**: `"text"` \| `"json"` \| `"markdown"` \| `"html"` \| `"code"`
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:173](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/hitl/IHumanInteractionManager.ts#L173)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:173](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/hitl/IHumanInteractionManager.ts#L173)
 
 Type of content
 
@@ -50,7 +50,7 @@ Type of content
 
 > **draftId**: `string`
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:171](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/hitl/IHumanInteractionManager.ts#L171)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:171](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/hitl/IHumanInteractionManager.ts#L171)
 
 Draft identifier
 
@@ -60,7 +60,7 @@ Draft identifier
 
 > **generatedAt**: `Date`
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:185](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/hitl/IHumanInteractionManager.ts#L185)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:185](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/hitl/IHumanInteractionManager.ts#L185)
 
 Timestamp
 
@@ -70,7 +70,7 @@ Timestamp
 
 > **purpose**: `string`
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:179](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/hitl/IHumanInteractionManager.ts#L179)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:179](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/hitl/IHumanInteractionManager.ts#L179)
 
 Purpose/context of the output
 
@@ -80,7 +80,7 @@ Purpose/context of the output
 
 > `optional` **reviewFocus**: `string`[]
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:181](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/hitl/IHumanInteractionManager.ts#L181)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:181](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/hitl/IHumanInteractionManager.ts#L181)
 
 Specific areas to review
 
@@ -90,6 +90,6 @@ Specific areas to review
 
 > `optional` **timeoutMs**: `number`
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:187](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/orchestration/hitl/IHumanInteractionManager.ts#L187)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:187](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/hitl/IHumanInteractionManager.ts#L187)
 
 Timeout (ms)

@@ -2,7 +2,7 @@
 
 > **createFeatureDetector**(`strategy`, `llmInvoker?`): [`IContentFeatureDetector`](../interfaces/IContentFeatureDetector.md)
 
-Defined in: [packages/agentos/src/memory/core/encoding/ContentFeatureDetector.ts:194](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/core/encoding/ContentFeatureDetector.ts#L194)
+Defined in: [packages/agentos/src/memory/core/encoding/ContentFeatureDetector.ts:194](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/core/encoding/ContentFeatureDetector.ts#L194)
 
 ## Parameters
 

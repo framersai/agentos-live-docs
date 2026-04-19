@@ -1,6 +1,6 @@
 # Interface: ImportOptions
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:492](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/io/facade/types.ts#L492)
+Defined in: [packages/agentos/src/memory/io/facade/types.ts:492](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/io/facade/types.ts#L492)
 
 Options for importing memory data via `Memory.import()`.
 
@@ -10,7 +10,7 @@ Options for importing memory data via `Memory.import()`.
 
 > `optional` **dedup**: `boolean`
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:511](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/io/facade/types.ts#L511)
+Defined in: [packages/agentos/src/memory/io/facade/types.ts:511](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/io/facade/types.ts#L511)
 
 Whether to skip importing traces whose content hash already exists in the
 store, preventing duplicates on repeated imports.
@@ -27,7 +27,7 @@ true
 
 > `optional` **format**: `"json"` \| `"markdown"` \| `"auto"` \| `"sqlite"` \| `"csv"` \| `"obsidian"` \| `"chatgpt"`
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:504](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/io/facade/types.ts#L504)
+Defined in: [packages/agentos/src/memory/io/facade/types.ts:504](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/io/facade/types.ts#L504)
 
 Source format of the import file.
 - `'auto'`     – detect from file extension / magic bytes.

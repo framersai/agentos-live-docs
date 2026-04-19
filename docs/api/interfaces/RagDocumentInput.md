@@ -1,6 +1,6 @@
 # Interface: RagDocumentInput
 
-Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:31](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/IRetrievalAugmentor.ts#L31)
+Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:31](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/IRetrievalAugmentor.ts#L31)
 
 Represents raw document content provided for ingestion.
 
@@ -10,7 +10,7 @@ Represents raw document content provided for ingestion.
 
 > **content**: `string`
 
-Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:35](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/IRetrievalAugmentor.ts#L35)
+Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:35](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/IRetrievalAugmentor.ts#L35)
 
 Raw text that will be chunked and embedded.
 
@@ -20,7 +20,7 @@ Raw text that will be chunked and embedded.
 
 > `optional` **dataSourceId**: `string`
 
-Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:37](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/IRetrievalAugmentor.ts#L37)
+Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:37](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/IRetrievalAugmentor.ts#L37)
 
 Optional override for which data source / collection to push this document into.
 
@@ -30,7 +30,7 @@ Optional override for which data source / collection to push this document into.
 
 > `optional` **embedding**: `number`[]
 
-Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:47](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/IRetrievalAugmentor.ts#L47)
+Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:47](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/IRetrievalAugmentor.ts#L47)
 
 Optional pre-computed embedding vector.
 
@@ -40,7 +40,7 @@ Optional pre-computed embedding vector.
 
 > `optional` **embeddingModelId**: `string`
 
-Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:49](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/IRetrievalAugmentor.ts#L49)
+Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:49](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/IRetrievalAugmentor.ts#L49)
 
 Identifier of the embedding model used when `embedding` is supplied.
 
@@ -50,7 +50,7 @@ Identifier of the embedding model used when `embedding` is supplied.
 
 > **id**: `string`
 
-Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:33](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/IRetrievalAugmentor.ts#L33)
+Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:33](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/IRetrievalAugmentor.ts#L33)
 
 Stable identifier for the document (chunk IDs will derive from this).
 
@@ -60,7 +60,7 @@ Stable identifier for the document (chunk IDs will derive from this).
 
 > `optional` **language**: `string`
 
-Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:43](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/IRetrievalAugmentor.ts#L43)
+Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:43](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/IRetrievalAugmentor.ts#L43)
 
 ISO language tag for the content.
 
@@ -70,7 +70,7 @@ ISO language tag for the content.
 
 > `optional` **metadata**: `Record`\<`string`, [`MetadataValue`](../type-aliases/MetadataValue.md)\>
 
-Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:41](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/IRetrievalAugmentor.ts#L41)
+Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:41](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/IRetrievalAugmentor.ts#L41)
 
 Arbitrary metadata stored alongside chunks; values must be vector-store friendly.
 
@@ -80,7 +80,7 @@ Arbitrary metadata stored alongside chunks; values must be vector-store friendly
 
 > `optional` **source**: `string`
 
-Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:39](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/IRetrievalAugmentor.ts#L39)
+Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:39](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/IRetrievalAugmentor.ts#L39)
 
 Original source pointer (URL, file path, API, etc.).
 
@@ -90,6 +90,6 @@ Original source pointer (URL, file path, API, etc.).
 
 > `optional` **timestamp**: `string`
 
-Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:45](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/IRetrievalAugmentor.ts#L45)
+Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:45](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/IRetrievalAugmentor.ts#L45)
 
 ISO timestamp describing when this content was produced/updated.

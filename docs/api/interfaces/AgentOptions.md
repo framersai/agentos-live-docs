@@ -1,6 +1,6 @@
 # Interface: AgentOptions
 
-Defined in: [packages/agentos/src/api/agent.ts:42](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/agent.ts#L42)
+Defined in: [packages/agentos/src/api/agent.ts:43](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/agent.ts#L43)
 
 Configuration options for the [agent](../functions/agent.md) factory function.
 
@@ -19,7 +19,7 @@ lightweight agent — they will be consumed by `agency()` and the full runtime.
 
 > `optional` **apiKey**: `string`
 
-Defined in: [packages/agentos/src/api/types.ts:1168](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/types.ts#L1168)
+Defined in: [packages/agentos/src/api/types.ts:1168](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/types.ts#L1168)
 
 Override the provider API key instead of reading from environment variables.
 
@@ -33,7 +33,7 @@ Override the provider API key instead of reading from environment variables.
 
 > `optional` **avatar**: `AvatarConfig`
 
-Defined in: [packages/agentos/src/api/types.ts:1222](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/types.ts#L1222)
+Defined in: [packages/agentos/src/api/types.ts:1234](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/types.ts#L1234)
 
 Avatar visual presentation configuration.
 
@@ -47,7 +47,7 @@ Avatar visual presentation configuration.
 
 > `optional` **baseUrl**: `string`
 
-Defined in: [packages/agentos/src/api/types.ts:1170](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/types.ts#L1170)
+Defined in: [packages/agentos/src/api/types.ts:1170](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/types.ts#L1170)
 
 Override the provider base URL (useful for local proxies or Ollama).
 
@@ -61,7 +61,7 @@ Override the provider base URL (useful for local proxies or Ollama).
 
 > `optional` **chainOfThought**: `string` \| `boolean`
 
-Defined in: [packages/agentos/src/api/agent.ts:54](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/agent.ts#L54)
+Defined in: [packages/agentos/src/api/agent.ts:55](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/agent.ts#L55)
 
 Chain-of-thought reasoning instruction.
 - `false` — disable CoT injection.
@@ -74,7 +74,7 @@ Chain-of-thought reasoning instruction.
 
 > `optional` **channels**: `Record`\<`string`, `Record`\<`string`, `unknown`\>\>
 
-Defined in: [packages/agentos/src/api/types.ts:1227](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/types.ts#L1227)
+Defined in: [packages/agentos/src/api/types.ts:1239](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/types.ts#L1239)
 
 Channel adapter configurations keyed by channel name.
 Values are channel-specific option objects passed through opaquely.
@@ -89,7 +89,7 @@ Values are channel-specific option objects passed through opaquely.
 
 > `optional` **cognitiveMechanisms**: [`CognitiveMechanismsConfig`](CognitiveMechanismsConfig.md)
 
-Defined in: [packages/agentos/src/api/types.ts:1264](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/types.ts#L1264)
+Defined in: [packages/agentos/src/api/types.ts:1276](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/types.ts#L1276)
 
 Cognitive mechanisms config — 8 neuroscience-backed memory mechanisms.
 All HEXACO-modulated (emotionality, conscientiousness, openness, etc.).
@@ -116,7 +116,7 @@ and the mechanisms config is ignored.
 
 > `optional` **controls**: [`ResourceControls`](ResourceControls.md)
 
-Defined in: [packages/agentos/src/api/types.ts:1241](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/types.ts#L1241)
+Defined in: [packages/agentos/src/api/types.ts:1253](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/types.ts#L1253)
 
 Resource limits (tokens, cost, time) applied to the entire run.
 
@@ -130,7 +130,7 @@ Resource limits (tokens, cost, time) applied to the entire run.
 
 > `optional` **dependsOn**: `string`[]
 
-Defined in: [packages/agentos/src/api/types.ts:1248](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/types.ts#L1248)
+Defined in: [packages/agentos/src/api/types.ts:1260](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/types.ts#L1260)
 
 Names of other agents in the agency that must complete before this agent runs.
 Used with `strategy: 'graph'` to build an explicit dependency DAG.
@@ -152,7 +152,7 @@ Agents with no `dependsOn` are roots and run first.
 
 > `optional` **discovery**: `DiscoveryConfig`
 
-Defined in: [packages/agentos/src/api/types.ts:1204](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/types.ts#L1204)
+Defined in: [packages/agentos/src/api/types.ts:1216](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/types.ts#L1216)
 
 Runtime capability discovery configuration.
 
@@ -166,7 +166,7 @@ Runtime capability discovery configuration.
 
 > `optional` **emergent**: `EmergentConfig`
 
-Defined in: [packages/agentos/src/api/types.ts:1218](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/types.ts#L1218)
+Defined in: [packages/agentos/src/api/types.ts:1230](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/types.ts#L1230)
 
 Emergent agent synthesis configuration.
 
@@ -180,7 +180,7 @@ Emergent agent synthesis configuration.
 
 > `optional` **fallbackProviders**: [`FallbackProviderEntry`](FallbackProviderEntry.md)[]
 
-Defined in: [packages/agentos/src/api/agent.ts:64](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/agent.ts#L64)
+Defined in: [packages/agentos/src/api/agent.ts:65](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/agent.ts#L65)
 
 Ordered list of fallback providers to try when the primary provider
 fails with a retryable error (HTTP 402/429/5xx, network errors).
@@ -198,7 +198,7 @@ Applied to every `generate()`, `stream()`, and `session.send()` /
 
 > `optional` **guardrails**: `string`[] \| `GuardrailsConfig`
 
-Defined in: [packages/agentos/src/api/types.ts:1210](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/types.ts#L1210)
+Defined in: [packages/agentos/src/api/types.ts:1222](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/types.ts#L1222)
 
 Guardrail policy identifiers or structured config.
 - `string[]` — shorthand; applies to both input and output.
@@ -214,7 +214,7 @@ Guardrail policy identifiers or structured config.
 
 > `optional` **hitl**: [`HitlConfig`](HitlConfig.md)
 
-Defined in: [packages/agentos/src/api/types.ts:1216](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/types.ts#L1216)
+Defined in: [packages/agentos/src/api/types.ts:1228](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/types.ts#L1228)
 
 Human-in-the-loop approval configuration.
 
@@ -224,11 +224,21 @@ Human-in-the-loop approval configuration.
 
 ***
 
+### hostPolicy?
+
+> `optional` **hostPolicy**: [`HostLLMPolicy`](HostLLMPolicy.md)
+
+Defined in: [packages/agentos/src/api/agent.ts:76](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/agent.ts#L76)
+
+Host-level routing hints forwarded to the high-level generation helpers.
+
+***
+
 ### instructions?
 
 > `optional` **instructions**: `string`
 
-Defined in: [packages/agentos/src/api/types.ts:1164](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/types.ts#L1164)
+Defined in: [packages/agentos/src/api/types.ts:1164](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/types.ts#L1164)
 
 Free-form system instructions prepended to the system prompt.
 
@@ -242,7 +252,7 @@ Free-form system instructions prepended to the system prompt.
 
 > `optional` **maxSteps**: `number`
 
-Defined in: [packages/agentos/src/api/types.ts:1193](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/types.ts#L1193)
+Defined in: [packages/agentos/src/api/types.ts:1193](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/types.ts#L1193)
 
 Maximum number of agentic steps (LLM calls) per invocation. Defaults to `5`.
 
@@ -252,11 +262,33 @@ Maximum number of agentic steps (LLM calls) per invocation. Defaults to `5`.
 
 ***
 
+### maxTokens?
+
+> `optional` **maxTokens**: `number`
+
+Defined in: [packages/agentos/src/api/types.ts:1205](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/types.ts#L1205)
+
+Upper bound on completion tokens for each LLM call the agent makes.
+Forwarded to the underlying `generateText` / `streamText` call on
+every `generate()`, `stream()`, and `session.send()` invocation.
+
+Caps tail spend when a model misbehaves and yaps past the intended
+output size — without it, calls fall back to the provider default
+(OpenAI 4096, Anthropic 4096-8192). Set to ~2× the agent's typical
+response size so normal calls finish naturally and only runaway
+generations hit the cap. Omit to use the provider default.
+
+#### Inherited from
+
+`BaseAgentConfig.maxTokens`
+
+***
+
 ### memory?
 
 > `optional` **memory**: `boolean` \| `MemoryConfig`
 
-Defined in: [packages/agentos/src/api/types.ts:1200](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/types.ts#L1200)
+Defined in: [packages/agentos/src/api/types.ts:1212](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/types.ts#L1212)
 
 Memory configuration.
 - `true` — enable in-memory conversation history with default settings.
@@ -273,7 +305,7 @@ Memory configuration.
 
 > `optional` **memoryProvider**: `any`
 
-Defined in: [packages/agentos/src/api/agent.ts:131](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/agent.ts#L131)
+Defined in: [packages/agentos/src/api/agent.ts:134](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/agent.ts#L134)
 
 Optional memory provider.  When provided:
 - `session.send()`/`stream()` calls `memory.getContext()` before each turn
@@ -287,7 +319,7 @@ Optional memory provider.  When provided:
 
 > `optional` **model**: `string`
 
-Defined in: [packages/agentos/src/api/types.ts:1157](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/types.ts#L1157)
+Defined in: [packages/agentos/src/api/types.ts:1157](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/types.ts#L1157)
 
 Model identifier. Accepted in two formats:
 - `"provider:model"` — e.g. `"openai:gpt-4o"`.
@@ -303,7 +335,7 @@ Model identifier. Accepted in two formats:
 
 > `optional` **name**: `string`
 
-Defined in: [packages/agentos/src/api/types.ts:1166](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/types.ts#L1166)
+Defined in: [packages/agentos/src/api/types.ts:1166](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/types.ts#L1166)
 
 Display name for the agent, injected into the system prompt.
 
@@ -317,7 +349,7 @@ Display name for the agent, injected into the system prompt.
 
 > `optional` **observability**: `ObservabilityConfig`
 
-Defined in: [packages/agentos/src/api/types.ts:1237](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/types.ts#L1237)
+Defined in: [packages/agentos/src/api/types.ts:1249](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/types.ts#L1249)
 
 Observability and telemetry configuration.
 
@@ -331,7 +363,7 @@ Observability and telemetry configuration.
 
 > `optional` **on**: [`AgencyCallbacks`](AgencyCallbacks.md)
 
-Defined in: [packages/agentos/src/api/types.ts:1239](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/types.ts#L1239)
+Defined in: [packages/agentos/src/api/types.ts:1251](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/types.ts#L1251)
 
 Event callbacks fired at various lifecycle points during the run.
 
@@ -345,7 +377,7 @@ Event callbacks fired at various lifecycle points during the run.
 
 > `optional` **onAfterGeneration**: (`result`) => `Promise`\<`void` \| [`GenerationHookResult`](GenerationHookResult.md)\>
 
-Defined in: [packages/agentos/src/api/agent.ts:121](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/agent.ts#L121)
+Defined in: [packages/agentos/src/api/agent.ts:124](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/agent.ts#L124)
 
 Post-generation hook, called after each LLM step.
 
@@ -365,7 +397,7 @@ Post-generation hook, called after each LLM step.
 
 > `optional` **onBeforeGeneration**: (`context`) => `Promise`\<`void` \| [`GenerationHookContext`](GenerationHookContext.md)\>
 
-Defined in: [packages/agentos/src/api/agent.ts:119](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/agent.ts#L119)
+Defined in: [packages/agentos/src/api/agent.ts:122](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/agent.ts#L122)
 
 Pre-generation hook, called before each LLM step.
 
@@ -385,7 +417,7 @@ Pre-generation hook, called before each LLM step.
 
 > `optional` **onBeforeToolExecution**: (`info`) => `Promise`\<[`ToolCallHookInfo`](ToolCallHookInfo.md) \| `null`\>
 
-Defined in: [packages/agentos/src/api/agent.ts:123](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/agent.ts#L123)
+Defined in: [packages/agentos/src/api/agent.ts:126](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/agent.ts#L126)
 
 Pre-tool-execution hook.
 
@@ -405,7 +437,7 @@ Pre-tool-execution hook.
 
 > `optional` **onFallback**: (`error`, `fallbackProvider`) => `void`
 
-Defined in: [packages/agentos/src/api/agent.ts:71](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/agent.ts#L71)
+Defined in: [packages/agentos/src/api/agent.ts:72](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/agent.ts#L72)
 
 Callback invoked when a fallback provider is about to be tried.
 
@@ -433,7 +465,7 @@ The provider identifier being tried next.
 
 > `optional` **output**: `unknown`
 
-Defined in: [packages/agentos/src/api/types.ts:1233](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/types.ts#L1233)
+Defined in: [packages/agentos/src/api/types.ts:1245](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/types.ts#L1245)
 
 Output schema for structured generation.
 Accepts a Zod schema at runtime; typed as `unknown` here to avoid a
@@ -449,7 +481,7 @@ hard dependency on the `zod` package in the types layer.
 
 > `optional` **permissions**: `PermissionsConfig`
 
-Defined in: [packages/agentos/src/api/types.ts:1214](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/types.ts#L1214)
+Defined in: [packages/agentos/src/api/types.ts:1226](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/types.ts#L1226)
 
 Fine-grained tool and resource permission overrides.
 
@@ -463,7 +495,7 @@ Fine-grained tool and resource permission overrides.
 
 > `optional` **personality**: `Partial`\<\{ `agreeableness`: `number`; `conscientiousness`: `number`; `emotionality`: `number`; `extraversion`: `number`; `honesty`: `number`; `openness`: `number`; \}\>
 
-Defined in: [packages/agentos/src/api/types.ts:1175](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/types.ts#L1175)
+Defined in: [packages/agentos/src/api/types.ts:1175](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/types.ts#L1175)
 
 HEXACO-inspired personality trait overrides (0–1 scale).
 Encoded as a human-readable trait string appended to the system prompt.
@@ -478,7 +510,7 @@ Encoded as a human-readable trait string appended to the system prompt.
 
 > `optional` **provenance**: `ProvenanceConfig`
 
-Defined in: [packages/agentos/src/api/types.ts:1235](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/types.ts#L1235)
+Defined in: [packages/agentos/src/api/types.ts:1247](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/types.ts#L1247)
 
 Provenance and audit-trail configuration.
 
@@ -492,7 +524,7 @@ Provenance and audit-trail configuration.
 
 > `optional` **provider**: `string`
 
-Defined in: [packages/agentos/src/api/types.ts:1162](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/types.ts#L1162)
+Defined in: [packages/agentos/src/api/types.ts:1162](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/types.ts#L1162)
 
 Provider name (e.g. `"openai"`, `"anthropic"`, `"ollama"`).
 Auto-detected from environment API keys when omitted.
@@ -507,7 +539,7 @@ Auto-detected from environment API keys when omitted.
 
 > `optional` **rag**: `RagConfig`
 
-Defined in: [packages/agentos/src/api/types.ts:1202](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/types.ts#L1202)
+Defined in: [packages/agentos/src/api/types.ts:1214](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/types.ts#L1214)
 
 Retrieval-Augmented Generation configuration.
 
@@ -521,7 +553,7 @@ Retrieval-Augmented Generation configuration.
 
 > `optional` **responseSchema**: `ZodType`\<`unknown`, `unknown`, `$ZodTypeInternals`\<`unknown`, `unknown`\>\>
 
-Defined in: [packages/agentos/src/api/agent.ts:117](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/agent.ts#L117)
+Defined in: [packages/agentos/src/api/agent.ts:120](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/agent.ts#L120)
 
 Optional Zod schema for validating the LLM's structured output.
 
@@ -552,7 +584,7 @@ console.log(result.parsed?.entities); // string[]
 
 > `optional` **router**: [`IModelRouter`](IModelRouter.md)
 
-Defined in: [packages/agentos/src/api/agent.ts:73](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/agent.ts#L73)
+Defined in: [packages/agentos/src/api/agent.ts:74](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/agent.ts#L74)
 
 Model router for intelligent provider selection per-call.
 
@@ -562,7 +594,7 @@ Model router for intelligent provider selection per-call.
 
 > `optional` **routerParams**: `Partial`\<[`ModelRouteParams`](ModelRouteParams.md)\>
 
-Defined in: [packages/agentos/src/api/agent.ts:93](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/agent.ts#L93)
+Defined in: [packages/agentos/src/api/agent.ts:96](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/agent.ts#L96)
 
 Routing hints passed to the model router's `selectModel()` call.
 
@@ -588,7 +620,7 @@ tools are declared).
 
 > `optional` **security**: `object`
 
-Defined in: [packages/agentos/src/api/types.ts:1212](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/types.ts#L1212)
+Defined in: [packages/agentos/src/api/types.ts:1224](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/types.ts#L1224)
 
 Security tier controlling permitted tools and capabilities.
 
@@ -606,7 +638,7 @@ Security tier controlling permitted tools and capabilities.
 
 > `optional` **skills**: [`SkillEntry`](SkillEntry.md)[]
 
-Defined in: [packages/agentos/src/api/agent.ts:136](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/agent.ts#L136)
+Defined in: [packages/agentos/src/api/agent.ts:139](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/agent.ts#L139)
 
 Optional skill entries to inject into the system prompt.
 Skill content is appended to the system prompt as markdown sections.
@@ -617,7 +649,7 @@ Skill content is appended to the system prompt as markdown sections.
 
 > `optional` **systemBlocks**: [`SystemContentBlock`](SystemContentBlock.md)[]
 
-Defined in: [packages/agentos/src/api/agent.ts:143](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/agent.ts#L143)
+Defined in: [packages/agentos/src/api/agent.ts:146](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/agent.ts#L146)
 
 Structured system prompt blocks with cache breakpoints.
 When provided, takes precedence over the assembled string from
@@ -630,7 +662,7 @@ Use this for prompt caching support with Anthropic.
 
 > `optional` **tools**: [`AdaptableToolInput`](../type-aliases/AdaptableToolInput.md)
 
-Defined in: [packages/agentos/src/api/types.ts:1191](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/types.ts#L1191)
+Defined in: [packages/agentos/src/api/types.ts:1191](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/types.ts#L1191)
 
 Tools available to the agent on every call.
 
@@ -649,7 +681,7 @@ Accepts:
 
 > `optional` **usageLedger**: [`AgentOSUsageLedgerOptions`](AgentOSUsageLedgerOptions.md)
 
-Defined in: [packages/agentos/src/api/agent.ts:47](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/agent.ts#L47)
+Defined in: [packages/agentos/src/api/agent.ts:48](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/agent.ts#L48)
 
 Top-level usage ledger shorthand for backward compatibility.
 When present, forwarded to `observability.usageLedger` internally.
@@ -660,7 +692,7 @@ When present, forwarded to `observability.usageLedger` internally.
 
 > `optional` **voice**: `VoiceConfig`
 
-Defined in: [packages/agentos/src/api/types.ts:1220](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/types.ts#L1220)
+Defined in: [packages/agentos/src/api/types.ts:1232](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/types.ts#L1232)
 
 Voice interface configuration.
 

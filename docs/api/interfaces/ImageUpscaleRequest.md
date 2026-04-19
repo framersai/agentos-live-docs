@@ -1,6 +1,6 @@
 # Interface: ImageUpscaleRequest
 
-Defined in: [packages/agentos/src/media/images/IImageProvider.ts:253](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/images/IImageProvider.ts#L253)
+Defined in: [packages/agentos/src/media/images/IImageProvider.ts:253](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/images/IImageProvider.ts#L253)
 
 Provider-level request for image upscaling / super-resolution.
 
@@ -13,7 +13,7 @@ Passed to [IImageProvider.upscaleImage](IImageProvider.md#upscaleimage) by the h
 
 > `optional` **height**: `number`
 
-Defined in: [packages/agentos/src/media/images/IImageProvider.ts:263](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/images/IImageProvider.ts#L263)
+Defined in: [packages/agentos/src/media/images/IImageProvider.ts:263](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/images/IImageProvider.ts#L263)
 
 Target height in pixels (alternative to `scale`).
 
@@ -23,7 +23,7 @@ Target height in pixels (alternative to `scale`).
 
 > **image**: `Buffer`
 
-Defined in: [packages/agentos/src/media/images/IImageProvider.ts:257](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/images/IImageProvider.ts#L257)
+Defined in: [packages/agentos/src/media/images/IImageProvider.ts:257](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/images/IImageProvider.ts#L257)
 
 Source image as a raw `Buffer`.
 
@@ -33,7 +33,7 @@ Source image as a raw `Buffer`.
 
 > **modelId**: `string`
 
-Defined in: [packages/agentos/src/media/images/IImageProvider.ts:255](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/images/IImageProvider.ts#L255)
+Defined in: [packages/agentos/src/media/images/IImageProvider.ts:255](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/images/IImageProvider.ts#L255)
 
 Model identifier to use for upscaling.
 
@@ -43,7 +43,7 @@ Model identifier to use for upscaling.
 
 > `optional` **providerOptions**: `Record`\<`string`, `unknown`\> \| [`ImageProviderOptionBag`](ImageProviderOptionBag.md)
 
-Defined in: [packages/agentos/src/media/images/IImageProvider.ts:265](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/images/IImageProvider.ts#L265)
+Defined in: [packages/agentos/src/media/images/IImageProvider.ts:265](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/images/IImageProvider.ts#L265)
 
 Arbitrary provider-specific options.
 
@@ -53,7 +53,7 @@ Arbitrary provider-specific options.
 
 > `optional` **scale**: `2` \| `4`
 
-Defined in: [packages/agentos/src/media/images/IImageProvider.ts:259](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/images/IImageProvider.ts#L259)
+Defined in: [packages/agentos/src/media/images/IImageProvider.ts:259](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/images/IImageProvider.ts#L259)
 
 Integer scale factor (e.g. `2` or `4`).
 
@@ -63,6 +63,6 @@ Integer scale factor (e.g. `2` or `4`).
 
 > `optional` **width**: `number`
 
-Defined in: [packages/agentos/src/media/images/IImageProvider.ts:261](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/media/images/IImageProvider.ts#L261)
+Defined in: [packages/agentos/src/media/images/IImageProvider.ts:261](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/images/IImageProvider.ts#L261)
 
 Target width in pixels (alternative to `scale`).

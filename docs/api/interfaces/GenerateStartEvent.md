@@ -1,6 +1,6 @@
 # Interface: GenerateStartEvent
 
-Defined in: [packages/agentos/src/query-router/types.ts:1009](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/query-router/types.ts#L1009)
+Defined in: [packages/agentos/src/query-router/types.ts:1009](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/query-router/types.ts#L1009)
 
 Emitted when answer generation begins.
 
@@ -10,7 +10,7 @@ Emitted when answer generation begins.
 
 > **contextChunkCount**: `number`
 
-Defined in: [packages/agentos/src/query-router/types.ts:1012](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/query-router/types.ts#L1012)
+Defined in: [packages/agentos/src/query-router/types.ts:1012](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/query-router/types.ts#L1012)
 
 Number of context chunks provided to the generator.
 
@@ -20,7 +20,7 @@ Number of context chunks provided to the generator.
 
 > **timestamp**: `number`
 
-Defined in: [packages/agentos/src/query-router/types.ts:1014](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/query-router/types.ts#L1014)
+Defined in: [packages/agentos/src/query-router/types.ts:1014](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/query-router/types.ts#L1014)
 
 Timestamp when generation started.
 
@@ -30,4 +30,4 @@ Timestamp when generation started.
 
 > **type**: `"generate:start"`
 
-Defined in: [packages/agentos/src/query-router/types.ts:1010](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/query-router/types.ts#L1010)
+Defined in: [packages/agentos/src/query-router/types.ts:1010](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/query-router/types.ts#L1010)

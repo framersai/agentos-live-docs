@@ -1,6 +1,6 @@
 # Interface: ButtonCallbackData
 
-Defined in: [packages/agentos/src/channels/types.ts:272](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/channels/types.ts#L272)
+Defined in: [packages/agentos/src/channels/types.ts:272](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/types.ts#L272)
 
 Button callback event data.
 
@@ -10,7 +10,7 @@ Button callback event data.
 
 > **buttonId**: `string`
 
-Defined in: [packages/agentos/src/channels/types.ts:274](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/channels/types.ts#L274)
+Defined in: [packages/agentos/src/channels/types.ts:274](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/types.ts#L274)
 
 ***
 
@@ -18,7 +18,7 @@ Defined in: [packages/agentos/src/channels/types.ts:274](https://github.com/fram
 
 > **callbackId**: `string`
 
-Defined in: [packages/agentos/src/channels/types.ts:273](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/channels/types.ts#L273)
+Defined in: [packages/agentos/src/channels/types.ts:273](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/types.ts#L273)
 
 ***
 
@@ -26,7 +26,7 @@ Defined in: [packages/agentos/src/channels/types.ts:273](https://github.com/fram
 
 > **messageId**: `string`
 
-Defined in: [packages/agentos/src/channels/types.ts:276](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/channels/types.ts#L276)
+Defined in: [packages/agentos/src/channels/types.ts:276](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/types.ts#L276)
 
 ***
 
@@ -34,4 +34,4 @@ Defined in: [packages/agentos/src/channels/types.ts:276](https://github.com/fram
 
 > **sender**: [`RemoteUser`](RemoteUser.md)
 
-Defined in: [packages/agentos/src/channels/types.ts:275](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/channels/types.ts#L275)
+Defined in: [packages/agentos/src/channels/types.ts:275](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/types.ts#L275)

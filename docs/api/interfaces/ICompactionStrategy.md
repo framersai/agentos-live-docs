@@ -1,6 +1,6 @@
 # Interface: ICompactionStrategy
 
-Defined in: [packages/agentos/src/memory/pipeline/context/types.ts:145](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/pipeline/context/types.ts#L145)
+Defined in: [packages/agentos/src/memory/pipeline/context/types.ts:145](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/pipeline/context/types.ts#L145)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/memory/pipeline/context/types.ts:145](https://
 
 > `readonly` **name**: [`CompactionStrategy`](../type-aliases/CompactionStrategy.md)
 
-Defined in: [packages/agentos/src/memory/pipeline/context/types.ts:146](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/pipeline/context/types.ts#L146)
+Defined in: [packages/agentos/src/memory/pipeline/context/types.ts:146](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/pipeline/context/types.ts#L146)
 
 ## Methods
 
@@ -16,7 +16,7 @@ Defined in: [packages/agentos/src/memory/pipeline/context/types.ts:146](https://
 
 > **compact**(`input`, `config`): `Promise`\<[`CompactionResult`](CompactionResult.md)\>
 
-Defined in: [packages/agentos/src/memory/pipeline/context/types.ts:147](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/memory/pipeline/context/types.ts#L147)
+Defined in: [packages/agentos/src/memory/pipeline/context/types.ts:147](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/pipeline/context/types.ts#L147)
 
 #### Parameters
 

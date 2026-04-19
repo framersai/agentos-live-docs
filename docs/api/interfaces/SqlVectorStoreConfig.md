@@ -1,6 +1,6 @@
 # Interface: SqlVectorStoreConfig
 
-Defined in: [packages/agentos/src/rag/vector\_stores/SqlVectorStore.ts:77](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/vector_stores/SqlVectorStore.ts#L77)
+Defined in: [packages/agentos/src/rag/vector\_stores/SqlVectorStore.ts:77](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/vector_stores/SqlVectorStore.ts#L77)
 
 Configuration for SQL-backed vector store.
 
@@ -18,7 +18,7 @@ SqlVectorStoreConfig
 
 > `optional` **adapter**: `StorageAdapter`
 
-Defined in: [packages/agentos/src/rag/vector\_stores/SqlVectorStore.ts:91](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/vector_stores/SqlVectorStore.ts#L91)
+Defined in: [packages/agentos/src/rag/vector\_stores/SqlVectorStore.ts:91](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/vector_stores/SqlVectorStore.ts#L91)
 
 Pre-initialized storage adapter.
 If provided, `storage` config is ignored.
@@ -29,7 +29,7 @@ If provided, `storage` config is ignored.
 
 > `optional` **customProps**: `Record`\<`string`, `any`\>
 
-Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:32](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/vector-store/IVectorStore.ts#L32)
+Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:32](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/vector-store/IVectorStore.ts#L32)
 
 Any other custom properties or
 configurations specific to this provider instance not covered by standard fields.
@@ -44,7 +44,7 @@ configurations specific to this provider instance not covered by standard fields
 
 > `optional` **defaultEmbeddingDimension**: `number`
 
-Defined in: [packages/agentos/src/rag/vector\_stores/SqlVectorStore.ts:96](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/vector_stores/SqlVectorStore.ts#L96)
+Defined in: [packages/agentos/src/rag/vector\_stores/SqlVectorStore.ts:96](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/vector_stores/SqlVectorStore.ts#L96)
 
 Default embedding dimension for new collections.
 
@@ -54,7 +54,7 @@ Default embedding dimension for new collections.
 
 > `optional` **enableFullTextSearch**: `boolean`
 
-Defined in: [packages/agentos/src/rag/vector\_stores/SqlVectorStore.ts:109](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/vector_stores/SqlVectorStore.ts#L109)
+Defined in: [packages/agentos/src/rag/vector\_stores/SqlVectorStore.ts:109](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/vector_stores/SqlVectorStore.ts#L109)
 
 Enable full-text search index provisioning.
 Creates FTS5 virtual tables for SQLite or tsvector columns for PostgreSQL.
@@ -71,7 +71,7 @@ true
 
 > `optional` **hnswDimensions**: `number`
 
-Defined in: [packages/agentos/src/rag/vector\_stores/SqlVectorStore.ts:137](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/vector_stores/SqlVectorStore.ts#L137)
+Defined in: [packages/agentos/src/rag/vector\_stores/SqlVectorStore.ts:137](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/vector_stores/SqlVectorStore.ts#L137)
 
 Embedding dimensions for the HNSW sidecar index.
 
@@ -87,7 +87,7 @@ Embedding dimensions for the HNSW sidecar index.
 
 > `optional` **hnswSidecarFactory**: () => `HnswIndexSidecar`
 
-Defined in: [packages/agentos/src/rag/vector\_stores/SqlVectorStore.ts:144](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/vector_stores/SqlVectorStore.ts#L144)
+Defined in: [packages/agentos/src/rag/vector\_stores/SqlVectorStore.ts:144](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/vector_stores/SqlVectorStore.ts#L144)
 
 Optional custom HNSW sidecar factory.
 Primarily useful for tests or advanced hosts that need to provide their
@@ -103,7 +103,7 @@ own ANN sidecar implementation.
 
 > `optional` **hnswThreshold**: `number`
 
-Defined in: [packages/agentos/src/rag/vector\_stores/SqlVectorStore.ts:131](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/vector_stores/SqlVectorStore.ts#L131)
+Defined in: [packages/agentos/src/rag/vector\_stores/SqlVectorStore.ts:131](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/vector_stores/SqlVectorStore.ts#L131)
 
 Document count threshold before HNSW sidecar activates.
 Below this count, brute-force cosine similarity is used.
@@ -121,7 +121,7 @@ Set to 0 to disable HNSW. Set to Infinity to always use brute-force.
 
 > **id**: `string`
 
-Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:30](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/core/vector-store/IVectorStore.ts#L30)
+Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:30](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/vector-store/IVectorStore.ts#L30)
 
 A unique identifier for this specific provider instance
 (e.g., "pinecone-main-prod", "weaviate-dev-local"). This ID is used by the
@@ -137,7 +137,7 @@ VectorStoreManager to retrieve this provider.
 
 > `optional` **pipeline**: `TextProcessingPipeline`
 
-Defined in: [packages/agentos/src/rag/vector\_stores/SqlVectorStore.ts:123](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/vector_stores/SqlVectorStore.ts#L123)
+Defined in: [packages/agentos/src/rag/vector\_stores/SqlVectorStore.ts:123](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/vector_stores/SqlVectorStore.ts#L123)
 
 Optional text processing pipeline for hybrid search tokenization.
 Replaces the built-in regex tokenizer with configurable stemming,
@@ -153,7 +153,7 @@ createRagPipeline from nlp
 
 > `optional` **similarityMetric**: `"cosine"` \| `"euclidean"` \| `"dotproduct"`
 
-Defined in: [packages/agentos/src/rag/vector\_stores/SqlVectorStore.ts:102](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/vector_stores/SqlVectorStore.ts#L102)
+Defined in: [packages/agentos/src/rag/vector\_stores/SqlVectorStore.ts:102](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/vector_stores/SqlVectorStore.ts#L102)
 
 Default similarity metric.
 
@@ -169,7 +169,7 @@ Default similarity metric.
 
 > `optional` **storage**: `StorageResolutionOptions`
 
-Defined in: [packages/agentos/src/rag/vector\_stores/SqlVectorStore.ts:85](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/vector_stores/SqlVectorStore.ts#L85)
+Defined in: [packages/agentos/src/rag/vector\_stores/SqlVectorStore.ts:85](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/vector_stores/SqlVectorStore.ts#L85)
 
 Storage adapter configuration.
 Passed directly to `resolveStorageAdapter()`.
@@ -180,7 +180,7 @@ Passed directly to `resolveStorageAdapter()`.
 
 > `optional` **tablePrefix**: `string`
 
-Defined in: [packages/agentos/src/rag/vector\_stores/SqlVectorStore.ts:115](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/vector_stores/SqlVectorStore.ts#L115)
+Defined in: [packages/agentos/src/rag/vector\_stores/SqlVectorStore.ts:115](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/vector_stores/SqlVectorStore.ts#L115)
 
 Table name prefix for all vector store tables.
 
@@ -196,7 +196,7 @@ Table name prefix for all vector store tables.
 
 > **type**: `"sql"`
 
-Defined in: [packages/agentos/src/rag/vector\_stores/SqlVectorStore.ts:79](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/rag/vector_stores/SqlVectorStore.ts#L79)
+Defined in: [packages/agentos/src/rag/vector\_stores/SqlVectorStore.ts:79](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/vector_stores/SqlVectorStore.ts#L79)
 
 Must be 'sql' for this provider
 

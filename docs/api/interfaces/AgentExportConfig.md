@@ -1,6 +1,6 @@
 # Interface: AgentExportConfig
 
-Defined in: [packages/agentos/src/api/agentExportCore.ts:18](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/agentExportCore.ts#L18)
+Defined in: [packages/agentos/src/api/agentExportCore.ts:18](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/agentExportCore.ts#L18)
 
 Portable agent configuration envelope.
 
@@ -14,7 +14,7 @@ variant (single agent vs. multi-agent agency).
 
 > `optional` **adaptive**: `boolean`
 
-Defined in: [packages/agentos/src/api/agentExportCore.ts:41](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/agentExportCore.ts#L41)
+Defined in: [packages/agentos/src/api/agentExportCore.ts:41](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/agentExportCore.ts#L41)
 
 Whether runtime strategy adaptation is enabled.
 
@@ -24,7 +24,7 @@ Whether runtime strategy adaptation is enabled.
 
 > `optional` **agents**: `Record`\<`string`, `BaseAgentConfig`\>
 
-Defined in: [packages/agentos/src/api/agentExportCore.ts:35](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/agentExportCore.ts#L35)
+Defined in: [packages/agentos/src/api/agentExportCore.ts:35](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/agentExportCore.ts#L35)
 
 Sub-agent roster keyed by agent name. Present for agency exports.
 
@@ -34,7 +34,7 @@ Sub-agent roster keyed by agent name. Present for agency exports.
 
 > **config**: `BaseAgentConfig`
 
-Defined in: [packages/agentos/src/api/agentExportCore.ts:32](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/agentExportCore.ts#L32)
+Defined in: [packages/agentos/src/api/agentExportCore.ts:32](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/agentExportCore.ts#L32)
 
 The full agent configuration.
 
@@ -44,7 +44,7 @@ The full agent configuration.
 
 > **exportedAt**: `string`
 
-Defined in: [packages/agentos/src/api/agentExportCore.ts:23](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/agentExportCore.ts#L23)
+Defined in: [packages/agentos/src/api/agentExportCore.ts:23](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/agentExportCore.ts#L23)
 
 ISO 8601 timestamp of when the export was created.
 
@@ -54,7 +54,7 @@ ISO 8601 timestamp of when the export was created.
 
 > `optional` **maxRounds**: `number`
 
-Defined in: [packages/agentos/src/api/agentExportCore.ts:44](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/agentExportCore.ts#L44)
+Defined in: [packages/agentos/src/api/agentExportCore.ts:44](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/agentExportCore.ts#L44)
 
 Maximum orchestration rounds for iterative strategies.
 
@@ -64,7 +64,7 @@ Maximum orchestration rounds for iterative strategies.
 
 > `optional` **metadata**: `object`
 
-Defined in: [packages/agentos/src/api/agentExportCore.ts:47](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/agentExportCore.ts#L47)
+Defined in: [packages/agentos/src/api/agentExportCore.ts:47](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/agentExportCore.ts#L47)
 
 Human-readable metadata about the export (name, author, tags, etc.).
 
@@ -90,7 +90,7 @@ Human-readable metadata about the export (name, author, tags, etc.).
 
 > `optional` **strategy**: [`AgencyStrategy`](../type-aliases/AgencyStrategy.md)
 
-Defined in: [packages/agentos/src/api/agentExportCore.ts:38](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/agentExportCore.ts#L38)
+Defined in: [packages/agentos/src/api/agentExportCore.ts:38](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/agentExportCore.ts#L38)
 
 Orchestration strategy. Present for agency exports.
 
@@ -100,7 +100,7 @@ Orchestration strategy. Present for agency exports.
 
 > **type**: `"agent"` \| `"agency"`
 
-Defined in: [packages/agentos/src/api/agentExportCore.ts:29](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/agentExportCore.ts#L29)
+Defined in: [packages/agentos/src/api/agentExportCore.ts:29](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/agentExportCore.ts#L29)
 
 Discriminator: `'agent'` for a single-agent export, `'agency'` for
 a multi-agent export that includes a sub-agent roster.
@@ -111,6 +111,6 @@ a multi-agent export that includes a sub-agent roster.
 
 > **version**: `"1.0.0"`
 
-Defined in: [packages/agentos/src/api/agentExportCore.ts:20](https://github.com/framersai/agentos/blob/e72831f0f0d93a558f6ab38097d3d29cfcd4c629/src/api/agentExportCore.ts#L20)
+Defined in: [packages/agentos/src/api/agentExportCore.ts:20](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/agentExportCore.ts#L20)
 
 Schema version for forward-compatible deserialization.
