@@ -49,14 +49,14 @@ console.log(result.sources);
 
 ## Bundled Platform Knowledge
 
-The QueryRouter ships with **244 pre-built knowledge entries** that cover the AgentOS platform surface:
+The QueryRouter ships with **260 pre-built knowledge entries** that cover the AgentOS platform surface:
 
 | Category | Count |
 |----------|-------|
-| **Tools** | 105 |
-| **Skills** | 80 |
-| **FAQ** | 30 |
-| **API** | 14 |
+| **Tools** | 110 |
+| **Skills** | 82 |
+| **FAQ** | 38 |
+| **API** | 15 |
 | **Troubleshooting** | 15 |
 
 Platform knowledge is loaded from `knowledge/platform-corpus.json` inside `@framers/agentos` and merged into the same corpus as your project docs during `init()`.

@@ -50,7 +50,7 @@ console.log(snapshot.prompt);
 
 The curated skills ecosystem ships as two packages:
 
-- `@framers/agentos-skills`: Content (69 SKILL.md files + registry.json)
+- `@framers/agentos-skills`: Content (88 SKILL.md files + registry.json)
 - `@framers/agentos-skills-registry`: Catalog SDK (SKILLS_CATALOG, query helpers, snapshot factories)
 
 It supports a lightweight import path:

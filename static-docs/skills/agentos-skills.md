@@ -5,7 +5,7 @@ sidebar_position: 6
 
 # @framers/agentos-skills
 
-The skills **content** package — 69 curated SKILL.md prompt modules + a `registry.json` index.
+The skills **content** package — 88 curated SKILL.md prompt modules + a `registry.json` index.
 
 ```bash
 npm install @framers/agentos-skills
@@ -17,21 +17,21 @@ npm install @framers/agentos-skills
 
 | What ships                  | Description                                                                 |
 | --------------------------- | --------------------------------------------------------------------------- |
-| `registry/curated/*/SKILL.md` | 69 curated skill files (developer tools, productivity, social, voice, etc.) |
+| `registry/curated/*/SKILL.md` | 88 curated skill files (developer tools, productivity, social, voice, etc.) |
 | `registry.json`             | Machine-readable index of all bundled skills (name, category, description)  |
 
 ## How It Relates to Other Packages
 
 ```
 @framers/agentos/skills               <- Engine (SkillLoader, SkillRegistry, path utils)
-@framers/agentos-skills               <- Content (this package — 69 SKILL.md files)
+@framers/agentos-skills               <- Content (this package — 88 SKILL.md files)
 @framers/agentos-skills-registry      <- Catalog SDK (SKILLS_CATALOG, query helpers, factories)
 ```
 
 This mirrors the extensions layout:
 
 ```
-@framers/agentos-extensions            <- Content (107 extension implementations)
+@framers/agentos-extensions            <- Content (115 extension implementations)
 @framers/agentos-extensions-registry   <- Catalog SDK (CHANNEL_CATALOG, TOOL_CATALOG, etc.)
 ```
 

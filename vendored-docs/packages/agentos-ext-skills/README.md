@@ -4,7 +4,7 @@ AgentOS extension pack that provides **skills discovery + enablement tools** for
 
 > **Note:** This package was renamed from `@framers/agentos-skills` to `@framers/agentos-ext-skills`
 > in the wunderland-sol workspace to avoid a naming collision with the main
-> `@framers/agentos-skills` content package (which ships 69 curated SKILL.md files,
+> `@framers/agentos-skills` content package (which ships 88 curated SKILL.md files,
 > registry.json, and types.d.ts). The two packages serve different purposes:
 > `@framers/agentos-skills` is content-only data, while this package is an extension
 > pack that provides runtime tools for discovering and enabling skills.
@@ -12,7 +12,7 @@ AgentOS extension pack that provides **skills discovery + enablement tools** for
 This extension is intended to be used alongside:
 
 - `@framers/agentos` (core runtime -- the skills engine lives at `@framers/agentos/skills`)
-- `@framers/agentos-skills` (content: 69 curated SKILL.md files + registry.json + types)
+- `@framers/agentos-skills` (content: 88 curated SKILL.md files + registry.json + types)
 - `@framers/agentos-skills-registry` (catalog SDK: query helpers + lazy-loading factories)
 
 ## Tools

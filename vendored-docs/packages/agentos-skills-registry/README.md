@@ -1,6 +1,6 @@
 # @framers/agentos-skills-registry
 
-Curated skills registry for [AgentOS](https://github.com/framersai/agentos) — 69 SKILL.md prompt modules, typed catalog, and lazy-loading factories.
+Curated skills registry for [AgentOS](https://github.com/framersai/agentos) — 88 SKILL.md prompt modules, typed catalog, and lazy-loading factories.
 
 [![npm](https://img.shields.io/npm/v/@framers/agentos-skills-registry?logo=npm&color=cb3837)](https://www.npmjs.com/package/@framers/agentos-skills-registry)
 
@@ -12,7 +12,7 @@ npm install @framers/agentos-skills-registry
 
 This is the **catalog SDK** for AgentOS skills. It contains:
 
-- **69 curated SKILL.md files** — prompt modules spanning developer tooling, productivity, research, social automation, voice, memory, and more
+- **88 curated SKILL.md files** — prompt modules spanning developer tooling, productivity, research, social automation, voice, memory, and more
 - **registry.json** — machine-readable index of all skills with metadata
 - **Static catalog** (`SKILLS_CATALOG`) — typed array with query helpers
 - **Registry factories** — `createCuratedSkillRegistry()`, `createCuratedSkillSnapshot()` (requires `@framers/agentos`)
