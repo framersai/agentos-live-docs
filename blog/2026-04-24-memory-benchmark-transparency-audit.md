@@ -145,24 +145,47 @@ That abstention prompt is tuned for LongMemEval-S, where abstention is the corre
 
 We initially wrote that fixing it "would require LOCOMO-specific prompt calibration, which would be the kind of benchmark-specific tuning we criticize other vendors for." Then we reconsidered. A reusable CLI flag (`--no-abstention`) that any user can opt into on any benchmark isn't benchmark-specific code — it's a capability. We shipped the flag, ran the tuned configuration on LOCOMO, and published both rows.
 
-### Stage F-2: we tuned LOCOMO transparently (modest gain)
+### Stage F-2: we tuned, mis-published, caught our own bug, and re-ran
 
-Two knobs changed from the OOD row: `--reader-top-k 20` (up from default 10) and `--no-abstention` (new flag, exposed at the CLI, not LOCOMO-hardcoded in-adapter). Same HybridRetriever, same reader, same judge, same seed, same rubric.
+This subsection's first version, posted earlier the same day, claimed `--no-abstention` + K=20 lifted LOCOMO from 49.9% to 51.5% (+1.6pp), and called out as the "most informative finding" that adversarial accuracy stayed flat under `--no-abstention`. Both claims were wrong.
 
-| LOCOMO config | N | Accuracy | 95% CI | $/correct | Avg latency |
-|---|---:|---:|---|---:|---:|
-| Tier 1 canonical OOD | 1986 | 49.9% | [47.7, 52.1] | $0.0123 | 2.58s |
-| **Tier 1 canonical + `--no-abstention` K=20** | 1986 | **51.5%** | **[49.2, 53.7]** | **$0.0099** | **1.45s** |
+The `--no-abstention` flag was silently dropped at runtime by a missing field in our `resolveRunConfig` function. TypeScript could not catch it (the type-system guard only checked that every optional config key exists on `RunConfig`, not that `resolveRunConfig` propagates each one). The fingerprint unit tests passed because they bypassed `resolveRunConfig` and called the cache-key builder directly. So the run we labeled "K=20 + `--no-abstention` tuned" was actually `K=20` alone with the v9 abstention prompt — the flag had zero runtime effect.
 
-The 1.6pp aggregate lift is inside the CI overlap of the two rows — this is a modest gain at the aggregate level, not a step-change. The tuned configuration wins cleanly on cost (20% cheaper per correct) and latency (44% faster) because the commit-directive produces shorter reader outputs. The gains concentrate where the initial diagnosis predicted — single-hop +2.8pp (20.6% → 23.4%), open-domain +3.2pp (48.5% → 51.7%) — but the sizes are ~20% of what our own handoff predicted (+10-15pp aggregate).
+We caught it from the next experiment's ablation, queued in our own session handoff:
 
-The most informative single data point: adversarial accuracy did NOT collapse. It stayed at 83.6% (+0.2pp, inside CI) even with the abstention directive off. The reader still refuses on questions where evidence is genuinely absent, regardless of prompt wording. `--no-abstention` shifts the refusal bias on borderline evidence; it does not monotonically force commits. That makes the flag safer and more portable than we initially modeled.
+- Run A: `--reader-top-k 20` only (no `--no-abstention`)
+- Run B: `--no-abstention` only (default K=10)
 
-What the result actually says about LOCOMO: **retrieval architecture is the bottleneck, not abstention calibration.** Our HybridRetriever (tuned for LongMemEval-S's 50-session haystacks) undersamples LOCOMO's 199-260-turn dense histories regardless of K. A K bump from 10 to 20 at a fixed candidate pool is not enough to close the gap.
+Run A finished in seconds with `totalUsd=$0` (full cache hit) and accuracy 51.5% — bit-for-bit identical to the published "tuned" number. The first case's `actualOutput` matched the published Stage F-2 case-0 byte-for-byte. That was the smoking gun: with a different config, you should see fresh API calls (cache miss) or different answers (cache key collision implies same effective config). Same answers + same cache key + claimed-different config = silent flag drop.
 
-Full per-category breakdown, diagnosis, and ablation proposal: [STAGE_F2_LOCOMO_ABSTENTION_TUNING_2026-04-24.md](https://github.com/framersai/agentos/blob/master/packages/agentos-bench/docs/STAGE_F2_LOCOMO_ABSTENTION_TUNING_2026-04-24.md). Per-case artifacts at `results/runs/2026-04-24T21-17-04-526--locomo--gpt-4o--full-cognitive--ingest.json`.
+Fix: one line in `resolveRunConfig` (`noAbstention: cfg.noAbstention,`). Test that prevents recurrence: a contract test driven by the canonical `OPTIONAL_RUN_CONFIG_KEYS` tuple — for every key, set a sample value, run `resolveRunConfig`, assert the resolved config has the same value. Adding a future flag without updating `resolveRunConfig` now fails CI immediately. The full bug story plus the audit confirming no other shipping number is affected: [STAGE_F2_CORRECTION_2026-04-24.md](https://github.com/framersai/agentos/blob/master/packages/agentos-bench/docs/STAGE_F2_CORRECTION_2026-04-24.md).
 
-The OOD row stays on the leaderboard. The tuned row sits next to it with its CI visible. Readers see the full picture and can decide whether the $0.0024/correct cost delta and 1.1s latency delta are worth the borderline accuracy bump for their workload.
+Re-ran the full ablation with the fix. All four LOCOMO configurations at N=1986, gpt-4o reader, seed=42:
+
+| LOCOMO config | Accuracy | 95% CI | $/correct | Avg latency | Δ vs OOD |
+|---|---:|---|---:|---:|---:|
+| **K=20 alone (Pareto-best LOCOMO tuning)** | **51.5%** | [49.2, 53.7] | **$0.0099** | 1.45s | **+1.6pp** |
+| K=10 baseline (Stage F-1 OOD, no tuning) | 49.9% | [47.7, 52.1] | $0.0123 | 2.58s | — |
+| K=20 + `--no-abstention` (Stage F-2 corrected) | 47.3% | [45.2, 49.5] | $0.0107 | 1.20s | −2.6pp |
+| `--no-abstention` alone at K=10 | 42.1% | [40.0, 44.3] | $0.0082 | 1.19s | **−7.8pp** |
+
+The actual mechanism story is the OPPOSITE of what we mis-published. When the prompt directive reaches the reader, **adversarial accuracy DOES collapse** — 83.4% → 56.5% at K=10 (−26.9pp), 83.4% → 54.3% at K=20 (−29.1pp). LOCOMO is 22.5% adversarial cases by count, so the adversarial loss outweighs everything else in aggregate. Per category at K=20 + `--no-abstention`:
+
+| Category | n | OOD baseline | K=20 + --no-abstention | Δ |
+|---|---:|---:|---:|---:|
+| temporal | 96 | 27.1% | 40.6% | **+13.5pp** |
+| open-domain | 841 | 48.5% | 55.2% | +6.7pp |
+| single-hop | 282 | 20.6% | 22.3% | +1.7pp |
+| multi-hop | 321 | 39.6% | 41.1% | +1.5pp |
+| adversarial | 446 | 83.4% | 54.3% | **−29.1pp** |
+
+`--no-abstention` is a category-specific tuning knob, not a Pareto improvement. For workloads with no adversarial Q's that need refusal, the temporal +13.5pp and open-domain +6.7pp gains are real. On LOCOMO's distribution, the adversarial −29pp wipes them out.
+
+The Pareto-best LOCOMO tuning we found is **K=20 retrieval alone** — 51.5% [49.2, 53.7] at $0.0099/correct, 1.45s avg. That row stays on the leaderboard. The `--no-abstention` row stays as a transparent regression so readers see the trade-off explicitly.
+
+Per-case artifacts: K=20 alone at `results/runs/2026-04-24T22-10-47-514--locomo--gpt-4o--full-cognitive--ingest.json`; Stage F-2 corrected at `results/runs/2026-04-24T22-05-01-855--locomo--gpt-4o--full-cognitive--ingest.json`; Stage F-3 Run B at `results/runs/2026-04-24T22-10-48-759--locomo--gpt-4o--full-cognitive--ingest.json`. The pre-fix corrupt Stage F-2 run is preserved at `results/runs/2026-04-24T21-17-04-526--locomo--gpt-4o--full-cognitive--ingest.json` for git-history transparency.
+
+This is exactly the failure mode the rest of this post criticizes other vendors for — a published number whose configuration didn't actually run. We found it ourselves in the next experiment's ablation, fixed it on the same day with a TDD'd one-line patch and a contract test that prevents recurrence, and the corrected numbers contradict our original headline. Audit verified the bug touched only Stage F-2 LOCOMO; every other published number (LongMemEval-S Tier 1/2a/2b/3, LOCOMO OOD, Stage A hold-out, Stage B/C negative results, Stage G judge probes) is unaffected.
 
 ### Stage G-LOCOMO: judge FPR probe on our LOCOMO cases (0% FPR)
 
@@ -182,7 +205,7 @@ Cost: $0.04. Elapsed: 167 seconds. Standalone script at [`src/scripts/stage-g-lo
 
 Two conclusions from the 63pp gap between Penfield's LOCOMO FPR and ours:
 
-1. **Our LOCOMO numbers (49.9% OOD, 51.5% tuned) are not judge-inflated at our rubric's strictness.** The 16pp gap to Mem0's claimed 66-68% is not sitting on judge noise floor on our side.
+1. **Our LOCOMO numbers (49.9% OOD, 51.5% K=20 tuned, 47.3% K=20 + `--no-abstention` corrected) are not judge-inflated at our rubric's strictness.** The 14.5–16.5pp gap to Mem0's claimed 66-68% is not sitting on judge noise floor on our side.
 2. **LOCOMO's default judge + rubric is the FPR source, not LOCOMO's gold-answer format.** The short entity-style gold answers are perfectly judge-able when the rubric is strict and the judge model is current-generation. Any published LOCOMO score that ran the default `gpt-4o-mini` judge is sitting on 30-60pp of accepted-wrong-answer noise by Penfield's measurement. That's a warning about how to interpret every LOCOMO number in the space, including Mem0's.
 
 We cannot, from our side, prove that Mem0's 66-68% is judge-inflated. That would require replicating Mem0 through our harness. What we can prove: on OUR rubric, LOCOMO is judge-able at a false-positive floor of 0%. Any vendor who wants to claim a LOCOMO number should publish their judge model, their rubric, and their FPR probe output. The gap between "we ran the benchmark" and "we validated the judge" is the gap between a claim and a measurement.
