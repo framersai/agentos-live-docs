@@ -104,6 +104,42 @@ Our current Phase B N=500 numbers on LongMemEval-S at `gpt-4o` reader. Primary s
 
 Tier 3 is the policy-router tier. Instead of shipping a single memory architecture, the router picks a backend per query based on the `gpt-5-mini` classifier's predicted question category. The `minimize-cost` preset routes SSA / SSU / TR / KU to Tier 1 (where those categories Pareto-dominate at baseline) and only pays the Tier 2b OM premium on MS and SSP (where the architectural lift earns it).
 
+### The LLM-as-judge memory router is a first-class agentos primitive
+
+The 76.6% headline above isn't bench-only tier logic. It's produced by [`@framers/agentos/memory-router`](https://github.com/framersai/agentos/tree/master/packages/agentos/src/memory-router) — a shipping agentos primitive that consumers import and use directly:
+
+```ts
+import {
+  LLMMemoryClassifier,
+  MemoryRouter,
+  FunctionMemoryDispatcher,
+} from '@framers/agentos/memory-router';
+
+const router = new MemoryRouter({
+  classifier: new LLMMemoryClassifier({ llm: openaiAdapter }),
+  preset: 'minimize-cost',
+  budget: { perQueryUsd: 0.05, mode: 'cheapest-fallback' },
+  dispatcher: new FunctionMemoryDispatcher({
+    'canonical-hybrid': async (q, p) => hybridRetriever.retrieve(q, p),
+    'observational-memory-v10': async (q, p) => omV10.recall(q, p),
+    'observational-memory-v11': async (q, p) => omV11.recall(q, p),
+  }),
+});
+
+const { decision, traces, backend } = await router.decideAndDispatch(query, { topK: 10 });
+```
+
+This means the benchmark number and the production primitive are the same piece of code. Not a paper, not a spec, not a bench-only flag — a TypeScript primitive with 76 passing tests, provider-agnostic LLM adapter, budget-aware dispatch, and shipping presets calibrated from the Phase B N=500 cost-accuracy points you see in the table above.
+
+The pattern generalizes. agentos already ships three LLM-as-judge decision points in production:
+- `@framers/agentos/query-router` for general Q&A (vector search / graph / keyword fallback)
+- `@framers/agentos/memory-router` for memory recall (the new primitive, this post)
+- `@framers/agentos/core/guardrails` + `agentos-ext-grounding-guard` for output validation
+
+Same LLM-as-judge contract at each boundary: classify context, pick strategy, execute. Memory-router is the input-stage guardrail that picks architecture; the output-stage guardrails validate what came back. We named it "multi-stage guardrails" internally and the spec for the pattern lives alongside the memory-router README.
+
+What this gives a consumer: one OpenAI API key, one agentos dependency, and the same routing decisions we publish measurements for. No Claude / Gemini / specialized provider accounts required. The classifier talks to a provider-agnostic `IMemoryClassifierLLM` adapter — swap OpenAI, Anthropic, local, or a mock by adapting two methods to the interface.
+
 Compared to the three flat tiers we shipped previously:
 - +1.2pp accuracy over Tier 2b v11 at 7.5× lower $/correct
 - +2.0pp accuracy over Tier 2a v10 at 5.6× lower $/correct
