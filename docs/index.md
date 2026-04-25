@@ -17,10 +17,10 @@ Modular orchestration runtime for AI agent systems.
 npm install @framers/agentos
 ```
 
-:::tip Paracosm — AI Agent Swarm Simulation
-**[Paracosm](https://paracosm.agentos.sh)** is an AI agent swarm simulation engine built on AgentOS. Define any scenario as JSON, run it with AI commanders that have different HEXACO personalities, and watch their decisions diverge into measurably different outcomes.
+:::tip Paracosm: structured world model for AI agents
+**[Paracosm](https://paracosm.agentos.sh)** is a structured world model for AI agents, built on AgentOS. Define a world as JSON, run it with leaders that have different HEXACO personalities, and watch their decisions diverge into measurably different outcomes from an identical seed. Reproducible counterfactual simulations that cover turn-loop civ sims, batch-trajectory digital twins, and batch-point forecasts through one universal result schema.
 
-**[Live Demo](https://paracosm.agentos.sh/sim)** · **[GitHub](https://github.com/framersai/paracosm)** · **[npm](https://www.npmjs.com/package/paracosm)** · **[API Reference](/paracosm)**
+**[Live Demo](https://paracosm.agentos.sh/sim)** · **[GitHub](https://github.com/framersai/paracosm)** · **[npm](https://www.npmjs.com/package/paracosm)** · **[API Reference](/paracosm)** · **[Positioning map](https://github.com/framersai/paracosm/blob/master/docs/positioning/world-model-mapping.md)**
 :::
 
 :::info Join the Community
@@ -97,6 +97,7 @@ graph TB
 ### Architecture & Core
 
 - [System Architecture](/architecture/system-architecture) — System design and core internals
+- [Runtime Status Matrix](/architecture/runtime-status-matrix) — Shipped vs partial vs planned runtime surfaces
 - [Platform Support](/architecture/platform-support) — Supported environments
 - [Tool Calling & Lazy Loading](/architecture/tool-calling-and-loading) — Extension loading, schema-on-demand, and descriptor IDs
 - [Observability (OpenTelemetry)](/architecture/observability) — Traces, metrics, and OTEL-compatible logging (opt-in)
@@ -104,6 +105,7 @@ graph TB
 
 ### Planning & Orchestration
 
+- [Cognitive Pipeline](/features/cognitive-pipeline) — Smart per-message orchestration: LLM-as-judge picks ingest / recall / read strategy per query
 - [Unified Orchestration Layer](/features/unified-orchestration) — One runtime, three authoring APIs
 - [AgentGraph](/features/agent-graph) — Explicit graph builder with node/edge control
 - [workflow() DSL](/features/workflow-dsl) — Deterministic DAG pipelines
@@ -126,6 +128,10 @@ graph TB
 
 - [Cognitive Memory](/features/cognitive-memory) — Personality-modulated memory, retrieval, and consolidation
 - [Working Memory](/features/working-memory) — Markdown notes and Baddeley slot-model working memory
+- [Memory Router](/features/memory-router) — Recall-stage smart orchestration (LLM-as-judge picks recall architecture per query)
+- [Ingest Router](/features/ingest-router) — Input-stage smart orchestration (per-content storage strategy)
+- [Read Router](/features/read-router) — Read-stage smart orchestration (per-query reader strategy)
+- [Adaptive Memory Router](/features/adaptive-memory-router) — Self-calibrating router for non-LongMemEval workloads
 - [RAG Memory](/features/rag-memory) — Vector storage and retrieval
 - [Multimodal RAG](/features/multimodal-rag) — Image and audio embeddings
 - [SQL Storage](/features/sql-storage) — Database adapters
@@ -142,13 +148,14 @@ graph TB
 - [Evaluation Framework](/features/evaluation-framework) — Testing and benchmarks
 - [Cost Optimization](/features/cost-optimization) — Token usage and caching
 
-### Paracosm — AI Simulation Engine
+### Paracosm: structured world model for AI agents
 
-- [Paracosm API Reference](/paracosm) — TypeDoc API for the simulation engine
-- [Live Demo](https://paracosm.agentos.sh/sim) — Run Mars Genesis in your browser
-- [GitHub](https://github.com/framersai/paracosm) — Source code and scenario examples
-- [npm](https://www.npmjs.com/package/paracosm) — `npm install paracosm`
-- [Landing Page](https://paracosm.agentos.sh) — Overview, architecture, and FAQ
+- [Paracosm API Reference](/paracosm): TypeDoc API for the simulation engine
+- [Live Demo](https://paracosm.agentos.sh/sim): Run Mars Genesis in your browser
+- [GitHub](https://github.com/framersai/paracosm): Source code and scenario examples
+- [npm](https://www.npmjs.com/package/paracosm): `npm install paracosm`
+- [Landing Page](https://paracosm.agentos.sh): Overview, architecture, and FAQ
+- [Positioning map](https://github.com/framersai/paracosm/blob/master/docs/positioning/world-model-mapping.md): Where paracosm sits in the world-model landscape
 
 ### Advanced
 

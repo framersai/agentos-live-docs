@@ -129,16 +129,24 @@ const router = new MemoryRouter({
 const { decision, traces, backend } = await router.decideAndDispatch(query, { topK: 10 });
 ```
 
-This means the benchmark number and the production primitive are the same piece of code. Not a paper, not a spec, not a bench-only flag — a TypeScript primitive with 76 passing tests, provider-agnostic LLM adapter, budget-aware dispatch, and shipping presets calibrated from the Phase B N=500 cost-accuracy points you see in the table above.
+This means the benchmark number and the production primitive are the same piece of code. Not a paper, not a spec, not a bench-only flag — a TypeScript primitive with 89 passing tests (the memory-router family), provider-agnostic LLM adapter, budget-aware dispatch, and shipping presets calibrated from the Phase B N=500 cost-accuracy points you see in the table above.
 
-The pattern generalizes. agentos already ships three LLM-as-judge decision points in production:
-- `@framers/agentos/query-router` for general Q&A (vector search / graph / keyword fallback)
-- `@framers/agentos/memory-router` for memory recall (the new primitive, this post)
-- `@framers/agentos/core/guardrails` + `agentos-ext-grounding-guard` for output validation
+The pattern generalizes into the agentos **Cognitive Pipeline** — smart per-message orchestration at every pipeline boundary. agentos now ships three LLM-as-judge router primitives plus a composition layer:
 
-Same LLM-as-judge contract at each boundary: classify context, pick strategy, execute. Memory-router is the input-stage guardrail that picks architecture; the output-stage guardrails validate what came back. We named it "multi-stage guardrails" internally and the spec for the pattern lives alongside the memory-router README.
+| Stage | Primitive | What it picks |
+|---|---|---|
+| Ingest | [`@framers/agentos/ingest-router`](https://github.com/framersai/agentos/tree/master/packages/agentos/src/ingest-router) | storage strategy per content (raw-chunks / summarized / observational / fact-graph / hybrid / skip) |
+| Recall | [`@framers/agentos/memory-router`](https://github.com/framersai/agentos/tree/master/packages/agentos/src/memory-router) | recall architecture per query (canonical-hybrid / OM-v10 / OM-v11) |
+| Read | [`@framers/agentos/read-router`](https://github.com/framersai/agentos/tree/master/packages/agentos/src/read-router) | reader strategy per query+evidence (single-call / two-call extract+answer / commit-vs-abstain / verbatim / scratchpad) |
+| Composition | [`@framers/agentos/cognitive-pipeline`](https://github.com/framersai/agentos/tree/master/packages/agentos/src/cognitive-pipeline) | wires the three stages together |
 
-What this gives a consumer: one OpenAI API key, one agentos dependency, and the same routing decisions we publish measurements for. No Claude / Gemini / specialized provider accounts required. The classifier talks to a provider-agnostic `IMemoryClassifierLLM` adapter — swap OpenAI, Anthropic, local, or a mock by adapting two methods to the interface.
+This is **smart orchestration, not safety guardrails.** Cognitive Pipeline picks strategies — it doesn't block, refuse, or validate output. Safety/policy concerns are a separate, complementary layer (`@framers/agentos/core/guardrails`, `agentos-ext-grounding-guard`, `agentos-ext-topicality`, `agentos-ext-pii-redaction`) that runs after the pipeline finishes. Two stacks, two responsibilities, two distinct mental models.
+
+Same LLM-as-judge contract at every orchestration boundary: classify context, pick strategy, dispatch to a registered executor. Each stage classifier is ~$0.0002 per call. The savings from per-message routing pay for the classifier overhead orders of magnitude over: shipping `minimize-cost` preset costs $0.058/correct because it only pays the OM premium on multi-session and single-session-preference queries; an always-OM pipeline costs $0.44/correct on the same workload.
+
+For workloads whose cost / accuracy profile diverges from LongMemEval-S, the [`AdaptiveMemoryRouter`](https://github.com/framersai/agentos/tree/master/packages/agentos/src/memory-router/adaptive.ts) derives the routing table from your own calibration data. Run a Phase A sweep on your workload, feed the (category, backend, cost, correct) samples into the constructor, and the router builds a workload-specific routing table at startup. No Phase B on someone else's distribution required.
+
+What this gives a consumer: one OpenAI API key, one agentos dependency, and the same routing decisions we publish measurements for. No Claude / Gemini / specialized provider accounts required. Every classifier talks to a provider-agnostic adapter interface — swap OpenAI, Anthropic, local, or a mock by adapting two methods to the interface.
 
 Compared to the three flat tiers we shipped previously:
 - +1.2pp accuracy over Tier 2b v11 at 7.5× lower $/correct

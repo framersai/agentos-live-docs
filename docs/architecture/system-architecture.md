@@ -160,7 +160,7 @@ src/
 │  ConversationHistory · CognitiveMemory · Sentiment · Persona│
 ├──────────────────────┬──────────────────────────────────────┤
 │  Safety & Guardrails │  Tools & Extensions                  │
-│  5-tier security     │  107 extensions, 72 skills           │
+│  5-tier security     │  110 extensions, 88 skills           │
 │  PII · toxicity      │  CLI executor, web search            │
 │  grounding guard     │  capability discovery                │
 ├──────────────────────┴──────────────────────────────────────┤
@@ -739,6 +739,8 @@ For full details, see [Cognitive Memory](/features/cognitive-memory), [Cognitive
 
 The RAG subsystem provides retrieval-augmented generation with multiple vector backends and retrieval strategies.
 
+Runtime truth: the default AgentOS bootstrap path still wires `EmbeddingManager` -> `VectorStoreManager` -> `RetrievalAugmentor`. `UnifiedRetriever` is implemented as a higher-level orchestration layer, but it remains opt-in rather than the default runtime path.
+
 ### Retrieval Pipeline
 
 ```mermaid
@@ -756,8 +758,12 @@ graph LR
 
 The GMI integrates with RAG through persona-configurable hooks:
 - `shouldTriggerRAGRetrieval()` checks `ragConfig.retrievalTriggers` (on user query, on tool failure, on intent detection)
-- `retrievalAugmentor.retrieveContext()` runs the retrieval pipeline
+- `retrievalAugmentor.retrieveContext()` runs the default runtime retrieval pipeline
 - `performPostTurnIngestion()` summarizes and embeds conversation turns
+
+When a host explicitly wires `QueryRouter.setUnifiedRetriever(...)`, plan-aware retrieval can run through `UnifiedRetriever` instead of the legacy dispatcher path. That path is real, but not the default bootstrap today.
+
+Within the default QueryRouter path, `cacheResults` now provides in-memory `route()` result caching, and `verifyCitations` can attach `QueryResult.grounding` by running `CitationVerifier` over retrieved chunks when embeddings are available.
 
 ### Vector Store Backends
 
@@ -767,9 +773,9 @@ Seven `IVectorStore` implementations provide different tradeoffs:
 |---------|---------------------|-------------|----------|
 | `HnswlibVectorStore` | 2-10ms (ANN) | File-based | Production (self-hosted) |
 | `InMemoryVectorStore` | 10-50ms (linear scan) | None | Development / testing |
-| `PostgresVectorStore` | 5-20ms (pgvector) | PostgreSQL | Production (cloud) |
-| `PineconeVectorStore` | 20-50ms (API) | Managed cloud | Serverless scale |
-| `QdrantVectorStore` | 5-15ms (API) | Managed/self-hosted | High-volume production |
+| `PostgresVectorStore` | 5-20ms (pgvector) | PostgreSQL | Production (SQL-native) |
+| `QdrantVectorStore` | 5-15ms (API) | Managed/self-hosted | Default OSS production |
+| `PineconeVectorStore` | 20-50ms (API) | Managed cloud | Optional vendor-managed scale |
 | `SqliteVectorStore` | 10-30ms | SQLite file | Edge / embedded |
 | `IndexedDBVectorStore` | 20-80ms | Browser | Client-side apps |
 
