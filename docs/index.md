@@ -128,10 +128,11 @@ graph TB
 
 - [Cognitive Memory](/features/cognitive-memory) — Personality-modulated memory, retrieval, and consolidation
 - [Working Memory](/features/working-memory) — Markdown notes and Baddeley slot-model working memory
-- [Memory Router](/features/memory-router) — Recall-stage smart orchestration (LLM-as-judge picks recall architecture per query)
-- [Ingest Router](/features/ingest-router) — Input-stage smart orchestration (per-content storage strategy)
+- [Memory Router](/features/memory-router) — Recall-stage smart orchestration (LLM-as-judge picks recall architecture per query). New in 0.2.13: `EntityRetrievalRanker` recall-stage primitive (Mem0-v3-style entity-overlap re-rank). New in 0.3.0+ (post-2026-04-26 ablations): `RetrievalConfigRouter` primitive — per-query retrieval-config dispatch among `(canonical, hyde, topk50, topk50-mult5, hyde-topk50, hyde-topk50-mult5)`, calibrated from LongMemEval-M Phase A N=54 ablation matrix (per-category-oracle ceiling 70.4% on M vs static combined 57.4%; +13 pp lift via per-query LLM-as-judge dispatch).
+- [Ingest Router](/features/ingest-router) — Input-stage smart orchestration (per-content storage strategy). New in 0.2.12 / 0.2.13: `SummarizedIngestExecutor` (Anthropic Contextual Retrieval recipe), `RawChunksIngestExecutor`, `SkipIngestExecutor`, `EntityExtractor`, `EntityLinkingIngestExecutor` (Mem0-v3-style fact-graph ingest).
 - [Read Router](/features/read-router) — Read-stage smart orchestration (per-query reader strategy)
 - [Adaptive Memory Router](/features/adaptive-memory-router) — Self-calibrating router for non-LongMemEval workloads
+- [Brain Storage](/features/sql-storage) — Universal SQLite + Postgres backbone (new in 0.3.0). `Brain.openSqlite(path)` / `Brain.openPostgres(connStr, { brainId })`. Multi-tenant via `brain_id` discriminator. Portable export via `Brain.exportToSqlite(path)`.
 - [RAG Memory](/features/rag-memory) — Vector storage and retrieval
 - [Multimodal RAG](/features/multimodal-rag) — Image and audio embeddings
 - [SQL Storage](/features/sql-storage) — Database adapters
