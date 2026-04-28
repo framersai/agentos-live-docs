@@ -1,6 +1,6 @@
 ---
 title: "85.6% on LongMemEval-S at $0.009/correct, 4-Second Latency: Per-Category Reader Routing on Canonical-Hybrid"
-description: "AgentOS Phase B at full N=500 lands at 85.6% [82.4%, 88.6%] — beating Mastra OM gpt-4o (84.2%) by +1.4 pp at the same gpt-4o-class reader, at 4.6× lower cost-per-correct ($0.0090 vs prior $0.041) and 5.3× lower average latency (4 seconds vs 21 seconds; 15× faster on the p95 tail). The architectural unlock: dropping the Tier 3 minimize-cost policy router (whose MS/SSP → OM-v11 calibration was derived from CharHash-era data and now actively hurts at the semantic-embedder era) AND adding a standalone gpt-5-mini classifier so the reader-router can dispatch per category on the canonical-hybrid path. Plus 7 stress-tested adjacent configurations that all regress, validating the new headline as empirically Pareto-optimal."
+description: "AgentOS Phase B at full N=500 lands at 85.6% [82.4%, 88.6%] — beating Mastra OM gpt-4o (84.2%) on accuracy by +1.4 pp at the same gpt-4o-class reader. Cost ($0.0090/correct) and latency (4 sec avg, 7 sec p95) are AgentOS-internal Pareto improvements: 4.6× cheaper and 5.3× faster than our prior 84.8% headline (Mastra does not publish $/correct or latency numbers, so direct cost/latency comparisons against Mastra are unmeasurable). The architectural unlock: dropping the Tier 3 minimize-cost policy router (whose MS/SSP → OM-v11 calibration was derived from CharHash-era data and now actively hurts at the semantic-embedder era) AND adding a standalone gpt-5-mini classifier so the reader-router can dispatch per category on the canonical-hybrid path. Plus 7 stress-tested adjacent configurations that all regress, validating the new headline as empirically Pareto-optimal in the tested parameter space."
 authors: [jddunn]
 tags: [memory, benchmarks, longmemeval, longmemeval-s, reader-router, dispatch, pareto-optimization, canonical-hybrid, sem-embedding]
 keywords: [longmemeval-s, agentos memory router, per-category dispatch, reader tier router, cost-pareto memory, gpt-4o vs gpt-5-mini, canonical hybrid retrieval, semantic embedder]
@@ -18,7 +18,7 @@ LongMemEval-S Phase B at full N=500, `gpt-4o-2024-08-06` judge, rubric `2026-04-
 | AgentOS Tier 3 min-cost + sem-embed (gpt-4o reader only) | 83.2% [79.8%, 86.4%] | $0.0521 | 73 234 ms | — | [link](2026-04-27-longmemeval-s-83-with-semantic-embedder.md) |
 | Supermemory gpt-4o | 81.6% | — | — | — | [link](https://supermemory.ai/research/) |
 
-**Beats Mastra OM gpt-4o by +1.4 pp at 4.6× lower cost AND 5.3× lower latency. Within statistical CI of EmergenceMem.**
+**+1.4 pp accuracy over Mastra OM gpt-4o at the same gpt-4o-class reader. Within statistical CI of EmergenceMem.** Cost-per-correct ($0.0090) and latency (4 sec avg, 7 sec p95) are AgentOS-internal Pareto improvements vs our own prior 84.8% headline — Mastra and EmergenceMem do not publish cost or latency numbers, so direct cost/latency comparisons against them are unmeasurable.
 
 <!-- truncate -->
 
@@ -165,15 +165,17 @@ export const MIN_COST_BEST_CAT_2026_04_28_TABLE: ReaderRouterTable = {
 
 ## Methodology disclosures
 
-Apples-to-apples here:
-- **Same answer reader (gpt-4o)** as Mastra OM gpt-4o, Supermemory gpt-4o, EmergenceMem.
-- **Same dataset** — LongMemEval-S, 500 cases, ~115k-token haystacks.
-- **Same judge harness** (`gpt-4o-2024-08-06` with rubric `2026-04-18.1`); judge false-positive rate **1% [0%, 3%]** at n=100 measured under [Stage G probe](https://github.com/framersai/agentos-bench/blob/master/docs/SESSION_2026-04-24_TRANSPARENT_NEGATIVES.md).
+What's apples-to-apples in this post:
+- **Accuracy comparison vs Mastra OM gpt-4o, Supermemory gpt-4o, EmergenceMem**: same answer reader (gpt-4o), same dataset (LongMemEval-S, 500 cases, ~115k-token haystacks). The +1.4 pp lift over Mastra OM gpt-4o is an apples-to-apples accuracy comparison at the same reader tier.
+- **Cost-per-correct and latency comparisons vs the prior AgentOS 84.8% reader-router-with-policy headline**: both runs measured at full Phase B N=500 on the same hardware, same OpenAI/Cohere endpoints, same per-case `costTracker.record()` instrumentation, same wall-clock latency capture. The 4.6× cost reduction and 5.3× latency reduction are real intra-AgentOS measurements.
+- **Same judge harness** across all AgentOS rows (`gpt-4o-2024-08-06` with rubric `2026-04-18.1`); judge false-positive rate **1% [0%, 3%]** at n=100 measured under [Stage G probe](https://github.com/framersai/agentos-bench/blob/master/docs/SESSION_2026-04-24_TRANSPARENT_NEGATIVES.md).
 - **Bootstrap 95% CI at 10 000 resamples** (most vendors don't publish CIs).
 
-Caveats inline:
-- Managed-platform numbers (Mastra, Mem0 v3, agentmemory) run on curated infrastructure with platform-specific optimizations. Mem0's own production-stack number on LOCOMO is [66.9%](https://mem0.ai/blog/state-of-ai-agent-memory-2026), suggesting the 93.4% LongMemEval-S number reflects the managed-evaluation harness more than the architecture.
-- Mastra OM's 94.9% headline uses `gpt-5-mini` as both reader and observer (cross-provider observer setups aren't single-provider reproducible at gpt-4o-class accuracy).
+What's NOT apples-to-apples — explicit caveats so the comparisons stay honest:
+- **Cost and latency comparisons vs Mastra (and Supermemory, EmergenceMem) are NOT measurable** because those vendors do not publish $/correct or per-case latency numbers in their blog posts. The cost/latency wins quoted in this post are AgentOS-internal (vs our own prior headline). To produce an apples-to-apples cost/latency comparison vs Mastra, we would need to clone Mastra's library, run it against the same 500 cases on the same hardware with our cost/latency instrumentation, and report the per-case numbers — work for a future post.
+- **Judge methodology differs across vendors.** Our judge is `gpt-4o-2024-08-06` with rubric `2026-04-18.1`, FPR 1%. Mastra's judge model and rubric are not disclosed publicly; their 84.2% gpt-4o number was measured under a different judge harness. Penfield Labs measured 62.81% FPR on LOCOMO's default `gpt-4o-mini` judge with the original rubric — judge differences alone can shift accuracy numbers by 5-10 pp on these datasets.
+- **Managed-platform numbers** (Mastra, Mem0 v3, agentmemory) run on curated infrastructure with platform-specific optimizations. Mem0's own production-stack number on LOCOMO is [66.9%](https://mem0.ai/blog/state-of-ai-agent-memory-2026), suggesting the 93.4% LongMemEval-S number reflects the managed-evaluation harness more than the architecture.
+- **Mastra OM's 94.9% headline** uses `gpt-5-mini` as both reader and observer (cross-provider observer setups aren't single-provider reproducible at gpt-4o-class accuracy).
 - The reader router invokes a per-query gpt-5-mini classifier in addition to the answer reader. Total per-case LLM calls: 2 (classifier + reader). Compared to the 84.8% Tier 3 + reader-router headline which also fires a classifier (3 calls inside OM-routed cases), the canonical-only headline is strictly fewer LLM calls on average.
 
 The full transparency stack — judge FPR per benchmark, eight documented negative architecture findings (`Stage L`, `Stage I`, `Stage H`, `two-call reader`, `M-tuned compounding on S`, `all-OM dispatch on S`, `gpt-4o classifier upgrade`, `7 stress tests on canonical-hybrid baseline`), cost-Pareto comparisons — is at [`packages/agentos-bench/results/eval-matrix-v1/comparison-table.md`](https://github.com/framersai/agentos-bench/blob/master/results/eval-matrix-v1/comparison-table.md) and [`transparency-notes.md`](https://github.com/framersai/agentos-bench/blob/master/results/eval-matrix-v1/transparency-notes.md).
