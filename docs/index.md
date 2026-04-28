@@ -29,6 +29,51 @@ Questions, feedback, or want to share what you're building? Join us on Discord.
 **[Join Discord](https://wilds.ai/discord)**
 :::
 
+## Classifier-Driven Memory Pipeline
+
+Most memory libraries retrieve on every query. AgentOS gates memory through three independent LLM-as-judge classifiers. Trivial queries skip retrieval entirely. Queries that need memory get the right architecture. The right reader handles each category.
+
+```
+                User query
+                    │
+                    ▼
+    ┌─────────────────────────────────────┐
+    │  Stage 1: QueryClassifier            │  ~$0.0001 / query
+    │  Memory needed at all?               │
+    │    T0 / none ──► answer from context, skip retrieval entirely
+    │    T1+ ──► continue to Stage 2       │
+    └─────────────────────────────────────┘
+                    │ (T1+ only)
+                    ▼
+    ┌─────────────────────────────────────┐
+    │  Stage 2: MemoryRouter               │  reuses Stage 1 classifier output
+    │  Which retrieval architecture?       │
+    │    canonical-hybrid · OM-v10 · OM-v11
+    └─────────────────────────────────────┘
+                    │
+                    ▼
+    ┌─────────────────────────────────────┐
+    │  Stage 3: ReaderRouter               │  reuses Stage 1 classifier output
+    │  Which reader tier?                  │
+    │    gpt-4o (TR/SSU) · gpt-5-mini (others)
+    └─────────────────────────────────────┘
+                    │
+                    ▼
+            Grounded answer
+```
+
+The pipeline costs **one classifier call per query** (Stages 2 and 3 reuse Stage 1 output). The T0 / no-memory gate removes embedding+rerank+reader cost on a substantial fraction of typical agent traffic (greetings, small talk, general knowledge). Per-category dispatch routes the rest to the architecture and reader best-suited to the question type.
+
+**LongMemEval-S Phase B at N=500, gpt-4o judge, bootstrap CI 10k resamples**: 85.6% [82.4%, 88.6%] at $0.0090/correct, 4 second average latency. Beats Mastra OM gpt-4o (84.2% published) on accuracy. Beats EmergenceMem Simple Fast (80.6% measured apples-to-apples in our harness) by +5.0 pp accuracy at 6.5× lower cost-per-correct.
+
+| Stage | Primitive | Source | Decision per query |
+|---|---|---|---|
+| 1 | `QueryClassifier` | [`query-router`](/features/query-routing) | T0/none vs T1/simple vs T2/moderate vs T3/complex |
+| 2 | `MemoryRouter` | [`memory-router`](/features/memory-router) | canonical-hybrid vs observational-memory-v10 vs observational-memory-v11 |
+| 3 | `ReaderRouter` | [`memory-router`](/features/reader-router) (v0.5.5) | gpt-4o vs gpt-5-mini per category |
+
+Reproducible run JSONs, vendor reproductions, full transparency stack: **[github.com/framersai/agentos-bench](https://github.com/framersai/agentos-bench)**.
+
 ## Architecture
 
 ```mermaid
