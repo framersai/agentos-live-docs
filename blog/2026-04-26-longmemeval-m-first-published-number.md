@@ -15,13 +15,13 @@ We just ran LongMemEval-M Phase B at full N=500 and report **30.6% accuracy at $
 
 ## Why no other vendor publishes M
 
-The dataset file is 2.7 GB. V8's max-string-length cap rejects `fs.readFile` on it. Out-of-the-box Node fails to load the dataset before any benchmark code runs. We hit this in Stage J Phase A and documented the [loader fix](https://github.com/framersai/agentos/blob/master/packages/agentos-bench/docs/STAGE_J_BLOCKED_2026-04-25.md): `chain([createReadStream, parser(), streamArray()])` from `stream-json` + `stream-chain`, with a file-size probe that routes >1 GB files through the streaming path while smaller files keep the existing `fs.readFile` fast path. With the loader fixed, peak memory during ingest is bounded by the largest single case (~3 MB).
+The dataset file is 2.7 GB. V8's max-string-length cap rejects `fs.readFile` on it. Out-of-the-box Node fails to load the dataset before any benchmark code runs. We hit this in Stage J Phase A and documented the [loader fix](https://github.com/framersai/agentos-bench/blob/master/docs/STAGE_J_BLOCKED_2026-04-25.md): `chain([createReadStream, parser(), streamArray()])` from `stream-json` + `stream-chain`, with a file-size probe that routes >1 GB files through the streaming path while smaller files keep the existing `fs.readFile` fast path. With the loader fixed, peak memory during ingest is bounded by the largest single case (~3 MB).
 
 The Phase B run cost itself is ~$12 per architecture (500 cases × ~$0.025 per case at `gpt-4o` reader). That is not the gating factor; the loader is. Once the loader is fixed, the run is about as expensive as a LongMemEval-S Phase B — but the architecture story is much harder.
 
 ## The shipping config
 
-Same shipping pipeline as the [76.6% LongMemEval-S Phase B](https://github.com/framersai/agentos/blob/master/packages/agentos-bench/results/LEADERBOARD.md):
+Same shipping pipeline as the [76.6% LongMemEval-S Phase B](https://github.com/framersai/agentos-bench/blob/master/results/LEADERBOARD.md):
 
 - Memory: `full-cognitive` (CharHashEmbedder + the cognitive memory subsystem at default config; HEXACO neutral, mood-neutral)
 - Replay: `ingest` (one `encode()` call per session, matching production cadence)
@@ -44,7 +44,7 @@ At LongMemEval-M scale the `minimize-cost` policy-router preset reduces to canon
 | Latency p95 | 34.076 s |
 | Avg latency | 10.564 s |
 
-Per-category breakdown ([STAGE_J_PHASE_B_FINDINGS_2026-04-25.md](https://github.com/framersai/agentos/blob/master/packages/agentos-bench/docs/STAGE_J_PHASE_B_FINDINGS_2026-04-25.md)):
+Per-category breakdown ([STAGE_J_PHASE_B_FINDINGS_2026-04-25.md](https://github.com/framersai/agentos-bench/blob/master/docs/STAGE_J_PHASE_B_FINDINGS_2026-04-25.md)):
 
 | Category | n | M accuracy | S baseline | Δ at M scale |
 |---|---:|---:|---:|---:|
@@ -62,7 +62,7 @@ The S→M scale gap is **−46 percentage points**, much steeper than the spec's
 
 ## Judge integrity at M scale
 
-The Stage G probe synthesizes topically-adjacent wrong answers via `gpt-5-mini` and sends them to the same judge that scores real answers. The acceptance rate is the judge's effective false-positive rate on the wrong-but-topical class of error. Our Stage G-M probe at n=100 ([STAGE_G_LONGMEMEVAL_M_FINDINGS_2026-04-26.md](https://github.com/framersai/agentos/blob/master/packages/agentos-bench/docs/STAGE_G_LONGMEMEVAL_M_FINDINGS_2026-04-26.md)) measured **2% [0%, 5%]** aggregate. The two false positives concentrated in temporal-reasoning (1/24 = 4.2%) and single-session-preference (1/8 = 12.5%) — both categories accept short, self-confident wrong answers more readily.
+The Stage G probe synthesizes topically-adjacent wrong answers via `gpt-5-mini` and sends them to the same judge that scores real answers. The acceptance rate is the judge's effective false-positive rate on the wrong-but-topical class of error. Our Stage G-M probe at n=100 ([STAGE_G_LONGMEMEVAL_M_FINDINGS_2026-04-26.md](https://github.com/framersai/agentos-bench/blob/master/docs/STAGE_G_LONGMEMEVAL_M_FINDINGS_2026-04-26.md)) measured **2% [0%, 5%]** aggregate. The two false positives concentrated in temporal-reasoning (1/24 = 4.2%) and single-session-preference (1/8 = 12.5%) — both categories accept short, self-confident wrong answers more readily.
 
 | Benchmark | Judge FPR | 95% CI |
 |---|---:|---:|
@@ -78,7 +78,7 @@ For comparison: Penfield Labs measured **62.81%** FPR on LOCOMO's default `gpt-4
 
 The 11.1 pp gap between Stage J Phase A's stratified estimate (41.7% N=12) and Phase B's full-distribution measurement (30.6% N=500) is explained entirely by category-distribution weighting. Phase A used `--sample-per-type 2`, which weights all six categories equally. Phase B uses the true LongMemEval-M distribution, which heavily favors multi-session and temporal-reasoning — the two hardest categories. Both effects reproduce: stratified subsets of memory benchmarks systematically overstate full-distribution accuracy when the dominant categories are also the hardest.
 
-The S→M precision collapse rules in **Stage E (Hindsight 4-network typed observer)** as the v2 architectural push. With multi-session at −44 pp and temporal-reasoning at −57 pp at M scale, the bottleneck is retrieval precision, not signal stacking. Hindsight's [4-network typed observer](https://arxiv.org/html/2512.12818v1) is specifically designed for typed graph traversal across long histories — the architectural primitive missing from our hybrid + Cohere rerank stack at M scale. Spec: [2026-04-26-hindsight-4network-observer-design.md](https://github.com/framersai/agentos/blob/master/packages/agentos-bench/docs/specs/2026-04-26-hindsight-4network-observer-design.md). Budget $500-800. 2-3 weeks. Phase A → Phase B decision gate at +2 pp baseline. v2 publication will pair Stage E with full multi-tier BEAM (100K + 500K + 1M).
+The S→M precision collapse rules in **Stage E (Hindsight 4-network typed observer)** as the v2 architectural push. With multi-session at −44 pp and temporal-reasoning at −57 pp at M scale, the bottleneck is retrieval precision, not signal stacking. Hindsight's [4-network typed observer](https://arxiv.org/html/2512.12818v1) is specifically designed for typed graph traversal across long histories — the architectural primitive missing from our hybrid + Cohere rerank stack at M scale. Spec: [2026-04-26-hindsight-4network-observer-design.md](https://github.com/framersai/agentos-bench/blob/master/docs/specs/2026-04-26-hindsight-4network-observer-design.md). Budget $500-800. 2-3 weeks. Phase A → Phase B decision gate at +2 pp baseline. v2 publication will pair Stage E with full multi-tier BEAM (100K + 500K + 1M).
 
 ## What this rules out
 
@@ -86,7 +86,7 @@ Lightweight signal additions on top of the current pipeline are ruled out. Both 
 
 ## The transparency stack
 
-Every cell in the [v1 evaluation matrix](https://github.com/framersai/agentos/blob/master/packages/agentos-bench/results/eval-matrix-v1/comparison-table.md) ships with:
+Every cell in the [v1 evaluation matrix](https://github.com/framersai/agentos-bench/blob/master/results/eval-matrix-v1/comparison-table.md) ships with:
 
 - Bootstrap 95% CI (10 k Mulberry32 resamples, seed 42)
 - Per-category breakdown
@@ -126,6 +126,6 @@ Per-case run JSON appears at `results/runs/<timestamp>--longmemeval-m--gpt-4o--f
 - [Two Negative Results: Stage L + Stage I](2026-04-26-two-negative-results-stage-l-stage-i.md) — what we tested and dropped at Phase A on LongMemEval-S and LOCOMO
 - [agentos IngestRouter Executors](2026-04-26-agentos-ingest-router-executors.md) — production primitives shipped in agentos 0.2.12 / 0.2.13
 - [Why Memory-Library Benchmarks Don't Mean What You Think](2026-04-24-memory-benchmark-transparency-audit.md) — earlier transparency audit
-- [Stage J Phase B Findings](https://github.com/framersai/agentos/blob/master/packages/agentos-bench/docs/STAGE_J_PHASE_B_FINDINGS_2026-04-25.md) — the run JSON, per-category breakdown, latency profile
-- [Stage G-M Findings](https://github.com/framersai/agentos/blob/master/packages/agentos-bench/docs/STAGE_G_LONGMEMEVAL_M_FINDINGS_2026-04-26.md) — judge integrity probe at M scale
-- [SOTA Cited Evidence](https://github.com/framersai/agentos/blob/master/packages/agentos-bench/docs/SOTA_CITED_EVIDENCE_2026-04-25.md) — primary-source-cited foundation, including LongMemEval-M context
+- [Stage J Phase B Findings](https://github.com/framersai/agentos-bench/blob/master/docs/STAGE_J_PHASE_B_FINDINGS_2026-04-25.md) — the run JSON, per-category breakdown, latency profile
+- [Stage G-M Findings](https://github.com/framersai/agentos-bench/blob/master/docs/STAGE_G_LONGMEMEVAL_M_FINDINGS_2026-04-26.md) — judge integrity probe at M scale
+- [SOTA Cited Evidence](https://github.com/framersai/agentos-bench/blob/master/docs/SOTA_CITED_EVIDENCE_2026-04-25.md) — primary-source-cited foundation, including LongMemEval-M context

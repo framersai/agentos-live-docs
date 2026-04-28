@@ -89,7 +89,7 @@ What's apples-to-apples here:
 
 - **Same reader (gpt-4o)** as Mastra OM gpt-4o, Supermemory gpt-4o, EmergenceMem, agentmemory.
 - **Same benchmark dataset** — LongMemEval-S, 500 cases, ~115k-token haystacks.
-- **Same judge harness** (`gpt-4o-2024-08-06` with rubric `2026-04-18.1`); judge false-positive rate **1% [0%, 3%]** at n=100 measured under [Stage G probe](https://github.com/framersai/agentos/blob/master/packages/agentos-bench/docs/SESSION_2026-04-24_TRANSPARENT_NEGATIVES.md).
+- **Same judge harness** (`gpt-4o-2024-08-06` with rubric `2026-04-18.1`); judge false-positive rate **1% [0%, 3%]** at n=100 measured under [Stage G probe](https://github.com/framersai/agentos-bench/blob/master/docs/SESSION_2026-04-24_TRANSPARENT_NEGATIVES.md).
 - **Bootstrap 95% confidence interval** at 10 000 resamples (most vendors don't publish CIs).
 
 What's NOT apples-to-apples (caveats inline):
@@ -98,7 +98,7 @@ What's NOT apples-to-apples (caveats inline):
 - Mastra OM's 94.9% uses `gpt-5-mini` as the OM observer; their 84.2% number uses `gpt-4o`. Cross-provider observer setups aren't single-provider reproducible.
 - agentmemory at 96.2% has no published CI, no methodology breakdown, and likely uses managed-curated data.
 
-The full transparency stack — judge FPR per benchmark, four documented negative architecture findings, cost-Pareto comparisons — is at [`packages/agentos-bench/results/eval-matrix-v1/comparison-table.md`](https://github.com/framersai/agentos/blob/master/packages/agentos-bench/results/eval-matrix-v1/comparison-table.md) and [`transparency-notes.md`](https://github.com/framersai/agentos/blob/master/packages/agentos-bench/results/eval-matrix-v1/transparency-notes.md).
+The full transparency stack — judge FPR per benchmark, four documented negative architecture findings, cost-Pareto comparisons — is at [`packages/agentos-bench/results/eval-matrix-v1/comparison-table.md`](https://github.com/framersai/agentos-bench/blob/master/results/eval-matrix-v1/comparison-table.md) and [`transparency-notes.md`](https://github.com/framersai/agentos-bench/blob/master/results/eval-matrix-v1/transparency-notes.md).
 
 ## What shipped to fix this for v2
 
@@ -126,7 +126,7 @@ NODE_OPTIONS="--max-old-space-size=8192" pnpm exec tsx src/cli.ts run longmemeva
   --bootstrap-resamples 10000
 ```
 
-Run JSON: [`results/runs/2026-04-27T06-27-24-170--longmemeval-s--gpt-4o--full-cognitive--ingest.json`](https://github.com/framersai/agentos/blob/master/packages/agentos-bench/results/runs/2026-04-27T06-27-24-170--longmemeval-s--gpt-4o--full-cognitive--ingest.json).
+Run JSON: [`results/runs/2026-04-27T06-27-24-170--longmemeval-s--gpt-4o--full-cognitive--ingest.json`](https://github.com/framersai/agentos-bench/blob/master/results/runs/2026-04-27T06-27-24-170--longmemeval-s--gpt-4o--full-cognitive--ingest.json).
 
 ## Next
 
@@ -142,4 +142,4 @@ Both will land in v2 alongside the validated S 83.2% headline as the v1 publicat
 - [First Public LongMemEval-M Number (30.6%)](2026-04-26-longmemeval-m-first-published-number.md)
 - [LongMemEval-M M-tuned config: 30.6% → 45.4%](2026-04-26-longmemeval-m-30-to-57.md)
 - [Memory Benchmark Transparency Audit](2026-04-24-memory-benchmark-transparency-audit.md)
-- [agentos-bench v1 evaluation matrix](https://github.com/framersai/agentos/blob/master/packages/agentos-bench/results/eval-matrix-v1/comparison-table.md)
+- [agentos-bench v1 evaluation matrix](https://github.com/framersai/agentos-bench/blob/master/results/eval-matrix-v1/comparison-table.md)

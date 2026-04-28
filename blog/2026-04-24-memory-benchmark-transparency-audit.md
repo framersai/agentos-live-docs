@@ -155,7 +155,7 @@ Compared to the three flat tiers we shipped previously:
 
 Compared to the published frontier, 76.6% sits above Zep's self-reported 71.2% (and well above Zep's independently-audited 63.8%) but below Mastra's 84.23%, Supermemory's 81.6%, EmergenceMem's 86%, and Mem0's 92-93.4%. We are not the frontier. The cost and latency profile at 76.6% is probably the cheapest path to that accuracy that's been published.
 
-Primary source for our runs: [`packages/agentos-bench/results/LEADERBOARD.md`](https://github.com/framersai/agentos/blob/master/packages/agentos-bench/results/LEADERBOARD.md). Reproducibility via `pnpm exec agentos-bench run longmemeval-s --policy-router --policy-router-preset minimize-cost --bootstrap-resamples 10000 --seed 42`.
+Primary source for our runs: [`packages/agentos-bench/results/LEADERBOARD.md`](https://github.com/framersai/agentos-bench/blob/master/results/LEADERBOARD.md). Reproducibility via `pnpm exec agentos-bench run longmemeval-s --policy-router --policy-router-preset minimize-cost --bootstrap-resamples 10000 --seed 42`.
 
 ## What we're still guilty of, and what we tested after we wrote this
 
@@ -169,7 +169,7 @@ Stratified 80/20 split of the Phase B N=500 data (seed=42), derive routing table
 
 For `maximize-accuracy`, two categories (SSU and KU) differ — calibration-derived routes both to Tier 2a, published routes to Tier 2b. Both backends' accuracy on these two categories is within CI overlap at calibration scale. The published table picks the backend with a non-significant in-sample advantage. End-to-end on the held-out N=97: 71.1% (published) vs 69.1% (calib-derived). The in-sample optimization buys ~2pp on this specific held-out sample, which is inside sampling variance at n=97 (CI ±9pp).
 
-Held-out N=97 aggregate drops 7pp vs full N=500 (69.1% vs 76.6%). Decomposition: 2.8pp from n=97 sampling variance, 4pp from classifier behaving worse on the smaller subset (51% accuracy on full → 46% on held-out). Not an architectural overfit signal. Full methodology and per-category breakdown at [`STAGE_A_HOLDOUT_CALIBRATION_2026-04-24.md`](https://github.com/framersai/agentos/blob/master/packages/agentos-bench/docs/STAGE_A_HOLDOUT_CALIBRATION_2026-04-24.md).
+Held-out N=97 aggregate drops 7pp vs full N=500 (69.1% vs 76.6%). Decomposition: 2.8pp from n=97 sampling variance, 4pp from classifier behaving worse on the smaller subset (51% accuracy on full → 46% on held-out). Not an architectural overfit signal. Full methodology and per-category breakdown at [`STAGE_A_HOLDOUT_CALIBRATION_2026-04-24.md`](https://github.com/framersai/agentos-bench/blob/master/docs/STAGE_A_HOLDOUT_CALIBRATION_2026-04-24.md).
 
 ### LOCOMO out-of-distribution
 
@@ -202,7 +202,7 @@ We caught it from the next experiment's ablation, queued in our own session hand
 
 Run A finished in seconds with `totalUsd=$0` (full cache hit) and accuracy 51.5% — bit-for-bit identical to the published "tuned" number. The first case's `actualOutput` matched the published Stage F-2 case-0 byte-for-byte. That was the smoking gun: with a different config, you should see fresh API calls (cache miss) or different answers (cache key collision implies same effective config). Same answers + same cache key + claimed-different config = silent flag drop.
 
-Fix: one line in `resolveRunConfig` (`noAbstention: cfg.noAbstention,`). Test that prevents recurrence: a contract test driven by the canonical `OPTIONAL_RUN_CONFIG_KEYS` tuple — for every key, set a sample value, run `resolveRunConfig`, assert the resolved config has the same value. Adding a future flag without updating `resolveRunConfig` now fails CI immediately. The full bug story plus the audit confirming no other shipping number is affected: [STAGE_F2_CORRECTION_2026-04-24.md](https://github.com/framersai/agentos/blob/master/packages/agentos-bench/docs/STAGE_F2_CORRECTION_2026-04-24.md).
+Fix: one line in `resolveRunConfig` (`noAbstention: cfg.noAbstention,`). Test that prevents recurrence: a contract test driven by the canonical `OPTIONAL_RUN_CONFIG_KEYS` tuple — for every key, set a sample value, run `resolveRunConfig`, assert the resolved config has the same value. Adding a future flag without updating `resolveRunConfig` now fails CI immediately. The full bug story plus the audit confirming no other shipping number is affected: [STAGE_F2_CORRECTION_2026-04-24.md](https://github.com/framersai/agentos-bench/blob/master/docs/STAGE_F2_CORRECTION_2026-04-24.md).
 
 Re-ran the full ablation with the fix. All four LOCOMO configurations at N=1986, gpt-4o reader, seed=42:
 
@@ -225,7 +225,7 @@ The actual mechanism story is the OPPOSITE of what we mis-published. When the pr
 
 `--no-abstention` is a category-specific tuning knob, not a Pareto improvement. For workloads with no adversarial Q's that need refusal, the temporal +13.5pp and open-domain +6.7pp gains are real. On LOCOMO's distribution, the adversarial −29pp wipes them out.
 
-The Pareto-best LOCOMO tuning we found is **K=20 retrieval alone** — 51.5% [49.2, 53.7] at $0.0099/correct, 1.45s avg. That row stays on the leaderboard. The `--no-abstention` row stays as a transparent regression so readers see the trade-off explicitly.
+The Pareto-best LOCOMO tuning we found is **K=20 retrieval alone** — 51.5% [49.2, 53.7] at $0.0099/correct, 1.45s avg. That row stays on the leaderboard. The clean K=20-only artifact is a full cache hit (`totalUsd=$0`); the published cost comes from the paid pre-fix Stage F-2 artifact, which had the same effective K=20-only runtime configuration. The `--no-abstention` row stays as a transparent regression so readers see the trade-off explicitly.
 
 Per-case artifacts: K=20 alone at `results/runs/2026-04-24T22-10-47-514--locomo--gpt-4o--full-cognitive--ingest.json`; Stage F-2 corrected at `results/runs/2026-04-24T22-05-01-855--locomo--gpt-4o--full-cognitive--ingest.json`; Stage F-3 Run B at `results/runs/2026-04-24T22-10-48-759--locomo--gpt-4o--full-cognitive--ingest.json`. The pre-fix corrupt Stage F-2 run is preserved at `results/runs/2026-04-24T21-17-04-526--locomo--gpt-4o--full-cognitive--ingest.json` for git-history transparency.
 
@@ -245,7 +245,7 @@ Penfield Labs found 62.81% FPR on LOCOMO's default judge (`gpt-4o-mini` with the
 
 (Breakdown by native LOCOMO category: single-hop 0% of 21, multi-hop 0% of 11, open-domain 0% of 45, temporal 0% of 5, adversarial 0% of 18.)
 
-Cost: $0.04. Elapsed: 167 seconds. Standalone script at [`src/scripts/stage-g-locomo-judge-fpr-probe.ts`](https://github.com/framersai/agentos/blob/master/packages/agentos-bench/src/scripts/stage-g-locomo-judge-fpr-probe.ts).
+Cost: $0.04. Elapsed: 167 seconds. Standalone script at [`src/scripts/stage-g-locomo-judge-fpr-probe.ts`](https://github.com/framersai/agentos-bench/blob/master/src/scripts/stage-g-locomo-judge-fpr-probe.ts).
 
 Two conclusions from the 63pp gap between Penfield's LOCOMO FPR and ours:
 
@@ -297,7 +297,7 @@ We ran the probe on LongMemEval-S: 100 randomly sampled cases (seed=42), synthes
 
 The gap between our 1% on LongMemEval-S and Penfield's 62.81% on LOCOMO is big enough to deserve two explanations. First, LOCOMO gold answers are often short entity-style strings ("Sweden", "beach, mountains, forest") where topical-adjacent distractors land inside the judge's tolerance band. LongMemEval-S gold answers are usually complete propositions, which makes topical distractors easier to reject. Second, our `rubricVersion 2026-04-18.1` is stricter than whatever rubric Penfield's audit subject used — rubric strictness is a first-order FPR variable.
 
-Either way, on LongMemEval-S our 76.6% is not meaningfully inflated by judge false-positives. The judge's noise floor (1-3%) is well below the bootstrap CI on the accuracy number (±4pp at n=500). Score differences above that bound are interpretable. The 100-probe run cost $0.05 and took 174 seconds. The standalone script is at [`src/scripts/stage-g-judge-fpr-probe.ts`](https://github.com/framersai/agentos/blob/master/packages/agentos-bench/src/scripts/stage-g-judge-fpr-probe.ts) — any vendor who wants to reproduce this on their own benchmark can fork it in ten minutes.
+Either way, on LongMemEval-S our 76.6% is not meaningfully inflated by judge false-positives. The judge's noise floor (1-3%) is well below the bootstrap CI on the accuracy number (±4pp at n=500). Score differences above that bound are interpretable. The 100-probe run cost $0.05 and took 174 seconds. The standalone script is at [`src/scripts/stage-g-judge-fpr-probe.ts`](https://github.com/framersai/agentos-bench/blob/master/src/scripts/stage-g-judge-fpr-probe.ts) — any vendor who wants to reproduce this on their own benchmark can fork it in ten minutes.
 
 This is the probe every memory-library publication should run and none of the eight vendors in our methodology audit did.
 
@@ -334,7 +334,7 @@ For developers evaluating memory libraries for their own stack, the takeaway is 
 
 Three open-source bench frameworks exist to do that without writing your own harness:
 
-- [**AgentOS agentos-bench**](https://github.com/framersai/agentos/tree/master/packages/agentos-bench) covers LongMemEval-S, LOCOMO, BEAM, and eight cognitive-mechanism micro-benchmarks. Bootstrap CIs, judge-adversarial probes, per-stage retention metric, kill-ladder methodology, per-case run JSONs at `--seed 42`. Depth over breadth.
+- [**AgentOS agentos-bench**](https://github.com/framersai/agentos-bench) covers LongMemEval-S, LOCOMO, BEAM, and eight cognitive-mechanism micro-benchmarks. Bootstrap CIs, judge-adversarial probes, per-stage retention metric, kill-ladder methodology, per-case run JSONs at `--seed 42`. Depth over breadth.
 - [**Supermemory memorybench**](https://github.com/supermemoryai/memorybench) covers LoCoMo, LongMemEval, and ConvoMem across Supermemory, Mem0, and Zep with any of GPT-4o, Claude, or Gemini as judge. Checkpointed pipeline, web UI, MemScore triple. Breadth over depth.
 - [**Mem0 memory-benchmarks**](https://github.com/mem0ai/memory-benchmarks) covers LOCOMO and LongMemEval against Mem0 Cloud and OSS. Mem0-specific but fully open.
 
@@ -346,4 +346,4 @@ What we are is the only vendor in the surveyed set that publishes bootstrap CIs,
 
 ---
 
-*All claims in this post are sourced from primary URLs visited April 24, 2026. The full audit with per-vendor transparency report cards is at [`packages/agentos-bench/docs/COMPETITOR_METHODOLOGY_AUDIT_2026-04-24.md`](https://github.com/framersai/agentos/blob/master/packages/agentos-bench/docs/COMPETITOR_METHODOLOGY_AUDIT_2026-04-24.md). The AgentOS bench implementation is open source at [`packages/agentos-bench`](https://github.com/framersai/agentos/tree/master/packages/agentos-bench).*
+*All claims in this post are sourced from primary URLs visited April 24, 2026. The full audit with per-vendor transparency report cards is at [`packages/agentos-bench/docs/COMPETITOR_METHODOLOGY_AUDIT_2026-04-24.md`](https://github.com/framersai/agentos-bench/blob/master/docs/COMPETITOR_METHODOLOGY_AUDIT_2026-04-24.md). The AgentOS bench implementation is open source at [`packages/agentos-bench`](https://github.com/framersai/agentos-bench).*

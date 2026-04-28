@@ -15,9 +15,9 @@ This post documents both negatives in detail, ships both architectures as produc
 
 ## The shipping baseline
 
-The bench's shipping config on LongMemEval-S Phase B at N=500 is **76.6% accuracy at $0.058 per correct answer** ([LEADERBOARD](https://github.com/framersai/agentos/blob/master/packages/agentos-bench/results/LEADERBOARD.md)). The architecture is the [`@framers/agentos/memory-router`](https://github.com/framersai/agentos/tree/master/packages/agentos/src/memory-router) primitive with the `minimize-cost` preset: a `gpt-5-mini` classifier reads each query and routes to either `canonical-hybrid` (BM25 + dense + Cohere `rerank-v3.5`) or `observational-memory-v11` based on the predicted question category. The min-cost routing table goes to canonical-hybrid for SSA / SSU / TR / KU, and to OM-v11 only for MS / SSP where the architectural lift earns its 1.7-1.8x cost premium.
+The bench's shipping config on LongMemEval-S Phase B at N=500 is **76.6% accuracy at $0.058 per correct answer** ([LEADERBOARD](https://github.com/framersai/agentos-bench/blob/master/results/LEADERBOARD.md)). The architecture is the [`@framers/agentos/memory-router`](https://github.com/framersai/agentos/tree/master/packages/agentos/src/memory-router) primitive with the `minimize-cost` preset: a `gpt-5-mini` classifier reads each query and routes to either `canonical-hybrid` (BM25 + dense + Cohere `rerank-v3.5`) or `observational-memory-v11` based on the predicted question category. The min-cost routing table goes to canonical-hybrid for SSA / SSU / TR / KU, and to OM-v11 only for MS / SSP where the architectural lift earns its 1.7-1.8x cost premium.
 
-On LOCOMO at N=1986, the same canonical-hybrid + Cohere rerank pipeline at `--reader-top-k 20` measures **51.5% [49.2%, 53.7%]** ([STAGE_F2_CORRECTION_2026-04-24.md](https://github.com/framersai/agentos/blob/master/packages/agentos-bench/docs/STAGE_F2_CORRECTION_2026-04-24.md)). The bench-grade judge FPR is 0% [0%, 0%] at n=100 on LOCOMO — Penfield Labs' [62.81%](https://dev.to/penfieldlabs/we-audited-locomo-64-of-the-answer-key-is-wrong-and-the-judge-accepts-up-to-63-of-intentionally-33lg) on the original `gpt-4o-mini` judge does not transfer to our `gpt-4o-2024-08-06` judge + `rubric 2026-04-18.1`.
+On LOCOMO at N=1986, the same canonical-hybrid + Cohere rerank pipeline at `--reader-top-k 20` measures **51.5% [49.2%, 53.7%]** ([STAGE_F2_CORRECTION_2026-04-24.md](https://github.com/framersai/agentos-bench/blob/master/docs/STAGE_F2_CORRECTION_2026-04-24.md)). The bench-grade judge FPR is 0% [0%, 0%] at n=100 on LOCOMO — Penfield Labs' [62.81%](https://dev.to/penfieldlabs/we-audited-locomo-64-of-the-answer-key-is-wrong-and-the-judge-accepts-up-to-63-of-intentionally-33lg) on the original `gpt-4o-mini` judge does not transfer to our `gpt-4o-2024-08-06` judge + `rubric 2026-04-18.1`.
 
 Both numbers are published with bootstrap 95% CIs, per-case run JSONs at seed=42, and a probed judge FPR per benchmark. The ceiling we are trying to push past is well-measured.
 
@@ -25,7 +25,7 @@ Both numbers are published with bootstrap 95% CIs, per-case run JSONs at seed=42
 
 [Anthropic's contextual retrieval recipe](https://www.anthropic.com/news/contextual-retrieval) prepends a per-document summary to every chunk before embedding. Their published measurement: 35% retrieval-failure reduction with embeddings alone, 49% with embeddings + BM25, 67% with reranking. We implemented the recipe verbatim as `SummarizedIngestExecutor` in agentos 0.2.12 ([source](https://github.com/framersai/agentos/tree/master/packages/agentos/src/ingest-router/executors)), wrapping the existing production `SessionSummarizer` to expose it through the `IngestRouter.dispatcher['summarized']` slot. The executor uses `gpt-5-mini` for summarization (no Claude dependency for the shipping path). Each session summary costs about $0.003 with the on-disk content-addressed cache.
 
-Phase A measurement: paired baseline with OpenAI semantic embedder at N=54 stratified gives **74.1%**. Same pipeline plus `--context-summary gpt-5-mini` gives **70.4%**. **−3.7 percentage points aggregate.** Per-category breakdown ([STAGE_L_PHASE_A_FINDINGS_2026-04-25.md](https://github.com/framersai/agentos/blob/master/packages/agentos-bench/docs/STAGE_L_PHASE_A_FINDINGS_2026-04-25.md)):
+Phase A measurement: paired baseline with OpenAI semantic embedder at N=54 stratified gives **74.1%**. Same pipeline plus `--context-summary gpt-5-mini` gives **70.4%**. **−3.7 percentage points aggregate.** Per-category breakdown ([STAGE_L_PHASE_A_FINDINGS_2026-04-25.md](https://github.com/framersai/agentos-bench/blob/master/docs/STAGE_L_PHASE_A_FINDINGS_2026-04-25.md)):
 
 | Category | Baseline | Treatment | Δ |
 |---|---:|---:|---:|
@@ -52,7 +52,7 @@ Stage L is real on documents. It does not generalize to conversational memory un
 
 We implemented the entity-linking primitive as `EntityExtractor` + `EntityLinkingIngestExecutor` (ingest side) and `EntityRetrievalRanker` (recall side) in agentos 0.2.13 ([source](https://github.com/framersai/agentos/tree/master/packages/agentos/src/memory-router/backends)). The ranker takes `combinedScore = (1 - w) * semanticScore + w * entityOverlapRatio`, with `w = 0.5` per the bench-default `--entity-linking 0.5` flag.
 
-Phase A measurement on LOCOMO at N=25 stratified ([STAGE_I_PHASE_A_FINDINGS_2026-04-25.md](https://github.com/framersai/agentos/blob/master/packages/agentos-bench/docs/STAGE_I_PHASE_A_FINDINGS_2026-04-25.md)):
+Phase A measurement on LOCOMO at N=25 stratified ([STAGE_I_PHASE_A_FINDINGS_2026-04-25.md](https://github.com/framersai/agentos-bench/blob/master/docs/STAGE_I_PHASE_A_FINDINGS_2026-04-25.md)):
 
 | Config | Accuracy | $/correct |
 |---|---:|---:|
@@ -87,7 +87,7 @@ Two negative results on lightweight signal additions:
 | L | Anthropic Contextual Retrieval (per-session summary prepended to chunks) | −3.7 pp on LongMemEval-S |
 | I | Mem0-v3-style entity-linking re-rank | −4.0 pp on LOCOMO |
 
-The shipping config (hybrid + Cohere rerank + `reader-top-k 20`) is well-tuned for both LongMemEval-S and LOCOMO. Lightweight pre-processing (Stage L) duplicates work the rerank stage already does. Lightweight post-processing (Stage I) introduces signals the cross-encoder already considers. To push aggregate accuracy further, the next architectural push needs to be substantial — a different mechanism, a different hypothesis. Stage E (Hindsight 4-network typed observer with typed graph traversal across long histories) is the v2 candidate. The spec is [drafted](https://github.com/framersai/agentos/blob/master/packages/agentos-bench/docs/specs/2026-04-26-hindsight-4network-observer-design.md) at $500-800 budget, 2-3 weeks, with an explicit Phase A → Phase B decision gate at +2 pp baseline.
+The shipping config (hybrid + Cohere rerank + `reader-top-k 20`) is well-tuned for both LongMemEval-S and LOCOMO. Lightweight pre-processing (Stage L) duplicates work the rerank stage already does. Lightweight post-processing (Stage I) introduces signals the cross-encoder already considers. To push aggregate accuracy further, the next architectural push needs to be substantial — a different mechanism, a different hypothesis. Stage E (Hindsight 4-network typed observer with typed graph traversal across long histories) is the v2 candidate. The spec is [drafted](https://github.com/framersai/agentos-bench/blob/master/docs/specs/2026-04-26-hindsight-4network-observer-design.md) at $500-800 budget, 2-3 weeks, with an explicit Phase A → Phase B decision gate at +2 pp baseline.
 
 ## What still ships
 
@@ -134,5 +134,5 @@ The next push is Stage E. The bench is ready, the methodology is in place, and t
 - [First Public LongMemEval-M Number](2026-04-26-longmemeval-m-first-published-number.md) — bench-coverage measurement on the harder 500-session-per-haystack variant
 - [agentos IngestRouter Executors](2026-04-26-agentos-ingest-router-executors.md) — production primitives for Stage L and Stage I in agentos core
 - [Why Memory-Library Benchmarks Don't Mean What You Think](2026-04-24-memory-benchmark-transparency-audit.md) — earlier transparency audit (Mem0 / Mastra / Supermemory / Zep / Emergence / MemPalace)
-- [v1 Comprehensive Evaluation Matrix](https://github.com/framersai/agentos/blob/master/packages/agentos-bench/results/eval-matrix-v1/comparison-table.md) — the full transparency-grade matrix this post sits inside
-- [SOTA Cited Evidence](https://github.com/framersai/agentos/blob/master/packages/agentos-bench/docs/SOTA_CITED_EVIDENCE_2026-04-25.md) — primary-source-cited foundation for both stages
+- [v1 Comprehensive Evaluation Matrix](https://github.com/framersai/agentos-bench/blob/master/results/eval-matrix-v1/comparison-table.md) — the full transparency-grade matrix this post sits inside
+- [SOTA Cited Evidence](https://github.com/framersai/agentos-bench/blob/master/docs/SOTA_CITED_EVIDENCE_2026-04-25.md) — primary-source-cited foundation for both stages
