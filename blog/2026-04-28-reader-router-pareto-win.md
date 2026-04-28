@@ -132,15 +132,25 @@ Before publishing the 85.6% headline, every adjacent knob in the parameter space
 
 All seven adjacent configurations regressed. The 85.6% canonical-hybrid + reader-router configuration is **empirically Pareto-optimal in the tested parameter space** — most benchmark publications report a number; we report a number AND prove it's locally Pareto-optimal by exhaustively measuring 7 adjacent configurations that all underperform.
 
-## Negative finding: gpt-4o classifier upgrade does NOT lift accuracy
+## Negative finding: gpt-4o classifier upgrade does NOT lift accuracy (two independent confirmations)
 
-A natural follow-up: would a stronger classifier close the gap further toward the 87.0% oracle? We measured it.
+A natural follow-up: would a stronger classifier close the gap further toward the 87.0% oracle? We measured it twice, on two different retrieval stacks. Both regressed.
 
-Phase A at N=54 stratified: **gpt-4o classifier hits 88.9%** (+3.7 pp over gpt-5-mini classifier's 85.2%). Looks promising.
+**First measurement (Tier 3 + reader router base config):**
 
-Phase B at full N=500: **gpt-4o classifier lands at 84.4% [81.2%, 87.6%]** — statistically tied with the gpt-5-mini classifier, within bootstrap CI overlap. The Phase A signal compressed away because SSP/SSU gains (+4.3 / +3.3 pp) were offset by KU regression (−3.9 pp). The published default classifier stays gpt-5-mini: matches gpt-4o classifier accuracy on S Phase B at **12× lower per-query LLM cost**.
+Phase A at N=54 stratified: gpt-4o classifier hits 88.9% (+3.7 pp over gpt-5-mini classifier's 85.2%). Looks promising.
 
-This is the **third Phase A → Phase B compression in the same week** (gpt-5-mini reader probe 90.7% → 83.2%, reader-router probe 85.2% → 84.8%, gpt-4o classifier probe 88.9% → 84.4%). Phase A signals at `--sample-per-type 9` (N=9 per category, ±10-15 pp implicit CIs) are decision gates, not headlines. Spend the bench dollars on Phase B before publishing the number.
+Phase B at full N=500: **gpt-4o classifier lands at 84.4% [81.2%, 87.6%]** — statistically tied with the gpt-5-mini-classifier reader-router run (84.8%), within bootstrap CI overlap. The Phase A signal compressed away because SSP/SSU gains (+4.3 / +3.3 pp) were offset by KU regression (−3.9 pp).
+
+**Second measurement (canonical+RR base config, today's 85.6% headline):**
+
+Phase B at full N=500 with the gpt-4o classifier swap on the new headline configuration: **84.0% [80.6%, 87.0%]** at $0.0130/correct, 5,564 ms avg latency. **−1.6 pp regression vs the 85.6% gpt-5-mini-classifier baseline** at +44% higher cost-per-correct ($0.0130 vs $0.0090). Per-category vs the 85.6% baseline: SSA 100% (+1.8 pp within CI), SSU 95.7% (+2.8 pp within CI), SSP 90.0% (+3.3 pp within CI), **KU 85.9% (−5.1 pp)**, TR 83.5% (−0.7 pp), **MS 69.2% (−5.2 pp)**.
+
+**Same pattern in both runs.** The gpt-4o classifier reclassifies edge cases more aggressively, gaining marginally on SSU/SSA/SSP (always within CI) but losing meaningfully on KU and MS as more cases get routed away from their gpt-5-mini-best dispatch. Plus the gpt-4o classifier costs ~12× more per query than gpt-5-mini.
+
+**Two independent Phase B confirmations confirm the recommended consumer default is `gpt-5-mini` classifier**: matches gpt-4o classifier accuracy on LongMemEval-S at this retrieval stack at 12× lower per-query classifier cost. The `--om-classifier-model gpt-4o` flag remains wired in for per-workload empirical testing, but the LongMemEval-S category mix doesn't reward the upgrade.
+
+The gpt-4o classifier was also the **third Phase A → Phase B compression in the same week** (gpt-5-mini reader probe 90.7% → 83.2%, reader-router probe 85.2% → 84.8%, gpt-4o classifier probe 88.9% → 84.4%). Phase A signals at `--sample-per-type 9` (N=9 per category, ±10-15 pp implicit CIs) are decision gates, not headlines. Spend the bench dollars on Phase B before publishing the number.
 
 ## Negative finding: all-OM dispatch (Mastra-OM architecture clone) hurts S
 
