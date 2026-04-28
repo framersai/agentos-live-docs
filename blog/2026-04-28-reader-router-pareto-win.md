@@ -9,16 +9,16 @@ image: /img/blog/reader-router-pareto.png
 
 LongMemEval-S Phase B at full N=500, `gpt-4o-2024-08-06` judge, rubric `2026-04-18.1`, bootstrap 10 000 resamples, seed 42:
 
-| System (gpt-4o-class reader) | Accuracy | $/correct | Avg latency | p95 latency | Source |
-|---|---:|---:|---:|---:|---|
-| EmergenceMem internal | 86.0% | — | — | — | [link](https://www.emergence.ai/blog/sota-on-longmemeval-with-rag) |
-| **🚀 AgentOS canonical-hybrid + reader router (this post)** | **85.6% [82.4%, 88.6%]** | **$0.0090** | **4 001 ms** | **7 264 ms** | this post |
-| Mastra OM gpt-4o (gemini observer) | 84.2% | — | — | — | [link](https://mastra.ai/research/observational-memory) |
-| AgentOS reader-router with Tier 3 policy router (prior post) | 84.8% [81.6%, 87.8%] | $0.0410 | 21 042 ms | 111 535 ms | [previous post](2026-04-28-reader-router-pareto-win.md) |
-| AgentOS Tier 3 min-cost + sem-embed (gpt-4o reader only) | 83.2% [79.8%, 86.4%] | $0.0521 | 73 234 ms | — | [link](2026-04-27-longmemeval-s-83-with-semantic-embedder.md) |
-| Supermemory gpt-4o | 81.6% | — | — | — | [link](https://supermemory.ai/research/) |
+| System (gpt-4o-class reader) | Accuracy | $/correct | Avg latency | Median latency | p95 latency | Source |
+|---|---:|---:|---:|---:|---:|---|
+| EmergenceMem internal | 86.0% (no CI) | — (not published) | — (not published) | 5,650 ms | — (not published) | [link](https://www.emergence.ai/blog/sota-on-longmemeval-with-rag) |
+| **🚀 AgentOS canonical-hybrid + reader router (this post)** | **85.6% [82.4%, 88.6%]** | **$0.0090** | **4,001 ms** | **3,558 ms** | **7,264 ms** | this post |
+| Mastra OM gpt-4o (gemini observer) | 84.2% (no CI) | — (not published) | — (not published) | — (not published) | — (not published) | [link](https://mastra.ai/research/observational-memory) |
+| AgentOS reader-router with Tier 3 policy router (prior post) | 84.8% [81.6%, 87.8%] | $0.0410 | 21,042 ms | ~5,000 ms | 111,535 ms | [previous post](2026-04-28-reader-router-pareto-win.md) |
+| AgentOS Tier 3 min-cost + sem-embed (gpt-4o reader only) | 83.2% [79.8%, 86.4%] | $0.0521 | 73,234 ms | ~5,000 ms | — | [link](2026-04-27-longmemeval-s-83-with-semantic-embedder.md) |
+| Supermemory gpt-4o | 81.6% (no CI) | — (not published) | — (not published) | — (not published) | — (not published) | [link](https://supermemory.ai/research/) |
 
-**+1.4 pp accuracy over Mastra OM gpt-4o at the same gpt-4o-class reader. Within statistical CI of EmergenceMem.** Cost-per-correct ($0.0090) and latency (4 sec avg, 7 sec p95) are AgentOS-internal Pareto improvements vs our own prior 84.8% headline — Mastra and EmergenceMem do not publish cost or latency numbers, so direct cost/latency comparisons against them are unmeasurable.
+**+1.4 pp accuracy over Mastra OM gpt-4o at the same gpt-4o-class reader. Statistically tied with EmergenceMem Internal at 86.0% — their point estimate sits inside our 95% CI [82.4%, 88.6%], not below it; they're 0.4 pp ahead on the point estimate.** EmergenceMem DOES publish median latency (5.65 s/item); our p50 of 3.558 s is **1.6× faster on the median** — so the latency comparison vs EmergenceMem IS measurable and we win there. Cost-per-correct comparisons remain AgentOS-internal Pareto improvements: $0.0090/correct vs our own prior 84.8% headline at $0.0410 (4.6× cheaper). EmergenceMem Internal's cost is not published; their cheaper open-source variants (`EmergenceMem Simple`/`Simple Fast`/`Simple Faster` at 82.4%/79%/76.8%) ship as Python source code and are measurable in v2.
 
 <!-- truncate -->
 
