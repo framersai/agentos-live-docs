@@ -1,6 +1,6 @@
 ---
-title: 'Mars Genesis vs MiroFish: Two Approaches to Multi-Agent Simulation'
-description: 'A deep technical comparison of AgentOS Mars Genesis and MiroFish, two open-source multi-agent simulation frameworks that take fundamentally different approaches to emergent behavior, personality modeling, and runtime tool creation. Includes architecture analysis, code walkthroughs, and live simulation screenshots.'
+title: "Mars Genesis vs MiroFish: Two Approaches to Multi-Agent Simulation"
+description: "Technical comparison of AgentOS Mars Genesis and MiroFish, two open-source multi-agent simulation frameworks. MiroFish builds parallel digital worlds from real-world seed data. Mars Genesis runs deterministic Mars colonies with personality-driven leaders forging tools at runtime."
 authors: [jddunn]
 date: 2026-04-13
 tags:
@@ -30,12 +30,15 @@ keywords:
   - runtime tool forging
   - LLM agent simulation
   - OASIS social simulation
+  - generative agents Park
   - autonomous AI agents
   - TypeScript AI framework
   - Mars colony simulation
 ---
 
 Multi-agent simulation splits into two schools: predict the real world, or generate emergent worlds that never existed. [MiroFish](https://github.com/666ghj/MiroFish) (54k GitHub stars) builds parallel digital worlds from real-world seed data to forecast outcomes. [Mars Genesis](https://github.com/framersai/mars-genesis-simulation) (built with [AgentOS](https://github.com/framersai/agentos)) creates a deterministic Mars colony where two AI commanders with distinct personalities face emergent crises, forge computational tools at runtime, and produce measurably different civilizations from identical starting conditions.
+
+Both descend from the [Generative Agents](https://arxiv.org/abs/2304.03442) lineage (Park et al., Stanford 2023), which established that LLM-driven simulacra produce believable human behavior at small scale. The split between MiroFish and Mars Genesis is what to do with that capability: predict reality, or generate divergent histories.
 
 This post breaks down how each system works at the architecture level, where they diverge in design philosophy, and what builders can learn from both.
 
@@ -46,7 +49,7 @@ This post breaks down how each system works at the architecture level, where the
 
 ---
 
-## The Core Question Each System Answers
+## The core question each system answers
 
 **MiroFish asks:** "Given this real-world information, what happens next?"
 
@@ -54,29 +57,29 @@ You upload a news article, policy draft, or financial signal. MiroFish extracts 
 
 **Mars Genesis asks:** "How does leadership personality shape civilization?"
 
-You configure two commanders with [HEXACO personality profiles](https://hexaco.org/hexaco-online) (six-factor model from psychology research). Both start with the same 100 colonists, same resources, same deterministic seed. An AI Crisis Director generates unique crises per timeline based on colony state. Department agents analyze each crisis, forge computational tools (radiation dose calculators, food security models), and the commander decides. The deterministic kernel applies bounded numerical effects. Five turns later, the two colonies have diverged in population, morale, infrastructure, and political structure.
+You configure two commanders with [HEXACO personality profiles](https://hexaco.org/hexaco-online) (six-factor model from [Lee & Ashton's research](https://hexaco.org/hexaco-inventory)). Both start with the same 100 colonists, same resources, same deterministic seed. An AI Crisis Director generates unique crises per timeline based on colony state. Department agents analyze each crisis, forge computational tools (radiation dose calculators, food security models), and the commander decides. The deterministic kernel applies bounded numerical effects. Five turns later, the two colonies have diverged in population, morale, infrastructure, and political structure.
 
-The difference is not cosmetic. It reflects a fundamental architectural split in how each system handles truth, agency, and emergence.
+The difference is not cosmetic. It reflects an architectural split in how each system handles truth, agency, and emergence.
 
-## Architecture: Who Owns Truth?
+## Architecture: who owns truth?
 
-### MiroFish: The Graph Owns Truth
+### MiroFish: the graph owns truth
 
 MiroFish's architecture has five stages:
 
-1. **Graph Building**: Seed text is chunked and fed to [Zep Cloud](https://www.getzep.com/) to build a knowledge graph. Entities (people, organizations, events) and their relationships become the simulation's ground truth.
+1. **Graph Building.** Seed text is chunked and fed to [Zep Cloud](https://www.getzep.com/) to build a knowledge graph. Entities (people, organizations, events) and their relationships become the simulation's ground truth.
 
-2. **Environment Setup**: An `OasisProfileGenerator` converts graph entities into agent profiles with personality (MBTI-based), demographics, social metrics (karma, followers), and behavioral instructions. Each agent gets a `persona` field: a paragraph-length character description generated by an LLM from the entity's graph context.
+2. **Environment Setup.** An `OasisProfileGenerator` converts graph entities into agent profiles with personality (MBTI-based), demographics, social metrics (karma, followers), and behavioral instructions. Each agent gets a `persona` field: a paragraph-length character description generated by an LLM from the entity's graph context.
 
-3. **Simulation**: OASIS runs parallel Twitter and Reddit simulations. Agents take actions each round: create posts, like, reply, retweet, follow. Activity levels vary by simulated time of day (the codebase includes a `CHINA_TIMEZONE_CONFIG` with hourly activity multipliers). A `SimulationIPCClient` uses file-system IPC (commands written to disk, polled by the simulation process) to coordinate between the Flask backend and the OASIS subprocess.
+3. **Simulation.** OASIS runs parallel Twitter and Reddit simulations. Agents take actions each round: create posts, like, reply, retweet, follow. Activity levels vary by simulated time of day (the codebase includes a `CHINA_TIMEZONE_CONFIG` with hourly activity multipliers). A `SimulationIPCClient` uses file-system IPC (commands written to disk, polled by the simulation process) to coordinate between the Flask backend and the OASIS subprocess.
 
-4. **Report Generation**: A `ReportAgent` using ReACT-style reasoning queries the post-simulation graph with three retrieval tools: `InsightForge` (deep multi-query retrieval), `PanoramaSearch` (breadth search including expired content), and `QuickSearch`. It generates a structured prediction report.
+4. **Report Generation.** A `ReportAgent` using ReACT-style reasoning ([Yao et al., 2022](https://arxiv.org/abs/2210.03629)) queries the post-simulation graph with three retrieval tools: `InsightForge` (deep multi-query retrieval), `PanoramaSearch` (breadth search including expired content), and `QuickSearch`. It generates a structured prediction report.
 
-5. **Deep Interaction**: Users can chat with any agent in the simulated world or interrogate the ReportAgent.
+5. **Deep Interaction.** Users can chat with any agent in the simulated world or interrogate the ReportAgent.
 
 The knowledge graph is the single source of truth. Agents' actions update the graph. The simulation runner reads from it. Reports query it.
 
-### Mars Genesis: The Kernel Owns Truth
+### Mars Genesis: the kernel owns truth
 
 Mars Genesis has a different separation:
 
@@ -92,17 +95,17 @@ Director crisis → Department analyses → Commander choice
 
 **The LLM-as-judge** reviews forged tool code for safety, correctness, determinism, and bounded execution. It does not determine simulation outcomes.
 
-The principle: **the host runtime owns truth, the agents own interpretation.**
+The principle: **the host runtime owns truth, the agents own interpretation.** This matches the CoALA framework's distinction between the agent's decision module and the environment's state-keeping module ([Sumers et al., 2023, arXiv:2309.02427](https://arxiv.org/abs/2309.02427)).
 
-## Agent Architecture: Personality at Scale
+## Agent architecture: personality at scale
 
-### MiroFish: MBTI + Social Graph Personas
+### MiroFish: MBTI + social-graph personas
 
 MiroFish agents get their personality from two sources:
 
-1. **Entity extraction**: Zep's knowledge graph identifies entities from the seed text. Each entity becomes a potential agent.
+1. **Entity extraction.** Zep's knowledge graph identifies entities from the seed text. Each entity becomes a potential agent.
 
-2. **LLM-generated personas**: The `OasisProfileGenerator` calls an LLM to generate a detailed character description from the entity's graph context. The persona includes MBTI type, age, gender, profession, interested topics, and a narrative backstory.
+2. **LLM-generated personas.** The `OasisProfileGenerator` calls an LLM to generate a detailed character description from the entity's graph context. The persona includes MBTI type, age, gender, profession, interested topics, and a narrative backstory.
 
 ```python
 @dataclass
@@ -122,73 +125,73 @@ class OasisAgentProfile:
 
 Agent behavior emerges from the persona prompt combined with OASIS's social media action space (post, reply, like, retweet, follow). Personality does not evolve over time: an agent's MBTI and persona remain fixed throughout the simulation.
 
-### Mars Genesis: HEXACO + Drift Forces
+### Mars Genesis: HEXACO + drift forces
 
 Mars Genesis uses the [HEXACO model](https://hexaco.org/hexaco-online) from psychology research (six continuous traits 0-1, not categorical types):
 
-- **Openness**: creativity, willingness to experiment
-- **Conscientiousness**: discipline, thoroughness
-- **Extraversion**: sociability, assertiveness
-- **Agreeableness**: cooperation, trust
-- **Emotionality**: anxiety, empathy
-- **Honesty-Humility**: sincerity, fairness
+- **Openness.** Creativity, willingness to experiment.
+- **Conscientiousness.** Discipline, thoroughness.
+- **Extraversion.** Sociability, assertiveness.
+- **Agreeableness.** Cooperation, trust.
+- **Emotionality.** Anxiety, empathy.
+- **Honesty-Humility.** Sincerity, fairness.
 
 Personality is not static. Three forces cause trait drift each turn:
 
-1. **Leader pull** (0.02/turn): promoted colonists' traits converge toward their commander's profile. Grounded in [leader-follower alignment research](https://www.tandfonline.com/doi/full/10.1080/1359432X.2023.2250085) (Van Iddekinge 2023).
+1. **Leader pull (0.02/turn).** Promoted colonists' traits converge toward their commander's profile. Grounded in [leader-follower alignment research](https://www.tandfonline.com/doi/full/10.1080/1359432X.2023.2250085) (Van Iddekinge 2023).
 
-2. **Role pull** (0.01/turn): department roles activate specific traits. Engineering activates conscientiousness. Psychology activates agreeableness and emotionality. Based on [trait activation theory](https://doi.org/10.1037/0021-9010.88.3.500) (Tett & Burnett 2003).
+2. **Role pull (0.01/turn).** Department roles activate specific traits. Engineering activates conscientiousness. Psychology activates agreeableness and emotionality. Based on [trait activation theory](https://doi.org/10.1037/0021-9010.88.3.500) (Tett & Burnett 2003).
 
-3. **Outcome pull** (event-driven): successful risks boost openness. Failed risks boost conscientiousness. Consistent with the [social investment principle](https://pmc.ncbi.nlm.nih.gov/articles/PMC3398702/) (Roberts 2005).
+3. **Outcome pull (event-driven).** Successful risks boost openness. Failed risks boost conscientiousness. Consistent with the [social investment principle](https://pmc.ncbi.nlm.nih.gov/articles/PMC3398702/) (Roberts 2005).
 
 After each turn, all ~100 alive colonists generate individual reactions via lightweight LLM calls. Each colonist's HEXACO profile, health stats, social ties, and the crisis context shape their 1-2 sentence reaction. A high-openness Mars-born teenager reacts differently to a governance crisis than a high-conscientiousness Earth-born engineer.
 
 ![Mars Genesis colonist reactions panel showing individual quotes from 100+ colonists with mood distribution bar, personality details on hover](/img/blog/mars-genesis-colonist-reactions.png)
 *Colonist reactions after a crisis outcome. Each of 100+ colonists generates an individual reaction shaped by their HEXACO personality, health, and social context. Mood distribution shows 63% negative, 38% anxious. Hovering any colonist reveals their full profile.*
 
-## Emergent Capabilities: Prediction vs Tool Forging
+## Emergent capabilities: prediction vs tool forging
 
-### MiroFish: Emergent Social Dynamics
+### MiroFish: emergent social dynamics
 
 MiroFish's emergence happens through agent interactions on simulated social platforms. Thousands of agents posting, replying, and influencing each other produce:
 
-- **Information cascading**: how news spreads through a social network
-- **Opinion polarization**: echo chambers forming around contentious topics
-- **Herd behavior**: agents following trending content
-- **Sentiment shifts**: collective mood changes over simulation rounds
+- **Information cascading.** How news spreads through a social network.
+- **Opinion polarization.** Echo chambers forming around contentious topics.
+- **Herd behavior.** Agents following trending content.
+- **Sentiment shifts.** Collective mood changes over simulation rounds.
 
-The emergence is **social**: individual agents acting on their personas and the content they see produce macro-level patterns that no single agent intended. OASIS supports simulations of up to [one million agents](https://github.com/camel-ai/oasis), enabling studies at real-world platform scale.
+The emergence is **social**: individual agents acting on their personas and the content they see produce macro-level patterns that no single agent intended. OASIS supports simulations of up to [one million agents](https://github.com/camel-ai/oasis), enabling studies at real-world platform scale. The pattern descends from [Park et al.'s Smallville generative agents](https://arxiv.org/abs/2304.03442) (Stanford, 2023) but at orders-of-magnitude larger population.
 
-### Mars Genesis: Emergent Tool Forging
+### Mars Genesis: emergent tool forging
 
 Mars Genesis's emergence happens through runtime capability creation. Department agents can invent new computational tools that never existed before:
 
-1. **Agent identifies need**: The Medical agent facing a radiation crisis decides it needs a "cumulative dose risk calculator."
-2. **Agent writes code**: Specifies tool name, description, input/output schemas, sandboxed JavaScript implementation, and test cases.
-3. **Judge reviews**: An LLM-as-judge scores safety, correctness, determinism, bounded execution, and input validation.
-4. **Tool executes**: Approved tools run in an isolated V8 sandbox with colony data as input, producing numerical results.
-5. **Output informs decisions**: The tool's computed output (risk scores, projections) appears in the department report to the commander.
+1. **Agent identifies need.** The Medical agent facing a radiation crisis decides it needs a "cumulative dose risk calculator."
+2. **Agent writes code.** Specifies tool name, description, input/output schemas, sandboxed JavaScript implementation, and test cases.
+3. **Judge reviews.** An LLM-as-judge scores safety, correctness, determinism, bounded execution, and input validation.
+4. **Tool executes.** Approved tools run in an isolated V8 sandbox with colony data as input, producing numerical results.
+5. **Output informs decisions.** The tool's computed output (risk scores, projections) appears in the department report to the commander.
 
 This uses AgentOS's [`EmergentCapabilityEngine`](https://docs.agentos.sh/api/classes/EmergentCapabilityEngine), [`EmergentJudge`](https://docs.agentos.sh/api/classes/EmergentJudge), and [`SandboxedToolForge`](https://docs.agentos.sh/api/classes/SandboxedToolForge). Tools do not directly change colony state. They produce analysis that informs decisions. The commander's selected policy effects change state through the kernel.
 
 Tools forged in one turn persist and can be reused. Over a 12-turn simulation, department agents accumulate a growing toolkit of specialized analytical instruments, each reviewed by the judge and sandboxed for safe execution.
 
-## Determinism: Reproducibility vs Exploration
+## Determinism: reproducibility vs exploration
 
-### MiroFish: Stochastic Exploration
+### MiroFish: stochastic exploration
 
 MiroFish simulations are inherently non-deterministic. Each run produces different agent interactions, different post timings, different content cascades. This is by design: the value is in running many simulations and aggregating patterns. The `SimulationConfigGenerator` uses LLM calls to auto-generate simulation parameters (time schedule, event injection, agent activity levels), which introduces additional variance.
 
-### Mars Genesis: Deterministic Kernel + Stochastic Agents
+### Mars Genesis: deterministic kernel + stochastic agents
 
 Mars Genesis separates determinism from agency:
 
-- **Deterministic**: colonist roster generation, births, deaths, aging, bone density, radiation, career progression, outcome classification (all seeded RNG)
-- **Non-deterministic**: crisis generation, department analysis, tool forging, commander decisions, colonist reactions (all LLM-driven)
+- **Deterministic.** Colonist roster generation, births, deaths, aging, bone density, radiation, career progression, outcome classification (all seeded RNG).
+- **Non-deterministic.** Crisis generation, department analysis, tool forging, commander decisions, colonist reactions (all LLM-driven).
 
-Same seed guarantees the same starting conditions and the same mechanical outcomes for identical decisions. The divergence between two timelines is entirely attributable to different leadership personalities making different choices. This makes the simulation's central claim ("different personalities create different civilizations") empirically testable.
+Same seed guarantees the same starting conditions and the same mechanical outcomes for identical decisions. The divergence between two timelines is entirely attributable to different leadership personalities making different choices. The simulation's central claim ("different personalities create different civilizations") is empirically testable.
 
-## Technology Stack Comparison
+## Technology stack comparison
 
 | Dimension | MiroFish | Mars Genesis |
 |-----------|----------|-------------|
@@ -204,14 +207,16 @@ Same seed guarantees the same starting conditions and the same mechanical outcom
 | **IPC** | File-system command/response | In-process SSE streaming |
 | **Deployment** | Docker + Flask + Node.js | Single `npx tsx` process |
 
-## What Builders Can Take From Each
+## What builders can take from each
 
 **From MiroFish:**
+
 - GraphRAG as simulation ground truth is powerful for prediction use cases. The Zep integration shows how entity extraction can bootstrap agent populations from unstructured text.
-- Dual-platform simulation (Twitter + Reddit) captures different interaction modalities. Agents behave differently with character limits vs. threaded discussions.
+- Dual-platform simulation (Twitter + Reddit) captures different interaction modalities. Agents behave differently with character limits vs threaded discussions.
 - ReACT-style report generation with retrieval tools produces richer analysis than simple summarization.
 
 **From Mars Genesis:**
+
 - Separating the deterministic kernel from AI interpretation makes claims testable. You can prove divergence came from decisions, not randomness.
 - Runtime tool forging gives agents genuine problem-solving capability beyond their initial training. The judge pipeline (build, test, review, sandbox) makes it safe.
 - Continuous personality evolution produces more nuanced behavioral change than static personality types. HEXACO drift grounded in psychology research adds scientific credibility.
@@ -243,14 +248,14 @@ The Settings tab lets you configure leaders, HEXACO personality sliders, custom 
 
 The simulation streams events via SSE to the browser. Both timelines run in parallel. Department cards show citations, forged tools, and risk assessments. Decision cards expand to show full commander reasoning and selected policies. Colonist quotes show individual reactions with personality-driven mood analysis.
 
-## Try Both
+## Try both
 
 - **Mars Genesis**: [github.com/framersai/mars-genesis-simulation](https://github.com/framersai/mars-genesis-simulation)
 - **AgentOS**: [github.com/framersai/agentos](https://github.com/framersai/agentos) | [docs.agentos.sh](https://docs.agentos.sh) | [npm](https://www.npmjs.com/package/@framers/agentos)
 - **MiroFish**: [github.com/666ghj/MiroFish](https://github.com/666ghj/MiroFish)
 - **OASIS**: [github.com/camel-ai/oasis](https://github.com/camel-ai/oasis)
 
-Both are open source. Both prove that multi-agent simulation has moved past chatbot demos into systems that generate genuine emergent behavior. The question is no longer whether AI agents can simulate complex social and organizational dynamics. It's which dynamics matter for your use case.
+Both are open source. Both prove that multi-agent simulation has moved past chatbot demos into systems that generate genuine emergent behavior. The question is no longer whether AI agents can simulate complex social and organizational dynamics. It is which dynamics matter for your use case.
 
 ---
 
