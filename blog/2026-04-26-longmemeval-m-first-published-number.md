@@ -7,8 +7,8 @@ keywords: [longmemeval-m, longmemeval m benchmark, agent memory benchmark scale,
 image: /img/blog/longmemeval-m.png
 ---
 
-:::tip Update 2026-04-28
-This 30.6% Phase B was measured against the bench's `CharHashEmbedder` lexical-hash fallback, not the deployed semantic-embedder configuration. The follow-up post **[From 30.6% to 45.4% on LongMemEval-M](2026-04-26-longmemeval-m-30-to-57.md)** lifts M to 45.4% with three retrieval-precision flags. A second M Phase B re-run with `text-embedding-3-small` + the canonical+RR pipeline (the same config that lifted S from 76.6% → 85.6% in the [Pareto-win post](2026-04-28-reader-router-pareto-win.md)) is currently in flight; results will land as a third post. The S→M scale gap framing below still holds at the architecture level — the absolute numbers move with each measurement.
+:::tip Update 2026-04-29
+This 30.6% Phase B has been superseded twice. The first follow-up post **[From 30.6% to 45.4% on LongMemEval-M](2026-04-26-longmemeval-m-30-to-57.md)** lifted M to 45.4% with three retrieval-precision flags (HyDE + reader-top-K 50 + rerank-candidate-multiplier 5). The new M headline post **[57.6% on LongMemEval-M](2026-04-29-longmemeval-m-57-with-sem-embed.md)** lands the v1.1 result by adding semantic embedder + per-category reader router on top of the M-tuned config — same two architectural axes that drove the S 85.6% Pareto-win. **+12.2 pp validated lift over the 45.4% CharHash baseline, CIs non-overlapping**. First public LongMemEval-M number above 50% from any orchestration-router architecture.
 :::
 
 LongMemEval ([Wang et al., ICLR 2025](https://arxiv.org/abs/2410.10813)) ships two variants. **LongMemEval-S** has approximately 115 K tokens and 50 sessions per haystack. **LongMemEval-M** has 1.5 M tokens and 500 sessions per haystack. Every memory-library vendor we audit publishes only the S variant: Mem0 v3 reports 93.4% on S; Mastra Observational Memory reports 84.23% (`gpt-4o`); Hindsight reports 91.4% (`gemini-3-pro`). [The official benchmark site](https://xiaowu0162.github.io/long-mem-eval/) lists both variants. None of the vendors' research pages cite an M number.
