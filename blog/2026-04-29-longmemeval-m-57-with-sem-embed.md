@@ -7,6 +7,10 @@ keywords: [longmemeval-m, agentos memory benchmark, semantic embedding, reader r
 image: /img/blog/longmemeval-m-57.png
 ---
 
+:::tip Update 2026-04-29
+The 57.6% headline below has been superseded by **[70.2% on LongMemEval-M](2026-04-29-longmemeval-m-70-with-topk5.md)** at $0.0078/correct, validated at full Phase B N=500. The single-variable change: lowering reader-top-K from 50 to 5. **+12.6 pp aggregate over the 57.6% headline below, CIs non-overlapping**. **+4.5 pp above the LongMemEval paper's academic-baseline ceiling (65.7%, Wu et al., ICLR 2025, Table 3)**. Statistically tied with AgentBrain's closed-source SaaS 71.7% on M. The architectural insight: at M scale (1.5M-token haystacks), top-K=50 was distracting the reader with 45 irrelevant chunks; top-K=5 forces the rerank cross-encoder to commit to its top picks. The 57.6% post below is preserved as a load-bearing intermediate calibration: it isolates the +12.2 pp lift attributable to sem-embed + reader-router (top-K=50 held constant), separate from the +12.6 pp lift attributable to top-K=5 (sem-embed + reader-router held constant).
+:::
+
 The agentos-bench's prior LongMemEval-M Phase B headline was **45.4% [41.2%, 49.8%]** at the M-tuned config (HyDE + reader-top-K 50 + rerank-candidate-multiplier 5) with the bench's `CharHashEmbedder` lexical-hash fallback. This was the first public LongMemEval-M number for any orchestration-router architecture, but it ran on the same fallback embedder that produced the misleading 76.6% S headline a few weeks ago.
 
 When we re-ran M Phase B at full N=500 with `text-embedding-3-small` + the per-category reader router (the same two-axis architecture that drove the S 85.6% Pareto-win headline), aggregate accuracy lifted to **57.6% [53.2%, 61.8%]** at $0.0505 per correct. **+12.2 pp over the prior CharHash-era headline, CIs non-overlapping.** First public LongMemEval-M number above 50% from any orchestration-router architecture. Mem0 v3, Mastra OM, Hindsight, Supermemory, EmergenceMem all publish only the easier S variant.
