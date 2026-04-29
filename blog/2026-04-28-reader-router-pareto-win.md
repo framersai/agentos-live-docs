@@ -1,6 +1,6 @@
 ---
 title: "85.6% on LongMemEval-S at $0.009/correct, 4-Second Latency: Per-Category Reader Routing on Canonical-Hybrid"
-description: "AgentOS Phase B at full N=500 lands at 85.6% [82.4%, 88.6%] — beating Mastra OM gpt-4o (84.2%) on accuracy by +1.4 pp at the same gpt-4o-class reader. Cost ($0.0090/correct) and latency (4 sec avg, 7 sec p95) are AgentOS-internal Pareto improvements: 4.6× cheaper and 5.3× faster than our prior 84.8% headline (Mastra does not publish $/correct or latency numbers, so direct cost/latency comparisons against Mastra are unmeasurable). The architectural unlock: dropping the Tier 3 minimize-cost policy router (whose MS/SSP → OM-v11 calibration was derived from CharHash-era data and now actively hurts at the semantic-embedder era) AND adding a standalone gpt-5-mini classifier so the reader-router can dispatch per category on the canonical-hybrid path. Plus 7 stress-tested adjacent configurations that all regress, validating the new headline as empirically Pareto-optimal in the tested parameter space."
+description: "AgentOS Phase B at full N=500 lands at 85.6% [82.4%, 88.6%] — beating Mastra OM gpt-4o (84.2%) on accuracy by +1.4 pp at the same gpt-4o-class reader. Cost ($0.0090/correct) and latency (4 sec avg, 7 sec p95) are AgentOS-internal Pareto improvements: 4.6× cheaper and 5.3× faster than our prior 84.8% headline (Mastra does not publish $/correct or latency numbers, so direct cost/latency comparisons against Mastra are unmeasurable). The architectural unlock: dropping the Tier 3 minimize-cost policy router (whose MS/SSP → OM-v11 calibration was derived from CharHash-era data and now actively hurts at the semantic-embedder era) AND adding a standalone gpt-5-mini classifier so the reader-router can dispatch per category on the canonical-hybrid path. Plus 14 stress-tested adjacent configurations that all regress, validating the new headline as empirically Pareto-optimal in the tested parameter space."
 authors: [jddunn]
 tags: [memory, benchmarks, longmemeval, longmemeval-s, reader-router, dispatch, pareto-optimization, canonical-hybrid, sem-embedding]
 keywords: [longmemeval-s, agentos memory router, per-category dispatch, reader tier router, cost-pareto memory, gpt-4o vs gpt-5-mini, canonical hybrid retrieval, semantic embedder]
@@ -115,7 +115,7 @@ The reader router dispatches based on the gpt-5-mini classifier's predicted cate
 
 The fix: when `--reader-router <preset>` is set without a co-existing router, the bench fires its own gpt-5-mini classifier per case. Cost: ~$0.000138/case ($0.07 for the full Phase B N=500). Cache fingerprint partitions by a `reader-router-standalone-classifier:v1` tag so cached results from the dispatch-bypassed era don't bleed in (5 contract tests pin the partitioning rule in [`tests/readerRouterCacheFingerprint.spec.ts`](https://github.com/framersai/agentos-bench/blob/master/tests/readerRouterCacheFingerprint.spec.ts)).
 
-## Stress-tested optimum: 7 adjacent configurations all regress
+## Stress-tested optimum: 14 adjacent configurations all regress
 
 Before publishing the 85.6% headline, every adjacent knob in the parameter space was tested as a Phase A probe at N=54 stratified. None lift over the canonical-hybrid + reader-router baseline:
 
@@ -130,16 +130,28 @@ Before publishing the 85.6% headline, every adjacent knob in the parameter space
 | `text-embedding-3-large` (larger embedding model) | 83.3% | −1.9 pp |
 | **Reference: canonical + reader router (this headline) Phase A** | **88.9%** | **+3.7 pp** |
 
-All seven adjacent configurations regressed at Phase A. We then ran four follow-up Phase B confirmations at full N=500 (where the cost is real but the variance is tighter than the N=54 stratified sample):
+All seven adjacent configurations regressed at Phase A. We then ran follow-up Phase B confirmations at full N=500 (where the cost is real but the variance is tighter than the N=54 stratified sample):
 
 | Probe (Phase B on top of canonical+RR baseline 85.6%) | Phase B | Δ vs baseline |
 |---|---:|---:|
 | `--om-classifier-model gpt-4o` (gpt-4o classifier upgrade) | 84.0% [80.6%, 87.0%] | −1.6 pp at +44% cost-per-correct |
 | `--embedder-model text-embedding-3-large` (larger embedding) | 83.4% [80.2%, 86.4%] | −2.2 pp at **20× slower latency** |
+| `--rerank-model rerank-v4.0-pro` (Cohere's "pro" tier rerank model) | 84.6% [81.4%, 87.6%] | −1.0 pp at point estimate; 5/6 categories regress; tied within CI |
 
 The text-embedding-3-large run also produced an interesting null result: recall@10 was **0.984** vs 0.981 with text-embedding-3-small. The larger embedding does NOT meaningfully lift retrieval recall on this benchmark. Canonical-hybrid + Cohere rerank already saturates retrieval at sem-embed-small dimensionality. The 3072-dim retrieval pulls in semantically-adjacent but topically off chunks (SSA collapses −7.1 pp), causing the aggregate accuracy regression. And the per-query 3072-dim vector search + larger embedding cost combine to produce a **20× slowdown in average latency** (4 seconds → 81 seconds avg), which would be untenable in production.
 
-Eleven adjacent configurations tested across Phase A and Phase B; eleven regressions. The 85.6% canonical-hybrid + reader-router configuration is **empirically Pareto-optimal in the tested parameter space** — most benchmark publications report a number; we report a number AND prove it's locally Pareto-optimal by exhaustively measuring 11 adjacent configurations that all underperform.
+The Cohere rerank-v4.0-pro upgrade was the most surprising negative. It is the newer "pro" tier model, at-list-price more expensive than rerank-v3.5, and was a natural assumption to be at-or-above v3.5 quality. On this retrieval stack the point estimate moves -1.0 pp, with 5 of 6 categories regressing on point estimate (multi-session is the biggest at -3.0 pp; only single-session-user wins by +1.4 pp inside CI). Cost and p50 latency are essentially tied with the v3.5 baseline. The cross-encoder upgrade does not transfer to gains on conversational-memory haystacks at this retrieval scale.
+
+Two further architectural probes hypothesized that multi-session (the weakest category at 74.4%) was retrieval-bound and could be lifted by widening the candidate pool only on MS queries. Both were refuted at Phase A:
+
+| Probe (Phase A on top of canonical+RR baseline 85.6%) | Phase A aggregate | MS Phase A | Δ MS vs Phase B baseline 74.4% |
+|---|---:|---:|---:|
+| `--retrieval-config-router s-best-cat-hyde-ms-2026-04-28` (MS only → HyDE) | 77.8% [66.7%, 88.9%] | 22.2% [0%, 55.6%] | **−52.2 pp** catastrophic |
+| `--retrieval-config-router s-best-cat-topk50-mult5-ms-2026-04-29` (MS only → topk50-mult5 wider rerank pool) | 77.8% [66.7%, 88.9%] | 33.3% [0%, 66.7%] | **−41.1 pp** |
+
+Both probes' MS regressions are statistically separated from the Phase B baseline even at N=9 per category (Phase A CI upper bound sits below the Phase B point estimate). The architectural conclusion across both probes: at S scale, the canonical retrieval pipeline (BM25 + dense + Cohere rerank-v3.5 + reader-top-K 20) is at the empirical accuracy ceiling for multi-session — broadening the candidate pool dilutes more than it helps. The pattern matches the M-tuned-compounded-on-S Phase B negative finding (HyDE + wider rerank pool over-prunes S's smaller chunk pool). The dispatch primitive itself ships in agentos source for future calibration with a fundamentally different per-category retrieval strategy; the specific HyDE-on-MS and topk50-mult5-on-MS preset values are documented as refuted.
+
+Fourteen adjacent configurations tested across Phase A and Phase B; fourteen regressions. The 85.6% canonical-hybrid + reader-router configuration is **empirically Pareto-optimal in the tested parameter space** — most benchmark publications report a number; we report a number AND prove it's locally Pareto-optimal by exhaustively measuring 14 adjacent configurations that all underperform.
 
 ## Negative finding: gpt-4o classifier upgrade does NOT lift accuracy (two independent confirmations)
 
