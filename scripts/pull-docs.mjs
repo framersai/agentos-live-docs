@@ -73,18 +73,41 @@ function ensureDir(filePath) {
 }
 
 function injectFrontmatter(content, title, position) {
-  // Strip existing frontmatter if present
+  // Extract existing frontmatter if present (yaml block between --- fences)
+  const fmMatch = content.match(/^---\n([\s\S]*?)\n---\n*/);
+  const existing = fmMatch ? fmMatch[1] : '';
+
+  // Preserve SEO-relevant frontmatter fields the canonical doc set carries:
+  // description (meta-description for search engines + Docusaurus social cards),
+  // keywords (meta-keywords array), image (social-card preview image), tags
+  // (Docusaurus blog/doc tag system). Fields are passed through verbatim.
+  const seoFieldNames = ['description', 'keywords', 'image', 'tags'];
+  const preservedSeoLines = [];
+  for (const fieldName of seoFieldNames) {
+    // Match key followed by `:` and the rest of that line plus any continuation
+    // lines (indented or array bullets) until the next top-level key. The
+    // negative lookahead at the end stops at a sibling key like `title:` or
+    // the end of the frontmatter block.
+    const re = new RegExp(`^${fieldName}:[^\n]*(?:\n[ \t-][^\n]*)*`, 'm');
+    const match = existing.match(re);
+    if (match) {
+      preservedSeoLines.push(match[0]);
+    }
+  }
+
+  // Strip existing frontmatter from the body
   const stripped = content.replace(/^---[\s\S]*?---\n*/, '');
 
   // Strip leading h1 if it matches the title (Docusaurus uses frontmatter title)
   const withoutH1 = stripped.replace(/^#\s+.*\n+/, '');
 
-  return `---
-title: "${title}"
-sidebar_position: ${position}
----
+  const frontmatterBody = [
+    `title: "${title}"`,
+    `sidebar_position: ${position}`,
+    ...preservedSeoLines,
+  ].join('\n');
 
-${withoutH1}`;
+  return `---\n${frontmatterBody}\n---\n\n${withoutH1}`;
 }
 
 function stripBadgeHtml(content) {
