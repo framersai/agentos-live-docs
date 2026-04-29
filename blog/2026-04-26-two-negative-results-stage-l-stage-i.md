@@ -7,6 +7,10 @@ keywords: [anthropic contextual retrieval longmemeval, mem0 v3 entity linking lo
 image: /img/blog/two-negative-results.png
 ---
 
+:::tip Update 2026-04-28
+The shipping pipeline this post measures against (76.6% LongMemEval-S Phase B) has since been replaced by **[85.6% on LongMemEval-S](2026-04-28-reader-router-pareto-win.md)** at $0.009/correct, 4-second latency. The two negative findings below (Stage L Anthropic Contextual Retrieval, Stage I Mem0-style entity-linking re-rank) still hold against the new headline — both architectures duplicate work the rerank stage already does, regardless of which retrieval base config the rerank sits on top of. Eleven additional adjacent stress-tests have since been documented in the [latest LEADERBOARD](https://github.com/framersai/agentos-bench/blob/master/results/LEADERBOARD.md), all regressing on the 85.6% configuration.
+:::
+
 Most memory-library benchmark posts publish the architectures that worked. We just measured two architectures that did not, on top of our shipping pipeline. Both are well-known. Both have published wins on adjacent benchmarks. Neither lifted ours. The per-category breakdowns are interesting because they show why these two specific additions are redundant against a hybrid + Cohere rerank stack, not why they are bad in general.
 
 This post documents both negatives in detail, ships both architectures as production primitives in agentos core anyway, and explains what kind of architectural push is left after lightweight signal additions are ruled out.

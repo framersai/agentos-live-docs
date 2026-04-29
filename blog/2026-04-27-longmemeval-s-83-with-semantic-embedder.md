@@ -7,6 +7,10 @@ keywords: [longmemeval-s, agentos memory, semantic embedding, retrieval quality,
 image: /img/blog/longmemeval-s-83.png
 ---
 
+:::tip Update 2026-04-28
+The 83.2% headline below has been superseded. The follow-up post **[85.6% on LongMemEval-S at $0.009/correct, 4-second latency](2026-04-28-reader-router-pareto-win.md)** lands the new validated headline by adding a per-category reader router on top and dropping the Tier 3 minimize-cost policy router (whose CharHash-era MS+SSP → OM-v11 routing is stale for the sem-embed era). Same dataset, same judge, same N=500 Phase B methodology.
+:::
+
 The agentos-bench's published number on LongMemEval-S Tier 3 min-cost was **76.6% [72.8%, 80.2%]** at full Phase B N=500. Mid-pack against published vendor numbers — Mastra Observational Memory at 84.2% (gpt-4o), Supermemory at 81.6% (gpt-4o), EmergenceMem at 86%.
 
 That published 76.6% was running against the bench's `CharHashEmbedder` — a lexical-hash stub the bench falls back to when no embedder is configured. **It's not what real consumers wiring `@framers/agentos` memory primitives use in deployment.**

@@ -7,6 +7,10 @@ keywords: [longmemeval-m, longmemeval m benchmark, agent memory benchmark scale,
 image: /img/blog/longmemeval-m.png
 ---
 
+:::tip Update 2026-04-28
+This 30.6% Phase B was measured against the bench's `CharHashEmbedder` lexical-hash fallback, not the deployed semantic-embedder configuration. The follow-up post **[From 30.6% to 45.4% on LongMemEval-M](2026-04-26-longmemeval-m-30-to-57.md)** lifts M to 45.4% with three retrieval-precision flags. A second M Phase B re-run with `text-embedding-3-small` + the canonical+RR pipeline (the same config that lifted S from 76.6% → 85.6% in the [Pareto-win post](2026-04-28-reader-router-pareto-win.md)) is currently in flight; results will land as a third post. The S→M scale gap framing below still holds at the architecture level — the absolute numbers move with each measurement.
+:::
+
 LongMemEval ([Wang et al., ICLR 2025](https://arxiv.org/abs/2410.10813)) ships two variants. **LongMemEval-S** has approximately 115 K tokens and 50 sessions per haystack. **LongMemEval-M** has 1.5 M tokens and 500 sessions per haystack. Every memory-library vendor we audit publishes only the S variant: Mem0 v3 reports 93.4% on S; Mastra Observational Memory reports 84.23% (`gpt-4o`); Hindsight reports 91.4% (`gemini-3-pro`). [The official benchmark site](https://xiaowu0162.github.io/long-mem-eval/) lists both variants. None of the vendors' research pages cite an M number.
 
 We just ran LongMemEval-M Phase B at full N=500 and report **30.6% accuracy at $0.0818 per correct, p50 5.4 s / p95 34 s latency**, with judge FPR 2% [0%, 5%] at n=100. First public LongMemEval-M number for any orchestration-router architecture.

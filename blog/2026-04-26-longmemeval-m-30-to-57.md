@@ -7,6 +7,10 @@ keywords: [longmemeval-m lift, agentos retrieval precision, hyde longmemeval, co
 image: /img/blog/longmemeval-m-lift.png
 ---
 
+:::tip Update 2026-04-28
+The 45.4% Phase B headline below was measured with the bench's `CharHashEmbedder` lexical-hash fallback, not the deployed semantic-embedder configuration. A second M Phase B run with `text-embedding-3-small` + the canonical+RR pipeline (the same config that drove S from 76.6% → 85.6% in the [Pareto-win post](2026-04-28-reader-router-pareto-win.md)) is currently in flight; the result will land as a follow-up post. The retrieval-precision diagnosis below — wider rerank pool + larger reader-top-k + HyDE — still holds at the architecture level. What changes is the embedder underneath, which historically lifted S +6.6 pp on the same flag stack.
+:::
+
 Two days ago we [published 30.6% on LongMemEval-M](2026-04-26-longmemeval-m-first-published-number.md) at our shipping config — first public M number for any orchestration-router architecture, transparent about the 46-percentage-point S→M scale gap, and we framed it as "retrieval precision is the bottleneck; only architecture work (Stage E typed-network) can fix it."
 
 That framing was wrong. The shipping config was leaving over 14 percentage points on the table due to over-restrictive retrieval windows tuned for 50-session haystacks instead of 500-session ones. Three opt-in flag tweaks — already wired in agentos and exposed via the bench CLI — lifted LongMemEval-M from **30.6% to 45.4% [41.2%, 49.8%]** at full Phase B N=500 with bootstrap 95% CI. Cost-per-correct moved from $0.082 to $0.135 — accuracy bought at a real cost increase, not a free win.

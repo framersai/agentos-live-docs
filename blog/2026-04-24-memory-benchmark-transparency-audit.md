@@ -7,6 +7,10 @@ keywords: [memory benchmark transparency, longmemeval gaming, locomo audit, agen
 image: /img/blog/memory-benchmarks.png
 ---
 
+:::tip Update 2026-04-28
+This post laid out the methodology audit framework that drives every published agentos-bench number. The current LongMemEval-S Phase B headline is **[85.6% on LongMemEval-S at $0.009/correct, 4-second latency](2026-04-28-reader-router-pareto-win.md)**, validated under the same transparency stack this post describes (per-cell run JSON at seed 42, bootstrap 95% CI at 10k resamples, judge FPR 1% [0%, 3%] at n=100, eleven adjacent stress-tests all regressing). The first apples-to-apples vendor reproduction (EmergenceMem Simple Fast in our harness, **80.6% measured**) also landed in the same publication.
+:::
+
 In April 2026, Penfield Labs ran a systematic audit of [LOCOMO](https://aclanthology.org/2024.acl-long.747.pdf), the long-term-memory benchmark that every major memory-library vendor cites as their SOTA proving ground. Their [audit](https://dev.to/penfieldlabs/we-audited-locomo-64-of-the-answer-key-is-wrong-and-the-judge-accepts-up-to-63-of-intentionally-33lg) found 99 errors in 1,540 answer-key entries. That's a 6.4% ground-truth error rate. They then tested the LLM judge the benchmark relies on. It accepted **62.81% of intentionally wrong answers** when the wrong answer was topically adjacent to the correct one.
 
 Those two numbers put a hard floor on any LOCOMO score comparison. A 6.4% error rate in the gold answers means any system scoring above 93.6% is benefiting from benchmark errors. A judge that accepts almost two-thirds of wrong-but-topical answers means any score gap below roughly 6pp is inside the judge's noise. Mem0's 91.6% LOCOMO claim, Hydra DB's 90.79%, Zep's self-reported 71.2%, Emergence AI's 86%: all are measured against a benchmark whose ceiling is 93.6% and whose grader tolerates the exact failure mode (vague, topically-adjacent answers) that weak memory systems produce.
