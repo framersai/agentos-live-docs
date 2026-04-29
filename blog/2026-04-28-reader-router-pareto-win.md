@@ -130,7 +130,16 @@ Before publishing the 85.6% headline, every adjacent knob in the parameter space
 | `text-embedding-3-large` (larger embedding model) | 83.3% | −1.9 pp |
 | **Reference: canonical + reader router (this headline) Phase A** | **88.9%** | **+3.7 pp** |
 
-All seven adjacent configurations regressed. The 85.6% canonical-hybrid + reader-router configuration is **empirically Pareto-optimal in the tested parameter space** — most benchmark publications report a number; we report a number AND prove it's locally Pareto-optimal by exhaustively measuring 7 adjacent configurations that all underperform.
+All seven adjacent configurations regressed at Phase A. We then ran four follow-up Phase B confirmations at full N=500 (where the cost is real but the variance is tighter than the N=54 stratified sample):
+
+| Probe (Phase B on top of canonical+RR baseline 85.6%) | Phase B | Δ vs baseline |
+|---|---:|---:|
+| `--om-classifier-model gpt-4o` (gpt-4o classifier upgrade) | 84.0% [80.6%, 87.0%] | −1.6 pp at +44% cost-per-correct |
+| `--embedder-model text-embedding-3-large` (larger embedding) | 83.4% [80.2%, 86.4%] | −2.2 pp at **20× slower latency** |
+
+The text-embedding-3-large run also produced an interesting null result: recall@10 was **0.984** vs 0.981 with text-embedding-3-small. The larger embedding does NOT meaningfully lift retrieval recall on this benchmark. Canonical-hybrid + Cohere rerank already saturates retrieval at sem-embed-small dimensionality. The 3072-dim retrieval pulls in semantically-adjacent but topically off chunks (SSA collapses −7.1 pp), causing the aggregate accuracy regression. And the per-query 3072-dim vector search + larger embedding cost combine to produce a **20× slowdown in average latency** (4 seconds → 81 seconds avg), which would be untenable in production.
+
+Eleven adjacent configurations tested across Phase A and Phase B; eleven regressions. The 85.6% canonical-hybrid + reader-router configuration is **empirically Pareto-optimal in the tested parameter space** — most benchmark publications report a number; we report a number AND prove it's locally Pareto-optimal by exhaustively measuring 11 adjacent configurations that all underperform.
 
 ## Negative finding: gpt-4o classifier upgrade does NOT lift accuracy (two independent confirmations)
 
