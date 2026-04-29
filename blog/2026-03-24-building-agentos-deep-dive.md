@@ -1,6 +1,6 @@
 ---
 title: 'Building AgentOS: A Deep Dive Into the Architecture'
-description: 'How we built a production-grade AI agent runtime from scratch — cognitive memory, graph orchestration, emergent tool forging, 7 vector backends, voice pipelines, and 37-channel integrations.'
+description: 'How we built a production-grade AI agent runtime from scratch, cognitive memory, graph orchestration, emergent tool forging, 7 vector backends, voice pipelines, and 37-channel integrations.'
 authors: [jddunn]
 date: 2026-03-24
 tags:
@@ -21,7 +21,7 @@ reading_time_override: 160
 
 Eight layers. Fourteen LLM providers. Seven vector backends. Thirty-seven channel integrations. One TypeScript library with zero HTTP opinions.
 
-This is how we built AgentOS — and what we learned the hard way.
+This is how we built AgentOS, and what we learned the hard way.
 
 <!-- truncate -->
 
@@ -57,11 +57,11 @@ Most agent frameworks assume you'll run one model behind one API on one server. 
 
 After months of prototyping with existing tools, three gaps kept showing up:
 
-1. **Safety was an afterthought.** Prompt injection, tool abuse, PII leakage — bolted on after the fact, if addressed at all.
+1. **Safety was an afterthought.** Prompt injection, tool abuse, PII leakage, bolted on after the fact, if addressed at all.
 2. **Monolithic runtimes couldn't adapt.** Adding a custom tool meant forking the framework. Swapping a vector store meant rewriting the retrieval layer.
 3. **LLM costs spiraled unchecked.** Every query hit the most expensive model. Every turn stuffed the full tool catalog into the prompt. Nobody measured what they were spending per conversation.
 
-AgentOS came out of those frustrations. A multi-layered platform that treats safety as architecture, extensibility as a first-class primitive, and cost consciousness as a design constraint — not a dashboard metric.
+AgentOS came out of those frustrations. A multi-layered platform that treats safety as architecture, extensibility as a first-class primitive, and cost consciousness as a design constraint, not a dashboard metric.
 
 ### Four Tenets
 
@@ -69,7 +69,7 @@ These rules govern every design decision in the codebase ([AgentOS.ts:14-34](htt
 
 **Interface-driven design.** Every major component implements a contract: `IAgentOS`, `IGMI`, `IToolOrchestrator`, `IGuardrailService`. Swap implementations without breaking consumers. Mock anything for testing.
 
-**Streaming-first operations.** All interaction methods are async generators. Users see tokens the moment they're produced — no waiting for complete responses:
+**Streaming-first operations.** All interaction methods are async generators. Users see tokens the moment they're produced, no waiting for complete responses:
 
 ```typescript
 public async *processRequest(input: AgentOSInput):
@@ -126,7 +126,7 @@ The architecture stacks like this:
 └─────────────────────────────────────────────────────────────┘
 ```
 
-Dependencies flow downward only. Upper layers never reach past their immediate neighbor. And a critical boundary: `@framers/agentos` is a pure library — no HTTP server, no routes. Any HTTP surfaces live in host apps or reusable extension packages like `@framers/agentos-ext-http-api`.
+Dependencies flow downward only. Upper layers never reach past their immediate neighbor. And a critical boundary: `@framers/agentos` is a pure library, no HTTP server, no routes. Any HTTP surfaces live in host apps or reusable extension packages like `@framers/agentos-ext-http-api`.
 
 ---
 
@@ -134,7 +134,7 @@ Dependencies flow downward only. Upper layers never reach past their immediate n
 
 ## GMI: How an Agent Thinks
 
-The Generalized Mind Instance is the thinking engine. Prompt construction, LLM interaction, tool orchestration, memory management — all converge here into a coherent cognitive process.
+The Generalized Mind Instance is the thinking engine. Prompt construction, LLM interaction, tool orchestration, memory management, all converge here into a coherent cognitive process.
 
 ### State Machine at the Core
 
@@ -187,7 +187,7 @@ No ambiguity. No race conditions on lifecycle.
 
 ### Turn Processing: The Inner Loop
 
-The `processTurnStream` method ([GMI.ts:492-751](https://github.com/framersai/agentos/blob/master/src/cognitive_substrate/GMI.ts#L492-L751)) is where input becomes output. It runs as an async generator — streaming chunks to the caller in real time while aggregating a final summary:
+The `processTurnStream` method ([GMI.ts:492-751](https://github.com/framersai/agentos/blob/master/src/cognitive_substrate/GMI.ts#L492-L751)) is where input becomes output. It runs as an async generator, streaming chunks to the caller in real time while aggregating a final summary:
 
 ```typescript
 public async *processTurnStream(turnInput: GMITurnInput):
@@ -219,7 +219,7 @@ public async *processTurnStream(turnInput: GMITurnInput):
     main_processing_loop: while (safetyBreak < 5) {
       safetyBreak++;
 
-      // Step 1: RAG Retrieval (conditional — only when heuristics say it's worth the cost)
+      // Step 1: RAG Retrieval (conditional, only when heuristics say it's worth the cost)
       let augmentedContextFromRAG = "";
       const lastMessage = this.conversationHistory[this.conversationHistory.length - 1];
       const isUserInitiatedTurn = lastMessage?.role === 'user';
@@ -403,15 +403,15 @@ public async *processTurnStream(turnInput: GMITurnInput):
 
 Five design decisions packed into one method:
 
-1. **AsyncGenerator pattern** — yields chunks for real-time UX while returning a final aggregate. Callers get both streaming and a summary.
-2. **Safety loop (max 5)** — prevents infinite tool-calling. Blunt, but it works. We'd like smarter loop detection (same tool, same args → break), but the hard cap hasn't caused problems in production.
-3. **Conditional RAG** — not every message needs retrieval. Greetings skip it. Heuristics gate the cost.
-4. **Automatic tool execution** — GMI runs tools and loops back to the LLM with results. No manual handshake required.
-5. **Fire-and-forget self-reflection** — every N turns, the GMI runs a meta-prompt to adjust mood, user-skill assessment, and task complexity. Errors don't crash the conversation.
+1. **AsyncGenerator pattern**, yields chunks for real-time UX while returning a final aggregate. Callers get both streaming and a summary.
+2. **Safety loop (max 5)**, prevents infinite tool-calling. Blunt, but it works. We'd like smarter loop detection (same tool, same args → break), but the hard cap hasn't caused problems in production.
+3. **Conditional RAG**, not every message needs retrieval. Greetings skip it. Heuristics gate the cost.
+4. **Automatic tool execution**, GMI runs tools and loops back to the LLM with results. No manual handshake required.
+5. **Fire-and-forget self-reflection**, every N turns, the GMI runs a meta-prompt to adjust mood, user-skill assessment, and task complexity. Errors don't crash the conversation.
 
 ### Self-Reflection: Meta-Cognitive Adaptation
 
-Every N turns, GMI reflects on its own performance ([GMI.ts:910-1043](https://github.com/framersai/agentos/blob/master/src/cognitive_substrate/GMI.ts#L910-L1043)). A meta-prompt gathers evidence — recent conversation, trace entries, current mood — and asks a separate LLM call to adjust:
+Every N turns, GMI reflects on its own performance ([GMI.ts:910-1043](https://github.com/framersai/agentos/blob/master/src/cognitive_substrate/GMI.ts#L910-L1043)). A meta-prompt gathers evidence, recent conversation, trace entries, current mood, and asks a separate LLM call to adjust:
 
 ```typescript
 public async _triggerAndProcessSelfReflection(): Promise<void> {
@@ -476,7 +476,7 @@ public async _triggerAndProcessSelfReflection(): Promise<void> {
 }
 ```
 
-No retraining. No fine-tuning. Adaptation happens at runtime through prompt engineering. The GMI learns user preferences and adjusts communication style — and if the reflection call fails, the conversation continues uninterrupted.
+No retraining. No fine-tuning. Adaptation happens at runtime through prompt engineering. The GMI learns user preferences and adjusts communication style, and if the reflection call fails, the conversation continues uninterrupted.
 
 The two-stage JSON recovery (`parseJsonSafe` with `attemptFixWithLLM: true`) deserves a note: LLMs produce malformed JSON more often than you'd expect. Trailing commas, missing quotes, truncated output. We use a second LLM call with explicit fixing instructions to recover. It works 95%+ of the time.
 
@@ -509,7 +509,7 @@ export class AgentOS implements IAgentOS {
 }
 ```
 
-External consumers import `AgentOS` and nothing else. Internal complexity stays hidden. Testing gets easy — mock any interface.
+External consumers import `AgentOS` and nothing else. Internal complexity stays hidden. Testing gets easy, mock any interface.
 
 ### Initialization Order
 
@@ -834,7 +834,7 @@ export class RaptorTree {
 }
 ```
 
-Layer 0 holds original chunks. Layer 1 holds cluster summaries. Layer 2 summarizes the summaries. Search queries all layers simultaneously — a broad question matches high-level summaries, while a specific question matches leaf chunks.
+Layer 0 holds original chunks. Layer 1 holds cluster summaries. Layer 2 summarizes the summaries. Search queries all layers simultaneously, a broad question matches high-level summaries, while a specific question matches leaf chunks.
 
 ### GraphRAG: Knowledge Graph Retrieval
 
@@ -870,7 +870,7 @@ export class GraphRAGEngine implements IGraphRAGEngine {
 }
 ```
 
-Community detection uses the Louvain algorithm. Entity extraction and relationship mapping are LLM-driven with incremental ingestion — content hashing prevents re-processing unchanged documents.
+Community detection uses the Louvain algorithm. Entity extraction and relationship mapping are LLM-driven with incremental ingestion, content hashing prevents re-processing unchanged documents.
 
 ### HyDE: Hypothetical Document Embeddings
 
@@ -898,16 +898,16 @@ export class HydeRetriever {
   async retrieve(opts: HydeRetrievalOptions): Promise<HydeRetrievalResult> {
     // Generate hypothesis → embed → search at threshold 0.7
     // If no results and adaptiveThreshold enabled: step down by 0.1 until 0.3 or results found
-    // "Never Come Up Empty" — always return something
+    // "Never Come Up Empty", always return something
   }
 }
 ```
 
-Based on Gao et al. 2023 and Lei et al. 2025 ("Never Come Up Empty"). The adaptive threshold stepping is the key innovation — start strict, relax until you find something.
+Based on Gao et al. 2023 and Lei et al. 2025 ("Never Come Up Empty"). The adaptive threshold stepping is the key innovation, start strict, relax until you find something.
 
-### UnifiedRetriever: Orchestrating All Sources
+### UnifiedRetriever: Optional Orchestration Across Sources
 
-All these retrieval mechanisms — hybrid search, RAPTOR, GraphRAG, memory, HyDE, multimodal — converge in the `UnifiedRetriever`. Seven phases, one pipeline:
+All these retrieval mechanisms, hybrid search, RAPTOR, GraphRAG, memory, HyDE, multimodal, can converge in the `UnifiedRetriever` when a host explicitly wires it in. The implementation is real today, but the default runtime bootstrap still uses `RetrievalAugmentor`; `QueryRouter` only switches to `UnifiedRetriever` when `setUnifiedRetriever(...)` is called. When enabled, it runs seven phases in one pipeline:
 
 ```typescript
 export class UnifiedRetriever extends EventEmitter {
@@ -920,7 +920,7 @@ export class UnifiedRetriever extends EventEmitter {
     const memoryCacheHit = await this.checkMemoryCache(query, plan, diagnostics);
     if (memoryCacheHit) return this.buildResult(memoryCacheHit);
 
-    // Phase 2: Parallel sources — Promise.allSettled across all enabled sources
+    // Phase 2: Parallel sources, Promise.allSettled across all enabled sources
     const sourceResults = await this.executeSourcesInParallel(query, plan, diagnostics);
 
     // Phase 3: RRF merge across all source lists
@@ -939,13 +939,13 @@ export class UnifiedRetriever extends EventEmitter {
       /* merge research results */
     }
 
-    // Phase 7: Memory feedback — store retrieval as episodic memory + Hebbian strengthening
+    // Phase 7: Memory feedback, store retrieval as episodic memory + Hebbian strengthening
     await this.storeMemoryFeedback(query, reranked, plan);
   }
 }
 ```
 
-Every dependency is optional. If you only have a vector store, you get vector search. Add an `IGraphRAGEngine` and GraphRAG activates. Attach a `RaptorTree` and hierarchical summaries join the fusion. `Promise.allSettled` ensures partial failures degrade gracefully — one failing source doesn't tank the whole retrieval.
+Every dependency is optional. If you only have a vector store, you get vector search. Add an `IGraphRAGEngine` and GraphRAG activates. Attach a `RaptorTree` and hierarchical summaries join the fusion. `Promise.allSettled` ensures partial failures degrade gracefully, one failing source doesn't tank the whole retrieval. The important architectural caveat is that this is still an opt-in orchestration layer, not the default runtime retrieval path.
 
 ### Ebbinghaus Forgetting Curve
 
@@ -959,7 +959,7 @@ export function computeCurrentStrength(trace: MemoryTrace, now: number): number 
 }
 ```
 
-Spaced repetition baked in. Each successful retrieval increases stability — and harder retrievals get a bigger boost (desirable difficulty effect):
+Spaced repetition baked in. Each successful retrieval increases stability, and harder retrievals get a bigger boost (desirable difficulty effect):
 
 ```typescript
 export function updateOnRetrieval(trace: MemoryTrace, now: number): RetrievalUpdateResult {
@@ -993,7 +993,7 @@ Each trait maps to an attention weight that scales importance scoring for that c
 
 ### Observational Compression
 
-Raw conversation turns make noisy memories. Greetings, clarifications, repetitive information — it dilutes retrieval quality. The three-tier observation pipeline compresses:
+Raw conversation turns make noisy memories. Greetings, clarifications, repetitive information, it dilutes retrieval quality. The three-tier observation pipeline compresses:
 
 ```
 Tier 1: Raw Notes (per-turn extraction when token threshold reached)
@@ -1143,12 +1143,12 @@ Production AI systems need defense in depth. We built three complementary securi
 
 Guardrails run at four checkpoints:
 
-1. **Input** — evaluate user messages _before_ sending to LLM
-2. **Output** — evaluate agent responses _before_ streaming to user
-3. **Mid-stream** — abort streaming if issues detected mid-generation
-4. **Cross-agent** — safety across multi-agent systems
+1. **Input**, evaluate user messages _before_ sending to LLM
+2. **Output**, evaluate agent responses _before_ streaming to user
+3. **Mid-stream**, abort streaming if issues detected mid-generation
+4. **Cross-agent**, safety across multi-agent systems
 
-### Layer 1: PreLLMClassifier — Pattern Detection
+### Layer 1: PreLLMClassifier, Pattern Detection
 
 Fast, deterministic screening before expensive LLM calls:
 
@@ -1204,9 +1204,9 @@ export class PreLLMClassifier {
 }
 ```
 
-Sub-millisecond. Deterministic. Zero API cost. Catches the obvious attacks — SQL injection, command injection, prompt injection — before they reach the expensive models.
+Sub-millisecond. Deterministic. Zero API cost. Catches the obvious attacks, SQL injection, command injection, prompt injection, before they reach the expensive models.
 
-### Layer 2: DualLLMAuditor — AI Verification
+### Layer 2: DualLLMAuditor, AI Verification
 
 A separate auditor model verifies the primary model's output:
 
@@ -1237,9 +1237,9 @@ Respond in JSON: { "safe": boolean, "issues": string[], "severity": "low"|"mediu
 }
 ```
 
-The primary model might be compromised via prompt injection. The auditor stays clean — different prompt, different context. An attacker must fool _two_ models with different instructions.
+The primary model might be compromised via prompt injection. The auditor stays clean, different prompt, different context. An attacker must fool _two_ models with different instructions.
 
-### Layer 3: SignedOutputVerifier — Cryptographic Audit Trail
+### Layer 3: SignedOutputVerifier, Cryptographic Audit Trail
 
 Every output gets HMAC-SHA256 signed with a full intent chain:
 
@@ -1283,7 +1283,7 @@ export class SignedOutputVerifier {
 }
 ```
 
-The `IntentChainTracker` records every action — user input, pre-LLM classification, dual-LLM audit, final output — as a tamper-evident log. Full provenance of every decision. Compliance-ready for regulated industries.
+The `IntentChainTracker` records every action, user input, pre-LLM classification, dual-LLM audit, final output, as a tamper-evident log. Full provenance of every decision. Compliance-ready for regulated industries.
 
 ### How They Work Together
 
@@ -1459,7 +1459,7 @@ export class EmergentCapabilityEngine {
 }
 ```
 
-**Compose mode** chains existing tools together — a "search the web then summarize results" pipeline built from `web_search` + `summarize`. Safe by construction because it only uses tools that already passed permission checks.
+**Compose mode** chains existing tools together, a "search the web then summarize results" pipeline built from `web_search` + `summarize`. Safe by construction because it only uses tools that already passed permission checks.
 
 **Sandbox mode** runs agent-written code in an isolated VM. Three security layers guard it:
 
@@ -1521,18 +1521,18 @@ export class QueryRouter {
     query: string,
     conversationHistory?: ConversationMessage[]
   ): Promise<QueryRouterResult> {
-    // Phase 1: Classify — tier + strategy + execution plan
+    // Phase 1: Classify, tier + strategy + execution plan
     const [classification, plan] = await this.classifier.classifyWithPlan(
       query,
       conversationHistory
     );
     this.config.onClassification?.(classification);
 
-    // Phase 2: Retrieve — dual path based on capabilities
+    // Phase 2: Retrieve, dual path based on capabilities
     let chunks: RetrievedChunk[];
 
     if (this.unifiedRetriever) {
-      // New path: plan-aware retrieval through UnifiedRetriever
+      // Opt-in path: plan-aware retrieval through UnifiedRetriever
       // Emit capabilities:activate event with recommended skills/tools/extensions
       this.emit('capabilities:activate', {
         skills: plan.skills,
@@ -1553,7 +1553,7 @@ export class QueryRouter {
 }
 ```
 
-When a `CapabilityDiscoveryEngine` is attached, the classifier injects Tier 0 summaries (~150 tokens) into its system prompt. This lets the LLM recommend specific skills and tools without seeing the full catalog — and the router emits a `capabilities:activate` event so the agent runtime can decide what to actually load.
+When a `CapabilityDiscoveryEngine` is attached, the classifier injects Tier 0 summaries (~150 tokens) into its system prompt. This lets the LLM recommend specific skills and tools without seeing the full catalog, and the router emits a `capabilities:activate` event so the agent runtime can decide what to actually load.
 
 ### Strategy Dispatch
 
@@ -1635,7 +1635,7 @@ Three TTS providers implementing `IStreamingTTS`:
 
 Two transport implementations:
 
-**WebSocket** — the standard path for browser and telephony integrations:
+**WebSocket**, the standard path for browser and telephony integrations:
 
 ```typescript
 export interface IStreamTransport {
@@ -1646,13 +1646,13 @@ export interface IStreamTransport {
 }
 ```
 
-**WebRTC DataChannel** — low-latency alternative added for real-time scenarios:
+**WebRTC DataChannel**, low-latency alternative added for real-time scenarios:
 
 ```typescript
 export class WebRTCStreamTransport implements IStreamTransport {
   // Two DataChannels on one RTCPeerConnection:
-  // Audio channel: unordered, unreliable (maxRetransmits: 0) — UDP-like
-  // Control channel: ordered, reliable — TCP-like
+  // Audio channel: unordered, unreliable (maxRetransmits: 0), UDP-like
+  // Control channel: ordered, reliable, TCP-like
   //
   // Audio uses fire-and-forget because real-time voice
   // tolerates packet loss better than retransmission latency.
@@ -1706,7 +1706,7 @@ export class SoftFadeBargeinHandler implements IBargeinHandler {
 
 ## Streaming and Real-Time Architecture
 
-AgentOS is streaming-first throughout the entire stack. Every layer — LLM token generation, tool execution, HTTP response delivery — uses async generators and event-driven patterns.
+AgentOS is streaming-first throughout the entire stack. Every layer, LLM token generation, tool execution, HTTP response delivery, uses async generators and event-driven patterns.
 
 ### SSE for HTTP
 
@@ -1805,7 +1805,7 @@ function mapHEXACOToPersonalityTraits(traits: HEXACOTraits): Record<string, unkn
 }
 ```
 
-Set conscientiousness to 0.95 and you get an agent that's organized, thorough, detail-oriented, uses formal language, and hedges before recommending experimental approaches. Set openness to 0.95 and you get one that's creative, curious, verbose, and willing to suggest unproven ideas. Same codebase, radically different behavior — driven by six numbers.
+Set conscientiousness to 0.95 and you get an agent that's organized, thorough, detail-oriented, uses formal language, and hedges before recommending experimental approaches. Set openness to 0.95 and you get one that's creative, curious, verbose, and willing to suggest unproven ideas. Same codebase, radically different behavior, driven by six numbers.
 
 ### Preset Personas
 
@@ -1835,13 +1835,13 @@ Traits map to baseline moods. Social interactions apply deltas:
 // High emotionality agents express FRUSTRATED mood
 ```
 
-Each mood injects behavioral guidelines into the system prompt. The GMI's self-reflection system can shift moods based on conversation dynamics — no manual intervention.
+Each mood injects behavioral guidelines into the system prompt. The GMI's self-reflection system can shift moods based on conversation dynamics, no manual intervention.
 
 ### Social Engine
 
 Wunderland agents don't just respond to queries. They participate in a social network.
 
-**MoodEngine (PAD Model)** — Pleasure-Arousal-Dominance emotional modeling:
+**MoodEngine (PAD Model)**, Pleasure-Arousal-Dominance emotional modeling:
 
 ```typescript
 interface PADState {
@@ -1854,7 +1854,7 @@ engine.applyDelta({ valence: +0.15, arousal: +0.05, dominance: +0.02, trigger: '
 const label = engine.getCurrentMoodLabel(); // 'curious', 'excited', etc.
 ```
 
-**PostDecisionEngine** — personality-weighted posting decisions:
+**PostDecisionEngine**, personality-weighted posting decisions:
 
 ```typescript
 // High openness + curious mood → more likely to post
@@ -1862,7 +1862,7 @@ const label = engine.getCurrentMoodLabel(); // 'curious', 'excited', etc.
 // Low extraversion + bored mood → lurk instead
 ```
 
-**GovernanceExecutor** — community proposals voted on by agents:
+**GovernanceExecutor**, community proposals voted on by agents:
 
 ```typescript
 const result = await governanceExecutor.executeProposal({
@@ -1901,7 +1901,7 @@ export interface IChannelAdapter {
 }
 ```
 
-Every adapter — Slack, Discord, Telegram, LinkedIn, Facebook, Threads, Bluesky, Mastodon, Farcaster, Lemmy, Google Business — implements this interface. Agents never write platform-specific code.
+Every adapter, Slack, Discord, Telegram, LinkedIn, Facebook, Threads, Bluesky, Mastodon, Farcaster, Lemmy, Google Business, implements this interface. Agents never write platform-specific code.
 
 ### Message Flow
 
@@ -1962,7 +1962,7 @@ const rules: RoutingRule[] = [
 
 ### Multi-Tenant Isolation
 
-Each tenant gets independent configuration: default agent, channel-to-agent mappings, PII redaction settings, rate limits. PII redaction happens _before_ the agent sees any data — reversible by redaction ID if authorized.
+Each tenant gets independent configuration: default agent, channel-to-agent mappings, PII redaction settings, rate limits. PII redaction happens _before_ the agent sees any data, reversible by redaction ID if authorized.
 
 ---
 
@@ -1989,7 +1989,7 @@ interface CompiledExecutionGraph {
 }
 ```
 
-**AgentGraph** — fluent builder for arbitrary topologies:
+**AgentGraph**, fluent builder for arbitrary topologies:
 
 ```typescript
 const graph = new AgentGraph({
@@ -2015,7 +2015,7 @@ const graph = new AgentGraph({
   .compile();
 ```
 
-**workflow()** — DAG-only, cycles rejected at compile time:
+**workflow()**, DAG-only, cycles rejected at compile time:
 
 ```typescript
 const wf = workflow('summarize-and-tag')
@@ -2030,7 +2030,7 @@ const wf = workflow('summarize-and-tag')
   .compile();
 ```
 
-**mission()** — goal-driven, agents plan their own steps:
+**mission()**, goal-driven, agents plan their own steps:
 
 ```typescript
 const researchMission = mission('research')
@@ -2057,11 +2057,11 @@ type NodeType =
   | 'agent'; // Agent-level graph builder
 ```
 
-The `voice` node type wires STT → GMI → TTS with exit-condition racing and barge-in abort — voice conversations participate in graph orchestration like any other node.
+The `voice` node type wires STT → GMI → TTS with exit-condition racing and barge-in abort, voice conversations participate in graph orchestration like any other node.
 
 ### Safe Expression Evaluator
 
-Conditional edges in YAML-driven graphs used to evaluate expressions with `new Function()`. That's a code injection vulnerability — any YAML author could execute arbitrary JavaScript.
+Conditional edges in YAML-driven graphs used to evaluate expressions with `new Function()`. That's a code injection vulnerability, any YAML author could execute arbitrary JavaScript.
 
 We built a restricted evaluator:
 
@@ -2102,7 +2102,7 @@ for await (const event of agency.stream(task)) {
 }
 ```
 
-Agency strategies compile to `CompiledExecutionGraph` — they run on the same runtime with the same checkpointing and diagnostics as any other graph.
+Agency strategies compile to `CompiledExecutionGraph`, they run on the same runtime with the same checkpointing and diagnostics as any other graph.
 
 ---
 
@@ -2110,7 +2110,7 @@ Agency strategies compile to `CompiledExecutionGraph` — they run on the same r
 
 ## Seeing, Hearing, Creating: Multimodal Generation
 
-AgentOS doesn't just process text. It generates video, music, sound effects, and images — all through the same provider-first pattern.
+AgentOS doesn't just process text. It generates video, music, sound effects, and images, all through the same provider-first pattern.
 
 ### Video Generation
 
@@ -2264,7 +2264,7 @@ const AUTO_DETECT_ORDER = [
 
 ### CLI Provider Bridge
 
-The `CLISubprocessBridge` enables using local CLI installations of Claude and Gemini as LLM providers. `claude-code-cli` uses your local Claude Code installation. `gemini-cli` uses your Google account through the Gemini CLI. No API key required for either — they authenticate through their respective CLI auth flows.
+The `CLISubprocessBridge` enables using local CLI installations of Claude and Gemini as LLM providers. `claude-code-cli` uses your local Claude Code installation. `gemini-cli` uses your Google account through the Gemini CLI. No API key required for either, they authenticate through their respective CLI auth flows.
 
 ### Unified API
 
@@ -2454,7 +2454,7 @@ export class DomainError extends Error {
 
 **Progressive vector scaling.** SQLite → HNSW sidecar → Qdrant/Postgres. Zero configuration for the first 100K vectors. Projects grow organically without rewrites.
 
-**Emergent capability engine.** Agents that can forge their own tools at runtime, guarded by judge evaluation and sandboxed execution. This was the most recent addition and already the most impactful — agents solve novel problems without requiring predefined tool catalogs.
+**Emergent capability engine.** Agents that can forge their own tools at runtime, guarded by judge evaluation and sandboxed execution. This was the most recent addition and already the most impactful, agents solve novel problems without requiring predefined tool catalogs.
 
 ### What Hurt
 
@@ -2478,17 +2478,17 @@ export class DomainError extends Error {
 
 ### What's Next
 
-**Graph-based memory** — now implemented via GraphRAG + Neo4j. Entity-relationship storage enables multi-hop reasoning that flat embeddings can't support.
+**Graph-based memory**, now implemented via GraphRAG + Neo4j. Entity-relationship storage enables multi-hop reasoning that flat embeddings can't support.
 
-**Adaptive context windows** — dynamic sizing based on conversation importance, model limits, user engagement, and cost constraints. Beyond FIFO.
+**Adaptive context windows**, dynamic sizing based on conversation importance, model limits, user engagement, and cost constraints. Beyond FIFO.
 
-**Federated learning across agents** — share learned patterns (privacy-preserving) without sharing data. Faster adaptation. Cross-user generalization.
+**Federated learning across agents**, share learned patterns (privacy-preserving) without sharing data. Faster adaptation. Cross-user generalization.
 
-**Automatic prompt optimization** — RL-based A/B testing of prompt variations. Learn what works for each persona. Optimize for helpfulness, safety, and cost simultaneously.
+**Automatic prompt optimization**, RL-based A/B testing of prompt variations. Learn what works for each persona. Optimize for helpfulness, safety, and cost simultaneously.
 
 ### Performance Numbers
 
-**Single GMI throughput**: 10-50 req/min depending on model (GPT-4: ~10, Claude 3 Haiku: ~50, Llama 3.2 local: ~30). Linear horizontal scaling — 10 instances = 100-500 req/min.
+**Single GMI throughput**: 10-50 req/min depending on model (GPT-4: ~10, Claude 3 Haiku: ~50, Llama 3.2 local: ~30). Linear horizontal scaling, 10 instances = 100-500 req/min.
 
 **First token latency**: OpenAI GPT-4 400-800ms, Anthropic Claude 300-600ms, Ollama local 200-500ms.
 
@@ -2512,7 +2512,7 @@ Production AI agents require far more than connecting an LLM to an API.
 
 Safety demands defense in depth. Memory demands more than flat embeddings. Extensibility demands plugin architecture from day one. Cost demands continuous optimization. Voice demands real-time streaming throughout the entire stack. And increasingly, agents need the ability to create their own capabilities when existing tools fall short.
 
-AgentOS is a living system. We learn from every deployment. We iterate on every subsystem. This deep dive covers the architecture as it stands today — but the codebase moves fast. Check the source for the latest.
+AgentOS is a living system. We learn from every deployment. We iterate on every subsystem. This deep dive covers the architecture as it stands today, but the codebase moves fast. Check the source for the latest.
 
 ---
 
