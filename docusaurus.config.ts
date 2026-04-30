@@ -430,6 +430,11 @@ const config: Config = {
           position: 'right' as const,
         },
         {
+          href: 'https://agentos.sh/contact',
+          label: 'Contact',
+          position: 'right' as const,
+        },
+        {
           href: 'https://github.com/framersai/agentos',
           label: 'GitHub',
           position: 'right' as const,

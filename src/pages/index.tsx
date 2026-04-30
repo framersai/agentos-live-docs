@@ -68,85 +68,148 @@ function Hero() {
 /* ------------------------------------------------------------------ */
 
 /**
- * Discord call-to-action card pointing users at the official Wilds AI
- * Discord — the support and developer-onboarding channel for AgentOS,
- * Paracosm, and other Frame projects. Mirrors the same component on
- * agentos.sh; kept inline here to avoid adding a components/ tree just
- * for a single static link card.
+ * Two side-by-side CTA cards under the hero: Discord (real-time community)
+ * and Contact (the agentos.sh contact page for written inquiries). Both
+ * mirror the cards rendered on agentos.sh; kept inline here to avoid a
+ * components/ tree just for static link cards.
  */
-function DiscordCTA() {
+const ctaCardStyle: React.CSSProperties = {
+  display: 'flex',
+  alignItems: 'center',
+  gap: '1rem',
+  padding: '1rem 1.25rem',
+  borderRadius: '12px',
+  border: '1px solid var(--ifm-color-emphasis-300)',
+  background: 'var(--ifm-background-surface-color)',
+  textDecoration: 'none',
+  color: 'inherit',
+  transition: 'border-color 0.2s, background 0.2s, transform 0.2s',
+  flex: '1 1 320px',
+};
+
+function liftCard(e: React.MouseEvent<HTMLAnchorElement>) {
+  e.currentTarget.style.borderColor = 'var(--ifm-color-primary)';
+  e.currentTarget.style.transform = 'translateY(-1px)';
+}
+
+function dropCard(e: React.MouseEvent<HTMLAnchorElement>) {
+  e.currentTarget.style.borderColor = 'var(--ifm-color-emphasis-300)';
+  e.currentTarget.style.transform = 'translateY(0)';
+}
+
+function ContactCTAs() {
   return (
     <section
       style={{
         padding: '1rem 2rem 0',
-        maxWidth: '720px',
+        maxWidth: '960px',
         margin: '0 auto',
       }}
-      aria-label="Join the Wilds AI Discord — official community for AgentOS and Paracosm"
+      aria-label="Talk to the AgentOS team — Discord or contact form"
     >
-      <a
-        href="https://wilds.ai/discord"
-        target="_blank"
-        rel="noopener noreferrer"
+      <div
         style={{
           display: 'flex',
-          alignItems: 'center',
-          gap: '1rem',
-          padding: '1rem 1.25rem',
-          borderRadius: '12px',
-          border: '1px solid var(--ifm-color-emphasis-300)',
-          background: 'var(--ifm-background-surface-color)',
-          textDecoration: 'none',
-          color: 'inherit',
-          transition: 'border-color 0.2s, background 0.2s, transform 0.2s',
-        }}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.borderColor = 'var(--ifm-color-primary)';
-          e.currentTarget.style.transform = 'translateY(-1px)';
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.borderColor = 'var(--ifm-color-emphasis-300)';
-          e.currentTarget.style.transform = 'translateY(0)';
+          flexWrap: 'wrap',
+          gap: '0.75rem',
         }}
       >
-        <img
-          src="/img/wilds-ai-icon.png"
-          alt="Wilds AI"
-          width={48}
-          height={48}
-          loading="lazy"
-          decoding="async"
-          style={{ borderRadius: '8px', flexShrink: 0 }}
-        />
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ fontWeight: 600, fontSize: '1rem' }}>
-            Join the Wilds AI Discord
+        <a
+          href="https://wilds.ai/discord"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={ctaCardStyle}
+          onMouseEnter={liftCard}
+          onMouseLeave={dropCard}
+        >
+          <img
+            src="/img/wilds-ai-icon.png"
+            alt="Wilds AI"
+            width={48}
+            height={48}
+            loading="lazy"
+            decoding="async"
+            style={{ borderRadius: '8px', flexShrink: 0 }}
+          />
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ fontWeight: 600, fontSize: '1rem' }}>
+              Join the Wilds AI Discord
+            </div>
+            <div
+              style={{
+                fontSize: '0.85rem',
+                opacity: 0.75,
+                marginTop: '0.15rem',
+              }}
+            >
+              Real-time community for AgentOS and Paracosm support and developer onboarding.
+            </div>
           </div>
-          <div
+          <span
+            aria-hidden="true"
             style={{
-              fontSize: '0.85rem',
-              opacity: 0.75,
-              marginTop: '0.15rem',
+              flexShrink: 0,
+              fontWeight: 600,
+              color: 'var(--ifm-color-primary)',
+              fontSize: '0.9rem',
             }}
           >
-            Official community for AgentOS and Paracosm support, developer onboarding, and questions.
-          </div>
-        </div>
-        <span
-          aria-hidden="true"
-          style={{
-            flexShrink: 0,
-            fontWeight: 600,
-            color: 'var(--ifm-color-primary)',
-            fontSize: '0.9rem',
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '0.35rem',
-          }}
+            Join &rarr;
+          </span>
+        </a>
+
+        <a
+          href="https://agentos.sh/contact"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={ctaCardStyle}
+          onMouseEnter={liftCard}
+          onMouseLeave={dropCard}
         >
-          Join &rarr;
-        </span>
-      </a>
+          <div
+            aria-hidden="true"
+            style={{
+              flexShrink: 0,
+              width: 48,
+              height: 48,
+              borderRadius: 8,
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              background: 'linear-gradient(135deg, #6366F1, #8B5CF6)',
+              color: '#fff',
+              fontSize: '1.5rem',
+            }}
+          >
+            ✉
+          </div>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ fontWeight: 600, fontSize: '1rem' }}>
+              Contact the AgentOS team
+            </div>
+            <div
+              style={{
+                fontSize: '0.85rem',
+                opacity: 0.75,
+                marginTop: '0.15rem',
+              }}
+            >
+              Partnerships, investment, press, security, hiring — written inquiries to team@frame.dev.
+            </div>
+          </div>
+          <span
+            aria-hidden="true"
+            style={{
+              flexShrink: 0,
+              fontWeight: 600,
+              color: 'var(--ifm-color-primary)',
+              fontSize: '0.9rem',
+            }}
+          >
+            Contact &rarr;
+          </span>
+        </a>
+      </div>
     </section>
   );
 }
@@ -626,7 +689,7 @@ export default function Home(): React.JSX.Element {
   return (
     <Layout description="AgentOS \u2014 open-source TypeScript runtime for autonomous AI agents with unified graph orchestration, cognitive memory, streaming guardrails, and voice pipeline.">
       <Hero />
-      <DiscordCTA />
+      <ContactCTAs />
       <InstallTabs />
       <QuickStartTabs />
       <ArchitectureDiagram />
