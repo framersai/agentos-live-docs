@@ -249,6 +249,37 @@ const config: Config = {
           { from: '/docs/STRUCTURED_OUTPUT', to: '/features/structured-output' },
           // Renamed getting-started/getting-started → getting-started (index.md)
           { from: '/getting-started/getting-started', to: '/getting-started' },
+          // Blog consolidation (Track G, 2026-04-30): docs.agentos.sh/blog/*
+          // is retired in favor of a single canonical blog at
+          // agentos.sh/en/blog/<slug>. Each docs blog URL redirects to its
+          // agentos.sh equivalent where the content has been ported, or to
+          // the agentos.sh blog index when the post is engineering-only and
+          // hasn't been ported yet (those are queued for a follow-up port).
+          // Cross-site duplicate slugs (4 posts), agentos.sh canonical:
+          { from: '/blog/2025/11/10/announcing-agentos', to: 'https://agentos.sh/en/blog/announcing-agentos' },
+          { from: '/blog/2025/11/15/adaptive-vs-emergent', to: 'https://agentos.sh/en/blog/adaptive-vs-emergent' },
+          { from: '/blog/2026/02/20/agentos-vs-langgraph-vs-crewai', to: 'https://agentos.sh/en/blog/agentos-vs-langgraph-vs-crewai' },
+          { from: '/blog/2026/03/31/cognitive-memory-beyond-rag', to: 'https://agentos.sh/en/blog/cognitive-memory-beyond-rag' },
+          // Engineering deep dives (13 posts), redirected to agentos.sh blog
+          // index until each is ported. The original slugs stay reserved
+          // for the eventual port (we'll point each line directly at
+          // /en/blog/<slug> once the post lives there).
+          { from: '/blog/2026/03/24/building-agentos-deep-dive', to: 'https://agentos.sh/en/blog' },
+          { from: '/blog/2026/04/10/cognitive-memory-architecture-deep-dive', to: 'https://agentos.sh/en/blog' },
+          { from: '/blog/2026/04/10/memory-archive-rehydration', to: 'https://agentos.sh/en/blog' },
+          { from: '/blog/2026/04/13/mars-genesis-vs-mirofish-multi-agent-simulation', to: 'https://agentos.sh/en/blog' },
+          { from: '/blog/2026/04/24/memory-benchmark-transparency-audit', to: 'https://agentos.sh/en/blog' },
+          { from: '/blog/2026/04/26/agentos-ingest-router-executors', to: 'https://agentos.sh/en/blog' },
+          { from: '/blog/2026/04/26/longmemeval-m-30-to-57', to: 'https://agentos.sh/en/blog' },
+          { from: '/blog/2026/04/26/longmemeval-m-first-published-number', to: 'https://agentos.sh/en/blog' },
+          { from: '/blog/2026/04/26/two-negative-results-stage-l-stage-i', to: 'https://agentos.sh/en/blog' },
+          { from: '/blog/2026/04/27/longmemeval-s-83-with-semantic-embedder', to: 'https://agentos.sh/en/blog' },
+          { from: '/blog/2026/04/28/reader-router-pareto-win', to: 'https://agentos.sh/en/blog' },
+          { from: '/blog/2026/04/29/longmemeval-m-57-with-sem-embed', to: 'https://agentos.sh/en/blog' },
+          { from: '/blog/2026/04/29/longmemeval-m-70-with-topk5', to: 'https://agentos.sh/en/blog' },
+          // Blog index + listing pages.
+          { from: '/blog', to: 'https://agentos.sh/en/blog' },
+          { from: '/blog/archive', to: 'https://agentos.sh/en/blog' },
         ],
         createRedirects(existingPath: string) {
           // Redirect old /docs/ prefixed guide paths to root (docs are now at /),
@@ -280,16 +311,11 @@ const config: Config = {
           exclude: guidesOnly ? ['api/**', 'paracosm/**'] : [],
           editUrl: 'https://github.com/framersai/agentos-live-docs/tree/master/docs/',
         },
-        blog: guidesOnly
-          ? false
-          : {
-              showReadingTime: true,
-              blogTitle: 'AgentOS Blog',
-              blogDescription:
-                'News, updates, and insights about AgentOS, AI agents, and multi-agent orchestration.',
-              blogSidebarTitle: 'Recent posts',
-              blogSidebarCount: 'ALL',
-            },
+        // Blog plugin disabled: the canonical AgentOS blog is at
+        // agentos.sh/en/blog (Track G consolidation, 2026-04-30). Old
+        // docs.agentos.sh/blog URLs redirect to the new home via
+        // @docusaurus/plugin-client-redirects entries above.
+        blog: false,
         theme: {
           customCss: './src/css/custom.css',
         },
@@ -316,7 +342,7 @@ const config: Config = {
     announcementBar: {
       id: 'longmemeval-m-2026-04-29',
       content:
-        'New benchmark: 70.2% on LongMemEval-M with reader-router top-K=5. <a href="/blog/2026/04/29/longmemeval-m-70-with-topk5">Read the post →</a>',
+        'New benchmark: 70.2% on LongMemEval-M with reader-router top-K=5. <a href="https://agentos.sh/en/blog/agentos-memory-sota-longmemeval">Read the post →</a>',
       backgroundColor: 'var(--ifm-color-primary-darkest)',
       textColor: 'var(--ifm-color-white)',
       isCloseable: true,
@@ -379,7 +405,7 @@ const config: Config = {
         ...(!guidesOnly
           ? [
               {
-                to: '/blog',
+                href: 'https://agentos.sh/en/blog',
                 position: 'left' as const,
                 label: 'Blog',
               },
