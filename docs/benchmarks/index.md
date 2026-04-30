@@ -71,17 +71,6 @@ The harder variant. M's haystacks exceed every production context window: GPT-4o
 
 **Competitive with the strongest published M results in the LongMemEval paper.** At matched reader-Top-5 retrieval, AgentOS is +4.5 above the round-level configuration (65.7%) and 1.2 below the session-level configuration (71.4%); the paper's strongest GPT-4o result overall is 72.0% at round-level Top-10. AgentOS is the first open-source library above 65% on M with publicly reproducible methodology (per-case run JSONs at fixed seed, single-CLI reproduction). The closest published external number is AgentBrain's 71.7% from their closed-source SaaS.
 
-### The journey: 30.6% → 45.4% → 57.6% → 70.2%
-
-| Date | Configuration | Aggregate | Lift |
-|---|---|---:|---:|
-| 2026-04-25 | Tier 1 canonical (CharHash, top-K=20) | 30.6% | baseline |
-| 2026-04-26 | M-tuned (HyDE + top-K=50 + rerank-mult=5, CharHash) | 45.4% | +14.8 pp |
-| 2026-04-29 | M-tuned + sem-embed + reader-router (top-K=50) | 57.6% | +12.2 pp |
-| **2026-04-29** | M-tuned + sem-embed + reader-router + **top-K=5** | **70.2%** | **+12.6 pp** |
-
-**Cumulative: +39.6 pp over the original baseline.** Each step has CIs disjoint from the prior step.
-
 ## LOCOMO (out-of-distribution transfer)
 
 LongMemEval-tuned pipeline, no LOCOMO-specific tuning, gpt-4o reader, N=1986:
