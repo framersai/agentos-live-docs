@@ -2,6 +2,7 @@
 title: "Two Negative Results: When Lightweight Architecture Additions Don't Lift on a Well-Tuned RAG Stack"
 description: "Anthropic Contextual Retrieval cost 3.7 pp on LongMemEval-S, with temporal-reasoning collapsing 33 points. Mem0-v3-style entity-linking re-rank cost 4 points on LOCOMO with multi-hop dropping 20. Per-category math, the architectural reason, and the production primitives we shipped anyway."
 authors: [jddunn]
+audience: engineer
 tags: [memory, benchmarks, longmemeval, locomo, transparency, anthropic-contextual-retrieval, mem0, ingest-router, memory-router]
 keywords: [anthropic contextual retrieval longmemeval, mem0 v3 entity linking locomo, agentos ingest router, agentos memory router, negative result benchmark, memory benchmark transparency, lightweight rag additions]
 image: /img/blog/two-negative-results.png

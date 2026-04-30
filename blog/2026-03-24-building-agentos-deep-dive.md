@@ -2,6 +2,7 @@
 title: 'Building AgentOS: A Deep Dive Into the Architecture'
 description: 'How we built a production-grade AI agent runtime from scratch, cognitive memory, graph orchestration, emergent tool forging, 7 vector backends, voice pipelines, and 37-channel integrations.'
 authors: [jddunn]
+audience: engineer
 date: 2026-03-24
 tags:
   [

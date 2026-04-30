@@ -2,6 +2,7 @@
 title: "83.2% on LongMemEval-S: When Your Bench Default Hides Your Real Numbers"
 description: "AgentOS's published 76.6% Tier 3 number was running against a lexical-hash fallback embedder. The deployed configuration with text-embedding-3-small lands 83.2% [79.8%, 86.4%] at $0.052/correct, validated at full Phase B N=500. +14.5 pp on TR and MS. Here's what was actually happening."
 authors: [jddunn]
+audience: engineer
 tags: [memory, benchmarks, longmemeval, longmemeval-s, semantic-embedding, retrieval-precision]
 keywords: [longmemeval-s, agentos memory, semantic embedding, retrieval quality, openai text-embedding-3-small, hybrid retrieval, multi-session memory]
 image: /img/blog/longmemeval-s-83.png

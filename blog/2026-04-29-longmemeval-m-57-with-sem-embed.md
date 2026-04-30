@@ -2,6 +2,7 @@
 title: "57.6% on LongMemEval-M: First Public M Number Above 50%"
 description: "AgentOS hits 57.6% [53.2%, 61.8%] on LongMemEval-M at Phase B N=500. +12.2 pp over the prior CharHash-era 45.4% baseline, CIs disjoint. The same two axes (semantic embedder + per-category reader router) that drove S 85.6% transfer to the 1.5M-token M variant."
 authors: [jddunn]
+audience: engineer
 tags: [memory, benchmarks, longmemeval, longmemeval-m, semantic-embedding, reader-router, scale]
 keywords: [longmemeval-m, agentos memory benchmark, semantic embedding, reader router, multi-session memory at scale]
 image: /img/blog/longmemeval-m-57.png

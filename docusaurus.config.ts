@@ -296,6 +296,14 @@ const config: Config = {
 
   themeConfig: {
     image: 'img/og-image.png',
+    announcementBar: {
+      id: 'longmemeval-m-2026-04-29',
+      content:
+        'New benchmark: 70.2% on LongMemEval-M with reader-router top-K=5. <a href="/blog/2026/04/29/longmemeval-m-70-with-topk5">Read the post →</a>',
+      backgroundColor: 'var(--ifm-color-primary-darkest)',
+      textColor: 'var(--ifm-color-white)',
+      isCloseable: true,
+    },
     navbar: {
       title: '',
       logo: {

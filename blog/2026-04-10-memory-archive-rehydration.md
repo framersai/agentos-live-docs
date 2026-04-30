@@ -2,6 +2,7 @@
 title: "Memory Archive: Lossless Cold Storage for Long-Running Agents"
 description: "AgentOS cognitive memory preserves verbatim content before temporal-gist compression. On-demand rehydration lets agents recall exact details from months ago on a fixed context budget. Write-ahead archive prevents irreversible information loss."
 authors: [agentos-team]
+audience: engineer
 tags: [memory, cognitive-science, architecture, long-running-agents]
 keywords: [ai agent memory, temporal gist, memory archive, rehydration, long-running ai agents, memory compression, cold storage, sql-storage-adapter]
 image: /img/blog/cognitive-memory.png

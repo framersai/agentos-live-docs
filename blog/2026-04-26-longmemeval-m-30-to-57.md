@@ -2,6 +2,7 @@
 title: "From 30.6% to 45.4% on LongMemEval-M: Three Opt-In Flags Cut the Scale Gap by a Third"
 description: "The 30.6% LongMemEval-M baseline was leaving 14 percentage points on the table. Three retrieval-precision flags (wider Cohere rerank pool, larger reader-top-k, HyDE) lift M to 45.4% [41.2%, 49.8%] at Phase B N=500 with bootstrap CI. Per-category math, the Phase A → Phase B compression that caught us, and what shipped."
 authors: [jddunn]
+audience: engineer
 tags: [memory, benchmarks, longmemeval, longmemeval-m, retrieval-precision, hyde, cohere-rerank]
 keywords: [longmemeval-m lift, agentos retrieval precision, hyde longmemeval, cohere rerank candidate multiplier, reader-top-k tuning, agent memory benchmark scale, agentos m-tuned config]
 image: /img/blog/longmemeval-m-lift.png

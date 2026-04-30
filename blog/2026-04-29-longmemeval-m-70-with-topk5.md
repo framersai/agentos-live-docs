@@ -2,6 +2,7 @@
 title: "70.2% on LongMemEval-M: First Open-Source Library Above 65% on the 1.5M-Token Variant"
 description: "AgentOS hits 70.2% [66.0%, 74.0%] on LongMemEval-M at Phase B N=500 at $0.0078 per correct ($7.80 per 1,000 memory-grounded answers over a 1.5M-token haystack). +4.5 pp above the LongMemEval paper's academic ceiling, statistically tied with AgentBrain's closed-source 71.7%."
 authors: [jddunn]
+audience: engineer
 tags: [memory, benchmarks, longmemeval, longmemeval-m, top-k, reader-router, scale, semantic-embedding]
 keywords: [longmemeval-m, agentos memory benchmark, top-K reduction, multi-session memory, 1.5M tokens, M variant, open source memory library]
 image: /img/blog/longmemeval-m-70.png

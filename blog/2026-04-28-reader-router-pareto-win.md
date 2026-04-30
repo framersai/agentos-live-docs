@@ -2,6 +2,7 @@
 title: "85.6% on LongMemEval-S at $0.009/Correct, 4-Second Latency: Per-Category Reader Routing"
 description: "AgentOS Phase B at full N=500 lands 85.6% [82.4%, 88.6%] on LongMemEval-S at $0.0090 per correct ($9 per 1,000 memory-grounded answers; ~$45 per 1,000 conversations averaging 5 RAG calls each). +1.4 pp over Mastra OM gpt-4o at point estimate, statistically tied within our CI. Plus 15 stress-tested adjacent configurations, all regressions."
 authors: [jddunn]
+audience: engineer
 tags: [memory, benchmarks, longmemeval, longmemeval-s, reader-router, dispatch, pareto-optimization, canonical-hybrid, sem-embedding]
 keywords: [longmemeval-s, agentos memory router, per-category dispatch, reader tier router, cost-pareto memory, gpt-4o vs gpt-5-mini, canonical hybrid retrieval, semantic embedder]
 image: /img/blog/reader-router-pareto.png

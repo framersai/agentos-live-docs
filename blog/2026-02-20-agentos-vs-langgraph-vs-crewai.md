@@ -2,12 +2,17 @@
 title: "AgentOS vs LangGraph vs CrewAI vs Mastra: AI Agent Frameworks Compared (2026)"
 description: "Honest comparison of four production-ready AI agent frameworks: architecture, memory, multi-agent support, code examples, benchmarks, and when to use each. Built by the AgentOS team with caveats called out where alternatives win."
 authors: [agentos-team]
+audience: engineer
 tags: [comparison, frameworks, multi-agent, architecture]
 keywords: [ai agent framework comparison, langgraph alternative, crewai alternative, mastra vs agentos, typescript ai agent framework, best ai agent framework 2026, multi-agent orchestration, cognitive memory ai, letta memgpt]
 image: /img/blog/framework-comparison.png
 ---
 
 Building AI agents in 2026 means choosing between a growing number of frameworks. This comparison covers four production-ready options: [AgentOS](https://agentos.sh), [LangGraph](https://www.langchain.com/langgraph), [CrewAI](https://crewai.com), and [Mastra](https://mastra.ai). Each targets different use cases and team profiles. We built AgentOS, so we will be upfront about where it excels and where alternatives might be a better fit. The numbers in this post are sourced from each project's primary documentation, GitHub stars/issues, and the [Speakeasy 2026 framework comparison](https://www.speakeasy.com/blog/ai-agent-framework-comparison) (Q1 2026 benchmarks).
+
+> *Editorial note (canonical):* This is the engineering deep-dive version of the comparison; it's the canonical entry for the topic. The shorter consumer-facing version on agentos.sh ([AgentOS vs LangGraph vs CrewAI vs Mastra vs VoltAgent](https://agentos.sh/blog/agentos-vs-langgraph-vs-crewai)) shares the same conclusions and provenance but reads as a higher-level summary. If you want the full per-knob comparison and the reader-matched cost claims, this is the post.
+
+Every numeric comparison below either matches reader model and configuration between systems or is flagged as a pricing observation rather than a quality claim. The methodology follows agentos-bench's matched-reader rule: comparing accuracy or cost across systems is meaningful only when the reader model and reader configuration are held constant. Where a competitor publishes only a number without specifying the reader, that number stays in its original form and is annotated as such.
 
 <!-- truncate -->
 

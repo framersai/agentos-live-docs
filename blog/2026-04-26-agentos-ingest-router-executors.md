@@ -2,6 +2,7 @@
 title: "Production Primitives: agentos IngestRouter Executors for Stage L and Stage I"
 description: "agentos 0.2.12 + 0.2.13 ship reference executors for the IngestRouter `summarized` and `fact-graph` strategy IDs: Anthropic Contextual Retrieval and Mem0-v3-style entity-linking. Benchmark measurements show both negative on our pipeline; the primitives are still useful for consumers building their own."
 authors: [jddunn]
+audience: engineer
 tags: [agentos, ingest-router, memory-router, anthropic-contextual-retrieval, mem0, primitives]
 keywords: [agentos ingest router, agentos memory router, anthropic contextual retrieval typescript, mem0 v3 entity linking typescript, summarizedingestexecutor, entitylinkingingestexecutor, entityretrievalranker, agentos production primitives]
 image: /img/blog/agentos-ingest-router-executors.png

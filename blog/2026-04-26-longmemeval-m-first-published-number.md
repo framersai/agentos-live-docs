@@ -2,6 +2,7 @@
 title: "First Public LongMemEval-M Number: 30.6% at 500-Session Haystacks"
 description: "Every published memory-library number on LongMemEval is the easier S variant: 115K tokens, 50 sessions per haystack. The official benchmark also ships an M variant: 1.5M tokens, 500 sessions per haystack. No vendor publishes M numbers. We just did. 30.6% at $0.082 per correct, with bootstrap CI and 2% [0%, 5%] judge FPR."
 authors: [jddunn]
+audience: engineer
 tags: [memory, benchmarks, longmemeval, longmemeval-m, transparency, retrieval-precision, scale]
 keywords: [longmemeval-m, longmemeval m benchmark, agent memory benchmark scale, memory retrieval at scale, longmemeval-s vs m, agentos longmemeval, first public longmemeval-m number]
 image: /img/blog/longmemeval-m.png

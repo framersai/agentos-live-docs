@@ -2,6 +2,7 @@
 title: "The Complete AgentOS Cognitive Memory Architecture"
 description: "Technical reference for AgentOS cognitive memory: Ebbinghaus decay, HEXACO encoding, write-ahead archives, subjective multi-agent perspective encoding, narrative thread tracking, and session-spanning scenario planning. How wilds.ai NPCs and companions remember the same events differently."
 authors: [agentos-team]
+audience: engineer
 tags: [memory, cognitive-science, architecture, long-running-agents, multi-agent, rag, npc-memory]
 keywords: [ai agent memory, cognitive memory architecture, temporal gist, memory archive, rehydration, perspective encoding, HEXACO personality, npc memory, companion memory, ebbinghaus decay, reconsolidation, retrieval-induced forgetting, narrative threads, session planning, knowledge graph, graphrag, coala framework, memgpt, generative agents]
 image: /img/blog/cognitive-memory.png

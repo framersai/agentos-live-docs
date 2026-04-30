@@ -2,6 +2,7 @@
 title: "Why Memory-Library Benchmarks Don't Mean What You Think"
 description: "An audit of how Mem0, Mastra, Supermemory, Zep, EmergenceMem, and MemPalace publish their LongMemEval and LOCOMO numbers. The benchmarks are broken, the gaming is documented, and AgentOS publishes its own honest numbers alongside the audit framework."
 authors: [agentos-team]
+audience: engineer
 tags: [memory, benchmarks, longmemeval, locomo, transparency, rag, policy-router]
 keywords: [memory benchmark transparency, longmemeval gaming, locomo audit, agentos policy router, pareto-optimal routing, memory library benchmark reproducibility, mem0 vs zep, mastra observational memory, supermemory memorybench, benchmark reproducibility]
 image: /img/blog/memory-benchmarks.png

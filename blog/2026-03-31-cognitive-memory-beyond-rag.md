@@ -2,10 +2,13 @@
 title: "Cognitive Memory for AI Agents: Beyond RAG"
 description: "RAG retrieves documents, it does not remember. AgentOS implements 9 cognitive mechanisms from published neuroscience: Ebbinghaus decay, reconsolidation, retrieval-induced forgetting, emotion regulation, and more. Each mechanism is independently configurable and grounded in primary literature."
 authors: [agentos-team]
+audience: engineer
 tags: [memory, cognitive-science, rag, architecture]
 keywords: [ai agent memory, cognitive memory ai, rag alternatives, ebbinghaus decay ai, ai agent long term memory, reconsolidation, retrieval-induced forgetting, coala framework, memgpt]
 image: /img/blog/cognitive-memory.png
 ---
+
+> *Editorial note:* This is the engineering deep-dive version of the topic. The consumer-facing essay version is at [Cognitive Memory for AI Agents: Beyond RAG](https://agentos.sh/blog/cognitive-memory-beyond-rag) on agentos.sh. The two posts overlap on the central thesis but the live-docs version below carries the full per-mechanism implementation references and benchmark provenance.
 
 RAG retrieves documents. It does not remember.
 

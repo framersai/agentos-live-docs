@@ -2,6 +2,7 @@
 title: "Mars Genesis vs MiroFish: Two Approaches to Multi-Agent Simulation"
 description: "Technical comparison of AgentOS Mars Genesis and MiroFish, two open-source multi-agent simulation frameworks. MiroFish builds parallel digital worlds from real-world seed data. Mars Genesis runs deterministic Mars colonies with personality-driven leaders forging tools at runtime."
 authors: [jddunn]
+audience: engineer
 date: 2026-04-13
 tags:
   [
@@ -40,12 +41,17 @@ Multi-agent simulation splits into two schools: predict the real world, or gener
 
 Both descend from the [Generative Agents](https://arxiv.org/abs/2304.03442) lineage (Park et al., Stanford 2023), which established that LLM-driven simulacra produce believable human behavior at small scale. The split between MiroFish and Mars Genesis is what to do with that capability: predict reality, or generate divergent histories.
 
-This post breaks down how each system works at the architecture level, where they diverge in design philosophy, and what builders can learn from both.
+This post breaks down how each system works at the architecture level, where they diverge in design philosophy, and what builders can learn from both. For the long-form essay version of the Mars Genesis side of the comparison, see [Paracosm: Counterfactual World Simulation in 2026](https://agentos.sh/blog/paracosm-2026-overview).
 
 <!-- truncate -->
 
 ![Mars Genesis simulation dashboard showing two AI commanders running side-by-side with emergent crises, department analysis, forged tools, colonist reactions, and divergence tracking](/img/blog/mars-genesis-simulation-dashboard.png)
 *Mars Genesis dashboard: two AI commanders face different emergent crises. Left column (Visionary) chose a risky exterior repair during a dust storm. Right column (Engineer) landed conservatively at Arcadia Planitia. Department pills, forged tools, colonist voice reactions, and the divergence rail are visible.*
+
+<video controls poster="/img/blog/paracosm/sim-poster.jpg" style="width:100%;border-radius:8px;margin:1rem 0;">
+  <source src="/img/blog/paracosm/sim-real.mp4" type="video/mp4">
+</video>
+*Side-by-side Mars Genesis run: identical seed, identical scenario, two commanders with opposing HEXACO profiles. Divergence in tool inventory, mortality cause distribution, and infrastructure footprint emerges by turn three.*
 
 ---
 
