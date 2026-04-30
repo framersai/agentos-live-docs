@@ -1,11 +1,24 @@
 import { themes as prismThemes } from 'prism-react-renderer';
 import type { Config } from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
+import { existsSync } from 'fs';
+import { resolve } from 'path';
 
 const disableLocalSearch = process.env.AGENTOS_DOCS_DISABLE_LOCAL_SEARCH === '1';
 const disableSearchManifest = process.env.AGENTOS_DOCS_DISABLE_SEARCH_MANIFEST === '1';
 const guidesOnly = process.env.AGENTOS_DOCS_GUIDES_ONLY === '1';
 const strictDocs = process.env.AGENTOS_DOCS_STRICT !== '0';
+
+// The paracosm typedoc plugin needs the live paracosm source tree at the
+// expected sibling path. When this docs site is built standalone (CI on
+// the docs repo, not the monorepo), that path is not present, and typedoc
+// fails the whole build before Docusaurus can render any blog or guide
+// content. Detect the source presence at config time and skip the plugin
+// when it is missing — the API reference for paracosm is still cross-
+// linked from the monorepo build, and the standalone docs build keeps
+// shipping every other update (blog posts, guides, agentos API).
+const paracosmSrcPath = resolve(__dirname, '../paracosm/src');
+const paracosmSrcAvailable = existsSync(paracosmSrcPath);
 
 const config: Config = {
   title: 'AgentOS — Open-Source TypeScript AI Agent Runtime',
@@ -188,25 +201,29 @@ const config: Config = {
               skipErrorChecking: true,
             },
           ],
-          [
-            'docusaurus-plugin-typedoc',
-            {
-              id: 'paracosm',
-              entryPoints: [
-                '../../apps/paracosm/src/engine/index.ts',
-                '../../apps/paracosm/src/runtime/index.ts',
-                '../../apps/paracosm/src/engine/compiler/index.ts',
-              ],
-              tsconfig: '../../apps/paracosm/tsconfig.build.json',
-              out: 'docs/paracosm',
-              readme: 'none',
-              sidebar: {
-                autoConfiguration: true,
-                pretty: true,
-              },
-              skipErrorChecking: true,
-            },
-          ],
+          ...(paracosmSrcAvailable
+            ? [
+                [
+                  'docusaurus-plugin-typedoc',
+                  {
+                    id: 'paracosm',
+                    entryPoints: [
+                      '../../apps/paracosm/src/engine/index.ts',
+                      '../../apps/paracosm/src/runtime/index.ts',
+                      '../../apps/paracosm/src/engine/compiler/index.ts',
+                    ],
+                    tsconfig: '../../apps/paracosm/tsconfig.build.json',
+                    out: 'docs/paracosm',
+                    readme: 'none',
+                    sidebar: {
+                      autoConfiguration: true,
+                      pretty: true,
+                    },
+                    skipErrorChecking: true,
+                  },
+                ] as [string, Record<string, unknown>],
+              ]
+            : []),
         ]
       : []),
     [
