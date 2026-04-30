@@ -64,6 +64,94 @@ function Hero() {
 }
 
 /* ------------------------------------------------------------------ */
+/*  Discord CTA                                                        */
+/* ------------------------------------------------------------------ */
+
+/**
+ * Discord call-to-action card pointing users at the official Wilds AI
+ * Discord — the support and developer-onboarding channel for AgentOS,
+ * Paracosm, and other Frame projects. Mirrors the same component on
+ * agentos.sh; kept inline here to avoid adding a components/ tree just
+ * for a single static link card.
+ */
+function DiscordCTA() {
+  return (
+    <section
+      style={{
+        padding: '1rem 2rem 0',
+        maxWidth: '720px',
+        margin: '0 auto',
+      }}
+      aria-label="Join the Wilds AI Discord — official community for AgentOS and Paracosm"
+    >
+      <a
+        href="https://wilds.ai/discord"
+        target="_blank"
+        rel="noopener noreferrer"
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '1rem',
+          padding: '1rem 1.25rem',
+          borderRadius: '12px',
+          border: '1px solid var(--ifm-color-emphasis-300)',
+          background: 'var(--ifm-background-surface-color)',
+          textDecoration: 'none',
+          color: 'inherit',
+          transition: 'border-color 0.2s, background 0.2s, transform 0.2s',
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.borderColor = 'var(--ifm-color-primary)';
+          e.currentTarget.style.transform = 'translateY(-1px)';
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.borderColor = 'var(--ifm-color-emphasis-300)';
+          e.currentTarget.style.transform = 'translateY(0)';
+        }}
+      >
+        <img
+          src="/img/wilds-ai-icon.png"
+          alt="Wilds AI"
+          width={48}
+          height={48}
+          loading="lazy"
+          decoding="async"
+          style={{ borderRadius: '8px', flexShrink: 0 }}
+        />
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ fontWeight: 600, fontSize: '1rem' }}>
+            Join the Wilds AI Discord
+          </div>
+          <div
+            style={{
+              fontSize: '0.85rem',
+              opacity: 0.75,
+              marginTop: '0.15rem',
+            }}
+          >
+            Official community for AgentOS and Paracosm support, developer onboarding, and questions.
+          </div>
+        </div>
+        <span
+          aria-hidden="true"
+          style={{
+            flexShrink: 0,
+            fontWeight: 600,
+            color: 'var(--ifm-color-primary)',
+            fontSize: '0.9rem',
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '0.35rem',
+          }}
+        >
+          Join &rarr;
+        </span>
+      </a>
+    </section>
+  );
+}
+
+/* ------------------------------------------------------------------ */
 /*  Install Tabs                                                       */
 /* ------------------------------------------------------------------ */
 
@@ -538,6 +626,7 @@ export default function Home(): React.JSX.Element {
   return (
     <Layout description="AgentOS \u2014 open-source TypeScript runtime for autonomous AI agents with unified graph orchestration, cognitive memory, streaming guardrails, and voice pipeline.">
       <Hero />
+      <DiscordCTA />
       <InstallTabs />
       <QuickStartTabs />
       <ArchitectureDiagram />
