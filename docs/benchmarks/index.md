@@ -31,7 +31,7 @@ Same dataset (`data/longmemeval/longmemeval_s.json`), full N=500, same `gpt-4o-2
 | System | Accuracy | $/correct | p50 latency | Source |
 |---|---:|---:|---:|---|
 | EmergenceMem Internal | 86.0% | not published | 5,650 ms | [emergence.ai](https://www.emergence.ai/blog/sota-on-longmemeval-with-rag) |
-| **🚀 AgentOS canonical-hybrid + reader-router** | **85.6%** | **$0.0090** | **3,558 ms** | [85.6% Pareto-win post](/blog/2026/04/28/reader-router-pareto-win) |
+| **🚀 AgentOS canonical-hybrid + reader-router** | **85.6%** | **$0.0090** | **3,558 ms** | [85.6% Pareto-win post](https://agentos.sh/en/blog/agentos-memory-sota-longmemeval) |
 | Mastra OM gpt-4o (gemini-flash observer) | 84.23% | not published | not published | [mastra.ai](https://mastra.ai/research/observational-memory) |
 | Supermemory gpt-4o | 81.6% | not published | not published | [supermemory.ai](https://supermemory.ai/research/) |
 | EmergenceMem Simple Fast (rerun in agentos-bench) | 80.6% | $0.0586 | 3,703 ms | [vendor reproduction adapter](https://github.com/framersai/agentos-bench/blob/master/vendors/emergence-simple-fast/) |
@@ -57,7 +57,7 @@ The harder variant. M's haystacks exceed every production context window: GPT-4o
 | System | Accuracy | License | Source |
 |---|---:|---|---|
 | AgentBrain | 71.7% (Test 0) | closed-source SaaS, requires hosted endpoint | [github.com/AgentBrainHQ](https://github.com/AgentBrainHQ) |
-| **🚀 AgentOS (sem-embed + reader-router + top-K=5)** | **70.2%** | **Apache-2.0** | [70.2% post](/blog/2026/04/29/longmemeval-m-70-with-topk5) |
+| **🚀 AgentOS (sem-embed + reader-router + top-K=5)** | **70.2%** | **Apache-2.0** | [70.2% post](https://agentos.sh/en/blog/agentos-memory-sota-longmemeval) |
 | LongMemEval paper, strongest GPT-4o (round, Top-10) | 72.0% | open repo | [Wu et al. ICLR 2025, Table 3](https://arxiv.org/abs/2410.10813) |
 | LongMemEval paper, GPT-4o session Top-5 | 71.4% | open repo | [Wu et al. ICLR 2025, Table 3](https://arxiv.org/abs/2410.10813) |
 | LongMemEval paper, GPT-4o round Top-5 | 65.7% | open repo | [Wu et al. ICLR 2025, Table 3](https://arxiv.org/abs/2410.10813) |
@@ -119,7 +119,7 @@ The 62.81% FPR ceiling on LOCOMO's default `gpt-4o-mini` judge means any LOCOMO 
 | Judge-adversarial FPR probe | yes | no | no | no | no | no | no | no |
 | Matched-reader cross-vendor table | yes | no | no | partial | partial | yes | no | no |
 
-The full audit framework is at [Memory Benchmark Transparency Audit](/blog/2026/04/24/memory-benchmark-transparency-audit). Per-case run JSONs at `seed=42` are committed under [`packages/agentos-bench/results/runs/`](https://github.com/framersai/agentos-bench/tree/master/results/runs) for every published number.
+The full audit framework is at [Memory Benchmark Transparency Audit](https://agentos.sh/en/blog/agentos-memory-sota-longmemeval). Per-case run JSONs at `seed=42` are committed under [`packages/agentos-bench/results/runs/`](https://github.com/framersai/agentos-bench/tree/master/results/runs) for every published number.
 
 ## Reproducing
 
@@ -160,10 +160,10 @@ Both runs ship with per-case run JSONs at `seed=42`. The full bench leaderboard 
 
 ## Related blog posts
 
-- [70.2% on LongMemEval-M](/blog/2026/04/29/longmemeval-m-70-with-topk5) — current M headline
-- [85.6% on LongMemEval-S Pareto-win](/blog/2026/04/28/reader-router-pareto-win) — current S headline
-- [Memory Benchmark Transparency Audit](/blog/2026/04/24/memory-benchmark-transparency-audit) — methodology framework
-- [Two Negative Results: Stage L + Stage I](/blog/2026/04/26/two-negative-results-stage-l-stage-i) — what we tested and dropped
+- [70.2% on LongMemEval-M](https://agentos.sh/en/blog/agentos-memory-sota-longmemeval) — current M headline
+- [85.6% on LongMemEval-S Pareto-win](https://agentos.sh/en/blog/agentos-memory-sota-longmemeval) — current S headline
+- [Memory Benchmark Transparency Audit](https://agentos.sh/en/blog/agentos-memory-sota-longmemeval) — methodology framework
+- [Two Negative Results: Stage L + Stage I](https://agentos.sh/en/blog/agentos-memory-sota-longmemeval) — what we tested and dropped
 
 ## References
 
