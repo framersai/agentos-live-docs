@@ -1,6 +1,6 @@
 ---
 title: "70.2% on LongMemEval-M: First Open-Source Library Above 65% on the 1.5M-Token Variant"
-description: "AgentOS hits 70.2% [66.0%, 74.0%] on LongMemEval-M at Phase B N=500. +4.5 pp above the LongMemEval paper's academic ceiling, statistically tied with AgentBrain's closed-source 71.7%, $0.0078 per correct, 6.5x cheaper than the prior headline."
+description: "AgentOS hits 70.2% [66.0%, 74.0%] on LongMemEval-M at Phase B N=500 at $0.0078 per correct ($7.80 per 1,000 memory-grounded answers over a 1.5M-token haystack). +4.5 pp above the LongMemEval paper's academic ceiling, statistically tied with AgentBrain's closed-source 71.7%."
 authors: [jddunn]
 tags: [memory, benchmarks, longmemeval, longmemeval-m, top-k, reader-router, scale, semantic-embedding]
 keywords: [longmemeval-m, agentos memory benchmark, top-K reduction, multi-session memory, 1.5M tokens, M variant, open source memory library]
@@ -9,7 +9,7 @@ image: /img/blog/longmemeval-m-70.png
 
 LongMemEval ships two variants: S (115K tokens, 50 sessions per haystack) and M (1.5M tokens, 500 sessions per haystack). Every other open-source memory library publishes only the easier S number. The M variant is harder by an order of magnitude in token count, and no open-source memory library has published an end-to-end QA accuracy above 65% on M with full methodology disclosure.
 
-AgentOS hits **70.2% [66.0%, 74.0%]** on LongMemEval-M at Phase B N=500, validated. That number sits **+4.5 pp above the LongMemEval paper's published academic-baseline ceiling of 65.7%** (Wu et al., ICLR 2025, [arXiv:2410.10813](https://arxiv.org/abs/2410.10813), Table 3) and is **statistically tied with [AgentBrain's](https://github.com/AgentBrainHQ) closed-source SaaS 71.7%**. Cost per correct: $0.0078, 6.5x cheaper than the same architecture at top-K=50.
+AgentOS hits **70.2% [66.0%, 74.0%]** on LongMemEval-M at Phase B N=500, validated. That number sits **+4.5 pp above the LongMemEval paper's published academic-baseline ceiling of 65.7%** (Wu et al., ICLR 2025, [arXiv:2410.10813](https://arxiv.org/abs/2410.10813), Table 3) and is **statistically tied with [AgentBrain's](https://github.com/AgentBrainHQ) closed-source SaaS 71.7%**. **Cost per correct: $0.0078** ($7.80 per 1,000 memory-grounded answers over the 1.5M-token haystack). The prior top-K=50 configuration on the same architecture cost $0.0505 per correct ($50.50 per 1,000 calls).
 
 <!-- truncate -->
 
@@ -22,11 +22,11 @@ Aggregate accuracy: **70.2% [66.0%, 74.0%]**. +12.6 pp over 57.6%, CIs non-overl
 | Metric | Top-K=50 (prior) | Top-K=5 (this post) | Δ |
 |---|---:|---:|---:|
 | Aggregate accuracy | 57.6% [53.2%, 61.8%] | **70.2% [66.0%, 74.0%]** | +12.6 pp; CIs disjoint |
-| Cost per correct | $0.0505 | **$0.0078** | 6.5x cheaper |
-| Total LLM cost | $14.56 | $2.74 | -81% |
-| Avg latency | 264,933 ms | 83,711 ms | 3.2x faster |
-| p50 latency | 22,166 ms | 18,018 ms | 19% faster |
-| p95 latency | 911,071 ms | 744,911 ms | 18% faster |
+| Cost per correct | $0.0505 | **$0.0078** | -$0.0427 per correct |
+| Total LLM cost (full N=500) | $14.56 | $2.74 | -$11.82 |
+| Avg latency | 264,933 ms | 83,711 ms | -181,222 ms |
+| p50 latency | 22,166 ms | 18,018 ms | -4,148 ms |
+| p95 latency | 911,071 ms | 744,911 ms | -166,160 ms |
 
 ## Why the reader does worse with more context at this scale
 

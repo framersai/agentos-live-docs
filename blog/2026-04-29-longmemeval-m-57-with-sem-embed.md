@@ -24,7 +24,7 @@ Phase B at full N=500, `gpt-4o-2024-08-06` judge, rubric `2026-04-18.1`, bootstr
 | Metric | CharHash baseline (prior) | sem-embed + reader router (this post) | Δ |
 |---|---:|---:|---:|
 | Aggregate accuracy | 45.4% [41.2%, 49.8%] | **57.6% [53.2%, 61.8%]** | +12.2 pp |
-| Cost per correct | $0.1348 | **$0.0505** | 2.7x cheaper |
+| Cost per correct | $0.1348 | **$0.0505** | -$0.0843 per correct |
 | Total LLM cost | $30.59 | $14.56 | -52% |
 | Avg latency | 40,271 ms | 264,933 ms | +6.6x |
 | p50 latency | not measured | 22,166 ms | reference |
@@ -68,14 +68,14 @@ Calibrated from LongMemEval-S Phase B per-category accuracy split between gpt-4o
 
 The router is opt-in via `--reader-router min-cost-best-cat-2026-04-28` and productionized as the `MIN_COST_BEST_CAT_2026_04_28_TABLE` constant in `@framers/agentos/memory-router` for consumers building their own memory pipelines.
 
-The S-side finding: dropping the Tier 3 minimize-cost policy router (whose CharHash-era MS+SSP → OM-v11 calibration was stale for sem-embed deployments) plus the per-category reader router lifts S from 83.2% → 85.6% at 4.6x lower cost. On M, the M-tuned config (HyDE + reader-top-K 50 + rerank-candidate-multiplier 5) is a separate optimization. Sem-embed + reader router layer cleanly on top.
+The S-side finding: dropping the Tier 3 minimize-cost policy router (whose CharHash-era MS+SSP → OM-v11 calibration was stale for sem-embed deployments) plus the per-category reader router lifts S from 83.2% → 85.6%. Cost per correct drops from $0.0521 to $0.0090 ($52 per 1,000 calls down to $9 per 1,000). On M, the M-tuned config (HyDE + reader-top-K 50 + rerank-candidate-multiplier 5) is a separate optimization. Sem-embed + reader router layer cleanly on top.
 
 ## Cost breakdown
 
 The 2.7x cost reduction vs the prior 45.4% headline is explained by where each LLM call goes:
 
 - **CharHash 45.4% baseline.** Every case used gpt-4o for the full reader pass at top-K 50. 500 × ~$0.06 reader cost ≈ $30.
-- **sem-embed + reader router 57.6%.** 47% of cases route to gpt-4o (TR + SSU classified, ~235 cases), 53% route to gpt-5-mini (~265 cases). The gpt-5-mini reader is 12x cheaper input than gpt-4o per 1K tokens and reads the same top-K 50 chunks. Net cost drop: $30 → $14.56 (-52%).
+- **sem-embed + reader router 57.6%.** 47% of cases route to gpt-4o (TR + SSU classified, ~235 cases), 53% route to gpt-5-mini (~265 cases). gpt-5-mini input is $0.00025/1k tokens vs gpt-4o's $0.0025/1k, so the routed half pays the cheaper per-token rate while reading the same top-K 50 chunks. Total LLM cost: $30 → $14.56 (-$15.44 across 500 cases, equivalently -$30.88 per 1,000 cases).
 
 The latency increase (40 sec → 265 sec avg) is real and entirely from rate-limit retries on the 1.5M-token haystacks. p50 latency is 22 sec; p95 is 911 sec. A small set of cases hit OpenAI rate limits during the sem-embed bulk-encoding step and waited 30-180 sec for retry windows. On a paid-tier OpenAI account with higher rate limits, the avg latency would compress significantly. Reader cost per correct (the cleaner Pareto axis) falls 2.7x regardless of the rate-limit tail.
 

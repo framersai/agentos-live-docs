@@ -38,7 +38,9 @@ Same dataset (`data/longmemeval/longmemeval_s.json`), same Phase B N=500 methodo
 | Zep self-reported | 71.2% | not published | not published | 632 ms p95 search | [getzep.com](https://blog.getzep.com/state-of-the-art-agent-memory/) |
 | Zep independently reproduced | 63.8% | not published | not published | not published | [arXiv:2512.13564](https://arxiv.org/abs/2512.13564) |
 
-**+1.4 pp accuracy over Mastra OM gpt-4o at the matched reader.** Statistically tied with EmergenceMem Internal (86.0% point estimate sits inside our 95% CI). Median latency vs EmergenceMem: 1.6× faster (3.558 s vs 5.650 s).
+**+1.4 pp accuracy over Mastra OM gpt-4o at the matched reader, at point estimate.** Mastra publishes no CI; their 84.23% sits inside our 95% CI. EmergenceMem Internal's 86.0% (no CI) also sits inside our CI; we are statistically tied with both. AgentOS p50 latency 3,558 ms vs EmergenceMem's published median 5,650 ms (-2,092 ms at the median). The other vendors do not publish a comparable per-case latency number.
+
+**Cost at scale**: $0.0090 per memory-grounded answer = $9 per 1,000 RAG calls. A chatbot averaging 5 RAG calls per conversation across 1,000 conversations costs ~$45.
 
 ### Why other Mastra and managed-platform numbers are not in this table
 

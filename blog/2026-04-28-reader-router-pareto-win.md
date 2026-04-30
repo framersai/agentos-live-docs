@@ -1,6 +1,6 @@
 ---
 title: "85.6% on LongMemEval-S at $0.009/Correct, 4-Second Latency: Per-Category Reader Routing"
-description: "AgentOS Phase B at full N=500 lands 85.6% [82.4%, 88.6%] on LongMemEval-S. +1.4 pp over Mastra OM gpt-4o, statistically tied with EmergenceMem 86%. 4.6x cheaper, 5.3x faster than the prior 84.8% headline. Plus 15 stress-tested adjacent configurations, all regressions."
+description: "AgentOS Phase B at full N=500 lands 85.6% [82.4%, 88.6%] on LongMemEval-S at $0.0090 per correct ($9 per 1,000 memory-grounded answers; ~$45 per 1,000 conversations averaging 5 RAG calls each). +1.4 pp over Mastra OM gpt-4o at point estimate, statistically tied within our CI. Plus 15 stress-tested adjacent configurations, all regressions."
 authors: [jddunn]
 tags: [memory, benchmarks, longmemeval, longmemeval-s, reader-router, dispatch, pareto-optimization, canonical-hybrid, sem-embedding]
 keywords: [longmemeval-s, agentos memory router, per-category dispatch, reader tier router, cost-pareto memory, gpt-4o vs gpt-5-mini, canonical hybrid retrieval, semantic embedder]
@@ -18,7 +18,7 @@ LongMemEval-S Phase B at full N=500, `gpt-4o-2024-08-06` judge, rubric `2026-04-
 | AgentOS Tier 3 min-cost + sem-embed (gpt-4o reader only) | 83.2% [79.8%, 86.4%] | $0.0521 | 73,234 ms | ~5,000 ms | not published | [link](2026-04-27-longmemeval-s-83-with-semantic-embedder.md) |
 | Supermemory gpt-4o | 81.6% (no CI) | not published | not published | not published | not published | [supermemory.ai](https://supermemory.ai/research/) |
 
-**+1.4 pp accuracy over Mastra OM gpt-4o at the same gpt-4o reader. Statistically tied with EmergenceMem Internal 86.0%**: their point estimate sits inside our 95% CI [82.4%, 88.6%], 0.4 pp ahead at the point estimate. EmergenceMem publishes median latency (5.65 s); our p50 of 3.558 s is **1.6x faster**. Cost per correct: ours is **$0.0090 (measured)**; EmergenceMem's cost is not published, but three measurable proxies (1.6x faster median, 53% of cases dispatched to gpt-5-mini at ~12x lower per-token rate, 2 LLM calls per case) suggest AgentOS is roughly 2-3x cheaper per correct. The inference is not directly measured.
+**+1.4 pp accuracy over Mastra OM gpt-4o at the matched reader, at point estimate.** Mastra publishes no CI; their 84.23% sits inside our 95% CI [82.4%, 88.6%], so the gap is at the threshold of statistical significance. **Statistically tied with EmergenceMem Internal 86.0%**: their point estimate also sits inside our CI, 0.4 pp ahead at the point estimate. EmergenceMem publishes median latency (5,650 ms); our p50 is 3,558 ms (-2,092 ms). Cost per correct: ours is **$0.0090 (measured)**, equivalent to $9 per 1,000 memory-grounded answers. EmergenceMem's cost-per-correct is not published, so a direct cross-vendor cost comparison cannot be made; the only signals available are latency (above) and reader-tier dispatch (53% of cases to gpt-5-mini, the cheaper-per-token reader, vs EmergenceMem's reported gpt-4o-throughout open-source variants).
 
 <!-- truncate -->
 
@@ -26,7 +26,7 @@ LongMemEval-S Phase B at full N=500, `gpt-4o-2024-08-06` judge, rubric `2026-04-
 
 A week ago, the AgentOS LongMemEval-S Phase B headline was **76.6%** measured against `CharHashEmbedder`, the bench's lexical-hash fallback. Wiring `text-embedding-3-small` (the documented production embedder) lifted the number to **83.2% [79.8%, 86.4%]** ([prior post](2026-04-27-longmemeval-s-83-with-semantic-embedder.md)), placing AgentOS within statistical CI of Mastra OM gpt-4o (84.2%). Two days later, [a per-category reader router that dispatches between gpt-4o and gpt-5-mini](2026-04-27-longmemeval-s-83-with-semantic-embedder.md) lifted that to **84.8% [81.6%, 87.8%]** at 21% lower cost.
 
-Today's headline is **85.6% [82.4%, 88.6%]** at 4.6x lower cost than the 84.8% headline. The unlock came from dropping an architectural component that was supposed to be load-bearing.
+Today's headline is **85.6% [82.4%, 88.6%]** at **$0.0090 per correct** ($9 per 1,000 memory-grounded answers). The prior 84.8% configuration cost $0.0410 per correct ($41 per 1,000) — a $0.0320 reduction per correct. The unlock came from dropping an architectural component that was supposed to be load-bearing.
 
 ## Discovery: the Tier 3 minimize-cost policy router was hurting, not helping
 
@@ -41,9 +41,9 @@ Today's run drops the policy router entirely. All categories flow through `canon
                             + Tier 3 PR    + canonical only
 Aggregate accuracy           84.8%          85.6%               +0.8 pp (CIs overlap)
 Total LLM cost               $17.38         $3.84               -78%
-Cost per correct             $0.0410        $0.0090             4.6x cheaper
-Avg latency                  21,042 ms      4,001 ms            5.3x faster
-p95 latency                  111,535 ms     7,264 ms            15.4x faster on tail
+Cost per correct             $0.0410        $0.0090             -$0.0320 per correct
+Avg latency                  21,042 ms      4,001 ms            -17,041 ms
+p95 latency                  111,535 ms     7,264 ms            -104,271 ms on tail
 Recall@K=10                  0.831          0.981               +0.150
 ```
 
@@ -67,12 +67,12 @@ SSU, KU, and TR all lift modestly. SSA loses 1.8 pp within CI. SSP and MS are fl
 
 ## Cost inference vs EmergenceMem
 
-EmergenceMem Internal is closed-source. Their model architecture and per-case LLM call structure are not published in detail. We cannot run their bench harness to measure $/correct directly. Three independently-measurable signals point at AgentOS being **roughly 2-3x cheaper per correct**:
+EmergenceMem Internal is closed-source. Their model architecture and per-case LLM call structure are not published in detail. We cannot run their bench harness to measure $/correct directly. AgentOS publishes its measured cost per correct ($0.0090, equivalent to $9 per 1,000 memory-grounded answers); EmergenceMem publishes none of cost, p50/p95 latency, bootstrap CIs, or per-case run JSONs. Three independently-measurable signals about call structure are available:
 
 | Signal | AgentOS canonical+RR | EmergenceMem Internal | Implication |
 |---|---|---|---|
-| Median latency per case | **3,558 ms (p50, measured)** | 5,650 ms (their published median) | We do 1.6x less LLM work per case at the median |
-| Reader model dispatch | 47% gpt-4o, 53% gpt-5-mini (measured) | gpt-4o-2024-08-06 throughout (per their open-source variants) | gpt-5-mini is ~12x cheaper per token than gpt-4o |
+| Median latency per case | **3,558 ms (p50, measured)** | 5,650 ms (their published median) | -2,092 ms at the median |
+| Reader model dispatch | 47% gpt-4o, 53% gpt-5-mini (measured) | gpt-4o-2024-08-06 throughout (per their open-source variants) | gpt-5-mini input is $0.00025/1k tokens vs gpt-4o's $0.0025/1k; cheaper-per-token reader on the routed half |
 | Per-case LLM call count | **2 calls** (1 gpt-5-mini classifier + 1 dispatched reader) | 2-3 calls (their open-source `Simple` does extract → answer; `Simple Fast` does retrieve + extract + answer) | Each LLM call costs the prompt + completion; fewer calls = less spend |
 
 Per-case LLM cost breakdown for the 85.6% headline, measured:
@@ -88,7 +88,7 @@ Per-case LLM cost breakdown for the 85.6% headline, measured:
 Per-case AgentOS LLM cost: ~$0.00768 / case (measured: $3.84 / 500)
 ```
 
-The honest claim: AgentOS is likely 2-3x cheaper per correct than EmergenceMem Internal, but this is **inferred** from three measurable proxies (latency, reader-tier dispatch, call count). Direct apples-to-apples cost measurement requires running [EmergenceMem's open-source](https://github.com/EmergenceAI/emergence_simple_fast) `Simple` variants in our bench harness with cost instrumentation. Queued as v2 work.
+The honest framing: AgentOS publishes its measured cost ($0.0090 per correct, $9 per 1,000 memory-grounded answers). EmergenceMem Internal does not publish $/correct, so a direct cross-vendor cost comparison cannot be made. The latency gap (-2,092 ms at the median) and reader-tier dispatch (53% of cases on the cheaper-per-token gpt-5-mini reader) are the only verifiable signals about call structure. Direct apples-to-apples cost measurement would require running [EmergenceMem's open-source](https://github.com/EmergenceAI/emergence_simple_fast) `Simple` variants in our bench harness with cost instrumentation. Queued as v2 work.
 
 ## Reader dispatch breakdown
 
@@ -170,9 +170,9 @@ Phase B at full N=500: gpt-4o classifier lands at **84.4% [81.2%, 87.6%]**, stat
 
 Phase B at full N=500 with the gpt-4o classifier swap on the new headline: **84.0% [80.6%, 87.0%]** at $0.0130/correct, 5,564 ms avg latency. **-1.6 pp regression vs the 85.6% gpt-5-mini-classifier baseline** at +44% higher cost-per-correct ($0.0130 vs $0.0090). Per-category vs the 85.6% baseline: SSA 100% (+1.8 pp within CI), SSU 95.7% (+2.8 pp within CI), SSP 90.0% (+3.3 pp within CI), **KU 85.9% (-5.1 pp)**, TR 83.5% (-0.7 pp), **MS 69.2% (-5.2 pp)**.
 
-Same pattern in both runs. The gpt-4o classifier reclassifies edge cases more aggressively, gaining marginally on SSU/SSA/SSP (always within CI) but losing meaningfully on KU and MS as more cases get routed away from their gpt-5-mini-best dispatch. The gpt-4o classifier also costs ~12x more per query.
+Same pattern in both runs. The gpt-4o classifier reclassifies edge cases more aggressively, gaining marginally on SSU/SSA/SSP (always within CI) but losing meaningfully on KU and MS as more cases get routed away from their gpt-5-mini-best dispatch. The gpt-4o classifier also costs more per query: gpt-4o input is $0.0025/1k tokens, gpt-5-mini input is $0.00025/1k tokens.
 
-**Two independent Phase B confirmations confirm the recommended consumer default is `gpt-5-mini` classifier**: matches gpt-4o classifier accuracy on LongMemEval-S at this retrieval stack at 12x lower per-query classifier cost. The `--om-classifier-model gpt-4o` flag remains wired in for per-workload empirical testing, but the LongMemEval-S category mix does not reward the upgrade.
+**Two independent Phase B confirmations confirm the recommended consumer default is `gpt-5-mini` classifier**: matches gpt-4o classifier accuracy on LongMemEval-S at this retrieval stack at the lower per-token classifier price ($0.00025/1k vs $0.0025/1k input tokens). The `--om-classifier-model gpt-4o` flag remains wired in for per-workload empirical testing, but the LongMemEval-S category mix does not reward the upgrade.
 
 ## Negative finding: all-OM dispatch (Mastra-OM-style) hurts S
 
