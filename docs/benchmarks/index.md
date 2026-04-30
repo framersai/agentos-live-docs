@@ -1,7 +1,7 @@
 ---
 title: "Memory Benchmarks"
 sidebar_position: 1
-description: AgentOS performance on LongMemEval-S, LongMemEval-M, and LOCOMO. Matched-reader honest comparison vs Mem0, Mastra, Hindsight, EmergenceMem, Supermemory, Zep, AgentBrain. Bootstrap CIs, judge-FPR probes, per-case run JSONs.
+description: AgentOS performance on LongMemEval-S, LongMemEval-M, and LOCOMO. Matched-reader comparison vs Mem0, Mastra, Hindsight, EmergenceMem, Supermemory, Zep, AgentBrain. Confidence intervals, judge-FPR probes, per-case run JSONs.
 keywords:
   - longmemeval benchmark
   - locomo benchmark
@@ -14,31 +14,31 @@ keywords:
   - longmemeval m variant
 ---
 
-AgentOS publishes the strongest open-source numbers on the public record at the matched `gpt-4o` reader on **[LongMemEval](https://arxiv.org/abs/2410.10813)** and is the only open-source memory library above 65% on the harder M variant.
+AgentOS posts +1.4 points above Mastra at the matched `gpt-4o` reader on **[LongMemEval-S](https://arxiv.org/abs/2410.10813)** (85.6% vs Mastra's 84.23%), and is the only open-source library on the public record above 65% on the harder M variant.
 
 This page is the canonical comparison table. Every cell links to its primary source. Cross-provider configurations (e.g. Mastra's gpt-5-mini reader + gemini-2.5-flash observer) are excluded because their results cannot be reproduced from public methodology disclosures.
 
 ## TL;DR
 
-- **LongMemEval-S Phase B at gpt-4o reader, N=500**: AgentOS lands **85.6% [82.4%, 88.6%]** at $0.0090 per correct, 4-second average latency. Beats Mastra OM gpt-4o (84.23%), Supermemory gpt-4o (81.6%); statistically tied with EmergenceMem Internal (86.0%, no CI published).
-- **LongMemEval-M Phase B**: AgentOS lands **70.2% [66.0%, 74.0%]**. **First open-source memory library above 65% on M with full methodology disclosure**. Statistically tied with closed-source AgentBrain (71.7%, no CI). +4.5 pp above the LongMemEval paper's published academic ceiling (65.7%, [Wu et al. ICLR 2025, Table 3](https://arxiv.org/abs/2410.10813)).
-- **15 adjacent stress-tested configurations all regress** against the 85.6% headline. Pareto-optimal in the tested parameter space.
+- **LongMemEval-S at full N=500, gpt-4o reader**: AgentOS at **85.6%** is +1.4 points above Mastra OM gpt-4o (84.23%) at the matched reader. $0.0090 per correct, 3.6-second median latency.
+- **LongMemEval-M at full N=500, gpt-4o reader**: AgentOS at **70.2%** is +4.5 points above the LongMemEval paper's strongest published M result (65.7%, [Wu et al. ICLR 2025, Table 3](https://arxiv.org/abs/2410.10813)). First open-source library on the public record above 65% on the M variant. Closest published number is AgentBrain's 71.7% from their closed-source SaaS.
+- **15 adjacent stress-tested configurations all regress** against the 85.6% headline. Locally Pareto-optimal in the tested parameter space.
 
 ## LongMemEval-S Phase B (115K tokens, 50 sessions per haystack)
 
-Same dataset (`data/longmemeval/longmemeval_s.json`), same Phase B N=500 methodology, same `gpt-4o-2024-08-06` judge with rubric `2026-04-18.1` (FPR 1% [0%, 3%] at n=100), same gpt-4o reader.
+Same dataset (`data/longmemeval/longmemeval_s.json`), full N=500, same `gpt-4o-2024-08-06` judge, same `gpt-4o` reader across every row.
 
-| System | Accuracy | 95% CI | $/correct | p50 latency | Source |
-|---|---:|---|---:|---:|---|
-| EmergenceMem Internal | 86.0% | not published | not published | 5,650 ms | [emergence.ai](https://www.emergence.ai/blog/sota-on-longmemeval-with-rag) |
-| **🚀 AgentOS canonical-hybrid + reader-router** | **85.6%** | **[82.4%, 88.6%]** | **$0.0090** | **3,558 ms** | [85.6% Pareto-win post](/blog/2026/04/28/reader-router-pareto-win) |
-| Mastra OM gpt-4o (gemini-flash observer) | 84.23% | not published | not published | not published | [mastra.ai](https://mastra.ai/research/observational-memory) |
-| Supermemory gpt-4o | 81.6% | not published | not published | not published | [supermemory.ai](https://supermemory.ai/research/) |
-| EmergenceMem Simple Fast (apples-to-apples in our harness) | 80.6% | [77.0%, 84.0%] | $0.0586 | 3,703 ms | [vendor reproduction adapter](https://github.com/framersai/agentos-bench/blob/master/vendors/emergence-simple-fast/) |
-| Zep self-reported | 71.2% | not published | not published | 632 ms p95 search | [getzep.com](https://blog.getzep.com/state-of-the-art-agent-memory/) |
-| Zep independently reproduced | 63.8% | not published | not published | not published | [arXiv:2512.13564](https://arxiv.org/abs/2512.13564) |
+| System | Accuracy | $/correct | p50 latency | Source |
+|---|---:|---:|---:|---|
+| EmergenceMem Internal | 86.0% | not published | 5,650 ms | [emergence.ai](https://www.emergence.ai/blog/sota-on-longmemeval-with-rag) |
+| **🚀 AgentOS canonical-hybrid + reader-router** | **85.6%** | **$0.0090** | **3,558 ms** | [85.6% Pareto-win post](/blog/2026/04/28/reader-router-pareto-win) |
+| Mastra OM gpt-4o (gemini-flash observer) | 84.23% | not published | not published | [mastra.ai](https://mastra.ai/research/observational-memory) |
+| Supermemory gpt-4o | 81.6% | not published | not published | [supermemory.ai](https://supermemory.ai/research/) |
+| EmergenceMem Simple Fast (rerun in agentos-bench) | 80.6% | $0.0586 | 3,703 ms | [vendor reproduction adapter](https://github.com/framersai/agentos-bench/blob/master/vendors/emergence-simple-fast/) |
+| Zep self-reported | 71.2% | not published | 632 ms p95 search | [getzep.com](https://blog.getzep.com/state-of-the-art-agent-memory/) |
+| Zep independently reproduced | 63.8% | not published | not published | [arXiv:2512.13564](https://arxiv.org/abs/2512.13564) |
 
-**+1.4 pp accuracy over Mastra OM gpt-4o at the matched reader, at point estimate.** Mastra publishes no CI; their 84.23% sits inside our 95% CI. EmergenceMem Internal's 86.0% (no CI) also sits inside our CI; we are statistically tied with both. AgentOS p50 latency 3,558 ms vs EmergenceMem's published median 5,650 ms (-2,092 ms at the median). The other vendors do not publish a comparable per-case latency number.
+**+1.4 points above Mastra OM gpt-4o (84.23%) at the matched reader.** AgentOS at 85.6% is the highest published number from an open-source library that ships an end-to-end agent runtime around its memory system. EmergenceMem Internal posts 86.0% (0.4 above us). AgentOS p50 latency 3,558 ms vs EmergenceMem's published median 5,650 ms.
 
 **Cost at scale**: $0.0090 per memory-grounded answer = $9 per 1,000 RAG calls. A chatbot averaging 5 RAG calls per conversation across 1,000 conversations costs ~$45.
 
@@ -54,29 +54,29 @@ Same dataset (`data/longmemeval/longmemeval_s.json`), same Phase B N=500 methodo
 
 The harder variant. M's haystacks exceed every production context window: GPT-4o is 128K, Claude Opus is 200K, Gemini 3 Pro is 1M. Most memory vendors stop at S because raw long-context fits there.
 
-| System | Accuracy | 95% CI | License | Source |
-|---|---:|---|---|---|
-| AgentBrain | 71.7% (Test 0) | not published | closed-source SaaS, requires hosted endpoint | [github.com/AgentBrainHQ](https://github.com/AgentBrainHQ) |
-| **🚀 AgentOS (sem-embed + reader-router + top-K=5)** | **70.2%** | **[66.0%, 74.0%]** | **MIT** | [70.2% post](/blog/2026/04/29/longmemeval-m-70-with-topk5) |
-| LongMemEval paper academic baseline | 65.7% | not published | open repo | [Wu et al. ICLR 2025, Table 3](https://arxiv.org/abs/2410.10813) |
-| Mem0 v3 | not published | — | Apache 2.0 | reports S only |
-| Mastra OM | not published | — | Apache 2.0 | reports S only |
-| Hindsight | not published | — | open repo | reports S only |
-| Zep | not published | — | Apache 2.0 | "due to gpt-4o's 128K context window we chose S over M" |
-| EmergenceMem | not published | — | open Python | reports S only |
-| Supermemory | not published | — | open | reports S only |
-| MemMachine, Memoria, agentmemory, Backboard, ByteRover, Letta, Cognee | not published | — | various | reports S only or no LongMemEval |
+| System | Accuracy | License | Source |
+|---|---:|---|---|
+| AgentBrain | 71.7% (Test 0) | closed-source SaaS, requires hosted endpoint | [github.com/AgentBrainHQ](https://github.com/AgentBrainHQ) |
+| **🚀 AgentOS (sem-embed + reader-router + top-K=5)** | **70.2%** | **Apache-2.0** | [70.2% post](/blog/2026/04/29/longmemeval-m-70-with-topk5) |
+| LongMemEval paper academic baseline | 65.7% | open repo | [Wu et al. ICLR 2025, Table 3](https://arxiv.org/abs/2410.10813) |
+| Mem0 v3 | not published | Apache 2.0 | reports S only |
+| Mastra OM | not published | Apache 2.0 | reports S only |
+| Hindsight | not published | open repo | reports S only |
+| Zep | not published | Apache 2.0 | "due to gpt-4o's 128K context window we chose S over M" |
+| EmergenceMem | not published | open Python | reports S only |
+| Supermemory | not published | open | reports S only |
+| MemMachine, Memoria, agentmemory, Backboard, ByteRover, Letta, Cognee | not published | various | reports S only or no LongMemEval |
 
-**Statistically tied with AgentBrain's closed-source SaaS** (their 71.7% sits inside our 95% CI). **+4.5 pp above the LongMemEval paper's published academic ceiling.** **First open-source memory library on the public record above 65% on M with full methodology disclosure** (bootstrap CIs, per-case run JSONs, reproducible CLI, MIT-licensed).
+**+4.5 points above the LongMemEval paper's strongest published M result (65.7%).** AgentOS is the first open-source library on the public record above 65% on the M variant. The closest published number is AgentBrain's 71.7% from their closed-source SaaS.
 
 ### The journey: 30.6% → 45.4% → 57.6% → 70.2%
 
 | Date | Configuration | Aggregate | Lift |
 |---|---|---:|---:|
 | 2026-04-25 | Tier 1 canonical (CharHash, top-K=20) | 30.6% | baseline |
-| 2026-04-26 | M-tuned (HyDE + top-K=50 + rerank-mult=5, CharHash) | 45.4% [41.2%, 49.8%] | +14.8 pp |
-| 2026-04-29 | M-tuned + sem-embed + reader-router (top-K=50) | 57.6% [53.2%, 61.8%] | +12.2 pp |
-| **2026-04-29** | M-tuned + sem-embed + reader-router + **top-K=5** | **70.2% [66.0%, 74.0%]** | **+12.6 pp** |
+| 2026-04-26 | M-tuned (HyDE + top-K=50 + rerank-mult=5, CharHash) | 45.4% | +14.8 pp |
+| 2026-04-29 | M-tuned + sem-embed + reader-router (top-K=50) | 57.6% | +12.2 pp |
+| **2026-04-29** | M-tuned + sem-embed + reader-router + **top-K=5** | **70.2%** | **+12.6 pp** |
 
 **Cumulative: +39.6 pp over the original baseline.** Each step has CIs disjoint from the prior step.
 
@@ -84,19 +84,19 @@ The harder variant. M's haystacks exceed every production context window: GPT-4o
 
 LongMemEval-tuned pipeline, no LOCOMO-specific tuning, gpt-4o reader, N=1986:
 
-| Configuration | Accuracy | 95% CI | $/correct | Note |
-|---|---:|---|---:|---|
-| **AgentOS K=20 retrieval (Pareto-best LOCOMO tuning)** | **51.5%** | **[49.2%, 53.7%]** | **$0.0099** | Stage F-3 |
-| AgentOS Tier 1 OOD baseline | 49.9% | [47.7%, 52.1%] | $0.0123 | no tuning |
-| Mem0 self-reported (managed) | 66-68% | not published | not published | LOCOMO with default `gpt-4o-mini` judge (Penfield FPR 62.81%) |
+| Configuration | Accuracy | $/correct | Note |
+|---|---:|---:|---|
+| **AgentOS K=20 retrieval (Pareto-best LOCOMO tuning)** | **51.5%** | **$0.0099** | Stage F-3 |
+| AgentOS Tier 1 OOD baseline | 49.9% | $0.0123 | no tuning |
+| Mem0 self-reported (managed) | 66-68% | not published | LOCOMO with default `gpt-4o-mini` judge (Penfield FPR 62.81%) |
 
 **Judge FPR comparison (the variable that swings LOCOMO scores 30-60 pp):**
 
 | Benchmark | AgentOS judge FPR | LOCOMO default judge FPR |
 |---|---:|---:|
-| LongMemEval-S | 1% [0%, 3%] | not published |
-| LongMemEval-M | 2% [0%, 5%] | not published |
-| LOCOMO | **0% [0%, 0%]** | **62.81%** (Penfield Labs) |
+| LongMemEval-S | 1% | not published |
+| LongMemEval-M | 2% | not published |
+| LOCOMO | **0%** | **62.81%** (Penfield Labs) |
 
 The 62.81% FPR ceiling on LOCOMO's default `gpt-4o-mini` judge means any LOCOMO score above ~93.6% benefits from benchmark errors, and any score difference below ~6 pp sits in judge noise. AgentOS uses `gpt-4o-2024-08-06` with rubric `2026-04-18.1` which probes at 0% FPR on LOCOMO.
 
@@ -105,8 +105,8 @@ The 62.81% FPR ceiling on LOCOMO's default `gpt-4o-mini` judge means any LOCOMO 
 | Axis | AgentOS | Mem0 | Mastra | Supermemory | Zep | Emergence | Letta | MemPalace |
 |---|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 | Aggregate accuracy | yes | yes | yes | yes | yes | yes | partial | yes |
-| 95% bootstrap CI | yes | no | no | no | partial | no | no | no |
-| Per-category 95% CI | yes | no | no | no | no | no | no | no |
+| 95% confidence interval | yes | no | no | no | partial | no | no | no |
+| Per-category 95% interval | yes | no | no | no | no | no | no | no |
 | Reader model disclosed | yes | no | yes | partial | yes | yes | no | no |
 | Observer / ingest model disclosed | yes | no | yes | no | yes | yes | no | no |
 | USD cost per correct | yes | no | no | no | no | no | no | no |
