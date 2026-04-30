@@ -266,8 +266,8 @@ const brain = await Brain.openWithAdapter(adapter, { brainId: 'agent-1' });
 
 ##### Spec
 
-- Spec: [packages/agentos/docs/superpowers/specs/2026-04-26-brain-storage-abstraction-design.md](docs/superpowers/specs/2026-04-26-brain-storage-abstraction-design.md)
-- Plan: [packages/agentos/docs/superpowers/plans/2026-04-26-brain-storage-abstraction-plan.md](docs/superpowers/plans/2026-04-26-brain-storage-abstraction-plan.md)
+- Spec: `packages/agentos/docs/superpowers/specs/2026-04-26-brain-storage-abstraction-design.md` (internal)
+- Plan: `packages/agentos/docs/superpowers/plans/2026-04-26-brain-storage-abstraction-plan.md` (internal)
 
 ## <small>0.2.12 (2026-04-25)</small>
 

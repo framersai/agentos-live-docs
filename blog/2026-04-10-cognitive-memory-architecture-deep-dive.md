@@ -243,12 +243,12 @@ A typed, token-budgeted enumeration of everything in the world knowledge graph. 
 ```markdown
 ## World Scope Index
 ### NPCs (12)
-- Lyra — elven ranger, Silverveil faction, friendly
-- Guard Captain Holt — human guard, Millhaven militia, hostile
+- Lyra, elven ranger, Silverveil faction, friendly
+- Guard Captain Holt, human guard, Millhaven militia, hostile
 ### Factions (4)
-- Silverveil Rangers — forest protectors, allied
+- Silverveil Rangers, forest protectors, allied
 ### Active Threads (3)
-- The Dragon's Demand — Vex demands tribute, 40% complete
+- The Dragon's Demand, Vex demands tribute, 40% complete
 ```
 
 The narrator sees what exists and can tool-call for detail. This kills a whole class of hallucinations: the LLM does not invent NPCs or locations because it knows what is actually in the world.

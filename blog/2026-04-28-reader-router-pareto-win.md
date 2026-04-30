@@ -33,7 +33,7 @@ LongMemEval-S Phase B at full N=500, `gpt-4o-2024-08-06` judge, rubric `2026-04-
 
 A week ago, the AgentOS LongMemEval-S Phase B headline was **76.6%** measured against `CharHashEmbedder`, the bench's lexical-hash fallback. Wiring `text-embedding-3-small` (the documented production embedder) lifted the number to **83.2% [79.8%, 86.4%]** ([prior post](2026-04-27-longmemeval-s-83-with-semantic-embedder.md)), placing AgentOS within statistical CI of Mastra OM gpt-4o (84.2%). Two days later, [a per-category reader router that dispatches between gpt-4o and gpt-5-mini](2026-04-27-longmemeval-s-83-with-semantic-embedder.md) lifted that to **84.8% [81.6%, 87.8%]** at 21% lower cost.
 
-Today's headline is **85.6% [82.4%, 88.6%]** at **$0.0090 per correct** ($9 per 1,000 memory-grounded answers). The prior 84.8% configuration cost $0.0410 per correct ($41 per 1,000) — a $0.0320 reduction per correct. The unlock came from dropping an architectural component that was supposed to be load-bearing.
+Today's headline is **85.6% [82.4%, 88.6%]** at **$0.0090 per correct** ($9 per 1,000 memory-grounded answers). The prior 84.8% configuration cost $0.0410 per correct ($41 per 1,000), a $0.0320 reduction per correct. The unlock came from dropping an architectural component that was supposed to be load-bearing.
 
 ## Discovery: the Tier 3 minimize-cost policy router was hurting, not helping
 

@@ -197,7 +197,7 @@ We ran the LongMemEval-tuned Tier 1 canonical pipeline on LOCOMO N=1986 at match
 | temporal | 96 | 27.1% |
 | single-hop | 282 | 20.6% |
 
-The single-hop 20.6% is the diagnostic. Sample inspection on conv-26: the pipeline abstains on questions that have clear answers in the haystack. "Where did Caroline move from 4 years ago?" (answer: Sweden) returns "I don't know — the excerpts do not mention where Caroline moved from 4 years ago." Retrieval did not surface the evidence turns, and the system prompt is calibrated to abstain when evidence is thin.
+The single-hop 20.6% is the diagnostic. Sample inspection on conv-26: the pipeline abstains on questions that have clear answers in the haystack. "Where did Caroline move from 4 years ago?" (answer: Sweden) returns "I don't know, the excerpts do not mention where Caroline moved from 4 years ago." Retrieval did not surface the evidence turns, and the system prompt is calibrated to abstain when evidence is thin.
 
 The abstention prompt is tuned for LongMemEval-S, where abstention is the correct answer on adversarial questions. The 83.4% on LOCOMO adversarial confirms it is working as designed. It just over-fires on LOCOMO single-hop where every question has an answer in the conversation.
 
