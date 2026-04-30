@@ -1,6 +1,6 @@
 # Class: VisionPipeline
 
-Defined in: [packages/agentos/src/vision/VisionPipeline.ts:127](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/vision/VisionPipeline.ts#L127)
+Defined in: [packages/agentos/src/vision/VisionPipeline.ts:127](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/vision/VisionPipeline.ts#L127)
 
 Unified vision pipeline with progressive enhancement.
 
@@ -24,7 +24,7 @@ surface when a tier that needs them actually runs.
 
 > **new VisionPipeline**(`config`): `VisionPipeline`
 
-Defined in: [packages/agentos/src/vision/VisionPipeline.ts:177](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/vision/VisionPipeline.ts#L177)
+Defined in: [packages/agentos/src/vision/VisionPipeline.ts:177](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/vision/VisionPipeline.ts#L177)
 
 Create a new vision pipeline.
 
@@ -58,7 +58,7 @@ const pipeline = new VisionPipeline({
 
 > **analyzeLayout**(`image`): `Promise`\<[`DocumentLayout`](../interfaces/DocumentLayout.md)\>
 
-Defined in: [packages/agentos/src/vision/VisionPipeline.ts:479](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/vision/VisionPipeline.ts#L479)
+Defined in: [packages/agentos/src/vision/VisionPipeline.ts:479](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/vision/VisionPipeline.ts#L479)
 
 Analyze document layout using Florence-2 — document-ai tier only.
 
@@ -105,7 +105,7 @@ for (const page of layout.pages) {
 
 > **dispose**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/vision/VisionPipeline.ts:506](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/vision/VisionPipeline.ts#L506)
+Defined in: [packages/agentos/src/vision/VisionPipeline.ts:506](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/vision/VisionPipeline.ts#L506)
 
 Shut down the pipeline and release all loaded model resources.
 
@@ -133,7 +133,7 @@ try {
 
 > **embed**(`image`): `Promise`\<`number`[]\>
 
-Defined in: [packages/agentos/src/vision/VisionPipeline.ts:442](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/vision/VisionPipeline.ts#L442)
+Defined in: [packages/agentos/src/vision/VisionPipeline.ts:442](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/vision/VisionPipeline.ts#L442)
 
 Generate an image embedding using CLIP — embedding tier only.
 
@@ -179,7 +179,7 @@ await vectorStore.upsert('images', [{
 
 > **extractText**(`image`): `Promise`\<`string`\>
 
-Defined in: [packages/agentos/src/vision/VisionPipeline.ts:409](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/vision/VisionPipeline.ts#L409)
+Defined in: [packages/agentos/src/vision/VisionPipeline.ts:409](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/vision/VisionPipeline.ts#L409)
 
 Extract text only — fastest path using OCR tier exclusively.
 
@@ -218,7 +218,7 @@ console.log(text); // "ACME STORE\n...\nTotal: $42.99"
 
 > **process**(`image`, `options?`): `Promise`\<[`VisionResult`](../interfaces/VisionResult.md)\>
 
-Defined in: [packages/agentos/src/vision/VisionPipeline.ts:222](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/vision/VisionPipeline.ts#L222)
+Defined in: [packages/agentos/src/vision/VisionPipeline.ts:222](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/vision/VisionPipeline.ts#L222)
 
 Process an image through the configured tiers.
 

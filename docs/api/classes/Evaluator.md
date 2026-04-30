@@ -1,6 +1,6 @@
 # Class: Evaluator
 
-Defined in: [packages/agentos/src/evaluation/Evaluator.ts:206](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/evaluation/Evaluator.ts#L206)
+Defined in: [packages/agentos/src/evaluation/Evaluator.ts:206](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/evaluation/Evaluator.ts#L206)
 
 Agent evaluation framework implementation.
 
@@ -14,7 +14,7 @@ Agent evaluation framework implementation.
 
 > **new Evaluator**(): `Evaluator`
 
-Defined in: [packages/agentos/src/evaluation/Evaluator.ts:210](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/evaluation/Evaluator.ts#L210)
+Defined in: [packages/agentos/src/evaluation/Evaluator.ts:210](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/evaluation/Evaluator.ts#L210)
 
 #### Returns
 
@@ -26,7 +26,7 @@ Defined in: [packages/agentos/src/evaluation/Evaluator.ts:210](https://github.co
 
 > **compareRuns**(`runId1`, `runId2`): `Promise`\<[`EvalComparison`](../interfaces/EvalComparison.md)\>
 
-Defined in: [packages/agentos/src/evaluation/Evaluator.ts:392](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/evaluation/Evaluator.ts#L392)
+Defined in: [packages/agentos/src/evaluation/Evaluator.ts:392](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/evaluation/Evaluator.ts#L392)
 
 Compares two evaluation runs.
 
@@ -60,7 +60,7 @@ Comparison results
 
 > **evaluateTestCase**(`testCase`, `actualOutput`, `config?`): `Promise`\<[`EvalTestResult`](../interfaces/EvalTestResult.md)\>
 
-Defined in: [packages/agentos/src/evaluation/Evaluator.ts:306](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/evaluation/Evaluator.ts#L306)
+Defined in: [packages/agentos/src/evaluation/Evaluator.ts:306](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/evaluation/Evaluator.ts#L306)
 
 Evaluates a single test case.
 
@@ -100,7 +100,7 @@ Test result
 
 > **generateReport**(`runId`, `format`): `Promise`\<`string`\>
 
-Defined in: [packages/agentos/src/evaluation/Evaluator.ts:433](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/evaluation/Evaluator.ts#L433)
+Defined in: [packages/agentos/src/evaluation/Evaluator.ts:433](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/evaluation/Evaluator.ts#L433)
 
 Generates a report for a run.
 
@@ -134,7 +134,7 @@ Report content
 
 > **getRun**(`runId`): `Promise`\<[`EvalRun`](../interfaces/EvalRun.md) \| `undefined`\>
 
-Defined in: [packages/agentos/src/evaluation/Evaluator.ts:382](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/evaluation/Evaluator.ts#L382)
+Defined in: [packages/agentos/src/evaluation/Evaluator.ts:382](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/evaluation/Evaluator.ts#L382)
 
 Gets an evaluation run by ID.
 
@@ -162,7 +162,7 @@ The evaluation run or undefined
 
 > **listRuns**(`limit?`): `Promise`\<[`EvalRun`](../interfaces/EvalRun.md)[]\>
 
-Defined in: [packages/agentos/src/evaluation/Evaluator.ts:386](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/evaluation/Evaluator.ts#L386)
+Defined in: [packages/agentos/src/evaluation/Evaluator.ts:386](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/evaluation/Evaluator.ts#L386)
 
 Lists recent evaluation runs.
 
@@ -190,7 +190,7 @@ Array of runs
 
 > **registerScorer**(`name`, `fn`): `void`
 
-Defined in: [packages/agentos/src/evaluation/Evaluator.ts:378](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/evaluation/Evaluator.ts#L378)
+Defined in: [packages/agentos/src/evaluation/Evaluator.ts:378](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/evaluation/Evaluator.ts#L378)
 
 Registers a custom scorer.
 
@@ -222,7 +222,7 @@ Scoring function
 
 > **runEvaluation**(`name`, `testCases`, `agentFn`, `config?`): `Promise`\<[`EvalRun`](../interfaces/EvalRun.md)\>
 
-Defined in: [packages/agentos/src/evaluation/Evaluator.ts:220](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/evaluation/Evaluator.ts#L220)
+Defined in: [packages/agentos/src/evaluation/Evaluator.ts:220](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/evaluation/Evaluator.ts#L220)
 
 Runs an evaluation suite against an agent.
 
@@ -268,7 +268,7 @@ The completed evaluation run
 
 > **score**(`scorer`, `actual`, `expected?`, `references?`): `Promise`\<`number`\>
 
-Defined in: [packages/agentos/src/evaluation/Evaluator.ts:365](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/evaluation/Evaluator.ts#L365)
+Defined in: [packages/agentos/src/evaluation/Evaluator.ts:365](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/evaluation/Evaluator.ts#L365)
 
 Scores output using a specific scorer.
 

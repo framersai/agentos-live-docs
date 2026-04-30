@@ -1,6 +1,6 @@
 # Interface: IEvaluator
 
-Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:268](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/evaluation/IEvaluator.ts#L268)
+Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:268](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/evaluation/IEvaluator.ts#L268)
 
 Interface for the agent evaluator.
 
@@ -34,7 +34,7 @@ console.log(`Pass rate: ${run.aggregateMetrics.passRate * 100}%`);
 
 > **compareRuns**(`runId1`, `runId2`): `Promise`\<[`EvalComparison`](EvalComparison.md)\>
 
-Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:339](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/evaluation/IEvaluator.ts#L339)
+Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:339](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/evaluation/IEvaluator.ts#L339)
 
 Compares two evaluation runs.
 
@@ -64,7 +64,7 @@ Comparison results
 
 > **evaluateTestCase**(`testCase`, `actualOutput`, `config?`): `Promise`\<[`EvalTestResult`](EvalTestResult.md)\>
 
-Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:291](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/evaluation/IEvaluator.ts#L291)
+Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:291](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/evaluation/IEvaluator.ts#L291)
 
 Evaluates a single test case.
 
@@ -100,7 +100,7 @@ Test result
 
 > **generateReport**(`runId`, `format`): `Promise`\<`string`\>
 
-Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:347](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/evaluation/IEvaluator.ts#L347)
+Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:347](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/evaluation/IEvaluator.ts#L347)
 
 Generates a report for a run.
 
@@ -130,7 +130,7 @@ Report content
 
 > **getRun**(`runId`): `Promise`\<[`EvalRun`](EvalRun.md) \| `undefined`\>
 
-Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:324](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/evaluation/IEvaluator.ts#L324)
+Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:324](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/evaluation/IEvaluator.ts#L324)
 
 Gets an evaluation run by ID.
 
@@ -154,7 +154,7 @@ The evaluation run or undefined
 
 > **listRuns**(`limit?`): `Promise`\<[`EvalRun`](EvalRun.md)[]\>
 
-Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:331](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/evaluation/IEvaluator.ts#L331)
+Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:331](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/evaluation/IEvaluator.ts#L331)
 
 Lists recent evaluation runs.
 
@@ -178,7 +178,7 @@ Array of runs
 
 > **registerScorer**(`name`, `fn`): `void`
 
-Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:317](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/evaluation/IEvaluator.ts#L317)
+Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:317](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/evaluation/IEvaluator.ts#L317)
 
 Registers a custom scorer.
 
@@ -206,7 +206,7 @@ Scoring function
 
 > **runEvaluation**(`name`, `testCases`, `agentFn`, `config?`): `Promise`\<[`EvalRun`](EvalRun.md)\>
 
-Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:277](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/evaluation/IEvaluator.ts#L277)
+Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:277](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/evaluation/IEvaluator.ts#L277)
 
 Runs an evaluation suite against an agent.
 
@@ -248,7 +248,7 @@ The completed evaluation run
 
 > **score**(`scorer`, `actual`, `expected?`, `references?`): `Promise`\<`number`\>
 
-Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:305](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/evaluation/IEvaluator.ts#L305)
+Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:305](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/evaluation/IEvaluator.ts#L305)
 
 Scores output using a specific scorer.
 

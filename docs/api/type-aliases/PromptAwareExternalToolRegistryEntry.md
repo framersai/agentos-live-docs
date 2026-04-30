@@ -2,7 +2,7 @@
 
 > **PromptAwareExternalToolRegistryEntry** = `object`
 
-Defined in: [packages/agentos/src/api/runtime/externalToolRegistry.ts:57](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/runtime/externalToolRegistry.ts#L57)
+Defined in: [packages/agentos/src/api/runtime/externalToolRegistry.ts:57](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/runtime/externalToolRegistry.ts#L57)
 
 ## Properties
 
@@ -10,7 +10,7 @@ Defined in: [packages/agentos/src/api/runtime/externalToolRegistry.ts:57](https:
 
 > `optional` **category**: `string`
 
-Defined in: [packages/agentos/src/api/runtime/externalToolRegistry.ts:65](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/runtime/externalToolRegistry.ts#L65)
+Defined in: [packages/agentos/src/api/runtime/externalToolRegistry.ts:65](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/runtime/externalToolRegistry.ts#L65)
 
 ***
 
@@ -18,7 +18,7 @@ Defined in: [packages/agentos/src/api/runtime/externalToolRegistry.ts:65](https:
 
 > **description**: `string`
 
-Defined in: [packages/agentos/src/api/runtime/externalToolRegistry.ts:60](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/runtime/externalToolRegistry.ts#L60)
+Defined in: [packages/agentos/src/api/runtime/externalToolRegistry.ts:60](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/runtime/externalToolRegistry.ts#L60)
 
 ***
 
@@ -26,7 +26,7 @@ Defined in: [packages/agentos/src/api/runtime/externalToolRegistry.ts:60](https:
 
 > `optional` **displayName**: `string`
 
-Defined in: [packages/agentos/src/api/runtime/externalToolRegistry.ts:62](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/runtime/externalToolRegistry.ts#L62)
+Defined in: [packages/agentos/src/api/runtime/externalToolRegistry.ts:62](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/runtime/externalToolRegistry.ts#L62)
 
 ***
 
@@ -34,7 +34,7 @@ Defined in: [packages/agentos/src/api/runtime/externalToolRegistry.ts:62](https:
 
 > **execute**: [`ITool`](../interfaces/ITool.md)\<`Record`\<`string`, `any`\>, `unknown`\>\[`"execute"`\]
 
-Defined in: [packages/agentos/src/api/runtime/externalToolRegistry.ts:59](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/runtime/externalToolRegistry.ts#L59)
+Defined in: [packages/agentos/src/api/runtime/externalToolRegistry.ts:59](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/runtime/externalToolRegistry.ts#L59)
 
 ***
 
@@ -42,7 +42,7 @@ Defined in: [packages/agentos/src/api/runtime/externalToolRegistry.ts:59](https:
 
 > `optional` **hasSideEffects**: `boolean`
 
-Defined in: [packages/agentos/src/api/runtime/externalToolRegistry.ts:67](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/runtime/externalToolRegistry.ts#L67)
+Defined in: [packages/agentos/src/api/runtime/externalToolRegistry.ts:67](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/runtime/externalToolRegistry.ts#L67)
 
 ***
 
@@ -50,7 +50,7 @@ Defined in: [packages/agentos/src/api/runtime/externalToolRegistry.ts:67](https:
 
 > **inputSchema**: [`JSONSchemaObject`](JSONSchemaObject.md)
 
-Defined in: [packages/agentos/src/api/runtime/externalToolRegistry.ts:61](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/runtime/externalToolRegistry.ts#L61)
+Defined in: [packages/agentos/src/api/runtime/externalToolRegistry.ts:61](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/runtime/externalToolRegistry.ts#L61)
 
 ***
 
@@ -58,7 +58,7 @@ Defined in: [packages/agentos/src/api/runtime/externalToolRegistry.ts:61](https:
 
 > **name**: `string`
 
-Defined in: [packages/agentos/src/api/runtime/externalToolRegistry.ts:58](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/runtime/externalToolRegistry.ts#L58)
+Defined in: [packages/agentos/src/api/runtime/externalToolRegistry.ts:58](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/runtime/externalToolRegistry.ts#L58)
 
 ***
 
@@ -66,7 +66,7 @@ Defined in: [packages/agentos/src/api/runtime/externalToolRegistry.ts:58](https:
 
 > `optional` **outputSchema**: [`JSONSchemaObject`](JSONSchemaObject.md)
 
-Defined in: [packages/agentos/src/api/runtime/externalToolRegistry.ts:63](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/runtime/externalToolRegistry.ts#L63)
+Defined in: [packages/agentos/src/api/runtime/externalToolRegistry.ts:63](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/runtime/externalToolRegistry.ts#L63)
 
 ***
 
@@ -74,7 +74,7 @@ Defined in: [packages/agentos/src/api/runtime/externalToolRegistry.ts:63](https:
 
 > `optional` **requiredCapabilities**: `string`[]
 
-Defined in: [packages/agentos/src/api/runtime/externalToolRegistry.ts:64](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/runtime/externalToolRegistry.ts#L64)
+Defined in: [packages/agentos/src/api/runtime/externalToolRegistry.ts:64](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/runtime/externalToolRegistry.ts#L64)
 
 ***
 
@@ -82,4 +82,4 @@ Defined in: [packages/agentos/src/api/runtime/externalToolRegistry.ts:64](https:
 
 > `optional` **version**: `string`
 
-Defined in: [packages/agentos/src/api/runtime/externalToolRegistry.ts:66](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/runtime/externalToolRegistry.ts#L66)
+Defined in: [packages/agentos/src/api/runtime/externalToolRegistry.ts:66](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/runtime/externalToolRegistry.ts#L66)

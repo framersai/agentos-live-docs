@@ -1,6 +1,6 @@
 # Class: HierarchicalStrategy
 
-Defined in: [packages/agentos/src/memory/pipeline/context/strategies/HierarchicalStrategy.ts:37](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/pipeline/context/strategies/HierarchicalStrategy.ts#L37)
+Defined in: [packages/agentos/src/memory/pipeline/context/strategies/HierarchicalStrategy.ts:37](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/pipeline/context/strategies/HierarchicalStrategy.ts#L37)
 
 ## Implements
 
@@ -12,7 +12,7 @@ Defined in: [packages/agentos/src/memory/pipeline/context/strategies/Hierarchica
 
 > **new HierarchicalStrategy**(`llmInvoker`): `HierarchicalStrategy`
 
-Defined in: [packages/agentos/src/memory/pipeline/context/strategies/HierarchicalStrategy.ts:41](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/pipeline/context/strategies/HierarchicalStrategy.ts#L41)
+Defined in: [packages/agentos/src/memory/pipeline/context/strategies/HierarchicalStrategy.ts:41](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/pipeline/context/strategies/HierarchicalStrategy.ts#L41)
 
 #### Parameters
 
@@ -30,7 +30,7 @@ Defined in: [packages/agentos/src/memory/pipeline/context/strategies/Hierarchica
 
 > `readonly` **name**: `"hierarchical"`
 
-Defined in: [packages/agentos/src/memory/pipeline/context/strategies/HierarchicalStrategy.ts:38](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/pipeline/context/strategies/HierarchicalStrategy.ts#L38)
+Defined in: [packages/agentos/src/memory/pipeline/context/strategies/HierarchicalStrategy.ts:38](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/pipeline/context/strategies/HierarchicalStrategy.ts#L38)
 
 #### Implementation of
 
@@ -42,7 +42,7 @@ Defined in: [packages/agentos/src/memory/pipeline/context/strategies/Hierarchica
 
 > **compact**(`input`, `config`): `Promise`\<[`CompactionResult`](../interfaces/CompactionResult.md)\>
 
-Defined in: [packages/agentos/src/memory/pipeline/context/strategies/HierarchicalStrategy.ts:45](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/pipeline/context/strategies/HierarchicalStrategy.ts#L45)
+Defined in: [packages/agentos/src/memory/pipeline/context/strategies/HierarchicalStrategy.ts:45](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/pipeline/context/strategies/HierarchicalStrategy.ts#L45)
 
 #### Parameters
 

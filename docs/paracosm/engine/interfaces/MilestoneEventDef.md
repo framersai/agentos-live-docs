@@ -1,6 +1,6 @@
 # Interface: MilestoneEventDef
 
-Defined in: [engine/types.ts:292](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/types.ts#L292)
+Defined in: [apps/paracosm/src/engine/types.ts:292](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L292)
 
 A milestone event (fixed narrative anchor, e.g., turn 1 founding or final assessment).
 
@@ -10,7 +10,7 @@ A milestone event (fixed narrative anchor, e.g., turn 1 founding or final assess
 
 > **category**: `string`
 
-Defined in: [engine/types.ts:300](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/types.ts#L300)
+Defined in: [apps/paracosm/src/engine/types.ts:300](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L300)
 
 ***
 
@@ -18,7 +18,7 @@ Defined in: [engine/types.ts:300](https://github.com/framersai/paracosm/blob/446
 
 > `optional` **crisis**: `string`
 
-Defined in: [engine/types.ts:296](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/types.ts#L296)
+Defined in: [apps/paracosm/src/engine/types.ts:296](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L296)
 
 Full detailed narrative text for the milestone event
 
@@ -28,7 +28,7 @@ Full detailed narrative text for the milestone event
 
 > **description**: `string`
 
-Defined in: [engine/types.ts:294](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/types.ts#L294)
+Defined in: [apps/paracosm/src/engine/types.ts:294](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L294)
 
 ***
 
@@ -36,7 +36,7 @@ Defined in: [engine/types.ts:294](https://github.com/framersai/paracosm/blob/446
 
 > **options**: [`EventOptionDef`](EventOptionDef.md)[]
 
-Defined in: [engine/types.ts:297](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/types.ts#L297)
+Defined in: [apps/paracosm/src/engine/types.ts:297](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L297)
 
 ***
 
@@ -44,7 +44,7 @@ Defined in: [engine/types.ts:297](https://github.com/framersai/paracosm/blob/446
 
 > **relevantDepartments**: `string`[]
 
-Defined in: [engine/types.ts:302](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/types.ts#L302)
+Defined in: [apps/paracosm/src/engine/types.ts:302](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L302)
 
 ***
 
@@ -52,7 +52,7 @@ Defined in: [engine/types.ts:302](https://github.com/framersai/paracosm/blob/446
 
 > **researchKeywords**: `string`[]
 
-Defined in: [engine/types.ts:301](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/types.ts#L301)
+Defined in: [apps/paracosm/src/engine/types.ts:301](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L301)
 
 ***
 
@@ -60,7 +60,7 @@ Defined in: [engine/types.ts:301](https://github.com/framersai/paracosm/blob/446
 
 > **riskSuccessProbability**: `number`
 
-Defined in: [engine/types.ts:299](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/types.ts#L299)
+Defined in: [apps/paracosm/src/engine/types.ts:299](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L299)
 
 ***
 
@@ -68,7 +68,7 @@ Defined in: [engine/types.ts:299](https://github.com/framersai/paracosm/blob/446
 
 > **riskyOptionId**: `string`
 
-Defined in: [engine/types.ts:298](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/types.ts#L298)
+Defined in: [apps/paracosm/src/engine/types.ts:298](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L298)
 
 ***
 
@@ -76,7 +76,7 @@ Defined in: [engine/types.ts:298](https://github.com/framersai/paracosm/blob/446
 
 > **title**: `string`
 
-Defined in: [engine/types.ts:293](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/types.ts#L293)
+Defined in: [apps/paracosm/src/engine/types.ts:293](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L293)
 
 ***
 
@@ -84,4 +84,4 @@ Defined in: [engine/types.ts:293](https://github.com/framersai/paracosm/blob/446
 
 > **turnSummary**: `string`
 
-Defined in: [engine/types.ts:303](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/types.ts#L303)
+Defined in: [apps/paracosm/src/engine/types.ts:303](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L303)

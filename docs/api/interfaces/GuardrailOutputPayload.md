@@ -1,6 +1,6 @@
 # Interface: GuardrailOutputPayload
 
-Defined in: [packages/agentos/src/safety/guardrails/IGuardrailService.ts:183](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/safety/guardrails/IGuardrailService.ts#L183)
+Defined in: [packages/agentos/src/safety/guardrails/IGuardrailService.ts:183](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/safety/guardrails/IGuardrailService.ts#L183)
 
 Payload for output guardrail evaluation.
 
@@ -20,7 +20,7 @@ The timing of evaluation depends on [GuardrailConfig.evaluateStreamingChunks](Gu
 
 > **chunk**: [`AgentOSResponse`](../type-aliases/AgentOSResponse.md)
 
-Defined in: [packages/agentos/src/safety/guardrails/IGuardrailService.ts:188](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/safety/guardrails/IGuardrailService.ts#L188)
+Defined in: [packages/agentos/src/safety/guardrails/IGuardrailService.ts:188](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/safety/guardrails/IGuardrailService.ts#L188)
 
 The response chunk to evaluate
 
@@ -30,7 +30,7 @@ The response chunk to evaluate
 
 > **context**: [`GuardrailContext`](GuardrailContext.md)
 
-Defined in: [packages/agentos/src/safety/guardrails/IGuardrailService.ts:185](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/safety/guardrails/IGuardrailService.ts#L185)
+Defined in: [packages/agentos/src/safety/guardrails/IGuardrailService.ts:185](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/safety/guardrails/IGuardrailService.ts#L185)
 
 Conversational context for policy decisions
 
@@ -40,7 +40,7 @@ Conversational context for policy decisions
 
 > `optional` **ragSources**: [`RagRetrievedChunk`](RagRetrievedChunk.md)[]
 
-Defined in: [packages/agentos/src/safety/guardrails/IGuardrailService.ts:196](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/safety/guardrails/IGuardrailService.ts#L196)
+Defined in: [packages/agentos/src/safety/guardrails/IGuardrailService.ts:196](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/safety/guardrails/IGuardrailService.ts#L196)
 
 RAG source chunks retrieved for this request.
 Available to output guardrails for grounding verification.

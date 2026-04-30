@@ -2,7 +2,7 @@
 
 > **buildLlmCaller**(`options?`): `Promise`\<(`system`, `user`) => `Promise`\<`string`\>\>
 
-Defined in: [packages/agentos/src/orchestration/planning/buildLlmCaller.ts:60](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/planning/buildLlmCaller.ts#L60)
+Defined in: [packages/agentos/src/orchestration/planning/buildLlmCaller.ts:60](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/planning/buildLlmCaller.ts#L60)
 
 Build an `llmCaller` function for any AgentOS-supported provider.
 

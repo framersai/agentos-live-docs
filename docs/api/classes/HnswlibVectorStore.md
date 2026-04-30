@@ -1,6 +1,6 @@
 # Class: HnswlibVectorStore
 
-Defined in: [packages/agentos/src/rag/vector\_stores/HnswlibVectorStore.ts:105](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/vector_stores/HnswlibVectorStore.ts#L105)
+Defined in: [packages/agentos/src/rag/vector\_stores/HnswlibVectorStore.ts:107](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/vector_stores/HnswlibVectorStore.ts#L107)
 
 Vector store implementation using hnswlib-node for fast ANN search.
 
@@ -31,7 +31,7 @@ Features:
 
 > **checkHealth**(): `Promise`\<\{ `details?`: `any`; `isHealthy`: `boolean`; \}\>
 
-Defined in: [packages/agentos/src/rag/vector\_stores/HnswlibVectorStore.ts:861](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/vector_stores/HnswlibVectorStore.ts#L861)
+Defined in: [packages/agentos/src/rag/vector\_stores/HnswlibVectorStore.ts:916](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/vector_stores/HnswlibVectorStore.ts#L916)
 
 **`Async`**
 
@@ -55,7 +55,7 @@ A promise that resolves with the health status.
 
 > **collectionExists**(`collectionName`): `Promise`\<`boolean`\>
 
-Defined in: [packages/agentos/src/rag/vector\_stores/HnswlibVectorStore.ts:574](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/vector_stores/HnswlibVectorStore.ts#L574)
+Defined in: [packages/agentos/src/rag/vector\_stores/HnswlibVectorStore.ts:576](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/vector_stores/HnswlibVectorStore.ts#L576)
 
 **`Async`**
 
@@ -89,7 +89,7 @@ If the check fails for reasons other than existence (e.g., connection issue).
 
 > **createCollection**(`collectionName`, `dimension`, `options?`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/rag/vector\_stores/HnswlibVectorStore.ts:477](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/vector_stores/HnswlibVectorStore.ts#L477)
+Defined in: [packages/agentos/src/rag/vector\_stores/HnswlibVectorStore.ts:479](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/vector_stores/HnswlibVectorStore.ts#L479)
 
 **`Async`**
 
@@ -136,7 +136,7 @@ If collection creation fails (e.g., name conflict and not overwriting, invalid p
 
 > **delete**(`collectionName`, `ids?`, `options?`): `Promise`\<[`DeleteResult`](../interfaces/DeleteResult.md)\>
 
-Defined in: [packages/agentos/src/rag/vector\_stores/HnswlibVectorStore.ts:782](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/vector_stores/HnswlibVectorStore.ts#L782)
+Defined in: [packages/agentos/src/rag/vector\_stores/HnswlibVectorStore.ts:837](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/vector_stores/HnswlibVectorStore.ts#L837)
 
 **`Async`**
 
@@ -184,7 +184,7 @@ If the delete operation fails.
 
 > **deleteCollection**(`collectionName`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/rag/vector\_stores/HnswlibVectorStore.ts:548](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/vector_stores/HnswlibVectorStore.ts#L548)
+Defined in: [packages/agentos/src/rag/vector\_stores/HnswlibVectorStore.ts:550](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/vector_stores/HnswlibVectorStore.ts#L550)
 
 **`Async`**
 
@@ -218,7 +218,7 @@ If collection deletion fails.
 
 > **getStats**(`collectionName?`): `Promise`\<`Record`\<`string`, `any`\>\>
 
-Defined in: [packages/agentos/src/rag/vector\_stores/HnswlibVectorStore.ts:899](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/vector_stores/HnswlibVectorStore.ts#L899)
+Defined in: [packages/agentos/src/rag/vector\_stores/HnswlibVectorStore.ts:954](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/vector_stores/HnswlibVectorStore.ts#L954)
 
 **`Async`**
 
@@ -254,7 +254,7 @@ If fetching statistics fails.
 
 > **initialize**(`config`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/rag/vector\_stores/HnswlibVectorStore.ts:127](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/vector_stores/HnswlibVectorStore.ts#L127)
+Defined in: [packages/agentos/src/rag/vector\_stores/HnswlibVectorStore.ts:129](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/vector_stores/HnswlibVectorStore.ts#L129)
 
 **`Async`**
 
@@ -291,7 +291,7 @@ If initialization fails (e.g., invalid configuration, connection error, authenti
 
 > **query**(`collectionName`, `queryEmbedding`, `options?`): `Promise`\<[`QueryResult`](../interfaces/QueryResult.md)\>
 
-Defined in: [packages/agentos/src/rag/vector\_stores/HnswlibVectorStore.ts:665](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/vector_stores/HnswlibVectorStore.ts#L665)
+Defined in: [packages/agentos/src/rag/vector\_stores/HnswlibVectorStore.ts:667](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/vector_stores/HnswlibVectorStore.ts#L667)
 
 **`Async`**
 
@@ -333,11 +333,40 @@ If the query operation fails.
 
 ***
 
+### scanByMetadata()
+
+> **scanByMetadata**(`collectionName`, `options?`): `Promise`\<`MetadataScanResult`\>
+
+Defined in: [packages/agentos/src/rag/vector\_stores/HnswlibVectorStore.ts:784](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/vector_stores/HnswlibVectorStore.ts#L784)
+
+Optional: Enumerates documents using metadata-only filtering without
+requiring a query embedding.
+
+#### Parameters
+
+##### collectionName
+
+`string`
+
+##### options?
+
+`MetadataScanOptions`
+
+#### Returns
+
+`Promise`\<`MetadataScanResult`\>
+
+#### Implementation of
+
+[`IVectorStore`](../interfaces/IVectorStore.md).[`scanByMetadata`](../interfaces/IVectorStore.md#scanbymetadata)
+
+***
+
 ### shutdown()
 
 > **shutdown**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/rag/vector\_stores/HnswlibVectorStore.ts:879](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/vector_stores/HnswlibVectorStore.ts#L879)
+Defined in: [packages/agentos/src/rag/vector\_stores/HnswlibVectorStore.ts:934](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/vector_stores/HnswlibVectorStore.ts#L934)
 
 **`Async`**
 
@@ -360,7 +389,7 @@ A promise that resolves when shutdown is complete.
 
 > **upsert**(`collectionName`, `documents`, `options?`): `Promise`\<[`UpsertResult`](../interfaces/UpsertResult.md)\>
 
-Defined in: [packages/agentos/src/rag/vector\_stores/HnswlibVectorStore.ts:596](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/vector_stores/HnswlibVectorStore.ts#L596)
+Defined in: [packages/agentos/src/rag/vector\_stores/HnswlibVectorStore.ts:598](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/vector_stores/HnswlibVectorStore.ts#L598)
 
 **`Async`**
 

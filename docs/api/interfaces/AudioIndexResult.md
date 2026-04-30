@@ -1,6 +1,6 @@
 # Interface: AudioIndexResult
 
-Defined in: [packages/agentos/src/rag/multimodal/types.ts:143](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/multimodal/types.ts#L143)
+Defined in: [packages/agentos/src/rag/multimodal/types.ts:169](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/multimodal/types.ts#L169)
 
 Result of indexing an audio file into the vector store.
 
@@ -14,7 +14,7 @@ Result of indexing an audio file into the vector store.
 
 > **id**: `string`
 
-Defined in: [packages/agentos/src/rag/multimodal/types.ts:145](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/multimodal/types.ts#L145)
+Defined in: [packages/agentos/src/rag/multimodal/types.ts:171](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/multimodal/types.ts#L171)
 
 Unique document ID in the vector store.
 
@@ -24,6 +24,6 @@ Unique document ID in the vector store.
 
 > **transcript**: `string`
 
-Defined in: [packages/agentos/src/rag/multimodal/types.ts:147](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/multimodal/types.ts#L147)
+Defined in: [packages/agentos/src/rag/multimodal/types.ts:173](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/multimodal/types.ts#L173)
 
 STT-generated transcript of the audio.

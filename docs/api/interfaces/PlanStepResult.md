@@ -1,6 +1,6 @@
 # Interface: PlanStepResult
 
-Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:113](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/planner/IPlanningEngine.ts#L113)
+Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:113](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/planner/IPlanningEngine.ts#L113)
 
 Result of executing a plan step.
 
@@ -10,7 +10,7 @@ Result of executing a plan step.
 
 > **durationMs**: `number`
 
-Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:123](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/planner/IPlanningEngine.ts#L123)
+Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:123](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/planner/IPlanningEngine.ts#L123)
 
 Execution duration in ms
 
@@ -20,7 +20,7 @@ Execution duration in ms
 
 > `optional` **error**: `string`
 
-Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:119](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/planner/IPlanningEngine.ts#L119)
+Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:119](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/planner/IPlanningEngine.ts#L119)
 
 Error message if failed
 
@@ -30,7 +30,7 @@ Error message if failed
 
 > **observations**: `string`[]
 
-Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:125](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/planner/IPlanningEngine.ts#L125)
+Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:125](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/planner/IPlanningEngine.ts#L125)
 
 Observations made during execution
 
@@ -40,7 +40,7 @@ Observations made during execution
 
 > **output**: `unknown`
 
-Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:117](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/planner/IPlanningEngine.ts#L117)
+Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:117](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/planner/IPlanningEngine.ts#L117)
 
 Output data from execution
 
@@ -50,7 +50,7 @@ Output data from execution
 
 > **success**: `boolean`
 
-Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:115](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/planner/IPlanningEngine.ts#L115)
+Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:115](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/planner/IPlanningEngine.ts#L115)
 
 Whether execution succeeded
 
@@ -60,6 +60,6 @@ Whether execution succeeded
 
 > **tokensUsed**: `number`
 
-Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:121](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/planner/IPlanningEngine.ts#L121)
+Defined in: [packages/agentos/src/orchestration/planner/IPlanningEngine.ts:121](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/planner/IPlanningEngine.ts#L121)
 
 Actual tokens used

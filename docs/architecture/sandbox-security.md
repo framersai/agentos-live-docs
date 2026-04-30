@@ -1,6 +1,6 @@
 ---
 title: "Sandbox Security"
-sidebar_position: 3
+sidebar_position: 4
 ---
 
 > Deep dive into AgentOS code execution isolation. For the full system overview, see [System Architecture](./system-architecture.md).

@@ -2,6 +2,7 @@
 // @ts-check
 
 // Import the TypeDoc-generated sidebar (exists after first build)
+const guidesOnly = process.env.AGENTOS_DOCS_GUIDES_ONLY === '1';
 let typedocSidebar = [];
 try {
   typedocSidebar = require('./docs/api/typedoc-sidebar.cjs');
@@ -15,17 +16,21 @@ const { buildGuideSidebar } = require('../../packages/agentos/docs/publication-m
 const sidebars = {
   guideSidebar: ['index']
     .concat(buildGuideSidebar())
-    .concat([
-      {
-        type: 'category',
-        label: 'API Reference',
-        link: {
-          type: 'doc',
-          id: 'api/index',
-        },
-        items: typedocSidebar,
-      },
-    ]),
+    .concat(
+      !guidesOnly
+        ? [
+            {
+              type: 'category',
+              label: 'API Reference',
+              link: {
+                type: 'doc',
+                id: 'api/index',
+              },
+              items: typedocSidebar,
+            },
+          ]
+        : [],
+    ),
 };
 
 module.exports = sidebars;

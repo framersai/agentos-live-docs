@@ -4,6 +4,7 @@ import type * as Preset from '@docusaurus/preset-classic';
 
 const disableLocalSearch = process.env.AGENTOS_DOCS_DISABLE_LOCAL_SEARCH === '1';
 const disableSearchManifest = process.env.AGENTOS_DOCS_DISABLE_SEARCH_MANIFEST === '1';
+const guidesOnly = process.env.AGENTOS_DOCS_GUIDES_ONLY === '1';
 const strictDocs = process.env.AGENTOS_DOCS_STRICT !== '0';
 
 const config: Config = {
@@ -15,7 +16,7 @@ const config: Config = {
   baseUrl: '/',
   organizationName: 'framersai',
   projectName: 'agentos-live-docs',
-  onBrokenLinks: strictDocs ? 'throw' : 'warn',
+  onBrokenLinks: guidesOnly ? 'ignore' : strictDocs ? 'throw' : 'warn',
   clientModules: [require.resolve('./src/mermaid-zoom.js')],
   trailingSlash: false,
 
@@ -141,7 +142,7 @@ const config: Config = {
     format: 'detect', // Allow CommonMark for TypeDoc-generated files (MDX v3 strict)
     mermaid: true,
     hooks: {
-      onBrokenMarkdownLinks: strictDocs ? 'throw' : 'warn',
+      onBrokenMarkdownLinks: guidesOnly ? 'ignore' : strictDocs ? 'throw' : 'warn',
     },
   },
 
@@ -169,41 +170,45 @@ const config: Config = {
   plugins: [
     // Lightweight search manifest for agentos.sh marketing-site DocSearch
     ...(!disableSearchManifest ? ['./plugins/search-manifest.js'] : []),
-    [
-      'docusaurus-plugin-typedoc',
-      {
-        entryPoints: ['../../packages/agentos/src/index.ts'],
-        tsconfig: '../../packages/agentos/tsconfig.json',
-        out: 'docs/api',
-        // Avoid pulling in the package README (it contains links that don't
-        // resolve inside Docusaurus and duplicates the Guides section).
-        readme: 'none',
-        sidebar: {
-          autoConfiguration: true,
-          pretty: true,
-        },
-        skipErrorChecking: true,
-      },
-    ],
-    [
-      'docusaurus-plugin-typedoc',
-      {
-        id: 'paracosm',
-        entryPoints: [
-          '../../apps/paracosm/src/engine/index.ts',
-          '../../apps/paracosm/src/runtime/index.ts',
-          '../../apps/paracosm/src/engine/compiler/index.ts',
-        ],
-        tsconfig: '../../apps/paracosm/tsconfig.build.json',
-        out: 'docs/paracosm',
-        readme: 'none',
-        sidebar: {
-          autoConfiguration: true,
-          pretty: true,
-        },
-        skipErrorChecking: true,
-      },
-    ],
+    ...(!guidesOnly
+      ? [
+          [
+            'docusaurus-plugin-typedoc',
+            {
+              entryPoints: ['../../packages/agentos/src/index.ts'],
+              tsconfig: '../../packages/agentos/tsconfig.json',
+              out: 'docs/api',
+              // Avoid pulling in the package README (it contains links that don't
+              // resolve inside Docusaurus and duplicates the Guides section).
+              readme: 'none',
+              sidebar: {
+                autoConfiguration: true,
+                pretty: true,
+              },
+              skipErrorChecking: true,
+            },
+          ],
+          [
+            'docusaurus-plugin-typedoc',
+            {
+              id: 'paracosm',
+              entryPoints: [
+                '../../apps/paracosm/src/engine/index.ts',
+                '../../apps/paracosm/src/runtime/index.ts',
+                '../../apps/paracosm/src/engine/compiler/index.ts',
+              ],
+              tsconfig: '../../apps/paracosm/tsconfig.build.json',
+              out: 'docs/paracosm',
+              readme: 'none',
+              sidebar: {
+                autoConfiguration: true,
+                pretty: true,
+              },
+              skipErrorChecking: true,
+            },
+          ],
+        ]
+      : []),
     [
       '@docusaurus/plugin-client-redirects',
       {
@@ -229,8 +234,17 @@ const config: Config = {
           { from: '/getting-started/getting-started', to: '/getting-started' },
         ],
         createRedirects(existingPath: string) {
-          // Redirect old /docs/ prefixed paths to root (docs are now at /)
-          if (existingPath === '/' || existingPath.startsWith('/docs/')) {
+          // Redirect old /docs/ prefixed guide paths to root (docs are now at /),
+          // but do not duplicate generated/reference/non-doc routes.
+          if (
+            existingPath === '/' ||
+            existingPath.startsWith('/docs/') ||
+            existingPath.startsWith('/api') ||
+            existingPath.startsWith('/paracosm') ||
+            existingPath.startsWith('/blog') ||
+            existingPath.startsWith('/search') ||
+            existingPath.startsWith('/404')
+          ) {
             return undefined;
           }
           return ['/docs' + existingPath];
@@ -246,16 +260,19 @@ const config: Config = {
         docs: {
           routeBasePath: '/',
           sidebarPath: './sidebars.js',
+          exclude: guidesOnly ? ['api/**', 'paracosm/**'] : [],
           editUrl: 'https://github.com/framersai/agentos-live-docs/tree/master/docs/',
         },
-        blog: {
-          showReadingTime: true,
-          blogTitle: 'AgentOS Blog',
-          blogDescription:
-            'News, updates, and insights about AgentOS, AI agents, and multi-agent orchestration.',
-          blogSidebarTitle: 'Recent posts',
-          blogSidebarCount: 'ALL',
-        },
+        blog: guidesOnly
+          ? false
+          : {
+              showReadingTime: true,
+              blogTitle: 'AgentOS Blog',
+              blogDescription:
+                'News, updates, and insights about AgentOS, AI agents, and multi-agent orchestration.',
+              blogSidebarTitle: 'Recent posts',
+              blogSidebarCount: 'ALL',
+            },
         theme: {
           customCss: './src/css/custom.css',
         },
@@ -264,7 +281,10 @@ const config: Config = {
           anonymizeIP: true,
         },
         sitemap: {
-          lastmod: 'date',
+          // Keep sitemap generation decoupled from git tracking state. Generated
+          // TypeDoc pages may exist locally before they are committed, and
+          // Docusaurus will otherwise warn when it cannot infer a git date.
+          lastmod: null,
           changefreq: 'weekly',
           priority: 0.5,
           ignorePatterns: ['/tags/**'],
@@ -317,30 +337,38 @@ const config: Config = {
             { label: 'All Guides & Docs', type: 'docSidebar', sidebarId: 'guideSidebar' },
           ],
         },
-        {
-          to: '/api/',
-          position: 'left',
-          label: 'API Reference',
-        },
-        {
-          to: '/paracosm/',
-          position: 'left',
-          label: 'Paracosm',
-        },
-        {
-          to: '/blog',
-          position: 'left',
-          label: 'Blog',
-        },
+        ...(!guidesOnly
+          ? [
+              {
+                to: '/api/',
+                position: 'left' as const,
+                label: 'API Reference',
+              },
+              {
+                to: '/paracosm/',
+                position: 'left' as const,
+                label: 'Paracosm',
+              },
+            ]
+          : []),
+        ...(!guidesOnly
+          ? [
+              {
+                to: '/blog',
+                position: 'left' as const,
+                label: 'Blog',
+              },
+            ]
+          : []),
         {
           href: 'https://agentos.sh',
           label: 'Website',
-          position: 'right',
+          position: 'right' as const,
         },
         {
           href: 'https://github.com/framersai/agentos',
           label: 'GitHub',
-          position: 'right',
+          position: 'right' as const,
           className: 'header-github-link',
           'aria-label': 'GitHub repository',
         },
@@ -362,8 +390,12 @@ const config: Config = {
             { label: 'Examples', to: '/getting-started/examples' },
             { label: 'Architecture', to: '/architecture/system-architecture' },
             { label: 'Feature Guides', to: '/getting-started/documentation-index' },
-            { label: 'API Reference', to: '/api/' },
-            { label: 'Paracosm API', to: '/paracosm/' },
+            ...(!guidesOnly
+              ? [
+                  { label: 'API Reference', to: '/api/' },
+                  { label: 'Paracosm API', to: '/paracosm/' },
+                ]
+              : []),
           ],
         },
         {

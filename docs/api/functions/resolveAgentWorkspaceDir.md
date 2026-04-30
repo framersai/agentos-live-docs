@@ -2,7 +2,7 @@
 
 > **resolveAgentWorkspaceDir**(`agentId`, `baseDir?`): `string`
 
-Defined in: [packages/agentos/src/marketplace/workspace/AgentWorkspace.ts:62](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/marketplace/workspace/AgentWorkspace.ts#L62)
+Defined in: [packages/agentos/src/marketplace/workspace/AgentWorkspace.ts:62](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/marketplace/workspace/AgentWorkspace.ts#L62)
 
 Resolve the full workspace directory for an agent.
 

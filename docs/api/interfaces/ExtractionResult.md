@@ -1,6 +1,6 @@
 # Interface: ExtractionResult
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/IGraphRAG.ts:75](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/retrieval/graph/graphrag/IGraphRAG.ts#L75)
+Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/IGraphRAG.ts:75](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/retrieval/graph/graphrag/IGraphRAG.ts#L75)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/IGraphRAG.ts:7
 
 > **entities**: [`GraphEntity`](GraphEntity.md)[]
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/IGraphRAG.ts:76](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/retrieval/graph/graphrag/IGraphRAG.ts#L76)
+Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/IGraphRAG.ts:76](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/retrieval/graph/graphrag/IGraphRAG.ts#L76)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/IGraphRAG.ts:7
 
 > **relationships**: [`GraphRelationship`](GraphRelationship.md)[]
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/IGraphRAG.ts:77](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/retrieval/graph/graphrag/IGraphRAG.ts#L77)
+Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/IGraphRAG.ts:77](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/retrieval/graph/graphrag/IGraphRAG.ts#L77)
 
 ***
 
@@ -24,4 +24,4 @@ Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/IGraphRAG.ts:7
 
 > **sourceDocumentId**: `string`
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/IGraphRAG.ts:78](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/retrieval/graph/graphrag/IGraphRAG.ts#L78)
+Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/IGraphRAG.ts:78](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/retrieval/graph/graphrag/IGraphRAG.ts#L78)

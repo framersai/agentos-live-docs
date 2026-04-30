@@ -2,7 +2,7 @@
 
 > **compileScenario**(`scenarioJson`, `options?`): `Promise`\<[`ScenarioPackage`](../../interfaces/ScenarioPackage.md)\>
 
-Defined in: [engine/compiler/index.ts:128](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/compiler/index.ts#L128)
+Defined in: [apps/paracosm/src/engine/compiler/index.ts:127](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/compiler/index.ts#L127)
 
 Compile a scenario JSON into a complete ScenarioPackage with generated hooks.
 

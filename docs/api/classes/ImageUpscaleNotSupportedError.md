@@ -1,6 +1,6 @@
 # Class: ImageUpscaleNotSupportedError
 
-Defined in: [packages/agentos/src/media/images/ImageOperationError.ts:43](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/images/ImageOperationError.ts#L43)
+Defined in: [packages/agentos/src/media/images/ImageOperationError.ts:43](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/media/images/ImageOperationError.ts#L43)
 
 Thrown when an upscale operation is requested from a provider that does
 not implement `upscaleImage`.
@@ -19,7 +19,7 @@ not implement `upscaleImage`.
 
 > **new ImageUpscaleNotSupportedError**(`providerId`): `ImageUpscaleNotSupportedError`
 
-Defined in: [packages/agentos/src/media/images/ImageOperationError.ts:47](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/images/ImageOperationError.ts#L47)
+Defined in: [packages/agentos/src/media/images/ImageOperationError.ts:47](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/media/images/ImageOperationError.ts#L47)
 
 #### Parameters
 
@@ -41,7 +41,7 @@ Defined in: [packages/agentos/src/media/images/ImageOperationError.ts:47](https:
 
 > **message**: `string`
 
-Defined in: apps/agentos-live-docs/node\_modules/typescript/lib/lib.es5.d.ts:1077
+Defined in: node\_modules/.pnpm/typescript@5.6.3/node\_modules/typescript/lib/lib.es5.d.ts:1077
 
 #### Inherited from
 
@@ -53,7 +53,7 @@ Defined in: apps/agentos-live-docs/node\_modules/typescript/lib/lib.es5.d.ts:107
 
 > **name**: `string`
 
-Defined in: apps/agentos-live-docs/node\_modules/typescript/lib/lib.es5.d.ts:1076
+Defined in: node\_modules/.pnpm/typescript@5.6.3/node\_modules/typescript/lib/lib.es5.d.ts:1076
 
 #### Inherited from
 
@@ -65,7 +65,7 @@ Defined in: apps/agentos-live-docs/node\_modules/typescript/lib/lib.es5.d.ts:107
 
 > `readonly` **providerId**: `string`
 
-Defined in: [packages/agentos/src/media/images/ImageOperationError.ts:45](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/images/ImageOperationError.ts#L45)
+Defined in: [packages/agentos/src/media/images/ImageOperationError.ts:45](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/media/images/ImageOperationError.ts#L45)
 
 The provider that was asked to perform the upscale.
 
@@ -75,7 +75,7 @@ The provider that was asked to perform the upscale.
 
 > `optional` **stack**: `string`
 
-Defined in: apps/agentos-live-docs/node\_modules/typescript/lib/lib.es5.d.ts:1078
+Defined in: node\_modules/.pnpm/typescript@5.6.3/node\_modules/typescript/lib/lib.es5.d.ts:1078
 
 #### Inherited from
 

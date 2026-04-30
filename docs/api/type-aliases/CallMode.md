@@ -2,7 +2,7 @@
 
 > **CallMode** = `"notify"` \| `"conversation"`
 
-Defined in: [packages/agentos/src/channels/telephony/types.ts:151](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/telephony/types.ts#L151)
+Defined in: [packages/agentos/src/channels/telephony/types.ts:151](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/channels/telephony/types.ts#L151)
 
 How the agent interacts during a call:
 - `notify`: Speak a message and hang up (one-way TTS).

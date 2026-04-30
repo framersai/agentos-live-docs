@@ -1,6 +1,6 @@
 # Class: AdaptiveVAD
 
-Defined in: [packages/agentos/src/hearing/AdaptiveVAD.ts:91](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/hearing/AdaptiveVAD.ts#L91)
+Defined in: [packages/agentos/src/hearing/AdaptiveVAD.ts:91](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/hearing/AdaptiveVAD.ts#L91)
 
 AdaptiveVAD - Detects speech in audio frames, adapting to environmental noise.
 
@@ -14,7 +14,7 @@ AdaptiveVAD - Detects speech in audio frames, adapting to environmental noise.
 
 > **new AdaptiveVAD**(`config?`, `calibrator`, `frameDurationMs`): `AdaptiveVAD`
 
-Defined in: [packages/agentos/src/hearing/AdaptiveVAD.ts:130](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/hearing/AdaptiveVAD.ts#L130)
+Defined in: [packages/agentos/src/hearing/AdaptiveVAD.ts:130](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/hearing/AdaptiveVAD.ts#L130)
 
 Creates a new AdaptiveVAD instance.
 
@@ -240,7 +240,7 @@ v0.1.26
 
 > **emit**\<`U`\>(`event`, ...`args`): `boolean`
 
-Defined in: [packages/agentos/src/hearing/AdaptiveVAD.ts:119](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/hearing/AdaptiveVAD.ts#L119)
+Defined in: [packages/agentos/src/hearing/AdaptiveVAD.ts:119](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/hearing/AdaptiveVAD.ts#L119)
 
 Synchronously calls each of the listeners registered for the event named `eventName`, in the order they were registered, passing the supplied arguments
 to each.
@@ -351,7 +351,7 @@ v6.0.0
 
 > **getConfig**(): `Readonly`\<`Required`\<[`AdaptiveVADConfig`](../interfaces/AdaptiveVADConfig.md)\>\>
 
-Defined in: [packages/agentos/src/hearing/AdaptiveVAD.ts:369](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/hearing/AdaptiveVAD.ts#L369)
+Defined in: [packages/agentos/src/hearing/AdaptiveVAD.ts:369](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/hearing/AdaptiveVAD.ts#L369)
 
 Exposes the current VAD configuration in a read-only manner.
 
@@ -365,7 +365,7 @@ Exposes the current VAD configuration in a read-only manner.
 
 > **getCurrentState**(): `object`
 
-Defined in: [packages/agentos/src/hearing/AdaptiveVAD.ts:350](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/hearing/AdaptiveVAD.ts#L350)
+Defined in: [packages/agentos/src/hearing/AdaptiveVAD.ts:350](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/hearing/AdaptiveVAD.ts#L350)
 
 Gets the current VAD state.
 
@@ -546,7 +546,7 @@ v10.0.0
 
 > **on**\<`U`\>(`event`, `listener`): `this`
 
-Defined in: [packages/agentos/src/hearing/AdaptiveVAD.ts:115](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/hearing/AdaptiveVAD.ts#L115)
+Defined in: [packages/agentos/src/hearing/AdaptiveVAD.ts:115](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/hearing/AdaptiveVAD.ts#L115)
 
 Adds the `listener` function to the end of the listeners array for the event
 named `eventName`. No checks are made to see if the `listener` has already
@@ -780,7 +780,7 @@ v6.0.0
 
 > **processFrame**(`audioFrame`): [`VADResult`](../interfaces/VADResult.md)
 
-Defined in: [packages/agentos/src/hearing/AdaptiveVAD.ts:202](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/hearing/AdaptiveVAD.ts#L202)
+Defined in: [packages/agentos/src/hearing/AdaptiveVAD.ts:202](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/hearing/AdaptiveVAD.ts#L202)
 
 Processes an incoming audio frame to detect voice activity.
 
@@ -1014,7 +1014,7 @@ v0.1.26
 
 > **resetState**(): `void`
 
-Defined in: [packages/agentos/src/hearing/AdaptiveVAD.ts:337](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/hearing/AdaptiveVAD.ts#L337)
+Defined in: [packages/agentos/src/hearing/AdaptiveVAD.ts:337](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/hearing/AdaptiveVAD.ts#L337)
 
 Resets the VAD's internal state.
 Useful when starting a new audio stream or after a manual interruption.

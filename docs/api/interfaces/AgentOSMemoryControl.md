@@ -1,6 +1,6 @@
 # Interface: AgentOSMemoryControl
 
-Defined in: [packages/agentos/src/core/conversation/LongTermMemoryPolicy.ts:48](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/conversation/LongTermMemoryPolicy.ts#L48)
+Defined in: [packages/agentos/src/core/conversation/LongTermMemoryPolicy.ts:56](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/core/conversation/LongTermMemoryPolicy.ts#L56)
 
 ## Properties
 
@@ -8,4 +8,4 @@ Defined in: [packages/agentos/src/core/conversation/LongTermMemoryPolicy.ts:48](
 
 > `optional` **longTermMemory**: [`LongTermMemoryPolicyInput`](LongTermMemoryPolicyInput.md)
 
-Defined in: [packages/agentos/src/core/conversation/LongTermMemoryPolicy.ts:49](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/conversation/LongTermMemoryPolicy.ts#L49)
+Defined in: [packages/agentos/src/core/conversation/LongTermMemoryPolicy.ts:57](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/core/conversation/LongTermMemoryPolicy.ts#L57)

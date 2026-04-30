@@ -1,6 +1,6 @@
 # Class: MarkdownLoader
 
-Defined in: [packages/agentos/src/memory/io/ingestion/MarkdownLoader.ts:114](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/io/ingestion/MarkdownLoader.ts#L114)
+Defined in: [packages/agentos/src/memory/io/ingestion/MarkdownLoader.ts:114](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/io/ingestion/MarkdownLoader.ts#L114)
 
 Document loader for Markdown (`.md`) and MDX (`.mdx`) files.
 
@@ -49,7 +49,7 @@ console.log(doc.metadata.title); // from front-matter or first # heading
 
 > `readonly` **supportedExtensions**: `string`[]
 
-Defined in: [packages/agentos/src/memory/io/ingestion/MarkdownLoader.ts:116](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/io/ingestion/MarkdownLoader.ts#L116)
+Defined in: [packages/agentos/src/memory/io/ingestion/MarkdownLoader.ts:116](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/io/ingestion/MarkdownLoader.ts#L116)
 
 File extensions this loader handles, each with a leading dot.
 
@@ -71,7 +71,7 @@ Used by [LoaderRegistry](LoaderRegistry.md) to route file paths to the correct l
 
 > **canLoad**(`source`): `boolean`
 
-Defined in: [packages/agentos/src/memory/io/ingestion/MarkdownLoader.ts:123](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/io/ingestion/MarkdownLoader.ts#L123)
+Defined in: [packages/agentos/src/memory/io/ingestion/MarkdownLoader.ts:123](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/io/ingestion/MarkdownLoader.ts#L123)
 
 Returns `true` when this loader is capable of handling `source`.
 
@@ -100,7 +100,7 @@ Absolute file path or raw bytes.
 
 > **load**(`source`, `_options?`): `Promise`\<[`LoadedDocument`](../interfaces/LoadedDocument.md)\>
 
-Defined in: [packages/agentos/src/memory/io/ingestion/MarkdownLoader.ts:137](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/io/ingestion/MarkdownLoader.ts#L137)
+Defined in: [packages/agentos/src/memory/io/ingestion/MarkdownLoader.ts:137](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/io/ingestion/MarkdownLoader.ts#L137)
 
 Parses `source` and returns a normalised [LoadedDocument](../interfaces/LoadedDocument.md).
 

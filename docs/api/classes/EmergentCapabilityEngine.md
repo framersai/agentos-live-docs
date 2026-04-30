@@ -1,6 +1,6 @@
 # Class: EmergentCapabilityEngine
 
-Defined in: [packages/agentos/src/emergent/EmergentCapabilityEngine.ts:186](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/emergent/EmergentCapabilityEngine.ts#L186)
+Defined in: [packages/agentos/src/emergent/EmergentCapabilityEngine.ts:186](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/emergent/EmergentCapabilityEngine.ts#L186)
 
 Orchestrates runtime tool creation for agents with emergent capabilities.
 
@@ -33,7 +33,7 @@ if (result.success) {
 
 > **new EmergentCapabilityEngine**(`deps`): `EmergentCapabilityEngine`
 
-Defined in: [packages/agentos/src/emergent/EmergentCapabilityEngine.ts:208](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/emergent/EmergentCapabilityEngine.ts#L208)
+Defined in: [packages/agentos/src/emergent/EmergentCapabilityEngine.ts:208](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/emergent/EmergentCapabilityEngine.ts#L208)
 
 Create a new EmergentCapabilityEngine.
 
@@ -55,7 +55,7 @@ All collaborator dependencies. See [EmergentCapabilityEngineDeps](../interfaces/
 
 > **checkPromotion**(`toolId`): `Promise`\<[`PromotionResult`](../interfaces/PromotionResult.md) \| `null`\>
 
-Defined in: [packages/agentos/src/emergent/EmergentCapabilityEngine.ts:440](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/emergent/EmergentCapabilityEngine.ts#L440)
+Defined in: [packages/agentos/src/emergent/EmergentCapabilityEngine.ts:440](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/emergent/EmergentCapabilityEngine.ts#L440)
 
 Check if a tool is eligible for promotion and auto-promote if the threshold
 is met.
@@ -90,7 +90,7 @@ A [PromotionResult](../interfaces/PromotionResult.md) if promotion was attempted
 
 > **cleanupSession**(`sessionId`): [`EmergentTool`](../interfaces/EmergentTool.md)[]
 
-Defined in: [packages/agentos/src/emergent/EmergentCapabilityEngine.ts:535](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/emergent/EmergentCapabilityEngine.ts#L535)
+Defined in: [packages/agentos/src/emergent/EmergentCapabilityEngine.ts:535](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/emergent/EmergentCapabilityEngine.ts#L535)
 
 Clean up all session tools for a given session.
 
@@ -115,7 +115,7 @@ The session identifier to clean up.
 
 > **createExecutableTool**(`tool`): [`ITool`](../interfaces/ITool.md)\<`Record`\<`string`, `unknown`\>, `unknown`\>
 
-Defined in: [packages/agentos/src/emergent/EmergentCapabilityEngine.ts:701](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/emergent/EmergentCapabilityEngine.ts#L701)
+Defined in: [packages/agentos/src/emergent/EmergentCapabilityEngine.ts:701](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/emergent/EmergentCapabilityEngine.ts#L701)
 
 Create an executable ITool wrapper for a forged emergent tool.
 
@@ -138,7 +138,7 @@ promotion checks after each successful execution.
 
 > **createSelfImprovementTools**(`deps`): `Promise`\<[`ITool`](../interfaces/ITool.md)\<`any`, `any`\>[]\>
 
-Defined in: [packages/agentos/src/emergent/EmergentCapabilityEngine.ts:604](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/emergent/EmergentCapabilityEngine.ts#L604)
+Defined in: [packages/agentos/src/emergent/EmergentCapabilityEngine.ts:604](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/emergent/EmergentCapabilityEngine.ts#L604)
 
 Factory method that creates the four self-improvement tools when
 `config.selfImprovement?.enabled` is `true`.
@@ -173,7 +173,7 @@ Array of 0 or 4 [ITool](../interfaces/ITool.md) instances.
 
 > **forge**(`request`, `context`): `Promise`\<[`ForgeResult`](../interfaces/ForgeResult.md)\>
 
-Defined in: [packages/agentos/src/emergent/EmergentCapabilityEngine.ts:242](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/emergent/EmergentCapabilityEngine.ts#L242)
+Defined in: [packages/agentos/src/emergent/EmergentCapabilityEngine.ts:242](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/emergent/EmergentCapabilityEngine.ts#L242)
 
 Forge a new tool from a request.
 
@@ -221,7 +221,7 @@ A [ForgeResult](../interfaces/ForgeResult.md) indicating success or failure.
 
 > **getAgentTools**(`agentId`): [`EmergentTool`](../interfaces/EmergentTool.md)[]
 
-Defined in: [packages/agentos/src/emergent/EmergentCapabilityEngine.ts:519](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/emergent/EmergentCapabilityEngine.ts#L519)
+Defined in: [packages/agentos/src/emergent/EmergentCapabilityEngine.ts:519](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/emergent/EmergentCapabilityEngine.ts#L519)
 
 Get all agent-tier tools for a given agent ID.
 
@@ -245,7 +245,7 @@ An array of [EmergentTool](../interfaces/EmergentTool.md) objects created by the
 
 > **getSessionTools**(`sessionId`): [`EmergentTool`](../interfaces/EmergentTool.md)[]
 
-Defined in: [packages/agentos/src/emergent/EmergentCapabilityEngine.ts:493](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/emergent/EmergentCapabilityEngine.ts#L493)
+Defined in: [packages/agentos/src/emergent/EmergentCapabilityEngine.ts:493](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/emergent/EmergentCapabilityEngine.ts#L493)
 
 Get all session-scoped tools for a given session ID.
 
@@ -269,7 +269,7 @@ An array of [EmergentTool](../interfaces/EmergentTool.md) objects belonging to t
 
 > **removeTool**(`toolId`): `Promise`\<[`EmergentTool`](../interfaces/EmergentTool.md) \| `undefined`\>
 
-Defined in: [packages/agentos/src/emergent/EmergentCapabilityEngine.ts:569](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/emergent/EmergentCapabilityEngine.ts#L569)
+Defined in: [packages/agentos/src/emergent/EmergentCapabilityEngine.ts:569](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/emergent/EmergentCapabilityEngine.ts#L569)
 
 Remove a previously synced tool from the live runtime and registry.
 
@@ -289,7 +289,7 @@ Remove a previously synced tool from the live runtime and registry.
 
 > **syncPersistedTool**(`tool`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/emergent/EmergentCapabilityEngine.ts:548](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/emergent/EmergentCapabilityEngine.ts#L548)
+Defined in: [packages/agentos/src/emergent/EmergentCapabilityEngine.ts:548](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/emergent/EmergentCapabilityEngine.ts#L548)
 
 Hydrate a persisted tool back into a live runtime and make it executable.
 

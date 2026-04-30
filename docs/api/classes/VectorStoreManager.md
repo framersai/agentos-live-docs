@@ -1,6 +1,6 @@
 # Class: VectorStoreManager
 
-Defined in: [packages/agentos/src/rag/VectorStoreManager.ts:59](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/VectorStoreManager.ts#L59)
+Defined in: [packages/agentos/src/rag/VectorStoreManager.ts:59](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/VectorStoreManager.ts#L59)
 
 Implements the `IVectorStoreManager` interface.
 
@@ -16,7 +16,7 @@ Implements the `IVectorStoreManager` interface.
 
 > **new VectorStoreManager**(): `VectorStoreManager`
 
-Defined in: [packages/agentos/src/rag/VectorStoreManager.ts:70](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/VectorStoreManager.ts#L70)
+Defined in: [packages/agentos/src/rag/VectorStoreManager.ts:70](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/VectorStoreManager.ts#L70)
 
 Constructs a VectorStoreManager instance.
 The manager is not operational until `initialize` is called.
@@ -31,7 +31,7 @@ The manager is not operational until `initialize` is called.
 
 > `readonly` **managerInstanceId**: `string`
 
-Defined in: [packages/agentos/src/rag/VectorStoreManager.ts:64](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/VectorStoreManager.ts#L64)
+Defined in: [packages/agentos/src/rag/VectorStoreManager.ts:64](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/VectorStoreManager.ts#L64)
 
 ## Methods
 
@@ -39,7 +39,7 @@ Defined in: [packages/agentos/src/rag/VectorStoreManager.ts:64](https://github.c
 
 > **checkHealth**(`providerId?`): `Promise`\<[`VectorStoreManagerHealthReport`](../interfaces/VectorStoreManagerHealthReport.md)\>
 
-Defined in: [packages/agentos/src/rag/VectorStoreManager.ts:290](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/VectorStoreManager.ts#L290)
+Defined in: [packages/agentos/src/rag/VectorStoreManager.ts:292](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/VectorStoreManager.ts#L292)
 
 **`Async`**
 
@@ -71,7 +71,7 @@ A promise that resolves with a comprehensive health report.
 
 > **getDefaultProvider**(): [`IVectorStore`](../interfaces/IVectorStore.md)
 
-Defined in: [packages/agentos/src/rag/VectorStoreManager.ts:228](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/VectorStoreManager.ts#L228)
+Defined in: [packages/agentos/src/rag/VectorStoreManager.ts:230](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/VectorStoreManager.ts#L230)
 
 Retrieves the default IVectorStore provider instance as configured in `VectorStoreManagerConfig.defaultProviderId`.
 
@@ -96,7 +96,7 @@ or it failed to initialize.
 
 > **getProvider**(`providerId`): [`IVectorStore`](../interfaces/IVectorStore.md)
 
-Defined in: [packages/agentos/src/rag/VectorStoreManager.ts:212](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/VectorStoreManager.ts#L212)
+Defined in: [packages/agentos/src/rag/VectorStoreManager.ts:214](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/VectorStoreManager.ts#L214)
 
 Retrieves a specific, initialized IVectorStore provider instance by its configured ID.
 The provider ID corresponds to `VectorStoreProviderConfig.id`.
@@ -130,7 +130,7 @@ failed to initialize.
 
 > **getStoreForDataSource**(`dataSourceId`): `Promise`\<\{ `collectionName`: `string`; `dimension?`: `number`; `store`: [`IVectorStore`](../interfaces/IVectorStore.md); \}\>
 
-Defined in: [packages/agentos/src/rag/VectorStoreManager.ts:250](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/VectorStoreManager.ts#L250)
+Defined in: [packages/agentos/src/rag/VectorStoreManager.ts:252](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/VectorStoreManager.ts#L252)
 
 Retrieves an IVectorStore instance and the specific collection name within that store
 associated with a given logical RAG Data Source ID.
@@ -167,7 +167,7 @@ If the `dataSourceId` is not configured, or its associated provider is unavailab
 
 > **initialize**(`managerConfig`, `dataSourceConfigs`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/rag/VectorStoreManager.ts:79](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/VectorStoreManager.ts#L79)
+Defined in: [packages/agentos/src/rag/VectorStoreManager.ts:79](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/VectorStoreManager.ts#L79)
 
 **`Async`**
 
@@ -213,7 +213,7 @@ to a critical provider, or other setup errors.
 
 > **listDataSourceIds**(): `string`[]
 
-Defined in: [packages/agentos/src/rag/VectorStoreManager.ts:282](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/VectorStoreManager.ts#L282)
+Defined in: [packages/agentos/src/rag/VectorStoreManager.ts:284](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/VectorStoreManager.ts#L284)
 
 Lists the unique IDs of all logical RAG Data Sources configured.
 
@@ -233,7 +233,7 @@ An array of RAG Data Source IDs.
 
 > **listProviderIds**(): `string`[]
 
-Defined in: [packages/agentos/src/rag/VectorStoreManager.ts:274](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/VectorStoreManager.ts#L274)
+Defined in: [packages/agentos/src/rag/VectorStoreManager.ts:276](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/VectorStoreManager.ts#L276)
 
 Lists the unique IDs of all vector store providers configured and managed by this manager.
 
@@ -253,7 +253,7 @@ An array of provider IDs.
 
 > **shutdownAllProviders**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/rag/VectorStoreManager.ts:351](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/VectorStoreManager.ts#L351)
+Defined in: [packages/agentos/src/rag/VectorStoreManager.ts:353](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/VectorStoreManager.ts#L353)
 
 **`Async`**
 

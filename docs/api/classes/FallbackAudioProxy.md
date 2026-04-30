@@ -1,6 +1,6 @@
 # Class: FallbackAudioProxy
 
-Defined in: [packages/agentos/src/media/audio/FallbackAudioProxy.ts:108](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/audio/FallbackAudioProxy.ts#L108)
+Defined in: [packages/agentos/src/media/audio/FallbackAudioProxy.ts:108](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/media/audio/FallbackAudioProxy.ts#L108)
 
 An [IAudioGenerator](../interfaces/IAudioGenerator.md) that wraps an ordered chain of audio providers
 and implements automatic failover for every operation.
@@ -31,7 +31,7 @@ that don't support `'sfx'` (or lack the method entirely) are skipped.
 
 > **new FallbackAudioProxy**(`chain`, `emitter`): `FallbackAudioProxy`
 
-Defined in: [packages/agentos/src/media/audio/FallbackAudioProxy.ts:134](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/audio/FallbackAudioProxy.ts#L134)
+Defined in: [packages/agentos/src/media/audio/FallbackAudioProxy.ts:134](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/media/audio/FallbackAudioProxy.ts#L134)
 
 Creates a new FallbackAudioProxy wrapping the given provider chain.
 
@@ -70,7 +70,7 @@ const proxy = new FallbackAudioProxy(
 
 > `readonly` `optional` **defaultModelId**: `string`
 
-Defined in: [packages/agentos/src/media/audio/FallbackAudioProxy.ts:116](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/audio/FallbackAudioProxy.ts#L116)
+Defined in: [packages/agentos/src/media/audio/FallbackAudioProxy.ts:116](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/media/audio/FallbackAudioProxy.ts#L116)
 
 Default model from the first provider, if set.
 
@@ -84,7 +84,7 @@ Default model from the first provider, if set.
 
 > `readonly` **isInitialized**: `boolean` = `true`
 
-Defined in: [packages/agentos/src/media/audio/FallbackAudioProxy.ts:113](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/audio/FallbackAudioProxy.ts#L113)
+Defined in: [packages/agentos/src/media/audio/FallbackAudioProxy.ts:113](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/media/audio/FallbackAudioProxy.ts#L113)
 
 Always `true` — the proxy is ready as soon as it is constructed.
 
@@ -98,7 +98,7 @@ Always `true` — the proxy is ready as soon as it is constructed.
 
 > `readonly` **providerId**: `string`
 
-Defined in: [packages/agentos/src/media/audio/FallbackAudioProxy.ts:110](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/audio/FallbackAudioProxy.ts#L110)
+Defined in: [packages/agentos/src/media/audio/FallbackAudioProxy.ts:110](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/media/audio/FallbackAudioProxy.ts#L110)
 
 Identifier derived from the first provider in the chain.
 
@@ -112,7 +112,7 @@ Identifier derived from the first provider in the chain.
 
 > **generateMusic**(`request`): `Promise`\<[`AudioResult`](../interfaces/AudioResult.md)\>
 
-Defined in: [packages/agentos/src/media/audio/FallbackAudioProxy.ts:185](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/audio/FallbackAudioProxy.ts#L185)
+Defined in: [packages/agentos/src/media/audio/FallbackAudioProxy.ts:185](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/media/audio/FallbackAudioProxy.ts#L185)
 
 Generate music from a text prompt, falling back through the provider
 chain on failure.
@@ -152,7 +152,7 @@ When the chain is empty.
 
 > **generateSFX**(`request`): `Promise`\<[`AudioResult`](../interfaces/AudioResult.md)\>
 
-Defined in: [packages/agentos/src/media/audio/FallbackAudioProxy.ts:215](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/audio/FallbackAudioProxy.ts#L215)
+Defined in: [packages/agentos/src/media/audio/FallbackAudioProxy.ts:215](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/media/audio/FallbackAudioProxy.ts#L215)
 
 Generate a sound effect from a text prompt, falling back through providers
 that support SFX.
@@ -188,7 +188,7 @@ When every provider fails or does not support SFX.
 
 > **initialize**(`_config`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/media/audio/FallbackAudioProxy.ts:150](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/audio/FallbackAudioProxy.ts#L150)
+Defined in: [packages/agentos/src/media/audio/FallbackAudioProxy.ts:150](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/media/audio/FallbackAudioProxy.ts#L150)
 
 No-op initialisation — individual providers in the chain should already
 be initialised before being passed to the proxy.
@@ -213,7 +213,7 @@ be initialised before being passed to the proxy.
 
 > **shutdown**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/media/audio/FallbackAudioProxy.ts:239](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/audio/FallbackAudioProxy.ts#L239)
+Defined in: [packages/agentos/src/media/audio/FallbackAudioProxy.ts:239](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/media/audio/FallbackAudioProxy.ts#L239)
 
 Shuts down all providers in the chain. Errors are caught per-provider
 so a single provider's failure does not prevent the others from
@@ -233,7 +233,7 @@ cleaning up.
 
 > **supports**(`capability`): `boolean`
 
-Defined in: [packages/agentos/src/media/audio/FallbackAudioProxy.ts:165](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/audio/FallbackAudioProxy.ts#L165)
+Defined in: [packages/agentos/src/media/audio/FallbackAudioProxy.ts:165](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/media/audio/FallbackAudioProxy.ts#L165)
 
 Returns `true` if at least one provider in the chain supports the
 given capability.

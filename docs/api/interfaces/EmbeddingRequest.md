@@ -1,6 +1,6 @@
 # Interface: EmbeddingRequest
 
-Defined in: [packages/agentos/src/core/embeddings/IEmbeddingManager.ts:33](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/embeddings/IEmbeddingManager.ts#L33)
+Defined in: [packages/agentos/src/core/embeddings/IEmbeddingManager.ts:33](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/core/embeddings/IEmbeddingManager.ts#L33)
 
 Represents a request to generate embeddings.
 This structure encapsulates the text(s) to be embedded and any parameters
@@ -17,7 +17,7 @@ EmbeddingRequest
 
 > `optional` **collectionId**: `string`
 
-Defined in: [packages/agentos/src/core/embeddings/IEmbeddingManager.ts:86](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/embeddings/IEmbeddingManager.ts#L86)
+Defined in: [packages/agentos/src/core/embeddings/IEmbeddingManager.ts:86](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/core/embeddings/IEmbeddingManager.ts#L86)
 
 **`Optional`**
 
@@ -38,7 +38,7 @@ for the content of a specific collection.
 
 > `optional` **customParameters**: `Record`\<`string`, `any`\>
 
-Defined in: [packages/agentos/src/core/embeddings/IEmbeddingManager.ts:96](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/embeddings/IEmbeddingManager.ts#L96)
+Defined in: [packages/agentos/src/core/embeddings/IEmbeddingManager.ts:96](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/core/embeddings/IEmbeddingManager.ts#L96)
 
 **`Optional`**
 
@@ -58,7 +58,7 @@ The exact interpretation of these parameters is implementation-dependent.
 
 > `optional` **modelId**: `string`
 
-Defined in: [packages/agentos/src/core/embeddings/IEmbeddingManager.ts:54](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/embeddings/IEmbeddingManager.ts#L54)
+Defined in: [packages/agentos/src/core/embeddings/IEmbeddingManager.ts:54](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/core/embeddings/IEmbeddingManager.ts#L54)
 
 **`Optional`**
 
@@ -78,7 +78,7 @@ configured strategy (e.g., default model, dynamic selection).
 
 > `optional` **providerId**: `string`
 
-Defined in: [packages/agentos/src/core/embeddings/IEmbeddingManager.ts:65](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/embeddings/IEmbeddingManager.ts#L65)
+Defined in: [packages/agentos/src/core/embeddings/IEmbeddingManager.ts:65](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/core/embeddings/IEmbeddingManager.ts#L65)
 
 **`Optional`**
 
@@ -99,7 +99,7 @@ if the architecture supports it. Generally, the model's configured provider is p
 
 > **texts**: `string` \| `string`[]
 
-Defined in: [packages/agentos/src/core/embeddings/IEmbeddingManager.ts:44](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/embeddings/IEmbeddingManager.ts#L44)
+Defined in: [packages/agentos/src/core/embeddings/IEmbeddingManager.ts:44](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/core/embeddings/IEmbeddingManager.ts#L44)
 
 The text content to be embedded. Can be a single string or an array of strings
 for batch processing.
@@ -119,7 +119,7 @@ const requestBatch: EmbeddingRequest = { texts: ["First document.", "Second docu
 
 > `optional` **userId**: `string`
 
-Defined in: [packages/agentos/src/core/embeddings/IEmbeddingManager.ts:75](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/embeddings/IEmbeddingManager.ts#L75)
+Defined in: [packages/agentos/src/core/embeddings/IEmbeddingManager.ts:75](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/core/embeddings/IEmbeddingManager.ts#L75)
 
 **`Optional`**
 

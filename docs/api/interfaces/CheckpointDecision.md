@@ -1,6 +1,6 @@
 # Interface: CheckpointDecision
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:295](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/hitl/IHumanInteractionManager.ts#L295)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:295](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/hitl/IHumanInteractionManager.ts#L295)
 
 Human's decision at a checkpoint.
 
@@ -10,7 +10,7 @@ Human's decision at a checkpoint.
 
 > **checkpointId**: `string`
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:297](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/hitl/IHumanInteractionManager.ts#L297)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:297](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/hitl/IHumanInteractionManager.ts#L297)
 
 Checkpoint ID
 
@@ -20,7 +20,7 @@ Checkpoint ID
 
 > **decidedAt**: `Date`
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:312](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/hitl/IHumanInteractionManager.ts#L312)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:312](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/hitl/IHumanInteractionManager.ts#L312)
 
 Timestamp
 
@@ -30,7 +30,7 @@ Timestamp
 
 > **decidedBy**: `string`
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:310](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/hitl/IHumanInteractionManager.ts#L310)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:310](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/hitl/IHumanInteractionManager.ts#L310)
 
 Who decided
 
@@ -40,7 +40,7 @@ Who decided
 
 > **decision**: `"continue"` \| `"abort"` \| `"pause"` \| `"modify"`
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:299](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/hitl/IHumanInteractionManager.ts#L299)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:299](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/hitl/IHumanInteractionManager.ts#L299)
 
 Decision
 
@@ -50,7 +50,7 @@ Decision
 
 > `optional` **instructions**: `string`
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:308](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/hitl/IHumanInteractionManager.ts#L308)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:308](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/hitl/IHumanInteractionManager.ts#L308)
 
 Instructions for agent
 
@@ -60,7 +60,7 @@ Instructions for agent
 
 > `optional` **modifications**: `object`
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:301](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/hitl/IHumanInteractionManager.ts#L301)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:301](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/hitl/IHumanInteractionManager.ts#L301)
 
 Modifications if any
 

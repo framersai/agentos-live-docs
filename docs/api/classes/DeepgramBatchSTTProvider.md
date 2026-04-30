@@ -1,6 +1,6 @@
 # Class: DeepgramBatchSTTProvider
 
-Defined in: [packages/agentos/src/hearing/providers/DeepgramBatchSTTProvider.ts:181](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/hearing/providers/DeepgramBatchSTTProvider.ts#L181)
+Defined in: [packages/agentos/src/hearing/providers/DeepgramBatchSTTProvider.ts:181](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/hearing/providers/DeepgramBatchSTTProvider.ts#L181)
 
 Speech-to-text provider that uses the Deepgram batch (pre-recorded) REST API.
 
@@ -60,7 +60,7 @@ console.log(result.segments?.map(s => `[Speaker ${s.speaker}] ${s.text}`));
 
 > **new DeepgramBatchSTTProvider**(`config`): `DeepgramBatchSTTProvider`
 
-Defined in: [packages/agentos/src/hearing/providers/DeepgramBatchSTTProvider.ts:210](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/hearing/providers/DeepgramBatchSTTProvider.ts#L210)
+Defined in: [packages/agentos/src/hearing/providers/DeepgramBatchSTTProvider.ts:210](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/hearing/providers/DeepgramBatchSTTProvider.ts#L210)
 
 #### Parameters
 
@@ -78,7 +78,7 @@ Defined in: [packages/agentos/src/hearing/providers/DeepgramBatchSTTProvider.ts:
 
 > `readonly` **displayName**: `"Deepgram (Batch)"` = `'Deepgram (Batch)'`
 
-Defined in: [packages/agentos/src/hearing/providers/DeepgramBatchSTTProvider.ts:186](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/hearing/providers/DeepgramBatchSTTProvider.ts#L186)
+Defined in: [packages/agentos/src/hearing/providers/DeepgramBatchSTTProvider.ts:186](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/hearing/providers/DeepgramBatchSTTProvider.ts#L186)
 
 Human-readable display name for UI and logging.
 
@@ -92,7 +92,7 @@ Human-readable display name for UI and logging.
 
 > `readonly` **id**: `"deepgram-batch"` = `'deepgram-batch'`
 
-Defined in: [packages/agentos/src/hearing/providers/DeepgramBatchSTTProvider.ts:183](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/hearing/providers/DeepgramBatchSTTProvider.ts#L183)
+Defined in: [packages/agentos/src/hearing/providers/DeepgramBatchSTTProvider.ts:183](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/hearing/providers/DeepgramBatchSTTProvider.ts#L183)
 
 Unique provider identifier used for registration and resolution.
 
@@ -106,7 +106,7 @@ Unique provider identifier used for registration and resolution.
 
 > `readonly` **supportsStreaming**: `false` = `false`
 
-Defined in: [packages/agentos/src/hearing/providers/DeepgramBatchSTTProvider.ts:189](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/hearing/providers/DeepgramBatchSTTProvider.ts#L189)
+Defined in: [packages/agentos/src/hearing/providers/DeepgramBatchSTTProvider.ts:189](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/hearing/providers/DeepgramBatchSTTProvider.ts#L189)
 
 This provider uses synchronous HTTP requests, not WebSocket streaming.
 
@@ -120,7 +120,7 @@ This provider uses synchronous HTTP requests, not WebSocket streaming.
 
 > **getProviderName**(): `string`
 
-Defined in: [packages/agentos/src/hearing/providers/DeepgramBatchSTTProvider.ts:225](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/hearing/providers/DeepgramBatchSTTProvider.ts#L225)
+Defined in: [packages/agentos/src/hearing/providers/DeepgramBatchSTTProvider.ts:225](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/hearing/providers/DeepgramBatchSTTProvider.ts#L225)
 
 Returns the human-readable provider name.
 
@@ -146,7 +146,7 @@ provider.getProviderName(); // 'Deepgram (Batch)'
 
 > **transcribe**(`audio`, `options?`): `Promise`\<[`SpeechTranscriptionResult`](../interfaces/SpeechTranscriptionResult.md)\>
 
-Defined in: [packages/agentos/src/hearing/providers/DeepgramBatchSTTProvider.ts:253](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/hearing/providers/DeepgramBatchSTTProvider.ts#L253)
+Defined in: [packages/agentos/src/hearing/providers/DeepgramBatchSTTProvider.ts:253](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/hearing/providers/DeepgramBatchSTTProvider.ts#L253)
 
 Transcribes an audio buffer using the Deepgram pre-recorded API.
 

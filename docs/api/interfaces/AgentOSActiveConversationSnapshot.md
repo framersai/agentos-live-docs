@@ -1,6 +1,6 @@
 # Interface: AgentOSActiveConversationSnapshot
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:695](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/AgentOS.ts#L695)
+Defined in: [packages/agentos/src/api/AgentOS.ts:695](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/AgentOS.ts#L695)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/api/AgentOS.ts:695](https://github.com/framers
 
 > `optional` **activePersonaId**: `string`
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:699](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/AgentOS.ts#L699)
+Defined in: [packages/agentos/src/api/AgentOS.ts:699](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/AgentOS.ts#L699)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [packages/agentos/src/api/AgentOS.ts:699](https://github.com/framers
 
 > **createdAt**: `number`
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:700](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/AgentOS.ts#L700)
+Defined in: [packages/agentos/src/api/AgentOS.ts:700](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/AgentOS.ts#L700)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: [packages/agentos/src/api/AgentOS.ts:700](https://github.com/framers
 
 > `optional` **gmiInstanceId**: `string`
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:698](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/AgentOS.ts#L698)
+Defined in: [packages/agentos/src/api/AgentOS.ts:698](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/AgentOS.ts#L698)
 
 ***
 
@@ -32,7 +32,7 @@ Defined in: [packages/agentos/src/api/AgentOS.ts:698](https://github.com/framers
 
 > `optional` **lastActiveAt**: `number`
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:701](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/AgentOS.ts#L701)
+Defined in: [packages/agentos/src/api/AgentOS.ts:701](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/AgentOS.ts#L701)
 
 ***
 
@@ -40,7 +40,7 @@ Defined in: [packages/agentos/src/api/AgentOS.ts:701](https://github.com/framers
 
 > **messageCount**: `number`
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:702](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/AgentOS.ts#L702)
+Defined in: [packages/agentos/src/api/AgentOS.ts:702](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/AgentOS.ts#L702)
 
 ***
 
@@ -48,7 +48,7 @@ Defined in: [packages/agentos/src/api/AgentOS.ts:702](https://github.com/framers
 
 > **sessionId**: `string`
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:696](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/AgentOS.ts#L696)
+Defined in: [packages/agentos/src/api/AgentOS.ts:696](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/AgentOS.ts#L696)
 
 ***
 
@@ -56,4 +56,4 @@ Defined in: [packages/agentos/src/api/AgentOS.ts:696](https://github.com/framers
 
 > `optional` **userId**: `string`
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:697](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/AgentOS.ts#L697)
+Defined in: [packages/agentos/src/api/AgentOS.ts:697](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/AgentOS.ts#L697)

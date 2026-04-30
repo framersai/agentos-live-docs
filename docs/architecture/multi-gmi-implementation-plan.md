@@ -1,6 +1,6 @@
 ---
 title: "Multi-GMI Collaboration"
-sidebar_position: 16
+sidebar_position: 17
 ---
 
 > Working notes that sit alongside `docs/ARCHITECTURE.md`. Focus: coordinating multiple GMIs asynchronously inside a single Agency identity, evolving their roles, and doing it with the current AgentOS building blocks.

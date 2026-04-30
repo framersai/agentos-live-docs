@@ -1,6 +1,6 @@
 # Interface: JudgmentResult
 
-Defined in: [packages/agentos/src/evaluation/LLMJudge.ts:47](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/evaluation/LLMJudge.ts#L47)
+Defined in: [packages/agentos/src/evaluation/LLMJudge.ts:47](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/evaluation/LLMJudge.ts#L47)
 
 LLM judgment result
 
@@ -10,7 +10,7 @@ LLM judgment result
 
 > **confidence**: `number`
 
-Defined in: [packages/agentos/src/evaluation/LLMJudge.ts:57](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/evaluation/LLMJudge.ts#L57)
+Defined in: [packages/agentos/src/evaluation/LLMJudge.ts:57](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/evaluation/LLMJudge.ts#L57)
 
 Confidence in the judgment
 
@@ -20,7 +20,7 @@ Confidence in the judgment
 
 > **criteriaScores**: `Record`\<`string`, `number`\>
 
-Defined in: [packages/agentos/src/evaluation/LLMJudge.ts:51](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/evaluation/LLMJudge.ts#L51)
+Defined in: [packages/agentos/src/evaluation/LLMJudge.ts:51](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/evaluation/LLMJudge.ts#L51)
 
 Individual criterion scores
 
@@ -30,7 +30,7 @@ Individual criterion scores
 
 > **feedback**: `string`[]
 
-Defined in: [packages/agentos/src/evaluation/LLMJudge.ts:55](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/evaluation/LLMJudge.ts#L55)
+Defined in: [packages/agentos/src/evaluation/LLMJudge.ts:55](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/evaluation/LLMJudge.ts#L55)
 
 Specific feedback
 
@@ -40,7 +40,7 @@ Specific feedback
 
 > **reasoning**: `string`
 
-Defined in: [packages/agentos/src/evaluation/LLMJudge.ts:53](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/evaluation/LLMJudge.ts#L53)
+Defined in: [packages/agentos/src/evaluation/LLMJudge.ts:53](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/evaluation/LLMJudge.ts#L53)
 
 Reasoning for the judgment
 
@@ -50,6 +50,6 @@ Reasoning for the judgment
 
 > **score**: `number`
 
-Defined in: [packages/agentos/src/evaluation/LLMJudge.ts:49](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/evaluation/LLMJudge.ts#L49)
+Defined in: [packages/agentos/src/evaluation/LLMJudge.ts:49](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/evaluation/LLMJudge.ts#L49)
 
 Overall score (0-1)

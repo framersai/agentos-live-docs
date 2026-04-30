@@ -1,6 +1,6 @@
 # Interface: GraphRAGConfig
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/IGraphRAG.ts:154](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/retrieval/graph/graphrag/IGraphRAG.ts#L154)
+Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/IGraphRAG.ts:154](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/retrieval/graph/graphrag/IGraphRAG.ts#L154)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/IGraphRAG.ts:1
 
 > `optional` **communityCollectionName**: `string`
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/IGraphRAG.ts:183](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/retrieval/graph/graphrag/IGraphRAG.ts#L183)
+Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/IGraphRAG.ts:183](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/retrieval/graph/graphrag/IGraphRAG.ts#L183)
 
 Collection name for community summary embeddings
 
@@ -18,7 +18,7 @@ Collection name for community summary embeddings
 
 > `optional` **communityResolution**: `number`
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/IGraphRAG.ts:164](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/retrieval/graph/graphrag/IGraphRAG.ts#L164)
+Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/IGraphRAG.ts:164](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/retrieval/graph/graphrag/IGraphRAG.ts#L164)
 
 Louvain resolution parameter (higher = more communities)
 
@@ -28,7 +28,7 @@ Louvain resolution parameter (higher = more communities)
 
 > `optional` **embeddingDimension**: `number`
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/IGraphRAG.ts:175](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/retrieval/graph/graphrag/IGraphRAG.ts#L175)
+Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/IGraphRAG.ts:175](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/retrieval/graph/graphrag/IGraphRAG.ts#L175)
 
 Embedding dimension for the selected embedding model.
 
@@ -41,7 +41,7 @@ probe the embedding dimension at runtime by generating a tiny embedding once.
 
 > `optional` **embeddingModelId**: `string`
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/IGraphRAG.ts:168](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/retrieval/graph/graphrag/IGraphRAG.ts#L168)
+Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/IGraphRAG.ts:168](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/retrieval/graph/graphrag/IGraphRAG.ts#L168)
 
 Embedding model ID to use
 
@@ -51,7 +51,7 @@ Embedding model ID to use
 
 > **engineId**: `string`
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/IGraphRAG.ts:156](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/retrieval/graph/graphrag/IGraphRAG.ts#L156)
+Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/IGraphRAG.ts:156](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/retrieval/graph/graphrag/IGraphRAG.ts#L156)
 
 Unique ID for this GraphRAG engine instance
 
@@ -61,7 +61,7 @@ Unique ID for this GraphRAG engine instance
 
 > `optional` **entityCollectionName**: `string`
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/IGraphRAG.ts:181](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/retrieval/graph/graphrag/IGraphRAG.ts#L181)
+Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/IGraphRAG.ts:181](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/retrieval/graph/graphrag/IGraphRAG.ts#L181)
 
 Collection name for entity embeddings
 
@@ -71,7 +71,7 @@ Collection name for entity embeddings
 
 > `optional` **entityTypes**: `string`[]
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/IGraphRAG.ts:158](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/retrieval/graph/graphrag/IGraphRAG.ts#L158)
+Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/IGraphRAG.ts:158](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/retrieval/graph/graphrag/IGraphRAG.ts#L158)
 
 Entity types to extract (e.g., ['person', 'organization', 'concept'])
 
@@ -81,7 +81,7 @@ Entity types to extract (e.g., ['person', 'organization', 'concept'])
 
 > `optional` **generateEntityEmbeddings**: `boolean`
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/IGraphRAG.ts:166](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/retrieval/graph/graphrag/IGraphRAG.ts#L166)
+Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/IGraphRAG.ts:166](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/retrieval/graph/graphrag/IGraphRAG.ts#L166)
 
 Whether to generate embeddings for entities
 
@@ -91,7 +91,7 @@ Whether to generate embeddings for entities
 
 > `optional` **maxCommunityLevels**: `number`
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/IGraphRAG.ts:160](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/retrieval/graph/graphrag/IGraphRAG.ts#L160)
+Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/IGraphRAG.ts:160](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/retrieval/graph/graphrag/IGraphRAG.ts#L160)
 
 Maximum community hierarchy depth
 
@@ -101,7 +101,7 @@ Maximum community hierarchy depth
 
 > `optional` **maxSummaryTokens**: `number`
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/IGraphRAG.ts:177](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/retrieval/graph/graphrag/IGraphRAG.ts#L177)
+Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/IGraphRAG.ts:177](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/retrieval/graph/graphrag/IGraphRAG.ts#L177)
 
 Maximum tokens for community summaries
 
@@ -111,7 +111,7 @@ Maximum tokens for community summaries
 
 > `optional` **minCommunitySize**: `number`
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/IGraphRAG.ts:162](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/retrieval/graph/graphrag/IGraphRAG.ts#L162)
+Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/IGraphRAG.ts:162](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/retrieval/graph/graphrag/IGraphRAG.ts#L162)
 
 Minimum community size (entities) before splitting stops
 
@@ -121,7 +121,7 @@ Minimum community size (entities) before splitting stops
 
 > `optional` **tablePrefix**: `string`
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/IGraphRAG.ts:185](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/retrieval/graph/graphrag/IGraphRAG.ts#L185)
+Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/IGraphRAG.ts:185](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/retrieval/graph/graphrag/IGraphRAG.ts#L185)
 
 SQL table prefix for persistence
 
@@ -131,6 +131,6 @@ SQL table prefix for persistence
 
 > `optional` **vectorStoreProviderId**: `string`
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/IGraphRAG.ts:179](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/retrieval/graph/graphrag/IGraphRAG.ts#L179)
+Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/IGraphRAG.ts:179](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/retrieval/graph/graphrag/IGraphRAG.ts#L179)
 
 Vector store provider ID for entity embeddings

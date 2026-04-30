@@ -1,6 +1,6 @@
 # Interface: ForgeResult
 
-Defined in: [packages/agentos/src/emergent/types.ts:575](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/emergent/types.ts#L575)
+Defined in: [packages/agentos/src/emergent/types.ts:575](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/emergent/types.ts#L575)
 
 Result returned after a forge_tool invocation.
 
@@ -13,7 +13,7 @@ the `verdict` field explains why the judge rejected the tool.
 
 > `optional` **error**: `string`
 
-Defined in: [packages/agentos/src/emergent/types.ts:603](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/emergent/types.ts#L603)
+Defined in: [packages/agentos/src/emergent/types.ts:603](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/emergent/types.ts#L603)
 
 Human-readable error message for system-level failures (e.g., sandbox crash,
 schema parse error). Distinct from judge rejection — check `verdict` for those.
@@ -24,7 +24,7 @@ schema parse error). Distinct from judge rejection — check `verdict` for those
 
 > **success**: `boolean`
 
-Defined in: [packages/agentos/src/emergent/types.ts:579](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/emergent/types.ts#L579)
+Defined in: [packages/agentos/src/emergent/types.ts:579](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/emergent/types.ts#L579)
 
 `true` when the tool was forged, judged, and registered successfully.
 
@@ -34,7 +34,7 @@ Defined in: [packages/agentos/src/emergent/types.ts:579](https://github.com/fram
 
 > `optional` **tool**: [`EmergentTool`](EmergentTool.md)
 
-Defined in: [packages/agentos/src/emergent/types.ts:590](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/emergent/types.ts#L590)
+Defined in: [packages/agentos/src/emergent/types.ts:590](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/emergent/types.ts#L590)
 
 The full emergent tool record, present only when `success` is `true`.
 
@@ -44,7 +44,7 @@ The full emergent tool record, present only when `success` is `true`.
 
 > `optional` **toolId**: `string`
 
-Defined in: [packages/agentos/src/emergent/types.ts:585](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/emergent/types.ts#L585)
+Defined in: [packages/agentos/src/emergent/types.ts:585](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/emergent/types.ts#L585)
 
 The assigned tool ID, present only when `success` is `true`.
 
@@ -60,7 +60,7 @@ The assigned tool ID, present only when `success` is `true`.
 
 > `optional` **verdict**: [`CreationVerdict`](CreationVerdict.md)
 
-Defined in: [packages/agentos/src/emergent/types.ts:597](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/emergent/types.ts#L597)
+Defined in: [packages/agentos/src/emergent/types.ts:597](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/emergent/types.ts#L597)
 
 The judge's creation verdict.
 Present whether the forge succeeded or was rejected — callers can inspect

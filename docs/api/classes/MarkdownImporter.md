@@ -1,6 +1,6 @@
 # Class: MarkdownImporter
 
-Defined in: [packages/agentos/src/memory/io/MarkdownImporter.ts:53](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/io/MarkdownImporter.ts#L53)
+Defined in: [packages/agentos/src/memory/io/MarkdownImporter.ts:53](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/io/MarkdownImporter.ts#L53)
 
 Imports Markdown files from a directory into a `SqliteBrain`.
 
@@ -21,7 +21,7 @@ console.log(result.imported, result.skipped);
 
 > **new MarkdownImporter**(`brain`): `MarkdownImporter`
 
-Defined in: [packages/agentos/src/memory/io/MarkdownImporter.ts:57](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/io/MarkdownImporter.ts#L57)
+Defined in: [packages/agentos/src/memory/io/MarkdownImporter.ts:57](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/io/MarkdownImporter.ts#L57)
 
 #### Parameters
 
@@ -41,7 +41,7 @@ The target `SqliteBrain` to import into.
 
 > `protected` `readonly` **brain**: [`SqliteBrain`](SqliteBrain.md)
 
-Defined in: [packages/agentos/src/memory/io/MarkdownImporter.ts:57](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/io/MarkdownImporter.ts#L57)
+Defined in: [packages/agentos/src/memory/io/MarkdownImporter.ts:57](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/io/MarkdownImporter.ts#L57)
 
 The target `SqliteBrain` to import into.
 
@@ -51,7 +51,7 @@ The target `SqliteBrain` to import into.
 
 > **import**(`sourceDir`, `options?`): `Promise`\<[`ImportResult`](../interfaces/ImportResult.md)\>
 
-Defined in: [packages/agentos/src/memory/io/MarkdownImporter.ts:72](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/io/MarkdownImporter.ts#L72)
+Defined in: [packages/agentos/src/memory/io/MarkdownImporter.ts:72](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/io/MarkdownImporter.ts#L72)
 
 Recursively walk `sourceDir`, parse every `.md` file, and insert traces.
 
@@ -82,7 +82,7 @@ Directory to recursively scan for `.md` files.
 
 > `protected` **postProcess**(`_filePath`, `_frontmatter`, `_body`, `_result`, `_traceId`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/memory/io/MarkdownImporter.ts:100](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/io/MarkdownImporter.ts#L100)
+Defined in: [packages/agentos/src/memory/io/MarkdownImporter.ts:100](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/io/MarkdownImporter.ts#L100)
 
 Post-process a parsed file before it is inserted into the database.
 

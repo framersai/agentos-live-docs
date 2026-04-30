@@ -1,6 +1,6 @@
 # Interface: IngestResult
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:430](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/io/facade/types.ts#L430)
+Defined in: [packages/agentos/src/memory/io/facade/types.ts:438](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/io/facade/types.ts#L438)
 
 Summary of a completed ingestion run returned by `Memory.ingest()`.
 
@@ -10,7 +10,7 @@ Summary of a completed ingestion run returned by `Memory.ingest()`.
 
 > **chunksCreated**: `number`
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:444](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/io/facade/types.ts#L444)
+Defined in: [packages/agentos/src/memory/io/facade/types.ts:452](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/io/facade/types.ts#L452)
 
 Total number of document chunks created and stored.
 
@@ -20,7 +20,7 @@ Total number of document chunks created and stored.
 
 > **failed**: `object`[]
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:439](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/io/facade/types.ts#L439)
+Defined in: [packages/agentos/src/memory/io/facade/types.ts:447](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/io/facade/types.ts#L447)
 
 Files that could not be ingested, with per-file error messages.
 
@@ -38,7 +38,7 @@ Files that could not be ingested, with per-file error messages.
 
 > **succeeded**: `string`[]
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:434](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/io/facade/types.ts#L434)
+Defined in: [packages/agentos/src/memory/io/facade/types.ts:442](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/io/facade/types.ts#L442)
 
 Absolute paths of all files that were successfully ingested.
 
@@ -48,6 +48,6 @@ Absolute paths of all files that were successfully ingested.
 
 > **tracesCreated**: `number`
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:449](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/io/facade/types.ts#L449)
+Defined in: [packages/agentos/src/memory/io/facade/types.ts:457](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/io/facade/types.ts#L457)
 
 Total number of new memory traces created from the ingested content.

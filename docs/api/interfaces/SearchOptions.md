@@ -1,6 +1,6 @@
 # Interface: SearchOptions
 
-Defined in: [packages/agentos/src/memory/AgentMemory.ts:85](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/AgentMemory.ts#L85)
+Defined in: [packages/agentos/src/memory/AgentMemory.ts:86](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/AgentMemory.ts#L86)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/memory/AgentMemory.ts:85](https://github.com/f
 
 > `optional` **limit**: `number`
 
-Defined in: [packages/agentos/src/memory/AgentMemory.ts:87](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/AgentMemory.ts#L87)
+Defined in: [packages/agentos/src/memory/AgentMemory.ts:88](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/AgentMemory.ts#L88)
 
 Maximum results. Default: 10.
 
@@ -18,9 +18,19 @@ Maximum results. Default: 10.
 
 > `optional` **minConfidence**: `number`
 
-Defined in: [packages/agentos/src/memory/AgentMemory.ts:93](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/AgentMemory.ts#L93)
+Defined in: [packages/agentos/src/memory/AgentMemory.ts:94](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/AgentMemory.ts#L94)
 
 Minimum confidence. Default: 0.
+
+***
+
+### policy?
+
+> `optional` **policy**: [`MemoryRetrievalPolicy`](MemoryRetrievalPolicy.md)
+
+Defined in: [packages/agentos/src/memory/AgentMemory.ts:96](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/AgentMemory.ts#L96)
+
+Shared retrieval policy surface.
 
 ***
 
@@ -28,7 +38,7 @@ Minimum confidence. Default: 0.
 
 > `optional` **tags**: `string`[]
 
-Defined in: [packages/agentos/src/memory/AgentMemory.ts:91](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/AgentMemory.ts#L91)
+Defined in: [packages/agentos/src/memory/AgentMemory.ts:92](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/AgentMemory.ts#L92)
 
 Tags filter.
 
@@ -38,6 +48,6 @@ Tags filter.
 
 > `optional` **types**: [`MemoryType`](../type-aliases/MemoryType.md)[]
 
-Defined in: [packages/agentos/src/memory/AgentMemory.ts:89](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/AgentMemory.ts#L89)
+Defined in: [packages/agentos/src/memory/AgentMemory.ts:90](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/AgentMemory.ts#L90)
 
 Memory type filter.

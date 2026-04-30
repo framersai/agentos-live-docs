@@ -2,7 +2,7 @@
 
 > **ExtensionPackManifestEntry** = [`ExtensionPackResolver`](ExtensionPackResolver.md) & `object`
 
-Defined in: [packages/agentos/src/extensions/manifest.ts:9](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/extensions/manifest.ts#L9)
+Defined in: [packages/agentos/src/extensions/manifest.ts:9](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/extensions/manifest.ts#L9)
 
 ## Type Declaration
 

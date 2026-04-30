@@ -1,6 +1,6 @@
 # Interface: AgentOSExternalToolHandlerContext
 
-Defined in: [packages/agentos/src/api/runtime/processRequestWithExternalTools.ts:13](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/runtime/processRequestWithExternalTools.ts#L13)
+Defined in: [packages/agentos/src/api/runtime/processRequestWithExternalTools.ts:13](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/runtime/processRequestWithExternalTools.ts#L13)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/api/runtime/processRequestWithExternalTools.ts
 
 > **agentos**: `Pick`\<`IAgentOS`, `"handleToolResult"`\> & `Partial`\<`Pick`\<`IAgentOS`, `"handleToolResults"`\>\>
 
-Defined in: [packages/agentos/src/api/runtime/processRequestWithExternalTools.ts:14](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/runtime/processRequestWithExternalTools.ts#L14)
+Defined in: [packages/agentos/src/api/runtime/processRequestWithExternalTools.ts:14](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/runtime/processRequestWithExternalTools.ts#L14)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [packages/agentos/src/api/runtime/processRequestWithExternalTools.ts
 
 > **requestChunk**: [`AgentOSActionableToolCallRequestChunk`](../type-aliases/AgentOSActionableToolCallRequestChunk.md)
 
-Defined in: [packages/agentos/src/api/runtime/processRequestWithExternalTools.ts:17](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/runtime/processRequestWithExternalTools.ts#L17)
+Defined in: [packages/agentos/src/api/runtime/processRequestWithExternalTools.ts:17](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/runtime/processRequestWithExternalTools.ts#L17)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: [packages/agentos/src/api/runtime/processRequestWithExternalTools.ts
 
 > **streamId**: `string`
 
-Defined in: [packages/agentos/src/api/runtime/processRequestWithExternalTools.ts:16](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/runtime/processRequestWithExternalTools.ts#L16)
+Defined in: [packages/agentos/src/api/runtime/processRequestWithExternalTools.ts:16](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/runtime/processRequestWithExternalTools.ts#L16)
 
 ***
 
@@ -32,4 +32,4 @@ Defined in: [packages/agentos/src/api/runtime/processRequestWithExternalTools.ts
 
 > **toolCall**: [`ToolCallRequest`](ToolCallRequest.md)
 
-Defined in: [packages/agentos/src/api/runtime/processRequestWithExternalTools.ts:18](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/runtime/processRequestWithExternalTools.ts#L18)
+Defined in: [packages/agentos/src/api/runtime/processRequestWithExternalTools.ts:18](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/runtime/processRequestWithExternalTools.ts#L18)

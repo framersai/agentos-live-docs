@@ -254,6 +254,11 @@ When a new trace overlaps with existing traces (cosine similarity > threshold, d
 
 Traces with `currentStrength < pruningThreshold` (default: 0.05) are soft-deleted during consolidation, **unless** their emotional intensity exceeds 0.3 (emotional memories are protected from pruning).
 
+Lifecycle note: these retention/decay sweeps are now operational on the
+built-in vector stores that implement `scanByMetadata()`. Adapters without
+metadata-scan support still need provider-specific work before they can
+participate fully in lifecycle enforcement.
+
 ---
 
 ## Retrieval Priority Scoring

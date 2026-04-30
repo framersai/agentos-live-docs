@@ -16,8 +16,17 @@ AgentOS includes a `QueryRouter` that turns one user question into a three-stage
 - Tier classification uses an LLM prompt with corpus topics, recent conversation history, and optional tool names.
 - The router embeds local markdown docs into an in-memory vector store when an embedding provider is available.
 - If embeddings are unavailable or vector search fails, the router falls back to keyword search automatically.
+- `cacheResults` now backs an in-memory `route()` result cache and is enabled by default.
+- `verifyCitations: true` now runs post-generation citation verification when retrieved chunks and embeddings are available.
 - Result metadata includes `tiersUsed`, `fallbacksUsed`, and capability `recommendations`.
 - Lifecycle events cover classification, retrieval, research, generation, route completion, and capability recommendation activation.
+
+## Execution Paths
+
+- Default path: `route()` classifies the query, then dispatches retrieval through the legacy `QueryDispatcher`.
+- Opt-in path: if a host calls `setUnifiedRetriever(...)`, `route()` switches to plan-aware retrieval through `UnifiedRetriever`.
+
+This matters because `UnifiedRetriever` is implemented and usable today, but it is not the default QueryRouter/runtime retrieval path yet.
 
 ## Current Limitations
 
@@ -77,6 +86,11 @@ const router = new QueryRouter({
 - `extensions`
 
 These are recommendations only. Hosts decide whether to activate or load them.
+
+## Caching And Grounding
+
+- `cacheResults` controls an in-memory cache of completed `route()` results. QueryRouter clears that cache when indexed corpus chunks change and when retrieval-planning dependencies such as `UnifiedRetriever` or the capability-discovery engine are swapped.
+- `verifyCitations` enables post-generation `CitationVerifier` runs against the retrieved chunks for a route. When verification runs successfully, the result is attached to `QueryResult.grounding`; if embeddings are unavailable or no chunks were retrieved, verification is skipped gracefully.
 
 ## Config Notes
 

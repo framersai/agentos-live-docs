@@ -1,6 +1,6 @@
 # Class: StabilityImageProvider
 
-Defined in: [packages/agentos/src/media/images/providers/StabilityImageProvider.ts:120](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/images/providers/StabilityImageProvider.ts#L120)
+Defined in: [packages/agentos/src/media/images/providers/StabilityImageProvider.ts:120](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/media/images/providers/StabilityImageProvider.ts#L120)
 
 ## Implements
 
@@ -22,7 +22,7 @@ Defined in: [packages/agentos/src/media/images/providers/StabilityImageProvider.
 
 > `optional` **defaultModelId**: `string`
 
-Defined in: [packages/agentos/src/media/images/providers/StabilityImageProvider.ts:123](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/images/providers/StabilityImageProvider.ts#L123)
+Defined in: [packages/agentos/src/media/images/providers/StabilityImageProvider.ts:123](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/media/images/providers/StabilityImageProvider.ts#L123)
 
 #### Implementation of
 
@@ -34,7 +34,7 @@ Defined in: [packages/agentos/src/media/images/providers/StabilityImageProvider.
 
 > **isInitialized**: `boolean` = `false`
 
-Defined in: [packages/agentos/src/media/images/providers/StabilityImageProvider.ts:122](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/images/providers/StabilityImageProvider.ts#L122)
+Defined in: [packages/agentos/src/media/images/providers/StabilityImageProvider.ts:122](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/media/images/providers/StabilityImageProvider.ts#L122)
 
 #### Implementation of
 
@@ -46,7 +46,7 @@ Defined in: [packages/agentos/src/media/images/providers/StabilityImageProvider.
 
 > `readonly` **providerId**: `"stability"` = `'stability'`
 
-Defined in: [packages/agentos/src/media/images/providers/StabilityImageProvider.ts:121](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/images/providers/StabilityImageProvider.ts#L121)
+Defined in: [packages/agentos/src/media/images/providers/StabilityImageProvider.ts:121](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/media/images/providers/StabilityImageProvider.ts#L121)
 
 #### Implementation of
 
@@ -58,7 +58,7 @@ Defined in: [packages/agentos/src/media/images/providers/StabilityImageProvider.
 
 > **editImage**(`request`): `Promise`\<[`ImageGenerationResult`](../interfaces/ImageGenerationResult.md)\>
 
-Defined in: [packages/agentos/src/media/images/providers/StabilityImageProvider.ts:297](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/images/providers/StabilityImageProvider.ts#L297)
+Defined in: [packages/agentos/src/media/images/providers/StabilityImageProvider.ts:297](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/media/images/providers/StabilityImageProvider.ts#L297)
 
 Edits an image using the Stability AI image-to-image endpoint.
 
@@ -104,7 +104,7 @@ https://platform.stability.ai/docs/api-reference#tag/Generate/paths/~1v2beta~1st
 
 > **generateImage**(`request`): `Promise`\<[`ImageGenerationResult`](../interfaces/ImageGenerationResult.md)\>
 
-Defined in: [packages/agentos/src/media/images/providers/StabilityImageProvider.ts:151](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/images/providers/StabilityImageProvider.ts#L151)
+Defined in: [packages/agentos/src/media/images/providers/StabilityImageProvider.ts:151](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/media/images/providers/StabilityImageProvider.ts#L151)
 
 #### Parameters
 
@@ -126,7 +126,7 @@ Defined in: [packages/agentos/src/media/images/providers/StabilityImageProvider.
 
 > **initialize**(`config`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/media/images/providers/StabilityImageProvider.ts:129](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/images/providers/StabilityImageProvider.ts#L129)
+Defined in: [packages/agentos/src/media/images/providers/StabilityImageProvider.ts:129](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/media/images/providers/StabilityImageProvider.ts#L129)
 
 #### Parameters
 
@@ -148,7 +148,7 @@ Defined in: [packages/agentos/src/media/images/providers/StabilityImageProvider.
 
 > **listAvailableModels**(): `Promise`\<[`ImageModelInfo`](../interfaces/ImageModelInfo.md)[]\>
 
-Defined in: [packages/agentos/src/media/images/providers/StabilityImageProvider.ts:488](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/images/providers/StabilityImageProvider.ts#L488)
+Defined in: [packages/agentos/src/media/images/providers/StabilityImageProvider.ts:488](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/media/images/providers/StabilityImageProvider.ts#L488)
 
 #### Returns
 
@@ -164,7 +164,7 @@ Defined in: [packages/agentos/src/media/images/providers/StabilityImageProvider.
 
 > **upscaleImage**(`request`): `Promise`\<[`ImageGenerationResult`](../interfaces/ImageGenerationResult.md)\>
 
-Defined in: [packages/agentos/src/media/images/providers/StabilityImageProvider.ts:387](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/images/providers/StabilityImageProvider.ts#L387)
+Defined in: [packages/agentos/src/media/images/providers/StabilityImageProvider.ts:387](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/media/images/providers/StabilityImageProvider.ts#L387)
 
 Upscales an image using the Stability AI upscale endpoint.
 

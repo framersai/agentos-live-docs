@@ -5,6 +5,7 @@
 - [EffectRegistry](classes/EffectRegistry.md)
 - [EventTaxonomy](classes/EventTaxonomy.md)
 - [MetricRegistry](classes/MetricRegistry.md)
+- [ProviderKeyMissingError](classes/ProviderKeyMissingError.md)
 - [SeededRng](classes/SeededRng.md)
 - [SimulationKernel](classes/SimulationKernel.md)
 
@@ -35,10 +36,14 @@
 - [MetricDefinition](interfaces/MetricDefinition.md)
 - [MilestoneEventDef](interfaces/MilestoneEventDef.md)
 - [OutcomeModifiers](interfaces/OutcomeModifiers.md)
+- [ParacosmClient](interfaces/ParacosmClient.md)
+- [ParacosmClientOptions](interfaces/ParacosmClientOptions.md)
 - [PolicyEffect](interfaces/PolicyEffect.md)
 - [ProgressionHookContext](interfaces/ProgressionHookContext.md)
 - [PromotionRecord](interfaces/PromotionRecord.md)
 - [PromptHookContext](interfaces/PromptHookContext.md)
+- [ResolvedProviderChoice](interfaces/ResolvedProviderChoice.md)
+- [ResolveProviderOptions](interfaces/ResolveProviderOptions.md)
 - [Scenario](interfaces/Scenario.md)
 - [ScenarioEventDef](interfaces/ScenarioEventDef.md)
 - [ScenarioHooks](interfaces/ScenarioHooks.md)
@@ -64,6 +69,7 @@
 ## Type Aliases
 
 - [AgentFieldValue](type-aliases/AgentFieldValue.md)
+- [CostPreset](type-aliases/CostPreset.md)
 - [Department](type-aliases/Department.md)
 - [LlmProvider](type-aliases/LlmProvider.md)
 - [TurnOutcome](type-aliases/TurnOutcome.md)
@@ -79,5 +85,7 @@
 - [applyPersonalityDrift](functions/applyPersonalityDrift.md)
 - [classifyOutcome](functions/classifyOutcome.md)
 - [classifyOutcomeById](functions/classifyOutcomeById.md)
+- [createParacosmClient](functions/createParacosmClient.md)
 - [generateInitialPopulation](functions/generateInitialPopulation.md)
 - [progressBetweenTurns](functions/progressBetweenTurns.md)
+- [resolveProviderWithFallback](functions/resolveProviderWithFallback.md)

@@ -2,7 +2,7 @@
 
 > `const` **hitl**: `object`
 
-Defined in: [packages/agentos/src/api/hitl.ts:58](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/hitl.ts#L58)
+Defined in: [packages/agentos/src/api/hitl.ts:58](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/hitl.ts#L58)
 
 A collection of factory functions that produce [HitlHandler](../type-aliases/HitlHandler.md) instances
 for common approval patterns.
@@ -106,7 +106,9 @@ delegated to a fallback handler (default: [hitl.autoReject](#autoreject)).
 
 ##### config?
 
-LLM judge configuration.
+LLM judge configuration including optional `model`,
+  `provider`, `criteria`, `confidenceThreshold`, `fallback`, and `apiKey`
+  overrides.
 
 ###### apiKey?
 

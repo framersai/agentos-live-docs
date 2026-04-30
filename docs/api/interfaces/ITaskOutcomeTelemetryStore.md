@@ -1,6 +1,6 @@
 # Interface: ITaskOutcomeTelemetryStore
 
-Defined in: [packages/agentos/src/api/types/OrchestratorConfig.ts:102](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/types/OrchestratorConfig.ts#L102)
+Defined in: [packages/agentos/src/api/types/OrchestratorConfig.ts:102](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/types/OrchestratorConfig.ts#L102)
 
 ## Methods
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/api/types/OrchestratorConfig.ts:102](https://g
 
 > **loadWindows**(): `Promise`\<`Record`\<`string`, [`TaskOutcomeKpiWindowEntry`](../type-aliases/TaskOutcomeKpiWindowEntry.md)[]\>\>
 
-Defined in: [packages/agentos/src/api/types/OrchestratorConfig.ts:103](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/types/OrchestratorConfig.ts#L103)
+Defined in: [packages/agentos/src/api/types/OrchestratorConfig.ts:103](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/types/OrchestratorConfig.ts#L103)
 
 #### Returns
 
@@ -20,7 +20,7 @@ Defined in: [packages/agentos/src/api/types/OrchestratorConfig.ts:103](https://g
 
 > **saveWindow**(`scopeKey`, `entries`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/api/types/OrchestratorConfig.ts:104](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/types/OrchestratorConfig.ts#L104)
+Defined in: [packages/agentos/src/api/types/OrchestratorConfig.ts:104](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/types/OrchestratorConfig.ts#L104)
 
 #### Parameters
 

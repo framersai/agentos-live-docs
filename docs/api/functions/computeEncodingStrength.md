@@ -2,7 +2,7 @@
 
 > **computeEncodingStrength**(`currentMood`, `traits`, `contentFeatures`, `contentSentiment?`, `config?`): [`EncodingResult`](../interfaces/EncodingResult.md)
 
-Defined in: [packages/agentos/src/memory/core/encoding/EncodingModel.ts:175](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/core/encoding/EncodingModel.ts#L175)
+Defined in: [packages/agentos/src/memory/core/encoding/EncodingModel.ts:175](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/encoding/EncodingModel.ts#L175)
 
 Compute encoding parameters for a new memory trace.
 

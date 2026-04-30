@@ -1,6 +1,6 @@
 # Class: RevisionManager
 
-Defined in: [packages/agentos/src/provenance/enforcement/RevisionManager.ts:28](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/provenance/enforcement/RevisionManager.ts#L28)
+Defined in: [packages/agentos/src/provenance/enforcement/RevisionManager.ts:28](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/provenance/enforcement/RevisionManager.ts#L28)
 
 ## Constructors
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/provenance/enforcement/RevisionManager.ts:28](
 
 > **new RevisionManager**(`storageAdapter`, `ledger?`, `tablePrefix?`): `RevisionManager`
 
-Defined in: [packages/agentos/src/provenance/enforcement/RevisionManager.ts:33](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/provenance/enforcement/RevisionManager.ts#L33)
+Defined in: [packages/agentos/src/provenance/enforcement/RevisionManager.ts:33](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/provenance/enforcement/RevisionManager.ts#L33)
 
 #### Parameters
 
@@ -34,7 +34,7 @@ Defined in: [packages/agentos/src/provenance/enforcement/RevisionManager.ts:33](
 
 > **captureRevision**(`tableName`, `whereClause`, `parameters?`): `Promise`\<[`RevisionRecord`](../interfaces/RevisionRecord.md)[]\>
 
-Defined in: [packages/agentos/src/provenance/enforcement/RevisionManager.ts:51](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/provenance/enforcement/RevisionManager.ts#L51)
+Defined in: [packages/agentos/src/provenance/enforcement/RevisionManager.ts:51](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/provenance/enforcement/RevisionManager.ts#L51)
 
 Capture the current state of records that are about to be updated.
 Call this BEFORE the UPDATE executes.
@@ -69,7 +69,7 @@ Parameters for the WHERE clause.
 
 > **getLatestRevision**(`tableName`, `recordId`): `Promise`\<[`RevisionRecord`](../interfaces/RevisionRecord.md) \| `null`\>
 
-Defined in: [packages/agentos/src/provenance/enforcement/RevisionManager.ts:139](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/provenance/enforcement/RevisionManager.ts#L139)
+Defined in: [packages/agentos/src/provenance/enforcement/RevisionManager.ts:139](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/provenance/enforcement/RevisionManager.ts#L139)
 
 Get the latest revision for a specific record.
 
@@ -93,7 +93,7 @@ Get the latest revision for a specific record.
 
 > **getRevisions**(`tableName`, `recordId`): `Promise`\<[`RevisionRecord`](../interfaces/RevisionRecord.md)[]\>
 
-Defined in: [packages/agentos/src/provenance/enforcement/RevisionManager.ts:117](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/provenance/enforcement/RevisionManager.ts#L117)
+Defined in: [packages/agentos/src/provenance/enforcement/RevisionManager.ts:117](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/provenance/enforcement/RevisionManager.ts#L117)
 
 Get all revisions for a specific record.
 

@@ -1,6 +1,6 @@
 # Interface: DiscordAuthParams
 
-Defined in: [packages/agentos/src/channels/adapters/DiscordChannelAdapter.ts:45](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/adapters/DiscordChannelAdapter.ts#L45)
+Defined in: [packages/agentos/src/channels/adapters/DiscordChannelAdapter.ts:45](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/channels/adapters/DiscordChannelAdapter.ts#L45)
 
 Platform-specific parameters for Discord connections.
 
@@ -18,7 +18,7 @@ Platform-specific parameters for Discord connections.
 
 > `optional` **applicationId**: `string`
 
-Defined in: [packages/agentos/src/channels/adapters/DiscordChannelAdapter.ts:49](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/adapters/DiscordChannelAdapter.ts#L49)
+Defined in: [packages/agentos/src/channels/adapters/DiscordChannelAdapter.ts:49](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/channels/adapters/DiscordChannelAdapter.ts#L49)
 
 Discord application ID.
 
@@ -28,7 +28,7 @@ Discord application ID.
 
 > `optional` **botToken**: `string`
 
-Defined in: [packages/agentos/src/channels/adapters/DiscordChannelAdapter.ts:47](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/adapters/DiscordChannelAdapter.ts#L47)
+Defined in: [packages/agentos/src/channels/adapters/DiscordChannelAdapter.ts:47](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/channels/adapters/DiscordChannelAdapter.ts#L47)
 
 Bot token. If provided, overrides credential.
 
@@ -38,7 +38,7 @@ Bot token. If provided, overrides credential.
 
 > `optional` **guildId**: `string`
 
-Defined in: [packages/agentos/src/channels/adapters/DiscordChannelAdapter.ts:51](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/adapters/DiscordChannelAdapter.ts#L51)
+Defined in: [packages/agentos/src/channels/adapters/DiscordChannelAdapter.ts:51](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/channels/adapters/DiscordChannelAdapter.ts#L51)
 
 Optional guild (server) ID to scope interactions to a single guild.
 
@@ -48,6 +48,6 @@ Optional guild (server) ID to scope interactions to a single guild.
 
 > `optional` **intents**: `string`
 
-Defined in: [packages/agentos/src/channels/adapters/DiscordChannelAdapter.ts:53](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/adapters/DiscordChannelAdapter.ts#L53)
+Defined in: [packages/agentos/src/channels/adapters/DiscordChannelAdapter.ts:53](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/channels/adapters/DiscordChannelAdapter.ts#L53)
 
 Comma-separated list of additional gateway intents.

@@ -1,6 +1,6 @@
 # Interface: CognitiveRetrievalOptions
 
-Defined in: [packages/agentos/src/memory/core/types.ts:183](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/core/types.ts#L183)
+Defined in: [packages/agentos/src/memory/core/types.ts:190](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/types.ts#L190)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/memory/core/types.ts:183](https://github.com/f
 
 > `optional` **entities**: `string`[]
 
-Defined in: [packages/agentos/src/memory/core/types.ts:188](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/core/types.ts#L188)
+Defined in: [packages/agentos/src/memory/core/types.ts:195](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/types.ts#L195)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [packages/agentos/src/memory/core/types.ts:188](https://github.com/f
 
 > `optional` **hyde**: `boolean`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:207](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/core/types.ts#L207)
+Defined in: [packages/agentos/src/memory/core/types.ts:214](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/types.ts#L214)
 
 Enable HyDE (Hypothetical Document Embedding) for memory retrieval.
 
@@ -41,7 +41,7 @@ false
 
 > `optional` **minConfidence**: `number`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:189](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/core/types.ts#L189)
+Defined in: [packages/agentos/src/memory/core/types.ts:196](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/types.ts#L196)
 
 ***
 
@@ -49,9 +49,19 @@ Defined in: [packages/agentos/src/memory/core/types.ts:189](https://github.com/f
 
 > `optional` **neutralMood**: `boolean`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:192](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/core/types.ts#L192)
+Defined in: [packages/agentos/src/memory/core/types.ts:199](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/types.ts#L199)
 
 If true, skip emotional congruence bias (useful for factual lookups).
+
+***
+
+### policy?
+
+> `optional` **policy**: [`MemoryRetrievalPolicy`](MemoryRetrievalPolicy.md)
+
+Defined in: [packages/agentos/src/memory/core/types.ts:216](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/types.ts#L216)
+
+Shared retrieval profile and confidence policy.
 
 ***
 
@@ -59,7 +69,7 @@ If true, skip emotional congruence bias (useful for factual lookups).
 
 > `optional` **scopes**: `object`[]
 
-Defined in: [packages/agentos/src/memory/core/types.ts:186](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/core/types.ts#L186)
+Defined in: [packages/agentos/src/memory/core/types.ts:193](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/types.ts#L193)
 
 #### scope
 
@@ -71,11 +81,25 @@ Defined in: [packages/agentos/src/memory/core/types.ts:186](https://github.com/f
 
 ***
 
+### scoringWeights?
+
+> `optional` **scoringWeights**: `Partial`\<[`ScoringWeights`](ScoringWeights.md)\>
+
+Defined in: [packages/agentos/src/memory/core/types.ts:224](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/types.ts#L224)
+
+Override the 6-signal retrieval weights for this call. Missing
+keys fall back to [DEFAULT\_SCORING\_WEIGHTS](../variables/DEFAULT_SCORING_WEIGHTS.md). Useful for
+ablation studies (zero one weight at a time and measure
+Δaccuracy) and for A/B testing alternate weight configurations
+without mutating global defaults.
+
+***
+
 ### tags?
 
 > `optional` **tags**: `string`[]
 
-Defined in: [packages/agentos/src/memory/core/types.ts:187](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/core/types.ts#L187)
+Defined in: [packages/agentos/src/memory/core/types.ts:194](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/types.ts#L194)
 
 ***
 
@@ -83,7 +107,7 @@ Defined in: [packages/agentos/src/memory/core/types.ts:187](https://github.com/f
 
 > `optional` **timeRange**: `object`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:190](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/core/types.ts#L190)
+Defined in: [packages/agentos/src/memory/core/types.ts:197](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/types.ts#L197)
 
 #### after?
 
@@ -99,7 +123,7 @@ Defined in: [packages/agentos/src/memory/core/types.ts:190](https://github.com/f
 
 > `optional` **topK**: `number`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:184](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/core/types.ts#L184)
+Defined in: [packages/agentos/src/memory/core/types.ts:191](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/types.ts#L191)
 
 ***
 
@@ -107,4 +131,4 @@ Defined in: [packages/agentos/src/memory/core/types.ts:184](https://github.com/f
 
 > `optional` **types**: [`MemoryType`](../type-aliases/MemoryType.md)[]
 
-Defined in: [packages/agentos/src/memory/core/types.ts:185](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/core/types.ts#L185)
+Defined in: [packages/agentos/src/memory/core/types.ts:192](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/types.ts#L192)

@@ -1,6 +1,6 @@
 # Interface: MediaProviderPreference
 
-Defined in: [packages/agentos/src/media/ProviderPreferences.ts:68](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/ProviderPreferences.ts#L68)
+Defined in: [packages/agentos/src/media/ProviderPreferences.ts:68](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/media/ProviderPreferences.ts#L68)
 
 Per-modality provider preference configuration.
 
@@ -18,7 +18,7 @@ Per-modality provider preference configuration.
 
 > `optional` **blocked**: `string`[]
 
-Defined in: [packages/agentos/src/media/ProviderPreferences.ts:74](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/ProviderPreferences.ts#L74)
+Defined in: [packages/agentos/src/media/ProviderPreferences.ts:74](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/media/ProviderPreferences.ts#L74)
 
 Provider IDs to unconditionally exclude.
 
@@ -28,7 +28,7 @@ Provider IDs to unconditionally exclude.
 
 > `optional` **preferred**: `string`[]
 
-Defined in: [packages/agentos/src/media/ProviderPreferences.ts:70](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/ProviderPreferences.ts#L70)
+Defined in: [packages/agentos/src/media/ProviderPreferences.ts:70](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/media/ProviderPreferences.ts#L70)
 
 Ordered list of preferred provider IDs.
 
@@ -38,6 +38,6 @@ Ordered list of preferred provider IDs.
 
 > `optional` **weights**: `Record`\<`string`, `number`\>
 
-Defined in: [packages/agentos/src/media/ProviderPreferences.ts:72](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/ProviderPreferences.ts#L72)
+Defined in: [packages/agentos/src/media/ProviderPreferences.ts:72](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/media/ProviderPreferences.ts#L72)
 
 Weight map for weighted random selection (default weight is `1`).

@@ -1,6 +1,6 @@
 # Interface: CommanderDecision
 
-Defined in: [runtime/contracts.ts:60](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/runtime/contracts.ts#L60)
+Defined in: [apps/paracosm/src/runtime/contracts.ts:60](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/contracts.ts#L60)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [runtime/contracts.ts:60](https://github.com/framersai/paracosm/blob
 
 > **decision**: `string`
 
-Defined in: [runtime/contracts.ts:63](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/runtime/contracts.ts#L63)
+Defined in: [apps/paracosm/src/runtime/contracts.ts:63](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/contracts.ts#L63)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [runtime/contracts.ts:63](https://github.com/framersai/paracosm/blob
 
 > **departmentsConsulted**: `string`[]
 
-Defined in: [runtime/contracts.ts:73](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/runtime/contracts.ts#L73)
+Defined in: [apps/paracosm/src/runtime/contracts.ts:73](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/contracts.ts#L73)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: [runtime/contracts.ts:73](https://github.com/framersai/paracosm/blob
 
 > **expectedTradeoffs**: `string`[]
 
-Defined in: [runtime/contracts.ts:76](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/runtime/contracts.ts#L76)
+Defined in: [apps/paracosm/src/runtime/contracts.ts:76](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/contracts.ts#L76)
 
 ***
 
@@ -32,7 +32,7 @@ Defined in: [runtime/contracts.ts:76](https://github.com/framersai/paracosm/blob
 
 > **rationale**: `string`
 
-Defined in: [runtime/contracts.ts:64](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/runtime/contracts.ts#L64)
+Defined in: [apps/paracosm/src/runtime/contracts.ts:64](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/contracts.ts#L64)
 
 ***
 
@@ -40,7 +40,7 @@ Defined in: [runtime/contracts.ts:64](https://github.com/framersai/paracosm/blob
 
 > `optional` **reasoning**: `string`
 
-Defined in: [runtime/contracts.ts:72](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/runtime/contracts.ts#L72)
+Defined in: [apps/paracosm/src/runtime/contracts.ts:72](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/contracts.ts#L72)
 
 Full stepwise reasoning populated by the commander's CoT prompt
 (numbered list: personality pole, dept consensus, forged-tool
@@ -54,7 +54,7 @@ runs or on schema fallback. Dashboard renders behind a
 
 > **rejectedPolicies**: `object`[]
 
-Defined in: [runtime/contracts.ts:75](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/runtime/contracts.ts#L75)
+Defined in: [apps/paracosm/src/runtime/contracts.ts:75](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/contracts.ts#L75)
 
 #### policy
 
@@ -70,7 +70,7 @@ Defined in: [runtime/contracts.ts:75](https://github.com/framersai/paracosm/blob
 
 > `optional` **selectedEffectIds**: `string`[]
 
-Defined in: [runtime/contracts.ts:62](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/runtime/contracts.ts#L62)
+Defined in: [apps/paracosm/src/runtime/contracts.ts:62](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/contracts.ts#L62)
 
 ***
 
@@ -78,7 +78,7 @@ Defined in: [runtime/contracts.ts:62](https://github.com/framersai/paracosm/blob
 
 > `optional` **selectedOptionId**: `string`
 
-Defined in: [runtime/contracts.ts:61](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/runtime/contracts.ts#L61)
+Defined in: [apps/paracosm/src/runtime/contracts.ts:61](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/contracts.ts#L61)
 
 ***
 
@@ -86,7 +86,7 @@ Defined in: [runtime/contracts.ts:61](https://github.com/framersai/paracosm/blob
 
 > **selectedPolicies**: `string`[]
 
-Defined in: [runtime/contracts.ts:74](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/runtime/contracts.ts#L74)
+Defined in: [apps/paracosm/src/runtime/contracts.ts:74](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/contracts.ts#L74)
 
 ***
 
@@ -94,4 +94,4 @@ Defined in: [runtime/contracts.ts:74](https://github.com/framersai/paracosm/blob
 
 > **watchMetricsNextTurn**: `string`[]
 
-Defined in: [runtime/contracts.ts:77](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/runtime/contracts.ts#L77)
+Defined in: [apps/paracosm/src/runtime/contracts.ts:77](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/contracts.ts#L77)

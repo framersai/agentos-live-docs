@@ -1,6 +1,6 @@
 # Class: GraphRAGEngine
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/GraphRAGEngine.ts:106](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/retrieval/graph/graphrag/GraphRAGEngine.ts#L106)
+Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/GraphRAGEngine.ts:106](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/retrieval/graph/graphrag/GraphRAGEngine.ts#L106)
 
 ## Implements
 
@@ -12,7 +12,7 @@ Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/GraphRAGEngine
 
 > **new GraphRAGEngine**(`deps?`): `GraphRAGEngine`
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/GraphRAGEngine.ts:130](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/retrieval/graph/graphrag/GraphRAGEngine.ts#L130)
+Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/GraphRAGEngine.ts:130](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/retrieval/graph/graphrag/GraphRAGEngine.ts#L130)
 
 #### Parameters
 
@@ -44,7 +44,7 @@ Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/GraphRAGEngine
 
 > **clear**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/GraphRAGEngine.ts:1494](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/retrieval/graph/graphrag/GraphRAGEngine.ts#L1494)
+Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/GraphRAGEngine.ts:1494](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/retrieval/graph/graphrag/GraphRAGEngine.ts#L1494)
 
 Clear all data
 
@@ -62,7 +62,7 @@ Clear all data
 
 > **getCommunities**(`level?`): `Promise`\<[`GraphCommunity`](../interfaces/GraphCommunity.md)[]\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/GraphRAGEngine.ts:1467](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/retrieval/graph/graphrag/GraphRAGEngine.ts#L1467)
+Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/GraphRAGEngine.ts:1467](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/retrieval/graph/graphrag/GraphRAGEngine.ts#L1467)
 
 Get community hierarchy
 
@@ -86,7 +86,7 @@ Get community hierarchy
 
 > **getEntities**(`options?`): `Promise`\<[`GraphEntity`](../interfaces/GraphEntity.md)[]\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/GraphRAGEngine.ts:1451](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/retrieval/graph/graphrag/GraphRAGEngine.ts#L1451)
+Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/GraphRAGEngine.ts:1451](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/retrieval/graph/graphrag/GraphRAGEngine.ts#L1451)
 
 Get all entities
 
@@ -116,7 +116,7 @@ Get all entities
 
 > **getRelationships**(`entityId`): `Promise`\<[`GraphRelationship`](../interfaces/GraphRelationship.md)[]\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/GraphRAGEngine.ts:1460](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/retrieval/graph/graphrag/GraphRAGEngine.ts#L1460)
+Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/GraphRAGEngine.ts:1460](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/retrieval/graph/graphrag/GraphRAGEngine.ts#L1460)
 
 Get all relationships for an entity
 
@@ -140,7 +140,7 @@ Get all relationships for an entity
 
 > **getStats**(): `Promise`\<\{ `communityLevels`: `number`; `documentsIngested`: `number`; `totalCommunities`: `number`; `totalEntities`: `number`; `totalRelationships`: `number`; \}\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/GraphRAGEngine.ts:1476](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/retrieval/graph/graphrag/GraphRAGEngine.ts#L1476)
+Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/GraphRAGEngine.ts:1476](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/retrieval/graph/graphrag/GraphRAGEngine.ts#L1476)
 
 Get statistics
 
@@ -158,7 +158,7 @@ Get statistics
 
 > **globalSearch**(`query`, `options?`): `Promise`\<[`GlobalSearchResult`](../interfaces/GlobalSearchResult.md)\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/GraphRAGEngine.ts:1116](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/retrieval/graph/graphrag/GraphRAGEngine.ts#L1116)
+Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/GraphRAGEngine.ts:1116](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/retrieval/graph/graphrag/GraphRAGEngine.ts#L1116)
 
 Global search: answers broad questions using community summaries.
 Best for "What are the main themes?" type questions.
@@ -187,7 +187,7 @@ Best for "What are the main themes?" type questions.
 
 > **ingestDocuments**(`documents`): `Promise`\<\{ `communitiesDetected`: `number`; `documentsProcessed`: `number`; `entitiesExtracted`: `number`; `relationshipsExtracted`: `number`; \}\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/GraphRAGEngine.ts:264](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/retrieval/graph/graphrag/GraphRAGEngine.ts#L264)
+Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/GraphRAGEngine.ts:264](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/retrieval/graph/graphrag/GraphRAGEngine.ts#L264)
 
 Ingest documents: extract entities/relationships, build graph,
 detect communities, generate summaries.
@@ -212,7 +212,7 @@ detect communities, generate summaries.
 
 > **initialize**(`config`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/GraphRAGEngine.ts:198](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/retrieval/graph/graphrag/GraphRAGEngine.ts#L198)
+Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/GraphRAGEngine.ts:198](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/retrieval/graph/graphrag/GraphRAGEngine.ts#L198)
 
 Initialize the engine with configuration
 
@@ -236,7 +236,7 @@ Initialize the engine with configuration
 
 > **localSearch**(`query`, `options?`): `Promise`\<[`LocalSearchResult`](../interfaces/LocalSearchResult.md)\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/GraphRAGEngine.ts:1287](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/retrieval/graph/graphrag/GraphRAGEngine.ts#L1287)
+Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/GraphRAGEngine.ts:1287](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/retrieval/graph/graphrag/GraphRAGEngine.ts#L1287)
 
 Local search: finds specific entities and their context.
 Best for "Tell me about X" type questions.
@@ -265,7 +265,7 @@ Best for "Tell me about X" type questions.
 
 > **removeDocuments**(`documentIds`): `Promise`\<\{ `communitiesDetected`: `number`; `documentsRemoved`: `number`; \}\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/GraphRAGEngine.ts:417](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/retrieval/graph/graphrag/GraphRAGEngine.ts#L417)
+Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/GraphRAGEngine.ts:417](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/retrieval/graph/graphrag/GraphRAGEngine.ts#L417)
 
 Remove one or more previously-ingested documents from the graph.
 
@@ -293,7 +293,7 @@ deleted or moved out of indexed categories.
 
 > **shutdown**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/GraphRAGEngine.ts:1517](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/retrieval/graph/graphrag/GraphRAGEngine.ts#L1517)
+Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/GraphRAGEngine.ts:1517](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/retrieval/graph/graphrag/GraphRAGEngine.ts#L1517)
 
 Shutdown and cleanup
 

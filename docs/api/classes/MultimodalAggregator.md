@@ -1,6 +1,6 @@
 # Class: MultimodalAggregator
 
-Defined in: [packages/agentos/src/memory/io/ingestion/MultimodalAggregator.ts:76](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/io/ingestion/MultimodalAggregator.ts#L76)
+Defined in: [packages/agentos/src/memory/io/ingestion/MultimodalAggregator.ts:76](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/io/ingestion/MultimodalAggregator.ts#L76)
 
 Adds auto-generated captions to [ExtractedImage](../interfaces/ExtractedImage.md) objects that lack
 one, using a caller-supplied vision LLM function.
@@ -31,7 +31,7 @@ const unchanged  = await aggregator.processImages(doc.images ?? []);
 
 > **new MultimodalAggregator**(`config?`): `MultimodalAggregator`
 
-Defined in: [packages/agentos/src/memory/io/ingestion/MultimodalAggregator.ts:80](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/io/ingestion/MultimodalAggregator.ts#L80)
+Defined in: [packages/agentos/src/memory/io/ingestion/MultimodalAggregator.ts:80](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/io/ingestion/MultimodalAggregator.ts#L80)
 
 #### Parameters
 
@@ -51,7 +51,7 @@ Optional configuration.  Omit to use in passthrough mode.
 
 > **processImages**(`images`): `Promise`\<[`ExtractedImage`](../interfaces/ExtractedImage.md)[]\>
 
-Defined in: [packages/agentos/src/memory/io/ingestion/MultimodalAggregator.ts:101](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/io/ingestion/MultimodalAggregator.ts#L101)
+Defined in: [packages/agentos/src/memory/io/ingestion/MultimodalAggregator.ts:101](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/io/ingestion/MultimodalAggregator.ts#L101)
 
 Enrich images with captions via the configured vision LLM.
 

@@ -1,6 +1,6 @@
 # Interface: ITranslationProviderConfig
 
-Defined in: [packages/agentos/src/nlp/language/interfaces.ts:59](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/nlp/language/interfaces.ts#L59)
+Defined in: [packages/agentos/src/nlp/language/interfaces.ts:59](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/nlp/language/interfaces.ts#L59)
 
 Configuration descriptor for a translation provider.
 
@@ -10,7 +10,7 @@ Configuration descriptor for a translation provider.
 
 > `optional` **costTier**: `"low"` \| `"medium"` \| `"high"`
 
-Defined in: [packages/agentos/src/nlp/language/interfaces.ts:63](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/nlp/language/interfaces.ts#L63)
+Defined in: [packages/agentos/src/nlp/language/interfaces.ts:63](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/nlp/language/interfaces.ts#L63)
 
 Cost tier hint for routing ("low", "medium", "high").
 
@@ -20,7 +20,7 @@ Cost tier hint for routing ("low", "medium", "high").
 
 > **id**: `string`
 
-Defined in: [packages/agentos/src/nlp/language/interfaces.ts:60](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/nlp/language/interfaces.ts#L60)
+Defined in: [packages/agentos/src/nlp/language/interfaces.ts:60](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/nlp/language/interfaces.ts#L60)
 
 ***
 
@@ -28,7 +28,7 @@ Defined in: [packages/agentos/src/nlp/language/interfaces.ts:60](https://github.
 
 > `optional` **maxCharsPerRequest**: `number`
 
-Defined in: [packages/agentos/src/nlp/language/interfaces.ts:67](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/nlp/language/interfaces.ts#L67)
+Defined in: [packages/agentos/src/nlp/language/interfaces.ts:67](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/nlp/language/interfaces.ts#L67)
 
 Maximum characters per request (provider constraint).
 
@@ -38,7 +38,7 @@ Maximum characters per request (provider constraint).
 
 > `optional` **params**: `Record`\<`string`, `unknown`\>
 
-Defined in: [packages/agentos/src/nlp/language/interfaces.ts:61](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/nlp/language/interfaces.ts#L61)
+Defined in: [packages/agentos/src/nlp/language/interfaces.ts:61](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/nlp/language/interfaces.ts#L61)
 
 ***
 
@@ -46,7 +46,7 @@ Defined in: [packages/agentos/src/nlp/language/interfaces.ts:61](https://github.
 
 > `optional` **priority**: `number`
 
-Defined in: [packages/agentos/src/nlp/language/interfaces.ts:65](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/nlp/language/interfaces.ts#L65)
+Defined in: [packages/agentos/src/nlp/language/interfaces.ts:65](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/nlp/language/interfaces.ts#L65)
 
 Relative priority for fallback ordering.
 
@@ -56,6 +56,6 @@ Relative priority for fallback ordering.
 
 > `optional` **supportedLanguages**: `string`[]
 
-Defined in: [packages/agentos/src/nlp/language/interfaces.ts:69](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/nlp/language/interfaces.ts#L69)
+Defined in: [packages/agentos/src/nlp/language/interfaces.ts:69](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/nlp/language/interfaces.ts#L69)
 
 Supported language codes subset; undefined means provider attempts all.

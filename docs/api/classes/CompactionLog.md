@@ -1,6 +1,6 @@
 # Class: CompactionLog
 
-Defined in: [packages/agentos/src/memory/pipeline/context/CompactionLog.ts:12](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/pipeline/context/CompactionLog.ts#L12)
+Defined in: [packages/agentos/src/memory/pipeline/context/CompactionLog.ts:12](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/pipeline/context/CompactionLog.ts#L12)
 
 ## Constructors
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/memory/pipeline/context/CompactionLog.ts:12](h
 
 > **new CompactionLog**(`maxEntries?`, `level?`): `CompactionLog`
 
-Defined in: [packages/agentos/src/memory/pipeline/context/CompactionLog.ts:17](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/pipeline/context/CompactionLog.ts#L17)
+Defined in: [packages/agentos/src/memory/pipeline/context/CompactionLog.ts:17](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/pipeline/context/CompactionLog.ts#L17)
 
 #### Parameters
 
@@ -32,7 +32,7 @@ Defined in: [packages/agentos/src/memory/pipeline/context/CompactionLog.ts:17](h
 
 > **get** **size**(): `number`
 
-Defined in: [packages/agentos/src/memory/pipeline/context/CompactionLog.ts:169](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/pipeline/context/CompactionLog.ts#L169)
+Defined in: [packages/agentos/src/memory/pipeline/context/CompactionLog.ts:169](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/pipeline/context/CompactionLog.ts#L169)
 
 ##### Returns
 
@@ -44,7 +44,7 @@ Defined in: [packages/agentos/src/memory/pipeline/context/CompactionLog.ts:169](
 
 > **append**(`entry`): `void`
 
-Defined in: [packages/agentos/src/memory/pipeline/context/CompactionLog.ts:25](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/pipeline/context/CompactionLog.ts#L25)
+Defined in: [packages/agentos/src/memory/pipeline/context/CompactionLog.ts:25](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/pipeline/context/CompactionLog.ts#L25)
 
 Record a compaction event.
 
@@ -64,7 +64,7 @@ Record a compaction event.
 
 > **clear**(): `void`
 
-Defined in: [packages/agentos/src/memory/pipeline/context/CompactionLog.ts:165](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/pipeline/context/CompactionLog.ts#L165)
+Defined in: [packages/agentos/src/memory/pipeline/context/CompactionLog.ts:165](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/pipeline/context/CompactionLog.ts#L165)
 
 Clear all entries.
 
@@ -78,7 +78,7 @@ Clear all entries.
 
 > **findByEntity**(`entity`): [`CompactionEntry`](../interfaces/CompactionEntry.md)[]
 
-Defined in: [packages/agentos/src/memory/pipeline/context/CompactionLog.ts:66](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/pipeline/context/CompactionLog.ts#L66)
+Defined in: [packages/agentos/src/memory/pipeline/context/CompactionLog.ts:66](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/pipeline/context/CompactionLog.ts#L66)
 
 Find entries that mention a specific entity.
 
@@ -98,7 +98,7 @@ Find entries that mention a specific entity.
 
 > **findByTimeRange**(`startMs`, `endMs`): [`CompactionEntry`](../interfaces/CompactionEntry.md)[]
 
-Defined in: [packages/agentos/src/memory/pipeline/context/CompactionLog.ts:74](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/pipeline/context/CompactionLog.ts#L74)
+Defined in: [packages/agentos/src/memory/pipeline/context/CompactionLog.ts:74](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/pipeline/context/CompactionLog.ts#L74)
 
 Find entries within a time range.
 
@@ -122,7 +122,7 @@ Find entries within a time range.
 
 > **findByTurn**(`turnIndex`): [`CompactionEntry`](../interfaces/CompactionEntry.md)[]
 
-Defined in: [packages/agentos/src/memory/pipeline/context/CompactionLog.ts:59](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/pipeline/context/CompactionLog.ts#L59)
+Defined in: [packages/agentos/src/memory/pipeline/context/CompactionLog.ts:59](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/pipeline/context/CompactionLog.ts#L59)
 
 Find compaction entries that cover a specific turn index.
 
@@ -142,7 +142,7 @@ Find compaction entries that cover a specific turn index.
 
 > **format**(): `string`
 
-Defined in: [packages/agentos/src/memory/pipeline/context/CompactionLog.ts:157](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/pipeline/context/CompactionLog.ts#L157)
+Defined in: [packages/agentos/src/memory/pipeline/context/CompactionLog.ts:157](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/pipeline/context/CompactionLog.ts#L157)
 
 Format full log for display.
 
@@ -156,7 +156,7 @@ Format full log for display.
 
 > **getAll**(): readonly [`CompactionEntry`](../interfaces/CompactionEntry.md)[]
 
-Defined in: [packages/agentos/src/memory/pipeline/context/CompactionLog.ts:49](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/pipeline/context/CompactionLog.ts#L49)
+Defined in: [packages/agentos/src/memory/pipeline/context/CompactionLog.ts:49](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/pipeline/context/CompactionLog.ts#L49)
 
 All entries, newest last.
 
@@ -170,7 +170,7 @@ readonly [`CompactionEntry`](../interfaces/CompactionEntry.md)[]
 
 > **getById**(`id`): [`CompactionEntry`](../interfaces/CompactionEntry.md) \| `undefined`
 
-Defined in: [packages/agentos/src/memory/pipeline/context/CompactionLog.ts:54](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/pipeline/context/CompactionLog.ts#L54)
+Defined in: [packages/agentos/src/memory/pipeline/context/CompactionLog.ts:54](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/pipeline/context/CompactionLog.ts#L54)
 
 Get a single entry by ID.
 
@@ -190,7 +190,7 @@ Get a single entry by ID.
 
 > **getStats**(): [`CompactionLogStats`](../interfaces/CompactionLogStats.md)
 
-Defined in: [packages/agentos/src/memory/pipeline/context/CompactionLog.ts:89](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/pipeline/context/CompactionLog.ts#L89)
+Defined in: [packages/agentos/src/memory/pipeline/context/CompactionLog.ts:89](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/pipeline/context/CompactionLog.ts#L89)
 
 Aggregate statistics across all logged compactions.
 
@@ -204,7 +204,7 @@ Aggregate statistics across all logged compactions.
 
 > **search**(`keyword`): [`CompactionEntry`](../interfaces/CompactionEntry.md)[]
 
-Defined in: [packages/agentos/src/memory/pipeline/context/CompactionLog.ts:81](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/pipeline/context/CompactionLog.ts#L81)
+Defined in: [packages/agentos/src/memory/pipeline/context/CompactionLog.ts:81](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/pipeline/context/CompactionLog.ts#L81)
 
 Search compaction summaries for a keyword.
 
@@ -224,7 +224,7 @@ Search compaction summaries for a keyword.
 
 > `static` **formatEntry**(`entry`): `string`
 
-Defined in: [packages/agentos/src/memory/pipeline/context/CompactionLog.ts:135](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/pipeline/context/CompactionLog.ts#L135)
+Defined in: [packages/agentos/src/memory/pipeline/context/CompactionLog.ts:135](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/pipeline/context/CompactionLog.ts#L135)
 
 Format a single entry for display in the agent's context or UI.
 

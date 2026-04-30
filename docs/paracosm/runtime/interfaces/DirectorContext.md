@@ -1,6 +1,6 @@
 # Interface: DirectorContext
 
-Defined in: [runtime/director.ts:52](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/runtime/director.ts#L52)
+Defined in: [apps/paracosm/src/runtime/director.ts:52](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/director.ts#L52)
 
 Context passed to the Event Director for generating turn events.
 
@@ -10,7 +10,7 @@ Context passed to the Event Director for generating turn events.
 
 > `optional` **agentMoodSummary**: `string`
 
-Defined in: [runtime/director.ts:82](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/runtime/director.ts#L82)
+Defined in: [apps/paracosm/src/runtime/director.ts:82](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/director.ts#L82)
 
 Agent mood summary from last turn
 
@@ -20,7 +20,7 @@ Agent mood summary from last turn
 
 > **aliveCount**: `number`
 
-Defined in: [runtime/director.ts:64](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/runtime/director.ts#L64)
+Defined in: [apps/paracosm/src/runtime/director.ts:64](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/director.ts#L64)
 
 ***
 
@@ -28,7 +28,7 @@ Defined in: [runtime/director.ts:64](https://github.com/framersai/paracosm/blob/
 
 > `optional` **colony**: `Record`\<`string`, `number`\>
 
-Defined in: [runtime/director.ts:91](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/runtime/director.ts#L91)
+Defined in: [apps/paracosm/src/runtime/director.ts:91](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/director.ts#L91)
 
 #### Deprecated
 
@@ -40,7 +40,7 @@ Use state
 
 > **driftSummary**: `object`[]
 
-Defined in: [runtime/director.ts:78](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/runtime/director.ts#L78)
+Defined in: [apps/paracosm/src/runtime/director.ts:78](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/director.ts#L78)
 
 #### conscientiousness
 
@@ -64,7 +64,7 @@ Defined in: [runtime/director.ts:78](https://github.com/framersai/paracosm/blob/
 
 > `optional` **knowledgeCategories**: `string`[]
 
-Defined in: [runtime/director.ts:87](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/runtime/director.ts#L87)
+Defined in: [apps/paracosm/src/runtime/director.ts:87](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/director.ts#L87)
 
 Categories the scenario knows about (from KnowledgeBundle.categoryMapping).
 
@@ -74,7 +74,7 @@ Categories the scenario knows about (from KnowledgeBundle.categoryMapping).
 
 > `optional` **knowledgeTopics**: `string`[]
 
-Defined in: [runtime/director.ts:85](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/runtime/director.ts#L85)
+Defined in: [apps/paracosm/src/runtime/director.ts:85](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/director.ts#L85)
 
 Knowledge topic IDs available in the scenario knowledge bundle.
  Provides grounding for researchKeywords so events tie back to real citations.
@@ -85,7 +85,7 @@ Knowledge topic IDs available in the scenario knowledge bundle.
 
 > **leaderArchetype**: `string`
 
-Defined in: [runtime/director.ts:56](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/runtime/director.ts#L56)
+Defined in: [apps/paracosm/src/runtime/director.ts:56](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/director.ts#L56)
 
 ***
 
@@ -93,7 +93,7 @@ Defined in: [runtime/director.ts:56](https://github.com/framersai/paracosm/blob/
 
 > **leaderHexaco**: [`HexacoProfile`](../../engine/interfaces/HexacoProfile.md)
 
-Defined in: [runtime/director.ts:57](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/runtime/director.ts#L57)
+Defined in: [apps/paracosm/src/runtime/director.ts:57](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/director.ts#L57)
 
 ***
 
@@ -101,7 +101,7 @@ Defined in: [runtime/director.ts:57](https://github.com/framersai/paracosm/blob/
 
 > `optional` **leaderHexacoHistory**: [`HexacoSnapshot`](../../engine/interfaces/HexacoSnapshot.md)[]
 
-Defined in: [runtime/director.ts:59](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/runtime/director.ts#L59)
+Defined in: [apps/paracosm/src/runtime/director.ts:59](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/director.ts#L59)
 
 Commander's HEXACO per-turn history for trajectory cue generation.
 
@@ -111,7 +111,7 @@ Commander's HEXACO per-turn history for trajectory cue generation.
 
 > **leaderName**: `string`
 
-Defined in: [runtime/director.ts:55](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/runtime/director.ts#L55)
+Defined in: [apps/paracosm/src/runtime/director.ts:55](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/director.ts#L55)
 
 ***
 
@@ -119,7 +119,7 @@ Defined in: [runtime/director.ts:55](https://github.com/framersai/paracosm/blob/
 
 > `optional` **marsBornCount**: `number`
 
-Defined in: [runtime/director.ts:95](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/runtime/director.ts#L95)
+Defined in: [apps/paracosm/src/runtime/director.ts:95](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/director.ts#L95)
 
 #### Deprecated
 
@@ -131,7 +131,7 @@ Use nativeBornCount
 
 > **nativeBornCount**: `number`
 
-Defined in: [runtime/director.ts:66](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/runtime/director.ts#L66)
+Defined in: [apps/paracosm/src/runtime/director.ts:66](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/director.ts#L66)
 
 Count of agents born at the settlement (vs arrived from elsewhere)
 
@@ -141,7 +141,7 @@ Count of agents born at the settlement (vs arrived from elsewhere)
 
 > **politics**: `Record`\<`string`, `number` \| `string` \| `boolean`\>
 
-Defined in: [runtime/director.ts:63](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/runtime/director.ts#L63)
+Defined in: [apps/paracosm/src/runtime/director.ts:63](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/director.ts#L63)
 
 Political/social state variables
 
@@ -151,7 +151,7 @@ Political/social state variables
 
 > `optional` **previousCrises**: `object`[]
 
-Defined in: [runtime/director.ts:93](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/runtime/director.ts#L93)
+Defined in: [apps/paracosm/src/runtime/director.ts:93](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/director.ts#L93)
 
 #### ~~category~~
 
@@ -187,7 +187,7 @@ Use previousEvents
 
 > **previousEvents**: `object`[]
 
-Defined in: [runtime/director.ts:69](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/runtime/director.ts#L69)
+Defined in: [apps/paracosm/src/runtime/director.ts:69](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/director.ts#L69)
 
 #### category
 
@@ -219,7 +219,7 @@ Defined in: [runtime/director.ts:69](https://github.com/framersai/paracosm/blob/
 
 > **recentBirths**: `number`
 
-Defined in: [runtime/director.ts:68](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/runtime/director.ts#L68)
+Defined in: [apps/paracosm/src/runtime/director.ts:68](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/director.ts#L68)
 
 ***
 
@@ -227,7 +227,7 @@ Defined in: [runtime/director.ts:68](https://github.com/framersai/paracosm/blob/
 
 > **recentDeaths**: `number`
 
-Defined in: [runtime/director.ts:67](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/runtime/director.ts#L67)
+Defined in: [apps/paracosm/src/runtime/director.ts:67](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/director.ts#L67)
 
 ***
 
@@ -235,7 +235,7 @@ Defined in: [runtime/director.ts:67](https://github.com/framersai/paracosm/blob/
 
 > **recentToolOutputs**: `object`[]
 
-Defined in: [runtime/director.ts:80](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/runtime/director.ts#L80)
+Defined in: [apps/paracosm/src/runtime/director.ts:80](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/director.ts#L80)
 
 Key outputs from forged tools last turn
 
@@ -257,7 +257,7 @@ Key outputs from forged tools last turn
 
 > **state**: `Record`\<`string`, `number`\>
 
-Defined in: [runtime/director.ts:61](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/runtime/director.ts#L61)
+Defined in: [apps/paracosm/src/runtime/director.ts:61](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/director.ts#L61)
 
 Scenario state metrics (population, morale, resources, etc.)
 
@@ -267,7 +267,7 @@ Scenario state metrics (population, morale, resources, etc.)
 
 > **toolsForged**: `string`[]
 
-Defined in: [runtime/director.ts:77](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/runtime/director.ts#L77)
+Defined in: [apps/paracosm/src/runtime/director.ts:77](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/director.ts#L77)
 
 ***
 
@@ -275,7 +275,7 @@ Defined in: [runtime/director.ts:77](https://github.com/framersai/paracosm/blob/
 
 > **turn**: `number`
 
-Defined in: [runtime/director.ts:53](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/runtime/director.ts#L53)
+Defined in: [apps/paracosm/src/runtime/director.ts:53](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/director.ts#L53)
 
 ***
 
@@ -283,4 +283,4 @@ Defined in: [runtime/director.ts:53](https://github.com/framersai/paracosm/blob/
 
 > **year**: `number`
 
-Defined in: [runtime/director.ts:54](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/runtime/director.ts#L54)
+Defined in: [apps/paracosm/src/runtime/director.ts:54](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/director.ts#L54)

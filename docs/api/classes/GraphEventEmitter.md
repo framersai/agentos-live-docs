@@ -1,6 +1,6 @@
 # Class: GraphEventEmitter
 
-Defined in: [packages/agentos/src/orchestration/events/GraphEvent.ts:320](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/events/GraphEvent.ts#L320)
+Defined in: [packages/agentos/src/orchestration/events/GraphEvent.ts:320](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/events/GraphEvent.ts#L320)
 
 Lightweight event emitter for `GraphEvent` values.
 
@@ -44,7 +44,7 @@ await consume(); // logs 'run_start'
 
 > **close**(): `void`
 
-Defined in: [packages/agentos/src/orchestration/events/GraphEvent.ts:382](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/events/GraphEvent.ts#L382)
+Defined in: [packages/agentos/src/orchestration/events/GraphEvent.ts:382](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/events/GraphEvent.ts#L382)
 
 Permanently closes the emitter.
 
@@ -61,7 +61,7 @@ Permanently closes the emitter.
 
 > **emit**(`event`): `void`
 
-Defined in: [packages/agentos/src/orchestration/events/GraphEvent.ts:362](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/events/GraphEvent.ts#L362)
+Defined in: [packages/agentos/src/orchestration/events/GraphEvent.ts:362](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/events/GraphEvent.ts#L362)
 
 Dispatches `event` to all registered listeners and any active `stream()` generators.
 If `close()` has already been called, this method is a no-op.
@@ -84,7 +84,7 @@ The `GraphEvent` to dispatch.
 
 > **off**(`listener`): `void`
 
-Defined in: [packages/agentos/src/orchestration/events/GraphEvent.ts:349](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/events/GraphEvent.ts#L349)
+Defined in: [packages/agentos/src/orchestration/events/GraphEvent.ts:349](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/events/GraphEvent.ts#L349)
 
 Removes a previously registered listener.
 If the listener was not registered, this is a no-op.
@@ -107,7 +107,7 @@ The exact function reference passed to `on()`.
 
 > **on**(`listener`): `void`
 
-Defined in: [packages/agentos/src/orchestration/events/GraphEvent.ts:339](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/events/GraphEvent.ts#L339)
+Defined in: [packages/agentos/src/orchestration/events/GraphEvent.ts:339](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/events/GraphEvent.ts#L339)
 
 Registers a callback that is invoked synchronously for every subsequent `emit()` call.
 
@@ -129,7 +129,7 @@ Function to call with each emitted `GraphEvent`.
 
 > **stream**(): `AsyncGenerator`\<[`GraphEvent`](../type-aliases/GraphEvent.md)\>
 
-Defined in: [packages/agentos/src/orchestration/events/GraphEvent.ts:425](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/events/GraphEvent.ts#L425)
+Defined in: [packages/agentos/src/orchestration/events/GraphEvent.ts:425](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/events/GraphEvent.ts#L425)
 
 Returns an `AsyncGenerator` that yields every `GraphEvent` emitted after the
 call to `stream()`, in the exact order they were emitted.

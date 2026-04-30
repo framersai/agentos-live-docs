@@ -1,6 +1,6 @@
 # Interface: ExtendedConsolidationConfig
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:52](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/io/facade/types.ts#L52)
+Defined in: [packages/agentos/src/memory/io/facade/types.ts:54](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/io/facade/types.ts#L54)
 
 Extended consolidation configuration that adds lifecycle-management fields
 on top of the core `ConsolidationConfig` used internally.
@@ -14,7 +14,7 @@ level; adapters translate these to the internal representation.
 
 > `optional` **deriveInsights**: `boolean`
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:89](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/io/facade/types.ts#L89)
+Defined in: [packages/agentos/src/memory/io/facade/types.ts:91](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/io/facade/types.ts#L91)
 
 Whether the consolidation engine should derive new insight traces from
 clusters of related memories.
@@ -31,7 +31,7 @@ true
 
 > `optional` **every**: `number`
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:68](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/io/facade/types.ts#L68)
+Defined in: [packages/agentos/src/memory/io/facade/types.ts:70](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/io/facade/types.ts#L70)
 
 Numeric complement to `trigger`.
 When `trigger='turns'` this is the turn count; when `trigger='interval'`
@@ -49,7 +49,7 @@ this is the millisecond interval.
 
 > `optional` **intervalMs**: `number`
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:105](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/io/facade/types.ts#L105)
+Defined in: [packages/agentos/src/memory/io/facade/types.ts:107](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/io/facade/types.ts#L107)
 
 How often to run consolidation in milliseconds (internal scheduler).
 Superseded by `trigger`+`every` at the facade level; kept for compatibility.
@@ -66,7 +66,7 @@ Superseded by `trigger`+`every` at the facade level; kept for compatibility.
 
 > `optional` **maxDerivedPerCycle**: `number`
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:96](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/io/facade/types.ts#L96)
+Defined in: [packages/agentos/src/memory/io/facade/types.ts:98](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/io/facade/types.ts#L98)
 
 Maximum number of new insight traces derived per consolidation cycle.
 Guards against unbounded graph growth.
@@ -83,7 +83,7 @@ Guards against unbounded graph growth.
 
 > `optional` **maxTracesPerCycle**: `number`
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:112](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/io/facade/types.ts#L112)
+Defined in: [packages/agentos/src/memory/io/facade/types.ts:114](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/io/facade/types.ts#L114)
 
 Maximum number of traces to process per consolidation cycle.
 Bounds CPU/memory cost of a single run.
@@ -100,7 +100,7 @@ Bounds CPU/memory cost of a single run.
 
 > `optional` **mergeSimilarityThreshold**: `number`
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:118](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/io/facade/types.ts#L118)
+Defined in: [packages/agentos/src/memory/io/facade/types.ts:120](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/io/facade/types.ts#L120)
 
 Similarity threshold used when merging redundant traces.
 
@@ -116,7 +116,7 @@ Similarity threshold used when merging redundant traces.
 
 > `optional` **mergeThreshold**: `number`
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:82](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/io/facade/types.ts#L82)
+Defined in: [packages/agentos/src/memory/io/facade/types.ts:84](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/io/facade/types.ts#L84)
 
 Cosine similarity above which two traces are candidates for merging.
 Must be between 0 and 1.
@@ -133,7 +133,7 @@ Must be between 0 and 1.
 
 > `optional` **minClusterSize**: `number`
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:124](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/io/facade/types.ts#L124)
+Defined in: [packages/agentos/src/memory/io/facade/types.ts:126](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/io/facade/types.ts#L126)
 
 Minimum cluster size required before schema integration fires.
 
@@ -149,7 +149,7 @@ Minimum cluster size required before schema integration fires.
 
 > `optional` **pruneThreshold**: `number`
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:75](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/io/facade/types.ts#L75)
+Defined in: [packages/agentos/src/memory/io/facade/types.ts:77](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/io/facade/types.ts#L77)
 
 Minimum strength below which a memory trace is pruned.
 Must be between 0 and 1.
@@ -166,7 +166,7 @@ Must be between 0 and 1.
 
 > `optional` **trigger**: `"manual"` \| `"turns"` \| `"interval"`
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:60](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/io/facade/types.ts#L60)
+Defined in: [packages/agentos/src/memory/io/facade/types.ts:62](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/io/facade/types.ts#L62)
 
 What event or schedule triggers a consolidation run.
 - `'turns'`    – run after every N conversation turns (`every` = turn count).

@@ -1,45 +1,26 @@
 # Type Alias: SimEvent
 
-> **SimEvent** = `object`
+> **SimEvent** = `{ [K in SimEventType]: { data: SimEventPayloadMap[K] & SimEventCostPayload; leader: string; turn?: number; type: K; year?: number } }`\[[`SimEventType`](SimEventType.md)\]
 
-Defined in: [runtime/orchestrator.ts:63](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/runtime/orchestrator.ts#L63)
+Defined in: [apps/paracosm/src/runtime/orchestrator.ts:235](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/orchestrator.ts#L235)
 
-## Properties
+A single event delivered to the `onEvent` callback during a simulation.
 
-### data?
+Discriminated on `type`: `if (e.type === 'event_start') { e.data.title }`
+compiles with full field-level intellisense. The runtime also spreads a
+`_cost` book-keeping payload onto every event for the live-cost counter;
+treat that as internal and read cost from the returned `result.cost`
+instead.
 
-> `optional` **data**: `Record`\<`string`, `unknown`\>
+## Example
 
-Defined in: [runtime/orchestrator.ts:72](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/runtime/orchestrator.ts#L72)
-
-***
-
-### leader
-
-> **leader**: `string`
-
-Defined in: [runtime/orchestrator.ts:69](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/runtime/orchestrator.ts#L69)
-
-***
-
-### turn?
-
-> `optional` **turn**: `number`
-
-Defined in: [runtime/orchestrator.ts:70](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/runtime/orchestrator.ts#L70)
-
-***
-
-### type
-
-> **type**: `"turn_start"` \| `"event_start"` \| `"dept_start"` \| `"dept_done"` \| `"forge_attempt"` \| `"commander_deciding"` \| `"commander_decided"` \| `"outcome"` \| `"drift"` \| `"agent_reactions"` \| `"bulletin"` \| `"turn_done"` \| `"promotion"` \| `"colony_snapshot"` \| `"provider_error"` \| `"validation_fallback"` \| `"sim_aborted"`
-
-Defined in: [runtime/orchestrator.ts:64](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/runtime/orchestrator.ts#L64)
-
-***
-
-### year?
-
-> `optional` **year**: `number`
-
-Defined in: [runtime/orchestrator.ts:71](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/runtime/orchestrator.ts#L71)
+```typescript
+const output = await runSimulation(leader, [], {
+  scenario, maxTurns: 8, seed: 42,
+  onEvent(e) {
+    if (e.type === 'event_start') console.log('crisis:', e.data.title, e.data.category);
+    if (e.type === 'outcome')     console.log('resolved:', e.data.outcome);
+    if (e.type === 'turn_done')   console.log('T' + e.turn, 'complete');
+  },
+});
+```

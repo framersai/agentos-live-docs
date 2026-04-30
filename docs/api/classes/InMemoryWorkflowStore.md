@@ -1,6 +1,6 @@
 # Class: InMemoryWorkflowStore
 
-Defined in: [packages/agentos/src/orchestration/workflows/storage/InMemoryWorkflowStore.ts:23](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/workflows/storage/InMemoryWorkflowStore.ts#L23)
+Defined in: [packages/agentos/src/orchestration/workflows/storage/InMemoryWorkflowStore.ts:23](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/workflows/storage/InMemoryWorkflowStore.ts#L23)
 
 Interface implemented by persistence layers capable of storing workflow state.
 
@@ -24,7 +24,7 @@ Interface implemented by persistence layers capable of storing workflow state.
 
 > **appendEvents**(`events`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/orchestration/workflows/storage/InMemoryWorkflowStore.ts:111](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/workflows/storage/InMemoryWorkflowStore.ts#L111)
+Defined in: [packages/agentos/src/orchestration/workflows/storage/InMemoryWorkflowStore.ts:111](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/workflows/storage/InMemoryWorkflowStore.ts#L111)
 
 Appends workflow events for auditing/streaming purposes.
 
@@ -48,7 +48,7 @@ Appends workflow events for auditing/streaming purposes.
 
 > **buildProgressUpdate**(`workflowId`, `sinceTimestamp?`): `Promise`\<[`WorkflowProgressUpdate`](../interfaces/WorkflowProgressUpdate.md) \| `null`\>
 
-Defined in: [packages/agentos/src/orchestration/workflows/storage/InMemoryWorkflowStore.ts:146](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/workflows/storage/InMemoryWorkflowStore.ts#L146)
+Defined in: [packages/agentos/src/orchestration/workflows/storage/InMemoryWorkflowStore.ts:146](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/workflows/storage/InMemoryWorkflowStore.ts#L146)
 
 Produces a payload representing the current workflow snapshot and optionally recent events.
 
@@ -76,7 +76,7 @@ Produces a payload representing the current workflow snapshot and optionally rec
 
 > **createInstance**(`data`, `initialTasks`): `Promise`\<[`WorkflowInstance`](../interfaces/WorkflowInstance.md)\>
 
-Defined in: [packages/agentos/src/orchestration/workflows/storage/InMemoryWorkflowStore.ts:27](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/workflows/storage/InMemoryWorkflowStore.ts#L27)
+Defined in: [packages/agentos/src/orchestration/workflows/storage/InMemoryWorkflowStore.ts:27](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/workflows/storage/InMemoryWorkflowStore.ts#L27)
 
 Persists a newly created workflow instance and its initial tasks snapshot.
 
@@ -104,7 +104,7 @@ Persists a newly created workflow instance and its initial tasks snapshot.
 
 > **getInstance**(`workflowId`): `Promise`\<[`WorkflowInstance`](../interfaces/WorkflowInstance.md) \| `null`\>
 
-Defined in: [packages/agentos/src/orchestration/workflows/storage/InMemoryWorkflowStore.ts:51](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/workflows/storage/InMemoryWorkflowStore.ts#L51)
+Defined in: [packages/agentos/src/orchestration/workflows/storage/InMemoryWorkflowStore.ts:51](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/workflows/storage/InMemoryWorkflowStore.ts#L51)
 
 Retrieves a workflow instance by identifier.
 
@@ -128,7 +128,7 @@ Retrieves a workflow instance by identifier.
 
 > **listInstances**(`options?`): `Promise`\<[`WorkflowInstance`](../interfaces/WorkflowInstance.md)[]\>
 
-Defined in: [packages/agentos/src/orchestration/workflows/storage/InMemoryWorkflowStore.ts:122](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/workflows/storage/InMemoryWorkflowStore.ts#L122)
+Defined in: [packages/agentos/src/orchestration/workflows/storage/InMemoryWorkflowStore.ts:122](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/workflows/storage/InMemoryWorkflowStore.ts#L122)
 
 Lists workflow instances matching the supplied filters.
 
@@ -152,7 +152,7 @@ Lists workflow instances matching the supplied filters.
 
 > **updateInstance**(`workflowId`, `patch`): `Promise`\<[`WorkflowInstance`](../interfaces/WorkflowInstance.md) \| `null`\>
 
-Defined in: [packages/agentos/src/orchestration/workflows/storage/InMemoryWorkflowStore.ts:56](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/workflows/storage/InMemoryWorkflowStore.ts#L56)
+Defined in: [packages/agentos/src/orchestration/workflows/storage/InMemoryWorkflowStore.ts:56](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/workflows/storage/InMemoryWorkflowStore.ts#L56)
 
 Applies a partial update to the workflow instance metadata/state.
 
@@ -180,7 +180,7 @@ Applies a partial update to the workflow instance metadata/state.
 
 > **updateTasks**(`workflowId`, `updates`): `Promise`\<[`WorkflowInstance`](../interfaces/WorkflowInstance.md) \| `null`\>
 
-Defined in: [packages/agentos/src/orchestration/workflows/storage/InMemoryWorkflowStore.ts:74](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/workflows/storage/InMemoryWorkflowStore.ts#L74)
+Defined in: [packages/agentos/src/orchestration/workflows/storage/InMemoryWorkflowStore.ts:74](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/workflows/storage/InMemoryWorkflowStore.ts#L74)
 
 Applies updates to one or more tasks within a workflow instance atomically.
 

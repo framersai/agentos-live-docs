@@ -1,6 +1,6 @@
 # Interface: MultimodalSearchOptions
 
-Defined in: [packages/agentos/src/rag/multimodal/types.ts:166](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/multimodal/types.ts#L166)
+Defined in: [packages/agentos/src/rag/multimodal/types.ts:202](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/multimodal/types.ts#L202)
 
 Options for cross-modal search.
 
@@ -20,7 +20,7 @@ const results = await indexer.search('cats playing', {
 
 > `optional` **collection**: `string`
 
-Defined in: [packages/agentos/src/rag/multimodal/types.ts:183](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/multimodal/types.ts#L183)
+Defined in: [packages/agentos/src/rag/multimodal/types.ts:219](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/multimodal/types.ts#L219)
 
 Vector store collection to search in.
 
@@ -36,7 +36,7 @@ Vector store collection to search in.
 
 > `optional` **hyde**: `object`
 
-Defined in: [packages/agentos/src/rag/multimodal/types.ts:203](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/multimodal/types.ts#L203)
+Defined in: [packages/agentos/src/rag/multimodal/types.ts:239](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/multimodal/types.ts#L239)
 
 HyDE (Hypothetical Document Embedding) configuration for this search.
 
@@ -80,7 +80,7 @@ const results = await indexer.search('architecture diagram', {
 
 > `optional` **modalities**: [`ContentModality`](../type-aliases/ContentModality.md)[]
 
-Defined in: [packages/agentos/src/rag/multimodal/types.ts:177](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/multimodal/types.ts#L177)
+Defined in: [packages/agentos/src/rag/multimodal/types.ts:213](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/multimodal/types.ts#L213)
 
 Filter results to specific modalities. If omitted or empty,
 all modalities are searched.
@@ -91,7 +91,7 @@ all modalities are searched.
 
 > `optional` **topK**: `number`
 
-Defined in: [packages/agentos/src/rag/multimodal/types.ts:171](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/multimodal/types.ts#L171)
+Defined in: [packages/agentos/src/rag/multimodal/types.ts:207](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/multimodal/types.ts#L207)
 
 Maximum number of results to return.
 

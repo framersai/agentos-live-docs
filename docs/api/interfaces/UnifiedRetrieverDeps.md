@@ -1,6 +1,6 @@
 # Interface: UnifiedRetrieverDeps
 
-Defined in: [packages/agentos/src/rag/unified/UnifiedRetriever.ts:94](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/unified/UnifiedRetriever.ts#L94)
+Defined in: [packages/agentos/src/rag/unified/UnifiedRetriever.ts:100](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/unified/UnifiedRetriever.ts#L100)
 
 Dependencies injected into the [UnifiedRetriever](../classes/UnifiedRetriever.md).
 
@@ -24,7 +24,7 @@ const deps: UnifiedRetrieverDeps = {
 
 > `optional` **collectionName**: `string`
 
-Defined in: [packages/agentos/src/rag/unified/UnifiedRetriever.ts:105](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/unified/UnifiedRetriever.ts#L105)
+Defined in: [packages/agentos/src/rag/unified/UnifiedRetriever.ts:111](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/unified/UnifiedRetriever.ts#L111)
 
 Vector store collection name for hybrid search.
 
@@ -40,7 +40,7 @@ Vector store collection name for hybrid search.
 
 > `optional` **decompose**: (`query`, `maxSubQueries`) => `Promise`\<`string`[]\>
 
-Defined in: [packages/agentos/src/rag/unified/UnifiedRetriever.ts:176](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/unified/UnifiedRetriever.ts#L176)
+Defined in: [packages/agentos/src/rag/unified/UnifiedRetriever.ts:182](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/unified/UnifiedRetriever.ts#L182)
 
 Query decomposition callback for complex strategies.
 
@@ -70,7 +70,7 @@ Array of decomposed sub-query strings.
 
 > `optional` **deepResearch**: (`query`, `sources`) => `Promise`\<\{ `sources`: [`RetrievedChunk`](RetrievedChunk.md)[]; `synthesis`: `string`; \}\>
 
-Defined in: [packages/agentos/src/rag/unified/UnifiedRetriever.ts:164](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/unified/UnifiedRetriever.ts#L164)
+Defined in: [packages/agentos/src/rag/unified/UnifiedRetriever.ts:170](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/unified/UnifiedRetriever.ts#L170)
 
 Deep research synthesis callback.
 
@@ -100,7 +100,7 @@ Synthesis narrative and source chunks.
 
 > `optional` **defaultMood**: `object`
 
-Defined in: [packages/agentos/src/rag/unified/UnifiedRetriever.ts:213](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/unified/UnifiedRetriever.ts#L213)
+Defined in: [packages/agentos/src/rag/unified/UnifiedRetriever.ts:219](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/unified/UnifiedRetriever.ts#L219)
 
 Default PAD mood state for memory operations.
 Used when no mood context is available.
@@ -123,7 +123,7 @@ Used when no mood context is available.
 
 > `optional` **defaultTopK**: `number`
 
-Defined in: [packages/agentos/src/rag/unified/UnifiedRetriever.ts:194](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/unified/UnifiedRetriever.ts#L194)
+Defined in: [packages/agentos/src/rag/unified/UnifiedRetriever.ts:200](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/unified/UnifiedRetriever.ts#L200)
 
 Default topK for final results.
 
@@ -139,7 +139,7 @@ Default topK for final results.
 
 > `optional` **emit**: (`event`) => `void`
 
-Defined in: [packages/agentos/src/rag/unified/UnifiedRetriever.ts:182](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/unified/UnifiedRetriever.ts#L182)
+Defined in: [packages/agentos/src/rag/unified/UnifiedRetriever.ts:188](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/unified/UnifiedRetriever.ts#L188)
 
 Event listener callback for retrieval lifecycle events.
 
@@ -161,7 +161,7 @@ A typed UnifiedRetriever event.
 
 > `optional` **graphEngine**: [`IGraphRAGEngine`](IGraphRAGEngine.md)
 
-Defined in: [packages/agentos/src/rag/unified/UnifiedRetriever.ts:117](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/unified/UnifiedRetriever.ts#L117)
+Defined in: [packages/agentos/src/rag/unified/UnifiedRetriever.ts:123](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/unified/UnifiedRetriever.ts#L123)
 
 GraphRAG engine for entity/relationship traversal.
 When provided, enables the `graph` source.
@@ -172,7 +172,7 @@ When provided, enables the `graph` source.
 
 > `optional` **hybridSearcher**: [`HybridSearcher`](../classes/HybridSearcher.md)
 
-Defined in: [packages/agentos/src/rag/unified/UnifiedRetriever.ts:99](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/unified/UnifiedRetriever.ts#L99)
+Defined in: [packages/agentos/src/rag/unified/UnifiedRetriever.ts:105](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/unified/UnifiedRetriever.ts#L105)
 
 Hybrid dense+sparse searcher (vector + BM25).
 When provided, enables the `vector` and `bm25` sources.
@@ -183,7 +183,7 @@ When provided, enables the `vector` and `bm25` sources.
 
 > `optional` **hydeRetriever**: [`HydeRetriever`](../classes/HydeRetriever.md)
 
-Defined in: [packages/agentos/src/rag/unified/UnifiedRetriever.ts:130](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/unified/UnifiedRetriever.ts#L130)
+Defined in: [packages/agentos/src/rag/unified/UnifiedRetriever.ts:136](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/unified/UnifiedRetriever.ts#L136)
 
 HyDE (Hypothetical Document Embedding) retriever.
 When provided and plan.hyde.enabled is true, generates hypothetical
@@ -195,7 +195,7 @@ answers before embedding for improved recall.
 
 > `optional` **maxSubQueries**: `number`
 
-Defined in: [packages/agentos/src/rag/unified/UnifiedRetriever.ts:200](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/unified/UnifiedRetriever.ts#L200)
+Defined in: [packages/agentos/src/rag/unified/UnifiedRetriever.ts:206](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/unified/UnifiedRetriever.ts#L206)
 
 Maximum sub-queries for complex decomposition.
 
@@ -211,7 +211,7 @@ Maximum sub-queries for complex decomposition.
 
 > `optional` **memoryCacheThreshold**: `number`
 
-Defined in: [packages/agentos/src/rag/unified/UnifiedRetriever.ts:207](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/unified/UnifiedRetriever.ts#L207)
+Defined in: [packages/agentos/src/rag/unified/UnifiedRetriever.ts:213](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/unified/UnifiedRetriever.ts#L213)
 
 Memory cache hit confidence threshold.
 Episodic memories above this confidence skip external sources.
@@ -228,7 +228,7 @@ Episodic memories above this confidence skip external sources.
 
 > `optional` **memoryManager**: [`ICognitiveMemoryManager`](ICognitiveMemoryManager.md)
 
-Defined in: [packages/agentos/src/rag/unified/UnifiedRetriever.ts:123](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/unified/UnifiedRetriever.ts#L123)
+Defined in: [packages/agentos/src/rag/unified/UnifiedRetriever.ts:129](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/unified/UnifiedRetriever.ts#L129)
 
 Cognitive memory manager.
 When provided, enables the `memory` source and memory feedback loop.
@@ -239,7 +239,7 @@ When provided, enables the `memory` source and memory feedback loop.
 
 > `optional` **multimodalIndexer**: [`MultimodalIndexer`](../classes/MultimodalIndexer.md)
 
-Defined in: [packages/agentos/src/rag/unified/UnifiedRetriever.ts:136](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/unified/UnifiedRetriever.ts#L136)
+Defined in: [packages/agentos/src/rag/unified/UnifiedRetriever.ts:142](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/unified/UnifiedRetriever.ts#L142)
 
 Multimodal indexer for image/audio/video search.
 When provided, enables the `multimodal` source.
@@ -250,7 +250,7 @@ When provided, enables the `multimodal` source.
 
 > `optional` **raptorTree**: [`RaptorTree`](../classes/RaptorTree.md)
 
-Defined in: [packages/agentos/src/rag/unified/UnifiedRetriever.ts:111](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/unified/UnifiedRetriever.ts#L111)
+Defined in: [packages/agentos/src/rag/unified/UnifiedRetriever.ts:117](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/unified/UnifiedRetriever.ts#L117)
 
 RAPTOR hierarchical summary tree.
 When provided, enables the `raptor` source.
@@ -261,7 +261,7 @@ When provided, enables the `raptor` source.
 
 > `optional` **rerank**: (`query`, `chunks`, `topN`) => `Promise`\<[`RetrievedChunk`](RetrievedChunk.md)[]\>
 
-Defined in: [packages/agentos/src/rag/unified/UnifiedRetriever.ts:155](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/unified/UnifiedRetriever.ts#L155)
+Defined in: [packages/agentos/src/rag/unified/UnifiedRetriever.ts:161](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/unified/UnifiedRetriever.ts#L161)
 
 Cross-encoder or LLM-based reranker.
 
@@ -297,7 +297,7 @@ Reranked chunks.
 
 > `optional` **rrfK**: `number`
 
-Defined in: [packages/agentos/src/rag/unified/UnifiedRetriever.ts:188](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/unified/UnifiedRetriever.ts#L188)
+Defined in: [packages/agentos/src/rag/unified/UnifiedRetriever.ts:194](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/unified/UnifiedRetriever.ts#L194)
 
 RRF constant k. Higher values flatten score differences.
 
@@ -313,7 +313,7 @@ RRF constant k. Higher values flatten score differences.
 
 > `optional` **vectorSearch**: (`query`, `topK`) => `Promise`\<[`RetrievedChunk`](RetrievedChunk.md)[]\>
 
-Defined in: [packages/agentos/src/rag/unified/UnifiedRetriever.ts:145](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/unified/UnifiedRetriever.ts#L145)
+Defined in: [packages/agentos/src/rag/unified/UnifiedRetriever.ts:151](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/unified/UnifiedRetriever.ts#L151)
 
 Vector search function (fallback when hybridSearcher is not available).
 

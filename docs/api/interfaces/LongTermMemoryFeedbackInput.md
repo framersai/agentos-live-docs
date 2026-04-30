@@ -1,6 +1,6 @@
 # Interface: LongTermMemoryFeedbackInput
 
-Defined in: [packages/agentos/src/core/conversation/ILongTermMemoryRetriever.ts:35](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/conversation/ILongTermMemoryRetriever.ts#L35)
+Defined in: [packages/agentos/src/core/conversation/ILongTermMemoryRetriever.ts:37](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/core/conversation/ILongTermMemoryRetriever.ts#L37)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/core/conversation/ILongTermMemoryRetriever.ts:
 
 > `optional` **feedbackPayload**: `unknown`
 
-Defined in: [packages/agentos/src/core/conversation/ILongTermMemoryRetriever.ts:38](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/conversation/ILongTermMemoryRetriever.ts#L38)
+Defined in: [packages/agentos/src/core/conversation/ILongTermMemoryRetriever.ts:40](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/core/conversation/ILongTermMemoryRetriever.ts#L40)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [packages/agentos/src/core/conversation/ILongTermMemoryRetriever.ts:
 
 > **queryText**: `string`
 
-Defined in: [packages/agentos/src/core/conversation/ILongTermMemoryRetriever.ts:36](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/conversation/ILongTermMemoryRetriever.ts#L36)
+Defined in: [packages/agentos/src/core/conversation/ILongTermMemoryRetriever.ts:38](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/core/conversation/ILongTermMemoryRetriever.ts#L38)
 
 ***
 
@@ -24,4 +24,4 @@ Defined in: [packages/agentos/src/core/conversation/ILongTermMemoryRetriever.ts:
 
 > **responseText**: `string`
 
-Defined in: [packages/agentos/src/core/conversation/ILongTermMemoryRetriever.ts:37](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/conversation/ILongTermMemoryRetriever.ts#L37)
+Defined in: [packages/agentos/src/core/conversation/ILongTermMemoryRetriever.ts:39](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/core/conversation/ILongTermMemoryRetriever.ts#L39)

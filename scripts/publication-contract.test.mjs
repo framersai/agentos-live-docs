@@ -167,12 +167,31 @@ test('publication verification scripts are wired into the docs packages', () => 
   const docusaurusConfig = readFileSync(resolve(MONO_ROOT, 'apps/agentos-live-docs/docusaurus.config.ts'), 'utf8');
 
   assert.equal(
+    liveDocsPackage.scripts['test:publication'],
+    'node --test scripts/publication-contract.test.mjs scripts/pull-docs-links.test.mjs plugins/search-manifest.test.js',
+  );
+  assert.equal(
     liveDocsPackage.scripts['verify:publication'],
-    'AGENTOS_DOCS_STRICT=1 node --test scripts/publication-contract.test.mjs scripts/pull-docs-links.test.mjs && AGENTOS_DOCS_STRICT=1 node scripts/pull-docs.mjs --check && AGENTOS_DOCS_STRICT=1 npm run build',
+    'AGENTOS_DOCS_STRICT=1 npm run test:publication && AGENTOS_DOCS_STRICT=1 node scripts/pull-docs.mjs --check && AGENTOS_DOCS_STRICT=1 npm run build',
+  );
+  assert.equal(
+    liveDocsPackage.scripts['build:guides'],
+    'AGENTOS_DOCS_GUIDES_ONLY=1 AGENTOS_DOCS_DISABLE_LOCAL_SEARCH=1 AGENTOS_DOCS_DISABLE_SEARCH_MANIFEST=1 AGENTOS_DOCS_STRICT=0 npm run build',
+  );
+  assert.equal(
+    liveDocsPackage.scripts['start:guides'],
+    'AGENTOS_DOCS_GUIDES_ONLY=1 AGENTOS_DOCS_DISABLE_LOCAL_SEARCH=1 AGENTOS_DOCS_DISABLE_SEARCH_MANIFEST=1 AGENTOS_DOCS_STRICT=0 npm run start',
   );
   assert.equal(
     agentosPackage.scripts['docs:verify'],
     'node scripts/build-publication-inventory.mjs && pnpm --dir ../../ --filter @framersai/agentos-live-docs run verify:publication && npx vitest run src/api/runtime/__tests__/docs-alignment.test.ts',
+  );
+  assert.match(docusaurusConfig, /AGENTOS_DOCS_GUIDES_ONLY/);
+  assert.match(docusaurusConfig, /exclude:\s*guidesOnly\s*\?\s*\['api\/\*\*',\s*'paracosm\/\*\*'\]\s*:\s*\[\]/);
+  assert.match(docusaurusConfig, /blog:\s*guidesOnly\s*\?\s*false\s*:/);
+  assert.match(
+    docusaurusConfig,
+    /\.\.\.\(!guidesOnly[\s\S]*?\[\s*\{[\s\S]*?to:\s*'\/blog'[\s\S]*?label:\s*'Blog'/,
   );
   assert.match(docusaurusConfig, /to: '\/skills\/overview'/);
   assert.doesNotMatch(docusaurusConfig, /skills\/skills-extension/);
@@ -181,6 +200,49 @@ test('publication verification scripts are wired into the docs packages', () => 
 test('production docs config throws on broken links and markdown drift', () => {
   const docusaurusConfig = readFileSync(resolve(MONO_ROOT, 'apps/agentos-live-docs/docusaurus.config.ts'), 'utf8');
 
-  assert.match(docusaurusConfig, /onBrokenLinks:\s*strictDocs \? 'throw' : 'warn'/);
-  assert.match(docusaurusConfig, /onBrokenMarkdownLinks:\s*strictDocs \? 'throw' : 'warn'/);
+  assert.match(
+    docusaurusConfig,
+    /onBrokenLinks:\s*guidesOnly \? 'ignore' : strictDocs \? 'throw' : 'warn'/,
+  );
+  assert.match(
+    docusaurusConfig,
+    /onBrokenMarkdownLinks:\s*guidesOnly \? 'ignore' : strictDocs \? 'throw' : 'warn'/,
+  );
+});
+
+test('legacy /docs redirects exclude generated api and paracosm routes', () => {
+  const docusaurusConfig = readFileSync(resolve(MONO_ROOT, 'apps/agentos-live-docs/docusaurus.config.ts'), 'utf8');
+
+  assert.match(docusaurusConfig, /existingPath\.startsWith\('\/api'\)/);
+  assert.match(docusaurusConfig, /existingPath\.startsWith\('\/paracosm'\)/);
+  assert.match(docusaurusConfig, /existingPath\.startsWith\('\/blog'\)/);
+});
+
+test('guides-only sidebar omits the API reference category', () => {
+  const sidebarsPath = resolve(MONO_ROOT, 'apps/agentos-live-docs/sidebars.js');
+  const previousGuidesOnly = process.env.AGENTOS_DOCS_GUIDES_ONLY;
+
+  process.env.AGENTOS_DOCS_GUIDES_ONLY = '1';
+  delete require.cache[require.resolve(sidebarsPath)];
+
+  try {
+    const sidebars = require(sidebarsPath);
+    const guideSidebar = sidebars.guideSidebar;
+    const hasApiReference = guideSidebar.some(
+      (item) =>
+        typeof item === 'object' &&
+        item !== null &&
+        'label' in item &&
+        item.label === 'API Reference',
+    );
+
+    assert.equal(hasApiReference, false);
+  } finally {
+    if (previousGuidesOnly === undefined) {
+      delete process.env.AGENTOS_DOCS_GUIDES_ONLY;
+    } else {
+      process.env.AGENTOS_DOCS_GUIDES_ONLY = previousGuidesOnly;
+    }
+    delete require.cache[require.resolve(sidebarsPath)];
+  }
 });

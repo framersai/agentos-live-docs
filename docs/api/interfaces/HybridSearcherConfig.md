@@ -1,6 +1,6 @@
 # Interface: HybridSearcherConfig
 
-Defined in: [packages/agentos/src/rag/search/HybridSearcher.ts:35](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/search/HybridSearcher.ts#L35)
+Defined in: [packages/agentos/src/rag/search/HybridSearcher.ts:35](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/search/HybridSearcher.ts#L35)
 
 Configuration for the hybrid searcher.
 
@@ -14,7 +14,7 @@ HybridSearcherConfig
 
 > `optional` **denseWeight**: `number`
 
-Defined in: [packages/agentos/src/rag/search/HybridSearcher.ts:37](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/search/HybridSearcher.ts#L37)
+Defined in: [packages/agentos/src/rag/search/HybridSearcher.ts:37](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/search/HybridSearcher.ts#L37)
 
 Weight for dense (vector) results. Range: 0-1. Default: 0.7.
 
@@ -24,7 +24,7 @@ Weight for dense (vector) results. Range: 0-1. Default: 0.7.
 
 > `optional` **fusionMethod**: `"rrf"` \| `"weighted-sum"` \| `"interleave"`
 
-Defined in: [packages/agentos/src/rag/search/HybridSearcher.ts:43](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/search/HybridSearcher.ts#L43)
+Defined in: [packages/agentos/src/rag/search/HybridSearcher.ts:43](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/search/HybridSearcher.ts#L43)
 
 Fusion method for merging ranked lists. Default: 'rrf'.
 
@@ -34,7 +34,7 @@ Fusion method for merging ranked lists. Default: 'rrf'.
 
 > `optional` **rrfK**: `number`
 
-Defined in: [packages/agentos/src/rag/search/HybridSearcher.ts:41](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/search/HybridSearcher.ts#L41)
+Defined in: [packages/agentos/src/rag/search/HybridSearcher.ts:41](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/search/HybridSearcher.ts#L41)
 
 RRF constant k. Higher values flatten score differences. Default: 60.
 
@@ -44,6 +44,6 @@ RRF constant k. Higher values flatten score differences. Default: 60.
 
 > `optional` **sparseWeight**: `number`
 
-Defined in: [packages/agentos/src/rag/search/HybridSearcher.ts:39](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/search/HybridSearcher.ts#L39)
+Defined in: [packages/agentos/src/rag/search/HybridSearcher.ts:39](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/search/HybridSearcher.ts#L39)
 
 Weight for sparse (BM25) results. Range: 0-1. Default: 0.3.

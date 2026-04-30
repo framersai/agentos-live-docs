@@ -1,6 +1,6 @@
 # Interface: FluxImageProviderOptions
 
-Defined in: [packages/agentos/src/media/images/providers/FluxImageProvider.ts:149](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/images/providers/FluxImageProvider.ts#L149)
+Defined in: [packages/agentos/src/media/images/providers/FluxImageProvider.ts:149](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/media/images/providers/FluxImageProvider.ts#L149)
 
 Provider-specific options for BFL Flux image generation.
 
@@ -25,7 +25,7 @@ const result = await provider.generateImage({
 
 > `optional` **guidance**: `number`
 
-Defined in: [packages/agentos/src/media/images/providers/FluxImageProvider.ts:153](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/images/providers/FluxImageProvider.ts#L153)
+Defined in: [packages/agentos/src/media/images/providers/FluxImageProvider.ts:153](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/media/images/providers/FluxImageProvider.ts#L153)
 
 Classifier-free guidance scale. Higher = more prompt adherence.
 
@@ -35,7 +35,7 @@ Classifier-free guidance scale. Higher = more prompt adherence.
 
 > `optional` **seed**: `number`
 
-Defined in: [packages/agentos/src/media/images/providers/FluxImageProvider.ts:155](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/images/providers/FluxImageProvider.ts#L155)
+Defined in: [packages/agentos/src/media/images/providers/FluxImageProvider.ts:155](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/media/images/providers/FluxImageProvider.ts#L155)
 
 Random seed for reproducible generation.
 
@@ -45,6 +45,6 @@ Random seed for reproducible generation.
 
 > `optional` **steps**: `number`
 
-Defined in: [packages/agentos/src/media/images/providers/FluxImageProvider.ts:151](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/images/providers/FluxImageProvider.ts#L151)
+Defined in: [packages/agentos/src/media/images/providers/FluxImageProvider.ts:151](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/media/images/providers/FluxImageProvider.ts#L151)
 
 Number of diffusion steps. Higher = better quality, slower.

@@ -1,6 +1,6 @@
 # Interface: EventOptionDef
 
-Defined in: [engine/types.ts:284](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/types.ts#L284)
+Defined in: [apps/paracosm/src/engine/types.ts:284](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L284)
 
 An option presented to the commander for a turn event.
 
@@ -10,7 +10,7 @@ An option presented to the commander for a turn event.
 
 > **description**: `string`
 
-Defined in: [engine/types.ts:287](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/types.ts#L287)
+Defined in: [apps/paracosm/src/engine/types.ts:287](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L287)
 
 ***
 
@@ -18,7 +18,7 @@ Defined in: [engine/types.ts:287](https://github.com/framersai/paracosm/blob/446
 
 > **id**: `string`
 
-Defined in: [engine/types.ts:285](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/types.ts#L285)
+Defined in: [apps/paracosm/src/engine/types.ts:285](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L285)
 
 ***
 
@@ -26,7 +26,7 @@ Defined in: [engine/types.ts:285](https://github.com/framersai/paracosm/blob/446
 
 > **isRisky**: `boolean`
 
-Defined in: [engine/types.ts:288](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/types.ts#L288)
+Defined in: [apps/paracosm/src/engine/types.ts:288](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L288)
 
 ***
 
@@ -34,4 +34,4 @@ Defined in: [engine/types.ts:288](https://github.com/framersai/paracosm/blob/446
 
 > **label**: `string`
 
-Defined in: [engine/types.ts:286](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/types.ts#L286)
+Defined in: [apps/paracosm/src/engine/types.ts:286](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L286)

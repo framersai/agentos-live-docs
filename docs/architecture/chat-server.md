@@ -1,6 +1,6 @@
 ---
 title: "Chat Server (HTTP API)"
-sidebar_position: 18
+sidebar_position: 19
 ---
 
 Wunderland ships a built-in HTTP server that exposes your agent as a REST API. Start it, send a POST request, get a response. No SDK required.

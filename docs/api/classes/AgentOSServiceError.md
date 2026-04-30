@@ -1,6 +1,6 @@
 # Class: AgentOSServiceError
 
-Defined in: [packages/agentos/src/api/errors.ts:11](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/errors.ts#L11)
+Defined in: [packages/agentos/src/api/errors.ts:11](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/errors.ts#L11)
 
 Custom error class for errors specifically originating from the AgentOS service facade.
 Provides a standardized way to represent errors encountered within the `AgentOS` class.
@@ -15,7 +15,7 @@ Provides a standardized way to represent errors encountered within the `AgentOS`
 
 > **new AgentOSServiceError**(`message`, `code`, `details?`, `componentOrigin?`): `AgentOSServiceError`
 
-Defined in: [packages/agentos/src/api/errors.ts:14](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/errors.ts#L14)
+Defined in: [packages/agentos/src/api/errors.ts:14](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/errors.ts#L14)
 
 #### Parameters
 
@@ -49,7 +49,7 @@ Defined in: [packages/agentos/src/api/errors.ts:14](https://github.com/framersai
 
 > `readonly` `optional` **cause**: `unknown`
 
-Defined in: [packages/agentos/dist/core/utils/errors.d.ts:70](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/dist/core/utils/errors.d.ts#L70)
+Defined in: [packages/agentos/dist/core/utils/errors.d.ts:70](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/dist/core/utils/errors.d.ts#L70)
 
 #### Inherited from
 
@@ -61,7 +61,7 @@ Defined in: [packages/agentos/dist/core/utils/errors.d.ts:70](https://github.com
 
 > `readonly` **code**: `string`
 
-Defined in: [packages/agentos/dist/core/utils/errors.d.ts:65](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/dist/core/utils/errors.d.ts#L65)
+Defined in: [packages/agentos/dist/core/utils/errors.d.ts:65](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/dist/core/utils/errors.d.ts#L65)
 
 #### Inherited from
 
@@ -73,7 +73,7 @@ Defined in: [packages/agentos/dist/core/utils/errors.d.ts:65](https://github.com
 
 > `readonly` `optional` **component**: `string`
 
-Defined in: [packages/agentos/dist/core/utils/errors.d.ts:67](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/dist/core/utils/errors.d.ts#L67)
+Defined in: [packages/agentos/dist/core/utils/errors.d.ts:67](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/dist/core/utils/errors.d.ts#L67)
 
 #### Inherited from
 
@@ -85,7 +85,7 @@ Defined in: [packages/agentos/dist/core/utils/errors.d.ts:67](https://github.com
 
 > `readonly` `optional` **details**: `any`
 
-Defined in: [packages/agentos/dist/core/utils/errors.d.ts:66](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/dist/core/utils/errors.d.ts#L66)
+Defined in: [packages/agentos/dist/core/utils/errors.d.ts:66](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/dist/core/utils/errors.d.ts#L66)
 
 #### Inherited from
 
@@ -97,7 +97,7 @@ Defined in: [packages/agentos/dist/core/utils/errors.d.ts:66](https://github.com
 
 > `readonly` `optional` **httpStatusCode**: `number`
 
-Defined in: [packages/agentos/dist/core/utils/errors.d.ts:69](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/dist/core/utils/errors.d.ts#L69)
+Defined in: [packages/agentos/dist/core/utils/errors.d.ts:69](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/dist/core/utils/errors.d.ts#L69)
 
 #### Inherited from
 
@@ -109,7 +109,7 @@ Defined in: [packages/agentos/dist/core/utils/errors.d.ts:69](https://github.com
 
 > **message**: `string`
 
-Defined in: apps/agentos-live-docs/node\_modules/typescript/lib/lib.es5.d.ts:1077
+Defined in: node\_modules/.pnpm/typescript@5.6.3/node\_modules/typescript/lib/lib.es5.d.ts:1077
 
 #### Inherited from
 
@@ -121,7 +121,7 @@ Defined in: apps/agentos-live-docs/node\_modules/typescript/lib/lib.es5.d.ts:107
 
 > `readonly` **name**: `string` = `'AgentOSServiceError'`
 
-Defined in: [packages/agentos/src/api/errors.ts:12](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/errors.ts#L12)
+Defined in: [packages/agentos/src/api/errors.ts:12](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/errors.ts#L12)
 
 #### Overrides
 
@@ -133,7 +133,7 @@ Defined in: [packages/agentos/src/api/errors.ts:12](https://github.com/framersai
 
 > `optional` **stack**: `string`
 
-Defined in: apps/agentos-live-docs/node\_modules/typescript/lib/lib.es5.d.ts:1078
+Defined in: node\_modules/.pnpm/typescript@5.6.3/node\_modules/typescript/lib/lib.es5.d.ts:1078
 
 #### Inherited from
 
@@ -145,7 +145,7 @@ Defined in: apps/agentos-live-docs/node\_modules/typescript/lib/lib.es5.d.ts:107
 
 > `readonly` **timestamp**: `string`
 
-Defined in: [packages/agentos/dist/core/utils/errors.d.ts:68](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/dist/core/utils/errors.d.ts#L68)
+Defined in: [packages/agentos/dist/core/utils/errors.d.ts:68](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/dist/core/utils/errors.d.ts#L68)
 
 #### Inherited from
 
@@ -179,7 +179,7 @@ not capture any frames.
 
 > **getHttpStatusCode**(): `number`
 
-Defined in: [packages/agentos/dist/core/utils/errors.d.ts:72](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/dist/core/utils/errors.d.ts#L72)
+Defined in: [packages/agentos/dist/core/utils/errors.d.ts:72](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/dist/core/utils/errors.d.ts#L72)
 
 #### Returns
 
@@ -195,7 +195,7 @@ Defined in: [packages/agentos/dist/core/utils/errors.d.ts:72](https://github.com
 
 > **getUserFriendlyMessage**(): `string`
 
-Defined in: [packages/agentos/dist/core/utils/errors.d.ts:73](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/dist/core/utils/errors.d.ts#L73)
+Defined in: [packages/agentos/dist/core/utils/errors.d.ts:73](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/dist/core/utils/errors.d.ts#L73)
 
 #### Returns
 
@@ -211,7 +211,7 @@ Defined in: [packages/agentos/dist/core/utils/errors.d.ts:73](https://github.com
 
 > **toJSON**(): `Record`\<`string`, `any`\>
 
-Defined in: [packages/agentos/dist/core/utils/errors.d.ts:75](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/dist/core/utils/errors.d.ts#L75)
+Defined in: [packages/agentos/dist/core/utils/errors.d.ts:75](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/dist/core/utils/errors.d.ts#L75)
 
 #### Returns
 
@@ -227,7 +227,7 @@ Defined in: [packages/agentos/dist/core/utils/errors.d.ts:75](https://github.com
 
 > **toPlainObject**(): `Record`\<`string`, `any`\>
 
-Defined in: [packages/agentos/dist/core/utils/errors.d.ts:74](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/dist/core/utils/errors.d.ts#L74)
+Defined in: [packages/agentos/dist/core/utils/errors.d.ts:74](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/dist/core/utils/errors.d.ts#L74)
 
 #### Returns
 
@@ -313,7 +313,7 @@ a();
 
 > `static` **isGMIError**(`error`): `error is GMIError`
 
-Defined in: [packages/agentos/dist/core/utils/errors.d.ts:76](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/dist/core/utils/errors.d.ts#L76)
+Defined in: [packages/agentos/dist/core/utils/errors.d.ts:76](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/dist/core/utils/errors.d.ts#L76)
 
 #### Parameters
 
@@ -365,7 +365,7 @@ https://v8.dev/docs/stack-trace-api#customizing-stack-traces
 
 > `static` **wrap**(`error`, `code`, `message`, `componentOrigin?`): `AgentOSServiceError`
 
-Defined in: [packages/agentos/src/api/errors.ts:22](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/errors.ts#L22)
+Defined in: [packages/agentos/src/api/errors.ts:22](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/errors.ts#L22)
 
 Wraps an existing error within a new AgentOSServiceError instance.
 

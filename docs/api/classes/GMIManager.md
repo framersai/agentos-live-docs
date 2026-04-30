@@ -1,6 +1,6 @@
 # Class: GMIManager
 
-Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:92](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/GMIManager.ts#L92)
+Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:92](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/cognitive_substrate/GMIManager.ts#L92)
 
 Manages the lifecycle of Generalized Mind Instances (GMIs).
 
@@ -10,7 +10,7 @@ Manages the lifecycle of Generalized Mind Instances (GMIs).
 
 > **new GMIManager**(`config`, `subscriptionService`, `authService`, `conversationManager`, `promptEngine`, `llmProviderManager`, `utilityAI`, `toolOrchestrator`, `retrievalAugmentor?`, `personaLoader?`): `GMIManager`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:116](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/GMIManager.ts#L116)
+Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:116](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/cognitive_substrate/GMIManager.ts#L116)
 
 #### Parameters
 
@@ -64,7 +64,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:116](https:
 
 > **activeGMIs**: `Map`\<`string`, [`IGMI`](../interfaces/IGMI.md)\>
 
-Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:98](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/GMIManager.ts#L98)
+Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:98](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/cognitive_substrate/GMIManager.ts#L98)
 
 ***
 
@@ -72,7 +72,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:98](https:/
 
 > **gmiSessionMap**: `Map`\<`string`, `string`\>
 
-Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:99](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/GMIManager.ts#L99)
+Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:99](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/cognitive_substrate/GMIManager.ts#L99)
 
 ***
 
@@ -80,7 +80,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:99](https:/
 
 > `readonly` **managerId**: `string`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:114](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/GMIManager.ts#L114)
+Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:114](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/cognitive_substrate/GMIManager.ts#L114)
 
 ## Methods
 
@@ -88,7 +88,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:114](https:
 
 > **cleanupInactiveGMIs**(`inactivityThresholdMinutes?`): `Promise`\<`number`\>
 
-Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:648](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/GMIManager.ts#L648)
+Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:648](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/cognitive_substrate/GMIManager.ts#L648)
 
 #### Parameters
 
@@ -106,7 +106,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:648](https:
 
 > **clearAgencyPersonaOverlay**(`agencyId`, `roleId`): `void`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:176](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/GMIManager.ts#L176)
+Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:176](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/cognitive_substrate/GMIManager.ts#L176)
 
 #### Parameters
 
@@ -128,7 +128,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:176](https:
 
 > **deactivateGMIForSession**(`sessionId`): `Promise`\<`boolean`\>
 
-Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:620](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/GMIManager.ts#L620)
+Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:620](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/cognitive_substrate/GMIManager.ts#L620)
 
 #### Parameters
 
@@ -146,7 +146,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:620](https:
 
 > **getAgencyPersonaOverlay**(`agencyId`, `roleId`): [`PersonaStateOverlay`](../interfaces/PersonaStateOverlay.md) \| `undefined`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:181](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/GMIManager.ts#L181)
+Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:181](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/cognitive_substrate/GMIManager.ts#L181)
 
 #### Parameters
 
@@ -168,7 +168,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:181](https:
 
 > **getGMIByInstanceId**(`gmiInstanceId`): [`IGMI`](../interfaces/IGMI.md) \| `undefined`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:615](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/GMIManager.ts#L615)
+Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:615](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/cognitive_substrate/GMIManager.ts#L615)
 
 #### Parameters
 
@@ -186,7 +186,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:615](https:
 
 > **getOrCreateGMIForSession**(`userId`, `sessionId`, `requestedPersonaId`, `conversationIdInput?`, `preferredModelId?`, `preferredProviderId?`, `userApiKeys?`, `agencyOptions?`): `Promise`\<\{ `conversationContext`: `ConversationContext`; `gmi`: [`IGMI`](../interfaces/IGMI.md); \}\>
 
-Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:502](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/GMIManager.ts#L502)
+Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:502](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/cognitive_substrate/GMIManager.ts#L502)
 
 #### Parameters
 
@@ -232,7 +232,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:502](https:
 
 > **getPersonaDefinition**(`personaId`): [`IPersonaDefinition`](../interfaces/IPersonaDefinition.md) \| `undefined`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:388](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/GMIManager.ts#L388)
+Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:388](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/cognitive_substrate/GMIManager.ts#L388)
 
 #### Parameters
 
@@ -250,7 +250,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:388](https:
 
 > **initialize**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:270](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/GMIManager.ts#L270)
+Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:270](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/cognitive_substrate/GMIManager.ts#L270)
 
 #### Returns
 
@@ -262,7 +262,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:270](https:
 
 > **listAvailablePersonas**(`userId?`): `Promise`\<`Partial`\<[`IPersonaDefinition`](../interfaces/IPersonaDefinition.md)\>[]\>
 
-Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:393](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/GMIManager.ts#L393)
+Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:393](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/cognitive_substrate/GMIManager.ts#L393)
 
 #### Parameters
 
@@ -280,7 +280,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:393](https:
 
 > **loadAllPersonaDefinitions**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:291](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/GMIManager.ts#L291)
+Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:291](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/cognitive_substrate/GMIManager.ts#L291)
 
 #### Returns
 
@@ -292,7 +292,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:291](https:
 
 > **processUserFeedback**(`userId`, `sessionId`, `personaId`, `feedbackData`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:719](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/GMIManager.ts#L719)
+Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:719](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/cognitive_substrate/GMIManager.ts#L719)
 
 #### Parameters
 
@@ -322,7 +322,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:719](https:
 
 > **shutdown**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:700](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/GMIManager.ts#L700)
+Defined in: [packages/agentos/src/cognitive\_substrate/GMIManager.ts:700](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/cognitive_substrate/GMIManager.ts#L700)
 
 #### Returns
 

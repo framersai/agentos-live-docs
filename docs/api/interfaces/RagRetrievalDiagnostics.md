@@ -1,6 +1,6 @@
 # Interface: RagRetrievalDiagnostics
 
-Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:128](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/IRetrievalAugmentor.ts#L128)
+Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:130](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/IRetrievalAugmentor.ts#L130)
 
 Diagnostics emitted by retrieval operations.
 
@@ -10,7 +10,7 @@ Diagnostics emitted by retrieval operations.
 
 > `optional` **dataSourceHits**: `Record`\<`string`, `number`\>
 
-Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:134](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/IRetrievalAugmentor.ts#L134)
+Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:136](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/IRetrievalAugmentor.ts#L136)
 
 ***
 
@@ -18,7 +18,7 @@ Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:134](https://github
 
 > `optional` **effectiveDataSourceIds**: `string`[]
 
-Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:135](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/IRetrievalAugmentor.ts#L135)
+Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:137](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/IRetrievalAugmentor.ts#L137)
 
 ***
 
@@ -26,7 +26,7 @@ Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:135](https://github
 
 > `optional` **embeddingTimeMs**: `number`
 
-Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:129](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/IRetrievalAugmentor.ts#L129)
+Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:131](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/IRetrievalAugmentor.ts#L131)
 
 ***
 
@@ -34,7 +34,7 @@ Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:129](https://github
 
 > `optional` **hyde**: `object`
 
-Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:146](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/IRetrievalAugmentor.ts#L146)
+Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:148](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/IRetrievalAugmentor.ts#L148)
 
 HyDE-specific diagnostics, populated when HyDE retrieval is active.
 
@@ -66,7 +66,27 @@ HyDE-specific diagnostics, populated when HyDE retrieval is active.
 
 > `optional` **messages**: `string`[]
 
-Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:136](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/IRetrievalAugmentor.ts#L136)
+Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:138](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/IRetrievalAugmentor.ts#L138)
+
+***
+
+### policy?
+
+> `optional` **policy**: `object`
+
+Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:154](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/IRetrievalAugmentor.ts#L154)
+
+#### confidence
+
+> **confidence**: `RetrievalConfidenceSummary`
+
+#### escalations
+
+> **escalations**: `string`[]
+
+#### profile
+
+> **profile**: [`MemoryRetrievalProfile`](../type-aliases/MemoryRetrievalProfile.md)
 
 ***
 
@@ -74,7 +94,7 @@ Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:136](https://github
 
 > `optional` **rerankingTimeMs**: `number`
 
-Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:131](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/IRetrievalAugmentor.ts#L131)
+Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:133](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/IRetrievalAugmentor.ts#L133)
 
 ***
 
@@ -82,7 +102,7 @@ Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:131](https://github
 
 > `optional` **retrievalTimeMs**: `number`
 
-Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:130](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/IRetrievalAugmentor.ts#L130)
+Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:132](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/IRetrievalAugmentor.ts#L132)
 
 ***
 
@@ -90,7 +110,7 @@ Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:130](https://github
 
 > `optional` **strategyUsed**: `"hybrid"` \| `"similarity"` \| `"mmr"`
 
-Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:133](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/IRetrievalAugmentor.ts#L133)
+Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:135](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/IRetrievalAugmentor.ts#L135)
 
 ***
 
@@ -98,4 +118,4 @@ Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:133](https://github
 
 > `optional` **totalTokensInContext**: `number`
 
-Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:132](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/IRetrievalAugmentor.ts#L132)
+Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:134](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/IRetrievalAugmentor.ts#L134)

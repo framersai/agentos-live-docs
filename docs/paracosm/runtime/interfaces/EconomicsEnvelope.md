@@ -1,6 +1,6 @@
 # Interface: EconomicsEnvelope
 
-Defined in: runtime/economics-profile.ts:19
+Defined in: [apps/paracosm/src/runtime/economics-profile.ts:19](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/economics-profile.ts#L19)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: runtime/economics-profile.ts:19
 
 > **estimatedCalls**: `number`
 
-Defined in: runtime/economics-profile.ts:22
+Defined in: [apps/paracosm/src/runtime/economics-profile.ts:22](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/economics-profile.ts#L22)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: runtime/economics-profile.ts:22
 
 > **estimatedPeakConcurrency**: `number`
 
-Defined in: runtime/economics-profile.ts:23
+Defined in: [apps/paracosm/src/runtime/economics-profile.ts:23](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/economics-profile.ts#L23)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: runtime/economics-profile.ts:23
 
 > **profileId**: [`SimulationEconomicsProfileId`](../type-aliases/SimulationEconomicsProfileId.md)
 
-Defined in: runtime/economics-profile.ts:20
+Defined in: [apps/paracosm/src/runtime/economics-profile.ts:20](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/economics-profile.ts#L20)
 
 ***
 
@@ -32,4 +32,4 @@ Defined in: runtime/economics-profile.ts:20
 
 > **summary**: `string`
 
-Defined in: runtime/economics-profile.ts:21
+Defined in: [apps/paracosm/src/runtime/economics-profile.ts:21](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/economics-profile.ts#L21)

@@ -1,6 +1,6 @@
 # Interface: SeedIngestionOptions
 
-Defined in: [engine/compiler/seed-ingestion.ts:20](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/compiler/seed-ingestion.ts#L20)
+Defined in: [apps/paracosm/src/engine/compiler/seed-ingestion.ts:20](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/compiler/seed-ingestion.ts#L20)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [engine/compiler/seed-ingestion.ts:20](https://github.com/framersai/
 
 > **generateText**: [`GenerateTextFn`](../type-aliases/GenerateTextFn.md)
 
-Defined in: [engine/compiler/seed-ingestion.ts:22](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/compiler/seed-ingestion.ts#L22)
+Defined in: [apps/paracosm/src/engine/compiler/seed-ingestion.ts:22](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/compiler/seed-ingestion.ts#L22)
 
 LLM generateText function
 
@@ -18,7 +18,7 @@ LLM generateText function
 
 > `optional` **maxSearches**: `number`
 
-Defined in: [engine/compiler/seed-ingestion.ts:26](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/compiler/seed-ingestion.ts#L26)
+Defined in: [apps/paracosm/src/engine/compiler/seed-ingestion.ts:26](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/compiler/seed-ingestion.ts#L26)
 
 Maximum number of web searches to perform. Default: 5.
 
@@ -28,7 +28,7 @@ Maximum number of web searches to perform. Default: 5.
 
 > `optional` **onProgress**: (`step`, `status`) => `void`
 
-Defined in: [engine/compiler/seed-ingestion.ts:28](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/compiler/seed-ingestion.ts#L28)
+Defined in: [apps/paracosm/src/engine/compiler/seed-ingestion.ts:28](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/compiler/seed-ingestion.ts#L28)
 
 Progress callback
 
@@ -52,6 +52,6 @@ Progress callback
 
 > `optional` **webSearch**: `boolean`
 
-Defined in: [engine/compiler/seed-ingestion.ts:24](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/compiler/seed-ingestion.ts#L24)
+Defined in: [apps/paracosm/src/engine/compiler/seed-ingestion.ts:24](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/compiler/seed-ingestion.ts#L24)
 
 Enable live web search to enrich with real citations. Requires search API keys in env.

@@ -1,6 +1,6 @@
 # Interface: PADState
 
-Defined in: [packages/agentos/src/memory/core/config.ts:18](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/core/config.ts#L18)
+Defined in: [packages/agentos/src/memory/core/config.ts:18](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/config.ts#L18)
 
 Pleasure-Arousal-Dominance emotional state.
 
@@ -10,7 +10,7 @@ Pleasure-Arousal-Dominance emotional state.
 
 > **arousal**: `number`
 
-Defined in: [packages/agentos/src/memory/core/config.ts:20](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/core/config.ts#L20)
+Defined in: [packages/agentos/src/memory/core/config.ts:20](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/config.ts#L20)
 
 ***
 
@@ -18,7 +18,7 @@ Defined in: [packages/agentos/src/memory/core/config.ts:20](https://github.com/f
 
 > **dominance**: `number`
 
-Defined in: [packages/agentos/src/memory/core/config.ts:21](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/core/config.ts#L21)
+Defined in: [packages/agentos/src/memory/core/config.ts:21](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/config.ts#L21)
 
 ***
 
@@ -26,4 +26,4 @@ Defined in: [packages/agentos/src/memory/core/config.ts:21](https://github.com/f
 
 > **valence**: `number`
 
-Defined in: [packages/agentos/src/memory/core/config.ts:19](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/core/config.ts#L19)
+Defined in: [packages/agentos/src/memory/core/config.ts:19](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/config.ts#L19)

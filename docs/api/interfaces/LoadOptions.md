@@ -1,6 +1,6 @@
 # Interface: LoadOptions
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:651](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/io/facade/types.ts#L651)
+Defined in: [packages/agentos/src/memory/io/facade/types.ts:659](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/io/facade/types.ts#L659)
 
 Options for the lower-level `Memory.load()` document-parsing primitive.
 
@@ -10,7 +10,7 @@ Options for the lower-level `Memory.load()` document-parsing primitive.
 
 > `optional` **format**: `string`
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:656](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/io/facade/types.ts#L656)
+Defined in: [packages/agentos/src/memory/io/facade/types.ts:664](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/io/facade/types.ts#L664)
 
 Format hint passed directly to the document parser.
 

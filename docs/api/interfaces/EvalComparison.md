@@ -1,6 +1,6 @@
 # Interface: EvalComparison
 
-Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:353](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/evaluation/IEvaluator.ts#L353)
+Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:353](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/evaluation/IEvaluator.ts#L353)
 
 Comparison between two evaluation runs.
 
@@ -10,7 +10,7 @@ Comparison between two evaluation runs.
 
 > **metrics**: `object`[]
 
-Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:356](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/evaluation/IEvaluator.ts#L356)
+Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:356](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/evaluation/IEvaluator.ts#L356)
 
 #### delta
 
@@ -42,7 +42,7 @@ Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:356](https://github.c
 
 > **run1Id**: `string`
 
-Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:354](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/evaluation/IEvaluator.ts#L354)
+Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:354](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/evaluation/IEvaluator.ts#L354)
 
 ***
 
@@ -50,7 +50,7 @@ Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:354](https://github.c
 
 > **run2Id**: `string`
 
-Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:355](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/evaluation/IEvaluator.ts#L355)
+Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:355](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/evaluation/IEvaluator.ts#L355)
 
 ***
 
@@ -58,7 +58,7 @@ Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:355](https://github.c
 
 > **summary**: `object`
 
-Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:364](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/evaluation/IEvaluator.ts#L364)
+Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:364](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/evaluation/IEvaluator.ts#L364)
 
 #### improved
 

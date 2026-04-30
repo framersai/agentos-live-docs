@@ -1,6 +1,6 @@
 # Class: AgentOSTurnPlanner
 
-Defined in: [packages/agentos/src/orchestration/turn-planner/TurnPlanner.ts:190](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/turn-planner/TurnPlanner.ts#L190)
+Defined in: [packages/agentos/src/orchestration/turn-planner/TurnPlanner.ts:190](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/turn-planner/TurnPlanner.ts#L190)
 
 ## Implements
 
@@ -12,7 +12,7 @@ Defined in: [packages/agentos/src/orchestration/turn-planner/TurnPlanner.ts:190]
 
 > **new AgentOSTurnPlanner**(`config?`, `discoveryEngine?`, `logger?`): `AgentOSTurnPlanner`
 
-Defined in: [packages/agentos/src/orchestration/turn-planner/TurnPlanner.ts:194](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/turn-planner/TurnPlanner.ts#L194)
+Defined in: [packages/agentos/src/orchestration/turn-planner/TurnPlanner.ts:194](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/turn-planner/TurnPlanner.ts#L194)
 
 #### Parameters
 
@@ -38,7 +38,7 @@ Defined in: [packages/agentos/src/orchestration/turn-planner/TurnPlanner.ts:194]
 
 > `readonly` **plannerId**: `"agentos-turn-planner-v1"` = `TURN_PLANNER_VERSION`
 
-Defined in: [packages/agentos/src/orchestration/turn-planner/TurnPlanner.ts:191](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/turn-planner/TurnPlanner.ts#L191)
+Defined in: [packages/agentos/src/orchestration/turn-planner/TurnPlanner.ts:191](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/turn-planner/TurnPlanner.ts#L191)
 
 #### Implementation of
 
@@ -50,7 +50,7 @@ Defined in: [packages/agentos/src/orchestration/turn-planner/TurnPlanner.ts:191]
 
 > **isDiscoveryAvailable**(): `boolean`
 
-Defined in: [packages/agentos/src/orchestration/turn-planner/TurnPlanner.ts:209](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/turn-planner/TurnPlanner.ts#L209)
+Defined in: [packages/agentos/src/orchestration/turn-planner/TurnPlanner.ts:209](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/turn-planner/TurnPlanner.ts#L209)
 
 #### Returns
 
@@ -66,7 +66,7 @@ Defined in: [packages/agentos/src/orchestration/turn-planner/TurnPlanner.ts:209]
 
 > **planTurn**(`input`): `Promise`\<[`TurnPlan`](../interfaces/TurnPlan.md)\>
 
-Defined in: [packages/agentos/src/orchestration/turn-planner/TurnPlanner.ts:217](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/turn-planner/TurnPlanner.ts#L217)
+Defined in: [packages/agentos/src/orchestration/turn-planner/TurnPlanner.ts:217](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/turn-planner/TurnPlanner.ts#L217)
 
 #### Parameters
 

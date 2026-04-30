@@ -1,6 +1,6 @@
 # Interface: WorkflowRoleDefinition
 
-Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:37](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/workflows/WorkflowTypes.ts#L37)
+Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:37](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/workflows/WorkflowTypes.ts#L37)
 
 Declarative role definition referenced by workflow tasks.
 
@@ -10,7 +10,7 @@ Declarative role definition referenced by workflow tasks.
 
 > `optional` **defaultAssigneeStrategy**: `"primary_gmi"` \| `"conversation_owner"` \| `"host_supplied"`
 
-Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:47](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/workflows/WorkflowTypes.ts#L47)
+Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:47](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/workflows/WorkflowTypes.ts#L47)
 
 ***
 
@@ -18,7 +18,7 @@ Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:47](h
 
 > `optional` **description**: `string`
 
-Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:40](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/workflows/WorkflowTypes.ts#L40)
+Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:40](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/workflows/WorkflowTypes.ts#L40)
 
 ***
 
@@ -26,7 +26,7 @@ Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:40](h
 
 > **displayName**: `string`
 
-Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:39](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/workflows/WorkflowTypes.ts#L39)
+Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:39](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/workflows/WorkflowTypes.ts#L39)
 
 ***
 
@@ -34,7 +34,7 @@ Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:39](h
 
 > `optional` **evolutionRules**: [`PersonaEvolutionRule`](PersonaEvolutionRule.md)[]
 
-Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:43](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/workflows/WorkflowTypes.ts#L43)
+Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:43](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/workflows/WorkflowTypes.ts#L43)
 
 ***
 
@@ -42,7 +42,7 @@ Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:43](h
 
 > `optional` **guardrailPolicyTags**: `string`[]
 
-Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:46](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/workflows/WorkflowTypes.ts#L46)
+Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:46](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/workflows/WorkflowTypes.ts#L46)
 
 ***
 
@@ -50,7 +50,7 @@ Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:46](h
 
 > `optional` **metadata**: `Record`\<`string`, `unknown`\>
 
-Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:48](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/workflows/WorkflowTypes.ts#L48)
+Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:48](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/workflows/WorkflowTypes.ts#L48)
 
 ***
 
@@ -58,7 +58,7 @@ Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:48](h
 
 > `optional` **personaCapabilityRequirements**: `string`[]
 
-Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:44](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/workflows/WorkflowTypes.ts#L44)
+Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:44](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/workflows/WorkflowTypes.ts#L44)
 
 ***
 
@@ -66,7 +66,7 @@ Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:44](h
 
 > `optional` **personaId**: `string`
 
-Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:41](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/workflows/WorkflowTypes.ts#L41)
+Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:41](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/workflows/WorkflowTypes.ts#L41)
 
 ***
 
@@ -74,7 +74,7 @@ Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:41](h
 
 > `optional` **personaTraits**: `Record`\<`string`, `unknown`\>
 
-Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:42](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/workflows/WorkflowTypes.ts#L42)
+Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:42](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/workflows/WorkflowTypes.ts#L42)
 
 ***
 
@@ -82,7 +82,7 @@ Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:42](h
 
 > **roleId**: `string`
 
-Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:38](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/workflows/WorkflowTypes.ts#L38)
+Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:38](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/workflows/WorkflowTypes.ts#L38)
 
 ***
 
@@ -90,4 +90,4 @@ Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:38](h
 
 > `optional` **toolCapabilityRequirements**: `string`[]
 
-Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:45](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/workflows/WorkflowTypes.ts#L45)
+Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:45](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/workflows/WorkflowTypes.ts#L45)

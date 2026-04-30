@@ -1,6 +1,6 @@
 # Interface: EventDefinition
 
-Defined in: [engine/types.ts:156](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/types.ts#L156)
+Defined in: [apps/paracosm/src/engine/types.ts:156](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L156)
 
 Defines an event type with render metadata for the dashboard.
 
@@ -10,7 +10,7 @@ Defines an event type with render metadata for the dashboard.
 
 > **color**: `string`
 
-Defined in: [engine/types.ts:160](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/types.ts#L160)
+Defined in: [apps/paracosm/src/engine/types.ts:160](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L160)
 
 ***
 
@@ -18,7 +18,7 @@ Defined in: [engine/types.ts:160](https://github.com/framersai/paracosm/blob/446
 
 > **icon**: `string`
 
-Defined in: [engine/types.ts:159](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/types.ts#L159)
+Defined in: [apps/paracosm/src/engine/types.ts:159](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L159)
 
 ***
 
@@ -26,7 +26,7 @@ Defined in: [engine/types.ts:159](https://github.com/framersai/paracosm/blob/446
 
 > **id**: `string`
 
-Defined in: [engine/types.ts:157](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/types.ts#L157)
+Defined in: [apps/paracosm/src/engine/types.ts:157](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L157)
 
 ***
 
@@ -34,4 +34,4 @@ Defined in: [engine/types.ts:157](https://github.com/framersai/paracosm/blob/446
 
 > **label**: `string`
 
-Defined in: [engine/types.ts:158](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/types.ts#L158)
+Defined in: [apps/paracosm/src/engine/types.ts:158](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L158)

@@ -2,7 +2,7 @@
 
 > **ingestFromUrl**(`url`, `options`): `Promise`\<[`KnowledgeBundle`](../../interfaces/KnowledgeBundle.md)\>
 
-Defined in: [engine/compiler/seed-ingestion.ts:248](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/compiler/seed-ingestion.ts#L248)
+Defined in: [apps/paracosm/src/engine/compiler/seed-ingestion.ts:248](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/compiler/seed-ingestion.ts#L248)
 
 Ingest from a URL by fetching and extracting content.
 

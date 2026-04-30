@@ -1,6 +1,6 @@
 ---
 title: "Logging (Pino + OpenTelemetry)"
-sidebar_position: 9
+sidebar_position: 10
 ---
 
 AgentOS uses **structured JSON logs** via `pino` and supports **opt-in** OpenTelemetry (OTEL) correlation and export.

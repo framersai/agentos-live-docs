@@ -1,6 +1,6 @@
 # Class: FallbackVideoProxy
 
-Defined in: [packages/agentos/src/media/video/FallbackVideoProxy.ts:108](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/video/FallbackVideoProxy.ts#L108)
+Defined in: [packages/agentos/src/media/video/FallbackVideoProxy.ts:108](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/media/video/FallbackVideoProxy.ts#L108)
 
 An [IVideoGenerator](../interfaces/IVideoGenerator.md) that wraps an ordered chain of video providers
 and implements automatic failover for every operation.
@@ -32,7 +32,7 @@ transiently failing.
 
 > **new FallbackVideoProxy**(`chain`, `emitter`): `FallbackVideoProxy`
 
-Defined in: [packages/agentos/src/media/video/FallbackVideoProxy.ts:134](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/video/FallbackVideoProxy.ts#L134)
+Defined in: [packages/agentos/src/media/video/FallbackVideoProxy.ts:134](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/media/video/FallbackVideoProxy.ts#L134)
 
 Creates a new FallbackVideoProxy wrapping the given provider chain.
 
@@ -71,7 +71,7 @@ const proxy = new FallbackVideoProxy(
 
 > `readonly` `optional` **defaultModelId**: `string`
 
-Defined in: [packages/agentos/src/media/video/FallbackVideoProxy.ts:116](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/video/FallbackVideoProxy.ts#L116)
+Defined in: [packages/agentos/src/media/video/FallbackVideoProxy.ts:116](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/media/video/FallbackVideoProxy.ts#L116)
 
 Default model from the first provider, if set.
 
@@ -85,7 +85,7 @@ Default model from the first provider, if set.
 
 > `readonly` **isInitialized**: `boolean` = `true`
 
-Defined in: [packages/agentos/src/media/video/FallbackVideoProxy.ts:113](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/video/FallbackVideoProxy.ts#L113)
+Defined in: [packages/agentos/src/media/video/FallbackVideoProxy.ts:113](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/media/video/FallbackVideoProxy.ts#L113)
 
 Always `true` — the proxy is ready as soon as it is constructed.
 
@@ -99,7 +99,7 @@ Always `true` — the proxy is ready as soon as it is constructed.
 
 > `readonly` **providerId**: `string`
 
-Defined in: [packages/agentos/src/media/video/FallbackVideoProxy.ts:110](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/video/FallbackVideoProxy.ts#L110)
+Defined in: [packages/agentos/src/media/video/FallbackVideoProxy.ts:110](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/media/video/FallbackVideoProxy.ts#L110)
 
 Identifier derived from the first provider in the chain.
 
@@ -113,7 +113,7 @@ Identifier derived from the first provider in the chain.
 
 > **generateVideo**(`request`): `Promise`\<[`VideoResult`](../interfaces/VideoResult.md)\>
 
-Defined in: [packages/agentos/src/media/video/FallbackVideoProxy.ts:182](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/video/FallbackVideoProxy.ts#L182)
+Defined in: [packages/agentos/src/media/video/FallbackVideoProxy.ts:182](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/media/video/FallbackVideoProxy.ts#L182)
 
 Generate a video from a text prompt, falling back through the provider
 chain on failure.
@@ -150,7 +150,7 @@ When the chain is empty.
 
 > **imageToVideo**(`request`): `Promise`\<[`VideoResult`](../interfaces/VideoResult.md)\>
 
-Defined in: [packages/agentos/src/media/video/FallbackVideoProxy.ts:204](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/video/FallbackVideoProxy.ts#L204)
+Defined in: [packages/agentos/src/media/video/FallbackVideoProxy.ts:204](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/media/video/FallbackVideoProxy.ts#L204)
 
 Generate a video from a source image, falling back through providers
 that support image-to-video.
@@ -186,7 +186,7 @@ When every provider fails or does not support image-to-video.
 
 > **initialize**(`_config`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/media/video/FallbackVideoProxy.ts:150](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/video/FallbackVideoProxy.ts#L150)
+Defined in: [packages/agentos/src/media/video/FallbackVideoProxy.ts:150](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/media/video/FallbackVideoProxy.ts#L150)
 
 No-op initialisation — individual providers in the chain should already
 be initialised before being passed to the proxy.
@@ -211,7 +211,7 @@ be initialised before being passed to the proxy.
 
 > **shutdown**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/media/video/FallbackVideoProxy.ts:228](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/video/FallbackVideoProxy.ts#L228)
+Defined in: [packages/agentos/src/media/video/FallbackVideoProxy.ts:228](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/media/video/FallbackVideoProxy.ts#L228)
 
 Shuts down all providers in the chain. Errors are caught per-provider
 so a single provider's failure does not prevent the others from
@@ -231,7 +231,7 @@ cleaning up.
 
 > **supports**(`capability`): `boolean`
 
-Defined in: [packages/agentos/src/media/video/FallbackVideoProxy.ts:165](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/video/FallbackVideoProxy.ts#L165)
+Defined in: [packages/agentos/src/media/video/FallbackVideoProxy.ts:165](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/media/video/FallbackVideoProxy.ts#L165)
 
 Returns `true` if at least one provider in the chain supports the
 given capability.

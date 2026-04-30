@@ -1,6 +1,6 @@
 # Interface: WorkflowCheckpoint
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:271](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/hitl/IHumanInteractionManager.ts#L271)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:271](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/hitl/IHumanInteractionManager.ts#L271)
 
 Workflow state for checkpoint review.
 
@@ -10,7 +10,7 @@ Workflow state for checkpoint review.
 
 > **checkpointAt**: `Date`
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:289](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/hitl/IHumanInteractionManager.ts#L289)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:289](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/hitl/IHumanInteractionManager.ts#L289)
 
 Timestamp
 
@@ -20,7 +20,7 @@ Timestamp
 
 > **checkpointId**: `string`
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:273](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/hitl/IHumanInteractionManager.ts#L273)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:273](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/hitl/IHumanInteractionManager.ts#L273)
 
 Checkpoint identifier
 
@@ -30,7 +30,7 @@ Checkpoint identifier
 
 > **completedWork**: `string`[]
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:281](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/hitl/IHumanInteractionManager.ts#L281)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:281](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/hitl/IHumanInteractionManager.ts#L281)
 
 Summary of work completed
 
@@ -40,7 +40,7 @@ Summary of work completed
 
 > **currentPhase**: `string`
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:277](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/hitl/IHumanInteractionManager.ts#L277)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:277](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/hitl/IHumanInteractionManager.ts#L277)
 
 Current step/phase
 
@@ -50,7 +50,7 @@ Current step/phase
 
 > **issues**: `string`[]
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:285](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/hitl/IHumanInteractionManager.ts#L285)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:285](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/hitl/IHumanInteractionManager.ts#L285)
 
 Any issues or concerns
 
@@ -60,7 +60,7 @@ Any issues or concerns
 
 > `optional` **notes**: `string`
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:287](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/hitl/IHumanInteractionManager.ts#L287)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:287](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/hitl/IHumanInteractionManager.ts#L287)
 
 Agent's notes
 
@@ -70,7 +70,7 @@ Agent's notes
 
 > **progress**: `number`
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:279](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/hitl/IHumanInteractionManager.ts#L279)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:279](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/hitl/IHumanInteractionManager.ts#L279)
 
 Progress (0-1)
 
@@ -80,7 +80,7 @@ Progress (0-1)
 
 > **upcomingWork**: `string`[]
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:283](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/hitl/IHumanInteractionManager.ts#L283)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:283](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/hitl/IHumanInteractionManager.ts#L283)
 
 Upcoming work
 
@@ -90,6 +90,6 @@ Upcoming work
 
 > **workflowId**: `string`
 
-Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:275](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/hitl/IHumanInteractionManager.ts#L275)
+Defined in: [packages/agentos/src/orchestration/hitl/IHumanInteractionManager.ts:275](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/hitl/IHumanInteractionManager.ts#L275)
 
 Workflow/plan identifier

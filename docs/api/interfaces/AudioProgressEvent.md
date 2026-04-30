@@ -1,6 +1,6 @@
 # Interface: AudioProgressEvent
 
-Defined in: [packages/agentos/src/media/audio/types.ts:293](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/audio/types.ts#L293)
+Defined in: [packages/agentos/src/media/audio/types.ts:293](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/media/audio/types.ts#L293)
 
 Typed progress event emitted during audio generation.
 
@@ -25,7 +25,7 @@ emitter.on('audio:progress', (evt: AudioProgressEvent) => {
 
 > `optional` **estimatedRemainingMs**: `number`
 
-Defined in: [packages/agentos/src/media/audio/types.ts:318](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/audio/types.ts#L318)
+Defined in: [packages/agentos/src/media/audio/types.ts:318](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/media/audio/types.ts#L318)
 
 Estimated time remaining in milliseconds.
 
@@ -37,7 +37,7 @@ Only available when the provider reports ETA information.
 
 > `optional` **message**: `string`
 
-Defined in: [packages/agentos/src/media/audio/types.ts:321](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/audio/types.ts#L321)
+Defined in: [packages/agentos/src/media/audio/types.ts:321](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/media/audio/types.ts#L321)
 
 Human-readable status message or error description.
 
@@ -47,7 +47,7 @@ Human-readable status message or error description.
 
 > `optional` **progress**: `number`
 
-Defined in: [packages/agentos/src/media/audio/types.ts:311](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/audio/types.ts#L311)
+Defined in: [packages/agentos/src/media/audio/types.ts:311](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/media/audio/types.ts#L311)
 
 Estimated progress percentage (0-100).
 
@@ -60,7 +60,7 @@ until the final status transition.
 
 > **status**: `"failed"` \| `"queued"` \| `"processing"` \| `"downloading"` \| `"complete"`
 
-Defined in: [packages/agentos/src/media/audio/types.ts:303](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/audio/types.ts#L303)
+Defined in: [packages/agentos/src/media/audio/types.ts:303](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/media/audio/types.ts#L303)
 
 Current status of the generation job.
 

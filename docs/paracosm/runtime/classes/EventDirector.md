@@ -1,6 +1,6 @@
 # Class: EventDirector
 
-Defined in: [runtime/director.ts:246](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/runtime/director.ts#L246)
+Defined in: [apps/paracosm/src/runtime/director.ts:246](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/director.ts#L246)
 
 ## Constructors
 
@@ -18,7 +18,7 @@ Defined in: [runtime/director.ts:246](https://github.com/framersai/paracosm/blob
 
 > **generateEventBatch**(`ctx`, `maxEvents?`, `provider?`, `model?`, `instructions?`, `onUsage?`, `onProviderError?`, `onSchemaAttempt?`): `Promise`\<`DirectorEventBatch`\>
 
-Defined in: [runtime/director.ts:258](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/runtime/director.ts#L258)
+Defined in: [apps/paracosm/src/runtime/director.ts:258](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/director.ts#L258)
 
 Generate 1 to maxEvents events for a turn via the schema-validated
 generateObject wrapper. Falls back to canned events when the LLM
@@ -82,7 +82,7 @@ can feed per-schema retry telemetry into its cost tracker.
 
 > **getMilestoneCrisis**(`turn`, `maxTurns`): [`DirectorCrisis`](../type-aliases/DirectorCrisis.md) \| `null`
 
-Defined in: [runtime/director.ts:333](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/runtime/director.ts#L333)
+Defined in: [apps/paracosm/src/runtime/director.ts:333](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/director.ts#L333)
 
 Get a milestone crisis (Turn 1 or final turn).
 These are fixed for narrative anchoring.

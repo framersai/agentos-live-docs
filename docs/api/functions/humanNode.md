@@ -2,7 +2,7 @@
 
 > **humanNode**(`config`, `policies?`): [`GraphNode`](../interfaces/GraphNode.md)
 
-Defined in: [packages/agentos/src/orchestration/builders/nodes.ts:93](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/builders/nodes.ts#L93)
+Defined in: [packages/agentos/src/orchestration/builders/nodes.ts:88](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/builders/nodes.ts#L88)
 
 Creates a human-in-the-loop node that suspends execution until a human
 (or automated surrogate) provides a decision.
@@ -10,6 +10,9 @@ Creates a human-in-the-loop node that suspends execution until a human
 ## Parameters
 
 ### config
+
+Human-node configuration. Includes the human-facing `prompt`,
+  optional timeout/auto-resolution behavior, and optional LLM-judge settings.
 
 #### autoAccept?
 
@@ -80,13 +83,9 @@ What to do when timeout expires.
 
 `string`
 
-Message displayed to the human operator.
-
 #### timeout?
 
 `number`
-
-Maximum wall-clock milliseconds before the node is aborted or handled by `onTimeout`.
 
 ### policies?
 

@@ -1,6 +1,6 @@
 # Interface: ScenarioEventDef
 
-Defined in: [engine/mars/events.ts:1](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/mars/events.ts#L1)
+Defined in: [apps/paracosm/src/engine/mars/events.ts:1](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/mars/events.ts#L1)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [engine/mars/events.ts:1](https://github.com/framersai/paracosm/blob
 
 > **color**: `string`
 
-Defined in: [engine/mars/events.ts:5](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/mars/events.ts#L5)
+Defined in: [apps/paracosm/src/engine/mars/events.ts:5](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/mars/events.ts#L5)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [engine/mars/events.ts:5](https://github.com/framersai/paracosm/blob
 
 > **icon**: `string`
 
-Defined in: [engine/mars/events.ts:4](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/mars/events.ts#L4)
+Defined in: [apps/paracosm/src/engine/mars/events.ts:4](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/mars/events.ts#L4)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: [engine/mars/events.ts:4](https://github.com/framersai/paracosm/blob
 
 > **id**: `string`
 
-Defined in: [engine/mars/events.ts:2](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/mars/events.ts#L2)
+Defined in: [apps/paracosm/src/engine/mars/events.ts:2](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/mars/events.ts#L2)
 
 ***
 
@@ -32,4 +32,4 @@ Defined in: [engine/mars/events.ts:2](https://github.com/framersai/paracosm/blob
 
 > **label**: `string`
 
-Defined in: [engine/mars/events.ts:3](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/mars/events.ts#L3)
+Defined in: [apps/paracosm/src/engine/mars/events.ts:3](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/mars/events.ts#L3)

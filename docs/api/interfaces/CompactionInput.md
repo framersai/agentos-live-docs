@@ -1,6 +1,6 @@
 # Interface: CompactionInput
 
-Defined in: [packages/agentos/src/memory/pipeline/context/types.ts:119](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/pipeline/context/types.ts#L119)
+Defined in: [packages/agentos/src/memory/pipeline/context/types.ts:119](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/pipeline/context/types.ts#L119)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/memory/pipeline/context/types.ts:119](https://
 
 > **currentTokens**: `number`
 
-Defined in: [packages/agentos/src/memory/pipeline/context/types.ts:125](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/pipeline/context/types.ts#L125)
+Defined in: [packages/agentos/src/memory/pipeline/context/types.ts:125](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/pipeline/context/types.ts#L125)
 
 Current total token count.
 
@@ -18,7 +18,7 @@ Current total token count.
 
 > `optional` **emotionalContext**: [`EmotionalContext`](EmotionalContext.md)
 
-Defined in: [packages/agentos/src/memory/pipeline/context/types.ts:129](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/pipeline/context/types.ts#L129)
+Defined in: [packages/agentos/src/memory/pipeline/context/types.ts:129](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/pipeline/context/types.ts#L129)
 
 Current emotional context, if available.
 
@@ -28,7 +28,7 @@ Current emotional context, if available.
 
 > **maxContextTokens**: `number`
 
-Defined in: [packages/agentos/src/memory/pipeline/context/types.ts:123](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/pipeline/context/types.ts#L123)
+Defined in: [packages/agentos/src/memory/pipeline/context/types.ts:123](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/pipeline/context/types.ts#L123)
 
 Maximum token budget for the entire context window.
 
@@ -38,7 +38,7 @@ Maximum token budget for the entire context window.
 
 > **messages**: [`ContextMessage`](ContextMessage.md)[]
 
-Defined in: [packages/agentos/src/memory/pipeline/context/types.ts:121](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/pipeline/context/types.ts#L121)
+Defined in: [packages/agentos/src/memory/pipeline/context/types.ts:121](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/pipeline/context/types.ts#L121)
 
 All messages in the conversation.
 
@@ -48,7 +48,7 @@ All messages in the conversation.
 
 > `optional` **recentTraces**: [`MemoryTrace`](MemoryTrace.md)[]
 
-Defined in: [packages/agentos/src/memory/pipeline/context/types.ts:131](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/pipeline/context/types.ts#L131)
+Defined in: [packages/agentos/src/memory/pipeline/context/types.ts:131](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/pipeline/context/types.ts#L131)
 
 Recent memory traces for context (hybrid strategy).
 
@@ -58,6 +58,6 @@ Recent memory traces for context (hybrid strategy).
 
 > **summaryChain**: [`SummaryChainNode`](SummaryChainNode.md)[]
 
-Defined in: [packages/agentos/src/memory/pipeline/context/types.ts:127](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/pipeline/context/types.ts#L127)
+Defined in: [packages/agentos/src/memory/pipeline/context/types.ts:127](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/pipeline/context/types.ts#L127)
 
 Existing summary chain (for incremental compaction).

@@ -1,6 +1,7 @@
 ---
 title: "Self-Improving Memory"
 sidebar_position: 6
+description: 'The ConsolidationLoop runs 6 maintenance steps (prune, merge, strengthen, derive, compact, reindex), feedback signals detect used/ignored traces, and observation compression distills conversations into long-term knowledge.'
 ---
 
 > Memory consolidation is the analogue of slow-wave sleep: background maintenance that prunes weak traces, merges duplicates, strengthens co-activated patterns, derives new insights, compacts old episodic traces, and rebuilds the search index.
@@ -101,7 +102,7 @@ When `TemporalGist` runs during step 6's cognitive mechanisms phase, it now pres
 ```ts
 import { Memory } from '@framers/agentos';
 
-const mem = await Memory.create({
+const mem = await Memory.createSqlite({
   path: './brain.sqlite',
   selfImprove: true,
   consolidation: {
@@ -142,7 +143,7 @@ console.log(`Avg strength: ${health.avgStrength.toFixed(2)}`);
 
 ```ts
 // Turn-based: consolidate every 50 conversation turns
-const mem = await Memory.create({
+const mem = await Memory.createSqlite({
   path: './brain.sqlite',
   selfImprove: true,
   consolidation: {
@@ -152,7 +153,7 @@ const mem = await Memory.create({
 });
 
 // Manual only
-const mem2 = await Memory.create({
+const mem2 = await Memory.createSqlite({
   path: './brain.sqlite',
   selfImprove: true,
   consolidation: {

@@ -1,6 +1,6 @@
 # Interface: SkillRegistryOptions
 
-Defined in: [packages/agentos/src/skills/SkillRegistry.ts:34](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/skills/SkillRegistry.ts#L34)
+Defined in: [packages/agentos/src/skills/SkillRegistry.ts:34](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/skills/SkillRegistry.ts#L34)
 
 Registry options for initialization.
 
@@ -10,7 +10,7 @@ Registry options for initialization.
 
 > `optional` **bundledSkillsDir**: `string`
 
-Defined in: [packages/agentos/src/skills/SkillRegistry.ts:45](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/skills/SkillRegistry.ts#L45)
+Defined in: [packages/agentos/src/skills/SkillRegistry.ts:45](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/skills/SkillRegistry.ts#L45)
 
 Bundled skills directory
 
@@ -20,7 +20,7 @@ Bundled skills directory
 
 > `optional` **config**: [`SkillsConfig`](SkillsConfig.md)
 
-Defined in: [packages/agentos/src/skills/SkillRegistry.ts:48](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/skills/SkillRegistry.ts#L48)
+Defined in: [packages/agentos/src/skills/SkillRegistry.ts:48](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/skills/SkillRegistry.ts#L48)
 
 Skills configuration
 
@@ -30,7 +30,7 @@ Skills configuration
 
 > `optional` **extraDirs**: `string`[]
 
-Defined in: [packages/agentos/src/skills/SkillRegistry.ts:42](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/skills/SkillRegistry.ts#L42)
+Defined in: [packages/agentos/src/skills/SkillRegistry.ts:42](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/skills/SkillRegistry.ts#L42)
 
 Additional skill directories to scan
 
@@ -40,7 +40,7 @@ Additional skill directories to scan
 
 > `optional` **managedSkillsDir**: `string`
 
-Defined in: [packages/agentos/src/skills/SkillRegistry.ts:39](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/skills/SkillRegistry.ts#L39)
+Defined in: [packages/agentos/src/skills/SkillRegistry.ts:39](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/skills/SkillRegistry.ts#L39)
 
 Managed/global skills directory (e.g., ~/.codex/skills).
 
@@ -50,6 +50,6 @@ Managed/global skills directory (e.g., ~/.codex/skills).
 
 > `optional` **workspaceDir**: `string`
 
-Defined in: [packages/agentos/src/skills/SkillRegistry.ts:36](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/skills/SkillRegistry.ts#L36)
+Defined in: [packages/agentos/src/skills/SkillRegistry.ts:36](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/skills/SkillRegistry.ts#L36)
 
 Workspace directory containing skills

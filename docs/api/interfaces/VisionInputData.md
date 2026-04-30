@@ -1,6 +1,6 @@
 # Interface: VisionInputData
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:118](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/IGMI.ts#L118)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:118](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/cognitive_substrate/IGMI.ts#L118)
 
 **`Export`**
 
@@ -16,7 +16,7 @@ VisionInputData
 
 > **data**: `string`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:120](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/IGMI.ts#L120)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:120](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/cognitive_substrate/IGMI.ts#L120)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:120](https://gith
 
 > `optional` **description**: `string`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:122](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/IGMI.ts#L122)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:122](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/cognitive_substrate/IGMI.ts#L122)
 
 ***
 
@@ -32,7 +32,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:122](https://gith
 
 > `optional` **mimeType**: `string`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:121](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/IGMI.ts#L121)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:121](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/cognitive_substrate/IGMI.ts#L121)
 
 ***
 
@@ -40,4 +40,4 @@ Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:121](https://gith
 
 > **type**: `"image_url"` \| `"base64"`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:119](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/IGMI.ts#L119)
+Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:119](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/cognitive_substrate/IGMI.ts#L119)

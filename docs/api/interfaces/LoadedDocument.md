@@ -1,6 +1,6 @@
 # Interface: LoadedDocument
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:788](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/io/facade/types.ts#L788)
+Defined in: [packages/agentos/src/memory/io/facade/types.ts:796](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/io/facade/types.ts#L796)
 
 The parsed representation of a document returned by `Memory.load()`.
 Contains full text, optional chunks, and any extracted images/tables.
@@ -11,7 +11,7 @@ Contains full text, optional chunks, and any extracted images/tables.
 
 > `optional` **chunks**: [`DocumentChunk`](DocumentChunk.md)[]
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:802](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/io/facade/types.ts#L802)
+Defined in: [packages/agentos/src/memory/io/facade/types.ts:810](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/io/facade/types.ts#L810)
 
 Pre-chunked segments, present when chunking was requested during load.
 
@@ -21,7 +21,7 @@ Pre-chunked segments, present when chunking was requested during load.
 
 > **content**: `string`
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:792](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/io/facade/types.ts#L792)
+Defined in: [packages/agentos/src/memory/io/facade/types.ts:800](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/io/facade/types.ts#L800)
 
 Full extracted text content of the document.
 
@@ -31,7 +31,7 @@ Full extracted text content of the document.
 
 > **format**: `string`
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:819](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/io/facade/types.ts#L819)
+Defined in: [packages/agentos/src/memory/io/facade/types.ts:827](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/io/facade/types.ts#L827)
 
 The format that was detected or used to parse the document.
 
@@ -47,7 +47,7 @@ The format that was detected or used to parse the document.
 
 > `optional` **images**: [`ExtractedImage`](ExtractedImage.md)[]
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:808](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/io/facade/types.ts#L808)
+Defined in: [packages/agentos/src/memory/io/facade/types.ts:816](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/io/facade/types.ts#L816)
 
 Images extracted from the document.
 Populated only when `IngestionConfig.extractImages` is `true`.
@@ -58,7 +58,7 @@ Populated only when `IngestionConfig.extractImages` is `true`.
 
 > **metadata**: [`DocumentMetadata`](DocumentMetadata.md)
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:797](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/io/facade/types.ts#L797)
+Defined in: [packages/agentos/src/memory/io/facade/types.ts:805](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/io/facade/types.ts#L805)
 
 Document-level metadata (title, author, page count, etc.).
 
@@ -68,6 +68,6 @@ Document-level metadata (title, author, page count, etc.).
 
 > `optional` **tables**: [`ExtractedTable`](ExtractedTable.md)[]
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:813](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/io/facade/types.ts#L813)
+Defined in: [packages/agentos/src/memory/io/facade/types.ts:821](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/io/facade/types.ts#L821)
 
 Structured tables extracted from the document.

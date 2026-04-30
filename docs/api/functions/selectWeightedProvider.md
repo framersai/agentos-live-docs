@@ -2,7 +2,7 @@
 
 > **selectWeightedProvider**(`providers`, `weights?`): `string`
 
-Defined in: [packages/agentos/src/media/ProviderPreferences.ts:215](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/ProviderPreferences.ts#L215)
+Defined in: [packages/agentos/src/media/ProviderPreferences.ts:215](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/media/ProviderPreferences.ts#L215)
 
 Select a single provider from a list using optional per-provider weights.
 

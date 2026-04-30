@@ -1,6 +1,6 @@
 # Interface: RunInspection
 
-Defined in: [packages/agentos/src/orchestration/ir/types.ts:630](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/ir/types.ts#L630)
+Defined in: [packages/agentos/src/orchestration/ir/types.ts:630](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/ir/types.ts#L630)
 
 Complete inspection record for an in-progress or finished graph run.
 Returned by the runtime's run-management API.
@@ -11,7 +11,7 @@ Returned by the runtime's run-management API.
 
 > **checkpoints**: [`CheckpointMetadata`](CheckpointMetadata.md)[]
 
-Defined in: [packages/agentos/src/orchestration/ir/types.ts:644](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/ir/types.ts#L644)
+Defined in: [packages/agentos/src/orchestration/ir/types.ts:644](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/ir/types.ts#L644)
 
 All checkpoint snapshots persisted during the run.
 
@@ -21,7 +21,7 @@ All checkpoint snapshots persisted during the run.
 
 > `optional` **currentNodeId**: `string`
 
-Defined in: [packages/agentos/src/orchestration/ir/types.ts:638](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/ir/types.ts#L638)
+Defined in: [packages/agentos/src/orchestration/ir/types.ts:638](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/ir/types.ts#L638)
 
 Id of the node currently executing; absent when `status` is terminal.
 
@@ -31,7 +31,7 @@ Id of the node currently executing; absent when `status` is terminal.
 
 > **diagnostics**: [`DiagnosticsView`](DiagnosticsView.md)
 
-Defined in: [packages/agentos/src/orchestration/ir/types.ts:646](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/ir/types.ts#L646)
+Defined in: [packages/agentos/src/orchestration/ir/types.ts:646](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/ir/types.ts#L646)
 
 Accumulated diagnostic telemetry.
 
@@ -41,7 +41,7 @@ Accumulated diagnostic telemetry.
 
 > `optional` **error**: `object`
 
-Defined in: [packages/agentos/src/orchestration/ir/types.ts:650](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/ir/types.ts#L650)
+Defined in: [packages/agentos/src/orchestration/ir/types.ts:650](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/ir/types.ts#L650)
 
 Structured error detail; only present when `status` is `'errored'`.
 
@@ -63,7 +63,7 @@ Structured error detail; only present when `status` is `'errored'`.
 
 > **events**: `unknown`[]
 
-Defined in: [packages/agentos/src/orchestration/ir/types.ts:642](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/ir/types.ts#L642)
+Defined in: [packages/agentos/src/orchestration/ir/types.ts:642](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/ir/types.ts#L642)
 
 Ordered stream of runtime events emitted during the run (type: `GraphEvent[]`).
 
@@ -73,7 +73,7 @@ Ordered stream of runtime events emitted during the run (type: `GraphEvent[]`).
 
 > `optional` **finalOutput**: `unknown`
 
-Defined in: [packages/agentos/src/orchestration/ir/types.ts:648](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/ir/types.ts#L648)
+Defined in: [packages/agentos/src/orchestration/ir/types.ts:648](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/ir/types.ts#L648)
 
 Final output value; only present when `status` is `'completed'`.
 
@@ -83,7 +83,7 @@ Final output value; only present when `status` is `'completed'`.
 
 > **graphId**: `string`
 
-Defined in: [packages/agentos/src/orchestration/ir/types.ts:634](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/ir/types.ts#L634)
+Defined in: [packages/agentos/src/orchestration/ir/types.ts:634](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/ir/types.ts#L634)
 
 Id of the `CompiledExecutionGraph` being executed.
 
@@ -93,7 +93,7 @@ Id of the `CompiledExecutionGraph` being executed.
 
 > **runId**: `string`
 
-Defined in: [packages/agentos/src/orchestration/ir/types.ts:632](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/ir/types.ts#L632)
+Defined in: [packages/agentos/src/orchestration/ir/types.ts:632](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/ir/types.ts#L632)
 
 Unique run id (UUIDv4 assigned when the run was started).
 
@@ -103,7 +103,7 @@ Unique run id (UUIDv4 assigned when the run was started).
 
 > **status**: `"completed"` \| `"running"` \| `"interrupted"` \| `"errored"`
 
-Defined in: [packages/agentos/src/orchestration/ir/types.ts:636](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/ir/types.ts#L636)
+Defined in: [packages/agentos/src/orchestration/ir/types.ts:636](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/ir/types.ts#L636)
 
 Current lifecycle phase of the run.
 
@@ -113,6 +113,6 @@ Current lifecycle phase of the run.
 
 > **visitedNodes**: `string`[]
 
-Defined in: [packages/agentos/src/orchestration/ir/types.ts:640](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/ir/types.ts#L640)
+Defined in: [packages/agentos/src/orchestration/ir/types.ts:640](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/ir/types.ts#L640)
 
 Ordered list of node ids that have completed execution.

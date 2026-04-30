@@ -2,7 +2,7 @@
 
 > **ScorerFunction** = (`actual`, `expected`, `references`, `metadata?`) => `Promise`\<`number`\> \| `number`
 
-Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:219](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/evaluation/IEvaluator.ts#L219)
+Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:219](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/evaluation/IEvaluator.ts#L219)
 
 Scorer function type.
 

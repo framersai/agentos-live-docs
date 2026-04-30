@@ -1,6 +1,6 @@
 # Interface: PlanContext
 
-Defined in: [packages/agentos/src/orchestration/planning/MissionPlanner.ts:53](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/planning/MissionPlanner.ts#L53)
+Defined in: [packages/agentos/src/orchestration/planning/MissionPlanner.ts:53](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/planning/MissionPlanner.ts#L53)
 
 Contextual information passed to the planner.
 
@@ -10,7 +10,7 @@ Contextual information passed to the planner.
 
 > **providers**: `string`[]
 
-Defined in: [packages/agentos/src/orchestration/planning/MissionPlanner.ts:55](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/planning/MissionPlanner.ts#L55)
+Defined in: [packages/agentos/src/orchestration/planning/MissionPlanner.ts:55](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/planning/MissionPlanner.ts#L55)
 
 ***
 
@@ -18,7 +18,7 @@ Defined in: [packages/agentos/src/orchestration/planning/MissionPlanner.ts:55](h
 
 > **tools**: `object`[]
 
-Defined in: [packages/agentos/src/orchestration/planning/MissionPlanner.ts:54](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/planning/MissionPlanner.ts#L54)
+Defined in: [packages/agentos/src/orchestration/planning/MissionPlanner.ts:54](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/planning/MissionPlanner.ts#L54)
 
 #### description
 

@@ -14,6 +14,8 @@ This guide documents the reference implementation used by the AgentOS HTTP API r
 
 This is a strong **production baseline**, not a claim that AgentOS already ships the full current frontier of multimodal retrieval research. Today the canonical retrieval surface is still derived text. Direct visual late-interaction retrievers and page-native document retrieval remain follow-up work.
 
+Current implementation detail: PDF/document ingestion now indexes extracted text into standard RAG collections through `MultimodalIndexer.indexText(...)`, so derived document text is retrievable through the normal text pipeline rather than only being stored as memory traces.
+
 ## Why This Design
 
 - **Works by default**: If you can derive text, you can retrieve multimodal assets immediately using the standard RAG pipeline.
@@ -35,6 +37,8 @@ flowchart LR
 ```
 
 Key idea: the **derived text** is the canonical retrieval surface. Modality embeddings (when enabled) are an acceleration path, not a requirement. Documents are first-class assets in the same model, but stay text-first for now.
+
+That text-first design has one important boundary today: `UnifiedRetriever` still treats its multimodal source as non-text-only. Document/PDF text retrieval therefore works through the standard text RAG collections rather than through the multimodal source branch in `UnifiedRetriever`.
 
 ### Query
 

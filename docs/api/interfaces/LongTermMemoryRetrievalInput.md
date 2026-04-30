@@ -1,6 +1,6 @@
 # Interface: LongTermMemoryRetrievalInput
 
-Defined in: [packages/agentos/src/core/conversation/ILongTermMemoryRetriever.ts:3](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/conversation/ILongTermMemoryRetriever.ts#L3)
+Defined in: [packages/agentos/src/core/conversation/ILongTermMemoryRetriever.ts:4](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/core/conversation/ILongTermMemoryRetriever.ts#L4)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/core/conversation/ILongTermMemoryRetriever.ts:
 
 > **conversationId**: `string`
 
-Defined in: [packages/agentos/src/core/conversation/ILongTermMemoryRetriever.ts:6](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/conversation/ILongTermMemoryRetriever.ts#L6)
+Defined in: [packages/agentos/src/core/conversation/ILongTermMemoryRetriever.ts:7](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/core/conversation/ILongTermMemoryRetriever.ts#L7)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [packages/agentos/src/core/conversation/ILongTermMemoryRetriever.ts:
 
 > `optional` **maxContextChars**: `number`
 
-Defined in: [packages/agentos/src/core/conversation/ILongTermMemoryRetriever.ts:15](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/conversation/ILongTermMemoryRetriever.ts#L15)
+Defined in: [packages/agentos/src/core/conversation/ILongTermMemoryRetriever.ts:17](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/core/conversation/ILongTermMemoryRetriever.ts#L17)
 
 Advisory character budget for the returned context string.
 Implementations may truncate to stay within this budget.
@@ -27,7 +27,7 @@ Implementations may truncate to stay within this budget.
 
 > **memoryPolicy**: [`ResolvedLongTermMemoryPolicy`](ResolvedLongTermMemoryPolicy.md)
 
-Defined in: [packages/agentos/src/core/conversation/ILongTermMemoryRetriever.ts:10](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/conversation/ILongTermMemoryRetriever.ts#L10)
+Defined in: [packages/agentos/src/core/conversation/ILongTermMemoryRetriever.ts:11](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/core/conversation/ILongTermMemoryRetriever.ts#L11)
 
 ***
 
@@ -35,7 +35,7 @@ Defined in: [packages/agentos/src/core/conversation/ILongTermMemoryRetriever.ts:
 
 > **mode**: `string`
 
-Defined in: [packages/agentos/src/core/conversation/ILongTermMemoryRetriever.ts:8](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/conversation/ILongTermMemoryRetriever.ts#L8)
+Defined in: [packages/agentos/src/core/conversation/ILongTermMemoryRetriever.ts:9](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/core/conversation/ILongTermMemoryRetriever.ts#L9)
 
 ***
 
@@ -43,7 +43,7 @@ Defined in: [packages/agentos/src/core/conversation/ILongTermMemoryRetriever.ts:
 
 > `optional` **organizationId**: `string`
 
-Defined in: [packages/agentos/src/core/conversation/ILongTermMemoryRetriever.ts:5](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/conversation/ILongTermMemoryRetriever.ts#L5)
+Defined in: [packages/agentos/src/core/conversation/ILongTermMemoryRetriever.ts:6](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/core/conversation/ILongTermMemoryRetriever.ts#L6)
 
 ***
 
@@ -51,7 +51,7 @@ Defined in: [packages/agentos/src/core/conversation/ILongTermMemoryRetriever.ts:
 
 > **personaId**: `string`
 
-Defined in: [packages/agentos/src/core/conversation/ILongTermMemoryRetriever.ts:7](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/conversation/ILongTermMemoryRetriever.ts#L7)
+Defined in: [packages/agentos/src/core/conversation/ILongTermMemoryRetriever.ts:8](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/core/conversation/ILongTermMemoryRetriever.ts#L8)
 
 ***
 
@@ -59,7 +59,15 @@ Defined in: [packages/agentos/src/core/conversation/ILongTermMemoryRetriever.ts:
 
 > **queryText**: `string`
 
-Defined in: [packages/agentos/src/core/conversation/ILongTermMemoryRetriever.ts:9](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/conversation/ILongTermMemoryRetriever.ts#L9)
+Defined in: [packages/agentos/src/core/conversation/ILongTermMemoryRetriever.ts:10](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/core/conversation/ILongTermMemoryRetriever.ts#L10)
+
+***
+
+### retrievalPolicy?
+
+> `optional` **retrievalPolicy**: [`MemoryRetrievalPolicy`](MemoryRetrievalPolicy.md)
+
+Defined in: [packages/agentos/src/core/conversation/ILongTermMemoryRetriever.ts:12](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/core/conversation/ILongTermMemoryRetriever.ts#L12)
 
 ***
 
@@ -67,7 +75,7 @@ Defined in: [packages/agentos/src/core/conversation/ILongTermMemoryRetriever.ts:
 
 > `optional` **topKByScope**: `Partial`\<`Record`\<`"user"` \| `"persona"` \| `"organization"`, `number`\>\>
 
-Defined in: [packages/agentos/src/core/conversation/ILongTermMemoryRetriever.ts:20](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/conversation/ILongTermMemoryRetriever.ts#L20)
+Defined in: [packages/agentos/src/core/conversation/ILongTermMemoryRetriever.ts:22](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/core/conversation/ILongTermMemoryRetriever.ts#L22)
 
 Optional per-scope retrieval caps.
 Implementations are free to ignore/override.
@@ -78,4 +86,4 @@ Implementations are free to ignore/override.
 
 > **userId**: `string`
 
-Defined in: [packages/agentos/src/core/conversation/ILongTermMemoryRetriever.ts:4](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/conversation/ILongTermMemoryRetriever.ts#L4)
+Defined in: [packages/agentos/src/core/conversation/ILongTermMemoryRetriever.ts:5](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/core/conversation/ILongTermMemoryRetriever.ts#L5)

@@ -1,6 +1,6 @@
 # Class: ObservationCompressor
 
-Defined in: [packages/agentos/src/memory/pipeline/observation/ObservationCompressor.ts:122](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/pipeline/observation/ObservationCompressor.ts#L122)
+Defined in: [packages/agentos/src/memory/pipeline/observation/ObservationCompressor.ts:122](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/pipeline/observation/ObservationCompressor.ts#L122)
 
 LLM-based compressor that takes a batch of [ObservationNote](../interfaces/ObservationNote.md) objects
 and produces denser [CompressedObservation](../interfaces/CompressedObservation.md) summaries.
@@ -16,7 +16,7 @@ and a human-friendly relative time label.
 
 > **new ObservationCompressor**(`llmInvoker`, `traits?`): `ObservationCompressor`
 
-Defined in: [packages/agentos/src/memory/pipeline/observation/ObservationCompressor.ts:127](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/pipeline/observation/ObservationCompressor.ts#L127)
+Defined in: [packages/agentos/src/memory/pipeline/observation/ObservationCompressor.ts:127](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/pipeline/observation/ObservationCompressor.ts#L127)
 
 #### Parameters
 
@@ -42,7 +42,7 @@ Optional HEXACO personality traits for bias-aware compression.
 
 > **compress**(`notes`): `Promise`\<[`CompressedObservation`](../interfaces/CompressedObservation.md)[]\>
 
-Defined in: [packages/agentos/src/memory/pipeline/observation/ObservationCompressor.ts:144](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/pipeline/observation/ObservationCompressor.ts#L144)
+Defined in: [packages/agentos/src/memory/pipeline/observation/ObservationCompressor.ts:144](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/pipeline/observation/ObservationCompressor.ts#L144)
 
 Compress a batch of observation notes into denser summaries.
 

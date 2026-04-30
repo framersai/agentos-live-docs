@@ -1,6 +1,6 @@
 # Interface: ChannelEvent\<T\>
 
-Defined in: [packages/agentos/src/channels/types.ts:257](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/types.ts#L257)
+Defined in: [packages/agentos/src/channels/types.ts:257](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/channels/types.ts#L257)
 
 Generic channel event wrapper. The `data` field varies by event type.
 
@@ -16,7 +16,7 @@ Generic channel event wrapper. The `data` field varies by event type.
 
 > **conversationId**: `string`
 
-Defined in: [packages/agentos/src/channels/types.ts:260](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/types.ts#L260)
+Defined in: [packages/agentos/src/channels/types.ts:260](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/channels/types.ts#L260)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: [packages/agentos/src/channels/types.ts:260](https://github.com/fram
 
 > **data**: `T`
 
-Defined in: [packages/agentos/src/channels/types.ts:262](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/types.ts#L262)
+Defined in: [packages/agentos/src/channels/types.ts:262](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/channels/types.ts#L262)
 
 ***
 
@@ -32,7 +32,7 @@ Defined in: [packages/agentos/src/channels/types.ts:262](https://github.com/fram
 
 > **platform**: [`ChannelPlatform`](../type-aliases/ChannelPlatform.md)
 
-Defined in: [packages/agentos/src/channels/types.ts:259](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/types.ts#L259)
+Defined in: [packages/agentos/src/channels/types.ts:259](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/channels/types.ts#L259)
 
 ***
 
@@ -40,7 +40,7 @@ Defined in: [packages/agentos/src/channels/types.ts:259](https://github.com/fram
 
 > **timestamp**: `string`
 
-Defined in: [packages/agentos/src/channels/types.ts:261](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/types.ts#L261)
+Defined in: [packages/agentos/src/channels/types.ts:261](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/channels/types.ts#L261)
 
 ***
 
@@ -48,4 +48,4 @@ Defined in: [packages/agentos/src/channels/types.ts:261](https://github.com/fram
 
 > **type**: [`ChannelEventType`](../type-aliases/ChannelEventType.md)
 
-Defined in: [packages/agentos/src/channels/types.ts:258](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/types.ts#L258)
+Defined in: [packages/agentos/src/channels/types.ts:258](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/channels/types.ts#L258)

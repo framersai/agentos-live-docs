@@ -1,6 +1,6 @@
 # Interface: RecallOptions
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:336](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/io/facade/types.ts#L336)
+Defined in: [packages/agentos/src/memory/io/facade/types.ts:338](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/io/facade/types.ts#L338)
 
 Options for querying memory traces via `Memory.recall()`.
 
@@ -10,7 +10,7 @@ Options for querying memory traces via `Memory.recall()`.
 
 > `optional` **after**: `number`
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:369](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/io/facade/types.ts#L369)
+Defined in: [packages/agentos/src/memory/io/facade/types.ts:371](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/io/facade/types.ts#L371)
 
 Only return traces created after this Unix-ms timestamp.
 Part of the three-date temporal model for time-ranged recall.
@@ -21,7 +21,7 @@ Part of the three-date temporal model for time-ranged recall.
 
 > `optional` **before**: `number`
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:375](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/io/facade/types.ts#L375)
+Defined in: [packages/agentos/src/memory/io/facade/types.ts:377](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/io/facade/types.ts#L377)
 
 Only return traces created before this Unix-ms timestamp.
 Part of the three-date temporal model for time-ranged recall.
@@ -32,7 +32,7 @@ Part of the three-date temporal model for time-ranged recall.
 
 > `optional` **limit**: `number`
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:341](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/io/facade/types.ts#L341)
+Defined in: [packages/agentos/src/memory/io/facade/types.ts:343](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/io/facade/types.ts#L343)
 
 Maximum number of traces to return.
 
@@ -48,7 +48,7 @@ Maximum number of traces to return.
 
 > `optional` **minStrength**: `number`
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:363](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/io/facade/types.ts#L363)
+Defined in: [packages/agentos/src/memory/io/facade/types.ts:365](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/io/facade/types.ts#L365)
 
 Minimum retrieval strength (Ebbinghaus current strength) to include.
 Traces below this value are considered too weak/forgotten.
@@ -61,11 +61,22 @@ Traces below this value are considered too weak/forgotten.
 
 ***
 
+### policy?
+
+> `optional` **policy**: [`MemoryRetrievalPolicy`](MemoryRetrievalPolicy.md)
+
+Defined in: [packages/agentos/src/memory/io/facade/types.ts:383](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/io/facade/types.ts#L383)
+
+Optional shared retrieval policy override.
+When omitted, recall preserves the current standalone behavior.
+
+***
+
 ### scope?
 
 > `optional` **scope**: `string`
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:351](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/io/facade/types.ts#L351)
+Defined in: [packages/agentos/src/memory/io/facade/types.ts:353](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/io/facade/types.ts#L353)
 
 Filter by visibility scope.
 
@@ -75,7 +86,7 @@ Filter by visibility scope.
 
 > `optional` **scopeId**: `string`
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:356](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/io/facade/types.ts#L356)
+Defined in: [packages/agentos/src/memory/io/facade/types.ts:358](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/io/facade/types.ts#L358)
 
 Filter by scope ID.
 
@@ -85,6 +96,6 @@ Filter by scope ID.
 
 > `optional` **type**: `string`
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:346](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/io/facade/types.ts#L346)
+Defined in: [packages/agentos/src/memory/io/facade/types.ts:348](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/io/facade/types.ts#L348)
 
 Filter by Tulving memory type.

@@ -2,7 +2,7 @@
 
 > **CircuitState** = `"closed"` \| `"open"` \| `"half-open"`
 
-Defined in: [packages/agentos/src/safety/runtime/CircuitBreaker.ts:8](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/safety/runtime/CircuitBreaker.ts#L8)
+Defined in: [packages/agentos/src/safety/runtime/CircuitBreaker.ts:8](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/safety/runtime/CircuitBreaker.ts#L8)
 
 ## File
 

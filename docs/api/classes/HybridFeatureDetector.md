@@ -1,6 +1,6 @@
 # Class: HybridFeatureDetector
 
-Defined in: [packages/agentos/src/memory/core/encoding/ContentFeatureDetector.ts:168](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/core/encoding/ContentFeatureDetector.ts#L168)
+Defined in: [packages/agentos/src/memory/core/encoding/ContentFeatureDetector.ts:168](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/encoding/ContentFeatureDetector.ts#L168)
 
 Uses keyword detection for real-time encoding. Exposes `detectWithLlm()`
 for retroactive re-classification during consolidation.
@@ -15,7 +15,7 @@ for retroactive re-classification during consolidation.
 
 > **new HybridFeatureDetector**(`llmInvoker?`): `HybridFeatureDetector`
 
-Defined in: [packages/agentos/src/memory/core/encoding/ContentFeatureDetector.ts:172](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/core/encoding/ContentFeatureDetector.ts#L172)
+Defined in: [packages/agentos/src/memory/core/encoding/ContentFeatureDetector.ts:172](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/encoding/ContentFeatureDetector.ts#L172)
 
 #### Parameters
 
@@ -33,7 +33,7 @@ Defined in: [packages/agentos/src/memory/core/encoding/ContentFeatureDetector.ts
 
 > **detect**(`text`): `Promise`\<[`ContentFeatures`](../interfaces/ContentFeatures.md)\>
 
-Defined in: [packages/agentos/src/memory/core/encoding/ContentFeatureDetector.ts:177](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/core/encoding/ContentFeatureDetector.ts#L177)
+Defined in: [packages/agentos/src/memory/core/encoding/ContentFeatureDetector.ts:177](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/encoding/ContentFeatureDetector.ts#L177)
 
 Real-time detection: keyword only (zero latency).
 
@@ -57,7 +57,7 @@ Real-time detection: keyword only (zero latency).
 
 > **detectWithLlm**(`text`): `Promise`\<[`ContentFeatures`](../interfaces/ContentFeatures.md)\>
 
-Defined in: [packages/agentos/src/memory/core/encoding/ContentFeatureDetector.ts:182](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/core/encoding/ContentFeatureDetector.ts#L182)
+Defined in: [packages/agentos/src/memory/core/encoding/ContentFeatureDetector.ts:182](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/encoding/ContentFeatureDetector.ts#L182)
 
 Deferred detection: LLM-based (called during consolidation).
 

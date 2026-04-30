@@ -1,6 +1,6 @@
 # Class: ChunkingEngine
 
-Defined in: [packages/agentos/src/memory/io/ingestion/ChunkingEngine.ts:214](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/io/ingestion/ChunkingEngine.ts#L214)
+Defined in: [packages/agentos/src/memory/io/ingestion/ChunkingEngine.ts:214](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/io/ingestion/ChunkingEngine.ts#L214)
 
 Splits raw document text into an ordered array of `DocumentChunk` objects
 suitable for embedding and storage in a vector index.
@@ -28,7 +28,7 @@ const chunks = await engine.chunk(content, { strategy: 'fixed', chunkSize: 512 }
 
 > **chunk**(`content`, `options`): `Promise`\<[`DocumentChunk`](../interfaces/DocumentChunk.md)[]\>
 
-Defined in: [packages/agentos/src/memory/io/ingestion/ChunkingEngine.ts:229](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/io/ingestion/ChunkingEngine.ts#L229)
+Defined in: [packages/agentos/src/memory/io/ingestion/ChunkingEngine.ts:229](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/io/ingestion/ChunkingEngine.ts#L229)
 
 Chunks the provided `content` string according to the given `options`.
 

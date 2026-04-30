@@ -1,6 +1,6 @@
 # Interface: TwitterAuthParams
 
-Defined in: [packages/agentos/src/channels/adapters/TwitterChannelAdapter.ts:49](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/adapters/TwitterChannelAdapter.ts#L49)
+Defined in: [packages/agentos/src/channels/adapters/TwitterChannelAdapter.ts:49](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/channels/adapters/TwitterChannelAdapter.ts#L49)
 
 Platform-specific authentication parameters for Twitter API v2.
 
@@ -18,7 +18,7 @@ Platform-specific authentication parameters for Twitter API v2.
 
 > **accessSecret**: `string`
 
-Defined in: [packages/agentos/src/channels/adapters/TwitterChannelAdapter.ts:57](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/adapters/TwitterChannelAdapter.ts#L57)
+Defined in: [packages/agentos/src/channels/adapters/TwitterChannelAdapter.ts:57](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/channels/adapters/TwitterChannelAdapter.ts#L57)
 
 User-level access token secret.
 
@@ -28,7 +28,7 @@ User-level access token secret.
 
 > **accessToken**: `string`
 
-Defined in: [packages/agentos/src/channels/adapters/TwitterChannelAdapter.ts:55](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/adapters/TwitterChannelAdapter.ts#L55)
+Defined in: [packages/agentos/src/channels/adapters/TwitterChannelAdapter.ts:55](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/channels/adapters/TwitterChannelAdapter.ts#L55)
 
 User-level access token for read/write operations.
 
@@ -38,7 +38,7 @@ User-level access token for read/write operations.
 
 > **apiKey**: `string`
 
-Defined in: [packages/agentos/src/channels/adapters/TwitterChannelAdapter.ts:51](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/adapters/TwitterChannelAdapter.ts#L51)
+Defined in: [packages/agentos/src/channels/adapters/TwitterChannelAdapter.ts:51](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/channels/adapters/TwitterChannelAdapter.ts#L51)
 
 Consumer / API key.
 
@@ -48,6 +48,6 @@ Consumer / API key.
 
 > **apiSecret**: `string`
 
-Defined in: [packages/agentos/src/channels/adapters/TwitterChannelAdapter.ts:53](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/adapters/TwitterChannelAdapter.ts#L53)
+Defined in: [packages/agentos/src/channels/adapters/TwitterChannelAdapter.ts:53](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/channels/adapters/TwitterChannelAdapter.ts#L53)
 
 Consumer / API secret.

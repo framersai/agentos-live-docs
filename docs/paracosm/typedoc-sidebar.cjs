@@ -27,6 +27,11 @@ const typedocSidebar = {
             },
             {
               type: "doc",
+              id: "paracosm/engine/classes/ProviderKeyMissingError",
+              label: "ProviderKeyMissingError"
+            },
+            {
+              type: "doc",
               id: "paracosm/engine/classes/SeededRng",
               label: "SeededRng"
             },
@@ -168,6 +173,16 @@ const typedocSidebar = {
             },
             {
               type: "doc",
+              id: "paracosm/engine/interfaces/ParacosmClient",
+              label: "ParacosmClient"
+            },
+            {
+              type: "doc",
+              id: "paracosm/engine/interfaces/ParacosmClientOptions",
+              label: "ParacosmClientOptions"
+            },
+            {
+              type: "doc",
               id: "paracosm/engine/interfaces/PolicyEffect",
               label: "PolicyEffect"
             },
@@ -185,6 +200,16 @@ const typedocSidebar = {
               type: "doc",
               id: "paracosm/engine/interfaces/PromptHookContext",
               label: "PromptHookContext"
+            },
+            {
+              type: "doc",
+              id: "paracosm/engine/interfaces/ResolvedProviderChoice",
+              label: "ResolvedProviderChoice"
+            },
+            {
+              type: "doc",
+              id: "paracosm/engine/interfaces/ResolveProviderOptions",
+              label: "ResolveProviderOptions"
             },
             {
               type: "doc",
@@ -304,6 +329,11 @@ const typedocSidebar = {
             },
             {
               type: "doc",
+              id: "paracosm/engine/type-aliases/CostPreset",
+              label: "CostPreset"
+            },
+            {
+              type: "doc",
               id: "paracosm/engine/type-aliases/Department",
               label: "Department"
             },
@@ -361,6 +391,11 @@ const typedocSidebar = {
             },
             {
               type: "doc",
+              id: "paracosm/engine/functions/createParacosmClient",
+              label: "createParacosmClient"
+            },
+            {
+              type: "doc",
               id: "paracosm/engine/functions/generateInitialPopulation",
               label: "generateInitialPopulation"
             },
@@ -368,6 +403,11 @@ const typedocSidebar = {
               type: "doc",
               id: "paracosm/engine/functions/progressBetweenTurns",
               label: "progressBetweenTurns"
+            },
+            {
+              type: "doc",
+              id: "paracosm/engine/functions/resolveProviderWithFallback",
+              label: "resolveProviderWithFallback"
             }
           ]
         },
@@ -511,6 +551,16 @@ const typedocSidebar = {
             },
             {
               type: "doc",
+              id: "paracosm/runtime/interfaces/SimEventCostPayload",
+              label: "SimEventCostPayload"
+            },
+            {
+              type: "doc",
+              id: "paracosm/runtime/interfaces/SimEventPayloadMap",
+              label: "SimEventPayloadMap"
+            },
+            {
+              type: "doc",
               id: "paracosm/runtime/interfaces/TurnArtifact",
               label: "TurnArtifact"
             }
@@ -544,6 +594,11 @@ const typedocSidebar = {
             },
             {
               type: "doc",
+              id: "paracosm/runtime/type-aliases/SimEventType",
+              label: "SimEventType"
+            },
+            {
+              type: "doc",
               id: "paracosm/runtime/type-aliases/SimulationEconomicsProfileId",
               label: "SimulationEconomicsProfileId"
             }
@@ -562,6 +617,11 @@ const typedocSidebar = {
               type: "doc",
               id: "paracosm/runtime/functions/buildEconomicsEnvelope",
               label: "buildEconomicsEnvelope"
+            },
+            {
+              type: "doc",
+              id: "paracosm/runtime/functions/buildEventSummary",
+              label: "buildEventSummary"
             },
             {
               type: "doc",

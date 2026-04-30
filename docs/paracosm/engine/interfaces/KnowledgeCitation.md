@@ -1,6 +1,6 @@
 # Interface: KnowledgeCitation
 
-Defined in: [engine/types.ts:182](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/types.ts#L182)
+Defined in: [apps/paracosm/src/engine/types.ts:182](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L182)
 
 A single research citation with optional DOI.
 
@@ -10,7 +10,7 @@ A single research citation with optional DOI.
 
 > **claim**: `string`
 
-Defined in: [engine/types.ts:183](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/types.ts#L183)
+Defined in: [apps/paracosm/src/engine/types.ts:183](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L183)
 
 ***
 
@@ -18,7 +18,7 @@ Defined in: [engine/types.ts:183](https://github.com/framersai/paracosm/blob/446
 
 > `optional` **doi**: `string`
 
-Defined in: [engine/types.ts:186](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/types.ts#L186)
+Defined in: [apps/paracosm/src/engine/types.ts:186](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L186)
 
 ***
 
@@ -26,7 +26,7 @@ Defined in: [engine/types.ts:186](https://github.com/framersai/paracosm/blob/446
 
 > **source**: `string`
 
-Defined in: [engine/types.ts:184](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/types.ts#L184)
+Defined in: [apps/paracosm/src/engine/types.ts:184](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L184)
 
 ***
 
@@ -34,4 +34,4 @@ Defined in: [engine/types.ts:184](https://github.com/framersai/paracosm/blob/446
 
 > **url**: `string`
 
-Defined in: [engine/types.ts:185](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/types.ts#L185)
+Defined in: [apps/paracosm/src/engine/types.ts:185](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L185)

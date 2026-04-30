@@ -1,6 +1,6 @@
 ---
 title: "Extension Loading"
-sidebar_position: 6
+sidebar_position: 7
 ---
 
 > Deep dive into the extension pack lifecycle, manifest resolution, and dynamic import system. For the full system overview, see [System Architecture](./system-architecture.md).

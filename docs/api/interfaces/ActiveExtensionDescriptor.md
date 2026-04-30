@@ -1,6 +1,6 @@
 # Interface: ActiveExtensionDescriptor\<TPayload\>
 
-Defined in: [packages/agentos/src/extensions/types.ts:147](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/extensions/types.ts#L147)
+Defined in: [packages/agentos/src/extensions/types.ts:147](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/extensions/types.ts#L147)
 
 Active descriptor paired with resolved priority and original stack index.
 
@@ -20,7 +20,7 @@ Active descriptor paired with resolved priority and original stack index.
 
 > `optional` **enableByDefault**: `boolean`
 
-Defined in: [packages/agentos/src/extensions/types.ts:114](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/extensions/types.ts#L114)
+Defined in: [packages/agentos/src/extensions/types.ts:114](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/extensions/types.ts#L114)
 
 Flag indicating whether the descriptor should be enabled by default when
 discovered. Manifests or overrides can still disable it explicitly.
@@ -35,7 +35,7 @@ discovered. Manifests or overrides can still disable it explicitly.
 
 > **id**: `string`
 
-Defined in: [packages/agentos/src/extensions/types.ts:100](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/extensions/types.ts#L100)
+Defined in: [packages/agentos/src/extensions/types.ts:100](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/extensions/types.ts#L100)
 
 Unique identifier for the descriptor within its kind. Subsequent
 descriptors with the same id stack on top of previous entries.
@@ -50,7 +50,7 @@ descriptors with the same id stack on top of previous entries.
 
 > **kind**: `string`
 
-Defined in: [packages/agentos/src/extensions/types.ts:104](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/extensions/types.ts#L104)
+Defined in: [packages/agentos/src/extensions/types.ts:104](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/extensions/types.ts#L104)
 
 High-level category of the descriptor (tool, guardrail, etc.).
 
@@ -64,7 +64,7 @@ High-level category of the descriptor (tool, guardrail, etc.).
 
 > `optional` **metadata**: `Record`\<`string`, `unknown`\>
 
-Defined in: [packages/agentos/src/extensions/types.ts:118](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/extensions/types.ts#L118)
+Defined in: [packages/agentos/src/extensions/types.ts:118](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/extensions/types.ts#L118)
 
 Arbitrary metadata for tooling or pack-specific usage.
 
@@ -78,7 +78,7 @@ Arbitrary metadata for tooling or pack-specific usage.
 
 > `optional` **onActivate**: (`context`) => `void` \| `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/extensions/types.ts:131](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/extensions/types.ts#L131)
+Defined in: [packages/agentos/src/extensions/types.ts:131](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/extensions/types.ts#L131)
 
 Optional lifecycle hook invoked when the descriptor becomes the active
 entry for its id.
@@ -103,7 +103,7 @@ entry for its id.
 
 > `optional` **onDeactivate**: (`context`) => `void` \| `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/extensions/types.ts:136](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/extensions/types.ts#L136)
+Defined in: [packages/agentos/src/extensions/types.ts:136](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/extensions/types.ts#L136)
 
 Optional lifecycle hook invoked when the descriptor is superseded or
 removed.
@@ -128,7 +128,7 @@ removed.
 
 > **payload**: `TPayload`
 
-Defined in: [packages/agentos/src/extensions/types.ts:122](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/extensions/types.ts#L122)
+Defined in: [packages/agentos/src/extensions/types.ts:122](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/extensions/types.ts#L122)
 
 The payload consumed by the runtime (e.g., tool factory function).
 
@@ -142,7 +142,7 @@ The payload consumed by the runtime (e.g., tool factory function).
 
 > `optional` **priority**: `number`
 
-Defined in: [packages/agentos/src/extensions/types.ts:109](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/extensions/types.ts#L109)
+Defined in: [packages/agentos/src/extensions/types.ts:109](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/extensions/types.ts#L109)
 
 Optional priority used during manifest loading. Higher numbers load later,
 allowing them to supersede earlier descriptors with the same id.
@@ -157,7 +157,7 @@ allowing them to supersede earlier descriptors with the same id.
 
 > `optional` **requiredSecrets**: [`ExtensionSecretRequirement`](ExtensionSecretRequirement.md)[]
 
-Defined in: [packages/agentos/src/extensions/types.ts:141](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/extensions/types.ts#L141)
+Defined in: [packages/agentos/src/extensions/types.ts:141](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/extensions/types.ts#L141)
 
 Declares the secrets (API keys, credentials) the descriptor needs in
 order to function.
@@ -172,7 +172,7 @@ order to function.
 
 > **resolvedPriority**: `number`
 
-Defined in: [packages/agentos/src/extensions/types.ts:152](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/extensions/types.ts#L152)
+Defined in: [packages/agentos/src/extensions/types.ts:152](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/extensions/types.ts#L152)
 
 Resolved numeric priority used to order descriptors inside a stack.
 
@@ -182,7 +182,7 @@ Resolved numeric priority used to order descriptors inside a stack.
 
 > `optional` **source**: [`ExtensionSourceMetadata`](ExtensionSourceMetadata.md)
 
-Defined in: [packages/agentos/src/extensions/types.ts:126](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/extensions/types.ts#L126)
+Defined in: [packages/agentos/src/extensions/types.ts:126](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/extensions/types.ts#L126)
 
 Provenance information for the descriptor.
 
@@ -196,6 +196,6 @@ Provenance information for the descriptor.
 
 > **stackIndex**: `number`
 
-Defined in: [packages/agentos/src/extensions/types.ts:156](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/extensions/types.ts#L156)
+Defined in: [packages/agentos/src/extensions/types.ts:156](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/extensions/types.ts#L156)
 
 0-based insertion position within the stack (lower is older).

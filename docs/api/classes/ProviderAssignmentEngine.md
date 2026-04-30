@@ -1,6 +1,6 @@
 # Class: ProviderAssignmentEngine
 
-Defined in: [packages/agentos/src/orchestration/planning/ProviderAssignmentEngine.ts:41](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/planning/ProviderAssignmentEngine.ts#L41)
+Defined in: [packages/agentos/src/orchestration/planning/ProviderAssignmentEngine.ts:41](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/planning/ProviderAssignmentEngine.ts#L41)
 
 Assigns LLM providers and models to graph nodes based on strategy.
 
@@ -10,7 +10,7 @@ Assigns LLM providers and models to graph nodes based on strategy.
 
 > **new ProviderAssignmentEngine**(`availableProviders`): `ProviderAssignmentEngine`
 
-Defined in: [packages/agentos/src/orchestration/planning/ProviderAssignmentEngine.ts:45](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/planning/ProviderAssignmentEngine.ts#L45)
+Defined in: [packages/agentos/src/orchestration/planning/ProviderAssignmentEngine.ts:45](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/planning/ProviderAssignmentEngine.ts#L45)
 
 #### Parameters
 
@@ -28,7 +28,7 @@ Defined in: [packages/agentos/src/orchestration/planning/ProviderAssignmentEngin
 
 > **assign**(`nodes`, `config`): [`NodeProviderAssignment`](../interfaces/NodeProviderAssignment.md)[]
 
-Defined in: [packages/agentos/src/orchestration/planning/ProviderAssignmentEngine.ts:57](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/planning/ProviderAssignmentEngine.ts#L57)
+Defined in: [packages/agentos/src/orchestration/planning/ProviderAssignmentEngine.ts:57](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/planning/ProviderAssignmentEngine.ts#L57)
 
 Assign providers/models to all nodes in a graph.
 
@@ -56,7 +56,7 @@ Strategy configuration.
 
 > **checkAvailability**(`assignments`): `object`
 
-Defined in: [packages/agentos/src/orchestration/planning/ProviderAssignmentEngine.ts:77](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/planning/ProviderAssignmentEngine.ts#L77)
+Defined in: [packages/agentos/src/orchestration/planning/ProviderAssignmentEngine.ts:77](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/planning/ProviderAssignmentEngine.ts#L77)
 
 Check whether all required providers are available (have API keys).
 

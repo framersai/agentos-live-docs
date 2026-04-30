@@ -1,6 +1,6 @@
 # Interface: RAGAuditTrail
 
-Defined in: [packages/agentos/src/rag/audit/RAGAuditTypes.ts:101](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/audit/RAGAuditTypes.ts#L101)
+Defined in: [packages/agentos/src/rag/audit/RAGAuditTypes.ts:101](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/audit/RAGAuditTypes.ts#L101)
 
 Aggregated audit trail for a complete RAG request.
 
@@ -10,7 +10,7 @@ Aggregated audit trail for a complete RAG request.
 
 > **operations**: [`RAGOperationEntry`](RAGOperationEntry.md)[]
 
-Defined in: [packages/agentos/src/rag/audit/RAGAuditTypes.ts:115](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/audit/RAGAuditTypes.ts#L115)
+Defined in: [packages/agentos/src/rag/audit/RAGAuditTypes.ts:115](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/audit/RAGAuditTypes.ts#L115)
 
 Per-operation breakdown.
 
@@ -20,7 +20,7 @@ Per-operation breakdown.
 
 > **query**: `string`
 
-Defined in: [packages/agentos/src/rag/audit/RAGAuditTypes.ts:110](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/audit/RAGAuditTypes.ts#L110)
+Defined in: [packages/agentos/src/rag/audit/RAGAuditTypes.ts:110](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/audit/RAGAuditTypes.ts#L110)
 
 The user query that triggered RAG.
 
@@ -30,7 +30,7 @@ The user query that triggered RAG.
 
 > **requestId**: `string`
 
-Defined in: [packages/agentos/src/rag/audit/RAGAuditTypes.ts:104](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/audit/RAGAuditTypes.ts#L104)
+Defined in: [packages/agentos/src/rag/audit/RAGAuditTypes.ts:104](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/audit/RAGAuditTypes.ts#L104)
 
 Correlates with the conversation turn or API request.
 
@@ -40,7 +40,7 @@ Correlates with the conversation turn or API request.
 
 > `optional` **seedId**: `string`
 
-Defined in: [packages/agentos/src/rag/audit/RAGAuditTypes.ts:106](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/audit/RAGAuditTypes.ts#L106)
+Defined in: [packages/agentos/src/rag/audit/RAGAuditTypes.ts:106](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/audit/RAGAuditTypes.ts#L106)
 
 Wunderland agent seed ID.
 
@@ -50,7 +50,7 @@ Wunderland agent seed ID.
 
 > `optional` **sessionId**: `string`
 
-Defined in: [packages/agentos/src/rag/audit/RAGAuditTypes.ts:108](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/audit/RAGAuditTypes.ts#L108)
+Defined in: [packages/agentos/src/rag/audit/RAGAuditTypes.ts:108](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/audit/RAGAuditTypes.ts#L108)
 
 Conversation session ID.
 
@@ -60,7 +60,7 @@ Conversation session ID.
 
 > **summary**: `object`
 
-Defined in: [packages/agentos/src/rag/audit/RAGAuditTypes.ts:118](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/audit/RAGAuditTypes.ts#L118)
+Defined in: [packages/agentos/src/rag/audit/RAGAuditTypes.ts:118](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/audit/RAGAuditTypes.ts#L118)
 
 Aggregated summary across all operations.
 
@@ -128,7 +128,7 @@ Unique operation types used (e.g. ['embedding', 'vector_query', 'rerank']).
 
 > **timestamp**: `string`
 
-Defined in: [packages/agentos/src/rag/audit/RAGAuditTypes.ts:112](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/audit/RAGAuditTypes.ts#L112)
+Defined in: [packages/agentos/src/rag/audit/RAGAuditTypes.ts:112](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/audit/RAGAuditTypes.ts#L112)
 
 ISO 8601 timestamp.
 
@@ -138,4 +138,4 @@ ISO 8601 timestamp.
 
 > **trailId**: `string`
 
-Defined in: [packages/agentos/src/rag/audit/RAGAuditTypes.ts:102](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/audit/RAGAuditTypes.ts#L102)
+Defined in: [packages/agentos/src/rag/audit/RAGAuditTypes.ts:102](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/audit/RAGAuditTypes.ts#L102)

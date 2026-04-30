@@ -1,6 +1,6 @@
 # Interface: WorldPolitics
 
-Defined in: [engine/core/state.ts:166](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/core/state.ts#L166)
+Defined in: [apps/paracosm/src/engine/core/state.ts:166](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/core/state.ts#L166)
 
 Universal political/social state shared by every scenario.
 
@@ -24,7 +24,7 @@ Scenario-defined political variables beyond the universal set.
 
 > **earthDependencyPct**: `number`
 
-Defined in: [engine/core/state.ts:171](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/core/state.ts#L171)
+Defined in: [apps/paracosm/src/engine/core/state.ts:171](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/core/state.ts#L171)
 
 Mars/Lunar-specific: percentage of supplies still relying on the
 parent body (Earth, planet, etc.). Custom scenarios may ignore.
@@ -35,7 +35,7 @@ parent body (Earth, planet, etc.). Custom scenarios may ignore.
 
 > **governanceStatus**: `"earth-governed"` \| `"commonwealth"` \| `"independent"`
 
-Defined in: [engine/core/state.ts:176](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/core/state.ts#L176)
+Defined in: [apps/paracosm/src/engine/core/state.ts:176](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/core/state.ts#L176)
 
 Mars/Lunar-specific governance trajectory. Custom scenarios may ignore
 or override with their own status string via the index signature.
@@ -46,7 +46,7 @@ or override with their own status string via the index signature.
 
 > **independencePressure**: `number`
 
-Defined in: [engine/core/state.ts:181](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/core/state.ts#L181)
+Defined in: [apps/paracosm/src/engine/core/state.ts:181](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/core/state.ts#L181)
 
 Mars/Lunar-specific: 0..1 pressure toward independence. Custom
 scenarios may ignore.

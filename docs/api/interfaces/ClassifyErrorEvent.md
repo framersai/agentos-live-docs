@@ -1,6 +1,6 @@
 # Interface: ClassifyErrorEvent
 
-Defined in: [packages/agentos/src/query-router/types.ts:879](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/query-router/types.ts#L879)
+Defined in: [packages/agentos/src/query-router/types.ts:890](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/query-router/types.ts#L890)
 
 Emitted when query classification fails.
 
@@ -10,7 +10,7 @@ Emitted when query classification fails.
 
 > **error**: `Error`
 
-Defined in: [packages/agentos/src/query-router/types.ts:882](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/query-router/types.ts#L882)
+Defined in: [packages/agentos/src/query-router/types.ts:893](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/query-router/types.ts#L893)
 
 The error that caused classification to fail.
 
@@ -20,7 +20,7 @@ The error that caused classification to fail.
 
 > **timestamp**: `number`
 
-Defined in: [packages/agentos/src/query-router/types.ts:884](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/query-router/types.ts#L884)
+Defined in: [packages/agentos/src/query-router/types.ts:895](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/query-router/types.ts#L895)
 
 Timestamp when the error occurred.
 
@@ -30,4 +30,4 @@ Timestamp when the error occurred.
 
 > **type**: `"classify:error"`
 
-Defined in: [packages/agentos/src/query-router/types.ts:880](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/query-router/types.ts#L880)
+Defined in: [packages/agentos/src/query-router/types.ts:891](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/query-router/types.ts#L891)

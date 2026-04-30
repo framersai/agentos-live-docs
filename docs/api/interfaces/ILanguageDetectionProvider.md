@@ -1,6 +1,6 @@
 # Interface: ILanguageDetectionProvider
 
-Defined in: [packages/agentos/src/nlp/language/interfaces.ts:43](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/nlp/language/interfaces.ts#L43)
+Defined in: [packages/agentos/src/nlp/language/interfaces.ts:43](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/nlp/language/interfaces.ts#L43)
 
 Pluggable detection provider interface.
 Providers SHOULD return an ordered list with the highest confidence first.
@@ -11,7 +11,7 @@ Providers SHOULD return an ordered list with the highest confidence first.
 
 > `readonly` **id**: `string`
 
-Defined in: [packages/agentos/src/nlp/language/interfaces.ts:44](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/nlp/language/interfaces.ts#L44)
+Defined in: [packages/agentos/src/nlp/language/interfaces.ts:44](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/nlp/language/interfaces.ts#L44)
 
 ***
 
@@ -19,7 +19,7 @@ Defined in: [packages/agentos/src/nlp/language/interfaces.ts:44](https://github.
 
 > `readonly` **isInitialized**: `boolean`
 
-Defined in: [packages/agentos/src/nlp/language/interfaces.ts:45](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/nlp/language/interfaces.ts#L45)
+Defined in: [packages/agentos/src/nlp/language/interfaces.ts:45](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/nlp/language/interfaces.ts#L45)
 
 ## Methods
 
@@ -27,7 +27,7 @@ Defined in: [packages/agentos/src/nlp/language/interfaces.ts:45](https://github.
 
 > **detect**(`text`): `Promise`\<[`DetectedLanguageResult`](DetectedLanguageResult.md)[]\>
 
-Defined in: [packages/agentos/src/nlp/language/interfaces.ts:49](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/nlp/language/interfaces.ts#L49)
+Defined in: [packages/agentos/src/nlp/language/interfaces.ts:49](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/nlp/language/interfaces.ts#L49)
 
 Detect language from plain text.
 
@@ -47,7 +47,7 @@ Detect language from plain text.
 
 > `optional` **detectFromAudio**(`audio`): `Promise`\<[`DetectedLanguageResult`](DetectedLanguageResult.md)[]\>
 
-Defined in: [packages/agentos/src/nlp/language/interfaces.ts:51](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/nlp/language/interfaces.ts#L51)
+Defined in: [packages/agentos/src/nlp/language/interfaces.ts:51](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/nlp/language/interfaces.ts#L51)
 
 Optional audio-based detection (e.g., short clip classification).
 
@@ -67,7 +67,7 @@ Optional audio-based detection (e.g., short clip classification).
 
 > **initialize**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/nlp/language/interfaces.ts:47](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/nlp/language/interfaces.ts#L47)
+Defined in: [packages/agentos/src/nlp/language/interfaces.ts:47](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/nlp/language/interfaces.ts#L47)
 
 Perform any async setup (API key validation, model warm-up).
 
@@ -81,7 +81,7 @@ Perform any async setup (API key validation, model warm-up).
 
 > `optional` **shutdown**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/nlp/language/interfaces.ts:53](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/nlp/language/interfaces.ts#L53)
+Defined in: [packages/agentos/src/nlp/language/interfaces.ts:53](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/nlp/language/interfaces.ts#L53)
 
 Dispose resources (close handles, free model memory).
 

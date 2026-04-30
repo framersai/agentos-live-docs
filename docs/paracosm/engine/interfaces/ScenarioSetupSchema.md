@@ -1,6 +1,6 @@
 # Interface: ScenarioSetupSchema
 
-Defined in: [engine/types.ts:51](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/types.ts#L51)
+Defined in: [apps/paracosm/src/engine/types.ts:51](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L51)
 
 Default values for the simulation setup form.
 
@@ -10,7 +10,7 @@ Default values for the simulation setup form.
 
 > **configurableSections**: (`"leaders"` \| `"personnel"` \| `"resources"` \| `"departments"` \| `"events"` \| `"models"` \| `"advanced"`)[]
 
-Defined in: [engine/types.ts:60](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/types.ts#L60)
+Defined in: [apps/paracosm/src/engine/types.ts:60](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L60)
 
 Which setup form sections to expose in the dashboard
 
@@ -20,7 +20,7 @@ Which setup form sections to expose in the dashboard
 
 > **defaultPopulation**: `number`
 
-Defined in: [engine/types.ts:56](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/types.ts#L56)
+Defined in: [apps/paracosm/src/engine/types.ts:56](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L56)
 
 ***
 
@@ -28,7 +28,7 @@ Defined in: [engine/types.ts:56](https://github.com/framersai/paracosm/blob/4460
 
 > **defaultSeed**: `number`
 
-Defined in: [engine/types.ts:53](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/types.ts#L53)
+Defined in: [apps/paracosm/src/engine/types.ts:53](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L53)
 
 ***
 
@@ -36,7 +36,7 @@ Defined in: [engine/types.ts:53](https://github.com/framersai/paracosm/blob/4460
 
 > **defaultStartYear**: `number`
 
-Defined in: [engine/types.ts:54](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/types.ts#L54)
+Defined in: [apps/paracosm/src/engine/types.ts:54](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L54)
 
 ***
 
@@ -44,7 +44,7 @@ Defined in: [engine/types.ts:54](https://github.com/framersai/paracosm/blob/4460
 
 > **defaultTurns**: `number`
 
-Defined in: [engine/types.ts:52](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/types.ts#L52)
+Defined in: [apps/paracosm/src/engine/types.ts:52](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L52)
 
 ***
 
@@ -52,7 +52,7 @@ Defined in: [engine/types.ts:52](https://github.com/framersai/paracosm/blob/4460
 
 > `optional` **defaultYearsPerTurn**: `number`
 
-Defined in: [engine/types.ts:55](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/types.ts#L55)
+Defined in: [apps/paracosm/src/engine/types.ts:55](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L55)
 
 ***
 
@@ -60,6 +60,6 @@ Defined in: [engine/types.ts:55](https://github.com/framersai/paracosm/blob/4460
 
 > `optional` **maxEventsPerTurn**: `number`
 
-Defined in: [engine/types.ts:58](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/types.ts#L58)
+Defined in: [apps/paracosm/src/engine/types.ts:58](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L58)
 
 Maximum events the Event Director can generate per turn. Default: 3

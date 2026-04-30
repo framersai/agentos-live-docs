@@ -1,6 +1,6 @@
 ---
 title: "Emergent Agency System"
-sidebar_position: 14
+sidebar_position: 15
 ---
 
 ## Overview

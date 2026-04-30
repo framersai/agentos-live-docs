@@ -1,6 +1,6 @@
 # Class: MetricRegistry
 
-Defined in: [engine/metric-registry.ts:5](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/metric-registry.ts#L5)
+Defined in: [apps/paracosm/src/engine/metric-registry.ts:5](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/metric-registry.ts#L5)
 
 ## Constructors
 
@@ -8,7 +8,7 @@ Defined in: [engine/metric-registry.ts:5](https://github.com/framersai/paracosm/
 
 > **new MetricRegistry**(`definitions`): `MetricRegistry`
 
-Defined in: [engine/metric-registry.ts:8](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/metric-registry.ts#L8)
+Defined in: [apps/paracosm/src/engine/metric-registry.ts:8](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/metric-registry.ts#L8)
 
 #### Parameters
 
@@ -26,7 +26,7 @@ Defined in: [engine/metric-registry.ts:8](https://github.com/framersai/paracosm/
 
 > **all**(): [`ScenarioMetric`](../interfaces/ScenarioMetric.md)[]
 
-Defined in: [engine/metric-registry.ts:16](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/metric-registry.ts#L16)
+Defined in: [apps/paracosm/src/engine/metric-registry.ts:16](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/metric-registry.ts#L16)
 
 #### Returns
 
@@ -38,7 +38,7 @@ Defined in: [engine/metric-registry.ts:16](https://github.com/framersai/paracosm
 
 > **get**(`id`): [`ScenarioMetric`](../interfaces/ScenarioMetric.md) \| `undefined`
 
-Defined in: [engine/metric-registry.ts:12](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/metric-registry.ts#L12)
+Defined in: [apps/paracosm/src/engine/metric-registry.ts:12](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/metric-registry.ts#L12)
 
 #### Parameters
 
@@ -56,7 +56,7 @@ Defined in: [engine/metric-registry.ts:12](https://github.com/framersai/paracosm
 
 > **getByCategory**(`category`): [`ScenarioMetric`](../interfaces/ScenarioMetric.md)[]
 
-Defined in: [engine/metric-registry.ts:24](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/metric-registry.ts#L24)
+Defined in: [apps/paracosm/src/engine/metric-registry.ts:24](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/metric-registry.ts#L24)
 
 #### Parameters
 
@@ -74,7 +74,7 @@ Defined in: [engine/metric-registry.ts:24](https://github.com/framersai/paracosm
 
 > **getHeaderMetrics**(): [`ScenarioMetric`](../interfaces/ScenarioMetric.md)[]
 
-Defined in: [engine/metric-registry.ts:20](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/metric-registry.ts#L20)
+Defined in: [apps/paracosm/src/engine/metric-registry.ts:20](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/metric-registry.ts#L20)
 
 #### Returns
 
@@ -86,7 +86,7 @@ Defined in: [engine/metric-registry.ts:20](https://github.com/framersai/paracosm
 
 > **getInitialValues**(): `Record`\<`string`, `number` \| `string` \| `boolean`\>
 
-Defined in: [engine/metric-registry.ts:28](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/metric-registry.ts#L28)
+Defined in: [apps/paracosm/src/engine/metric-registry.ts:28](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/metric-registry.ts#L28)
 
 #### Returns
 

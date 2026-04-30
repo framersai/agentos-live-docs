@@ -2,7 +2,7 @@
 
 > **processRequestWithExternalTools**(`agentos`, `input`, `executeToolCall`): `AsyncGenerator`\<[`AgentOSResponse`](../type-aliases/AgentOSResponse.md), `void`, `undefined`\>
 
-Defined in: [packages/agentos/src/api/runtime/processRequestWithExternalTools.ts:103](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/runtime/processRequestWithExternalTools.ts#L103)
+Defined in: [packages/agentos/src/api/runtime/processRequestWithExternalTools.ts:103](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/runtime/processRequestWithExternalTools.ts#L103)
 
 Runs a full `AgentOS.processRequest(...)` turn and automatically resumes any
 actionable external tool pauses through `handleToolResult(...)`.

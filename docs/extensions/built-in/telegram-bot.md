@@ -3,6 +3,27 @@ title: "Telegram Bot (Comms)"
 sidebar_position: 11
 ---
 
-# Telegram Bot (Comms)
+Telegram Bot API communication tools for AgentOS agents.
 
-Documentation coming soon. See the [extension source](https://github.com/framersai/agentos-extensions/tree/master/registry/curated/communications/telegram-bot) for usage details.
+## What It Provides
+
+- `telegramSendMessage`
+- `telegramSendPhoto`
+- `telegramSendDocument`
+- `telegramManageChat`
+- `telegramPollMessages`
+
+## Runtime Status
+
+- This is a curated tool pack, not a background-installed plugin.
+- AgentOS only loads it when the package is installed and your host includes it in the extension manifest.
+- Use `createCuratedManifest({ tools: 'all', channels: 'none' })` for the simplest curated setup, or add it to a custom manifest explicitly.
+
+## Required Secret
+
+- `telegram.botToken`
+
+## Source of Truth
+
+- `manifest.json` defines the public tool descriptors.
+- `src/` contains the tool implementations that are compiled into `dist/`.

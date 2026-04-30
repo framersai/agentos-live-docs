@@ -1,6 +1,6 @@
 # Interface: GuardrailOutputOptions
 
-Defined in: [packages/agentos/src/safety/guardrails/guardrailDispatcher.ts:99](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/safety/guardrails/guardrailDispatcher.ts#L99)
+Defined in: [packages/agentos/src/safety/guardrails/guardrailDispatcher.ts:99](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/safety/guardrails/guardrailDispatcher.ts#L99)
 
 Options for output guardrail wrapping.
 
@@ -10,7 +10,7 @@ Options for output guardrail wrapping.
 
 > `optional` **inputEvaluations**: [`GuardrailEvaluationResult`](GuardrailEvaluationResult.md)[] \| `null`
 
-Defined in: [packages/agentos/src/safety/guardrails/guardrailDispatcher.ts:107](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/safety/guardrails/guardrailDispatcher.ts#L107)
+Defined in: [packages/agentos/src/safety/guardrails/guardrailDispatcher.ts:107](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/safety/guardrails/guardrailDispatcher.ts#L107)
 
 Input evaluations to attach to first output chunk
 
@@ -20,7 +20,7 @@ Input evaluations to attach to first output chunk
 
 > `optional` **personaId**: `string`
 
-Defined in: [packages/agentos/src/safety/guardrails/guardrailDispatcher.ts:104](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/safety/guardrails/guardrailDispatcher.ts#L104)
+Defined in: [packages/agentos/src/safety/guardrails/guardrailDispatcher.ts:104](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/safety/guardrails/guardrailDispatcher.ts#L104)
 
 Persona ID for error chunks
 
@@ -30,7 +30,7 @@ Persona ID for error chunks
 
 > `optional` **ragSources**: [`RagRetrievedChunk`](RagRetrievedChunk.md)[]
 
-Defined in: [packages/agentos/src/safety/guardrails/guardrailDispatcher.ts:110](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/safety/guardrails/guardrailDispatcher.ts#L110)
+Defined in: [packages/agentos/src/safety/guardrails/guardrailDispatcher.ts:110](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/safety/guardrails/guardrailDispatcher.ts#L110)
 
 RAG sources to thread through to output guardrails for grounding verification
 
@@ -40,6 +40,6 @@ RAG sources to thread through to output guardrails for grounding verification
 
 > **streamId**: `string`
 
-Defined in: [packages/agentos/src/safety/guardrails/guardrailDispatcher.ts:101](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/safety/guardrails/guardrailDispatcher.ts#L101)
+Defined in: [packages/agentos/src/safety/guardrails/guardrailDispatcher.ts:101](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/safety/guardrails/guardrailDispatcher.ts#L101)
 
 Stream identifier for error chunks

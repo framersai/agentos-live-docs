@@ -1,6 +1,6 @@
 # Interface: ChannelBindingConfig
 
-Defined in: [packages/agentos/src/channels/types.ts:289](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/types.ts#L289)
+Defined in: [packages/agentos/src/channels/types.ts:289](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/channels/types.ts#L289)
 
 Binding between an agent (seed) and a channel on an external platform.
 Extended from the original Wunderland `ChannelBinding` with additional fields
@@ -12,7 +12,7 @@ for the full channel system.
 
 > **autoBroadcast**: `boolean`
 
-Defined in: [packages/agentos/src/channels/types.ts:307](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/types.ts#L307)
+Defined in: [packages/agentos/src/channels/types.ts:307](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/channels/types.ts#L307)
 
 Whether agent posts should auto-broadcast to this channel.
 
@@ -22,7 +22,7 @@ Whether agent posts should auto-broadcast to this channel.
 
 > **bindingId**: `string`
 
-Defined in: [packages/agentos/src/channels/types.ts:291](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/types.ts#L291)
+Defined in: [packages/agentos/src/channels/types.ts:291](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/channels/types.ts#L291)
 
 Unique binding identifier.
 
@@ -32,7 +32,7 @@ Unique binding identifier.
 
 > **channelId**: `string`
 
-Defined in: [packages/agentos/src/channels/types.ts:299](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/types.ts#L299)
+Defined in: [packages/agentos/src/channels/types.ts:299](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/channels/types.ts#L299)
 
 Platform-native channel/chat ID.
 
@@ -42,7 +42,7 @@ Platform-native channel/chat ID.
 
 > **conversationType**: [`ConversationType`](../type-aliases/ConversationType.md)
 
-Defined in: [packages/agentos/src/channels/types.ts:301](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/types.ts#L301)
+Defined in: [packages/agentos/src/channels/types.ts:301](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/channels/types.ts#L301)
 
 Type of conversation.
 
@@ -52,7 +52,7 @@ Type of conversation.
 
 > `optional` **credentialId**: `string`
 
-Defined in: [packages/agentos/src/channels/types.ts:303](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/types.ts#L303)
+Defined in: [packages/agentos/src/channels/types.ts:303](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/channels/types.ts#L303)
 
 Credential ID (references encrypted credential in vault).
 
@@ -62,7 +62,7 @@ Credential ID (references encrypted credential in vault).
 
 > **isActive**: `boolean`
 
-Defined in: [packages/agentos/src/channels/types.ts:305](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/types.ts#L305)
+Defined in: [packages/agentos/src/channels/types.ts:305](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/channels/types.ts#L305)
 
 Whether this binding is active.
 
@@ -72,7 +72,7 @@ Whether this binding is active.
 
 > **ownerUserId**: `string`
 
-Defined in: [packages/agentos/src/channels/types.ts:295](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/types.ts#L295)
+Defined in: [packages/agentos/src/channels/types.ts:295](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/channels/types.ts#L295)
 
 Owner user ID (for permission checks).
 
@@ -82,7 +82,7 @@ Owner user ID (for permission checks).
 
 > **platform**: [`ChannelPlatform`](../type-aliases/ChannelPlatform.md)
 
-Defined in: [packages/agentos/src/channels/types.ts:297](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/types.ts#L297)
+Defined in: [packages/agentos/src/channels/types.ts:297](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/channels/types.ts#L297)
 
 Target platform.
 
@@ -92,7 +92,7 @@ Target platform.
 
 > `optional` **platformConfig**: `Record`\<`string`, `unknown`\>
 
-Defined in: [packages/agentos/src/channels/types.ts:309](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/types.ts#L309)
+Defined in: [packages/agentos/src/channels/types.ts:309](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/channels/types.ts#L309)
 
 Platform-specific configuration.
 
@@ -102,6 +102,6 @@ Platform-specific configuration.
 
 > **seedId**: `string`
 
-Defined in: [packages/agentos/src/channels/types.ts:293](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/types.ts#L293)
+Defined in: [packages/agentos/src/channels/types.ts:293](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/channels/types.ts#L293)
 
 Agent seed ID.

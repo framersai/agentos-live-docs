@@ -2,7 +2,7 @@
 
 > **generateObject**\<`T`\>(`opts`): `Promise`\<[`GenerateObjectResult`](../interfaces/GenerateObjectResult.md)\<`output`\<`T`\>\>\>
 
-Defined in: [packages/agentos/src/api/generateObject.ts:371](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/generateObject.ts#L371)
+Defined in: [packages/agentos/src/api/generateObject.ts:371](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/generateObject.ts#L371)
 
 Generates a structured object by forcing the LLM to produce JSON matching
 a Zod schema.

@@ -1,6 +1,6 @@
 # Interface: BatchManifest
 
-Defined in: [runtime/batch.ts:31](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/runtime/batch.ts#L31)
+Defined in: [apps/paracosm/src/runtime/batch.ts:39](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/batch.ts#L39)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [runtime/batch.ts:31](https://github.com/framersai/paracosm/blob/446
 
 > **config**: `object`
 
-Defined in: [runtime/batch.ts:33](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/runtime/batch.ts#L33)
+Defined in: [apps/paracosm/src/runtime/batch.ts:41](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/batch.ts#L41)
 
 #### leaders
 
@@ -40,7 +40,7 @@ Defined in: [runtime/batch.ts:33](https://github.com/framersai/paracosm/blob/446
 
 > **results**: [`BatchResult`](BatchResult.md)[]
 
-Defined in: [runtime/batch.ts:41](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/runtime/batch.ts#L41)
+Defined in: [apps/paracosm/src/runtime/batch.ts:49](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/batch.ts#L49)
 
 ***
 
@@ -48,7 +48,7 @@ Defined in: [runtime/batch.ts:41](https://github.com/framersai/paracosm/blob/446
 
 > **timestamp**: `string`
 
-Defined in: [runtime/batch.ts:32](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/runtime/batch.ts#L32)
+Defined in: [apps/paracosm/src/runtime/batch.ts:40](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/batch.ts#L40)
 
 ***
 
@@ -56,4 +56,4 @@ Defined in: [runtime/batch.ts:32](https://github.com/framersai/paracosm/blob/446
 
 > **totalDuration**: `number`
 
-Defined in: [runtime/batch.ts:42](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/runtime/batch.ts#L42)
+Defined in: [apps/paracosm/src/runtime/batch.ts:50](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/batch.ts#L50)

@@ -1,6 +1,6 @@
 # Class: ManageSkillsTool
 
-Defined in: [packages/agentos/src/emergent/ManageSkillsTool.ts:125](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/emergent/ManageSkillsTool.ts#L125)
+Defined in: [packages/agentos/src/emergent/ManageSkillsTool.ts:125](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/emergent/ManageSkillsTool.ts#L125)
 
 ITool implementation enabling agents to dynamically manage their skill set
 at runtime, subject to allowlist and lock constraints.
@@ -28,7 +28,7 @@ const tool = new ManageSkillsTool({
 
 > **new ManageSkillsTool**(`deps`): `ManageSkillsTool`
 
-Defined in: [packages/agentos/src/emergent/ManageSkillsTool.ts:179](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/emergent/ManageSkillsTool.ts#L179)
+Defined in: [packages/agentos/src/emergent/ManageSkillsTool.ts:179](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/emergent/ManageSkillsTool.ts#L179)
 
 Create a new ManageSkillsTool.
 
@@ -51,7 +51,7 @@ Injected dependencies including config, skill accessors,
 
 > `readonly` **category**: `"emergent"` = `'emergent'`
 
-Defined in: [packages/agentos/src/emergent/ManageSkillsTool.ts:141](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/emergent/ManageSkillsTool.ts#L141)
+Defined in: [packages/agentos/src/emergent/ManageSkillsTool.ts:141](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/emergent/ManageSkillsTool.ts#L141)
 
 **`Optional`**
 
@@ -69,7 +69,7 @@ aiding an LLM in selecting from a large set of tools.
 
 > `readonly` **description**: `string`
 
-Defined in: [packages/agentos/src/emergent/ManageSkillsTool.ts:136](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/emergent/ManageSkillsTool.ts#L136)
+Defined in: [packages/agentos/src/emergent/ManageSkillsTool.ts:136](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/emergent/ManageSkillsTool.ts#L136)
 
 A detailed, natural language description of what the tool does, its primary purpose,
 typical use cases, and any important considerations or limitations for its use.
@@ -87,7 +87,7 @@ for the LLM to grasp the tool's semantics.
 
 > `readonly` **displayName**: `"Manage Skills"` = `'Manage Skills'`
 
-Defined in: [packages/agentos/src/emergent/ManageSkillsTool.ts:133](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/emergent/ManageSkillsTool.ts#L133)
+Defined in: [packages/agentos/src/emergent/ManageSkillsTool.ts:133](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/emergent/ManageSkillsTool.ts#L133)
 
 A concise, human-readable title or display name for the tool.
 Used in user interfaces, logs, or when presenting tool options to developers or users.
@@ -108,7 +108,7 @@ Used in user interfaces, logs, or when presenting tool options to developers or 
 
 > `readonly` **hasSideEffects**: `true` = `true`
 
-Defined in: [packages/agentos/src/emergent/ManageSkillsTool.ts:144](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/emergent/ManageSkillsTool.ts#L144)
+Defined in: [packages/agentos/src/emergent/ManageSkillsTool.ts:144](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/emergent/ManageSkillsTool.ts#L144)
 
 **`Optional`**
 
@@ -127,7 +127,7 @@ with greater caution, potentially requiring explicit user confirmation.
 
 > `readonly` **id**: `"com.framers.emergent.manage-skills"` = `'com.framers.emergent.manage-skills'`
 
-Defined in: [packages/agentos/src/emergent/ManageSkillsTool.ts:127](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/emergent/ManageSkillsTool.ts#L127)
+Defined in: [packages/agentos/src/emergent/ManageSkillsTool.ts:127](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/emergent/ManageSkillsTool.ts#L127)
 
 A globally unique identifier for this specific tool (e.g., "web-search-engine-v1.2", "stock-price-fetcher").
 This ID is used for internal registration, management, and precise identification.
@@ -143,7 +143,7 @@ It's recommended to use a namespaced, versioned format (e.g., `vendor-toolname-v
 
 > `readonly` **inputSchema**: [`JSONSchemaObject`](../type-aliases/JSONSchemaObject.md)
 
-Defined in: [packages/agentos/src/emergent/ManageSkillsTool.ts:147](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/emergent/ManageSkillsTool.ts#L147)
+Defined in: [packages/agentos/src/emergent/ManageSkillsTool.ts:147](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/emergent/ManageSkillsTool.ts#L147)
 
 The JSON schema defining the structure, types, and constraints of the input arguments object
 that this tool expects. This schema is used by:
@@ -165,7 +165,7 @@ https://json-schema.org/
 
 > `readonly` **name**: `"manage_skills"` = `'manage_skills'`
 
-Defined in: [packages/agentos/src/emergent/ManageSkillsTool.ts:130](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/emergent/ManageSkillsTool.ts#L130)
+Defined in: [packages/agentos/src/emergent/ManageSkillsTool.ts:130](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/emergent/ManageSkillsTool.ts#L130)
 
 The functional name of the tool, as it should be presented to and used by an LLM in a tool call request
 (e.g., "searchWeb", "executePythonCode", "getWeatherForecast").
@@ -182,7 +182,7 @@ It should be concise, descriptive, and typically in camelCase or snake_case.
 
 > **execute**(`args`, `context`): `Promise`\<[`ToolExecutionResult`](../interfaces/ToolExecutionResult.md)\<`any`\>\>
 
-Defined in: [packages/agentos/src/emergent/ManageSkillsTool.ts:194](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/emergent/ManageSkillsTool.ts#L194)
+Defined in: [packages/agentos/src/emergent/ManageSkillsTool.ts:194](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/emergent/ManageSkillsTool.ts#L194)
 
 Execute the requested skill management action.
 
@@ -197,6 +197,8 @@ Action type and associated parameters.
 ##### context
 
 [`ToolExecutionContext`](../interfaces/ToolExecutionContext.md)
+
+Tool execution context.
 
 #### Returns
 

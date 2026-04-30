@@ -1,6 +1,6 @@
 # Interface: AudioIndexOptions
 
-Defined in: [packages/agentos/src/rag/multimodal/types.ts:96](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/multimodal/types.ts#L96)
+Defined in: [packages/agentos/src/rag/multimodal/types.ts:96](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/multimodal/types.ts#L96)
 
 Options for indexing an audio file into the vector store.
 
@@ -23,7 +23,7 @@ const result = await indexer.indexAudio({
 
 > **audio**: `Buffer`
 
-Defined in: [packages/agentos/src/rag/multimodal/types.ts:101](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/multimodal/types.ts#L101)
+Defined in: [packages/agentos/src/rag/multimodal/types.ts:101](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/multimodal/types.ts#L101)
 
 Audio data as a raw Buffer (WAV, MP3, OGG, etc.).
 The format must be supported by the configured STT provider.
@@ -34,7 +34,7 @@ The format must be supported by the configured STT provider.
 
 > `optional` **collection**: `string`
 
-Defined in: [packages/agentos/src/rag/multimodal/types.ts:113](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/multimodal/types.ts#L113)
+Defined in: [packages/agentos/src/rag/multimodal/types.ts:113](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/multimodal/types.ts#L113)
 
 Vector store collection to index into.
 
@@ -50,7 +50,7 @@ Vector store collection to index into.
 
 > `optional` **language**: `string`
 
-Defined in: [packages/agentos/src/rag/multimodal/types.ts:119](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/multimodal/types.ts#L119)
+Defined in: [packages/agentos/src/rag/multimodal/types.ts:119](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/multimodal/types.ts#L119)
 
 BCP-47 language hint for the STT provider (e.g. 'en', 'es', 'ja').
 Improves transcription accuracy for non-English audio.
@@ -61,7 +61,7 @@ Improves transcription accuracy for non-English audio.
 
 > `optional` **metadata**: `Record`\<`string`, `unknown`\>
 
-Defined in: [packages/agentos/src/rag/multimodal/types.ts:107](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/multimodal/types.ts#L107)
+Defined in: [packages/agentos/src/rag/multimodal/types.ts:107](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/multimodal/types.ts#L107)
 
 Optional metadata to attach to the indexed document.
 Stored alongside the embedding for filtering during search.

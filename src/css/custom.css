@@ -865,27 +865,38 @@ article,
     backdrop-filter: blur(8px);
   }
 
-  /* ── Mobile hamburger drawer (Docusaurus CSS module classes) ────────────
-   * The drawer uses hashed classes like .drawer_XXXX — target via attribute
-   * selectors to survive class name regeneration across builds.
-   */
-
-  /* The fixed drawer panel itself */
-  [class*="drawer_"] {
+  /* ── Mobile hamburger drawer (stable Docusaurus classes) ─────────────── */
+  .navbar-sidebar {
     height: 100vh !important;
     max-height: 100vh !important;
     overflow-y: auto !important;
     -webkit-overflow-scrolling: touch;
     padding-bottom: 4rem !important;
+    background: rgba(255, 255, 255, 0.98) !important;
   }
 
-  [data-theme='dark'] [class*="drawer_"] {
+  [data-theme='dark'] .navbar-sidebar {
     background: #020617 !important;
   }
 
+  .navbar-sidebar__brand {
+    padding: 0.95rem 1rem !important;
+    border-bottom: 1px solid rgba(99, 102, 241, 0.14) !important;
+    background: inherit !important;
+  }
+
+  [data-theme='dark'] .navbar-sidebar__brand {
+    border-bottom-color: rgba(129, 140, 248, 0.16) !important;
+  }
+
+  .navbar-sidebar__close,
+  .navbar-sidebar__back {
+    border-radius: 999px !important;
+  }
+
   /* All menu links inside the drawer */
-  [class*="drawer_"] .menu__link,
-  [class*="drawer_"] .menu__link--sublist {
+  .navbar-sidebar .menu__link,
+  .navbar-sidebar .menu__link--sublist {
     display: flex !important;
     padding: 0.85rem 1.25rem !important;
     font-size: 0.95rem !important;
@@ -893,29 +904,21 @@ article,
     min-height: 2.75rem !important;
   }
 
-  [class*="drawer_"] .menu__link:hover {
+  .navbar-sidebar .menu__link:hover {
     color: var(--ao-indigo-light, #818cf8) !important;
     background: rgba(99, 102, 241, 0.08) !important;
   }
 
   /* Menu list — remove any max-height / overflow hidden */
-  [class*="drawer_"] .menu__list,
-  [class*="drawer_"] [class*="menuList_"] {
+  .navbar-sidebar .menu__list {
     max-height: none !important;
     overflow: visible !important;
   }
 
   /* Dropdown items inside drawer — show expanded */
-  [class*="drawer_"] [class*="dropdownNavbarItemMobile_"] .menu__list {
+  .navbar-sidebar [class*="dropdownNavbarItemMobile_"] .menu__list {
     display: block !important;
     max-height: none !important;
-  }
-
-  /* Also target the standard navbar-sidebar (older Docusaurus versions) */
-  .navbar-sidebar {
-    height: 100vh !important;
-    max-height: 100vh !important;
-    overflow-y: auto !important;
   }
 
   .navbar-sidebar .navbar__item,

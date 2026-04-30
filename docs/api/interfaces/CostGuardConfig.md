@@ -1,6 +1,6 @@
 # Interface: CostGuardConfig
 
-Defined in: [packages/agentos/src/safety/runtime/CostGuard.ts:10](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/safety/runtime/CostGuard.ts#L10)
+Defined in: [packages/agentos/src/safety/runtime/CostGuard.ts:10](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/safety/runtime/CostGuard.ts#L10)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/safety/runtime/CostGuard.ts:10](https://github
 
 > **maxDailyCostUsd**: `number`
 
-Defined in: [packages/agentos/src/safety/runtime/CostGuard.ts:14](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/safety/runtime/CostGuard.ts#L14)
+Defined in: [packages/agentos/src/safety/runtime/CostGuard.ts:14](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/safety/runtime/CostGuard.ts#L14)
 
 Maximum USD spend per agent per day.
 
@@ -24,7 +24,7 @@ Maximum USD spend per agent per day.
 
 > **maxSessionCostUsd**: `number`
 
-Defined in: [packages/agentos/src/safety/runtime/CostGuard.ts:12](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/safety/runtime/CostGuard.ts#L12)
+Defined in: [packages/agentos/src/safety/runtime/CostGuard.ts:12](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/safety/runtime/CostGuard.ts#L12)
 
 Maximum USD spend per agent session.
 
@@ -40,7 +40,7 @@ Maximum USD spend per agent session.
 
 > **maxSingleOperationCostUsd**: `number`
 
-Defined in: [packages/agentos/src/safety/runtime/CostGuard.ts:16](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/safety/runtime/CostGuard.ts#L16)
+Defined in: [packages/agentos/src/safety/runtime/CostGuard.ts:16](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/safety/runtime/CostGuard.ts#L16)
 
 Maximum USD spend per single operation.
 
@@ -56,7 +56,7 @@ Maximum USD spend per single operation.
 
 > `optional` **onCapReached**: (`agentId`, `capType`, `currentCost`, `limit`) => `void`
 
-Defined in: [packages/agentos/src/safety/runtime/CostGuard.ts:18](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/safety/runtime/CostGuard.ts#L18)
+Defined in: [packages/agentos/src/safety/runtime/CostGuard.ts:18](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/safety/runtime/CostGuard.ts#L18)
 
 Callback when a cap is hit.
 

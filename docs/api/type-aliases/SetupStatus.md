@@ -2,6 +2,6 @@
 
 > **SetupStatus** = `"running"` \| `"stopped"` \| `"not_found"` \| `"no_docker"` \| `"error"`
 
-Defined in: [packages/agentos/src/rag/setup/types.ts:7](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/setup/types.ts#L7)
+Defined in: [packages/agentos/src/rag/setup/types.ts:7](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/setup/types.ts#L7)
 
 Status of a backend detection attempt.

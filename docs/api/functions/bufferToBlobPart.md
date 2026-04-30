@@ -2,7 +2,7 @@
 
 > **bufferToBlobPart**(`input`): `ArrayBuffer`
 
-Defined in: [packages/agentos/src/media/images/imageToBuffer.ts:102](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/images/imageToBuffer.ts#L102)
+Defined in: [packages/agentos/src/media/images/imageToBuffer.ts:102](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/media/images/imageToBuffer.ts#L102)
 
 Converts a Node.js `Buffer` into a DOM-compatible `BlobPart`.
 

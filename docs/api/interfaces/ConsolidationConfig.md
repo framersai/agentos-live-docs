@@ -1,6 +1,6 @@
 # Interface: ConsolidationConfig
 
-Defined in: [packages/agentos/src/memory/core/config.ts:125](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/core/config.ts#L125)
+Defined in: [packages/agentos/src/memory/core/config.ts:125](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/config.ts#L125)
 
 ## Properties
 
@@ -8,10 +8,33 @@ Defined in: [packages/agentos/src/memory/core/config.ts:125](https://github.com/
 
 > `optional` **deriveInsights**: `boolean`
 
-Defined in: [packages/agentos/src/memory/core/config.ts:173](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/core/config.ts#L173)
+Defined in: [packages/agentos/src/memory/core/config.ts:185](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/config.ts#L185)
 
 Whether the consolidation engine should derive new insight traces from
 clusters of related memories during each cycle.
+
+#### Default
+
+```ts
+true
+```
+
+***
+
+### enabled?
+
+> `optional` **enabled**: `boolean`
+
+Defined in: [packages/agentos/src/memory/core/config.ts:137](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/config.ts#L137)
+
+Whether the periodic consolidation timer is active. Set to false
+for short-lived contexts (benches, tests, one-shot scripts) where
+a lingering `setInterval` would keep the Node event loop alive
+past the meaningful work.
+
+When false, `CognitiveMemoryManager` still constructs the
+pipeline so `runConsolidation()` works on-demand; only the
+auto-started timer is suppressed.
 
 #### Default
 
@@ -25,7 +48,7 @@ true
 
 > `optional` **every**: `number`
 
-Defined in: [packages/agentos/src/memory/core/config.ts:152](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/core/config.ts#L152)
+Defined in: [packages/agentos/src/memory/core/config.ts:164](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/config.ts#L164)
 
 Numeric complement to `trigger`.
 When `trigger='turns'` this is the turn count; when `trigger='interval'`
@@ -43,7 +66,7 @@ this is the millisecond period.
 
 > **intervalMs**: `number`
 
-Defined in: [packages/agentos/src/memory/core/config.ts:127](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/core/config.ts#L127)
+Defined in: [packages/agentos/src/memory/core/config.ts:139](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/config.ts#L139)
 
 How often to run consolidation (ms).
 
@@ -59,7 +82,7 @@ How often to run consolidation (ms).
 
 > `optional` **maxDerivedPerCycle**: `number`
 
-Defined in: [packages/agentos/src/memory/core/config.ts:180](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/core/config.ts#L180)
+Defined in: [packages/agentos/src/memory/core/config.ts:192](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/config.ts#L192)
 
 Maximum number of new insight traces the engine may derive per cycle.
 Guards against unbounded graph growth.
@@ -76,7 +99,7 @@ Guards against unbounded graph growth.
 
 > **maxTracesPerCycle**: `number`
 
-Defined in: [packages/agentos/src/memory/core/config.ts:129](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/core/config.ts#L129)
+Defined in: [packages/agentos/src/memory/core/config.ts:141](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/config.ts#L141)
 
 Max traces to process per cycle.
 
@@ -92,7 +115,7 @@ Max traces to process per cycle.
 
 > **mergeSimilarityThreshold**: `number`
 
-Defined in: [packages/agentos/src/memory/core/config.ts:131](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/core/config.ts#L131)
+Defined in: [packages/agentos/src/memory/core/config.ts:143](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/config.ts#L143)
 
 Similarity threshold for merging redundant traces.
 
@@ -108,7 +131,7 @@ Similarity threshold for merging redundant traces.
 
 > `optional` **mergeThreshold**: `number`
 
-Defined in: [packages/agentos/src/memory/core/config.ts:166](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/core/config.ts#L166)
+Defined in: [packages/agentos/src/memory/core/config.ts:178](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/config.ts#L178)
 
 Cosine similarity above which two traces are candidates for merging.
 Must be between 0 and 1.
@@ -125,7 +148,7 @@ Must be between 0 and 1.
 
 > **minClusterSize**: `number`
 
-Defined in: [packages/agentos/src/memory/core/config.ts:133](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/core/config.ts#L133)
+Defined in: [packages/agentos/src/memory/core/config.ts:145](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/config.ts#L145)
 
 Minimum cluster size for schema integration.
 
@@ -141,7 +164,7 @@ Minimum cluster size for schema integration.
 
 > `optional` **pruneThreshold**: `number`
 
-Defined in: [packages/agentos/src/memory/core/config.ts:159](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/core/config.ts#L159)
+Defined in: [packages/agentos/src/memory/core/config.ts:171](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/config.ts#L171)
 
 Minimum Ebbinghaus strength below which a trace is pruned.
 Must be between 0 and 1.
@@ -158,7 +181,7 @@ Must be between 0 and 1.
 
 > `optional` **trigger**: `"manual"` \| `"turns"` \| `"interval"`
 
-Defined in: [packages/agentos/src/memory/core/config.ts:144](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/core/config.ts#L144)
+Defined in: [packages/agentos/src/memory/core/config.ts:156](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/config.ts#L156)
 
 What event or schedule triggers a consolidation run.
 - `'turns'`    – fire after every N conversation turns (`every` = turn count).

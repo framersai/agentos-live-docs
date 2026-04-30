@@ -1,6 +1,6 @@
 # Class: StateManager
 
-Defined in: [packages/agentos/src/orchestration/runtime/StateManager.ts:46](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/runtime/StateManager.ts#L46)
+Defined in: [packages/agentos/src/orchestration/runtime/StateManager.ts:46](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/runtime/StateManager.ts#L46)
 
 Manages the [GraphState](../interfaces/GraphState.md) partitions (`input`, `scratch`, `artifacts`,
 `memory`, `diagnostics`) for a single graph run.
@@ -23,7 +23,7 @@ state = manager.updateScratch(state, { messages: ['second'] });
 
 > **new StateManager**(`reducers`): `StateManager`
 
-Defined in: [packages/agentos/src/orchestration/runtime/StateManager.ts:52](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/runtime/StateManager.ts#L52)
+Defined in: [packages/agentos/src/orchestration/runtime/StateManager.ts:52](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/runtime/StateManager.ts#L52)
 
 #### Parameters
 
@@ -45,7 +45,7 @@ Field-level reducer configuration keyed by dot-notation paths
 
 > **initialize**(`input`): [`GraphState`](../interfaces/GraphState.md)
 
-Defined in: [packages/agentos/src/orchestration/runtime/StateManager.ts:67](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/runtime/StateManager.ts#L67)
+Defined in: [packages/agentos/src/orchestration/runtime/StateManager.ts:67](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/runtime/StateManager.ts#L67)
 
 Create a clean initial [GraphState](../interfaces/GraphState.md) from the caller-supplied `input` value.
 
@@ -72,7 +72,7 @@ A fully initialised `GraphState` ready for the first node execution.
 
 > **mergeParallelBranches**(`baseState`, `branchStates`): [`GraphState`](../interfaces/GraphState.md)
 
-Defined in: [packages/agentos/src/orchestration/runtime/StateManager.ts:164](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/runtime/StateManager.ts#L164)
+Defined in: [packages/agentos/src/orchestration/runtime/StateManager.ts:164](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/runtime/StateManager.ts#L164)
 
 Merge the `scratch` partitions of one or more parallel branch states back into
 a single `GraphState`.
@@ -111,7 +111,7 @@ New `GraphState` with the merged scratch partition.
 
 > **recordNodeVisit**(`state`, `nodeId`): [`GraphState`](../interfaces/GraphState.md)
 
-Defined in: [packages/agentos/src/orchestration/runtime/StateManager.ts:139](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/runtime/StateManager.ts#L139)
+Defined in: [packages/agentos/src/orchestration/runtime/StateManager.ts:139](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/runtime/StateManager.ts#L139)
 
 Record that execution has entered `nodeId`.
 
@@ -143,7 +143,7 @@ New `GraphState` reflecting the visit.
 
 > **updateArtifacts**(`state`, `patch`): [`GraphState`](../interfaces/GraphState.md)
 
-Defined in: [packages/agentos/src/orchestration/runtime/StateManager.ts:123](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/runtime/StateManager.ts#L123)
+Defined in: [packages/agentos/src/orchestration/runtime/StateManager.ts:123](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/runtime/StateManager.ts#L123)
 
 Apply a `patch` to the `artifacts` partition using last-write-wins semantics.
 
@@ -177,7 +177,7 @@ New `GraphState` with the updated artifacts partition.
 
 > **updateScratch**(`state`, `patch`): [`GraphState`](../interfaces/GraphState.md)
 
-Defined in: [packages/agentos/src/orchestration/runtime/StateManager.ts:93](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/runtime/StateManager.ts#L93)
+Defined in: [packages/agentos/src/orchestration/runtime/StateManager.ts:93](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/runtime/StateManager.ts#L93)
 
 Apply a `patch` to the `scratch` partition, honoring any registered reducers.
 

@@ -58,7 +58,7 @@ All extensions are published to npm under the `@framers` scope.
 | [`@framers/agentos-ext-wunderbot-feeds`](https://www.npmjs.com/package/@framers/agentos-ext-wunderbot-feeds) | Wunderbot feed ingestion + social content pipeline integration |  |
 | [`@framers/agentos-ext-telegram-bot`](/extensions/built-in/telegram-bot) | Telegram bot communications handler |  |
 | [`@framers/agentos-ext-anchor-providers`](/extensions/built-in/anchor-providers) | Solana on-chain provenance anchoring |  |
-| [`@framers/agentos-ext-tip-ingestion`](https://www.npmjs.com/package/@framers/agentos-ext-tip-ingestion) | Tip content processing pipeline |  |
+| [`@framers/agentos-ext-tip-ingestion`](https://www.npmjs.com/package/@framers/agentos-ext-tip-ingestion) | Tip content processing pipeline (published package; not vendored in this workspace) |  |
 | [`@framers/agentos-ext-browser-automation`](https://github.com/framersai/agentos-extensions/tree/master/registry/curated/system/browser-automation) | Full browser automation (Playwright) — 10 tools |  |
 | [`@framers/agentos-ext-deep-research`](https://github.com/framersai/agentos-extensions/tree/master/registry/curated/research/deep-research) | Multi-source research & investigation — 5 tools |  |
 | [`@framers/agentos-ext-content-extraction`](https://github.com/framersai/agentos-extensions/tree/master/registry/curated/research/content-extraction) | Content extraction (URLs, YouTube, PDF) — 5 tools |  |
@@ -162,7 +162,7 @@ agentos-extensions/
 │   │   ├── communications/# Telegram bot, notifications
 │   │   ├── integrations/  # External services (Telegram API)
 │   │   ├── media/         # Giphy, image search, voice synthesis
-│   │   ├── provenance/    # On-chain anchoring & tip ingestion
+│   │   ├── provenance/    # On-chain anchoring (tip-ingestion package is published separately)
 │   │   ├── research/      # Web search, deep research, content extraction
 │   │   ├── safety/        # Stub READMEs -> core packages (see above)
 │   │   ├── system/        # CLI executor, browser automation, credential vault

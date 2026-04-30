@@ -1,6 +1,6 @@
 # Interface: DocumentLayout
 
-Defined in: [packages/agentos/src/vision/types.ts:146](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/vision/types.ts#L146)
+Defined in: [packages/agentos/src/vision/types.ts:146](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/vision/types.ts#L146)
 
 Structured document layout produced by Florence-2 or similar
 document understanding models.
@@ -14,6 +14,6 @@ and other semantic blocks within a multi-page document.
 
 > **pages**: [`DocumentPage`](DocumentPage.md)[]
 
-Defined in: [packages/agentos/src/vision/types.ts:148](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/vision/types.ts#L148)
+Defined in: [packages/agentos/src/vision/types.ts:148](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/vision/types.ts#L148)
 
 Pages in document order.

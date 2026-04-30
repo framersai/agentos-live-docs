@@ -91,7 +91,7 @@ src/
 │   ├── io/tools/            # MemoryAdd/Search/Update/Delete/Merge tools
 │   ├── mechanisms/          # Neuroscience-grounded cognitive mechanisms
 │   ├── pipeline/            # Consolidation, context, lifecycle, observation
-│   └── retrieval/           # SqliteBrain, graphs, feedback, prospective memory
+│   └── retrieval/           # Brain, graphs, feedback, prospective memory
 │
 ├── nlp/                     # NLP processing
 │   ├── ai_utilities/        # AI utility helpers (LLM-backed summarization, etc.)
@@ -673,6 +673,46 @@ CognitiveMemoryManager (orchestrator)
   └── ConsolidationPipeline -- 5-step periodic maintenance
 ```
 
+### Cognitive Pipeline (per-message smart orchestration)
+
+Above the storage substrate sits an LLM-as-judge orchestration layer that picks strategy per message at three pipeline boundaries. Each stage is its own router primitive — independently shippable, independently testable, composable via the `CognitivePipeline` facade. This is **smart orchestration, not safety guardrails** — orchestration picks strategies, guardrails enforce safety/policy at the output stage. They live in different packages on purpose.
+
+```
+   Content                 Query                    Query
+      │                      │                       │
+      ▼                      ▼                       ▼
+  ┌─────────┐          ┌─────────────┐         ┌─────────────┐
+  │ Ingest  │          │   Memory    │         │    Read     │
+  │ Router  │          │   Router    │         │   Router    │
+  │ (input) │          │  (recall)   │         │   (read)    │
+  └─────────┘          └─────────────┘         └─────────────┘
+      │                      │                       │
+      ▼                      ▼                       ▼
+  Memory state          Retrieved traces         Final answer
+                                                       │
+                                                       ▼
+                                              ┌──────────────┐
+                                              │ core/        │
+                                              │ guardrails   │
+                                              │ (output      │
+                                              │  validation) │
+                                              └──────────────┘
+```
+
+Every router has the same internal structure: a classifier (LLM-as-judge that maps input to a category/intent token), a pure `select*` function (category + routing table + budget policy → strategy decision), a dispatcher (registry of executors per strategy), and three shipping presets calibrated from LongMemEval-S Phase B N=500 measurements.
+
+| Primitive | Subpath | Categories | Strategies |
+|---|---|---|---|
+| Memory Router | `@framers/agentos/memory-router` | 6 query categories | 3 backends (canonical-hybrid, OM-v10, OM-v11) |
+| Ingest Router | `@framers/agentos/ingest-router` | 6 content kinds | 6 strategies (raw / summarized / observational / fact-graph / hybrid / skip) |
+| Read Router | `@framers/agentos/read-router` | 5 read intents | 5 strategies (single-call / two-call extract+answer / commit-vs-abstain / verbatim / scratchpad) |
+| Cognitive Pipeline | `@framers/agentos/cognitive-pipeline` | (composition) | wires all three stages |
+| Adaptive Memory Router | `@framers/agentos/memory-router` | (self-calibrating) | derives routing tables from your own calibration data |
+
+Each classifier is provider-agnostic — talks to a small `IXClassifierLLM` adapter interface, not an SDK. One OpenAI key reproduces the entire pipeline; no Claude / Gemini accounts required for the shipping configuration.
+
+Each router ships 26-38 contract tests; the entire family ships 163 tests. See the dedicated [Cognitive Pipeline](/features/cognitive-pipeline) guide for the unified architecture overview, or the per-stage docs ([Memory Router](/features/memory-router), [Ingest Router](/features/ingest-router), [Read Router](/features/read-router), [Adaptive Memory Router](/features/adaptive-memory-router)) for the routing tables and presets each stage exposes.
+
 ### The MemoryTrace Envelope
 
 Every memory is stored as a `MemoryTrace` (defined in `memory/core/types.ts`):
@@ -1197,8 +1237,8 @@ When `emergent: true` is set in `AgentOSConfig`, the agent gains access to the `
 
 1. The agent generates JavaScript code for a new tool (name, description, input schema, implementation)
 2. `SandboxedToolForge` performs static validation, rejecting dangerous patterns (`eval`, `Function`, `process`, `require`, `import`, `child_process`, `fs.write*`)
-3. Validated code executes in an isolated sandbox (preferring `isolated-vm` for V8 isolate sandboxing, falling back to Node.js `vm` module) with configurable limits:
-   - Memory: 128 MB default
+3. Validated code executes in a hardened node:vm sandbox via `CodeSandbox` with configurable bounds:
+   - Memory: observed as a heap delta only, not preemptively capped
    - Timeout: 5,000 ms default
    - API allowlist: only `fetch` (domain-restricted), `fs.readFile` (path-restricted, 1 MB max), `crypto` (hash/HMAC only)
 4. `EmergentJudge` evaluates the tool against safety criteria before permanent registration

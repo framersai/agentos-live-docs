@@ -1,6 +1,7 @@
 ---
 title: "Document Ingestion"
 sidebar_position: 6
+description: 'Ingest PDFs, DOCX, HTML, Markdown, CSV, JSON, YAML, text, and URLs into the agent memory system with configurable chunking and multimodal image extraction.'
 ---
 
 > The Memory ingestion pipeline converts external documents into searchable memory traces. It handles format detection, multi-tier PDF extraction, four chunking strategies, folder scanning with glob patterns, and optional vision-LLM image captioning.
@@ -16,7 +17,7 @@ Source (file / directory / URL)
   │
   ▼
 ┌──────────────────┐     ┌──────────────────┐     ┌──────────────────┐
-│  LoaderRegistry  │────▶│  ChunkingEngine  │────▶│  SqliteBrain     │
+│  LoaderRegistry  │────▶│  ChunkingEngine  │────▶│  Brain     │
 │  (format detect) │     │  (split + index) │     │  (store traces)  │
 └──────────────────┘     └──────────────────┘     └──────────────────┘
         │                                                │
@@ -32,7 +33,7 @@ Source (file / directory / URL)
 ```ts
 import { Memory } from '@framers/agentos';
 
-const mem = await Memory.create({ path: './brain.sqlite' });
+const mem = await Memory.createSqlite({ path: './brain.sqlite' });
 
 // Single file
 await mem.ingest('./report.pdf');
@@ -108,7 +109,7 @@ PDF buffer arrives
 ### Configuration
 
 ```ts
-const mem = await Memory.create({
+const mem = await Memory.createSqlite({
   path: './brain.sqlite',
   ingestion: {
     extractImages: true,   // Pull images from PDFs/DOCX
@@ -134,7 +135,7 @@ The `ChunkingEngine` splits document text into indexable chunks. Four strategies
 ### Configuration
 
 ```ts
-const mem = await Memory.create({
+const mem = await Memory.createSqlite({
   path: './brain.sqlite',
   ingestion: {
     chunkStrategy: 'semantic',   // 'fixed' | 'semantic' | 'hierarchical' | 'layout'
@@ -204,7 +205,7 @@ interface IngestResult {
 When `extractImages: true` is configured, document loaders (PDF, DOCX) extract embedded images as `ExtractedImage` objects. The `MultimodalAggregator` enriches them with natural-language captions via a vision-capable LLM:
 
 ```ts
-const mem = await Memory.create({
+const mem = await Memory.createSqlite({
   path: './brain.sqlite',
   ingestion: {
     extractImages: true,

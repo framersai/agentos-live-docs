@@ -1,6 +1,6 @@
 # Interface: BackendConfig
 
-Defined in: [packages/agentos/src/rag/migration/types.ts:26](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/migration/types.ts#L26)
+Defined in: [packages/agentos/src/rag/migration/types.ts:26](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/migration/types.ts#L26)
 
 Configuration for a migration source or target backend.
 Only the fields relevant to the chosen `type` need to be provided.
@@ -11,7 +11,7 @@ Only the fields relevant to the chosen `type` need to be provided.
 
 > `optional` **apiKey**: `string`
 
-Defined in: [packages/agentos/src/rag/migration/types.ts:36](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/migration/types.ts#L36)
+Defined in: [packages/agentos/src/rag/migration/types.ts:36](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/migration/types.ts#L36)
 
 Qdrant API key for cloud instances. Optional.
 
@@ -21,7 +21,7 @@ Qdrant API key for cloud instances. Optional.
 
 > `optional` **collectionPrefix**: `string`
 
-Defined in: [packages/agentos/src/rag/migration/types.ts:43](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/migration/types.ts#L43)
+Defined in: [packages/agentos/src/rag/migration/types.ts:43](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/migration/types.ts#L43)
 
 Qdrant collection name prefix.
 
@@ -37,7 +37,7 @@ Qdrant collection name prefix.
 
 > `optional` **connectionString**: `string`
 
-Defined in: [packages/agentos/src/rag/migration/types.ts:32](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/migration/types.ts#L32)
+Defined in: [packages/agentos/src/rag/migration/types.ts:32](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/migration/types.ts#L32)
 
 Postgres connection string. Required when type='postgres'.
 
@@ -47,7 +47,7 @@ Postgres connection string. Required when type='postgres'.
 
 > `optional` **path**: `string`
 
-Defined in: [packages/agentos/src/rag/migration/types.ts:30](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/migration/types.ts#L30)
+Defined in: [packages/agentos/src/rag/migration/types.ts:30](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/migration/types.ts#L30)
 
 SQLite file path. Required when type='sqlite'.
 
@@ -57,7 +57,7 @@ SQLite file path. Required when type='sqlite'.
 
 > `optional` **sidecarPath**: `string`
 
-Defined in: [packages/agentos/src/rag/migration/types.ts:41](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/migration/types.ts#L41)
+Defined in: [packages/agentos/src/rag/migration/types.ts:41](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/migration/types.ts#L41)
 
 Optional SQLite sidecar path used by Qdrant deployments for non-vector
 tables such as graph metadata and documents.
@@ -68,7 +68,7 @@ tables such as graph metadata and documents.
 
 > **type**: [`BackendType`](../type-aliases/BackendType.md)
 
-Defined in: [packages/agentos/src/rag/migration/types.ts:28](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/migration/types.ts#L28)
+Defined in: [packages/agentos/src/rag/migration/types.ts:28](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/migration/types.ts#L28)
 
 Which backend type to connect to.
 
@@ -78,6 +78,6 @@ Which backend type to connect to.
 
 > `optional` **url**: `string`
 
-Defined in: [packages/agentos/src/rag/migration/types.ts:34](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/migration/types.ts#L34)
+Defined in: [packages/agentos/src/rag/migration/types.ts:34](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/migration/types.ts#L34)
 
 Qdrant base URL (e.g. 'http://localhost:6333'). Required when type='qdrant'.

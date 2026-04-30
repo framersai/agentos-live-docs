@@ -1,6 +1,6 @@
 # Class: EmergentToolRegistry
 
-Defined in: [packages/agentos/src/emergent/EmergentToolRegistry.ts:155](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/emergent/EmergentToolRegistry.ts#L155)
+Defined in: [packages/agentos/src/emergent/EmergentToolRegistry.ts:155](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/emergent/EmergentToolRegistry.ts#L155)
 
 Manages the lifecycle of emergent tools across three trust tiers.
 
@@ -32,7 +32,7 @@ const stats = registry.getUsageStats(tool.id);
 
 > **new EmergentToolRegistry**(`config?`, `db?`): `EmergentToolRegistry`
 
-Defined in: [packages/agentos/src/emergent/EmergentToolRegistry.ts:191](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/emergent/EmergentToolRegistry.ts#L191)
+Defined in: [packages/agentos/src/emergent/EmergentToolRegistry.ts:191](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/emergent/EmergentToolRegistry.ts#L191)
 
 Create a new EmergentToolRegistry.
 
@@ -63,7 +63,7 @@ Optional SQLite storage adapter. When provided, agent and
 
 > **cleanupSession**(`sessionId`): `number`
 
-Defined in: [packages/agentos/src/emergent/EmergentToolRegistry.ts:650](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/emergent/EmergentToolRegistry.ts#L650)
+Defined in: [packages/agentos/src/emergent/EmergentToolRegistry.ts:650](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/emergent/EmergentToolRegistry.ts#L650)
 
 Remove all session-tier tools associated with a specific session.
 
@@ -92,7 +92,7 @@ The number of tools removed.
 
 > **demote**(`toolId`, `reason`): `void`
 
-Defined in: [packages/agentos/src/emergent/EmergentToolRegistry.ts:614](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/emergent/EmergentToolRegistry.ts#L614)
+Defined in: [packages/agentos/src/emergent/EmergentToolRegistry.ts:614](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/emergent/EmergentToolRegistry.ts#L614)
 
 Demote or deactivate a tool.
 
@@ -130,7 +130,7 @@ If the tool is not found.
 
 > **ensureSchema**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/emergent/EmergentToolRegistry.ts:227](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/emergent/EmergentToolRegistry.ts#L227)
+Defined in: [packages/agentos/src/emergent/EmergentToolRegistry.ts:227](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/emergent/EmergentToolRegistry.ts#L227)
 
 Initialize the database schema for emergent tool persistence.
 
@@ -154,7 +154,7 @@ If the storage adapter's `exec` or `run` method rejects.
 
 > **ensureSchemaReady**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/emergent/EmergentToolRegistry.ts:209](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/emergent/EmergentToolRegistry.ts#L209)
+Defined in: [packages/agentos/src/emergent/EmergentToolRegistry.ts:209](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/emergent/EmergentToolRegistry.ts#L209)
 
 Idempotent schema readiness guard.
 
@@ -174,7 +174,7 @@ A promise that resolves when the schema is ready.
 
 > **get**(`toolId`): [`EmergentTool`](../interfaces/EmergentTool.md) \| `undefined`
 
-Defined in: [packages/agentos/src/emergent/EmergentToolRegistry.ts:361](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/emergent/EmergentToolRegistry.ts#L361)
+Defined in: [packages/agentos/src/emergent/EmergentToolRegistry.ts:361](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/emergent/EmergentToolRegistry.ts#L361)
 
 Retrieve a tool by its unique identifier.
 
@@ -200,7 +200,7 @@ The tool if found, or `undefined` if no tool with that ID exists.
 
 > **getAuditLog**(`toolId?`): [`AuditEntry`](../interfaces/AuditEntry.md)[]
 
-Defined in: [packages/agentos/src/emergent/EmergentToolRegistry.ts:681](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/emergent/EmergentToolRegistry.ts#L681)
+Defined in: [packages/agentos/src/emergent/EmergentToolRegistry.ts:681](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/emergent/EmergentToolRegistry.ts#L681)
 
 Retrieve audit log entries, optionally filtered by tool ID.
 
@@ -224,7 +224,7 @@ An array of [AuditEntry](../interfaces/AuditEntry.md) objects in chronological o
 
 > **getByTier**(`tier`, `scope?`): [`EmergentTool`](../interfaces/EmergentTool.md)[]
 
-Defined in: [packages/agentos/src/emergent/EmergentToolRegistry.ts:427](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/emergent/EmergentToolRegistry.ts#L427)
+Defined in: [packages/agentos/src/emergent/EmergentToolRegistry.ts:427](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/emergent/EmergentToolRegistry.ts#L427)
 
 Get all tools registered at a specific tier, optionally filtered by scope.
 
@@ -262,7 +262,7 @@ An array of matching tools (may be empty).
 
 > **getUsageStats**(`toolId`): [`ToolUsageStats`](../interfaces/ToolUsageStats.md) \| `undefined`
 
-Defined in: [packages/agentos/src/emergent/EmergentToolRegistry.ts:528](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/emergent/EmergentToolRegistry.ts#L528)
+Defined in: [packages/agentos/src/emergent/EmergentToolRegistry.ts:528](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/emergent/EmergentToolRegistry.ts#L528)
 
 Retrieve usage statistics for a registered tool.
 
@@ -287,7 +287,7 @@ The tool's [ToolUsageStats](../interfaces/ToolUsageStats.md), or `undefined` if 
 
 > **promote**(`toolId`, `targetTier`, `approvedBy?`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/emergent/EmergentToolRegistry.ts:553](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/emergent/EmergentToolRegistry.ts#L553)
+Defined in: [packages/agentos/src/emergent/EmergentToolRegistry.ts:553](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/emergent/EmergentToolRegistry.ts#L553)
 
 Promote a tool to a higher lifecycle tier.
 
@@ -336,7 +336,7 @@ If `targetTier` is not higher than the tool's current tier.
 
 > **recordUse**(`toolId`, `_input`, `_output`, `success`, `executionTimeMs`): `void`
 
-Defined in: [packages/agentos/src/emergent/EmergentToolRegistry.ts:476](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/emergent/EmergentToolRegistry.ts#L476)
+Defined in: [packages/agentos/src/emergent/EmergentToolRegistry.ts:476](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/emergent/EmergentToolRegistry.ts#L476)
 
 Record a tool invocation, updating rolling usage statistics.
 
@@ -393,7 +393,7 @@ If no tool with the given ID is registered.
 
 > **register**(`tool`, `tier`): `void`
 
-Defined in: [packages/agentos/src/emergent/EmergentToolRegistry.ts:306](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/emergent/EmergentToolRegistry.ts#L306)
+Defined in: [packages/agentos/src/emergent/EmergentToolRegistry.ts:306](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/emergent/EmergentToolRegistry.ts#L306)
 
 Register a new emergent tool at the given tier.
 
@@ -435,7 +435,7 @@ If a tool with the same ID is already registered.
 
 > **remove**(`toolId`): `boolean`
 
-Defined in: [packages/agentos/src/emergent/EmergentToolRegistry.ts:396](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/emergent/EmergentToolRegistry.ts#L396)
+Defined in: [packages/agentos/src/emergent/EmergentToolRegistry.ts:396](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/emergent/EmergentToolRegistry.ts#L396)
 
 Remove a tool from the registry entirely.
 
@@ -457,7 +457,7 @@ Used to roll back newly forged tools when downstream activation fails.
 
 > **upsert**(`tool`): `void`
 
-Defined in: [packages/agentos/src/emergent/EmergentToolRegistry.ts:371](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/emergent/EmergentToolRegistry.ts#L371)
+Defined in: [packages/agentos/src/emergent/EmergentToolRegistry.ts:371](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/emergent/EmergentToolRegistry.ts#L371)
 
 Upsert a tool into the registry, replacing any prior in-memory copy.
 

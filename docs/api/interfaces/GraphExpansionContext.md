@@ -1,6 +1,6 @@
 # Interface: GraphExpansionContext
 
-Defined in: [packages/agentos/src/orchestration/runtime/GraphRuntime.ts:76](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/runtime/GraphRuntime.ts#L76)
+Defined in: [packages/agentos/src/orchestration/runtime/GraphRuntime.ts:76](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/runtime/GraphRuntime.ts#L76)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/orchestration/runtime/GraphRuntime.ts:76](http
 
 > `optional` **checkpointIdBefore**: `string`
 
-Defined in: [packages/agentos/src/orchestration/runtime/GraphRuntime.ts:82](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/runtime/GraphRuntime.ts#L82)
+Defined in: [packages/agentos/src/orchestration/runtime/GraphRuntime.ts:82](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/runtime/GraphRuntime.ts#L82)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [packages/agentos/src/orchestration/runtime/GraphRuntime.ts:82](http
 
 > **completedNodes**: `string`[]
 
-Defined in: [packages/agentos/src/orchestration/runtime/GraphRuntime.ts:83](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/runtime/GraphRuntime.ts#L83)
+Defined in: [packages/agentos/src/orchestration/runtime/GraphRuntime.ts:83](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/runtime/GraphRuntime.ts#L83)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: [packages/agentos/src/orchestration/runtime/GraphRuntime.ts:83](http
 
 > **graph**: [`CompiledExecutionGraph`](CompiledExecutionGraph.md)
 
-Defined in: [packages/agentos/src/orchestration/runtime/GraphRuntime.ts:77](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/runtime/GraphRuntime.ts#L77)
+Defined in: [packages/agentos/src/orchestration/runtime/GraphRuntime.ts:77](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/runtime/GraphRuntime.ts#L77)
 
 ***
 
@@ -32,7 +32,7 @@ Defined in: [packages/agentos/src/orchestration/runtime/GraphRuntime.ts:77](http
 
 > **nodeId**: `string`
 
-Defined in: [packages/agentos/src/orchestration/runtime/GraphRuntime.ts:79](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/runtime/GraphRuntime.ts#L79)
+Defined in: [packages/agentos/src/orchestration/runtime/GraphRuntime.ts:79](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/runtime/GraphRuntime.ts#L79)
 
 ***
 
@@ -40,7 +40,7 @@ Defined in: [packages/agentos/src/orchestration/runtime/GraphRuntime.ts:79](http
 
 > **nodeResults**: `Record`\<`string`, \{ `durationMs`: `number`; `effectClass`: [`EffectClass`](../type-aliases/EffectClass.md); `output`: `unknown`; \}\>
 
-Defined in: [packages/agentos/src/orchestration/runtime/GraphRuntime.ts:85](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/runtime/GraphRuntime.ts#L85)
+Defined in: [packages/agentos/src/orchestration/runtime/GraphRuntime.ts:85](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/runtime/GraphRuntime.ts#L85)
 
 ***
 
@@ -48,7 +48,7 @@ Defined in: [packages/agentos/src/orchestration/runtime/GraphRuntime.ts:85](http
 
 > **request**: [`GraphExpansionRequest`](GraphExpansionRequest.md)
 
-Defined in: [packages/agentos/src/orchestration/runtime/GraphRuntime.ts:81](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/runtime/GraphRuntime.ts#L81)
+Defined in: [packages/agentos/src/orchestration/runtime/GraphRuntime.ts:81](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/runtime/GraphRuntime.ts#L81)
 
 ***
 
@@ -56,7 +56,7 @@ Defined in: [packages/agentos/src/orchestration/runtime/GraphRuntime.ts:81](http
 
 > **runId**: `string`
 
-Defined in: [packages/agentos/src/orchestration/runtime/GraphRuntime.ts:78](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/runtime/GraphRuntime.ts#L78)
+Defined in: [packages/agentos/src/orchestration/runtime/GraphRuntime.ts:78](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/runtime/GraphRuntime.ts#L78)
 
 ***
 
@@ -64,7 +64,7 @@ Defined in: [packages/agentos/src/orchestration/runtime/GraphRuntime.ts:78](http
 
 > **skippedNodes**: `string`[]
 
-Defined in: [packages/agentos/src/orchestration/runtime/GraphRuntime.ts:84](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/runtime/GraphRuntime.ts#L84)
+Defined in: [packages/agentos/src/orchestration/runtime/GraphRuntime.ts:84](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/runtime/GraphRuntime.ts#L84)
 
 ***
 
@@ -72,4 +72,4 @@ Defined in: [packages/agentos/src/orchestration/runtime/GraphRuntime.ts:84](http
 
 > **state**: [`GraphState`](GraphState.md)
 
-Defined in: [packages/agentos/src/orchestration/runtime/GraphRuntime.ts:80](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/runtime/GraphRuntime.ts#L80)
+Defined in: [packages/agentos/src/orchestration/runtime/GraphRuntime.ts:80](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/runtime/GraphRuntime.ts#L80)

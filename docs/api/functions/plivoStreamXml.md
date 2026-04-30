@@ -2,7 +2,7 @@
 
 > **plivoStreamXml**(`streamUrl`): `string`
 
-Defined in: [packages/agentos/src/channels/telephony/twiml.ts:131](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/telephony/twiml.ts#L131)
+Defined in: [packages/agentos/src/channels/telephony/twiml.ts:131](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/channels/telephony/twiml.ts#L131)
 
 Generate Plivo bidirectional streaming XML.
 

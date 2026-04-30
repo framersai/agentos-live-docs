@@ -1,6 +1,6 @@
 # Interface: ExtractedImage
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:729](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/io/facade/types.ts#L729)
+Defined in: [packages/agentos/src/memory/io/facade/types.ts:737](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/io/facade/types.ts#L737)
 
 An image extracted from a document during ingestion.
 
@@ -10,7 +10,7 @@ An image extracted from a document during ingestion.
 
 > `optional` **caption**: `string`
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:745](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/io/facade/types.ts#L745)
+Defined in: [packages/agentos/src/memory/io/facade/types.ts:753](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/io/facade/types.ts#L753)
 
 Auto-generated or OCR-derived caption.
 Present when a vision LLM is configured and `extractImages: true`.
@@ -21,7 +21,7 @@ Present when a vision LLM is configured and `extractImages: true`.
 
 > **data**: `Buffer`
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:733](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/io/facade/types.ts#L733)
+Defined in: [packages/agentos/src/memory/io/facade/types.ts:741](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/io/facade/types.ts#L741)
 
 Raw image bytes (PNG, JPEG, WebP, etc.).
 
@@ -31,7 +31,7 @@ Raw image bytes (PNG, JPEG, WebP, etc.).
 
 > `optional` **embedding**: `number`[]
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:756](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/io/facade/types.ts#L756)
+Defined in: [packages/agentos/src/memory/io/facade/types.ts:764](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/io/facade/types.ts#L764)
 
 Dense embedding of the image caption or visual content.
 Only present when embeddings were computed during extraction.
@@ -42,7 +42,7 @@ Only present when embeddings were computed during extraction.
 
 > **mimeType**: `string`
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:739](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/io/facade/types.ts#L739)
+Defined in: [packages/agentos/src/memory/io/facade/types.ts:747](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/io/facade/types.ts#L747)
 
 MIME type of `data`.
 
@@ -58,6 +58,6 @@ MIME type of `data`.
 
 > `optional` **pageNumber**: `number`
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:750](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/io/facade/types.ts#L750)
+Defined in: [packages/agentos/src/memory/io/facade/types.ts:758](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/io/facade/types.ts#L758)
 
 Page number the image appears on (1-based, PDF/DOCX).

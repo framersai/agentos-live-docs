@@ -2,7 +2,7 @@
 
 > **consolidateMemory**(`agent`): `void`
 
-Defined in: [runtime/agent-memory.ts:59](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/runtime/agent-memory.ts#L59)
+Defined in: [apps/paracosm/src/runtime/agent-memory.ts:59](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/agent-memory.ts#L59)
 
 Consolidate short-term memories into long-term beliefs.
 Called when short-term memory exceeds the threshold.

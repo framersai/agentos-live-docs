@@ -1,6 +1,6 @@
 # Interface: DepartmentReport
 
-Defined in: [runtime/contracts.ts:45](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/runtime/contracts.ts#L45)
+Defined in: [apps/paracosm/src/runtime/contracts.ts:45](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/contracts.ts#L45)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [runtime/contracts.ts:45](https://github.com/framersai/paracosm/blob
 
 > **citations**: `Citation`[]
 
-Defined in: [runtime/contracts.ts:48](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/runtime/contracts.ts#L48)
+Defined in: [apps/paracosm/src/runtime/contracts.ts:48](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/contracts.ts#L48)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [runtime/contracts.ts:48](https://github.com/framersai/paracosm/blob
 
 > **confidence**: `number`
 
-Defined in: [runtime/contracts.ts:55](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/runtime/contracts.ts#L55)
+Defined in: [apps/paracosm/src/runtime/contracts.ts:55](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/contracts.ts#L55)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: [runtime/contracts.ts:55](https://github.com/framersai/paracosm/blob
 
 > **department**: `string`
 
-Defined in: [runtime/contracts.ts:46](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/runtime/contracts.ts#L46)
+Defined in: [apps/paracosm/src/runtime/contracts.ts:46](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/contracts.ts#L46)
 
 ***
 
@@ -32,7 +32,7 @@ Defined in: [runtime/contracts.ts:46](https://github.com/framersai/paracosm/blob
 
 > **featuredAgentUpdates**: `FeaturedAgentUpdate`[]
 
-Defined in: [runtime/contracts.ts:54](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/runtime/contracts.ts#L54)
+Defined in: [apps/paracosm/src/runtime/contracts.ts:54](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/contracts.ts#L54)
 
 ***
 
@@ -40,7 +40,7 @@ Defined in: [runtime/contracts.ts:54](https://github.com/framersai/paracosm/blob
 
 > **forgedToolsUsed**: `ForgedToolUsage`[]
 
-Defined in: [runtime/contracts.ts:53](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/runtime/contracts.ts#L53)
+Defined in: [apps/paracosm/src/runtime/contracts.ts:53](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/contracts.ts#L53)
 
 ***
 
@@ -48,7 +48,7 @@ Defined in: [runtime/contracts.ts:53](https://github.com/framersai/paracosm/blob
 
 > **openQuestions**: `string`[]
 
-Defined in: [runtime/contracts.ts:56](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/runtime/contracts.ts#L56)
+Defined in: [apps/paracosm/src/runtime/contracts.ts:56](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/contracts.ts#L56)
 
 ***
 
@@ -56,7 +56,7 @@ Defined in: [runtime/contracts.ts:56](https://github.com/framersai/paracosm/blob
 
 > **opportunities**: `Opportunity`[]
 
-Defined in: [runtime/contracts.ts:50](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/runtime/contracts.ts#L50)
+Defined in: [apps/paracosm/src/runtime/contracts.ts:50](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/contracts.ts#L50)
 
 ***
 
@@ -64,7 +64,7 @@ Defined in: [runtime/contracts.ts:50](https://github.com/framersai/paracosm/blob
 
 > **proposedPatches**: `Partial`\<[`ColonyPatch`](../../engine/interfaces/ColonyPatch.md)\>
 
-Defined in: [runtime/contracts.ts:52](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/runtime/contracts.ts#L52)
+Defined in: [apps/paracosm/src/runtime/contracts.ts:52](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/contracts.ts#L52)
 
 ***
 
@@ -72,7 +72,7 @@ Defined in: [runtime/contracts.ts:52](https://github.com/framersai/paracosm/blob
 
 > **recommendedActions**: `string`[]
 
-Defined in: [runtime/contracts.ts:51](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/runtime/contracts.ts#L51)
+Defined in: [apps/paracosm/src/runtime/contracts.ts:51](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/contracts.ts#L51)
 
 ***
 
@@ -80,7 +80,7 @@ Defined in: [runtime/contracts.ts:51](https://github.com/framersai/paracosm/blob
 
 > `optional` **recommendedEffects**: `TypedPolicyEffect`[]
 
-Defined in: [runtime/contracts.ts:57](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/runtime/contracts.ts#L57)
+Defined in: [apps/paracosm/src/runtime/contracts.ts:57](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/contracts.ts#L57)
 
 ***
 
@@ -88,7 +88,7 @@ Defined in: [runtime/contracts.ts:57](https://github.com/framersai/paracosm/blob
 
 > **risks**: `Risk`[]
 
-Defined in: [runtime/contracts.ts:49](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/runtime/contracts.ts#L49)
+Defined in: [apps/paracosm/src/runtime/contracts.ts:49](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/contracts.ts#L49)
 
 ***
 
@@ -96,4 +96,4 @@ Defined in: [runtime/contracts.ts:49](https://github.com/framersai/paracosm/blob
 
 > **summary**: `string`
 
-Defined in: [runtime/contracts.ts:47](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/runtime/contracts.ts#L47)
+Defined in: [apps/paracosm/src/runtime/contracts.ts:47](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/contracts.ts#L47)

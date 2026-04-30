@@ -1,6 +1,6 @@
 # Interface: CrossAgentGuardrailContext
 
-Defined in: [packages/agentos/src/safety/guardrails/crossAgentGuardrailDispatcher.ts:38](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/safety/guardrails/crossAgentGuardrailDispatcher.ts#L38)
+Defined in: [packages/agentos/src/safety/guardrails/crossAgentGuardrailDispatcher.ts:38](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/safety/guardrails/crossAgentGuardrailDispatcher.ts#L38)
 
 Context for cross-agent guardrail evaluation.
 
@@ -10,7 +10,7 @@ Context for cross-agent guardrail evaluation.
 
 > `optional` **agencyId**: `string`
 
-Defined in: [packages/agentos/src/safety/guardrails/crossAgentGuardrailDispatcher.ts:46](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/safety/guardrails/crossAgentGuardrailDispatcher.ts#L46)
+Defined in: [packages/agentos/src/safety/guardrails/crossAgentGuardrailDispatcher.ts:46](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/safety/guardrails/crossAgentGuardrailDispatcher.ts#L46)
 
 Agency ID if agents are in the same agency
 
@@ -20,7 +20,7 @@ Agency ID if agents are in the same agency
 
 > **observerAgentId**: `string`
 
-Defined in: [packages/agentos/src/safety/guardrails/crossAgentGuardrailDispatcher.ts:43](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/safety/guardrails/crossAgentGuardrailDispatcher.ts#L43)
+Defined in: [packages/agentos/src/safety/guardrails/crossAgentGuardrailDispatcher.ts:43](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/safety/guardrails/crossAgentGuardrailDispatcher.ts#L43)
 
 The agent running the cross-agent guardrails
 
@@ -30,6 +30,6 @@ The agent running the cross-agent guardrails
 
 > **sourceAgentId**: `string`
 
-Defined in: [packages/agentos/src/safety/guardrails/crossAgentGuardrailDispatcher.ts:40](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/safety/guardrails/crossAgentGuardrailDispatcher.ts#L40)
+Defined in: [packages/agentos/src/safety/guardrails/crossAgentGuardrailDispatcher.ts:40](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/safety/guardrails/crossAgentGuardrailDispatcher.ts#L40)
 
 The agent whose output is being observed

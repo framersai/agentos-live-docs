@@ -1,6 +1,6 @@
 # Class: EventTaxonomy
 
-Defined in: [engine/event-taxonomy.ts:5](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/event-taxonomy.ts#L5)
+Defined in: [apps/paracosm/src/engine/event-taxonomy.ts:5](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/event-taxonomy.ts#L5)
 
 ## Constructors
 
@@ -8,7 +8,7 @@ Defined in: [engine/event-taxonomy.ts:5](https://github.com/framersai/paracosm/b
 
 > **new EventTaxonomy**(`definitions`): `EventTaxonomy`
 
-Defined in: [engine/event-taxonomy.ts:8](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/event-taxonomy.ts#L8)
+Defined in: [apps/paracosm/src/engine/event-taxonomy.ts:8](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/event-taxonomy.ts#L8)
 
 #### Parameters
 
@@ -26,7 +26,7 @@ Defined in: [engine/event-taxonomy.ts:8](https://github.com/framersai/paracosm/b
 
 > **all**(): [`ScenarioEventDef`](../interfaces/ScenarioEventDef.md)[]
 
-Defined in: [engine/event-taxonomy.ts:16](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/event-taxonomy.ts#L16)
+Defined in: [apps/paracosm/src/engine/event-taxonomy.ts:16](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/event-taxonomy.ts#L16)
 
 #### Returns
 
@@ -38,7 +38,7 @@ Defined in: [engine/event-taxonomy.ts:16](https://github.com/framersai/paracosm/
 
 > **get**(`id`): [`ScenarioEventDef`](../interfaces/ScenarioEventDef.md) \| `undefined`
 
-Defined in: [engine/event-taxonomy.ts:12](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/event-taxonomy.ts#L12)
+Defined in: [apps/paracosm/src/engine/event-taxonomy.ts:12](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/event-taxonomy.ts#L12)
 
 #### Parameters
 

@@ -1,6 +1,6 @@
 # Interface: ILongTermMemoryRetriever
 
-Defined in: [packages/agentos/src/core/conversation/ILongTermMemoryRetriever.ts:41](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/conversation/ILongTermMemoryRetriever.ts#L41)
+Defined in: [packages/agentos/src/core/conversation/ILongTermMemoryRetriever.ts:43](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/core/conversation/ILongTermMemoryRetriever.ts#L43)
 
 ## Methods
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/core/conversation/ILongTermMemoryRetriever.ts:
 
 > `optional` **recordRetrievalFeedback**(`input`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/core/conversation/ILongTermMemoryRetriever.ts:46](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/conversation/ILongTermMemoryRetriever.ts#L46)
+Defined in: [packages/agentos/src/core/conversation/ILongTermMemoryRetriever.ts:48](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/core/conversation/ILongTermMemoryRetriever.ts#L48)
 
 #### Parameters
 
@@ -26,7 +26,7 @@ Defined in: [packages/agentos/src/core/conversation/ILongTermMemoryRetriever.ts:
 
 > **retrieveLongTermMemory**(`input`): `Promise`\<[`LongTermMemoryRetrievalResult`](LongTermMemoryRetrievalResult.md) \| `null`\>
 
-Defined in: [packages/agentos/src/core/conversation/ILongTermMemoryRetriever.ts:42](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/conversation/ILongTermMemoryRetriever.ts#L42)
+Defined in: [packages/agentos/src/core/conversation/ILongTermMemoryRetriever.ts:44](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/core/conversation/ILongTermMemoryRetriever.ts#L44)
 
 #### Parameters
 

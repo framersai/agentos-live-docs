@@ -1,6 +1,6 @@
 # Interface: Agent
 
-Defined in: [packages/agentos/src/api/agent.ts:185](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/agent.ts#L185)
+Defined in: [packages/agentos/src/api/agent.ts:185](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/agent.ts#L185)
 
 A stateful agent instance returned by [agent](../functions/agent.md).
 
@@ -10,7 +10,7 @@ A stateful agent instance returned by [agent](../functions/agent.md).
 
 > **close**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/api/agent.ts:214](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/agent.ts#L214)
+Defined in: [packages/agentos/src/api/agent.ts:214](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/agent.ts#L214)
 
 Releases all in-memory session state held by this agent.
 
@@ -24,7 +24,7 @@ Releases all in-memory session state held by this agent.
 
 > **export**(`metadata?`): [`AgentExportConfig`](AgentExportConfig.md)
 
-Defined in: [packages/agentos/src/api/agent.ts:220](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/agent.ts#L220)
+Defined in: [packages/agentos/src/api/agent.ts:220](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/agent.ts#L220)
 
 Exports the agent's configuration as a portable object.
 
@@ -62,7 +62,7 @@ A portable [AgentExportConfig](AgentExportConfig.md) object.
 
 > **exportJSON**(`metadata?`): `string`
 
-Defined in: [packages/agentos/src/api/agent.ts:226](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/agent.ts#L226)
+Defined in: [packages/agentos/src/api/agent.ts:226](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/agent.ts#L226)
 
 Exports the agent's configuration as a pretty-printed JSON string.
 
@@ -100,7 +100,7 @@ JSON string.
 
 > **generate**(`prompt`, `opts?`): `Promise`\<[`GenerateTextResult`](GenerateTextResult.md)\>
 
-Defined in: [packages/agentos/src/api/agent.ts:194](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/agent.ts#L194)
+Defined in: [packages/agentos/src/api/agent.ts:194](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/agent.ts#L194)
 
 Generates a single reply without maintaining session history.
 Accepts plain text or multimodal content (text + image parts).
@@ -131,7 +131,7 @@ The complete generation result.
 
 > **getAvatarBindings**(): `AvatarBindingInputs` & `Record`\<`string`, `unknown`\>
 
-Defined in: [packages/agentos/src/api/agent.ts:228](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/agent.ts#L228)
+Defined in: [packages/agentos/src/api/agent.ts:228](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/agent.ts#L228)
 
 Read current avatar binding state (auto-populated from mood/voice/relationship).
 
@@ -145,7 +145,7 @@ Read current avatar binding state (auto-populated from mood/voice/relationship).
 
 > **session**(`id?`): [`AgentSession`](AgentSession.md)
 
-Defined in: [packages/agentos/src/api/agent.ts:210](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/agent.ts#L210)
+Defined in: [packages/agentos/src/api/agent.ts:210](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/agent.ts#L210)
 
 Returns (or creates) a named [AgentSession](AgentSession.md) with its own conversation history.
 
@@ -169,7 +169,7 @@ The session object for this ID.
 
 > **setAvatarBindingOverrides**(`overrides`): `void`
 
-Defined in: [packages/agentos/src/api/agent.ts:230](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/agent.ts#L230)
+Defined in: [packages/agentos/src/api/agent.ts:230](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/agent.ts#L230)
 
 Inject game-specific binding overrides (healthBand, combatMode, etc.).
 
@@ -189,7 +189,7 @@ Inject game-specific binding overrides (healthBand, combatMode, etc.).
 
 > **stream**(`prompt`, `opts?`): [`StreamTextResult`](StreamTextResult.md)
 
-Defined in: [packages/agentos/src/api/agent.ts:203](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/agent.ts#L203)
+Defined in: [packages/agentos/src/api/agent.ts:203](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/agent.ts#L203)
 
 Streams a single reply without maintaining session history.
 Accepts plain text or multimodal content (text + image parts).
@@ -220,7 +220,7 @@ A [StreamTextResult](StreamTextResult.md).
 
 > **usage**(`sessionId?`): `Promise`\<[`AgentOSUsageAggregate`](AgentOSUsageAggregate.md)\>
 
-Defined in: [packages/agentos/src/api/agent.ts:212](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/agent.ts#L212)
+Defined in: [packages/agentos/src/api/agent.ts:212](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/agent.ts#L212)
 
 Returns persisted usage totals for the whole agent or a single session.
 

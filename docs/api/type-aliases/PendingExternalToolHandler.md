@@ -2,7 +2,7 @@
 
 > **PendingExternalToolHandler** = (`context`) => `Promise`\<[`AgentOSExternalToolHandlerResult`](../interfaces/AgentOSExternalToolHandlerResult.md)\>
 
-Defined in: [packages/agentos/src/api/runtime/resumeExternalToolRequestWithRegisteredTools.ts:95](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/runtime/resumeExternalToolRequestWithRegisteredTools.ts#L95)
+Defined in: [packages/agentos/src/api/runtime/resumeExternalToolRequestWithRegisteredTools.ts:95](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/runtime/resumeExternalToolRequestWithRegisteredTools.ts#L95)
 
 ## Parameters
 

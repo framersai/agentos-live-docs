@@ -1,6 +1,6 @@
 # Interface: ProvenanceConfig
 
-Defined in: [packages/agentos/src/provenance/types.ts:29](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/provenance/types.ts#L29)
+Defined in: [packages/agentos/src/provenance/types.ts:29](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/provenance/types.ts#L29)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/provenance/types.ts:29](https://github.com/fra
 
 > `optional` **anchorTarget**: [`AnchorTarget`](AnchorTarget.md)
 
-Defined in: [packages/agentos/src/provenance/types.ts:39](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/provenance/types.ts#L39)
+Defined in: [packages/agentos/src/provenance/types.ts:39](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/provenance/types.ts#L39)
 
 Optional external anchor target configuration.
 
@@ -18,7 +18,7 @@ Optional external anchor target configuration.
 
 > **enabled**: `boolean`
 
-Defined in: [packages/agentos/src/provenance/types.ts:31](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/provenance/types.ts#L31)
+Defined in: [packages/agentos/src/provenance/types.ts:31](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/provenance/types.ts#L31)
 
 Whether the signed event ledger is active.
 
@@ -28,7 +28,7 @@ Whether the signed event ledger is active.
 
 > **hashAlgorithm**: `"sha256"` \| `"sha384"` \| `"sha512"`
 
-Defined in: [packages/agentos/src/provenance/types.ts:35](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/provenance/types.ts#L35)
+Defined in: [packages/agentos/src/provenance/types.ts:35](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/provenance/types.ts#L35)
 
 Hash algorithm for the chain.
 
@@ -38,7 +38,7 @@ Hash algorithm for the chain.
 
 > **keySource**: [`AgentKeySource`](AgentKeySource.md)
 
-Defined in: [packages/agentos/src/provenance/types.ts:37](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/provenance/types.ts#L37)
+Defined in: [packages/agentos/src/provenance/types.ts:37](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/provenance/types.ts#L37)
 
 Agent keypair source.
 
@@ -48,6 +48,6 @@ Agent keypair source.
 
 > **signatureMode**: `"every-event"` \| `"anchor-only"`
 
-Defined in: [packages/agentos/src/provenance/types.ts:33](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/provenance/types.ts#L33)
+Defined in: [packages/agentos/src/provenance/types.ts:33](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/provenance/types.ts#L33)
 
 Sign every event individually, or only sign at anchor points.

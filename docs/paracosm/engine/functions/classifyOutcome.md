@@ -2,7 +2,7 @@
 
 > **classifyOutcome**(`decisionText`, `riskyOption`, `riskSuccessProbability`, `colony`, `rng`): [`TurnOutcome`](../type-aliases/TurnOutcome.md)
 
-Defined in: [engine/core/progression.ts:152](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/core/progression.ts#L152)
+Defined in: [apps/paracosm/src/engine/core/progression.ts:152](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/core/progression.ts#L152)
 
 Classify turn outcome as risky/conservative success/failure.
 Deterministic from seed + decision text.

@@ -1,6 +1,6 @@
 # Interface: MarketplaceStats
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:330](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/marketplace/store/IMarketplace.ts#L330)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:330](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/marketplace/store/IMarketplace.ts#L330)
 
 Statistics about the marketplace
 
@@ -10,7 +10,7 @@ Statistics about the marketplace
 
 > **averageRating**: `number`
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:337](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/marketplace/store/IMarketplace.ts#L337)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:337](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/marketplace/store/IMarketplace.ts#L337)
 
 ***
 
@@ -18,7 +18,7 @@ Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:337](https:/
 
 > **itemsByType**: `Record`\<[`MarketplaceItemType`](../type-aliases/MarketplaceItemType.md), `number`\>
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:334](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/marketplace/store/IMarketplace.ts#L334)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:334](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/marketplace/store/IMarketplace.ts#L334)
 
 ***
 
@@ -26,7 +26,7 @@ Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:334](https:/
 
 > **recentlyAdded**: `number`
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:336](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/marketplace/store/IMarketplace.ts#L336)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:336](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/marketplace/store/IMarketplace.ts#L336)
 
 ***
 
@@ -34,7 +34,7 @@ Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:336](https:/
 
 > **topCategories**: `object`[]
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:335](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/marketplace/store/IMarketplace.ts#L335)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:335](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/marketplace/store/IMarketplace.ts#L335)
 
 #### count
 
@@ -50,7 +50,7 @@ Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:335](https:/
 
 > **totalDownloads**: `number`
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:333](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/marketplace/store/IMarketplace.ts#L333)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:333](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/marketplace/store/IMarketplace.ts#L333)
 
 ***
 
@@ -58,7 +58,7 @@ Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:333](https:/
 
 > **totalItems**: `number`
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:331](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/marketplace/store/IMarketplace.ts#L331)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:331](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/marketplace/store/IMarketplace.ts#L331)
 
 ***
 
@@ -66,4 +66,4 @@ Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:331](https:/
 
 > **totalPublishers**: `number`
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:332](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/marketplace/store/IMarketplace.ts#L332)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:332](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/marketplace/store/IMarketplace.ts#L332)

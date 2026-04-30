@@ -1,6 +1,6 @@
 # Class: SeededRng
 
-Defined in: [engine/core/rng.ts:5](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/core/rng.ts#L5)
+Defined in: [apps/paracosm/src/engine/core/rng.ts:5](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/core/rng.ts#L5)
 
 Mulberry32 — fast 32-bit seeded PRNG.
 Deterministic: same seed always produces same sequence.
@@ -11,7 +11,7 @@ Deterministic: same seed always produces same sequence.
 
 > **new SeededRng**(`seed`): `SeededRng`
 
-Defined in: [engine/core/rng.ts:8](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/core/rng.ts#L8)
+Defined in: [apps/paracosm/src/engine/core/rng.ts:8](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/core/rng.ts#L8)
 
 #### Parameters
 
@@ -29,7 +29,7 @@ Defined in: [engine/core/rng.ts:8](https://github.com/framersai/paracosm/blob/44
 
 > **chance**(`probability`): `boolean`
 
-Defined in: [engine/core/rng.ts:26](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/core/rng.ts#L26)
+Defined in: [apps/paracosm/src/engine/core/rng.ts:26](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/core/rng.ts#L26)
 
 Returns true with the given probability (0-1).
 
@@ -49,7 +49,7 @@ Returns true with the given probability (0-1).
 
 > **int**(`min`, `max`): `number`
 
-Defined in: [engine/core/rng.ts:21](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/core/rng.ts#L21)
+Defined in: [apps/paracosm/src/engine/core/rng.ts:21](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/core/rng.ts#L21)
 
 Returns an integer in [min, max] inclusive.
 
@@ -73,7 +73,7 @@ Returns an integer in [min, max] inclusive.
 
 > **next**(): `number`
 
-Defined in: [engine/core/rng.ts:13](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/core/rng.ts#L13)
+Defined in: [apps/paracosm/src/engine/core/rng.ts:13](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/core/rng.ts#L13)
 
 Returns a float in [0, 1).
 
@@ -87,7 +87,7 @@ Returns a float in [0, 1).
 
 > **pick**\<`T`\>(`arr`): `T`
 
-Defined in: [engine/core/rng.ts:31](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/core/rng.ts#L31)
+Defined in: [apps/paracosm/src/engine/core/rng.ts:31](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/core/rng.ts#L31)
 
 Picks a random element from an array.
 
@@ -113,7 +113,7 @@ readonly `T`[]
 
 > **turnSeed**(`turn`): `SeededRng`
 
-Defined in: [engine/core/rng.ts:36](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/core/rng.ts#L36)
+Defined in: [apps/paracosm/src/engine/core/rng.ts:36](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/core/rng.ts#L36)
 
 Derives a child RNG for a specific turn (deterministic sub-stream).
 

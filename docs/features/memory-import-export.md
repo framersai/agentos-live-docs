@@ -1,6 +1,7 @@
 ---
 title: "Memory Import/Export"
 sidebar_position: 7
+description: 'Export agent memories to SQLite, JSON, Markdown, or Obsidian vaults, and import from SQLite, JSON, Markdown, Obsidian, ChatGPT exports, and CSV.'
 ---
 
 > The Memory I/O subsystem provides lossless round-trip serialisation across four export formats and six import formats. JSON round-trips traces, graph rows, documents, chunks, images, conversations, and messages, and trace deduplication is enabled by default on import.

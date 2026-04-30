@@ -1,6 +1,6 @@
 # Class: InMemoryVectorStore
 
-Defined in: [packages/agentos/src/rag/vector\_stores/InMemoryVectorStore.ts:65](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/vector_stores/InMemoryVectorStore.ts#L65)
+Defined in: [packages/agentos/src/rag/vector\_stores/InMemoryVectorStore.ts:67](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/vector_stores/InMemoryVectorStore.ts#L67)
 
 Implements the `IVectorStore` interface using in-memory data structures.
 Provides a simple, fast vector store primarily for development and testing.
@@ -17,7 +17,7 @@ Provides a simple, fast vector store primarily for development and testing.
 
 > **new InMemoryVectorStore**(): `InMemoryVectorStore`
 
-Defined in: [packages/agentos/src/rag/vector\_stores/InMemoryVectorStore.ts:75](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/vector_stores/InMemoryVectorStore.ts#L75)
+Defined in: [packages/agentos/src/rag/vector\_stores/InMemoryVectorStore.ts:77](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/vector_stores/InMemoryVectorStore.ts#L77)
 
 Constructs an InMemoryVectorStore instance.
 Note: The store is not ready for use until `initialize` is called.
@@ -32,7 +32,7 @@ Note: The store is not ready for use until `initialize` is called.
 
 > **checkHealth**(): `Promise`\<\{ `details?`: `any`; `isHealthy`: `boolean`; \}\>
 
-Defined in: [packages/agentos/src/rag/vector\_stores/InMemoryVectorStore.ts:385](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/vector_stores/InMemoryVectorStore.ts#L385)
+Defined in: [packages/agentos/src/rag/vector\_stores/InMemoryVectorStore.ts:423](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/vector_stores/InMemoryVectorStore.ts#L423)
 
 **`Async`**
 
@@ -56,7 +56,7 @@ A promise that resolves with the health status.
 
 > **collectionExists**(`collectionName`): `Promise`\<`boolean`\>
 
-Defined in: [packages/agentos/src/rag/vector\_stores/InMemoryVectorStore.ts:204](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/vector_stores/InMemoryVectorStore.ts#L204)
+Defined in: [packages/agentos/src/rag/vector\_stores/InMemoryVectorStore.ts:206](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/vector_stores/InMemoryVectorStore.ts#L206)
 
 **`Async`**
 
@@ -90,7 +90,7 @@ If the check fails for reasons other than existence (e.g., connection issue).
 
 > **createCollection**(`collectionName`, `dimension`, `options?`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/rag/vector\_stores/InMemoryVectorStore.ts:162](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/vector_stores/InMemoryVectorStore.ts#L162)
+Defined in: [packages/agentos/src/rag/vector\_stores/InMemoryVectorStore.ts:164](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/vector_stores/InMemoryVectorStore.ts#L164)
 
 Creates or replaces an in-memory collection.
 
@@ -122,7 +122,7 @@ Creates or replaces an in-memory collection.
 
 > **delete**(`collectionName`, `ids?`, `options?`): `Promise`\<[`DeleteResult`](../interfaces/DeleteResult.md)\>
 
-Defined in: [packages/agentos/src/rag/vector\_stores/InMemoryVectorStore.ts:332](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/vector_stores/InMemoryVectorStore.ts#L332)
+Defined in: [packages/agentos/src/rag/vector\_stores/InMemoryVectorStore.ts:370](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/vector_stores/InMemoryVectorStore.ts#L370)
 
 **`Async`**
 
@@ -170,7 +170,7 @@ If the delete operation fails.
 
 > **deleteCollection**(`collectionName`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/rag/vector\_stores/InMemoryVectorStore.ts:212](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/vector_stores/InMemoryVectorStore.ts#L212)
+Defined in: [packages/agentos/src/rag/vector\_stores/InMemoryVectorStore.ts:214](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/vector_stores/InMemoryVectorStore.ts#L214)
 
 **`Async`**
 
@@ -204,7 +204,7 @@ If collection deletion fails.
 
 > **getStats**(`collectionName?`): `Promise`\<`Record`\<`string`, `any`\>\>
 
-Defined in: [packages/agentos/src/rag/vector\_stores/InMemoryVectorStore.ts:428](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/vector_stores/InMemoryVectorStore.ts#L428)
+Defined in: [packages/agentos/src/rag/vector\_stores/InMemoryVectorStore.ts:466](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/vector_stores/InMemoryVectorStore.ts#L466)
 
 **`Async`**
 
@@ -240,7 +240,7 @@ If fetching statistics fails.
 
 > **initialize**(`config`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/rag/vector\_stores/InMemoryVectorStore.ts:83](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/vector_stores/InMemoryVectorStore.ts#L83)
+Defined in: [packages/agentos/src/rag/vector\_stores/InMemoryVectorStore.ts:85](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/vector_stores/InMemoryVectorStore.ts#L85)
 
 **`Async`**
 
@@ -277,7 +277,7 @@ If initialization fails (e.g., invalid configuration, connection error, authenti
 
 > **query**(`collectionName`, `queryEmbedding`, `options?`): `Promise`\<[`QueryResult`](../interfaces/QueryResult.md)\>
 
-Defined in: [packages/agentos/src/rag/vector\_stores/InMemoryVectorStore.ts:272](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/vector_stores/InMemoryVectorStore.ts#L272)
+Defined in: [packages/agentos/src/rag/vector\_stores/InMemoryVectorStore.ts:274](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/vector_stores/InMemoryVectorStore.ts#L274)
 
 **`Async`**
 
@@ -319,11 +319,40 @@ If the query operation fails.
 
 ***
 
+### scanByMetadata()
+
+> **scanByMetadata**(`collectionName`, `options?`): `Promise`\<`MetadataScanResult`\>
+
+Defined in: [packages/agentos/src/rag/vector\_stores/InMemoryVectorStore.ts:331](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/vector_stores/InMemoryVectorStore.ts#L331)
+
+Optional: Enumerates documents using metadata-only filtering without
+requiring a query embedding.
+
+#### Parameters
+
+##### collectionName
+
+`string`
+
+##### options?
+
+`MetadataScanOptions`
+
+#### Returns
+
+`Promise`\<`MetadataScanResult`\>
+
+#### Implementation of
+
+[`IVectorStore`](../interfaces/IVectorStore.md).[`scanByMetadata`](../interfaces/IVectorStore.md#scanbymetadata)
+
+***
+
 ### shutdown()
 
 > **shutdown**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/rag/vector\_stores/InMemoryVectorStore.ts:406](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/vector_stores/InMemoryVectorStore.ts#L406)
+Defined in: [packages/agentos/src/rag/vector\_stores/InMemoryVectorStore.ts:444](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/vector_stores/InMemoryVectorStore.ts#L444)
 
 **`Async`**
 
@@ -346,7 +375,7 @@ A promise that resolves when shutdown is complete.
 
 > **upsert**(`collectionName`, `documents`, `options?`): `Promise`\<[`UpsertResult`](../interfaces/UpsertResult.md)\>
 
-Defined in: [packages/agentos/src/rag/vector\_stores/InMemoryVectorStore.ts:229](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/vector_stores/InMemoryVectorStore.ts#L229)
+Defined in: [packages/agentos/src/rag/vector\_stores/InMemoryVectorStore.ts:231](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/vector_stores/InMemoryVectorStore.ts#L231)
 
 **`Async`**
 

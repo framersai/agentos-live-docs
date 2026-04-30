@@ -1,6 +1,6 @@
 # Interface: RollingSummaryCompactionProfileDefinition
 
-Defined in: [packages/agentos/src/api/types/OrchestratorConfig.ts:21](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/types/OrchestratorConfig.ts#L21)
+Defined in: [packages/agentos/src/api/types/OrchestratorConfig.ts:21](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/types/OrchestratorConfig.ts#L21)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/api/types/OrchestratorConfig.ts:21](https://gi
 
 > **config**: `RollingSummaryCompactionConfig`
 
-Defined in: [packages/agentos/src/api/types/OrchestratorConfig.ts:22](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/types/OrchestratorConfig.ts#L22)
+Defined in: [packages/agentos/src/api/types/OrchestratorConfig.ts:22](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/types/OrchestratorConfig.ts#L22)
 
 ***
 
@@ -16,4 +16,4 @@ Defined in: [packages/agentos/src/api/types/OrchestratorConfig.ts:22](https://gi
 
 > `optional` **systemPrompt**: `string`
 
-Defined in: [packages/agentos/src/api/types/OrchestratorConfig.ts:23](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/types/OrchestratorConfig.ts#L23)
+Defined in: [packages/agentos/src/api/types/OrchestratorConfig.ts:23](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/types/OrchestratorConfig.ts#L23)

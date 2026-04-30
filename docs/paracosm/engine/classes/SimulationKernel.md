@@ -1,6 +1,6 @@
 # Class: SimulationKernel
 
-Defined in: [engine/core/kernel.ts:30](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/core/kernel.ts#L30)
+Defined in: [apps/paracosm/src/engine/core/kernel.ts:30](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/core/kernel.ts#L30)
 
 ## Constructors
 
@@ -8,7 +8,7 @@ Defined in: [engine/core/kernel.ts:30](https://github.com/framersai/paracosm/blo
 
 > **new SimulationKernel**(`seed`, `leaderId`, `keyPersonnel`, `init?`): `SimulationKernel`
 
-Defined in: [engine/core/kernel.ts:34](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/core/kernel.ts#L34)
+Defined in: [apps/paracosm/src/engine/core/kernel.ts:34](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/core/kernel.ts#L34)
 
 #### Parameters
 
@@ -38,7 +38,7 @@ Defined in: [engine/core/kernel.ts:34](https://github.com/framersai/paracosm/blo
 
 > **advanceTurn**(`nextTurn`, `nextYear`, `progressionHook?`): [`SimulationState`](../interfaces/SimulationState.md)
 
-Defined in: [engine/core/kernel.ts:130](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/core/kernel.ts#L130)
+Defined in: [apps/paracosm/src/engine/core/kernel.ts:130](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/core/kernel.ts#L130)
 
 Advance to the next turn. Runs between-turn progression.
 
@@ -66,7 +66,7 @@ Advance to the next turn. Runs between-turn progression.
 
 > **applyAgentUpdates**(`updates`): `void`
 
-Defined in: [engine/core/kernel.ts:237](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/core/kernel.ts#L237)
+Defined in: [apps/paracosm/src/engine/core/kernel.ts:237](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/core/kernel.ts#L237)
 
 Apply featured colonist updates from department reports.
 
@@ -86,7 +86,7 @@ Apply featured colonist updates from department reports.
 
 > **applyColonyDeltas**(`deltas`, `events?`): `void`
 
-Defined in: [engine/core/kernel.ts:199](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/core/kernel.ts#L199)
+Defined in: [apps/paracosm/src/engine/core/kernel.ts:199](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/core/kernel.ts#L199)
 
 Apply additive deltas to colony systems (not absolute values).
 
@@ -110,7 +110,7 @@ Apply additive deltas to colony systems (not absolute values).
 
 > **applyDrift**(`commanderHexaco`, `outcome`, `yearDelta`): `void`
 
-Defined in: [engine/core/kernel.ts:229](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/core/kernel.ts#L229)
+Defined in: [apps/paracosm/src/engine/core/kernel.ts:229](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/core/kernel.ts#L229)
 
 Apply personality drift to all promoted colonists.
 
@@ -138,7 +138,7 @@ Apply personality drift to all promoted colonists.
 
 > **applyPolicy**(`effect`): `void`
 
-Defined in: [engine/core/kernel.ts:94](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/core/kernel.ts#L94)
+Defined in: [apps/paracosm/src/engine/core/kernel.ts:94](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/core/kernel.ts#L94)
 
 Apply a policy effect from the commander's decision.
 
@@ -158,7 +158,7 @@ Apply a policy effect from the commander's decision.
 
 > **applyPoliticsDeltas**(`deltas`, `events?`): `void`
 
-Defined in: [engine/core/kernel.ts:216](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/core/kernel.ts#L216)
+Defined in: [apps/paracosm/src/engine/core/kernel.ts:216](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/core/kernel.ts#L216)
 
 Apply additive deltas to colony politics.
 
@@ -182,7 +182,7 @@ Apply additive deltas to colony politics.
 
 > **export**(): [`SimulationState`](../interfaces/SimulationState.md)
 
-Defined in: [engine/core/kernel.ts:268](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/core/kernel.ts#L268)
+Defined in: [apps/paracosm/src/engine/core/kernel.ts:268](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/core/kernel.ts#L268)
 
 #### Returns
 
@@ -194,7 +194,7 @@ Defined in: [engine/core/kernel.ts:268](https://github.com/framersai/paracosm/bl
 
 > **getAliveAgents**(): [`Agent`](../interfaces/Agent.md)[]
 
-Defined in: [engine/core/kernel.ts:74](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/core/kernel.ts#L74)
+Defined in: [apps/paracosm/src/engine/core/kernel.ts:74](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/core/kernel.ts#L74)
 
 #### Returns
 
@@ -206,7 +206,7 @@ Defined in: [engine/core/kernel.ts:74](https://github.com/framersai/paracosm/blo
 
 > **getAliveCount**(): `number`
 
-Defined in: [engine/core/kernel.ts:78](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/core/kernel.ts#L78)
+Defined in: [apps/paracosm/src/engine/core/kernel.ts:78](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/core/kernel.ts#L78)
 
 #### Returns
 
@@ -218,7 +218,7 @@ Defined in: [engine/core/kernel.ts:78](https://github.com/framersai/paracosm/blo
 
 > **getCandidates**(`dept`, `topN?`): [`Agent`](../interfaces/Agent.md)[]
 
-Defined in: [engine/core/kernel.ts:160](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/core/kernel.ts#L160)
+Defined in: [apps/paracosm/src/engine/core/kernel.ts:160](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/core/kernel.ts#L160)
 
 Get top N candidates for a department role, scored by trait fit.
 
@@ -242,7 +242,7 @@ Get top N candidates for a department role, scored by trait fit.
 
 > **getDepartmentSummary**(`dept`): `object`
 
-Defined in: [engine/core/kernel.ts:82](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/core/kernel.ts#L82)
+Defined in: [apps/paracosm/src/engine/core/kernel.ts:82](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/core/kernel.ts#L82)
 
 #### Parameters
 
@@ -276,7 +276,7 @@ Defined in: [engine/core/kernel.ts:82](https://github.com/framersai/paracosm/blo
 
 > **getFeaturedAgents**(): [`Agent`](../interfaces/Agent.md)[]
 
-Defined in: [engine/core/kernel.ts:70](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/core/kernel.ts#L70)
+Defined in: [apps/paracosm/src/engine/core/kernel.ts:70](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/core/kernel.ts#L70)
 
 #### Returns
 
@@ -288,7 +288,7 @@ Defined in: [engine/core/kernel.ts:70](https://github.com/framersai/paracosm/blo
 
 > **getState**(): [`SimulationState`](../interfaces/SimulationState.md)
 
-Defined in: [engine/core/kernel.ts:66](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/core/kernel.ts#L66)
+Defined in: [apps/paracosm/src/engine/core/kernel.ts:66](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/core/kernel.ts#L66)
 
 #### Returns
 
@@ -300,7 +300,7 @@ Defined in: [engine/core/kernel.ts:66](https://github.com/framersai/paracosm/blo
 
 > **promoteAgent**(`agentId`, `dept`, `role`, `promotedBy`): `void`
 
-Defined in: [engine/core/kernel.ts:175](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/core/kernel.ts#L175)
+Defined in: [apps/paracosm/src/engine/core/kernel.ts:175](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/core/kernel.ts#L175)
 
 Promote a colonist to a department head role.
 

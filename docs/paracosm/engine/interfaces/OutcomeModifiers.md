@@ -1,6 +1,6 @@
 # Interface: OutcomeModifiers
 
-Defined in: [engine/effect-registry.ts:11](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/effect-registry.ts#L11)
+Defined in: [apps/paracosm/src/engine/effect-registry.ts:11](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/effect-registry.ts#L11)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [engine/effect-registry.ts:11](https://github.com/framersai/paracosm
 
 > **noise**: `number`
 
-Defined in: [engine/effect-registry.ts:13](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/effect-registry.ts#L13)
+Defined in: [apps/paracosm/src/engine/effect-registry.ts:13](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/effect-registry.ts#L13)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [engine/effect-registry.ts:13](https://github.com/framersai/paracosm
 
 > **personalityBonus**: `number`
 
-Defined in: [engine/effect-registry.ts:12](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/effect-registry.ts#L12)
+Defined in: [apps/paracosm/src/engine/effect-registry.ts:12](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/effect-registry.ts#L12)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: [engine/effect-registry.ts:12](https://github.com/framersai/paracosm
 
 > `optional` **toolModifiers**: `object`
 
-Defined in: [engine/effect-registry.ts:25](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/effect-registry.ts#L25)
+Defined in: [apps/paracosm/src/engine/effect-registry.ts:25](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/effect-registry.ts#L25)
 
 Tool intelligence factor. Forging computational tools is a tradeoff:
   newToolsThisEvent      tools forged THIS event (consume time/compute,

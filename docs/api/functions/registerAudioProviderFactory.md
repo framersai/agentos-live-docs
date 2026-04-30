@@ -2,7 +2,7 @@
 
 > **registerAudioProviderFactory**(`providerId`, `factory`): `void`
 
-Defined in: [packages/agentos/src/media/audio/index.ts:69](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/audio/index.ts#L69)
+Defined in: [packages/agentos/src/media/audio/index.ts:69](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/media/audio/index.ts#L69)
 
 Register an audio provider factory for a given provider ID.
 

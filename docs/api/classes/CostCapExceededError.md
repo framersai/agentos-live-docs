@@ -1,6 +1,6 @@
 # Class: CostCapExceededError
 
-Defined in: [packages/agentos/src/safety/runtime/CostGuard.ts:39](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/safety/runtime/CostGuard.ts#L39)
+Defined in: [packages/agentos/src/safety/runtime/CostGuard.ts:39](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/safety/runtime/CostGuard.ts#L39)
 
 ## Extends
 
@@ -12,7 +12,7 @@ Defined in: [packages/agentos/src/safety/runtime/CostGuard.ts:39](https://github
 
 > **new CostCapExceededError**(`agentId`, `capType`, `currentCost`, `limit`): `CostCapExceededError`
 
-Defined in: [packages/agentos/src/safety/runtime/CostGuard.ts:40](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/safety/runtime/CostGuard.ts#L40)
+Defined in: [packages/agentos/src/safety/runtime/CostGuard.ts:40](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/safety/runtime/CostGuard.ts#L40)
 
 #### Parameters
 
@@ -46,7 +46,7 @@ Defined in: [packages/agentos/src/safety/runtime/CostGuard.ts:40](https://github
 
 > `readonly` **agentId**: `string`
 
-Defined in: [packages/agentos/src/safety/runtime/CostGuard.ts:41](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/safety/runtime/CostGuard.ts#L41)
+Defined in: [packages/agentos/src/safety/runtime/CostGuard.ts:41](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/safety/runtime/CostGuard.ts#L41)
 
 ***
 
@@ -54,7 +54,7 @@ Defined in: [packages/agentos/src/safety/runtime/CostGuard.ts:41](https://github
 
 > `readonly` **capType**: [`CostCapType`](../type-aliases/CostCapType.md)
 
-Defined in: [packages/agentos/src/safety/runtime/CostGuard.ts:42](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/safety/runtime/CostGuard.ts#L42)
+Defined in: [packages/agentos/src/safety/runtime/CostGuard.ts:42](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/safety/runtime/CostGuard.ts#L42)
 
 ***
 
@@ -62,7 +62,7 @@ Defined in: [packages/agentos/src/safety/runtime/CostGuard.ts:42](https://github
 
 > `readonly` **currentCost**: `number`
 
-Defined in: [packages/agentos/src/safety/runtime/CostGuard.ts:43](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/safety/runtime/CostGuard.ts#L43)
+Defined in: [packages/agentos/src/safety/runtime/CostGuard.ts:43](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/safety/runtime/CostGuard.ts#L43)
 
 ***
 
@@ -70,7 +70,7 @@ Defined in: [packages/agentos/src/safety/runtime/CostGuard.ts:43](https://github
 
 > `readonly` **limit**: `number`
 
-Defined in: [packages/agentos/src/safety/runtime/CostGuard.ts:44](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/safety/runtime/CostGuard.ts#L44)
+Defined in: [packages/agentos/src/safety/runtime/CostGuard.ts:44](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/safety/runtime/CostGuard.ts#L44)
 
 ***
 
@@ -78,7 +78,7 @@ Defined in: [packages/agentos/src/safety/runtime/CostGuard.ts:44](https://github
 
 > **message**: `string`
 
-Defined in: apps/agentos-live-docs/node\_modules/typescript/lib/lib.es5.d.ts:1077
+Defined in: node\_modules/.pnpm/typescript@5.6.3/node\_modules/typescript/lib/lib.es5.d.ts:1077
 
 #### Inherited from
 
@@ -90,7 +90,7 @@ Defined in: apps/agentos-live-docs/node\_modules/typescript/lib/lib.es5.d.ts:107
 
 > **name**: `string`
 
-Defined in: apps/agentos-live-docs/node\_modules/typescript/lib/lib.es5.d.ts:1076
+Defined in: node\_modules/.pnpm/typescript@5.6.3/node\_modules/typescript/lib/lib.es5.d.ts:1076
 
 #### Inherited from
 
@@ -102,7 +102,7 @@ Defined in: apps/agentos-live-docs/node\_modules/typescript/lib/lib.es5.d.ts:107
 
 > `optional` **stack**: `string`
 
-Defined in: apps/agentos-live-docs/node\_modules/typescript/lib/lib.es5.d.ts:1078
+Defined in: node\_modules/.pnpm/typescript@5.6.3/node\_modules/typescript/lib/lib.es5.d.ts:1078
 
 #### Inherited from
 

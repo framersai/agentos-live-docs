@@ -4,7 +4,11 @@ const path = require('path');
 const test = require('node:test');
 const assert = require('node:assert/strict');
 
-const { collectHtmlFiles, getSkippedTopLevelDirs } = require('./search-manifest.js');
+const {
+  collectHtmlFiles,
+  getSkippedTopLevelDirs,
+  stripTags,
+} = require('./search-manifest.js');
 
 function writeFile(filePath, content = '<html></html>') {
   fs.mkdirSync(path.dirname(filePath), { recursive: true });
@@ -63,4 +67,55 @@ test('getSkippedTopLevelDirs merges defaults with environment additions', () => 
   } else {
     process.env.AGENTOS_DOCS_SEARCH_MANIFEST_SKIP_DIRS = previous;
   }
+});
+
+test('stripTags removes skipped sections and decodes entities', () => {
+  const html = `
+    <nav>skip nav</nav>
+    <article>
+      <h1>AgentOS &amp; Memory</h1>
+      <p>Stores &#x1F4A1; and &#169; knowledge.</p>
+      <script>window.ignore = true;</script>
+      <style>.hidden { display: none; }</style>
+      <footer>skip footer</footer>
+    </article>
+  `;
+
+  assert.equal(stripTags(html), 'AgentOS & Memory Stores 💡 and © knowledge.');
+});
+
+test('postBuild logs when search manifest indexing starts and finishes', async () => {
+  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'search-manifest-'));
+  writeFile(
+    path.join(tmpDir, 'guides', 'index.html'),
+    `
+      <html>
+        <head><title>Guides | AgentOS</title></head>
+        <body>
+          <article><h1>Guides</h1><p>Build reliable agents.</p></article>
+        </body>
+      </html>
+    `
+  );
+
+  const pluginFactory = require('./search-manifest.js');
+  const plugin = pluginFactory({}, {});
+  const logs = [];
+  const originalLog = console.log;
+  console.log = (message) => logs.push(String(message));
+
+  try {
+    await plugin.postBuild({ outDir: tmpDir });
+  } finally {
+    console.log = originalLog;
+  }
+
+  assert.ok(
+    logs.some((line) => line.includes('[search-manifest] Indexing 1 HTML files')),
+    `expected start log, received: ${logs.join('\n')}`
+  );
+  assert.ok(
+    logs.some((line) => line.includes('[search-manifest] Wrote 1 entries')),
+    `expected finish log, received: ${logs.join('\n')}`
+  );
 });

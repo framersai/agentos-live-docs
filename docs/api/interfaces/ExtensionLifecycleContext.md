@@ -1,6 +1,6 @@
 # Interface: ExtensionLifecycleContext
 
-Defined in: [packages/agentos/src/extensions/types.ts:51](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/extensions/types.ts#L51)
+Defined in: [packages/agentos/src/extensions/types.ts:51](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/extensions/types.ts#L51)
 
 Context object passed to lifecycle hooks when descriptors are activated or
 deactivated. Additional properties can be added as the extension runtime
@@ -16,7 +16,7 @@ evolves.
 
 > `optional` **getSecret**: (`secretId`) => `string` \| `undefined`
 
-Defined in: [packages/agentos/src/extensions/types.ts:57](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/extensions/types.ts#L57)
+Defined in: [packages/agentos/src/extensions/types.ts:57](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/extensions/types.ts#L57)
 
 Resolves a secret value registered with AgentOS / the host application.
 Returns `undefined` when a secret is not configured.
@@ -37,7 +37,7 @@ Returns `undefined` when a secret is not configured.
 
 > `optional` **logger**: [`ILogger`](ILogger.md)
 
-Defined in: [packages/agentos/src/extensions/types.ts:52](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/extensions/types.ts#L52)
+Defined in: [packages/agentos/src/extensions/types.ts:52](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/extensions/types.ts#L52)
 
 ***
 
@@ -45,6 +45,6 @@ Defined in: [packages/agentos/src/extensions/types.ts:52](https://github.com/fra
 
 > `optional` **services**: [`ISharedServiceRegistry`](ISharedServiceRegistry.md)
 
-Defined in: [packages/agentos/src/extensions/types.ts:61](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/extensions/types.ts#L61)
+Defined in: [packages/agentos/src/extensions/types.ts:61](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/extensions/types.ts#L61)
 
 Shared singleton registry for lazy-loading heavyweight extension services.

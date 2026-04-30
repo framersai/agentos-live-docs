@@ -1,6 +1,6 @@
 # Interface: IToolPermissionManager
 
-Defined in: [packages/agentos/src/core/tools/permissions/IToolPermissionManager.ts:111](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/tools/permissions/IToolPermissionManager.ts#L111)
+Defined in: [packages/agentos/src/core/tools/permissions/IToolPermissionManager.ts:111](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/core/tools/permissions/IToolPermissionManager.ts#L111)
 
 ## Interface
 
@@ -19,7 +19,7 @@ features, and any other custom authorization rules before a tool is allowed to e
 
 > **checkToolSubscriptionAccess**(`userId`, `toolIdOrName`): `Promise`\<\{ `isAllowed`: `boolean`; `missingFeatures?`: [`FeatureFlag`](FeatureFlag.md)[]; `reason?`: `string`; \}\>
 
-Defined in: [packages/agentos/src/core/tools/permissions/IToolPermissionManager.ts:196](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/tools/permissions/IToolPermissionManager.ts#L196)
+Defined in: [packages/agentos/src/core/tools/permissions/IToolPermissionManager.ts:196](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/core/tools/permissions/IToolPermissionManager.ts#L196)
 
 **`Async`**
 
@@ -61,7 +61,7 @@ for a tool that has required features (`GMIErrorCode.CONFIGURATION_ERROR` or `EX
 
 > **getRequiredFeaturesForTool**(`toolIdOrName`): [`FeatureFlag`](FeatureFlag.md)[] \| `undefined`
 
-Defined in: [packages/agentos/src/core/tools/permissions/IToolPermissionManager.ts:210](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/tools/permissions/IToolPermissionManager.ts#L210)
+Defined in: [packages/agentos/src/core/tools/permissions/IToolPermissionManager.ts:210](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/core/tools/permissions/IToolPermissionManager.ts#L210)
 
 Retrieves the list of `FeatureFlag`s that are configured as being required for a specific tool.
 This information is sourced from the `toolToSubscriptionFeatures` mapping in the manager's configuration.
@@ -87,7 +87,7 @@ or `undefined` if no specific features are mapped as required for this tool.
 
 > **hasRequiredCapabilities**(`personaCapabilities`, `toolRequiredCapabilities`): `boolean`
 
-Defined in: [packages/agentos/src/core/tools/permissions/IToolPermissionManager.ts:174](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/tools/permissions/IToolPermissionManager.ts#L174)
+Defined in: [packages/agentos/src/core/tools/permissions/IToolPermissionManager.ts:174](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/core/tools/permissions/IToolPermissionManager.ts#L174)
 
 Performs a specific check to determine if a Persona possesses all the capabilities
 explicitly listed as required by a tool.
@@ -119,7 +119,7 @@ If `undefined` or empty, this check inherently passes (tool requires no specific
 
 > **initialize**(`config`, `authService?`, `subscriptionService?`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/core/tools/permissions/IToolPermissionManager.ts:128](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/tools/permissions/IToolPermissionManager.ts#L128)
+Defined in: [packages/agentos/src/core/tools/permissions/IToolPermissionManager.ts:128](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/core/tools/permissions/IToolPermissionManager.ts#L128)
 
 **`Async`**
 
@@ -166,7 +166,7 @@ If initialization fails due to invalid configuration or issues with dependencies
 
 > **isExecutionAllowed**(`context`): `Promise`\<[`PermissionCheckResult`](PermissionCheckResult.md)\>
 
-Defined in: [packages/agentos/src/core/tools/permissions/IToolPermissionManager.ts:162](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/tools/permissions/IToolPermissionManager.ts#L162)
+Defined in: [packages/agentos/src/core/tools/permissions/IToolPermissionManager.ts:162](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/core/tools/permissions/IToolPermissionManager.ts#L162)
 
 **`Async`**
 

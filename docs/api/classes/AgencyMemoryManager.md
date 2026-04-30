@@ -1,6 +1,6 @@
 # Class: AgencyMemoryManager
 
-Defined in: [packages/agentos/src/agents/agency/AgencyMemoryManager.ts:163](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/agents/agency/AgencyMemoryManager.ts#L163)
+Defined in: [packages/agentos/src/agents/agency/AgencyMemoryManager.ts:163](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/agents/agency/AgencyMemoryManager.ts#L163)
 
 Manages shared RAG memory for Agency collectives.
 
@@ -30,7 +30,7 @@ AgencyMemoryManager
 
 > **new AgencyMemoryManager**(`vectorStoreManager`, `logger?`): `AgencyMemoryManager`
 
-Defined in: [packages/agentos/src/agents/agency/AgencyMemoryManager.ts:187](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/agents/agency/AgencyMemoryManager.ts#L187)
+Defined in: [packages/agentos/src/agents/agency/AgencyMemoryManager.ts:187](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/agents/agency/AgencyMemoryManager.ts#L187)
 
 Creates a new AgencyMemoryManager instance.
 
@@ -58,7 +58,7 @@ Optional logger for diagnostics
 
 > **broadcastToAgency**(`agencyId`, `input`, `config?`): `Promise`\<[`AgencyMemoryOperationResult`](../interfaces/AgencyMemoryOperationResult.md)\>
 
-Defined in: [packages/agentos/src/agents/agency/AgencyMemoryManager.ts:688](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/agents/agency/AgencyMemoryManager.ts#L688)
+Defined in: [packages/agentos/src/agents/agency/AgencyMemoryManager.ts:688](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/agents/agency/AgencyMemoryManager.ts#L688)
 
 Broadcasts context from one GMI to all others in the agency.
 This is useful for sharing discoveries, decisions, or important updates.
@@ -133,7 +133,7 @@ await memoryManager.broadcastToAgency(agencyId, {
 
 > **cleanupAgencyMemory**(`agencyId`): `Promise`\<[`AgencyMemoryOperationResult`](../interfaces/AgencyMemoryOperationResult.md)\>
 
-Defined in: [packages/agentos/src/agents/agency/AgencyMemoryManager.ts:584](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/agents/agency/AgencyMemoryManager.ts#L584)
+Defined in: [packages/agentos/src/agents/agency/AgencyMemoryManager.ts:584](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/agents/agency/AgencyMemoryManager.ts#L584)
 
 Cleans up agency memory when agency is removed.
 
@@ -157,7 +157,7 @@ Operation result
 
 > **getContextFromRoles**(`agencyId`, `options`, `config?`): `Promise`\<[`AgencyMemoryQueryResult`](../interfaces/AgencyMemoryQueryResult.md)\>
 
-Defined in: [packages/agentos/src/agents/agency/AgencyMemoryManager.ts:748](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/agents/agency/AgencyMemoryManager.ts#L748)
+Defined in: [packages/agentos/src/agents/agency/AgencyMemoryManager.ts:748](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/agents/agency/AgencyMemoryManager.ts#L748)
 
 Gets recent context contributions from specific roles.
 Enables GMIs to selectively query context from collaborators.
@@ -229,7 +229,7 @@ const findings = await memoryManager.getContextFromRoles(agencyId, {
 
 > **getDecisions**(`agencyId`, `options`, `config?`): `Promise`\<[`AgencyMemoryQueryResult`](../interfaces/AgencyMemoryQueryResult.md)\>
 
-Defined in: [packages/agentos/src/agents/agency/AgencyMemoryManager.ts:870](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/agents/agency/AgencyMemoryManager.ts#L870)
+Defined in: [packages/agentos/src/agents/agency/AgencyMemoryManager.ts:870](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/agents/agency/AgencyMemoryManager.ts#L870)
 
 Gets all decisions made by the agency.
 
@@ -279,7 +279,7 @@ Query result with decision chunks
 
 > **getStats**(`agencyId`): `Promise`\<[`AgencyMemoryStats`](../interfaces/AgencyMemoryStats.md) \| `null`\>
 
-Defined in: [packages/agentos/src/agents/agency/AgencyMemoryManager.ts:528](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/agents/agency/AgencyMemoryManager.ts#L528)
+Defined in: [packages/agentos/src/agents/agency/AgencyMemoryManager.ts:528](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/agents/agency/AgencyMemoryManager.ts#L528)
 
 Gets statistics for agency shared memory.
 
@@ -303,7 +303,7 @@ Memory statistics
 
 > **ingestToSharedMemory**(`agencyId`, `input`, `config?`): `Promise`\<[`AgencyMemoryOperationResult`](../interfaces/AgencyMemoryOperationResult.md)\>
 
-Defined in: [packages/agentos/src/agents/agency/AgencyMemoryManager.ts:297](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/agents/agency/AgencyMemoryManager.ts#L297)
+Defined in: [packages/agentos/src/agents/agency/AgencyMemoryManager.ts:297](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/agents/agency/AgencyMemoryManager.ts#L297)
 
 Ingests a document to agency shared memory.
 
@@ -339,7 +339,7 @@ Operation result
 
 > **initializeAgencyMemory**(`session`): `Promise`\<[`AgencyMemoryOperationResult`](../interfaces/AgencyMemoryOperationResult.md)\>
 
-Defined in: [packages/agentos/src/agents/agency/AgencyMemoryManager.ts:207](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/agents/agency/AgencyMemoryManager.ts#L207)
+Defined in: [packages/agentos/src/agents/agency/AgencyMemoryManager.ts:207](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/agents/agency/AgencyMemoryManager.ts#L207)
 
 Initializes shared memory for an agency.
 Creates dedicated collection and applies configuration.
@@ -364,7 +364,7 @@ Operation result
 
 > **isInitialized**(`agencyId`): `boolean`
 
-Defined in: [packages/agentos/src/agents/agency/AgencyMemoryManager.ts:660](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/agents/agency/AgencyMemoryManager.ts#L660)
+Defined in: [packages/agentos/src/agents/agency/AgencyMemoryManager.ts:660](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/agents/agency/AgencyMemoryManager.ts#L660)
 
 Checks if agency memory is initialized.
 
@@ -384,7 +384,7 @@ Checks if agency memory is initialized.
 
 > **querySharedMemory**(`agencyId`, `options`, `config?`): `Promise`\<[`AgencyMemoryQueryResult`](../interfaces/AgencyMemoryQueryResult.md)\>
 
-Defined in: [packages/agentos/src/agents/agency/AgencyMemoryManager.ts:403](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/agents/agency/AgencyMemoryManager.ts#L403)
+Defined in: [packages/agentos/src/agents/agency/AgencyMemoryManager.ts:403](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/agents/agency/AgencyMemoryManager.ts#L403)
 
 Queries agency shared memory.
 
@@ -420,7 +420,7 @@ Query result with retrieved chunks
 
 > **recordDecision**(`agencyId`, `decision`, `config?`): `Promise`\<[`AgencyMemoryOperationResult`](../interfaces/AgencyMemoryOperationResult.md)\>
 
-Defined in: [packages/agentos/src/agents/agency/AgencyMemoryManager.ts:823](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/agents/agency/AgencyMemoryManager.ts#L823)
+Defined in: [packages/agentos/src/agents/agency/AgencyMemoryManager.ts:823](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/agents/agency/AgencyMemoryManager.ts#L823)
 
 Records a decision made by the agency for future reference.
 
@@ -482,7 +482,7 @@ Operation result
 
 > **shareSynthesis**(`agencyId`, `summary`, `config?`): `Promise`\<[`AgencyMemoryOperationResult`](../interfaces/AgencyMemoryOperationResult.md)\>
 
-Defined in: [packages/agentos/src/agents/agency/AgencyMemoryManager.ts:781](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/agents/agency/AgencyMemoryManager.ts#L781)
+Defined in: [packages/agentos/src/agents/agency/AgencyMemoryManager.ts:781](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/agents/agency/AgencyMemoryManager.ts#L781)
 
 Shares a synthesis or summary across all GMIs in the agency.
 Typically used by coordinator or synthesizer roles.

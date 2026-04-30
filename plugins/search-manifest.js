@@ -19,6 +19,8 @@ const fs = require('fs');
 const path = require('path');
 
 const DEFAULT_SKIPPED_TOP_LEVEL_DIRS = new Set(['assets', '__server', 'api', 'paracosm']);
+const NON_CONTENT_BLOCK_RE = /<(script|style|nav|footer)\b[^>]*>[\s\S]*?<\/\1>/gi;
+const HTML_TOKEN_RE = /<[^>]+>|&#x([0-9a-f]+);|&#(\d+);|&([a-z]+);|\s+/gi;
 
 const NAMED_ENTITIES = {
   amp: '&',
@@ -61,14 +63,13 @@ function collectHtmlFiles(dir, skippedTopLevelDirs = getSkippedTopLevelDirs(), d
 /** Strip HTML tags and collapse whitespace. */
 function stripTags(html) {
   return html
-    .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '')
-    .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '')
-    .replace(/<nav[^>]*>[\s\S]*?<\/nav>/gi, '')
-    .replace(/<footer[^>]*>[\s\S]*?<\/footer>/gi, '')
-    .replace(/<[^>]+>/g, ' ')
-    .replace(/&#x([0-9a-f]+);/gi, (_match, hex) => decodeCodePoint(parseInt(hex, 16)))
-    .replace(/&#(\d+);/g, (_match, dec) => decodeCodePoint(parseInt(dec, 10)))
-    .replace(/&([a-z]+);/gi, (_match, entity) => NAMED_ENTITIES[entity.toLowerCase()] ?? ' ')
+    .replace(NON_CONTENT_BLOCK_RE, ' ')
+    .replace(HTML_TOKEN_RE, (_match, hex, dec, entity) => {
+      if (hex) return decodeCodePoint(parseInt(hex, 16));
+      if (dec) return decodeCodePoint(parseInt(dec, 10));
+      if (entity) return NAMED_ENTITIES[entity.toLowerCase()] ?? ' ';
+      return ' ';
+    })
     .replace(/\s+/g, ' ')
     .trim();
 }
@@ -89,6 +90,8 @@ function searchManifestPlugin(_context, _options) {
     async postBuild({ outDir }) {
       const htmlFiles = collectHtmlFiles(outDir);
       const manifest = [];
+
+      console.log(`[search-manifest] Indexing ${htmlFiles.length} HTML files...`);
 
       for (const file of htmlFiles) {
         const html = fs.readFileSync(file, 'utf-8');
@@ -140,10 +143,11 @@ function searchManifestPlugin(_context, _options) {
       deduped.sort((a, b) => a.t.localeCompare(b.t));
 
       const outPath = path.join(outDir, 'search-docs.json');
-      fs.writeFileSync(outPath, JSON.stringify(deduped));
+      const json = JSON.stringify(deduped);
+      fs.writeFileSync(outPath, json);
 
       console.log(
-        `[search-manifest] Wrote ${deduped.length} entries to search-docs.json (${(Buffer.byteLength(JSON.stringify(deduped)) / 1024).toFixed(1)} KB)`
+        `[search-manifest] Wrote ${deduped.length} entries to search-docs.json (${(Buffer.byteLength(json) / 1024).toFixed(1)} KB)`
       );
     },
   };

@@ -1,6 +1,6 @@
 # Class: UrlLoader
 
-Defined in: [packages/agentos/src/memory/io/ingestion/UrlLoader.ts:63](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/io/ingestion/UrlLoader.ts#L63)
+Defined in: [packages/agentos/src/memory/io/ingestion/UrlLoader.ts:63](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/io/ingestion/UrlLoader.ts#L63)
 
 An [IDocumentLoader](../interfaces/IDocumentLoader.md) that fetches a remote URL and delegates parsing
 to the appropriate registered loader based on the response `Content-Type`.
@@ -38,7 +38,7 @@ if (urlLoader.canLoad('https://example.com/report.pdf')) {
 
 > **new UrlLoader**(`registry`): `UrlLoader`
 
-Defined in: [packages/agentos/src/memory/io/ingestion/UrlLoader.ts:76](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/io/ingestion/UrlLoader.ts#L76)
+Defined in: [packages/agentos/src/memory/io/ingestion/UrlLoader.ts:76](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/io/ingestion/UrlLoader.ts#L76)
 
 #### Parameters
 
@@ -59,7 +59,7 @@ The [LoaderRegistry](LoaderRegistry.md) used to resolve format-specific
 
 > `readonly` **supportedExtensions**: `string`[] = `[]`
 
-Defined in: [packages/agentos/src/memory/io/ingestion/UrlLoader.ts:70](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/io/ingestion/UrlLoader.ts#L70)
+Defined in: [packages/agentos/src/memory/io/ingestion/UrlLoader.ts:70](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/io/ingestion/UrlLoader.ts#L70)
 
 URLs have no file extension so this array is always empty.
 
@@ -76,7 +76,7 @@ the registry's extension-based lookup.
 
 > **canLoad**(`source`): `boolean`
 
-Defined in: [packages/agentos/src/memory/io/ingestion/UrlLoader.ts:90](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/io/ingestion/UrlLoader.ts#L90)
+Defined in: [packages/agentos/src/memory/io/ingestion/UrlLoader.ts:90](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/io/ingestion/UrlLoader.ts#L90)
 
 Returns `true` when `source` is a string that starts with `http://` or
 `https://`.
@@ -105,7 +105,7 @@ Absolute file path, URL string, or raw bytes.
 
 > **load**(`source`, `options?`): `Promise`\<[`LoadedDocument`](../interfaces/LoadedDocument.md)\>
 
-Defined in: [packages/agentos/src/memory/io/ingestion/UrlLoader.ts:119](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/io/ingestion/UrlLoader.ts#L119)
+Defined in: [packages/agentos/src/memory/io/ingestion/UrlLoader.ts:119](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/io/ingestion/UrlLoader.ts#L119)
 
 Fetch `source` over HTTP/HTTPS and return a [LoadedDocument](../interfaces/LoadedDocument.md).
 

@@ -1,6 +1,6 @@
 # Interface: TurnArtifact
 
-Defined in: [runtime/contracts.ts:86](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/runtime/contracts.ts#L86)
+Defined in: [apps/paracosm/src/runtime/contracts.ts:86](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/contracts.ts#L86)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [runtime/contracts.ts:86](https://github.com/framersai/paracosm/blob
 
 > **commanderDecision**: [`CommanderDecision`](CommanderDecision.md)
 
-Defined in: [runtime/contracts.ts:91](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/runtime/contracts.ts#L91)
+Defined in: [apps/paracosm/src/runtime/contracts.ts:91](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/contracts.ts#L91)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [runtime/contracts.ts:91](https://github.com/framersai/paracosm/blob
 
 > **crisis**: `string`
 
-Defined in: [runtime/contracts.ts:89](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/runtime/contracts.ts#L89)
+Defined in: [apps/paracosm/src/runtime/contracts.ts:89](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/contracts.ts#L89)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: [runtime/contracts.ts:89](https://github.com/framersai/paracosm/blob
 
 > **departmentReports**: [`DepartmentReport`](DepartmentReport.md)[]
 
-Defined in: [runtime/contracts.ts:90](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/runtime/contracts.ts#L90)
+Defined in: [apps/paracosm/src/runtime/contracts.ts:90](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/contracts.ts#L90)
 
 ***
 
@@ -32,7 +32,7 @@ Defined in: [runtime/contracts.ts:90](https://github.com/framersai/paracosm/blob
 
 > **policyEffectsApplied**: `string`[]
 
-Defined in: [runtime/contracts.ts:92](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/runtime/contracts.ts#L92)
+Defined in: [apps/paracosm/src/runtime/contracts.ts:92](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/contracts.ts#L92)
 
 ***
 
@@ -40,7 +40,7 @@ Defined in: [runtime/contracts.ts:92](https://github.com/framersai/paracosm/blob
 
 > **stateSnapshotAfter**: `object`
 
-Defined in: [runtime/contracts.ts:93](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/runtime/contracts.ts#L93)
+Defined in: [apps/paracosm/src/runtime/contracts.ts:93](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/contracts.ts#L93)
 
 #### births
 
@@ -76,7 +76,7 @@ Defined in: [runtime/contracts.ts:93](https://github.com/framersai/paracosm/blob
 
 > **turn**: `number`
 
-Defined in: [runtime/contracts.ts:87](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/runtime/contracts.ts#L87)
+Defined in: [apps/paracosm/src/runtime/contracts.ts:87](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/contracts.ts#L87)
 
 ***
 
@@ -84,4 +84,4 @@ Defined in: [runtime/contracts.ts:87](https://github.com/framersai/paracosm/blob
 
 > **year**: `number`
 
-Defined in: [runtime/contracts.ts:88](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/runtime/contracts.ts#L88)
+Defined in: [apps/paracosm/src/runtime/contracts.ts:88](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/contracts.ts#L88)

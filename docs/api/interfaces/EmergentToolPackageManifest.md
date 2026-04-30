@@ -1,6 +1,6 @@
 # Interface: EmergentToolPackageManifest
 
-Defined in: [packages/agentos/src/emergent/ToolPackage.ts:33](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/emergent/ToolPackage.ts#L33)
+Defined in: [packages/agentos/src/emergent/ToolPackage.ts:33](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/emergent/ToolPackage.ts#L33)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/emergent/ToolPackage.ts:33](https://github.com
 
 > **exportedAt**: `string`
 
-Defined in: [packages/agentos/src/emergent/ToolPackage.ts:36](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/emergent/ToolPackage.ts#L36)
+Defined in: [packages/agentos/src/emergent/ToolPackage.ts:36](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/emergent/ToolPackage.ts#L36)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [packages/agentos/src/emergent/ToolPackage.ts:36](https://github.com
 
 > **packageType**: `"emergent-tool"`
 
-Defined in: [packages/agentos/src/emergent/ToolPackage.ts:35](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/emergent/ToolPackage.ts#L35)
+Defined in: [packages/agentos/src/emergent/ToolPackage.ts:35](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/emergent/ToolPackage.ts#L35)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: [packages/agentos/src/emergent/ToolPackage.ts:35](https://github.com
 
 > **portability**: `object`
 
-Defined in: [packages/agentos/src/emergent/ToolPackage.ts:37](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/emergent/ToolPackage.ts#L37)
+Defined in: [packages/agentos/src/emergent/ToolPackage.ts:37](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/emergent/ToolPackage.ts#L37)
 
 #### portable
 
@@ -40,7 +40,7 @@ Defined in: [packages/agentos/src/emergent/ToolPackage.ts:37](https://github.com
 
 > **schemaVersion**: `"agentos.emergent-tool.v1"`
 
-Defined in: [packages/agentos/src/emergent/ToolPackage.ts:34](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/emergent/ToolPackage.ts#L34)
+Defined in: [packages/agentos/src/emergent/ToolPackage.ts:34](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/emergent/ToolPackage.ts#L34)
 
 ***
 
@@ -48,7 +48,7 @@ Defined in: [packages/agentos/src/emergent/ToolPackage.ts:34](https://github.com
 
 > **tool**: `object`
 
-Defined in: [packages/agentos/src/emergent/ToolPackage.ts:41](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/emergent/ToolPackage.ts#L41)
+Defined in: [packages/agentos/src/emergent/ToolPackage.ts:41](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/emergent/ToolPackage.ts#L41)
 
 #### createdAt
 

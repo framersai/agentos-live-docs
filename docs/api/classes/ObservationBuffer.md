@@ -1,6 +1,6 @@
 # Class: ObservationBuffer
 
-Defined in: [packages/agentos/src/memory/pipeline/observation/ObservationBuffer.ts:41](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/pipeline/observation/ObservationBuffer.ts#L41)
+Defined in: [packages/agentos/src/memory/pipeline/observation/ObservationBuffer.ts:41](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/pipeline/observation/ObservationBuffer.ts#L41)
 
 ## Constructors
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/memory/pipeline/observation/ObservationBuffer.
 
 > **new ObservationBuffer**(`config?`): `ObservationBuffer`
 
-Defined in: [packages/agentos/src/memory/pipeline/observation/ObservationBuffer.ts:48](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/pipeline/observation/ObservationBuffer.ts#L48)
+Defined in: [packages/agentos/src/memory/pipeline/observation/ObservationBuffer.ts:48](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/pipeline/observation/ObservationBuffer.ts#L48)
 
 #### Parameters
 
@@ -26,7 +26,7 @@ Defined in: [packages/agentos/src/memory/pipeline/observation/ObservationBuffer.
 
 > **clear**(): `void`
 
-Defined in: [packages/agentos/src/memory/pipeline/observation/ObservationBuffer.ts:105](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/pipeline/observation/ObservationBuffer.ts#L105)
+Defined in: [packages/agentos/src/memory/pipeline/observation/ObservationBuffer.ts:105](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/pipeline/observation/ObservationBuffer.ts#L105)
 
 Clear the buffer entirely.
 
@@ -40,7 +40,7 @@ Clear the buffer entirely.
 
 > **drain**(): [`BufferedMessage`](../interfaces/BufferedMessage.md)[]
 
-Defined in: [packages/agentos/src/memory/pipeline/observation/ObservationBuffer.ts:79](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/pipeline/observation/ObservationBuffer.ts#L79)
+Defined in: [packages/agentos/src/memory/pipeline/observation/ObservationBuffer.ts:79](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/pipeline/observation/ObservationBuffer.ts#L79)
 
 Drain messages since last drain for observation processing.
 Returns the messages and marks them as consumed.
@@ -55,7 +55,7 @@ Returns the messages and marks them as consumed.
 
 > **getMessageCount**(): `number`
 
-Defined in: [packages/agentos/src/memory/pipeline/observation/ObservationBuffer.ts:100](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/pipeline/observation/ObservationBuffer.ts#L100)
+Defined in: [packages/agentos/src/memory/pipeline/observation/ObservationBuffer.ts:100](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/pipeline/observation/ObservationBuffer.ts#L100)
 
 Total message count.
 
@@ -69,7 +69,7 @@ Total message count.
 
 > **getPendingTokens**(): `number`
 
-Defined in: [packages/agentos/src/memory/pipeline/observation/ObservationBuffer.ts:95](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/pipeline/observation/ObservationBuffer.ts#L95)
+Defined in: [packages/agentos/src/memory/pipeline/observation/ObservationBuffer.ts:95](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/pipeline/observation/ObservationBuffer.ts#L95)
 
 Unprocessed tokens since last drain.
 
@@ -83,7 +83,7 @@ Unprocessed tokens since last drain.
 
 > **getTotalTokens**(): `number`
 
-Defined in: [packages/agentos/src/memory/pipeline/observation/ObservationBuffer.ts:90](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/pipeline/observation/ObservationBuffer.ts#L90)
+Defined in: [packages/agentos/src/memory/pipeline/observation/ObservationBuffer.ts:90](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/pipeline/observation/ObservationBuffer.ts#L90)
 
 Total accumulated tokens.
 
@@ -97,7 +97,7 @@ Total accumulated tokens.
 
 > **push**(`role`, `content`): `boolean`
 
-Defined in: [packages/agentos/src/memory/pipeline/observation/ObservationBuffer.ts:58](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/pipeline/observation/ObservationBuffer.ts#L58)
+Defined in: [packages/agentos/src/memory/pipeline/observation/ObservationBuffer.ts:58](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/pipeline/observation/ObservationBuffer.ts#L58)
 
 Add a message to the buffer.
 Returns true if the buffer has reached activation threshold.
@@ -122,7 +122,7 @@ Returns true if the buffer has reached activation threshold.
 
 > **shouldActivate**(): `boolean`
 
-Defined in: [packages/agentos/src/memory/pipeline/observation/ObservationBuffer.ts:71](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/pipeline/observation/ObservationBuffer.ts#L71)
+Defined in: [packages/agentos/src/memory/pipeline/observation/ObservationBuffer.ts:71](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/pipeline/observation/ObservationBuffer.ts#L71)
 
 Whether accumulated tokens since last drain exceed the threshold.
 

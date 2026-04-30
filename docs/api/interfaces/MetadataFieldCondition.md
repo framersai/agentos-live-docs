@@ -1,6 +1,6 @@
 # Interface: MetadataFieldCondition
 
-Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:60](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/vector-store/IVectorStore.ts#L60)
+Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:60](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/core/vector-store/IVectorStore.ts#L60)
 
 Defines conditions for filtering metadata fields during a query.
 Each property represents a comparison operator.
@@ -26,7 +26,7 @@ MetadataFieldCondition
 
 > `optional` **$all**: [`MetadataScalarValue`](../type-aliases/MetadataScalarValue.md)[]
 
-Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:71](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/vector-store/IVectorStore.ts#L71)
+Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:71](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/core/vector-store/IVectorStore.ts#L71)
 
 ***
 
@@ -34,7 +34,7 @@ Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:71](https://
 
 > `optional` **$contains**: [`MetadataScalarValue`](../type-aliases/MetadataScalarValue.md)
 
-Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:70](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/vector-store/IVectorStore.ts#L70)
+Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:70](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/core/vector-store/IVectorStore.ts#L70)
 
 ***
 
@@ -42,7 +42,7 @@ Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:70](https://
 
 > `optional` **$eq**: [`MetadataScalarValue`](../type-aliases/MetadataScalarValue.md)
 
-Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:61](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/vector-store/IVectorStore.ts#L61)
+Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:61](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/core/vector-store/IVectorStore.ts#L61)
 
 ***
 
@@ -50,23 +50,23 @@ Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:61](https://
 
 > `optional` **$exists**: `boolean`
 
-Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:69](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/vector-store/IVectorStore.ts#L69)
+Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:69](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/core/vector-store/IVectorStore.ts#L69)
 
 ***
 
 ### $gt?
 
-> `optional` **$gt**: `number`
+> `optional` **$gt**: `string` \| `number`
 
-Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:63](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/vector-store/IVectorStore.ts#L63)
+Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:63](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/core/vector-store/IVectorStore.ts#L63)
 
 ***
 
 ### $gte?
 
-> `optional` **$gte**: `number`
+> `optional` **$gte**: `string` \| `number`
 
-Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:64](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/vector-store/IVectorStore.ts#L64)
+Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:64](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/core/vector-store/IVectorStore.ts#L64)
 
 ***
 
@@ -74,23 +74,23 @@ Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:64](https://
 
 > `optional` **$in**: [`MetadataScalarValue`](../type-aliases/MetadataScalarValue.md)[]
 
-Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:67](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/vector-store/IVectorStore.ts#L67)
+Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:67](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/core/vector-store/IVectorStore.ts#L67)
 
 ***
 
 ### $lt?
 
-> `optional` **$lt**: `number`
+> `optional` **$lt**: `string` \| `number`
 
-Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:65](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/vector-store/IVectorStore.ts#L65)
+Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:65](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/core/vector-store/IVectorStore.ts#L65)
 
 ***
 
 ### $lte?
 
-> `optional` **$lte**: `number`
+> `optional` **$lte**: `string` \| `number`
 
-Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:66](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/vector-store/IVectorStore.ts#L66)
+Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:66](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/core/vector-store/IVectorStore.ts#L66)
 
 ***
 
@@ -98,7 +98,7 @@ Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:66](https://
 
 > `optional` **$ne**: [`MetadataScalarValue`](../type-aliases/MetadataScalarValue.md)
 
-Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:62](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/vector-store/IVectorStore.ts#L62)
+Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:62](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/core/vector-store/IVectorStore.ts#L62)
 
 ***
 
@@ -106,7 +106,7 @@ Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:62](https://
 
 > `optional` **$nin**: [`MetadataScalarValue`](../type-aliases/MetadataScalarValue.md)[]
 
-Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:68](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/vector-store/IVectorStore.ts#L68)
+Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:68](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/core/vector-store/IVectorStore.ts#L68)
 
 ***
 
@@ -114,4 +114,4 @@ Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:68](https://
 
 > `optional` **$textSearch**: `string`
 
-Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:72](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/vector-store/IVectorStore.ts#L72)
+Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:72](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/core/vector-store/IVectorStore.ts#L72)

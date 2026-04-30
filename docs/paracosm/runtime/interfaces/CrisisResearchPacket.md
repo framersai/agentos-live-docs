@@ -1,6 +1,6 @@
 # Interface: CrisisResearchPacket
 
-Defined in: [runtime/contracts.ts:80](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/runtime/contracts.ts#L80)
+Defined in: [apps/paracosm/src/runtime/contracts.ts:80](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/contracts.ts#L80)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [runtime/contracts.ts:80](https://github.com/framersai/paracosm/blob
 
 > **canonicalFacts**: `object`[]
 
-Defined in: [runtime/contracts.ts:81](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/runtime/contracts.ts#L81)
+Defined in: [apps/paracosm/src/runtime/contracts.ts:81](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/contracts.ts#L81)
 
 #### claim
 
@@ -32,7 +32,7 @@ Defined in: [runtime/contracts.ts:81](https://github.com/framersai/paracosm/blob
 
 > **counterpoints**: `object`[]
 
-Defined in: [runtime/contracts.ts:82](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/runtime/contracts.ts#L82)
+Defined in: [apps/paracosm/src/runtime/contracts.ts:82](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/contracts.ts#L82)
 
 #### claim
 
@@ -52,4 +52,4 @@ Defined in: [runtime/contracts.ts:82](https://github.com/framersai/paracosm/blob
 
 > **departmentNotes**: `Record`\<`string`, `string`\>
 
-Defined in: [runtime/contracts.ts:83](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/runtime/contracts.ts#L83)
+Defined in: [apps/paracosm/src/runtime/contracts.ts:83](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/contracts.ts#L83)

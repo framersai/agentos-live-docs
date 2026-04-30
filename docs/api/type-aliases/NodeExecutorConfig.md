@@ -2,7 +2,7 @@
 
 > **NodeExecutorConfig** = \{ `instructions`: `string`; `maxInternalIterations?`: `number`; `maxTokens?`: `number`; `parallelTools?`: `boolean`; `temperature?`: `number`; `type`: `"gmi"`; \} \| \{ `args?`: `Record`\<`string`, `unknown`\>; `toolName`: `string`; `type`: `"tool"`; \} \| \{ `extensionId`: `string`; `method`: `string`; `type`: `"extension"`; \} \| \{ `autoAccept?`: `boolean`; `autoReject?`: `boolean` \| `string`; `guardrailOverride?`: `boolean`; `judge?`: \{ `confidenceThreshold?`: `number`; `criteria?`: `string`; `model?`: `string`; `provider?`: `string`; \}; `onTimeout?`: `"accept"` \| `"reject"` \| `"error"`; `prompt`: `string`; `type`: `"human"`; \} \| \{ `guardrailIds`: `string`[]; `onViolation`: `"block"` \| `"reroute"` \| `"warn"` \| `"sanitize"`; `rerouteTarget?`: `string`; `type`: `"guardrail"`; \} \| \{ `condition`: [`GraphCondition`](GraphCondition.md); `type`: `"router"`; \} \| \{ `graphId`: `string`; `inputMapping?`: `Record`\<`string`, `string`\>; `outputMapping?`: `Record`\<`string`, `string`\>; `type`: `"subgraph"`; \} \| \{ `type`: `"voice"`; `voiceConfig`: [`VoiceNodeConfig`](../interfaces/VoiceNodeConfig.md); \}
 
-Defined in: [packages/agentos/src/orchestration/ir/types.ts:162](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/ir/types.ts#L162)
+Defined in: [packages/agentos/src/orchestration/ir/types.ts:162](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/ir/types.ts#L162)
 
 Describes how the runtime should execute a `GraphNode`.  Each variant maps to a
 distinct execution strategy.

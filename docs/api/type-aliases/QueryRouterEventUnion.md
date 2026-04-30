@@ -2,7 +2,7 @@
 
 > **QueryRouterEventUnion** = [`ClassifyStartEvent`](../interfaces/ClassifyStartEvent.md) \| [`ClassifyCompleteEvent`](../interfaces/ClassifyCompleteEvent.md) \| [`ClassifyErrorEvent`](../interfaces/ClassifyErrorEvent.md) \| `CapabilitiesActivateEvent` \| [`RetrieveStartEvent`](../interfaces/RetrieveStartEvent.md) \| [`RetrieveVectorEvent`](../interfaces/RetrieveVectorEvent.md) \| [`RetrieveGraphEvent`](../interfaces/RetrieveGraphEvent.md) \| [`RetrieveRerankEvent`](../interfaces/RetrieveRerankEvent.md) \| [`RetrieveCompleteEvent`](../interfaces/RetrieveCompleteEvent.md) \| [`RetrieveFallbackEvent`](../interfaces/RetrieveFallbackEvent.md) \| [`ResearchStartEvent`](../interfaces/ResearchStartEvent.md) \| [`ResearchPhaseEvent`](../interfaces/ResearchPhaseEvent.md) \| [`ResearchCompleteEvent`](../interfaces/ResearchCompleteEvent.md) \| [`GenerateStartEvent`](../interfaces/GenerateStartEvent.md) \| [`GenerateCompleteEvent`](../interfaces/GenerateCompleteEvent.md) \| [`RouteCompleteEvent`](../interfaces/RouteCompleteEvent.md) \| `StrategySelectEvent` \| `DecomposeEvent` \| `GitHubIndexStartEvent` \| `GitHubIndexCompleteEvent` \| `GitHubIndexErrorEvent`
 
-Defined in: [packages/agentos/src/query-router/types.ts:1173](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/query-router/types.ts#L1173)
+Defined in: [packages/agentos/src/query-router/types.ts:1184](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/query-router/types.ts#L1184)
 
 Discriminated union of all QueryRouter lifecycle events.
 The `type` field serves as the discriminant for exhaustive matching.

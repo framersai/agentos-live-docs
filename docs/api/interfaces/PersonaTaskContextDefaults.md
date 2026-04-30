@@ -1,6 +1,6 @@
 # Interface: PersonaTaskContextDefaults
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:27](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/personas/IPersonaDefinition.ts#L27)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:27](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/cognitive_substrate/personas/IPersonaDefinition.ts#L27)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefiniti
 
 > `optional` **complexity**: `string`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:29](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/personas/IPersonaDefinition.ts#L29)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:29](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/cognitive_substrate/personas/IPersonaDefinition.ts#L29)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefiniti
 
 > `optional` **domain**: `string`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:28](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/personas/IPersonaDefinition.ts#L28)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:28](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/cognitive_substrate/personas/IPersonaDefinition.ts#L28)
 
 ***
 
@@ -24,4 +24,4 @@ Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefiniti
 
 > `optional` **goal**: `string`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:30](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/personas/IPersonaDefinition.ts#L30)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:30](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/cognitive_substrate/personas/IPersonaDefinition.ts#L30)

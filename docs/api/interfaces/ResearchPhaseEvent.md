@@ -1,6 +1,6 @@
 # Interface: ResearchPhaseEvent
 
-Defined in: [packages/agentos/src/query-router/types.ts:979](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/query-router/types.ts#L979)
+Defined in: [packages/agentos/src/query-router/types.ts:990](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/query-router/types.ts#L990)
 
 Emitted after each iteration of the research loop.
 
@@ -10,7 +10,7 @@ Emitted after each iteration of the research loop.
 
 > **iteration**: `number`
 
-Defined in: [packages/agentos/src/query-router/types.ts:982](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/query-router/types.ts#L982)
+Defined in: [packages/agentos/src/query-router/types.ts:993](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/query-router/types.ts#L993)
 
 Current iteration number (1-based).
 
@@ -20,7 +20,7 @@ Current iteration number (1-based).
 
 > **newChunksFound**: `number`
 
-Defined in: [packages/agentos/src/query-router/types.ts:986](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/query-router/types.ts#L986)
+Defined in: [packages/agentos/src/query-router/types.ts:997](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/query-router/types.ts#L997)
 
 Number of new chunks discovered in this iteration.
 
@@ -30,7 +30,7 @@ Number of new chunks discovered in this iteration.
 
 > **timestamp**: `number`
 
-Defined in: [packages/agentos/src/query-router/types.ts:988](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/query-router/types.ts#L988)
+Defined in: [packages/agentos/src/query-router/types.ts:999](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/query-router/types.ts#L999)
 
 Timestamp of the event.
 
@@ -40,7 +40,7 @@ Timestamp of the event.
 
 > **totalIterations**: `number`
 
-Defined in: [packages/agentos/src/query-router/types.ts:984](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/query-router/types.ts#L984)
+Defined in: [packages/agentos/src/query-router/types.ts:995](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/query-router/types.ts#L995)
 
 Total configured iterations.
 
@@ -50,4 +50,4 @@ Total configured iterations.
 
 > **type**: `"research:phase"`
 
-Defined in: [packages/agentos/src/query-router/types.ts:980](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/query-router/types.ts#L980)
+Defined in: [packages/agentos/src/query-router/types.ts:991](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/query-router/types.ts#L991)

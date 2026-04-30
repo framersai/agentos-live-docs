@@ -1,6 +1,6 @@
 # Class: LLMVisionProvider
 
-Defined in: [packages/agentos/src/vision/providers/LLMVisionProvider.ts:119](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/vision/providers/LLMVisionProvider.ts#L119)
+Defined in: [packages/agentos/src/vision/providers/LLMVisionProvider.ts:119](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/vision/providers/LLMVisionProvider.ts#L119)
 
 Vision provider that delegates to a cloud LLM via `generateText()`.
 
@@ -29,7 +29,7 @@ const indexer = new MultimodalIndexer({
 
 > **new LLMVisionProvider**(`config`): `LLMVisionProvider`
 
-Defined in: [packages/agentos/src/vision/providers/LLMVisionProvider.ts:141](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/vision/providers/LLMVisionProvider.ts#L141)
+Defined in: [packages/agentos/src/vision/providers/LLMVisionProvider.ts:141](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/vision/providers/LLMVisionProvider.ts#L141)
 
 Create a new LLM vision provider.
 
@@ -64,7 +64,7 @@ const provider = new LLMVisionProvider({
 
 > **describeImage**(`image`): `Promise`\<`string`\>
 
-Defined in: [packages/agentos/src/vision/providers/LLMVisionProvider.ts:175](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/vision/providers/LLMVisionProvider.ts#L175)
+Defined in: [packages/agentos/src/vision/providers/LLMVisionProvider.ts:175](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/vision/providers/LLMVisionProvider.ts#L175)
 
 Generate a text description of the provided image using a cloud
 vision LLM.

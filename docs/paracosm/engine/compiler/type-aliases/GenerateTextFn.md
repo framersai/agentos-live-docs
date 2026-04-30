@@ -2,7 +2,7 @@
 
 > **GenerateTextFn** = (`promptOrOptions`) => `Promise`\<`string`\>
 
-Defined in: [engine/compiler/types.ts:19](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/compiler/types.ts#L19)
+Defined in: [apps/paracosm/src/engine/compiler/types.ts:19](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/compiler/types.ts#L19)
 
 Function signature for LLM text generation calls used by compile hooks.
 

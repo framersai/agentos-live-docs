@@ -1,6 +1,6 @@
 # Interface: OpenAIImageProviderOptions
 
-Defined in: [packages/agentos/src/media/images/IImageProvider.ts:31](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/images/IImageProvider.ts#L31)
+Defined in: [packages/agentos/src/media/images/IImageProvider.ts:31](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/media/images/IImageProvider.ts#L31)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/media/images/IImageProvider.ts:31](https://git
 
 > `optional` **extraBody**: `Record`\<`string`, `unknown`\>
 
-Defined in: [packages/agentos/src/media/images/IImageProvider.ts:34](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/images/IImageProvider.ts#L34)
+Defined in: [packages/agentos/src/media/images/IImageProvider.ts:34](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/media/images/IImageProvider.ts#L34)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [packages/agentos/src/media/images/IImageProvider.ts:34](https://git
 
 > `optional` **moderation**: `"low"` \| `"auto"`
 
-Defined in: [packages/agentos/src/media/images/IImageProvider.ts:33](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/images/IImageProvider.ts#L33)
+Defined in: [packages/agentos/src/media/images/IImageProvider.ts:33](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/media/images/IImageProvider.ts#L33)
 
 ***
 
@@ -24,4 +24,4 @@ Defined in: [packages/agentos/src/media/images/IImageProvider.ts:33](https://git
 
 > `optional` **style**: `"vivid"` \| `"natural"`
 
-Defined in: [packages/agentos/src/media/images/IImageProvider.ts:32](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/images/IImageProvider.ts#L32)
+Defined in: [packages/agentos/src/media/images/IImageProvider.ts:32](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/media/images/IImageProvider.ts#L32)

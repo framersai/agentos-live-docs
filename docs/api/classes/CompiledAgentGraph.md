@@ -1,6 +1,6 @@
 # Class: CompiledAgentGraph\<TState\>
 
-Defined in: [packages/agentos/src/orchestration/builders/AgentGraph.ts:340](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/builders/AgentGraph.ts#L340)
+Defined in: [packages/agentos/src/orchestration/builders/AgentGraph.ts:340](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/builders/AgentGraph.ts#L340)
 
 A compiled, execution-ready agent graph.
 
@@ -24,7 +24,7 @@ Type parameter threaded from the parent `AgentGraph`.
 
 > **new CompiledAgentGraph**\<`TState`\>(`ir`, `checkpointStore`): `CompiledAgentGraph`\<`TState`\>
 
-Defined in: [packages/agentos/src/orchestration/builders/AgentGraph.ts:348](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/builders/AgentGraph.ts#L348)
+Defined in: [packages/agentos/src/orchestration/builders/AgentGraph.ts:348](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/builders/AgentGraph.ts#L348)
 
 #### Parameters
 
@@ -50,7 +50,7 @@ Persistence backend for checkpoint snapshots.
 
 > **inspect**(`_runId`): `Promise`\<`unknown`\>
 
-Defined in: [packages/agentos/src/orchestration/builders/AgentGraph.ts:414](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/builders/AgentGraph.ts#L414)
+Defined in: [packages/agentos/src/orchestration/builders/AgentGraph.ts:414](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/builders/AgentGraph.ts#L414)
 
 Inspect execution state for a completed or in-progress run.
 
@@ -77,7 +77,7 @@ stub object until the run-registry subsystem lands.
 
 > **invoke**(`input`): `Promise`\<`unknown`\>
 
-Defined in: [packages/agentos/src/orchestration/builders/AgentGraph.ts:371](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/builders/AgentGraph.ts#L371)
+Defined in: [packages/agentos/src/orchestration/builders/AgentGraph.ts:371](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/builders/AgentGraph.ts#L371)
 
 Execute the graph to completion and return the final `artifacts` payload.
 
@@ -104,7 +104,7 @@ The `GraphState.artifacts` value after the last node completes.
 
 > **resume**(`checkpointId`, `patch?`): `Promise`\<`unknown`\>
 
-Defined in: [packages/agentos/src/orchestration/builders/AgentGraph.ts:399](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/builders/AgentGraph.ts#L399)
+Defined in: [packages/agentos/src/orchestration/builders/AgentGraph.ts:399](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/builders/AgentGraph.ts#L399)
 
 Resume a previously interrupted run from its latest persisted checkpoint.
 
@@ -141,7 +141,7 @@ When no checkpoint exists for the given identifier.
 
 > **stream**(`input`): `AsyncIterable`\<[`GraphEvent`](../type-aliases/GraphEvent.md)\>
 
-Defined in: [packages/agentos/src/orchestration/builders/AgentGraph.ts:384](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/builders/AgentGraph.ts#L384)
+Defined in: [packages/agentos/src/orchestration/builders/AgentGraph.ts:384](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/builders/AgentGraph.ts#L384)
 
 Execute the graph while yielding `GraphEvent` values at each significant step.
 
@@ -170,7 +170,7 @@ Runtime events in causal order.
 
 > **toIR**(): [`CompiledExecutionGraph`](../interfaces/CompiledExecutionGraph.md)
 
-Defined in: [packages/agentos/src/orchestration/builders/AgentGraph.ts:424](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/builders/AgentGraph.ts#L424)
+Defined in: [packages/agentos/src/orchestration/builders/AgentGraph.ts:424](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/builders/AgentGraph.ts#L424)
 
 Return the underlying `CompiledExecutionGraph` IR.
 

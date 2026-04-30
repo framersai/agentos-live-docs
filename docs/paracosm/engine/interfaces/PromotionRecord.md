@@ -1,6 +1,6 @@
 # Interface: PromotionRecord
 
-Defined in: [engine/core/state.ts:18](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/core/state.ts#L18)
+Defined in: [apps/paracosm/src/engine/core/state.ts:18](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/core/state.ts#L18)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [engine/core/state.ts:18](https://github.com/framersai/paracosm/blob
 
 > **department**: `string`
 
-Defined in: [engine/core/state.ts:19](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/core/state.ts#L19)
+Defined in: [apps/paracosm/src/engine/core/state.ts:19](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/core/state.ts#L19)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [engine/core/state.ts:19](https://github.com/framersai/paracosm/blob
 
 > **promotedBy**: `string`
 
-Defined in: [engine/core/state.ts:22](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/core/state.ts#L22)
+Defined in: [apps/paracosm/src/engine/core/state.ts:22](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/core/state.ts#L22)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: [engine/core/state.ts:22](https://github.com/framersai/paracosm/blob
 
 > **role**: `string`
 
-Defined in: [engine/core/state.ts:20](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/core/state.ts#L20)
+Defined in: [apps/paracosm/src/engine/core/state.ts:20](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/core/state.ts#L20)
 
 ***
 
@@ -32,4 +32,4 @@ Defined in: [engine/core/state.ts:20](https://github.com/framersai/paracosm/blob
 
 > **turnPromoted**: `number`
 
-Defined in: [engine/core/state.ts:21](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/core/state.ts#L21)
+Defined in: [apps/paracosm/src/engine/core/state.ts:21](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/core/state.ts#L21)

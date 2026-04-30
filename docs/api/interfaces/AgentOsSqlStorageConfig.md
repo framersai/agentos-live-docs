@@ -1,6 +1,6 @@
 # Interface: AgentOsSqlStorageConfig
 
-Defined in: [packages/agentos/src/core/storage/SqlStorageAdapter.ts:61](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/storage/SqlStorageAdapter.ts#L61)
+Defined in: [packages/agentos/src/core/storage/SqlStorageAdapter.ts:61](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/core/storage/SqlStorageAdapter.ts#L61)
 
 Configuration options for the AgentOS SQL storage adapter.
 
@@ -45,7 +45,7 @@ Options passed to the Capacitor adapter.
 
 > `optional` **enableAutoMigration**: `boolean`
 
-Defined in: [packages/agentos/src/core/storage/SqlStorageAdapter.ts:62](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/storage/SqlStorageAdapter.ts#L62)
+Defined in: [packages/agentos/src/core/storage/SqlStorageAdapter.ts:62](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/core/storage/SqlStorageAdapter.ts#L62)
 
 Automatically run schema migrations on init
 
@@ -83,7 +83,7 @@ Options passed to the IndexedDB adapter (browser persistence).
 
 > `optional` **messageRetentionDays**: `number`
 
-Defined in: [packages/agentos/src/core/storage/SqlStorageAdapter.ts:63](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/storage/SqlStorageAdapter.ts#L63)
+Defined in: [packages/agentos/src/core/storage/SqlStorageAdapter.ts:63](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/core/storage/SqlStorageAdapter.ts#L63)
 
 Auto-delete messages older than X days (0 = disabled)
 

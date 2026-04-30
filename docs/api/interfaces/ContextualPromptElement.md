@@ -1,6 +1,6 @@
 # Interface: ContextualPromptElement
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:342](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/personas/IPersonaDefinition.ts#L342)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:342](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/cognitive_substrate/personas/IPersonaDefinition.ts#L342)
 
 Defines contextual elements that can be dynamically injected into prompts.
 
@@ -14,7 +14,7 @@ ContextualPromptElement
 
 > **content**: `string` \| `object`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:345](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/personas/IPersonaDefinition.ts#L345)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:345](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/cognitive_substrate/personas/IPersonaDefinition.ts#L345)
 
 ***
 
@@ -22,7 +22,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefiniti
 
 > **criteria**: [`ContextualPromptElementCriteria`](ContextualPromptElementCriteria.md)
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:346](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/personas/IPersonaDefinition.ts#L346)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:346](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/cognitive_substrate/personas/IPersonaDefinition.ts#L346)
 
 ***
 
@@ -30,7 +30,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefiniti
 
 > **id**: `string`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:343](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/personas/IPersonaDefinition.ts#L343)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:343](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/cognitive_substrate/personas/IPersonaDefinition.ts#L343)
 
 ***
 
@@ -38,7 +38,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefiniti
 
 > `optional` **metadata**: `Record`\<`string`, `any`\>
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:348](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/personas/IPersonaDefinition.ts#L348)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:348](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/cognitive_substrate/personas/IPersonaDefinition.ts#L348)
 
 ***
 
@@ -46,7 +46,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefiniti
 
 > `optional` **priority**: `number`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:347](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/personas/IPersonaDefinition.ts#L347)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:347](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/cognitive_substrate/personas/IPersonaDefinition.ts#L347)
 
 ***
 
@@ -54,4 +54,4 @@ Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefiniti
 
 > **type**: `string`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:344](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/personas/IPersonaDefinition.ts#L344)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:344](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/cognitive_substrate/personas/IPersonaDefinition.ts#L344)

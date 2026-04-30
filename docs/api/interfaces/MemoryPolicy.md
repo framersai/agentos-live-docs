@@ -1,6 +1,6 @@
 # Interface: MemoryPolicy
 
-Defined in: [packages/agentos/src/orchestration/ir/types.ts:287](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/ir/types.ts#L287)
+Defined in: [packages/agentos/src/orchestration/ir/types.ts:287](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/ir/types.ts#L287)
 
 Controls how a node reads from and writes to the agent's memory subsystem.
 
@@ -10,7 +10,7 @@ Controls how a node reads from and writes to the agent's memory subsystem.
 
 > **consistency**: [`MemoryConsistencyMode`](../type-aliases/MemoryConsistencyMode.md)
 
-Defined in: [packages/agentos/src/orchestration/ir/types.ts:288](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/ir/types.ts#L288)
+Defined in: [packages/agentos/src/orchestration/ir/types.ts:288](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/ir/types.ts#L288)
 
 Isolation mode applied for all memory I/O in this node.
 
@@ -20,7 +20,7 @@ Isolation mode applied for all memory I/O in this node.
 
 > `optional` **read**: `object`
 
-Defined in: [packages/agentos/src/orchestration/ir/types.ts:289](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/ir/types.ts#L289)
+Defined in: [packages/agentos/src/orchestration/ir/types.ts:289](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/ir/types.ts#L289)
 
 Optional filter applied when loading traces before execution.
 
@@ -60,7 +60,7 @@ Restrict loaded traces to these memory types.
 
 > `optional` **write**: `object`
 
-Defined in: [packages/agentos/src/orchestration/ir/types.ts:301](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/ir/types.ts#L301)
+Defined in: [packages/agentos/src/orchestration/ir/types.ts:301](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/ir/types.ts#L301)
 
 Optional encoding settings applied when persisting after execution.
 

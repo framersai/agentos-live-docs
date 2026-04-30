@@ -1,6 +1,6 @@
 # Interface: TurnPlannerDiscoveryConfig
 
-Defined in: [packages/agentos/src/orchestration/turn-planner/TurnPlanner.ts:24](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/turn-planner/TurnPlanner.ts#L24)
+Defined in: [packages/agentos/src/orchestration/turn-planner/TurnPlanner.ts:24](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/turn-planner/TurnPlanner.ts#L24)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/orchestration/turn-planner/TurnPlanner.ts:24](
 
 > `optional` **defaultKind**: `CapabilityKind` \| `"any"`
 
-Defined in: [packages/agentos/src/orchestration/turn-planner/TurnPlanner.ts:27](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/turn-planner/TurnPlanner.ts#L27)
+Defined in: [packages/agentos/src/orchestration/turn-planner/TurnPlanner.ts:27](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/turn-planner/TurnPlanner.ts#L27)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [packages/agentos/src/orchestration/turn-planner/TurnPlanner.ts:27](
 
 > `optional` **defaultToolSelectionMode**: [`ToolSelectionMode`](../type-aliases/ToolSelectionMode.md)
 
-Defined in: [packages/agentos/src/orchestration/turn-planner/TurnPlanner.ts:29](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/turn-planner/TurnPlanner.ts#L29)
+Defined in: [packages/agentos/src/orchestration/turn-planner/TurnPlanner.ts:29](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/turn-planner/TurnPlanner.ts#L29)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: [packages/agentos/src/orchestration/turn-planner/TurnPlanner.ts:29](
 
 > `optional` **enabled**: `boolean`
 
-Defined in: [packages/agentos/src/orchestration/turn-planner/TurnPlanner.ts:25](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/turn-planner/TurnPlanner.ts#L25)
+Defined in: [packages/agentos/src/orchestration/turn-planner/TurnPlanner.ts:25](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/turn-planner/TurnPlanner.ts#L25)
 
 ***
 
@@ -32,7 +32,7 @@ Defined in: [packages/agentos/src/orchestration/turn-planner/TurnPlanner.ts:25](
 
 > `optional` **includePromptContext**: `boolean`
 
-Defined in: [packages/agentos/src/orchestration/turn-planner/TurnPlanner.ts:28](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/turn-planner/TurnPlanner.ts#L28)
+Defined in: [packages/agentos/src/orchestration/turn-planner/TurnPlanner.ts:28](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/turn-planner/TurnPlanner.ts#L28)
 
 ***
 
@@ -40,7 +40,7 @@ Defined in: [packages/agentos/src/orchestration/turn-planner/TurnPlanner.ts:28](
 
 > `optional` **maxRetries**: `number`
 
-Defined in: [packages/agentos/src/orchestration/turn-planner/TurnPlanner.ts:34](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/turn-planner/TurnPlanner.ts#L34)
+Defined in: [packages/agentos/src/orchestration/turn-planner/TurnPlanner.ts:34](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/turn-planner/TurnPlanner.ts#L34)
 
 Number of retry attempts after the initial discovery call.
 Example: `1` = up to 2 total attempts.
@@ -51,7 +51,7 @@ Example: `1` = up to 2 total attempts.
 
 > `optional` **onlyAvailable**: `boolean`
 
-Defined in: [packages/agentos/src/orchestration/turn-planner/TurnPlanner.ts:26](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/turn-planner/TurnPlanner.ts#L26)
+Defined in: [packages/agentos/src/orchestration/turn-planner/TurnPlanner.ts:26](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/turn-planner/TurnPlanner.ts#L26)
 
 ***
 
@@ -59,6 +59,6 @@ Defined in: [packages/agentos/src/orchestration/turn-planner/TurnPlanner.ts:26](
 
 > `optional` **retryBackoffMs**: `number`
 
-Defined in: [packages/agentos/src/orchestration/turn-planner/TurnPlanner.ts:38](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/turn-planner/TurnPlanner.ts#L38)
+Defined in: [packages/agentos/src/orchestration/turn-planner/TurnPlanner.ts:38](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/turn-planner/TurnPlanner.ts#L38)
 
 Delay between discovery retries in milliseconds.

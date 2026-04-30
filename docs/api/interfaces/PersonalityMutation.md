@@ -1,6 +1,6 @@
 # Interface: PersonalityMutation
 
-Defined in: [packages/agentos/src/emergent/PersonalityMutationStore.ts:30](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/emergent/PersonalityMutationStore.ts#L30)
+Defined in: [packages/agentos/src/emergent/PersonalityMutationStore.ts:30](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/emergent/PersonalityMutationStore.ts#L30)
 
 A single persisted personality mutation record.
 
@@ -14,7 +14,7 @@ motivated the change.
 
 > **agentId**: `string`
 
-Defined in: [packages/agentos/src/emergent/PersonalityMutationStore.ts:35](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/emergent/PersonalityMutationStore.ts#L35)
+Defined in: [packages/agentos/src/emergent/PersonalityMutationStore.ts:35](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/emergent/PersonalityMutationStore.ts#L35)
 
 The agent that made this mutation.
 
@@ -24,7 +24,7 @@ The agent that made this mutation.
 
 > **baselineValue**: `number`
 
-Defined in: [packages/agentos/src/emergent/PersonalityMutationStore.ts:47](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/emergent/PersonalityMutationStore.ts#L47)
+Defined in: [packages/agentos/src/emergent/PersonalityMutationStore.ts:47](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/emergent/PersonalityMutationStore.ts#L47)
 
 The trait value before this mutation was applied.
 
@@ -34,7 +34,7 @@ The trait value before this mutation was applied.
 
 > **createdAt**: `number`
 
-Defined in: [packages/agentos/src/emergent/PersonalityMutationStore.ts:61](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/emergent/PersonalityMutationStore.ts#L61)
+Defined in: [packages/agentos/src/emergent/PersonalityMutationStore.ts:61](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/emergent/PersonalityMutationStore.ts#L61)
 
 Unix epoch millisecond timestamp of when this mutation was recorded.
 
@@ -44,7 +44,7 @@ Unix epoch millisecond timestamp of when this mutation was recorded.
 
 > **delta**: `number`
 
-Defined in: [packages/agentos/src/emergent/PersonalityMutationStore.ts:41](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/emergent/PersonalityMutationStore.ts#L41)
+Defined in: [packages/agentos/src/emergent/PersonalityMutationStore.ts:41](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/emergent/PersonalityMutationStore.ts#L41)
 
 The signed delta applied to the trait value. Positive = increase, negative = decrease.
 
@@ -54,7 +54,7 @@ The signed delta applied to the trait value. Positive = increase, negative = dec
 
 > **id**: `string`
 
-Defined in: [packages/agentos/src/emergent/PersonalityMutationStore.ts:32](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/emergent/PersonalityMutationStore.ts#L32)
+Defined in: [packages/agentos/src/emergent/PersonalityMutationStore.ts:32](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/emergent/PersonalityMutationStore.ts#L32)
 
 Unique mutation identifier (format: `pm_<timestamp>_<random>`).
 
@@ -64,7 +64,7 @@ Unique mutation identifier (format: `pm_<timestamp>_<random>`).
 
 > **mutatedValue**: `number`
 
-Defined in: [packages/agentos/src/emergent/PersonalityMutationStore.ts:50](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/emergent/PersonalityMutationStore.ts#L50)
+Defined in: [packages/agentos/src/emergent/PersonalityMutationStore.ts:50](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/emergent/PersonalityMutationStore.ts#L50)
 
 The trait value after this mutation was applied.
 
@@ -74,7 +74,7 @@ The trait value after this mutation was applied.
 
 > **reasoning**: `string`
 
-Defined in: [packages/agentos/src/emergent/PersonalityMutationStore.ts:44](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/emergent/PersonalityMutationStore.ts#L44)
+Defined in: [packages/agentos/src/emergent/PersonalityMutationStore.ts:44](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/emergent/PersonalityMutationStore.ts#L44)
 
 Free-text reasoning explaining why the agent chose to mutate this trait.
 
@@ -84,7 +84,7 @@ Free-text reasoning explaining why the agent chose to mutate this trait.
 
 > **strength**: `number`
 
-Defined in: [packages/agentos/src/emergent/PersonalityMutationStore.ts:58](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/emergent/PersonalityMutationStore.ts#L58)
+Defined in: [packages/agentos/src/emergent/PersonalityMutationStore.ts:58](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/emergent/PersonalityMutationStore.ts#L58)
 
 Current strength of this mutation in the range (0, 1].
 
@@ -97,6 +97,6 @@ When strength drops to 0.1 or below, the mutation is pruned.
 
 > **trait**: `string`
 
-Defined in: [packages/agentos/src/emergent/PersonalityMutationStore.ts:38](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/emergent/PersonalityMutationStore.ts#L38)
+Defined in: [packages/agentos/src/emergent/PersonalityMutationStore.ts:38](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/emergent/PersonalityMutationStore.ts#L38)
 
 The HEXACO trait that was mutated (e.g., `'openness'`, `'conscientiousness'`).

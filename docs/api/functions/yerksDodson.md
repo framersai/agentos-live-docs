@@ -2,7 +2,7 @@
 
 > **yerksDodson**(`arousal01`): `number`
 
-Defined in: [packages/agentos/src/memory/core/encoding/EncodingModel.ts:68](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/core/encoding/EncodingModel.ts#L68)
+Defined in: [packages/agentos/src/memory/core/encoding/EncodingModel.ts:68](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/encoding/EncodingModel.ts#L68)
 
 Encoding quality modifier based on arousal level.
 Returns a multiplier in [0.3, 1.0], peaking at arousal = 0.5 (moderate).

@@ -1,6 +1,6 @@
 # Class: SqliteMemoryGraph
 
-Defined in: [packages/agentos/src/memory/retrieval/store/SqliteMemoryGraph.ts:114](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/retrieval/store/SqliteMemoryGraph.ts#L114)
+Defined in: [packages/agentos/src/memory/retrieval/store/SqliteMemoryGraph.ts:114](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/retrieval/store/SqliteMemoryGraph.ts#L114)
 
 SQLite-backed implementation of [IMemoryGraph](../interfaces/IMemoryGraph.md).
 
@@ -29,7 +29,7 @@ const activated = await graph.spreadingActivation(['mem-1']);
 
 > **new SqliteMemoryGraph**(`brain`): `SqliteMemoryGraph`
 
-Defined in: [packages/agentos/src/memory/retrieval/store/SqliteMemoryGraph.ts:143](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/retrieval/store/SqliteMemoryGraph.ts#L143)
+Defined in: [packages/agentos/src/memory/retrieval/store/SqliteMemoryGraph.ts:143](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/retrieval/store/SqliteMemoryGraph.ts#L143)
 
 #### Parameters
 
@@ -51,7 +51,7 @@ The shared SqliteBrain connection for this agent.
 
 > **addEdge**(`edge`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/store/SqliteMemoryGraph.ts:312](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/retrieval/store/SqliteMemoryGraph.ts#L312)
+Defined in: [packages/agentos/src/memory/retrieval/store/SqliteMemoryGraph.ts:312](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/retrieval/store/SqliteMemoryGraph.ts#L312)
 
 Add a directed edge between two memory nodes.
 
@@ -82,7 +82,7 @@ Edge descriptor including type, weight, and timestamp.
 
 > **addNode**(`memoryId`, `metadata`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/store/SqliteMemoryGraph.ts:224](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/retrieval/store/SqliteMemoryGraph.ts#L224)
+Defined in: [packages/agentos/src/memory/retrieval/store/SqliteMemoryGraph.ts:224](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/retrieval/store/SqliteMemoryGraph.ts#L224)
 
 Add a memory node to the graph.
 
@@ -118,7 +118,7 @@ Structural metadata describing the memory.
 
 > **clear**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/store/SqliteMemoryGraph.ts:747](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/retrieval/store/SqliteMemoryGraph.ts#L747)
+Defined in: [packages/agentos/src/memory/retrieval/store/SqliteMemoryGraph.ts:747](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/retrieval/store/SqliteMemoryGraph.ts#L747)
 
 Remove all nodes and edges from the graph (both in-memory and SQLite).
 
@@ -139,7 +139,7 @@ administrative resets only.
 
 > **detectClusters**(`minSize?`): `Promise`\<[`MemoryCluster`](../interfaces/MemoryCluster.md)[]\>
 
-Defined in: [packages/agentos/src/memory/retrieval/store/SqliteMemoryGraph.ts:609](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/retrieval/store/SqliteMemoryGraph.ts#L609)
+Defined in: [packages/agentos/src/memory/retrieval/store/SqliteMemoryGraph.ts:609](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/retrieval/store/SqliteMemoryGraph.ts#L609)
 
 Detect connected components (clusters) in the memory graph.
 
@@ -184,7 +184,7 @@ Array of [MemoryCluster](../interfaces/MemoryCluster.md) objects.
 
 > **edgeCount**(): `number`
 
-Defined in: [packages/agentos/src/memory/retrieval/store/SqliteMemoryGraph.ts:737](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/retrieval/store/SqliteMemoryGraph.ts#L737)
+Defined in: [packages/agentos/src/memory/retrieval/store/SqliteMemoryGraph.ts:737](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/retrieval/store/SqliteMemoryGraph.ts#L737)
 
 Return the number of edges currently in the graph.
 O(1) — backed by the in-memory Map size.
@@ -203,7 +203,7 @@ O(1) — backed by the in-memory Map size.
 
 > **getConflicts**(`memoryId`): [`MemoryEdge`](../interfaces/MemoryEdge.md)[]
 
-Defined in: [packages/agentos/src/memory/retrieval/store/SqliteMemoryGraph.ts:584](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/retrieval/store/SqliteMemoryGraph.ts#L584)
+Defined in: [packages/agentos/src/memory/retrieval/store/SqliteMemoryGraph.ts:584](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/retrieval/store/SqliteMemoryGraph.ts#L584)
 
 Return all CONTRADICTS edges incident to a given memory node.
 
@@ -235,7 +235,7 @@ Array of CONTRADICTS edges (may be empty).
 
 > **getEdges**(`memoryId`, `type?`): [`MemoryEdge`](../interfaces/MemoryEdge.md)[]
 
-Defined in: [packages/agentos/src/memory/retrieval/store/SqliteMemoryGraph.ts:343](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/retrieval/store/SqliteMemoryGraph.ts#L343)
+Defined in: [packages/agentos/src/memory/retrieval/store/SqliteMemoryGraph.ts:343](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/retrieval/store/SqliteMemoryGraph.ts#L343)
 
 Retrieve all edges incident to a memory node.
 
@@ -275,7 +275,7 @@ Array of matching [MemoryEdge](../interfaces/MemoryEdge.md) objects.
 
 > **hasNode**(`memoryId`): `boolean`
 
-Defined in: [packages/agentos/src/memory/retrieval/store/SqliteMemoryGraph.ts:294](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/retrieval/store/SqliteMemoryGraph.ts#L294)
+Defined in: [packages/agentos/src/memory/retrieval/store/SqliteMemoryGraph.ts:294](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/retrieval/store/SqliteMemoryGraph.ts#L294)
 
 Check whether a node exists in the graph.
 
@@ -305,7 +305,7 @@ ID to check.
 
 > **initialize**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/store/SqliteMemoryGraph.ts:155](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/retrieval/store/SqliteMemoryGraph.ts#L155)
+Defined in: [packages/agentos/src/memory/retrieval/store/SqliteMemoryGraph.ts:155](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/retrieval/store/SqliteMemoryGraph.ts#L155)
 
 Hydrate the in-memory node and edge caches from the SQLite database.
 
@@ -326,7 +326,7 @@ Must be called once before any other method. Safe to call multiple times
 
 > **nodeCount**(): `number`
 
-Defined in: [packages/agentos/src/memory/retrieval/store/SqliteMemoryGraph.ts:729](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/retrieval/store/SqliteMemoryGraph.ts#L729)
+Defined in: [packages/agentos/src/memory/retrieval/store/SqliteMemoryGraph.ts:729](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/retrieval/store/SqliteMemoryGraph.ts#L729)
 
 Return the number of nodes currently in the graph.
 O(1) — backed by the in-memory Map size.
@@ -345,7 +345,7 @@ O(1) — backed by the in-memory Map size.
 
 > **recordCoActivation**(`memoryIds`, `learningRate?`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/store/SqliteMemoryGraph.ts:532](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/retrieval/store/SqliteMemoryGraph.ts#L532)
+Defined in: [packages/agentos/src/memory/retrieval/store/SqliteMemoryGraph.ts:532](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/retrieval/store/SqliteMemoryGraph.ts#L532)
 
 Record that a set of memories were activated together (Hebbian learning).
 
@@ -393,7 +393,7 @@ Weight increment per co-activation event.
 
 > **removeEdge**(`sourceId`, `targetId`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/store/SqliteMemoryGraph.ts:361](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/retrieval/store/SqliteMemoryGraph.ts#L361)
+Defined in: [packages/agentos/src/memory/retrieval/store/SqliteMemoryGraph.ts:361](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/retrieval/store/SqliteMemoryGraph.ts#L361)
 
 Remove a directed edge from the graph.
 
@@ -425,7 +425,7 @@ Target node ID.
 
 > **removeNode**(`memoryId`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/store/SqliteMemoryGraph.ts:257](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/retrieval/store/SqliteMemoryGraph.ts#L257)
+Defined in: [packages/agentos/src/memory/retrieval/store/SqliteMemoryGraph.ts:257](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/retrieval/store/SqliteMemoryGraph.ts#L257)
 
 Remove a node and all its incident edges from the graph.
 
@@ -454,7 +454,7 @@ ID of the node to remove.
 
 > **shutdown**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/store/SqliteMemoryGraph.ts:206](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/retrieval/store/SqliteMemoryGraph.ts#L206)
+Defined in: [packages/agentos/src/memory/retrieval/store/SqliteMemoryGraph.ts:206](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/retrieval/store/SqliteMemoryGraph.ts#L206)
 
 Shut down the memory graph.
 
@@ -475,7 +475,7 @@ Provided for interface compliance and forward compatibility.
 
 > **spreadingActivation**(`seedIds`, `config?`): `Promise`\<[`ActivatedNode`](../interfaces/ActivatedNode.md)[]\>
 
-Defined in: [packages/agentos/src/memory/retrieval/store/SqliteMemoryGraph.ts:395](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/retrieval/store/SqliteMemoryGraph.ts#L395)
+Defined in: [packages/agentos/src/memory/retrieval/store/SqliteMemoryGraph.ts:395](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/retrieval/store/SqliteMemoryGraph.ts#L395)
 
 Run spreading activation from a set of seed nodes.
 

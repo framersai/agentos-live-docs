@@ -1,6 +1,6 @@
 # Interface: PromptHookContext
 
-Defined in: [engine/types.ts:246](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/types.ts#L246)
+Defined in: [apps/paracosm/src/engine/types.ts:246](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L246)
 
 Context passed to the scenario department prompt hook.
 
@@ -10,7 +10,7 @@ Context passed to the scenario department prompt hook.
 
 > **department**: `string`
 
-Defined in: [engine/types.ts:247](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/types.ts#L247)
+Defined in: [apps/paracosm/src/engine/types.ts:247](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L247)
 
 ***
 
@@ -18,7 +18,7 @@ Defined in: [engine/types.ts:247](https://github.com/framersai/paracosm/blob/446
 
 > **researchPacket**: `object`
 
-Defined in: [engine/types.ts:250](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/types.ts#L250)
+Defined in: [apps/paracosm/src/engine/types.ts:250](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L250)
 
 #### canonicalFacts
 
@@ -38,7 +38,7 @@ Defined in: [engine/types.ts:250](https://github.com/framersai/paracosm/blob/446
 
 > **scenario**: [`Scenario`](Scenario.md)
 
-Defined in: [engine/types.ts:249](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/types.ts#L249)
+Defined in: [apps/paracosm/src/engine/types.ts:249](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L249)
 
 ***
 
@@ -46,4 +46,4 @@ Defined in: [engine/types.ts:249](https://github.com/framersai/paracosm/blob/446
 
 > **state**: [`SimulationState`](SimulationState.md)
 
-Defined in: [engine/types.ts:248](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/types.ts#L248)
+Defined in: [apps/paracosm/src/engine/types.ts:248](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L248)

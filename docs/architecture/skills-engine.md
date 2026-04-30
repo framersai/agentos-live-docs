@@ -1,6 +1,6 @@
 ---
 title: "Skills Engine"
-sidebar_position: 7
+sidebar_position: 8
 ---
 
 > Deep dive into the skill loading pipeline, registry, and 3-tier ecosystem. For the full system overview, see [System Architecture](./system-architecture.md).
@@ -19,7 +19,7 @@ Source: `packages/agentos/src/skills/`
 | Tier            | Package                            | Purpose                                                    |
 | --------------- | ---------------------------------- | ---------------------------------------------------------- |
 | **Engine**      | `@framers/agentos` (`src/skills/`) | SkillLoader, SkillRegistry, types, paths                   |
-| **Content**     | `@framers/agentos-skills`          | 69 curated SKILL.md files + `registry.json` + `types.d.ts` |
+| **Content**     | `@framers/agentos-skills`          | 88 curated SKILL.md files + `registry.json` + `types.d.ts` |
 | **Catalog SDK** | `@framers/agentos-skills-registry` | SKILLS_CATALOG, query helpers, factories                   |
 
 The engine tier contains no content. The content tier contains no runtime code. The catalog SDK resolves content from `@framers/agentos-skills` via `createRequire()`.
@@ -193,7 +193,7 @@ Skill content from SKILL.md body
 | `packages/agentos/src/skills/SkillLoader.ts`   | SKILL.md parsing, filtering                 |
 | `packages/agentos/src/skills/SkillRegistry.ts` | Runtime registry, snapshot building         |
 | `packages/agentos/src/skills/types.ts`         | Skill, SkillEntry, SkillSnapshot types      |
-| `packages/agentos-skills/`                     | 69 curated SKILL.md files                   |
+| `packages/agentos-skills/`                     | 88 curated SKILL.md files                   |
 | `packages/agentos-skills-registry/`            | Catalog SDK (SKILLS_CATALOG, query helpers) |
 
 ## See Also

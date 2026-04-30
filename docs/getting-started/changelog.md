@@ -3,6 +3,471 @@ title: "Changelog"
 sidebar_position: 7
 ---
 
+## <small>0.5.10 (2026-04-30)</small>
+
+* feat(strategies): accumulate costUSD/cache tokens, render debate as judge verdict ([494fbe4](https://github.com/framersai/agentos/commit/494fbe4))
+* fix(ci): postgres adapter capabilities + drop unused vars ([404e328](https://github.com/framersai/agentos/commit/404e328))
+* docs(readme): replace ratio with absolute cost-at-scale framing ([01ea3ff](https://github.com/framersai/agentos/commit/01ea3ff))
+* docs(readme): streamline from 551 to 258 lines, lead with SOTA numbers + CTAs ([9b12b6a](https://github.com/framersai/agentos/commit/9b12b6a))
+* docs(readme): tighten Mastra comparison framing ([bd44032](https://github.com/framersai/agentos/commit/bd44032))
+
+## <small>0.5.9 (2026-04-29)</small>
+
+* feat(docs): register /benchmarks page in publication manifest ([b3dc29b](https://github.com/framersai/agentos/commit/b3dc29b))
+* docs(readme): add quantitative SOTA benchmark tables (matched gpt-4o reader) ([79da2ce](https://github.com/framersai/agentos/commit/79da2ce))
+* docs(emergent,sandbox): clarify sandbox memory-limit enforcement is nominal not preemptive ([ed2839a](https://github.com/framersai/agentos/commit/ed2839a))
+
+## <small>0.5.8 (2026-04-29)</small>
+
+* feat(memory): inject persistent markdown into prompt assembly + normalize Postgres DDL ([0d27268](https://github.com/framersai/agentos/commit/0d27268))
+
+## <small>0.5.7 (2026-04-29)</small>
+
+* feat(memory-router): productionize ReaderRouter primitive ([162d7ab](https://github.com/framersai/agentos/commit/162d7ab))
+
+## <small>0.5.6 (2026-04-29)</small>
+
+* feat(memory-router): add topk50-mult5-on-MS S-tuned preset (follow-up to refuted HyDE preset) ([fb79c65](https://github.com/framersai/agentos/commit/fb79c65))
+
+## <small>0.5.5 (2026-04-29)</small>
+
+* feat(memory-router): add S-tuned per-category retrieval router preset ([9690d0f](https://github.com/framersai/agentos/commit/9690d0f))
+* docs: surface 3-stage classifier-driven memory pipeline + add READER_ROUTER source doc ([99ac99a](https://github.com/framersai/agentos/commit/99ac99a))
+* docs(READER_ROUTER): add 'Why the default classifier is gpt-5-mini and not gpt-4o' subsection ([ff1e26b](https://github.com/framersai/agentos/commit/ff1e26b))
+* docs(README): surface the classifier-driven memory pipeline as a top-level section ([1aa864c](https://github.com/framersai/agentos/commit/1aa864c))
+* chore: stop tracking tmp-parity.sqlite + ignore local sqlite test artifacts ([6bc1dc7](https://github.com/framersai/agentos/commit/6bc1dc7))
+
+## <small>0.5.4 (2026-04-27)</small>
+
+* Merge pull request #3 from framersai/docs/auto-fallback-default ([b872c85](https://github.com/framersai/agentos/commit/b872c85)), closes [#3](https://github.com/framersai/agentos/issues/3)
+* fix(generate-text): document auto-fallback default; flag strict mode opt-out ([2146a98](https://github.com/framersai/agentos/commit/2146a98))
+
+## <small>0.5.3 (2026-04-27)</small>
+
+* fix(memory/typed-network): per-attempt 30s timeout on observer LLM invoke ([4f41a8d](https://github.com/framersai/agentos/commit/4f41a8d))
+* feat(memory-router): augmented routing for backend × retrieval-config dispatch ([fa14f7f](https://github.com/framersai/agentos/commit/fa14f7f))
+* Merge remote-tracking branch 'origin/master' ([1dceecd](https://github.com/framersai/agentos/commit/1dceecd))
+* docs(memory/typed-network): expand W/E/O/S abbreviation to full bank names ([73cb557](https://github.com/framersai/agentos/commit/73cb557))
+
+## <small>0.5.2 (2026-04-26)</small>
+
+* Merge remote-tracking branch 'origin/master' ([297ec9e](https://github.com/framersai/agentos/commit/297ec9e))
+* fix(memory/typed-network): tolerant observer parsing for gpt-5-mini extraction ([7ee0ff5](https://github.com/framersai/agentos/commit/7ee0ff5))
+
+## <small>0.5.1 (2026-04-26)</small>
+
+* feat(memory): re-export typed-network primitives from memory barrel ([f597978](https://github.com/framersai/agentos/commit/f597978))
+* fix(structured-output): address coderabbit findings on session.send overload ([198b0a0](https://github.com/framersai/agentos/commit/198b0a0)), closes [hi#relevance](https://github.com/hi/issues/relevance)
+
+## 0.5.0 (2026-04-26)
+
+* fix(memory): Stage E coderabbit C1+C2 - gate extractAtEncode + delegate retrieve to TypedNetworkRetr ([01ea591](https://github.com/framersai/agentos/commit/01ea591))
+
+### BREAKING CHANGE
+
+* CognitiveRetrievalResult.diagnostics.retrievedTypedFacts
+renamed to retrievedTypedTraces and now ScoredMemoryTrace[] instead of
+TypedFact[]. Stage E typed-network manager-side encoding now requires
+opt-in via config.typedNetwork.extractAtEncode (default false).
+
+## <small>0.4.1 (2026-04-26)</small>
+
+* feat(memory/typed-network): TypedNetworkRetriever for canonical-shaped retrieval ([230c6ae](https://github.com/framersai/agentos/commit/230c6ae))
+
+## 0.4.0 (2026-04-26)
+
+* fix(agent+memory): unblock CI build (TS errors in 0.3.4 release commit) ([cf045fa](https://github.com/framersai/agentos/commit/cf045fa))
+* fix(memory): place retrievedTypedFacts inside diagnostics + add ScoredMemoryTrace import ([64a5e69](https://github.com/framersai/agentos/commit/64a5e69))
+* feat(agent): session.send accepts responseSchema for typed structured output ([827b6b9](https://github.com/framersai/agentos/commit/827b6b9))
+* feat(AnthropicProvider): forced tool-use for schema-enforced structured output ([0ba00b9](https://github.com/framersai/agentos/commit/0ba00b9))
+* feat(GeminiProvider): responseSchema for schema-enforced structured output ([b5e1bcb](https://github.com/framersai/agentos/commit/b5e1bcb))
+* feat(memory): add subpath export for typed-network module ([db9ea8b](https://github.com/framersai/agentos/commit/db9ea8b))
+* feat(memory): Stage E Phase 4.3 - retrieve() runs typed spreading activation ([d0ab11c](https://github.com/framersai/agentos/commit/d0ab11c))
+
+## <small>0.3.4 (2026-04-26)</small>
+
+* chore(IProvider): tighten responseFormat type to admit json_schema shape ([1e5c4ac](https://github.com/framersai/agentos/commit/1e5c4ac))
+* feat(memory): Stage E Phase 4.1 - typedNetwork config field + manager wiring ([cac63c2](https://github.com/framersai/agentos/commit/cac63c2))
+* feat(memory): Stage E Phase 4.2 - encode() routes through typed-network observer ([a604d86](https://github.com/framersai/agentos/commit/a604d86))
+* feat(structured-output): provider-format adapter for session-aware schema enforcement ([17f7198](https://github.com/framersai/agentos/commit/17f7198))
+* docs(spec+plan): session-aware structured output for agent.session.send ([bcbdcf5](https://github.com/framersai/agentos/commit/bcbdcf5))
+* Merge branch 'master' of https://github.com/framersai/agentos ([72a25d8](https://github.com/framersai/agentos/commit/72a25d8))
+* Merge pull request #2 from framersai/structured-output-spec ([7c4d0e6](https://github.com/framersai/agentos/commit/7c4d0e6)), closes [#2](https://github.com/framersai/agentos/issues/2)
+
+## <small>0.3.3 (2026-04-26)</small>
+
+* fix(memory): MigrationRunner._readSchemaVersion handles v1 schema (no brain_id column) ([794649a](https://github.com/framersai/agentos/commit/794649a))
+* fix(memory): redact passwords in keyword-form Postgres connection strings ([f4bc827](https://github.com/framersai/agentos/commit/f4bc827))
+* fix(memory): use adapter.transaction in _bulkCopy to fix Postgres atomicity ([e72d7cf](https://github.com/framersai/agentos/commit/e72d7cf))
+* fix(memory/typed-network): broaden stripCodeFence regex to any alphabetic language tag ([f7ecef3](https://github.com/framersai/agentos/commit/f7ecef3))
+
+## <small>0.3.2 (2026-04-26)</small>
+
+* feat(memory/typed-network): Phase 1 primitives (types + store + temporal overlap) ([ebdf565](https://github.com/framersai/agentos/commit/ebdf565))
+* feat(memory/typed-network): Phase 2 LLM observer (6-step extraction prompt + zod schema) ([ee8f463](https://github.com/framersai/agentos/commit/ee8f463))
+* feat(memory/typed-network): Phase 3 retrieval (spreading activation + 4-way RRF) ([d867849](https://github.com/framersai/agentos/commit/d867849))
+
+## <small>0.3.1 (2026-04-26)</small>
+
+* docs: add 0.3.1 hardening pass changelog entry ([6d72d2f](https://github.com/framersai/agentos/commit/6d72d2f))
+* docs(memory): document archived_traces brain_id source caveat ([9efe4aa](https://github.com/framersai/agentos/commit/9efe4aa))
+* docs(memory): document pool contention semantics for shared adapter brains ([8fd929f](https://github.com/framersai/agentos/commit/8fd929f))
+* docs(memory): explain Brain factory naming asymmetry ([fd3f3d3](https://github.com/framersai/agentos/commit/fd3f3d3))
+* docs(memory): note importFromSqlite mutates the source file in-place ([16c6b2b](https://github.com/framersai/agentos/commit/16c6b2b))
+* test(memory): add cross-dialect round-trip test (sqlite->postgres->sqlite) ([3f6e2e0](https://github.com/framersai/agentos/commit/3f6e2e0))
+* test(memory): add Postgres tests for concurrent open + FK + rollback ([3e9001d](https://github.com/framersai/agentos/commit/3e9001d))
+* test(memory): log Postgres test cleanup errors instead of swallowing ([e71ce1d](https://github.com/framersai/agentos/commit/e71ce1d))
+* fix(memory): guard agent_id column existence in Postgres v1->v2 migration ([ca31c3d](https://github.com/framersai/agentos/commit/ca31c3d))
+* fix(memory): make Brain.close best-effort with logged failures ([09e4125](https://github.com/framersai/agentos/commit/09e4125))
+* fix(memory): redact password in Brain.openPostgres connection errors ([75d00c3](https://github.com/framersai/agentos/commit/75d00c3))
+* fix(memory): reject multi-brain source in Brain.importFromSqlite ([9e51f3d](https://github.com/framersai/agentos/commit/9e51f3d))
+* refactor(memory): assert V2_TABLES order matches PORTABLE_TABLES ([d9adf1a](https://github.com/framersai/agentos/commit/d9adf1a))
+* refactor(memory): hoist PORTABLE_TABLES to shared module ([6b058a3](https://github.com/framersai/agentos/commit/6b058a3))
+* refactor(memory): use ECMAScript private field syntax for #brainId ([611d04a](https://github.com/framersai/agentos/commit/611d04a)), closes [#brainId](https://github.com/framersai/agentos/issues/brainId)
+* refactor(memory): use shared PORTABLE_TABLES in Brain.postgres test ([b7a3ae9](https://github.com/framersai/agentos/commit/b7a3ae9))
+* feat(memory): add MigrationRunner with transaction + lock + version-bump ([f309028](https://github.com/framersai/agentos/commit/f309028))
+* feat(memory): add migrations/index.ts registry ([5963d1c](https://github.com/framersai/agentos/commit/5963d1c))
+* feat(memory): export v1ToV2 as Migration object alongside legacy function ([3e06300](https://github.com/framersai/agentos/commit/3e06300))
+* feat(memory): wire Brain._initialize to MigrationRunner ([76cd58a](https://github.com/framersai/agentos/commit/76cd58a))
+
+## 0.3.1 (2026-04-25)
+
+Hardening pass for the Brain storage abstraction shipped in 0.3.0. Closes 16 correctness, maintainability, and polish gaps from the post-0.3.0 code review.
+
+### Critical fixes
+
+- Schema migration is now fully transactional. Failure rolls back to the prior schema version cleanly. (C1)
+- Concurrent first-opens against the same `brainId` serialize via per-brain `pg_advisory_xact_lock` (Postgres) or `BEGIN IMMEDIATE` (SQLite). Two workers booting against the same brain no longer race. (C2)
+- `Brain.importFromSqlite` validates the source file contains exactly one `brain_id` and throws on multi-brain sources. Previously it silently collapsed all rows into the target brain. (C3)
+- `schema_version` is bumped atomically inside the migration transaction. Was previously stuck at `'1'` after a v1 to v2 migration because the seed used `INSERT OR IGNORE`. (C5)
+- Postgres `archived_traces` migration now checks for `agent_id` column existence before referencing it. Mirrors the SQLite path's existing guard. (I6)
+
+### Maintainability
+
+- New `MigrationRunner` centralizes transaction wrapping, advisory locking, and version detection. Future schema migrations register a `Migration` object instead of re-implementing this logic.
+- `PORTABLE_TABLES` hoisted to a single shared module (`store/portable-tables.ts`). Adding a portable table now requires touching one file.
+- New `migrations/index.ts` registry exposes `MIGRATIONS` and `LATEST_SCHEMA_VERSION` constants. Both `Brain._initialize` and `Brain._seedMeta` derive from the registry.
+- Cross-dialect round-trip test (sqlite to postgres to sqlite) verifies the portability contract.
+
+### Polish
+
+- `Brain.openPostgres` redacts the password segment from connection-failure error messages.
+- `Brain.close` is best-effort with logged failures: pool drain timeouts no longer propagate to shutdown callers.
+- `_brainId` private field uses ECMAScript `#` syntax (true private) instead of underscore convention.
+- Brain factory naming asymmetry (`openSqlite`/`openPostgres` vs `openWithAdapter`) documented in class JSDoc as intentional: by-dialect entry points vs by-pre-built-adapter escape hatch.
+- Postgres integration tests log cleanup errors to stderr instead of silently swallowing them.
+
+### Documentation
+
+- `docs/memory/POSTGRES_BACKEND.md` documents pool-contention semantics for shared adapter brains.
+- `Brain.importFromSqlite` JSDoc warns that the source SQLite file is mutated in-place by the auto-migration.
+- `archived_traces` brain_id-from-agent_id behavior documented as a migration caveat.
+
+### Downgrade warning
+
+This release auto-migrates v1 schemas to v2 on first open. **Downgrading from 0.3.x to 0.2.x is not supported by automatic migration.** Restore from a pre-0.3.0 backup or use `Brain.exportToSqlite` and `Brain.importFromSqlite` to round-trip data through a portable file.
+
+### Out of scope
+
+- A `--rebrand-archives` migration option (write archived_traces brain_id to the explicit override). Tracked as a follow-up.
+- A Postgres vs SQLite benchmark sweep on the `agentos-bench` suite. Tracked as a follow-up.
+
+## 0.3.0 (2026-04-25)
+
+* feat(memory): Brain storage abstraction v2 (universal SQLite + Postgres backbone) ([0676d8b](https://github.com/framersai/agentos/commit/0676d8b))
+* feat(ingest-router,memory-router): Stage I entity-linking executors + ranker ([b59cd43](https://github.com/framersai/agentos/commit/b59cd43))
+* Merge branch 'master' of https://github.com/framersai/agentos ([c6d7465](https://github.com/framersai/agentos/commit/c6d7465))
+
+### BREAKING CHANGE
+
+* SqliteBrain, SqliteKnowledgeGraph, SqliteMemoryGraph,
+Brain.open(path), Brain.create(path), Memory.create({path}) all removed.
+Postgres deployments require brainId on every brain operation. Existing
+SQLite files auto-migrate on first open.
+
+Spec: docs/superpowers/specs/2026-04-26-brain-storage-abstraction-design.md
+Plan: docs/superpowers/plans/2026-04-26-brain-storage-abstraction-plan.md
+
+## 0.3.0 (2026-04-26)
+
+### BREAKING CHANGES
+
+#### Brain storage abstraction (universal SQLite + Postgres backbone)
+
+The cognitive memory storage layer is dialect-agnostic. The class-name lie is fixed. Postgres is now a first-class backend.
+
+##### Renames
+
+| Old | New |
+|---|---|
+| `SqliteBrain` | `Brain` |
+| `SqliteBrain.open(path)` | `Brain.openSqlite(path)` |
+| `SqliteBrain.create(path)` | `Brain.openSqlite(path)` |
+| n/a | `Brain.openPostgres(connStr, { brainId, poolSize? })` |
+| n/a | `Brain.openWithAdapter(adapter, { brainId? })` |
+| `SqliteKnowledgeGraph` | `SqlKnowledgeGraph` |
+| `SqliteMemoryGraph` | `SqlMemoryGraph` |
+| `Memory.create({ path, ... })` | `Memory.createSqlite(path, opts?)` (also accepts a config object for back-compat) |
+| n/a | `Memory.createPostgres(connStr, { brainId, poolSize?, graph?, selfImprove?, ... })` |
+| n/a | `Memory.createWithAdapter(adapter, opts?)` |
+
+`SqliteImporter` and `SqliteExporter` keep their names because they actually require the `better-sqlite3` native module.
+
+##### Schema v2: `brain_id` discriminator
+
+Every brain-owned table (14 total: 12 in the main DDL + 2 in the archive subsystem) gains a `brain_id TEXT NOT NULL` column with composite primary keys `(brain_id, id)` and indexes leading with `brain_id`. This enables multi-tenant brain storage in Postgres (many brains share one schema, scoped per query) without changing the per-file SQLite isolation model.
+
+Existing SQLite files auto-migrate on first `Brain.openSqlite()` call. The migration is idempotent for both SQLite (uses the recreate-table dance) and Postgres (uses `ALTER TABLE ADD COLUMN` + new primary key constraint). Subsequent opens are no-ops once the schema is at v2.
+
+##### Portable export / import
+
+`Brain.exportToSqlite(path)` materialises any brain (regardless of live backend) to a portable SQLite file. `Brain.importFromSqlite(path, opts?)` loads that file into a receiving Brain, rewriting `brain_id` to the receiving brain's identity. This means importing a snapshot under a different `brainId` produces a fork. The `.wildsoul` portability format stays SQLite-based even when production runs on Postgres.
+
+```ts
+const liveBrain = await Brain.openPostgres(connStr, { brainId: 'alice' });
+await liveBrain.exportToSqlite('/tmp/alice-snapshot.sqlite');
+
+const forkBrain = await Brain.openPostgres(connStr, { brainId: 'alice-fork' });
+await forkBrain.importFromSqlite('/tmp/alice-snapshot.sqlite'); // fork
+```
+
+##### Postgres CI integration tests
+
+`Brain.postgres.test.ts` is gated on the `AGENTOS_TEST_POSTGRES_URL` env var. CI now provisions a `pgvector/pgvector:pg16` service container and runs the suite against it. Local contributors without Postgres see all 5 postgres tests skipped (suite stays green).
+
+##### Migration guide
+
+Most consumers upgrade with one-line search-replace:
+
+```ts
+// Before
+await Memory.create({ path: './brain.sqlite', graph: true });
+
+// After
+await Memory.createSqlite('./brain.sqlite', { graph: true });
+// (or pass the config object: Memory.createSqlite({ path, graph }) — both work)
+```
+
+For Postgres deployments (new):
+
+```ts
+const mem = await Memory.createPostgres(process.env.DATABASE_URL, {
+  brainId: 'companion-alice',
+  graph: true,
+});
+```
+
+For sharing an adapter across foundation tables and brains:
+
+```ts
+const adapter = await createDatabase({ postgres: { connectionString } });
+const brain = await Brain.openWithAdapter(adapter, { brainId: 'agent-1' });
+```
+
+##### Spec
+
+- Spec: [packages/agentos/docs/superpowers/specs/2026-04-26-brain-storage-abstraction-design.md](docs/superpowers/specs/2026-04-26-brain-storage-abstraction-design.md)
+- Plan: [packages/agentos/docs/superpowers/plans/2026-04-26-brain-storage-abstraction-plan.md](docs/superpowers/plans/2026-04-26-brain-storage-abstraction-plan.md)
+
+## <small>0.2.12 (2026-04-25)</small>
+
+* Merge branch 'master' of https://github.com/framersai/agentos ([fc7cf50](https://github.com/framersai/agentos/commit/fc7cf50))
+* refactor(ingest-router): SummarizedIngestExecutor wraps existing SessionSummarizer ([dbb3d31](https://github.com/framersai/agentos/commit/dbb3d31))
+* feat(ingest-router): add executors sub-barrel + top-level re-exports ([7aaf38d](https://github.com/framersai/agentos/commit/7aaf38d))
+* feat(ingest-router): implement session summarizer with verbatim Anthropic prompt ([a62a716](https://github.com/framersai/agentos/commit/a62a716))
+* feat(ingest-router): RawChunks + Skip reference executors + uniform outcome shape ([8c4fa6f](https://github.com/framersai/agentos/commit/8c4fa6f))
+* feat(ingest-router): SummarizedIngestExecutor with per-session caching ([995954d](https://github.com/framersai/agentos/commit/995954d))
+* feat(ingest-router): types for summarized + entity-linking executors ([8823792](https://github.com/framersai/agentos/commit/8823792))
+* test(ingest-router): SummarizedIngestExecutor + FunctionIngestDispatcher integration ([d44f1e8](https://github.com/framersai/agentos/commit/d44f1e8))
+
+## <small>0.2.11 (2026-04-25)</small>
+
+* docs(ingest-router): correct fact-graph attribution per Mem0 v3 graph removal ([1fdef22](https://github.com/framersai/agentos/commit/1fdef22))
+* docs(paracosm): note prompt/URL-grounded scenario authoring ([630d913](https://github.com/framersai/agentos/commit/630d913))
+* refactor(cognitive-pipeline): finish rename + clean lingering JSDoc refs ([bbb46d8](https://github.com/framersai/agentos/commit/bbb46d8))
+
+## <small>0.2.10 (2026-04-25)</small>
+
+* fix(read-router): typecheck failure on result.outcome.answer access ([1651180](https://github.com/framersai/agentos/commit/1651180))
+* docs(architecture): add Cognitive Pipeline section to ARCHITECTURE.md ([425a9fc](https://github.com/framersai/agentos/commit/425a9fc))
+
+## <small>0.2.9 (2026-04-25)</small>
+
+* refactor(cognitive-pipeline): rename multi-stage-guardrails → cognitive-pipeline + ship 5 canonical  ([fc0dadb](https://github.com/framersai/agentos/commit/fc0dadb))
+
+## <small>0.2.8 (2026-04-25)</small>
+
+* feat: ship multi-stage guardrails — ingest-router + read-router + adaptive memory-router + compositi ([7866f7a](https://github.com/framersai/agentos/commit/7866f7a))
+
+## <small>0.2.7 (2026-04-24)</small>
+
+* feat(memory-router): LLM-as-judge orchestrator for per-query memory-architecture routing ([fc4792c](https://github.com/framersai/agentos/commit/fc4792c))
+
+## <small>0.2.6 (2026-04-24)</small>
+
+* fix(sandbox): expand CodeSandbox hardening to block realm intrinsics ([c748b26](https://github.com/framersai/agentos/commit/c748b26))
+
+## <small>0.2.5 (2026-04-24)</small>
+
+* fix(sandbox): consolidate SandboxedToolForge to delegate to hardened CodeSandbox ([eb7a812](https://github.com/framersai/agentos/commit/eb7a812))
+
+## <small>0.2.4 (2026-04-24)</small>
+
+* fix(anthropic-provider): drop temperature for Claude Opus 4.7 ([9a7d90f](https://github.com/framersai/agentos/commit/9a7d90f))
+
+## <small>0.2.3 (2026-04-24)</small>
+
+* fix(paracosm-doc): coderabbit review. correct Kirfel citation ([39000de](https://github.com/framersai/agentos/commit/39000de))
+* docs(paracosm): reposition PARACOSM doc as structured world model ([aec39a3](https://github.com/framersai/agentos/commit/aec39a3))
+* chore: untrack build artifacts and local db_data ([d8f7bfc](https://github.com/framersai/agentos/commit/d8f7bfc))
+
+## <small>0.2.2 (2026-04-23)</small>
+
+* docs: domain-neutral naming in paracosm + ecosystem guides ([49cb85b](https://github.com/framersai/agentos/commit/49cb85b))
+* docs(emergent): add forge-observability section covering 5-utility telemetry API ([45ef25e](https://github.com/framersai/agentos/commit/45ef25e))
+* docs(paracosm): cover 0.6.0 universal schema + list as ecosystem app ([0cb3fae](https://github.com/framersai/agentos/commit/0cb3fae))
+* docs(paracosm): P1 rename drift \u2014 colony \u2192 unit + finalState.colony \u2192 finalState.syst ([2e3406d](https://github.com/framersai/agentos/commit/2e3406d))
+* docs(paracosm): update scenario example for 0.7.0 time-unit field names ([80fcc22](https://github.com/framersai/agentos/commit/80fcc22))
+* fix(ecosystem): coderabbit review - point live demo to /sim path ([49495b6](https://github.com/framersai/agentos/commit/49495b6))
+
+## <small>0.2.1 (2026-04-22)</small>
+
+* Merge remote-tracking branch 'origin/master' ([126d6e3](https://github.com/framersai/agentos/commit/126d6e3))
+* fix(build): handle multi-line import statements in fix-esm-imports ([72ddc75](https://github.com/framersai/agentos/commit/72ddc75))
+* fix(deps): bump @framers/sql-storage-adapter peer + dev pin to ^0.6.3 ([3ea2f3d](https://github.com/framersai/agentos/commit/3ea2f3d))
+
+## 0.2.0 (2026-04-22)
+
+* fix(build): rewrite agentos self-package imports ([cd22430](https://github.com/framersai/agentos/commit/cd22430))
+* fix(lint): drop unnecessary $ escape in MemoryReflector template literal ([a472a53](https://github.com/framersai/agentos/commit/a472a53))
+* fix(rag): export MetadataScan types + align Pinecone config contract ([fc724a8](https://github.com/framersai/agentos/commit/fc724a8))
+* fix(rag): vector-store implementations handle number+string MetadataFieldCondition ([a2030ba](https://github.com/framersai/agentos/commit/a2030ba))
+* docs(plan): implementation plan for memoryProvider direct-call autowire (0.2.0) ([307de07](https://github.com/framersai/agentos/commit/307de07))
+* docs(readme): document memoryProvider auto-wire on direct calls ([ad8988d](https://github.com/framersai/agentos/commit/ad8988d))
+* docs(spec): mark memoryProvider-direct-call-autowire implemented ([e2a2d43](https://github.com/framersai/agentos/commit/e2a2d43))
+* docs(spec): memoryProvider auto-wire on direct agent calls (0.2.0) ([8bde92a](https://github.com/framersai/agentos/commit/8bde92a))
+* feat(memory)!: memoryProvider auto-wires on all four agent call paths ([d866ad4](https://github.com/framersai/agentos/commit/d866ad4))
+* feat(memory): applyMemoryProvider helper + 10 unit tests ([392c1bd](https://github.com/framersai/agentos/commit/392c1bd))
+* feat(memory): auto-wire memoryProvider on direct agent.generate() ([ab3a2d9](https://github.com/framersai/agentos/commit/ab3a2d9))
+* feat(memory): auto-wire memoryProvider on direct agent.stream() + drop dead MEMORY_TIMEOUT_MS ([13efc85](https://github.com/framersai/agentos/commit/13efc85))
+* feat(memory): export AgentMemoryProvider type from public barrel ([9250da4](https://github.com/framersai/agentos/commit/9250da4))
+* feat(memory): heuristic entity extraction + graph activation wire-up ([796467c](https://github.com/framersai/agentos/commit/796467c))
+* feat(memory): thread enableGraphActivation through CognitiveMemoryConfig ([d568b62](https://github.com/framersai/agentos/commit/d568b62))
+* feat(memory): type memoryProvider as AgentMemoryProvider interface ([3a1785d](https://github.com/framersai/agentos/commit/3a1785d))
+* feat(pinecone): add metadata scan, retry with backoff, and expanded tests ([0cb6ba9](https://github.com/framersai/agentos/commit/0cb6ba9))
+* refactor(memory): session.send uses applyMemoryProvider helper ([4156084](https://github.com/framersai/agentos/commit/4156084))
+* refactor(memory): session.stream uses applyMemoryProvider helper ([38f0cf8](https://github.com/framersai/agentos/commit/38f0cf8))
+* chore: update Discord invite to permanent link ([fb6fcb0](https://github.com/framersai/agentos/commit/fb6fcb0))
+* chore(pinecone): continue vector store refinements ([7021709](https://github.com/framersai/agentos/commit/7021709))
+
+### BREAKING CHANGE
+
+* Direct agent.stream() / agent.generate() now invoke
+memoryProvider.getContext before the LLM call and memoryProvider.observe
+after. Callers who passed memoryProvider on createAgent but did not want
+it to fire on direct calls (no legitimate use case) will see behavior
+change. Callers using .session() paths are unaffected — behavior
+unchanged.
+
+Type change: memoryProvider: any is now typed as AgentMemoryProvider
+interface with optional getContext + observe methods. Callers passing
+malformed providers will see TypeScript errors at the provider
+boundary.
+
+Migration:
+- .session() path: no change required, behavior unchanged.
+- Direct path wanting memory: already passed memoryProvider; now it
+  works. Remove any manual onBeforeGeneration wiring that previously
+  worked around the silent-ignore.
+- Direct path not wanting memory: remove memoryProvider from the
+  createAgent config.
+
+## <small>0.1.255 (2026-04-21)</small>
+
+* feat(memory): export REFLECTOR_PROMPT_HASH for content-addressed cache keys ([c1fb669](https://github.com/framersai/agentos/commit/c1fb669))
+
+## <small>0.1.254 (2026-04-21)</small>
+
+* feat(memory): MemoryReflector prompt preserves literal tokens verbatim ([35b75ae](https://github.com/framersai/agentos/commit/35b75ae))
+
+## <small>0.1.253 (2026-04-21)</small>
+
+* feat(memory): HybridRetriever fact-graph integration + synthetic trace prepending ([1147043](https://github.com/framersai/agentos/commit/1147043))
+
+## <small>0.1.252 (2026-04-21)</small>
+
+* fix(llm-routing): drop MythoMax L2 13B from uncensored catalog ([ef21e90](https://github.com/framersai/agentos/commit/ef21e90))
+* feat(memory): export fact-graph module from memory barrel ([7f05f56](https://github.com/framersai/agentos/commit/7f05f56))
+* feat(memory): fact-graph canonicalization + 25-predicate closed schema ([7f3af44](https://github.com/framersai/agentos/commit/7f3af44))
+* feat(memory): FactExtractor — LLM fact extraction with closed schema + session cache ([af4bbcc](https://github.com/framersai/agentos/commit/af4bbcc))
+* feat(memory): FactStore — in-memory fact-graph keyed by scope/subject/predicate ([4d7b8fc](https://github.com/framersai/agentos/commit/4d7b8fc))
+
+## <small>0.1.251 (2026-04-21)</small>
+
+* feat(memory): HybridRetriever emits per-stage candidate IDs in diagnostics ([b36c015](https://github.com/framersai/agentos/commit/b36c015))
+
+## <small>0.1.250 (2026-04-21)</small>
+
+* fix(memory): flushReflection scopeOverride param — ensures reflection traces land in caller's scope, ([1ac24cb](https://github.com/framersai/agentos/commit/1ac24cb))
+
+## <small>0.1.249 (2026-04-21)</small>
+
+* feat(memory): getReflector() accessor + flushReflection() for forced reflection at caller boundaries ([e21e08e](https://github.com/framersai/agentos/commit/e21e08e))
+
+## <small>0.1.248 (2026-04-21)</small>
+
+* feat(memory): HybridRetriever + progressive enhancement flags ship as v0.1.248 ([5657f31](https://github.com/framersai/agentos/commit/5657f31))
+* memory: barrel exports + CognitiveMemoryManager.getRerankerService getter ([e6ac741](https://github.com/framersai/agentos/commit/e6ac741))
+* memory: barrel-export SessionSummaryStore + SessionRetriever; fix PADState import ([a563cf0](https://github.com/framersai/agentos/commit/a563cf0))
+* memory: FactSupersession post-retrieval LLM filter (drops superseded traces) ([30ae52a](https://github.com/framersai/agentos/commit/30ae52a))
+* memory: HybridRetriever for BM25 + dense RRF retrieval ([b32099d](https://github.com/framersai/agentos/commit/b32099d))
+* memory: HybridRetriever integration tests with real MemoryStore + BM25Index ([d44001a](https://github.com/framersai/agentos/commit/d44001a))
+* memory: HybridRetriever split-on-ambiguous rerank refinement (monotonic, additive) ([c2c0a52](https://github.com/framersai/agentos/commit/c2c0a52))
+* memory: optional HyDE retriever in HybridRetriever (hypothesis for dense+sparse, original query for  ([3781d75](https://github.com/framersai/agentos/commit/3781d75))
+* memory: reciprocalRankFusion for rank-based fusion of retrievers ([9c4a6f4](https://github.com/framersai/agentos/commit/9c4a6f4))
+* memory: restore SessionSummarizer + tests (tracked file missing from prior push — unblocks CI) ([1472981](https://github.com/framersai/agentos/commit/1472981))
+* memory: SessionRetriever for two-stage hierarchical retrieval ([b6aa1ef](https://github.com/framersai/agentos/commit/b6aa1ef))
+* memory: SessionRetriever integration tests with real in-memory components ([c9374e2](https://github.com/framersai/agentos/commit/c9374e2))
+* memory: SessionSummaryStore for session-level vector indexing ([aecfc85](https://github.com/framersai/agentos/commit/aecfc85))
+* memory(test): fix typecheck — test stubs cast as interface at usage sites, PADState from core/config ([732d475](https://github.com/framersai/agentos/commit/732d475))
+* docs(memory): architecture doc for SessionRetriever ([a41c4f9](https://github.com/framersai/agentos/commit/a41c4f9))
+* docs(memory): HybridRetriever architecture doc ([38f1d5f](https://github.com/framersai/agentos/commit/38f1d5f))
+
+## <small>0.1.247 (2026-04-19)</small>
+
+* fix(memory): emit real scoringTimeMs + vectorSearchTimeMs diagnostics ([fc0b25c](https://github.com/framersai/agentos/commit/fc0b25c))
+
+## <small>0.1.246 (2026-04-19)</small>
+
+* fix: add missing Required fields (enabled, syntax_error) unblocking CI ([b60eb31](https://github.com/framersai/agentos/commit/b60eb31)), closes [#2](https://github.com/framersai/agentos/issues/2)
+* fix: correct IKnowledgeGraph import path in memory specs ([e4705ed](https://github.com/framersai/agentos/commit/e4705ed))
+* fix(emergent): pre-parse syntax validation + actionable hints + classifier category ([b9f4d65](https://github.com/framersai/agentos/commit/b9f4d65))
+* fix(memory): honour consolidation.enabled=false + unref timer ([bfc8c1b](https://github.com/framersai/agentos/commit/bfc8c1b))
+* chore: rebuild dist (consolidation.enabled fix + scoringWeights override) ([3442fac](https://github.com/framersai/agentos/commit/3442fac))
+* feat: expose public CognitiveMemoryManager.getTraceCount() ([5929380](https://github.com/framersai/agentos/commit/5929380))
+* feat(memory): scoringWeights override on CognitiveRetrievalOptions ([e48cd64](https://github.com/framersai/agentos/commit/e48cd64))
+* test: pin tag round-trip through CognitiveMemoryManager encode/retrieve ([9433dad](https://github.com/framersai/agentos/commit/9433dad))
+
+## <small>0.1.245 (2026-04-19)</small>
+
+* feat: add shared memory retrieval policy contract ([d70ab08](https://github.com/framersai/agentos/commit/d70ab08))
+* feat: add shared retrieval confidence evaluation ([1efdd5a](https://github.com/framersai/agentos/commit/1efdd5a))
+* feat: thread retrieval policy through cognitive memory ([15ed10d](https://github.com/framersai/agentos/commit/15ed10d))
+* feat: unify retrieval policies across rag entrypoints ([da3cd13](https://github.com/framersai/agentos/commit/da3cd13))
+* feat: unify standalone and runtime long-term retrieval policy ([9cc8905](https://github.com/framersai/agentos/commit/9cc8905))
+* feat(llm): gate provider init logs behind AGENTOS_DEBUG, memoize createProviderManager ([76b05ed](https://github.com/framersai/agentos/commit/76b05ed))
+* fix: calibrate standalone recall confidence ([4be8755](https://github.com/framersai/agentos/commit/4be8755))
+
+## <small>0.1.244 (2026-04-19)</small>
+
+* Merge branch 'master' of https://github.com/framersai/agentos ([3950d82](https://github.com/framersai/agentos/commit/3950d82))
+* fix(routing): remove dead uncensored text models from catalog ([e0abaeb](https://github.com/framersai/agentos/commit/e0abaeb))
+* feat: add host llm policy routing ([748cc25](https://github.com/framersai/agentos/commit/748cc25))
+
+## <small>0.1.243 (2026-04-19)</small>
+
+* fix(judge): tighten creation-review rubric to eliminate false rejects ([9cd8765](https://github.com/framersai/agentos/commit/9cd8765))
+
 ## <small>0.1.242 (2026-04-19)</small>
 
 * fix(openai): use max_completion_tokens for gpt-5 + o-series models ([675c004](https://github.com/framersai/agentos/commit/675c004))

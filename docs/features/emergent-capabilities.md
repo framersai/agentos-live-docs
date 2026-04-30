@@ -30,7 +30,7 @@ await agent.initialize({
         ▼
  ┌─── Build ───┐
  │ compose? → ComposableToolBuilder (chains existing tools)
- │ sandbox? → SandboxedToolForge (isolated VM execution)
+ │ sandbox? → SandboxedToolForge (hardened node:vm context via CodeSandbox)
  └──────┬──────┘
         │
         ▼
@@ -160,7 +160,7 @@ const forgeRequest = {
 
 ### Sandbox Mode -- Write Novel Code
 
-Sandbox mode runs agent-written JavaScript in an isolated V8 context via [`CodeSandbox`](/api/classes/CodeSandbox) with hard memory and timeout limits. More powerful but requires explicit opt-in.
+Sandbox mode runs agent-written JavaScript in a hardened node:vm context. The forge-specific [`SandboxedToolForge`](/api/classes/SandboxedToolForge) layers the `function execute(input)` contract and allowlist-injected APIs on top of [`CodeSandbox`](/api/classes/CodeSandbox), which provides the hardening: `codeGeneration: { strings: false, wasm: false }`, frozen console, and explicit `process` / `globalThis` / `require` set to undefined. Wall-clock timeouts are enforced; memory limits are not (node:vm shares the host heap; an isolated-vm soft dependency would be required for preemptive memory limits and is deferred).
 
 **Example: CSV parser**
 
@@ -288,7 +288,7 @@ These are rejected at code validation time (before execution):
 | Resource | Default | Config key |
 |---|---|---|
 | Execution timeout | 5,000 ms | `sandboxTimeoutMs` |
-| Memory limit | 128 MB | `sandboxMemoryMB` |
+| Memory observed (heap delta heuristic, NOT preempted) | 128 MB nominal | `sandboxMemoryMB` |
 | Session tools | 10 | `maxSessionTools` |
 | Agent tools | 50 | `maxAgentTools` |
 
@@ -317,6 +317,110 @@ session ──(5+ uses, >0.8 confidence, panel approved)──→ agent ──(h
 | **Session** | Current conversation only | Discarded on session end | Auto on creation + judge approval |
 | **Agent** | Persisted for the creating agent | Survives restarts | 5+ uses, confidence > 0.8, two-reviewer panel |
 | **Shared** | All agents in the runtime | Permanent until demoted | Human approval required (HITL gate) |
+
+## Forge Observability
+
+The forge pipeline ships with a five-utility observability layer under [`@framers/agentos/emergent`](/api/modules#emergent) so any consumer can see live forge health without re-implementing the instrumentation. Each utility is standalone, pure, and composes with whatever telemetry the host already has.
+
+```
+ forge_tool invocation
+        │
+        ▼
+ ┌────────────────────────────────────────┐
+ │  wrapForgeTool                         │
+ │  · JSON-parse stringified schemas      │
+ │  · normalize mode synonyms             │
+ │  · backstop required fields            │
+ │  · scope-tag every attempt             │
+ └────────────┬───────────────────────────┘
+              │
+              ▼
+ ┌────────────────────────────────────────┐
+ │  inferSchemaFromTestCases              │
+ │  · synthesize inputSchema.properties   │
+ │    from testCase inputs when missing   │
+ │  · same for outputSchema               │
+ └────────────┬───────────────────────────┘
+              │
+              ▼
+ ┌────────────────────────────────────────┐
+ │  validateForgeShape (pre-judge)        │
+ │  · empty schema properties → reject    │
+ │  · <2 testCases → reject               │
+ │  · empty-input testCases → reject      │
+ │  rejection short-circuits the judge    │
+ └────────────┬───────────────────────────┘
+              │
+              ▼
+     EmergentJudge (unchanged)
+              │
+              ▼
+ ┌────────────────────────────────────────┐
+ │  capture callback (one per attempt)    │
+ │    ForgeStatsAggregator.recordAttempt  │
+ │      · uniqueNames / uniqueApproved    │
+ │      · uniqueTerminalRejections        │
+ │      · classifyForgeRejection          │
+ │        → rejectionReasons histogram    │
+ └────────────┬───────────────────────────┘
+              │
+              ▼
+      snapshot()  →  host telemetry
+```
+
+### API surface
+
+| Utility | Kind | Purpose |
+|---|---|---|
+| [`wrapForgeTool`](/api/functions/wrapForgeTool) | wrapper (`ForgeToolMetaTool → ITool`) | Normalizes messy LLM forge args, runs pre-judge shape check, captures every attempt to the caller's sink regardless of outcome. Takes an optional `scope` label and `log` event callback so consumers can group attempts (e.g., `dept: 'medical'`) and render lifecycle events to stdout / pm2 / structured logs without the wrapper owning any console dependency. |
+| [`validateForgeShape`](/api/functions/validateForgeShape) | pure function (`ForgeShapeRequest → string[]`) | Catches the three failure modes that dominate cheap-tier rejections before the judge LLM runs: empty schema properties, fewer than 2 testCases, empty-input testCases. Every shape-check rejection saves one judge invocation plus the sandbox round-trip that would have followed it. |
+| [`inferSchemaFromTestCases`](/api/functions/inferSchemaFromTestCases) | pure function (in-place mutation) | Synthesizes `inputSchema.properties` / `outputSchema.properties` from concrete testCase values when the LLM forgot to declare them. Rescues the "examples without formalization" failure mode without relaxing schema discipline. Unions fields across every testCase so a single incomplete case does not narrow the inferred schema. |
+| [`classifyForgeRejection`](/api/functions/classifyForgeRejection) | pure function (`string → ForgeRejectionCategory`) | Bins rejection-reason text into six categories: `schema_extra_field`, `shape_check`, `syntax_error`, `parse_error`, `judge_correctness`, `other`. Order matters: `schema_extra_field` wins over `judge_correctness` because it is the more specific and more actionable signal. A growing `other` bucket is the signal to read raw reasons and extend the pattern set. |
+| [`ForgeStatsAggregator`](/api/classes/ForgeStatsAggregator) | class | Per-run rollup: `attempts`, `approved`, `rejected`, `approvedConfidenceSum`, `uniqueNames`, `uniqueApproved`, `uniqueTerminalRejections`, and the `rejectionReasons` histogram. `uniqueApproved` vs `uniqueTerminalRejections` is the real quality signal: unique-tool approval rate, not attempt-level approval rate. Shape pinned — extend by adding fields, never rename existing ones. |
+
+### Composed wiring
+
+```typescript
+import {
+  EmergentCapabilityEngine, ForgeToolMetaTool,
+  wrapForgeTool, ForgeStatsAggregator,
+} from '@framers/agentos/emergent';
+
+const engine = new EmergentCapabilityEngine({ /* ... */ });
+const forgeTool = new ForgeToolMetaTool(engine);
+
+const stats = new ForgeStatsAggregator();
+
+const wrapped = wrapForgeTool({
+  raw: forgeTool,
+  agentId: 'agent-1',
+  sessionId: 'session-1',
+  scope: 'medical',  // optional; propagated onto every CapturedForge
+  capture: record => stats.recordAttempt(
+    record.approved, record.confidence, record.name, record.errorReason,
+  ),
+  log: event => {
+    // event: { kind: 'start' | 'approved' | 'rejected' | 'error', toolName, ... }
+    // Optional; omit for quiet mode.
+  },
+});
+
+// Expose `wrapped` to the agent. After the run:
+const snapshot = stats.snapshot();
+// → { attempts, approved, rejected, uniqueApproved, uniqueTerminalRejections, rejectionReasons, ... }
+```
+
+### Interpreting the histogram
+
+- Dominant `schema_extra_field` bucket — the LLM declares strict output schemas then returns extra fields. Mitigation: tighten the forge-guidance prompt or fix the sandbox's schema discipline.
+- Dominant `shape_check` bucket — the LLM keeps producing well-intentioned requests that the pre-judge validator rejects (empty properties, too few testCases). Usually fixable with a better system prompt that shows a worked forge example.
+- Dominant `judge_correctness` bucket — tool code has real logic bugs the judge catches (division, threshold inversions, unbounded outputs). Investigate the specific forges.
+- Non-zero `syntax_error` — LLM is emitting TypeScript syntax in a JavaScript sandbox, or single-line `if`/`for` without braces. Prompt fix.
+- `uniqueApproved / uniqueNames` near 1.0 — retry loop recovers well. Near 0 — LLM gets stuck on the same name across retries.
+
+### Reference consumer: paracosm
+
+Paracosm threads these utilities end-to-end through its SSE + cost telemetry surface. Every forge attempt shows up as a `forge_attempt` SSE event, is folded into the run's `_cost.forgeStats` payload on every subsequent event, lands in the run artifact's `finalCost().forgeStats`, and is aggregated across the last 100 runs at `/retry-stats.forges`. See [`apps/paracosm/src/runtime/emergent-setup.ts`](https://github.com/framersai/paracosm/blob/master/src/runtime/emergent-setup.ts) and [`cost-tracker.ts`](https://github.com/framersai/paracosm/blob/master/src/runtime/cost-tracker.ts) for the integration pattern.
 
 ## End-to-End Example: Agent Conversation
 
@@ -455,9 +559,9 @@ await importEmergentTool('./slugify.emergent-tool.yaml', { seedId: agentSeedId }
     maxSessionTools: 10,           // Max tools per session
     maxAgentTools: 50,             // Max persisted per agent
 
-    // Sandbox resource limits
+    // Sandbox resource limits and telemetry
     sandboxTimeoutMs: 5000,        // VM execution timeout
-    sandboxMemoryMB: 128,          // VM memory cap
+    sandboxMemoryMB: 128,          // Nominal budget; node:vm reports heap delta only
 
     // Judge configuration
     judgeModel: 'gpt-4o-mini',    // Model for creation reviews
@@ -483,7 +587,7 @@ await importEmergentTool('./slugify.emergent-tool.yaml', { seedId: agentSeedId }
 
 - Emergent tools **cannot** modify the guardrail pipeline
 - Emergent tools **cannot** access other agents' memory or credentials
-- Sandbox runs in an isolated V8 context — no escape to the host process
+- Sandbox runs in a hardened node:vm context (own realm, `process` / `globalThis` / `require` set to undefined, `codeGeneration: { strings: false, wasm: false }` blocks runtime `eval`/`Function` reflection). Host-realm escape is blocked; runaway memory is not preempted (use isolated-vm for that, currently deferred).
 - All forge decisions and metadata are logged to the provenance audit trail
 - Human approval is required for shared-tier promotion
 - Raw sandbox source is redacted at rest by default

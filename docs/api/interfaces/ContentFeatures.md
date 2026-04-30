@@ -1,6 +1,6 @@
 # Interface: ContentFeatures
 
-Defined in: [packages/agentos/src/memory/core/types.ts:73](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/core/types.ts#L73)
+Defined in: [packages/agentos/src/memory/core/types.ts:80](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/types.ts#L80)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/memory/core/types.ts:73](https://github.com/fr
 
 > **hasContradiction**: `boolean`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:80](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/core/types.ts#L80)
+Defined in: [packages/agentos/src/memory/core/types.ts:87](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/types.ts#L87)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [packages/agentos/src/memory/core/types.ts:80](https://github.com/fr
 
 > **hasCooperation**: `boolean`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:78](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/core/types.ts#L78)
+Defined in: [packages/agentos/src/memory/core/types.ts:85](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/types.ts#L85)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: [packages/agentos/src/memory/core/types.ts:78](https://github.com/fr
 
 > **hasEmotion**: `boolean`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:76](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/core/types.ts#L76)
+Defined in: [packages/agentos/src/memory/core/types.ts:83](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/types.ts#L83)
 
 ***
 
@@ -32,7 +32,7 @@ Defined in: [packages/agentos/src/memory/core/types.ts:76](https://github.com/fr
 
 > **hasEthicalContent**: `boolean`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:79](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/core/types.ts#L79)
+Defined in: [packages/agentos/src/memory/core/types.ts:86](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/types.ts#L86)
 
 ***
 
@@ -40,7 +40,7 @@ Defined in: [packages/agentos/src/memory/core/types.ts:79](https://github.com/fr
 
 > **hasNovelty**: `boolean`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:74](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/core/types.ts#L74)
+Defined in: [packages/agentos/src/memory/core/types.ts:81](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/types.ts#L81)
 
 ***
 
@@ -48,7 +48,7 @@ Defined in: [packages/agentos/src/memory/core/types.ts:74](https://github.com/fr
 
 > **hasProcedure**: `boolean`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:75](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/core/types.ts#L75)
+Defined in: [packages/agentos/src/memory/core/types.ts:82](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/types.ts#L82)
 
 ***
 
@@ -56,7 +56,7 @@ Defined in: [packages/agentos/src/memory/core/types.ts:75](https://github.com/fr
 
 > **hasSocialContent**: `boolean`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:77](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/core/types.ts#L77)
+Defined in: [packages/agentos/src/memory/core/types.ts:84](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/types.ts#L84)
 
 ***
 
@@ -64,6 +64,6 @@ Defined in: [packages/agentos/src/memory/core/types.ts:77](https://github.com/fr
 
 > **topicRelevance**: `number`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:82](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/core/types.ts#L82)
+Defined in: [packages/agentos/src/memory/core/types.ts:89](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/types.ts#L89)
 
 0-1 relevance to current task / active goal.

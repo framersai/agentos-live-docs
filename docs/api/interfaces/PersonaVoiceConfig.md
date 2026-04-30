@@ -1,6 +1,6 @@
 # Interface: PersonaVoiceConfig
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:39](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/personas/IPersonaDefinition.ts#L39)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:39](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/cognitive_substrate/personas/IPersonaDefinition.ts#L39)
 
 Specifies the configuration for a persona's voice when generating audio output (Text-to-Speech).
 
@@ -14,7 +14,7 @@ PersonaVoiceConfig
 
 > `optional` **customParams**: `Record`\<`string`, `any`\>
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:43](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/personas/IPersonaDefinition.ts#L43)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:43](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/cognitive_substrate/personas/IPersonaDefinition.ts#L43)
 
 ***
 
@@ -22,7 +22,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefiniti
 
 > `optional` **languageCode**: `string`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:42](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/personas/IPersonaDefinition.ts#L42)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:42](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/cognitive_substrate/personas/IPersonaDefinition.ts#L42)
 
 ***
 
@@ -30,7 +30,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefiniti
 
 > `optional` **moodToVoiceStyleMap**: `Record`\<`string`, \{ `customParams?`: `Record`\<`string`, `any`\>; `voiceId?`: `string`; \}\>
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:44](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/personas/IPersonaDefinition.ts#L44)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:44](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/cognitive_substrate/personas/IPersonaDefinition.ts#L44)
 
 ***
 
@@ -38,7 +38,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefiniti
 
 > `optional` **provider**: `string`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:40](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/personas/IPersonaDefinition.ts#L40)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:40](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/cognitive_substrate/personas/IPersonaDefinition.ts#L40)
 
 ***
 
@@ -46,4 +46,4 @@ Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefiniti
 
 > `optional` **voiceId**: `string`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:41](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/cognitive_substrate/personas/IPersonaDefinition.ts#L41)
+Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:41](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/cognitive_substrate/personas/IPersonaDefinition.ts#L41)

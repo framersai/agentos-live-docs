@@ -1,6 +1,6 @@
 # Interface: StableDiffusionLocalOptions
 
-Defined in: [packages/agentos/src/media/images/providers/StableDiffusionLocalProvider.ts:37](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/images/providers/StableDiffusionLocalProvider.ts#L37)
+Defined in: [packages/agentos/src/media/images/providers/StableDiffusionLocalProvider.ts:37](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/media/images/providers/StableDiffusionLocalProvider.ts#L37)
 
 Provider-specific options passed through
 `request.providerOptions['stable-diffusion-local']`.
@@ -11,7 +11,7 @@ Provider-specific options passed through
 
 > `optional` **batchSize**: `number`
 
-Defined in: [packages/agentos/src/media/images/providers/StableDiffusionLocalProvider.ts:53](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/images/providers/StableDiffusionLocalProvider.ts#L53)
+Defined in: [packages/agentos/src/media/images/providers/StableDiffusionLocalProvider.ts:53](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/media/images/providers/StableDiffusionLocalProvider.ts#L53)
 
 Number of images to generate (default 1).
 
@@ -21,7 +21,7 @@ Number of images to generate (default 1).
 
 > `optional` **cfgScale**: `number`
 
-Defined in: [packages/agentos/src/media/images/providers/StableDiffusionLocalProvider.ts:41](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/images/providers/StableDiffusionLocalProvider.ts#L41)
+Defined in: [packages/agentos/src/media/images/providers/StableDiffusionLocalProvider.ts:41](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/media/images/providers/StableDiffusionLocalProvider.ts#L41)
 
 Classifier-free guidance scale (default 7.5).
 
@@ -31,7 +31,7 @@ Classifier-free guidance scale (default 7.5).
 
 > `optional` **controlnet**: `Record`\<`string`, `unknown`\>
 
-Defined in: [packages/agentos/src/media/images/providers/StableDiffusionLocalProvider.ts:55](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/images/providers/StableDiffusionLocalProvider.ts#L55)
+Defined in: [packages/agentos/src/media/images/providers/StableDiffusionLocalProvider.ts:55](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/media/images/providers/StableDiffusionLocalProvider.ts#L55)
 
 ControlNet settings forwarded verbatim to the backend.
 
@@ -41,7 +41,7 @@ ControlNet settings forwarded verbatim to the backend.
 
 > `optional` **denoisingStrength**: `number`
 
-Defined in: [packages/agentos/src/media/images/providers/StableDiffusionLocalProvider.ts:61](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/images/providers/StableDiffusionLocalProvider.ts#L61)
+Defined in: [packages/agentos/src/media/images/providers/StableDiffusionLocalProvider.ts:61](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/media/images/providers/StableDiffusionLocalProvider.ts#L61)
 
 Denoising strength for high-res fix or img2img (default 0.7).
 
@@ -51,7 +51,7 @@ Denoising strength for high-res fix or img2img (default 0.7).
 
 > `optional` **height**: `number`
 
-Defined in: [packages/agentos/src/media/images/providers/StableDiffusionLocalProvider.ts:51](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/images/providers/StableDiffusionLocalProvider.ts#L51)
+Defined in: [packages/agentos/src/media/images/providers/StableDiffusionLocalProvider.ts:51](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/media/images/providers/StableDiffusionLocalProvider.ts#L51)
 
 Image height in pixels (default 512).
 
@@ -61,7 +61,7 @@ Image height in pixels (default 512).
 
 > `optional` **hrFix**: `boolean`
 
-Defined in: [packages/agentos/src/media/images/providers/StableDiffusionLocalProvider.ts:59](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/images/providers/StableDiffusionLocalProvider.ts#L59)
+Defined in: [packages/agentos/src/media/images/providers/StableDiffusionLocalProvider.ts:59](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/media/images/providers/StableDiffusionLocalProvider.ts#L59)
 
 Enable high-resolution fix (A1111 only).
 
@@ -71,7 +71,7 @@ Enable high-resolution fix (A1111 only).
 
 > `optional` **loras**: `object`[]
 
-Defined in: [packages/agentos/src/media/images/providers/StableDiffusionLocalProvider.ts:57](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/images/providers/StableDiffusionLocalProvider.ts#L57)
+Defined in: [packages/agentos/src/media/images/providers/StableDiffusionLocalProvider.ts:57](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/media/images/providers/StableDiffusionLocalProvider.ts#L57)
 
 LoRA models to apply.  Injected into the prompt as `<lora:name:weight>`.
 
@@ -89,7 +89,7 @@ LoRA models to apply.  Injected into the prompt as `<lora:name:weight>`.
 
 > `optional` **negativePrompt**: `string`
 
-Defined in: [packages/agentos/src/media/images/providers/StableDiffusionLocalProvider.ts:47](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/images/providers/StableDiffusionLocalProvider.ts#L47)
+Defined in: [packages/agentos/src/media/images/providers/StableDiffusionLocalProvider.ts:47](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/media/images/providers/StableDiffusionLocalProvider.ts#L47)
 
 Negative prompt.
 
@@ -99,7 +99,7 @@ Negative prompt.
 
 > `optional` **sampler**: `string`
 
-Defined in: [packages/agentos/src/media/images/providers/StableDiffusionLocalProvider.ts:45](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/images/providers/StableDiffusionLocalProvider.ts#L45)
+Defined in: [packages/agentos/src/media/images/providers/StableDiffusionLocalProvider.ts:45](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/media/images/providers/StableDiffusionLocalProvider.ts#L45)
 
 Sampler name (e.g. `'Euler a'`, `'DPM++ 2M Karras'`).
 
@@ -109,7 +109,7 @@ Sampler name (e.g. `'Euler a'`, `'DPM++ 2M Karras'`).
 
 > `optional` **seed**: `number`
 
-Defined in: [packages/agentos/src/media/images/providers/StableDiffusionLocalProvider.ts:43](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/images/providers/StableDiffusionLocalProvider.ts#L43)
+Defined in: [packages/agentos/src/media/images/providers/StableDiffusionLocalProvider.ts:43](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/media/images/providers/StableDiffusionLocalProvider.ts#L43)
 
 Random seed (-1 for random).
 
@@ -119,7 +119,7 @@ Random seed (-1 for random).
 
 > `optional` **steps**: `number`
 
-Defined in: [packages/agentos/src/media/images/providers/StableDiffusionLocalProvider.ts:39](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/images/providers/StableDiffusionLocalProvider.ts#L39)
+Defined in: [packages/agentos/src/media/images/providers/StableDiffusionLocalProvider.ts:39](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/media/images/providers/StableDiffusionLocalProvider.ts#L39)
 
 Number of inference steps (default 25).
 
@@ -129,6 +129,6 @@ Number of inference steps (default 25).
 
 > `optional` **width**: `number`
 
-Defined in: [packages/agentos/src/media/images/providers/StableDiffusionLocalProvider.ts:49](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/images/providers/StableDiffusionLocalProvider.ts#L49)
+Defined in: [packages/agentos/src/media/images/providers/StableDiffusionLocalProvider.ts:49](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/media/images/providers/StableDiffusionLocalProvider.ts#L49)
 
 Image width in pixels (default 512).

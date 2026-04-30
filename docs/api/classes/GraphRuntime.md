@@ -1,6 +1,6 @@
 # Class: GraphRuntime
 
-Defined in: [packages/agentos/src/orchestration/runtime/GraphRuntime.ts:152](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/runtime/GraphRuntime.ts#L152)
+Defined in: [packages/agentos/src/orchestration/runtime/GraphRuntime.ts:152](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/runtime/GraphRuntime.ts#L152)
 
 Main execution engine for compiled AgentOS graphs.
 
@@ -21,7 +21,7 @@ const result = await runtime.invoke(compiledGraph, { query: 'hello' });
 
 > **new GraphRuntime**(`config`): `GraphRuntime`
 
-Defined in: [packages/agentos/src/orchestration/runtime/GraphRuntime.ts:156](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/runtime/GraphRuntime.ts#L156)
+Defined in: [packages/agentos/src/orchestration/runtime/GraphRuntime.ts:156](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/runtime/GraphRuntime.ts#L156)
 
 #### Parameters
 
@@ -41,7 +41,7 @@ Injected dependencies shared across all runs handled by this instance.
 
 > **invoke**(`graph`, `input`): `Promise`\<`unknown`\>
 
-Defined in: [packages/agentos/src/orchestration/runtime/GraphRuntime.ts:172](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/runtime/GraphRuntime.ts#L172)
+Defined in: [packages/agentos/src/orchestration/runtime/GraphRuntime.ts:172](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/runtime/GraphRuntime.ts#L172)
 
 Execute the graph to completion and return the final `artifacts` payload.
 
@@ -74,7 +74,7 @@ The `GraphState.artifacts` value after the last node completes.
 
 > **resume**(`graph`, `runOrCheckpointId`): `Promise`\<`unknown`\>
 
-Defined in: [packages/agentos/src/orchestration/runtime/GraphRuntime.ts:745](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/runtime/GraphRuntime.ts#L745)
+Defined in: [packages/agentos/src/orchestration/runtime/GraphRuntime.ts:745](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/runtime/GraphRuntime.ts#L745)
 
 Resume a previously interrupted run from its latest persisted checkpoint.
 
@@ -113,7 +113,7 @@ When no checkpoint exists for the given identifier.
 
 > **stream**(`graph`, `input`): `AsyncGenerator`\<[`GraphEvent`](../type-aliases/GraphEvent.md)\>
 
-Defined in: [packages/agentos/src/orchestration/runtime/GraphRuntime.ts:194](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/runtime/GraphRuntime.ts#L194)
+Defined in: [packages/agentos/src/orchestration/runtime/GraphRuntime.ts:194](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/runtime/GraphRuntime.ts#L194)
 
 Execute the graph while yielding `GraphEvent` values at each significant step.
 
@@ -152,7 +152,7 @@ Runtime events in causal order.
 
 > **streamResume**(`graph`, `runOrCheckpointId`): `AsyncGenerator`\<[`GraphEvent`](../type-aliases/GraphEvent.md)\>
 
-Defined in: [packages/agentos/src/orchestration/runtime/GraphRuntime.ts:765](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/runtime/GraphRuntime.ts#L765)
+Defined in: [packages/agentos/src/orchestration/runtime/GraphRuntime.ts:765](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/runtime/GraphRuntime.ts#L765)
 
 Resume a previously interrupted run and stream runtime events from the restore point.
 

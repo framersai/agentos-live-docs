@@ -1,6 +1,6 @@
 # Interface: StructuredOutputManagerConfig
 
-Defined in: [packages/agentos/src/structured/output/StructuredOutputManager.ts:55](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/structured/output/StructuredOutputManager.ts#L55)
+Defined in: [packages/agentos/src/structured/output/StructuredOutputManager.ts:55](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/structured/output/StructuredOutputManager.ts#L55)
 
 Configuration options for the Structured Output Manager.
 
@@ -10,7 +10,7 @@ Configuration options for the Structured Output Manager.
 
 > `optional` **defaultMaxRetries**: `number`
 
-Defined in: [packages/agentos/src/structured/output/StructuredOutputManager.ts:66](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/structured/output/StructuredOutputManager.ts#L66)
+Defined in: [packages/agentos/src/structured/output/StructuredOutputManager.ts:66](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/structured/output/StructuredOutputManager.ts#L66)
 
 Default max retries
 
@@ -20,7 +20,7 @@ Default max retries
 
 > `optional` **defaultModelId**: `string`
 
-Defined in: [packages/agentos/src/structured/output/StructuredOutputManager.ts:63](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/structured/output/StructuredOutputManager.ts#L63)
+Defined in: [packages/agentos/src/structured/output/StructuredOutputManager.ts:63](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/structured/output/StructuredOutputManager.ts#L63)
 
 Default model ID
 
@@ -30,7 +30,7 @@ Default model ID
 
 > `optional` **defaultProviderId**: `string`
 
-Defined in: [packages/agentos/src/structured/output/StructuredOutputManager.ts:60](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/structured/output/StructuredOutputManager.ts#L60)
+Defined in: [packages/agentos/src/structured/output/StructuredOutputManager.ts:60](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/structured/output/StructuredOutputManager.ts#L60)
 
 Default provider ID
 
@@ -40,7 +40,7 @@ Default provider ID
 
 > `optional` **defaultTimeoutMs**: `number`
 
-Defined in: [packages/agentos/src/structured/output/StructuredOutputManager.ts:69](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/structured/output/StructuredOutputManager.ts#L69)
+Defined in: [packages/agentos/src/structured/output/StructuredOutputManager.ts:69](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/structured/output/StructuredOutputManager.ts#L69)
 
 Default timeout in milliseconds
 
@@ -50,7 +50,7 @@ Default timeout in milliseconds
 
 > **llmProviderManager**: [`AIModelProviderManager`](../classes/AIModelProviderManager.md)
 
-Defined in: [packages/agentos/src/structured/output/StructuredOutputManager.ts:57](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/structured/output/StructuredOutputManager.ts#L57)
+Defined in: [packages/agentos/src/structured/output/StructuredOutputManager.ts:57](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/structured/output/StructuredOutputManager.ts#L57)
 
 LLM provider manager for making requests
 
@@ -60,6 +60,6 @@ LLM provider manager for making requests
 
 > `optional` **logger**: [`ILogger`](ILogger.md)
 
-Defined in: [packages/agentos/src/structured/output/StructuredOutputManager.ts:72](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/structured/output/StructuredOutputManager.ts#L72)
+Defined in: [packages/agentos/src/structured/output/StructuredOutputManager.ts:72](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/structured/output/StructuredOutputManager.ts#L72)
 
 Logger instance

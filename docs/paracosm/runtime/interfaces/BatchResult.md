@@ -1,6 +1,6 @@
 # Interface: BatchResult
 
-Defined in: [runtime/batch.ts:20](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/runtime/batch.ts#L20)
+Defined in: [apps/paracosm/src/runtime/batch.ts:28](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/batch.ts#L28)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [runtime/batch.ts:20](https://github.com/framersai/paracosm/blob/446
 
 > **duration**: `number`
 
-Defined in: [runtime/batch.ts:28](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/runtime/batch.ts#L28)
+Defined in: [apps/paracosm/src/runtime/batch.ts:36](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/batch.ts#L36)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [runtime/batch.ts:28](https://github.com/framersai/paracosm/blob/446
 
 > **fingerprint**: `Record`\<`string`, `string`\>
 
-Defined in: [runtime/batch.ts:27](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/runtime/batch.ts#L27)
+Defined in: [apps/paracosm/src/runtime/batch.ts:35](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/batch.ts#L35)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: [runtime/batch.ts:27](https://github.com/framersai/paracosm/blob/446
 
 > **leader**: `string`
 
-Defined in: [runtime/batch.ts:23](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/runtime/batch.ts#L23)
+Defined in: [apps/paracosm/src/runtime/batch.ts:31](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/batch.ts#L31)
 
 ***
 
@@ -32,7 +32,7 @@ Defined in: [runtime/batch.ts:23](https://github.com/framersai/paracosm/blob/446
 
 > **output**: `any`
 
-Defined in: [runtime/batch.ts:26](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/runtime/batch.ts#L26)
+Defined in: [apps/paracosm/src/runtime/batch.ts:34](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/batch.ts#L34)
 
 ***
 
@@ -40,7 +40,7 @@ Defined in: [runtime/batch.ts:26](https://github.com/framersai/paracosm/blob/446
 
 > **scenarioId**: `string`
 
-Defined in: [runtime/batch.ts:21](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/runtime/batch.ts#L21)
+Defined in: [apps/paracosm/src/runtime/batch.ts:29](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/batch.ts#L29)
 
 ***
 
@@ -48,7 +48,7 @@ Defined in: [runtime/batch.ts:21](https://github.com/framersai/paracosm/blob/446
 
 > **scenarioVersion**: `string`
 
-Defined in: [runtime/batch.ts:22](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/runtime/batch.ts#L22)
+Defined in: [apps/paracosm/src/runtime/batch.ts:30](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/batch.ts#L30)
 
 ***
 
@@ -56,7 +56,7 @@ Defined in: [runtime/batch.ts:22](https://github.com/framersai/paracosm/blob/446
 
 > **seed**: `number`
 
-Defined in: [runtime/batch.ts:24](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/runtime/batch.ts#L24)
+Defined in: [apps/paracosm/src/runtime/batch.ts:32](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/batch.ts#L32)
 
 ***
 
@@ -64,4 +64,4 @@ Defined in: [runtime/batch.ts:24](https://github.com/framersai/paracosm/blob/446
 
 > **turns**: `number`
 
-Defined in: [runtime/batch.ts:25](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/runtime/batch.ts#L25)
+Defined in: [apps/paracosm/src/runtime/batch.ts:33](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/batch.ts#L33)

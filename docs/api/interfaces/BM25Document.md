@@ -1,6 +1,6 @@
 # Interface: BM25Document
 
-Defined in: [packages/agentos/src/rag/search/BM25Index.ts:38](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/search/BM25Index.ts#L38)
+Defined in: [packages/agentos/src/rag/search/BM25Index.ts:38](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/search/BM25Index.ts#L38)
 
 Internal document representation stored in the BM25 index.
 
@@ -14,7 +14,7 @@ BM25Document
 
 > **id**: `string`
 
-Defined in: [packages/agentos/src/rag/search/BM25Index.ts:40](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/search/BM25Index.ts#L40)
+Defined in: [packages/agentos/src/rag/search/BM25Index.ts:40](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/search/BM25Index.ts#L40)
 
 Unique document identifier.
 
@@ -24,7 +24,7 @@ Unique document identifier.
 
 > **length**: `number`
 
-Defined in: [packages/agentos/src/rag/search/BM25Index.ts:42](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/search/BM25Index.ts#L42)
+Defined in: [packages/agentos/src/rag/search/BM25Index.ts:42](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/search/BM25Index.ts#L42)
 
 Number of tokens in the document after tokenization.
 
@@ -34,6 +34,6 @@ Number of tokens in the document after tokenization.
 
 > `optional` **metadata**: `Record`\<`string`, `unknown`\>
 
-Defined in: [packages/agentos/src/rag/search/BM25Index.ts:44](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/search/BM25Index.ts#L44)
+Defined in: [packages/agentos/src/rag/search/BM25Index.ts:44](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/search/BM25Index.ts#L44)
 
 Optional metadata attached to the document.

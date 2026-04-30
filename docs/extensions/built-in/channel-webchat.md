@@ -3,6 +3,25 @@ title: "Channel: WebChat"
 sidebar_position: 16
 ---
 
-# Channel: WebChat
+Lightweight web chat channel adapter for AgentOS.
 
-Documentation coming soon. See the [extension source](https://github.com/framersai/agentos-extensions/tree/master/registry/curated/channels/webchat) for usage details.
+## What It Provides
+
+- `webchatChannelSendMessage`
+- `webchatChannel`
+
+## Runtime Status
+
+- This is a curated channel pack.
+- Channels stay opt-in because they can connect to host transport layers.
+- Enable it through `createCuratedManifest({ channels: ['webchat'] })` or a custom extension manifest.
+- The adapter delegates transport to the host gateway rather than shipping an external SDK.
+
+## Required Secrets
+
+- None
+
+## Source of Truth
+
+- `manifest.json` defines the exported tool and messaging-channel descriptor.
+- `src/` contains the adapter implementation.

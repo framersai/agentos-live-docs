@@ -1,6 +1,6 @@
 # Class: ObsidianImporter
 
-Defined in: [packages/agentos/src/memory/io/ObsidianImporter.ts:80](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/io/ObsidianImporter.ts#L80)
+Defined in: [packages/agentos/src/memory/io/ObsidianImporter.ts:80](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/io/ObsidianImporter.ts#L80)
 
 Imports an Obsidian vault (directory of Markdown files) into a `SqliteBrain`.
 
@@ -20,7 +20,7 @@ const result = await importer.import('/path/to/obsidian-vault');
 
 > **new ObsidianImporter**(`brain`): `ObsidianImporter`
 
-Defined in: [packages/agentos/src/memory/io/ObsidianImporter.ts:84](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/io/ObsidianImporter.ts#L84)
+Defined in: [packages/agentos/src/memory/io/ObsidianImporter.ts:84](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/io/ObsidianImporter.ts#L84)
 
 #### Parameters
 
@@ -44,7 +44,7 @@ The target `SqliteBrain` to import into.
 
 > `protected` `readonly` **brain**: [`SqliteBrain`](SqliteBrain.md)
 
-Defined in: [packages/agentos/src/memory/io/MarkdownImporter.ts:57](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/io/MarkdownImporter.ts#L57)
+Defined in: [packages/agentos/src/memory/io/MarkdownImporter.ts:57](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/io/MarkdownImporter.ts#L57)
 
 The target `SqliteBrain` to import into.
 
@@ -58,7 +58,7 @@ The target `SqliteBrain` to import into.
 
 > **import**(`sourceDir`, `options?`): `Promise`\<[`ImportResult`](../interfaces/ImportResult.md)\>
 
-Defined in: [packages/agentos/src/memory/io/MarkdownImporter.ts:72](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/io/MarkdownImporter.ts#L72)
+Defined in: [packages/agentos/src/memory/io/MarkdownImporter.ts:72](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/io/MarkdownImporter.ts#L72)
 
 Recursively walk `sourceDir`, parse every `.md` file, and insert traces.
 
@@ -93,7 +93,7 @@ Directory to recursively scan for `.md` files.
 
 > `protected` **postProcess**(`_filePath`, `_frontmatter`, `body`, `result`, `traceId`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/memory/io/ObsidianImporter.ts:105](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/io/ObsidianImporter.ts#L105)
+Defined in: [packages/agentos/src/memory/io/ObsidianImporter.ts:105](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/io/ObsidianImporter.ts#L105)
 
 Post-process a successfully imported Markdown file:
 

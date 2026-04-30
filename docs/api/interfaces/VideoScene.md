@@ -1,6 +1,6 @@
 # Interface: VideoScene
 
-Defined in: [packages/agentos/src/media/video/types.ts:219](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/video/types.ts#L219)
+Defined in: [packages/agentos/src/media/video/types.ts:219](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/media/video/types.ts#L219)
 
 A single scene / segment detected during video analysis.
 
@@ -10,7 +10,7 @@ A single scene / segment detected during video analysis.
 
 > **description**: `string`
 
-Defined in: [packages/agentos/src/media/video/types.ts:225](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/video/types.ts#L225)
+Defined in: [packages/agentos/src/media/video/types.ts:225](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/media/video/types.ts#L225)
 
 Human-readable description of what happens in this scene.
 
@@ -20,7 +20,7 @@ Human-readable description of what happens in this scene.
 
 > **endSec**: `number`
 
-Defined in: [packages/agentos/src/media/video/types.ts:223](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/video/types.ts#L223)
+Defined in: [packages/agentos/src/media/video/types.ts:223](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/media/video/types.ts#L223)
 
 End time of the scene in seconds.
 
@@ -30,6 +30,6 @@ End time of the scene in seconds.
 
 > **startSec**: `number`
 
-Defined in: [packages/agentos/src/media/video/types.ts:221](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/video/types.ts#L221)
+Defined in: [packages/agentos/src/media/video/types.ts:221](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/media/video/types.ts#L221)
 
 Start time of the scene in seconds.

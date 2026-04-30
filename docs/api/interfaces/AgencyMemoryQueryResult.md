@@ -1,6 +1,6 @@
 # Interface: AgencyMemoryQueryResult
 
-Defined in: [packages/agentos/src/agents/agency/AgencyMemoryManager.ts:90](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/agents/agency/AgencyMemoryManager.ts#L90)
+Defined in: [packages/agentos/src/agents/agency/AgencyMemoryManager.ts:90](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/agents/agency/AgencyMemoryManager.ts#L90)
 
 Result of querying agency shared memory.
 
@@ -10,7 +10,7 @@ Result of querying agency shared memory.
 
 > **chunks**: [`AgencyMemoryChunk`](AgencyMemoryChunk.md)[]
 
-Defined in: [packages/agentos/src/agents/agency/AgencyMemoryManager.ts:94](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/agents/agency/AgencyMemoryManager.ts#L94)
+Defined in: [packages/agentos/src/agents/agency/AgencyMemoryManager.ts:94](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/agents/agency/AgencyMemoryManager.ts#L94)
 
 Retrieved chunks
 
@@ -20,7 +20,7 @@ Retrieved chunks
 
 > `optional` **error**: `string`
 
-Defined in: [packages/agentos/src/agents/agency/AgencyMemoryManager.ts:100](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/agents/agency/AgencyMemoryManager.ts#L100)
+Defined in: [packages/agentos/src/agents/agency/AgencyMemoryManager.ts:100](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/agents/agency/AgencyMemoryManager.ts#L100)
 
 Error message if failed
 
@@ -30,7 +30,7 @@ Error message if failed
 
 > **processingTimeMs**: `number`
 
-Defined in: [packages/agentos/src/agents/agency/AgencyMemoryManager.ts:98](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/agents/agency/AgencyMemoryManager.ts#L98)
+Defined in: [packages/agentos/src/agents/agency/AgencyMemoryManager.ts:98](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/agents/agency/AgencyMemoryManager.ts#L98)
 
 Query processing time in ms
 
@@ -40,7 +40,7 @@ Query processing time in ms
 
 > **success**: `boolean`
 
-Defined in: [packages/agentos/src/agents/agency/AgencyMemoryManager.ts:92](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/agents/agency/AgencyMemoryManager.ts#L92)
+Defined in: [packages/agentos/src/agents/agency/AgencyMemoryManager.ts:92](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/agents/agency/AgencyMemoryManager.ts#L92)
 
 Whether query succeeded
 
@@ -50,6 +50,6 @@ Whether query succeeded
 
 > **totalResults**: `number`
 
-Defined in: [packages/agentos/src/agents/agency/AgencyMemoryManager.ts:96](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/agents/agency/AgencyMemoryManager.ts#L96)
+Defined in: [packages/agentos/src/agents/agency/AgencyMemoryManager.ts:96](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/agents/agency/AgencyMemoryManager.ts#L96)
 
 Total matching results

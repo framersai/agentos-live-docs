@@ -2,4 +2,4 @@
 
 > **ISttProvider** = [`SpeechToTextProvider`](../interfaces/SpeechToTextProvider.md)
 
-Defined in: [packages/agentos/src/speech/types.ts:368](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/speech/types.ts#L368)
+Defined in: [packages/agentos/src/speech/types.ts:368](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/speech/types.ts#L368)

@@ -1,6 +1,6 @@
 # Interface: EmergentCapabilityEngineDeps
 
-Defined in: [packages/agentos/src/emergent/EmergentCapabilityEngine.ts:115](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/emergent/EmergentCapabilityEngine.ts#L115)
+Defined in: [packages/agentos/src/emergent/EmergentCapabilityEngine.ts:115](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/emergent/EmergentCapabilityEngine.ts#L115)
 
 Dependencies injected into the [EmergentCapabilityEngine](../classes/EmergentCapabilityEngine.md) constructor.
 
@@ -13,7 +13,7 @@ with mocks — no real LLM calls, no real sandbox execution.
 
 > **composableBuilder**: [`ComposableToolBuilder`](../classes/ComposableToolBuilder.md)
 
-Defined in: [packages/agentos/src/emergent/EmergentCapabilityEngine.ts:120](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/emergent/EmergentCapabilityEngine.ts#L120)
+Defined in: [packages/agentos/src/emergent/EmergentCapabilityEngine.ts:120](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/emergent/EmergentCapabilityEngine.ts#L120)
 
 Builder for composable (tool-chaining) implementations.
 
@@ -23,7 +23,7 @@ Builder for composable (tool-chaining) implementations.
 
 > **config**: [`EmergentConfig`](EmergentConfig.md)
 
-Defined in: [packages/agentos/src/emergent/EmergentCapabilityEngine.ts:117](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/emergent/EmergentCapabilityEngine.ts#L117)
+Defined in: [packages/agentos/src/emergent/EmergentCapabilityEngine.ts:117](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/emergent/EmergentCapabilityEngine.ts#L117)
 
 Resolved emergent capability configuration.
 
@@ -33,7 +33,7 @@ Resolved emergent capability configuration.
 
 > **judge**: [`EmergentJudge`](../classes/EmergentJudge.md)
 
-Defined in: [packages/agentos/src/emergent/EmergentCapabilityEngine.ts:126](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/emergent/EmergentCapabilityEngine.ts#L126)
+Defined in: [packages/agentos/src/emergent/EmergentCapabilityEngine.ts:126](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/emergent/EmergentCapabilityEngine.ts#L126)
 
 LLM-as-judge evaluator for creation and promotion reviews.
 
@@ -43,7 +43,7 @@ LLM-as-judge evaluator for creation and promotion reviews.
 
 > `optional` **onToolForged**: (`tool`, `executable`) => `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/emergent/EmergentCapabilityEngine.ts:132](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/emergent/EmergentCapabilityEngine.ts#L132)
+Defined in: [packages/agentos/src/emergent/EmergentCapabilityEngine.ts:132](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/emergent/EmergentCapabilityEngine.ts#L132)
 
 Optional callback used to activate a newly forged tool immediately.
 
@@ -67,7 +67,7 @@ Optional callback used to activate a newly forged tool immediately.
 
 > `optional` **onToolPromoted**: (`tool`) => `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/emergent/EmergentCapabilityEngine.ts:135](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/emergent/EmergentCapabilityEngine.ts#L135)
+Defined in: [packages/agentos/src/emergent/EmergentCapabilityEngine.ts:135](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/emergent/EmergentCapabilityEngine.ts#L135)
 
 Optional callback used when a tool is promoted to a persisted tier.
 
@@ -87,7 +87,7 @@ Optional callback used when a tool is promoted to a persisted tier.
 
 > `optional` **onToolRemoved**: (`tool`) => `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/emergent/EmergentCapabilityEngine.ts:138](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/emergent/EmergentCapabilityEngine.ts#L138)
+Defined in: [packages/agentos/src/emergent/EmergentCapabilityEngine.ts:138](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/emergent/EmergentCapabilityEngine.ts#L138)
 
 Optional callback used when a tool is removed from the live runtime.
 
@@ -107,7 +107,7 @@ Optional callback used when a tool is removed from the live runtime.
 
 > **registry**: [`EmergentToolRegistry`](../classes/EmergentToolRegistry.md)
 
-Defined in: [packages/agentos/src/emergent/EmergentCapabilityEngine.ts:129](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/emergent/EmergentCapabilityEngine.ts#L129)
+Defined in: [packages/agentos/src/emergent/EmergentCapabilityEngine.ts:129](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/emergent/EmergentCapabilityEngine.ts#L129)
 
 Tiered registry for storing and querying emergent tools.
 
@@ -117,6 +117,6 @@ Tiered registry for storing and querying emergent tools.
 
 > **sandboxForge**: [`SandboxedToolForge`](../classes/SandboxedToolForge.md)
 
-Defined in: [packages/agentos/src/emergent/EmergentCapabilityEngine.ts:123](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/emergent/EmergentCapabilityEngine.ts#L123)
+Defined in: [packages/agentos/src/emergent/EmergentCapabilityEngine.ts:123](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/emergent/EmergentCapabilityEngine.ts#L123)
 
 Sandboxed code executor for arbitrary-code implementations.

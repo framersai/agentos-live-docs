@@ -1,6 +1,6 @@
 # Interface: ProviderConfigEntry
 
-Defined in: [packages/agentos/src/core/llm/providers/AIModelProviderManager.ts:39](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/llm/providers/AIModelProviderManager.ts#L39)
+Defined in: [packages/agentos/src/core/llm/providers/AIModelProviderManager.ts:39](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/core/llm/providers/AIModelProviderManager.ts#L39)
 
 Configuration for a single AI model provider entry within the manager.
 
@@ -14,7 +14,7 @@ ProviderConfigEntry
 
 > **config**: `Partial`\<`Record`\<`string`, `any`\> \| `OpenAIProviderConfig` \| `OpenRouterProviderConfig` \| `OllamaProviderConfig` \| `AnthropicProviderConfig` \| `GroqProviderConfig` \| `TogetherProviderConfig` \| `MistralProviderConfig` \| `XAIProviderConfig` \| `GeminiProviderConfig` \| `ClaudeCodeProviderConfig` \| `GeminiCLIProviderConfig`\>
 
-Defined in: [packages/agentos/src/core/llm/providers/AIModelProviderManager.ts:42](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/llm/providers/AIModelProviderManager.ts#L42)
+Defined in: [packages/agentos/src/core/llm/providers/AIModelProviderManager.ts:42](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/core/llm/providers/AIModelProviderManager.ts#L42)
 
 ***
 
@@ -22,7 +22,7 @@ Defined in: [packages/agentos/src/core/llm/providers/AIModelProviderManager.ts:4
 
 > **enabled**: `boolean`
 
-Defined in: [packages/agentos/src/core/llm/providers/AIModelProviderManager.ts:41](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/llm/providers/AIModelProviderManager.ts#L41)
+Defined in: [packages/agentos/src/core/llm/providers/AIModelProviderManager.ts:41](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/core/llm/providers/AIModelProviderManager.ts#L41)
 
 ***
 
@@ -30,7 +30,7 @@ Defined in: [packages/agentos/src/core/llm/providers/AIModelProviderManager.ts:4
 
 > `optional` **isDefault**: `boolean`
 
-Defined in: [packages/agentos/src/core/llm/providers/AIModelProviderManager.ts:43](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/llm/providers/AIModelProviderManager.ts#L43)
+Defined in: [packages/agentos/src/core/llm/providers/AIModelProviderManager.ts:43](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/core/llm/providers/AIModelProviderManager.ts#L43)
 
 ***
 
@@ -38,4 +38,4 @@ Defined in: [packages/agentos/src/core/llm/providers/AIModelProviderManager.ts:4
 
 > **providerId**: `string`
 
-Defined in: [packages/agentos/src/core/llm/providers/AIModelProviderManager.ts:40](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/llm/providers/AIModelProviderManager.ts#L40)
+Defined in: [packages/agentos/src/core/llm/providers/AIModelProviderManager.ts:40](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/core/llm/providers/AIModelProviderManager.ts#L40)

@@ -1,6 +1,6 @@
 # Class: ParallelGuardrailDispatcher
 
-Defined in: [packages/agentos/src/safety/guardrails/ParallelGuardrailDispatcher.ts:166](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/safety/guardrails/ParallelGuardrailDispatcher.ts#L166)
+Defined in: [packages/agentos/src/safety/guardrails/ParallelGuardrailDispatcher.ts:166](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/safety/guardrails/ParallelGuardrailDispatcher.ts#L166)
 
 Stateless two-phase parallel guardrail dispatcher.
 
@@ -23,7 +23,7 @@ as a namespace to keep the two public entry points grouped.
 
 > `static` **evaluateInput**(`services`, `input`, `context`): `Promise`\<[`GuardrailInputOutcome`](../interfaces/GuardrailInputOutcome.md)\>
 
-Defined in: [packages/agentos/src/safety/guardrails/ParallelGuardrailDispatcher.ts:192](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/safety/guardrails/ParallelGuardrailDispatcher.ts#L192)
+Defined in: [packages/agentos/src/safety/guardrails/ParallelGuardrailDispatcher.ts:192](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/safety/guardrails/ParallelGuardrailDispatcher.ts#L192)
 
 Evaluate user input through registered guardrails using two-phase execution.
 
@@ -72,7 +72,7 @@ Outcome with sanitized input and all evaluations in registration order
 
 > `static` **wrapOutput**(`services`, `context`, `stream`, `options`): `AsyncGenerator`\<[`AgentOSResponse`](../type-aliases/AgentOSResponse.md), `void`, `undefined`\>
 
-Defined in: [packages/agentos/src/safety/guardrails/ParallelGuardrailDispatcher.ts:358](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/safety/guardrails/ParallelGuardrailDispatcher.ts#L358)
+Defined in: [packages/agentos/src/safety/guardrails/ParallelGuardrailDispatcher.ts:358](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/safety/guardrails/ParallelGuardrailDispatcher.ts#L358)
 
 Wrap a response stream with two-phase guardrail filtering.
 

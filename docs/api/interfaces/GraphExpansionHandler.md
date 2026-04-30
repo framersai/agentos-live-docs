@@ -1,6 +1,6 @@
 # Interface: GraphExpansionHandler
 
-Defined in: [packages/agentos/src/orchestration/runtime/GraphRuntime.ts:97](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/runtime/GraphRuntime.ts#L97)
+Defined in: [packages/agentos/src/orchestration/runtime/GraphRuntime.ts:97](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/runtime/GraphRuntime.ts#L97)
 
 ## Methods
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/orchestration/runtime/GraphRuntime.ts:97](http
 
 > **handle**(`context`): `Promise`\<[`GraphExpansionResult`](GraphExpansionResult.md) \| `null`\>
 
-Defined in: [packages/agentos/src/orchestration/runtime/GraphRuntime.ts:98](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/runtime/GraphRuntime.ts#L98)
+Defined in: [packages/agentos/src/orchestration/runtime/GraphRuntime.ts:98](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/runtime/GraphRuntime.ts#L98)
 
 #### Parameters
 

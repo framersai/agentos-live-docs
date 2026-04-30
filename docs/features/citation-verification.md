@@ -100,23 +100,26 @@ const result = await verifier.verify(
 
 ## When Verification Runs
 
-### Automatic (via QueryRouter)
+### QueryRouter Integration
 
-```json title="agent.config.json"
-{
-  "queryRouter": {
-    "verifyCitations": true
-  }
-}
-```
+The default `QueryRouter` runtime can now trigger `CitationVerifier`
+automatically when `verifyCitations: true` is set.
 
-| Research Depth | Behavior |
-|---|---|
-| `deep` | Always verifies automatically |
-| `moderate` | Only if `verifyCitations: true` |
-| `quick` / `none` | Never automatic |
+Verification runs only when both of these conditions are true:
 
-When enabled, `QueryResult.grounding` contains the full `VerifiedResponse`.
+- `route()` retrieved source chunks to verify against
+- the router has an active embedding path available for similarity scoring
+
+When verification runs successfully, the result is attached to
+`QueryResult.grounding`. If either prerequisite is missing, QueryRouter skips
+verification gracefully.
+
+Outside QueryRouter, you can still use the verifier directly in host-managed
+flows:
+
+- call `CitationVerifier` directly after generation
+- call the `verify_citations` tool from an agent workflow
+- wire citation verification in your own host/runtime around deep research or synthesis
 
 ### On-Demand (via Tool)
 
@@ -176,5 +179,5 @@ For higher quality extraction, install `@framers/agentos-ext-grounding-guard` wh
 
 - [Grounding Guard](/extensions/built-in/grounding-guard) — real-time NLI streaming verification (guardrail)
 - [Reranker Chain](/features/reranker-chain) — multi-stage result ranking before citation
-- [Deep Research](/features/deep-research) — automatic citation verification on synthesis
+- [Deep Research](/features/deep-research) — common place to add host-managed citation verification on synthesis
 - [Content Policy Rewriter](/extensions/built-in/content-policy-rewriter) — content filtering guardrail

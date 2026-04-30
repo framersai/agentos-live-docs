@@ -1,6 +1,6 @@
 # Class: PostgresSetup
 
-Defined in: [packages/agentos/src/rag/setup/PostgresSetup.ts:25](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/setup/PostgresSetup.ts#L25)
+Defined in: [packages/agentos/src/rag/setup/PostgresSetup.ts:25](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/setup/PostgresSetup.ts#L25)
 
 ## Constructors
 
@@ -18,7 +18,7 @@ Defined in: [packages/agentos/src/rag/setup/PostgresSetup.ts:25](https://github.
 
 > `static` **detect**(`config?`): `Promise`\<[`BackendStatus`](../interfaces/BackendStatus.md)\>
 
-Defined in: [packages/agentos/src/rag/setup/PostgresSetup.ts:32](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/setup/PostgresSetup.ts#L32)
+Defined in: [packages/agentos/src/rag/setup/PostgresSetup.ts:32](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/setup/PostgresSetup.ts#L32)
 
 Detect and optionally provision a Postgres + pgvector instance.
 

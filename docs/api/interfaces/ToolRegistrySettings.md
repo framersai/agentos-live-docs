@@ -1,6 +1,6 @@
 # Interface: ToolRegistrySettings
 
-Defined in: [packages/agentos/src/core/config/ToolOrchestratorConfig.ts:28](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/config/ToolOrchestratorConfig.ts#L28)
+Defined in: [packages/agentos/src/core/config/ToolOrchestratorConfig.ts:28](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/core/config/ToolOrchestratorConfig.ts#L28)
 
 ## Interface
 
@@ -18,7 +18,7 @@ and conceptual aspects of persistence.
 
 > `optional` **allowDynamicRegistration**: `boolean`
 
-Defined in: [packages/agentos/src/core/config/ToolOrchestratorConfig.ts:29](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/config/ToolOrchestratorConfig.ts#L29)
+Defined in: [packages/agentos/src/core/config/ToolOrchestratorConfig.ts:29](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/core/config/ToolOrchestratorConfig.ts#L29)
 
 If true (default), tools can be registered or
 unregistered with the orchestrator after its initial initialization. If false, the set of
@@ -30,7 +30,7 @@ available tools is fixed once the orchestrator is initialized.
 
 > `optional` **persistencePath**: `string`
 
-Defined in: [packages/agentos/src/core/config/ToolOrchestratorConfig.ts:31](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/config/ToolOrchestratorConfig.ts#L31)
+Defined in: [packages/agentos/src/core/config/ToolOrchestratorConfig.ts:31](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/core/config/ToolOrchestratorConfig.ts#L31)
 
 Optional. If `persistRegistry` is true, this string could specify
 the path, URI, or identifier for the persisted storage location or configuration. (Conceptual).
@@ -41,7 +41,7 @@ the path, URI, or identifier for the persisted storage location or configuration
 
 > `optional` **persistRegistry**: `boolean`
 
-Defined in: [packages/agentos/src/core/config/ToolOrchestratorConfig.ts:30](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/config/ToolOrchestratorConfig.ts#L30)
+Defined in: [packages/agentos/src/core/config/ToolOrchestratorConfig.ts:30](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/core/config/ToolOrchestratorConfig.ts#L30)
 
 If true (default: false), this conceptually indicates that the tool
 registry's state (e.g., list of dynamically registered tools, their versions) should be persisted

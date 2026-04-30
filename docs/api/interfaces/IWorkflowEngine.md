@@ -1,6 +1,6 @@
 # Interface: IWorkflowEngine
 
-Defined in: [packages/agentos/src/orchestration/workflows/IWorkflowEngine.ts:38](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/workflows/IWorkflowEngine.ts#L38)
+Defined in: [packages/agentos/src/orchestration/workflows/IWorkflowEngine.ts:38](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/workflows/IWorkflowEngine.ts#L38)
 
 ## Methods
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/orchestration/workflows/IWorkflowEngine.ts:38]
 
 > **applyTaskUpdates**(`workflowId`, `updates`): `Promise`\<[`WorkflowInstance`](WorkflowInstance.md) \| `null`\>
 
-Defined in: [packages/agentos/src/orchestration/workflows/IWorkflowEngine.ts:53](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/workflows/IWorkflowEngine.ts#L53)
+Defined in: [packages/agentos/src/orchestration/workflows/IWorkflowEngine.ts:53](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/workflows/IWorkflowEngine.ts#L53)
 
 #### Parameters
 
@@ -30,7 +30,7 @@ Defined in: [packages/agentos/src/orchestration/workflows/IWorkflowEngine.ts:53]
 
 > **getWorkflow**(`workflowId`): `Promise`\<[`WorkflowInstance`](WorkflowInstance.md) \| `null`\>
 
-Defined in: [packages/agentos/src/orchestration/workflows/IWorkflowEngine.ts:49](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/workflows/IWorkflowEngine.ts#L49)
+Defined in: [packages/agentos/src/orchestration/workflows/IWorkflowEngine.ts:49](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/workflows/IWorkflowEngine.ts#L49)
 
 #### Parameters
 
@@ -48,7 +48,7 @@ Defined in: [packages/agentos/src/orchestration/workflows/IWorkflowEngine.ts:49]
 
 > **getWorkflowProgress**(`workflowId`, `sinceTimestamp?`): `Promise`\<[`WorkflowProgressUpdate`](WorkflowProgressUpdate.md) \| `null`\>
 
-Defined in: [packages/agentos/src/orchestration/workflows/IWorkflowEngine.ts:60](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/workflows/IWorkflowEngine.ts#L60)
+Defined in: [packages/agentos/src/orchestration/workflows/IWorkflowEngine.ts:60](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/workflows/IWorkflowEngine.ts#L60)
 
 #### Parameters
 
@@ -70,7 +70,7 @@ Defined in: [packages/agentos/src/orchestration/workflows/IWorkflowEngine.ts:60]
 
 > **initialize**(`config`, `deps`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/orchestration/workflows/IWorkflowEngine.ts:39](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/workflows/IWorkflowEngine.ts#L39)
+Defined in: [packages/agentos/src/orchestration/workflows/IWorkflowEngine.ts:39](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/workflows/IWorkflowEngine.ts#L39)
 
 #### Parameters
 
@@ -92,7 +92,7 @@ Defined in: [packages/agentos/src/orchestration/workflows/IWorkflowEngine.ts:39]
 
 > **listWorkflowDefinitions**(): [`WorkflowDefinition`](WorkflowDefinition.md)[]
 
-Defined in: [packages/agentos/src/orchestration/workflows/IWorkflowEngine.ts:45](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/workflows/IWorkflowEngine.ts#L45)
+Defined in: [packages/agentos/src/orchestration/workflows/IWorkflowEngine.ts:45](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/workflows/IWorkflowEngine.ts#L45)
 
 #### Returns
 
@@ -104,7 +104,7 @@ Defined in: [packages/agentos/src/orchestration/workflows/IWorkflowEngine.ts:45]
 
 > **listWorkflows**(`options?`): `Promise`\<[`WorkflowInstance`](WorkflowInstance.md)[]\>
 
-Defined in: [packages/agentos/src/orchestration/workflows/IWorkflowEngine.ts:58](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/workflows/IWorkflowEngine.ts#L58)
+Defined in: [packages/agentos/src/orchestration/workflows/IWorkflowEngine.ts:58](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/workflows/IWorkflowEngine.ts#L58)
 
 #### Parameters
 
@@ -122,7 +122,7 @@ Defined in: [packages/agentos/src/orchestration/workflows/IWorkflowEngine.ts:58]
 
 > **offEvent**(`listener`): `void`
 
-Defined in: [packages/agentos/src/orchestration/workflows/IWorkflowEngine.ts:64](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/workflows/IWorkflowEngine.ts#L64)
+Defined in: [packages/agentos/src/orchestration/workflows/IWorkflowEngine.ts:64](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/workflows/IWorkflowEngine.ts#L64)
 
 #### Parameters
 
@@ -140,7 +140,7 @@ Defined in: [packages/agentos/src/orchestration/workflows/IWorkflowEngine.ts:64]
 
 > **onEvent**(`listener`): `void`
 
-Defined in: [packages/agentos/src/orchestration/workflows/IWorkflowEngine.ts:62](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/workflows/IWorkflowEngine.ts#L62)
+Defined in: [packages/agentos/src/orchestration/workflows/IWorkflowEngine.ts:62](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/workflows/IWorkflowEngine.ts#L62)
 
 #### Parameters
 
@@ -158,7 +158,7 @@ Defined in: [packages/agentos/src/orchestration/workflows/IWorkflowEngine.ts:62]
 
 > **recordEvents**(`events`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/orchestration/workflows/IWorkflowEngine.ts:55](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/workflows/IWorkflowEngine.ts#L55)
+Defined in: [packages/agentos/src/orchestration/workflows/IWorkflowEngine.ts:55](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/workflows/IWorkflowEngine.ts#L55)
 
 #### Parameters
 
@@ -176,7 +176,7 @@ Defined in: [packages/agentos/src/orchestration/workflows/IWorkflowEngine.ts:55]
 
 > **registerWorkflowDescriptor**(`descriptor`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/orchestration/workflows/IWorkflowEngine.ts:41](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/workflows/IWorkflowEngine.ts#L41)
+Defined in: [packages/agentos/src/orchestration/workflows/IWorkflowEngine.ts:41](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/workflows/IWorkflowEngine.ts#L41)
 
 #### Parameters
 
@@ -194,7 +194,7 @@ Defined in: [packages/agentos/src/orchestration/workflows/IWorkflowEngine.ts:41]
 
 > **startWorkflow**(`options`): `Promise`\<[`WorkflowInstance`](WorkflowInstance.md)\>
 
-Defined in: [packages/agentos/src/orchestration/workflows/IWorkflowEngine.ts:47](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/workflows/IWorkflowEngine.ts#L47)
+Defined in: [packages/agentos/src/orchestration/workflows/IWorkflowEngine.ts:47](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/workflows/IWorkflowEngine.ts#L47)
 
 #### Parameters
 
@@ -212,7 +212,7 @@ Defined in: [packages/agentos/src/orchestration/workflows/IWorkflowEngine.ts:47]
 
 > **unregisterWorkflowDescriptor**(`workflowDefinitionId`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/orchestration/workflows/IWorkflowEngine.ts:43](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/workflows/IWorkflowEngine.ts#L43)
+Defined in: [packages/agentos/src/orchestration/workflows/IWorkflowEngine.ts:43](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/workflows/IWorkflowEngine.ts#L43)
 
 #### Parameters
 
@@ -230,7 +230,7 @@ Defined in: [packages/agentos/src/orchestration/workflows/IWorkflowEngine.ts:43]
 
 > **updateWorkflowAgencyState**(`workflowId`, `agencyState`): `Promise`\<[`WorkflowInstance`](WorkflowInstance.md) \| `null`\>
 
-Defined in: [packages/agentos/src/orchestration/workflows/IWorkflowEngine.ts:56](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/workflows/IWorkflowEngine.ts#L56)
+Defined in: [packages/agentos/src/orchestration/workflows/IWorkflowEngine.ts:56](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/workflows/IWorkflowEngine.ts#L56)
 
 #### Parameters
 
@@ -252,7 +252,7 @@ Defined in: [packages/agentos/src/orchestration/workflows/IWorkflowEngine.ts:56]
 
 > **updateWorkflowStatus**(`workflowId`, `status`): `Promise`\<[`WorkflowInstance`](WorkflowInstance.md) \| `null`\>
 
-Defined in: [packages/agentos/src/orchestration/workflows/IWorkflowEngine.ts:51](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/workflows/IWorkflowEngine.ts#L51)
+Defined in: [packages/agentos/src/orchestration/workflows/IWorkflowEngine.ts:51](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/workflows/IWorkflowEngine.ts#L51)
 
 #### Parameters
 

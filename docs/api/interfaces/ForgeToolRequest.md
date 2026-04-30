@@ -1,6 +1,6 @@
 # Interface: ForgeToolRequest
 
-Defined in: [packages/agentos/src/emergent/types.ts:534](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/emergent/types.ts#L534)
+Defined in: [packages/agentos/src/emergent/types.ts:534](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/emergent/types.ts#L534)
 
 Request payload for the `forge_tool` system tool.
 
@@ -13,7 +13,7 @@ engine validates the request, runs the judge, and returns a [ForgeResult](ForgeR
 
 > **description**: `string`
 
-Defined in: [packages/agentos/src/emergent/types.ts:545](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/emergent/types.ts#L545)
+Defined in: [packages/agentos/src/emergent/types.ts:545](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/emergent/types.ts#L545)
 
 Natural language description of the tool's purpose and behaviour.
 Used verbatim as the tool's description in the LLM tool list.
@@ -24,7 +24,7 @@ Used verbatim as the tool's description in the LLM tool list.
 
 > **implementation**: [`ToolImplementation`](../type-aliases/ToolImplementation.md)
 
-Defined in: [packages/agentos/src/emergent/types.ts:560](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/emergent/types.ts#L560)
+Defined in: [packages/agentos/src/emergent/types.ts:560](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/emergent/types.ts#L560)
 
 Implementation specification — composable pipeline or sandboxed code.
 
@@ -34,7 +34,7 @@ Implementation specification — composable pipeline or sandboxed code.
 
 > **inputSchema**: [`JSONSchemaObject`](../type-aliases/JSONSchemaObject.md)
 
-Defined in: [packages/agentos/src/emergent/types.ts:550](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/emergent/types.ts#L550)
+Defined in: [packages/agentos/src/emergent/types.ts:550](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/emergent/types.ts#L550)
 
 JSON Schema for the tool's input arguments.
 
@@ -44,7 +44,7 @@ JSON Schema for the tool's input arguments.
 
 > **name**: `string`
 
-Defined in: [packages/agentos/src/emergent/types.ts:539](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/emergent/types.ts#L539)
+Defined in: [packages/agentos/src/emergent/types.ts:539](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/emergent/types.ts#L539)
 
 Desired machine-readable name for the new tool.
 Must be unique among tools currently visible to the requesting agent.
@@ -55,7 +55,7 @@ Must be unique among tools currently visible to the requesting agent.
 
 > **outputSchema**: [`JSONSchemaObject`](../type-aliases/JSONSchemaObject.md)
 
-Defined in: [packages/agentos/src/emergent/types.ts:555](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/emergent/types.ts#L555)
+Defined in: [packages/agentos/src/emergent/types.ts:555](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/emergent/types.ts#L555)
 
 JSON Schema for the tool's expected output.
 
@@ -65,7 +65,7 @@ JSON Schema for the tool's expected output.
 
 > **testCases**: \[[`ForgeTestCase`](ForgeTestCase.md), `...ForgeTestCase[]`\]
 
-Defined in: [packages/agentos/src/emergent/types.ts:566](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/emergent/types.ts#L566)
+Defined in: [packages/agentos/src/emergent/types.ts:566](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/emergent/types.ts#L566)
 
 One or more test cases the judge uses to evaluate correctness.
 At least one test case is required for the forge request to be accepted.

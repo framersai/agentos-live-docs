@@ -404,6 +404,21 @@ const typedocSidebar = {
         },
         {
           type: "doc",
+          id: "api/classes/FactExtractor",
+          label: "FactExtractor"
+        },
+        {
+          type: "doc",
+          id: "api/classes/FactStore",
+          label: "FactStore"
+        },
+        {
+          type: "doc",
+          id: "api/classes/FactSupersession",
+          label: "FactSupersession"
+        },
+        {
+          type: "doc",
           id: "api/classes/FalImageProvider",
           label: "FalImageProvider"
         },
@@ -536,6 +551,11 @@ const typedocSidebar = {
           type: "doc",
           id: "api/classes/HybridFeatureDetector",
           label: "HybridFeatureDetector"
+        },
+        {
+          type: "doc",
+          id: "api/classes/HybridRetriever",
+          label: "HybridRetriever"
         },
         {
           type: "doc",
@@ -1071,6 +1091,21 @@ const typedocSidebar = {
           type: "doc",
           id: "api/classes/SentenceBoundaryBuffer",
           label: "SentenceBoundaryBuffer"
+        },
+        {
+          type: "doc",
+          id: "api/classes/SessionRetriever",
+          label: "SessionRetriever"
+        },
+        {
+          type: "doc",
+          id: "api/classes/SessionSummarizer",
+          label: "SessionSummarizer"
+        },
+        {
+          type: "doc",
+          id: "api/classes/SessionSummaryStore",
+          label: "SessionSummaryStore"
         },
         {
           type: "doc",
@@ -2635,6 +2670,41 @@ const typedocSidebar = {
         },
         {
           type: "doc",
+          id: "api/interfaces/Fact",
+          label: "Fact"
+        },
+        {
+          type: "doc",
+          id: "api/interfaces/FactExtractorOptions",
+          label: "FactExtractorOptions"
+        },
+        {
+          type: "doc",
+          id: "api/interfaces/FactExtractorSession",
+          label: "FactExtractorSession"
+        },
+        {
+          type: "doc",
+          id: "api/interfaces/FactStoreEntry",
+          label: "FactStoreEntry"
+        },
+        {
+          type: "doc",
+          id: "api/interfaces/FactSupersessionInput",
+          label: "FactSupersessionInput"
+        },
+        {
+          type: "doc",
+          id: "api/interfaces/FactSupersessionOptions",
+          label: "FactSupersessionOptions"
+        },
+        {
+          type: "doc",
+          id: "api/interfaces/FactSupersessionResult",
+          label: "FactSupersessionResult"
+        },
+        {
+          type: "doc",
           id: "api/interfaces/FalImageProviderConfig",
           label: "FalImageProviderConfig"
         },
@@ -2652,6 +2722,11 @@ const typedocSidebar = {
           type: "doc",
           id: "api/interfaces/FeatureFlag",
           label: "FeatureFlag"
+        },
+        {
+          type: "doc",
+          id: "api/interfaces/FlushReflectionResult",
+          label: "FlushReflectionResult"
         },
         {
           type: "doc",
@@ -3060,6 +3135,16 @@ const typedocSidebar = {
         },
         {
           type: "doc",
+          id: "api/interfaces/HybridRetrieveOptions",
+          label: "HybridRetrieveOptions"
+        },
+        {
+          type: "doc",
+          id: "api/interfaces/HybridRetrieverOptions",
+          label: "HybridRetrieverOptions"
+        },
+        {
+          type: "doc",
           id: "api/interfaces/HybridSearcherConfig",
           label: "HybridSearcherConfig"
         },
@@ -3327,6 +3412,11 @@ const typedocSidebar = {
           type: "doc",
           id: "api/interfaces/ImportResult",
           label: "ImportResult"
+        },
+        {
+          type: "doc",
+          id: "api/interfaces/IndexSessionInput",
+          label: "IndexSessionInput"
         },
         {
           type: "doc",
@@ -3827,6 +3917,11 @@ const typedocSidebar = {
           type: "doc",
           id: "api/interfaces/MemoryReflectionResult",
           label: "MemoryReflectionResult"
+        },
+        {
+          type: "doc",
+          id: "api/interfaces/MemoryRetrievalPolicy",
+          label: "MemoryRetrievalPolicy"
         },
         {
           type: "doc",
@@ -4480,6 +4575,11 @@ const typedocSidebar = {
         },
         {
           type: "doc",
+          id: "api/interfaces/QueriedSession",
+          label: "QueriedSession"
+        },
+        {
+          type: "doc",
           id: "api/interfaces/QueryOptions",
           label: "QueryOptions"
         },
@@ -4557,6 +4657,11 @@ const typedocSidebar = {
           type: "doc",
           id: "api/interfaces/RAGSourceAttribution",
           label: "RAGSourceAttribution"
+        },
+        {
+          type: "doc",
+          id: "api/interfaces/RankedDoc",
+          label: "RankedDoc"
         },
         {
           type: "doc",
@@ -4740,6 +4845,11 @@ const typedocSidebar = {
         },
         {
           type: "doc",
+          id: "api/interfaces/ResolvedMemoryRetrievalPolicy",
+          label: "ResolvedMemoryRetrievalPolicy"
+        },
+        {
+          type: "doc",
           id: "api/interfaces/ResolveSkillsDirsOptions",
           label: "ResolveSkillsDirsOptions"
         },
@@ -4865,6 +4975,16 @@ const typedocSidebar = {
         },
         {
           type: "doc",
+          id: "api/interfaces/RRFOptions",
+          label: "RRFOptions"
+        },
+        {
+          type: "doc",
+          id: "api/interfaces/RRFResult",
+          label: "RRFResult"
+        },
+        {
+          type: "doc",
           id: "api/interfaces/RunInspection",
           label: "RunInspection"
         },
@@ -4982,6 +5102,26 @@ const typedocSidebar = {
           type: "doc",
           id: "api/interfaces/SentimentTrackingConfig",
           label: "SentimentTrackingConfig"
+        },
+        {
+          type: "doc",
+          id: "api/interfaces/SessionRetrieveOptions",
+          label: "SessionRetrieveOptions"
+        },
+        {
+          type: "doc",
+          id: "api/interfaces/SessionRetrieverOptions",
+          label: "SessionRetrieverOptions"
+        },
+        {
+          type: "doc",
+          id: "api/interfaces/SessionSummarizerOptions",
+          label: "SessionSummarizerOptions"
+        },
+        {
+          type: "doc",
+          id: "api/interfaces/SessionSummaryStoreOptions",
+          label: "SessionSummaryStoreOptions"
         },
         {
           type: "doc",
@@ -5437,6 +5577,11 @@ const typedocSidebar = {
           type: "doc",
           id: "api/interfaces/SummarizationOptions",
           label: "SummarizationOptions"
+        },
+        {
+          type: "doc",
+          id: "api/interfaces/SummarizerStats",
+          label: "SummarizerStats"
         },
         {
           type: "doc",
@@ -6656,6 +6801,11 @@ const typedocSidebar = {
         },
         {
           type: "doc",
+          id: "api/type-aliases/MemoryRetrievalProfile",
+          label: "MemoryRetrievalProfile"
+        },
+        {
+          type: "doc",
           id: "api/type-aliases/MemoryScope",
           label: "MemoryScope"
         },
@@ -6916,8 +7066,18 @@ const typedocSidebar = {
         },
         {
           type: "doc",
+          id: "api/type-aliases/SessionSummarizerInvoker",
+          label: "SessionSummarizerInvoker"
+        },
+        {
+          type: "doc",
           id: "api/type-aliases/SetupStatus",
           label: "SetupStatus"
+        },
+        {
+          type: "doc",
+          id: "api/type-aliases/SignalName",
+          label: "SignalName"
         },
         {
           type: "doc",
@@ -7242,6 +7402,11 @@ const typedocSidebar = {
         },
         {
           type: "doc",
+          id: "api/variables/DEFAULT_MEMORY_RETRIEVAL_POLICY",
+          label: "DEFAULT_MEMORY_RETRIEVAL_POLICY"
+        },
+        {
+          type: "doc",
           id: "api/variables/DEFAULT_PERSONA_DRIFT_CONFIG",
           label: "DEFAULT_PERSONA_DRIFT_CONFIG"
         },
@@ -7417,6 +7582,11 @@ const typedocSidebar = {
         },
         {
           type: "doc",
+          id: "api/variables/PREDICATE_SCHEMA",
+          label: "PREDICATE_SCHEMA"
+        },
+        {
+          type: "doc",
           id: "api/variables/profiles",
           label: "profiles"
         },
@@ -7424,6 +7594,11 @@ const typedocSidebar = {
           type: "doc",
           id: "api/variables/PROVIDER_DEFAULTS",
           label: "PROVIDER_DEFAULTS"
+        },
+        {
+          type: "doc",
+          id: "api/variables/REFLECTOR_PROMPT_HASH",
+          label: "REFLECTOR_PROMPT_HASH"
         },
         {
           type: "doc",
@@ -7568,6 +7743,11 @@ const typedocSidebar = {
         },
         {
           type: "doc",
+          id: "api/functions/buildRetrievalPlanFromPolicy",
+          label: "buildRetrievalPlanFromPolicy"
+        },
+        {
+          type: "doc",
           id: "api/functions/buildScopedExternalToolContextParts",
           label: "buildScopedExternalToolContextParts"
         },
@@ -7585,6 +7765,11 @@ const typedocSidebar = {
           type: "doc",
           id: "api/functions/calculateRemainingPercentage",
           label: "calculateRemainingPercentage"
+        },
+        {
+          type: "doc",
+          id: "api/functions/canonicalizeSubject",
+          label: "canonicalizeSubject"
         },
         {
           type: "doc",
@@ -7988,6 +8173,11 @@ const typedocSidebar = {
         },
         {
           type: "doc",
+          id: "api/functions/getCandidateLimit",
+          label: "getCandidateLimit"
+        },
+        {
+          type: "doc",
           id: "api/functions/getDefaultAgentOSUsageLedgerPath",
           label: "getDefaultAgentOSUsageLedgerPath"
         },
@@ -8055,6 +8245,16 @@ const typedocSidebar = {
           type: "doc",
           id: "api/functions/hasAudioProviderFactory",
           label: "hasAudioProviderFactory"
+        },
+        {
+          type: "doc",
+          id: "api/functions/hashPredicate",
+          label: "hashPredicate"
+        },
+        {
+          type: "doc",
+          id: "api/functions/hashSubject",
+          label: "hashSubject"
         },
         {
           type: "doc",
@@ -8155,6 +8355,11 @@ const typedocSidebar = {
           type: "doc",
           id: "api/functions/isToolCallRequestChunk",
           label: "isToolCallRequestChunk"
+        },
+        {
+          type: "doc",
+          id: "api/functions/isValidPredicate",
+          label: "isValidPredicate"
         },
         {
           type: "doc",
@@ -8323,6 +8528,11 @@ const typedocSidebar = {
         },
         {
           type: "doc",
+          id: "api/functions/reciprocalRankFusion",
+          label: "reciprocalRankFusion"
+        },
+        {
+          type: "doc",
           id: "api/functions/recombineCodeAndProse",
           label: "recombineCodeAndProse"
         },
@@ -8405,6 +8615,11 @@ const typedocSidebar = {
           type: "doc",
           id: "api/functions/resolveMechanismsConfig",
           label: "resolveMechanismsConfig"
+        },
+        {
+          type: "doc",
+          id: "api/functions/resolveMemoryRetrievalPolicy",
+          label: "resolveMemoryRetrievalPolicy"
         },
         {
           type: "doc",

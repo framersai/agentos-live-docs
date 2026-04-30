@@ -1,6 +1,6 @@
 # Interface: GraphTraversalConfig
 
-Defined in: [packages/agentos/src/rag/unified/types.ts:230](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/unified/types.ts#L230)
+Defined in: [packages/agentos/src/rag/unified/types.ts:232](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/unified/types.ts#L232)
 
 Graph traversal configuration for GraphRAG.
 
@@ -14,7 +14,7 @@ RetrievalPlan.graphConfig
 
 > **maxDepth**: `number`
 
-Defined in: [packages/agentos/src/rag/unified/types.ts:235](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/unified/types.ts#L235)
+Defined in: [packages/agentos/src/rag/unified/types.ts:237](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/unified/types.ts#L237)
 
 Maximum depth to traverse from seed entities.
 
@@ -30,7 +30,7 @@ Maximum depth to traverse from seed entities.
 
 > **minEdgeWeight**: `number`
 
-Defined in: [packages/agentos/src/rag/unified/types.ts:241](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/unified/types.ts#L241)
+Defined in: [packages/agentos/src/rag/unified/types.ts:243](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/unified/types.ts#L243)
 
 Minimum edge weight to follow during traversal.
 Edges below this weight are pruned.

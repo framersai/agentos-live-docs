@@ -1,6 +1,6 @@
 # Interface: MessagingChannelPayload
 
-Defined in: [packages/agentos/src/extensions/MessagingChannelPayload.ts:30](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/extensions/MessagingChannelPayload.ts#L30)
+Defined in: [packages/agentos/src/extensions/MessagingChannelPayload.ts:30](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/extensions/MessagingChannelPayload.ts#L30)
 
 Payload shape for `messaging-channel` extension descriptors.
 
@@ -14,7 +14,7 @@ Extension packs register this as the `payload` of an
 
 > **capabilities**: [`ChannelCapability`](../type-aliases/ChannelCapability.md)[]
 
-Defined in: [packages/agentos/src/extensions/MessagingChannelPayload.ts:36](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/extensions/MessagingChannelPayload.ts#L36)
+Defined in: [packages/agentos/src/extensions/MessagingChannelPayload.ts:36](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/extensions/MessagingChannelPayload.ts#L36)
 
 Capabilities this channel supports.
 
@@ -24,7 +24,7 @@ Capabilities this channel supports.
 
 > **displayName**: `string`
 
-Defined in: [packages/agentos/src/extensions/MessagingChannelPayload.ts:34](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/extensions/MessagingChannelPayload.ts#L34)
+Defined in: [packages/agentos/src/extensions/MessagingChannelPayload.ts:34](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/extensions/MessagingChannelPayload.ts#L34)
 
 Human-friendly display name.
 
@@ -34,7 +34,7 @@ Human-friendly display name.
 
 > **platform**: [`ChannelPlatform`](../type-aliases/ChannelPlatform.md)
 
-Defined in: [packages/agentos/src/extensions/MessagingChannelPayload.ts:32](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/extensions/MessagingChannelPayload.ts#L32)
+Defined in: [packages/agentos/src/extensions/MessagingChannelPayload.ts:32](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/extensions/MessagingChannelPayload.ts#L32)
 
 Platform identifier (e.g., 'telegram', 'discord').
 
@@ -44,7 +44,7 @@ Platform identifier (e.g., 'telegram', 'discord').
 
 > **getConnectionInfo**(): [`ChannelConnectionInfo`](ChannelConnectionInfo.md)
 
-Defined in: [packages/agentos/src/extensions/MessagingChannelPayload.ts:52](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/extensions/MessagingChannelPayload.ts#L52)
+Defined in: [packages/agentos/src/extensions/MessagingChannelPayload.ts:52](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/extensions/MessagingChannelPayload.ts#L52)
 
 Get current connection status.
 
@@ -58,7 +58,7 @@ Get current connection status.
 
 > **initialize**(`auth`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/extensions/MessagingChannelPayload.ts:39](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/extensions/MessagingChannelPayload.ts#L39)
+Defined in: [packages/agentos/src/extensions/MessagingChannelPayload.ts:39](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/extensions/MessagingChannelPayload.ts#L39)
 
 Initialize with credentials.
 
@@ -78,7 +78,7 @@ Initialize with credentials.
 
 > **on**(`handler`, `eventTypes?`): () => `void`
 
-Defined in: [packages/agentos/src/extensions/MessagingChannelPayload.ts:49](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/extensions/MessagingChannelPayload.ts#L49)
+Defined in: [packages/agentos/src/extensions/MessagingChannelPayload.ts:49](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/extensions/MessagingChannelPayload.ts#L49)
 
 Subscribe to events. Returns unsubscribe function.
 
@@ -106,7 +106,7 @@ Subscribe to events. Returns unsubscribe function.
 
 > **sendMessage**(`conversationId`, `content`): `Promise`\<[`ChannelSendResult`](ChannelSendResult.md)\>
 
-Defined in: [packages/agentos/src/extensions/MessagingChannelPayload.ts:44](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/extensions/MessagingChannelPayload.ts#L44)
+Defined in: [packages/agentos/src/extensions/MessagingChannelPayload.ts:44](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/extensions/MessagingChannelPayload.ts#L44)
 
 Send a message to a conversation.
 
@@ -130,7 +130,7 @@ Send a message to a conversation.
 
 > **sendTypingIndicator**(`conversationId`, `isTyping`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/extensions/MessagingChannelPayload.ts:46](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/extensions/MessagingChannelPayload.ts#L46)
+Defined in: [packages/agentos/src/extensions/MessagingChannelPayload.ts:46](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/extensions/MessagingChannelPayload.ts#L46)
 
 Show/hide typing indicator.
 
@@ -154,7 +154,7 @@ Show/hide typing indicator.
 
 > **shutdown**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/extensions/MessagingChannelPayload.ts:41](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/extensions/MessagingChannelPayload.ts#L41)
+Defined in: [packages/agentos/src/extensions/MessagingChannelPayload.ts:41](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/extensions/MessagingChannelPayload.ts#L41)
 
 Graceful shutdown.
 

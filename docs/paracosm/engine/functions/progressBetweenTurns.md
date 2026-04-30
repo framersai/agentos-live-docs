@@ -2,7 +2,7 @@
 
 > **progressBetweenTurns**(`state`, `yearDelta`, `turnRng`, `progressionHook?`): `object`
 
-Defined in: [engine/core/progression.ts:207](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/core/progression.ts#L207)
+Defined in: [apps/paracosm/src/engine/core/progression.ts:207](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/core/progression.ts#L207)
 
 Run all between-turn progression: aging, mortality, births, careers,
 health degradation, resource production. All deterministic from seed.

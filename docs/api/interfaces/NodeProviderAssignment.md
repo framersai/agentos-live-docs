@@ -1,6 +1,6 @@
 # Interface: NodeProviderAssignment
 
-Defined in: [packages/agentos/src/orchestration/planning/types.ts:79](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/planning/types.ts#L79)
+Defined in: [packages/agentos/src/orchestration/planning/types.ts:79](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/planning/types.ts#L79)
 
 Result of assigning a provider+model to a single node.
 
@@ -10,7 +10,7 @@ Result of assigning a provider+model to a single node.
 
 > **complexity**: `number`
 
-Defined in: [packages/agentos/src/orchestration/planning/types.ts:84](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/planning/types.ts#L84)
+Defined in: [packages/agentos/src/orchestration/planning/types.ts:84](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/planning/types.ts#L84)
 
 Complexity score (0-1) used for balanced assignment.
 
@@ -20,7 +20,7 @@ Complexity score (0-1) used for balanced assignment.
 
 > **model**: `string`
 
-Defined in: [packages/agentos/src/orchestration/planning/types.ts:82](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/planning/types.ts#L82)
+Defined in: [packages/agentos/src/orchestration/planning/types.ts:82](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/planning/types.ts#L82)
 
 ***
 
@@ -28,7 +28,7 @@ Defined in: [packages/agentos/src/orchestration/planning/types.ts:82](https://gi
 
 > **nodeId**: `string`
 
-Defined in: [packages/agentos/src/orchestration/planning/types.ts:80](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/planning/types.ts#L80)
+Defined in: [packages/agentos/src/orchestration/planning/types.ts:80](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/planning/types.ts#L80)
 
 ***
 
@@ -36,7 +36,7 @@ Defined in: [packages/agentos/src/orchestration/planning/types.ts:80](https://gi
 
 > **provider**: `string`
 
-Defined in: [packages/agentos/src/orchestration/planning/types.ts:81](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/planning/types.ts#L81)
+Defined in: [packages/agentos/src/orchestration/planning/types.ts:81](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/planning/types.ts#L81)
 
 ***
 
@@ -44,6 +44,6 @@ Defined in: [packages/agentos/src/orchestration/planning/types.ts:81](https://gi
 
 > **reason**: `string`
 
-Defined in: [packages/agentos/src/orchestration/planning/types.ts:86](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/planning/types.ts#L86)
+Defined in: [packages/agentos/src/orchestration/planning/types.ts:86](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/planning/types.ts#L86)
 
 Human-readable reason for this assignment.

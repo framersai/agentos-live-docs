@@ -1,6 +1,6 @@
 # Interface: ClassifyCompleteEvent
 
-Defined in: [packages/agentos/src/query-router/types.ts:866](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/query-router/types.ts#L866)
+Defined in: [packages/agentos/src/query-router/types.ts:877](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/query-router/types.ts#L877)
 
 Emitted when query classification completes successfully.
 
@@ -10,7 +10,7 @@ Emitted when query classification completes successfully.
 
 > **durationMs**: `number`
 
-Defined in: [packages/agentos/src/query-router/types.ts:871](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/query-router/types.ts#L871)
+Defined in: [packages/agentos/src/query-router/types.ts:882](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/query-router/types.ts#L882)
 
 Duration of classification in milliseconds.
 
@@ -20,7 +20,7 @@ Duration of classification in milliseconds.
 
 > **result**: [`ClassificationResult`](ClassificationResult.md)
 
-Defined in: [packages/agentos/src/query-router/types.ts:869](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/query-router/types.ts#L869)
+Defined in: [packages/agentos/src/query-router/types.ts:880](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/query-router/types.ts#L880)
 
 The classification result.
 
@@ -30,7 +30,7 @@ The classification result.
 
 > **timestamp**: `number`
 
-Defined in: [packages/agentos/src/query-router/types.ts:873](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/query-router/types.ts#L873)
+Defined in: [packages/agentos/src/query-router/types.ts:884](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/query-router/types.ts#L884)
 
 Timestamp when classification completed.
 
@@ -40,4 +40,4 @@ Timestamp when classification completed.
 
 > **type**: `"classify:complete"`
 
-Defined in: [packages/agentos/src/query-router/types.ts:867](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/query-router/types.ts#L867)
+Defined in: [packages/agentos/src/query-router/types.ts:878](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/query-router/types.ts#L878)

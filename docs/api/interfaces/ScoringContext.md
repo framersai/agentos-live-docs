@@ -1,6 +1,6 @@
 # Interface: ScoringContext
 
-Defined in: [packages/agentos/src/memory/core/decay/RetrievalPriorityScorer.ts:79](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/core/decay/RetrievalPriorityScorer.ts#L79)
+Defined in: [packages/agentos/src/memory/core/decay/RetrievalPriorityScorer.ts:85](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/decay/RetrievalPriorityScorer.ts#L85)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/memory/core/decay/RetrievalPriorityScorer.ts:7
 
 > **currentMood**: [`PADState`](PADState.md)
 
-Defined in: [packages/agentos/src/memory/core/decay/RetrievalPriorityScorer.ts:80](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/core/decay/RetrievalPriorityScorer.ts#L80)
+Defined in: [packages/agentos/src/memory/core/decay/RetrievalPriorityScorer.ts:86](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/decay/RetrievalPriorityScorer.ts#L86)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [packages/agentos/src/memory/core/decay/RetrievalPriorityScorer.ts:8
 
 > `optional` **decayConfig**: [`DecayConfig`](DecayConfig.md)
 
-Defined in: [packages/agentos/src/memory/core/decay/RetrievalPriorityScorer.ts:84](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/core/decay/RetrievalPriorityScorer.ts#L84)
+Defined in: [packages/agentos/src/memory/core/decay/RetrievalPriorityScorer.ts:90](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/decay/RetrievalPriorityScorer.ts#L90)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: [packages/agentos/src/memory/core/decay/RetrievalPriorityScorer.ts:8
 
 > `optional` **neutralMood**: `boolean`
 
-Defined in: [packages/agentos/src/memory/core/decay/RetrievalPriorityScorer.ts:83](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/core/decay/RetrievalPriorityScorer.ts#L83)
+Defined in: [packages/agentos/src/memory/core/decay/RetrievalPriorityScorer.ts:89](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/decay/RetrievalPriorityScorer.ts#L89)
 
 Set to true to disable emotional congruence bias.
 
@@ -34,7 +34,7 @@ Set to true to disable emotional congruence bias.
 
 > **now**: `number`
 
-Defined in: [packages/agentos/src/memory/core/decay/RetrievalPriorityScorer.ts:81](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/core/decay/RetrievalPriorityScorer.ts#L81)
+Defined in: [packages/agentos/src/memory/core/decay/RetrievalPriorityScorer.ts:87](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/decay/RetrievalPriorityScorer.ts#L87)
 
 ***
 
@@ -42,4 +42,4 @@ Defined in: [packages/agentos/src/memory/core/decay/RetrievalPriorityScorer.ts:8
 
 > `optional` **weights**: [`ScoringWeights`](ScoringWeights.md)
 
-Defined in: [packages/agentos/src/memory/core/decay/RetrievalPriorityScorer.ts:85](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/core/decay/RetrievalPriorityScorer.ts#L85)
+Defined in: [packages/agentos/src/memory/core/decay/RetrievalPriorityScorer.ts:91](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/decay/RetrievalPriorityScorer.ts#L91)

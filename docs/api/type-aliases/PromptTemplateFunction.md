@@ -2,7 +2,7 @@
 
 > **PromptTemplateFunction** = (`components`, `modelInfo`, `selectedContextualElements`, `config`, `estimateTokenCountFn`) => `Promise`\<[`FormattedPrompt`](FormattedPrompt.md)\>
 
-Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:372](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/llm/IPromptEngine.ts#L372)
+Defined in: [packages/agentos/src/core/llm/IPromptEngine.ts:372](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/core/llm/IPromptEngine.ts#L372)
 
 Function signature for prompt template implementations.
 Templates are responsible for taking all processed prompt components and

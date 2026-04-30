@@ -1,6 +1,6 @@
 # Interface: LongTermMemoryRetrievalResult
 
-Defined in: [packages/agentos/src/core/conversation/ILongTermMemoryRetriever.ts:23](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/conversation/ILongTermMemoryRetriever.ts#L23)
+Defined in: [packages/agentos/src/core/conversation/ILongTermMemoryRetriever.ts:25](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/core/conversation/ILongTermMemoryRetriever.ts#L25)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/core/conversation/ILongTermMemoryRetriever.ts:
 
 > **contextText**: `string`
 
-Defined in: [packages/agentos/src/core/conversation/ILongTermMemoryRetriever.ts:25](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/conversation/ILongTermMemoryRetriever.ts#L25)
+Defined in: [packages/agentos/src/core/conversation/ILongTermMemoryRetriever.ts:27](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/core/conversation/ILongTermMemoryRetriever.ts#L27)
 
 Markdown/plain-text context to inject into the next prompt.
 
@@ -18,7 +18,7 @@ Markdown/plain-text context to inject into the next prompt.
 
 > `optional` **diagnostics**: `Record`\<`string`, `unknown`\>
 
-Defined in: [packages/agentos/src/core/conversation/ILongTermMemoryRetriever.ts:27](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/conversation/ILongTermMemoryRetriever.ts#L27)
+Defined in: [packages/agentos/src/core/conversation/ILongTermMemoryRetriever.ts:29](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/core/conversation/ILongTermMemoryRetriever.ts#L29)
 
 Optional lightweight diagnostics for UI/debugging.
 
@@ -28,7 +28,7 @@ Optional lightweight diagnostics for UI/debugging.
 
 > `optional` **feedbackPayload**: `unknown`
 
-Defined in: [packages/agentos/src/core/conversation/ILongTermMemoryRetriever.ts:32](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/core/conversation/ILongTermMemoryRetriever.ts#L32)
+Defined in: [packages/agentos/src/core/conversation/ILongTermMemoryRetriever.ts:34](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/core/conversation/ILongTermMemoryRetriever.ts#L34)
 
 Opaque implementation-specific payload used to record used/ignored
 feedback after the assistant produces a final response.

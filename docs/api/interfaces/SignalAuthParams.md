@@ -1,6 +1,6 @@
 # Interface: SignalAuthParams
 
-Defined in: [packages/agentos/src/channels/adapters/SignalChannelAdapter.ts:51](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/adapters/SignalChannelAdapter.ts#L51)
+Defined in: [packages/agentos/src/channels/adapters/SignalChannelAdapter.ts:51](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/channels/adapters/SignalChannelAdapter.ts#L51)
 
 Platform-specific authentication parameters for Signal.
 
@@ -18,7 +18,7 @@ Platform-specific authentication parameters for Signal.
 
 > `optional` **configDir**: `string`
 
-Defined in: [packages/agentos/src/channels/adapters/SignalChannelAdapter.ts:55](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/adapters/SignalChannelAdapter.ts#L55)
+Defined in: [packages/agentos/src/channels/adapters/SignalChannelAdapter.ts:55](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/channels/adapters/SignalChannelAdapter.ts#L55)
 
 Path to signal-cli config/data directory.
 
@@ -28,7 +28,7 @@ Path to signal-cli config/data directory.
 
 > `optional` **daemonSocket**: `string`
 
-Defined in: [packages/agentos/src/channels/adapters/SignalChannelAdapter.ts:57](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/adapters/SignalChannelAdapter.ts#L57)
+Defined in: [packages/agentos/src/channels/adapters/SignalChannelAdapter.ts:57](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/channels/adapters/SignalChannelAdapter.ts#L57)
 
 Unix socket or TCP address of signal-cli JSON-RPC daemon.
 
@@ -38,7 +38,7 @@ Unix socket or TCP address of signal-cli JSON-RPC daemon.
 
 > `optional` **signalCliPath**: `string`
 
-Defined in: [packages/agentos/src/channels/adapters/SignalChannelAdapter.ts:53](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/adapters/SignalChannelAdapter.ts#L53)
+Defined in: [packages/agentos/src/channels/adapters/SignalChannelAdapter.ts:53](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/channels/adapters/SignalChannelAdapter.ts#L53)
 
 Path to the signal-cli binary. Default: 'signal-cli'.
 
@@ -48,6 +48,6 @@ Path to the signal-cli binary. Default: 'signal-cli'.
 
 > `optional` **trustMode**: `string`
 
-Defined in: [packages/agentos/src/channels/adapters/SignalChannelAdapter.ts:59](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/adapters/SignalChannelAdapter.ts#L59)
+Defined in: [packages/agentos/src/channels/adapters/SignalChannelAdapter.ts:59](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/channels/adapters/SignalChannelAdapter.ts#L59)
 
 Trust mode for new identities: 'always', 'on-first-use', 'never'. Default: 'on-first-use'.

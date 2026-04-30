@@ -1,6 +1,6 @@
 # Interface: WorkflowEngineDependencies
 
-Defined in: [packages/agentos/src/orchestration/workflows/IWorkflowEngine.ts:29](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/workflows/IWorkflowEngine.ts#L29)
+Defined in: [packages/agentos/src/orchestration/workflows/IWorkflowEngine.ts:29](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/workflows/IWorkflowEngine.ts#L29)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/orchestration/workflows/IWorkflowEngine.ts:29]
 
 > `optional` **logger**: [`ILogger`](ILogger.md)
 
-Defined in: [packages/agentos/src/orchestration/workflows/IWorkflowEngine.ts:31](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/workflows/IWorkflowEngine.ts#L31)
+Defined in: [packages/agentos/src/orchestration/workflows/IWorkflowEngine.ts:31](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/workflows/IWorkflowEngine.ts#L31)
 
 ***
 
@@ -16,4 +16,4 @@ Defined in: [packages/agentos/src/orchestration/workflows/IWorkflowEngine.ts:31]
 
 > **store**: [`IWorkflowStore`](IWorkflowStore.md)
 
-Defined in: [packages/agentos/src/orchestration/workflows/IWorkflowEngine.ts:30](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/orchestration/workflows/IWorkflowEngine.ts#L30)
+Defined in: [packages/agentos/src/orchestration/workflows/IWorkflowEngine.ts:30](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/workflows/IWorkflowEngine.ts#L30)

@@ -1,6 +1,6 @@
 # Interface: MarketplaceSearchResult
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:253](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/marketplace/store/IMarketplace.ts#L253)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:253](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/marketplace/store/IMarketplace.ts#L253)
 
 Search results
 
@@ -10,7 +10,7 @@ Search results
 
 > **facets**: `object`
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:259](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/marketplace/store/IMarketplace.ts#L259)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:259](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/marketplace/store/IMarketplace.ts#L259)
 
 Facets for filtering
 
@@ -36,7 +36,7 @@ Facets for filtering
 
 > **items**: [`MarketplaceItem`](MarketplaceItem.md)[]
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:255](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/marketplace/store/IMarketplace.ts#L255)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:255](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/marketplace/store/IMarketplace.ts#L255)
 
 Matching items
 
@@ -46,7 +46,7 @@ Matching items
 
 > **searchMeta**: `object`
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:266](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/marketplace/store/IMarketplace.ts#L266)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:266](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/marketplace/store/IMarketplace.ts#L266)
 
 Search metadata
 
@@ -72,6 +72,6 @@ Search metadata
 
 > **total**: `number`
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:257](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/marketplace/store/IMarketplace.ts#L257)
+Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:257](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/marketplace/store/IMarketplace.ts#L257)
 
 Total count of matches

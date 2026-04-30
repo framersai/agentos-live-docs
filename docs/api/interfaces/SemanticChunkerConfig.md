@@ -1,6 +1,6 @@
 # Interface: SemanticChunkerConfig
 
-Defined in: [packages/agentos/src/rag/chunking/SemanticChunker.ts:30](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/chunking/SemanticChunker.ts#L30)
+Defined in: [packages/agentos/src/rag/chunking/SemanticChunker.ts:30](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/chunking/SemanticChunker.ts#L30)
 
 Configuration for the semantic chunker.
 
@@ -14,7 +14,7 @@ SemanticChunkerConfig
 
 > `optional` **maxSize**: `number`
 
-Defined in: [packages/agentos/src/rag/chunking/SemanticChunker.ts:34](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/chunking/SemanticChunker.ts#L34)
+Defined in: [packages/agentos/src/rag/chunking/SemanticChunker.ts:34](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/chunking/SemanticChunker.ts#L34)
 
 Maximum chunk size — hard limit before forced splitting. Default: 2000.
 
@@ -24,7 +24,7 @@ Maximum chunk size — hard limit before forced splitting. Default: 2000.
 
 > `optional` **minSize**: `number`
 
-Defined in: [packages/agentos/src/rag/chunking/SemanticChunker.ts:36](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/chunking/SemanticChunker.ts#L36)
+Defined in: [packages/agentos/src/rag/chunking/SemanticChunker.ts:36](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/chunking/SemanticChunker.ts#L36)
 
 Minimum chunk size — fragments below this merge with previous. Default: 200.
 
@@ -34,7 +34,7 @@ Minimum chunk size — fragments below this merge with previous. Default: 200.
 
 > `optional` **overlap**: `number`
 
-Defined in: [packages/agentos/src/rag/chunking/SemanticChunker.ts:38](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/chunking/SemanticChunker.ts#L38)
+Defined in: [packages/agentos/src/rag/chunking/SemanticChunker.ts:38](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/chunking/SemanticChunker.ts#L38)
 
 Overlap characters from previous chunk prepended for context. Default: 100.
 
@@ -44,7 +44,7 @@ Overlap characters from previous chunk prepended for context. Default: 100.
 
 > `optional` **preserveCodeBlocks**: `boolean`
 
-Defined in: [packages/agentos/src/rag/chunking/SemanticChunker.ts:40](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/chunking/SemanticChunker.ts#L40)
+Defined in: [packages/agentos/src/rag/chunking/SemanticChunker.ts:40](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/chunking/SemanticChunker.ts#L40)
 
 Whether to detect and preserve fenced code blocks intact. Default: true.
 
@@ -54,7 +54,7 @@ Whether to detect and preserve fenced code blocks intact. Default: true.
 
 > `optional` **respectHeadings**: `boolean`
 
-Defined in: [packages/agentos/src/rag/chunking/SemanticChunker.ts:42](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/chunking/SemanticChunker.ts#L42)
+Defined in: [packages/agentos/src/rag/chunking/SemanticChunker.ts:42](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/chunking/SemanticChunker.ts#L42)
 
 Whether to detect markdown headings as chunk-start boundaries. Default: true.
 
@@ -64,6 +64,6 @@ Whether to detect markdown headings as chunk-start boundaries. Default: true.
 
 > `optional` **targetSize**: `number`
 
-Defined in: [packages/agentos/src/rag/chunking/SemanticChunker.ts:32](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/chunking/SemanticChunker.ts#L32)
+Defined in: [packages/agentos/src/rag/chunking/SemanticChunker.ts:32](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/chunking/SemanticChunker.ts#L32)
 
 Target chunk size in characters. Default: 1000.

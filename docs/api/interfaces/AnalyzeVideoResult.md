@@ -1,6 +1,6 @@
 # Interface: AnalyzeVideoResult
 
-Defined in: [packages/agentos/src/api/analyzeVideo.ts:105](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/analyzeVideo.ts#L105)
+Defined in: [packages/agentos/src/api/analyzeVideo.ts:105](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/analyzeVideo.ts#L105)
 
 The result returned by [analyzeVideo](../functions/analyzeVideo.md).
 
@@ -13,7 +13,7 @@ when scene detection and description are enabled.
 
 > **description**: `string`
 
-Defined in: [packages/agentos/src/api/analyzeVideo.ts:107](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/analyzeVideo.ts#L107)
+Defined in: [packages/agentos/src/api/analyzeVideo.ts:107](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/analyzeVideo.ts#L107)
 
 Free-form textual description / answer from the analyser.
 
@@ -23,7 +23,7 @@ Free-form textual description / answer from the analyser.
 
 > `optional` **durationSec**: `number`
 
-Defined in: [packages/agentos/src/api/analyzeVideo.ts:115](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/analyzeVideo.ts#L115)
+Defined in: [packages/agentos/src/api/analyzeVideo.ts:115](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/analyzeVideo.ts#L115)
 
 Overall duration of the analysed video in seconds.
 
@@ -33,7 +33,7 @@ Overall duration of the analysed video in seconds.
 
 > `optional` **fullTranscript**: `string`
 
-Defined in: [packages/agentos/src/api/analyzeVideo.ts:121](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/analyzeVideo.ts#L121)
+Defined in: [packages/agentos/src/api/analyzeVideo.ts:121](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/analyzeVideo.ts#L121)
 
 Full transcript when audio transcription was enabled.
 
@@ -43,7 +43,7 @@ Full transcript when audio transcription was enabled.
 
 > `optional` **model**: `string`
 
-Defined in: [packages/agentos/src/api/analyzeVideo.ts:117](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/analyzeVideo.ts#L117)
+Defined in: [packages/agentos/src/api/analyzeVideo.ts:117](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/analyzeVideo.ts#L117)
 
 Model that produced the analysis.
 
@@ -53,7 +53,7 @@ Model that produced the analysis.
 
 > `optional` **objects**: `string`[]
 
-Defined in: [packages/agentos/src/api/analyzeVideo.ts:111](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/analyzeVideo.ts#L111)
+Defined in: [packages/agentos/src/api/analyzeVideo.ts:111](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/analyzeVideo.ts#L111)
 
 Detected objects / entities across the video.
 
@@ -63,7 +63,7 @@ Detected objects / entities across the video.
 
 > `optional` **provider**: `string`
 
-Defined in: [packages/agentos/src/api/analyzeVideo.ts:119](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/analyzeVideo.ts#L119)
+Defined in: [packages/agentos/src/api/analyzeVideo.ts:119](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/analyzeVideo.ts#L119)
 
 Provider that produced the analysis.
 
@@ -73,7 +73,7 @@ Provider that produced the analysis.
 
 > `optional` **providerMetadata**: `Record`\<`string`, `unknown`\>
 
-Defined in: [packages/agentos/src/api/analyzeVideo.ts:125](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/analyzeVideo.ts#L125)
+Defined in: [packages/agentos/src/api/analyzeVideo.ts:125](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/analyzeVideo.ts#L125)
 
 Provider-specific metadata.
 
@@ -83,7 +83,7 @@ Provider-specific metadata.
 
 > `optional` **ragChunkIds**: `string`[]
 
-Defined in: [packages/agentos/src/api/analyzeVideo.ts:123](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/analyzeVideo.ts#L123)
+Defined in: [packages/agentos/src/api/analyzeVideo.ts:123](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/analyzeVideo.ts#L123)
 
 IDs of RAG chunks created, when indexForRAG was enabled.
 
@@ -93,7 +93,7 @@ IDs of RAG chunks created, when indexForRAG was enabled.
 
 > `optional` **scenes**: [`SceneDescription`](SceneDescription.md)[]
 
-Defined in: [packages/agentos/src/api/analyzeVideo.ts:109](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/analyzeVideo.ts#L109)
+Defined in: [packages/agentos/src/api/analyzeVideo.ts:109](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/analyzeVideo.ts#L109)
 
 Detected scene segments with timestamps.
 
@@ -103,6 +103,6 @@ Detected scene segments with timestamps.
 
 > `optional` **text**: `string`[]
 
-Defined in: [packages/agentos/src/api/analyzeVideo.ts:113](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/analyzeVideo.ts#L113)
+Defined in: [packages/agentos/src/api/analyzeVideo.ts:113](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/analyzeVideo.ts#L113)
 
 Detected on-screen or spoken text (OCR / ASR).

@@ -1,6 +1,6 @@
 # Interface: PlanningStrategyPayload
 
-Defined in: [packages/agentos/src/extensions/types.ts:264](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/extensions/types.ts#L264)
+Defined in: [packages/agentos/src/extensions/types.ts:264](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/extensions/types.ts#L264)
 
 Planning strategy payload for custom planning algorithms.
 Strategies can override how plans are generated, refined, and executed.
@@ -11,7 +11,7 @@ Strategies can override how plans are generated, refined, and executed.
 
 > **description**: `string`
 
-Defined in: [packages/agentos/src/extensions/types.ts:268](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/extensions/types.ts#L268)
+Defined in: [packages/agentos/src/extensions/types.ts:268](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/extensions/types.ts#L268)
 
 Strategy description
 
@@ -21,7 +21,7 @@ Strategy description
 
 > **generatePlan**: (`goal`, `context`) => `Promise`\<`unknown`\>
 
-Defined in: [packages/agentos/src/extensions/types.ts:278](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/extensions/types.ts#L278)
+Defined in: [packages/agentos/src/extensions/types.ts:278](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/extensions/types.ts#L278)
 
 The planning function to execute
 
@@ -45,7 +45,7 @@ The planning function to execute
 
 > **name**: `string`
 
-Defined in: [packages/agentos/src/extensions/types.ts:266](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/extensions/types.ts#L266)
+Defined in: [packages/agentos/src/extensions/types.ts:266](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/extensions/types.ts#L266)
 
 Unique strategy name (e.g., 'tree-of-thought', 'reflexion', 'custom-heuristic')
 
@@ -55,7 +55,7 @@ Unique strategy name (e.g., 'tree-of-thought', 'reflexion', 'custom-heuristic')
 
 > **priority**: `number`
 
-Defined in: [packages/agentos/src/extensions/types.ts:270](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/extensions/types.ts#L270)
+Defined in: [packages/agentos/src/extensions/types.ts:270](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/extensions/types.ts#L270)
 
 Priority order when multiple strategies match (higher = preferred)
 
@@ -65,7 +65,7 @@ Priority order when multiple strategies match (higher = preferred)
 
 > `optional` **refinePlan**: (`plan`, `feedback`) => `Promise`\<`unknown`\>
 
-Defined in: [packages/agentos/src/extensions/types.ts:280](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/extensions/types.ts#L280)
+Defined in: [packages/agentos/src/extensions/types.ts:280](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/extensions/types.ts#L280)
 
 Optional refinement function
 
@@ -89,7 +89,7 @@ Optional refinement function
 
 > `optional` **shouldActivate**: (`context`) => `boolean`
 
-Defined in: [packages/agentos/src/extensions/types.ts:272](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/extensions/types.ts#L272)
+Defined in: [packages/agentos/src/extensions/types.ts:272](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/extensions/types.ts#L272)
 
 Optional condition function to determine if this strategy should be used
 

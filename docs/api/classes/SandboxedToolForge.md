@@ -1,6 +1,6 @@
 # Class: SandboxedToolForge
 
-Defined in: [packages/agentos/src/emergent/SandboxedToolForge.ts:134](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/emergent/SandboxedToolForge.ts#L134)
+Defined in: [packages/agentos/src/emergent/SandboxedToolForge.ts:134](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/emergent/SandboxedToolForge.ts#L134)
 
 Runs agent-generated code in an isolated sandbox with strict resource limits.
 
@@ -39,7 +39,7 @@ console.log(result.output); // 5
 
 > **new SandboxedToolForge**(`config?`): `SandboxedToolForge`
 
-Defined in: [packages/agentos/src/emergent/SandboxedToolForge.ts:153](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/emergent/SandboxedToolForge.ts#L153)
+Defined in: [packages/agentos/src/emergent/SandboxedToolForge.ts:153](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/emergent/SandboxedToolForge.ts#L153)
 
 Create a new SandboxedToolForge instance.
 
@@ -62,7 +62,7 @@ Optional configuration overrides. All fields have sensible
 
 > **execute**(`request`): `Promise`\<[`SandboxExecutionResult`](../interfaces/SandboxExecutionResult.md)\>
 
-Defined in: [packages/agentos/src/emergent/SandboxedToolForge.ts:264](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/emergent/SandboxedToolForge.ts#L264)
+Defined in: [packages/agentos/src/emergent/SandboxedToolForge.ts:304](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/emergent/SandboxedToolForge.ts#L304)
 
 Execute agent-generated code in the sandbox.
 
@@ -115,21 +115,7 @@ const result = await forge.execute({
 
 > **validateCode**(`code`, `allowlist`): `object`
 
-Defined in: [packages/agentos/src/emergent/SandboxedToolForge.ts:192](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/emergent/SandboxedToolForge.ts#L192)
-
-Static analysis of code — reject dangerous patterns before execution.
-
-Scans the source string for banned API usage patterns using regex matching.
-If an API is not present in the allowlist, references to it are also flagged.
-
-Checked patterns (always banned):
-- `eval()`, `new Function()`, `require()`, `import`, `process.*`
-- `child_process`, `fs.write*`, `fs.unlink`, `fs.rm`, `fs.rmdir`
-
-Conditionally banned (when not in allowlist):
-- `fetch(` — when `'fetch'` is not in the allowlist
-- `fs.*` — when `'fs.readFile'` is not in the allowlist
-- `crypto.*` — when `'crypto'` is not in the allowlist
+Defined in: [packages/agentos/src/emergent/SandboxedToolForge.ts:232](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/emergent/SandboxedToolForge.ts#L232)
 
 #### Parameters
 
@@ -137,20 +123,13 @@ Conditionally banned (when not in allowlist):
 
 `string`
 
-The raw source code string to validate.
-
 ##### allowlist
 
 [`SandboxAPI`](../type-aliases/SandboxAPI.md)[]
 
-The set of APIs the code is permitted to use.
-
 #### Returns
 
 `object`
-
-An object with `valid: true` if no violations were found, or
-  `valid: false` with a `violations` array describing each flagged pattern.
 
 ##### valid
 
@@ -159,12 +138,3 @@ An object with `valid: true` if no violations were found, or
 ##### violations
 
 > **violations**: `string`[]
-
-#### Example
-
-```ts
-const forge = new SandboxedToolForge();
-const result = forge.validateCode('eval("exploit")', []);
-// result.valid === false
-// result.violations === ['eval() is forbidden']
-```

@@ -1,6 +1,6 @@
 ---
 title: "Tool Permissions & Security Tiers"
-sidebar_position: 5
+sidebar_position: 6
 ---
 
 > Deep dive into the tool permission system, security tiers, and guardrail dispatch model. For the full system overview, see [System Architecture](./system-architecture.md).

@@ -2,7 +2,7 @@
 
 > **ContentModality** = `"text"` \| `"image"` \| `"audio"`
 
-Defined in: [packages/agentos/src/rag/multimodal/types.ts:37](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/multimodal/types.ts#L37)
+Defined in: [packages/agentos/src/rag/multimodal/types.ts:37](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/multimodal/types.ts#L37)
 
 Supported content modalities in the multimodal RAG system.
 

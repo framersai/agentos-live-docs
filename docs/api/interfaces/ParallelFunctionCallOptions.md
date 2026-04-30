@@ -1,6 +1,6 @@
 # Interface: ParallelFunctionCallOptions
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:271](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/structured/output/IStructuredOutputManager.ts#L271)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:271](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/structured/output/IStructuredOutputManager.ts#L271)
 
 Options for parallel function/tool calls.
 
@@ -10,7 +10,7 @@ Options for parallel function/tool calls.
 
 > **functions**: [`FunctionDefinition`](FunctionDefinition.md)[]
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:276](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/structured/output/IStructuredOutputManager.ts#L276)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:276](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/structured/output/IStructuredOutputManager.ts#L276)
 
 Available functions/tools the model can call
 
@@ -20,7 +20,7 @@ Available functions/tools the model can call
 
 > `optional` **maxParallelCalls**: `number`
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:279](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/structured/output/IStructuredOutputManager.ts#L279)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:279](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/structured/output/IStructuredOutputManager.ts#L279)
 
 Maximum number of parallel calls allowed
 
@@ -30,7 +30,7 @@ Maximum number of parallel calls allowed
 
 > `optional` **modelId**: `string`
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:288](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/structured/output/IStructuredOutputManager.ts#L288)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:288](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/structured/output/IStructuredOutputManager.ts#L288)
 
 Model ID to use
 
@@ -40,7 +40,7 @@ Model ID to use
 
 > **prompt**: `string` \| `object`[]
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:273](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/structured/output/IStructuredOutputManager.ts#L273)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:273](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/structured/output/IStructuredOutputManager.ts#L273)
 
 The prompt requesting actions
 
@@ -50,7 +50,7 @@ The prompt requesting actions
 
 > `optional` **providerId**: `string`
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:285](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/structured/output/IStructuredOutputManager.ts#L285)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:285](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/structured/output/IStructuredOutputManager.ts#L285)
 
 LLM provider to use
 
@@ -60,7 +60,7 @@ LLM provider to use
 
 > `optional` **temperature**: `number`
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:291](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/structured/output/IStructuredOutputManager.ts#L291)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:291](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/structured/output/IStructuredOutputManager.ts#L291)
 
 Temperature for generation
 
@@ -70,7 +70,7 @@ Temperature for generation
 
 > `optional` **timeoutMs**: `number`
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:294](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/structured/output/IStructuredOutputManager.ts#L294)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:294](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/structured/output/IStructuredOutputManager.ts#L294)
 
 Timeout in milliseconds
 
@@ -80,6 +80,6 @@ Timeout in milliseconds
 
 > `optional` **toolChoice**: `"none"` \| `"auto"` \| `"required"` \| \{ `function`: \{ `name`: `string`; \}; `type`: `"function"`; \}
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:282](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/structured/output/IStructuredOutputManager.ts#L282)
+Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:282](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/structured/output/IStructuredOutputManager.ts#L282)
 
 Whether functions are required or optional

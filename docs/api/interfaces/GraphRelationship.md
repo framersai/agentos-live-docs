@@ -1,6 +1,6 @@
 # Interface: GraphRelationship
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/IGraphRAG.ts:32](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/retrieval/graph/graphrag/IGraphRAG.ts#L32)
+Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/IGraphRAG.ts:32](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/retrieval/graph/graphrag/IGraphRAG.ts#L32)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/IGraphRAG.ts:3
 
 > **createdAt**: `string`
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/IGraphRAG.ts:41](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/retrieval/graph/graphrag/IGraphRAG.ts#L41)
+Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/IGraphRAG.ts:41](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/retrieval/graph/graphrag/IGraphRAG.ts#L41)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/IGraphRAG.ts:4
 
 > **description**: `string`
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/IGraphRAG.ts:37](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/retrieval/graph/graphrag/IGraphRAG.ts#L37)
+Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/IGraphRAG.ts:37](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/retrieval/graph/graphrag/IGraphRAG.ts#L37)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/IGraphRAG.ts:3
 
 > **id**: `string`
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/IGraphRAG.ts:33](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/retrieval/graph/graphrag/IGraphRAG.ts#L33)
+Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/IGraphRAG.ts:33](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/retrieval/graph/graphrag/IGraphRAG.ts#L33)
 
 ***
 
@@ -32,7 +32,7 @@ Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/IGraphRAG.ts:3
 
 > **properties**: `Record`\<`string`, `unknown`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/IGraphRAG.ts:39](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/retrieval/graph/graphrag/IGraphRAG.ts#L39)
+Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/IGraphRAG.ts:39](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/retrieval/graph/graphrag/IGraphRAG.ts#L39)
 
 ***
 
@@ -40,7 +40,7 @@ Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/IGraphRAG.ts:3
 
 > **sourceDocumentIds**: `string`[]
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/IGraphRAG.ts:40](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/retrieval/graph/graphrag/IGraphRAG.ts#L40)
+Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/IGraphRAG.ts:40](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/retrieval/graph/graphrag/IGraphRAG.ts#L40)
 
 ***
 
@@ -48,7 +48,7 @@ Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/IGraphRAG.ts:4
 
 > **sourceEntityId**: `string`
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/IGraphRAG.ts:34](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/retrieval/graph/graphrag/IGraphRAG.ts#L34)
+Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/IGraphRAG.ts:34](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/retrieval/graph/graphrag/IGraphRAG.ts#L34)
 
 ***
 
@@ -56,7 +56,7 @@ Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/IGraphRAG.ts:3
 
 > **targetEntityId**: `string`
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/IGraphRAG.ts:35](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/retrieval/graph/graphrag/IGraphRAG.ts#L35)
+Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/IGraphRAG.ts:35](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/retrieval/graph/graphrag/IGraphRAG.ts#L35)
 
 ***
 
@@ -64,7 +64,7 @@ Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/IGraphRAG.ts:3
 
 > **type**: `string`
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/IGraphRAG.ts:36](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/retrieval/graph/graphrag/IGraphRAG.ts#L36)
+Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/IGraphRAG.ts:36](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/retrieval/graph/graphrag/IGraphRAG.ts#L36)
 
 ***
 
@@ -72,4 +72,4 @@ Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/IGraphRAG.ts:3
 
 > **weight**: `number`
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/IGraphRAG.ts:38](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/retrieval/graph/graphrag/IGraphRAG.ts#L38)
+Defined in: [packages/agentos/src/memory/retrieval/graph/graphrag/IGraphRAG.ts:38](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/retrieval/graph/graphrag/IGraphRAG.ts#L38)

@@ -1,6 +1,6 @@
 # Interface: RunOptions
 
-Defined in: [runtime/orchestrator.ts:75](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/runtime/orchestrator.ts#L75)
+Defined in: [apps/paracosm/src/runtime/orchestrator.ts:336](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/orchestrator.ts#L336)
 
 ## Properties
 
@@ -8,7 +8,31 @@ Defined in: [runtime/orchestrator.ts:75](https://github.com/framersai/paracosm/b
 
 > `optional` **activeDepartments**: `string`[]
 
-Defined in: [runtime/orchestrator.ts:81](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/runtime/orchestrator.ts#L81)
+Defined in: [apps/paracosm/src/runtime/orchestrator.ts:342](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/orchestrator.ts#L342)
+
+***
+
+### costPreset?
+
+> `optional` **costPreset**: [`CostPreset`](../../engine/type-aliases/CostPreset.md)
+
+Defined in: [apps/paracosm/src/runtime/orchestrator.ts:364](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/orchestrator.ts#L364)
+
+Cost-vs-quality switch for model routing. Defaults to `'quality'`
+which keeps department agents on the flagship tier (gpt-5.4 /
+claude-sonnet-4-6) for reliable tool forging — ~$1-3 per 6-turn run
+on OpenAI. Set to `'economy'` to drop every role to mid/cheap
+(gpt-4o departments, gpt-5.4-nano everything else; haiku on
+Anthropic) — ~$0.20-0.60 per 6-turn run on OpenAI, ~5-10× cheaper.
+
+Economy mode drops forge approval rate by roughly 10-20pp because
+the mid-tier model occasionally violates structured-output schemas
+the judge rejects. Use it for quick iteration / debugging / CI;
+use `'quality'` (default) for publishable or production runs.
+
+Explicit `models` entries always win over the preset, so you can
+mix and match: `{ costPreset: 'economy', models: { departments:
+'gpt-5.4' } }` gives you cheap everything except departments.
 
 ***
 
@@ -16,7 +40,7 @@ Defined in: [runtime/orchestrator.ts:81](https://github.com/framersai/paracosm/b
 
 > `optional` **customEvents**: `object`[]
 
-Defined in: [runtime/orchestrator.ts:84](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/runtime/orchestrator.ts#L84)
+Defined in: [apps/paracosm/src/runtime/orchestrator.ts:345](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/orchestrator.ts#L345)
 
 #### description
 
@@ -36,7 +60,7 @@ Defined in: [runtime/orchestrator.ts:84](https://github.com/framersai/paracosm/b
 
 > `optional` **economics**: [`ResolvedEconomicsProfile`](ResolvedEconomicsProfile.md)
 
-Defined in: [runtime/orchestrator.ts:86](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/runtime/orchestrator.ts#L86)
+Defined in: [apps/paracosm/src/runtime/orchestrator.ts:365](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/orchestrator.ts#L365)
 
 ***
 
@@ -44,7 +68,7 @@ Defined in: [runtime/orchestrator.ts:86](https://github.com/framersai/paracosm/b
 
 > `optional` **execution**: `Partial`\<`SimulationExecutionConfig`\>
 
-Defined in: [runtime/orchestrator.ts:90](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/runtime/orchestrator.ts#L90)
+Defined in: [apps/paracosm/src/runtime/orchestrator.ts:369](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/orchestrator.ts#L369)
 
 ***
 
@@ -52,7 +76,7 @@ Defined in: [runtime/orchestrator.ts:90](https://github.com/framersai/paracosm/b
 
 > `optional` **initialPopulation**: `number`
 
-Defined in: [runtime/orchestrator.ts:87](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/runtime/orchestrator.ts#L87)
+Defined in: [apps/paracosm/src/runtime/orchestrator.ts:366](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/orchestrator.ts#L366)
 
 ***
 
@@ -60,7 +84,7 @@ Defined in: [runtime/orchestrator.ts:87](https://github.com/framersai/paracosm/b
 
 > `optional` **liveSearch**: `boolean`
 
-Defined in: [runtime/orchestrator.ts:80](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/runtime/orchestrator.ts#L80)
+Defined in: [apps/paracosm/src/runtime/orchestrator.ts:341](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/orchestrator.ts#L341)
 
 ***
 
@@ -68,7 +92,7 @@ Defined in: [runtime/orchestrator.ts:80](https://github.com/framersai/paracosm/b
 
 > `optional` **maxTurns**: `number`
 
-Defined in: [runtime/orchestrator.ts:76](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/runtime/orchestrator.ts#L76)
+Defined in: [apps/paracosm/src/runtime/orchestrator.ts:337](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/orchestrator.ts#L337)
 
 ***
 
@@ -76,7 +100,7 @@ Defined in: [runtime/orchestrator.ts:76](https://github.com/framersai/paracosm/b
 
 > `optional` **models**: `Partial`\<[`SimulationModelConfig`](../../engine/interfaces/SimulationModelConfig.md)\>
 
-Defined in: [runtime/orchestrator.ts:85](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/runtime/orchestrator.ts#L85)
+Defined in: [apps/paracosm/src/runtime/orchestrator.ts:346](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/orchestrator.ts#L346)
 
 ***
 
@@ -84,7 +108,7 @@ Defined in: [runtime/orchestrator.ts:85](https://github.com/framersai/paracosm/b
 
 > `optional` **onEvent**: (`event`) => `void`
 
-Defined in: [runtime/orchestrator.ts:83](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/runtime/orchestrator.ts#L83)
+Defined in: [apps/paracosm/src/runtime/orchestrator.ts:344](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/orchestrator.ts#L344)
 
 #### Parameters
 
@@ -102,7 +126,7 @@ Defined in: [runtime/orchestrator.ts:83](https://github.com/framersai/paracosm/b
 
 > `optional` **provider**: [`LlmProvider`](../../engine/type-aliases/LlmProvider.md)
 
-Defined in: [runtime/orchestrator.ts:82](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/runtime/orchestrator.ts#L82)
+Defined in: [apps/paracosm/src/runtime/orchestrator.ts:343](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/orchestrator.ts#L343)
 
 ***
 
@@ -110,7 +134,7 @@ Defined in: [runtime/orchestrator.ts:82](https://github.com/framersai/paracosm/b
 
 > `optional` **scenario**: [`ScenarioPackage`](../../engine/interfaces/ScenarioPackage.md)
 
-Defined in: [runtime/orchestrator.ts:91](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/runtime/orchestrator.ts#L91)
+Defined in: [apps/paracosm/src/runtime/orchestrator.ts:370](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/orchestrator.ts#L370)
 
 ***
 
@@ -118,7 +142,7 @@ Defined in: [runtime/orchestrator.ts:91](https://github.com/framersai/paracosm/b
 
 > `optional` **seed**: `number`
 
-Defined in: [runtime/orchestrator.ts:77](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/runtime/orchestrator.ts#L77)
+Defined in: [apps/paracosm/src/runtime/orchestrator.ts:338](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/orchestrator.ts#L338)
 
 ***
 
@@ -126,7 +150,7 @@ Defined in: [runtime/orchestrator.ts:77](https://github.com/framersai/paracosm/b
 
 > `optional` **signal**: `AbortSignal`
 
-Defined in: [runtime/orchestrator.ts:102](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/runtime/orchestrator.ts#L102)
+Defined in: [apps/paracosm/src/runtime/orchestrator.ts:381](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/orchestrator.ts#L381)
 
 Cancellation signal. When `.aborted` flips to true, the turn loop
 short-circuits at the next turn boundary, emits a `sim_aborted`
@@ -143,7 +167,7 @@ the partial results they already accumulated in the event buffer.
 
 > `optional` **startingPolitics**: `StartingPolitics`
 
-Defined in: [runtime/orchestrator.ts:89](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/runtime/orchestrator.ts#L89)
+Defined in: [apps/paracosm/src/runtime/orchestrator.ts:368](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/orchestrator.ts#L368)
 
 ***
 
@@ -151,7 +175,7 @@ Defined in: [runtime/orchestrator.ts:89](https://github.com/framersai/paracosm/b
 
 > `optional` **startingResources**: `StartingResources`
 
-Defined in: [runtime/orchestrator.ts:88](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/runtime/orchestrator.ts#L88)
+Defined in: [apps/paracosm/src/runtime/orchestrator.ts:367](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/orchestrator.ts#L367)
 
 ***
 
@@ -159,7 +183,7 @@ Defined in: [runtime/orchestrator.ts:88](https://github.com/framersai/paracosm/b
 
 > `optional` **startYear**: `number`
 
-Defined in: [runtime/orchestrator.ts:78](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/runtime/orchestrator.ts#L78)
+Defined in: [apps/paracosm/src/runtime/orchestrator.ts:339](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/orchestrator.ts#L339)
 
 ***
 
@@ -167,4 +191,4 @@ Defined in: [runtime/orchestrator.ts:78](https://github.com/framersai/paracosm/b
 
 > `optional` **yearsPerTurn**: `number`
 
-Defined in: [runtime/orchestrator.ts:79](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/runtime/orchestrator.ts#L79)
+Defined in: [apps/paracosm/src/runtime/orchestrator.ts:340](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/orchestrator.ts#L340)

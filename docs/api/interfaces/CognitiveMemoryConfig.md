@@ -1,6 +1,6 @@
 # Interface: CognitiveMemoryConfig
 
-Defined in: [packages/agentos/src/memory/core/config.ts:212](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/core/config.ts#L212)
+Defined in: [packages/agentos/src/memory/core/config.ts:224](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/config.ts#L224)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/memory/core/config.ts:212](https://github.com/
 
 > **agentId**: `string`
 
-Defined in: [packages/agentos/src/memory/core/config.ts:220](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/core/config.ts#L220)
+Defined in: [packages/agentos/src/memory/core/config.ts:232](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/config.ts#L232)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [packages/agentos/src/memory/core/config.ts:220](https://github.com/
 
 > `optional` **archive**: `IMemoryArchive`
 
-Defined in: [packages/agentos/src/memory/core/config.ts:301](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/core/config.ts#L301)
+Defined in: [packages/agentos/src/memory/core/config.ts:313](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/config.ts#L313)
 
 Optional memory archive for write-ahead verbatim preservation.
 
@@ -40,7 +40,7 @@ IMemoryArchive — the archive contract
 
 > `optional` **brain**: [`SqliteBrain`](../classes/SqliteBrain.md)
 
-Defined in: [packages/agentos/src/memory/core/config.ts:273](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/core/config.ts#L273)
+Defined in: [packages/agentos/src/memory/core/config.ts:285](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/config.ts#L285)
 
 Optional SqliteBrain instance for durable persistence.
 
@@ -68,7 +68,7 @@ undefined (in-memory only)
 
 > `optional` **cognitiveMechanisms**: [`CognitiveMechanismsConfig`](CognitiveMechanismsConfig.md)
 
-Defined in: [packages/agentos/src/memory/core/config.ts:246](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/core/config.ts#L246)
+Defined in: [packages/agentos/src/memory/core/config.ts:258](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/config.ts#L258)
 
 Optional per-mechanism cognitive science extensions (reconsolidation, RIF, FOK, etc.).
 
@@ -78,7 +78,7 @@ Optional per-mechanism cognitive science extensions (reconsolidation, RIF, FOK, 
 
 > `optional` **collectionPrefix**: `string`
 
-Defined in: [packages/agentos/src/memory/core/config.ts:256](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/core/config.ts#L256)
+Defined in: [packages/agentos/src/memory/core/config.ts:268](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/config.ts#L268)
 
 #### Default
 
@@ -92,7 +92,7 @@ Defined in: [packages/agentos/src/memory/core/config.ts:256](https://github.com/
 
 > `optional` **consolidation**: `Partial`\<[`ConsolidationConfig`](ConsolidationConfig.md)\>
 
-Defined in: [packages/agentos/src/memory/core/config.ts:242](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/core/config.ts#L242)
+Defined in: [packages/agentos/src/memory/core/config.ts:254](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/config.ts#L254)
 
 ***
 
@@ -100,7 +100,7 @@ Defined in: [packages/agentos/src/memory/core/config.ts:242](https://github.com/
 
 > `optional` **decay**: `Partial`\<[`DecayConfig`](DecayConfig.md)\>
 
-Defined in: [packages/agentos/src/memory/core/config.ts:233](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/core/config.ts#L233)
+Defined in: [packages/agentos/src/memory/core/config.ts:245](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/config.ts#L245)
 
 ***
 
@@ -108,7 +108,7 @@ Defined in: [packages/agentos/src/memory/core/config.ts:233](https://github.com/
 
 > **embeddingManager**: [`IEmbeddingManager`](IEmbeddingManager.md)
 
-Defined in: [packages/agentos/src/memory/core/config.ts:217](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/core/config.ts#L217)
+Defined in: [packages/agentos/src/memory/core/config.ts:229](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/config.ts#L229)
 
 ***
 
@@ -116,7 +116,7 @@ Defined in: [packages/agentos/src/memory/core/config.ts:217](https://github.com/
 
 > `optional` **encoding**: `Partial`\<[`EncodingConfig`](EncodingConfig.md)\>
 
-Defined in: [packages/agentos/src/memory/core/config.ts:232](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/core/config.ts#L232)
+Defined in: [packages/agentos/src/memory/core/config.ts:244](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/config.ts#L244)
 
 ***
 
@@ -124,7 +124,7 @@ Defined in: [packages/agentos/src/memory/core/config.ts:232](https://github.com/
 
 > `optional` **featureDetectionLlmInvoker**: (`systemPrompt`, `userPrompt`) => `Promise`\<`string`\>
 
-Defined in: [packages/agentos/src/memory/core/config.ts:229](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/core/config.ts#L229)
+Defined in: [packages/agentos/src/memory/core/config.ts:241](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/config.ts#L241)
 
 Required when strategy is 'llm' or 'hybrid'.
 
@@ -148,7 +148,7 @@ Required when strategy is 'llm' or 'hybrid'.
 
 > **featureDetectionStrategy**: `"hybrid"` \| `"llm"` \| `"keyword"`
 
-Defined in: [packages/agentos/src/memory/core/config.ts:227](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/core/config.ts#L227)
+Defined in: [packages/agentos/src/memory/core/config.ts:239](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/config.ts#L239)
 
 #### Default
 
@@ -162,7 +162,7 @@ Defined in: [packages/agentos/src/memory/core/config.ts:227](https://github.com/
 
 > `optional` **graph**: `Partial`\<[`MemoryGraphConfig`](MemoryGraphConfig.md)\>
 
-Defined in: [packages/agentos/src/memory/core/config.ts:241](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/core/config.ts#L241)
+Defined in: [packages/agentos/src/memory/core/config.ts:253](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/config.ts#L253)
 
 ***
 
@@ -170,7 +170,7 @@ Defined in: [packages/agentos/src/memory/core/config.ts:241](https://github.com/
 
 > `optional` **infiniteContext**: `Partial`\<[`InfiniteContextConfig`](InfiniteContextConfig.md)\>
 
-Defined in: [packages/agentos/src/memory/core/config.ts:250](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/core/config.ts#L250)
+Defined in: [packages/agentos/src/memory/core/config.ts:262](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/config.ts#L262)
 
 Infinite context window config. Enables transparent compaction for forever conversations.
 
@@ -180,7 +180,7 @@ Infinite context window config. Enables transparent compaction for forever conve
 
 > **knowledgeGraph**: [`IKnowledgeGraph`](IKnowledgeGraph.md)
 
-Defined in: [packages/agentos/src/memory/core/config.ts:215](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/core/config.ts#L215)
+Defined in: [packages/agentos/src/memory/core/config.ts:227](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/config.ts#L227)
 
 ***
 
@@ -188,7 +188,7 @@ Defined in: [packages/agentos/src/memory/core/config.ts:215](https://github.com/
 
 > `optional` **maxContextTokens**: `number`
 
-Defined in: [packages/agentos/src/memory/core/config.ts:252](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/core/config.ts#L252)
+Defined in: [packages/agentos/src/memory/core/config.ts:264](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/config.ts#L264)
 
 Max context window size in tokens (required for infinite context).
 
@@ -198,7 +198,7 @@ Max context window size in tokens (required for infinite context).
 
 > **moodProvider**: () => [`PADState`](PADState.md)
 
-Defined in: [packages/agentos/src/memory/core/config.ts:223](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/core/config.ts#L223)
+Defined in: [packages/agentos/src/memory/core/config.ts:235](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/config.ts#L235)
 
 Callback to get current mood from MoodEngine or similar.
 
@@ -212,7 +212,7 @@ Callback to get current mood from MoodEngine or similar.
 
 > `optional` **observer**: `Partial`\<[`ObserverConfig`](ObserverConfig.md)\>
 
-Defined in: [packages/agentos/src/memory/core/config.ts:239](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/core/config.ts#L239)
+Defined in: [packages/agentos/src/memory/core/config.ts:251](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/config.ts#L251)
 
 ***
 
@@ -220,7 +220,7 @@ Defined in: [packages/agentos/src/memory/core/config.ts:239](https://github.com/
 
 > `optional` **reflector**: `Partial`\<[`ReflectorConfig`](ReflectorConfig.md)\>
 
-Defined in: [packages/agentos/src/memory/core/config.ts:240](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/core/config.ts#L240)
+Defined in: [packages/agentos/src/memory/core/config.ts:252](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/config.ts#L252)
 
 ***
 
@@ -228,7 +228,7 @@ Defined in: [packages/agentos/src/memory/core/config.ts:240](https://github.com/
 
 > `optional` **rerankerService**: `RerankerService`
 
-Defined in: [packages/agentos/src/memory/core/config.ts:289](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/core/config.ts#L289)
+Defined in: [packages/agentos/src/memory/core/config.ts:301](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/config.ts#L301)
 
 Optional reranker service for post-retrieval quality improvement.
 
@@ -253,7 +253,7 @@ undefined (no reranking)
 
 > `optional` **tokenBudget**: `Partial`\<[`MemoryBudgetAllocation`](MemoryBudgetAllocation.md)\>
 
-Defined in: [packages/agentos/src/memory/core/config.ts:236](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/core/config.ts#L236)
+Defined in: [packages/agentos/src/memory/core/config.ts:248](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/config.ts#L248)
 
 ***
 
@@ -261,7 +261,7 @@ Defined in: [packages/agentos/src/memory/core/config.ts:236](https://github.com/
 
 > **traits**: [`HexacoTraits`](HexacoTraits.md)
 
-Defined in: [packages/agentos/src/memory/core/config.ts:221](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/core/config.ts#L221)
+Defined in: [packages/agentos/src/memory/core/config.ts:233](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/config.ts#L233)
 
 ***
 
@@ -269,7 +269,7 @@ Defined in: [packages/agentos/src/memory/core/config.ts:221](https://github.com/
 
 > **vectorStore**: [`IVectorStore`](IVectorStore.md)
 
-Defined in: [packages/agentos/src/memory/core/config.ts:216](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/core/config.ts#L216)
+Defined in: [packages/agentos/src/memory/core/config.ts:228](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/config.ts#L228)
 
 ***
 
@@ -277,7 +277,7 @@ Defined in: [packages/agentos/src/memory/core/config.ts:216](https://github.com/
 
 > **workingMemory**: `IWorkingMemory`
 
-Defined in: [packages/agentos/src/memory/core/config.ts:214](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/core/config.ts#L214)
+Defined in: [packages/agentos/src/memory/core/config.ts:226](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/config.ts#L226)
 
 ***
 
@@ -285,7 +285,7 @@ Defined in: [packages/agentos/src/memory/core/config.ts:214](https://github.com/
 
 > `optional` **workingMemoryCapacity**: `number`
 
-Defined in: [packages/agentos/src/memory/core/config.ts:235](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/core/config.ts#L235)
+Defined in: [packages/agentos/src/memory/core/config.ts:247](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/config.ts#L247)
 
 #### Default
 

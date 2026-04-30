@@ -1,6 +1,6 @@
 # Class: TelnyxVoiceProvider
 
-Defined in: [packages/agentos/src/channels/telephony/providers/telnyx.ts:150](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/telephony/providers/telnyx.ts#L150)
+Defined in: [packages/agentos/src/channels/telephony/providers/telnyx.ts:150](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/channels/telephony/providers/telnyx.ts#L150)
 
 Telnyx voice call provider.
 
@@ -28,7 +28,7 @@ const provider = new TelnyxVoiceProvider({
 
 > **new TelnyxVoiceProvider**(`config`): `TelnyxVoiceProvider`
 
-Defined in: [packages/agentos/src/channels/telephony/providers/telnyx.ts:169](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/telephony/providers/telnyx.ts#L169)
+Defined in: [packages/agentos/src/channels/telephony/providers/telnyx.ts:169](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/channels/telephony/providers/telnyx.ts#L169)
 
 #### Parameters
 
@@ -48,7 +48,7 @@ Telnyx credentials and optional overrides.
 
 > `readonly` **name**: `"telnyx"`
 
-Defined in: [packages/agentos/src/channels/telephony/providers/telnyx.ts:152](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/telephony/providers/telnyx.ts#L152)
+Defined in: [packages/agentos/src/channels/telephony/providers/telnyx.ts:152](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/channels/telephony/providers/telnyx.ts#L152)
 
 Provider identifier, always `'telnyx'`.
 
@@ -62,7 +62,7 @@ Provider identifier, always `'telnyx'`.
 
 > **hangupCall**(`input`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/channels/telephony/providers/telnyx.ts:358](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/telephony/providers/telnyx.ts#L358)
+Defined in: [packages/agentos/src/channels/telephony/providers/telnyx.ts:358](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/channels/telephony/providers/telnyx.ts#L358)
 
 Hang up an active call via the Telnyx Call Control hangup action.
 
@@ -91,7 +91,7 @@ Contains the Telnyx `call_control_id` to hang up.
 
 > **initiateCall**(`input`): `Promise`\<[`InitiateCallResult`](../interfaces/InitiateCallResult.md)\>
 
-Defined in: [packages/agentos/src/channels/telephony/providers/telnyx.ts:324](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/telephony/providers/telnyx.ts#L324)
+Defined in: [packages/agentos/src/channels/telephony/providers/telnyx.ts:324](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/channels/telephony/providers/telnyx.ts#L324)
 
 Initiate an outbound call via the Telnyx Call Control v2 API.
 
@@ -129,7 +129,7 @@ Never throws; returns `{ success: false, error: '...' }` on failure.
 
 > **parseWebhookEvent**(`ctx`): [`WebhookParseResult`](../interfaces/WebhookParseResult.md)
 
-Defined in: [packages/agentos/src/channels/telephony/providers/telnyx.ts:250](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/telephony/providers/telnyx.ts#L250)
+Defined in: [packages/agentos/src/channels/telephony/providers/telnyx.ts:250](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/channels/telephony/providers/telnyx.ts#L250)
 
 Parse a Telnyx webhook JSON body into normalized [NormalizedCallEvent](../type-aliases/NormalizedCallEvent.md)s.
 
@@ -169,7 +169,7 @@ Parsed result containing zero or more normalized events.
 
 > **playTts**(`input`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/channels/telephony/providers/telnyx.ts:379](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/telephony/providers/telnyx.ts#L379)
+Defined in: [packages/agentos/src/channels/telephony/providers/telnyx.ts:379](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/channels/telephony/providers/telnyx.ts#L379)
 
 Speak text into a live call using Telnyx's text-to-speech speak action.
 
@@ -198,7 +198,7 @@ TTS parameters (text, optional voice, call ID).
 
 > **verifyWebhook**(`ctx`): [`WebhookVerificationResult`](../interfaces/WebhookVerificationResult.md)
 
-Defined in: [packages/agentos/src/channels/telephony/providers/telnyx.ts:196](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/telephony/providers/telnyx.ts#L196)
+Defined in: [packages/agentos/src/channels/telephony/providers/telnyx.ts:196](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/channels/telephony/providers/telnyx.ts#L196)
 
 Verify an incoming Telnyx webhook using Ed25519 signature verification.
 

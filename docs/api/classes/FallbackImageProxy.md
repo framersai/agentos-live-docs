@@ -1,6 +1,6 @@
 # Class: FallbackImageProxy
 
-Defined in: [packages/agentos/src/media/images/FallbackImageProxy.ts:138](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/images/FallbackImageProxy.ts#L138)
+Defined in: [packages/agentos/src/media/images/FallbackImageProxy.ts:138](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/media/images/FallbackImageProxy.ts#L138)
 
 An [IImageProvider](../interfaces/IImageProvider.md) that wraps an ordered chain of image providers
 and implements automatic failover for every operation.
@@ -32,7 +32,7 @@ failing.
 
 > **new FallbackImageProxy**(`chain`, `emitter`): `FallbackImageProxy`
 
-Defined in: [packages/agentos/src/media/images/FallbackImageProxy.ts:164](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/images/FallbackImageProxy.ts#L164)
+Defined in: [packages/agentos/src/media/images/FallbackImageProxy.ts:164](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/media/images/FallbackImageProxy.ts#L164)
 
 Creates a new FallbackImageProxy wrapping the given provider chain.
 
@@ -71,7 +71,7 @@ const proxy = new FallbackImageProxy(
 
 > `readonly` `optional` **defaultModelId**: `string`
 
-Defined in: [packages/agentos/src/media/images/FallbackImageProxy.ts:146](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/images/FallbackImageProxy.ts#L146)
+Defined in: [packages/agentos/src/media/images/FallbackImageProxy.ts:146](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/media/images/FallbackImageProxy.ts#L146)
 
 Default model from the first provider, if set.
 
@@ -85,7 +85,7 @@ Default model from the first provider, if set.
 
 > `readonly` **isInitialized**: `boolean` = `true`
 
-Defined in: [packages/agentos/src/media/images/FallbackImageProxy.ts:143](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/images/FallbackImageProxy.ts#L143)
+Defined in: [packages/agentos/src/media/images/FallbackImageProxy.ts:143](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/media/images/FallbackImageProxy.ts#L143)
 
 Always `true` — the proxy is ready as soon as it is constructed.
 
@@ -99,7 +99,7 @@ Always `true` — the proxy is ready as soon as it is constructed.
 
 > `readonly` **providerId**: `string`
 
-Defined in: [packages/agentos/src/media/images/FallbackImageProxy.ts:140](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/images/FallbackImageProxy.ts#L140)
+Defined in: [packages/agentos/src/media/images/FallbackImageProxy.ts:140](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/media/images/FallbackImageProxy.ts#L140)
 
 Identifier derived from the first provider in the chain.
 
@@ -113,7 +113,7 @@ Identifier derived from the first provider in the chain.
 
 > **editImage**(`request`): `Promise`\<[`ImageGenerationResult`](../interfaces/ImageGenerationResult.md)\>
 
-Defined in: [packages/agentos/src/media/images/FallbackImageProxy.ts:218](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/images/FallbackImageProxy.ts#L218)
+Defined in: [packages/agentos/src/media/images/FallbackImageProxy.ts:218](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/media/images/FallbackImageProxy.ts#L218)
 
 Edit an image, falling back through providers that support editing.
 
@@ -148,7 +148,7 @@ When every provider fails or does not support editing.
 
 > **generateImage**(`request`): `Promise`\<[`ImageGenerationResult`](../interfaces/ImageGenerationResult.md)\>
 
-Defined in: [packages/agentos/src/media/images/FallbackImageProxy.ts:197](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/images/FallbackImageProxy.ts#L197)
+Defined in: [packages/agentos/src/media/images/FallbackImageProxy.ts:197](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/media/images/FallbackImageProxy.ts#L197)
 
 Generate an image, falling back through the provider chain on failure.
 
@@ -184,7 +184,7 @@ When the chain is empty.
 
 > **initialize**(`_config`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/media/images/FallbackImageProxy.ts:180](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/images/FallbackImageProxy.ts#L180)
+Defined in: [packages/agentos/src/media/images/FallbackImageProxy.ts:180](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/media/images/FallbackImageProxy.ts#L180)
 
 No-op initialisation — individual providers in the chain should already
 be initialised before being passed to the proxy.
@@ -209,7 +209,7 @@ be initialised before being passed to the proxy.
 
 > **listAvailableModels**(): `Promise`\<[`ImageModelInfo`](../interfaces/ImageModelInfo.md)[]\>
 
-Defined in: [packages/agentos/src/media/images/FallbackImageProxy.ts:294](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/images/FallbackImageProxy.ts#L294)
+Defined in: [packages/agentos/src/media/images/FallbackImageProxy.ts:294](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/media/images/FallbackImageProxy.ts#L294)
 
 Returns the model list from the first provider in the chain that
 implements `listAvailableModels`. Returns an empty array when none do.
@@ -228,7 +228,7 @@ implements `listAvailableModels`. Returns an empty array when none do.
 
 > **shutdown**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/media/images/FallbackImageProxy.ts:312](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/images/FallbackImageProxy.ts#L312)
+Defined in: [packages/agentos/src/media/images/FallbackImageProxy.ts:312](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/media/images/FallbackImageProxy.ts#L312)
 
 Shuts down all providers in the chain. Errors are caught per-provider
 so a single provider's failure does not prevent the others from
@@ -248,7 +248,7 @@ cleaning up.
 
 > **upscaleImage**(`request`): `Promise`\<[`ImageGenerationResult`](../interfaces/ImageGenerationResult.md)\>
 
-Defined in: [packages/agentos/src/media/images/FallbackImageProxy.ts:244](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/images/FallbackImageProxy.ts#L244)
+Defined in: [packages/agentos/src/media/images/FallbackImageProxy.ts:244](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/media/images/FallbackImageProxy.ts#L244)
 
 Upscale an image, falling back through providers that support upscaling.
 
@@ -280,7 +280,7 @@ When every provider fails or does not support upscaling.
 
 > **variateImage**(`request`): `Promise`\<[`ImageGenerationResult`](../interfaces/ImageGenerationResult.md)\>
 
-Defined in: [packages/agentos/src/media/images/FallbackImageProxy.ts:271](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/media/images/FallbackImageProxy.ts#L271)
+Defined in: [packages/agentos/src/media/images/FallbackImageProxy.ts:271](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/media/images/FallbackImageProxy.ts#L271)
 
 Generate variations of an image, falling back through providers that
 support the operation.

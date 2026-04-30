@@ -1,6 +1,6 @@
 # Interface: Reflection
 
-Defined in: [packages/agentos/src/memory/pipeline/observation/ObservationReflector.ts:37](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/pipeline/observation/ObservationReflector.ts#L37)
+Defined in: [packages/agentos/src/memory/pipeline/observation/ObservationReflector.ts:37](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/pipeline/observation/ObservationReflector.ts#L37)
 
 A high-level insight derived from multiple compressed observations.
 Reflections are the highest tier in the observation hierarchy:
@@ -12,7 +12,7 @@ Reflections are the highest tier in the observation hierarchy:
 
 > **confidence**: `number`
 
-Defined in: [packages/agentos/src/memory/pipeline/observation/ObservationReflector.ts:45](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/pipeline/observation/ObservationReflector.ts#L45)
+Defined in: [packages/agentos/src/memory/pipeline/observation/ObservationReflector.ts:45](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/pipeline/observation/ObservationReflector.ts#L45)
 
 Confidence in this reflection (0-1).
 
@@ -22,7 +22,7 @@ Confidence in this reflection (0-1).
 
 > **id**: `string`
 
-Defined in: [packages/agentos/src/memory/pipeline/observation/ObservationReflector.ts:39](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/pipeline/observation/ObservationReflector.ts#L39)
+Defined in: [packages/agentos/src/memory/pipeline/observation/ObservationReflector.ts:39](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/pipeline/observation/ObservationReflector.ts#L39)
 
 Unique identifier for this reflection.
 
@@ -32,7 +32,7 @@ Unique identifier for this reflection.
 
 > **insight**: `string`
 
-Defined in: [packages/agentos/src/memory/pipeline/observation/ObservationReflector.ts:41](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/pipeline/observation/ObservationReflector.ts#L41)
+Defined in: [packages/agentos/src/memory/pipeline/observation/ObservationReflector.ts:41](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/pipeline/observation/ObservationReflector.ts#L41)
 
 High-level insight text (1-3 sentences).
 
@@ -42,7 +42,7 @@ High-level insight text (1-3 sentences).
 
 > **patternType**: [`ReflectionPatternType`](../type-aliases/ReflectionPatternType.md)
 
-Defined in: [packages/agentos/src/memory/pipeline/observation/ObservationReflector.ts:43](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/pipeline/observation/ObservationReflector.ts#L43)
+Defined in: [packages/agentos/src/memory/pipeline/observation/ObservationReflector.ts:43](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/pipeline/observation/ObservationReflector.ts#L43)
 
 Pattern type classifier.
 
@@ -52,7 +52,7 @@ Pattern type classifier.
 
 > **sourceIds**: `string`[]
 
-Defined in: [packages/agentos/src/memory/pipeline/observation/ObservationReflector.ts:47](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/pipeline/observation/ObservationReflector.ts#L47)
+Defined in: [packages/agentos/src/memory/pipeline/observation/ObservationReflector.ts:47](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/pipeline/observation/ObservationReflector.ts#L47)
 
 IDs of the source compressed observations.
 
@@ -62,7 +62,7 @@ IDs of the source compressed observations.
 
 > **temporal**: `object`
 
-Defined in: [packages/agentos/src/memory/pipeline/observation/ObservationReflector.ts:49](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/pipeline/observation/ObservationReflector.ts#L49)
+Defined in: [packages/agentos/src/memory/pipeline/observation/ObservationReflector.ts:49](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/pipeline/observation/ObservationReflector.ts#L49)
 
 Temporal span covered by this reflection.
 

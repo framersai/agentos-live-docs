@@ -1,6 +1,6 @@
 # Interface: SpeechVadProvider
 
-Defined in: [packages/agentos/src/speech/types.ts:162](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/speech/types.ts#L162)
+Defined in: [packages/agentos/src/speech/types.ts:162](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/speech/types.ts#L162)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/speech/types.ts:162](https://github.com/framer
 
 > `readonly` `optional` **displayName**: `string`
 
-Defined in: [packages/agentos/src/speech/types.ts:164](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/speech/types.ts#L164)
+Defined in: [packages/agentos/src/speech/types.ts:164](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/speech/types.ts#L164)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [packages/agentos/src/speech/types.ts:164](https://github.com/framer
 
 > `readonly` **id**: `string`
 
-Defined in: [packages/agentos/src/speech/types.ts:163](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/speech/types.ts#L163)
+Defined in: [packages/agentos/src/speech/types.ts:163](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/speech/types.ts#L163)
 
 ## Methods
 
@@ -24,7 +24,7 @@ Defined in: [packages/agentos/src/speech/types.ts:163](https://github.com/framer
 
 > `optional` **dispose**(): `void`
 
-Defined in: [packages/agentos/src/speech/types.ts:168](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/speech/types.ts#L168)
+Defined in: [packages/agentos/src/speech/types.ts:168](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/speech/types.ts#L168)
 
 #### Returns
 
@@ -36,7 +36,7 @@ Defined in: [packages/agentos/src/speech/types.ts:168](https://github.com/framer
 
 > `optional` **getNoiseProfile**(): [`NoiseProfile`](NoiseProfile.md) \| `null`
 
-Defined in: [packages/agentos/src/speech/types.ts:167](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/speech/types.ts#L167)
+Defined in: [packages/agentos/src/speech/types.ts:167](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/speech/types.ts#L167)
 
 #### Returns
 
@@ -48,7 +48,7 @@ Defined in: [packages/agentos/src/speech/types.ts:167](https://github.com/framer
 
 > **processFrame**(`frame`): [`SpeechVadDecision`](SpeechVadDecision.md)
 
-Defined in: [packages/agentos/src/speech/types.ts:165](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/speech/types.ts#L165)
+Defined in: [packages/agentos/src/speech/types.ts:165](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/speech/types.ts#L165)
 
 #### Parameters
 
@@ -66,7 +66,7 @@ Defined in: [packages/agentos/src/speech/types.ts:165](https://github.com/framer
 
 > **reset**(): `void`
 
-Defined in: [packages/agentos/src/speech/types.ts:166](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/speech/types.ts#L166)
+Defined in: [packages/agentos/src/speech/types.ts:166](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/speech/types.ts#L166)
 
 #### Returns
 

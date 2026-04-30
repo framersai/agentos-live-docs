@@ -1,6 +1,6 @@
 # Interface: RaptorInputChunk
 
-Defined in: [packages/agentos/src/rag/raptor/RaptorTree.ts:73](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/raptor/RaptorTree.ts#L73)
+Defined in: [packages/agentos/src/rag/raptor/RaptorTree.ts:73](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/raptor/RaptorTree.ts#L73)
 
 Input chunk for building the RAPTOR tree.
 
@@ -14,7 +14,7 @@ RaptorInputChunk
 
 > **id**: `string`
 
-Defined in: [packages/agentos/src/rag/raptor/RaptorTree.ts:75](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/raptor/RaptorTree.ts#L75)
+Defined in: [packages/agentos/src/rag/raptor/RaptorTree.ts:75](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/raptor/RaptorTree.ts#L75)
 
 Unique chunk identifier.
 
@@ -24,7 +24,7 @@ Unique chunk identifier.
 
 > `optional` **metadata**: `Record`\<`string`, `unknown`\>
 
-Defined in: [packages/agentos/src/rag/raptor/RaptorTree.ts:79](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/raptor/RaptorTree.ts#L79)
+Defined in: [packages/agentos/src/rag/raptor/RaptorTree.ts:79](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/raptor/RaptorTree.ts#L79)
 
 Optional metadata to preserve in the tree.
 
@@ -34,6 +34,6 @@ Optional metadata to preserve in the tree.
 
 > **text**: `string`
 
-Defined in: [packages/agentos/src/rag/raptor/RaptorTree.ts:77](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/rag/raptor/RaptorTree.ts#L77)
+Defined in: [packages/agentos/src/rag/raptor/RaptorTree.ts:77](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/raptor/RaptorTree.ts#L77)
 
 Chunk text content.

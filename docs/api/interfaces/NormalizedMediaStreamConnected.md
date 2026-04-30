@@ -1,6 +1,6 @@
 # Interface: NormalizedMediaStreamConnected
 
-Defined in: [packages/agentos/src/channels/telephony/types.ts:339](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/telephony/types.ts#L339)
+Defined in: [packages/agentos/src/channels/telephony/types.ts:339](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/channels/telephony/types.ts#L339)
 
 A bidirectional media stream WebSocket has connected successfully.
 
@@ -14,7 +14,7 @@ A bidirectional media stream WebSocket has connected successfully.
 
 > **eventId**: `string`
 
-Defined in: [packages/agentos/src/channels/telephony/types.ts:266](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/telephony/types.ts#L266)
+Defined in: [packages/agentos/src/channels/telephony/types.ts:266](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/channels/telephony/types.ts#L266)
 
 Provider-assigned event ID for idempotency.
 
@@ -28,7 +28,7 @@ Provider-assigned event ID for idempotency.
 
 > **kind**: `"media-stream-connected"`
 
-Defined in: [packages/agentos/src/channels/telephony/types.ts:340](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/telephony/types.ts#L340)
+Defined in: [packages/agentos/src/channels/telephony/types.ts:340](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/channels/telephony/types.ts#L340)
 
 ***
 
@@ -36,7 +36,7 @@ Defined in: [packages/agentos/src/channels/telephony/types.ts:340](https://githu
 
 > **providerCallId**: `string`
 
-Defined in: [packages/agentos/src/channels/telephony/types.ts:268](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/telephony/types.ts#L268)
+Defined in: [packages/agentos/src/channels/telephony/types.ts:268](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/channels/telephony/types.ts#L268)
 
 Provider-assigned call ID.
 
@@ -50,7 +50,7 @@ Provider-assigned call ID.
 
 > **streamSid**: `string`
 
-Defined in: [packages/agentos/src/channels/telephony/types.ts:342](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/telephony/types.ts#L342)
+Defined in: [packages/agentos/src/channels/telephony/types.ts:342](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/channels/telephony/types.ts#L342)
 
 Provider-assigned stream identifier for routing audio frames.
 
@@ -60,7 +60,7 @@ Provider-assigned stream identifier for routing audio frames.
 
 > **timestamp**: `number`
 
-Defined in: [packages/agentos/src/channels/telephony/types.ts:270](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/channels/telephony/types.ts#L270)
+Defined in: [packages/agentos/src/channels/telephony/types.ts:270](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/channels/telephony/types.ts#L270)
 
 Unix timestamp (ms).
 

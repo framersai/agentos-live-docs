@@ -1,6 +1,7 @@
 ---
 title: "Agent Memory Tools"
 sidebar_position: 6
+description: 'Reference for the 6 agent-facing memory tools (memory_add, memory_update, memory_delete, memory_merge, memory_search, memory_reflect) that let agents manage their own long-term memory.'
 ---
 
 > Six ITool implementations let agents read, write, search, and consolidate their own memory traces at runtime. Register them as a pack or individually.
@@ -29,7 +30,7 @@ All tools implement the `ITool` interface and belong to the `memory` category.
 ```ts
 import { createMemoryToolsPack, Memory } from '@framers/agentos';
 
-const memory = await Memory.create({ path: './brain.sqlite', selfImprove: true });
+const memory = await Memory.createSqlite({ path: './brain.sqlite', selfImprove: true });
 
 // Register all 6 tools at once
 for (const tool of memory.createTools()) {
@@ -42,7 +43,7 @@ for (const tool of memory.createTools()) {
 ```ts
 import { AgentOS, Memory } from '@framers/agentos';
 
-const memory = await Memory.create({ path: './brain.sqlite', selfImprove: true });
+const memory = await Memory.createSqlite({ path: './brain.sqlite', selfImprove: true });
 const agentos = new AgentOS();
 
 await agentos.initialize({

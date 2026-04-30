@@ -1,6 +1,6 @@
 # Interface: ContextMessage
 
-Defined in: [packages/agentos/src/memory/pipeline/context/types.ts:52](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/pipeline/context/types.ts#L52)
+Defined in: [packages/agentos/src/memory/pipeline/context/types.ts:52](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/pipeline/context/types.ts#L52)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/memory/pipeline/context/types.ts:52](https://g
 
 > `optional` **compacted**: `boolean`
 
-Defined in: [packages/agentos/src/memory/pipeline/context/types.ts:59](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/pipeline/context/types.ts#L59)
+Defined in: [packages/agentos/src/memory/pipeline/context/types.ts:59](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/pipeline/context/types.ts#L59)
 
 Set to true after this message has been compacted into a summary.
 
@@ -18,7 +18,7 @@ Set to true after this message has been compacted into a summary.
 
 > **content**: `string`
 
-Defined in: [packages/agentos/src/memory/pipeline/context/types.ts:54](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/pipeline/context/types.ts#L54)
+Defined in: [packages/agentos/src/memory/pipeline/context/types.ts:54](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/pipeline/context/types.ts#L54)
 
 ***
 
@@ -26,7 +26,7 @@ Defined in: [packages/agentos/src/memory/pipeline/context/types.ts:54](https://g
 
 > **role**: `"user"` \| `"tool"` \| `"system"` \| `"assistant"`
 
-Defined in: [packages/agentos/src/memory/pipeline/context/types.ts:53](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/pipeline/context/types.ts#L53)
+Defined in: [packages/agentos/src/memory/pipeline/context/types.ts:53](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/pipeline/context/types.ts#L53)
 
 ***
 
@@ -34,7 +34,7 @@ Defined in: [packages/agentos/src/memory/pipeline/context/types.ts:53](https://g
 
 > **timestamp**: `number`
 
-Defined in: [packages/agentos/src/memory/pipeline/context/types.ts:55](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/pipeline/context/types.ts#L55)
+Defined in: [packages/agentos/src/memory/pipeline/context/types.ts:55](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/pipeline/context/types.ts#L55)
 
 ***
 
@@ -42,7 +42,7 @@ Defined in: [packages/agentos/src/memory/pipeline/context/types.ts:55](https://g
 
 > **tokenEstimate**: `number`
 
-Defined in: [packages/agentos/src/memory/pipeline/context/types.ts:57](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/pipeline/context/types.ts#L57)
+Defined in: [packages/agentos/src/memory/pipeline/context/types.ts:57](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/pipeline/context/types.ts#L57)
 
 ***
 
@@ -50,4 +50,4 @@ Defined in: [packages/agentos/src/memory/pipeline/context/types.ts:57](https://g
 
 > **turnIndex**: `number`
 
-Defined in: [packages/agentos/src/memory/pipeline/context/types.ts:56](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/pipeline/context/types.ts#L56)
+Defined in: [packages/agentos/src/memory/pipeline/context/types.ts:56](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/pipeline/context/types.ts#L56)

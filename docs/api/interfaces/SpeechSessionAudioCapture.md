@@ -1,6 +1,6 @@
 # Interface: SpeechSessionAudioCapture
 
-Defined in: [packages/agentos/src/speech/types.ts:258](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/speech/types.ts#L258)
+Defined in: [packages/agentos/src/speech/types.ts:258](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/speech/types.ts#L258)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/speech/types.ts:258](https://github.com/framer
 
 > **audioBuffer**: `Buffer`
 
-Defined in: [packages/agentos/src/speech/types.ts:259](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/speech/types.ts#L259)
+Defined in: [packages/agentos/src/speech/types.ts:259](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/speech/types.ts#L259)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [packages/agentos/src/speech/types.ts:259](https://github.com/framer
 
 > **durationMs**: `number`
 
-Defined in: [packages/agentos/src/speech/types.ts:263](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/speech/types.ts#L263)
+Defined in: [packages/agentos/src/speech/types.ts:263](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/speech/types.ts#L263)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: [packages/agentos/src/speech/types.ts:263](https://github.com/framer
 
 > **fileName**: `string`
 
-Defined in: [packages/agentos/src/speech/types.ts:261](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/speech/types.ts#L261)
+Defined in: [packages/agentos/src/speech/types.ts:261](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/speech/types.ts#L261)
 
 ***
 
@@ -32,7 +32,7 @@ Defined in: [packages/agentos/src/speech/types.ts:261](https://github.com/framer
 
 > **frameCount**: `number`
 
-Defined in: [packages/agentos/src/speech/types.ts:264](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/speech/types.ts#L264)
+Defined in: [packages/agentos/src/speech/types.ts:264](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/speech/types.ts#L264)
 
 ***
 
@@ -40,7 +40,7 @@ Defined in: [packages/agentos/src/speech/types.ts:264](https://github.com/framer
 
 > **mimeType**: `string`
 
-Defined in: [packages/agentos/src/speech/types.ts:260](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/speech/types.ts#L260)
+Defined in: [packages/agentos/src/speech/types.ts:260](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/speech/types.ts#L260)
 
 ***
 
@@ -48,4 +48,4 @@ Defined in: [packages/agentos/src/speech/types.ts:260](https://github.com/framer
 
 > **sampleRate**: `number`
 
-Defined in: [packages/agentos/src/speech/types.ts:262](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/speech/types.ts#L262)
+Defined in: [packages/agentos/src/speech/types.ts:262](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/speech/types.ts#L262)

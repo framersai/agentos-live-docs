@@ -1,6 +1,6 @@
 # Interface: SkillMetadata
 
-Defined in: [packages/agentos/src/skills/types.ts:92](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/skills/types.ts#L92)
+Defined in: [packages/agentos/src/skills/types.ts:92](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/skills/types.ts#L92)
 
 Skill metadata from SKILL.md frontmatter.
 
@@ -10,7 +10,7 @@ Skill metadata from SKILL.md frontmatter.
 
 > `optional` **always**: `boolean`
 
-Defined in: [packages/agentos/src/skills/types.ts:94](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/skills/types.ts#L94)
+Defined in: [packages/agentos/src/skills/types.ts:94](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/skills/types.ts#L94)
 
 Always include this skill regardless of requirements
 
@@ -20,7 +20,7 @@ Always include this skill regardless of requirements
 
 > `optional` **emoji**: `string`
 
-Defined in: [packages/agentos/src/skills/types.ts:103](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/skills/types.ts#L103)
+Defined in: [packages/agentos/src/skills/types.ts:103](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/skills/types.ts#L103)
 
 Emoji for display
 
@@ -30,7 +30,7 @@ Emoji for display
 
 > `optional` **homepage**: `string`
 
-Defined in: [packages/agentos/src/skills/types.ts:106](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/skills/types.ts#L106)
+Defined in: [packages/agentos/src/skills/types.ts:106](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/skills/types.ts#L106)
 
 Homepage URL
 
@@ -40,7 +40,7 @@ Homepage URL
 
 > `optional` **install**: [`SkillInstallSpec`](SkillInstallSpec.md)[]
 
-Defined in: [packages/agentos/src/skills/types.ts:115](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/skills/types.ts#L115)
+Defined in: [packages/agentos/src/skills/types.ts:115](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/skills/types.ts#L115)
 
 Installation specifications
 
@@ -50,7 +50,7 @@ Installation specifications
 
 > `optional` **os**: readonly `string`[]
 
-Defined in: [packages/agentos/src/skills/types.ts:109](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/skills/types.ts#L109)
+Defined in: [packages/agentos/src/skills/types.ts:109](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/skills/types.ts#L109)
 
 Limit to specific OS platforms
 
@@ -60,7 +60,7 @@ Limit to specific OS platforms
 
 > `optional` **primaryEnv**: `string`
 
-Defined in: [packages/agentos/src/skills/types.ts:100](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/skills/types.ts#L100)
+Defined in: [packages/agentos/src/skills/types.ts:100](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/skills/types.ts#L100)
 
 Primary environment variable for this skill
 
@@ -70,7 +70,7 @@ Primary environment variable for this skill
 
 > `optional` **requires**: [`SkillRequirements`](SkillRequirements.md)
 
-Defined in: [packages/agentos/src/skills/types.ts:112](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/skills/types.ts#L112)
+Defined in: [packages/agentos/src/skills/types.ts:112](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/skills/types.ts#L112)
 
 Requirements for eligibility
 
@@ -80,6 +80,6 @@ Requirements for eligibility
 
 > `optional` **skillKey**: `string`
 
-Defined in: [packages/agentos/src/skills/types.ts:97](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/skills/types.ts#L97)
+Defined in: [packages/agentos/src/skills/types.ts:97](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/skills/types.ts#L97)
 
 Override skill key (default: folder name)

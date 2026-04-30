@@ -1,6 +1,6 @@
 # Class: SpeechRuntime
 
-Defined in: [packages/agentos/src/speech/SpeechRuntime.ts:28](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/speech/SpeechRuntime.ts#L28)
+Defined in: [packages/agentos/src/speech/SpeechRuntime.ts:28](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/speech/SpeechRuntime.ts#L28)
 
 ## Constructors
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/speech/SpeechRuntime.ts:28](https://github.com
 
 > **new SpeechRuntime**(`config?`): `SpeechRuntime`
 
-Defined in: [packages/agentos/src/speech/SpeechRuntime.ts:36](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/speech/SpeechRuntime.ts#L36)
+Defined in: [packages/agentos/src/speech/SpeechRuntime.ts:36](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/speech/SpeechRuntime.ts#L36)
 
 #### Parameters
 
@@ -26,7 +26,7 @@ Defined in: [packages/agentos/src/speech/SpeechRuntime.ts:36](https://github.com
 
 > `readonly` **resolver**: [`SpeechProviderResolver`](SpeechProviderResolver.md)
 
-Defined in: [packages/agentos/src/speech/SpeechRuntime.ts:34](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/speech/SpeechRuntime.ts#L34)
+Defined in: [packages/agentos/src/speech/SpeechRuntime.ts:34](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/speech/SpeechRuntime.ts#L34)
 
 Prefer resolver-based provider resolution over direct registry lookups.
 
@@ -36,7 +36,7 @@ Prefer resolver-based provider resolution over direct registry lookups.
 
 > **createSession**(`config?`): [`SpeechSession`](SpeechSession.md)
 
-Defined in: [packages/agentos/src/speech/SpeechRuntime.ts:167](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/speech/SpeechRuntime.ts#L167)
+Defined in: [packages/agentos/src/speech/SpeechRuntime.ts:167](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/speech/SpeechRuntime.ts#L167)
 
 #### Parameters
 
@@ -54,7 +54,7 @@ Defined in: [packages/agentos/src/speech/SpeechRuntime.ts:167](https://github.co
 
 > **getProvider**(`id`): [`SpeechToTextProvider`](../interfaces/SpeechToTextProvider.md) \| [`TextToSpeechProvider`](../interfaces/TextToSpeechProvider.md) \| [`SpeechVadProvider`](../interfaces/SpeechVadProvider.md) \| [`WakeWordProvider`](../interfaces/WakeWordProvider.md) \| `undefined`
 
-Defined in: [packages/agentos/src/speech/SpeechRuntime.ts:192](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/speech/SpeechRuntime.ts#L192)
+Defined in: [packages/agentos/src/speech/SpeechRuntime.ts:192](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/speech/SpeechRuntime.ts#L192)
 
 #### Parameters
 
@@ -72,7 +72,7 @@ Defined in: [packages/agentos/src/speech/SpeechRuntime.ts:192](https://github.co
 
 > **getProviderRegistry**(): [`SpeechProviderRegistry`](SpeechProviderRegistry.md)
 
-Defined in: [packages/agentos/src/speech/SpeechRuntime.ts:96](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/speech/SpeechRuntime.ts#L96)
+Defined in: [packages/agentos/src/speech/SpeechRuntime.ts:96](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/speech/SpeechRuntime.ts#L96)
 
 #### Returns
 
@@ -84,7 +84,7 @@ Defined in: [packages/agentos/src/speech/SpeechRuntime.ts:96](https://github.com
 
 > **getSTT**(`requirements?`): [`SpeechToTextProvider`](../interfaces/SpeechToTextProvider.md) \| `undefined`
 
-Defined in: [packages/agentos/src/speech/SpeechRuntime.ts:147](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/speech/SpeechRuntime.ts#L147)
+Defined in: [packages/agentos/src/speech/SpeechRuntime.ts:147](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/speech/SpeechRuntime.ts#L147)
 
 Resolve an STT provider via the new [SpeechProviderResolver](SpeechProviderResolver.md).
 Returns `undefined` instead of throwing when no provider matches.
@@ -105,7 +105,7 @@ Returns `undefined` instead of throwing when no provider matches.
 
 > **getTTS**(`requirements?`): [`TextToSpeechProvider`](../interfaces/TextToSpeechProvider.md) \| `undefined`
 
-Defined in: [packages/agentos/src/speech/SpeechRuntime.ts:159](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/speech/SpeechRuntime.ts#L159)
+Defined in: [packages/agentos/src/speech/SpeechRuntime.ts:159](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/speech/SpeechRuntime.ts#L159)
 
 Resolve a TTS provider via the new [SpeechProviderResolver](SpeechProviderResolver.md).
 Returns `undefined` instead of throwing when no provider matches.
@@ -126,7 +126,7 @@ Returns `undefined` instead of throwing when no provider matches.
 
 > **hydrateFromExtensionManager**(`manager`): `void`
 
-Defined in: [packages/agentos/src/speech/SpeechRuntime.ts:116](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/speech/SpeechRuntime.ts#L116)
+Defined in: [packages/agentos/src/speech/SpeechRuntime.ts:116](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/speech/SpeechRuntime.ts#L116)
 
 #### Parameters
 
@@ -144,7 +144,7 @@ Defined in: [packages/agentos/src/speech/SpeechRuntime.ts:116](https://github.co
 
 > **listProviders**(): [`SpeechProviderCatalogEntry`](../interfaces/SpeechProviderCatalogEntry.md) & `object`[]
 
-Defined in: [packages/agentos/src/speech/SpeechRuntime.ts:185](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/speech/SpeechRuntime.ts#L185)
+Defined in: [packages/agentos/src/speech/SpeechRuntime.ts:185](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/speech/SpeechRuntime.ts#L185)
 
 #### Returns
 
@@ -156,7 +156,7 @@ Defined in: [packages/agentos/src/speech/SpeechRuntime.ts:185](https://github.co
 
 > **registerSttProvider**(`provider`): `void`
 
-Defined in: [packages/agentos/src/speech/SpeechRuntime.ts:100](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/speech/SpeechRuntime.ts#L100)
+Defined in: [packages/agentos/src/speech/SpeechRuntime.ts:100](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/speech/SpeechRuntime.ts#L100)
 
 #### Parameters
 
@@ -174,7 +174,7 @@ Defined in: [packages/agentos/src/speech/SpeechRuntime.ts:100](https://github.co
 
 > **registerTtsProvider**(`provider`): `void`
 
-Defined in: [packages/agentos/src/speech/SpeechRuntime.ts:104](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/speech/SpeechRuntime.ts#L104)
+Defined in: [packages/agentos/src/speech/SpeechRuntime.ts:104](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/speech/SpeechRuntime.ts#L104)
 
 #### Parameters
 
@@ -192,7 +192,7 @@ Defined in: [packages/agentos/src/speech/SpeechRuntime.ts:104](https://github.co
 
 > **registerVadProvider**(`provider`): `void`
 
-Defined in: [packages/agentos/src/speech/SpeechRuntime.ts:108](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/speech/SpeechRuntime.ts#L108)
+Defined in: [packages/agentos/src/speech/SpeechRuntime.ts:108](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/speech/SpeechRuntime.ts#L108)
 
 #### Parameters
 
@@ -210,7 +210,7 @@ Defined in: [packages/agentos/src/speech/SpeechRuntime.ts:108](https://github.co
 
 > **registerWakeWordProvider**(`provider`): `void`
 
-Defined in: [packages/agentos/src/speech/SpeechRuntime.ts:112](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/speech/SpeechRuntime.ts#L112)
+Defined in: [packages/agentos/src/speech/SpeechRuntime.ts:112](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/speech/SpeechRuntime.ts#L112)
 
 #### Parameters
 

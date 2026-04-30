@@ -1,6 +1,6 @@
 # Interface: IContentFeatureDetector
 
-Defined in: [packages/agentos/src/memory/core/encoding/ContentFeatureDetector.ts:18](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/core/encoding/ContentFeatureDetector.ts#L18)
+Defined in: [packages/agentos/src/memory/core/encoding/ContentFeatureDetector.ts:18](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/encoding/ContentFeatureDetector.ts#L18)
 
 ## Methods
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/memory/core/encoding/ContentFeatureDetector.ts
 
 > **detect**(`text`): `Promise`\<[`ContentFeatures`](ContentFeatures.md)\>
 
-Defined in: [packages/agentos/src/memory/core/encoding/ContentFeatureDetector.ts:19](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/memory/core/encoding/ContentFeatureDetector.ts#L19)
+Defined in: [packages/agentos/src/memory/core/encoding/ContentFeatureDetector.ts:19](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/encoding/ContentFeatureDetector.ts#L19)
 
 #### Parameters
 

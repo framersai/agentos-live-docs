@@ -107,7 +107,7 @@ const snapshot = await createCuratedSkillSnapshot({ skills: ['github', 'weather'
 ---
 
 ### [@framers/agentos-skills](https://github.com/framersai/agentos-skills)
-**Skills Content** — 69 curated SKILL.md prompt modules + `registry.json` index.
+**Skills Content** — 88 curated SKILL.md prompt modules + `registry.json` index.
 
 ```bash
 npm install @framers/agentos-skills
@@ -117,13 +117,33 @@ This is the content package for skills. The runtime engine (SkillLoader, SkillRe
 
 ```
 @framers/agentos/skills               <- Engine (SkillLoader, SkillRegistry, path utils)
-@framers/agentos-skills               <- Content (69 SKILL.md files + registry.json)
+@framers/agentos-skills               <- Content (88 SKILL.md files + registry.json)
 @framers/agentos-skills-registry      <- Catalog SDK (SKILLS_CATALOG, query helpers, factories)
 ```
 
 ---
 
 ## Applications
+
+### [Paracosm](https://github.com/framersai/paracosm)
+**AI Agent Swarm Simulation Engine** — Define worlds as JSON, assign AI leaders with HEXACO personality profiles, and watch their decisions compound into measurably different outcomes from identical starting conditions. Built on `@framers/agentos`.
+
+```bash
+npm install paracosm
+```
+
+
+
+
+**Features:**
+- Universal `RunArtifact` schema at `paracosm/schema` covering turn-loop civilization sims, batch-trajectory digital twins, and batch-point forecasts
+- HEXACO personality-driven commander decisions with runtime tool forging through AgentOS's `EmergentCapabilityEngine`
+- Deterministic kernel: same seed plus same crises equals replayable, diff-able runs
+- `SubjectConfig` and `InterventionConfig` input primitives for digital-twin adoption
+
+🌐 **Live demo:** [paracosm.agentos.sh/sim](https://paracosm.agentos.sh/sim) · **Docs:** [paracosm.agentos.sh/docs](https://paracosm.agentos.sh/docs)
+
+---
 
 ### [agentos.sh](https://github.com/framersai/agentos.sh)
 **Documentation Website** — Official documentation and marketing site.
@@ -160,7 +180,7 @@ npm install wunderland
 | Resource | Link |
 |----------|------|
 | Documentation | [agentos.sh/docs](https://agentos.sh/docs) |
-| API Reference | [agentos-live-docs branch](https://github.com/framersai/agentos/tree/agentos-live-docs) |
+| API Reference | [docs.agentos.sh/api](https://docs.agentos.sh/api/) |
 | npm | [@framers/agentos](https://www.npmjs.com/package/@framers/agentos) |
 | Discord | [Join Community](https://discord.gg/usEkfCeQxs) |
 | Twitter | [@framersai](https://twitter.com/framersai) |

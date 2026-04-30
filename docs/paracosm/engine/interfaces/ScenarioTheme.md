@@ -1,6 +1,6 @@
 # Interface: ScenarioTheme
 
-Defined in: [engine/types.ts:39](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/types.ts#L39)
+Defined in: [apps/paracosm/src/engine/types.ts:39](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L39)
 
 Visual theme for a scenario. Applied to the dashboard via CSS custom properties.
 
@@ -10,7 +10,7 @@ Visual theme for a scenario. Applied to the dashboard via CSS custom properties.
 
 > **accentColor**: `string`
 
-Defined in: [engine/types.ts:41](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/types.ts#L41)
+Defined in: [apps/paracosm/src/engine/types.ts:41](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L41)
 
 ***
 
@@ -18,7 +18,7 @@ Defined in: [engine/types.ts:41](https://github.com/framersai/paracosm/blob/4460
 
 > **cssVariables**: `Record`\<`string`, `string`\>
 
-Defined in: [engine/types.ts:43](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/types.ts#L43)
+Defined in: [apps/paracosm/src/engine/types.ts:43](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L43)
 
 CSS custom properties injected into :root on scenario load
 
@@ -28,4 +28,4 @@ CSS custom properties injected into :root on scenario load
 
 > **primaryColor**: `string`
 
-Defined in: [engine/types.ts:40](https://github.com/framersai/paracosm/blob/4460134be69867eda5cc8dfb2df653cefb7431d1/src/engine/types.ts#L40)
+Defined in: [apps/paracosm/src/engine/types.ts:40](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L40)

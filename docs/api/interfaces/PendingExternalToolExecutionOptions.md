@@ -1,6 +1,6 @@
 # Interface: PendingExternalToolExecutionOptions
 
-Defined in: [packages/agentos/src/api/runtime/resumeExternalToolRequestWithRegisteredTools.ts:43](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/runtime/resumeExternalToolRequestWithRegisteredTools.ts#L43)
+Defined in: [packages/agentos/src/api/runtime/resumeExternalToolRequestWithRegisteredTools.ts:43](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/runtime/resumeExternalToolRequestWithRegisteredTools.ts#L43)
 
 ## Extended by
 
@@ -12,7 +12,7 @@ Defined in: [packages/agentos/src/api/runtime/resumeExternalToolRequestWithRegis
 
 > `optional` **correlationId**: `string`
 
-Defined in: [packages/agentos/src/api/runtime/resumeExternalToolRequestWithRegisteredTools.ts:58](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/runtime/resumeExternalToolRequestWithRegisteredTools.ts#L58)
+Defined in: [packages/agentos/src/api/runtime/resumeExternalToolRequestWithRegisteredTools.ts:58](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/runtime/resumeExternalToolRequestWithRegisteredTools.ts#L58)
 
 Optional correlation ID for tool execution tracing. Defaults to the pending
 stream ID when omitted.
@@ -23,7 +23,7 @@ stream ID when omitted.
 
 > `optional` **externalTools**: [`ExternalToolRegistry`](../type-aliases/ExternalToolRegistry.md)
 
-Defined in: [packages/agentos/src/api/runtime/resumeExternalToolRequestWithRegisteredTools.ts:69](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/runtime/resumeExternalToolRequestWithRegisteredTools.ts#L69)
+Defined in: [packages/agentos/src/api/runtime/resumeExternalToolRequestWithRegisteredTools.ts:69](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/runtime/resumeExternalToolRequestWithRegisteredTools.ts#L69)
 
 Optional map, array, or iterable of host-managed external tools to use
 when a tool name is not registered in AgentOS itself.
@@ -34,7 +34,7 @@ when a tool name is not registered in AgentOS itself.
 
 > `optional` **fallbackExternalToolHandler**: [`PendingExternalToolHandler`](../type-aliases/PendingExternalToolHandler.md)
 
-Defined in: [packages/agentos/src/api/runtime/resumeExternalToolRequestWithRegisteredTools.ts:64](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/runtime/resumeExternalToolRequestWithRegisteredTools.ts#L64)
+Defined in: [packages/agentos/src/api/runtime/resumeExternalToolRequestWithRegisteredTools.ts:64](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/runtime/resumeExternalToolRequestWithRegisteredTools.ts#L64)
 
 Optional fallback for pending external tool calls that are not registered
 in AgentOS. Use this when the same persisted pause can mix AgentOS-
@@ -46,7 +46,7 @@ registered tools with custom host-managed tools.
 
 > `optional` **organizationId**: `string`
 
-Defined in: [packages/agentos/src/api/runtime/resumeExternalToolRequestWithRegisteredTools.ts:53](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/runtime/resumeExternalToolRequestWithRegisteredTools.ts#L53)
+Defined in: [packages/agentos/src/api/runtime/resumeExternalToolRequestWithRegisteredTools.ts:53](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/runtime/resumeExternalToolRequestWithRegisteredTools.ts#L53)
 
 Trusted runtime-only organization context to propagate into both
 `userContext.organizationId` and `sessionData.organizationId`.
@@ -57,7 +57,7 @@ Trusted runtime-only organization context to propagate into both
 
 > `optional` **userContext**: `Partial`\<[`UserContext`](UserContext.md)\>
 
-Defined in: [packages/agentos/src/api/runtime/resumeExternalToolRequestWithRegisteredTools.ts:48](https://github.com/framersai/agentos/blob/9cd876525a0929142090c143309112844b6928f9/src/api/runtime/resumeExternalToolRequestWithRegisteredTools.ts#L48)
+Defined in: [packages/agentos/src/api/runtime/resumeExternalToolRequestWithRegisteredTools.ts:48](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/runtime/resumeExternalToolRequestWithRegisteredTools.ts#L48)
 
 Optional additional user-context fields to merge into the execution
 context. `pendingRequest.userId` always wins.
