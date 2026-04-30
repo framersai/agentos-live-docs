@@ -1,6 +1,6 @@
 ---
 title: "70.2% on LongMemEval-M: First Open-Source Library Above 65% on the 1.5M-Token Variant"
-description: "AgentOS hits 70.2% [66.0%, 74.0%] on LongMemEval-M at Phase B N=500 at $0.0078 per correct ($7.80 per 1,000 memory-grounded answers over a 1.5M-token haystack). +4.5 pp above the LongMemEval paper's academic ceiling, statistically tied with AgentBrain's closed-source 71.7%."
+description: "AgentOS hits 70.2% [66.0%, 74.0%] on LongMemEval-M at Phase B N=500 at $0.0078 per correct ($7.80 per 1,000 memory-grounded answers over a 1.5M-token haystack). competitive with the strongest published M results in the LongMemEval paper, statistically tied with AgentBrain's closed-source 71.7%."
 authors: [jddunn]
 audience: engineer
 tags: [memory, benchmarks, longmemeval, longmemeval-m, top-k, reader-router, scale, semantic-embedding]
@@ -16,7 +16,7 @@ The number that moved this benchmark wasn't a new architecture. It was a configu
 
 LongMemEval ships two variants: S (115K tokens, 50 sessions per haystack) and M (1.5M tokens, 500 sessions per haystack). Every other open-source memory library publishes only the easier S number. The M variant is harder by an order of magnitude in token count, and no open-source memory library has published an end-to-end QA accuracy above 65% on M with full methodology disclosure.
 
-AgentOS hits **70.2% [66.0%, 74.0%]** on LongMemEval-M at Phase B N=500, validated. That number sits **+4.5 pp above the LongMemEval paper's published academic-baseline ceiling of 65.7%** (Wu et al., ICLR 2025, [arXiv:2410.10813](https://arxiv.org/abs/2410.10813), Table 3) and is **statistically tied with [AgentBrain's](https://github.com/AgentBrainHQ) closed-source SaaS 71.7%**. **Cost per correct: $0.0078** ($7.80 per 1,000 memory-grounded answers over the 1.5M-token haystack). The prior top-K=50 configuration on the same architecture cost $0.0505 per correct ($50.50 per 1,000 calls).
+AgentOS hits **70.2% [66.0%, 74.0%]** on LongMemEval-M at Phase B N=500, validated. That number sits **competitive with the strongest published M results in the LongMemEval paper. At matched Top-5 retrieval, +4.5 above the paper's round-level configuration (65.7%) and 1.2 below the session-level configuration (71.4%); the paper's strongest GPT-4o result is 72.0% at round-level Top-10** (Wu et al., ICLR 2025, [arXiv:2410.10813](https://arxiv.org/abs/2410.10813), Table 3) and is **statistically tied with [AgentBrain's](https://github.com/AgentBrainHQ) closed-source SaaS 71.7%**. **Cost per correct: $0.0078** ($7.80 per 1,000 memory-grounded answers over the 1.5M-token haystack). The prior top-K=50 configuration on the same architecture cost $0.0505 per correct ($50.50 per 1,000 calls).
 
 <!-- truncate -->
 
@@ -24,7 +24,7 @@ AgentOS hits **70.2% [66.0%, 74.0%]** on LongMemEval-M at Phase B N=500, validat
 
 The previous M Phase B headline was 57.6% [53.2%, 61.8%] at `--reader-top-k 50`. The LongMemEval paper's strongest published M configuration uses `top-5` (Wu et al., Table 3). We reran Phase B at full N=500 with `--reader-top-k 5` and held every other knob constant: same retrieval pipeline, same `text-embedding-3-small` embedder, same per-category reader router, same M-tuned ablation flags (HyDE on, rerank-candidate-multiplier 5).
 
-Aggregate accuracy: **70.2% [66.0%, 74.0%]**. +12.6 pp over 57.6%, CIs non-overlapping. +4.5 pp above the academic ceiling.
+Aggregate accuracy: **70.2% [66.0%, 74.0%]**. +12.6 pp over 57.6%, CIs non-overlapping. +4.5 above the paper's round-Top-5 baseline (65.7%); the paper's overall strongest GPT-4o is 72.0% at round-Top-10.
 
 | Metric | Top-K=50 (prior) | Top-K=5 (this post) | Δ |
 |---|---:|---:|---:|
@@ -74,7 +74,9 @@ Verified across Mem0, Mastra, Hindsight, Letta, Zep, Cognee, EmergenceMem, Super
 |---|---|---:|---:|---|
 | **agentos-bench (this post)** | **MIT** | 85.6% | **70.2% [66.0%, 74.0%]** | Phase B N=500, full methodology |
 | AgentBrain | closed-source SaaS | not published | 71.7% (Test 0) | requires hosted Brain endpoint |
-| LongMemEval paper academic baseline | open repo | not published | 65.7% | Wu et al., Table 3 |
+| LongMemEval paper, strongest GPT-4o (round Top-10) | open repo | not published | 72.0% | Wu et al., Table 3 |
+| LongMemEval paper, GPT-4o session Top-5 | open repo | not published | 71.4% | Wu et al., Table 3 |
+| LongMemEval paper, GPT-4o round Top-5 | open repo | not published | 65.7% | Wu et al., Table 3 |
 | Mem0 v3 | Apache 2.0 | 93.4% | not published | reports S only |
 | Mastra OM | Apache 2.0 | 84.2-94.9% | not published | reports S only |
 | Zep | Apache 2.0 | 71.2% | not published | "due to gpt-4o's 128k context window we chose S over M" |

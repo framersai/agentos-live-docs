@@ -21,7 +21,7 @@ This page is the canonical comparison table. Every cell links to its primary sou
 ## TL;DR
 
 - **LongMemEval-S at full N=500, gpt-4o reader**: AgentOS at **85.6%** is +1.4 points above Mastra OM gpt-4o (84.23%) at the matched reader. $0.0090 per correct, 3.6-second median latency.
-- **LongMemEval-M at full N=500, gpt-4o reader**: AgentOS at **70.2%** is +4.5 points above the LongMemEval paper's strongest published M result (65.7%, [Wu et al. ICLR 2025, Table 3](https://arxiv.org/abs/2410.10813)). First open-source library on the public record above 65% on the M variant. Closest published number is AgentBrain's 71.7% from their closed-source SaaS.
+- **LongMemEval-M at full N=500, gpt-4o reader**: AgentOS at **70.2%** is competitive with the strongest published M results in the LongMemEval paper ([Wu et al. ICLR 2025, Table 3](https://arxiv.org/abs/2410.10813)). The paper's three primary GPT-4o configurations: round Top-5 65.7% (we're +4.5), session Top-5 71.4% (we're 1.2 below), round Top-10 72.0% (we're 1.8 below at the harder Top-5 retrieval budget). First open-source library above 65% on M with publicly reproducible methodology. Closest published external number is AgentBrain's 71.7% from their closed-source SaaS.
 - **15 adjacent stress-tested configurations all regress** against the 85.6% headline. Locally Pareto-optimal in the tested parameter space.
 
 ## LongMemEval-S Phase B (115K tokens, 50 sessions per haystack)
@@ -58,7 +58,9 @@ The harder variant. M's haystacks exceed every production context window: GPT-4o
 |---|---:|---|---|
 | AgentBrain | 71.7% (Test 0) | closed-source SaaS, requires hosted endpoint | [github.com/AgentBrainHQ](https://github.com/AgentBrainHQ) |
 | **🚀 AgentOS (sem-embed + reader-router + top-K=5)** | **70.2%** | **Apache-2.0** | [70.2% post](/blog/2026/04/29/longmemeval-m-70-with-topk5) |
-| LongMemEval paper academic baseline | 65.7% | open repo | [Wu et al. ICLR 2025, Table 3](https://arxiv.org/abs/2410.10813) |
+| LongMemEval paper, strongest GPT-4o (round, Top-10) | 72.0% | open repo | [Wu et al. ICLR 2025, Table 3](https://arxiv.org/abs/2410.10813) |
+| LongMemEval paper, GPT-4o session Top-5 | 71.4% | open repo | [Wu et al. ICLR 2025, Table 3](https://arxiv.org/abs/2410.10813) |
+| LongMemEval paper, GPT-4o round Top-5 | 65.7% | open repo | [Wu et al. ICLR 2025, Table 3](https://arxiv.org/abs/2410.10813) |
 | Mem0 v3 | not published | Apache 2.0 | reports S only |
 | Mastra OM | not published | Apache 2.0 | reports S only |
 | Hindsight | not published | open repo | reports S only |
@@ -67,7 +69,7 @@ The harder variant. M's haystacks exceed every production context window: GPT-4o
 | Supermemory | not published | open | reports S only |
 | MemMachine, Memoria, agentmemory, Backboard, ByteRover, Letta, Cognee | not published | various | reports S only or no LongMemEval |
 
-**+4.5 points above the LongMemEval paper's strongest published M result (65.7%).** AgentOS is the first open-source library on the public record above 65% on the M variant. The closest published number is AgentBrain's 71.7% from their closed-source SaaS.
+**Competitive with the strongest published M results in the LongMemEval paper.** At matched reader-Top-5 retrieval, AgentOS is +4.5 above the round-level configuration (65.7%) and 1.2 below the session-level configuration (71.4%); the paper's strongest GPT-4o result overall is 72.0% at round-level Top-10. AgentOS is the first open-source library above 65% on M with publicly reproducible methodology (per-case run JSONs at fixed seed, single-CLI reproduction). The closest published external number is AgentBrain's 71.7% from their closed-source SaaS.
 
 ### The journey: 30.6% → 45.4% → 57.6% → 70.2%
 
