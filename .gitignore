@@ -13,6 +13,9 @@ docs/skills/
 # TypeDoc auto-generated
 docs/api/
 
+# Internal planning workflow — never published.
+docs/superpowers/
+
 # Environment
 .env
 .env.local
