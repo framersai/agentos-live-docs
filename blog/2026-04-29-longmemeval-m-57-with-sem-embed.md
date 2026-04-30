@@ -8,6 +8,12 @@ keywords: [longmemeval-m, agentos memory benchmark, semantic embedding, reader r
 image: /img/blog/longmemeval-m-57.png
 ---
 
+> "A measurement is the comparison of an unknown to a standard, where the standard has been agreed to and is reproducible."
+>
+> — paraphrased after the Bureau International des Poids et Mesures
+
+Two benchmark axes — the embedder and the reader router — moved together in this post. The +12.2 pp lift is attributable to those two changes with the third axis (top-K) deliberately held constant so the result could be isolated. A day later we moved the third axis and the number jumped again. This is what disciplined ablation looks like when each variable gets its own Phase B budget.
+
 :::tip Update 2026-04-29
 The 57.6% headline below has been superseded by **[70.2% on LongMemEval-M](2026-04-29-longmemeval-m-70-with-topk5.md)** at $0.0078/correct, validated at full Phase B N=500. Single-variable change: lowering reader-top-K from 50 to 5. **+12.6 pp aggregate over 57.6%, CIs disjoint. +4.5 pp above the LongMemEval paper's academic-baseline ceiling (65.7%, [Wu et al., ICLR 2025, Table 3](https://arxiv.org/abs/2410.10813))**. Statistically tied with [AgentBrain's](https://github.com/AgentBrainHQ) closed-source SaaS 71.7%. The 57.6% post below is preserved as a load-bearing intermediate calibration: it isolates the +12.2 pp lift attributable to sem-embed + reader-router (top-K=50 held constant), separate from the +12.6 pp lift attributable to top-K=5 (sem-embed + reader-router held constant).
 :::

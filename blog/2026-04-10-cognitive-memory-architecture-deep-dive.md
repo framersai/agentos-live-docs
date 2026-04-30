@@ -8,6 +8,12 @@ keywords: [ai agent memory, cognitive memory architecture, temporal gist, memory
 image: /img/blog/cognitive-memory.png
 ---
 
+> "Consciousness, then, does not appear to itself chopped up in bits. It is nothing jointed; it flows. A 'river' or a 'stream' are the metaphors by which it is most naturally described."
+>
+> — William James, *The Principles of Psychology*, 1890
+
+The mistake most agent frameworks make about memory is treating it as a database. James was right a century before LLMs existed: memory flows, it isn't filed. This post is the technical reference for how AgentOS implements that intuition as a runnable system, with the neuroscience citations for each mechanism.
+
 This is the technical reference for how AgentOS gives AI agents genuine memory: not RAG lookups, but a cognitive system grounded in published neuroscience that encodes, decays, consolidates, archives, rehydrates, and perspective-encodes memories across hundreds of sessions. The architecture follows the **CoALA framework** ([Sumers et al., arXiv:2309.02427](https://arxiv.org/abs/2309.02427)) and adapts patterns from [MemGPT](https://arxiv.org/abs/2310.08560) (Packer et al., 2023) and [Generative Agents](https://arxiv.org/abs/2304.03442) (Park et al., 2023) for production agent runtimes.
 
 [wilds.ai](https://wilds.ai) uses this system to give game NPCs and AI companions distinct minds that remember the same events differently.

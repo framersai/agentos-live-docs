@@ -8,6 +8,12 @@ keywords: [agentos ingest router, agentos memory router, anthropic contextual re
 image: /img/blog/agentos-ingest-router-executors.png
 ---
 
+> "A change in perspective is worth eighty IQ points."
+>
+> — Alan Kay, *The Power of the Context*, 2004
+
+A negative result on a benchmark does not mean a useless implementation. The two architectures we measured negative on our internal LongMemEval-S pipeline are still production-grade primitives that consumers ship in different pipeline shapes than ours. agentos 0.2.12 and 0.2.13 ship them as `IngestRouter` executors so consumers don't have to reimplement what the literature already specifies. This post is the reference.
+
 The [Cognitive Pipeline](/features/cognitive-pipeline) ships three orchestrator stages: an [`IngestRouter`](/features/ingest-router) (input stage), a [`MemoryRouter`](/features/memory-router) (recall stage), and a [`ReadRouter`](/features/read-router) (read stage). Each is an LLM-as-judge dispatcher: a `gpt-5-mini`-style classifier reads the input, picks a strategy from a calibrated routing table, and hands off to a registered executor. The decomposition follows the **CoALA framework** ([Sumers et al., arXiv:2309.02427](https://arxiv.org/abs/2309.02427)) for cognitive architectures.
 
 `IngestRouter` defines six strategy IDs: `raw-chunks`, `summarized`, `observational`, `fact-graph`, `hybrid`, `skip`. Until 0.2.12 / 0.2.13, the `summarized` and `fact-graph` IDs were empty promises: strategy slots in the type system without core executor implementations. Consumers had to author their own. agentos 0.2.12 and 0.2.13 ship the reference executors so the IngestRouter ships with `summarized` and `fact-graph` working out of the box.

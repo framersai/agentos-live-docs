@@ -8,6 +8,12 @@ keywords: [ai agent memory, temporal gist, memory archive, rehydration, long-run
 image: /img/blog/cognitive-memory.png
 ---
 
+> "Time present and time past / Are both perhaps present in time future, / And time future contained in time past."
+>
+> — T.S. Eliot, *Burnt Norton*, 1936
+
+Forgetting that's irreversible is a property of biology, not a feature for software. The tension this post resolves is between aggressive compression for retrieval efficiency and durable archival for audit. The pattern is borrowed from production databases: write-ahead-log discipline before any destructive operation, with on-demand rehydration when an agent's coarse-grained memory needs the verbatim original.
+
 Temporal gist is one of the strongest features in AgentOS cognitive memory. Old, low-retrieval traces get compressed to 2-3 core assertions, mirroring how human episodic memory fades to semantic gist over time ([Reyna & Brainerd, 1995](https://doi.org/10.1006/drev.1995.1002)). Compression was destructive: the original verbatim content was overwritten with the summary, and only a SHA-256 hash remained for audit.
 
 For agents that run across hundreds of sessions, this created a ceiling. After a few months, the agent's early memories were irreversibly compressed. Important details that happened to not be retrieved often enough were lost to the gist.

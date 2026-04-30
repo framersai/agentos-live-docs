@@ -8,6 +8,12 @@ keywords: [longmemeval-s, agentos memory router, per-category dispatch, reader t
 image: /img/blog/reader-router-pareto.png
 ---
 
+> "It is the mark of an educated mind to be able to entertain a thought without accepting it."
+>
+> — Aristotle, *Metaphysics*, c. 350 BC
+
+We had two readers. They cost different amounts and were strong at different question categories. The instinct was to pick one and ship it. The discipline was to route per-category and let each reader do what it was good at. That single discipline is what produced the headline below; the hard part was building the calibration tables that let the routing be defensible against stress-tests.
+
 LongMemEval-S Phase B at full N=500, `gpt-4o-2024-08-06` judge, rubric `2026-04-18.1`, bootstrap 10,000 resamples, seed 42. AgentOS lands at **85.6% [82.4%, 88.6%]** at **$0.0090 per correct** and **4.0-second average latency**. This post documents the architectural change that produced the result and the 15 stress-tested adjacent configurations that all regressed against it.
 
 | System (gpt-4o-class reader) | Accuracy | $/correct | Avg latency | p50 latency | p95 latency | Source |

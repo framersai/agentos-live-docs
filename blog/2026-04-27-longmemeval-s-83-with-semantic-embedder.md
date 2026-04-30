@@ -8,6 +8,12 @@ keywords: [longmemeval-s, agentos memory, semantic embedding, retrieval quality,
 image: /img/blog/longmemeval-s-83.png
 ---
 
+> "The first principle is that you must not fool yourself, and you are the easiest person to fool."
+>
+> — Richard Feynman, Caltech commencement address, 1974
+
+The published 76.6% number was wrong, in a quietly catastrophic way. The bench was running with a lexical-hash fallback embedder because the OPENAI_API_KEY environment variable was unset in the harness, and the harness was silently degrading rather than throwing. We were fooling ourselves about our own numbers. This post is the audit, the corrected baseline, and the 14.5 percentage point recovery.
+
 :::tip Update 2026-04-28
 The 83.2% headline below has been superseded. The follow-up post **[85.6% on LongMemEval-S at $0.009/correct, 4-second latency](2026-04-28-reader-router-pareto-win.md)** lands the new validated headline by adding a per-category reader router on top and dropping the Tier 3 minimize-cost policy router (whose CharHash-era MS+SSP → OM-v11 routing is stale for the sem-embed era). Same dataset, same judge, same N=500 Phase B methodology.
 :::

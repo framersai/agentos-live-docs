@@ -8,6 +8,12 @@ keywords: [memory benchmark transparency, longmemeval gaming, locomo audit, agen
 image: /img/blog/memory-benchmarks.png
 ---
 
+> "If a measurement matters at all, it is because it must have some conceivable effect on decisions and behavior. If we can't identify a decision that could be affected by a proposed measurement and how it could change those decisions, then the measurement simply has no value."
+>
+> — Douglas Hubbard, *How to Measure Anything*, 2014
+
+The version of this post nobody wants to write is the one that examines the benchmarks the entire memory-library industry uses as proof. We wrote that version. The benchmarks are broken in measurable ways, the gaming patterns are documented, and the right response is not to refuse to publish numbers but to publish honest ones with a methodology stack disclosed at every step. Below is the audit; everything else we publish runs against this disclosure.
+
 :::tip Update 2026-04-28
 This post laid out the methodology audit framework that drives every published agentos-bench number. The current LongMemEval-S Phase B headline is **[85.6% on LongMemEval-S at $0.009/correct, 4-second latency](2026-04-28-reader-router-pareto-win.md)**, validated under the same transparency stack this post describes (per-cell run JSON at seed 42, bootstrap 95% CI at 10k resamples, judge FPR 1% [0%, 3%] at n=100, eleven adjacent stress-tests all regressing). The current LongMemEval-M headline is **[70.2% on LongMemEval-M](2026-04-29-longmemeval-m-70-with-topk5.md)**.
 :::

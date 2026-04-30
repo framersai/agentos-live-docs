@@ -8,6 +8,12 @@ keywords: [longmemeval-m, longmemeval m benchmark, agent memory benchmark scale,
 image: /img/blog/longmemeval-m.png
 ---
 
+> "If you can't measure it, you can't improve it."
+>
+> — Peter Drucker, attributed
+
+The S variant of LongMemEval is published by every memory-library vendor in the space. The M variant is not. The reason isn't that M is uninteresting; it's that M is harder by an order of magnitude and forces vendors with prompt-stuffing or compression-based architectures to confront context-window limits they'd rather ignore. This post is the opening move: 30.6% on M, with bootstrap CI and judge-FPR probe, on the public record.
+
 :::tip Update 2026-04-29 (latest)
 This 30.6% Phase B has been superseded three times in one week. **45.4%** with M-tuned retrieval flags ([post](2026-04-26-longmemeval-m-30-to-57.md)). Then **57.6%** with sem-embed + reader router on top ([post](2026-04-29-longmemeval-m-57-with-sem-embed.md)). The current **[70.2% [66.0%, 74.0%] M headline](2026-04-29-longmemeval-m-70-with-topk5.md)** stacks reader-top-K=5 on top of all of the above. **+39.6 pp total lift over the 30.6% Tier 1 baseline below**, validated at Phase B N=500 with CIs disjoint. **+4.5 pp above the LongMemEval paper's academic-baseline ceiling (65.7%)**. **agentos-bench is the first open-source memory library on the public record with end-to-end LongMemEval-M QA accuracy above 65% with full methodology disclosure**. The S→M scale gap framing below still holds at the architecture level; the absolute numbers move with each measurement.
 :::

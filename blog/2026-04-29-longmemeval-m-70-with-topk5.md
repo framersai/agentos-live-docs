@@ -8,6 +8,12 @@ keywords: [longmemeval-m, agentos memory benchmark, top-K reduction, multi-sessi
 image: /img/blog/longmemeval-m-70.png
 ---
 
+> "The single biggest problem in communication is the illusion that it has taken place."
+>
+> — George Bernard Shaw, attributed
+
+The number that moved this benchmark wasn't a new architecture. It was a configuration knob the LongMemEval paper had already pointed at, that we had been holding at the wrong setting for three weeks because we trusted Phase A directional results too aggressively. Phase A at N=20 is fast; Phase B at N=500 is the audit. This post is what happened when the audit caught up with the assumption.
+
 LongMemEval ships two variants: S (115K tokens, 50 sessions per haystack) and M (1.5M tokens, 500 sessions per haystack). Every other open-source memory library publishes only the easier S number. The M variant is harder by an order of magnitude in token count, and no open-source memory library has published an end-to-end QA accuracy above 65% on M with full methodology disclosure.
 
 AgentOS hits **70.2% [66.0%, 74.0%]** on LongMemEval-M at Phase B N=500, validated. That number sits **+4.5 pp above the LongMemEval paper's published academic-baseline ceiling of 65.7%** (Wu et al., ICLR 2025, [arXiv:2410.10813](https://arxiv.org/abs/2410.10813), Table 3) and is **statistically tied with [AgentBrain's](https://github.com/AgentBrainHQ) closed-source SaaS 71.7%**. **Cost per correct: $0.0078** ($7.80 per 1,000 memory-grounded answers over the 1.5M-token haystack). The prior top-K=50 configuration on the same architecture cost $0.0505 per correct ($50.50 per 1,000 calls).

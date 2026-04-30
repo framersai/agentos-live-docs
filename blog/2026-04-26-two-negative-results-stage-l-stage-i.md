@@ -8,6 +8,12 @@ keywords: [anthropic contextual retrieval longmemeval, mem0 v3 entity linking lo
 image: /img/blog/two-negative-results.png
 ---
 
+> "I have not failed. I've just found 10,000 ways that won't work."
+>
+> — Edison, attributed (1890s)
+
+Negative results are the unglamorous half of an honest benchmark. The mistake is to publish only the wins; the second-order mistake is to publish only the wins and the losses without explaining why the losses lost. This post does the third thing: per-category math on two well-known additions that did not lift on our pipeline, and the architectural reason for each.
+
 :::tip Update 2026-04-28
 The shipping pipeline this post measures against (76.6% LongMemEval-S Phase B) has been replaced by **[85.6% on LongMemEval-S](2026-04-28-reader-router-pareto-win.md)** at $0.009/correct, 4-second latency. The two negative findings below (Stage L Anthropic Contextual Retrieval, Stage I Mem0-style entity-linking re-rank) still hold against the new headline. Both architectures duplicate work the rerank stage already does, regardless of which retrieval base config the rerank sits on top of. Eleven additional adjacent stress-tests have since been documented in the [latest LEADERBOARD](https://github.com/framersai/agentos-bench/blob/master/results/LEADERBOARD.md), all regressing on the 85.6% configuration.
 :::

@@ -37,6 +37,12 @@ keywords:
   - Mars colony simulation
 ---
 
+> "Two roads diverged in a yellow wood, / And sorry I could not travel both / And be one traveler, long I stood."
+>
+> — Robert Frost, *The Road Not Taken*, 1916
+
+The two systems compared in this post answer "what would happen if" with very different machinery. MiroFish answers it bottom-up: spawn 1,000–1,000,000 LLM agents on a social substrate seeded with a real-world document, watch the swarm behavior aggregate into a forecast. Mars Genesis answers it top-down: spawn ~100 colonists led by one HEXACO commander, run a deterministic kernel for six turns, swap the commander's personality, see what diverges. Both are legitimate. They serve different jobs. The honest comparison is per-axis (direction, scale, determinism, output shape) rather than per-headline.
+
 Multi-agent simulation splits into two schools: predict the real world, or generate emergent worlds that never existed. [MiroFish](https://github.com/666ghj/MiroFish) (54k GitHub stars) builds parallel digital worlds from real-world seed data to forecast outcomes. [Mars Genesis](https://github.com/framersai/mars-genesis-simulation) (built with [AgentOS](https://github.com/framersai/agentos)) creates a deterministic Mars colony where two AI commanders with distinct personalities face emergent crises, forge computational tools at runtime, and produce measurably different civilizations from identical starting conditions.
 
 Both descend from the [Generative Agents](https://arxiv.org/abs/2304.03442) lineage (Park et al., Stanford 2023), which established that LLM-driven simulacra produce believable human behavior at small scale. The split between MiroFish and Mars Genesis is what to do with that capability: predict reality, or generate divergent histories.

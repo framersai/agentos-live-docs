@@ -20,6 +20,12 @@ tags:
 reading_time_override: 160
 ---
 
+> "Architecture is the thoughtful making of space."
+>
+> — Louis Kahn, attributed (1969)
+
+This is the long version of how AgentOS was built. Eight layers, fourteen LLM providers, seven vector backends, thirty-seven channel integrations. The short version is in [the announcement post](https://agentos.sh/blog/announcing-agentos). This is the version where we walk every layer, name every decision we made wrong before we made it right, and link the code that implements each piece. If you're evaluating whether to base a system on AgentOS, this is the post that should answer your hard questions.
+
 Eight layers. Fourteen LLM providers. Seven vector backends. Thirty-seven channel integrations. One TypeScript library with zero HTTP opinions.
 
 This is how we built AgentOS, and what we learned the hard way.
