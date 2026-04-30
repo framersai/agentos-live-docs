@@ -144,6 +144,19 @@ const config: Config = {
         codeRepository: 'https://github.com/framersai/agentos',
       }),
     },
+    // Microsoft Clarity. Same project ID as agentos.sh main site so
+    // session recordings + heatmaps roll up into one Clarity dashboard
+    // across the agentos.sh ecosystem. GA already lives below in
+    // `presets.gtag` (G-4KEEK15KWZ).
+    {
+      tagName: 'script',
+      attributes: { type: 'text/javascript' },
+      innerHTML: `(function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+      })(window, document, "clarity", "script", "ukky5yykaj");`,
+    },
   ],
 
   i18n: {
