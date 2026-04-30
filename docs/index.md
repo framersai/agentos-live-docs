@@ -17,8 +17,8 @@ Modular orchestration runtime for AI agent systems.
 npm install @framers/agentos
 ```
 
-:::tip Memory benchmarks (full N=500, matched gpt-4o reader)
-**85.6% on LongMemEval-S** at $0.0090 per correct, **+1.4 points above Mastra Observational Memory (84.23%)** at the matched reader. **70.2% on LongMemEval-M** at $0.0078 per correct on the 1.5M-token / 500-session haystack variant — the only open-source library on the public record above 65% on M with publicly reproducible methodology. Competitive with the strongest published M results in the LongMemEval paper (Wu et al., ICLR 2025: round Top-5 65.7%, session Top-5 71.4%, round Top-10 72.0%).
+:::tip Memory benchmarks (full N=500, gpt-4o reader)
+**85.6% on LongMemEval-S** at $0.0090 per correct, **+1.4 points above Mastra Observational Memory (84.23%)**. **70.2% on LongMemEval-M** at $0.0078 per correct on the 1.5M-token / 500-session haystack variant — the only open-source library on the public record above 65% on M with publicly reproducible methodology. Competitive with the strongest published M results in the LongMemEval paper (Wu et al., ICLR 2025: round Top-5 65.7%, session Top-5 71.4%, round Top-10 72.0%).
 
 **[Full benchmarks reference →](/benchmarks)** · **[Reproducible run JSONs →](https://github.com/framersai/agentos-bench/tree/master/results/runs)** · **[SOTA writeup →](https://agentos.sh/en/blog/agentos-memory-sota-longmemeval/)**
 :::
@@ -70,7 +70,7 @@ Most memory libraries retrieve on every query. AgentOS gates memory through thre
 
 The pipeline costs **one classifier call per query** (Stages 2 and 3 reuse Stage 1 output). The T0 / no-memory gate removes embedding+rerank+reader cost on a substantial fraction of typical agent traffic (greetings, small talk, general knowledge). Per-category dispatch routes the rest to the architecture and reader best-suited to the question type.
 
-**LongMemEval-S at full N=500 with gpt-4o reader**: AgentOS at 85.6% is +1.4 points above Mastra OM gpt-4o (84.23%) at the matched reader. $0.0090 per correct, 3.6-second median latency. Beats EmergenceMem Simple Fast (80.6% in agentos-bench) by +5.0 points at 6.5× lower cost.
+**LongMemEval-S at full N=500 with gpt-4o reader**: AgentOS at 85.6% is +1.4 points above Mastra OM gpt-4o (84.23%). $0.0090 per correct, 3.6-second median latency. Beats EmergenceMem Simple Fast (80.6% in agentos-bench) by +5.0 points at 6.5× lower cost.
 
 | Stage | Primitive | Source | Decision per query |
 |---|---|---|---|

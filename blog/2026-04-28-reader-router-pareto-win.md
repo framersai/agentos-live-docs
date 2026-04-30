@@ -25,7 +25,7 @@ LongMemEval-S Phase B at full N=500, `gpt-4o-2024-08-06` judge, rubric `2026-04-
 | AgentOS Tier 3 min-cost + sem-embed (gpt-4o reader only) | 83.2% [79.8%, 86.4%] | $0.0521 | 73,234 ms | ~5,000 ms | not published | [link](2026-04-27-longmemeval-s-83-with-semantic-embedder.md) |
 | Supermemory gpt-4o | 81.6% (no CI) | not published | not published | not published | not published | [supermemory.ai](https://supermemory.ai/research/) |
 
-**+1.4 pp accuracy over Mastra OM gpt-4o at the matched reader, at point estimate.** Mastra publishes no CI; their 84.23% sits inside our 95% CI [82.4%, 88.6%], so the gap is at the threshold of statistical significance. **Statistically tied with EmergenceMem Internal 86.0%**: their point estimate also sits inside our CI, 0.4 pp ahead at the point estimate. EmergenceMem publishes median latency (5,650 ms); our p50 is 3,558 ms (-2,092 ms). Cost per correct: ours is **$0.0090 (measured)**, equivalent to $9 per 1,000 memory-grounded answers. EmergenceMem's cost-per-correct is not published, so a direct cross-vendor cost comparison cannot be made; the only signals available are latency (above) and reader-tier dispatch (53% of cases to gpt-5-mini, the cheaper-per-token reader, vs EmergenceMem's reported gpt-4o-throughout open-source variants).
+**+1.4 pp accuracy over Mastra OM gpt-4o, at point estimate.** Mastra publishes no CI; their 84.23% sits inside our 95% CI [82.4%, 88.6%], so the gap is at the threshold of statistical significance. **Statistically tied with EmergenceMem Internal 86.0%**: their point estimate also sits inside our CI, 0.4 pp ahead at the point estimate. EmergenceMem publishes median latency (5,650 ms); our p50 is 3,558 ms (-2,092 ms). Cost per correct: ours is **$0.0090 (measured)**, equivalent to $9 per 1,000 memory-grounded answers. EmergenceMem's cost-per-correct is not published, so a direct cross-vendor cost comparison cannot be made; the only signals available are latency (above) and reader-tier dispatch (53% of cases to gpt-5-mini, the cheaper-per-token reader, vs EmergenceMem's reported gpt-4o-throughout open-source variants).
 
 <!-- truncate -->
 
@@ -231,7 +231,7 @@ export const MIN_COST_BEST_CAT_2026_04_28_TABLE: ReaderRouterTable = {
 
 What's apples-to-apples in this post:
 
-- **Accuracy comparison vs Mastra OM gpt-4o, Supermemory gpt-4o, EmergenceMem.** Same answer reader (gpt-4o), same dataset (LongMemEval-S, 500 cases, ~115K-token haystacks). The +1.4 pp lift over Mastra OM gpt-4o is an apples-to-apples accuracy comparison at the same reader tier.
+- **Accuracy comparison vs Mastra OM gpt-4o, Supermemory gpt-4o, EmergenceMem.** Same answer reader (gpt-4o), same dataset (LongMemEval-S, 500 cases, ~115K-token haystacks). The +1.4 pp lift over Mastra OM gpt-4o is an apples-to-apples accuracy comparison tier.
 - **Cost-per-correct and latency vs the prior AgentOS 84.8% headline.** Both runs measured at full Phase B N=500 on the same hardware, same OpenAI/Cohere endpoints, same per-case `costTracker.record()` instrumentation, same wall-clock latency capture. The 4.6x cost reduction and 5.3x latency reduction are real intra-AgentOS measurements.
 - **Same judge harness across all AgentOS rows** (`gpt-4o-2024-08-06` with rubric `2026-04-18.1`). Judge false-positive rate **1% [0%, 3%]** at n=100 ([Stage G probe](https://github.com/framersai/agentos-bench/blob/master/docs/SESSION_2026-04-24_TRANSPARENT_NEGATIVES.md)).
 - **Bootstrap 95% CI at 10,000 resamples.** Most vendors do not publish CIs.

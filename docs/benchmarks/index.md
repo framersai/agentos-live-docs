@@ -1,7 +1,7 @@
 ---
 title: "Memory Benchmarks"
 sidebar_position: 1
-description: AgentOS performance on LongMemEval-S, LongMemEval-M, and LOCOMO. Matched-reader comparison vs Mem0, Mastra, Hindsight, EmergenceMem, Supermemory, Zep, AgentBrain. Confidence intervals, judge-FPR probes, per-case run JSONs.
+description: AgentOS performance on LongMemEval-S, LongMemEval-M, and LOCOMO. Cross-vendor comparison vs Mem0, Mastra, Hindsight, EmergenceMem, Supermemory, Zep, AgentBrain. Confidence intervals, judge-FPR probes, per-case run JSONs.
 keywords:
   - longmemeval benchmark
   - locomo benchmark
@@ -14,13 +14,13 @@ keywords:
   - longmemeval m variant
 ---
 
-AgentOS posts +1.4 points above Mastra at the matched `gpt-4o` reader on **[LongMemEval-S](https://arxiv.org/abs/2410.10813)** (85.6% vs Mastra's 84.23%), and is the only open-source library on the public record above 65% on the harder M variant.
+AgentOS posts +1.4 points above Mastra at `gpt-4o` reader on **[LongMemEval-S](https://arxiv.org/abs/2410.10813)** (85.6% vs Mastra's 84.23%), and is the only open-source library on the public record above 65% on the harder M variant.
 
 This page is the canonical comparison table. Every cell links to its primary source. Cross-provider configurations (e.g. Mastra's gpt-5-mini reader + gemini-2.5-flash observer) are excluded because their results cannot be reproduced from public methodology disclosures.
 
 ## TL;DR
 
-- **LongMemEval-S at full N=500, gpt-4o reader**: AgentOS at **85.6%** is +1.4 points above Mastra OM gpt-4o (84.23%) at the matched reader. $0.0090 per correct, 3.6-second median latency.
+- **LongMemEval-S at full N=500, gpt-4o reader**: AgentOS at **85.6%** is +1.4 points above Mastra OM gpt-4o (84.23%). $0.0090 per correct, 3.6-second median latency.
 - **LongMemEval-M at full N=500, gpt-4o reader**: AgentOS at **70.2%** is competitive with the strongest published M results in the LongMemEval paper ([Wu et al. ICLR 2025, Table 3](https://arxiv.org/abs/2410.10813)). The paper's three primary GPT-4o configurations: round Top-5 65.7% (we're +4.5), session Top-5 71.4% (we're 1.2 below), round Top-10 72.0% (we're 1.8 below at the harder Top-5 retrieval budget). First open-source library above 65% on M with publicly reproducible methodology. Closest published external number is AgentBrain's 71.7% from their closed-source SaaS.
 - **15 adjacent stress-tested configurations all regress** against the 85.6% headline. Locally Pareto-optimal in the tested parameter space.
 
@@ -38,7 +38,7 @@ Same dataset (`data/longmemeval/longmemeval_s.json`), full N=500, same `gpt-4o-2
 | Zep self-reported | 71.2% | not published | 632 ms p95 search | [getzep.com](https://blog.getzep.com/state-of-the-art-agent-memory/) |
 | Zep independently reproduced | 63.8% | not published | not published | [arXiv:2512.13564](https://arxiv.org/abs/2512.13564) |
 
-**+1.4 points above Mastra OM gpt-4o (84.23%) at the matched reader.** AgentOS at 85.6% is the highest published number from an open-source library that ships an end-to-end agent runtime around its memory system. EmergenceMem Internal posts 86.0% (0.4 above us). AgentOS p50 latency 3,558 ms vs EmergenceMem's published median 5,650 ms.
+**+1.4 points above Mastra OM gpt-4o (84.23%).** AgentOS at 85.6% is the highest published number from an open-source library that ships an end-to-end agent runtime around its memory system. EmergenceMem Internal posts 86.0% (0.4 above us). AgentOS p50 latency 3,558 ms vs EmergenceMem's published median 5,650 ms.
 
 **Cost at scale**: $0.0090 per memory-grounded answer = $9 per 1,000 RAG calls. A chatbot averaging 5 RAG calls per conversation across 1,000 conversations costs ~$45.
 
@@ -69,7 +69,7 @@ The harder variant. M's haystacks exceed every production context window: GPT-4o
 | Supermemory | not published | open | reports S only |
 | MemMachine, Memoria, agentmemory, Backboard, ByteRover, Letta, Cognee | not published | various | reports S only or no LongMemEval |
 
-**Competitive with the strongest published M results in the LongMemEval paper.** At matched reader-Top-5 retrieval, AgentOS is +4.5 above the round-level configuration (65.7%) and 1.2 below the session-level configuration (71.4%); the paper's strongest GPT-4o result overall is 72.0% at round-level Top-10. AgentOS is the first open-source library above 65% on M with publicly reproducible methodology (per-case run JSONs at fixed seed, single-CLI reproduction). The closest published external number is AgentBrain's 71.7% from their closed-source SaaS.
+**Competitive with the strongest published M results in the LongMemEval paper.** At reader-Top-5 retrieval, AgentOS is +4.5 above the round-level configuration (65.7%) and 1.2 below the session-level configuration (71.4%); the paper's strongest GPT-4o result overall is 72.0% at round-level Top-10. AgentOS is the first open-source library above 65% on M with publicly reproducible methodology (per-case run JSONs at fixed seed, single-CLI reproduction). The closest published external number is AgentBrain's 71.7% from their closed-source SaaS.
 
 ## LOCOMO (out-of-distribution transfer)
 
@@ -106,7 +106,7 @@ The 62.81% FPR ceiling on LOCOMO's default `gpt-4o-mini` judge means any LOCOMO 
 | Open-source benchmark runner | yes | yes | partial | yes | partial | yes | no | partial |
 | Per-case run JSONs at fixed seed | yes | no | no | no | no | no | no | no |
 | Judge-adversarial FPR probe | yes | no | no | no | no | no | no | no |
-| Matched-reader cross-vendor table | yes | no | no | partial | partial | yes | no | no |
+| Cross-vendor cross-vendor table | yes | no | no | partial | partial | yes | no | no |
 
 The full audit framework is at [Memory Benchmark Transparency Audit](https://agentos.sh/en/blog/agentos-memory-sota-longmemeval). Per-case run JSONs at `seed=42` are committed under [`packages/agentos-bench/results/runs/`](https://github.com/framersai/agentos-bench/tree/master/results/runs) for every published number.
 
