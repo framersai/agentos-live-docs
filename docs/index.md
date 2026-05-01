@@ -68,7 +68,7 @@ Most memory libraries retrieve on every query. AgentOS gates memory through thre
 
 The pipeline costs **one classifier call per query** (Stages 2 and 3 reuse Stage 1 output). The T0 / no-memory gate removes embedding+rerank+reader cost on a substantial fraction of typical agent traffic (greetings, small talk, general knowledge). Per-category dispatch routes the rest to the architecture and reader best-suited to the question type.
 
-**LongMemEval-S at full N=500 with gpt-4o reader**: AgentOS at 85.6% is +1.4 points above Mastra OM gpt-4o (84.23%). $0.0090 per correct, 3.6-second median latency. Beats EmergenceMem Simple Fast (80.6% in agentos-bench) by +5.0 points at 6.5× lower cost.
+**LongMemEval-S at full N=500 with gpt-4o reader**: AgentOS at 85.6% is +1.4 points above Mastra OM gpt-4o (84.23%). $0.0090 per correct, 3.6-second median latency. Statistically tied with EmergenceMem Internal's published 86.0% (their point estimate sits inside our 95% CI [82.4%, 88.6%]) — but EmergenceMem Internal is **closed-source SaaS at [emergence.ai/web-automation-api](https://www.emergence.ai/web-automation-api), not a library you can install**, while AgentOS ships under [Apache-2.0](https://github.com/framersai/agentos/blob/master/LICENSE) and runs locally. Beats their public-but-no-license reference repo `emergence_simple_fast` (80.6% in agentos-bench) by +5.0 points at 6.5× lower cost.
 
 | Stage | Primitive | Source | Decision per query |
 |---|---|---|---|
