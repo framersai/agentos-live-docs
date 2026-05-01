@@ -280,7 +280,7 @@ const config: Config = {
           { from: '/blog/2026/03/24/building-agentos-deep-dive', to: 'https://agentos.sh/en/blog' },
           { from: '/blog/2026/04/10/cognitive-memory-architecture-deep-dive', to: 'https://agentos.sh/en/blog' },
           { from: '/blog/2026/04/10/memory-archive-rehydration', to: 'https://agentos.sh/en/blog' },
-          { from: '/blog/2026/04/13/mars-genesis-vs-mirofish-multi-agent-simulation', to: 'https://agentos.sh/en/blog/mars-genesis-vs-mirofish-multi-agent-simulation' },
+          { from: '/blog/2026/04/13/mars-genesis-vs-mirofish-multi-agent-simulation', to: 'https://agentos.sh/en/blog/inside-mars-genesis-ai-colony-simulation' },
           { from: '/blog/2026/04/24/memory-benchmark-transparency-audit', to: 'https://agentos.sh/en/blog/memory-benchmark-transparency-audit' },
           { from: '/blog/2026/04/26/agentos-ingest-router-executors', to: 'https://agentos.sh/en/blog' },
           { from: '/blog/2026/04/26/longmemeval-m-30-to-57', to: 'https://agentos.sh/en/blog' },
