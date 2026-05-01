@@ -1,34 +1,43 @@
 ---
 title: "Skills vs Tools vs Extensions"
 sidebar_position: 8.5
+description: "Which capability system to reach for when. The decision is rarely ambiguous if you know what each one actually owns — this page is a verified-against-the-source map of the three."
 ---
 
-AgentOS has three systems for giving agents capabilities. They solve different problems, load at different times, and compose together.
+> "Make each program do one thing well. To do a new job, build afresh rather than complicate old programs by adding new features."
+>
+> — *The Bell System Technical Journal*, M. D. McIlroy, E. N. Pinson, and B. A. Tague, 1978
+
+The Unix philosophy is the right starting frame for the three capability systems in AgentOS. Each one does exactly one thing. Skills tell the LLM *when* to do something. Tools are the things the LLM actually invokes. Extensions are the npm-package distribution mechanism for reusable tool sets, guardrail packs, and voice pipelines. Confusion only sets in when someone reaches for one of them to do another's job — writing a skill that tries to "execute," writing an extension that needs to know which user is asking. The page below is a map for picking the right one the first time.
+
+## At a glance
 
 | | Skills | Tools | Extensions |
 |---|---|---|---|
-| **What it is** | A `SKILL.md` file with YAML frontmatter and markdown body | A function definition with schema, description, and `execute()` callback | An npm package that exports tools, guardrails, or workflows |
-| **How it loads** | `SkillRegistry` scans directories at startup | Inline on `createAgent()`, or resolved from an extension pack | `ExtensionsRegistry` resolves packages at initialization |
-| **What the LLM sees** | Text injected into the system prompt | A function call schema (name, description, parameters) | Nothing directly. Extensions provide tools, which the LLM sees. |
-| **When it runs** | At agent construction (prompt injection) | During generation (the LLM calls it as a function) | At app initialization (tool and guardrail setup) |
-| **Can access runtime state** | No. Prompt text only. | Yes. Closures capture request-scoped state. | Package-scoped config only. |
-| **Use case** | Behavioral guidelines, workflow instructions, "how to" knowledge | API calls, DB queries, vision analysis, media search, memory retrieval | Reusable tool packages, guardrail packs, voice pipelines |
+| **What it is** | A `SKILL.md` file with YAML frontmatter and markdown body | A function with a JSON-schema'd parameter list, a description, and an `execute()` callback | An npm package that exports tools, guardrails, workflows, or voice pipelines |
+| **How it loads** | [`SkillRegistry`](https://github.com/framersai/agentos/blob/master/src/skills/SkillRegistry.ts) scans directories at startup | Inline on `agent({...tools})`, or resolved from an extension manifest | [`createCuratedManifest()`](https://github.com/framersai/agentos-extensions-registry) resolves packages at initialization |
+| **What the LLM sees** | Text injected into the system prompt | A function-call schema (name, description, parameter shape) | Nothing directly — extensions provide tools, the LLM sees the tools |
+| **When it runs** | At agent construction (prompt assembly) | During generation, when the LLM emits a tool-call | At app initialization (one-time setup) |
+| **Can capture request-scoped state?** | No — prompt text only, written before the request exists | **Yes** — closures capture actorId, sessionId, policy tier, anything in scope | No — package-scoped config only |
+| **Right for** | Behavioral guidelines, workflow instructions, "how to" knowledge | API calls, DB queries, vision analysis, media search, memory retrieval | Reusable bundles published once and consumed across many agents |
 
-## Decision Flowchart
+## The decision
 
 ```mermaid
 graph TD
     A["Does the LLM need to<br/>call a function?"] -->|Yes| B["Does it need<br/>request-scoped state?"]
     A -->|No| C["Does the LLM need<br/>behavioral instructions?"]
-    B -->|Yes| D["<b>Inline Tool</b><br/>Define on createAgent()"]
-    B -->|No| E["<b>Extension Tool</b><br/>Load from a package"]
+    B -->|Yes| D["<b>Inline tool</b><br/>Define on agent({...tools})"]
+    B -->|No| E["<b>Extension tool</b><br/>Load from a curated manifest"]
     C -->|Yes| F["<b>Skill</b><br/>Write a SKILL.md"]
     C -->|No| G["<b>Extension</b><br/>Guardrail, workflow,<br/>or voice pipeline"]
 ```
 
-## Skills: Prompt Modules
+Most production apps use all three. The question is never "which one" — it's "which one for *this* capability."
 
-Skills are `SKILL.md` files that get injected into the agent's system prompt. They teach the LLM *when* and *how* to use its capabilities. A skill cannot execute code. It provides instructions.
+## Skills — prompt modules
+
+A skill is a markdown file with YAML frontmatter. It teaches the LLM *when* and *how* to use a tool, but it cannot itself execute anything. The skill body becomes part of the system prompt; the frontmatter declares prerequisites the runtime checks before exposing the skill.
 
 ```markdown
 ---
@@ -43,68 +52,76 @@ metadata:
 
 When the user asks about current events, recent news, or information
 that may have changed since your training cutoff, use the `web_search`
-tool. Prefer specific queries over broad ones.
+tool. Prefer specific queries over broad ones. Avoid asking the user
+to confirm — search first, then respond with what you found.
 ```
 
-Load skills with `SkillRegistry`:
+Load skills with [`SkillRegistry`](https://github.com/framersai/agentos/blob/master/src/skills/SkillRegistry.ts):
 
 ```typescript
 import { SkillRegistry } from '@framers/agentos/skills';
+import { agent } from '@framers/agentos';
 
 const registry = new SkillRegistry();
 await registry.loadFromDirs(['./skills']);
+
+// buildSnapshot() supports platform filters, eligibility gating,
+// and runtime-config-driven `requires.config` checks.
 const snapshot = registry.buildSnapshot({ platform: process.platform });
 
-// Inject into agent system prompt
-const agent = createAgent({
+const myAgent = agent({
   instructions: baseInstructions + '\n\n' + snapshot.prompt,
   tools: myTools,
 });
 ```
 
-Skills load once at startup. They don't auto-update at runtime.
+Skills load once at startup. They don't auto-update at runtime — if you change a `SKILL.md` while the process is running, call `registry.reload()` or restart. The frontmatter `requires.env` / `requires.bins` / `requires.config` checks are evaluated against the host environment at snapshot time, so a skill that needs `SERPAPI_API_KEY` is silently filtered out when the key isn't set.
 
-**Source:** [`packages/agentos/src/skills/`](https://github.com/framersai/agentos)
+## Tools — callable functions
 
-## Tools: Callable Functions
+Tools are what the LLM actually invokes. The LLM sees the tool's name, description, and parameter JSON schema; when it decides to call one, the runtime executes the `execute()` function and feeds the result back into the next generation step.
 
-Tools are functions the LLM invokes during generation. The LLM sees the tool's name, description, and parameter schema. When it decides to call a tool, AgentOS executes the function and returns the result to the LLM for the next generation step.
+### Inline tools — the production pattern
 
-### Inline tools (the production pattern)
-
-The most powerful pattern for production apps: define tools as closures on `createAgent()` that capture request-scoped state.
+The most powerful pattern, and the one used in production on [wilds.ai](https://wilds.ai): define tools as closures on `agent({...})` so they capture request-scoped state.
 
 ```typescript
-const agent = createAgent({
-  name: 'Alice',
-  tools: {
-    analyze_image: {
-      description: 'Look at an image URL to see what it contains.',
-      parameters: {
-        type: 'object',
-        properties: {
-          image_url: { type: 'string' },
+import { agent } from '@framers/agentos';
+
+function buildCompanionAgent(actorId: string, slug: string, policyTier: string) {
+  return agent({
+    name: 'Alice',
+    tools: {
+      analyze_image: {
+        description: 'Look at an image URL to see what it contains.',
+        parameters: {
+          type: 'object',
+          properties: {
+            image_url: { type: 'string' },
+          },
+          required: ['image_url'],
         },
-        required: ['image_url'],
-      },
-      execute: async ({ image_url }) => {
-        // This closure captures actorId, policyTier, etc.
-        const description = await describeImage(image_url);
-        return { description };
+        execute: async ({ image_url }) => {
+          // Closure captures actorId, slug, policyTier from the enclosing scope.
+          // No global state. No registry. The tool knows who is asking.
+          const description = await describeImage(image_url, { actorId, policyTier });
+          await recordVisionUsage(actorId, slug, image_url);
+          return { description };
+        },
       },
     },
-  },
-  maxSteps: 8,
-});
+    maxSteps: 8,
+  });
+}
 ```
 
-This pattern is used in production on [wilds.ai](https://wilds.ai), where each companion has 11 agentic tools (memory recall, GIF search, vision analysis, web search, selfie generation) that capture the current user's ID, companion slug, and content policy tier.
+The wilds.ai companion ships eleven of these per session — memory recall, GIF search, vision analysis, web search, selfie generation, conversation stats, attachment recall — all closing over the current actor, companion slug, and content policy tier. None of those values exist at registry-load time. They only exist per-request.
 
-Inline tools cannot come from a registry because they need runtime closures. If a tool needs to know *who is asking*, define it inline.
+If a tool needs to know *who is asking*, it has to be inline. There is no other shape that fits.
 
 ### Extension tools
 
-Tools that don't need request-scoped state can be loaded from extension packages:
+For tools that don't need request-scoped state — `web-search`, `giphy`, generic API wrappers — extension packages are cleaner. They live in their own npm packages, ship with API-key checks and lazy initialization, and can be enabled or disabled per agent without code changes:
 
 ```typescript
 import { createCuratedManifest } from '@framers/agentos-extensions-registry';
@@ -114,15 +131,22 @@ const manifest = await createCuratedManifest({
 });
 ```
 
-**Source:** [`packages/agentos/src/tools/`](https://github.com/framersai/agentos)
+`createCuratedManifest` checks API key availability per tool, lazy-imports only the requested packages, and returns a manifest the runtime can wire into `agent({...})` or `AgentOS.initialize()`.
 
-## Extensions: Reusable Packages
+## Extensions — reusable packages
 
-Extensions are npm packages that export tools, guardrails, workflows, or voice pipelines. They're the distribution mechanism for capabilities that don't need request-scoped state.
+Extensions are the distribution mechanism. They're npm packages under [`packages/agentos-extensions/registry/curated/`](https://github.com/framersai/agentos-extensions/tree/master/registry/curated) that export one of four descriptor kinds:
+
+| Kind | What it provides |
+|---|---|
+| `tool` | Callable function for the LLM (web-search, weather, email, etc.) |
+| `guardrail` | Input or output safety check (`pii-redaction`, `grounding-guard`, `topicality`, etc.) |
+| `workflow` | Reusable workflow definition for the orchestration engine |
+| `provenance` | Content-anchoring provider (blockchain attestation, signature verification) |
+
+The same `createCuratedManifest()` resolves any combination:
 
 ```typescript
-import { createCuratedManifest } from '@framers/agentos-extensions-registry';
-
 const manifest = await createCuratedManifest({
   tools: ['web-search', 'web-browser'],
   guardrails: ['pii-redaction', 'grounding-guard'],
@@ -130,34 +154,42 @@ const manifest = await createCuratedManifest({
 });
 ```
 
-The extensions registry resolves packages, checks API key availability, and instantiates tool/guardrail instances. Extensions are loaded once at app initialization.
+Resolution is per-extension: missing API keys produce skipped tools rather than hard failures, so a manifest that asks for ten tools and only has keys for seven yields seven loaded tools and seven warnings. This is intentional — production manifests are stable across environments where some integrations are deployment-specific.
 
-**Source:** [`packages/agentos-extensions/`](https://github.com/framersai/agentos)
+## How they compose
 
-## How They Compose
+All three layers cooperate per agent. Loading order:
 
-All three systems work together. The loading order:
-
-1. **Extensions** resolve tool packages and guardrail packs at initialization
-2. **Inline tools** are defined on `createAgent()` alongside extension tools
-3. **Skills** are injected into the system prompt, teaching the LLM how to use the tools
+1. **Extensions** resolve at app initialization — packages are imported, factories called, instances cached
+2. **Inline tools** are defined on `agent({...})` per request, alongside whichever extension tools the manifest provides
+3. **Skills** are injected into the system prompt at agent construction, teaching the LLM *when* to reach for which tool
 
 ```mermaid
 graph LR
     E["Extensions<br/>(npm packages)"] --> T["Tools<br/>(callable functions)"]
-    I["Inline Tools<br/>(closures)"] --> T
-    T --> A["createAgent()"]
-    S["Skills<br/>(SKILL.md)"] --> P["System Prompt"]
+    I["Inline tools<br/>(closures)"] --> T
+    T --> A["agent({...})"]
+    S["Skills<br/>(SKILL.md)"] --> P["System prompt"]
     P --> A
     A --> L["LLM sees:<br/>prompt + tool schemas"]
 ```
 
-The LLM sees a system prompt (from skills) and a set of tool schemas (from inline tools + extension tools). It generates text and tool calls. AgentOS executes the tool calls and feeds results back.
+The LLM ends up with one system prompt (assembled from skills + persona + memory + RAG context) and one set of tool schemas (inline + extension). It generates text and tool calls. The runtime executes the tool calls and feeds results back into the loop.
 
-## Common Mistakes
+## Common mistakes
 
-**Writing a skill when you need a tool.** A skill can tell the LLM "use web search when the user asks about current events." It cannot execute a web search. If you need side effects, write a tool.
+**Writing a skill when you need a tool.** A skill can tell the LLM "use web search when the user asks about current events." It cannot perform the search. If you need side effects, you need a tool.
 
-**Writing an extension when you need an inline tool.** An extension provides tools from a package with package-scoped config. If your tool needs to know the current user's ID, session, or policy tier, it can't come from an extension. Define it inline on `createAgent()`.
+**Writing an extension when you need an inline tool.** Extensions provide tools from packages with package-scoped config. If your tool needs to know the current user's ID, the conversation slug, or the policy tier — anything that only exists per-request — it cannot come from an extension. Define it inline on `agent({...})`.
 
-**Skipping skills for complex tools.** A tool schema has a name, description, and parameters. That's enough for simple tools like `web_search`. But complex tools (like `analyze_image` or `recall_memories`) benefit from a skill that teaches the LLM *when* to call them. Without the skill, the LLM might call `analyze_image` on text content or skip it when the user clearly references an image.
+**Skipping skills for complex tools.** A tool's name + description + parameter schema is enough for self-explanatory tools (`web_search`, `get_weather`). Less obvious ones (`analyze_image`, `recall_memories`, `forge_tool`) benefit from a SKILL.md that teaches the LLM when each is appropriate. Without the skill, you get the LLM calling `analyze_image` on text content, or skipping it when the user clearly references an image.
+
+**Treating the registry as the source of truth.** Skills load at startup; the registry is a convenience for organizing them, not a runtime authority. The system prompt the LLM actually sees is whatever you assembled at `agent({...})` construction. If you forgot to inject `snapshot.prompt`, the skill is functionally invisible no matter what the registry says.
+
+## Source
+
+- Skills: [`packages/agentos/src/skills/`](https://github.com/framersai/agentos/tree/master/src/skills)
+- Tools: [`packages/agentos/src/core/tools/`](https://github.com/framersai/agentos/tree/master/src/core/tools)
+- Extension runtime: [`packages/agentos/src/extensions/`](https://github.com/framersai/agentos/tree/master/src/extensions)
+- Curated extensions: [`packages/agentos-extensions/registry/curated/`](https://github.com/framersai/agentos-extensions/tree/master/registry/curated)
+- Curated manifest builder: [`packages/agentos-extensions-registry/`](https://github.com/framersai/agentos-extensions-registry)
