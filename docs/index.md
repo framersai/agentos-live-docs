@@ -17,8 +17,12 @@ Modular orchestration runtime for AI agent systems.
 npm install @framers/agentos
 ```
 
+:::info Get in touch
+**[Join the Wilds AI Discord →](https://wilds.ai/discord)** for questions, feedback, and community discussion. **[Contact the AgentOS team →](https://agentos.sh/en/contact)** for partnerships, security disclosures, and enterprise inquiries.
+:::
+
 :::tip Memory benchmarks (full N=500, gpt-4o reader)
-**85.6% on LongMemEval-S** at $0.0090 per correct, **+1.4 points above Mastra Observational Memory (84.23%)**. **70.2% on LongMemEval-M** at $0.0078 per correct on the 1.5M-token / 500-session haystack variant — the only open-source library on the public record above 65% on M with publicly reproducible methodology. Competitive with the strongest published M results in the LongMemEval paper (Wu et al., ICLR 2025: round Top-5 65.7%, session Top-5 71.4%, round Top-10 72.0%).
+**85.6% on LongMemEval-S** at $0.0090 per correct, **+1.4 points above [Mastra](https://mastra.ai) Observational Memory (84.23%)**. **70.2% on LongMemEval-M** at $0.0078 per correct on the 1.5M-token / 500-session haystack variant, the only open-source library on the public record above 65% on M with publicly reproducible methodology. Competitive with the strongest published M results in the LongMemEval paper (Wu et al., ICLR 2025: round Top-5 65.7%, session Top-5 71.4%, round Top-10 72.0%).
 
 **[Full benchmarks reference →](/benchmarks)** · **[Reproducible run JSONs →](https://github.com/framersai/agentos-bench/tree/master/results/runs)** · **[SOTA writeup →](https://agentos.sh/en/blog/agentos-memory-sota-longmemeval/)**
 :::
@@ -27,12 +31,6 @@ npm install @framers/agentos
 **[Paracosm](https://paracosm.agentos.sh)** is a structured world model for AI agents, built on AgentOS. Define a world as JSON, run it with leaders that have different HEXACO personalities, and watch their decisions diverge into measurably different outcomes from an identical seed. Reproducible counterfactual simulations that cover turn-loop civ sims, batch-trajectory digital twins, and batch-point forecasts through one universal result schema.
 
 **[Live Demo](https://paracosm.agentos.sh/sim)** · **[GitHub](https://github.com/framersai/paracosm)** · **[npm](https://www.npmjs.com/package/paracosm)** · **[API Reference](/paracosm)** · **[Positioning map](https://github.com/framersai/paracosm/blob/master/docs/positioning/world-model-mapping.md)**
-:::
-
-:::info Join the Community
-Questions, feedback, or want to share what you're building? Join us on Discord.
-
-**[Join Discord](https://wilds.ai/discord)**
 :::
 
 ## Classifier-Driven Memory Pipeline

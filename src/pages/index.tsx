@@ -159,7 +159,7 @@ function ContactCTAs() {
         </a>
 
         <a
-          href="https://agentos.sh/contact"
+          href="https://agentos.sh/en/contact"
           target="_blank"
           rel="noopener noreferrer"
           style={ctaCardStyle}

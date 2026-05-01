@@ -8,7 +8,7 @@ tags: [engineering, adaptive-ai, emergent-intelligence, architecture]
 keywords: [adaptive ai, emergent intelligence, multi-agent collaboration, ai agent runtime, agentos architecture, generative agents]
 ---
 
-> *Editorial note:* This is the engineering deep-dive version. The longer consumer-facing essay version, with the same conclusions and additional cultural framing, lives at [Adaptive vs. Emergent Intelligence](https://agentos.sh/blog/adaptive-vs-emergent) on agentos.sh.
+> *Editorial note:* This is the engineering deep-dive version. The longer consumer-facing essay version, with the same conclusions and additional cultural framing, lives at [Adaptive vs. Emergent Intelligence](https://agentos.sh/en/blog/adaptive-vs-emergent) on agentos.sh.
 
 The terms "adaptive" and "emergent" get used interchangeably in agent-system marketing. They are not the same thing, and conflating them produces confused architecture. AgentOS treats them as distinct capabilities with different mechanisms and different boundaries.
 

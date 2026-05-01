@@ -47,7 +47,7 @@ Multi-agent simulation splits into two schools: predict the real world, or gener
 
 Both descend from the [Generative Agents](https://arxiv.org/abs/2304.03442) lineage (Park et al., Stanford 2023), which established that LLM-driven simulacra produce believable human behavior at small scale. The split between MiroFish and Mars Genesis is what to do with that capability: predict reality, or generate divergent histories.
 
-This post breaks down how each system works at the architecture level, where they diverge in design philosophy, and what builders can learn from both. For the long-form essay version of the Mars Genesis side of the comparison, see [Paracosm: Counterfactual World Simulation in 2026](https://agentos.sh/blog/paracosm-2026-overview).
+This post breaks down how each system works at the architecture level, where they diverge in design philosophy, and what builders can learn from both. For the long-form essay version of the Mars Genesis side of the comparison, see [Paracosm: Counterfactual World Simulation in 2026](https://agentos.sh/en/blog/paracosm-2026-overview).
 
 <!-- truncate -->
 
@@ -271,6 +271,6 @@ Both are open source. Both prove that multi-agent simulation has moved past chat
 
 ---
 
-*Mars Genesis is built with [AgentOS](https://agentos.sh), an open-source TypeScript runtime for autonomous AI agents. Install: `npm i @framers/agentos`*
+*Mars Genesis is built with [AgentOS](https://agentos.sh/en), an open-source TypeScript runtime for autonomous AI agents. Install: `npm i @framers/agentos`*
 
 *Built by [Manic Agency](https://manic.agency) / [Frame.dev](https://frame.dev). Contact: [team@frame.dev](mailto:team@frame.dev)*

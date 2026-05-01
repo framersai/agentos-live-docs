@@ -139,7 +139,7 @@ const config: Config = {
         applicationCategory: 'DeveloperApplication',
         operatingSystem: 'Cross-platform',
         offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
-        url: 'https://agentos.sh',
+        url: 'https://agentos.sh/en',
         downloadUrl: 'https://www.npmjs.com/package/@framers/agentos',
         codeRepository: 'https://github.com/framersai/agentos',
       }),
@@ -353,9 +353,9 @@ const config: Config = {
   themeConfig: {
     image: 'img/og-image.png',
     announcementBar: {
-      id: 'longmemeval-m-2026-04-29',
+      id: 'longmemeval-sm-2026-04-30',
       content:
-        'New benchmark: 70.2% on LongMemEval-M with reader-router top-K=5. <a href="https://agentos.sh/en/blog/agentos-memory-sota-longmemeval">Read the post →</a>',
+        'New benchmarks: 85.6% on LongMemEval-S (+1.4 above <a href="https://mastra.ai" target="_blank" rel="noopener noreferrer">Mastra</a> at gpt-4o) and 70.2% on LongMemEval-M. <a href="https://agentos.sh/en/blog/agentos-memory-sota-longmemeval">Read the post →</a>',
       backgroundColor: 'var(--ifm-color-primary-darkest)',
       textColor: 'var(--ifm-color-white)',
       isCloseable: true,
@@ -425,14 +425,16 @@ const config: Config = {
             ]
           : []),
         {
-          href: 'https://agentos.sh',
+          href: 'https://agentos.sh/en',
           label: 'Website',
           position: 'right' as const,
+          className: 'navbar-collapse-md',
         },
         {
-          href: 'https://agentos.sh/contact',
+          href: 'https://agentos.sh/en/contact',
           label: 'Contact',
           position: 'right' as const,
+          className: 'navbar-collapse-md',
         },
         {
           href: 'https://github.com/framersai/agentos',
@@ -472,7 +474,7 @@ const config: Config = {
           items: [
             { label: 'Manic Agency', href: 'https://manic.agency' },
             { label: 'Frame.dev', href: 'https://frame.dev' },
-            { label: 'AgentOS', href: 'https://agentos.sh' },
+            { label: 'AgentOS', href: 'https://agentos.sh/en' },
             { label: 'Wilds.ai', href: 'https://wilds.ai' },
             { label: 'Wunderland CLI', href: 'https://wunderland.sh' },
           ],
@@ -490,10 +492,10 @@ const config: Config = {
         {
           title: 'Legal',
           items: [
-            { label: 'Privacy Policy', href: 'https://agentos.sh/legal/privacy' },
-            { label: 'Terms of Service', href: 'https://agentos.sh/legal/terms' },
-            { label: 'Security', href: 'https://agentos.sh/legal/security' },
-            { label: 'Cookies', href: 'https://agentos.sh/legal/cookies' },
+            { label: 'Privacy Policy', href: 'https://agentos.sh/en/legal/privacy' },
+            { label: 'Terms of Service', href: 'https://agentos.sh/en/legal/terms' },
+            { label: 'Security', href: 'https://agentos.sh/en/legal/security' },
+            { label: 'Cookies', href: 'https://agentos.sh/en/legal/cookies' },
           ],
         },
       ],

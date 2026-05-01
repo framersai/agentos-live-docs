@@ -320,7 +320,7 @@ session ──(5+ uses, >0.8 confidence, panel approved)──→ agent ──(h
 
 ## Forge Observability
 
-The forge pipeline ships with a five-utility observability layer under [`@framers/agentos/emergent`](/api/modules#emergent) so any consumer can see live forge health without re-implementing the instrumentation. Each utility is standalone, pure, and composes with whatever telemetry the host already has.
+The forge pipeline ships with a five-utility observability layer under `@framers/agentos/emergent` so any consumer can see live forge health without re-implementing the instrumentation. Each utility is standalone, pure, and composes with whatever telemetry the host already has.
 
 ```
  forge_tool invocation
@@ -631,7 +631,7 @@ await exportToolAsSkillPack(forgedTool, './skills/slugify');
 
 ## Related
 
-- [Adaptive vs. Emergent Intelligence](https://agentos.sh/blog/adaptive-vs-emergent) -- how adaptive and emergent behavior differ in the AgentOS architecture
+- [Adaptive vs. Emergent Intelligence](https://agentos.sh/en/blog/adaptive-vs-emergent) -- how adaptive and emergent behavior differ in the AgentOS architecture
 - [Self-Improving Agents](/features/self-improving-agents) -- broader patterns for agents that improve over time
 - [Recursive Self-Building](/features/recursive-self-building) -- recursive tool creation and agent spawning
 - [Guardrails](/features/guardrails) -- safety mechanisms that constrain emergent behavior

@@ -1,7 +1,7 @@
 <div align="center">
 
 <p align="center">
-  <a href="https://agentos.sh"><img src="static/img/brand/agentos-primary-no-tagline-transparent-2x.png" alt="AgentOS" height="64" /></a>
+  <a href="https://agentos.sh/en"><img src="static/img/brand/agentos-primary-no-tagline-transparent-2x.png" alt="AgentOS" height="64" /></a>
   &nbsp;&nbsp;&nbsp;
   <a href="https://frame.dev" target="_blank" rel="noopener"><img src="static/img/brand/frame-logo-green-no-tagline.svg" alt="Frame.dev" height="40" /></a>
 </p>
@@ -10,7 +10,7 @@
 
 Unified documentation site for AgentOS — guides, architecture, extensions, and API reference.
 
-[Frame.dev](https://frame.dev) • [AgentOS](https://agentos.sh) • [Docs](https://docs.agentos.sh)
+[Frame.dev](https://frame.dev) • [AgentOS](https://agentos.sh/en) • [Docs](https://docs.agentos.sh)
 
 </div>
 
@@ -79,7 +79,7 @@ MIT
 ---
 
 <p align="center">
-  <a href="https://agentos.sh"><img src="static/img/brand/agentos-primary-no-tagline-transparent-2x.png" alt="AgentOS" height="36" /></a>
+  <a href="https://agentos.sh/en"><img src="static/img/brand/agentos-primary-no-tagline-transparent-2x.png" alt="AgentOS" height="36" /></a>
   &nbsp;&nbsp;&nbsp;
   <a href="https://frame.dev"><img src="static/img/brand/frame-logo-green-no-tagline.svg" alt="Frame.dev" height="28" /></a>
 </p>

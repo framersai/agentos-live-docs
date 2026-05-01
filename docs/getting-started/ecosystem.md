@@ -148,7 +148,7 @@ npm install paracosm
 ### [agentos.sh](https://github.com/framersai/agentos.sh)
 **Documentation Website** — Official documentation and marketing site.
 
-🌐 **Live:** [agentos.sh](https://agentos.sh)
+🌐 **Live:** [agentos.sh](https://agentos.sh/en)
 
 ---
 

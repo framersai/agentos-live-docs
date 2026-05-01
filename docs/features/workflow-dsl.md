@@ -3,9 +3,9 @@ title: "workflow() DSL"
 sidebar_position: 4
 ---
 
-`workflow()` is the sequential/pipeline authoring API in the Unified Orchestration Layer. It compiles to the same `CompiledExecutionGraph` IR as `AgentGraph` and `mission()`, but enforces that the result is a strict DAG — cycles are detected and rejected at compile time.
+The right way to ship a multi-step agent is rarely the most flexible way. A graph that can loop and replan is great when you don't know what shape the work takes; it's overkill — and harder to operate — when you do know. `workflow()` exists for the second case. You declare the steps in the order they run, the compiler builds the execution graph, and a static cycle check rejects anything that would loop. The output is the same [`CompiledExecutionGraph`](https://github.com/framersai/agentos/blob/master/src/orchestration/compiler/CompiledExecutionGraph.ts) the cyclic builders produce, so you can swap a `workflow()` for an `AgentGraph` later without re-architecting the runtime around it.
 
-Use `workflow()` when your steps are known upfront and execute in a well-defined order. For cyclic agent loops or complex graph structures, see [AgentGraph](/features/agent-graph). For goal-driven orchestration where steps emerge at runtime, see [mission()](/features/mission-api).
+Use `workflow()` when the steps are known and ordered. Use [`AgentGraph`](/features/agent-graph) when you need cycles, conditional branches, or fan-out/fan-in patterns the linear `then()` chain can't express. Use [`mission()`](/features/mission-api) when you want to declare intent first and let the planner decide the steps.
 
 ## Quick Start
 

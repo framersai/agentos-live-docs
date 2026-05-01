@@ -8,7 +8,7 @@ tags: [announcements, agentos, open-source, typescript, ai-agents]
 keywords: [agentos, ai agent framework, typescript ai agents, generalized mind instance, GMI, cognitive memory, multi-agent collaboration]
 ---
 
-> *Editorial note:* This is the technical announcement on the docs site. The brand announcement (with measured benchmark provenance and FAQ) lives at [Announcing AgentOS](https://agentos.sh/blog/announcing-agentos) on agentos.sh. They are different posts for different audiences and intentionally do not overlap.
+> *Editorial note:* This is the technical announcement on the docs site. The brand announcement (with measured benchmark provenance and FAQ) lives at [Announcing AgentOS](https://agentos.sh/en/blog/announcing-agentos) on agentos.sh. They are different posts for different audiences and intentionally do not overlap.
 
 AgentOS is an open-source TypeScript framework for building adaptive multi-agent systems. The runtime ships [Generalized Mind Instances](https://docs.agentos.sh/architecture/gmi) (GMIs) as the core abstraction: agents with working memory, episodic / semantic / procedural memory partitions, personality traits, and a provider-agnostic LLM adapter. The architecture follows the [CoALA framework](https://arxiv.org/abs/2309.02427) (Sumers et al., 2023) for cognitive architectures.
 
