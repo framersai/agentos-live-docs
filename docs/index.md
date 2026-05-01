@@ -74,7 +74,7 @@ The pipeline costs **one classifier call per query** (Stages 2 and 3 reuse Stage
 |---|---|---|---|
 | 1 | `QueryClassifier` | [`query-router`](/features/query-routing) | T0/none vs T1/simple vs T2/moderate vs T3/complex |
 | 2 | `MemoryRouter` | [`memory-router`](/features/memory-router) | canonical-hybrid vs observational-memory-v10 vs observational-memory-v11 |
-| 3 | `ReaderRouter` | [`memory-router`](/features/reader-router) (v0.5.5) | gpt-4o vs gpt-5-mini per category |
+| 3 | `ReaderRouter` | [`memory-router`](/features/read-router) (v0.5.5) | gpt-4o vs gpt-5-mini per category |
 
 Reproducible run JSONs, vendor reproductions, full transparency stack: **[github.com/framersai/agentos-bench](https://github.com/framersai/agentos-bench)**.
 

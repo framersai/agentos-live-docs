@@ -3,7 +3,11 @@ title: "LLM Providers"
 sidebar_position: 12
 ---
 
-> Configure and switch between 11 LLM providers (including 2 CLI-based) with automatic detection, fallback, and cost-aware routing.
+The cost of a model going down today does not save you when it goes down tomorrow. The right question for any production agent runtime is not *which provider* — it is *what happens when this provider isn't available*. Provider outages happen. Rate limits hit at the worst moment. A model deprecates. A region throttles. A subscription lapses. None of these stop being true because the agent is mid-conversation.
+
+AgentOS abstracts every LLM behind a single `IProvider` interface. Eleven providers are wired in directly — nine via API key, two via local CLI bridges that ride your existing Claude Max or Google account subscription. OpenRouter, included in the eleven, fans out to 200+ additional models from the same set of vendors. Every provider speaks the same streaming protocol, supports the same tool-call shape (with the documented exceptions below), and participates in the same cost ledger. Failover is automatic by default. The fallback chain is auto-built from whichever keys you've set, and is overridable per agent.
+
+The point isn't that AgentOS hides the provider. It's that it stops being a load-bearing decision. Pick a primary, set one fallback key, the runtime handles the rest.
 
 ---
 
@@ -35,17 +39,15 @@ sidebar_position: 12
 
 ## Overview
 
-AgentOS abstracts LLM access behind a unified `LLMProviderManager` interface.
-You configure providers via environment variables, and AgentOS handles model
-selection, streaming, tool calling, retries, and fallback routing.
+AgentOS abstracts LLM access behind a unified `IProvider` interface. You configure providers via environment variables, and AgentOS handles model selection, streaming, tool calling, retries, and fallback routing.
 
 **Key features:**
 
 - **11 providers** supported out of the box (9 API-key + 2 CLI-based)
 - **CLI providers**: Use your Claude Max or Google account subscription via local CLI — no API key needed
 - **Auto-detection**: Set an API key or install a CLI and the provider is available
-- **Fallback**: Automatic retry with alternate providers on failure
-- **Cost-aware routing**: Route requests to cheaper models when quality allows
+- **Fallback**: Automatic retry with alternate providers on failure (`fallbackProviders`)
+- **Cost-aware caps**: Per-run cost ceilings via `controls.maxCostUSD`; route requests to cheaper models with a custom router
 - **Streaming**: All providers support streaming with a unified async iterator
 - **Tool calling**: Unified function/tool calling across providers that support it
 
@@ -87,28 +89,31 @@ export OPENAI_API_KEY=sk-...
 ```
 
 ```typescript
-import { createAgent } from '@framers/agentos';
+import { agent } from '@framers/agentos';
 
-const agent = await createAgent();  // Auto-detects OpenAI
-const response = await agent.chat('Hello, world!');
+const myAgent = agent({});  // Auto-detects from env (OpenAI here)
+const result = await myAgent.generate('Hello, world!');
+console.log(result.text);
 ```
 
 ### Option 2: Programmatic
 
 ```typescript
-import { createAgent } from '@framers/agentos';
+import { agent } from '@framers/agentos';
 
-const agent = await createAgent({
-  llmProvider: 'anthropic',
-  llmModel: 'claude-sonnet-4-20250514',
+const myAgent = agent({
+  provider: 'anthropic',
+  model: 'claude-sonnet-4-20250514',
 });
 ```
+
+The `agent()` factory is **synchronous** — it does not return a Promise. The first network call happens on `generate()` / `stream()` / `session().send()`.
 
 ---
 
 ## Auto-Detection Order
 
-When no provider is explicitly configured, AgentOS checks for API keys in this
+When neither `provider` nor `model` is set, AgentOS checks for API keys in this
 order and uses the first one found:
 
 1. `OPENROUTER_API_KEY` → OpenRouter
@@ -123,8 +128,28 @@ order and uses the first one found:
 10. `which gemini` → Gemini CLI (PATH detection — no API key, uses Google account)
 11. `OLLAMA_BASE_URL` → Ollama
 
-You can override auto-detection by setting `llmProvider` explicitly in your
-configuration or passing `--provider <name>` to CLI commands.
+You can override auto-detection in three ways, highest priority first:
+
+1. **Inline** — `agent({ provider: '...', apiKey: '...' })` on a single call.
+2. **Module-level default** — `setDefaultProvider({ provider, apiKey })` once at boot. Every subsequent call inherits it; inline opts still win when supplied. Useful when credentials live in a secrets manager rather than `.env`.
+3. **CLI flag** — for the [Wunderland](https://wunderland.sh) CLI, pass `--provider <name>`.
+
+```typescript
+import { setDefaultProvider, generateText, agent } from '@framers/agentos';
+
+setDefaultProvider({
+  provider: 'openai',
+  apiKey: process.env.MY_OWN_KEY,
+  // optional: model: 'gpt-4o-mini', baseUrl: '...'
+});
+
+// No env vars, no inline opts — just works:
+const { text } = await generateText({ prompt: 'hello' });
+const bot = agent({ instructions: '...' });
+
+// Inline still wins:
+generateText({ apiKey: 'sk-tenant-scoped', prompt: 'isolated call' });
+```
 
 ---
 
@@ -148,21 +173,25 @@ OLLAMA_BASE_URL=http://localhost:11434
 
 ### Per-Agent Override
 
-Individual agents can use different providers via `agent.config.json`:
+Individual agents pick their provider/model directly in the `agent({ ... })` config:
 
-```json
-{
-  "llmProvider": "anthropic",
-  "llmModel": "claude-sonnet-4-20250514",
-  "llmAuthMethod": "api-key"
-}
+```typescript
+import { agent } from '@framers/agentos';
+
+const writer = agent({
+  provider: 'anthropic',
+  model: 'claude-sonnet-4-20250514',
+  apiKey: process.env.ANTHROPIC_API_KEY, // optional override
+});
 ```
 
 ---
 
 ## Fallback Behavior
 
-AgentOS supports automatic fallback when a provider request fails:
+AgentOS supports automatic fallback when a provider request fails on a
+retryable error (HTTP 402/429/5xx, network errors). Fallback is **on by
+default** with an auto-built chain — to disable it, pass an empty array.
 
 ```
 Primary Provider (e.g., Anthropic)
@@ -177,22 +206,30 @@ Error returned to caller
 ### Configuring Fallback
 
 ```typescript
-import { createAgent } from '@framers/agentos';
+import { agent } from '@framers/agentos';
 
-const agent = await createAgent({
-  llmProvider: 'anthropic',
-  llmFallback: ['openrouter', 'ollama'],  // Ordered fallback chain
-  llmFallbackModel: {
-    openrouter: 'anthropic/claude-sonnet-4-20250514',
-    ollama: 'llama3.2',
+const myAgent = agent({
+  provider: 'anthropic',
+  model: 'claude-sonnet-4-20250514',
+  // Ordered fallback chain — each entry can override the model.
+  fallbackProviders: [
+    { provider: 'openrouter', model: 'anthropic/claude-sonnet-4-20250514' },
+    { provider: 'ollama',     model: 'llama3.2' },
+  ],
+  onFallback: (err, next) => {
+    console.warn(`Falling back to ${next}: ${err.message}`);
   },
 });
+
+// Disable fallback entirely:
+const strict = agent({ provider: 'anthropic', fallbackProviders: [] });
 ```
 
 ### OpenRouter as Universal Fallback
 
 Setting `OPENROUTER_API_KEY` automatically enables it as a fallback for any
-primary provider. OpenRouter routes to 200+ models across all major providers.
+primary provider in the auto-built chain. OpenRouter routes to 200+ models
+across all major providers.
 
 ```bash
 # Primary: Anthropic. Fallback: OpenRouter (automatic)
@@ -212,22 +249,27 @@ AgentOS tracks token usage and cost across all providers:
 | **$$** (Standard) | Gemini, Mistral, xAI, OpenRouter (varies) | $0.50–$3.00 |
 | **$$$** (Premium) | OpenAI, Anthropic | $3.00–$15.00 |
 
-### Cost-Aware Routing
+### Cost-Aware Caps
+
+Per-run hard cost caps live on `controls`:
 
 ```typescript
-import { createAgent } from '@framers/agentos';
+import { agent } from '@framers/agentos';
 
-const agent = await createAgent({
-  costOptimization: {
-    enabled: true,
-    maxCostPerTurn: 0.05,          // USD budget per turn
-    preferCheaperModels: true,     // Route simple queries to cheaper models
-    premiumModelThreshold: 0.7,    // Complexity score threshold for premium models
+const myAgent = agent({
+  provider: 'anthropic',
+  controls: {
+    maxCostUSD: 0.05,           // Stop the run if total cost exceeds $0.05
+    maxTotalTokens: 50_000,     // Stop on token cap
+    maxDurationMs: 30_000,      // Wall-clock cap
+    onLimitReached: 'stop',     // 'stop' | 'warn' | 'error'
   },
 });
 ```
 
-See [Cost Optimization](/features/cost-optimization) for the full guide.
+For cheap-first routing across multiple models, attach a custom `IModelRouter`
+via `agent({ router })` — the router decides which provider/model to call per
+request. See [Cost Optimization](/features/cost-optimization) for the full guide.
 
 ---
 
@@ -332,9 +374,11 @@ OpenRouter is a multi-provider proxy that routes to 200+ models. Specify the
 model using the `provider/model` format:
 
 ```typescript
-const agent = await createAgent({
-  llmProvider: 'openrouter',
-  llmModel: 'anthropic/claude-sonnet-4-20250514',
+import { agent } from '@framers/agentos';
+
+const myAgent = agent({
+  provider: 'openrouter',
+  model: 'anthropic/claude-sonnet-4-20250514',
 });
 ```
 
@@ -371,80 +415,68 @@ ollama pull dolphin-mixtral
 
 ## Programmatic Configuration
 
-### LLMProviderConfig
+### Provider + Model + Auth
+
+The agent factory accepts `provider`, `model`, `apiKey`, and `baseUrl`
+directly. There is no separate `LLMProviderConfig` type — these fields live
+on `AgentOptions` (and on `BaseAgentConfig`, so every sub-agent in an
+`agency()` roster takes the same fields).
 
 ```typescript
-import { createAgent, type LLMProviderConfig } from '@framers/agentos';
+import { agent } from '@framers/agentos';
 
-const providerConfig: LLMProviderConfig = {
-  apiKey: process.env.ANTHROPIC_API_KEY!,
+const myAgent = agent({
+  provider: 'anthropic',
   model: 'claude-sonnet-4-20250514',
-  baseUrl: undefined,              // Custom base URL (optional)
-  extraHeaders: {                  // Additional headers (optional)
-    'X-Custom-Header': 'value',
-  },
-};
-
-const agent = await createAgent({
-  llmProvider: 'anthropic',
-  llmProviderConfig: providerConfig,
+  apiKey: process.env.ANTHROPIC_API_KEY,        // optional override
+  baseUrl: undefined,                           // optional custom base URL
 });
 ```
 
-### Switching Providers at Runtime
+### Per-Call Overrides
+
+`generate()` and `stream()` accept the same provider/model fields as a
+per-call override on top of the agent's base config — useful for sending one
+specific question through a different provider:
 
 ```typescript
-import { createAgent } from '@framers/agentos';
-
-const agent = await createAgent({
-  llmProvider: 'openai',
-});
-
-// Switch to Anthropic for a specific request
-const response = await agent.chat('Complex analysis task', {
-  provider: 'anthropic',
-  model: 'claude-opus-4-20250514',
-});
+const result = await myAgent.generate(
+  'Run this complex analysis as a one-off.',
+  {
+    provider: 'openai',
+    model: 'gpt-4o',
+  },
+);
 ```
 
 ---
 
 ## Adding a Custom Provider
 
-Implement the `ILLMProvider` interface to add a custom LLM provider:
+Implement the `IProvider` interface from `@framers/agentos` to add a custom
+LLM provider. Provider registration today is wired up via
+`AIModelProviderManager` — there is no public `registerLLMProvider()`
+shortcut yet; instead, instantiate your provider and inject it via the
+manager surfaced on `AgentOSConfig.dependencies` when constructing the
+runtime.
 
 ```typescript
-import { registerLLMProvider, type ILLMProvider } from '@framers/agentos';
+import type { IProvider } from '@framers/agentos';
 
-const myProvider: ILLMProvider = {
-  id: 'my-provider',
-  name: 'My Custom LLM',
+class MyProvider implements IProvider {
+  readonly id = 'my-provider';
+  readonly name = 'My Custom LLM';
 
-  models: [
-    { id: 'my-model-v1', contextWindow: 32768, supportsTool: true, supportsVision: false },
-  ],
-
-  async chat(messages, options) {
-    const response = await fetch('https://my-llm.com/v1/chat', {
-      method: 'POST',
-      headers: { Authorization: `Bearer ${process.env.MY_LLM_KEY}` },
-      body: JSON.stringify({ messages, model: options.model }),
-    });
-    const data = await response.json();
-    return {
-      content: data.choices[0].message.content,
-      usage: { promptTokens: data.usage.prompt_tokens, completionTokens: data.usage.completion_tokens },
-    };
-  },
-
-  async *stream(messages, options) {
-    // Implement SSE streaming
-    // yield { type: 'text_delta', content: '...' }
-  },
-};
-
-registerLLMProvider(myProvider);
+  // ... implement generateCompletion / streamCompletion / listModels / etc.
+  // See packages/agentos/src/core/llm/providers/IProvider.ts for the full
+  // contract; the existing OpenAI / Anthropic / Ollama implementations are
+  // good references.
+}
 ```
+
+Look at any class under `src/core/llm/providers/implementations/` for a
+complete reference — the OpenAI and Anthropic providers are the most fully
+exercised paths.
 
 ---
 
