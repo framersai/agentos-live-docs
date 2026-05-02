@@ -27,8 +27,8 @@ npm install @framers/agentos
 **[Full benchmarks reference →](/benchmarks)** · **[Reproducible run JSONs →](https://github.com/framersai/agentos-bench/tree/master/results/runs)** · **[SOTA writeup →](https://agentos.sh/en/blog/agentos-memory-sota-longmemeval/)**
 :::
 
-:::tip Paracosm: structured world model for AI agents
-**[Paracosm](https://paracosm.agentos.sh)** is a structured world model for AI agents, built on AgentOS. Define a world as JSON, run it with leaders that have different HEXACO personalities, and watch their decisions diverge into measurably different outcomes from an identical seed. Reproducible counterfactual simulations that cover turn-loop civ sims, batch-trajectory digital twins, and batch-point forecasts through one universal result schema.
+:::tip Paracosm: agent swarm simulation for structured world modeling with LLMs
+**[Paracosm](https://paracosm.agentos.sh)** is an agent swarm simulation framework for structured world modeling with LLMs, built on AgentOS. Define a world as JSON, run it with HEXACO-typed leaders directing a swarm of specialists and ~100 personality-typed cells, and watch their decisions diverge into measurably different outcomes from an identical seed. Reproducible forkable simulations that cover turn-loop civ sims, batch-trajectory digital twins, and batch-point forecasts through one universal result schema. The swarm itself is first-class on the API: `RunArtifact.finalSwarm`, `paracosm/swarm` helpers, and `GET /api/v1/runs/:runId/swarm` for HTTP consumers.
 
 **[Live Demo](https://paracosm.agentos.sh/sim)** · **[GitHub](https://github.com/framersai/paracosm)** · **[npm](https://www.npmjs.com/package/paracosm)** · **[API Reference](/paracosm)** · **[Positioning map](https://github.com/framersai/paracosm/blob/master/docs/positioning/world-model-mapping.md)**
 :::
@@ -198,7 +198,7 @@ graph TB
 - [Evaluation Framework](/features/evaluation-framework) — Testing and benchmarks
 - [Cost Optimization](/features/cost-optimization) — Token usage and caching
 
-### Paracosm: structured world model for AI agents
+### Paracosm: agent swarm simulation for structured world modeling with LLMs
 
 - [Paracosm API Reference](/paracosm): TypeDoc API for the simulation engine
 - [Live Demo](https://paracosm.agentos.sh/sim): Run Mars Genesis in your browser
