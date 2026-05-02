@@ -11,7 +11,9 @@ slug: /documentation
 [![tests](https://img.shields.io/badge/tests-3%2C866%2B_passed-2ea043?style=flat-square&logo=vitest&logoColor=white)](https://github.com/framersai/agentos/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/gh/framersai/agentos/graph/badge.svg)](https://codecov.io/gh/framersai/agentos)
 
-Modular orchestration runtime for AI agent systems.
+Open-source TypeScript runtime for AI agents that **remember, adapt, and write their own tools**.
+
+When an agent encounters a sub-task no existing tool covers, it generates a TypeScript function with a Zod schema, sends it through an LLM judge, and on approval runs it in a hardened `node:vm` sandbox. When a multi-agent team hits a capability gap, the manager calls `spawn_specialist` and the LLM judge reviews the spec before the new agent joins the live roster.
 
 ```bash
 npm install @framers/agentos
