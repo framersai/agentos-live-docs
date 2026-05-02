@@ -22,7 +22,7 @@ npm install @framers/agentos
 :::
 
 :::tip Memory benchmarks (full N=500, gpt-4o reader)
-**85.6% on LongMemEval-S** at $0.0090 per correct, **+1.4 points above [Mastra](https://mastra.ai) Observational Memory (84.23%)**. **70.2% on LongMemEval-M** at $0.0078 per correct on the 1.5M-token / 500-session haystack variant, the only open-source library on the public record above 65% on M with publicly reproducible methodology. Competitive with the strongest published M results in the LongMemEval paper (Wu et al., ICLR 2025: round Top-5 65.7%, session Top-5 71.4%, round Top-10 72.0%).
+**85.6% on LongMemEval-S** at $0.0090 per correct, **0.4 points behind [Emergence.ai](https://www.emergence.ai/blog/sota-on-longmemeval-with-rag) SOTA (86%, closed-source SaaS)** and **+1.4 points above [Mastra](https://mastra.ai) Observational Memory (84.23%)** at matched gpt-4o reader. AgentOS ships fully open-source under Apache-2.0, free to install, fork, and self-host. **70.2% on LongMemEval-M** at $0.0078 per correct on the 1.5M-token / 500-session haystack variant, the only open-source library on the public record above 65% on M with publicly reproducible methodology. Competitive with the strongest published M results in the LongMemEval paper (Wu et al., ICLR 2025: round Top-5 65.7%, session Top-5 71.4%, round Top-10 72.0%).
 
 **[Full benchmarks reference →](/benchmarks)** · **[Reproducible run JSONs →](https://github.com/framersai/agentos-bench/tree/master/results/runs)** · **[SOTA writeup →](https://agentos.sh/en/blog/agentos-memory-sota-longmemeval/)**
 :::

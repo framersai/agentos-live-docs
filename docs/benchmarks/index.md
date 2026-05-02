@@ -14,13 +14,13 @@ keywords:
   - longmemeval m variant
 ---
 
-AgentOS posts +1.4 points above Mastra at `gpt-4o` reader on **[LongMemEval-S](https://arxiv.org/abs/2410.10813)** (85.6% vs Mastra's 84.23%), and is the only open-source library on the public record above 65% on the harder M variant.
+AgentOS posts 85.6% on **[LongMemEval-S](https://arxiv.org/abs/2410.10813)** at `gpt-4o` reader: 0.4 points behind Emergence.ai's published 86% SOTA (closed-source SaaS) and +1.4 points above Mastra's 84.23% at the same reader. AgentOS is the only open-source memory library on the public record above 65% on the harder M variant.
 
 This page is the canonical comparison table. Every cell links to its primary source. Cross-provider configurations (e.g. Mastra's gpt-5-mini reader + gemini-2.5-flash observer) are excluded because their results cannot be reproduced from public methodology disclosures.
 
 ## TL;DR
 
-- **LongMemEval-S at full N=500, gpt-4o reader**: AgentOS at **85.6%** is +1.4 points above Mastra OM gpt-4o (84.23%). $0.0090 per correct, 3.6-second median latency.
+- **LongMemEval-S at full N=500, gpt-4o reader**: AgentOS at **85.6%** is 0.4 points behind Emergence.ai SOTA (86%, closed-source SaaS) and +1.4 points above Mastra OM gpt-4o (84.23%). $0.0090 per correct, 3.6-second median latency.
 - **LongMemEval-M at full N=500, gpt-4o reader**: AgentOS at **70.2%** is competitive with the strongest published M results in the LongMemEval paper ([Wu et al. ICLR 2025, Table 3](https://arxiv.org/abs/2410.10813)). The paper's three primary GPT-4o configurations: round Top-5 65.7% (we're +4.5), session Top-5 71.4% (we're 1.2 below), round Top-10 72.0% (we're 1.8 below at the harder Top-5 retrieval budget). First open-source library above 65% on M with publicly reproducible methodology. Closest published external number is AgentBrain's 71.7% from their closed-source SaaS.
 - **15 adjacent stress-tested configurations all regress** against the 85.6% headline. Locally Pareto-optimal in the tested parameter space.
 
