@@ -409,7 +409,7 @@ const config: Config = {
                 label: 'API Reference',
               },
               {
-                to: '/paracosm/',
+                href: 'https://paracosm.agentos.sh/docs',
                 position: 'left' as const,
                 label: 'Paracosm',
               },
