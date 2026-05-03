@@ -193,10 +193,13 @@ test('publication verification scripts are wired into the docs packages', () => 
   );
   assert.match(docusaurusConfig, /AGENTOS_DOCS_GUIDES_ONLY/);
   assert.match(docusaurusConfig, /exclude:\s*guidesOnly\s*\?\s*\['api\/\*\*',\s*'paracosm\/\*\*'\]\s*:\s*\[\]/);
-  assert.match(docusaurusConfig, /blog:\s*guidesOnly\s*\?\s*false\s*:/);
+  // Blog consolidation (Track G, 2026-04-30): canonical blog moved to
+  // agentos.sh/en/blog. The local blog plugin is disabled unconditionally,
+  // and the navbar "Blog" entry is an external href under guidesOnly.
+  assert.match(docusaurusConfig, /blog:\s*false,/);
   assert.match(
     docusaurusConfig,
-    /\.\.\.\(!guidesOnly[\s\S]*?\[\s*\{[\s\S]*?to:\s*'\/blog'[\s\S]*?label:\s*'Blog'/,
+    /\.\.\.\(!guidesOnly[\s\S]*?\[\s*\{[\s\S]*?href:\s*'https:\/\/agentos\.sh\/en\/blog'[\s\S]*?label:\s*'Blog'/,
   );
   assert.match(docusaurusConfig, /label: 'Skills',\s*to: '\/skills'/);
   assert.match(docusaurusConfig, /label: 'Extensions',\s*to: '\/extensions'/);
