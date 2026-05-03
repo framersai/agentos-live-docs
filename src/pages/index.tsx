@@ -647,7 +647,7 @@ const features = [
     title: 'Curated Skills',
     description:
       'SKILL.md prompt modules for research, developer tools, communication, productivity, security, media, and creative workflows. Semantic discovery finds the right skill per turn.',
-    link: '/skills/overview',
+    link: '/skills',
   },
   {
     title: 'Self-Improving Agents',
