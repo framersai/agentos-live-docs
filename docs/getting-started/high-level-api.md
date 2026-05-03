@@ -48,7 +48,7 @@ AgentOS supports three styles for specifying provider and model. **Provider-firs
 await generateText({ provider: 'openai', prompt: '...' });
 
 // 2. Provider + explicit model — full control
-await generateText({ provider: 'anthropic', model: 'claude-sonnet-4-20250514', prompt: '...' });
+await generateText({ provider: 'anthropic', model: 'claude-sonnet-4-5-20250929', prompt: '...' });
 
 // 3. Legacy colon format — backwards compatible, still works
 await generateText({ model: 'openai:gpt-4o', prompt: '...' });
@@ -62,10 +62,10 @@ for the requested task automatically:
 | Provider                 | Type  | Text default               | Image default                    | Embedding default        | Env var                           |
 | ------------------------ | ----- | -------------------------- | -------------------------------- | ------------------------ | --------------------------------- |
 | `openai`                 | Cloud | `gpt-4o`                   | `gpt-image-1`                    | `text-embedding-3-small` | `OPENAI_API_KEY`                  |
-| `anthropic`              | Cloud | `claude-sonnet-4-20250514` | —                                | —                        | `ANTHROPIC_API_KEY`               |
+| `anthropic`              | Cloud | `claude-sonnet-4-5-20250929` | —                                | —                        | `ANTHROPIC_API_KEY`               |
 | `gemini`                 | Cloud | `gemini-2.5-flash`         | —                                | —                        | `GEMINI_API_KEY`                  |
 | `openrouter`             | Cloud | `openai/gpt-4o`            | —                                | —                        | `OPENROUTER_API_KEY`              |
-| `claude-code-cli`        | Local | `claude-sonnet-4-20250514` | —                                | —                        | `which claude`                    |
+| `claude-code-cli`        | Local | `claude-sonnet-4-5-20250929` | —                                | —                        | `which claude`                    |
 | `gemini-cli`             | Local | `gemini-2.5-flash`         | —                                | —                        | `which gemini`                    |
 | `stability`              | Cloud | —                          | `stable-diffusion-xl-1024-v1-0`  | —                        | `STABILITY_API_KEY`               |
 | `replicate`              | Cloud | —                          | `black-forest-labs/flux-1.1-pro` | —                        | `REPLICATE_API_TOKEN`             |
@@ -536,7 +536,7 @@ Runnable examples in the package source:
 
 ```ts
 import { AgentOS, AgentOSResponseChunkType } from '@framers/agentos';
-import { createTestAgentOSConfig } from '@framers/agentos/config/AgentOSConfig';
+import { createTestAgentOSConfig } from '@framers/agentos';
 
 const agent = new AgentOS();
 await agent.initialize(
@@ -588,6 +588,8 @@ import {
   processRequestWithRegisteredTools,
 } from '@framers/agentos';
 
+const agent = await AgentOS.create();
+
 for await (const chunk of processRequestWithRegisteredTools(agent, {
   userId: 'user-1',
   sessionId: 'session-1',
@@ -638,8 +640,13 @@ tools with the correct resume-time `ToolExecutionContext` and then resumes the
 stream for you.
 
 ```ts
-import { resumeExternalToolRequestWithRegisteredTools } from '@framers/agentos';
+import {
+  AgentOS,
+  AgentOSResponseChunkType,
+  resumeExternalToolRequestWithRegisteredTools,
+} from '@framers/agentos';
 
+const agent = await AgentOS.create();
 const pending = await agent.getPendingExternalToolRequest('conv-1', 'user-1');
 
 if (pending) {

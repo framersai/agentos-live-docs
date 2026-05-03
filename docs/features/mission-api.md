@@ -3,6 +3,8 @@ title: "mission() API"
 sidebar_position: 3
 ---
 
+> **Live run**: see `mission()` generate a step plan (gmi + tool steps) and return final artifacts with confidence in [the agentos.sh demo gallery](https://agentos.sh/#live-demo). Source: [`examples/mission-api.mjs`](https://github.com/framersai/agentos/blob/master/examples/mission-api.mjs).
+
 `workflow()` and `AgentGraph` ask you to think in terms of nodes and edges before you've thought in terms of intent. `mission()` lets you state the intent first and shape the graph later. You declare what the mission is supposed to accomplish — the goal template, the input schema, the return schema, the planner hints — and the compiler emits a working execution graph from those declarations. When the shape stabilises through use, you export it via `.toWorkflow()` and pin it as a deterministic [workflow()](/features/workflow-dsl) or [AgentGraph](/features/agent-graph) for production.
 
 **Honest status today.** `mission()` is partly the API you'd expect from the description above and partly a forward-compatible shape for what it will be. The compiler currently emits a fixed phase-ordered stub graph (`gather` → `process` → `deliver`) with the anchors and mission-level policies you declared applied on top. The planner config is accepted and preserved, but does not yet change graph shape at runtime. The exported [`CompiledExecutionGraph`](/features/workflow-dsl) is real and runs through the same orchestration runtime as everything else; it's just not dynamically planned yet. See [`/architecture/runtime-status-matrix`](../architecture/runtime-status-matrix) for the shipped-vs-partial map across the orchestration surface.
@@ -147,7 +149,7 @@ All constraint fields are optional — an anchor with no constraints is appended
 
 ```typescript
 const compiled = mission(...).compile({
-  checkpointStore: new SqliteCheckpointStore('./missions.db'), // optional
+  checkpointStore: new InMemoryCheckpointStore('./missions.db'), // optional
 });
 ```
 
@@ -202,7 +204,7 @@ const outerGraph = new AgentGraph(outerState)
 
 ```typescript
 import { mission, toolNode, humanNode } from '@framers/agentos/orchestration';
-import { SqliteCheckpointStore } from '@framers/agentos/orchestration/checkpoint';
+import { InMemoryCheckpointStore } from '@framers/agentos/orchestration/checkpoint';
 import { z } from 'zod';
 
 const deepResearch = mission('deep-research')
@@ -244,7 +246,7 @@ const deepResearch = mission('deep-research')
   )
 
   .compile({
-    checkpointStore: new SqliteCheckpointStore('./research.db'),
+    checkpointStore: new InMemoryCheckpointStore('./research.db'),
   });
 
 // Inspect the plan before running
@@ -272,3 +274,18 @@ const staticIR = deepResearch.toWorkflow();
 - [workflow() DSL](/features/workflow-dsl) — for deterministic DAG pipelines
 - [Checkpointing](/features/checkpointing) — ICheckpointStore, resume semantics
 - [Unified Orchestration](/features/unified-orchestration) — architecture overview
+
+---
+
+## References
+
+### Goal-first authoring patterns
+
+- Yao, S., Zhao, J., Yu, D., Du, N., Shafran, I., Narasimhan, K., & Cao, Y. (2023). *ReAct: Synergizing reasoning and acting in language models.* ICLR 2023. — Reasoning-and-acting pattern the `react` planner strategy targets. [arXiv:2210.03629](https://arxiv.org/abs/2210.03629)
+- Yao, S., Yu, D., Zhao, J., Shafran, I., Griffiths, T. L., Cao, Y., & Narasimhan, K. (2023). *Tree of thoughts: Deliberate problem solving with large language models.* NeurIPS 2023. — Branch-and-evaluate planning pattern informing the `tree` planner strategy. [arXiv:2305.10601](https://arxiv.org/abs/2305.10601)
+- Hong, S., Zhuge, M., Chen, J., et al. (2023). *MetaGPT: Meta programming for a multi-agent collaborative framework.* ICLR 2024. — Hierarchical task decomposition informing the `hierarchical` planner strategy. [arXiv:2308.00352](https://arxiv.org/abs/2308.00352)
+
+### Implementation references
+
+- `packages/agentos/src/orchestration/builders/MissionBuilder.ts` — the `mission()` factory + builder
+- `packages/agentos/src/orchestration/compiler/` — IR + graph compiler shared with `workflow()` and `AgentGraph`

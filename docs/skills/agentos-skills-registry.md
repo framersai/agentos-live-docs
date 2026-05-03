@@ -147,4 +147,4 @@ const merged = mergeWithWorkspaceSkills(SKILLS_CATALOG, workspace);
 
 ## License
 
-MIT
+Apache 2.0 — see [LICENSE](LICENSE).

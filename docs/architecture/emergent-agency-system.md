@@ -1,688 +1,278 @@
 ---
 title: "Emergent Agency System"
 sidebar_position: 15
+description: "How AgentOS coordinates multiple GMIs (the agency layer) and how it synthesises new specialist agents at runtime (the emergent layer). Verified against the agentos source — the previous version of this page documented application-layer code that does not live in the package."
 ---
 
-## Overview
+A single GMI is a mind. Most agent runtimes stop there: one mind per request, one persona per session. AgentOS does too, when one mind is enough. But research that holds up has more than one author. A reviewer is not the same person as a writer. A planner who decomposes a goal benefits from not also being the executor who runs the steps. The runtime support for "more than one mind, on the same task, coordinating" is the **agency** layer. The runtime support for "the orchestrator decides at execution time that it needs a specialist mind it didn't have when the run started" is the **emergent** layer. They compose, but they're separate systems with separate config surfaces.
 
-The Emergent Agency System enables **dynamic multi-agent coordination** where agents can:
+This page documents both. It deliberately replaces an earlier draft that described `EmergentAgencyCoordinator` and `MultiGMIAgencyExecutor` — those classes belong to a downstream wilds-ai backend, not to agentos core, and surfacing them here misled readers about what shipping with `@framers/agentos` actually gets you.
 
-- Decompose complex goals into subtasks
-- Spawn new roles adaptively based on task requirements
-- Coordinate through shared context
-- Produce structured, actionable outputs
+> **Scope note.** The agency layer described here is for **single-request multi-agent coordination** — one external request produces one coordinated multi-agent response. Long-running world simulations where a fixed roster of agents all run in parallel each turn against an evolving world state (e.g. paracosm, Mars Genesis) don't fit this shape and shouldn't be force-fitted; build your own turn loop with `agent()` + (optionally) `EmergentAgentForge` / `EmergentAgentJudge` directly. See the [scope table in AGENCY_API](/orchestration/agency-api#scope-when-to-reach-for-agency) for which patterns belong here vs in your own orchestrator.
 
-This document describes the full implementation for AgentOS v0.1.0.
+## The agency layer
 
----
+An **agency** is a named roster of GMIs (or a mix of GMIs and tools) coordinating on a shared goal. The configuration shape is [`AgencyOptions`](https://github.com/framersai/agentos/blob/master/src/api/types.ts) (extends `BaseAgentConfig`):
 
-## Architecture
+```typescript
+import { agency } from '@framers/agentos';
 
-### Core Components
-
-1. **EmergentAgencyCoordinator**
-   - Analyzes goals and decomposes them into concrete tasks
-   - Assigns tasks to roles (existing or newly spawned)
-   - Manages shared context for inter-agent coordination
-   - Location: `backend/src/integrations/agentos/EmergentAgencyCoordinator.ts`
-
-2. **MultiGMIAgencyExecutor**
-   - Orchestrates parallel execution of multiple GMI instances
-   - Handles error recovery with configurable retry logic
-   - Aggregates costs and usage across all agents
-   - Streams real-time progress updates
-   - Location: `backend/src/integrations/agentos/MultiGMIAgencyExecutor.ts`
-
-3. **Agency Persistence Layer**
-   - Persists agency execution state to database
-   - Tracks individual seat progress and retries
-   - Stores emergent metadata (decomposed tasks, spawned roles)
-   - Location: `backend/src/integrations/agentos/agencyPersistence.service.ts`
-
-4. **Agency Stream Router**
-   - Provides SSE endpoint for real-time agency streaming
-   - Supports emergent behavior via query parameter
-   - Location: `backend/src/integrations/agentos/agentos.agency-stream-router.ts`
-
----
-
-## How It Works
-
-### 1. Goal Decomposition
-
-When `enableEmergentBehavior=true`, the system:
-
-1. Sends the goal to a planner persona
-2. Receives a structured list of tasks with:
-   - Description
-   - Dependencies (which tasks must complete first)
-   - Priority (1-10 scale)
-   - Required capabilities
-
-**Example:**
-
-```json
-[
-  {
-    "description": "Research current quantum computing breakthroughs",
-    "dependencies": [],
-    "priority": 9,
-    "requiredCapabilities": ["webSearch", "factCheck"]
+const myAgency = agency({
+  agents: {
+    researcher: { instructions: 'Find relevant papers and pull verbatim quotes.' },
+    writer:     { instructions: 'Compose a clear, well-cited summary.' },
+    reviewer:   { instructions: 'Critique for accuracy and missing citations.' },
   },
-  {
-    "description": "Format findings into publishable report",
-    "dependencies": ["task_1"],
-    "priority": 7,
-    "requiredCapabilities": ["contentFormatting"]
-  }
-]
+  strategy: 'review-loop',
+  maxRounds: 3,
+});
+
+const result = await myAgency.generate('Summarise advances in retrieval-augmented generation since 2023.');
 ```
 
-### 2. Adaptive Role Assignment
+`agents` is a `Record<string, BaseAgentConfig | Agent>` — each entry is either a config object the agency will instantiate, or a pre-built `Agent` you've already constructed. The latter is how you reuse a heavyweight agent (one with full memory + tool surface) across multiple agencies without rebuilding it.
 
-The coordinator then:
+### The six strategies
 
-1. Analyzes available roles vs. task requirements
-2. Assigns tasks to existing roles where capabilities match
-3. **Spawns new roles** if existing ones lack required capabilities
-4. Returns an updated role list with task assignments
+`AgencyStrategy` is defined in `src/api/types.ts`:
 
-**Example:**
+| Strategy | Behavior | Best for |
+|---|---|---|
+| `sequential` | Each agent runs after the previous one completes; each output feeds into the next agent's input | Pipelines where one phase clearly precedes the next (research → write → review) |
+| `parallel` | All agents run concurrently against the same input; outputs are aggregated | Independent perspectives on the same question (multi-source research, ensemble opinions) |
+| `debate` | Agents critique and refine each other's outputs across rounds, capped by `maxRounds` | Adversarial scrutiny — getting two strong views and forcing them to converge or surface real disagreement |
+| `review-loop` | One agent produces, another reviews; loop continues until reviewer accepts or `maxRounds` hits | Quality-gated outputs where one agent is the author and another is the gatekeeper |
+| `hierarchical` | A coordinator agent delegates to sub-agents and synthesises their results | Complex goals with clear decomposition (manager + ICs pattern) |
+| `graph` | Explicit DAG via `dependsOn` on each sub-agent; runs roots first, then dependents | Workflows with explicit dependency structure that don't fit the linear strategies above |
 
-```json
-{
-  "assignments": [
-    { "taskId": "task_1", "roleId": "researcher", "reason": "Has webSearch capability" },
-    { "taskId": "task_2", "roleId": "communicator", "reason": "Handles formatting" }
-  ],
-  "newRoles": []
-}
-```
+The `adaptive: true` option lets the orchestrator override the configured strategy at runtime if the task complexity signals warrant it (currently a conservative override — most runs use the requested strategy).
 
-### 3. Parallel Execution
+### Agency runtime classes
 
-Each role:
+Coordination state lives in [`src/agents/agency/`](https://github.com/framersai/agentos/tree/master/src/agents/agency):
 
-- Spawns a dedicated GMI instance with the assigned persona
-- Receives its specific instruction + shared goal context
-- Executes independently with automatic retry on failure
-- Streams progress updates back to the coordinator
+| Class | Purpose |
+|---|---|
+| [`AgencyRegistry`](https://github.com/framersai/agentos/blob/master/src/agents/agency/AgencyRegistry.ts) | Tracks active agencies and the GMIs each contains. `agency()` registers; the orchestrator looks up GMIs by agency ID + role name during execution. |
+| [`AgencyMemoryManager`](https://github.com/framersai/agentos/blob/master/src/agents/agency/AgencyMemoryManager.ts) | Shared memory across the agency's GMIs, separate from each GMI's private cognitive memory. The shared memory is what lets the writer see the researcher's findings without re-running retrieval. |
+| [`AgentCommunicationBus`](https://github.com/framersai/agentos/blob/master/src/agents/agency/AgentCommunicationBus.ts) (`IAgentCommunicationBus`) | The structured messaging layer. Supports point-to-point send, broadcast, request/response, and handoff with state transfer. Message types include `task_delegation`, `status_update`, `question`, `answer`, `finding`, `decision`, `critique`, `handoff`. |
 
-### 4. Structured Output
+Each GMI in the agency keeps its own persona, traits, and cognitive memory. The agency adds coordination on top — it doesn't merge the GMIs into one entity.
 
-Results are formatted based on `outputFormat`:
+### Communication patterns
 
-- **markdown**: Consolidated report with sections per role
-- **json**: Structured data for programmatic consumption
-- **csv**: Tabular format for data analysis
-- **text**: Plain text summary
-
----
-
-## Usage
-
-### API Endpoint
-
-**GET** `/api/agentos/agency/stream`
-
-Query Parameters:
-
-- `userId` (required): User ID
-- `conversationId` (required): Conversation/session ID
-- `goal` (required): The high-level objective
-- `roles` (required): JSON array of role configurations
-- `outputFormat` (optional): `markdown` | `json` | `csv` | `text`
-- `workflowDefinitionId` (optional): Workflow to follow
-- **`enableEmergent`** (optional): `"true"` to enable emergent behavior
-
-**Example:**
-
-```bash
-curl "http://localhost:3333/api/agentos/agency/stream?\
-userId=user123&\
-conversationId=conv456&\
-goal=Research%20quantum%20computing%20and%20publish%20to%20Telegram&\
-roles=%5B%7B%22roleId%22%3A%22researcher%22%2C%22personaId%22%3A%22research-specialist%22%2C%22instruction%22%3A%22Research%20technical%20info%22%7D%5D&\
-outputFormat=markdown&\
-enableEmergent=true"
-```
-
-### Response Stream (SSE)
-
-The endpoint streams `AgentOSResponse` chunks:
+The bus interface ([`IAgentCommunicationBus`](https://github.com/framersai/agentos/blob/master/src/agents/agency/IAgentCommunicationBus.ts)) supports four patterns:
 
 ```typescript
-{
-  "type": "agency_update",
-  "streamId": "conv456",
-  "gmiInstanceId": "agency:agency_abc123",
-  "personaId": "agency:agency_abc123",
-  "isFinal": false,
-  "timestamp": "2025-01-15T10:30:00Z",
-  "agency": {
-    "agencyId": "agency_abc123",
-    "workflowId": "workflow:agency_abc123",
-    "conversationId": "conv456",
-    "seats": [
-      {
-        "roleId": "researcher",
-        "personaId": "research-specialist",
-        "gmiInstanceId": "gmi-instance-xyz789",
-        "metadata": { "status": "running" }
-      }
-    ],
-    "metadata": { "goal": "...", "status": "pending" }
-  }
-}
-```
+// Point-to-point: targeted message to a specific agent
+await bus.sendToAgent('researcher-gmi', {
+  type: 'question',
+  content: 'What did you find about topic X?',
+  priority: 'normal',
+});
 
-Final chunk includes:
+// Broadcast: all agents in the agency
+await bus.broadcast({
+  type: 'finding',
+  content: 'New constraint discovered: deadline moved to Friday.',
+});
 
-```typescript
-{
-  "type": "final_response",
-  "finalResponseText": "# Research Findings\n\n## RESEARCHER\n...",
-  "usage": {
-    "promptTokens": 1500,
-    "completionTokens": 2000,
-    "totalTokens": 3500,
-    "totalCostUSD": 0.0105
-  },
-  "metadata": {
-    "agencyId": "agency_abc123",
-    "roleCount": 2,
-    "outputFormat": "markdown",
-    "emergentBehavior": {
-      "tasksDecomposed": 3,
-      "rolesSpawned": 2,
-      "coordinationEvents": 5
-    }
-  }
-}
-```
+// Request/response: send + wait for reply
+const answer = await bus.request('researcher-gmi', {
+  type: 'question',
+  content: 'Does the source say anything about throughput?',
+});
 
----
-
-## Configuration
-
-### Retry Logic
-
-Configured in `MultiGMIAgencyExecutorDependencies`:
-
-```typescript
-const executor = new MultiGMIAgencyExecutor({
-  agentOS: agentosInstance,
-  onChunk: streamCallback,
-  maxRetries: 2, // Default: 2
-  retryDelayMs: 1000, // Default: 1000
+// Handoff: transfer state with the message
+await bus.handoff('writer-gmi', {
+  state: { findings, citations, openQuestions },
+  message: { type: 'handoff', content: 'Research complete; writing phase begins.' },
 });
 ```
 
-### Concurrency
+Handoffs are the pattern most worth understanding. They aren't just messages — they bundle the transferring agent's findings and partial state. The receiving agent gets a snapshot of where the previous agent left off, which is what lets the writer pick up from the researcher's notes without having to re-derive them.
 
-Tasks execute in parallel with a concurrency limit of **min(4, roleCount)**.
+## The emergent layer
 
-### Cost Tracking
+[`EmergentConfig`](https://github.com/framersai/agentos/blob/master/src/api/types.ts) is a separate concern. The agency layer is about coordinating GMIs you defined ahead of time. The emergent layer is about the orchestrator synthesising a *new* GMI at runtime when the existing roster doesn't cover a sub-task.
 
-Automatically aggregates:
-
-- Prompt tokens
-- Completion tokens
-- Total cost in USD (based on model pricing)
-- Per-seat usage breakdowns
-
----
-
-## Database Schema
-
-### `agency_executions`
-
-Stores top-level agency execution metadata:
-
-```sql
-CREATE TABLE agency_executions (
-  agency_id TEXT PRIMARY KEY,
-  user_id TEXT NOT NULL,
-  conversation_id TEXT NOT NULL,
-  goal TEXT NOT NULL,
-  workflow_definition_id TEXT,
-  status TEXT NOT NULL,  -- 'pending' | 'running' | 'completed' | 'failed' | 'cancelled'
-  started_at INTEGER NOT NULL,
-  completed_at INTEGER,
-  duration_ms INTEGER,
-  total_cost_usd REAL,
-  total_tokens INTEGER,
-  output_format TEXT,
-  consolidated_output TEXT,
-  formatted_output TEXT,
-  emergent_metadata TEXT,  -- JSON string with decomposed tasks and spawned roles
-  error TEXT,
-  FOREIGN KEY (user_id) REFERENCES app_users(id) ON DELETE CASCADE
-);
-```
-
-### `agency_seats`
-
-Tracks individual role execution:
-
-```sql
-CREATE TABLE agency_seats (
-  id TEXT PRIMARY KEY,
-  agency_id TEXT NOT NULL,
-  role_id TEXT NOT NULL,
-  persona_id TEXT NOT NULL,
-  gmi_instance_id TEXT,
-  status TEXT NOT NULL,  -- 'pending' | 'running' | 'completed' | 'failed'
-  started_at INTEGER,
-  completed_at INTEGER,
-  output TEXT,
-  error TEXT,
-  usage_tokens INTEGER,
-  usage_cost_usd REAL,
-  retry_count INTEGER DEFAULT 0,
-  metadata TEXT,
-  FOREIGN KEY (agency_id) REFERENCES agency_executions(agency_id) ON DELETE CASCADE
-);
-```
-
----
-
-## API Endpoints
-
-### List Agency Executions
-
-**GET** `/api/agentos/agency/executions?userId=<userId>&limit=<limit>`
-
-Returns historical agency executions for a user.
-
-**Response:**
-
-```json
-{
-  "executions": [
-    {
-      "agency_id": "agency_abc123",
-      "user_id": "user123",
-      "goal": "Research and publish quantum computing news",
-      "status": "completed",
-      "started_at": 1705315800000,
-      "completed_at": 1705316100000,
-      "duration_ms": 300000,
-      "total_cost_usd": 0.0105,
-      "total_tokens": 3500,
-      "emergent_metadata": "{\"tasksDecomposed\":[...],\"rolesSpawned\":[...]}"
-    }
-  ]
-}
-```
-
-### Get Specific Agency Execution
-
-**GET** `/api/agentos/agency/executions/:agencyId`
-
-Returns detailed execution with all seats.
-
-**Response:**
-
-```json
-{
-  "execution": {
-    /* AgencyExecutionRecord */
+```typescript
+const myAgency = agency({
+  agents: {
+    researcher: { instructions: '...' },
+    writer:     { instructions: '...' },
   },
-  "seats": [
-    {
-      "id": "seat_agency_abc123_researcher",
-      "agency_id": "agency_abc123",
-      "role_id": "researcher",
-      "persona_id": "research-specialist",
-      "gmi_instance_id": "gmi-instance-xyz789",
-      "status": "completed",
-      "output": "Research findings...",
-      "usage_tokens": 1500,
-      "usage_cost_usd": 0.0045,
-      "retry_count": 0
-    }
-  ]
-}
+  strategy: 'hierarchical',
+  emergent: {
+    enabled: true,
+    tier: 'session',  // 'session' | 'agent' | 'shared'
+    judge: true,       // run a judge agent over the synthesised spec before activating
+  },
+});
 ```
 
----
+When `emergent.enabled` is true, the orchestrator may decide — based on its decomposition of the goal — that it needs a specialist that wasn't in the roster (e.g., a "fact-checker" GMI for a research agency that didn't define one). It synthesises a config for the new GMI, optionally runs a judge agent over the spec, and activates the new specialist for the duration of the run.
 
-## Workbench UI
+The `tier` controls visibility:
 
-### AgencyHistoryView Component
+- `session` — ephemeral; the synthesised GMI is discarded when the run completes
+- `agent` — persisted for the lifetime of the parent agent instance
+- `shared` — persisted globally across all agent instances created from this configuration
 
-Location: `apps/agentos-workbench/src/components/AgencyHistoryView.tsx`
+The tradeoff is straightforward: `session` is safest (no state escapes the run), `shared` is most efficient (the runtime amortises synthesis across many runs). Most production deployments use `session` unless they have a specific reason to persist.
 
-**Features:**
+The implementation lives in [`src/emergent/`](https://github.com/framersai/agentos/tree/master/src/emergent):
 
-- Lists all agency executions for the current user
-- Expandable cards showing:
-  - Goal and status
-  - Duration and cost
-  - Seat breakdown with individual outputs
-  - Emergent behavior insights (tasks decomposed, roles spawned)
-  - Retry counts and error messages
-- Real-time updates via SSE integration
+| Class | Role |
+|---|---|
+| `EmergentCapabilityEngine` | Decides when tool synthesis is warranted; constructs the spec |
+| `EmergentJudge` | LLM-as-judge safety gate for synthesised **tools** (code review + test validation) |
+| `EmergentAgentForge` | Stateless validator + config builder for synthesised **agents** (used by `spawn_specialist`) |
+| `EmergentAgentJudge` | LLM-as-judge safety gate for synthesised **agents** (scope + safety review of the spec) |
+| `EmergentToolRegistry` | Persists approved emergent tools (when tier is `agent` or `shared`) |
+| `ComposableToolBuilder` | Declarative tool composition: chain existing tools into a new one without code |
+| `AdaptPersonalityTool` | Bounded personality adaptation; lets a long-running GMI shift its HEXACO traits within configured ranges |
+| `ForgeShapeValidator` / `ForgeRejectionClassifier` / `ForgeStatsAggregator` | The validation pipeline for the runtime tool forge |
 
-**Usage:**
+## Hierarchical + emergent: agent spawning
+
+The cleanest expression of "I want a manager that can decompose my goal AND spawn the specialists it needs" is the natural composition of the `'hierarchical'` strategy with `emergent.enabled`. When that combination is active, the manager agent gets one extra tool — `spawn_specialist` — that lets it grow the roster mid-run.
 
 ```typescript
-import { AgencyHistoryView } from '@/components/AgencyHistoryView';
+import { agency } from '@framers/agentos';
 
-<AgencyHistoryView userId="user123" />
-```
-
----
-
-## Best Practices
-
-### When to Enable Emergent Behavior
-
-✅ **Use emergent behavior when:**
-
-- Goal is complex and multi-faceted
-- Optimal role distribution is unclear
-- Tasks have dependencies
-- You want the system to adapt dynamically
-
-❌ **Don't use emergent behavior when:**
-
-- Goal is simple and single-step
-- Roles are well-defined upfront
-- You need predictable, fixed execution
-- Latency/cost must be minimized
-
-### Output Format Selection
-
-- **markdown**: Human-readable reports, documentation
-- **json**: API integrations, data pipelines
-- **csv**: Data analysis, spreadsheet import
-- **text**: Simple summaries, notifications
-
-### Error Handling
-
-The system automatically:
-
-- Retries failed seats up to `maxRetries` times
-- Logs errors to database with full stack traces
-- Continues execution even if some seats fail
-- Marks overall agency as "completed" if ≥50% seats succeed
-
----
-
-## Example: Research & Publish Workflow
-
-### Input
-
-```json
-{
-  "goal": "Research quantum computing breakthroughs in 2024 and publish to Telegram",
-  "roles": [
-    {
-      "roleId": "researcher",
-      "personaId": "research-specialist",
-      "instruction": "Find and verify latest quantum computing news",
-      "priority": 10
+const research = agency({
+  agents: {
+    researcher: { instructions: 'Find papers and pull verbatim quotes.' },
+    writer:     { instructions: 'Write clear, well-cited prose.' },
+  },
+  strategy: 'hierarchical',
+  emergent: {
+    enabled: true,
+    judge: true,
+    planner: {
+      maxSpecialists: 3,
+      requireJustification: true,
     },
-    {
-      "roleId": "communicator",
-      "personaId": "communications-manager",
-      "instruction": "Format findings and publish to Telegram",
-      "priority": 8
-    }
-  ],
-  "userId": "user123",
-  "conversationId": "conv456",
-  "outputFormat": "markdown",
-  "enableEmergentBehavior": true
-}
+  },
+});
+
+const result = await research.generate(
+  'Survey the post-2023 RAG literature, including evaluation methodology and known limitations.'
+);
 ```
 
-### Emergent Decomposition
-
-System analyzes and might produce:
-
-```json
-{
-  "tasksDecomposed": [
-    {
-      "taskId": "task_1",
-      "description": "Search for quantum computing news from 2024",
-      "dependencies": [],
-      "priority": 10,
-      "assignedRoleId": "researcher"
-    },
-    {
-      "taskId": "task_2",
-      "description": "Fact-check and verify sources",
-      "dependencies": ["task_1"],
-      "priority": 9,
-      "assignedRoleId": "researcher"
-    },
-    {
-      "taskId": "task_3",
-      "description": "Format as Telegram-ready message",
-      "dependencies": ["task_2"],
-      "priority": 7,
-      "assignedRoleId": "communicator"
-    },
-    {
-      "taskId": "task_4",
-      "description": "Publish to Telegram channel",
-      "dependencies": ["task_3"],
-      "priority": 8,
-      "assignedRoleId": "communicator"
-    }
-  ],
-  "rolesSpawned": [
-    /* Existing roles + any new ones */
-  ]
-}
-```
-
-### Output
-
-Consolidated markdown report:
-
-```markdown
-# Agency Coordination Results
-
-## RESEARCHER
-
-_Persona: research-specialist_
-
-Found 5 major quantum computing breakthroughs in 2024:
-
-1. IBM's 1000+ qubit processor announcement
-2. Google's quantum error correction milestone
-   ... (detailed findings)
-
----
-
-## COMMUNICATOR
-
-_Persona: communications-manager_
-
-Successfully formatted and published findings to @quantum_tech_news.
-Message ID: msg_xyz789
-Published at: 2025-01-15 10:45:00 UTC
-Reach: ~15K subscribers
-```
-
----
-
-## Testing
-
-### Integration Tests
-
-Location: `backend/src/__tests__/agency.integration.test.ts`
-
-**Coverage:**
-
-- Agency execution persistence
-- Seat progress tracking
-- Retry logic validation
-- Emergent metadata storage
-
-**Run:**
-
-```bash
-pnpm --filter voice-chat-assistant-backend test
-```
-
-### Manual Testing
-
-1. Start backend:
-
-```bash
-pnpm --filter voice-chat-assistant-backend dev
-```
-
-2. Start workbench:
-
-```bash
-pnpm --filter @framersai/agentos-workbench dev
-```
-
-3. Navigate to Agency Manager
-4. Click "History" button to view past executions
-5. Launch new agency with emergent behavior enabled
-
----
-
-## Performance Characteristics
-
-### Resource Usage
-
-- **Memory**: ~50-100MB per spawned GMI instance
-- **Latency**: Initial decomposition adds ~2-5s overhead
-- **Cost**: 2-3x higher token usage vs non-emergent (due to planning steps)
-
-### Scaling Limits
-
-- Max concurrent seats: 4 (configurable)
-- Max tasks per decomposition: Unlimited (LLM-constrained)
-- Max retries per seat: 2 (configurable)
-
----
-
-## Future Enhancements
-
-Planned for v0.2.0:
-
-1. **Inter-Agent Messaging**
-   - Agents can communicate mid-execution
-   - Share intermediate results
-   - Request clarifications
-
-2. **Hierarchical Agencies**
-   - Agencies can spawn sub-agencies
-   - Recursive task delegation
-
-3. **Learning & Optimization**
-   - Track successful role/task assignments
-   - Optimize future decompositions based on history
-
-4. **Visual Workflow Editor**
-   - Drag-and-drop agency composition
-   - Real-time dependency graph visualization
-
----
-
-## Troubleshooting
-
-### Issue: Foreign key constraint error
-
-**Cause**: User doesn't exist in `app_users` table
-
-**Fix**: Ensure user is created before launching agency:
-
-```sql
-INSERT INTO app_users (id, email, password_hash, created_at, updated_at)
-VALUES ('user123', 'user@example.com', 'hash', 1705315800000, 1705315800000);
-```
-
-### Issue: Emergent behavior not triggering
-
-**Cause**: `enableEmergent` query parameter missing or not `"true"`
-
-**Fix**: Ensure URL includes `&enableEmergent=true`
-
-### Issue: Seats stuck in "running" status
-
-**Cause**: GMI instance failed without retry catching it
-
-**Fix**: Check backend logs for unhandled errors. Increase `maxRetries` or add better error boundaries.
-
----
-
-## API Reference
-
-### EmergentAgencyCoordinator
-
-#### `decomposeGoal(goal: string, userId: string): Promise<EmergentTask[]>`
-
-Analyzes a goal and returns decomposed tasks.
-
-#### `assignRolesToTasks(tasks: EmergentTask[], existingRoles: AgentRoleConfig[], goal: string, userId: string): Promise<EmergentRole[]>`
-
-Assigns tasks to roles and spawns new ones as needed.
-
-#### `transformToEmergentAgency(input: AgencyExecutionInput): Promise<{ tasks, roles, context }>`
-
-End-to-end transformation from basic input to emergent agency.
-
-### MultiGMIAgencyExecutor
-
-#### `executeAgency(input: AgencyExecutionInput): Promise<AgencyExecutionResult>`
-
-Main entry point for agency execution.
-
-**Input:**
+What happens at runtime when the manager hits a gap (the goal needs a fact-checker that wasn't in the static roster):
+
+1. Manager LLM emits a `tool_call` to `spawn_specialist({ role, instructions, justification })`.
+2. [`EmergentAgentForge`](https://github.com/framersai/agentos/blob/master/src/emergent/EmergentAgentForge.ts) validates the spec (reserved-name check, identifier rules, instruction-length cap) and produces a `BaseAgentConfig`.
+3. If `emergent.judge === true`, [`EmergentAgentJudge`](https://github.com/framersai/agentos/blob/master/src/emergent/EmergentAgentJudge.ts) runs one LLM-as-judge call evaluating the spec on safety / scope / risk; rejection short-circuits with no roster mutation.
+4. The new agent is added to the running roster, and `delegate_to_factChecker` becomes available on the manager's next turn.
+5. A `ForgeEvent` fires through the existing `emergentForge` callback for audit + observability.
+6. Manager calls `delegate_to_factChecker({ task: '...' })` and gets the result back.
+7. On run completion, the synthesised agent's lifetime depends on `emergent.tier`.
+
+The `planner` sub-config bounds the manager's freedom to grow the roster:
+
+| Field | Default | Effect |
+|---|---|---|
+| `maxSpecialists` | `5` | Hard cap on **successful** synthesis count per run. Past the cap, `spawn_specialist` returns an error to the manager. |
+| `requireJustification` | `false` | Forces the manager to explain why no static agent can handle the task. Surfaces on the `ForgeEvent` for audit. |
+| `maxJudgeCalls` | `maxSpecialists * 2` | Bounds the judge LLM cost. Counts rejected spawns too (the judge already ran). No effect when `judge: false`. |
+| `judgeModel` | provider-aware small-model default (`gpt-4o-mini`, `claude-haiku-4-5-20251001`, `gemini-2.5-flash`, `llama-3.3-70b-versatile`); falls back to agency model | Override when you want a more capable judge — defaults pick a cheap model so `judge: true` doesn't silently route every spawn through the agency's full model. |
+
+Subscribe to synthesis events for observability:
 
 ```typescript
-interface AgencyExecutionInput {
-  goal: string;
-  roles: AgentRoleConfig[];
-  userId: string;
-  conversationId: string;
-  workflowDefinitionId?: string;
-  outputFormat?: 'json' | 'csv' | 'markdown' | 'text';
-  metadata?: Record<string, unknown>;
-  enableEmergentBehavior?: boolean;
-}
+const research = agency({
+  // ...same as above...
+  on: {
+    emergentForge: (event) => {
+      logger.info('agent.synthesised', {
+        agentName: event.agentName,
+        approved: event.approved,
+        timestamp: event.timestamp,
+      });
+    },
+  },
+});
 ```
 
-**Output:**
+Tested rejection paths (each short-circuits cleanly with a structured tool-result error the manager can recover from):
 
-```typescript
-interface AgencyExecutionResult {
-  agencyId: string;
-  goal: string;
-  gmiResults: GmiExecutionResult[];
-  consolidatedOutput: string;
-  formattedOutput?: { format, content };
-  durationMs: number;
-  totalUsage: CostAggregator;
-  emergentMetadata?: {
-    tasksDecomposed: EmergentTask[];
-    rolesSpawned: EmergentRole[];
-    coordinationLog: Array<{...}>;
-  };
-}
-```
+- Empty `instructions` — forge rejection
+- Reserved role name (e.g. `spawn_specialist`, `final_answer`) — forge rejection
+- Invalid identifier (spaces, leading digit) — forge rejection
+- `requireJustification: true` with missing justification — pre-forge rejection
+- `maxSpecialists` cap reached — pre-forge rejection
+- `maxJudgeCalls` cap reached — pre-judge rejection
+- Role collides with existing roster entry — pre-forge rejection
+- HITL `beforeEmergent: true` handler returns `approved: false` — pre-forge rejection (no roster mutation, no event)
+- Judge returns `approved: false` — post-forge rejection (no roster mutation, no event)
+- Judge LLM error or malformed JSON — treated as rejection
+
+For high-stakes deployments, combine `judge: true` with `hitl.approvals.beforeEmergent: true` — the judge filters automated rejections; the HITL handler gives a human final say on every spawn that survives the judge.
+
+## How agency and emergent compose
+
+The two systems are orthogonal but layer cleanly:
+
+1. You define an agency with a static roster (`agency({ agents: {...} })`).
+2. You enable `emergent: true` on the agency.
+3. The orchestrator runs the goal through whichever strategy you picked.
+4. If decomposition surfaces a sub-task no static agent covers, the emergent engine synthesises a specialist for it.
+5. The new GMI participates in the strategy's coordination (added to the bus, registered with `AgencyRegistry`, given access to shared memory).
+6. When the run completes, the synthesised GMI's lifetime depends on `emergent.tier`.
+
+You can also use either layer alone:
+
+- **Agency without emergent** — Static roster only. Predictable, deterministic, easier to debug. Use when you know the role decomposition ahead of time.
+- **Emergent without agency** — A single agent with `emergent: true` and the `forge_tool` meta-tool can synthesise new tools mid-run within the [sandbox security boundary](/architecture/sandbox-security). No multi-agent coordination, but runtime tool creation. Use when the task surface is open-ended (research assistants, exploratory analysis).
+
+## Honest limits
+
+The agency layer is in active development. The strategies are real, the bus is real, the registry is real, and the simple cases (sequential pipeline, parallel ensemble, review-loop) work end-to-end with current test coverage. The hierarchical+emergent path documented above is newly landed — `spawn_specialist`, `EmergentAgentForge`, and the `EmergentAgentJudge` gate are integration-tested (11 tests covering the happy path plus every documented rejection mode), but the more elaborate scenarios (deep delegation chains across many synthesised specialists, debate strategy combined with emergent) are still settling.
+
+The emergent layer's tool-forge path is hardened — it goes through the [`SandboxedToolForge`](https://github.com/framersai/agentos/blob/master/src/emergent/SandboxedToolForge.ts) into the [Code Sandbox](/architecture/sandbox-security) with the documented opt-in fetch / fs / crypto allowlist. The agent-synthesis path is more recent; review the synthesised spec before enabling `tier: 'shared'` in production. When `emergent.judge: true`, every spawn pays for one extra LLM call; budget accordingly via `controls.maxCostUSD` and the `planner.maxSpecialists` cap.
+
+## Source map
+
+- [`src/agents/agency/`](https://github.com/framersai/agentos/tree/master/src/agents/agency) — `AgencyRegistry`, `AgencyMemoryManager`, `AgentCommunicationBus`, `AgencyTypes`
+- [`src/api/agency.ts`](https://github.com/framersai/agentos/blob/master/src/api/agency.ts) — the `agency()` factory
+- [`src/api/types.ts`](https://github.com/framersai/agentos/blob/master/src/api/types.ts) — `AgencyOptions`, `AgencyStrategy`, `EmergentConfig`
+- [`src/emergent/`](https://github.com/framersai/agentos/tree/master/src/emergent) — emergent engine, judge, tool forge, registry, validators
+
+## See also
+
+- [GMI](/architecture/gmi) — what a single mind looks like before you start composing them
+- [Skills vs Tools vs Extensions](/architecture/skills-vs-tools-vs-extensions) — the capability layer each GMI in an agency can pull from
+- [Sandbox Security](/architecture/sandbox-security) — the boundary the emergent layer's tool synthesis runs through
+- [System Architecture](./system-architecture.md) — full request lifecycle including agency dispatch
 
 ---
 
-## Links
+## References
 
-- [Multi-GMI Collaboration](/architecture/multi-gmi-implementation-plan)
-- [AgentOS Architecture](/architecture/system-architecture)
-- [Backend API Reference](/architecture/backend-api)
+### Multi-agent coordination patterns
 
----
+- Park, J. S., O'Brien, J. C., Cai, C. J., Morris, M. R., Liang, P., & Bernstein, M. S. (2023). *Generative agents: Interactive simulacra of human behavior.* arXiv preprint. — Smallville generative agents — the canonical "agents-with-memory-that-act-in-character" demo at small scale; the agency layer here ports that pattern into a production runtime. [arXiv:2304.03442](https://arxiv.org/abs/2304.03442)
+- Wu, Q., Bansal, G., Zhang, J., Wu, Y., Li, B., Zhu, E., Jiang, L., Zhang, X., Zhang, S., Liu, J., Awadallah, A. H., White, R. W., Burger, D., & Wang, C. (2023). *AutoGen: Enabling next-gen LLM applications via multi-agent conversation.* arXiv preprint. — Reference architecture for the manager-with-delegation pattern that AgentOS's `hierarchical` strategy adopts. [arXiv:2308.08155](https://arxiv.org/abs/2308.08155)
+- Sumers, T. R., Yao, S., Narasimhan, K., & Griffiths, T. L. (2023). *Cognitive architectures for language agents.* arXiv preprint. — CoALA framework; agency adds coordination on top of the per-GMI cognitive architecture defined here. [arXiv:2309.02427](https://arxiv.org/abs/2309.02427)
 
-**Status**: ✅ Fully Implemented for v0.1.0  
-**Last Updated**: 2025-01-15  
-**Maintainer**: AgentOS Core Team
+### Emergent agent / tool synthesis
+
+- Hong, S., Zhuge, M., Chen, J., Zheng, X., Cheng, Y., Zhang, C., Wang, J., Wang, Z., Yau, S. K. S., Lin, Z., Zhou, L., Ran, C., Xiao, L., Wu, C., & Schmidhuber, J. (2023). *MetaGPT: Meta programming for a multi-agent collaborative framework.* arXiv preprint. — Reference for runtime role decomposition via LLM planner; informed `spawn_specialist`'s prompt + judgment design. [arXiv:2308.00352](https://arxiv.org/abs/2308.00352)
+- Yao, S., Zhao, J., Yu, D., Du, N., Shafran, I., Narasimhan, K., & Cao, Y. (2023). *ReAct: Synergizing reasoning and acting in language models.* arXiv preprint. — Reasoning-and-acting loop the manager runs through when calling `spawn_specialist` + `delegate_to_<role>` in sequence. [arXiv:2210.03629](https://arxiv.org/abs/2210.03629)
+
+### LLM-as-judge
+
+- Zheng, L., Chiang, W.-L., Sheng, Y., Zhuang, S., Wu, Z., Zhuang, Y., Lin, Z., Li, Z., Li, D., Xing, E. P., Zhang, H., Gonzalez, J. E., & Stoica, I. (2023). *Judging LLM-as-a-judge with MT-Bench and chatbot arena.* arXiv preprint. — Methodology behind the `EmergentAgentJudge` design; documents reliability, bias, and confidence calibration of LLM judges. [arXiv:2306.05685](https://arxiv.org/abs/2306.05685)
+
+### Implementation references
+
+- [`src/agents/agency/`](https://github.com/framersai/agentos/tree/master/src/agents/agency) — `AgencyRegistry`, `AgencyMemoryManager`, `AgentCommunicationBus`, `AgencyTypes`
+- [`src/api/agency.ts`](https://github.com/framersai/agentos/blob/master/src/api/agency.ts) — the `agency()` factory + `validateAgencyOptions`
+- [`src/api/runtime/strategies/hierarchical.ts`](https://github.com/framersai/agentos/blob/master/src/api/runtime/strategies/hierarchical.ts) — strategy compiler with `buildHierarchicalTools` + `spawn_specialist` injection
+- [`src/api/types.ts`](https://github.com/framersai/agentos/blob/master/src/api/types.ts) — `AgencyOptions`, `AgencyStrategy`, `EmergentConfig`, `EmergentPlannerConfig`
+- [`src/emergent/EmergentAgentForge.ts`](https://github.com/framersai/agentos/blob/master/src/emergent/EmergentAgentForge.ts) — agent-spec validator
+- [`src/emergent/EmergentAgentJudge.ts`](https://github.com/framersai/agentos/blob/master/src/emergent/EmergentAgentJudge.ts) — agent-spec safety judge

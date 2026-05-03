@@ -238,5 +238,3 @@ await liveBrain.exportToSqlite('/tmp/alice-snapshot.sqlite');
 const forkBrain = await Brain.openPostgres(connStr, { brainId: 'alice-fork' });
 await forkBrain.importFromSqlite('/tmp/alice-snapshot.sqlite');
 ```
-
-Full architecture lives in the internal design spec at `packages/agentos/docs/superpowers/specs/2026-04-26-brain-storage-abstraction-design.md` (not published to the docs site).

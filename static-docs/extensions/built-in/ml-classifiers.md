@@ -371,7 +371,7 @@ All models are lazy-loaded. If only toxicity is enabled, memory cost is ~33MB. M
 
 - [Guardrails](/features/guardrails)
 - [Extension Architecture](/extensions/extension-architecture)
-- [Extensions Overview](/extensions/overview)
+- [Extensions Overview](/extensions)
 - [PII Redaction](/extensions/built-in/pii-redaction)
 - [Topicality](/extensions/built-in/topicality)
 - [Code Safety](/extensions/built-in/code-safety)

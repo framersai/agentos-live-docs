@@ -37,9 +37,9 @@ All backend routes are prefixed with `/api`. Optional authentication (JWT or Sup
 | `GET`  | `/agentos/extensions`                 | Lists available extensions from the local registry (`packages/agentos-extensions/registry.json`).                                                                       |
 | `GET`  | `/agentos/extensions/tools`           | Lists tools derived from extensions (schemas may be omitted).                                                                                                           |
 | `GET`  | `/agentos/extensions/search?q=<text>` | Searches the extension registry by name/package/description substring.                                                                                                  |
-| `POST` | `/agentos/extensions/install`         | Schedules installation of an extension package (placeholder; invalidates cache).                                                                                        |
+| `POST` | `/agentos/extensions/install`         | experimental placeholder — schedules installation of an extension package (invalidates cache). Production install path lands once the runtime bridge ships.            |
 | `POST` | `/agentos/extensions/reload`          | Invalidates the extensions registry cache.                                                                                                                              |
-| `POST` | `/agentos/tools/execute`              | Executes a tool (placeholder echo implementation until full runtime bridge is enabled).                                                                                 |
+| `POST` | `/agentos/tools/execute`              | experimental placeholder — echoes the request shape until the full runtime bridge replaces this path. Treat as not production-ready.                                   |
 | `GET`  | `/agentos/guardrails`                 | Lists curated/community guardrails from local registry (`packages/agentos-guardrails/registry.json`).                                                                   |
 | `POST` | `/agentos/guardrails/reload`          | Invalidates the guardrails registry cache.                                                                                                                              |
 
@@ -732,3 +732,9 @@ Routes require authentication.
 | `POST`   | `/agents`               | Create a new user agent (subject to plan limits).               |
 | `PATCH`  | `/agents/:agentId`      | Update agent attributes (label, slug, status, config, archive). |
 | `DELETE` | `/agents/:agentId`      | Delete a user agent.                                            |
+
+---
+
+## Status reference
+
+For shipped vs partial vs experimental status of every endpoint surface, see [./runtime-status-matrix.md](/architecture/runtime-status-matrix).

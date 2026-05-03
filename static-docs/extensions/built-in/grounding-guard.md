@@ -333,7 +333,7 @@ The NLI model is lazy-loaded and shared via `ISharedServiceRegistry`. If another
 
 - [Guardrails](/features/guardrails)
 - [Extension Architecture](/extensions/extension-architecture)
-- [Extensions Overview](/extensions/overview)
+- [Extensions Overview](/extensions)
 - [RAG Memory](/features/rag-memory)
 - [PII Redaction](/extensions/built-in/pii-redaction)
 - [ML Content Classifiers](/extensions/built-in/ml-classifiers)

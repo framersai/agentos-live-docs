@@ -129,7 +129,7 @@ See [CONTRIBUTING.md](/extensions/contributing) for guidelines on adding new ski
 
 ## License
 
-MIT
+Apache 2.0 — see [LICENSE](LICENSE).
 
 ---
 

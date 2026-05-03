@@ -222,14 +222,14 @@ graph TB
 
 ### Skills
 
-- [Skills Overview](/skills/overview) — SKILL.md format, loading, and semantic discovery integration
+- [Skills Overview](/skills) — SKILL.md format, loading, and semantic discovery integration
 - [Skills Format](/skills/skill-format) — Authoring SKILL.md files
 - [@framers/agentos-skills](/skills/agentos-skills) — Curated SKILL.md content package
 - [Skills Registry](/skills/agentos-skills-registry) — Browsing and installing curated skills
 
 ### Extensions
 
-- [Extensions Overview](/extensions/overview) — Available extensions catalog
+- [Extensions Overview](/extensions) — Available extensions catalog
 - [How Extensions Work](/extensions/how-extensions-work) — Loading and lifecycle
 - [Extension Architecture](/extensions/extension-architecture) — Building custom extensions
 - [Auto-Loading](/extensions/auto-loading) — Automatic extension discovery

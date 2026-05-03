@@ -82,6 +82,7 @@ Explicit nodes, edges, cycles, and subgraphs. Use this when you need the full gr
 
 ```typescript
 import { AgentGraph, END, START, gmiNode, toolNode } from '@framers/agentos/orchestration';
+import { z } from 'zod';
 
 const graph = new AgentGraph({
   input: z.object({ topic: z.string() }),
@@ -101,6 +102,7 @@ Fluent DSL for sequential pipelines with branching and parallelism. Every workfl
 
 ```typescript
 import { workflow } from '@framers/agentos/orchestration';
+import { z } from 'zod';
 
 const wf = workflow('onboarding')
   .input(z.object({ userId: z.string() }))
@@ -116,6 +118,7 @@ Describe what you want to achieve and let the mission compiler generate the curr
 
 ```typescript
 import { mission } from '@framers/agentos/orchestration';
+import { z } from 'zod';
 
 const m = mission('deep-research')
   .input(z.object({ topic: z.string() }))

@@ -7,13 +7,26 @@ Agents with `emergent: true` can forge new tools at runtime when no existing cap
 
 Important: emergent tooling is a full runtime capability. Use `new AgentOS()` or another full runtime entry point that initializes `ToolOrchestrator` with emergent support. The lightweight `agent()` helper accepts `emergent` config for compatibility, but it does not activate `forge_tool` by itself.
 
+## Live run: a manager spawns a specialist mid-task
+
+![AgentOS spawning a security_audit_specialist agent at runtime, side-by-side with the source code](/img/demos/agentos-emergent-demo.png)
+
+The image above is captured from a real run of [`examples/emergent-hierarchical-spawning.mjs`](https://github.com/framersai/agentos/blob/master/examples/emergent-hierarchical-spawning.mjs). The team starts with `researcher` + `writer`; the prompt asks for a security audit of sandbox isolation primitives, which neither static agent covers. The manager calls `spawn_specialist`, [`EmergentAgentJudge`](/api/classes/EmergentAgentJudge) approves the synthesised config, and `security_audit_specialist` joins the live roster. The `[FORGE]` line in the right panel is the moment that happens.
+
+Reproduce locally:
+
+```bash
+npm install @framers/agentos
+export OPENAI_API_KEY="sk-..."
+node examples/emergent-hierarchical-spawning.mjs
+```
+
 ## Quick Start
 
 ```typescript
 import { AgentOS } from '@framers/agentos';
 
-const agent = new AgentOS();
-await agent.initialize({
+const agent = await AgentOS.create({
   provider: 'openai',
   emergent: true,
 });
@@ -459,8 +472,7 @@ Agent: [Calling validate_and_extract_json...]
 ```typescript
 import { AgentOS } from '@framers/agentos';
 
-const agent = new AgentOS();
-await agent.initialize({
+const agent = await AgentOS.create({
   provider: 'openai',
   emergent: true,
   emergentConfig: {
@@ -631,7 +643,7 @@ await exportToolAsSkillPack(forgedTool, './skills/slugify');
 
 ## Related
 
-- [Adaptive vs. Emergent Intelligence](https://agentos.sh/en/blog/adaptive-vs-emergent) -- how adaptive and emergent behavior differ in the AgentOS architecture
+- [Adaptive vs. Emergent Intelligence](https://agentos.sh/blog/adaptive-vs-emergent) -- how adaptive and emergent behavior differ in the AgentOS architecture
 - [Self-Improving Agents](/features/self-improving-agents) -- broader patterns for agents that improve over time
 - [Recursive Self-Building](/features/recursive-self-building) -- recursive tool creation and agent spawning
 - [Guardrails](/features/guardrails) -- safety mechanisms that constrain emergent behavior

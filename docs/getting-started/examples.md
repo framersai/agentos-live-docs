@@ -125,24 +125,82 @@ console.log(report.text);
 
 ## 3. Content Pipeline
 
-Review loop with social posting on approval.
+Review loop with social posting on approval. The `workflow()` DSL is a
+typed graph that compiles into a runtime. Two things are easy to get wrong
+the first time, both shown explicitly below:
+
+1. **Pass `deps` into `compile({ deps })`.** The runtime needs an executor
+   for every node type you use — `toolOrchestrator` for `tool` nodes,
+   `loopController` + `providerCall` for `gmi` nodes, etc. Without these,
+   the matching nodes resolve `success: false` and `invoke()` returns `{}`.
+   See [`WorkflowRuntimeDeps`](https://github.com/framersai/agentos/blob/master/src/orchestration/builders/WorkflowBuilder.ts).
+2. **Use `outputAs` to map the final step's output to your `.returns()`
+   schema key.** By default each step's `output` lands in
+   `state.artifacts[<stepId>]`, so without `outputAs: 'publishedTo'` your
+   `result` would have `result.publish` (the step id) rather than
+   `result.publishedTo`.
 
 ```typescript
 import { workflow } from '@framers/agentos/orchestration';
-import { SocialPostManager, ContentAdaptationEngine } from '@framers/agentos/social-posting';
+import { agent } from '@framers/agentos';
 import { z } from 'zod';
 
+// Stand-ins for the host-side helpers the workflow's tools delegate to.
+// Replace with your real implementations (HTTP calls, SDKs, etc.).
+async function searchTheWeb(args: Record<string, unknown>) { return { results: [] }; }
+async function postToTwitterAndLinkedIn(args: Record<string, unknown>) { return { posted: true }; }
+
+// 1. Wire up a stateful agent that the GMI nodes will delegate to. Any
+//    real-world workflow runs LLM calls through your own provider config;
+//    the workflow runtime only orchestrates — it does NOT pick a provider
+//    for you.
+const writer = agent({
+  provider: 'openai',
+  model: 'gpt-4o-mini',
+  instructions: 'You are a senior content marketer.',
+});
+
+// 2. Implement the deps the runtime expects. `toolOrchestrator` is the
+//    minimal hook for `step({ tool: '...' })` — register the tools your
+//    workflow names and `processToolCall` returns their output.
+const toolOrchestrator = {
+  async processToolCall({ toolCallRequest }: {
+    toolCallRequest: { toolName: string; arguments: Record<string, unknown> };
+  }) {
+    switch (toolCallRequest.toolName) {
+      case 'web_search':
+        return { success: true, output: await searchTheWeb(toolCallRequest.arguments) };
+      case 'multi_channel_post':
+        return { success: true, output: await postToTwitterAndLinkedIn(toolCallRequest.arguments) };
+      default:
+        return { success: false, error: `Unknown tool: ${toolCallRequest.toolName}` };
+    }
+  },
+};
+
+// 3. `providerCall` is the GMI-node hook. It receives the step's
+//    instructions string and the current graph state, and yields LoopChunks
+//    on the way to a final LoopOutput. The simplest possible implementation
+//    just delegates to the agent above.
+async function* providerCall(instructions: string) {
+  const reply = await writer.generate(instructions);
+  yield { type: 'text' as const, text: reply.text };
+  return { success: true, output: reply.text };
+}
+
+// 4. Build the pipeline. Each step's output is auto-promoted to
+//    `state.artifacts[<stepId>]` unless you set `outputAs`.
 const contentPipeline = workflow('content-pipeline')
   .input(z.object({ topic: z.string(), audience: z.string() }))
   .returns(z.object({ publishedTo: z.array(z.string()) }))
 
-  // Step 1: Research the topic
+  // Step 1: Research the topic — output lands in `result.research`.
   .step('research', {
     tool: 'web_search',
     effectClass: 'external',
   })
 
-  // Step 2: Draft the blog post
+  // Step 2: Draft the blog post — output lands in `result.draft`.
   .step('draft', {
     gmi: {
       instructions: `
@@ -152,50 +210,76 @@ const contentPipeline = workflow('content-pipeline')
     },
   })
 
-  // Step 3: Human approval
+  // Step 3: Human approval — uses autoAccept here so the example runs
+  // without an interactive terminal. In production, omit autoAccept and
+  // wire up `hitl.cli()` or `hitl.llmJudge()` from `@framers/agentos`.
   .step('review', {
-    human: { prompt: 'Review the draft. Approve or request changes.' },
+    human: { prompt: 'Review the draft. Approve or request changes.', autoAccept: true } as any,
   })
 
-  // Step 4: Generate a social post variant
+  // Step 4: Generate a social variant — output in `result['social-draft']`.
   .step('social-draft', {
     gmi: {
       instructions: 'Create a Twitter/LinkedIn-optimized 280-char teaser for the blog post.',
     },
   })
 
-  // Step 5: Publish to social platforms
+  // Step 5: Publish — `outputAs` renames the artifact key to match the
+  // `.returns()` schema, so callers get `result.publishedTo` directly.
   .step('publish', {
     tool: 'multi_channel_post',
     effectClass: 'external',
+    outputAs: 'publishedTo',
   })
 
-  .compile();
+  .compile({
+    // Wire the deps you need. Missing deps → matching node types fail.
+    deps: {
+      toolOrchestrator,
+      providerCall, // consumed by GMI nodes
+    },
+  });
 
 const result = await contentPipeline.invoke({
   topic: 'How AI agents will change software development in 2026',
   audience: 'senior software engineers',
-});
+}) as { publishedTo: string[]; research?: unknown; draft?: string };
 
-console.log('Published to:', result.publishedTo);
+console.log('Published to:', result.publishedTo); // ['twitter', 'linkedin']
+console.log('Draft preview:', String(result.draft).slice(0, 200));
 ```
+
+> **Prefer the `agency()` API for multi-step LLM pipelines.** When every
+> step is a GMI/agent and you don't need explicit graph control,
+> [`agency({ strategy: 'sequential', agents: { ... } })`](/getting-started/high-level-api)
+> is the higher-level path — it auto-wires the providers, memory, and
+> guardrails so you don't manage `toolOrchestrator` / `providerCall`
+> yourself. Reach for `workflow()` when you need a typed DAG, branches,
+> or human-in-the-loop gates.
 
 ---
 
 ## 4. Voice Call Center
 
-Hierarchical agency with voice transport and telephony.
+Hierarchical agency with voice transport. The `voice.enabled: true` flag attaches a `listen()` method to the returned agency that starts a local WebSocket server; STT, TTS, and telephony bridge to that transport.
 
 ```typescript
 import { agency } from '@framers/agentos';
 
 const callCenter = agency({
   provider: 'openai',
+  model: 'gpt-4o',
   strategy: 'hierarchical',
   voice: {
-    sttProvider: 'deepgram',
-    ttsProvider: 'elevenlabs',
-    voiceId: 'professional-en-us',
+    enabled: true,
+    transport: 'telephony',
+    stt: 'deepgram',
+    tts: 'elevenlabs',
+    ttsVoice: 'professional-en-us',
+    telephony: {
+      provider: 'twilio',
+      inboundNumber: process.env.TWILIO_PHONE_NUMBER,
+    },
   },
   agents: {
     receptionist: {
@@ -222,26 +306,29 @@ const callCenter = agency({
       tools: ['product_catalog', 'crm_create_lead'],
     },
   },
-  telephony: {
-    provider: 'twilio',
-    inboundNumber: process.env.TWILIO_PHONE_NUMBER,
-  },
 });
 
-// Answer an inbound call
-callCenter.listen({
-  transport: 'twilio',
-  onCallEnd: (summary) => console.log('Call summary:', summary),
-});
+// listen() is attached when voice.enabled is set. It starts a local WebSocket
+// server that accepts JSON text frames and routes them through the agency's
+// generate(). STT, TTS, and Twilio bridge the WebSocket to live audio via the
+// channels system and the telephony adapter — see
+// docs.agentos.sh/features/telephony-providers.
+const { port, url, close } = await callCenter.listen({ port: 8080 });
 
-console.log('Call center ready. Listening for calls...');
+console.log(`Call center ready. WebSocket transport listening at ${url}`);
+
+// Optional: graceful shutdown
+process.on('SIGINT', async () => {
+  await close();
+  process.exit(0);
+});
 ```
 
 ---
 
 ## 5. Code Review Bot
 
-Debate strategy where two agents argue before a final decision.
+Debate strategy: two agents argue across N rounds, then the agency-level model synthesises a final verdict.
 
 ```typescript
 import { agency } from '@framers/agentos';
@@ -249,31 +336,36 @@ import { readFileSync } from 'fs';
 
 const codeReviewer = agency({
   provider: 'anthropic',
+  // Always pin a model explicitly. Package versions before 0.6.0 defaulted to
+  // a Sonnet snapshot Anthropic later retired, which now returns 404.
+  model: 'claude-sonnet-4-6',
   strategy: 'debate',
-  rounds: 2,
+  maxRounds: 2,
   agents: {
     critic: {
       instructions: `
-        You are a strict code reviewer. Find bugs, security issues, performance problems,
-        and violations of best practices. Be thorough — your job is to find everything wrong.
+        You are a strict code reviewer. Find bugs, security issues, performance
+        problems, and violations of best practices. Your job is to find
+        everything wrong.
       `,
     },
     advocate: {
       instructions: `
         You are a code quality advocate. Identify the strengths of the code:
-        good patterns, clear naming, testability, and solid architecture choices.
+        good patterns, clear naming, testability, solid architecture choices.
         Push back on overly pedantic criticism.
       `,
     },
-  },
-  judge: {
-    instructions: `
-      You are a senior engineer making the final call on a code review.
-      Weigh the critic and advocate's arguments. Output:
-      - APPROVE: if the code is production-ready
-      - REQUEST_CHANGES: if fixes are needed (list them)
-      - REJECT: if the approach is fundamentally flawed
-    `,
+    synthesizer: {
+      instructions: `
+        You are a senior engineer making the final call on a code review.
+        Weigh the critic and advocate's arguments and output one of:
+        - APPROVE: code is production-ready
+        - REQUEST_CHANGES: fixes are needed (list them)
+        - REJECT: the approach is fundamentally flawed
+      `,
+      role: 'orchestrator',
+    },
   },
 });
 
@@ -294,52 +386,51 @@ console.log(review.text);
 
 ## 6. Knowledge Base Q&A
 
-RAG-powered Q&A with cognitive memory for returning users.
+RAG-powered Q&A with cognitive memory across sessions. RAG configuration is enforced by the full runtime — use `new AgentOS()` or `agency()`. The lightweight `agent()` helper preserves the `rag` field for forward compatibility but does not actively dispatch to a vector store, so a kb-aware agent built on `agent()` alone will produce ungrounded answers.
 
 ```typescript
-import { agent } from '@framers/agentos';
-import { CognitiveMemoryManager } from '@framers/agentos/memory';
+import { AgentOS } from '@framers/agentos';
 
-const memory = new CognitiveMemoryManager({
-  decay: { enabled: true },
-  workingMemory: { capacity: 7 },
-  vectorStore: { type: 'hnsw', dimensions: 1536 },
-});
-
-const kbAgent = agent({
+const kb = new AgentOS();
+await kb.initialize({
   provider: 'openai',
+  model: 'gpt-4o',
   instructions: `
     You are a helpful documentation assistant.
     Search the knowledge base to answer questions accurately.
     If you don't find a relevant answer, say so clearly.
   `,
-  tools: ['knowledge_base_search'],
+  memory: {
+    enabled: true,
+    decay: 'ebbinghaus',
+    workingMemory: { capacity: 7 },
+  },
   rag: {
     enabled: true,
-    vectorStore: 'hnsw',
+    vectorStore: { type: 'hnsw', dimensions: 1536 },
     collections: ['product-docs', 'api-reference', 'tutorials'],
     topK: 5,
     minSimilarity: 0.7,
   },
-  memory: memory,
 });
 
-const session = kbAgent.session('user-alice');
+// Per-user session keeps cognitive memory scoped per actor.
+const session = kb.session('user-alice');
 
-// User returns — memory provides context from previous sessions
+// First turn — answered from RAG hits
 const { text: answer } = await session.send(
-  'How do I configure rate limiting in the AgentOS middleware?'
+  'How do I configure rate limiting in the AgentOS middleware?',
 );
-
 console.log(answer);
-// "Based on the docs, you can configure rate limiting via the `rateLimiting`
-//  option in your AgentOSConfig..."
 
-// Follow-up benefits from both RAG and memory
-const { text: followUp } = await session.send('What about for the voice pipeline specifically?');
-
+// Follow-up benefits from both RAG and the prior turn's session memory
+const { text: followUp } = await session.send(
+  'What about for the voice pipeline specifically?',
+);
 console.log(followUp);
 ```
+
+> **Note on RAG corpus.** This example assumes `product-docs`, `api-reference`, and `tutorials` collections are already populated in the configured vector store. If you run it against an empty store, the agent will correctly report it does not have grounded information instead of hallucinating. See [Multimodal RAG](/features/multimodal-rag) for the ingestion pipeline.
 
 ---
 
@@ -524,7 +615,7 @@ Runnable source: `packages/agentos/examples/agentos-config-tools.mjs`
 
 ```typescript
 import { AgentOS } from '@framers/agentos';
-import { createTestAgentOSConfig } from '@framers/agentos/config/AgentOSConfig';
+import { createTestAgentOSConfig } from '@framers/agentos';
 
 const agent = new AgentOS();
 
@@ -690,7 +781,16 @@ Runnable source: `packages/agentos/examples/query-router-host-hooks.mjs`
 The simplest entry point: one agent, one tool, one call.
 
 ```typescript
-import { agent } from '@framers/agentos';
+import { agent, type ITool } from '@framers/agentos';
+
+// Stand-in for a real web-search tool (Tavily, Serper, Firecrawl, etc.).
+// Replace with your real implementation.
+const webSearchTool: ITool = {
+  name: 'web_search',
+  description: 'Search the web for recent information.',
+  inputSchema: { type: 'object', properties: { query: { type: 'string' } }, required: ['query'] },
+  execute: async ({ query }) => ({ success: true, output: `(stub) results for "${query}"` }),
+};
 
 const researcher = agent({
   model: 'openai:gpt-4o',
@@ -712,7 +812,22 @@ automatically. Agents with no dependencies run first; downstream agents receive
 their predecessors' outputs as context.
 
 ```typescript
-import { agency } from '@framers/agentos';
+import { agency, type ITool } from '@framers/agentos';
+
+// Stand-ins for the host-supplied tools each agent uses. Replace with real
+// implementations (Tavily, arxiv-api, etc.).
+const webSearchTool: ITool = {
+  name: 'web_search',
+  description: 'Search the web.',
+  inputSchema: { type: 'object', properties: { query: { type: 'string' } }, required: ['query'] },
+  execute: async ({ query }) => ({ success: true, output: `(stub) ${query}` }),
+};
+const arxivTool: ITool = {
+  name: 'arxiv_search',
+  description: 'Search arXiv for papers.',
+  inputSchema: { type: 'object', properties: { query: { type: 'string' } }, required: ['query'] },
+  execute: async ({ query }) => ({ success: true, output: `(stub) arxiv: ${query}` }),
+};
 
 const team = agency({
   agents: {
@@ -750,11 +865,20 @@ with `maxDeltaPerSession` and skill allowlists.
 
 ```typescript
 import { agent } from '@framers/agentos';
+import { ForgeToolMetaTool, AdaptPersonalityTool } from '@framers/agentos/emergent';
+
+// The emergent toolkit ships these built-in meta-tools. Wire them into the
+// agent's tools list so the runtime exposes forge_tool / adapt_personality
+// when emergent.enabled is true.
+const forgeTool = ForgeToolMetaTool;
+const adaptPersonalityTool = AdaptPersonalityTool;
+// manageSkillsTool / selfEvaluateTool are illustrative — substitute your own
+// skills-management / self-evaluation tool implementations as needed.
 
 const adaptiveAgent = agent({
   model: 'openai:gpt-4o',
   instructions: 'You are a helpful assistant that learns and adapts.',
-  tools: [forgeTool, adaptPersonalityTool, manageSkillsTool, selfEvaluateTool],
+  tools: [forgeTool, adaptPersonalityTool],
   emergent: {
     enabled: true,
     selfImprovement: {

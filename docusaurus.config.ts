@@ -265,6 +265,12 @@ const config: Config = {
           { from: '/docs/STRUCTURED_OUTPUT', to: '/features/structured-output' },
           // Renamed getting-started/getting-started → getting-started (index.md)
           { from: '/getting-started/getting-started', to: '/getting-started' },
+          // Section overviews moved from /<section>/overview to /<section>
+          // (index.md). The old URLs are linked from external blog posts,
+          // package READMEs, and the marketing site search index, so keep
+          // them as redirects rather than 404s.
+          { from: '/extensions/overview', to: '/extensions' },
+          { from: '/skills/overview', to: '/skills' },
           // Blog consolidation (Track G, 2026-04-30): docs.agentos.sh/blog/*
           // is retired in favor of a single canonical blog at
           // agentos.sh/en/blog/<slug>. Each docs blog URL redirects to its
@@ -400,8 +406,8 @@ const config: Config = {
             { label: 'Vector Scaling', to: '/features/memory-scaling' },
             { label: 'Guardrails', to: '/features/guardrails' },
             { label: 'Voice Pipeline', to: '/features/voice-pipeline' },
-            { label: 'Extensions', to: '/extensions/overview' },
-            { label: 'Skills', to: '/skills/overview' },
+            { label: 'Extensions', to: '/extensions' },
+            { label: 'Skills', to: '/skills' },
             {
               label: '─── Architecture ───',
               to: '/architecture/system-architecture',

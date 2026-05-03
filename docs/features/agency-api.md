@@ -3,7 +3,9 @@ title: "Multi-Agent Agency API"
 sidebar_position: 12
 ---
 
-`agency()` is the high-level multi-agent factory in AgentOS.  It coordinates a
+> **Live runs**: side-by-side code + captured output for both the `graph` strategy (research → writer ‖ illustrator → reviewer DAG) and the `sequential` strategy with streaming + HITL approval are on the [agentos.sh demo gallery](https://agentos.sh/#live-demo). Source: [`examples/agency-graph.mjs`](https://github.com/framersai/agentos/blob/master/examples/agency-graph.mjs), [`examples/agency-streaming.mjs`](https://github.com/framersai/agentos/blob/master/examples/agency-streaming.mjs).
+
+`agency()` is the high-level multi-agent factory in AgentOS. It coordinates a
 named roster of sub-agents under a chosen orchestration strategy and returns a
 single `Agent`-compatible interface so callers can swap a single agent for an
 entire team without changing call sites.
@@ -14,15 +16,41 @@ Zod output, RAG context injection (v1 placeholder), `listen()` for voice
 WebSocket transport, `connect()` for channel adapters, and real per-agent
 streaming events on the sequential strategy.
 
+## Scope: when to reach for `agency()`
+
+`agency()` is for **single-request multi-agent coordination** — patterns where
+one external request produces one coordinated multi-agent response. It is
+deliberately *not* a general "all multi-agent patterns" abstraction; some
+multi-agent patterns belong in your own orchestrator with `agent()` plus
+agentos's lower-level primitives.
+
+| Pattern | Use `agency()`? | Why |
+|---|---|---|
+| Research workflow: user asks a question, a researcher → writer → reviewer team produces one answer | Yes | Single request → coordinated response is the canonical fit |
+| Customer support escalation: one user message routed through triage → specialist → supervisor | Yes | Same shape — one in, one coordinated out |
+| Code review pipeline: one PR, parallel reviewers (style + security + tests) produce one review | Yes (use `parallel` or `graph`) | Fan-out / fan-in over a single input |
+| Multi-agent debate to consensus on a single question | Yes (use `debate`) | The strategy is built for it |
+| Long-running world simulation where a fixed roster of agents all run in parallel every turn against an evolving world state (e.g. paracosm) | **No** | Each simulation turn is closer to N independent `agent().session()` calls coordinated by your loop than to one `agency().generate()` call. Build your own turn loop; use `agent()` + (optionally) `EmergentAgentForge` / `EmergentAgentJudge` for runtime synthesis |
+| Multi-turn conversation with persistent agent roster, shared `AgencyMemoryManager`, and persistent specialists from `spawn_specialist` across turns | **Not yet** | `agency().session()` exists but only persists message history + usage. Roster, shared memory, and `tier: 'session'` synthesised specialists reset between `.send()` calls. Build your own multi-call coordination on top, or [open an issue](https://github.com/framersai/agentos/issues) describing the use case |
+| Companion app where a single agent has a persistent identity across many user turns | **No** — use `agent()` directly | `agent().session()` already covers this. agency() is overkill for single-agent stateful chat |
+
+The shared rule: if your problem decomposes into "one external request →
+one coordinated response", `agency()` is the right primitive. If your problem
+is fundamentally multi-turn with state evolving between turns, build your
+own orchestrator and reach into agentos for the lower-level primitives
+(`agent()`, `AgencyMemoryManager`, `AgentCommunicationBus`, `EmergentAgentForge`,
+`EmergentAgentJudge`, the cognitive memory layer) directly.
+
 ---
 
 ## Table of Contents
 
-1. [API Hierarchy](#api-hierarchy)
-2. [Minimal Example](#minimal-example)
-3. [Orchestration Strategies](#orchestration-strategies)
-4. [Adaptive Mode](#adaptive-mode)
-5. [Emergent Agent Creation](#emergent-agent-creation)
+1. [Scope: when to reach for agency()](#scope-when-to-reach-for-agency)
+2. [API Hierarchy](#api-hierarchy)
+3. [Minimal Example](#minimal-example)
+4. [Orchestration Strategies](#orchestration-strategies)
+5. [Adaptive Mode](#adaptive-mode)
+6. [Emergent Agent Creation](#emergent-agent-creation)
 6. [Human-in-the-Loop (HITL)](#human-in-the-loop-hitl)
 7. [Memory and RAG](#memory-and-rag)
 8. [Voice and Channels](#voice-and-channels)
@@ -312,22 +340,32 @@ first is `strategy: 'hierarchical'`).
 ## Emergent Agent Creation
 
 When enabled, the orchestrator may synthesise new specialist agents at runtime
-to handle tasks not covered by the statically defined roster.  Emergent agents
-are subject to HITL approval when `hitl.approvals.beforeEmergent` is set.
+to handle tasks not covered by the statically defined roster. Mechanically, the
+hierarchical manager gets one extra tool — `spawn_specialist({ role,
+instructions, justification? })` — alongside its `delegate_to_<name>` tools.
+Calling it forges a new sub-agent via [`EmergentAgentForge`](https://github.com/framersai/agentos/blob/master/src/emergent/EmergentAgentForge.ts)
+and (when `judge: true`) gates it through [`EmergentAgentJudge`](https://github.com/framersai/agentos/blob/master/src/emergent/EmergentAgentJudge.ts)
+before it joins the live roster. Emergent agents are also subject to HITL
+approval when `hitl.approvals.beforeEmergent` is set.
 
 Emergent requires either `strategy: 'hierarchical'` or `adaptive: true`.
 
 ```typescript
-const adaptive = agency({
+const research = agency({
   model: 'openai:gpt-4o',
   agents: {
-    generalist: { instructions: 'Handle most tasks.' },
+    researcher: { instructions: 'Find sources and pull verbatim quotes.' },
+    writer: { instructions: 'Write clear, well-cited prose.' },
   },
   strategy: 'hierarchical',
   emergent: {
     enabled: true,
-    tier: 'session',   // 'session' | 'agent' | 'shared'
-    judge: true,       // a separate judge agent evaluates emergent agents before use
+    tier: 'session',          // 'session' | 'agent' | 'shared'
+    judge: true,              // EmergentAgentJudge gates each spawn
+    planner: {
+      maxSpecialists: 3,      // hard cap per run; default 5
+      requireJustification: true,  // manager must explain each spawn
+    },
   },
 });
 ```
@@ -337,6 +375,15 @@ const adaptive = agency({
 | `"session"` | Discarded when the `generate()` call ends |
 | `"agent"` | Persist for the lifetime of the agency instance |
 | `"shared"` | Persist globally across all agency instances |
+
+| `planner` field | Default | Effect |
+|---|---|---|
+| `maxSpecialists` | `5` | Hard cap on **successful** synthesis count per run. Past the cap, `spawn_specialist` returns an error to the manager. |
+| `requireJustification` | `false` | Forces the manager to supply a `justification` string explaining why no static agent fits. Surfaces on the `emergentForge` callback's `ForgeEvent`. |
+| `maxJudgeCalls` | `maxSpecialists * 2` | Bounds the judge LLM cost — counts rejected spawns too (the judge already ran). Has no effect when `judge: false`. |
+| `judgeModel` | small-model default per provider (`gpt-4o-mini`, `claude-haiku-4-5-20251001`, `gemini-2.5-flash`, `llama-3.3-70b-versatile`) → falls back to agency model | Override when you want a more capable judge or the small-model default does not exist for your provider. |
+
+Tested rejection paths (each surfaces a structured tool-result error the manager can recover from): empty instructions, reserved role name (e.g. `spawn_specialist`, `final_answer`), invalid identifier (spaces / leading digit), missing justification when required, `maxSpecialists` cap reached, `maxJudgeCalls` cap reached, role collision with existing roster entry, HITL `beforeEmergent` rejection, judge rejection, judge LLM error / malformed JSON.
 
 ---
 
@@ -770,7 +817,22 @@ in what order, and how to merge their outputs -- all at runtime. Combine with
 when the static roster is insufficient.
 
 ```typescript
-import { agency } from '@framers/agentos';
+import { agency, type ITool } from '@framers/agentos';
+
+// Stand-ins for the host-supplied tools the researcher delegates to.
+// Replace with real implementations (Tavily, arxiv-api, etc.).
+const webSearchTool: ITool = {
+  name: 'web_search',
+  description: 'Search the web.',
+  inputSchema: { type: 'object', properties: { query: { type: 'string' } }, required: ['query'] },
+  execute: async ({ query }) => ({ success: true, output: `(stub) ${query}` }),
+};
+const arxivTool: ITool = {
+  name: 'arxiv_search',
+  description: 'Search arXiv for papers.',
+  inputSchema: { type: 'object', properties: { query: { type: 'string' } }, required: ['query'] },
+  execute: async ({ query }) => ({ success: true, output: `(stub) arxiv: ${query}` }),
+};
 
 // Hierarchical agency where manager delegates dynamically
 const dynamicTeam = agency({
@@ -806,33 +868,33 @@ console.log(result.text);
 
 ### Adding Emergent Agent Creation
 
-Enable `emergent` so the manager can spawn ad-hoc specialists when the
-predefined roster does not cover a sub-task. A judge agent evaluates the
-synthesised agent before it runs.
+Enable `emergent` so the manager can spawn ad-hoc specialists via the
+`spawn_specialist` tool when the predefined roster does not cover a sub-task.
+With `judge: true`, [`EmergentAgentJudge`](https://github.com/framersai/agentos/blob/master/src/emergent/EmergentAgentJudge.ts)
+runs one LLM-as-judge call evaluating the spec on safety / scope / risk
+before it joins the roster.
 
 ```typescript
 const emergentTeam = agency({
+  model: 'openai:gpt-4o',
   agents: {
-    manager: {
-      model: 'openai:gpt-4o',
-      instructions:
-        'Coordinate the team. If a task requires a specialist not in the roster, request one.',
-    },
     researcher: {
-      model: 'openai:gpt-4o',
       instructions: 'Research topics using web and academic sources.',
       tools: [webSearchTool, arxivTool],
     },
     writer: {
-      model: 'openai:gpt-4o',
       instructions: 'Produce polished, well-structured content.',
     },
   },
   strategy: 'hierarchical',
   emergent: {
     enabled: true,
-    tier: 'session', // synthesised agents discarded after generate() returns
-    judge: true,     // a judge agent evaluates emergent agents before use
+    tier: 'session',           // synthesised agents discarded after generate() returns
+    judge: true,               // EmergentAgentJudge gates each spawn
+    planner: {
+      maxSpecialists: 3,       // hard cap per run
+      requireJustification: true,  // manager must explain each spawn
+    },
   },
   hitl: {
     approvals: { beforeEmergent: true },
@@ -840,9 +902,6 @@ const emergentTeam = agency({
       console.log(`Emergent agent requested: ${request.description}`);
       return { approved: true };
     },
-  },
-  controls: {
-    maxEmergentAgents: 3, // cap the number of runtime-synthesised agents
   },
   on: {
     emergentForge: (e) =>

@@ -3,9 +3,9 @@ title: "Telephony Providers"
 sidebar_position: 3
 ---
 
-AgentOS supports three telephony providers for outbound and inbound voice calls:
-**Twilio**, **Telnyx**, and **Plivo**. All three implement the same
-`IVoiceCallProvider` interface and are wired through the central `CallManager`.
+A real phone call has stricter latency budgets than any chat surface. Twilio's docs say "audio gaps over 200ms feel unnatural"; in practice anything over 400ms gets users hanging up. The voice path through AgentOS is built around that constraint: the [voice pipeline](/features/voice-pipeline) runs end-to-end at low enough latency to feel like a conversation, and the telephony layer extends that into the PSTN by speaking the same streaming protocol — incoming caller audio is decoded to Float32 frames for VAD/STT, outbound TTS audio is re-encoded to mu-law on the way back to the phone, all through a full-duplex WebSocket. The provider is interchangeable.
+
+Three providers ship in-tree at [`src/channels/telephony/providers/`](https://github.com/framersai/agentos/tree/master/src/channels/telephony/providers): **Twilio**, **Telnyx**, and **Plivo**. All three implement [`IVoiceCallProvider`](https://github.com/framersai/agentos/blob/master/src/channels/telephony/IVoiceCallProvider.ts) and are wired through the central [`CallManager`](https://github.com/framersai/agentos/blob/master/src/channels/telephony/CallManager.ts) state machine. There's also a mock provider for testing.
 
 ---
 
@@ -173,20 +173,18 @@ POST https://<your-domain>/api/voice/webhook/telnyx
 POST https://<your-domain>/api/voice/webhook/plivo
 ```
 
-Use `startTelephonyWebhookServer` from `@framers/agentos/voice` to start a standalone
-HTTP listener (useful for local development via ngrok or a tunnel):
+For local development, start the listener via the [Wunderland](https://wunderland.sh)
+CLI's `chat --telephony-webhook-port=...` flags ([documented below](#cli-flags))
+and expose it with a tunnel (`ngrok http 3001`).
 
-```typescript
-import { startTelephonyWebhookServer } from '@framers/agentos/voice';
-
-const { url, close } = await startTelephonyWebhookServer(
-  callManager,
-  new Map([['twilio', twilioProvider]]),
-  pipeline,
-  { port: 3001 },
-);
-console.log(`Webhook server listening at ${url}`);
-```
+Programmatically, wire the webhook routes onto your own HTTP server using the
+exports from `@framers/agentos/channels/telephony` — `CallManager`,
+`TelephonyStreamTransport`, and the per-provider media-stream parsers
+(`TwilioMediaStreamParser`, `TelnyxMediaStreamParser`, `PlivoMediaStreamParser`)
+— mounted under whatever framework you already run. A drop-in
+`startTelephonyWebhookServer` factory is on the roadmap but has not shipped
+yet; until then, the CLI is the no-code path and the manager + transport are
+the manual path.
 
 ### Signature verification
 

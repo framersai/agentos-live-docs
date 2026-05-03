@@ -3,15 +3,11 @@ title: "AgentGraph"
 sidebar_position: 5
 ---
 
-`AgentGraph` is the lowest-level authoring API in the Unified Orchestration Layer. It exposes explicit node and edge management, supports cycles, subgraph composition, and four edge types including the AgentOS-exclusive discovery and personality edges.
+When `workflow()` is too rigid and `mission()` is too far ahead of where the runtime currently plans, the answer is `AgentGraph` — explicit node and edge construction with cycles, conditional routing, subgraph composition, and the discovery and personality edges that don't exist in any other open agent framework. It compiles to the same [`CompiledExecutionGraph`](https://github.com/framersai/agentos/blob/master/src/orchestration/compiler/CompiledExecutionGraph.ts) IR as the higher-level builders, but it gets you full control over the topology before compilation.
 
-> Current runtime note:
-> `AgentGraph` compilation is complete, but some advanced execution paths are still bridge-dependent today.
-> The base runtime executes `tool`, `router`, `guardrail`, and `human` nodes directly.
-> `gmi`, `extension`, and `subgraph` execution require a higher-level runtime bridge,
-> and discovery/personality edges are still partial unless those integrations are wired.
+**Honest runtime status.** Compilation is complete. Execution is partial: the base runtime executes `tool`, `router`, `guardrail`, and `human` nodes directly. `gmi`, `extension`, and `subgraph` execution still requires a higher-level runtime bridge today, and the discovery and personality edges activate fully only when those integrations are wired. If your graph uses only the four direct-execution node kinds, you're in production-ready territory; if it relies heavily on `gmi` nodes inside cycles, expect to wire the bridge.
 
-Use `AgentGraph` when you need full control: complex conditional routing, agent loops that cycle back, memory-driven state machines, or subgraph composition. For linear pipelines, see [workflow()](/features/workflow-dsl). For goal-driven orchestration, see [mission()](/features/mission-api).
+Use `AgentGraph` when you need cycles, conditional fan-out, memory-driven state machines, or subgraph composition. Use [`workflow()`](/features/workflow-dsl) for linear pipelines. Use [`mission()`](/features/mission-api) when you'd rather declare intent than topology.
 
 ## Quick Start
 
@@ -268,7 +264,7 @@ const graph = new AgentGraph(stateSchema, {
 
 ```typescript
 const compiled = graph.compile({
-  checkpointStore: new SqliteCheckpointStore('./runs.db'),
+  checkpointStore: new InMemoryCheckpointStore('./runs.db'),
   validate: true, // default — throws on unreachable nodes or structural errors
 });
 ```
@@ -328,7 +324,7 @@ import {
   AgentGraph, START, END,
   gmiNode, toolNode, humanNode,
 } from '@framers/agentos/orchestration';
-import { SqliteCheckpointStore } from '@framers/agentos/orchestration/checkpoint';
+import { InMemoryCheckpointStore } from '@framers/agentos/orchestration/checkpoint';
 import { z } from 'zod';
 
 const ResearchState = {
@@ -412,7 +408,7 @@ const graph = new AgentGraph(ResearchState, {
   .addEdge('review', END)
 
   .compile({
-    checkpointStore: new SqliteCheckpointStore('./research-checkpoints.db'),
+    checkpointStore: new InMemoryCheckpointStore('./research-checkpoints.db'),
   });
 
 // Run
@@ -433,3 +429,26 @@ const result2 = await graph.resume(savedCheckpointId);
 - [workflow() DSL](/features/workflow-dsl) — simpler API for DAG pipelines
 - [Checkpointing](/features/checkpointing) — ICheckpointStore, resume, time-travel
 - [Unified Orchestration](/features/unified-orchestration) — architecture overview
+
+---
+
+## References
+
+### Graph-structured agent orchestration
+
+- Wu, Q., Bansal, G., Zhang, J., Wu, Y., Li, B., Zhu, E., Jiang, L., Zhang, X., Zhang, S., Liu, J., Awadallah, A. H., White, R. W., Burger, D., & Wang, C. (2023). *AutoGen: Enabling next-gen LLM applications via multi-agent conversation.* arXiv preprint. — Conversation-graph patterns that informed the `gmi` node + `delegate_to` edge semantics. [arXiv:2308.08155](https://arxiv.org/abs/2308.08155)
+- LangGraph contributors. *LangGraph: A library for building stateful, multi-actor applications with LLMs.* — Reference architecture for stateful graph orchestration with cycles and conditional branches; AgentGraph deliberately differs in the edge taxonomy (adds discovery + personality edges). [GitHub](https://github.com/langchain-ai/langgraph)
+
+### Conditional + cyclic state machines
+
+- Harel, D. (1987). *Statecharts: A visual formalism for complex systems.* *Science of Computer Programming*, 8(3), 231–274. — The state-machine formalism behind cyclic agent loops with conditional transitions. [DOI](https://doi.org/10.1016/0167-6423(87)90035-9)
+
+### State reducers (functional + applied)
+
+- Abramov, D. (2015). *Redux: A predictable state container.* — The reducer pattern AgentGraph's per-field state-merge strategies follow (concat, replace, max, etc.). [redux.js.org](https://redux.js.org/)
+
+### Implementation references
+
+- `packages/agentos/src/orchestration/builders/AgentGraph.ts` — the AgentGraph class
+- `packages/agentos/src/orchestration/builders/nodes.ts` — `gmiNode`, `toolNode`, `humanNode`, `routerNode`, `guardrailNode`, `subgraphNode`, `judgeNode` factories
+- `packages/agentos/src/orchestration/ir/` — shared IR types (`START`, `END`, edges, reducers)

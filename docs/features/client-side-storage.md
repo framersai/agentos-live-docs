@@ -27,18 +27,17 @@ npm install @framers/sql-storage-adapter
 ### 2. Initialize AgentOS with Storage
 
 ```typescript
-import { createAgentOSStorage } from '@framers/sql-storage-adapter/agentos';
+import { resolveStorageAdapter } from '@framers/sql-storage-adapter';
 import { AgentOS } from '@framers/agentos';
 
-// Auto-detects platform (web → IndexedDB, electron → better-sqlite3, etc.)
-const storage = await createAgentOSStorage({
-  platform: 'auto',
-  persistence: true,
+// Auto-detects platform (web → IndexedDB, electron → better-sqlite3, capacitor → @capacitor-community/sqlite, node → better-sqlite3 fallback to sql.js)
+const storage = await resolveStorageAdapter({
+  // pass platform-specific options here, or leave empty for full auto
 });
 
 const agentos = new AgentOS();
 await agentos.initialize({
-  storageAdapter: storage.getAdapter(),
+  storageAdapter: storage,   // pass the StorageAdapter directly
   // ... other config (modelProviderManagerConfig, etc.)
 });
 ```
@@ -130,12 +129,14 @@ await agentos.initialize({
 - ✅ Unlimited storage (file-based)
 - ✅ No quota limits
 
-**Fallback:** If better-sqlite3 fails to build, gracefully falls back to sql.js:
+**Fallback:** If better-sqlite3 fails to build, fall back to sql.js manually
+or via `resolveStorageAdapter` with a preferred-order list:
 
 ```typescript
-const storage = await createAgentOSStorage({
-  platform: 'electron',
-  // Tries better-sqlite3 first, falls back to sql.js
+import { resolveStorageAdapter } from '@framers/sql-storage-adapter';
+
+const storage = await resolveStorageAdapter({
+  preferred: ['better-sqlite3', 'sql.js'],
 });
 ```
 
@@ -167,12 +168,15 @@ await agentos.initialize({
 - ✅ Multi-threaded (better performance)
 - ✅ Unlimited storage (device-dependent)
 
-**Fallback:** For WebView-based Ionic apps without Capacitor:
+**Fallback:** For WebView-based Ionic apps without Capacitor, use IndexedDB:
 
 ```typescript
-const storage = await createAgentOSStorage({
-  platform: 'web',  // Uses IndexedDB in WebView
+import { IndexedDbAdapter } from '@framers/sql-storage-adapter';
+
+const storage = new IndexedDbAdapter({
+  dbName: 'agentos-mobile',
 });
+await storage.open();
 ```
 
 ---
@@ -181,18 +185,27 @@ const storage = await createAgentOSStorage({
 
 **Use Case:** Local-first for speed/offline, sync to cloud for multi-device access.
 
-```typescript
-import { createAgentOSStorage } from '@framers/sql-storage-adapter/agentos';
+The cross-platform sync layer ships in `@framers/sql-storage-adapter/sync` and
+takes a local adapter plus a remote one. See the dedicated sync guide in the
+adapter repo for the full schema; the minimal wiring is:
 
-const storage = await createAgentOSStorage({
-  local: { adapter: 'indexeddb' },
-  remote: { 
-    adapter: 'postgres',
-    connectionString: process.env.SUPABASE_URL,
-  },
-  syncStrategy: 'optimistic',  // Write local, sync async
-  syncIntervalMs: 30000,       // Sync every 30s
+```typescript
+import { IndexedDbAdapter } from '@framers/sql-storage-adapter';
+import { createCrossPlatformSync } from '@framers/sql-storage-adapter/sync';
+import { createPostgresAdapter } from '@framers/sql-storage-adapter';
+
+const local  = new IndexedDbAdapter({ dbName: 'agentos-local' });
+const remote = createPostgresAdapter({ connectionString: process.env.SUPABASE_URL! });
+
+await local.open();
+await remote.open();
+
+const sync = createCrossPlatformSync({
+  local,
+  remote,
+  intervalMs: 30_000,
 });
+await sync.start();
 ```
 
 **Sync Strategies:**
@@ -266,12 +279,21 @@ await agentos.initialize({
 ### After (Client-Side)
 
 ```typescript
-const storage = await createAgentOSStorage({ platform: 'auto' });
+import { resolveStorageAdapter } from '@framers/sql-storage-adapter';
+import type { PrismaClient } from '@prisma/client';
+
+const storage = await resolveStorageAdapter();
+
+// Minimal stub: AgentOS.initialize still validates that `prisma` is set, but
+// when `storageAdapter` is provided it does not actually call into Prisma for
+// conversation/event/session storage. An empty object cast through unknown is
+// enough to satisfy the type at compile time.
+const mockPrisma = {} as unknown as PrismaClient;
 
 const agentos = new AgentOS();
 await agentos.initialize({
-  storageAdapter: storage.getAdapter(),  // 🆕 Client-side
-  prisma: mockPrisma,  // Compatibility stub while Prisma remains required
+  storageAdapter: storage,   // 🆕 Client-side
+  prisma: mockPrisma,        // Compatibility stub while Prisma remains required
   // ...
 });
 ```
@@ -336,7 +358,7 @@ await storage.importDatabase(new Uint8Array(file));
 const backup = storage.exportDatabase();
 
 // Clear old data
-await storage.getAdapter().run('DELETE FROM conversation_events WHERE timestamp < ?', [cutoffDate]);
+await storage.run('DELETE FROM conversation_events WHERE timestamp < ?', [cutoffDate]);
 ```
 
 ### "better-sqlite3 failed to build"
@@ -372,10 +394,10 @@ const storage = new IndexedDbAdapter({
 
 ## Next Steps
 
-1. **Try the demo:** See `apps/agentos-client` for a working example
+1. **Try the demo:** See `apps/agentos-workbench` for a working browser-side example
 2. **Read the Platform Strategy:** [PLATFORM_STRATEGY.md](/features/platform-strategy)
 3. **Contribute:** Submit issues/PRs for improvements
 
 ---
 
-**TL;DR:** Use `createAgentOSStorage({ platform: 'auto' })` and AgentOS works offline everywhere. IndexedDB for web, better-sqlite3 for desktop, capacitor for mobile.
+**TL;DR:** Use `resolveStorageAdapter()` from `@framers/sql-storage-adapter` and AgentOS works offline everywhere. IndexedDB for web, better-sqlite3 for desktop, `@capacitor-community/sqlite` for mobile.

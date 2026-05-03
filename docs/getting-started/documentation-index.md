@@ -93,7 +93,7 @@ sidebar_position: 1
 
 | Resource    | Link                                                                   |
 | ----------- | ---------------------------------------------------------------------- |
-| Website     | [agentos.sh](https://agentos.sh/en)                                       |
+| Website     | [agentos.sh](https://agentos.sh)                                       |
 | GitHub      | [framersai/agentos](https://github.com/framersai/agentos)              |
 | npm         | [@framers/agentos](https://www.npmjs.com/package/@framers/agentos)     |
 | Issues      | [GitHub Issues](https://github.com/framersai/agentos/issues)           |

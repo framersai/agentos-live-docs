@@ -17,13 +17,18 @@ test('publication manifest exists and canonicalizes the skills section', () => {
   const { publicationManifest } = require(manifestPath);
   const byDestination = new Map(publicationManifest.map((entry) => [entry.dest, entry]));
 
-  assert.equal(byDestination.has('skills/overview.md'), true);
+  assert.equal(byDestination.has('skills/index.md'), true);
   assert.equal(
-    byDestination.get('skills/overview.md')?.sourcePath,
+    byDestination.get('skills/index.md')?.sourcePath,
     'packages/agentos/docs/SKILLS_OVERVIEW.md',
   );
   assert.equal(byDestination.has('skills/agentos-skills.md'), true);
   assert.equal(byDestination.has('skills/skills-extension.md'), false);
+  assert.equal(byDestination.has('extensions/index.md'), true);
+  assert.equal(
+    byDestination.get('extensions/index.md')?.sourcePath,
+    'packages/agentos-extensions/README.md',
+  );
 });
 
 test('publication inventory rejects duplicate destinations and missing sources', () => {
@@ -193,7 +198,10 @@ test('publication verification scripts are wired into the docs packages', () => 
     docusaurusConfig,
     /\.\.\.\(!guidesOnly[\s\S]*?\[\s*\{[\s\S]*?to:\s*'\/blog'[\s\S]*?label:\s*'Blog'/,
   );
-  assert.match(docusaurusConfig, /to: '\/skills\/overview'/);
+  assert.match(docusaurusConfig, /label: 'Skills',\s*to: '\/skills'/);
+  assert.match(docusaurusConfig, /label: 'Extensions',\s*to: '\/extensions'/);
+  assert.match(docusaurusConfig, /from: '\/skills\/overview',\s*to: '\/skills'/);
+  assert.match(docusaurusConfig, /from: '\/extensions\/overview',\s*to: '\/extensions'/);
   assert.doesNotMatch(docusaurusConfig, /skills\/skills-extension/);
 });
 

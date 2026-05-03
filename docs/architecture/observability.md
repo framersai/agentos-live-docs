@@ -3,8 +3,11 @@ title: "Observability (OpenTelemetry)"
 sidebar_position: 9
 ---
 
-> AgentOS provides **opt-in** OpenTelemetry (OTEL) spans, metrics, and log correlation/export hooks.
-> AgentOS itself does **not** start an OTEL SDK. Your host application owns exporters, sampling, and context propagation.
+You can't operate an agent runtime in production without observability, and the cost of bolting it on after the fact is paid in incidents you can't reproduce. AgentOS treats spans, metrics, and log correlation as first-class concerns — but it does not own the OpenTelemetry SDK lifecycle. The SDK is an application-level concern: your host owns exporters, sampling, and context propagation, because the right answer for a CLI process is different from the right answer for a long-running server is different from the right answer for an edge worker.
+
+What AgentOS owns is the *emit side*: opt-in spans around turns and tool-result handling, opt-in counters and histograms for the operations worth measuring, optional trace-correlation in logs and streamed response metadata, and an optional path to export application logs as OTEL `LogRecord`s. All defaults are off. Turning them on is a single config change, and the runtime will surface to whatever exporter your host has wired (OTLP to Honeycomb, Tempo, Jaeger, Grafana Cloud — the runtime doesn't care, because your host SDK is what does the export).
+
+The implementation lives in [`src/evaluation/observability/`](https://github.com/framersai/agentos/tree/master/src/evaluation/observability) and uses [`@opentelemetry/api`](https://www.npmjs.com/package/@opentelemetry/api) directly — never bundled, always peer-dep-style imported, so your host SDK is the one and only OTEL provider in the process.
 
 ---
 
@@ -66,9 +69,7 @@ Precedence:
 ```ts
 import { AgentOS } from '@framers/agentos';
 
-const agentos = new AgentOS();
-await agentos.initialize({
-  // ...your normal config...
+const agentos = await AgentOS.create({
   observability: {
     // Master switch: when true, defaults to enabling tracing/metrics + log correlation.
     // Keep explicit per-signal toggles if you want a tighter blast radius.
@@ -279,3 +280,31 @@ Common library choices:
 - Telemetry: `@opentelemetry/sdk-node`, `@opentelemetry/auto-instrumentations-node`
 - Logging: `pino` (+ `@opentelemetry/instrumentation-pino` if you want automatic injection everywhere)
 - Agent/LLM observability layers: Langfuse, Helicone, Sentry AI monitoring, OpenLIT, OpenLLMetry-js
+
+---
+
+## References
+
+### OpenTelemetry
+
+- W3C. (2021). *Trace Context Level 1.* W3C Recommendation. — The W3C standard for distributed-trace context propagation across process boundaries; AgentOS uses it to correlate spans across microservices. [w3.org/TR/trace-context-1](https://www.w3.org/TR/trace-context-1/)
+- OpenTelemetry Specification (current). *OpenTelemetry signal specifications: traces, metrics, and logs.* — The protocol contract AgentOS emits against. [opentelemetry.io/docs/specs/otel](https://opentelemetry.io/docs/specs/otel/)
+- OpenTelemetry. (current). *Semantic conventions.* — Naming and attribute schema for spans/metrics/logs; AgentOS follows the GenAI semantic conventions for LLM-call attributes. [opentelemetry.io/docs/specs/semconv](https://opentelemetry.io/docs/specs/semconv/)
+- OpenTelemetry GenAI working group. (current). *Generative AI semantic conventions.* — The schema for `gen_ai.*` attributes (request.model, usage.input_tokens, etc.) AgentOS sets on LLM-call spans. [opentelemetry.io/docs/specs/semconv/gen-ai](https://opentelemetry.io/docs/specs/semconv/gen-ai/)
+
+### Distributed tracing foundations
+
+- Sigelman, B. H., Barroso, L. A., Burrows, M., Stephenson, P., Plakal, M., Beaver, D., Jaspan, S., & Shanbhag, C. (2010). *Dapper, a large-scale distributed systems tracing infrastructure.* Google Technical Report. — The original distributed-tracing paper that defined the span/trace abstractions used today. [Google Research](https://research.google/pubs/dapper-a-large-scale-distributed-systems-tracing-infrastructure/)
+- Mace, J., Roelke, R., & Fonseca, R. (2015). *Pivot tracing: Dynamic causal monitoring for distributed systems.* SOSP 2015. — Causal monitoring methodology informing the trace-id propagation through `AgentOSResponse` metadata. [DOI](https://doi.org/10.1145/2815400.2815415)
+
+### Logging
+
+- OpenTelemetry. (current). *OpenTelemetry logging specification.* — The bridge spec connecting `LogRecord` events to span context; AgentOS's optional `exportToOtel` log path follows it. [opentelemetry.io/docs/specs/otel/logs](https://opentelemetry.io/docs/specs/otel/logs/)
+- Pino contributors. (current). *Pino: Very low overhead Node.js logger.* — The logger AgentOS wraps via `PinoLogger`; chosen for its sub-microsecond per-line cost in hot paths. [GitHub](https://github.com/pinojs/pino)
+
+### Implementation references
+
+- `packages/agentos/src/evaluation/observability/Tracer.ts` — span creation around turn / tool / guardrail / LLM-call boundaries
+- `packages/agentos/src/evaluation/observability/otel.ts` — OpenTelemetry API peer-dep wiring
+- `packages/agentos/src/logging/PinoLogger.ts` — structured logger with trace-id / span-id field injection
+- `packages/agentos/src/evaluation/SqlTaskOutcomeTelemetryStore.ts` — persisted per-turn outcome KPIs for rolling-quality dashboards

@@ -341,7 +341,7 @@ Negligible compared to PII (~115MB), ML classifiers (~98MB), and topicality (~1.
 
 - [Guardrails](/features/guardrails)
 - [Extension Architecture](/extensions/extension-architecture)
-- [Extensions Overview](/extensions/overview)
+- [Extensions Overview](/extensions)
 - [PII Redaction](/extensions/built-in/pii-redaction)
 - [ML Content Classifiers](/extensions/built-in/ml-classifiers)
 - [Topicality](/extensions/built-in/topicality)

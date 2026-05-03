@@ -3,32 +3,20 @@ title: "Channels"
 sidebar_position: 1
 ---
 
-> Connect your agent to any messaging platform with a unified adapter interface.
+The agents people actually use don't live in one window. A useful research assistant gets pinged on Slack during the workday, on Telegram on the weekend, and over email when someone forwards a thread for it to summarise. Each platform has its own ergonomics, its own rate limits, its own message-shape quirks, its own auth model. The work of integrating each one is real, and writing it once per agent is the thing that stops most projects at "demo on Discord."
 
----
+The channel layer is the boundary that makes this someone else's problem. Every external platform sits behind a single [`IChannelAdapter`](https://github.com/framersai/agentos/blob/master/src/channels/IChannelAdapter.ts) interface; your agent code emits and receives `ChannelMessage` objects, and the adapter handles serialization, auth, reconnection, and platform-specific edge cases. Twelve adapters ship in-tree (`src/channels/adapters/`); 37 curated extension packs cover the rest of the messaging, social, and publishing surface. Same shape on either side of the boundary — same `ChannelMessage` envelope, same `ChannelRouter` for routing inbound traffic to the right agent, same code path for sending replies back out.
 
-## Table of Contents
+```
+User (Discord / Telegram / etc.)
+  ↕  platform SDK
+IChannelAdapter
+  ↕  ChannelRouter
+Your Agent (AgentOS)
+```
 
-1. [Overview](#overview)
-2. [All 37 Channels](#all-37-channels)
-3. [Setup Guides](#setup-guides)
-   - [Discord](#discord)
-   - [Slack](#slack)
-   - [Telegram](#telegram)
-   - [Twitter / X](#twitter--x)
-   - [WhatsApp](#whatsapp)
-4. [Custom Channel Adapter](#custom-channel-adapter)
-5. [Message Routing](#message-routing)
-6. [Broadcast to Multiple Channels](#broadcast-to-multiple-channels)
-
----
-
-## Overview
-
-The AgentOS Channel System normalizes every external messaging platform behind
-a single `IChannelAdapter` interface. Your agent code never speaks platform
-APIs directly — it emits and receives `ChannelMessage` objects, and the adapter
-handles all platform-specific serialization, authentication, and reconnection.
+Channels are registered as `messaging-channel` extensions and managed by the
+`ChannelRouter`, which handles load balancing, health checks, and fallback.
 
 ```
 User (Discord / Telegram / etc.)
@@ -124,28 +112,43 @@ export DISCORD_GUILD_ID=your-server-id   # optional: restrict to one guild
 
 **3. Register the adapter**
 
+Each channel ships its own `<Channel>Service` (transport client) and
+`<Channel>ChannelAdapter` (the `IChannelAdapter` implementation). The
+adapter takes the service in its constructor:
+
 ```typescript
 import { ChannelRouter } from '@framers/agentos/channels';
-import { DiscordAdapter } from '@framers/agentos-extensions/channels/discord';
+import { DiscordService, DiscordChannelAdapter } from '@framers/agentos-ext-channel-discord';
 
 const router = new ChannelRouter();
-const discord = new DiscordAdapter();
 
-await discord.initialize({
-  credential: process.env.DISCORD_BOT_TOKEN!,
-  metadata: { applicationId: process.env.DISCORD_APPLICATION_ID },
+const service = new DiscordService({
+  botToken: process.env.DISCORD_BOT_TOKEN!,
+  applicationId: process.env.DISCORD_APPLICATION_ID,
+  // guildId: process.env.DISCORD_GUILD_ID, // optional
 });
+await service.initialize();
 
-router.register(discord);
+const discord = new DiscordChannelAdapter(service);
+await discord.initialize({ credential: process.env.DISCORD_BOT_TOKEN! });
 
-// Listen for incoming messages
-discord.on('message', async (message) => {
+router.registerAdapter(discord);
+
+// Listen for incoming messages via ChannelRouter's onMessage handler.
+// Handler receives the parsed message + the resolved binding + session.
+router.onMessage(async (message, binding, session) => {
   const response = await agent.reply(message.text);
   await discord.sendMessage(message.conversationId, {
     blocks: [{ type: 'text', text: response }],
   });
 });
 ```
+
+> **Recommended: registry pattern.** For multi-channel apps, use
+> [`createCuratedManifest`](https://github.com/framersai/agentos-extensions-registry)
+> from `@framers/agentos-extensions-registry` — it instantiates each
+> channel's `Service` + `ChannelAdapter` from your env vars and registers
+> them with the router automatically.
 
 ---
 
@@ -167,15 +170,18 @@ export SLACK_SIGNING_SECRET=your-signing-secret
 **2. Register the adapter**
 
 ```typescript
-import { SlackAdapter } from '@framers/agentos-extensions/channels/slack';
+import { SlackService, SlackChannelAdapter } from '@framers/agentos-ext-channel-slack';
 
-const slack = new SlackAdapter();
-await slack.initialize({
-  credential: process.env.SLACK_BOT_TOKEN!,
-  metadata: { signingSecret: process.env.SLACK_SIGNING_SECRET },
+const service = new SlackService({
+  botToken: process.env.SLACK_BOT_TOKEN!,
+  signingSecret: process.env.SLACK_SIGNING_SECRET!,
 });
+await service.initialize();
 
-router.register(slack);
+const slack = new SlackChannelAdapter(service);
+await slack.initialize({ credential: process.env.SLACK_BOT_TOKEN! });
+
+router.registerAdapter(slack);
 ```
 
 ---
@@ -195,14 +201,15 @@ export TELEGRAM_BOT_TOKEN=123456789:ABC-...
 **2. Register the adapter**
 
 ```typescript
-import { TelegramAdapter } from '@framers/agentos-extensions/channels/telegram';
+import { TelegramService, TelegramChannelAdapter } from '@framers/agentos-ext-channel-telegram';
 
-const telegram = new TelegramAdapter();
-await telegram.initialize({
-  credential: process.env.TELEGRAM_BOT_TOKEN!,
-});
+const service = new TelegramService({ botToken: process.env.TELEGRAM_BOT_TOKEN! });
+await service.initialize();
 
-router.register(telegram);
+const telegram = new TelegramChannelAdapter(service);
+await telegram.initialize({ credential: process.env.TELEGRAM_BOT_TOKEN! });
+
+router.registerAdapter(telegram);
 ```
 
 ---
@@ -225,9 +232,17 @@ export TWITTER_ACCESS_SECRET=your-access-secret
 **2. Register the adapter**
 
 ```typescript
-import { TwitterAdapter } from '@framers/agentos-extensions/channels/twitter';
+import { TwitterService, TwitterChannelAdapter } from '@framers/agentos-ext-channel-twitter';
 
-const twitter = new TwitterAdapter();
+const service = new TwitterService({
+  apiKey:        process.env.TWITTER_API_KEY!,
+  apiSecret:     process.env.TWITTER_API_SECRET!,
+  accessToken:   process.env.TWITTER_ACCESS_TOKEN!,
+  accessSecret:  process.env.TWITTER_ACCESS_SECRET!,
+});
+await service.initialize();
+
+const twitter = new TwitterChannelAdapter(service);
 await twitter.initialize({
   credential: JSON.stringify({
     apiKey:        process.env.TWITTER_API_KEY,
@@ -236,6 +251,8 @@ await twitter.initialize({
     accessSecret:  process.env.TWITTER_ACCESS_SECRET,
   }),
 });
+
+router.registerAdapter(twitter);
 ```
 
 ---
@@ -256,13 +273,18 @@ export WHATSAPP_PHONE_NUMBER_ID=your-phone-number-id
 **2. Register the adapter**
 
 ```typescript
-import { WhatsAppAdapter } from '@framers/agentos-extensions/channels/whatsapp';
+import { WhatsAppService, WhatsAppChannelAdapter } from '@framers/agentos-ext-channel-whatsapp';
 
-const whatsapp = new WhatsAppAdapter();
-await whatsapp.initialize({
-  credential: process.env.WHATSAPP_ACCESS_TOKEN!,
-  metadata: { phoneNumberId: process.env.WHATSAPP_PHONE_NUMBER_ID },
+const service = new WhatsAppService({
+  accessToken: process.env.WHATSAPP_ACCESS_TOKEN!,
+  phoneNumberId: process.env.WHATSAPP_PHONE_NUMBER_ID!,
 });
+await service.initialize();
+
+const whatsapp = new WhatsAppChannelAdapter(service);
+await whatsapp.initialize({ credential: process.env.WHATSAPP_ACCESS_TOKEN! });
+
+router.registerAdapter(whatsapp);
 ```
 
 ---
@@ -348,7 +370,7 @@ Register and use:
 ```typescript
 const myAdapter = new MyPlatformAdapter();
 await myAdapter.initialize({ credential: 'my-api-key' });
-router.register(myAdapter);
+router.registerAdapter(myAdapter);
 ```
 
 ---
@@ -363,9 +385,9 @@ import { ChannelRouter } from '@framers/agentos/channels';
 const router = new ChannelRouter();
 
 // Register all desired adapters
-router.register(discordAdapter);
-router.register(slackAdapter);
-router.register(telegramAdapter);
+router.registerAdapter(discordAdapter);
+router.registerAdapter(slackAdapter);
+router.registerAdapter(telegramAdapter);
 
 // Route a message to a specific platform
 await router.send('discord', channelId, {

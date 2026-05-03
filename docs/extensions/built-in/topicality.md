@@ -288,7 +288,7 @@ The guardrail returns machine-readable reason codes for analytics:
 
 - [Guardrails](/features/guardrails)
 - [Extension Architecture](/extensions/extension-architecture)
-- [Extensions Overview](/extensions/overview)
+- [Extensions Overview](/extensions)
 - [PII Redaction](/extensions/built-in/pii-redaction)
 - [ML Content Classifiers](/extensions/built-in/ml-classifiers)
 - [Code Safety](/extensions/built-in/code-safety)

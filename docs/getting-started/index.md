@@ -11,11 +11,13 @@ sidebar_position: 2
 
 1. [Installation](#installation)
 2. [Environment Setup](#environment-setup)
-3. [Level 1 — Single Text Generation](#level-1--single-text-generation)
-4. [Level 2 — Stateful Agent Session](#level-2--stateful-agent-session)
-5. [Level 3 — Multi-Agent Agency](#level-3--multi-agent-agency)
-6. [First End-to-End Example](#first-end-to-end-example)
-7. [What's Next](#whats-next)
+3. [Core Concepts](#core-concepts)
+4. [Provider Configuration](#provider-configuration)
+5. [Level 1 — Single Text Generation](#level-1--single-text-generation)
+6. [Level 2 — Stateful Agent Session](#level-2--stateful-agent-session)
+7. [Level 3 — Multi-Agent Agency](#level-3--multi-agent-agency)
+8. [First End-to-End Example](#first-end-to-end-example)
+9. [What's Next](#whats-next)
 
 ---
 
@@ -60,7 +62,7 @@ import { setDefaultProvider, generateText, agent } from '@framers/agentos';
 
 setDefaultProvider({
   provider: 'openai',
-  apiKey: process.env.MY_OWN_KEY,    // any source — Vault, KMS, hard-coded, etc.
+  apiKey: process.env.MY_OWN_KEY ?? process.env.OPENAI_API_KEY,  // any source — Vault, KMS, hard-coded, etc.
   // optional:
   // model: 'gpt-4o-mini',
   // baseUrl: 'https://my-proxy.example.com/v1',
@@ -72,7 +74,7 @@ const bot = agent({ instructions: 'You are a coding tutor.' });
 
 // Inline opts always win over the default (per-tenant keys, fallback providers, etc.):
 const { text: tenantReply } = await generateText({
-  apiKey: 'sk-customer-scoped-key',
+  apiKey: process.env.SCOPED_OPENAI_API_KEY ?? process.env.OPENAI_API_KEY,
   prompt: 'tenant-isolated call',
 });
 
@@ -81,6 +83,23 @@ setDefaultProvider(undefined);
 ```
 
 `setDefaultProvider` is the recommended path for apps that hold their keys somewhere other than environment variables (secrets manager, runtime config service, etc.). It also works inside the `AgentOS` class — pass `defaultProvider` in your `AgentOSConfig` and the runtime will install it during `initialize()`.
+
+### Reordering the auto-detect chain
+
+If you have multiple env-var keys configured but want a different one preferred, install a custom priority list once at boot:
+
+```typescript
+import { setProviderPriority, generateText } from '@framers/agentos';
+
+// Even if OPENAI_API_KEY is set, prefer Anthropic when its key is also present:
+setProviderPriority(['anthropic', 'openai', 'ollama']);
+
+const { text } = await generateText({ prompt: 'hello' });
+// Picks anthropic if ANTHROPIC_API_KEY is set; falls through to openai;
+// then to a local ollama server. Providers not in the list are skipped.
+```
+
+Throws if you list an unknown provider id (typo guard). Pass an empty array to disable auto-detection entirely (callers must then supply a provider inline or via `setDefaultProvider`). Call `clearProviderPriority()` (or `setProviderPriority(undefined)`) to revert to the default order.
 
 ### Environment variables
 
@@ -134,15 +153,78 @@ All high-level functions support `apiKey`: `generateText`, `streamText`, `genera
 
 ---
 
+## Core Concepts
+
+Before the code, four parts and how they fit together.
+
+```mermaid
+flowchart LR
+    User([user input]) --> Agent
+
+    subgraph Agent["Agent"]
+        direction TB
+        Loop[the loop + decision logic]
+    end
+
+    Agent --> LLM[/"LLM<br/>(provider of choice)"/]
+    Agent <--> Memory[("Memory<br/>working + cognitive store")]
+    Agent --> Tools[/"Tools<br/>functions the agent can call"/]
+
+    LLM --> Agent
+    Tools --> Agent
+
+    Agent --> Output([response])
+
+    classDef accent fill:#0041ff,stroke:#0041ff,color:#fff,rx:6
+    classDef store fill:#1e293b,stroke:#475569,color:#e2e8f0,rx:6
+    classDef io fill:none,stroke:#94a3b8,color:#475569,rx:6
+    class Agent accent
+    class Memory store
+    class LLM,Tools io
+```
+
+- **Agent** — the runtime loop. Receives input, calls the LLM, executes tool calls, retrieves memory, returns a response. `agent()` and `agency()` are the two factories that build one.
+- **LLM** — the language model. AgentOS routes through 21 provider adapters; the agent does not care which one you pick.
+- **Memory** — what survives across turns and sessions. Working memory (short-term scratchpad) plus cognitive memory (episodic, semantic, procedural traces with Ebbinghaus decay, retrieval-induced forgetting, and reconsolidation).
+- **Tools** — functions the agent can invoke when the LLM decides it needs one. Pre-registered tools work the same way runtime-generated tools do once approved by the LLM judge.
+
+The three levels below build on this picture:
+
+| Level | API | What it adds |
+|---|---|---|
+| 1 | `generateText()` / `streamText()` | one LLM call, no agent loop, no memory, no tools |
+| 2 | `agent()` | the loop, sessions, working memory, tool calling |
+| 3 | `agency()` | multiple agents under a coordination strategy; optional runtime tool generation and specialist spawning |
+
+Personality vectors, multimodal RAG, streaming guardrails, channel adapters, and the voice pipeline layer on top of any level.
+
+---
+
+## Provider Configuration
+
+Every entry point (`generateText`, `streamText`, `generateObject`, `agent`, `agency`, etc.) accepts the same three provider fields:
+
+| Field | Required? | Default | Notes |
+|---|---|---|---|
+| `provider` | yes | none | One of `openai`, `anthropic`, `gemini`, `ollama`, `groq`, `together`, `fireworks`, `perplexity`, `mistral`, `cohere`, `deepseek`, `xai`, `bedrock`, `qwen`, `moonshot`, `openrouter`, plus the CLI bridges. |
+| `model` | no | provider-specific (`gpt-4o`, `claude-sonnet-4-6`, `gemini-2.5-pro`, `llama3.3` for Ollama, etc.) | Pin explicitly for stability across package upgrades. Use a current model id; retired snapshots return 404. |
+| `apiKey` | no | env auto-detect (`OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, etc.; full chain in [Environment Setup](#environment-setup)) | Pass explicitly for multi-tenant apps and to avoid coupling code to env var names. |
+
+The examples below use the same explicit shape across all three levels. If you would rather rely on the auto-detect chain plus the provider's default model, omit `model` and `apiKey` — the calls still work as long as the env var is set.
+
+---
+
 ## Level 1 — Single Text Generation
 
-One call, no state, no setup:
+One call, no state, no agent loop:
 
 ```typescript
 import { generateText } from '@framers/agentos';
 
 const { text } = await generateText({
   provider: 'openai',
+  model: 'gpt-4o',
+  apiKey: process.env.OPENAI_API_KEY,
   prompt: 'Explain the TCP three-way handshake in three bullet points.',
 });
 
@@ -156,7 +238,8 @@ import { streamText } from '@framers/agentos';
 
 const stream = streamText({
   provider: 'anthropic',
-  model: 'claude-sonnet-4-20250514',
+  model: 'claude-sonnet-4-6',
+  apiKey: process.env.ANTHROPIC_API_KEY,
   prompt: 'Write a haiku about distributed systems.',
 });
 
@@ -169,15 +252,18 @@ for await (const chunk of stream.textStream) {
 
 ## Level 2 — Stateful Agent Session
 
-Three lines to create a multi-turn assistant that remembers context:
+`agent()` adds the loop, sessions, working memory, and tool calling on top of a Level 1 call:
 
 ```typescript
 import { agent } from '@framers/agentos';
 
 const assistant = agent({
   provider: 'openai',
+  model: 'gpt-4o',
+  apiKey: process.env.OPENAI_API_KEY,
   instructions: 'You are a helpful coding assistant.',
 });
+
 const session = assistant.session('my-session');
 const reply = await session.send('What is a closure in JavaScript?');
 
@@ -192,24 +278,28 @@ console.log(followUp.text);
 
 ## Level 3 — Multi-Agent Agency
 
-Five lines to orchestrate a team of specialized agents:
+`agency()` coordinates a team of agents under a chosen strategy:
 
 ```typescript
 import { agency } from '@framers/agentos';
 
 const team = agency({
   provider: 'openai',
+  model: 'gpt-4o',
+  apiKey: process.env.OPENAI_API_KEY,
   strategy: 'sequential',
   agents: {
     researcher: { instructions: 'Find key facts about the topic.' },
-    writer: { instructions: 'Synthesize the facts into a clear summary.' },
-    reviewer: { instructions: 'Check for accuracy and suggest improvements.' },
+    writer:     { instructions: 'Synthesize the facts into a clear summary.' },
+    reviewer:   { instructions: 'Check for accuracy and suggest improvements.' },
   },
 });
 
 const result = await team.generate('Explain how large language models work.');
 console.log(result.text);
 ```
+
+Per-agent overrides: any sub-agent in the `agents` map can declare its own `provider`, `model`, and `apiKey` to route specific roles to specific models (for example, a `gpt-5-mini` reviewer with a `claude-sonnet-4-6` researcher).
 
 ---
 
@@ -276,7 +366,7 @@ console.log('Summary:', summary);
 // ── Step 2: Stateful session with tool-enabled agent ───────────────────────
 const coder = agent({
   provider: 'anthropic',
-  model: 'claude-sonnet-4-20250514',
+  model: 'claude-sonnet-4-5-20250929',
   instructions: 'You are an expert TypeScript developer.',
   maxSteps: 4,
 });
