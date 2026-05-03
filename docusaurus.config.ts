@@ -30,7 +30,10 @@ const config: Config = {
   organizationName: 'framersai',
   projectName: 'agentos-live-docs',
   onBrokenLinks: guidesOnly ? 'ignore' : strictDocs ? 'throw' : 'warn',
-  clientModules: [require.resolve('./src/mermaid-zoom.js')],
+  clientModules: [
+    require.resolve('./src/mermaid-zoom.js'),
+    require.resolve('./src/logo-scroll-to-top.js'),
+  ],
   trailingSlash: false,
 
   headTags: [

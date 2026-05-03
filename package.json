@@ -14,6 +14,7 @@
     "docusaurus": "docusaurus",
     "start": "docusaurus start",
     "build": "docusaurus build",
+    "postbuild": "node scripts/inject-sitemap-stylesheet.mjs",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "swizzle": "docusaurus swizzle",
     "deploy": "docusaurus deploy",
