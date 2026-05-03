@@ -343,7 +343,21 @@ const config: Config = {
           lastmod: null,
           changefreq: 'weekly',
           priority: 0.5,
-          ignorePatterns: ['/tags/**'],
+          ignorePatterns: [
+            '/tags/**',
+            // 404 + search are always-empty / always-stale — they crowd the
+            // sitemap without helping Google rank anything.
+            '/404',
+            '/search',
+            '/search/**',
+            // TypeDoc emits a full page tree for every re-exported namespace
+            // — most usefully `z` (zod), which contributes ~1350 URLs to the
+            // sitemap (~40% of total, all auto-generated cross-references).
+            // Google rate-limits indexing on sites that look noisy. Filter
+            // the namespace tree out so the real API surface ranks.
+            '/api/*/namespaces/**',
+            '/api/@framers/namespaces/**',
+          ],
           filename: 'sitemap.xml',
         },
       } satisfies Preset.Options,
