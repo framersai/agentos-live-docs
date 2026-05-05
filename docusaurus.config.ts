@@ -408,6 +408,7 @@ const config: Config = {
             { label: 'Voice Pipeline', to: '/features/voice-pipeline' },
             { label: 'Extensions', to: '/extensions' },
             { label: 'Skills', to: '/skills' },
+            { label: 'Paracosm', to: '/features/paracosm' },
             {
               label: '─── Architecture ───',
               to: '/architecture/system-architecture',
