@@ -1,6 +1,6 @@
 # Interface: ExecutionRequest
 
-Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:70](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/sandbox/executor/ICodeSandbox.ts#L70)
+Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:85](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/sandbox/executor/ICodeSandbox.ts#L85)
 
 Request to execute code in the sandbox.
 
@@ -10,7 +10,7 @@ Request to execute code in the sandbox.
 
 > `optional` **args**: `string`[]
 
-Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:80](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/sandbox/executor/ICodeSandbox.ts#L80)
+Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:95](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/sandbox/executor/ICodeSandbox.ts#L95)
 
 Command-line arguments
 
@@ -20,7 +20,7 @@ Command-line arguments
 
 > **code**: `string`
 
-Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:76](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/sandbox/executor/ICodeSandbox.ts#L76)
+Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:91](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/sandbox/executor/ICodeSandbox.ts#L91)
 
 Code to execute
 
@@ -30,7 +30,7 @@ Code to execute
 
 > `optional` **config**: `Partial`\<[`SandboxConfig`](SandboxConfig.md)\>
 
-Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:84](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/sandbox/executor/ICodeSandbox.ts#L84)
+Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:99](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/sandbox/executor/ICodeSandbox.ts#L99)
 
 Sandbox configuration overrides
 
@@ -40,7 +40,7 @@ Sandbox configuration overrides
 
 > `optional` **executionId**: `string`
 
-Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:72](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/sandbox/executor/ICodeSandbox.ts#L72)
+Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:87](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/sandbox/executor/ICodeSandbox.ts#L87)
 
 Unique execution ID
 
@@ -50,7 +50,7 @@ Unique execution ID
 
 > `optional` **files**: [`SandboxFile`](SandboxFile.md)[]
 
-Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:82](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/sandbox/executor/ICodeSandbox.ts#L82)
+Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:97](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/sandbox/executor/ICodeSandbox.ts#L97)
 
 Input files
 
@@ -60,7 +60,7 @@ Input files
 
 > **language**: [`SandboxLanguage`](../type-aliases/SandboxLanguage.md)
 
-Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:74](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/sandbox/executor/ICodeSandbox.ts#L74)
+Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:89](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/sandbox/executor/ICodeSandbox.ts#L89)
 
 Programming language
 
@@ -70,7 +70,7 @@ Programming language
 
 > `optional` **metadata**: `Record`\<`string`, `unknown`\>
 
-Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:86](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/sandbox/executor/ICodeSandbox.ts#L86)
+Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:101](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/sandbox/executor/ICodeSandbox.ts#L101)
 
 Metadata for tracking
 
@@ -80,6 +80,6 @@ Metadata for tracking
 
 > `optional` **stdin**: `string`
 
-Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:78](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/sandbox/executor/ICodeSandbox.ts#L78)
+Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:93](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/sandbox/executor/ICodeSandbox.ts#L93)
 
 Input data (stdin)

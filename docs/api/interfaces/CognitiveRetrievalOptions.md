@@ -1,6 +1,6 @@
 # Interface: CognitiveRetrievalOptions
 
-Defined in: [packages/agentos/src/memory/core/types.ts:190](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/types.ts#L190)
+Defined in: [packages/agentos/src/memory/core/types.ts:191](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L191)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/memory/core/types.ts:190](https://github.com/f
 
 > `optional` **entities**: `string`[]
 
-Defined in: [packages/agentos/src/memory/core/types.ts:195](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/types.ts#L195)
+Defined in: [packages/agentos/src/memory/core/types.ts:196](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L196)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [packages/agentos/src/memory/core/types.ts:195](https://github.com/f
 
 > `optional` **hyde**: `boolean`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:214](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/types.ts#L214)
+Defined in: [packages/agentos/src/memory/core/types.ts:215](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L215)
 
 Enable HyDE (Hypothetical Document Embedding) for memory retrieval.
 
@@ -41,7 +41,7 @@ false
 
 > `optional` **minConfidence**: `number`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:196](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/types.ts#L196)
+Defined in: [packages/agentos/src/memory/core/types.ts:197](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L197)
 
 ***
 
@@ -49,7 +49,7 @@ Defined in: [packages/agentos/src/memory/core/types.ts:196](https://github.com/f
 
 > `optional` **neutralMood**: `boolean`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:199](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/types.ts#L199)
+Defined in: [packages/agentos/src/memory/core/types.ts:200](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L200)
 
 If true, skip emotional congruence bias (useful for factual lookups).
 
@@ -59,7 +59,7 @@ If true, skip emotional congruence bias (useful for factual lookups).
 
 > `optional` **policy**: [`MemoryRetrievalPolicy`](MemoryRetrievalPolicy.md)
 
-Defined in: [packages/agentos/src/memory/core/types.ts:216](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/types.ts#L216)
+Defined in: [packages/agentos/src/memory/core/types.ts:217](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L217)
 
 Shared retrieval profile and confidence policy.
 
@@ -69,7 +69,7 @@ Shared retrieval profile and confidence policy.
 
 > `optional` **scopes**: `object`[]
 
-Defined in: [packages/agentos/src/memory/core/types.ts:193](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/types.ts#L193)
+Defined in: [packages/agentos/src/memory/core/types.ts:194](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L194)
 
 #### scope
 
@@ -85,7 +85,7 @@ Defined in: [packages/agentos/src/memory/core/types.ts:193](https://github.com/f
 
 > `optional` **scoringWeights**: `Partial`\<[`ScoringWeights`](ScoringWeights.md)\>
 
-Defined in: [packages/agentos/src/memory/core/types.ts:224](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/types.ts#L224)
+Defined in: [packages/agentos/src/memory/core/types.ts:225](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L225)
 
 Override the 6-signal retrieval weights for this call. Missing
 keys fall back to [DEFAULT\_SCORING\_WEIGHTS](../variables/DEFAULT_SCORING_WEIGHTS.md). Useful for
@@ -99,7 +99,7 @@ without mutating global defaults.
 
 > `optional` **tags**: `string`[]
 
-Defined in: [packages/agentos/src/memory/core/types.ts:194](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/types.ts#L194)
+Defined in: [packages/agentos/src/memory/core/types.ts:195](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L195)
 
 ***
 
@@ -107,7 +107,7 @@ Defined in: [packages/agentos/src/memory/core/types.ts:194](https://github.com/f
 
 > `optional` **timeRange**: `object`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:197](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/types.ts#L197)
+Defined in: [packages/agentos/src/memory/core/types.ts:198](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L198)
 
 #### after?
 
@@ -123,7 +123,7 @@ Defined in: [packages/agentos/src/memory/core/types.ts:197](https://github.com/f
 
 > `optional` **topK**: `number`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:191](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/types.ts#L191)
+Defined in: [packages/agentos/src/memory/core/types.ts:192](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L192)
 
 ***
 
@@ -131,4 +131,4 @@ Defined in: [packages/agentos/src/memory/core/types.ts:191](https://github.com/f
 
 > `optional` **types**: [`MemoryType`](../type-aliases/MemoryType.md)[]
 
-Defined in: [packages/agentos/src/memory/core/types.ts:192](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/types.ts#L192)
+Defined in: [packages/agentos/src/memory/core/types.ts:193](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L193)

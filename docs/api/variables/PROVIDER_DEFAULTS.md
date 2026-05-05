@@ -2,7 +2,7 @@
 
 > `const` **PROVIDER\_DEFAULTS**: `Record`\<`string`, [`ProviderDefaults`](../interfaces/ProviderDefaults.md)\>
 
-Defined in: [packages/agentos/src/api/runtime/provider-defaults.ts:36](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/runtime/provider-defaults.ts#L36)
+Defined in: [packages/agentos/src/api/runtime/provider-defaults.ts:37](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/runtime/provider-defaults.ts#L37)
 
 Registry of default models per provider, keyed by provider identifier.
 

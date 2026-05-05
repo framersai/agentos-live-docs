@@ -2,7 +2,7 @@
 
 > **calculateRemainingPercentage**(`info`): `number` \| `null`
 
-Defined in: [packages/agentos/src/core/rate-limiting/types.ts:78](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/core/rate-limiting/types.ts#L78)
+Defined in: [packages/agentos/src/core/rate-limiting/types.ts:78](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/core/rate-limiting/types.ts#L78)
 
 Calculate remaining percentage from rate limit info.
 

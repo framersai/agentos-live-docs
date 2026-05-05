@@ -1,6 +1,6 @@
 # Interface: SimulationInitOverrides
 
-Defined in: [apps/paracosm/src/engine/core/kernel.ts:23](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/core/kernel.ts#L23)
+Defined in: [apps/paracosm/src/engine/core/kernel.ts:77](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/core/kernel.ts#L77)
 
 ## Properties
 
@@ -8,7 +8,28 @@ Defined in: [apps/paracosm/src/engine/core/kernel.ts:23](https://github.com/fram
 
 > `optional` **initialPopulation**: `number`
 
-Defined in: [apps/paracosm/src/engine/core/kernel.ts:25](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/core/kernel.ts#L25)
+Defined in: [apps/paracosm/src/engine/core/kernel.ts:79](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/core/kernel.ts#L79)
+
+***
+
+### scenario?
+
+> `optional` **scenario**: [`ScenarioPackage`](ScenarioPackage.md)
+
+Defined in: [apps/paracosm/src/engine/core/kernel.ts:86](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/core/kernel.ts#L86)
+
+Source for scenario-declared world bag initials. When present, the
+kernel seeds each runtime bag from `scenario.world.*` before
+applying the explicit overlay fields below. Absent → Mars-heritage
+hardcoded defaults only.
+
+***
+
+### startingEnvironment?
+
+> `optional` **startingEnvironment**: `Record`\<`string`, `string` \| `number` \| `boolean`\>
+
+Defined in: [apps/paracosm/src/engine/core/kernel.ts:90](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/core/kernel.ts#L90)
 
 ***
 
@@ -16,20 +37,28 @@ Defined in: [apps/paracosm/src/engine/core/kernel.ts:25](https://github.com/fram
 
 > `optional` **startingPolitics**: `Partial`\<[`WorldPolitics`](WorldPolitics.md)\>
 
-Defined in: [apps/paracosm/src/engine/core/kernel.ts:27](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/core/kernel.ts#L27)
+Defined in: [apps/paracosm/src/engine/core/kernel.ts:88](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/core/kernel.ts#L88)
 
 ***
 
 ### startingResources?
 
-> `optional` **startingResources**: `Partial`\<[`WorldSystems`](WorldSystems.md)\>
+> `optional` **startingResources**: `Partial`\<[`WorldMetrics`](WorldMetrics.md)\>
 
-Defined in: [apps/paracosm/src/engine/core/kernel.ts:26](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/core/kernel.ts#L26)
+Defined in: [apps/paracosm/src/engine/core/kernel.ts:87](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/core/kernel.ts#L87)
 
 ***
 
-### startYear?
+### startingStatuses?
 
-> `optional` **startYear**: `number`
+> `optional` **startingStatuses**: `Record`\<`string`, `string` \| `boolean`\>
 
-Defined in: [apps/paracosm/src/engine/core/kernel.ts:24](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/core/kernel.ts#L24)
+Defined in: [apps/paracosm/src/engine/core/kernel.ts:89](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/core/kernel.ts#L89)
+
+***
+
+### startTime?
+
+> `optional` **startTime**: `number`
+
+Defined in: [apps/paracosm/src/engine/core/kernel.ts:78](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/core/kernel.ts#L78)

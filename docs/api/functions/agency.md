@@ -2,7 +2,7 @@
 
 > **agency**(`opts`): `Agent`
 
-Defined in: [packages/agentos/src/api/agency.ts:77](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/agency.ts#L77)
+Defined in: [packages/agentos/src/api/agency.ts:109](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/agency.ts#L109)
 
 Creates a multi-agent agency that coordinates a named roster of sub-agents
 using the specified orchestration strategy.

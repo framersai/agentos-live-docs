@@ -2,7 +2,7 @@
 
 > **VisionContentCategory** = `"printed-text"` \| `"handwritten"` \| `"document-layout"` \| `"photograph"` \| `"diagram"` \| `"screenshot"` \| `"mixed"`
 
-Defined in: [packages/agentos/src/vision/types.ts:57](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/vision/types.ts#L57)
+Defined in: [packages/agentos/src/vision/types.ts:57](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/vision/types.ts#L57)
 
 What kind of visual content the pipeline detected or was told to expect.
 

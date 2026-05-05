@@ -47,6 +47,12 @@
 
 ## References
 
+### ActorConfig
+
+Re-exports [ActorConfig](../engine/interfaces/ActorConfig.md)
+
+***
+
 ### CostPreset
 
 Re-exports [CostPreset](../engine/type-aliases/CostPreset.md)
@@ -56,12 +62,6 @@ Re-exports [CostPreset](../engine/type-aliases/CostPreset.md)
 ### createParacosmClient
 
 Re-exports [createParacosmClient](../engine/functions/createParacosmClient.md)
-
-***
-
-### LeaderConfig
-
-Re-exports [LeaderConfig](../engine/interfaces/LeaderConfig.md)
 
 ***
 

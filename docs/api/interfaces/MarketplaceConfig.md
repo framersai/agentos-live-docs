@@ -1,6 +1,6 @@
 # Interface: MarketplaceConfig
 
-Defined in: [packages/agentos/src/marketplace/store/Marketplace.ts:32](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/marketplace/store/Marketplace.ts#L32)
+Defined in: [packages/agentos/src/marketplace/store/Marketplace.ts:32](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/marketplace/store/Marketplace.ts#L32)
 
 Configuration for Marketplace
 
@@ -10,7 +10,7 @@ Configuration for Marketplace
 
 > `optional` **logger**: [`ILogger`](ILogger.md)
 
-Defined in: [packages/agentos/src/marketplace/store/Marketplace.ts:34](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/marketplace/store/Marketplace.ts#L34)
+Defined in: [packages/agentos/src/marketplace/store/Marketplace.ts:34](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/marketplace/store/Marketplace.ts#L34)
 
 Logger instance
 
@@ -20,6 +20,6 @@ Logger instance
 
 > `optional` **userId**: `string`
 
-Defined in: [packages/agentos/src/marketplace/store/Marketplace.ts:36](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/marketplace/store/Marketplace.ts#L36)
+Defined in: [packages/agentos/src/marketplace/store/Marketplace.ts:36](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/marketplace/store/Marketplace.ts#L36)
 
 Current user ID (for installations/reviews)

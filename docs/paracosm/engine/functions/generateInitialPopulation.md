@@ -1,8 +1,8 @@
 # Function: generateInitialPopulation()
 
-> **generateInitialPopulation**(`seed`, `startYear`, `keyPersonnel`, `totalPopulation?`): [`Agent`](../interfaces/Agent.md)[]
+> **generateInitialPopulation**(`seed`, `startTime`, `keyPersonnel`, `totalPopulation?`): [`Agent`](../interfaces/Agent.md)[]
 
-Defined in: [apps/paracosm/src/engine/core/agent-generator.ts:63](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/core/agent-generator.ts#L63)
+Defined in: [apps/paracosm/src/engine/core/agent-generator.ts:63](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/core/agent-generator.ts#L63)
 
 ## Parameters
 
@@ -10,7 +10,7 @@ Defined in: [apps/paracosm/src/engine/core/agent-generator.ts:63](https://github
 
 `number`
 
-### startYear
+### startTime
 
 `number`
 

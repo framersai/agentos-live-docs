@@ -2,7 +2,7 @@
 
 > **convertPcmToMulaw8k**(`pcmBuffer`, `sampleRate`): `Buffer`
 
-Defined in: [packages/agentos/src/channels/telephony/telephony-audio.ts:69](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/channels/telephony/telephony-audio.ts#L69)
+Defined in: [packages/agentos/src/channels/telephony/telephony-audio.ts:69](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/channels/telephony/telephony-audio.ts#L69)
 
 Convert PCM audio buffer to mu-law 8kHz mono format for telephony.
 

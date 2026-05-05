@@ -1,6 +1,6 @@
 # Interface: CorpusChunk
 
-Defined in: [packages/agentos/src/query-router/types.ts:1215](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/query-router/types.ts#L1215)
+Defined in: [packages/agentos/src/query-router/types.ts:1215](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/query-router/types.ts#L1215)
 
 A chunk of corpus content with optional pre-computed embedding.
 Used during corpus ingestion into the vector store.
@@ -11,7 +11,7 @@ Used during corpus ingestion into the vector store.
 
 > **content**: `string`
 
-Defined in: [packages/agentos/src/query-router/types.ts:1220](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/query-router/types.ts#L1220)
+Defined in: [packages/agentos/src/query-router/types.ts:1220](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/query-router/types.ts#L1220)
 
 The text content of the chunk.
 
@@ -21,7 +21,7 @@ The text content of the chunk.
 
 > `optional` **embedding**: `number`[]
 
-Defined in: [packages/agentos/src/query-router/types.ts:1232](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/query-router/types.ts#L1232)
+Defined in: [packages/agentos/src/query-router/types.ts:1232](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/query-router/types.ts#L1232)
 
 Pre-computed embedding vector. When present, the ingestion pipeline
 can skip embedding generation for this chunk.
@@ -32,7 +32,7 @@ can skip embedding generation for this chunk.
 
 > **heading**: `string`
 
-Defined in: [packages/agentos/src/query-router/types.ts:1223](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/query-router/types.ts#L1223)
+Defined in: [packages/agentos/src/query-router/types.ts:1223](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/query-router/types.ts#L1223)
 
 Section heading or title the chunk belongs to.
 
@@ -42,7 +42,7 @@ Section heading or title the chunk belongs to.
 
 > **id**: `string`
 
-Defined in: [packages/agentos/src/query-router/types.ts:1217](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/query-router/types.ts#L1217)
+Defined in: [packages/agentos/src/query-router/types.ts:1217](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/query-router/types.ts#L1217)
 
 Unique identifier for the chunk.
 
@@ -52,6 +52,6 @@ Unique identifier for the chunk.
 
 > **sourcePath**: `string`
 
-Defined in: [packages/agentos/src/query-router/types.ts:1226](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/query-router/types.ts#L1226)
+Defined in: [packages/agentos/src/query-router/types.ts:1226](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/query-router/types.ts#L1226)
 
 File path or document source path this chunk was extracted from.

@@ -4,6 +4,6886 @@ const typedocSidebar = {
   items: [
     {
       type: "category",
+      label: "Namespaces",
+      items: [
+        {
+          type: "category",
+          label: "z",
+          items: [
+            {
+              type: "category",
+              label: "Namespaces",
+              items: [
+                {
+                  type: "category",
+                  label: "coerce",
+                  items: [
+                    {
+                      type: "category",
+                      label: "Functions",
+                      items: [
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/coerce/functions/bigint",
+                          label: "bigint"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/coerce/functions/boolean",
+                          label: "boolean"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/coerce/functions/date",
+                          label: "date"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/coerce/functions/number",
+                          label: "number"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/coerce/functions/string",
+                          label: "string"
+                        }
+                      ]
+                    }
+                  ],
+                  link: {
+                    type: "doc",
+                    id: "api/@framers/namespaces/z/namespaces/coerce/index"
+                  }
+                },
+                {
+                  type: "category",
+                  label: "core",
+                  items: [
+                    {
+                      type: "category",
+                      label: "Namespaces",
+                      items: [
+                        {
+                          type: "category",
+                          label: "JSONSchema",
+                          items: [
+                            {
+                              type: "category",
+                              label: "Interfaces",
+                              items: [
+                                {
+                                  type: "doc",
+                                  id: "api/@framers/namespaces/z/namespaces/core/namespaces/JSONSchema/interfaces/ArraySchema",
+                                  label: "ArraySchema"
+                                },
+                                {
+                                  type: "doc",
+                                  id: "api/@framers/namespaces/z/namespaces/core/namespaces/JSONSchema/interfaces/BooleanSchema",
+                                  label: "BooleanSchema"
+                                },
+                                {
+                                  type: "doc",
+                                  id: "api/@framers/namespaces/z/namespaces/core/namespaces/JSONSchema/interfaces/IntegerSchema",
+                                  label: "IntegerSchema"
+                                },
+                                {
+                                  type: "doc",
+                                  id: "api/@framers/namespaces/z/namespaces/core/namespaces/JSONSchema/interfaces/NullSchema",
+                                  label: "NullSchema"
+                                },
+                                {
+                                  type: "doc",
+                                  id: "api/@framers/namespaces/z/namespaces/core/namespaces/JSONSchema/interfaces/NumberSchema",
+                                  label: "NumberSchema"
+                                },
+                                {
+                                  type: "doc",
+                                  id: "api/@framers/namespaces/z/namespaces/core/namespaces/JSONSchema/interfaces/ObjectSchema",
+                                  label: "ObjectSchema"
+                                },
+                                {
+                                  type: "doc",
+                                  id: "api/@framers/namespaces/z/namespaces/core/namespaces/JSONSchema/interfaces/StringSchema",
+                                  label: "StringSchema"
+                                }
+                              ]
+                            },
+                            {
+                              type: "category",
+                              label: "Type Aliases",
+                              items: [
+                                {
+                                  type: "doc",
+                                  id: "api/@framers/namespaces/z/namespaces/core/namespaces/JSONSchema/type-aliases/JSONSchema",
+                                  label: "_JSONSchema"
+                                },
+                                {
+                                  type: "doc",
+                                  id: "api/@framers/namespaces/z/namespaces/core/namespaces/JSONSchema/type-aliases/BaseSchema",
+                                  label: "BaseSchema"
+                                },
+                                {
+                                  type: "doc",
+                                  id: "api/@framers/namespaces/z/namespaces/core/namespaces/JSONSchema/type-aliases/JSONSchema-1",
+                                  label: "JSONSchema"
+                                },
+                                {
+                                  type: "doc",
+                                  id: "api/@framers/namespaces/z/namespaces/core/namespaces/JSONSchema/type-aliases/Schema",
+                                  label: "Schema"
+                                }
+                              ]
+                            }
+                          ],
+                          link: {
+                            type: "doc",
+                            id: "api/@framers/namespaces/z/namespaces/core/namespaces/JSONSchema/index"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      type: "category",
+                      label: "Classes",
+                      items: [
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/classes/$ZodAsyncError",
+                          label: "$ZodAsyncError"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/classes/$ZodEncodeError",
+                          label: "$ZodEncodeError"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/classes/$ZodRegistry",
+                          label: "$ZodRegistry"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/classes/Doc",
+                          label: "Doc"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/classes/JSONSchemaGenerator",
+                          label: "JSONSchemaGenerator",
+                          className: "typedoc-sidebar-item-deprecated"
+                        }
+                      ]
+                    },
+                    {
+                      type: "category",
+                      label: "Interfaces",
+                      items: [
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodType",
+                          label: "_$ZodType"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodTypeInternals",
+                          label: "_$ZodTypeInternals"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$constructor",
+                          label: "$constructor"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$RefinementCtx",
+                          label: "$RefinementCtx"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodAny",
+                          label: "$ZodAny"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodAnyDef",
+                          label: "$ZodAnyDef"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodAnyInternals",
+                          label: "$ZodAnyInternals"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodArray",
+                          label: "$ZodArray"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodArrayDef",
+                          label: "$ZodArrayDef"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodArrayInternals",
+                          label: "$ZodArrayInternals"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodBase64",
+                          label: "$ZodBase64"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodBase64Def",
+                          label: "$ZodBase64Def"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodBase64Internals",
+                          label: "$ZodBase64Internals"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodBase64URL",
+                          label: "$ZodBase64URL"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodBase64URLDef",
+                          label: "$ZodBase64URLDef"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodBase64URLInternals",
+                          label: "$ZodBase64URLInternals"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodBigInt",
+                          label: "$ZodBigInt"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodBigIntDef",
+                          label: "$ZodBigIntDef"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodBigIntFormat",
+                          label: "$ZodBigIntFormat"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodBigIntFormatDef",
+                          label: "$ZodBigIntFormatDef"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodBigIntFormatInternals",
+                          label: "$ZodBigIntFormatInternals"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodBigIntInternals",
+                          label: "$ZodBigIntInternals"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodBoolean",
+                          label: "$ZodBoolean"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodBooleanDef",
+                          label: "$ZodBooleanDef"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodBooleanInternals",
+                          label: "$ZodBooleanInternals"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodCatch",
+                          label: "$ZodCatch"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodCatchCtx",
+                          label: "$ZodCatchCtx"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodCatchDef",
+                          label: "$ZodCatchDef"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodCatchInternals",
+                          label: "$ZodCatchInternals"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodCheck",
+                          label: "$ZodCheck"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodCheckBigIntFormat",
+                          label: "$ZodCheckBigIntFormat"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodCheckBigIntFormatDef",
+                          label: "$ZodCheckBigIntFormatDef"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodCheckBigIntFormatInternals",
+                          label: "$ZodCheckBigIntFormatInternals"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodCheckDef",
+                          label: "$ZodCheckDef"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodCheckEndsWith",
+                          label: "$ZodCheckEndsWith"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodCheckEndsWithDef",
+                          label: "$ZodCheckEndsWithDef"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodCheckEndsWithInternals",
+                          label: "$ZodCheckEndsWithInternals"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodCheckGreaterThan",
+                          label: "$ZodCheckGreaterThan"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodCheckGreaterThanDef",
+                          label: "$ZodCheckGreaterThanDef"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodCheckGreaterThanInternals",
+                          label: "$ZodCheckGreaterThanInternals"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodCheckIncludes",
+                          label: "$ZodCheckIncludes"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodCheckIncludesDef",
+                          label: "$ZodCheckIncludesDef"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodCheckIncludesInternals",
+                          label: "$ZodCheckIncludesInternals"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodCheckInternals",
+                          label: "$ZodCheckInternals"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodCheckLengthEquals",
+                          label: "$ZodCheckLengthEquals"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodCheckLengthEqualsDef",
+                          label: "$ZodCheckLengthEqualsDef"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodCheckLengthEqualsInternals",
+                          label: "$ZodCheckLengthEqualsInternals"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodCheckLessThan",
+                          label: "$ZodCheckLessThan"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodCheckLessThanDef",
+                          label: "$ZodCheckLessThanDef"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodCheckLessThanInternals",
+                          label: "$ZodCheckLessThanInternals"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodCheckLowerCase",
+                          label: "$ZodCheckLowerCase"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodCheckLowerCaseDef",
+                          label: "$ZodCheckLowerCaseDef"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodCheckLowerCaseInternals",
+                          label: "$ZodCheckLowerCaseInternals"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodCheckMaxLength",
+                          label: "$ZodCheckMaxLength"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodCheckMaxLengthDef",
+                          label: "$ZodCheckMaxLengthDef"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodCheckMaxLengthInternals",
+                          label: "$ZodCheckMaxLengthInternals"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodCheckMaxSize",
+                          label: "$ZodCheckMaxSize"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodCheckMaxSizeDef",
+                          label: "$ZodCheckMaxSizeDef"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodCheckMaxSizeInternals",
+                          label: "$ZodCheckMaxSizeInternals"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodCheckMimeType",
+                          label: "$ZodCheckMimeType"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodCheckMimeTypeDef",
+                          label: "$ZodCheckMimeTypeDef"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodCheckMimeTypeInternals",
+                          label: "$ZodCheckMimeTypeInternals"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodCheckMinLength",
+                          label: "$ZodCheckMinLength"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodCheckMinLengthDef",
+                          label: "$ZodCheckMinLengthDef"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodCheckMinLengthInternals",
+                          label: "$ZodCheckMinLengthInternals"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodCheckMinSize",
+                          label: "$ZodCheckMinSize"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodCheckMinSizeDef",
+                          label: "$ZodCheckMinSizeDef"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodCheckMinSizeInternals",
+                          label: "$ZodCheckMinSizeInternals"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodCheckMultipleOf",
+                          label: "$ZodCheckMultipleOf"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodCheckMultipleOfDef",
+                          label: "$ZodCheckMultipleOfDef"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodCheckMultipleOfInternals",
+                          label: "$ZodCheckMultipleOfInternals"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodCheckNumberFormat",
+                          label: "$ZodCheckNumberFormat"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodCheckNumberFormatDef",
+                          label: "$ZodCheckNumberFormatDef"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodCheckNumberFormatInternals",
+                          label: "$ZodCheckNumberFormatInternals"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodCheckOverwrite",
+                          label: "$ZodCheckOverwrite"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodCheckOverwriteDef",
+                          label: "$ZodCheckOverwriteDef"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodCheckOverwriteInternals",
+                          label: "$ZodCheckOverwriteInternals"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodCheckProperty",
+                          label: "$ZodCheckProperty"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodCheckPropertyDef",
+                          label: "$ZodCheckPropertyDef"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodCheckPropertyInternals",
+                          label: "$ZodCheckPropertyInternals"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodCheckRegex",
+                          label: "$ZodCheckRegex"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodCheckRegexDef",
+                          label: "$ZodCheckRegexDef"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodCheckRegexInternals",
+                          label: "$ZodCheckRegexInternals"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodCheckSizeEquals",
+                          label: "$ZodCheckSizeEquals"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodCheckSizeEqualsDef",
+                          label: "$ZodCheckSizeEqualsDef"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodCheckSizeEqualsInternals",
+                          label: "$ZodCheckSizeEqualsInternals"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodCheckStartsWith",
+                          label: "$ZodCheckStartsWith"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodCheckStartsWithDef",
+                          label: "$ZodCheckStartsWithDef"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodCheckStartsWithInternals",
+                          label: "$ZodCheckStartsWithInternals"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodCheckStringFormat",
+                          label: "$ZodCheckStringFormat"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodCheckStringFormatDef",
+                          label: "$ZodCheckStringFormatDef"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodCheckStringFormatInternals",
+                          label: "$ZodCheckStringFormatInternals"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodCheckUpperCase",
+                          label: "$ZodCheckUpperCase"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodCheckUpperCaseDef",
+                          label: "$ZodCheckUpperCaseDef"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodCheckUpperCaseInternals",
+                          label: "$ZodCheckUpperCaseInternals"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodCIDRv4",
+                          label: "$ZodCIDRv4"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodCIDRv4Def",
+                          label: "$ZodCIDRv4Def"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodCIDRv4Internals",
+                          label: "$ZodCIDRv4Internals"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodCIDRv6",
+                          label: "$ZodCIDRv6"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodCIDRv6Def",
+                          label: "$ZodCIDRv6Def"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodCIDRv6Internals",
+                          label: "$ZodCIDRv6Internals"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodCodec",
+                          label: "$ZodCodec"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodCodecDef",
+                          label: "$ZodCodecDef"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodCodecInternals",
+                          label: "$ZodCodecInternals"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodConfig",
+                          label: "$ZodConfig"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodCUID",
+                          label: "$ZodCUID"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodCUID2",
+                          label: "$ZodCUID2"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodCUID2Def",
+                          label: "$ZodCUID2Def"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodCUID2Internals",
+                          label: "$ZodCUID2Internals"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodCUIDDef",
+                          label: "$ZodCUIDDef"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodCUIDInternals",
+                          label: "$ZodCUIDInternals"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodCustom",
+                          label: "$ZodCustom"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodCustomDef",
+                          label: "$ZodCustomDef"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodCustomInternals",
+                          label: "$ZodCustomInternals"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodCustomStringFormat",
+                          label: "$ZodCustomStringFormat"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodCustomStringFormatDef",
+                          label: "$ZodCustomStringFormatDef"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodCustomStringFormatInternals",
+                          label: "$ZodCustomStringFormatInternals"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodDate",
+                          label: "$ZodDate"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodDateDef",
+                          label: "$ZodDateDef"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodDateInternals",
+                          label: "$ZodDateInternals"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodDefault",
+                          label: "$ZodDefault"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodDefaultDef",
+                          label: "$ZodDefaultDef"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodDefaultInternals",
+                          label: "$ZodDefaultInternals"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodDiscriminatedUnion",
+                          label: "$ZodDiscriminatedUnion"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodDiscriminatedUnionDef",
+                          label: "$ZodDiscriminatedUnionDef"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodDiscriminatedUnionInternals",
+                          label: "$ZodDiscriminatedUnionInternals"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodE164",
+                          label: "$ZodE164"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodE164Def",
+                          label: "$ZodE164Def"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodE164Internals",
+                          label: "$ZodE164Internals"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodEmail",
+                          label: "$ZodEmail"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodEmailDef",
+                          label: "$ZodEmailDef"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodEmailInternals",
+                          label: "$ZodEmailInternals"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodEmoji",
+                          label: "$ZodEmoji"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodEmojiDef",
+                          label: "$ZodEmojiDef"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodEmojiInternals",
+                          label: "$ZodEmojiInternals"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodEnum",
+                          label: "$ZodEnum"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodEnumDef",
+                          label: "$ZodEnumDef"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodEnumInternals",
+                          label: "$ZodEnumInternals"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodError",
+                          label: "$ZodError"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodErrorMap",
+                          label: "$ZodErrorMap"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodExactOptional",
+                          label: "$ZodExactOptional"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodExactOptionalDef",
+                          label: "$ZodExactOptionalDef"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodExactOptionalInternals",
+                          label: "$ZodExactOptionalInternals"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodFile",
+                          label: "$ZodFile"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodFileDef",
+                          label: "$ZodFileDef"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodFileInternals",
+                          label: "$ZodFileInternals"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodFunction",
+                          label: "$ZodFunction"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodFunctionDef",
+                          label: "$ZodFunctionDef"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodFunctionInternals",
+                          label: "$ZodFunctionInternals"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodFunctionParams",
+                          label: "$ZodFunctionParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodGUID",
+                          label: "$ZodGUID"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodGUIDDef",
+                          label: "$ZodGUIDDef"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodGUIDInternals",
+                          label: "$ZodGUIDInternals"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodIntersection",
+                          label: "$ZodIntersection"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodIntersectionDef",
+                          label: "$ZodIntersectionDef"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodIntersectionInternals",
+                          label: "$ZodIntersectionInternals"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodIPv4",
+                          label: "$ZodIPv4"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodIPv4Def",
+                          label: "$ZodIPv4Def"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodIPv4Internals",
+                          label: "$ZodIPv4Internals"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodIPv6",
+                          label: "$ZodIPv6"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodIPv6Def",
+                          label: "$ZodIPv6Def"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodIPv6Internals",
+                          label: "$ZodIPv6Internals"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodISODate",
+                          label: "$ZodISODate"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodISODateDef",
+                          label: "$ZodISODateDef"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodISODateInternals",
+                          label: "$ZodISODateInternals"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodISODateTime",
+                          label: "$ZodISODateTime"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodISODateTimeDef",
+                          label: "$ZodISODateTimeDef"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodISODateTimeInternals",
+                          label: "$ZodISODateTimeInternals"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodISODuration",
+                          label: "$ZodISODuration"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodISODurationDef",
+                          label: "$ZodISODurationDef"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodISODurationInternals",
+                          label: "$ZodISODurationInternals"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodISOTime",
+                          label: "$ZodISOTime"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodISOTimeDef",
+                          label: "$ZodISOTimeDef"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodISOTimeInternals",
+                          label: "$ZodISOTimeInternals"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodIssueBase",
+                          label: "$ZodIssueBase"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodIssueCustom",
+                          label: "$ZodIssueCustom"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodIssueInvalidElement",
+                          label: "$ZodIssueInvalidElement"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodIssueInvalidKey",
+                          label: "$ZodIssueInvalidKey"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodIssueInvalidStringFormat",
+                          label: "$ZodIssueInvalidStringFormat"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodIssueInvalidType",
+                          label: "$ZodIssueInvalidType"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodIssueInvalidValue",
+                          label: "$ZodIssueInvalidValue"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodIssueNotMultipleOf",
+                          label: "$ZodIssueNotMultipleOf"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodIssueStringCommonFormats",
+                          label: "$ZodIssueStringCommonFormats"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodIssueStringEndsWith",
+                          label: "$ZodIssueStringEndsWith"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodIssueStringIncludes",
+                          label: "$ZodIssueStringIncludes"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodIssueStringInvalidJWT",
+                          label: "$ZodIssueStringInvalidJWT"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodIssueStringInvalidRegex",
+                          label: "$ZodIssueStringInvalidRegex"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodIssueStringStartsWith",
+                          label: "$ZodIssueStringStartsWith"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodIssueTooBig",
+                          label: "$ZodIssueTooBig"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodIssueTooSmall",
+                          label: "$ZodIssueTooSmall"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodIssueUnrecognizedKeys",
+                          label: "$ZodIssueUnrecognizedKeys"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodJWT",
+                          label: "$ZodJWT"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodJWTDef",
+                          label: "$ZodJWTDef"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodJWTInternals",
+                          label: "$ZodJWTInternals"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodKSUID",
+                          label: "$ZodKSUID"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodKSUIDDef",
+                          label: "$ZodKSUIDDef"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodKSUIDInternals",
+                          label: "$ZodKSUIDInternals"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodLazy",
+                          label: "$ZodLazy"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodLazyDef",
+                          label: "$ZodLazyDef"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodLazyInternals",
+                          label: "$ZodLazyInternals"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodLiteral",
+                          label: "$ZodLiteral"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodLiteralDef",
+                          label: "$ZodLiteralDef"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodLiteralInternals",
+                          label: "$ZodLiteralInternals"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodMAC",
+                          label: "$ZodMAC"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodMACDef",
+                          label: "$ZodMACDef"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodMACInternals",
+                          label: "$ZodMACInternals"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodMap",
+                          label: "$ZodMap"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodMapDef",
+                          label: "$ZodMapDef"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodMapInternals",
+                          label: "$ZodMapInternals"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodNaN",
+                          label: "$ZodNaN"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodNaNDef",
+                          label: "$ZodNaNDef"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodNaNInternals",
+                          label: "$ZodNaNInternals"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodNanoID",
+                          label: "$ZodNanoID"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodNanoIDDef",
+                          label: "$ZodNanoIDDef"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodNanoIDInternals",
+                          label: "$ZodNanoIDInternals"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodNever",
+                          label: "$ZodNever"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodNeverDef",
+                          label: "$ZodNeverDef"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodNeverInternals",
+                          label: "$ZodNeverInternals"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodNonOptional",
+                          label: "$ZodNonOptional"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodNonOptionalDef",
+                          label: "$ZodNonOptionalDef"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodNonOptionalInternals",
+                          label: "$ZodNonOptionalInternals"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodNull",
+                          label: "$ZodNull"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodNullable",
+                          label: "$ZodNullable"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodNullableDef",
+                          label: "$ZodNullableDef"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodNullableInternals",
+                          label: "$ZodNullableInternals"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodNullDef",
+                          label: "$ZodNullDef"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodNullInternals",
+                          label: "$ZodNullInternals"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodNumber",
+                          label: "$ZodNumber"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodNumberDef",
+                          label: "$ZodNumberDef"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodNumberFormat",
+                          label: "$ZodNumberFormat"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodNumberFormatDef",
+                          label: "$ZodNumberFormatDef"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodNumberFormatInternals",
+                          label: "$ZodNumberFormatInternals"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodNumberInternals",
+                          label: "$ZodNumberInternals"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodObject",
+                          label: "$ZodObject"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodObjectDef",
+                          label: "$ZodObjectDef"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodObjectInternals",
+                          label: "$ZodObjectInternals"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodOptional",
+                          label: "$ZodOptional"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodOptionalDef",
+                          label: "$ZodOptionalDef"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodOptionalInternals",
+                          label: "$ZodOptionalInternals"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodPipe",
+                          label: "$ZodPipe"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodPipeDef",
+                          label: "$ZodPipeDef"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodPipeInternals",
+                          label: "$ZodPipeInternals"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodPrefault",
+                          label: "$ZodPrefault"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodPrefaultDef",
+                          label: "$ZodPrefaultDef"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodPrefaultInternals",
+                          label: "$ZodPrefaultInternals"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodPromise",
+                          label: "$ZodPromise"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodPromiseDef",
+                          label: "$ZodPromiseDef"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodPromiseInternals",
+                          label: "$ZodPromiseInternals"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodReadonly",
+                          label: "$ZodReadonly"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodReadonlyDef",
+                          label: "$ZodReadonlyDef"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodReadonlyInternals",
+                          label: "$ZodReadonlyInternals"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodRecord",
+                          label: "$ZodRecord"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodRecordDef",
+                          label: "$ZodRecordDef"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodRecordInternals",
+                          label: "$ZodRecordInternals"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodSet",
+                          label: "$ZodSet"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodSetDef",
+                          label: "$ZodSetDef"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodSetInternals",
+                          label: "$ZodSetInternals"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodString",
+                          label: "$ZodString"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodStringBoolParams",
+                          label: "$ZodStringBoolParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodStringDef",
+                          label: "$ZodStringDef"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodStringFormat",
+                          label: "$ZodStringFormat"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodStringFormatDef",
+                          label: "$ZodStringFormatDef"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodStringFormatInternals",
+                          label: "$ZodStringFormatInternals"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodStringInternals",
+                          label: "$ZodStringInternals"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodSuccess",
+                          label: "$ZodSuccess"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodSuccessDef",
+                          label: "$ZodSuccessDef"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodSuccessInternals",
+                          label: "$ZodSuccessInternals"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodSymbol",
+                          label: "$ZodSymbol"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodSymbolDef",
+                          label: "$ZodSymbolDef"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodSymbolInternals",
+                          label: "$ZodSymbolInternals"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodTemplateLiteral",
+                          label: "$ZodTemplateLiteral"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodTemplateLiteralDef",
+                          label: "$ZodTemplateLiteralDef"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodTemplateLiteralInternals",
+                          label: "$ZodTemplateLiteralInternals"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodTransform",
+                          label: "$ZodTransform"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodTransformDef",
+                          label: "$ZodTransformDef"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodTransformInternals",
+                          label: "$ZodTransformInternals"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodTuple",
+                          label: "$ZodTuple"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodTupleDef",
+                          label: "$ZodTupleDef"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodTupleInternals",
+                          label: "$ZodTupleInternals"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodType-1",
+                          label: "$ZodType"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodTypeDef",
+                          label: "$ZodTypeDef"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodTypeDiscriminable",
+                          label: "$ZodTypeDiscriminable"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodTypeDiscriminableInternals",
+                          label: "$ZodTypeDiscriminableInternals"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodTypeInternals-1",
+                          label: "$ZodTypeInternals"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodULID",
+                          label: "$ZodULID"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodULIDDef",
+                          label: "$ZodULIDDef"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodULIDInternals",
+                          label: "$ZodULIDInternals"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodUndefined",
+                          label: "$ZodUndefined"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodUndefinedDef",
+                          label: "$ZodUndefinedDef"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodUndefinedInternals",
+                          label: "$ZodUndefinedInternals"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodUnion",
+                          label: "$ZodUnion"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodUnionDef",
+                          label: "$ZodUnionDef"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodUnionInternals",
+                          label: "$ZodUnionInternals"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodUnknown",
+                          label: "$ZodUnknown"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodUnknownDef",
+                          label: "$ZodUnknownDef"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodUnknownInternals",
+                          label: "$ZodUnknownInternals"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodURL",
+                          label: "$ZodURL"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodURLDef",
+                          label: "$ZodURLDef"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodURLInternals",
+                          label: "$ZodURLInternals"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodUUID",
+                          label: "$ZodUUID"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodUUIDDef",
+                          label: "$ZodUUIDDef"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodUUIDInternals",
+                          label: "$ZodUUIDInternals"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodVoid",
+                          label: "$ZodVoid"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodVoidDef",
+                          label: "$ZodVoidDef"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodVoidInternals",
+                          label: "$ZodVoidInternals"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodXID",
+                          label: "$ZodXID"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodXIDDef",
+                          label: "$ZodXIDDef"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodXIDInternals",
+                          label: "$ZodXIDInternals"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodXor",
+                          label: "$ZodXor"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/$ZodXorInternals",
+                          label: "$ZodXorInternals"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/File",
+                          label: "File"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/GlobalMeta",
+                          label: "GlobalMeta"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/JSONSchemaGeneratorParams",
+                          label: "JSONSchemaGeneratorParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/JSONSchemaMeta",
+                          label: "JSONSchemaMeta"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/ParseContext",
+                          label: "ParseContext"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/ParseContextInternal",
+                          label: "ParseContextInternal"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/ParsePayload",
+                          label: "ParsePayload"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/ProcessParams",
+                          label: "ProcessParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/RegistryToJSONSchemaParams",
+                          label: "RegistryToJSONSchemaParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/Seen",
+                          label: "Seen"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/ToJSONSchemaContext",
+                          label: "ToJSONSchemaContext"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/interfaces/ZodStandardJSONSchemaPayload",
+                          label: "ZodStandardJSONSchemaPayload"
+                        }
+                      ]
+                    },
+                    {
+                      type: "category",
+                      label: "Type Aliases",
+                      items: [
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$brand",
+                          label: "$brand"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$catchall",
+                          label: "$catchall"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$Decode",
+                          label: "$Decode"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$DecodeAsync",
+                          label: "$DecodeAsync"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$Encode",
+                          label: "$Encode"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$EncodeAsync",
+                          label: "$EncodeAsync"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$InferEnumInput",
+                          label: "$InferEnumInput"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$InferEnumOutput",
+                          label: "$InferEnumOutput"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$InferInnerFunctionType",
+                          label: "$InferInnerFunctionType"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$InferInnerFunctionTypeAsync",
+                          label: "$InferInnerFunctionTypeAsync"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$InferObjectInput",
+                          label: "$InferObjectInput"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$InferObjectOutput",
+                          label: "$InferObjectOutput"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$InferOuterFunctionType",
+                          label: "$InferOuterFunctionType"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$InferOuterFunctionTypeAsync",
+                          label: "$InferOuterFunctionTypeAsync"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$InferTupleInputType",
+                          label: "$InferTupleInputType"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$InferTupleOutputType",
+                          label: "$InferTupleOutputType"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$InferUnionInput",
+                          label: "$InferUnionInput"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$InferUnionOutput",
+                          label: "$InferUnionOutput"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$InferZodRecordInput",
+                          label: "$InferZodRecordInput"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$InferZodRecordOutput",
+                          label: "$InferZodRecordOutput"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$input",
+                          label: "$input"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$loose",
+                          label: "$loose"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$output",
+                          label: "$output"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$Parse",
+                          label: "$Parse"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ParseAsync",
+                          label: "$ParseAsync"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$partial",
+                          label: "$partial"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$PartsToTemplateLiteral",
+                          label: "$PartsToTemplateLiteral"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$replace",
+                          label: "$replace"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$SafeDecode",
+                          label: "$SafeDecode"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$SafeDecodeAsync",
+                          label: "$SafeDecodeAsync"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$SafeEncode",
+                          label: "$SafeEncode"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$SafeEncodeAsync",
+                          label: "$SafeEncodeAsync"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$SafeParse",
+                          label: "$SafeParse"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$SafeParseAsync",
+                          label: "$SafeParseAsync"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$strict",
+                          label: "$strict"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$strip",
+                          label: "$strip"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodAnyParams",
+                          label: "$ZodAnyParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodArrayParams",
+                          label: "$ZodArrayParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodBase64Params",
+                          label: "$ZodBase64Params"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodBase64URLParams",
+                          label: "$ZodBase64URLParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodBigIntFormatParams",
+                          label: "$ZodBigIntFormatParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodBigIntFormats",
+                          label: "$ZodBigIntFormats"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodBigIntParams",
+                          label: "$ZodBigIntParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodBooleanParams",
+                          label: "$ZodBooleanParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodBranded",
+                          label: "$ZodBranded"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodCatchParams",
+                          label: "$ZodCatchParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodCheckBase64Params",
+                          label: "$ZodCheckBase64Params"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodCheckBase64URLParams",
+                          label: "$ZodCheckBase64URLParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodCheckBigIntFormatParams",
+                          label: "$ZodCheckBigIntFormatParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodCheckCIDRv4Params",
+                          label: "$ZodCheckCIDRv4Params"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodCheckCIDRv6Params",
+                          label: "$ZodCheckCIDRv6Params"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodCheckCUID2Params",
+                          label: "$ZodCheckCUID2Params"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodCheckCUIDParams",
+                          label: "$ZodCheckCUIDParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodCheckE164Params",
+                          label: "$ZodCheckE164Params"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodCheckEmailParams",
+                          label: "$ZodCheckEmailParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodCheckEmojiParams",
+                          label: "$ZodCheckEmojiParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodCheckEndsWithParams",
+                          label: "$ZodCheckEndsWithParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodCheckGreaterThanParams",
+                          label: "$ZodCheckGreaterThanParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodCheckGUIDParams",
+                          label: "$ZodCheckGUIDParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodCheckIncludesParams",
+                          label: "$ZodCheckIncludesParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodCheckIPv4Params",
+                          label: "$ZodCheckIPv4Params"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodCheckIPv6Params",
+                          label: "$ZodCheckIPv6Params"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodCheckISODateParams",
+                          label: "$ZodCheckISODateParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodCheckISODateTimeParams",
+                          label: "$ZodCheckISODateTimeParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodCheckISODurationParams",
+                          label: "$ZodCheckISODurationParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodCheckISOTimeParams",
+                          label: "$ZodCheckISOTimeParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodCheckJWTParams",
+                          label: "$ZodCheckJWTParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodCheckKSUIDParams",
+                          label: "$ZodCheckKSUIDParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodCheckLengthEqualsParams",
+                          label: "$ZodCheckLengthEqualsParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodCheckLessThanParams",
+                          label: "$ZodCheckLessThanParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodCheckLowerCaseParams",
+                          label: "$ZodCheckLowerCaseParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodCheckMACParams",
+                          label: "$ZodCheckMACParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodCheckMaxLengthParams",
+                          label: "$ZodCheckMaxLengthParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodCheckMaxSizeParams",
+                          label: "$ZodCheckMaxSizeParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodCheckMimeTypeParams",
+                          label: "$ZodCheckMimeTypeParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodCheckMinLengthParams",
+                          label: "$ZodCheckMinLengthParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodCheckMinSizeParams",
+                          label: "$ZodCheckMinSizeParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodCheckMultipleOfParams",
+                          label: "$ZodCheckMultipleOfParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodCheckNanoIDParams",
+                          label: "$ZodCheckNanoIDParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodCheckNumberFormatParams",
+                          label: "$ZodCheckNumberFormatParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodCheckPropertyParams",
+                          label: "$ZodCheckPropertyParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodCheckRegexParams",
+                          label: "$ZodCheckRegexParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodChecks",
+                          label: "$ZodChecks"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodCheckSizeEqualsParams",
+                          label: "$ZodCheckSizeEqualsParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodCheckStartsWithParams",
+                          label: "$ZodCheckStartsWithParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodCheckStringFormatParams",
+                          label: "$ZodCheckStringFormatParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodCheckULIDParams",
+                          label: "$ZodCheckULIDParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodCheckUpperCaseParams",
+                          label: "$ZodCheckUpperCaseParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodCheckURLParams",
+                          label: "$ZodCheckURLParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodCheckUUIDParams",
+                          label: "$ZodCheckUUIDParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodCheckUUIDv4Params",
+                          label: "$ZodCheckUUIDv4Params"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodCheckUUIDv6Params",
+                          label: "$ZodCheckUUIDv6Params"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodCheckUUIDv7Params",
+                          label: "$ZodCheckUUIDv7Params"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodCheckXIDParams",
+                          label: "$ZodCheckXIDParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodCIDRv4Params",
+                          label: "$ZodCIDRv4Params"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodCIDRv6Params",
+                          label: "$ZodCIDRv6Params"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodCUID2Params",
+                          label: "$ZodCUID2Params"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodCUIDParams",
+                          label: "$ZodCUIDParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodCustomParams",
+                          label: "$ZodCustomParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodDateParams",
+                          label: "$ZodDateParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodDefaultParams",
+                          label: "$ZodDefaultParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodDiscriminatedUnionParams",
+                          label: "$ZodDiscriminatedUnionParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodE164Params",
+                          label: "$ZodE164Params"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodEmailParams",
+                          label: "$ZodEmailParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodEmojiParams",
+                          label: "$ZodEmojiParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodEnumParams",
+                          label: "$ZodEnumParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodErrorClass",
+                          label: "$ZodErrorClass"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodErrorTree",
+                          label: "$ZodErrorTree"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodFileParams",
+                          label: "$ZodFileParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodFlattenedError",
+                          label: "$ZodFlattenedError"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodFormattedError",
+                          label: "$ZodFormattedError"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodFunctionArgs",
+                          label: "$ZodFunctionArgs"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodFunctionIn",
+                          label: "$ZodFunctionIn"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodFunctionOut",
+                          label: "$ZodFunctionOut"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodGUIDParams",
+                          label: "$ZodGUIDParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodInternalIssue",
+                          label: "$ZodInternalIssue"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodIntersectionParams",
+                          label: "$ZodIntersectionParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodInvalidTypeExpected",
+                          label: "$ZodInvalidTypeExpected"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodIPv4Params",
+                          label: "$ZodIPv4Params"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodIPv6Params",
+                          label: "$ZodIPv6Params"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodISODateParams",
+                          label: "$ZodISODateParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodISODateTimeParams",
+                          label: "$ZodISODateTimeParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodISODurationParams",
+                          label: "$ZodISODurationParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodISOTimeParams",
+                          label: "$ZodISOTimeParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodIssue",
+                          label: "$ZodIssue"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodIssueCode",
+                          label: "$ZodIssueCode"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodIssueInvalidUnion",
+                          label: "$ZodIssueInvalidUnion"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodJWTParams",
+                          label: "$ZodJWTParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodKSUIDParams",
+                          label: "$ZodKSUIDParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodLazyParams",
+                          label: "$ZodLazyParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodLiteralParams",
+                          label: "$ZodLiteralParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodLooseShape",
+                          label: "$ZodLooseShape"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodMACParams",
+                          label: "$ZodMACParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodMapParams",
+                          label: "$ZodMapParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodNanoIDParams",
+                          label: "$ZodNanoIDParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodNaNParams",
+                          label: "$ZodNaNParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodNarrow",
+                          label: "$ZodNarrow"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodNeverParams",
+                          label: "$ZodNeverParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodNonOptionalParams",
+                          label: "$ZodNonOptionalParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodNullableParams",
+                          label: "$ZodNullableParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodNullParams",
+                          label: "$ZodNullParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodNumberFormatParams",
+                          label: "$ZodNumberFormatParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodNumberFormats",
+                          label: "$ZodNumberFormats"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodNumberParams",
+                          label: "$ZodNumberParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodObjectConfig",
+                          label: "$ZodObjectConfig"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodObjectParams",
+                          label: "$ZodObjectParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodOptionalParams",
+                          label: "$ZodOptionalParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodPipeParams",
+                          label: "$ZodPipeParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodPromiseParams",
+                          label: "$ZodPromiseParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodRawIssue",
+                          label: "$ZodRawIssue"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodReadonlyParams",
+                          label: "$ZodReadonlyParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodRecordKey",
+                          label: "$ZodRecordKey"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodRecordParams",
+                          label: "$ZodRecordParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodSetParams",
+                          label: "$ZodSetParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodShape",
+                          label: "$ZodShape"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodStandardSchema",
+                          label: "$ZodStandardSchema"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodStringFormatChecks",
+                          label: "$ZodStringFormatChecks"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodStringFormatIssues",
+                          label: "$ZodStringFormatIssues"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodStringFormatParams",
+                          label: "$ZodStringFormatParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodStringFormats",
+                          label: "$ZodStringFormats"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodStringFormatTypes",
+                          label: "$ZodStringFormatTypes"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodStringParams",
+                          label: "$ZodStringParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodSuccessParams",
+                          label: "$ZodSuccessParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodSuperRefineIssue",
+                          label: "$ZodSuperRefineIssue"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodSymbolParams",
+                          label: "$ZodSymbolParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodTemplateLiteralParams",
+                          label: "$ZodTemplateLiteralParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodTemplateLiteralPart",
+                          label: "$ZodTemplateLiteralPart"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodTransformParams",
+                          label: "$ZodTransformParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodTupleParams",
+                          label: "$ZodTupleParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodTypes",
+                          label: "$ZodTypes"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodULIDParams",
+                          label: "$ZodULIDParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodUndefinedParams",
+                          label: "$ZodUndefinedParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodUnionParams",
+                          label: "$ZodUnionParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodUnknownParams",
+                          label: "$ZodUnknownParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodURLParams",
+                          label: "$ZodURLParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodUUIDParams",
+                          label: "$ZodUUIDParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodUUIDv4Params",
+                          label: "$ZodUUIDv4Params"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodUUIDv6Params",
+                          label: "$ZodUUIDv6Params"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodUUIDv7Params",
+                          label: "$ZodUUIDv7Params"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodVoidParams",
+                          label: "$ZodVoidParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodXIDParams",
+                          label: "$ZodXIDParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/$ZodXorParams",
+                          label: "$ZodXorParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/CheckFn",
+                          label: "CheckFn"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/CheckParams",
+                          label: "CheckParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/CheckStringFormatParams",
+                          label: "CheckStringFormatParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/CheckTypeParams",
+                          label: "CheckTypeParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/ConcatenateTupleOfStrings",
+                          label: "ConcatenateTupleOfStrings"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/ConvertPartsToStringTuple",
+                          label: "ConvertPartsToStringTuple"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/input",
+                          label: "input"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/output",
+                          label: "output"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/Params",
+                          label: "Params"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/Processor",
+                          label: "Processor"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/SomeType",
+                          label: "SomeType"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/StringFormatParams",
+                          label: "StringFormatParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/ToJSONSchemaParams",
+                          label: "ToJSONSchemaParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/ToTemplateLiteral",
+                          label: "ToTemplateLiteral"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/TypeParams",
+                          label: "TypeParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/type-aliases/ZodStandardSchemaWithJSON",
+                          label: "ZodStandardSchemaWithJSON"
+                        }
+                      ]
+                    },
+                    {
+                      type: "category",
+                      label: "Variables",
+                      items: [
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/decode",
+                          label: "_decode"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/decodeAsync",
+                          label: "_decodeAsync"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/encode",
+                          label: "_encode"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/encodeAsync",
+                          label: "_encodeAsync"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/parse",
+                          label: "_parse"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/parseAsync",
+                          label: "_parseAsync"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/safeDecode",
+                          label: "_safeDecode"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/safeDecodeAsync",
+                          label: "_safeDecodeAsync"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/safeEncode",
+                          label: "_safeEncode"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/safeEncodeAsync",
+                          label: "_safeEncodeAsync"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/safeParse",
+                          label: "_safeParse"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/safeParseAsync",
+                          label: "_safeParseAsync"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/$brand",
+                          label: "$brand"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/$input",
+                          label: "$input"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/$output",
+                          label: "$output"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/$ZodAny",
+                          label: "$ZodAny"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/$ZodArray",
+                          label: "$ZodArray"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/$ZodBase64",
+                          label: "$ZodBase64"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/$ZodBase64URL",
+                          label: "$ZodBase64URL"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/$ZodBigInt",
+                          label: "$ZodBigInt"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/$ZodBigIntFormat",
+                          label: "$ZodBigIntFormat"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/$ZodBoolean",
+                          label: "$ZodBoolean"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/$ZodCatch",
+                          label: "$ZodCatch"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/$ZodCheck",
+                          label: "$ZodCheck"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/$ZodCheckBigIntFormat",
+                          label: "$ZodCheckBigIntFormat"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/$ZodCheckEndsWith",
+                          label: "$ZodCheckEndsWith"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/$ZodCheckGreaterThan",
+                          label: "$ZodCheckGreaterThan"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/$ZodCheckIncludes",
+                          label: "$ZodCheckIncludes"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/$ZodCheckLengthEquals",
+                          label: "$ZodCheckLengthEquals"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/$ZodCheckLessThan",
+                          label: "$ZodCheckLessThan"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/$ZodCheckLowerCase",
+                          label: "$ZodCheckLowerCase"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/$ZodCheckMaxLength",
+                          label: "$ZodCheckMaxLength"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/$ZodCheckMaxSize",
+                          label: "$ZodCheckMaxSize"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/$ZodCheckMimeType",
+                          label: "$ZodCheckMimeType"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/$ZodCheckMinLength",
+                          label: "$ZodCheckMinLength"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/$ZodCheckMinSize",
+                          label: "$ZodCheckMinSize"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/$ZodCheckMultipleOf",
+                          label: "$ZodCheckMultipleOf"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/$ZodCheckNumberFormat",
+                          label: "$ZodCheckNumberFormat"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/$ZodCheckOverwrite",
+                          label: "$ZodCheckOverwrite"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/$ZodCheckProperty",
+                          label: "$ZodCheckProperty"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/$ZodCheckRegex",
+                          label: "$ZodCheckRegex"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/$ZodCheckSizeEquals",
+                          label: "$ZodCheckSizeEquals"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/$ZodCheckStartsWith",
+                          label: "$ZodCheckStartsWith"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/$ZodCheckStringFormat",
+                          label: "$ZodCheckStringFormat"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/$ZodCheckUpperCase",
+                          label: "$ZodCheckUpperCase"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/$ZodCIDRv4",
+                          label: "$ZodCIDRv4"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/$ZodCIDRv6",
+                          label: "$ZodCIDRv6"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/$ZodCodec",
+                          label: "$ZodCodec"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/$ZodCUID",
+                          label: "$ZodCUID"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/$ZodCUID2",
+                          label: "$ZodCUID2"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/$ZodCustom",
+                          label: "$ZodCustom"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/$ZodCustomStringFormat",
+                          label: "$ZodCustomStringFormat"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/$ZodDate",
+                          label: "$ZodDate"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/$ZodDefault",
+                          label: "$ZodDefault"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/$ZodDiscriminatedUnion",
+                          label: "$ZodDiscriminatedUnion"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/$ZodE164",
+                          label: "$ZodE164"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/$ZodEmail",
+                          label: "$ZodEmail"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/$ZodEmoji",
+                          label: "$ZodEmoji"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/$ZodEnum",
+                          label: "$ZodEnum"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/$ZodError",
+                          label: "$ZodError"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/$ZodExactOptional",
+                          label: "$ZodExactOptional"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/$ZodFile",
+                          label: "$ZodFile"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/$ZodFunction",
+                          label: "$ZodFunction"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/$ZodGUID",
+                          label: "$ZodGUID"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/$ZodIntersection",
+                          label: "$ZodIntersection"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/$ZodIPv4",
+                          label: "$ZodIPv4"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/$ZodIPv6",
+                          label: "$ZodIPv6"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/$ZodISODate",
+                          label: "$ZodISODate"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/$ZodISODateTime",
+                          label: "$ZodISODateTime"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/$ZodISODuration",
+                          label: "$ZodISODuration"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/$ZodISOTime",
+                          label: "$ZodISOTime"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/$ZodJWT",
+                          label: "$ZodJWT"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/$ZodKSUID",
+                          label: "$ZodKSUID"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/$ZodLazy",
+                          label: "$ZodLazy"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/$ZodLiteral",
+                          label: "$ZodLiteral"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/$ZodMAC",
+                          label: "$ZodMAC"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/$ZodMap",
+                          label: "$ZodMap"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/$ZodNaN",
+                          label: "$ZodNaN"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/$ZodNanoID",
+                          label: "$ZodNanoID"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/$ZodNever",
+                          label: "$ZodNever"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/$ZodNonOptional",
+                          label: "$ZodNonOptional"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/$ZodNull",
+                          label: "$ZodNull"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/$ZodNullable",
+                          label: "$ZodNullable"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/$ZodNumber",
+                          label: "$ZodNumber"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/$ZodNumberFormat",
+                          label: "$ZodNumberFormat"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/$ZodObject",
+                          label: "$ZodObject"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/$ZodObjectJIT",
+                          label: "$ZodObjectJIT"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/$ZodOptional",
+                          label: "$ZodOptional"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/$ZodPipe",
+                          label: "$ZodPipe"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/$ZodPrefault",
+                          label: "$ZodPrefault"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/$ZodPromise",
+                          label: "$ZodPromise"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/$ZodReadonly",
+                          label: "$ZodReadonly"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/$ZodRealError",
+                          label: "$ZodRealError"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/$ZodRecord",
+                          label: "$ZodRecord"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/$ZodSet",
+                          label: "$ZodSet"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/$ZodString",
+                          label: "$ZodString"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/$ZodStringFormat",
+                          label: "$ZodStringFormat"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/$ZodSuccess",
+                          label: "$ZodSuccess"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/$ZodSymbol",
+                          label: "$ZodSymbol"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/$ZodTemplateLiteral",
+                          label: "$ZodTemplateLiteral"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/$ZodTransform",
+                          label: "$ZodTransform"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/$ZodTuple",
+                          label: "$ZodTuple"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/$ZodType",
+                          label: "$ZodType"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/$ZodULID",
+                          label: "$ZodULID"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/$ZodUndefined",
+                          label: "$ZodUndefined"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/$ZodUnion",
+                          label: "$ZodUnion"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/$ZodUnknown",
+                          label: "$ZodUnknown"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/$ZodURL",
+                          label: "$ZodURL"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/$ZodUUID",
+                          label: "$ZodUUID"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/$ZodVoid",
+                          label: "$ZodVoid"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/$ZodXID",
+                          label: "$ZodXID"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/$ZodXor",
+                          label: "$ZodXor"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/createStandardJSONSchemaMethod",
+                          label: "createStandardJSONSchemaMethod"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/createToJSONSchemaMethod",
+                          label: "createToJSONSchemaMethod"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/decode-1",
+                          label: "decode"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/decodeAsync-1",
+                          label: "decodeAsync"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/encode-1",
+                          label: "encode"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/encodeAsync-1",
+                          label: "encodeAsync"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/globalConfig",
+                          label: "globalConfig"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/globalRegistry",
+                          label: "globalRegistry"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/NEVER",
+                          label: "NEVER"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/parse-1",
+                          label: "parse"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/parseAsync-1",
+                          label: "parseAsync"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/safeDecode-1",
+                          label: "safeDecode"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/safeDecodeAsync-1",
+                          label: "safeDecodeAsync"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/safeEncode-1",
+                          label: "safeEncode"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/safeEncodeAsync-1",
+                          label: "safeEncodeAsync"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/safeParse-1",
+                          label: "safeParse"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/safeParseAsync-1",
+                          label: "safeParseAsync"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/TimePrecision",
+                          label: "TimePrecision"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/variables/version",
+                          label: "version"
+                        }
+                      ]
+                    },
+                    {
+                      type: "category",
+                      label: "Functions",
+                      items: [
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/any",
+                          label: "_any"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/array",
+                          label: "_array"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/base64",
+                          label: "_base64"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/base64url",
+                          label: "_base64url"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/bigint",
+                          label: "_bigint"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/boolean",
+                          label: "_boolean"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/catch",
+                          label: "_catch"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/check",
+                          label: "_check"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/cidrv4",
+                          label: "_cidrv4"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/cidrv6",
+                          label: "_cidrv6"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/coercedBigint",
+                          label: "_coercedBigint"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/coercedBoolean",
+                          label: "_coercedBoolean"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/coercedDate",
+                          label: "_coercedDate"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/coercedNumber",
+                          label: "_coercedNumber"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/coercedString",
+                          label: "_coercedString"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/cuid",
+                          label: "_cuid"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/cuid2",
+                          label: "_cuid2"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/custom",
+                          label: "_custom"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/date",
+                          label: "_date"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/default",
+                          label: "_default"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/discriminatedUnion",
+                          label: "_discriminatedUnion"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/e164",
+                          label: "_e164"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/email",
+                          label: "_email"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/emoji",
+                          label: "_emoji"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/endsWith",
+                          label: "_endsWith"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/enum",
+                          label: "_enum"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/file",
+                          label: "_file"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/float32",
+                          label: "_float32"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/float64",
+                          label: "_float64"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/gt",
+                          label: "_gt"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/gte",
+                          label: "_gte"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/guid",
+                          label: "_guid"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/includes",
+                          label: "_includes"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/int",
+                          label: "_int"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/int32",
+                          label: "_int32"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/int64",
+                          label: "_int64"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/intersection",
+                          label: "_intersection"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/ipv4",
+                          label: "_ipv4"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/ipv6",
+                          label: "_ipv6"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/isoDate",
+                          label: "_isoDate"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/isoDateTime",
+                          label: "_isoDateTime"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/isoDuration",
+                          label: "_isoDuration"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/isoTime",
+                          label: "_isoTime"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/jwt",
+                          label: "_jwt"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/ksuid",
+                          label: "_ksuid"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/lazy",
+                          label: "_lazy"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/length",
+                          label: "_length"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/literal",
+                          label: "_literal"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/lowercase",
+                          label: "_lowercase"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/lt",
+                          label: "_lt"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/lte",
+                          label: "_lte"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/mac",
+                          label: "_mac"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/map",
+                          label: "_map"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/maxLength",
+                          label: "_maxLength"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/maxSize",
+                          label: "_maxSize"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/mime",
+                          label: "_mime"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/minLength",
+                          label: "_minLength"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/minSize",
+                          label: "_minSize"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/multipleOf",
+                          label: "_multipleOf"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/nan",
+                          label: "_nan"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/nanoid",
+                          label: "_nanoid"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/nativeEnum",
+                          label: "_nativeEnum",
+                          className: "typedoc-sidebar-item-deprecated"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/negative",
+                          label: "_negative"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/never",
+                          label: "_never"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/nonnegative",
+                          label: "_nonnegative"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/nonoptional",
+                          label: "_nonoptional"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/nonpositive",
+                          label: "_nonpositive"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/normalize",
+                          label: "_normalize"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/null",
+                          label: "_null"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/nullable",
+                          label: "_nullable"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/number",
+                          label: "_number"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/optional",
+                          label: "_optional"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/overwrite",
+                          label: "_overwrite"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/pipe",
+                          label: "_pipe"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/positive",
+                          label: "_positive"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/promise",
+                          label: "_promise"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/property",
+                          label: "_property"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/readonly",
+                          label: "_readonly"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/record",
+                          label: "_record"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/refine",
+                          label: "_refine"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/regex",
+                          label: "_regex"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/set",
+                          label: "_set"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/size",
+                          label: "_size"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/slugify",
+                          label: "_slugify"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/startsWith",
+                          label: "_startsWith"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/string",
+                          label: "_string"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/stringbool",
+                          label: "_stringbool"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/stringFormat",
+                          label: "_stringFormat"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/success",
+                          label: "_success"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/superRefine",
+                          label: "_superRefine"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/symbol",
+                          label: "_symbol"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/templateLiteral",
+                          label: "_templateLiteral"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/toLowerCase",
+                          label: "_toLowerCase"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/toUpperCase",
+                          label: "_toUpperCase"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/transform",
+                          label: "_transform"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/trim",
+                          label: "_trim"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/tuple",
+                          label: "_tuple"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/uint32",
+                          label: "_uint32"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/uint64",
+                          label: "_uint64"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/ulid",
+                          label: "_ulid"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/undefined",
+                          label: "_undefined"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/union",
+                          label: "_union"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/unknown",
+                          label: "_unknown"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/uppercase",
+                          label: "_uppercase"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/url",
+                          label: "_url"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/uuid",
+                          label: "_uuid"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/uuidv4",
+                          label: "_uuidv4"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/uuidv6",
+                          label: "_uuidv6"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/uuidv7",
+                          label: "_uuidv7"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/void",
+                          label: "_void"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/xid",
+                          label: "_xid"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/xor",
+                          label: "_xor"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/$constructor",
+                          label: "$constructor"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/config",
+                          label: "config"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/describe",
+                          label: "describe"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/extractDefs",
+                          label: "extractDefs"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/finalize",
+                          label: "finalize"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/flattenError",
+                          label: "flattenError"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/formatError",
+                          label: "formatError"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/initializeContext",
+                          label: "initializeContext"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/isValidBase64",
+                          label: "isValidBase64"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/isValidBase64URL",
+                          label: "isValidBase64URL"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/isValidJWT",
+                          label: "isValidJWT"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/meta",
+                          label: "meta"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/prettifyError",
+                          label: "prettifyError"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/process",
+                          label: "process"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/registry",
+                          label: "registry"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/toDotPath",
+                          label: "toDotPath"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/core/functions/treeifyError",
+                          label: "treeifyError"
+                        }
+                      ]
+                    }
+                  ],
+                  link: {
+                    type: "doc",
+                    id: "api/@framers/namespaces/z/namespaces/core/index"
+                  }
+                },
+                {
+                  type: "category",
+                  label: "iso",
+                  items: [
+                    {
+                      type: "category",
+                      label: "Functions",
+                      items: [
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/iso/functions/date",
+                          label: "date"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/iso/functions/datetime",
+                          label: "datetime"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/iso/functions/duration",
+                          label: "duration"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/iso/functions/time",
+                          label: "time"
+                        }
+                      ]
+                    }
+                  ],
+                  link: {
+                    type: "doc",
+                    id: "api/@framers/namespaces/z/namespaces/iso/index"
+                  }
+                },
+                {
+                  type: "category",
+                  label: "locales",
+                  items: [
+                    {
+                      type: "category",
+                      label: "Functions",
+                      items: [
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/locales/functions/ar",
+                          label: "ar"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/locales/functions/az",
+                          label: "az"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/locales/functions/be",
+                          label: "be"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/locales/functions/bg",
+                          label: "bg"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/locales/functions/ca",
+                          label: "ca"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/locales/functions/cs",
+                          label: "cs"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/locales/functions/da",
+                          label: "da"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/locales/functions/de",
+                          label: "de"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/locales/functions/en",
+                          label: "en"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/locales/functions/eo",
+                          label: "eo"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/locales/functions/es",
+                          label: "es"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/locales/functions/fa",
+                          label: "fa"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/locales/functions/fi",
+                          label: "fi"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/locales/functions/fr",
+                          label: "fr"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/locales/functions/frCA",
+                          label: "frCA"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/locales/functions/he",
+                          label: "he"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/locales/functions/hu",
+                          label: "hu"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/locales/functions/hy",
+                          label: "hy"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/locales/functions/id",
+                          label: "id"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/locales/functions/is",
+                          label: "is"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/locales/functions/it",
+                          label: "it"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/locales/functions/ja",
+                          label: "ja"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/locales/functions/ka",
+                          label: "ka"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/locales/functions/kh",
+                          label: "kh"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/locales/functions/km",
+                          label: "km"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/locales/functions/ko",
+                          label: "ko"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/locales/functions/lt",
+                          label: "lt"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/locales/functions/mk",
+                          label: "mk"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/locales/functions/ms",
+                          label: "ms"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/locales/functions/nl",
+                          label: "nl"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/locales/functions/no",
+                          label: "no"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/locales/functions/ota",
+                          label: "ota"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/locales/functions/pl",
+                          label: "pl"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/locales/functions/ps",
+                          label: "ps"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/locales/functions/pt",
+                          label: "pt"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/locales/functions/ru",
+                          label: "ru"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/locales/functions/sl",
+                          label: "sl"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/locales/functions/sv",
+                          label: "sv"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/locales/functions/ta",
+                          label: "ta"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/locales/functions/th",
+                          label: "th"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/locales/functions/tr",
+                          label: "tr"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/locales/functions/ua",
+                          label: "ua"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/locales/functions/uk",
+                          label: "uk"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/locales/functions/ur",
+                          label: "ur"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/locales/functions/uz",
+                          label: "uz"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/locales/functions/vi",
+                          label: "vi"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/locales/functions/yo",
+                          label: "yo"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/locales/functions/zhCN",
+                          label: "zhCN"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/locales/functions/zhTW",
+                          label: "zhTW"
+                        }
+                      ]
+                    }
+                  ],
+                  link: {
+                    type: "doc",
+                    id: "api/@framers/namespaces/z/namespaces/locales/index"
+                  }
+                },
+                {
+                  type: "category",
+                  label: "regexes",
+                  items: [
+                    {
+                      type: "category",
+                      label: "Variables",
+                      items: [
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/regexes/variables/base64",
+                          label: "base64"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/regexes/variables/base64url",
+                          label: "base64url"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/regexes/variables/bigint",
+                          label: "bigint"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/regexes/variables/boolean",
+                          label: "boolean"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/regexes/variables/browserEmail",
+                          label: "browserEmail"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/regexes/variables/cidrv4",
+                          label: "cidrv4"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/regexes/variables/cidrv6",
+                          label: "cidrv6"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/regexes/variables/cuid",
+                          label: "cuid"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/regexes/variables/cuid2",
+                          label: "cuid2"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/regexes/variables/date",
+                          label: "date"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/regexes/variables/domain",
+                          label: "domain"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/regexes/variables/duration",
+                          label: "duration"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/regexes/variables/e164",
+                          label: "e164"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/regexes/variables/email",
+                          label: "email"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/regexes/variables/extendedDuration",
+                          label: "extendedDuration"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/regexes/variables/guid",
+                          label: "guid"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/regexes/variables/hex",
+                          label: "hex"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/regexes/variables/hostname",
+                          label: "hostname"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/regexes/variables/html5Email",
+                          label: "html5Email"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/regexes/variables/idnEmail",
+                          label: "idnEmail"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/regexes/variables/integer",
+                          label: "integer"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/regexes/variables/ipv4",
+                          label: "ipv4"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/regexes/variables/ipv6",
+                          label: "ipv6"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/regexes/variables/ksuid",
+                          label: "ksuid"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/regexes/variables/lowercase",
+                          label: "lowercase"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/regexes/variables/mac",
+                          label: "mac"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/regexes/variables/md5_base64",
+                          label: "md5_base64"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/regexes/variables/md5_base64url",
+                          label: "md5_base64url"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/regexes/variables/md5_hex",
+                          label: "md5_hex"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/regexes/variables/nanoid",
+                          label: "nanoid"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/regexes/variables/null",
+                          label: "null"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/regexes/variables/number",
+                          label: "number"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/regexes/variables/rfc5322Email",
+                          label: "rfc5322Email"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/regexes/variables/sha1_base64",
+                          label: "sha1_base64"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/regexes/variables/sha1_base64url",
+                          label: "sha1_base64url"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/regexes/variables/sha1_hex",
+                          label: "sha1_hex"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/regexes/variables/sha256_base64",
+                          label: "sha256_base64"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/regexes/variables/sha256_base64url",
+                          label: "sha256_base64url"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/regexes/variables/sha256_hex",
+                          label: "sha256_hex"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/regexes/variables/sha384_base64",
+                          label: "sha384_base64"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/regexes/variables/sha384_base64url",
+                          label: "sha384_base64url"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/regexes/variables/sha384_hex",
+                          label: "sha384_hex"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/regexes/variables/sha512_base64",
+                          label: "sha512_base64"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/regexes/variables/sha512_base64url",
+                          label: "sha512_base64url"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/regexes/variables/sha512_hex",
+                          label: "sha512_hex"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/regexes/variables/string",
+                          label: "string"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/regexes/variables/ulid",
+                          label: "ulid"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/regexes/variables/undefined",
+                          label: "undefined"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/regexes/variables/unicodeEmail",
+                          label: "unicodeEmail"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/regexes/variables/uppercase",
+                          label: "uppercase"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/regexes/variables/uuid",
+                          label: "uuid"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/regexes/variables/uuid4",
+                          label: "uuid4"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/regexes/variables/uuid6",
+                          label: "uuid6"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/regexes/variables/uuid7",
+                          label: "uuid7"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/regexes/variables/xid",
+                          label: "xid"
+                        }
+                      ]
+                    },
+                    {
+                      type: "category",
+                      label: "Functions",
+                      items: [
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/regexes/functions/datetime",
+                          label: "datetime"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/regexes/functions/emoji",
+                          label: "emoji"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/regexes/functions/time",
+                          label: "time"
+                        }
+                      ]
+                    }
+                  ],
+                  link: {
+                    type: "doc",
+                    id: "api/@framers/namespaces/z/namespaces/regexes/index"
+                  }
+                },
+                {
+                  type: "category",
+                  label: "util",
+                  items: [
+                    {
+                      type: "category",
+                      label: "Classes",
+                      items: [
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/classes/Class",
+                          label: "Class"
+                        }
+                      ]
+                    },
+                    {
+                      type: "category",
+                      label: "Type Aliases",
+                      items: [
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/type-aliases/AnyFunc",
+                          label: "AnyFunc"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/type-aliases/AssertEqual",
+                          label: "AssertEqual"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/type-aliases/AssertExtends",
+                          label: "AssertExtends"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/type-aliases/AssertNotEqual",
+                          label: "AssertNotEqual"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/type-aliases/BuiltIn",
+                          label: "BuiltIn"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/type-aliases/CleanKey",
+                          label: "CleanKey"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/type-aliases/Constructor",
+                          label: "Constructor"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/type-aliases/EmptyObject",
+                          label: "EmptyObject"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/type-aliases/EmptyToNever",
+                          label: "EmptyToNever"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/type-aliases/EnumLike",
+                          label: "EnumLike"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/type-aliases/EnumValue",
+                          label: "EnumValue"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/type-aliases/Exactly",
+                          label: "Exactly"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/type-aliases/Extend",
+                          label: "Extend"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/type-aliases/ExtractIndexSignature",
+                          label: "ExtractIndexSignature"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/type-aliases/Flatten",
+                          label: "Flatten"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/type-aliases/FromCleanMap",
+                          label: "FromCleanMap"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/type-aliases/HashAlgorithm",
+                          label: "HashAlgorithm"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/type-aliases/HashEncoding",
+                          label: "HashEncoding"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/type-aliases/HashFormat",
+                          label: "HashFormat"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/type-aliases/HasLength",
+                          label: "HasLength"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/type-aliases/HasSize",
+                          label: "HasSize"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/type-aliases/Identity",
+                          label: "Identity"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/type-aliases/InexactPartial",
+                          label: "InexactPartial"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/type-aliases/IPVersion",
+                          label: "IPVersion"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/type-aliases/IsAny",
+                          label: "IsAny"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/type-aliases/IsProp",
+                          label: "IsProp"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/type-aliases/JSONType",
+                          label: "JSONType"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/type-aliases/JWTAlgorithm",
+                          label: "JWTAlgorithm"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/type-aliases/KeyOf",
+                          label: "KeyOf"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/type-aliases/Keys",
+                          label: "Keys"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/type-aliases/KeysArray",
+                          label: "KeysArray"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/type-aliases/KeysEnum",
+                          label: "KeysEnum"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/type-aliases/Literal",
+                          label: "Literal"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/type-aliases/LiteralArray",
+                          label: "LiteralArray"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/type-aliases/LoosePartial",
+                          label: "LoosePartial"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/type-aliases/MakePartial",
+                          label: "MakePartial"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/type-aliases/MakeReadonly",
+                          label: "MakeReadonly"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/type-aliases/MakeRequired",
+                          label: "MakeRequired"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/type-aliases/Mapped",
+                          label: "Mapped"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/type-aliases/Mask",
+                          label: "Mask"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/type-aliases/MaybeAsync",
+                          label: "MaybeAsync"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/type-aliases/MimeTypes",
+                          label: "MimeTypes"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/type-aliases/NoNever",
+                          label: "NoNever"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/type-aliases/NoNeverKeys",
+                          label: "NoNeverKeys"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/type-aliases/Normalize",
+                          label: "Normalize"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/type-aliases/NoUndefined",
+                          label: "NoUndefined"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/type-aliases/Numeric",
+                          label: "Numeric"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/type-aliases/Omit",
+                          label: "Omit"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/type-aliases/OmitIndexSignature",
+                          label: "OmitIndexSignature"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/type-aliases/OmitKeys",
+                          label: "OmitKeys"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/type-aliases/ParsedTypes",
+                          label: "ParsedTypes"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/type-aliases/Prettify",
+                          label: "Prettify"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/type-aliases/Primitive",
+                          label: "Primitive"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/type-aliases/PrimitiveArray",
+                          label: "PrimitiveArray"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/type-aliases/PrimitiveSet",
+                          label: "PrimitiveSet"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/type-aliases/PropValues",
+                          label: "PropValues"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/type-aliases/SafeParseError",
+                          label: "SafeParseError"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/type-aliases/SafeParseResult",
+                          label: "SafeParseResult"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/type-aliases/SafeParseSuccess",
+                          label: "SafeParseSuccess"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/type-aliases/SchemaClass",
+                          label: "SchemaClass"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/type-aliases/SomeObject",
+                          label: "SomeObject"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/type-aliases/ToCleanMap",
+                          label: "ToCleanMap"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/type-aliases/ToEnum",
+                          label: "ToEnum"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/type-aliases/TupleItems",
+                          label: "TupleItems"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/type-aliases/Whatever",
+                          label: "Whatever"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/type-aliases/Writeable",
+                          label: "Writeable"
+                        }
+                      ]
+                    },
+                    {
+                      type: "category",
+                      label: "Variables",
+                      items: [
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/variables/allowsEval",
+                          label: "allowsEval"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/variables/BIGINT_FORMAT_RANGES",
+                          label: "BIGINT_FORMAT_RANGES"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/variables/captureStackTrace",
+                          label: "captureStackTrace"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/variables/getParsedType",
+                          label: "getParsedType"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/variables/NUMBER_FORMAT_RANGES",
+                          label: "NUMBER_FORMAT_RANGES"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/variables/primitiveTypes",
+                          label: "primitiveTypes"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/variables/propertyKeyTypes",
+                          label: "propertyKeyTypes"
+                        }
+                      ]
+                    },
+                    {
+                      type: "category",
+                      label: "Functions",
+                      items: [
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/functions/aborted",
+                          label: "aborted"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/functions/assert",
+                          label: "assert"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/functions/assertEqual",
+                          label: "assertEqual"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/functions/assertIs",
+                          label: "assertIs"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/functions/assertNever",
+                          label: "assertNever"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/functions/assertNotEqual",
+                          label: "assertNotEqual"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/functions/assignProp",
+                          label: "assignProp"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/functions/base64ToUint8Array",
+                          label: "base64ToUint8Array"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/functions/base64urlToUint8Array",
+                          label: "base64urlToUint8Array"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/functions/cached",
+                          label: "cached"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/functions/cleanEnum",
+                          label: "cleanEnum"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/functions/cleanRegex",
+                          label: "cleanRegex"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/functions/cloneDef",
+                          label: "cloneDef"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/functions/createTransparentProxy",
+                          label: "createTransparentProxy"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/functions/defineLazy",
+                          label: "defineLazy"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/functions/esc",
+                          label: "esc"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/functions/escapeRegex",
+                          label: "escapeRegex"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/functions/extend",
+                          label: "extend"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/functions/finalizeIssue",
+                          label: "finalizeIssue"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/functions/floatSafeRemainder",
+                          label: "floatSafeRemainder"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/functions/getElementAtPath",
+                          label: "getElementAtPath"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/functions/getEnumValues",
+                          label: "getEnumValues"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/functions/getLengthableOrigin",
+                          label: "getLengthableOrigin"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/functions/getSizableOrigin",
+                          label: "getSizableOrigin"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/functions/hexToUint8Array",
+                          label: "hexToUint8Array"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/functions/isObject",
+                          label: "isObject"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/functions/isPlainObject",
+                          label: "isPlainObject"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/functions/issue",
+                          label: "issue"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/functions/joinValues",
+                          label: "joinValues"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/functions/jsonStringifyReplacer",
+                          label: "jsonStringifyReplacer"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/functions/merge",
+                          label: "merge"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/functions/mergeDefs",
+                          label: "mergeDefs"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/functions/normalizeParams",
+                          label: "normalizeParams"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/functions/nullish",
+                          label: "nullish"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/functions/numKeys",
+                          label: "numKeys"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/functions/objectClone",
+                          label: "objectClone"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/functions/omit",
+                          label: "omit"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/functions/optionalKeys",
+                          label: "optionalKeys"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/functions/parsedType",
+                          label: "parsedType"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/functions/partial",
+                          label: "partial"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/functions/pick",
+                          label: "pick"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/functions/prefixIssues",
+                          label: "prefixIssues"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/functions/promiseAllObject",
+                          label: "promiseAllObject"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/functions/randomString",
+                          label: "randomString"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/functions/required",
+                          label: "required"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/functions/safeExtend",
+                          label: "safeExtend"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/functions/shallowClone",
+                          label: "shallowClone"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/functions/slugify",
+                          label: "slugify"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/functions/stringifyPrimitive",
+                          label: "stringifyPrimitive"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/functions/uint8ArrayToBase64",
+                          label: "uint8ArrayToBase64"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/functions/uint8ArrayToBase64url",
+                          label: "uint8ArrayToBase64url"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/functions/uint8ArrayToHex",
+                          label: "uint8ArrayToHex"
+                        },
+                        {
+                          type: "doc",
+                          id: "api/@framers/namespaces/z/namespaces/util/functions/unwrapMessage",
+                          label: "unwrapMessage"
+                        }
+                      ]
+                    }
+                  ],
+                  link: {
+                    type: "doc",
+                    id: "api/@framers/namespaces/z/namespaces/util/index"
+                  }
+                }
+              ]
+            },
+            {
+              type: "category",
+              label: "Enumerations",
+              items: [
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/enumerations/ZodFirstPartyTypeKind",
+                  label: "ZodFirstPartyTypeKind",
+                  className: "typedoc-sidebar-item-deprecated"
+                }
+              ]
+            },
+            {
+              type: "category",
+              label: "Interfaces",
+              items: [
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/interfaces/ZodBigInt",
+                  label: "_ZodBigInt"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/interfaces/ZodBoolean",
+                  label: "_ZodBoolean"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/interfaces/ZodDate",
+                  label: "_ZodDate"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/interfaces/ZodNumber",
+                  label: "_ZodNumber"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/interfaces/ZodString",
+                  label: "_ZodString"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/interfaces/ZodType",
+                  label: "_ZodType"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/interfaces/ZodAny",
+                  label: "ZodAny"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/interfaces/ZodArray",
+                  label: "ZodArray"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/interfaces/ZodBase64",
+                  label: "ZodBase64"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/interfaces/ZodBase64URL",
+                  label: "ZodBase64URL"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/interfaces/ZodBigInt-1",
+                  label: "ZodBigInt"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/interfaces/ZodBigIntFormat",
+                  label: "ZodBigIntFormat"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/interfaces/ZodBoolean-1",
+                  label: "ZodBoolean"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/interfaces/ZodCatch",
+                  label: "ZodCatch"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/interfaces/ZodCIDRv4",
+                  label: "ZodCIDRv4"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/interfaces/ZodCIDRv6",
+                  label: "ZodCIDRv6"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/interfaces/ZodCodec",
+                  label: "ZodCodec"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/interfaces/ZodCoercedBigInt",
+                  label: "ZodCoercedBigInt"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/interfaces/ZodCoercedBoolean",
+                  label: "ZodCoercedBoolean"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/interfaces/ZodCoercedDate",
+                  label: "ZodCoercedDate"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/interfaces/ZodCoercedNumber",
+                  label: "ZodCoercedNumber"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/interfaces/ZodCoercedString",
+                  label: "ZodCoercedString"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/interfaces/ZodCUID",
+                  label: "ZodCUID"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/interfaces/ZodCUID2",
+                  label: "ZodCUID2"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/interfaces/ZodCustom",
+                  label: "ZodCustom"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/interfaces/ZodCustomStringFormat",
+                  label: "ZodCustomStringFormat"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/interfaces/ZodDate-1",
+                  label: "ZodDate"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/interfaces/ZodDefault",
+                  label: "ZodDefault"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/interfaces/ZodDiscriminatedUnion",
+                  label: "ZodDiscriminatedUnion"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/interfaces/ZodE164",
+                  label: "ZodE164"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/interfaces/ZodEmail",
+                  label: "ZodEmail"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/interfaces/ZodEmoji",
+                  label: "ZodEmoji"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/interfaces/ZodEnum",
+                  label: "ZodEnum"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/interfaces/ZodError",
+                  label: "ZodError"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/interfaces/ZodExactOptional",
+                  label: "ZodExactOptional"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/interfaces/ZodFile",
+                  label: "ZodFile"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/interfaces/ZodFloat32",
+                  label: "ZodFloat32"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/interfaces/ZodFloat64",
+                  label: "ZodFloat64"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/interfaces/ZodFunction",
+                  label: "ZodFunction"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/interfaces/ZodGUID",
+                  label: "ZodGUID"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/interfaces/ZodInt",
+                  label: "ZodInt"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/interfaces/ZodInt32",
+                  label: "ZodInt32"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/interfaces/ZodIntersection",
+                  label: "ZodIntersection"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/interfaces/ZodIPv4",
+                  label: "ZodIPv4"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/interfaces/ZodIPv6",
+                  label: "ZodIPv6"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/interfaces/ZodISODate",
+                  label: "ZodISODate"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/interfaces/ZodISODateTime",
+                  label: "ZodISODateTime"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/interfaces/ZodISODuration",
+                  label: "ZodISODuration"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/interfaces/ZodISOTime",
+                  label: "ZodISOTime"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/interfaces/ZodJSONSchema",
+                  label: "ZodJSONSchema"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/interfaces/ZodJSONSchemaInternals",
+                  label: "ZodJSONSchemaInternals"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/interfaces/ZodJWT",
+                  label: "ZodJWT"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/interfaces/ZodKSUID",
+                  label: "ZodKSUID"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/interfaces/ZodLazy",
+                  label: "ZodLazy"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/interfaces/ZodLiteral",
+                  label: "ZodLiteral"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/interfaces/ZodMAC",
+                  label: "ZodMAC"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/interfaces/ZodMap",
+                  label: "ZodMap"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/interfaces/ZodNaN",
+                  label: "ZodNaN"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/interfaces/ZodNanoID",
+                  label: "ZodNanoID"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/interfaces/ZodNever",
+                  label: "ZodNever"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/interfaces/ZodNonOptional",
+                  label: "ZodNonOptional"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/interfaces/ZodNull",
+                  label: "ZodNull"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/interfaces/ZodNullable",
+                  label: "ZodNullable"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/interfaces/ZodNumber-1",
+                  label: "ZodNumber"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/interfaces/ZodNumberFormat",
+                  label: "ZodNumberFormat"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/interfaces/ZodObject",
+                  label: "ZodObject"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/interfaces/ZodOptional",
+                  label: "ZodOptional"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/interfaces/ZodPipe",
+                  label: "ZodPipe"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/interfaces/ZodPrefault",
+                  label: "ZodPrefault"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/interfaces/ZodPromise",
+                  label: "ZodPromise"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/interfaces/ZodReadonly",
+                  label: "ZodReadonly"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/interfaces/ZodRecord",
+                  label: "ZodRecord"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/interfaces/ZodSet",
+                  label: "ZodSet"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/interfaces/ZodString-1",
+                  label: "ZodString"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/interfaces/ZodStringFormat",
+                  label: "ZodStringFormat"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/interfaces/ZodSuccess",
+                  label: "ZodSuccess"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/interfaces/ZodSymbol",
+                  label: "ZodSymbol"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/interfaces/ZodTemplateLiteral",
+                  label: "ZodTemplateLiteral"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/interfaces/ZodTransform",
+                  label: "ZodTransform"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/interfaces/ZodTuple",
+                  label: "ZodTuple"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/interfaces/ZodType-1",
+                  label: "ZodType"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/interfaces/ZodUInt32",
+                  label: "ZodUInt32"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/interfaces/ZodULID",
+                  label: "ZodULID"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/interfaces/ZodUndefined",
+                  label: "ZodUndefined"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/interfaces/ZodUnion",
+                  label: "ZodUnion"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/interfaces/ZodUnknown",
+                  label: "ZodUnknown"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/interfaces/ZodURL",
+                  label: "ZodURL"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/interfaces/ZodUUID",
+                  label: "ZodUUID"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/interfaces/ZodVoid",
+                  label: "ZodVoid"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/interfaces/ZodXID",
+                  label: "ZodXID"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/interfaces/ZodXor",
+                  label: "ZodXor"
+                }
+              ]
+            },
+            {
+              type: "category",
+              label: "Type Aliases",
+              items: [
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/type-aliases/BRAND",
+                  label: "BRAND"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/type-aliases/inferFlattenedErrors",
+                  label: "inferFlattenedErrors",
+                  className: "typedoc-sidebar-item-deprecated"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/type-aliases/inferFormattedError",
+                  label: "inferFormattedError",
+                  className: "typedoc-sidebar-item-deprecated"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/type-aliases/IssueData",
+                  label: "IssueData",
+                  className: "typedoc-sidebar-item-deprecated"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/type-aliases/SafeExtendShape",
+                  label: "SafeExtendShape"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/type-aliases/ZodIssue",
+                  label: "ZodIssue",
+                  className: "typedoc-sidebar-item-deprecated"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/type-aliases/ZodRawShape",
+                  label: "ZodRawShape"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/type-aliases/ZodSafeParseError",
+                  label: "ZodSafeParseError"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/type-aliases/ZodSafeParseResult",
+                  label: "ZodSafeParseResult"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/type-aliases/ZodSafeParseSuccess",
+                  label: "ZodSafeParseSuccess"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/type-aliases/ZodStandardSchemaWithJSON",
+                  label: "ZodStandardSchemaWithJSON"
+                }
+              ]
+            },
+            {
+              type: "category",
+              label: "Variables",
+              items: [
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/variables/ZodString",
+                  label: "_ZodString"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/variables/decode",
+                  label: "decode"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/variables/decodeAsync",
+                  label: "decodeAsync"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/variables/describe",
+                  label: "describe"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/variables/encode",
+                  label: "encode"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/variables/encodeAsync",
+                  label: "encodeAsync"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/variables/meta",
+                  label: "meta"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/variables/parse",
+                  label: "parse"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/variables/parseAsync",
+                  label: "parseAsync"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/variables/safeDecode",
+                  label: "safeDecode"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/variables/safeDecodeAsync",
+                  label: "safeDecodeAsync"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/variables/safeEncode",
+                  label: "safeEncode"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/variables/safeEncodeAsync",
+                  label: "safeEncodeAsync"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/variables/safeParse",
+                  label: "safeParse"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/variables/safeParseAsync",
+                  label: "safeParseAsync"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/variables/stringbool",
+                  label: "stringbool"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/variables/ZodAny",
+                  label: "ZodAny"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/variables/ZodArray",
+                  label: "ZodArray"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/variables/ZodBase64",
+                  label: "ZodBase64"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/variables/ZodBase64URL",
+                  label: "ZodBase64URL"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/variables/ZodBigInt",
+                  label: "ZodBigInt"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/variables/ZodBigIntFormat",
+                  label: "ZodBigIntFormat"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/variables/ZodBoolean",
+                  label: "ZodBoolean"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/variables/ZodCatch",
+                  label: "ZodCatch"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/variables/ZodCIDRv4",
+                  label: "ZodCIDRv4"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/variables/ZodCIDRv6",
+                  label: "ZodCIDRv6"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/variables/ZodCodec",
+                  label: "ZodCodec"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/variables/ZodCUID",
+                  label: "ZodCUID"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/variables/ZodCUID2",
+                  label: "ZodCUID2"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/variables/ZodCustom",
+                  label: "ZodCustom"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/variables/ZodCustomStringFormat",
+                  label: "ZodCustomStringFormat"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/variables/ZodDate",
+                  label: "ZodDate"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/variables/ZodDefault",
+                  label: "ZodDefault"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/variables/ZodDiscriminatedUnion",
+                  label: "ZodDiscriminatedUnion"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/variables/ZodE164",
+                  label: "ZodE164"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/variables/ZodEmail",
+                  label: "ZodEmail"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/variables/ZodEmoji",
+                  label: "ZodEmoji"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/variables/ZodEnum",
+                  label: "ZodEnum"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/variables/ZodError",
+                  label: "ZodError"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/variables/ZodExactOptional",
+                  label: "ZodExactOptional"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/variables/ZodFile",
+                  label: "ZodFile"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/variables/ZodFunction",
+                  label: "ZodFunction"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/variables/ZodGUID",
+                  label: "ZodGUID"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/variables/ZodIntersection",
+                  label: "ZodIntersection"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/variables/ZodIPv4",
+                  label: "ZodIPv4"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/variables/ZodIPv6",
+                  label: "ZodIPv6"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/variables/ZodISODate",
+                  label: "ZodISODate"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/variables/ZodISODateTime",
+                  label: "ZodISODateTime"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/variables/ZodISODuration",
+                  label: "ZodISODuration"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/variables/ZodISOTime",
+                  label: "ZodISOTime"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/variables/ZodIssueCode",
+                  label: "ZodIssueCode",
+                  className: "typedoc-sidebar-item-deprecated"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/variables/ZodJWT",
+                  label: "ZodJWT"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/variables/ZodKSUID",
+                  label: "ZodKSUID"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/variables/ZodLazy",
+                  label: "ZodLazy"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/variables/ZodLiteral",
+                  label: "ZodLiteral"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/variables/ZodMAC",
+                  label: "ZodMAC"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/variables/ZodMap",
+                  label: "ZodMap"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/variables/ZodNaN",
+                  label: "ZodNaN"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/variables/ZodNanoID",
+                  label: "ZodNanoID"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/variables/ZodNever",
+                  label: "ZodNever"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/variables/ZodNonOptional",
+                  label: "ZodNonOptional"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/variables/ZodNull",
+                  label: "ZodNull"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/variables/ZodNullable",
+                  label: "ZodNullable"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/variables/ZodNumber",
+                  label: "ZodNumber"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/variables/ZodNumberFormat",
+                  label: "ZodNumberFormat"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/variables/ZodObject",
+                  label: "ZodObject"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/variables/ZodOptional",
+                  label: "ZodOptional"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/variables/ZodPipe",
+                  label: "ZodPipe"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/variables/ZodPrefault",
+                  label: "ZodPrefault"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/variables/ZodPromise",
+                  label: "ZodPromise"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/variables/ZodReadonly",
+                  label: "ZodReadonly"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/variables/ZodRealError",
+                  label: "ZodRealError"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/variables/ZodRecord",
+                  label: "ZodRecord"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/variables/ZodSet",
+                  label: "ZodSet"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/variables/ZodString-1",
+                  label: "ZodString"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/variables/ZodStringFormat",
+                  label: "ZodStringFormat"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/variables/ZodSuccess",
+                  label: "ZodSuccess"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/variables/ZodSymbol",
+                  label: "ZodSymbol"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/variables/ZodTemplateLiteral",
+                  label: "ZodTemplateLiteral"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/variables/ZodTransform",
+                  label: "ZodTransform"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/variables/ZodTuple",
+                  label: "ZodTuple"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/variables/ZodType",
+                  label: "ZodType"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/variables/ZodULID",
+                  label: "ZodULID"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/variables/ZodUndefined",
+                  label: "ZodUndefined"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/variables/ZodUnion",
+                  label: "ZodUnion"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/variables/ZodUnknown",
+                  label: "ZodUnknown"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/variables/ZodURL",
+                  label: "ZodURL"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/variables/ZodUUID",
+                  label: "ZodUUID"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/variables/ZodVoid",
+                  label: "ZodVoid"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/variables/ZodXID",
+                  label: "ZodXID"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/variables/ZodXor",
+                  label: "ZodXor"
+                }
+              ]
+            },
+            {
+              type: "category",
+              label: "Functions",
+              items: [
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/functions/default",
+                  label: "_default"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/functions/function",
+                  label: "_function"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/functions/any",
+                  label: "any"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/functions/array",
+                  label: "array"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/functions/base64",
+                  label: "base64"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/functions/base64url",
+                  label: "base64url"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/functions/bigint",
+                  label: "bigint"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/functions/boolean",
+                  label: "boolean"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/functions/catch",
+                  label: "catch"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/functions/check",
+                  label: "check"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/functions/cidrv4",
+                  label: "cidrv4"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/functions/cidrv6",
+                  label: "cidrv6"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/functions/clone",
+                  label: "clone"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/functions/codec",
+                  label: "codec"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/functions/cuid",
+                  label: "cuid"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/functions/cuid2",
+                  label: "cuid2"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/functions/custom",
+                  label: "custom"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/functions/date",
+                  label: "date"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/functions/discriminatedUnion",
+                  label: "discriminatedUnion"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/functions/e164",
+                  label: "e164"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/functions/email",
+                  label: "email"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/functions/emoji",
+                  label: "emoji"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/functions/enum",
+                  label: "enum"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/functions/exactOptional",
+                  label: "exactOptional"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/functions/file",
+                  label: "file"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/functions/float32",
+                  label: "float32"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/functions/float64",
+                  label: "float64"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/functions/fromJSONSchema",
+                  label: "fromJSONSchema"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/functions/getErrorMap",
+                  label: "getErrorMap",
+                  className: "typedoc-sidebar-item-deprecated"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/functions/guid",
+                  label: "guid"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/functions/hash",
+                  label: "hash"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/functions/hex",
+                  label: "hex"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/functions/hostname",
+                  label: "hostname"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/functions/httpUrl",
+                  label: "httpUrl"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/functions/instanceof",
+                  label: "instanceof"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/functions/int",
+                  label: "int"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/functions/int32",
+                  label: "int32"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/functions/int64",
+                  label: "int64"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/functions/intersection",
+                  label: "intersection"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/functions/ipv4",
+                  label: "ipv4"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/functions/ipv6",
+                  label: "ipv6"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/functions/json",
+                  label: "json"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/functions/jwt",
+                  label: "jwt"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/functions/keyof",
+                  label: "keyof"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/functions/ksuid",
+                  label: "ksuid"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/functions/lazy",
+                  label: "lazy"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/functions/literal",
+                  label: "literal"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/functions/looseObject",
+                  label: "looseObject"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/functions/looseRecord",
+                  label: "looseRecord"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/functions/mac",
+                  label: "mac"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/functions/map",
+                  label: "map"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/functions/nan",
+                  label: "nan"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/functions/nanoid",
+                  label: "nanoid"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/functions/nativeEnum",
+                  label: "nativeEnum",
+                  className: "typedoc-sidebar-item-deprecated"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/functions/never",
+                  label: "never"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/functions/nonoptional",
+                  label: "nonoptional"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/functions/null",
+                  label: "null"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/functions/nullable",
+                  label: "nullable"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/functions/nullish",
+                  label: "nullish"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/functions/number",
+                  label: "number"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/functions/object",
+                  label: "object"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/functions/optional",
+                  label: "optional"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/functions/partialRecord",
+                  label: "partialRecord"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/functions/pipe",
+                  label: "pipe"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/functions/prefault",
+                  label: "prefault"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/functions/preprocess",
+                  label: "preprocess"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/functions/promise",
+                  label: "promise"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/functions/readonly",
+                  label: "readonly"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/functions/record",
+                  label: "record"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/functions/refine",
+                  label: "refine"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/functions/set",
+                  label: "set"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/functions/setErrorMap",
+                  label: "setErrorMap",
+                  className: "typedoc-sidebar-item-deprecated"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/functions/strictObject",
+                  label: "strictObject"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/functions/string",
+                  label: "string"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/functions/stringFormat",
+                  label: "stringFormat"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/functions/success",
+                  label: "success"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/functions/superRefine",
+                  label: "superRefine"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/functions/symbol",
+                  label: "symbol"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/functions/templateLiteral",
+                  label: "templateLiteral"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/functions/toJSONSchema",
+                  label: "toJSONSchema"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/functions/transform",
+                  label: "transform"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/functions/tuple",
+                  label: "tuple"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/functions/uint32",
+                  label: "uint32"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/functions/uint64",
+                  label: "uint64"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/functions/ulid",
+                  label: "ulid"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/functions/undefined",
+                  label: "undefined"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/functions/union",
+                  label: "union"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/functions/unknown",
+                  label: "unknown"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/functions/url",
+                  label: "url"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/functions/uuid",
+                  label: "uuid"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/functions/uuidv4",
+                  label: "uuidv4"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/functions/uuidv6",
+                  label: "uuidv6"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/functions/uuidv7",
+                  label: "uuidv7"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/functions/void",
+                  label: "void"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/functions/xid",
+                  label: "xid"
+                },
+                {
+                  type: "doc",
+                  id: "api/@framers/namespaces/z/functions/xor",
+                  label: "xor"
+                }
+              ]
+            }
+          ],
+          link: {
+            type: "doc",
+            id: "api/@framers/namespaces/z/index"
+          }
+        }
+      ]
+    },
+    {
+      type: "category",
       label: "Enumerations",
       items: [
         {
@@ -176,6 +7056,11 @@ const typedocSidebar = {
           type: "doc",
           id: "api/classes/BM25Index",
           label: "BM25Index"
+        },
+        {
+          type: "doc",
+          id: "api/classes/Brain",
+          label: "Brain"
         },
         {
           type: "doc",
@@ -361,6 +7246,16 @@ const typedocSidebar = {
           type: "doc",
           id: "api/classes/EmbeddingManager",
           label: "EmbeddingManager"
+        },
+        {
+          type: "doc",
+          id: "api/classes/EmergentAgentForge",
+          label: "EmergentAgentForge"
+        },
+        {
+          type: "doc",
+          id: "api/classes/EmergentAgentJudge",
+          label: "EmergentAgentJudge"
         },
         {
           type: "doc",
@@ -1169,18 +8064,13 @@ const typedocSidebar = {
         },
         {
           type: "doc",
-          id: "api/classes/SqliteBrain",
-          label: "SqliteBrain"
+          id: "api/classes/SqlKnowledgeGraph",
+          label: "SqlKnowledgeGraph"
         },
         {
           type: "doc",
-          id: "api/classes/SqliteKnowledgeGraph",
-          label: "SqliteKnowledgeGraph"
-        },
-        {
-          type: "doc",
-          id: "api/classes/SqliteMemoryGraph",
-          label: "SqliteMemoryGraph"
+          id: "api/classes/SqlMemoryGraph",
+          label: "SqlMemoryGraph"
         },
         {
           type: "doc",
@@ -1314,6 +8204,26 @@ const typedocSidebar = {
         },
         {
           type: "doc",
+          id: "api/classes/TypedNetworkObserver",
+          label: "TypedNetworkObserver"
+        },
+        {
+          type: "doc",
+          id: "api/classes/TypedNetworkRetriever",
+          label: "TypedNetworkRetriever"
+        },
+        {
+          type: "doc",
+          id: "api/classes/TypedNetworkStore",
+          label: "TypedNetworkStore"
+        },
+        {
+          type: "doc",
+          id: "api/classes/TypedSpreadingActivation",
+          label: "TypedSpreadingActivation"
+        },
+        {
+          type: "doc",
           id: "api/classes/UnifiedRetriever",
           label: "UnifiedRetriever"
         },
@@ -1346,6 +8256,11 @@ const typedocSidebar = {
           type: "doc",
           id: "api/classes/VisionPipeline",
           label: "VisionPipeline"
+        },
+        {
+          type: "doc",
+          id: "api/classes/VoiceNodeBuilder",
+          label: "VoiceNodeBuilder"
         },
         {
           type: "doc",
@@ -1512,6 +8427,11 @@ const typedocSidebar = {
           type: "doc",
           id: "api/interfaces/AgentKeySource",
           label: "AgentKeySource"
+        },
+        {
+          type: "doc",
+          id: "api/interfaces/AgentMemoryProvider",
+          label: "AgentMemoryProvider"
         },
         {
           type: "doc",
@@ -1742,6 +8662,16 @@ const typedocSidebar = {
           type: "doc",
           id: "api/interfaces/AgentSession",
           label: "AgentSession"
+        },
+        {
+          type: "doc",
+          id: "api/interfaces/AgentSpec",
+          label: "AgentSpec"
+        },
+        {
+          type: "doc",
+          id: "api/interfaces/AgentVerdict",
+          label: "AgentVerdict"
         },
         {
           type: "doc",
@@ -2420,6 +9350,11 @@ const typedocSidebar = {
         },
         {
           type: "doc",
+          id: "api/interfaces/EmergentAgentJudgeConfig",
+          label: "EmergentAgentJudgeConfig"
+        },
+        {
+          type: "doc",
           id: "api/interfaces/EmergentCapabilityEngineDeps",
           label: "EmergentCapabilityEngineDeps"
         },
@@ -2705,6 +9640,11 @@ const typedocSidebar = {
         },
         {
           type: "doc",
+          id: "api/interfaces/FactTemporal",
+          label: "FactTemporal"
+        },
+        {
+          type: "doc",
           id: "api/interfaces/FalImageProviderConfig",
           label: "FalImageProviderConfig"
         },
@@ -2740,8 +9680,8 @@ const typedocSidebar = {
         },
         {
           type: "doc",
-          id: "api/interfaces/ForgeResult",
-          label: "ForgeResult"
+          id: "api/interfaces/ForgeDefaults",
+          label: "ForgeDefaults"
         },
         {
           type: "doc",
@@ -2772,6 +9712,16 @@ const typedocSidebar = {
           type: "doc",
           id: "api/interfaces/ForgeToolRequest",
           label: "ForgeToolRequest"
+        },
+        {
+          type: "doc",
+          id: "api/interfaces/FourWayRrfInput",
+          label: "FourWayRrfInput"
+        },
+        {
+          type: "doc",
+          id: "api/interfaces/FourWayRrfOptions",
+          label: "FourWayRrfOptions"
         },
         {
           type: "doc",
@@ -2877,6 +9827,11 @@ const typedocSidebar = {
           type: "doc",
           id: "api/interfaces/GenerationHookResult",
           label: "GenerationHookResult"
+        },
+        {
+          type: "doc",
+          id: "api/interfaces/GlobalDefaultProvider",
+          label: "GlobalDefaultProvider"
         },
         {
           type: "doc",
@@ -3590,6 +10545,11 @@ const typedocSidebar = {
         },
         {
           type: "doc",
+          id: "api/interfaces/ITypedExtractionLLM",
+          label: "ITypedExtractionLLM"
+        },
+        {
+          type: "doc",
           id: "api/interfaces/IUsageLedgerPersistence",
           label: "IUsageLedgerPersistence"
         },
@@ -4247,6 +11207,11 @@ const typedocSidebar = {
           type: "doc",
           id: "api/interfaces/PartiallyRetrievedTrace",
           label: "PartiallyRetrievedTrace"
+        },
+        {
+          type: "doc",
+          id: "api/interfaces/Participant",
+          label: "Participant"
         },
         {
           type: "doc",
@@ -5115,6 +12080,16 @@ const typedocSidebar = {
         },
         {
           type: "doc",
+          id: "api/interfaces/SessionSendOptions",
+          label: "SessionSendOptions"
+        },
+        {
+          type: "doc",
+          id: "api/interfaces/SessionSendStructuredResult",
+          label: "SessionSendStructuredResult"
+        },
+        {
+          type: "doc",
           id: "api/interfaces/SessionSummarizerOptions",
           label: "SessionSummarizerOptions"
         },
@@ -5427,6 +12402,11 @@ const typedocSidebar = {
           type: "doc",
           id: "api/interfaces/SpreadingActivationInput",
           label: "SpreadingActivationInput"
+        },
+        {
+          type: "doc",
+          id: "api/interfaces/SpreadOptions",
+          label: "SpreadOptions"
         },
         {
           type: "doc",
@@ -5817,6 +12797,36 @@ const typedocSidebar = {
           type: "doc",
           id: "api/interfaces/TwitterAuthParams",
           label: "TwitterAuthParams"
+        },
+        {
+          type: "doc",
+          id: "api/interfaces/TypedEdge",
+          label: "TypedEdge"
+        },
+        {
+          type: "doc",
+          id: "api/interfaces/TypedFact",
+          label: "TypedFact"
+        },
+        {
+          type: "doc",
+          id: "api/interfaces/TypedNetworkObserverOptions",
+          label: "TypedNetworkObserverOptions"
+        },
+        {
+          type: "doc",
+          id: "api/interfaces/TypedNetworkRetrieveOptions",
+          label: "TypedNetworkRetrieveOptions"
+        },
+        {
+          type: "doc",
+          id: "api/interfaces/TypedNetworkRetrieverOptions",
+          label: "TypedNetworkRetrieverOptions"
+        },
+        {
+          type: "doc",
+          id: "api/interfaces/TypedSpreadingActivationOptions",
+          label: "TypedSpreadingActivationOptions"
         },
         {
           type: "doc",
@@ -6316,6 +13326,11 @@ const typedocSidebar = {
         },
         {
           type: "doc",
+          id: "api/type-aliases/BankId",
+          label: "BankId"
+        },
+        {
+          type: "doc",
           id: "api/type-aliases/BoundaryType",
           label: "BoundaryType"
         },
@@ -6436,6 +13451,11 @@ const typedocSidebar = {
         },
         {
           type: "doc",
+          id: "api/type-aliases/EdgeKind",
+          label: "EdgeKind"
+        },
+        {
+          type: "doc",
           id: "api/type-aliases/EffectClass",
           label: "EffectClass"
         },
@@ -6533,6 +13553,11 @@ const typedocSidebar = {
           type: "doc",
           id: "api/type-aliases/ForgeRejectionCategory",
           label: "ForgeRejectionCategory"
+        },
+        {
+          type: "doc",
+          id: "api/type-aliases/ForgeResult",
+          label: "ForgeResult"
         },
         {
           type: "doc",
@@ -6748,6 +13773,11 @@ const typedocSidebar = {
           type: "doc",
           id: "api/type-aliases/JSONSchemaType",
           label: "JSONSchemaType"
+        },
+        {
+          type: "doc",
+          id: "api/type-aliases/JudgeGenerateText",
+          label: "JudgeGenerateText"
         },
         {
           type: "doc",
@@ -7246,6 +14276,16 @@ const typedocSidebar = {
         },
         {
           type: "doc",
+          id: "api/type-aliases/TypedExtractionFact",
+          label: "TypedExtractionFact"
+        },
+        {
+          type: "doc",
+          id: "api/type-aliases/TypedExtractionOutput",
+          label: "TypedExtractionOutput"
+        },
+        {
+          type: "doc",
           id: "api/type-aliases/UnifiedRetrieverEvent",
           label: "UnifiedRetrieverEvent"
         },
@@ -7347,6 +14387,11 @@ const typedocSidebar = {
         },
         {
           type: "doc",
+          id: "api/variables/BANK_IDS",
+          label: "BANK_IDS"
+        },
+        {
+          type: "doc",
           id: "api/variables/BUILT_IN_PERSONAS",
           label: "BUILT_IN_PERSONAS"
         },
@@ -7369,6 +14414,11 @@ const typedocSidebar = {
           type: "doc",
           id: "api/variables/DEFAULT_DECAY_CONFIG",
           label: "DEFAULT_DECAY_CONFIG"
+        },
+        {
+          type: "doc",
+          id: "api/variables/DEFAULT_EDGE_MULTIPLIERS",
+          label: "DEFAULT_EDGE_MULTIPLIERS"
         },
         {
           type: "doc",
@@ -7439,6 +14489,11 @@ const typedocSidebar = {
           type: "doc",
           id: "api/variables/DEFAULT_THRESHOLDS",
           label: "DEFAULT_THRESHOLDS"
+        },
+        {
+          type: "doc",
+          id: "api/variables/EDGE_KINDS",
+          label: "EDGE_KINDS"
         },
         {
           type: "doc",
@@ -7639,6 +14694,21 @@ const typedocSidebar = {
           type: "doc",
           id: "api/variables/TERMINAL_CALL_STATES",
           label: "TERMINAL_CALL_STATES"
+        },
+        {
+          type: "doc",
+          id: "api/variables/TYPED_EXTRACTION_SYSTEM_PROMPT",
+          label: "TYPED_EXTRACTION_SYSTEM_PROMPT"
+        },
+        {
+          type: "doc",
+          id: "api/variables/TypedExtractionFactSchema",
+          label: "TypedExtractionFactSchema"
+        },
+        {
+          type: "doc",
+          id: "api/variables/TypedExtractionSchema",
+          label: "TypedExtractionSchema"
         }
       ]
     },
@@ -7723,6 +14793,11 @@ const typedocSidebar = {
         },
         {
           type: "doc",
+          id: "api/functions/buildExtractionUserPrompt",
+          label: "buildExtractionUserPrompt"
+        },
+        {
+          type: "doc",
           id: "api/functions/buildFallbackChain",
           label: "buildFallbackChain"
         },
@@ -7780,6 +14855,16 @@ const typedocSidebar = {
           type: "doc",
           id: "api/functions/classifyForgeRejection",
           label: "classifyForgeRejection"
+        },
+        {
+          type: "doc",
+          id: "api/functions/clearDefaultProvider",
+          label: "clearDefaultProvider"
+        },
+        {
+          type: "doc",
+          id: "api/functions/clearProviderPriority",
+          label: "clearProviderPriority"
         },
         {
           type: "doc",
@@ -7953,6 +15038,11 @@ const typedocSidebar = {
         },
         {
           type: "doc",
+          id: "api/functions/createTestAgentOSConfig",
+          label: "createTestAgentOSConfig"
+        },
+        {
+          type: "doc",
           id: "api/functions/createVideoProvider",
           label: "createVideoProvider"
         },
@@ -8063,6 +15153,11 @@ const typedocSidebar = {
         },
         {
           type: "doc",
+          id: "api/functions/extractEntities",
+          label: "extractEntities"
+        },
+        {
+          type: "doc",
           id: "api/functions/extractJson",
           label: "extractJson"
         },
@@ -8070,6 +15165,11 @@ const typedocSidebar = {
           type: "doc",
           id: "api/functions/extractMetadata",
           label: "extractMetadata"
+        },
+        {
+          type: "doc",
+          id: "api/functions/extractQueryEntities",
+          label: "extractQueryEntities"
         },
         {
           type: "doc",
@@ -8120,6 +15220,11 @@ const typedocSidebar = {
           type: "doc",
           id: "api/functions/formatTraceId",
           label: "formatTraceId"
+        },
+        {
+          type: "doc",
+          id: "api/functions/fourWayRrf",
+          label: "fourWayRrf"
         },
         {
           type: "doc",
@@ -8183,6 +15288,11 @@ const typedocSidebar = {
         },
         {
           type: "doc",
+          id: "api/functions/getDefaultProvider",
+          label: "getDefaultProvider"
+        },
+        {
+          type: "doc",
           id: "api/functions/getDefaultSpeechProviderId",
           label: "getDefaultSpeechProviderId"
         },
@@ -8200,6 +15310,11 @@ const typedocSidebar = {
           type: "doc",
           id: "api/functions/getProvenanceSchema",
           label: "getProvenanceSchema"
+        },
+        {
+          type: "doc",
+          id: "api/functions/getProviderPriority",
+          label: "getProviderPriority"
         },
         {
           type: "doc",
@@ -8315,6 +15430,11 @@ const typedocSidebar = {
           type: "doc",
           id: "api/functions/isAuthenticatedRateLimit",
           label: "isAuthenticatedRateLimit"
+        },
+        {
+          type: "doc",
+          id: "api/functions/isBankId",
+          label: "isBankId"
         },
         {
           type: "doc",
@@ -8523,6 +15643,11 @@ const typedocSidebar = {
         },
         {
           type: "doc",
+          id: "api/functions/rankByTemporalOverlap",
+          label: "rankByTemporalOverlap"
+        },
+        {
+          type: "doc",
           id: "api/functions/readRecordedAgentOSUsageEvents",
           label: "readRecordedAgentOSUsageEvents"
         },
@@ -8693,8 +15818,18 @@ const typedocSidebar = {
         },
         {
           type: "doc",
+          id: "api/functions/setDefaultProvider",
+          label: "setDefaultProvider"
+        },
+        {
+          type: "doc",
           id: "api/functions/setLoggerFactory",
           label: "setLoggerFactory"
+        },
+        {
+          type: "doc",
+          id: "api/functions/setProviderPriority",
+          label: "setProviderPriority"
         },
         {
           type: "doc",
@@ -8710,6 +15845,11 @@ const typedocSidebar = {
           type: "doc",
           id: "api/functions/shouldObserveAgent",
           label: "shouldObserveAgent"
+        },
+        {
+          type: "doc",
+          id: "api/functions/slugifyEntityId",
+          label: "slugifyEntityId"
         },
         {
           type: "doc",
@@ -8753,6 +15893,11 @@ const typedocSidebar = {
         },
         {
           type: "doc",
+          id: "api/functions/transferStyle",
+          label: "transferStyle"
+        },
+        {
+          type: "doc",
           id: "api/functions/twilioConversationTwiml",
           label: "twilioConversationTwiml"
         },
@@ -8760,6 +15905,11 @@ const typedocSidebar = {
           type: "doc",
           id: "api/functions/twilioNotifyTwiml",
           label: "twilioNotifyTwiml"
+        },
+        {
+          type: "doc",
+          id: "api/functions/typedFactToScoredTrace",
+          label: "typedFactToScoredTrace"
         },
         {
           type: "doc",
@@ -8795,6 +15945,11 @@ const typedocSidebar = {
           type: "doc",
           id: "api/functions/variateImage",
           label: "variateImage"
+        },
+        {
+          type: "doc",
+          id: "api/functions/voiceNode",
+          label: "voiceNode"
         },
         {
           type: "doc",

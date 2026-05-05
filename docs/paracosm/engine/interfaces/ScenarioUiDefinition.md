@@ -1,6 +1,6 @@
 # Interface: ScenarioUiDefinition
 
-Defined in: [apps/paracosm/src/engine/types.ts:168](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L168)
+Defined in: [apps/paracosm/src/engine/types.ts:185](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/types.ts#L185)
 
 Tells the dashboard how to render scenario-specific UI elements.
 
@@ -10,7 +10,7 @@ Tells the dashboard how to render scenario-specific UI elements.
 
 > **departmentIcons**: `Record`\<`string`, `string`\>
 
-Defined in: [apps/paracosm/src/engine/types.ts:172](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L172)
+Defined in: [apps/paracosm/src/engine/types.ts:189](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/types.ts#L189)
 
 ***
 
@@ -18,7 +18,7 @@ Defined in: [apps/paracosm/src/engine/types.ts:172](https://github.com/framersai
 
 > **eventRenderers**: `Record`\<`string`, \{ `color`: `string`; `icon`: `string`; \}\>
 
-Defined in: [apps/paracosm/src/engine/types.ts:173](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L173)
+Defined in: [apps/paracosm/src/engine/types.ts:190](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/types.ts#L190)
 
 ***
 
@@ -26,7 +26,7 @@ Defined in: [apps/paracosm/src/engine/types.ts:173](https://github.com/framersai
 
 > **headerMetrics**: `object`[]
 
-Defined in: [apps/paracosm/src/engine/types.ts:169](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L169)
+Defined in: [apps/paracosm/src/engine/types.ts:186](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/types.ts#L186)
 
 #### format
 
@@ -42,15 +42,15 @@ Defined in: [apps/paracosm/src/engine/types.ts:169](https://github.com/framersai
 
 > **reportSections**: (`"departments"` \| `"crisis"` \| `"decision"` \| `"outcome"` \| `"quotes"` \| `"causality"`)[]
 
-Defined in: [apps/paracosm/src/engine/types.ts:171](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L171)
+Defined in: [apps/paracosm/src/engine/types.ts:188](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/types.ts#L188)
 
 ***
 
 ### setupSections
 
-> **setupSections**: (`"leaders"` \| `"personnel"` \| `"resources"` \| `"departments"` \| `"events"` \| `"models"` \| `"advanced"`)[]
+> **setupSections**: (`"actors"` \| `"personnel"` \| `"resources"` \| `"departments"` \| `"events"` \| `"models"` \| `"advanced"`)[]
 
-Defined in: [apps/paracosm/src/engine/types.ts:174](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L174)
+Defined in: [apps/paracosm/src/engine/types.ts:191](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/types.ts#L191)
 
 ***
 
@@ -58,4 +58,4 @@ Defined in: [apps/paracosm/src/engine/types.ts:174](https://github.com/framersai
 
 > **tooltipFields**: `string`[]
 
-Defined in: [apps/paracosm/src/engine/types.ts:170](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L170)
+Defined in: [apps/paracosm/src/engine/types.ts:187](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/types.ts#L187)

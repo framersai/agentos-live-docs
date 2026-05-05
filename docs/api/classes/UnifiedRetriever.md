@@ -1,6 +1,6 @@
 # Class: UnifiedRetriever
 
-Defined in: [packages/agentos/src/rag/unified/UnifiedRetriever.ts:263](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/unified/UnifiedRetriever.ts#L263)
+Defined in: [packages/agentos/src/rag/unified/UnifiedRetriever.ts:263](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/unified/UnifiedRetriever.ts#L263)
 
 Unified retrieval orchestrator that executes a [RetrievalPlan](../interfaces/RetrievalPlan.md)
 across ALL available sources in parallel, merges results via RRF,
@@ -51,7 +51,7 @@ console.log(`Found ${result.chunks.length} chunks from ${Object.keys(result.sour
 
 > **new UnifiedRetriever**(`deps`): `UnifiedRetriever`
 
-Defined in: [packages/agentos/src/rag/unified/UnifiedRetriever.ts:299](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/unified/UnifiedRetriever.ts#L299)
+Defined in: [packages/agentos/src/rag/unified/UnifiedRetriever.ts:299](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/unified/UnifiedRetriever.ts#L299)
 
 Creates a new UnifiedRetriever.
 
@@ -981,7 +981,7 @@ v0.1.26
 
 > **retrieve**(`query`, `plan`, `topK?`): `Promise`\<[`UnifiedRetrievalResult`](../interfaces/UnifiedRetrievalResult.md)\>
 
-Defined in: [packages/agentos/src/rag/unified/UnifiedRetriever.ts:342](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/unified/UnifiedRetriever.ts#L342)
+Defined in: [packages/agentos/src/rag/unified/UnifiedRetriever.ts:342](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/unified/UnifiedRetriever.ts#L342)
 
 Execute a retrieval plan across all enabled sources.
 
@@ -1041,7 +1041,7 @@ for (const chunk of result.chunks) {
 
 > **retrieveWithPolicy**(`query`, `policyInput?`): `Promise`\<[`UnifiedRetrievalResult`](../interfaces/UnifiedRetrievalResult.md)\>
 
-Defined in: [packages/agentos/src/rag/unified/UnifiedRetriever.ts:433](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/unified/UnifiedRetriever.ts#L433)
+Defined in: [packages/agentos/src/rag/unified/UnifiedRetriever.ts:433](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/unified/UnifiedRetriever.ts#L433)
 
 #### Parameters
 

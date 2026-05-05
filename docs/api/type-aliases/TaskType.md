@@ -2,7 +2,7 @@
 
 > **TaskType** = `"text"` \| `"image"` \| `"embedding"`
 
-Defined in: [packages/agentos/src/api/model.ts:211](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/model.ts#L211)
+Defined in: [packages/agentos/src/api/model.ts:223](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/model.ts#L223)
 
 Supported task types used when looking up a provider's default model.
 

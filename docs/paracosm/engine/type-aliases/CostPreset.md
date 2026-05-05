@@ -2,7 +2,7 @@
 
 > **CostPreset** = `"quality"` \| `"economy"`
 
-Defined in: [apps/paracosm/src/cli/sim-config.ts:380](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/cli/sim-config.ts#L380)
+Defined in: [apps/paracosm/src/cli/sim-config.ts:412](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/cli/sim-config.ts#L412)
 
 Cost-vs-quality preset for `runSimulation` model routing.
 

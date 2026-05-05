@@ -2,7 +2,7 @@
 
 > **buildEventSummary**(`type`, `data`): `string`
 
-Defined in: [apps/paracosm/src/runtime/orchestrator.ts:256](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/orchestrator.ts#L256)
+Defined in: [apps/paracosm/src/runtime/orchestrator.ts:275](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/runtime/orchestrator.ts#L275)
 
 Build a human-readable one-liner for an event, used as the universal
 `summary` field on every emitted event's `data`. Centralized here so

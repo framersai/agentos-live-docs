@@ -2,7 +2,7 @@
 
 > **VisionTier** = `"ocr"` \| `"handwriting"` \| `"document-ai"` \| `"embedding"` \| `"cloud-vision"`
 
-Defined in: [packages/agentos/src/vision/types.ts:79](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/vision/types.ts#L79)
+Defined in: [packages/agentos/src/vision/types.ts:79](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/vision/types.ts#L79)
 
 Identifies which processing tier produced a result.
 

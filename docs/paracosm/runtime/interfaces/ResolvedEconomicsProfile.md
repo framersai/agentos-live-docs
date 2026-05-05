@@ -1,6 +1,6 @@
 # Interface: ResolvedEconomicsProfile
 
-Defined in: [apps/paracosm/src/runtime/economics-profile.ts:10](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/economics-profile.ts#L10)
+Defined in: [apps/paracosm/src/runtime/economics-profile.ts:10](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/runtime/economics-profile.ts#L10)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [apps/paracosm/src/runtime/economics-profile.ts:10](https://github.c
 
 > **batch**: `object`
 
-Defined in: [apps/paracosm/src/runtime/economics-profile.ts:15](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/economics-profile.ts#L15)
+Defined in: [apps/paracosm/src/runtime/economics-profile.ts:15](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/runtime/economics-profile.ts#L15)
 
 #### maxConcurrency
 
@@ -20,7 +20,7 @@ Defined in: [apps/paracosm/src/runtime/economics-profile.ts:15](https://github.c
 
 > **compileSignature**: `string`
 
-Defined in: [apps/paracosm/src/runtime/economics-profile.ts:16](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/economics-profile.ts#L16)
+Defined in: [apps/paracosm/src/runtime/economics-profile.ts:16](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/runtime/economics-profile.ts#L16)
 
 ***
 
@@ -28,7 +28,7 @@ Defined in: [apps/paracosm/src/runtime/economics-profile.ts:16](https://github.c
 
 > **id**: [`SimulationEconomicsProfileId`](../type-aliases/SimulationEconomicsProfileId.md)
 
-Defined in: [apps/paracosm/src/runtime/economics-profile.ts:11](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/economics-profile.ts#L11)
+Defined in: [apps/paracosm/src/runtime/economics-profile.ts:11](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/runtime/economics-profile.ts#L11)
 
 ***
 
@@ -36,7 +36,7 @@ Defined in: [apps/paracosm/src/runtime/economics-profile.ts:11](https://github.c
 
 > **models**: [`SimulationModelConfig`](../../engine/interfaces/SimulationModelConfig.md)
 
-Defined in: [apps/paracosm/src/runtime/economics-profile.ts:12](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/economics-profile.ts#L12)
+Defined in: [apps/paracosm/src/runtime/economics-profile.ts:12](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/runtime/economics-profile.ts#L12)
 
 ***
 
@@ -44,7 +44,7 @@ Defined in: [apps/paracosm/src/runtime/economics-profile.ts:12](https://github.c
 
 > **search**: `object`
 
-Defined in: [apps/paracosm/src/runtime/economics-profile.ts:14](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/economics-profile.ts#L14)
+Defined in: [apps/paracosm/src/runtime/economics-profile.ts:14](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/runtime/economics-profile.ts#L14)
 
 #### maxSearches
 
@@ -60,7 +60,7 @@ Defined in: [apps/paracosm/src/runtime/economics-profile.ts:14](https://github.c
 
 > **verdict**: `object`
 
-Defined in: [apps/paracosm/src/runtime/economics-profile.ts:13](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/economics-profile.ts#L13)
+Defined in: [apps/paracosm/src/runtime/economics-profile.ts:13](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/runtime/economics-profile.ts#L13)
 
 #### mode
 

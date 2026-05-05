@@ -1,6 +1,6 @@
 # Interface: DepartmentDefinition
 
-Defined in: [apps/paracosm/src/engine/types.ts:125](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L125)
+Defined in: [apps/paracosm/src/engine/types.ts:142](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/types.ts#L142)
 
 Defines a department (analysis group) in the scenario.
 
@@ -10,7 +10,7 @@ Defines a department (analysis group) in the scenario.
 
 > **defaultModel**: `string`
 
-Defined in: [apps/paracosm/src/engine/types.ts:130](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L130)
+Defined in: [apps/paracosm/src/engine/types.ts:147](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/types.ts#L147)
 
 ***
 
@@ -18,7 +18,7 @@ Defined in: [apps/paracosm/src/engine/types.ts:130](https://github.com/framersai
 
 > **icon**: `string`
 
-Defined in: [apps/paracosm/src/engine/types.ts:129](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L129)
+Defined in: [apps/paracosm/src/engine/types.ts:146](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/types.ts#L146)
 
 ***
 
@@ -26,7 +26,7 @@ Defined in: [apps/paracosm/src/engine/types.ts:129](https://github.com/framersai
 
 > **id**: `string`
 
-Defined in: [apps/paracosm/src/engine/types.ts:126](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L126)
+Defined in: [apps/paracosm/src/engine/types.ts:143](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/types.ts#L143)
 
 ***
 
@@ -34,7 +34,7 @@ Defined in: [apps/paracosm/src/engine/types.ts:126](https://github.com/framersai
 
 > **instructions**: `string`
 
-Defined in: [apps/paracosm/src/engine/types.ts:131](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L131)
+Defined in: [apps/paracosm/src/engine/types.ts:148](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/types.ts#L148)
 
 ***
 
@@ -42,7 +42,7 @@ Defined in: [apps/paracosm/src/engine/types.ts:131](https://github.com/framersai
 
 > **label**: `string`
 
-Defined in: [apps/paracosm/src/engine/types.ts:127](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L127)
+Defined in: [apps/paracosm/src/engine/types.ts:144](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/types.ts#L144)
 
 ***
 
@@ -50,4 +50,4 @@ Defined in: [apps/paracosm/src/engine/types.ts:127](https://github.com/framersai
 
 > **role**: `string`
 
-Defined in: [apps/paracosm/src/engine/types.ts:128](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L128)
+Defined in: [apps/paracosm/src/engine/types.ts:145](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/types.ts#L145)

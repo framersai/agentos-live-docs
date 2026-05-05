@@ -1,16 +1,60 @@
 # Interface: CompileOptions
 
-Defined in: [apps/paracosm/src/engine/compiler/types.ts:37](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/compiler/types.ts#L37)
+Defined in: [apps/paracosm/src/engine/compiler/types.ts:38](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/compiler/types.ts#L38)
 
 Options for compileScenario().
 
+## Extends
+
+- `RuntimeCredentialOptions`
+
 ## Properties
+
+### anthropicKey?
+
+> `optional` **anthropicKey**: `string`
+
+Defined in: [apps/paracosm/src/engine/provider-credentials.ts:8](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/provider-credentials.ts#L8)
+
+Anthropic API key.
+
+#### Inherited from
+
+`RuntimeCredentialOptions.anthropicKey`
+
+***
+
+### apiKey?
+
+> `optional` **apiKey**: `string`
+
+Defined in: [apps/paracosm/src/engine/provider-credentials.ts:6](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/provider-credentials.ts#L6)
+
+OpenAI API key. Historical dashboard field name.
+
+#### Inherited from
+
+`RuntimeCredentialOptions.apiKey`
+
+***
+
+### braveKey?
+
+> `optional` **braveKey**: `string`
+
+Defined in: [apps/paracosm/src/engine/provider-credentials.ts:16](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/provider-credentials.ts#L16)
+
+#### Inherited from
+
+`RuntimeCredentialOptions.braveKey`
+
+***
 
 ### cache?
 
 > `optional` **cache**: `boolean`
 
-Defined in: [apps/paracosm/src/engine/compiler/types.ts:43](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/compiler/types.ts#L43)
+Defined in: [apps/paracosm/src/engine/compiler/types.ts:44](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/compiler/types.ts#L44)
 
 Whether to use disk caching. Default: true.
 
@@ -20,9 +64,33 @@ Whether to use disk caching. Default: true.
 
 > `optional` **cacheDir**: `string`
 
-Defined in: [apps/paracosm/src/engine/compiler/types.ts:45](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/compiler/types.ts#L45)
+Defined in: [apps/paracosm/src/engine/compiler/types.ts:46](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/compiler/types.ts#L46)
 
 Base directory for the disk cache. Default: '.paracosm/cache'.
+
+***
+
+### cohereKey?
+
+> `optional` **cohereKey**: `string`
+
+Defined in: [apps/paracosm/src/engine/provider-credentials.ts:17](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/provider-credentials.ts#L17)
+
+#### Inherited from
+
+`RuntimeCredentialOptions.cohereKey`
+
+***
+
+### firecrawlKey?
+
+> `optional` **firecrawlKey**: `string`
+
+Defined in: [apps/paracosm/src/engine/provider-credentials.ts:14](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/provider-credentials.ts#L14)
+
+#### Inherited from
+
+`RuntimeCredentialOptions.firecrawlKey`
 
 ***
 
@@ -30,7 +98,7 @@ Base directory for the disk cache. Default: '.paracosm/cache'.
 
 > `optional` **generateText**: [`GenerateTextFn`](../type-aliases/GenerateTextFn.md)
 
-Defined in: [apps/paracosm/src/engine/compiler/types.ts:47](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/compiler/types.ts#L47)
+Defined in: [apps/paracosm/src/engine/compiler/types.ts:48](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/compiler/types.ts#L48)
 
 Custom generateText function (overrides provider/model).
 
@@ -40,7 +108,7 @@ Custom generateText function (overrides provider/model).
 
 > `optional` **maxSearches**: `number`
 
-Defined in: [apps/paracosm/src/engine/compiler/types.ts:57](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/compiler/types.ts#L57)
+Defined in: [apps/paracosm/src/engine/compiler/types.ts:58](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/compiler/types.ts#L58)
 
 Max web searches during seed ingestion. Default: 5.
 
@@ -50,7 +118,7 @@ Max web searches during seed ingestion. Default: 5.
 
 > `optional` **model**: `string`
 
-Defined in: [apps/paracosm/src/engine/compiler/types.ts:41](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/compiler/types.ts#L41)
+Defined in: [apps/paracosm/src/engine/compiler/types.ts:42](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/compiler/types.ts#L42)
 
 Model name for hook generation.
 
@@ -60,7 +128,7 @@ Model name for hook generation.
 
 > `optional` **onProgress**: (`hookName`, `status`) => `void`
 
-Defined in: [apps/paracosm/src/engine/compiler/types.ts:49](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/compiler/types.ts#L49)
+Defined in: [apps/paracosm/src/engine/compiler/types.ts:50](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/compiler/types.ts#L50)
 
 Progress callback for each hook being generated.
 
@@ -84,7 +152,7 @@ Progress callback for each hook being generated.
 
 > `optional` **provider**: [`LlmProvider`](../../type-aliases/LlmProvider.md)
 
-Defined in: [apps/paracosm/src/engine/compiler/types.ts:39](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/compiler/types.ts#L39)
+Defined in: [apps/paracosm/src/engine/compiler/types.ts:40](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/compiler/types.ts#L40)
 
 LLM provider to use for hook generation.
 
@@ -94,9 +162,9 @@ LLM provider to use for hook generation.
 
 > `optional` **seedText**: `string`
 
-Defined in: [apps/paracosm/src/engine/compiler/types.ts:51](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/compiler/types.ts#L51)
+Defined in: [apps/paracosm/src/engine/compiler/types.ts:52](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/compiler/types.ts#L52)
 
-Seed text to ingest into the scenario's knowledge bundle via LLM extraction + optional web search.
+Prompt, brief, or document text to ingest into the scenario's knowledge bundle via LLM extraction + optional web search.
 
 ***
 
@@ -104,9 +172,33 @@ Seed text to ingest into the scenario's knowledge bundle via LLM extraction + op
 
 > `optional` **seedUrl**: `string`
 
-Defined in: [apps/paracosm/src/engine/compiler/types.ts:53](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/compiler/types.ts#L53)
+Defined in: [apps/paracosm/src/engine/compiler/types.ts:54](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/compiler/types.ts#L54)
 
-Seed URL to fetch and ingest. If set, seedText is ignored.
+URL to fetch and ingest as source material. If set, seedText is ignored.
+
+***
+
+### serperKey?
+
+> `optional` **serperKey**: `string`
+
+Defined in: [apps/paracosm/src/engine/provider-credentials.ts:13](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/provider-credentials.ts#L13)
+
+#### Inherited from
+
+`RuntimeCredentialOptions.serperKey`
+
+***
+
+### tavilyKey?
+
+> `optional` **tavilyKey**: `string`
+
+Defined in: [apps/paracosm/src/engine/provider-credentials.ts:15](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/provider-credentials.ts#L15)
+
+#### Inherited from
+
+`RuntimeCredentialOptions.tavilyKey`
 
 ***
 
@@ -114,7 +206,7 @@ Seed URL to fetch and ingest. If set, seedText is ignored.
 
 > `optional` **telemetry**: `CompilerTelemetry`
 
-Defined in: [apps/paracosm/src/engine/compiler/types.ts:64](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/compiler/types.ts#L64)
+Defined in: [apps/paracosm/src/engine/compiler/types.ts:65](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/compiler/types.ts#L65)
 
 Optional telemetry sink that collects per-hook attempt counts and
 any exhausted-retry fallbacks. Use when you want to surface compile
@@ -127,6 +219,6 @@ CompilerTelemetry.
 
 > `optional` **webSearch**: `boolean`
 
-Defined in: [apps/paracosm/src/engine/compiler/types.ts:55](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/compiler/types.ts#L55)
+Defined in: [apps/paracosm/src/engine/compiler/types.ts:56](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/compiler/types.ts#L56)
 
 Enable live web search during seed ingestion. Requires search API keys. Default: true.

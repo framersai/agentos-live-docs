@@ -2,7 +2,7 @@
 
 > **registerAnchorProviderFactory**(`type`, `factory`): `void`
 
-Defined in: [packages/agentos/src/provenance/anchoring/providers/createAnchorProvider.ts:33](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/provenance/anchoring/providers/createAnchorProvider.ts#L33)
+Defined in: [packages/agentos/src/provenance/anchoring/providers/createAnchorProvider.ts:33](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/provenance/anchoring/providers/createAnchorProvider.ts#L33)
 
 Register an external AnchorProvider factory for a given anchor target type.
 Called by extension packages (e.g., @framers/agentos-ext-anchor-providers) at startup.

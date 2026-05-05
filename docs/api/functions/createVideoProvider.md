@@ -2,7 +2,7 @@
 
 > **createVideoProvider**(`providerId`): [`IVideoGenerator`](../interfaces/IVideoGenerator.md)
 
-Defined in: [packages/agentos/src/media/video/index.ts:70](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/media/video/index.ts#L70)
+Defined in: [packages/agentos/src/media/video/index.ts:70](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/media/video/index.ts#L70)
 
 Create a video provider instance by provider ID.
 

@@ -1,6 +1,6 @@
 # Interface: ScenarioWorldSchema
 
-Defined in: [apps/paracosm/src/engine/types.ts:80](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L80)
+Defined in: [apps/paracosm/src/engine/types.ts:97](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/types.ts#L97)
 
 Declares all world state variables for a scenario.
 
@@ -10,7 +10,7 @@ Declares all world state variables for a scenario.
 
 > **capacities**: `Record`\<`string`, [`WorldMetricSchema`](WorldMetricSchema.md)\>
 
-Defined in: [apps/paracosm/src/engine/types.ts:82](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L82)
+Defined in: [apps/paracosm/src/engine/types.ts:99](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/types.ts#L99)
 
 ***
 
@@ -18,7 +18,7 @@ Defined in: [apps/paracosm/src/engine/types.ts:82](https://github.com/framersai/
 
 > **environment**: `Record`\<`string`, [`WorldMetricSchema`](WorldMetricSchema.md)\>
 
-Defined in: [apps/paracosm/src/engine/types.ts:85](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L85)
+Defined in: [apps/paracosm/src/engine/types.ts:102](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/types.ts#L102)
 
 ***
 
@@ -26,7 +26,7 @@ Defined in: [apps/paracosm/src/engine/types.ts:85](https://github.com/framersai/
 
 > **metrics**: `Record`\<`string`, [`WorldMetricSchema`](WorldMetricSchema.md)\>
 
-Defined in: [apps/paracosm/src/engine/types.ts:81](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L81)
+Defined in: [apps/paracosm/src/engine/types.ts:98](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/types.ts#L98)
 
 ***
 
@@ -34,7 +34,7 @@ Defined in: [apps/paracosm/src/engine/types.ts:81](https://github.com/framersai/
 
 > **politics**: `Record`\<`string`, [`WorldMetricSchema`](WorldMetricSchema.md)\>
 
-Defined in: [apps/paracosm/src/engine/types.ts:84](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L84)
+Defined in: [apps/paracosm/src/engine/types.ts:101](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/types.ts#L101)
 
 ***
 
@@ -42,4 +42,4 @@ Defined in: [apps/paracosm/src/engine/types.ts:84](https://github.com/framersai/
 
 > **statuses**: `Record`\<`string`, [`WorldMetricSchema`](WorldMetricSchema.md)\>
 
-Defined in: [apps/paracosm/src/engine/types.ts:83](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L83)
+Defined in: [apps/paracosm/src/engine/types.ts:100](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/types.ts#L100)

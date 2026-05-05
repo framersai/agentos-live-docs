@@ -1,6 +1,6 @@
 # Interface: ExplicitAssignment
 
-Defined in: [packages/agentos/src/orchestration/planning/types.ts:64](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/planning/types.ts#L64)
+Defined in: [packages/agentos/src/orchestration/planning/types.ts:64](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/planning/types.ts#L64)
 
 Explicit provider+model override for a specific node or role.
 
@@ -10,7 +10,7 @@ Explicit provider+model override for a specific node or role.
 
 > `optional` **model**: `string`
 
-Defined in: [packages/agentos/src/orchestration/planning/types.ts:66](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/planning/types.ts#L66)
+Defined in: [packages/agentos/src/orchestration/planning/types.ts:66](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/planning/types.ts#L66)
 
 ***
 
@@ -18,4 +18,4 @@ Defined in: [packages/agentos/src/orchestration/planning/types.ts:66](https://gi
 
 > **provider**: `string`
 
-Defined in: [packages/agentos/src/orchestration/planning/types.ts:65](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/planning/types.ts#L65)
+Defined in: [packages/agentos/src/orchestration/planning/types.ts:65](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/planning/types.ts#L65)

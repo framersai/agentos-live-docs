@@ -1,6 +1,6 @@
 # Class: AgentGraph\<TState\>
 
-Defined in: [packages/agentos/src/orchestration/builders/AgentGraph.ts:62](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/builders/AgentGraph.ts#L62)
+Defined in: [packages/agentos/src/orchestration/builders/AgentGraph.ts:63](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/builders/AgentGraph.ts#L63)
 
 Fluent builder for agent execution graphs.
 
@@ -22,7 +22,7 @@ Narrows the `GraphState` type used in conditional-edge callbacks.
 
 > **new AgentGraph**\<`TState`\>(`stateSchema`, `config?`): `AgentGraph`\<`TState`\>
 
-Defined in: [packages/agentos/src/orchestration/builders/AgentGraph.ts:79](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/builders/AgentGraph.ts#L79)
+Defined in: [packages/agentos/src/orchestration/builders/AgentGraph.ts:80](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/builders/AgentGraph.ts#L80)
 
 #### Parameters
 
@@ -83,7 +83,7 @@ Field-level merge strategies for `scratch` and `artifacts` fields.
 
 > **addConditionalEdge**(`source`, `condition`): `this`
 
-Defined in: [packages/agentos/src/orchestration/builders/AgentGraph.ts:160](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/builders/AgentGraph.ts#L160)
+Defined in: [packages/agentos/src/orchestration/builders/AgentGraph.ts:161](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/builders/AgentGraph.ts#L161)
 
 Add a conditional edge whose target is determined at runtime by a callback.
 
@@ -120,7 +120,7 @@ Pure function `(state: TState) => string` returning the next node id.
 
 > **addDiscoveryEdge**(`source`, `config`): `this`
 
-Defined in: [packages/agentos/src/orchestration/builders/AgentGraph.ts:189](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/builders/AgentGraph.ts#L189)
+Defined in: [packages/agentos/src/orchestration/builders/AgentGraph.ts:190](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/builders/AgentGraph.ts#L190)
 
 Add a discovery edge whose target is resolved at runtime via the capability discovery engine.
 
@@ -172,7 +172,7 @@ Semantic query forwarded to the capability discovery engine.
 
 > **addEdge**(`source`, `target`): `this`
 
-Defined in: [packages/agentos/src/orchestration/builders/AgentGraph.ts:136](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/builders/AgentGraph.ts#L136)
+Defined in: [packages/agentos/src/orchestration/builders/AgentGraph.ts:137](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/builders/AgentGraph.ts#L137)
 
 Add an unconditional (static) edge that is always followed at runtime.
 
@@ -204,7 +204,7 @@ Target node id (or `END`).
 
 > **addNode**(`id`, `node`): `this`
 
-Defined in: [packages/agentos/src/orchestration/builders/AgentGraph.ts:113](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/builders/AgentGraph.ts#L113)
+Defined in: [packages/agentos/src/orchestration/builders/AgentGraph.ts:114](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/builders/AgentGraph.ts#L114)
 
 Add a node to the graph.
 
@@ -241,7 +241,7 @@ When `id` has already been registered.
 
 > **addPersonalityEdge**(`source`, `config`): `this`
 
-Defined in: [packages/agentos/src/orchestration/builders/AgentGraph.ts:227](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/builders/AgentGraph.ts#L227)
+Defined in: [packages/agentos/src/orchestration/builders/AgentGraph.ts:228](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/builders/AgentGraph.ts#L228)
 
 Add a personality edge whose target is chosen based on the agent's current trait value.
 
@@ -300,7 +300,7 @@ HEXACO/PAD trait name, e.g. `'conscientiousness'` or `'openness'`.
 
 > **compile**(`options?`): [`CompiledAgentGraph`](CompiledAgentGraph.md)\<`TState`\>
 
-Defined in: [packages/agentos/src/orchestration/builders/AgentGraph.ts:281](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/builders/AgentGraph.ts#L281)
+Defined in: [packages/agentos/src/orchestration/builders/AgentGraph.ts:282](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/builders/AgentGraph.ts#L282)
 
 Compile the builder state into a `CompiledAgentGraph` ready for execution.
 
@@ -325,6 +325,19 @@ Optional compilation flags.
 [`ICheckpointStore`](../interfaces/ICheckpointStore.md)
 
 Custom checkpoint persistence backend. Defaults to an in-memory store.
+
+###### deps?
+
+`NodeExecutorDeps`
+
+Runtime-execution dependencies forwarded to the underlying
+`NodeExecutor`. Wire in `toolOrchestrator` for `tool` nodes,
+`loopController` + `providerCall` for `gmi` nodes, etc. Without these,
+the matching node types fail with `success: false`.
+
+**See**
+
+WorkflowRuntimeDeps
 
 ###### validate?
 

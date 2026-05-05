@@ -1,6 +1,6 @@
 # Interface: ScenarioHooks
 
-Defined in: [apps/paracosm/src/engine/types.ts:260](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L260)
+Defined in: [apps/paracosm/src/engine/types.ts:277](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/types.ts#L277)
 
 Lifecycle hooks that a scenario provides to inject domain-specific behavior
 into the generic engine. All hooks are optional.
@@ -11,7 +11,7 @@ into the generic engine. All hooks are optional.
 
 > `optional` **departmentPromptHook**: (`ctx`) => `string`[]
 
-Defined in: [apps/paracosm/src/engine/types.ts:264](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L264)
+Defined in: [apps/paracosm/src/engine/types.ts:281](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/types.ts#L281)
 
 Builds department-specific prompt context lines for LLM department agents
 
@@ -31,7 +31,7 @@ Builds department-specific prompt context lines for LLM department agents
 
 > `optional` **directorInstructions**: () => `string`
 
-Defined in: [apps/paracosm/src/engine/types.ts:266](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L266)
+Defined in: [apps/paracosm/src/engine/types.ts:283](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/types.ts#L283)
 
 Returns the Event Director's system instructions for this scenario
 
@@ -45,7 +45,7 @@ Returns the Event Director's system instructions for this scenario
 
 > `optional` **directorPromptHook**: (`ctx`) => `string`
 
-Defined in: [apps/paracosm/src/engine/types.ts:268](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L268)
+Defined in: [apps/paracosm/src/engine/types.ts:285](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/types.ts#L285)
 
 Builds the Event Director's per-turn context prompt
 
@@ -65,7 +65,7 @@ Builds the Event Director's per-turn context prompt
 
 > `optional` **fingerprintHook**: (`finalState`, `outcomeLog`, `leader`, `toolRegs`, `maxTurns`) => `Record`\<`string`, `string`\>
 
-Defined in: [apps/paracosm/src/engine/types.ts:272](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L272)
+Defined in: [apps/paracosm/src/engine/types.ts:289](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/types.ts#L289)
 
 Computes a timeline fingerprint classification from final simulation state
 
@@ -81,7 +81,7 @@ Computes a timeline fingerprint classification from final simulation state
 
 ##### leader
 
-[`LeaderConfig`](LeaderConfig.md)
+[`ActorConfig`](ActorConfig.md)
 
 ##### toolRegs
 
@@ -101,7 +101,7 @@ Computes a timeline fingerprint classification from final simulation state
 
 > `optional` **getMilestoneEvent**: (`turn`, `maxTurns`) => [`MilestoneEventDef`](MilestoneEventDef.md) \| `null`
 
-Defined in: [apps/paracosm/src/engine/types.ts:274](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L274)
+Defined in: [apps/paracosm/src/engine/types.ts:291](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/types.ts#L291)
 
 Returns a milestone event for narrative anchor turns (turn 1, final turn)
 
@@ -125,7 +125,7 @@ Returns a milestone event for narrative anchor turns (turn 1, final turn)
 
 > `optional` **politicsHook**: (`category`, `outcome`) => `Record`\<`string`, `number`\> \| `null`
 
-Defined in: [apps/paracosm/src/engine/types.ts:276](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L276)
+Defined in: [apps/paracosm/src/engine/types.ts:293](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/types.ts#L293)
 
 Returns politics deltas for political/social events, null if not applicable
 
@@ -149,7 +149,7 @@ Returns politics deltas for political/social events, null if not applicable
 
 > `optional` **progressionHook**: (`ctx`) => `void`
 
-Defined in: [apps/paracosm/src/engine/types.ts:262](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L262)
+Defined in: [apps/paracosm/src/engine/types.ts:279](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/types.ts#L279)
 
 Called during between-turn progression for scenario-specific health/field changes (e.g., radiation, bone density)
 
@@ -169,7 +169,7 @@ Called during between-turn progression for scenario-specific health/field change
 
 > `optional` **reactionContextHook**: (`colonist`, `ctx`) => `string`
 
-Defined in: [apps/paracosm/src/engine/types.ts:270](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L270)
+Defined in: [apps/paracosm/src/engine/types.ts:287](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/types.ts#L287)
 
 Returns location/identity/health phrasing for agent reaction prompts
 
@@ -181,11 +181,11 @@ Returns location/identity/health phrasing for agent reaction prompts
 
 ##### ctx
 
-###### turn
+###### time
 
 `number`
 
-###### year
+###### turn
 
 `number`
 

@@ -1,22 +1,22 @@
 # Interface: SimulationMetadata
 
-Defined in: [apps/paracosm/src/engine/core/state.ts:186](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/core/state.ts#L186)
+Defined in: [apps/paracosm/src/engine/core/state.ts:186](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/core/state.ts#L186)
 
 ## Properties
+
+### currentTime
+
+> **currentTime**: `number`
+
+Defined in: [apps/paracosm/src/engine/core/state.ts:191](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/core/state.ts#L191)
+
+***
 
 ### currentTurn
 
 > **currentTurn**: `number`
 
-Defined in: [apps/paracosm/src/engine/core/state.ts:192](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/core/state.ts#L192)
-
-***
-
-### currentYear
-
-> **currentYear**: `number`
-
-Defined in: [apps/paracosm/src/engine/core/state.ts:191](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/core/state.ts#L191)
+Defined in: [apps/paracosm/src/engine/core/state.ts:192](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/core/state.ts#L192)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: [apps/paracosm/src/engine/core/state.ts:191](https://github.com/fram
 
 > **leaderId**: `string`
 
-Defined in: [apps/paracosm/src/engine/core/state.ts:188](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/core/state.ts#L188)
+Defined in: [apps/paracosm/src/engine/core/state.ts:188](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/core/state.ts#L188)
 
 ***
 
@@ -32,7 +32,7 @@ Defined in: [apps/paracosm/src/engine/core/state.ts:188](https://github.com/fram
 
 > **seed**: `number`
 
-Defined in: [apps/paracosm/src/engine/core/state.ts:189](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/core/state.ts#L189)
+Defined in: [apps/paracosm/src/engine/core/state.ts:189](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/core/state.ts#L189)
 
 ***
 
@@ -40,12 +40,12 @@ Defined in: [apps/paracosm/src/engine/core/state.ts:189](https://github.com/fram
 
 > **simulationId**: `string`
 
-Defined in: [apps/paracosm/src/engine/core/state.ts:187](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/core/state.ts#L187)
+Defined in: [apps/paracosm/src/engine/core/state.ts:187](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/core/state.ts#L187)
 
 ***
 
-### startYear
+### startTime
 
-> **startYear**: `number`
+> **startTime**: `number`
 
-Defined in: [apps/paracosm/src/engine/core/state.ts:190](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/core/state.ts#L190)
+Defined in: [apps/paracosm/src/engine/core/state.ts:190](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/core/state.ts#L190)

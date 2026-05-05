@@ -1,6 +1,6 @@
 # Interface: RecallResult
 
-Defined in: [packages/agentos/src/memory/AgentMemory.ts:71](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/AgentMemory.ts#L71)
+Defined in: [packages/agentos/src/memory/AgentMemory.ts:71](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/AgentMemory.ts#L71)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/memory/AgentMemory.ts:71](https://github.com/f
 
 > **diagnostics**: `object`
 
-Defined in: [packages/agentos/src/memory/AgentMemory.ts:77](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/AgentMemory.ts#L77)
+Defined in: [packages/agentos/src/memory/AgentMemory.ts:77](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/AgentMemory.ts#L77)
 
 Retrieval diagnostics.
 
@@ -64,6 +64,27 @@ benefited from expansion.
 #### policyProfile?
 
 > `optional` **policyProfile**: [`MemoryRetrievalProfile`](../type-aliases/MemoryRetrievalProfile.md)
+
+#### retrievedTypedTraces?
+
+> `optional` **retrievedTypedTraces**: [`ScoredMemoryTrace`](ScoredMemoryTrace.md)[]
+
+Stage E: optional Hindsight typed-network output as canonical-shaped
+scored traces. When the manager is configured with `typedNetwork` and
+the variant supports retrieval-side activation (`'full'`), the manager
+delegates to a `TypedNetworkRetriever` which performs seed-finding
+(proper-noun + quoted-string entity extraction, case-insensitive
+intersection), spreading activation, and top-K ranking. Top-K results
+are surfaced as `ScoredMemoryTrace[]` for drop-in compatibility with
+the canonical retrieval pipeline (bank-prefixed content, namespaced
+IDs `typed-network:<factId>`, sourceType `'typed_network'`).
+
+Absent when typed-network is not configured. Empty when the retriever
+found no seed matches in the typed-network store.
+
+Phase 4.3 MVP: surfaced in diagnostics but NOT merged into the primary
+`retrieved` ranking. Phase 4.4 fusion lands when consumers wire the
+merged ranking. See `2026-04-26-hindsight-4network-observer-design.md`.
 
 #### scoringTimeMs
 
@@ -139,7 +160,7 @@ retrieval paths.
 
 > **memories**: [`ScoredMemoryTrace`](ScoredMemoryTrace.md)[]
 
-Defined in: [packages/agentos/src/memory/AgentMemory.ts:73](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/AgentMemory.ts#L73)
+Defined in: [packages/agentos/src/memory/AgentMemory.ts:73](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/AgentMemory.ts#L73)
 
 Relevant memory traces sorted by relevance.
 
@@ -149,6 +170,6 @@ Relevant memory traces sorted by relevance.
 
 > **partial**: [`PartiallyRetrievedTrace`](PartiallyRetrievedTrace.md)[]
 
-Defined in: [packages/agentos/src/memory/AgentMemory.ts:75](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/AgentMemory.ts#L75)
+Defined in: [packages/agentos/src/memory/AgentMemory.ts:75](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/AgentMemory.ts#L75)
 
 Partially retrieved traces (tip-of-the-tongue).

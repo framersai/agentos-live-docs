@@ -1,6 +1,6 @@
 # Interface: Scenario
 
-Defined in: [apps/paracosm/src/engine/types.ts:307](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L307)
+Defined in: [apps/paracosm/src/engine/types.ts:324](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/types.ts#L324)
 
 Legacy turn-based scenario (used by static SCENARIOS array and department context).
 
@@ -10,7 +10,7 @@ Legacy turn-based scenario (used by static SCENARIOS array and department contex
 
 > **crisis**: `string`
 
-Defined in: [apps/paracosm/src/engine/types.ts:311](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L311)
+Defined in: [apps/paracosm/src/engine/types.ts:328](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/types.ts#L328)
 
 ***
 
@@ -18,7 +18,7 @@ Defined in: [apps/paracosm/src/engine/types.ts:311](https://github.com/framersai
 
 > `optional` **options**: [`EventOptionDef`](EventOptionDef.md)[]
 
-Defined in: [apps/paracosm/src/engine/types.ts:316](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L316)
+Defined in: [apps/paracosm/src/engine/types.ts:333](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/types.ts#L333)
 
 ***
 
@@ -26,7 +26,7 @@ Defined in: [apps/paracosm/src/engine/types.ts:316](https://github.com/framersai
 
 > **researchKeywords**: `string`[]
 
-Defined in: [apps/paracosm/src/engine/types.ts:312](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L312)
+Defined in: [apps/paracosm/src/engine/types.ts:329](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/types.ts#L329)
 
 ***
 
@@ -34,7 +34,7 @@ Defined in: [apps/paracosm/src/engine/types.ts:312](https://github.com/framersai
 
 > **riskSuccessProbability**: `number`
 
-Defined in: [apps/paracosm/src/engine/types.ts:315](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L315)
+Defined in: [apps/paracosm/src/engine/types.ts:332](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/types.ts#L332)
 
 ***
 
@@ -42,7 +42,7 @@ Defined in: [apps/paracosm/src/engine/types.ts:315](https://github.com/framersai
 
 > **riskyOption**: `string`
 
-Defined in: [apps/paracosm/src/engine/types.ts:314](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L314)
+Defined in: [apps/paracosm/src/engine/types.ts:331](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/types.ts#L331)
 
 ***
 
@@ -50,7 +50,15 @@ Defined in: [apps/paracosm/src/engine/types.ts:314](https://github.com/framersai
 
 > **snapshotHints**: `Record`\<`string`, `unknown`\>
 
-Defined in: [apps/paracosm/src/engine/types.ts:313](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L313)
+Defined in: [apps/paracosm/src/engine/types.ts:330](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/types.ts#L330)
+
+***
+
+### time
+
+> **time**: `number`
+
+Defined in: [apps/paracosm/src/engine/types.ts:326](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/types.ts#L326)
 
 ***
 
@@ -58,7 +66,7 @@ Defined in: [apps/paracosm/src/engine/types.ts:313](https://github.com/framersai
 
 > **title**: `string`
 
-Defined in: [apps/paracosm/src/engine/types.ts:310](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L310)
+Defined in: [apps/paracosm/src/engine/types.ts:327](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/types.ts#L327)
 
 ***
 
@@ -66,12 +74,4 @@ Defined in: [apps/paracosm/src/engine/types.ts:310](https://github.com/framersai
 
 > **turn**: `number`
 
-Defined in: [apps/paracosm/src/engine/types.ts:308](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L308)
-
-***
-
-### year
-
-> **year**: `number`
-
-Defined in: [apps/paracosm/src/engine/types.ts:309](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L309)
+Defined in: [apps/paracosm/src/engine/types.ts:325](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/types.ts#L325)

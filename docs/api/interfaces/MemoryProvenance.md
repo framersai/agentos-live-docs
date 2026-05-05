@@ -1,6 +1,6 @@
 # Interface: MemoryProvenance
 
-Defined in: [packages/agentos/src/memory/core/types.ts:44](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/types.ts#L44)
+Defined in: [packages/agentos/src/memory/core/types.ts:45](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L45)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/memory/core/types.ts:44](https://github.com/fr
 
 > **confidence**: `number`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:51](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/types.ts#L51)
+Defined in: [packages/agentos/src/memory/core/types.ts:52](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L52)
 
 0-1 confidence we have in this memory's accuracy.
 
@@ -18,7 +18,7 @@ Defined in: [packages/agentos/src/memory/core/types.ts:51](https://github.com/fr
 
 > `optional` **contradictedBy**: `string`[]
 
-Defined in: [packages/agentos/src/memory/core/types.ts:56](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/types.ts#L56)
+Defined in: [packages/agentos/src/memory/core/types.ts:57](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L57)
 
 IDs of other traces that contradict this one.
 
@@ -28,7 +28,7 @@ IDs of other traces that contradict this one.
 
 > `optional` **lastVerifiedAt**: `number`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:54](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/types.ts#L54)
+Defined in: [packages/agentos/src/memory/core/types.ts:55](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L55)
 
 ***
 
@@ -36,7 +36,7 @@ Defined in: [packages/agentos/src/memory/core/types.ts:54](https://github.com/fr
 
 > `optional` **sourceId**: `string`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:47](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/types.ts#L47)
+Defined in: [packages/agentos/src/memory/core/types.ts:48](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L48)
 
 Back-reference to originating conversation, tool call, etc.
 
@@ -46,7 +46,7 @@ Back-reference to originating conversation, tool call, etc.
 
 > **sourceTimestamp**: `number`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:49](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/types.ts#L49)
+Defined in: [packages/agentos/src/memory/core/types.ts:50](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L50)
 
 Timestamp of the original source information.
 
@@ -56,7 +56,7 @@ Timestamp of the original source information.
 
 > **sourceType**: [`MemorySourceType`](../type-aliases/MemorySourceType.md)
 
-Defined in: [packages/agentos/src/memory/core/types.ts:45](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/types.ts#L45)
+Defined in: [packages/agentos/src/memory/core/types.ts:46](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L46)
 
 ***
 
@@ -64,6 +64,6 @@ Defined in: [packages/agentos/src/memory/core/types.ts:45](https://github.com/fr
 
 > **verificationCount**: `number`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:53](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/types.ts#L53)
+Defined in: [packages/agentos/src/memory/core/types.ts:54](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L54)
 
 How many times this memory has been externally confirmed.

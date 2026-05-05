@@ -1,6 +1,6 @@
 # Interface: ExecutionOutput
 
-Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:92](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/sandbox/executor/ICodeSandbox.ts#L92)
+Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:107](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/sandbox/executor/ICodeSandbox.ts#L107)
 
 Output from sandbox execution.
 
@@ -10,7 +10,7 @@ Output from sandbox execution.
 
 > **exitCode**: `number`
 
-Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:98](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/sandbox/executor/ICodeSandbox.ts#L98)
+Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:113](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/sandbox/executor/ICodeSandbox.ts#L113)
 
 Exit code
 
@@ -20,7 +20,7 @@ Exit code
 
 > `optional` **files**: [`SandboxFile`](SandboxFile.md)[]
 
-Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:100](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/sandbox/executor/ICodeSandbox.ts#L100)
+Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:115](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/sandbox/executor/ICodeSandbox.ts#L115)
 
 Output files generated
 
@@ -30,7 +30,7 @@ Output files generated
 
 > **stderr**: `string`
 
-Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:96](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/sandbox/executor/ICodeSandbox.ts#L96)
+Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:111](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/sandbox/executor/ICodeSandbox.ts#L111)
 
 Standard error
 
@@ -40,6 +40,6 @@ Standard error
 
 > **stdout**: `string`
 
-Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:94](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/sandbox/executor/ICodeSandbox.ts#L94)
+Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:109](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/sandbox/executor/ICodeSandbox.ts#L109)
 
 Standard output

@@ -2,7 +2,7 @@
 
 > **AgencyStrategy** = `"sequential"` \| `"parallel"` \| `"debate"` \| `"review-loop"` \| `"hierarchical"` \| `"graph"`
 
-Defined in: [packages/agentos/src/api/types.ts:54](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/types.ts#L54)
+Defined in: [packages/agentos/src/api/types.ts:54](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/types.ts#L54)
 
 High-level orchestration strategy for multi-agent runs.
 

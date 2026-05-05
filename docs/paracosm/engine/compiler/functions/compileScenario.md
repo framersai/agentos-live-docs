@@ -2,9 +2,9 @@
 
 > **compileScenario**(`scenarioJson`, `options?`): `Promise`\<[`ScenarioPackage`](../../interfaces/ScenarioPackage.md)\>
 
-Defined in: [apps/paracosm/src/engine/compiler/index.ts:127](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/compiler/index.ts#L127)
+Defined in: [apps/paracosm/src/engine/compiler/index.ts:142](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/compiler/index.ts#L142)
 
-Compile a scenario JSON into a complete ScenarioPackage with generated hooks.
+Compile a scenario JSON draft into a complete ScenarioPackage with generated hooks.
 
 ## Parameters
 
@@ -12,13 +12,13 @@ Compile a scenario JSON into a complete ScenarioPackage with generated hooks.
 
 `Record`\<`string`, `unknown`\>
 
-The data portion of a scenario (labels, departments, metrics, effects, etc.)
+Canonical world draft (labels, departments, metrics, effects, etc.)
 
 ### options?
 
 [`CompileOptions`](../interfaces/CompileOptions.md) = `{}`
 
-Compiler options (provider, model, cache settings)
+Compiler options (provider, model, cache settings, seed text / URL grounding)
 
 ## Returns
 

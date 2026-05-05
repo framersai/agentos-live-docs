@@ -1,6 +1,6 @@
 # Class: ForgeToolMetaTool
 
-Defined in: [packages/agentos/src/emergent/ForgeToolMetaTool.ts:99](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/emergent/ForgeToolMetaTool.ts#L99)
+Defined in: [packages/agentos/src/emergent/ForgeToolMetaTool.ts:99](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/emergent/ForgeToolMetaTool.ts#L99)
 
 Meta-tool enabling agents to create new tools at runtime.
 
@@ -33,7 +33,7 @@ const result = await metaTool.execute({
 
 ## Implements
 
-- [`ITool`](../interfaces/ITool.md)\<[`ForgeToolInput`](../interfaces/ForgeToolInput.md), [`ForgeResult`](../interfaces/ForgeResult.md)\>
+- [`ITool`](../interfaces/ITool.md)\<[`ForgeToolInput`](../interfaces/ForgeToolInput.md), `ForgeResult`\>
 
 ## Constructors
 
@@ -41,7 +41,7 @@ const result = await metaTool.execute({
 
 > **new ForgeToolMetaTool**(`engine`): `ForgeToolMetaTool`
 
-Defined in: [packages/agentos/src/emergent/ForgeToolMetaTool.ts:217](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/emergent/ForgeToolMetaTool.ts#L217)
+Defined in: [packages/agentos/src/emergent/ForgeToolMetaTool.ts:217](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/emergent/ForgeToolMetaTool.ts#L217)
 
 Create a new ForgeToolMetaTool.
 
@@ -64,7 +64,7 @@ The [EmergentCapabilityEngine](EmergentCapabilityEngine.md) that will handle the
 
 > `readonly` **category**: `"emergent"` = `'emergent'`
 
-Defined in: [packages/agentos/src/emergent/ForgeToolMetaTool.ts:116](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/emergent/ForgeToolMetaTool.ts#L116)
+Defined in: [packages/agentos/src/emergent/ForgeToolMetaTool.ts:116](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/emergent/ForgeToolMetaTool.ts#L116)
 
 **`Optional`**
 
@@ -82,7 +82,7 @@ aiding an LLM in selecting from a large set of tools.
 
 > `readonly` **description**: `string`
 
-Defined in: [packages/agentos/src/emergent/ForgeToolMetaTool.ts:110](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/emergent/ForgeToolMetaTool.ts#L110)
+Defined in: [packages/agentos/src/emergent/ForgeToolMetaTool.ts:110](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/emergent/ForgeToolMetaTool.ts#L110)
 
 A detailed, natural language description of what the tool does, its primary purpose,
 typical use cases, and any important considerations or limitations for its use.
@@ -100,7 +100,7 @@ for the LLM to grasp the tool's semantics.
 
 > `readonly` **displayName**: `"Forge Tool"` = `'Forge Tool'`
 
-Defined in: [packages/agentos/src/emergent/ForgeToolMetaTool.ts:107](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/emergent/ForgeToolMetaTool.ts#L107)
+Defined in: [packages/agentos/src/emergent/ForgeToolMetaTool.ts:107](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/emergent/ForgeToolMetaTool.ts#L107)
 
 A concise, human-readable title or display name for the tool.
 Used in user interfaces, logs, or when presenting tool options to developers or users.
@@ -121,7 +121,7 @@ Used in user interfaces, logs, or when presenting tool options to developers or 
 
 > `readonly` **hasSideEffects**: `true` = `true`
 
-Defined in: [packages/agentos/src/emergent/ForgeToolMetaTool.ts:119](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/emergent/ForgeToolMetaTool.ts#L119)
+Defined in: [packages/agentos/src/emergent/ForgeToolMetaTool.ts:119](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/emergent/ForgeToolMetaTool.ts#L119)
 
 **`Optional`**
 
@@ -140,7 +140,7 @@ with greater caution, potentially requiring explicit user confirmation.
 
 > `readonly` **id**: `"com.framers.emergent.forge-tool"` = `'com.framers.emergent.forge-tool'`
 
-Defined in: [packages/agentos/src/emergent/ForgeToolMetaTool.ts:101](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/emergent/ForgeToolMetaTool.ts#L101)
+Defined in: [packages/agentos/src/emergent/ForgeToolMetaTool.ts:101](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/emergent/ForgeToolMetaTool.ts#L101)
 
 A globally unique identifier for this specific tool (e.g., "web-search-engine-v1.2", "stock-price-fetcher").
 This ID is used for internal registration, management, and precise identification.
@@ -156,7 +156,7 @@ It's recommended to use a namespaced, versioned format (e.g., `vendor-toolname-v
 
 > `readonly` **inputSchema**: [`JSONSchemaObject`](../type-aliases/JSONSchemaObject.md)
 
-Defined in: [packages/agentos/src/emergent/ForgeToolMetaTool.ts:122](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/emergent/ForgeToolMetaTool.ts#L122)
+Defined in: [packages/agentos/src/emergent/ForgeToolMetaTool.ts:122](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/emergent/ForgeToolMetaTool.ts#L122)
 
 The JSON schema defining the structure, types, and constraints of the input arguments object
 that this tool expects. This schema is used by:
@@ -178,7 +178,7 @@ https://json-schema.org/
 
 > `readonly` **name**: `"forge_tool"` = `'forge_tool'`
 
-Defined in: [packages/agentos/src/emergent/ForgeToolMetaTool.ts:104](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/emergent/ForgeToolMetaTool.ts#L104)
+Defined in: [packages/agentos/src/emergent/ForgeToolMetaTool.ts:104](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/emergent/ForgeToolMetaTool.ts#L104)
 
 The functional name of the tool, as it should be presented to and used by an LLM in a tool call request
 (e.g., "searchWeb", "executePythonCode", "getWeatherForecast").
@@ -193,9 +193,9 @@ It should be concise, descriptive, and typically in camelCase or snake_case.
 
 ### execute()
 
-> **execute**(`args`, `context`): `Promise`\<[`ToolExecutionResult`](../interfaces/ToolExecutionResult.md)\<[`ForgeResult`](../interfaces/ForgeResult.md)\>\>
+> **execute**(`args`, `context`): `Promise`\<[`ToolExecutionResult`](../interfaces/ToolExecutionResult.md)\<`ForgeResult`\>\>
 
-Defined in: [packages/agentos/src/emergent/ForgeToolMetaTool.ts:236](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/emergent/ForgeToolMetaTool.ts#L236)
+Defined in: [packages/agentos/src/emergent/ForgeToolMetaTool.ts:236](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/emergent/ForgeToolMetaTool.ts#L236)
 
 Execute the forge pipeline via the engine.
 
@@ -219,9 +219,9 @@ The tool execution context providing agent and session IDs.
 
 #### Returns
 
-`Promise`\<[`ToolExecutionResult`](../interfaces/ToolExecutionResult.md)\<[`ForgeResult`](../interfaces/ForgeResult.md)\>\>
+`Promise`\<[`ToolExecutionResult`](../interfaces/ToolExecutionResult.md)\<`ForgeResult`\>\>
 
-A [ToolExecutionResult](../interfaces/ToolExecutionResult.md) wrapping the [ForgeResult](../interfaces/ForgeResult.md).
+A [ToolExecutionResult](../interfaces/ToolExecutionResult.md) wrapping the [ForgeResult](../type-aliases/ForgeResult.md).
 
 #### Implementation of
 

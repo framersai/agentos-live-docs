@@ -2,7 +2,7 @@
 
 > **shouldObserveAgent**(`guardrail`, `agentId`): `boolean`
 
-Defined in: [packages/agentos/src/safety/guardrails/ICrossAgentGuardrailService.ts:203](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/safety/guardrails/ICrossAgentGuardrailService.ts#L203)
+Defined in: [packages/agentos/src/safety/guardrails/ICrossAgentGuardrailService.ts:203](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/safety/guardrails/ICrossAgentGuardrailService.ts#L203)
 
 Check if a cross-agent guardrail should observe a specific agent.
 

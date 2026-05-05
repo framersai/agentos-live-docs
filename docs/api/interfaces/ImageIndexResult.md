@@ -1,6 +1,6 @@
 # Interface: ImageIndexResult
 
-Defined in: [packages/agentos/src/rag/multimodal/types.ts:157](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/multimodal/types.ts#L157)
+Defined in: [packages/agentos/src/rag/multimodal/types.ts:157](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/multimodal/types.ts#L157)
 
 Result of indexing an image into the vector store.
 
@@ -14,7 +14,7 @@ Result of indexing an image into the vector store.
 
 > **description**: `string`
 
-Defined in: [packages/agentos/src/rag/multimodal/types.ts:161](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/multimodal/types.ts#L161)
+Defined in: [packages/agentos/src/rag/multimodal/types.ts:161](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/multimodal/types.ts#L161)
 
 Vision LLM-generated description of the image.
 
@@ -24,6 +24,6 @@ Vision LLM-generated description of the image.
 
 > **id**: `string`
 
-Defined in: [packages/agentos/src/rag/multimodal/types.ts:159](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/multimodal/types.ts#L159)
+Defined in: [packages/agentos/src/rag/multimodal/types.ts:159](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/multimodal/types.ts#L159)
 
 Unique document ID in the vector store.

@@ -1,6 +1,6 @@
 # Interface: MemoryHealthReport
 
-Defined in: [packages/agentos/src/memory/core/types.ts:332](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/types.ts#L332)
+Defined in: [packages/agentos/src/memory/core/types.ts:352](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L352)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/memory/core/types.ts:332](https://github.com/f
 
 > **activeTraces**: `number`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:334](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/types.ts#L334)
+Defined in: [packages/agentos/src/memory/core/types.ts:354](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L354)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [packages/agentos/src/memory/core/types.ts:334](https://github.com/f
 
 > **avgStrength**: `number`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:335](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/types.ts#L335)
+Defined in: [packages/agentos/src/memory/core/types.ts:355](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L355)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: [packages/agentos/src/memory/core/types.ts:335](https://github.com/f
 
 > `optional` **lastConsolidationAt**: `number`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:338](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/types.ts#L338)
+Defined in: [packages/agentos/src/memory/core/types.ts:358](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L358)
 
 ***
 
@@ -32,7 +32,7 @@ Defined in: [packages/agentos/src/memory/core/types.ts:338](https://github.com/f
 
 > **totalTraces**: `number`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:333](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/types.ts#L333)
+Defined in: [packages/agentos/src/memory/core/types.ts:353](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L353)
 
 ***
 
@@ -40,7 +40,7 @@ Defined in: [packages/agentos/src/memory/core/types.ts:333](https://github.com/f
 
 > **tracesPerScope**: `Record`\<[`MemoryScope`](../type-aliases/MemoryScope.md), `number`\>
 
-Defined in: [packages/agentos/src/memory/core/types.ts:340](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/types.ts#L340)
+Defined in: [packages/agentos/src/memory/core/types.ts:360](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L360)
 
 ***
 
@@ -48,7 +48,7 @@ Defined in: [packages/agentos/src/memory/core/types.ts:340](https://github.com/f
 
 > **tracesPerType**: `Record`\<[`MemoryType`](../type-aliases/MemoryType.md), `number`\>
 
-Defined in: [packages/agentos/src/memory/core/types.ts:339](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/types.ts#L339)
+Defined in: [packages/agentos/src/memory/core/types.ts:359](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L359)
 
 ***
 
@@ -56,7 +56,7 @@ Defined in: [packages/agentos/src/memory/core/types.ts:339](https://github.com/f
 
 > **weakestTraceStrength**: `number`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:336](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/types.ts#L336)
+Defined in: [packages/agentos/src/memory/core/types.ts:356](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L356)
 
 ***
 
@@ -64,4 +64,4 @@ Defined in: [packages/agentos/src/memory/core/types.ts:336](https://github.com/f
 
 > **workingMemoryUtilization**: `number`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:337](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/types.ts#L337)
+Defined in: [packages/agentos/src/memory/core/types.ts:357](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L357)

@@ -1,6 +1,6 @@
 # Interface: ResolveProviderOptions
 
-Defined in: [apps/paracosm/src/engine/provider-resolver.ts:74](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/provider-resolver.ts#L74)
+Defined in: [apps/paracosm/src/engine/provider-resolver.ts:74](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/provider-resolver.ts#L74)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [apps/paracosm/src/engine/provider-resolver.ts:74](https://github.co
 
 > `optional` **apiKey**: `string` \| `null`
 
-Defined in: [apps/paracosm/src/engine/provider-resolver.ts:76](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/provider-resolver.ts#L76)
+Defined in: [apps/paracosm/src/engine/provider-resolver.ts:76](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/provider-resolver.ts#L76)
 
 Explicit apiKey disables env inspection for the requested provider.
 
@@ -18,7 +18,7 @@ Explicit apiKey disables env inspection for the requested provider.
 
 > `optional` **env**: `ProcessEnv`
 
-Defined in: [apps/paracosm/src/engine/provider-resolver.ts:78](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/provider-resolver.ts#L78)
+Defined in: [apps/paracosm/src/engine/provider-resolver.ts:78](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/provider-resolver.ts#L78)
 
 Inject env for tests. Defaults to `process.env` when available.
 
@@ -28,6 +28,6 @@ Inject env for tests. Defaults to `process.env` when available.
 
 > `optional` **silent**: `boolean`
 
-Defined in: [apps/paracosm/src/engine/provider-resolver.ts:80](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/provider-resolver.ts#L80)
+Defined in: [apps/paracosm/src/engine/provider-resolver.ts:80](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/provider-resolver.ts#L80)
 
 Suppress the fallback warning log (tests, library callers).

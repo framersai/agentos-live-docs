@@ -1,6 +1,6 @@
 # Interface: EffectDefinition
 
-Defined in: [apps/paracosm/src/engine/types.ts:147](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L147)
+Defined in: [apps/paracosm/src/engine/types.ts:164](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/types.ts#L164)
 
 Defines an effect category with base deltas applied on crisis outcomes.
 
@@ -10,7 +10,7 @@ Defines an effect category with base deltas applied on crisis outcomes.
 
 > **categoryDefaults**: `Record`\<`string`, `Record`\<`string`, `number`\>\>
 
-Defined in: [apps/paracosm/src/engine/types.ts:152](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L152)
+Defined in: [apps/paracosm/src/engine/types.ts:169](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/types.ts#L169)
 
 Maps crisis category to base colony system deltas
 
@@ -20,7 +20,7 @@ Maps crisis category to base colony system deltas
 
 > **id**: `string`
 
-Defined in: [apps/paracosm/src/engine/types.ts:148](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L148)
+Defined in: [apps/paracosm/src/engine/types.ts:165](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/types.ts#L165)
 
 ***
 
@@ -28,7 +28,7 @@ Defined in: [apps/paracosm/src/engine/types.ts:148](https://github.com/framersai
 
 > **label**: `string`
 
-Defined in: [apps/paracosm/src/engine/types.ts:150](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L150)
+Defined in: [apps/paracosm/src/engine/types.ts:167](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/types.ts#L167)
 
 ***
 
@@ -36,4 +36,4 @@ Defined in: [apps/paracosm/src/engine/types.ts:150](https://github.com/framersai
 
 > **type**: `string`
 
-Defined in: [apps/paracosm/src/engine/types.ts:149](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L149)
+Defined in: [apps/paracosm/src/engine/types.ts:166](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/types.ts#L166)

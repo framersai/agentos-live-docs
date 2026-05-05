@@ -1,6 +1,6 @@
 # Interface: AgencyConfigErrorType
 
-Defined in: [packages/agentos/src/api/types.ts:1374](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/types.ts#L1374)
+Defined in: [packages/agentos/src/api/types.ts:1446](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/types.ts#L1446)
 
 Thrown when an `agency()` configuration is invalid (e.g. no agents defined,
 unknown strategy, conflicting options).

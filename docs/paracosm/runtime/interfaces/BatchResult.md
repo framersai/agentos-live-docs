@@ -1,6 +1,6 @@
 # Interface: BatchResult
 
-Defined in: [apps/paracosm/src/runtime/batch.ts:28](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/batch.ts#L28)
+Defined in: [apps/paracosm/src/runtime/batch.ts:28](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/runtime/batch.ts#L28)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [apps/paracosm/src/runtime/batch.ts:28](https://github.com/framersai
 
 > **duration**: `number`
 
-Defined in: [apps/paracosm/src/runtime/batch.ts:36](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/batch.ts#L36)
+Defined in: [apps/paracosm/src/runtime/batch.ts:36](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/runtime/batch.ts#L36)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [apps/paracosm/src/runtime/batch.ts:36](https://github.com/framersai
 
 > **fingerprint**: `Record`\<`string`, `string`\>
 
-Defined in: [apps/paracosm/src/runtime/batch.ts:35](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/batch.ts#L35)
+Defined in: [apps/paracosm/src/runtime/batch.ts:35](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/runtime/batch.ts#L35)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: [apps/paracosm/src/runtime/batch.ts:35](https://github.com/framersai
 
 > **leader**: `string`
 
-Defined in: [apps/paracosm/src/runtime/batch.ts:31](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/batch.ts#L31)
+Defined in: [apps/paracosm/src/runtime/batch.ts:31](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/runtime/batch.ts#L31)
 
 ***
 
@@ -32,7 +32,7 @@ Defined in: [apps/paracosm/src/runtime/batch.ts:31](https://github.com/framersai
 
 > **output**: `any`
 
-Defined in: [apps/paracosm/src/runtime/batch.ts:34](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/batch.ts#L34)
+Defined in: [apps/paracosm/src/runtime/batch.ts:34](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/runtime/batch.ts#L34)
 
 ***
 
@@ -40,7 +40,7 @@ Defined in: [apps/paracosm/src/runtime/batch.ts:34](https://github.com/framersai
 
 > **scenarioId**: `string`
 
-Defined in: [apps/paracosm/src/runtime/batch.ts:29](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/batch.ts#L29)
+Defined in: [apps/paracosm/src/runtime/batch.ts:29](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/runtime/batch.ts#L29)
 
 ***
 
@@ -48,7 +48,7 @@ Defined in: [apps/paracosm/src/runtime/batch.ts:29](https://github.com/framersai
 
 > **scenarioVersion**: `string`
 
-Defined in: [apps/paracosm/src/runtime/batch.ts:30](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/batch.ts#L30)
+Defined in: [apps/paracosm/src/runtime/batch.ts:30](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/runtime/batch.ts#L30)
 
 ***
 
@@ -56,7 +56,7 @@ Defined in: [apps/paracosm/src/runtime/batch.ts:30](https://github.com/framersai
 
 > **seed**: `number`
 
-Defined in: [apps/paracosm/src/runtime/batch.ts:32](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/batch.ts#L32)
+Defined in: [apps/paracosm/src/runtime/batch.ts:32](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/runtime/batch.ts#L32)
 
 ***
 
@@ -64,4 +64,4 @@ Defined in: [apps/paracosm/src/runtime/batch.ts:32](https://github.com/framersai
 
 > **turns**: `number`
 
-Defined in: [apps/paracosm/src/runtime/batch.ts:33](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/batch.ts#L33)
+Defined in: [apps/paracosm/src/runtime/batch.ts:33](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/runtime/batch.ts#L33)

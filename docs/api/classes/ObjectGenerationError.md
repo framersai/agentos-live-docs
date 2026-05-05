@@ -1,6 +1,6 @@
 # Class: ObjectGenerationError
 
-Defined in: [packages/agentos/src/api/generateObject.ts:43](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/generateObject.ts#L43)
+Defined in: [packages/agentos/src/api/generateObject.ts:45](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/generateObject.ts#L45)
 
 Thrown when structured output generation fails after exhausting all retries.
 
@@ -30,7 +30,7 @@ try {
 
 > **new ObjectGenerationError**(`message`, `rawText`, `validationErrors?`): `ObjectGenerationError`
 
-Defined in: [packages/agentos/src/api/generateObject.ts:52](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/generateObject.ts#L52)
+Defined in: [packages/agentos/src/api/generateObject.ts:54](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/generateObject.ts#L54)
 
 #### Parameters
 
@@ -48,7 +48,7 @@ The last raw text the LLM produced before we gave up.
 
 ##### validationErrors?
 
-`ZodError`\<`unknown`\>
+[`ZodError`](../@framers/namespaces/z/interfaces/ZodError.md)\<`unknown`\>
 
 Zod validation issues from the final attempt.
 
@@ -78,7 +78,7 @@ Defined in: node\_modules/.pnpm/typescript@5.6.3/node\_modules/typescript/lib/li
 
 > `readonly` **name**: `"ObjectGenerationError"` = `'ObjectGenerationError'`
 
-Defined in: [packages/agentos/src/api/generateObject.ts:45](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/generateObject.ts#L45)
+Defined in: [packages/agentos/src/api/generateObject.ts:47](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/generateObject.ts#L47)
 
 The name of this error class, useful for `instanceof` checks across realms.
 
@@ -92,7 +92,7 @@ The name of this error class, useful for `instanceof` checks across realms.
 
 > `readonly` **rawText**: `string`
 
-Defined in: [packages/agentos/src/api/generateObject.ts:55](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/generateObject.ts#L55)
+Defined in: [packages/agentos/src/api/generateObject.ts:57](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/generateObject.ts#L57)
 
 The raw text returned by the LLM on the final attempt.
 
@@ -112,9 +112,9 @@ Defined in: node\_modules/.pnpm/typescript@5.6.3/node\_modules/typescript/lib/li
 
 ### validationErrors?
 
-> `readonly` `optional` **validationErrors**: `ZodError`\<`unknown`\>
+> `readonly` `optional` **validationErrors**: [`ZodError`](../@framers/namespaces/z/interfaces/ZodError.md)\<`unknown`\>
 
-Defined in: [packages/agentos/src/api/generateObject.ts:57](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/generateObject.ts#L57)
+Defined in: [packages/agentos/src/api/generateObject.ts:59](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/generateObject.ts#L59)
 
 Zod validation error details from the last parse attempt, if available.
 

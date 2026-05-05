@@ -1,6 +1,6 @@
 # Interface: WorldState
 
-Defined in: [apps/paracosm/src/engine/types.ts:89](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L89)
+Defined in: [apps/paracosm/src/engine/types.ts:106](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/types.ts#L106)
 
 Runtime world state with typed record bags. Not everything is a flat numeric resource.
 
@@ -10,7 +10,7 @@ Runtime world state with typed record bags. Not everything is a flat numeric res
 
 > **capacities**: `Record`\<`string`, `number`\>
 
-Defined in: [apps/paracosm/src/engine/types.ts:93](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L93)
+Defined in: [apps/paracosm/src/engine/types.ts:110](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/types.ts#L110)
 
 Capacity constraints: life support, housing
 
@@ -20,7 +20,7 @@ Capacity constraints: life support, housing
 
 > **environment**: `Record`\<`string`, `number` \| `string` \| `boolean`\>
 
-Defined in: [apps/paracosm/src/engine/types.ts:99](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L99)
+Defined in: [apps/paracosm/src/engine/types.ts:116](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/types.ts#L116)
 
 Environment conditions
 
@@ -30,7 +30,7 @@ Environment conditions
 
 > **metrics**: `Record`\<`string`, `number`\>
 
-Defined in: [apps/paracosm/src/engine/types.ts:91](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L91)
+Defined in: [apps/paracosm/src/engine/types.ts:108](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/types.ts#L108)
 
 Numeric gauges: food, power, water, population, morale
 
@@ -40,7 +40,7 @@ Numeric gauges: food, power, water, population, morale
 
 > **politics**: `Record`\<`string`, `number` \| `string` \| `boolean`\>
 
-Defined in: [apps/paracosm/src/engine/types.ts:97](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L97)
+Defined in: [apps/paracosm/src/engine/types.ts:114](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/types.ts#L114)
 
 Political/social pressures
 
@@ -50,6 +50,6 @@ Political/social pressures
 
 > **statuses**: `Record`\<`string`, `string` \| `boolean`\>
 
-Defined in: [apps/paracosm/src/engine/types.ts:95](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L95)
+Defined in: [apps/paracosm/src/engine/types.ts:112](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/types.ts#L112)
 
 Categorical state: governance status, faction alignment

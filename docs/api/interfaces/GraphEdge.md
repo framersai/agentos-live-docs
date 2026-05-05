@@ -1,6 +1,6 @@
 # Interface: GraphEdge
 
-Defined in: [packages/agentos/src/orchestration/ir/types.ts:483](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/ir/types.ts#L483)
+Defined in: [packages/agentos/src/orchestration/ir/types.ts:496](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/ir/types.ts#L496)
 
 A directed edge connecting two vertices in the compiled execution graph.
 
@@ -12,7 +12,7 @@ The `source` and `target` fields may be `START` or `END` sentinels.
 
 > `optional` **condition**: [`GraphCondition`](../type-aliases/GraphCondition.md)
 
-Defined in: [packages/agentos/src/orchestration/ir/types.ts:499](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/ir/types.ts#L499)
+Defined in: [packages/agentos/src/orchestration/ir/types.ts:512](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/ir/types.ts#L512)
 
 Routing predicate; required when `type` is `'conditional'`.
 
@@ -22,7 +22,7 @@ Routing predicate; required when `type` is `'conditional'`.
 
 > `optional` **discoveryFallback**: `string`
 
-Defined in: [packages/agentos/src/orchestration/ir/types.ts:505](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/ir/types.ts#L505)
+Defined in: [packages/agentos/src/orchestration/ir/types.ts:518](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/ir/types.ts#L518)
 
 Node id used as fallback when discovery resolves no target.
 
@@ -32,7 +32,7 @@ Node id used as fallback when discovery resolves no target.
 
 > `optional` **discoveryKind**: `"tool"` \| `"skill"` \| `"extension"` \| `"any"`
 
-Defined in: [packages/agentos/src/orchestration/ir/types.ts:503](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/ir/types.ts#L503)
+Defined in: [packages/agentos/src/orchestration/ir/types.ts:516](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/ir/types.ts#L516)
 
 Capability kind filter applied during discovery-based routing.
 
@@ -42,7 +42,7 @@ Capability kind filter applied during discovery-based routing.
 
 > `optional` **discoveryQuery**: `string`
 
-Defined in: [packages/agentos/src/orchestration/ir/types.ts:501](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/ir/types.ts#L501)
+Defined in: [packages/agentos/src/orchestration/ir/types.ts:514](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/ir/types.ts#L514)
 
 Semantic query used to discover the target node at runtime; required for `'discovery'` edges.
 
@@ -52,7 +52,7 @@ Semantic query used to discover the target node at runtime; required for `'disco
 
 > `optional` **guardrailPolicy**: [`GuardrailPolicy`](GuardrailPolicy.md)
 
-Defined in: [packages/agentos/src/orchestration/ir/types.ts:518](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/ir/types.ts#L518)
+Defined in: [packages/agentos/src/orchestration/ir/types.ts:531](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/ir/types.ts#L531)
 
 Optional guardrail policy evaluated when traffic crosses this edge.
 
@@ -62,7 +62,7 @@ Optional guardrail policy evaluated when traffic crosses this edge.
 
 > **id**: `string`
 
-Defined in: [packages/agentos/src/orchestration/ir/types.ts:485](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/ir/types.ts#L485)
+Defined in: [packages/agentos/src/orchestration/ir/types.ts:498](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/ir/types.ts#L498)
 
 Unique identifier within the parent `CompiledExecutionGraph`.
 
@@ -72,7 +72,7 @@ Unique identifier within the parent `CompiledExecutionGraph`.
 
 > `optional` **personalityCondition**: `object`
 
-Defined in: [packages/agentos/src/orchestration/ir/types.ts:511](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/ir/types.ts#L511)
+Defined in: [packages/agentos/src/orchestration/ir/types.ts:524](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/ir/types.ts#L524)
 
 Personality-based routing descriptor; required when `type` is `'personality'`.
 The runtime reads `trait` from the agent's current HEXACO/PAD state and
@@ -100,7 +100,7 @@ routes to `above` or `below` depending on whether the value exceeds `threshold`.
 
 > **source**: `string`
 
-Defined in: [packages/agentos/src/orchestration/ir/types.ts:487](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/ir/types.ts#L487)
+Defined in: [packages/agentos/src/orchestration/ir/types.ts:500](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/ir/types.ts#L500)
 
 Source node id (or `START`).
 
@@ -110,7 +110,7 @@ Source node id (or `START`).
 
 > **target**: `string`
 
-Defined in: [packages/agentos/src/orchestration/ir/types.ts:489](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/ir/types.ts#L489)
+Defined in: [packages/agentos/src/orchestration/ir/types.ts:502](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/ir/types.ts#L502)
 
 Target node id (or `END`).
 
@@ -120,7 +120,7 @@ Target node id (or `END`).
 
 > **type**: `"discovery"` \| `"static"` \| `"conditional"` \| `"personality"`
 
-Defined in: [packages/agentos/src/orchestration/ir/types.ts:497](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/ir/types.ts#L497)
+Defined in: [packages/agentos/src/orchestration/ir/types.ts:510](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/ir/types.ts#L510)
 
 Edge routing strategy:
 - `static`      — always followed; no condition evaluated.

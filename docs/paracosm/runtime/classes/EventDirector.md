@@ -1,6 +1,6 @@
 # Class: EventDirector
 
-Defined in: [apps/paracosm/src/runtime/director.ts:246](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/director.ts#L246)
+Defined in: [apps/paracosm/src/runtime/director.ts:253](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/runtime/director.ts#L253)
 
 ## Constructors
 
@@ -16,9 +16,9 @@ Defined in: [apps/paracosm/src/runtime/director.ts:246](https://github.com/frame
 
 ### generateEventBatch()
 
-> **generateEventBatch**(`ctx`, `maxEvents?`, `provider?`, `model?`, `instructions?`, `onUsage?`, `onProviderError?`, `onSchemaAttempt?`): `Promise`\<`DirectorEventBatch`\>
+> **generateEventBatch**(`ctx`, `maxEvents?`, `provider?`, `model?`, `instructions?`, `onUsage?`, `onProviderError?`, `onSchemaAttempt?`, `apiKey?`): `Promise`\<`DirectorEventBatch`\>
 
-Defined in: [apps/paracosm/src/runtime/director.ts:258](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/director.ts#L258)
+Defined in: [apps/paracosm/src/runtime/director.ts:265](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/runtime/director.ts#L265)
 
 Generate 1 to maxEvents events for a turn via the schema-validated
 generateObject wrapper. Falls back to canned events when the LLM
@@ -72,6 +72,12 @@ quietly substitutes canned events.
 Called with the attempts count + fallback flag so the orchestrator
 can feed per-schema retry telemetry into its cost tracker.
 
+##### apiKey?
+
+`string`
+
+Explicit provider API key for this run.
+
 #### Returns
 
 `Promise`\<`DirectorEventBatch`\>
@@ -82,7 +88,7 @@ can feed per-schema retry telemetry into its cost tracker.
 
 > **getMilestoneCrisis**(`turn`, `maxTurns`): [`DirectorCrisis`](../type-aliases/DirectorCrisis.md) \| `null`
 
-Defined in: [apps/paracosm/src/runtime/director.ts:333](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/director.ts#L333)
+Defined in: [apps/paracosm/src/runtime/director.ts:343](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/runtime/director.ts#L343)
 
 Get a milestone crisis (Turn 1 or final turn).
 These are fixed for narrative anchoring.

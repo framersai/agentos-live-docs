@@ -1,6 +1,6 @@
 # Class: MemoryStore
 
-Defined in: [packages/agentos/src/memory/retrieval/store/MemoryStore.ts:134](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/retrieval/store/MemoryStore.ts#L134)
+Defined in: [packages/agentos/src/memory/retrieval/store/MemoryStore.ts:149](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/store/MemoryStore.ts#L149)
 
 ## Constructors
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/memory/retrieval/store/MemoryStore.ts:134](htt
 
 > **new MemoryStore**(`config`): `MemoryStore`
 
-Defined in: [packages/agentos/src/memory/retrieval/store/MemoryStore.ts:153](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/retrieval/store/MemoryStore.ts#L153)
+Defined in: [packages/agentos/src/memory/retrieval/store/MemoryStore.ts:168](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/store/MemoryStore.ts#L168)
 
 #### Parameters
 
@@ -26,7 +26,7 @@ Defined in: [packages/agentos/src/memory/retrieval/store/MemoryStore.ts:153](htt
 
 > **getActiveTraceCount**(): `number`
 
-Defined in: [packages/agentos/src/memory/retrieval/store/MemoryStore.ts:590](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/retrieval/store/MemoryStore.ts#L590)
+Defined in: [packages/agentos/src/memory/retrieval/store/MemoryStore.ts:682](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/store/MemoryStore.ts#L682)
 
 Get active trace count.
 
@@ -38,16 +38,16 @@ Get active trace count.
 
 ### getBrain()
 
-> **getBrain**(): [`SqliteBrain`](SqliteBrain.md) \| `null`
+> **getBrain**(): [`Brain`](Brain.md) \| `null`
 
-Defined in: [packages/agentos/src/memory/retrieval/store/MemoryStore.ts:174](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/retrieval/store/MemoryStore.ts#L174)
+Defined in: [packages/agentos/src/memory/retrieval/store/MemoryStore.ts:189](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/store/MemoryStore.ts#L189)
 
-Access the attached SqliteBrain for export/import operations.
+Access the attached Brain for export/import operations.
 Returns null when no brain is attached (in-memory only mode).
 
 #### Returns
 
-[`SqliteBrain`](SqliteBrain.md) \| `null`
+[`Brain`](Brain.md) \| `null`
 
 ***
 
@@ -55,7 +55,7 @@ Returns null when no brain is attached (in-memory only mode).
 
 > **getByScope**(`scope`, `scopeId`, `type?`): `Promise`\<[`MemoryTrace`](../interfaces/MemoryTrace.md)[]\>
 
-Defined in: [packages/agentos/src/memory/retrieval/store/MemoryStore.ts:498](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/retrieval/store/MemoryStore.ts#L498)
+Defined in: [packages/agentos/src/memory/retrieval/store/MemoryStore.ts:590](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/store/MemoryStore.ts#L590)
 
 Get all traces for a scope (for consolidation pipeline).
 
@@ -90,7 +90,7 @@ topK) and does not guarantee completeness.
 
 > **getTrace**(`traceId`): [`MemoryTrace`](../interfaces/MemoryTrace.md) \| `undefined`
 
-Defined in: [packages/agentos/src/memory/retrieval/store/MemoryStore.ts:576](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/retrieval/store/MemoryStore.ts#L576)
+Defined in: [packages/agentos/src/memory/retrieval/store/MemoryStore.ts:668](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/store/MemoryStore.ts#L668)
 
 Get a trace by ID.
 
@@ -110,7 +110,7 @@ Get a trace by ID.
 
 > **getTraceCount**(): `number`
 
-Defined in: [packages/agentos/src/memory/retrieval/store/MemoryStore.ts:583](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/retrieval/store/MemoryStore.ts#L583)
+Defined in: [packages/agentos/src/memory/retrieval/store/MemoryStore.ts:675](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/store/MemoryStore.ts#L675)
 
 Get trace count.
 
@@ -124,7 +124,7 @@ Get trace count.
 
 > **listTraces**(`options?`): [`MemoryTrace`](../interfaces/MemoryTrace.md)[]
 
-Defined in: [packages/agentos/src/memory/retrieval/store/MemoryStore.ts:601](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/retrieval/store/MemoryStore.ts#L601)
+Defined in: [packages/agentos/src/memory/retrieval/store/MemoryStore.ts:693](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/store/MemoryStore.ts#L693)
 
 List cached traces for diagnostics and tooling.
 
@@ -158,7 +158,7 @@ List cached traces for diagnostics and tooling.
 
 > **query**(`queryText`, `currentMood`, `options?`): `Promise`\<\{ `partial`: [`PartiallyRetrievedTrace`](../interfaces/PartiallyRetrievedTrace.md)[]; `scored`: [`ScoredMemoryTrace`](../interfaces/ScoredMemoryTrace.md)[]; `timings`: \{ `scoringMs`: `number`; `vectorSearchMs`: `number`; \}; \}\>
 
-Defined in: [packages/agentos/src/memory/retrieval/store/MemoryStore.ts:292](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/retrieval/store/MemoryStore.ts#L292)
+Defined in: [packages/agentos/src/memory/retrieval/store/MemoryStore.ts:326](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/store/MemoryStore.ts#L326)
 
 Query memory traces with cognitive scoring.
 
@@ -186,7 +186,7 @@ Query memory traces with cognitive scoring.
 
 > **recordAccess**(`traceId`): `Promise`\<[`RetrievalUpdateResult`](../interfaces/RetrievalUpdateResult.md) \| `null`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/store/MemoryStore.ts:421](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/retrieval/store/MemoryStore.ts#L421)
+Defined in: [packages/agentos/src/memory/retrieval/store/MemoryStore.ts:513](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/store/MemoryStore.ts#L513)
 
 Record that a memory was accessed (retrieved).
 Updates decay parameters via spaced repetition.
@@ -207,9 +207,9 @@ Updates decay parameters via spaced repetition.
 
 > **setBrain**(`brain`): `void`
 
-Defined in: [packages/agentos/src/memory/retrieval/store/MemoryStore.ts:166](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/retrieval/store/MemoryStore.ts#L166)
+Defined in: [packages/agentos/src/memory/retrieval/store/MemoryStore.ts:181](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/store/MemoryStore.ts#L181)
 
-Attach a SqliteBrain for durable write-through persistence.
+Attach a Brain for durable write-through persistence.
 Once attached, all store/softDelete/recordAccess operations also
 write to the brain's `memory_traces` table.
 
@@ -217,9 +217,9 @@ write to the brain's `memory_traces` table.
 
 ##### brain
 
-[`SqliteBrain`](SqliteBrain.md)
+[`Brain`](Brain.md)
 
-SqliteBrain instance (already initialized with schema)
+Brain instance (already initialized with schema)
 
 #### Returns
 
@@ -231,7 +231,7 @@ SqliteBrain instance (already initialized with schema)
 
 > **softDelete**(`traceId`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/store/MemoryStore.ts:556](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/retrieval/store/MemoryStore.ts#L556)
+Defined in: [packages/agentos/src/memory/retrieval/store/MemoryStore.ts:648](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/store/MemoryStore.ts#L648)
 
 Soft-delete a trace.
 
@@ -251,7 +251,7 @@ Soft-delete a trace.
 
 > **store**(`trace`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/store/MemoryStore.ts:186](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/retrieval/store/MemoryStore.ts#L186)
+Defined in: [packages/agentos/src/memory/retrieval/store/MemoryStore.ts:201](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/store/MemoryStore.ts#L201)
 
 Store a new memory trace: embed content, upsert into vector store,
 and record as episodic memory in the knowledge graph.

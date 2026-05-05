@@ -2,7 +2,7 @@
 
 > **resolveProviderOrder**(`available`, `preferences?`): `string`[]
 
-Defined in: [packages/agentos/src/media/ProviderPreferences.ts:129](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/media/ProviderPreferences.ts#L129)
+Defined in: [packages/agentos/src/media/ProviderPreferences.ts:129](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/media/ProviderPreferences.ts#L129)
 
 Filter and reorder an "available" provider list according to user
 preferences.

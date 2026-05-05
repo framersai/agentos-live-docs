@@ -2,7 +2,7 @@
 
 > **resolveProvider**(`providerId`, `modelId`, `overrides?`): `ResolvedProvider`
 
-Defined in: [packages/agentos/src/api/model.ts:105](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/model.ts#L105)
+Defined in: [packages/agentos/src/api/model.ts:106](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/model.ts#L106)
 
 Resolves a complete provider configuration for LLM text providers.
 

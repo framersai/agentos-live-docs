@@ -1,6 +1,6 @@
 # Interface: ScenarioMetric
 
-Defined in: [apps/paracosm/src/engine/mars/metrics.ts:1](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/mars/metrics.ts#L1)
+Defined in: [apps/paracosm/src/engine/mars/metrics.ts:1](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/mars/metrics.ts#L1)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [apps/paracosm/src/engine/mars/metrics.ts:1](https://github.com/fram
 
 > **category**: `"metric"` \| `"capacity"` \| `"status"` \| `"politic"`
 
-Defined in: [apps/paracosm/src/engine/mars/metrics.ts:9](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/mars/metrics.ts#L9)
+Defined in: [apps/paracosm/src/engine/mars/metrics.ts:9](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/mars/metrics.ts#L9)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [apps/paracosm/src/engine/mars/metrics.ts:9](https://github.com/fram
 
 > **format**: `"string"` \| `"number"` \| `"percent"` \| `"currency"` \| `"duration"`
 
-Defined in: [apps/paracosm/src/engine/mars/metrics.ts:11](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/mars/metrics.ts#L11)
+Defined in: [apps/paracosm/src/engine/mars/metrics.ts:11](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/mars/metrics.ts#L11)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: [apps/paracosm/src/engine/mars/metrics.ts:11](https://github.com/fra
 
 > **id**: `string`
 
-Defined in: [apps/paracosm/src/engine/mars/metrics.ts:2](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/mars/metrics.ts#L2)
+Defined in: [apps/paracosm/src/engine/mars/metrics.ts:2](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/mars/metrics.ts#L2)
 
 ***
 
@@ -32,7 +32,7 @@ Defined in: [apps/paracosm/src/engine/mars/metrics.ts:2](https://github.com/fram
 
 > **initial**: `string` \| `number` \| `boolean`
 
-Defined in: [apps/paracosm/src/engine/mars/metrics.ts:6](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/mars/metrics.ts#L6)
+Defined in: [apps/paracosm/src/engine/mars/metrics.ts:6](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/mars/metrics.ts#L6)
 
 ***
 
@@ -40,7 +40,7 @@ Defined in: [apps/paracosm/src/engine/mars/metrics.ts:6](https://github.com/fram
 
 > **label**: `string`
 
-Defined in: [apps/paracosm/src/engine/mars/metrics.ts:3](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/mars/metrics.ts#L3)
+Defined in: [apps/paracosm/src/engine/mars/metrics.ts:3](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/mars/metrics.ts#L3)
 
 ***
 
@@ -48,7 +48,7 @@ Defined in: [apps/paracosm/src/engine/mars/metrics.ts:3](https://github.com/fram
 
 > `optional` **max**: `number`
 
-Defined in: [apps/paracosm/src/engine/mars/metrics.ts:8](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/mars/metrics.ts#L8)
+Defined in: [apps/paracosm/src/engine/mars/metrics.ts:8](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/mars/metrics.ts#L8)
 
 ***
 
@@ -56,7 +56,7 @@ Defined in: [apps/paracosm/src/engine/mars/metrics.ts:8](https://github.com/fram
 
 > `optional` **min**: `number`
 
-Defined in: [apps/paracosm/src/engine/mars/metrics.ts:7](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/mars/metrics.ts#L7)
+Defined in: [apps/paracosm/src/engine/mars/metrics.ts:7](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/mars/metrics.ts#L7)
 
 ***
 
@@ -64,7 +64,7 @@ Defined in: [apps/paracosm/src/engine/mars/metrics.ts:7](https://github.com/fram
 
 > **showInHeader**: `boolean`
 
-Defined in: [apps/paracosm/src/engine/mars/metrics.ts:10](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/mars/metrics.ts#L10)
+Defined in: [apps/paracosm/src/engine/mars/metrics.ts:10](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/mars/metrics.ts#L10)
 
 ***
 
@@ -72,7 +72,7 @@ Defined in: [apps/paracosm/src/engine/mars/metrics.ts:10](https://github.com/fra
 
 > **type**: `"string"` \| `"number"` \| `"boolean"`
 
-Defined in: [apps/paracosm/src/engine/mars/metrics.ts:5](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/mars/metrics.ts#L5)
+Defined in: [apps/paracosm/src/engine/mars/metrics.ts:5](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/mars/metrics.ts#L5)
 
 ***
 
@@ -80,4 +80,4 @@ Defined in: [apps/paracosm/src/engine/mars/metrics.ts:5](https://github.com/fram
 
 > **unit**: `string`
 
-Defined in: [apps/paracosm/src/engine/mars/metrics.ts:4](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/mars/metrics.ts#L4)
+Defined in: [apps/paracosm/src/engine/mars/metrics.ts:4](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/mars/metrics.ts#L4)

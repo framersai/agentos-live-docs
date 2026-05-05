@@ -1,8 +1,8 @@
 # Function: streamObject()
 
-> **streamObject**\<`T`\>(`opts`): [`StreamObjectResult`](../interfaces/StreamObjectResult.md)\<`output`\<`T`\>\>
+> **streamObject**\<`T`\>(`opts`): [`StreamObjectResult`](../interfaces/StreamObjectResult.md)\<[`output`](../@framers/namespaces/z/namespaces/core/type-aliases/output.md)\<`T`\>\>
 
-Defined in: [packages/agentos/src/api/streamObject.ts:344](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/streamObject.ts#L344)
+Defined in: [packages/agentos/src/api/streamObject.ts:344](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/streamObject.ts#L344)
 
 Streams a structured object by incrementally parsing JSON as the LLM
 produces tokens, then validates the final result against a Zod schema.
@@ -15,7 +15,7 @@ consumer starts iterating `partialObjectStream` or awaits a promise.
 
 ### T
 
-`T` *extends* `ZodType`\<`unknown`, `unknown`, `$ZodTypeInternals`\<`unknown`, `unknown`\>\>
+`T` *extends* [`ZodType`](../@framers/namespaces/z/interfaces/ZodType-1.md)\<`unknown`, `unknown`, [`$ZodTypeInternals`](../@framers/namespaces/z/namespaces/core/interfaces/$ZodTypeInternals-1.md)\<`unknown`, `unknown`\>\>
 
 The Zod schema type. Partial objects are typed as
   `DeepPartial<z.infer<T>>`, and the final `object` promise resolves
@@ -32,7 +32,7 @@ Streaming generation options including the Zod schema,
 
 ## Returns
 
-[`StreamObjectResult`](../interfaces/StreamObjectResult.md)\<`output`\<`T`\>\>
+[`StreamObjectResult`](../interfaces/StreamObjectResult.md)\<[`output`](../@framers/namespaces/z/namespaces/core/type-aliases/output.md)\<`T`\>\>
 
 A [StreamObjectResult](../interfaces/StreamObjectResult.md) with `partialObjectStream`, `object`,
   `text`, and `usage` properties.

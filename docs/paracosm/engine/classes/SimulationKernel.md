@@ -1,6 +1,6 @@
 # Class: SimulationKernel
 
-Defined in: [apps/paracosm/src/engine/core/kernel.ts:30](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/core/kernel.ts#L30)
+Defined in: [apps/paracosm/src/engine/core/kernel.ts:93](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/core/kernel.ts#L93)
 
 ## Constructors
 
@@ -8,7 +8,7 @@ Defined in: [apps/paracosm/src/engine/core/kernel.ts:30](https://github.com/fram
 
 > **new SimulationKernel**(`seed`, `leaderId`, `keyPersonnel`, `init?`): `SimulationKernel`
 
-Defined in: [apps/paracosm/src/engine/core/kernel.ts:34](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/core/kernel.ts#L34)
+Defined in: [apps/paracosm/src/engine/core/kernel.ts:97](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/core/kernel.ts#L97)
 
 #### Parameters
 
@@ -36,9 +36,9 @@ Defined in: [apps/paracosm/src/engine/core/kernel.ts:34](https://github.com/fram
 
 ### advanceTurn()
 
-> **advanceTurn**(`nextTurn`, `nextYear`, `progressionHook?`): [`SimulationState`](../interfaces/SimulationState.md)
+> **advanceTurn**(`nextTurn`, `nextTime`, `progressionHook?`): [`SimulationState`](../interfaces/SimulationState.md)
 
-Defined in: [apps/paracosm/src/engine/core/kernel.ts:130](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/core/kernel.ts#L130)
+Defined in: [apps/paracosm/src/engine/core/kernel.ts:293](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/core/kernel.ts#L293)
 
 Advance to the next turn. Runs between-turn progression.
 
@@ -48,7 +48,7 @@ Advance to the next turn. Runs between-turn progression.
 
 `number`
 
-##### nextYear
+##### nextTime
 
 `number`
 
@@ -66,7 +66,7 @@ Advance to the next turn. Runs between-turn progression.
 
 > **applyAgentUpdates**(`updates`): `void`
 
-Defined in: [apps/paracosm/src/engine/core/kernel.ts:237](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/core/kernel.ts#L237)
+Defined in: [apps/paracosm/src/engine/core/kernel.ts:400](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/core/kernel.ts#L400)
 
 Apply featured colonist updates from department reports.
 
@@ -82,35 +82,11 @@ Apply featured colonist updates from department reports.
 
 ***
 
-### applyColonyDeltas()
-
-> **applyColonyDeltas**(`deltas`, `events?`): `void`
-
-Defined in: [apps/paracosm/src/engine/core/kernel.ts:199](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/core/kernel.ts#L199)
-
-Apply additive deltas to colony systems (not absolute values).
-
-#### Parameters
-
-##### deltas
-
-`Partial`\<[`WorldSystems`](../interfaces/WorldSystems.md)\>
-
-##### events?
-
-[`TurnEvent`](../interfaces/TurnEvent.md)[] = `[]`
-
-#### Returns
-
-`void`
-
-***
-
 ### applyDrift()
 
-> **applyDrift**(`commanderHexaco`, `outcome`, `yearDelta`): `void`
+> **applyDrift**(`commanderHexaco`, `outcome`, `timeDelta`): `void`
 
-Defined in: [apps/paracosm/src/engine/core/kernel.ts:229](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/core/kernel.ts#L229)
+Defined in: [apps/paracosm/src/engine/core/kernel.ts:392](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/core/kernel.ts#L392)
 
 Apply personality drift to all promoted colonists.
 
@@ -124,7 +100,7 @@ Apply personality drift to all promoted colonists.
 
 [`TurnOutcome`](../type-aliases/TurnOutcome.md) | `null`
 
-##### yearDelta
+##### timeDelta
 
 `number`
 
@@ -138,7 +114,7 @@ Apply personality drift to all promoted colonists.
 
 > **applyPolicy**(`effect`): `void`
 
-Defined in: [apps/paracosm/src/engine/core/kernel.ts:94](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/core/kernel.ts#L94)
+Defined in: [apps/paracosm/src/engine/core/kernel.ts:257](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/core/kernel.ts#L257)
 
 Apply a policy effect from the commander's decision.
 
@@ -158,9 +134,9 @@ Apply a policy effect from the commander's decision.
 
 > **applyPoliticsDeltas**(`deltas`, `events?`): `void`
 
-Defined in: [apps/paracosm/src/engine/core/kernel.ts:216](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/core/kernel.ts#L216)
+Defined in: [apps/paracosm/src/engine/core/kernel.ts:379](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/core/kernel.ts#L379)
 
-Apply additive deltas to colony politics.
+Apply additive deltas to world politics.
 
 #### Parameters
 
@@ -178,11 +154,35 @@ Apply additive deltas to colony politics.
 
 ***
 
+### applySystemDeltas()
+
+> **applySystemDeltas**(`deltas`, `events?`): `void`
+
+Defined in: [apps/paracosm/src/engine/core/kernel.ts:362](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/core/kernel.ts#L362)
+
+Apply additive deltas to world systems (not absolute values).
+
+#### Parameters
+
+##### deltas
+
+`Partial`\<[`WorldMetrics`](../interfaces/WorldMetrics.md)\>
+
+##### events?
+
+[`TurnEvent`](../interfaces/TurnEvent.md)[] = `[]`
+
+#### Returns
+
+`void`
+
+***
+
 ### export()
 
 > **export**(): [`SimulationState`](../interfaces/SimulationState.md)
 
-Defined in: [apps/paracosm/src/engine/core/kernel.ts:268](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/core/kernel.ts#L268)
+Defined in: [apps/paracosm/src/engine/core/kernel.ts:431](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/core/kernel.ts#L431)
 
 #### Returns
 
@@ -194,7 +194,7 @@ Defined in: [apps/paracosm/src/engine/core/kernel.ts:268](https://github.com/fra
 
 > **getAliveAgents**(): [`Agent`](../interfaces/Agent.md)[]
 
-Defined in: [apps/paracosm/src/engine/core/kernel.ts:74](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/core/kernel.ts#L74)
+Defined in: [apps/paracosm/src/engine/core/kernel.ts:237](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/core/kernel.ts#L237)
 
 #### Returns
 
@@ -206,7 +206,7 @@ Defined in: [apps/paracosm/src/engine/core/kernel.ts:74](https://github.com/fram
 
 > **getAliveCount**(): `number`
 
-Defined in: [apps/paracosm/src/engine/core/kernel.ts:78](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/core/kernel.ts#L78)
+Defined in: [apps/paracosm/src/engine/core/kernel.ts:241](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/core/kernel.ts#L241)
 
 #### Returns
 
@@ -218,7 +218,7 @@ Defined in: [apps/paracosm/src/engine/core/kernel.ts:78](https://github.com/fram
 
 > **getCandidates**(`dept`, `topN?`): [`Agent`](../interfaces/Agent.md)[]
 
-Defined in: [apps/paracosm/src/engine/core/kernel.ts:160](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/core/kernel.ts#L160)
+Defined in: [apps/paracosm/src/engine/core/kernel.ts:323](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/core/kernel.ts#L323)
 
 Get top N candidates for a department role, scored by trait fit.
 
@@ -242,7 +242,7 @@ Get top N candidates for a department role, scored by trait fit.
 
 > **getDepartmentSummary**(`dept`): `object`
 
-Defined in: [apps/paracosm/src/engine/core/kernel.ts:82](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/core/kernel.ts#L82)
+Defined in: [apps/paracosm/src/engine/core/kernel.ts:245](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/core/kernel.ts#L245)
 
 #### Parameters
 
@@ -276,7 +276,7 @@ Defined in: [apps/paracosm/src/engine/core/kernel.ts:82](https://github.com/fram
 
 > **getFeaturedAgents**(): [`Agent`](../interfaces/Agent.md)[]
 
-Defined in: [apps/paracosm/src/engine/core/kernel.ts:70](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/core/kernel.ts#L70)
+Defined in: [apps/paracosm/src/engine/core/kernel.ts:233](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/core/kernel.ts#L233)
 
 #### Returns
 
@@ -288,7 +288,7 @@ Defined in: [apps/paracosm/src/engine/core/kernel.ts:70](https://github.com/fram
 
 > **getState**(): [`SimulationState`](../interfaces/SimulationState.md)
 
-Defined in: [apps/paracosm/src/engine/core/kernel.ts:66](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/core/kernel.ts#L66)
+Defined in: [apps/paracosm/src/engine/core/kernel.ts:162](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/core/kernel.ts#L162)
 
 #### Returns
 
@@ -300,7 +300,7 @@ Defined in: [apps/paracosm/src/engine/core/kernel.ts:66](https://github.com/fram
 
 > **promoteAgent**(`agentId`, `dept`, `role`, `promotedBy`): `void`
 
-Defined in: [apps/paracosm/src/engine/core/kernel.ts:175](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/core/kernel.ts#L175)
+Defined in: [apps/paracosm/src/engine/core/kernel.ts:338](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/core/kernel.ts#L338)
 
 Promote a colonist to a department head role.
 
@@ -325,3 +325,70 @@ Promote a colonist to a department head role.
 #### Returns
 
 `void`
+
+***
+
+### toSnapshot()
+
+> **toSnapshot**(`scenarioId`): `KernelSnapshot`
+
+Defined in: [apps/paracosm/src/engine/core/kernel.ts:175](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/core/kernel.ts#L175)
+
+Capture a KernelSnapshot bundle. The returned object is
+plain JSON-safe data: `JSON.stringify(snap)` + `JSON.parse` +
+`SimulationKernel.fromSnapshot(parsed, scenarioId)` round-trips
+to a new kernel in the same state. Used by
+`WorldModel.snapshot()` + `fork()` for mid-run counterfactuals.
+
+#### Parameters
+
+##### scenarioId
+
+`string`
+
+Scenario id the snapshot is being taken
+  against. Stamped into the snapshot so `fromSnapshot` can
+  verify the target WorldModel's scenario matches.
+
+#### Returns
+
+`KernelSnapshot`
+
+***
+
+### fromSnapshot()
+
+> `static` **fromSnapshot**(`snap`, `expectedScenarioId`): `SimulationKernel`
+
+Defined in: [apps/paracosm/src/engine/core/kernel.ts:202](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/core/kernel.ts#L202)
+
+Reverse of [SimulationKernel.toSnapshot](#tosnapshot). Constructs a
+fresh kernel positioned at the snapshot's turn, with simulation
+state + PRNG state + metadata fully restored. The returned
+kernel is indistinguishable from the one that produced the
+snapshot as far as subsequent `advanceTurn` calls are concerned.
+
+#### Parameters
+
+##### snap
+
+`KernelSnapshot`
+
+The captured snapshot.
+
+##### expectedScenarioId
+
+`string`
+
+Scenario id the caller expects the
+  snapshot to match. Throws when they differ; this is the gate
+  against accidental cross-scenario forks.
+
+#### Returns
+
+`SimulationKernel`
+
+#### Throws
+
+Error when `snap.snapshotVersion !== 1` or when
+  `snap.scenarioId !== expectedScenarioId`.

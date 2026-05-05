@@ -1,6 +1,6 @@
 # Interface: AgentFieldDefinition
 
-Defined in: [apps/paracosm/src/engine/types.ts:107](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L107)
+Defined in: [apps/paracosm/src/engine/types.ts:124](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/types.ts#L124)
 
 Defines a custom field on agents/colonists for a scenario.
 
@@ -10,7 +10,7 @@ Defines a custom field on agents/colonists for a scenario.
 
 > **id**: `string`
 
-Defined in: [apps/paracosm/src/engine/types.ts:108](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L108)
+Defined in: [apps/paracosm/src/engine/types.ts:125](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/types.ts#L125)
 
 ***
 
@@ -18,7 +18,7 @@ Defined in: [apps/paracosm/src/engine/types.ts:108](https://github.com/framersai
 
 > **includeInReactionContext**: `boolean`
 
-Defined in: [apps/paracosm/src/engine/types.ts:117](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L117)
+Defined in: [apps/paracosm/src/engine/types.ts:134](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/types.ts#L134)
 
 ***
 
@@ -26,7 +26,7 @@ Defined in: [apps/paracosm/src/engine/types.ts:117](https://github.com/framersai
 
 > **initial**: [`AgentFieldValue`](../type-aliases/AgentFieldValue.md)
 
-Defined in: [apps/paracosm/src/engine/types.ts:112](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L112)
+Defined in: [apps/paracosm/src/engine/types.ts:129](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/types.ts#L129)
 
 ***
 
@@ -34,7 +34,7 @@ Defined in: [apps/paracosm/src/engine/types.ts:112](https://github.com/framersai
 
 > **label**: `string`
 
-Defined in: [apps/paracosm/src/engine/types.ts:109](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L109)
+Defined in: [apps/paracosm/src/engine/types.ts:126](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/types.ts#L126)
 
 ***
 
@@ -42,7 +42,7 @@ Defined in: [apps/paracosm/src/engine/types.ts:109](https://github.com/framersai
 
 > `optional` **max**: `number`
 
-Defined in: [apps/paracosm/src/engine/types.ts:114](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L114)
+Defined in: [apps/paracosm/src/engine/types.ts:131](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/types.ts#L131)
 
 ***
 
@@ -50,7 +50,7 @@ Defined in: [apps/paracosm/src/engine/types.ts:114](https://github.com/framersai
 
 > `optional` **min**: `number`
 
-Defined in: [apps/paracosm/src/engine/types.ts:113](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L113)
+Defined in: [apps/paracosm/src/engine/types.ts:130](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/types.ts#L130)
 
 ***
 
@@ -58,7 +58,7 @@ Defined in: [apps/paracosm/src/engine/types.ts:113](https://github.com/framersai
 
 > `optional` **mortalityContribution**: `object`
 
-Defined in: [apps/paracosm/src/engine/types.ts:115](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L115)
+Defined in: [apps/paracosm/src/engine/types.ts:132](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/types.ts#L132)
 
 #### ratePerYear
 
@@ -74,7 +74,7 @@ Defined in: [apps/paracosm/src/engine/types.ts:115](https://github.com/framersai
 
 > **showInTooltip**: `boolean`
 
-Defined in: [apps/paracosm/src/engine/types.ts:116](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L116)
+Defined in: [apps/paracosm/src/engine/types.ts:133](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/types.ts#L133)
 
 ***
 
@@ -82,7 +82,7 @@ Defined in: [apps/paracosm/src/engine/types.ts:116](https://github.com/framersai
 
 > **type**: `"string"` \| `"number"` \| `"boolean"` \| `"tags"`
 
-Defined in: [apps/paracosm/src/engine/types.ts:111](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L111)
+Defined in: [apps/paracosm/src/engine/types.ts:128](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/types.ts#L128)
 
 ***
 
@@ -90,4 +90,4 @@ Defined in: [apps/paracosm/src/engine/types.ts:111](https://github.com/framersai
 
 > **unit**: `string`
 
-Defined in: [apps/paracosm/src/engine/types.ts:110](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L110)
+Defined in: [apps/paracosm/src/engine/types.ts:127](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/types.ts#L127)

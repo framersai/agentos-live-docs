@@ -1,6 +1,6 @@
 # Class: QdrantVectorStore
 
-Defined in: [packages/agentos/src/rag/vector\_stores/QdrantVectorStore.ts:347](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/vector_stores/QdrantVectorStore.ts#L347)
+Defined in: [packages/agentos/src/rag/vector\_stores/QdrantVectorStore.ts:347](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/vector_stores/QdrantVectorStore.ts#L347)
 
 ## Interface
 
@@ -31,7 +31,7 @@ Implementations will wrap specific clients (e.g., Pinecone client, Weaviate clie
 
 > **checkHealth**(): `Promise`\<\{ `details?`: `any`; `isHealthy`: `boolean`; \}\>
 
-Defined in: [packages/agentos/src/rag/vector\_stores/QdrantVectorStore.ts:477](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/vector_stores/QdrantVectorStore.ts#L477)
+Defined in: [packages/agentos/src/rag/vector\_stores/QdrantVectorStore.ts:477](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/vector_stores/QdrantVectorStore.ts#L477)
 
 **`Async`**
 
@@ -55,7 +55,7 @@ A promise that resolves with the health status.
 
 > **collectionExists**(`collectionName`): `Promise`\<`boolean`\>
 
-Defined in: [packages/agentos/src/rag/vector\_stores/QdrantVectorStore.ts:506](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/vector_stores/QdrantVectorStore.ts#L506)
+Defined in: [packages/agentos/src/rag/vector\_stores/QdrantVectorStore.ts:506](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/vector_stores/QdrantVectorStore.ts#L506)
 
 **`Async`**
 
@@ -89,7 +89,7 @@ If the check fails for reasons other than existence (e.g., connection issue).
 
 > **createCollection**(`collectionName`, `dimension`, `options?`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/rag/vector\_stores/QdrantVectorStore.ts:525](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/vector_stores/QdrantVectorStore.ts#L525)
+Defined in: [packages/agentos/src/rag/vector\_stores/QdrantVectorStore.ts:525](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/vector_stores/QdrantVectorStore.ts#L525)
 
 **`Async`**
 
@@ -136,7 +136,7 @@ If collection creation fails (e.g., name conflict and not overwriting, invalid p
 
 > **delete**(`collectionName`, `ids?`, `options?`): `Promise`\<[`DeleteResult`](../interfaces/DeleteResult.md)\>
 
-Defined in: [packages/agentos/src/rag/vector\_stores/QdrantVectorStore.ts:982](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/vector_stores/QdrantVectorStore.ts#L982)
+Defined in: [packages/agentos/src/rag/vector\_stores/QdrantVectorStore.ts:982](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/vector_stores/QdrantVectorStore.ts#L982)
 
 **`Async`**
 
@@ -184,7 +184,7 @@ If the delete operation fails.
 
 > **deleteCollection**(`collectionName`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/rag/vector\_stores/QdrantVectorStore.ts:577](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/vector_stores/QdrantVectorStore.ts#L577)
+Defined in: [packages/agentos/src/rag/vector\_stores/QdrantVectorStore.ts:577](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/vector_stores/QdrantVectorStore.ts#L577)
 
 **`Async`**
 
@@ -218,7 +218,7 @@ If collection deletion fails.
 
 > **getStats**(`collectionName?`): `Promise`\<`Record`\<`string`, `any`\>\>
 
-Defined in: [packages/agentos/src/rag/vector\_stores/QdrantVectorStore.ts:586](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/vector_stores/QdrantVectorStore.ts#L586)
+Defined in: [packages/agentos/src/rag/vector\_stores/QdrantVectorStore.ts:586](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/vector_stores/QdrantVectorStore.ts#L586)
 
 **`Async`**
 
@@ -254,7 +254,7 @@ If fetching statistics fails.
 
 > **hybridSearch**(`collectionName`, `queryEmbedding`, `queryText`, `options?`): `Promise`\<[`QueryResult`](../interfaces/QueryResult.md)\>
 
-Defined in: [packages/agentos/src/rag/vector\_stores/QdrantVectorStore.ts:819](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/vector_stores/QdrantVectorStore.ts#L819)
+Defined in: [packages/agentos/src/rag/vector\_stores/QdrantVectorStore.ts:819](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/vector_stores/QdrantVectorStore.ts#L819)
 
 Optional: Hybrid retrieval combining dense vector similarity with lexical search.
 
@@ -295,7 +295,7 @@ If not implemented, callers should fall back to `query()` (dense similarity).
 
 > **initialize**(`config`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/rag/vector\_stores/QdrantVectorStore.ts:362](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/vector_stores/QdrantVectorStore.ts#L362)
+Defined in: [packages/agentos/src/rag/vector\_stores/QdrantVectorStore.ts:362](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/vector_stores/QdrantVectorStore.ts#L362)
 
 **`Async`**
 
@@ -332,7 +332,7 @@ If initialization fails (e.g., invalid configuration, connection error, authenti
 
 > **query**(`collectionName`, `queryEmbedding`, `options?`): `Promise`\<[`QueryResult`](../interfaces/QueryResult.md)\>
 
-Defined in: [packages/agentos/src/rag/vector\_stores/QdrantVectorStore.ts:704](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/vector_stores/QdrantVectorStore.ts#L704)
+Defined in: [packages/agentos/src/rag/vector\_stores/QdrantVectorStore.ts:704](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/vector_stores/QdrantVectorStore.ts#L704)
 
 **`Async`**
 
@@ -378,7 +378,7 @@ If the query operation fails.
 
 > **scanByMetadata**(`collectionName`, `options?`): `Promise`\<`MetadataScanResult`\>
 
-Defined in: [packages/agentos/src/rag/vector\_stores/QdrantVectorStore.ts:740](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/vector_stores/QdrantVectorStore.ts#L740)
+Defined in: [packages/agentos/src/rag/vector\_stores/QdrantVectorStore.ts:740](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/vector_stores/QdrantVectorStore.ts#L740)
 
 Optional: Enumerates documents using metadata-only filtering without
 requiring a query embedding.
@@ -407,7 +407,7 @@ requiring a query embedding.
 
 > **shutdown**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/rag/vector\_stores/QdrantVectorStore.ts:501](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/vector_stores/QdrantVectorStore.ts#L501)
+Defined in: [packages/agentos/src/rag/vector\_stores/QdrantVectorStore.ts:501](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/vector_stores/QdrantVectorStore.ts#L501)
 
 **`Async`**
 
@@ -430,7 +430,7 @@ A promise that resolves when shutdown is complete.
 
 > **upsert**(`collectionName`, `documents`, `options?`): `Promise`\<[`UpsertResult`](../interfaces/UpsertResult.md)\>
 
-Defined in: [packages/agentos/src/rag/vector\_stores/QdrantVectorStore.ts:604](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/vector_stores/QdrantVectorStore.ts#L604)
+Defined in: [packages/agentos/src/rag/vector\_stores/QdrantVectorStore.ts:604](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/vector_stores/QdrantVectorStore.ts#L604)
 
 **`Async`**
 

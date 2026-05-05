@@ -2,7 +2,7 @@
 
 > **filterByEligibility**(`entries`, `context`): [`SkillEntry`](../interfaces/SkillEntry.md)[]
 
-Defined in: [packages/agentos/src/skills/SkillLoader.ts:287](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/skills/SkillLoader.ts#L287)
+Defined in: [packages/agentos/src/skills/SkillLoader.ts:287](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/skills/SkillLoader.ts#L287)
 
 Filter skill entries by eligibility context.
 

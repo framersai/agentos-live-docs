@@ -1,6 +1,6 @@
 # Class: AgentOSOrchestrator
 
-Defined in: [packages/agentos/src/api/runtime/AgentOSOrchestrator.ts:310](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/runtime/AgentOSOrchestrator.ts#L310)
+Defined in: [packages/agentos/src/api/runtime/AgentOSOrchestrator.ts:290](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/runtime/AgentOSOrchestrator.ts#L290)
 
 ## Description
 
@@ -16,7 +16,7 @@ and handles the complex dance of tool calls and streaming responses.
 
 > **new AgentOSOrchestrator**(): `AgentOSOrchestrator`
 
-Defined in: [packages/agentos/src/api/runtime/AgentOSOrchestrator.ts:330](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/runtime/AgentOSOrchestrator.ts#L330)
+Defined in: [packages/agentos/src/api/runtime/AgentOSOrchestrator.ts:310](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/runtime/AgentOSOrchestrator.ts#L310)
 
 #### Returns
 
@@ -28,7 +28,7 @@ Defined in: [packages/agentos/src/api/runtime/AgentOSOrchestrator.ts:330](https:
 
 > **broadcastWorkflowUpdate**(`update`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/api/runtime/AgentOSOrchestrator.ts:482](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/runtime/AgentOSOrchestrator.ts#L482)
+Defined in: [packages/agentos/src/api/runtime/AgentOSOrchestrator.ts:462](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/runtime/AgentOSOrchestrator.ts#L462)
 
 #### Parameters
 
@@ -46,7 +46,7 @@ Defined in: [packages/agentos/src/api/runtime/AgentOSOrchestrator.ts:482](https:
 
 > **initialize**(`config`, `dependencies`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/api/runtime/AgentOSOrchestrator.ts:343](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/runtime/AgentOSOrchestrator.ts#L343)
+Defined in: [packages/agentos/src/api/runtime/AgentOSOrchestrator.ts:323](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/runtime/AgentOSOrchestrator.ts#L323)
 
 **`Async`**
 
@@ -83,7 +83,7 @@ If any critical dependency is missing or config is invalid.
 
 > **orchestrateResumedToolResults**(`pendingRequest`, `toolResults`, `options?`): `Promise`\<`string`\>
 
-Defined in: [packages/agentos/src/api/runtime/AgentOSOrchestrator.ts:608](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/runtime/AgentOSOrchestrator.ts#L608)
+Defined in: [packages/agentos/src/api/runtime/AgentOSOrchestrator.ts:588](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/runtime/AgentOSOrchestrator.ts#L588)
 
 #### Parameters
 
@@ -109,7 +109,7 @@ Defined in: [packages/agentos/src/api/runtime/AgentOSOrchestrator.ts:608](https:
 
 > **orchestrateToolResult**(`agentOSStreamId`, `toolCallId`, `toolName`, `toolOutput`, `isSuccess`, `errorMessage?`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/api/runtime/AgentOSOrchestrator.ts:1167](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/runtime/AgentOSOrchestrator.ts#L1167)
+Defined in: [packages/agentos/src/api/runtime/AgentOSOrchestrator.ts:1144](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/runtime/AgentOSOrchestrator.ts#L1144)
 
 Handles the result of an external tool execution, feeding it back into the
 relevant GMI instance for continued processing.
@@ -151,7 +151,7 @@ Delegates to ExternalToolResultHandler.
 
 > **orchestrateToolResults**(`agentOSStreamId`, `toolResults`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/api/runtime/AgentOSOrchestrator.ts:1185](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/runtime/AgentOSOrchestrator.ts#L1185)
+Defined in: [packages/agentos/src/api/runtime/AgentOSOrchestrator.ts:1162](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/runtime/AgentOSOrchestrator.ts#L1162)
 
 Handles one or more external tool results in batch.
 Delegates to ExternalToolResultHandler.
@@ -176,7 +176,7 @@ Delegates to ExternalToolResultHandler.
 
 > **orchestrateTurn**(`input`): `Promise`\<`string`\>
 
-Defined in: [packages/agentos/src/api/runtime/AgentOSOrchestrator.ts:539](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/runtime/AgentOSOrchestrator.ts#L539)
+Defined in: [packages/agentos/src/api/runtime/AgentOSOrchestrator.ts:519](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/runtime/AgentOSOrchestrator.ts#L519)
 
 **`Async`**
 
@@ -208,7 +208,7 @@ If critical initialization or setup fails.
 
 > **shutdown**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/api/runtime/AgentOSOrchestrator.ts:1205](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/runtime/AgentOSOrchestrator.ts#L1205)
+Defined in: [packages/agentos/src/api/runtime/AgentOSOrchestrator.ts:1182](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/runtime/AgentOSOrchestrator.ts#L1182)
 
 **`Async`**
 

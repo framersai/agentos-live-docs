@@ -1,6 +1,6 @@
 # Interface: SkillCommandDispatch
 
-Defined in: [packages/agentos/src/skills/types.ts:136](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/skills/types.ts#L136)
+Defined in: [packages/agentos/src/skills/types.ts:136](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/skills/types.ts#L136)
 
 Dispatch specification for skill commands.
 
@@ -10,7 +10,7 @@ Dispatch specification for skill commands.
 
 > `optional` **argMode**: `"raw"`
 
-Defined in: [packages/agentos/src/skills/types.ts:144](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/skills/types.ts#L144)
+Defined in: [packages/agentos/src/skills/types.ts:144](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/skills/types.ts#L144)
 
 How to forward user-provided args
 
@@ -20,7 +20,7 @@ How to forward user-provided args
 
 > **kind**: `"tool"`
 
-Defined in: [packages/agentos/src/skills/types.ts:138](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/skills/types.ts#L138)
+Defined in: [packages/agentos/src/skills/types.ts:138](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/skills/types.ts#L138)
 
 Dispatch kind (tool invocation)
 
@@ -30,6 +30,6 @@ Dispatch kind (tool invocation)
 
 > **toolName**: `string`
 
-Defined in: [packages/agentos/src/skills/types.ts:141](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/skills/types.ts#L141)
+Defined in: [packages/agentos/src/skills/types.ts:141](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/skills/types.ts#L141)
 
 Name of the tool to invoke

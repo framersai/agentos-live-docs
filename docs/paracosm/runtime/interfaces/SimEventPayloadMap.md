@@ -1,6 +1,6 @@
 # Interface: SimEventPayloadMap
 
-Defined in: [apps/paracosm/src/runtime/orchestrator.ts:96](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/orchestrator.ts#L96)
+Defined in: [apps/paracosm/src/runtime/orchestrator.ts:113](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/runtime/orchestrator.ts#L113)
 
 Per-event-type data shapes. The discriminated `SimEvent` union below
 maps each `type` to its payload so `onEvent` handlers get proper
@@ -18,7 +18,7 @@ payload is non-breaking; removing or renaming one is.
 
 > **agent\_reactions**: `object`
 
-Defined in: [apps/paracosm/src/runtime/orchestrator.ts:170](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/orchestrator.ts#L170)
+Defined in: [apps/paracosm/src/runtime/orchestrator.ts:187](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/runtime/orchestrator.ts#L187)
 
 Rollup of ~100 agent reactions for the turn (sliced preview only; full list on result).
 
@@ -36,7 +36,7 @@ Rollup of ~100 agent reactions for the turn (sliced preview only; full list on r
 
 > **bulletin**: `object`
 
-Defined in: [apps/paracosm/src/runtime/orchestrator.ts:172](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/orchestrator.ts#L172)
+Defined in: [apps/paracosm/src/runtime/orchestrator.ts:189](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/runtime/orchestrator.ts#L189)
 
 Social-media-style per-turn posts from featured agents.
 
@@ -46,45 +46,11 @@ Social-media-style per-turn posts from featured agents.
 
 ***
 
-### colony\_snapshot
+### decision\_made
 
-> **colony\_snapshot**: `object`
+> **decision\_made**: `object`
 
-Defined in: [apps/paracosm/src/runtime/orchestrator.ts:184](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/orchestrator.ts#L184)
-
-Full roster snapshot used by the dashboard cellular-automata viz.
-
-#### agents
-
-> **agents**: `unknown`[]
-
-#### births
-
-> **births**: `number`
-
-#### deaths
-
-> **deaths**: `number`
-
-#### foodReserve
-
-> **foodReserve**: `number`
-
-#### morale
-
-> **morale**: `number`
-
-#### population
-
-> **population**: `number`
-
-***
-
-### commander\_decided
-
-> **commander\_decided**: `object`
-
-Defined in: [apps/paracosm/src/runtime/orchestrator.ts:151](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/orchestrator.ts#L151)
+Defined in: [apps/paracosm/src/runtime/orchestrator.ts:168](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/runtime/orchestrator.ts#L168)
 
 Commander picked. `reasoning` is the full CoT; `rationale` is the compressed version.
 
@@ -114,11 +80,11 @@ Commander picked. `reasoning` is the full CoT; `rationale` is the compressed ver
 
 ***
 
-### commander\_deciding
+### decision\_pending
 
-> **commander\_deciding**: `object`
+> **decision\_pending**: `object`
 
-Defined in: [apps/paracosm/src/runtime/orchestrator.ts:149](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/orchestrator.ts#L149)
+Defined in: [apps/paracosm/src/runtime/orchestrator.ts:166](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/runtime/orchestrator.ts#L166)
 
 Commander is about to read department reports and pick an option.
 
@@ -128,89 +94,11 @@ Commander is about to read department reports and pick an option.
 
 ***
 
-### dept\_done
-
-> **dept\_done**: `object`
-
-Defined in: [apps/paracosm/src/runtime/orchestrator.ts:124](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/orchestrator.ts#L124)
-
-Department finished analyzing. `citationList` is truncated to 5; full list lives on the returned report.
-
-#### citationList
-
-> **citationList**: `object`[]
-
-#### citations
-
-> **citations**: `number`
-
-#### department
-
-> **department**: `string`
-
-#### eventIndex
-
-> **eventIndex**: `number`
-
-#### forgedTools
-
-> **forgedTools**: `unknown`[]
-
-#### recommendedActions?
-
-> `optional` **recommendedActions**: `string`[]
-
-#### risks
-
-> **risks**: `string`[]
-
-#### summary
-
-> **summary**: `string`
-
-***
-
-### dept\_start
-
-> **dept\_start**: `object`
-
-Defined in: [apps/paracosm/src/runtime/orchestrator.ts:122](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/orchestrator.ts#L122)
-
-Department agent starts analyzing an event. `department` is the scenario-defined id.
-
-#### department
-
-> **department**: `string`
-
-#### eventIndex
-
-> **eventIndex**: `number`
-
-***
-
-### drift
-
-> **drift**: `object`
-
-Defined in: [apps/paracosm/src/runtime/orchestrator.ts:168](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/orchestrator.ts#L168)
-
-Per-turn HEXACO drift for promoted agents + the commander.
-
-#### agents
-
-> **agents**: `Record`\<`string`, \{ `hexaco`: `Record`\<`string`, `number`\>; `name`: `string`; \}\>
-
-#### commander
-
-> **commander**: `unknown`
-
-***
-
 ### event\_start
 
 > **event\_start**: `object`
 
-Defined in: [apps/paracosm/src/runtime/orchestrator.ts:111](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/orchestrator.ts#L111)
+Defined in: [apps/paracosm/src/runtime/orchestrator.ts:128](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/runtime/orchestrator.ts#L128)
 
 Fires before each event within a turn. One turn can carry multiple events (up to `maxEventsPerTurn`).
 
@@ -252,7 +140,7 @@ Fires before each event within a turn. One turn can carry multiple events (up to
 
 > **forge\_attempt**: `object`
 
-Defined in: [apps/paracosm/src/runtime/orchestrator.ts:135](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/orchestrator.ts#L135)
+Defined in: [apps/paracosm/src/runtime/orchestrator.ts:152](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/runtime/orchestrator.ts#L152)
 
 A department tried to forge a runtime tool. `approved` reflects the LLM-judge verdict.
 
@@ -306,17 +194,13 @@ A department tried to forge a runtime tool. `approved` reflects the LLM-judge ve
 
 > **outcome**: `object`
 
-Defined in: [apps/paracosm/src/runtime/orchestrator.ts:160](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/orchestrator.ts#L160)
+Defined in: [apps/paracosm/src/runtime/orchestrator.ts:177](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/runtime/orchestrator.ts#L177)
 
-Outcome classification + numerical deltas applied to colony state.
+Outcome classification + numerical deltas applied to the metrics state bag.
 
 #### category
 
 > **category**: `string`
-
-#### colonyDeltas
-
-> **colonyDeltas**: `Record`\<`string`, `number`\>
 
 #### emergent
 
@@ -330,13 +214,35 @@ Outcome classification + numerical deltas applied to colony state.
 
 > **outcome**: `string`
 
+#### systemDeltas
+
+> **systemDeltas**: `Record`\<`string`, `number`\>
+
+***
+
+### personality\_drift
+
+> **personality\_drift**: `object`
+
+Defined in: [apps/paracosm/src/runtime/orchestrator.ts:185](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/runtime/orchestrator.ts#L185)
+
+Per-turn HEXACO drift for promoted agents + the commander.
+
+#### agents
+
+> **agents**: `Record`\<`string`, \{ `hexaco`: `Record`\<`string`, `number`\>; `name`: `string`; \}\>
+
+#### commander
+
+> **commander**: `unknown`
+
 ***
 
 ### promotion
 
 > **promotion**: `object`
 
-Defined in: [apps/paracosm/src/runtime/orchestrator.ts:182](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/orchestrator.ts#L182)
+Defined in: [apps/paracosm/src/runtime/orchestrator.ts:201](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/runtime/orchestrator.ts#L201)
 
 Department-head promotion at turn 0. One per department.
 
@@ -362,7 +268,7 @@ Department-head promotion at turn 0. One per department.
 
 > **provider\_error**: `object`
 
-Defined in: [apps/paracosm/src/runtime/orchestrator.ts:193](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/orchestrator.ts#L193)
+Defined in: [apps/paracosm/src/runtime/orchestrator.ts:212](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/runtime/orchestrator.ts#L212)
 
 Terminal provider failure (invalid key, quota, classified auth error). The run aborts at the next turn.
 
@@ -372,7 +278,7 @@ Terminal provider failure (invalid key, quota, classified auth error). The run a
 
 #### kind
 
-> **kind**: `"auth"` \| `"quota"` \| `"rate_limit"` \| `"network"` \| `"unknown"`
+> **kind**: `"unknown"` \| `"auth"` \| `"quota"` \| `"rate_limit"` \| `"network"`
 
 #### message
 
@@ -392,17 +298,17 @@ Terminal provider failure (invalid key, quota, classified auth error). The run a
 
 > **sim\_aborted**: `object`
 
-Defined in: [apps/paracosm/src/runtime/orchestrator.ts:203](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/orchestrator.ts#L203)
+Defined in: [apps/paracosm/src/runtime/orchestrator.ts:222](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/runtime/orchestrator.ts#L222)
 
 Run was cancelled via `signal.abort()` (or the server's disconnect watchdog). Partial results preserved.
-
-#### colony
-
-> **colony**: `Record`\<`string`, `number`\>
 
 #### completedTurns
 
 > **completedTurns**: `number`
+
+#### metrics
+
+> **metrics**: `Record`\<`string`, `number`\>
 
 #### reason
 
@@ -414,25 +320,127 @@ Run was cancelled via `signal.abort()` (or the server's disconnect watchdog). Pa
 
 ***
 
+### specialist\_done
+
+> **specialist\_done**: `object`
+
+Defined in: [apps/paracosm/src/runtime/orchestrator.ts:141](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/runtime/orchestrator.ts#L141)
+
+Department finished analyzing. `citationList` is truncated to 5; full list lives on the returned report.
+
+#### citationList
+
+> **citationList**: `object`[]
+
+#### citations
+
+> **citations**: `number`
+
+#### department
+
+> **department**: `string`
+
+#### eventIndex
+
+> **eventIndex**: `number`
+
+#### forgedTools
+
+> **forgedTools**: `unknown`[]
+
+#### recommendedActions?
+
+> `optional` **recommendedActions**: `string`[]
+
+#### risks
+
+> **risks**: `string`[]
+
+#### summary
+
+> **summary**: `string`
+
+***
+
+### specialist\_start
+
+> **specialist\_start**: `object`
+
+Defined in: [apps/paracosm/src/runtime/orchestrator.ts:139](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/runtime/orchestrator.ts#L139)
+
+Department agent starts analyzing an event. `department` is the scenario-defined id.
+
+#### department
+
+> **department**: `string`
+
+#### eventIndex
+
+> **eventIndex**: `number`
+
+***
+
+### systems\_snapshot
+
+> **systems\_snapshot**: `object`
+
+Defined in: [apps/paracosm/src/runtime/orchestrator.ts:203](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/runtime/orchestrator.ts#L203)
+
+Full roster snapshot used by the dashboard cellular-automata viz.
+
+#### agents
+
+> **agents**: `unknown`[]
+
+#### births
+
+> **births**: `number`
+
+#### deaths
+
+> **deaths**: `number`
+
+#### foodReserve
+
+> **foodReserve**: `number`
+
+#### morale
+
+> **morale**: `number`
+
+#### population
+
+> **population**: `number`
+
+***
+
 ### turn\_done
 
 > **turn\_done**: `object`
 
-Defined in: [apps/paracosm/src/runtime/orchestrator.ts:174](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/orchestrator.ts#L174)
+Defined in: [apps/paracosm/src/runtime/orchestrator.ts:191](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/runtime/orchestrator.ts#L191)
 
 End of turn. Carries applied deltas + cumulative tool count + death-cause breakdown when relevant.
-
-#### colony
-
-> **colony**: `Record`\<`string`, `number`\>
 
 #### deathCauses?
 
 > `optional` **deathCauses**: `Record`\<`string`, `number`\>
 
+#### environment?
+
+> `optional` **environment**: `Record`\<`string`, `string` \| `number` \| `boolean`\>
+
 #### error?
 
 > `optional` **error**: `string`
+
+#### metrics
+
+> **metrics**: `Record`\<`string`, `number`\>
+
+#### statuses?
+
+> `optional` **statuses**: `Record`\<`string`, `string` \| `boolean`\>
 
 #### toolsForged
 
@@ -448,7 +456,7 @@ End of turn. Carries applied deltas + cumulative tool count + death-cause breakd
 
 > **turn\_start**: `object`
 
-Defined in: [apps/paracosm/src/runtime/orchestrator.ts:98](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/orchestrator.ts#L98)
+Defined in: [apps/paracosm/src/runtime/orchestrator.ts:115](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/runtime/orchestrator.ts#L115)
 
 Fires once at the start of every turn. Title/crisis carry the first event's headline when `totalEvents > 0`.
 
@@ -459,10 +467,6 @@ Fires once at the start of every turn. Title/crisis carry the first event's head
 #### category?
 
 > `optional` **category**: `string`
-
-#### colony?
-
-> `optional` **colony**: `Record`\<`string`, `number`\>
 
 #### crisis?
 
@@ -475,6 +479,10 @@ Fires once at the start of every turn. Title/crisis carry the first event's head
 #### emergent?
 
 > `optional` **emergent**: `boolean`
+
+#### metrics?
+
+> `optional` **metrics**: `Record`\<`string`, `number`\>
 
 #### pacing?
 
@@ -498,7 +506,7 @@ Fires once at the start of every turn. Title/crisis carry the first event's head
 
 > **validation\_fallback**: `object`
 
-Defined in: [apps/paracosm/src/runtime/orchestrator.ts:201](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/orchestrator.ts#L201)
+Defined in: [apps/paracosm/src/runtime/orchestrator.ts:220](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/runtime/orchestrator.ts#L220)
 
 Non-terminal: a schema-validated call exhausted retries and returned the fallback skeleton. Run continues degraded.
 

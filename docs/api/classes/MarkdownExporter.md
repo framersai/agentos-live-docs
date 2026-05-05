@@ -1,6 +1,6 @@
 # Class: MarkdownExporter
 
-Defined in: [packages/agentos/src/memory/io/MarkdownExporter.ts:63](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/io/MarkdownExporter.ts#L63)
+Defined in: [packages/agentos/src/memory/io/MarkdownExporter.ts:63](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/io/MarkdownExporter.ts#L63)
 
 Exports memory traces as Markdown files with YAML front-matter.
 
@@ -20,15 +20,15 @@ await exporter.export('/path/to/vault');
 
 > **new MarkdownExporter**(`brain`): `MarkdownExporter`
 
-Defined in: [packages/agentos/src/memory/io/MarkdownExporter.ts:67](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/io/MarkdownExporter.ts#L67)
+Defined in: [packages/agentos/src/memory/io/MarkdownExporter.ts:67](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/io/MarkdownExporter.ts#L67)
 
 #### Parameters
 
 ##### brain
 
-[`SqliteBrain`](SqliteBrain.md)
+[`Brain`](Brain.md)
 
-The `SqliteBrain` instance to read from.
+The `Brain` instance to read from.
 
 #### Returns
 
@@ -38,11 +38,11 @@ The `SqliteBrain` instance to read from.
 
 ### brain
 
-> `protected` `readonly` **brain**: [`SqliteBrain`](SqliteBrain.md)
+> `protected` `readonly` **brain**: [`Brain`](Brain.md)
 
-Defined in: [packages/agentos/src/memory/io/MarkdownExporter.ts:67](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/io/MarkdownExporter.ts#L67)
+Defined in: [packages/agentos/src/memory/io/MarkdownExporter.ts:67](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/io/MarkdownExporter.ts#L67)
 
-The `SqliteBrain` instance to read from.
+The `Brain` instance to read from.
 
 ## Methods
 
@@ -50,7 +50,7 @@ The `SqliteBrain` instance to read from.
 
 > `protected` **buildFileContent**(`trace`): `string`
 
-Defined in: [packages/agentos/src/memory/io/MarkdownExporter.ts:103](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/io/MarkdownExporter.ts#L103)
+Defined in: [packages/agentos/src/memory/io/MarkdownExporter.ts:103](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/io/MarkdownExporter.ts#L103)
 
 Build the Markdown content for a single trace.
 
@@ -77,7 +77,7 @@ Full Markdown file content (front-matter + body).
 
 > **export**(`outputDir`, `_options?`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/memory/io/MarkdownExporter.ts:82](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/io/MarkdownExporter.ts#L82)
+Defined in: [packages/agentos/src/memory/io/MarkdownExporter.ts:82](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/io/MarkdownExporter.ts#L82)
 
 Export all memory traces as `.md` files into `outputDir`.
 
@@ -108,7 +108,7 @@ Optional export configuration (currently unused but
 
 > `protected` **traceRelativePath**(`trace`): `string`
 
-Defined in: [packages/agentos/src/memory/io/MarkdownExporter.ts:130](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/io/MarkdownExporter.ts#L130)
+Defined in: [packages/agentos/src/memory/io/MarkdownExporter.ts:130](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/io/MarkdownExporter.ts#L130)
 
 Determine the relative file path for a trace within the output directory.
 

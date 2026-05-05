@@ -1,6 +1,6 @@
 # Interface: GenerateObjectOptions\<T\>
 
-Defined in: [packages/agentos/src/api/generateObject.ts:84](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/generateObject.ts#L84)
+Defined in: [packages/agentos/src/api/generateObject.ts:86](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/generateObject.ts#L86)
 
 Options for a [generateObject](../functions/generateObject.md) call.
 
@@ -20,7 +20,7 @@ const opts: GenerateObjectOptions<typeof mySchema> = {
 
 ### T
 
-`T` *extends* `ZodType`
+`T` *extends* [`ZodType`](../@framers/namespaces/z/interfaces/ZodType-1.md)
 
 The Zod schema type that defines the expected output shape.
 
@@ -30,7 +30,7 @@ The Zod schema type that defines the expected output shape.
 
 > `optional` **apiKey**: `string`
 
-Defined in: [packages/agentos/src/api/generateObject.ts:154](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/generateObject.ts#L154)
+Defined in: [packages/agentos/src/api/generateObject.ts:156](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/generateObject.ts#L156)
 
 Override the API key instead of reading from environment variables.
 
@@ -40,7 +40,7 @@ Override the API key instead of reading from environment variables.
 
 > `optional` **baseUrl**: `string`
 
-Defined in: [packages/agentos/src/api/generateObject.ts:157](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/generateObject.ts#L157)
+Defined in: [packages/agentos/src/api/generateObject.ts:159](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/generateObject.ts#L159)
 
 Override the provider base URL (useful for local proxies or Ollama).
 
@@ -50,7 +50,7 @@ Override the provider base URL (useful for local proxies or Ollama).
 
 > `optional` **fallbackProviders**: [`FallbackProviderEntry`](FallbackProviderEntry.md)[]
 
-Defined in: [packages/agentos/src/api/generateObject.ts:164](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/generateObject.ts#L164)
+Defined in: [packages/agentos/src/api/generateObject.ts:166](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/generateObject.ts#L166)
 
 Ordered fallback providers tried when the primary fails with a retryable
 error. When undefined, auto-built from env keys. Pass `[]` to disable.
@@ -65,7 +65,7 @@ import('./generateText.js').GenerateTextOptions.fallbackProviders
 
 > `optional` **maxRetries**: `number`
 
-Defined in: [packages/agentos/src/api/generateObject.ts:151](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/generateObject.ts#L151)
+Defined in: [packages/agentos/src/api/generateObject.ts:153](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/generateObject.ts#L153)
 
 Number of times to retry when JSON parsing or Zod validation fails.
 Each retry appends the error details to the conversation so the model
@@ -83,7 +83,7 @@ can self-correct.
 
 > `optional` **maxTokens**: `number`
 
-Defined in: [packages/agentos/src/api/generateObject.ts:142](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/generateObject.ts#L142)
+Defined in: [packages/agentos/src/api/generateObject.ts:144](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/generateObject.ts#L144)
 
 Hard cap on output tokens.
 
@@ -93,7 +93,7 @@ Hard cap on output tokens.
 
 > `optional` **messages**: [`Message`](Message.md)[]
 
-Defined in: [packages/agentos/src/api/generateObject.ts:136](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/generateObject.ts#L136)
+Defined in: [packages/agentos/src/api/generateObject.ts:138](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/generateObject.ts#L138)
 
 Full conversation history.
 
@@ -103,7 +103,7 @@ Full conversation history.
 
 > `optional` **model**: `string`
 
-Defined in: [packages/agentos/src/api/generateObject.ts:98](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/generateObject.ts#L98)
+Defined in: [packages/agentos/src/api/generateObject.ts:100](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/generateObject.ts#L100)
 
 Model identifier. Accepts `"provider:model"` or plain model name with `provider`.
 
@@ -119,7 +119,7 @@ Model identifier. Accepts `"provider:model"` or plain model name with `provider`
 
 > `optional` **onFallback**: (`error`, `fallbackProvider`) => `void`
 
-Defined in: [packages/agentos/src/api/generateObject.ts:169](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/generateObject.ts#L169)
+Defined in: [packages/agentos/src/api/generateObject.ts:171](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/generateObject.ts#L171)
 
 Called when a fallback provider is about to be tried.
 
@@ -143,7 +143,7 @@ Called when a fallback provider is about to be tried.
 
 > `optional` **prompt**: `string`
 
-Defined in: [packages/agentos/src/api/generateObject.ts:120](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/generateObject.ts#L120)
+Defined in: [packages/agentos/src/api/generateObject.ts:122](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/generateObject.ts#L122)
 
 User prompt. Convenience alternative to building a `messages` array.
 
@@ -153,7 +153,7 @@ User prompt. Convenience alternative to building a `messages` array.
 
 > `optional` **provider**: `string`
 
-Defined in: [packages/agentos/src/api/generateObject.ts:91](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/generateObject.ts#L91)
+Defined in: [packages/agentos/src/api/generateObject.ts:93](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/generateObject.ts#L93)
 
 Provider name. When supplied without `model`, the default text model for
 the provider is resolved automatically.
@@ -170,7 +170,7 @@ the provider is resolved automatically.
 
 > **schema**: `T`
 
-Defined in: [packages/agentos/src/api/generateObject.ts:101](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/generateObject.ts#L101)
+Defined in: [packages/agentos/src/api/generateObject.ts:103](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/generateObject.ts#L103)
 
 Zod schema defining the expected output shape.
 
@@ -180,7 +180,7 @@ Zod schema defining the expected output shape.
 
 > `optional` **schemaDescription**: `string`
 
-Defined in: [packages/agentos/src/api/generateObject.ts:117](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/generateObject.ts#L117)
+Defined in: [packages/agentos/src/api/generateObject.ts:119](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/generateObject.ts#L119)
 
 Description of the schema, injected into the system prompt alongside
 the JSON Schema definition.
@@ -197,7 +197,7 @@ the JSON Schema definition.
 
 > `optional` **schemaName**: `string`
 
-Defined in: [packages/agentos/src/api/generateObject.ts:109](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/generateObject.ts#L109)
+Defined in: [packages/agentos/src/api/generateObject.ts:111](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/generateObject.ts#L111)
 
 Human-readable name for the schema, injected into the system prompt to
 give the model context about what it is generating.
@@ -214,7 +214,7 @@ give the model context about what it is generating.
 
 > `optional` **system**: `string` \| [`SystemContentBlock`](SystemContentBlock.md)[]
 
-Defined in: [packages/agentos/src/api/generateObject.ts:133](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/generateObject.ts#L133)
+Defined in: [packages/agentos/src/api/generateObject.ts:135](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/generateObject.ts#L135)
 
 System prompt. The schema extraction instructions are appended to this,
 so any custom system context is preserved.
@@ -232,6 +232,6 @@ the per-call schema vary freely.
 
 > `optional` **temperature**: `number`
 
-Defined in: [packages/agentos/src/api/generateObject.ts:139](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/generateObject.ts#L139)
+Defined in: [packages/agentos/src/api/generateObject.ts:141](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/generateObject.ts#L141)
 
 Sampling temperature forwarded to the provider (0-2 for most providers).

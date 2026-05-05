@@ -1,6 +1,6 @@
 # Class: AgentOS
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:762](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/AgentOS.ts#L762)
+Defined in: [packages/agentos/src/api/AgentOS.ts:762](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/AgentOS.ts#L762)
 
 ## Implements
 
@@ -22,7 +22,7 @@ comprehensive documentation, and strict type safety.
 
 > **new AgentOS**(`logger?`): `AgentOS`
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:794](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/AgentOS.ts#L794)
+Defined in: [packages/agentos/src/api/AgentOS.ts:794](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/AgentOS.ts#L794)
 
 Constructs an `AgentOS` instance. The instance is not operational until
 `initialize()` is called and successfully completes.
@@ -43,7 +43,7 @@ Constructs an `AgentOS` instance. The instance is not operational until
 
 > **applyWorkflowTaskUpdates**(`workflowId`, `updates`): `Promise`\<[`WorkflowInstance`](../interfaces/WorkflowInstance.md) \| `null`\>
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:1892](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/AgentOS.ts#L1892)
+Defined in: [packages/agentos/src/api/AgentOS.ts:1944](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/AgentOS.ts#L1944)
 
 Applies task-level updates to a workflow instance.
 
@@ -77,7 +77,7 @@ Updated workflow instance or null if not found.
 
 > **getConversationHistory**(`conversationId`, `userId`): `Promise`\<`ConversationContext` \| `null`\>
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:1942](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/AgentOS.ts#L1942)
+Defined in: [packages/agentos/src/api/AgentOS.ts:1994](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/AgentOS.ts#L1994)
 
 **`Async`**
 
@@ -120,7 +120,7 @@ occurs during history retrieval (permission errors might result in `null` or spe
 
 > **getConversationManager**(): [`ConversationManager`](ConversationManager.md)
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:1455](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/AgentOS.ts#L1455)
+Defined in: [packages/agentos/src/api/AgentOS.ts:1507](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/AgentOS.ts#L1507)
 
 Explicit runtime getters for devtools integrations such as AgentOS Workbench.
 
@@ -138,7 +138,7 @@ Explicit runtime getters for devtools integrations such as AgentOS Workbench.
 
 > **getExtensionManager**(): [`ExtensionManager`](ExtensionManager.md)
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:1465](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/AgentOS.ts#L1465)
+Defined in: [packages/agentos/src/api/AgentOS.ts:1517](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/AgentOS.ts#L1517)
 
 #### Returns
 
@@ -154,7 +154,7 @@ Defined in: [packages/agentos/src/api/AgentOS.ts:1465](https://github.com/framer
 
 > **getExternalToolRegistry**(): [`ExternalToolRegistry`](../type-aliases/ExternalToolRegistry.md) \| `undefined`
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:1475](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/AgentOS.ts#L1475)
+Defined in: [packages/agentos/src/api/AgentOS.ts:1527](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/AgentOS.ts#L1527)
 
 #### Returns
 
@@ -170,7 +170,7 @@ Defined in: [packages/agentos/src/api/AgentOS.ts:1475](https://github.com/framer
 
 > **getGMIManager**(): [`GMIManager`](GMIManager.md)
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:1460](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/AgentOS.ts#L1460)
+Defined in: [packages/agentos/src/api/AgentOS.ts:1512](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/AgentOS.ts#L1512)
 
 #### Returns
 
@@ -186,7 +186,7 @@ Defined in: [packages/agentos/src/api/AgentOS.ts:1460](https://github.com/framer
 
 > **getModelProviderManager**(): [`AIModelProviderManager`](AIModelProviderManager.md)
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:1485](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/AgentOS.ts#L1485)
+Defined in: [packages/agentos/src/api/AgentOS.ts:1537](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/AgentOS.ts#L1537)
 
 #### Returns
 
@@ -202,7 +202,7 @@ Defined in: [packages/agentos/src/api/AgentOS.ts:1485](https://github.com/framer
 
 > **getPendingExternalToolRequest**(`conversationId`, `userId`): `Promise`\<[`AgentOSPendingExternalToolRequest`](../interfaces/AgentOSPendingExternalToolRequest.md) \| `null`\>
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:1985](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/AgentOS.ts#L1985)
+Defined in: [packages/agentos/src/api/AgentOS.ts:2037](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/AgentOS.ts#L2037)
 
 Returns the pending external-tool pause snapshot for a conversation, if one
 was persisted during an actionable TOOL_CALL_REQUEST pause.
@@ -231,7 +231,7 @@ was persisted during an actionable TOOL_CALL_REQUEST pause.
 
 > **getRuntimeSnapshot**(): `Promise`\<[`AgentOSRuntimeSnapshot`](../interfaces/AgentOSRuntimeSnapshot.md)\>
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:1352](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/AgentOS.ts#L1352)
+Defined in: [packages/agentos/src/api/AgentOS.ts:1404](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/AgentOS.ts#L1404)
 
 Returns a serializable runtime/devtools snapshot of the initialized AgentOS instance.
 
@@ -249,7 +249,7 @@ Returns a serializable runtime/devtools snapshot of the initialized AgentOS inst
 
 > **getToolOrchestrator**(): `IToolOrchestrator`
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:1470](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/AgentOS.ts#L1470)
+Defined in: [packages/agentos/src/api/AgentOS.ts:1522](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/AgentOS.ts#L1522)
 
 #### Returns
 
@@ -265,7 +265,7 @@ Defined in: [packages/agentos/src/api/AgentOS.ts:1470](https://github.com/framer
 
 > **getWorkflow**(`workflowId`): `Promise`\<[`WorkflowInstance`](../interfaces/WorkflowInstance.md) \| `null`\>
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:1866](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/AgentOS.ts#L1866)
+Defined in: [packages/agentos/src/api/AgentOS.ts:1918](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/AgentOS.ts#L1918)
 
 Retrieves a workflow instance by its identifier.
 
@@ -293,7 +293,7 @@ The workflow instance or null if not found.
 
 > **getWorkflowProgress**(`workflowId`, `sinceTimestamp?`): `Promise`\<[`WorkflowProgressUpdate`](../interfaces/WorkflowProgressUpdate.md) \| `null`\>
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:1876](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/AgentOS.ts#L1876)
+Defined in: [packages/agentos/src/api/AgentOS.ts:1928](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/AgentOS.ts#L1928)
 
 Retrieves workflow progress details, including recent events.
 
@@ -327,7 +327,7 @@ Progress details or null if not found.
 
 > **handleToolResult**(`streamId`, `toolCallId`, `toolName`, `toolOutput`, `isSuccess`, `errorMessage?`): `AsyncGenerator`\<[`AgentOSResponse`](../type-aliases/AgentOSResponse.md), `void`, `undefined`\>
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:1743](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/AgentOS.ts#L1743)
+Defined in: [packages/agentos/src/api/AgentOS.ts:1795](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/AgentOS.ts#L1795)
 
 **`Async`** **`Generator`**
 
@@ -405,7 +405,7 @@ Errors during GMI processing are yielded as `AgentOSErrorChunk`s.
 
 > **handleToolResults**(`streamId`, `toolResults`): `AsyncGenerator`\<[`AgentOSResponse`](../type-aliases/AgentOSResponse.md), `void`, `undefined`\>
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:1762](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/AgentOS.ts#L1762)
+Defined in: [packages/agentos/src/api/AgentOS.ts:1814](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/AgentOS.ts#L1814)
 
 Handles a batch of externally executed tool results that belong to the same
 paused stream and continues the agent interaction once.
@@ -445,7 +445,7 @@ If the `streamId` is invalid or the tool result batch is empty.
 
 > **initialize**(`config`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:809](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/AgentOS.ts#L809)
+Defined in: [packages/agentos/src/api/AgentOS.ts:861](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/AgentOS.ts#L861)
 
 **`Async`**
 
@@ -483,7 +483,7 @@ dependency fails to initialize.
 
 > **listAvailablePersonas**(`userId?`): `Promise`\<`Partial`\<[`IPersonaDefinition`](../interfaces/IPersonaDefinition.md)\>[]\>
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:1912](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/AgentOS.ts#L1912)
+Defined in: [packages/agentos/src/api/AgentOS.ts:1964](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/AgentOS.ts#L1964)
 
 **`Async`**
 
@@ -520,7 +520,7 @@ If the service is not initialized.
 
 > **listExternalToolsForLLM**(): `ToolDefinitionForLLM`[]
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:1480](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/AgentOS.ts#L1480)
+Defined in: [packages/agentos/src/api/AgentOS.ts:1532](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/AgentOS.ts#L1532)
 
 #### Returns
 
@@ -536,7 +536,7 @@ Defined in: [packages/agentos/src/api/AgentOS.ts:1480](https://github.com/framer
 
 > **listWorkflowDefinitions**(): [`WorkflowDefinition`](../interfaces/WorkflowDefinition.md)[]
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:1845](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/AgentOS.ts#L1845)
+Defined in: [packages/agentos/src/api/AgentOS.ts:1897](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/AgentOS.ts#L1897)
 
 Lists registered workflow definitions available via the extension manager.
 
@@ -556,7 +556,7 @@ Array of available workflow definitions.
 
 > **listWorkflows**(`options?`): `Promise`\<[`WorkflowInstance`](../interfaces/WorkflowInstance.md)[]\>
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:1871](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/AgentOS.ts#L1871)
+Defined in: [packages/agentos/src/api/AgentOS.ts:1923](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/AgentOS.ts#L1923)
 
 Lists workflow instances matching the provided filters.
 
@@ -584,7 +584,7 @@ Array of matching workflow instances.
 
 > **processRequest**(`input`): `AsyncGenerator`\<[`AgentOSResponse`](../type-aliases/AgentOSResponse.md), `void`, `undefined`\>
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:1516](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/AgentOS.ts#L1516)
+Defined in: [packages/agentos/src/api/AgentOS.ts:1568](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/AgentOS.ts#L1568)
 
 **`Async`** **`Generator`**
 
@@ -637,7 +637,7 @@ service is not initialized. Errors during GMI processing are typically yielded a
 
 > **receiveFeedback**(`userId`, `sessionId`, `personaId`, `feedbackPayload`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:2092](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/AgentOS.ts#L2092)
+Defined in: [packages/agentos/src/api/AgentOS.ts:2144](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/AgentOS.ts#L2144)
 
 **`Async`**
 
@@ -692,7 +692,7 @@ during feedback processing (e.g., `GMIErrorCode.GMI_FEEDBACK_ERROR`).
 
 > **resumeExternalToolRequest**(`pendingRequest`, `toolResults`, `options?`): `AsyncGenerator`\<[`AgentOSResponse`](../type-aliases/AgentOSResponse.md), `void`, `undefined`\>
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:2000](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/AgentOS.ts#L2000)
+Defined in: [packages/agentos/src/api/AgentOS.ts:2052](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/AgentOS.ts#L2052)
 
 Resumes a previously persisted external-tool pause after restart using the
 saved pause snapshot and the host-provided tool results.
@@ -728,7 +728,7 @@ when the resumed turn needs organization-scoped memory or tenant routing.
 
 > **shutdown**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:2132](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/AgentOS.ts#L2132)
+Defined in: [packages/agentos/src/api/AgentOS.ts:2184](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/AgentOS.ts#L2184)
 
 **`Async`**
 
@@ -755,7 +755,7 @@ If an error occurs during the shutdown of any critical component.
 
 > **startWorkflow**(`definitionId`, `input`, `options?`): `Promise`\<[`WorkflowInstance`](../interfaces/WorkflowInstance.md)\>
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:1850](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/AgentOS.ts#L1850)
+Defined in: [packages/agentos/src/api/AgentOS.ts:1902](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/AgentOS.ts#L1902)
 
 Starts a workflow instance using the specified definition and input payload.
 
@@ -817,7 +817,7 @@ The created workflow instance.
 
 > **updateWorkflowStatus**(`workflowId`, `status`): `Promise`\<[`WorkflowInstance`](../interfaces/WorkflowInstance.md) \| `null`\>
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:1884](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/AgentOS.ts#L1884)
+Defined in: [packages/agentos/src/api/AgentOS.ts:1936](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/AgentOS.ts#L1936)
 
 Updates the high-level workflow status (e.g., cancel, complete).
 
@@ -844,3 +844,67 @@ Updated workflow instance or null if not found.
 #### Implementation of
 
 `IAgentOS.updateWorkflowStatus`
+
+***
+
+### create()
+
+> `static` **create**(`overrides?`, `logger?`): `Promise`\<`AgentOS`\>
+
+Defined in: [packages/agentos/src/api/AgentOS.ts:833](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/AgentOS.ts#L833)
+
+Convenience factory: build an `AgentOS` instance with a fully-populated
+default configuration in a single call.
+
+The factory uses createAgentOSConfig under the hood, which reads
+from the standard environment (`DATABASE_URL`, provider API keys, etc.)
+and wires up sane defaults for every sub-system. Any fields passed in
+`overrides` are deep-merged onto the generated config so callers can
+tweak observability, provenance, memoryTools, etc. without rebuilding
+the whole config object themselves.
+
+For fine-grained control, fall back to `new AgentOS()` +
+`initialize(yourConfig)`.
+
+#### Parameters
+
+##### overrides?
+
+`Partial`\<[`AgentOSConfig`](../interfaces/AgentOSConfig.md)\> & `object` = `{}`
+
+Optional partial `AgentOSConfig` whose fields are
+  shallow-merged onto the auto-generated config. Pass `tools` /
+  `externalTools` here to register them at construction time. Pass
+  `observability`, `provenance`, `memoryTools`, etc. to opt into
+  subsystems without touching the rest of the defaults.
+
+##### logger?
+
+[`ILogger`](../interfaces/ILogger.md)
+
+Optional logger override.
+
+#### Returns
+
+`Promise`\<`AgentOS`\>
+
+A fully-initialised `AgentOS` instance.
+
+#### Throws
+
+If env config is invalid or initialisation fails.
+
+#### Example
+
+```ts
+import { AgentOS } from '@framers/agentos';
+
+// Defaults — reads DATABASE_URL + provider keys from env.
+const os = await AgentOS.create();
+
+// With observability + provenance turned on.
+const observed = await AgentOS.create({
+  observability: { tracing: { enabled: true } },
+  provenance:    { policy: 'sealed', keyPath: '~/.framers/key.pem' },
+});
+```

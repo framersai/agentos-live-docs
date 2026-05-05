@@ -2,7 +2,7 @@
 
 > **computeRecencyBoost**(`lastAccessedAt`, `now`, `halfLifeMs?`): `number`
 
-Defined in: [packages/agentos/src/memory/core/decay/RetrievalPriorityScorer.ts:58](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/decay/RetrievalPriorityScorer.ts#L58)
+Defined in: [packages/agentos/src/memory/core/decay/RetrievalPriorityScorer.ts:58](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/decay/RetrievalPriorityScorer.ts#L58)
 
 Recency boost: exponential decay from recent events.
 Recent memories (within the half-life window) get a small bonus.

@@ -1,6 +1,6 @@
 # Interface: SecurityEvent
 
-Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:138](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/sandbox/executor/ICodeSandbox.ts#L138)
+Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:153](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/sandbox/executor/ICodeSandbox.ts#L153)
 
 Security event detected during execution.
 
@@ -10,7 +10,7 @@ Security event detected during execution.
 
 > **description**: `string`
 
-Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:142](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/sandbox/executor/ICodeSandbox.ts#L142)
+Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:157](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/sandbox/executor/ICodeSandbox.ts#L157)
 
 Description of the event
 
@@ -20,7 +20,7 @@ Description of the event
 
 > **severity**: `"critical"` \| `"low"` \| `"medium"` \| `"high"`
 
-Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:146](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/sandbox/executor/ICodeSandbox.ts#L146)
+Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:161](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/sandbox/executor/ICodeSandbox.ts#L161)
 
 Severity
 
@@ -30,7 +30,7 @@ Severity
 
 > **timestamp**: `string`
 
-Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:144](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/sandbox/executor/ICodeSandbox.ts#L144)
+Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:159](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/sandbox/executor/ICodeSandbox.ts#L159)
 
 Timestamp
 
@@ -40,6 +40,6 @@ Timestamp
 
 > **type**: `"resource_limit"` \| `"blocked_import"` \| `"blocked_syscall"` \| `"network_attempt"` \| `"filesystem_violation"`
 
-Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:140](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/sandbox/executor/ICodeSandbox.ts#L140)
+Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:155](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/sandbox/executor/ICodeSandbox.ts#L155)
 
 Event type

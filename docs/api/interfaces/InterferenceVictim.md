@@ -1,6 +1,6 @@
 # Interface: InterferenceVictim
 
-Defined in: [packages/agentos/src/memory/core/decay/DecayModel.ts:102](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/decay/DecayModel.ts#L102)
+Defined in: [packages/agentos/src/memory/core/decay/DecayModel.ts:102](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/decay/DecayModel.ts#L102)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/memory/core/decay/DecayModel.ts:102](https://g
 
 > **strengthReduction**: `number`
 
-Defined in: [packages/agentos/src/memory/core/decay/DecayModel.ts:104](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/decay/DecayModel.ts#L104)
+Defined in: [packages/agentos/src/memory/core/decay/DecayModel.ts:104](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/decay/DecayModel.ts#L104)
 
 ***
 
@@ -16,4 +16,4 @@ Defined in: [packages/agentos/src/memory/core/decay/DecayModel.ts:104](https://g
 
 > **traceId**: `string`
 
-Defined in: [packages/agentos/src/memory/core/decay/DecayModel.ts:103](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/decay/DecayModel.ts#L103)
+Defined in: [packages/agentos/src/memory/core/decay/DecayModel.ts:103](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/decay/DecayModel.ts#L103)

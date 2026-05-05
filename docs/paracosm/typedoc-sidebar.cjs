@@ -39,6 +39,16 @@ const typedocSidebar = {
               type: "doc",
               id: "paracosm/engine/classes/SimulationKernel",
               label: "SimulationKernel"
+            },
+            {
+              type: "doc",
+              id: "paracosm/engine/classes/TraitModelRegistry",
+              label: "TraitModelRegistry"
+            },
+            {
+              type: "doc",
+              id: "paracosm/engine/classes/UnknownTraitModelError",
+              label: "UnknownTraitModelError"
             }
           ]
         },
@@ -46,6 +56,11 @@ const typedocSidebar = {
           type: "category",
           label: "Interfaces",
           items: [
+            {
+              type: "doc",
+              id: "paracosm/engine/interfaces/ActorConfig",
+              label: "ActorConfig"
+            },
             {
               type: "doc",
               id: "paracosm/engine/interfaces/Agent",
@@ -93,13 +108,18 @@ const typedocSidebar = {
             },
             {
               type: "doc",
-              id: "paracosm/engine/interfaces/ColonyPatch",
-              label: "ColonyPatch"
+              id: "paracosm/engine/interfaces/CueZone",
+              label: "CueZone"
             },
             {
               type: "doc",
               id: "paracosm/engine/interfaces/DepartmentDefinition",
               label: "DepartmentDefinition"
+            },
+            {
+              type: "doc",
+              id: "paracosm/engine/interfaces/DriftTable",
+              label: "DriftTable"
             },
             {
               type: "doc",
@@ -148,11 +168,6 @@ const typedocSidebar = {
             },
             {
               type: "doc",
-              id: "paracosm/engine/interfaces/LeaderConfig",
-              label: "LeaderConfig"
-            },
-            {
-              type: "doc",
               id: "paracosm/engine/interfaces/LifeEvent",
               label: "LifeEvent"
             },
@@ -165,6 +180,16 @@ const typedocSidebar = {
               type: "doc",
               id: "paracosm/engine/interfaces/MilestoneEventDef",
               label: "MilestoneEventDef"
+            },
+            {
+              type: "doc",
+              id: "paracosm/engine/interfaces/NormalizedActorConfig",
+              label: "NormalizedActorConfig"
+            },
+            {
+              type: "doc",
+              id: "paracosm/engine/interfaces/NormalizeOptions",
+              label: "NormalizeOptions"
             },
             {
               type: "doc",
@@ -293,8 +318,33 @@ const typedocSidebar = {
             },
             {
               type: "doc",
+              id: "paracosm/engine/interfaces/SystemsPatch",
+              label: "SystemsPatch"
+            },
+            {
+              type: "doc",
+              id: "paracosm/engine/interfaces/TraitAxis",
+              label: "TraitAxis"
+            },
+            {
+              type: "doc",
+              id: "paracosm/engine/interfaces/TraitModel",
+              label: "TraitModel"
+            },
+            {
+              type: "doc",
+              id: "paracosm/engine/interfaces/TraitProfile",
+              label: "TraitProfile"
+            },
+            {
+              type: "doc",
               id: "paracosm/engine/interfaces/TurnEvent",
               label: "TurnEvent"
+            },
+            {
+              type: "doc",
+              id: "paracosm/engine/interfaces/WorldMetrics",
+              label: "WorldMetrics"
             },
             {
               type: "doc",
@@ -310,11 +360,6 @@ const typedocSidebar = {
               type: "doc",
               id: "paracosm/engine/interfaces/WorldState",
               label: "WorldState"
-            },
-            {
-              type: "doc",
-              id: "paracosm/engine/interfaces/WorldSystems",
-              label: "WorldSystems"
             }
           ]
         },
@@ -344,6 +389,11 @@ const typedocSidebar = {
             },
             {
               type: "doc",
+              id: "paracosm/engine/type-aliases/Outcome",
+              label: "Outcome"
+            },
+            {
+              type: "doc",
               id: "paracosm/engine/type-aliases/TurnOutcome",
               label: "TurnOutcome"
             },
@@ -360,6 +410,16 @@ const typedocSidebar = {
           items: [
             {
               type: "doc",
+              id: "paracosm/engine/variables/aiAgentModel",
+              label: "aiAgentModel"
+            },
+            {
+              type: "doc",
+              id: "paracosm/engine/variables/hexacoModel",
+              label: "hexacoModel"
+            },
+            {
+              type: "doc",
               id: "paracosm/engine/variables/lunarScenario",
               label: "lunarScenario"
             },
@@ -367,6 +427,11 @@ const typedocSidebar = {
               type: "doc",
               id: "paracosm/engine/variables/marsScenario",
               label: "marsScenario"
+            },
+            {
+              type: "doc",
+              id: "paracosm/engine/variables/traitModelRegistry",
+              label: "traitModelRegistry"
             }
           ]
         },
@@ -376,8 +441,38 @@ const typedocSidebar = {
           items: [
             {
               type: "doc",
+              id: "paracosm/engine/functions/applyLeaderPull",
+              label: "applyLeaderPull"
+            },
+            {
+              type: "doc",
+              id: "paracosm/engine/functions/applyOutcomeDrift",
+              label: "applyOutcomeDrift"
+            },
+            {
+              type: "doc",
               id: "paracosm/engine/functions/applyPersonalityDrift",
               label: "applyPersonalityDrift"
+            },
+            {
+              type: "doc",
+              id: "paracosm/engine/functions/applyRoleActivation",
+              label: "applyRoleActivation"
+            },
+            {
+              type: "doc",
+              id: "paracosm/engine/functions/axisIntensities",
+              label: "axisIntensities"
+            },
+            {
+              type: "doc",
+              id: "paracosm/engine/functions/buildCueLine",
+              label: "buildCueLine"
+            },
+            {
+              type: "doc",
+              id: "paracosm/engine/functions/clampTrait",
+              label: "clampTrait"
             },
             {
               type: "doc",
@@ -396,8 +491,28 @@ const typedocSidebar = {
             },
             {
               type: "doc",
+              id: "paracosm/engine/functions/driftLeaderProfile",
+              label: "driftLeaderProfile"
+            },
+            {
+              type: "doc",
               id: "paracosm/engine/functions/generateInitialPopulation",
               label: "generateInitialPopulation"
+            },
+            {
+              type: "doc",
+              id: "paracosm/engine/functions/hexacoToTraits",
+              label: "hexacoToTraits"
+            },
+            {
+              type: "doc",
+              id: "paracosm/engine/functions/normalizeActorConfig",
+              label: "normalizeActorConfig"
+            },
+            {
+              type: "doc",
+              id: "paracosm/engine/functions/pickCues",
+              label: "pickCues"
             },
             {
               type: "doc",
@@ -408,6 +523,21 @@ const typedocSidebar = {
               type: "doc",
               id: "paracosm/engine/functions/resolveProviderWithFallback",
               label: "resolveProviderWithFallback"
+            },
+            {
+              type: "doc",
+              id: "paracosm/engine/functions/traitsToHexaco",
+              label: "traitsToHexaco"
+            },
+            {
+              type: "doc",
+              id: "paracosm/engine/functions/traitZone",
+              label: "traitZone"
+            },
+            {
+              type: "doc",
+              id: "paracosm/engine/functions/withDefaults",
+              label: "withDefaults"
             }
           ]
         },

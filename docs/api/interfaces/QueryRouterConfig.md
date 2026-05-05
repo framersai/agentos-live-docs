@@ -1,6 +1,6 @@
 # Interface: QueryRouterConfig
 
-Defined in: [packages/agentos/src/query-router/types.ts:427](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/query-router/types.ts#L427)
+Defined in: [packages/agentos/src/query-router/types.ts:427](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/query-router/types.ts#L427)
 
 Public constructor configuration for the QueryRouter pipeline.
 
@@ -23,7 +23,7 @@ const router = new QueryRouter({
 
 > `optional` **apiKey**: `string`
 
-Defined in: [packages/agentos/src/query-router/types.ts:575](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/query-router/types.ts#L575)
+Defined in: [packages/agentos/src/query-router/types.ts:575](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/query-router/types.ts#L575)
 
 Optional API key override for classifier and generator LLM calls.
 
@@ -36,7 +36,7 @@ When omitted, QueryRouter prefers `OPENAI_API_KEY` and falls back to
 
 > `optional` **availableTools**: `string`[]
 
-Defined in: [packages/agentos/src/query-router/types.ts:511](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/query-router/types.ts#L511)
+Defined in: [packages/agentos/src/query-router/types.ts:511](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/query-router/types.ts#L511)
 
 Optional tool/capability names exposed to the classifier prompt so it can
 reason about what the runtime can actually do.
@@ -53,7 +53,7 @@ reason about what the runtime can actually do.
 
 > `optional` **baseUrl**: `string`
 
-Defined in: [packages/agentos/src/query-router/types.ts:583](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/query-router/types.ts#L583)
+Defined in: [packages/agentos/src/query-router/types.ts:583](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/query-router/types.ts#L583)
 
 Optional base URL override for classifier and generator LLM providers.
 
@@ -66,7 +66,7 @@ only when `OPENROUTER_API_KEY` is being used implicitly.
 
 > `optional` **cacheResults**: `boolean`
 
-Defined in: [packages/agentos/src/query-router/types.ts:504](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/query-router/types.ts#L504)
+Defined in: [packages/agentos/src/query-router/types.ts:504](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/query-router/types.ts#L504)
 
 Whether to cache query results.
 
@@ -86,7 +86,7 @@ true
 
 > `optional` **classifierModel**: `string`
 
-Defined in: [packages/agentos/src/query-router/types.ts:445](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/query-router/types.ts#L445)
+Defined in: [packages/agentos/src/query-router/types.ts:445](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/query-router/types.ts#L445)
 
 LLM model for the classifier.
 
@@ -102,7 +102,7 @@ LLM model for the classifier.
 
 > `optional` **classifierProvider**: `string`
 
-Defined in: [packages/agentos/src/query-router/types.ts:448](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/query-router/types.ts#L448)
+Defined in: [packages/agentos/src/query-router/types.ts:448](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/query-router/types.ts#L448)
 
 LLM provider for the classifier.
 
@@ -118,7 +118,7 @@ LLM provider for the classifier.
 
 > `optional` **confidenceThreshold**: `number`
 
-Defined in: [packages/agentos/src/query-router/types.ts:442](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/query-router/types.ts#L442)
+Defined in: [packages/agentos/src/query-router/types.ts:442](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/query-router/types.ts#L442)
 
 Minimum confidence threshold for accepting a classification result.
 If confidence falls below this, the router may escalate to a higher tier.
@@ -135,7 +135,7 @@ If confidence falls below this, the router may escalate to a higher tier.
 
 > `optional` **conversationWindowSize**: `number`
 
-Defined in: [packages/agentos/src/query-router/types.ts:487](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/query-router/types.ts#L487)
+Defined in: [packages/agentos/src/query-router/types.ts:487](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/query-router/types.ts#L487)
 
 Number of recent conversation messages to include as context
 for classification and generation.
@@ -152,7 +152,7 @@ for classification and generation.
 
 > `optional` **deepResearch**: (`query`, `sources`) => `Promise`\<\{ `sources`: [`RetrievedChunk`](RetrievedChunk.md)[]; `synthesis`: `string`; \}\>
 
-Defined in: [packages/agentos/src/query-router/types.ts:552](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/query-router/types.ts#L552)
+Defined in: [packages/agentos/src/query-router/types.ts:552](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/query-router/types.ts#L552)
 
 Optional host-provided deep research callback.
 
@@ -181,7 +181,7 @@ not raw classifier retrieval labels.
 
 > `optional` **deepResearchEnabled**: `boolean`
 
-Defined in: [packages/agentos/src/query-router/types.ts:480](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/query-router/types.ts#L480)
+Defined in: [packages/agentos/src/query-router/types.ts:480](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/query-router/types.ts#L480)
 
 Whether to enable deep research mode for tier 3 queries.
 Research mode performs iterative multi-pass retrieval and synthesis.
@@ -198,7 +198,7 @@ true
 
 > `optional` **embeddingApiKey**: `string`
 
-Defined in: [packages/agentos/src/query-router/types.ts:593](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/query-router/types.ts#L593)
+Defined in: [packages/agentos/src/query-router/types.ts:593](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/query-router/types.ts#L593)
 
 Optional API key override for embeddings only.
 
@@ -213,7 +213,7 @@ OpenRouter but embeddings should stay on a direct OpenAI key.
 
 > `optional` **embeddingBaseUrl**: `string`
 
-Defined in: [packages/agentos/src/query-router/types.ts:604](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/query-router/types.ts#L604)
+Defined in: [packages/agentos/src/query-router/types.ts:604](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/query-router/types.ts#L604)
 
 Optional base URL override for embeddings only.
 
@@ -229,7 +229,7 @@ URL for embeddings as well.
 
 > `optional` **embeddingModel**: `string`
 
-Defined in: [packages/agentos/src/query-router/types.ts:457](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/query-router/types.ts#L457)
+Defined in: [packages/agentos/src/query-router/types.ts:457](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/query-router/types.ts#L457)
 
 Embedding model identifier.
 
@@ -245,7 +245,7 @@ Embedding model identifier.
 
 > `optional` **embeddingProvider**: `string`
 
-Defined in: [packages/agentos/src/query-router/types.ts:454](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/query-router/types.ts#L454)
+Defined in: [packages/agentos/src/query-router/types.ts:454](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/query-router/types.ts#L454)
 
 Embedding provider name.
 
@@ -261,7 +261,7 @@ Embedding provider name.
 
 > `optional` **generationModel**: `string`
 
-Defined in: [packages/agentos/src/query-router/types.ts:460](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/query-router/types.ts#L460)
+Defined in: [packages/agentos/src/query-router/types.ts:460](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/query-router/types.ts#L460)
 
 LLM model for T0/T1 generation.
 
@@ -277,7 +277,7 @@ LLM model for T0/T1 generation.
 
 > `optional` **generationModelDeep**: `string`
 
-Defined in: [packages/agentos/src/query-router/types.ts:463](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/query-router/types.ts#L463)
+Defined in: [packages/agentos/src/query-router/types.ts:463](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/query-router/types.ts#L463)
 
 LLM model for T2/T3 generation (deep).
 
@@ -293,7 +293,7 @@ LLM model for T2/T3 generation (deep).
 
 > `optional` **generationProvider**: `string`
 
-Defined in: [packages/agentos/src/query-router/types.ts:466](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/query-router/types.ts#L466)
+Defined in: [packages/agentos/src/query-router/types.ts:466](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/query-router/types.ts#L466)
 
 LLM provider for generation.
 
@@ -309,7 +309,7 @@ LLM provider for generation.
 
 > `optional` **githubRepos**: `RepoIndexConfig`
 
-Defined in: [packages/agentos/src/query-router/types.ts:612](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/query-router/types.ts#L612)
+Defined in: [packages/agentos/src/query-router/types.ts:612](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/query-router/types.ts#L612)
 
 Configuration for background GitHub repository indexing.
 
@@ -322,7 +322,7 @@ When provided, the router will asynchronously index GitHub repos after
 
 > `optional` **graphEnabled**: `boolean`
 
-Defined in: [packages/agentos/src/query-router/types.ts:473](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/query-router/types.ts#L473)
+Defined in: [packages/agentos/src/query-router/types.ts:473](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/query-router/types.ts#L473)
 
 Whether to enable GraphRAG-based retrieval for tier >= 2 queries.
 Requires a configured GraphRAG engine.
@@ -339,7 +339,7 @@ true
 
 > `optional` **graphExpand**: (`seedChunks`) => `Promise`\<[`RetrievedChunk`](RetrievedChunk.md)[]\>
 
-Defined in: [packages/agentos/src/query-router/types.ts:519](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/query-router/types.ts#L519)
+Defined in: [packages/agentos/src/query-router/types.ts:519](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/query-router/types.ts#L519)
 
 Optional host-provided graph expansion callback.
 
@@ -362,7 +362,7 @@ with a real GraphRAG or relationship-expansion implementation.
 
 > `optional` **includePlatformKnowledge**: `boolean`
 
-Defined in: [packages/agentos/src/query-router/types.ts:633](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/query-router/types.ts#L633)
+Defined in: [packages/agentos/src/query-router/types.ts:633](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/query-router/types.ts#L633)
 
 Load bundled platform knowledge (tools, skills, FAQ, API reference,
 troubleshooting) into the corpus during `init()`.
@@ -382,7 +382,7 @@ true
 
 > **knowledgeCorpus**: `string`[]
 
-Defined in: [packages/agentos/src/query-router/types.ts:435](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/query-router/types.ts#L435)
+Defined in: [packages/agentos/src/query-router/types.ts:435](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/query-router/types.ts#L435)
 
 Directories containing `.md` / `.mdx` files to ingest as the knowledge
 corpus.
@@ -396,7 +396,7 @@ sections, because a successful router init should imply a non-empty corpus.
 
 > `optional` **maxContextTokens**: `number`
 
-Defined in: [packages/agentos/src/query-router/types.ts:493](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/query-router/types.ts#L493)
+Defined in: [packages/agentos/src/query-router/types.ts:493](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/query-router/types.ts#L493)
 
 Maximum estimated tokens to allocate for documentation context.
 
@@ -412,7 +412,7 @@ Maximum estimated tokens to allocate for documentation context.
 
 > `optional` **maxTier**: [`QueryTier`](../type-aliases/QueryTier.md)
 
-Defined in: [packages/agentos/src/query-router/types.ts:451](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/query-router/types.ts#L451)
+Defined in: [packages/agentos/src/query-router/types.ts:451](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/query-router/types.ts#L451)
 
 Maximum tier the classifier may assign.
 
@@ -428,7 +428,7 @@ Maximum tier the classifier may assign.
 
 > `optional` **onClassification**: (`result`) => `void`
 
-Defined in: [packages/agentos/src/query-router/types.ts:561](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/query-router/types.ts#L561)
+Defined in: [packages/agentos/src/query-router/types.ts:561](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/query-router/types.ts#L561)
 
 Hook called after classification completes.
 Receives the ClassificationResult for consumer integration.
@@ -449,7 +449,7 @@ Receives the ClassificationResult for consumer integration.
 
 > `optional` **onRetrieval**: (`result`) => `void`
 
-Defined in: [packages/agentos/src/query-router/types.ts:567](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/query-router/types.ts#L567)
+Defined in: [packages/agentos/src/query-router/types.ts:567](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/query-router/types.ts#L567)
 
 Hook called after retrieval completes.
 Receives the RetrievalResult for consumer integration.
@@ -470,7 +470,7 @@ Receives the RetrievalResult for consumer integration.
 
 > `optional` **rerank**: (`query`, `chunks`, `topN`) => `Promise`\<[`RetrievedChunk`](RetrievedChunk.md)[]\>
 
-Defined in: [packages/agentos/src/query-router/types.ts:527](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/query-router/types.ts#L527)
+Defined in: [packages/agentos/src/query-router/types.ts:527](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/query-router/types.ts#L527)
 
 Optional host-provided reranker callback.
 
@@ -501,7 +501,7 @@ provider-backed or cross-encoder reranker.
 
 > `optional` **strategyConfig**: `QueryRouterStrategyConfig`
 
-Defined in: [packages/agentos/src/query-router/types.ts:622](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/query-router/types.ts#L622)
+Defined in: [packages/agentos/src/query-router/types.ts:622](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/query-router/types.ts#L622)
 
 Retrieval strategy configuration for the HyDE-aware query router.
 
@@ -518,7 +518,7 @@ QueryRouterStrategyConfig
 
 > `optional` **verifyCitations**: `boolean`
 
-Defined in: [packages/agentos/src/query-router/types.ts:542](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/query-router/types.ts#L542)
+Defined in: [packages/agentos/src/query-router/types.ts:542](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/query-router/types.ts#L542)
 
 Enable post-generation citation verification when the router has an active
 embedding path and retrieved source chunks.

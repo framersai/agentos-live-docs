@@ -2,7 +2,7 @@
 
 > **generateAgentReactions**(`agents`, `ctx`, `options?`): `Promise`\<`AgentReaction`[]\>
 
-Defined in: [apps/paracosm/src/runtime/agent-reactions.ts:194](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/agent-reactions.ts#L194)
+Defined in: [apps/paracosm/src/runtime/agent-reactions.ts:201](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/runtime/agent-reactions.ts#L201)
 
 Generate reactions from all alive agents in parallel.
 Uses cheap model (gpt-4o-mini / haiku) for cost efficiency.
@@ -18,6 +18,12 @@ Uses cheap model (gpt-4o-mini / haiku) for cost efficiency.
 `ReactionContext`
 
 ### options?
+
+#### apiKey?
+
+`string`
+
+Explicit provider API key for this run.
 
 #### batchSize?
 

@@ -1,6 +1,6 @@
 # Interface: HexacoSnapshot
 
-Defined in: [apps/paracosm/src/engine/core/state.ts:25](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/core/state.ts#L25)
+Defined in: [apps/paracosm/src/engine/core/state.ts:25](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/core/state.ts#L25)
 
 ## Properties
 
@@ -8,7 +8,15 @@ Defined in: [apps/paracosm/src/engine/core/state.ts:25](https://github.com/frame
 
 > **hexaco**: [`HexacoProfile`](HexacoProfile.md)
 
-Defined in: [apps/paracosm/src/engine/core/state.ts:28](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/core/state.ts#L28)
+Defined in: [apps/paracosm/src/engine/core/state.ts:28](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/core/state.ts#L28)
+
+***
+
+### time
+
+> **time**: `number`
+
+Defined in: [apps/paracosm/src/engine/core/state.ts:27](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/core/state.ts#L27)
 
 ***
 
@@ -16,12 +24,4 @@ Defined in: [apps/paracosm/src/engine/core/state.ts:28](https://github.com/frame
 
 > **turn**: `number`
 
-Defined in: [apps/paracosm/src/engine/core/state.ts:26](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/core/state.ts#L26)
-
-***
-
-### year
-
-> **year**: `number`
-
-Defined in: [apps/paracosm/src/engine/core/state.ts:27](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/core/state.ts#L27)
+Defined in: [apps/paracosm/src/engine/core/state.ts:26](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/core/state.ts#L26)

@@ -1,8 +1,8 @@
 # Function: classifyOutcomeById()
 
-> **classifyOutcomeById**(`selectedOptionId`, `options`, `riskSuccessProbability`, `colony`, `rng`): [`TurnOutcome`](../type-aliases/TurnOutcome.md)
+> **classifyOutcomeById**(`selectedOptionId`, `options`, `riskSuccessProbability`, `metrics`, `rng`): [`TurnOutcome`](../type-aliases/TurnOutcome.md)
 
-Defined in: [apps/paracosm/src/engine/core/progression.ts:179](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/core/progression.ts#L179)
+Defined in: [apps/paracosm/src/engine/core/progression.ts:179](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/core/progression.ts#L179)
 
 Classify turn outcome using structured option ID.
 Preferred over text-based classifyOutcome.
@@ -21,9 +21,9 @@ Preferred over text-based classifyOutcome.
 
 `number`
 
-### colony
+### metrics
 
-[`WorldSystems`](../interfaces/WorldSystems.md)
+[`WorldMetrics`](../interfaces/WorldMetrics.md)
 
 ### rng
 

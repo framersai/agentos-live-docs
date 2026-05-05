@@ -1,6 +1,6 @@
 # Interface: TelephonyStreamTransportConfig
 
-Defined in: [packages/agentos/src/channels/telephony/TelephonyStreamTransport.ts:82](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/channels/telephony/TelephonyStreamTransport.ts#L82)
+Defined in: [packages/agentos/src/channels/telephony/TelephonyStreamTransport.ts:82](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/channels/telephony/TelephonyStreamTransport.ts#L82)
 
 Optional construction-time configuration for [TelephonyStreamTransport](../classes/TelephonyStreamTransport.md).
 
@@ -10,7 +10,7 @@ Optional construction-time configuration for [TelephonyStreamTransport](../class
 
 > `optional` **outputSampleRate**: `number`
 
-Defined in: [packages/agentos/src/channels/telephony/TelephonyStreamTransport.ts:88](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/channels/telephony/TelephonyStreamTransport.ts#L88)
+Defined in: [packages/agentos/src/channels/telephony/TelephonyStreamTransport.ts:88](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/channels/telephony/TelephonyStreamTransport.ts#L88)
 
 Sample rate the pipeline expects for inbound `AudioFrame` events.
 Incoming 8 kHz telephony audio is upsampled to this rate.

@@ -1,6 +1,6 @@
 # Interface: WorldMetricSchema
 
-Defined in: [apps/paracosm/src/engine/types.ts:68](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L68)
+Defined in: [apps/paracosm/src/engine/types.ts:85](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/types.ts#L85)
 
 Schema for a single world metric, capacity, status, or political variable.
 
@@ -10,7 +10,7 @@ Schema for a single world metric, capacity, status, or political variable.
 
 > **category**: `"metric"` \| `"capacity"` \| `"status"` \| `"politic"` \| `"environment"`
 
-Defined in: [apps/paracosm/src/engine/types.ts:76](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L76)
+Defined in: [apps/paracosm/src/engine/types.ts:93](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/types.ts#L93)
 
 ***
 
@@ -18,7 +18,7 @@ Defined in: [apps/paracosm/src/engine/types.ts:76](https://github.com/framersai/
 
 > **id**: `string`
 
-Defined in: [apps/paracosm/src/engine/types.ts:69](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L69)
+Defined in: [apps/paracosm/src/engine/types.ts:86](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/types.ts#L86)
 
 ***
 
@@ -26,7 +26,7 @@ Defined in: [apps/paracosm/src/engine/types.ts:69](https://github.com/framersai/
 
 > **initial**: `string` \| `number` \| `boolean`
 
-Defined in: [apps/paracosm/src/engine/types.ts:73](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L73)
+Defined in: [apps/paracosm/src/engine/types.ts:90](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/types.ts#L90)
 
 ***
 
@@ -34,7 +34,7 @@ Defined in: [apps/paracosm/src/engine/types.ts:73](https://github.com/framersai/
 
 > **label**: `string`
 
-Defined in: [apps/paracosm/src/engine/types.ts:70](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L70)
+Defined in: [apps/paracosm/src/engine/types.ts:87](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/types.ts#L87)
 
 ***
 
@@ -42,7 +42,7 @@ Defined in: [apps/paracosm/src/engine/types.ts:70](https://github.com/framersai/
 
 > `optional` **max**: `number`
 
-Defined in: [apps/paracosm/src/engine/types.ts:75](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L75)
+Defined in: [apps/paracosm/src/engine/types.ts:92](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/types.ts#L92)
 
 ***
 
@@ -50,7 +50,7 @@ Defined in: [apps/paracosm/src/engine/types.ts:75](https://github.com/framersai/
 
 > `optional` **min**: `number`
 
-Defined in: [apps/paracosm/src/engine/types.ts:74](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L74)
+Defined in: [apps/paracosm/src/engine/types.ts:91](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/types.ts#L91)
 
 ***
 
@@ -58,7 +58,7 @@ Defined in: [apps/paracosm/src/engine/types.ts:74](https://github.com/framersai/
 
 > **type**: `"string"` \| `"number"` \| `"boolean"`
 
-Defined in: [apps/paracosm/src/engine/types.ts:72](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L72)
+Defined in: [apps/paracosm/src/engine/types.ts:89](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/types.ts#L89)
 
 ***
 
@@ -66,4 +66,4 @@ Defined in: [apps/paracosm/src/engine/types.ts:72](https://github.com/framersai/
 
 > **unit**: `string`
 
-Defined in: [apps/paracosm/src/engine/types.ts:71](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L71)
+Defined in: [apps/paracosm/src/engine/types.ts:88](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/types.ts#L88)

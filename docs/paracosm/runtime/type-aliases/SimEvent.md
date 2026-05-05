@@ -1,8 +1,8 @@
 # Type Alias: SimEvent
 
-> **SimEvent** = `{ [K in SimEventType]: { data: SimEventPayloadMap[K] & SimEventCostPayload; leader: string; turn?: number; type: K; year?: number } }`\[[`SimEventType`](SimEventType.md)\]
+> **SimEvent** = `{ [K in SimEventType]: { data: SimEventPayloadMap[K] & SimEventCostPayload; leader: string; time?: number; turn?: number; type: K } }`\[[`SimEventType`](SimEventType.md)\]
 
-Defined in: [apps/paracosm/src/runtime/orchestrator.ts:235](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/orchestrator.ts#L235)
+Defined in: [apps/paracosm/src/runtime/orchestrator.ts:254](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/runtime/orchestrator.ts#L254)
 
 A single event delivered to the `onEvent` callback during a simulation.
 

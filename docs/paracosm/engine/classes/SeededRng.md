@@ -1,8 +1,8 @@
 # Class: SeededRng
 
-Defined in: [apps/paracosm/src/engine/core/rng.ts:5](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/core/rng.ts#L5)
+Defined in: [apps/paracosm/src/engine/core/rng.ts:5](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/core/rng.ts#L5)
 
-Mulberry32 — fast 32-bit seeded PRNG.
+Mulberry32: fast 32-bit seeded PRNG.
 Deterministic: same seed always produces same sequence.
 
 ## Constructors
@@ -11,7 +11,7 @@ Deterministic: same seed always produces same sequence.
 
 > **new SeededRng**(`seed`): `SeededRng`
 
-Defined in: [apps/paracosm/src/engine/core/rng.ts:8](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/core/rng.ts#L8)
+Defined in: [apps/paracosm/src/engine/core/rng.ts:8](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/core/rng.ts#L8)
 
 #### Parameters
 
@@ -29,7 +29,7 @@ Defined in: [apps/paracosm/src/engine/core/rng.ts:8](https://github.com/framersa
 
 > **chance**(`probability`): `boolean`
 
-Defined in: [apps/paracosm/src/engine/core/rng.ts:26](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/core/rng.ts#L26)
+Defined in: [apps/paracosm/src/engine/core/rng.ts:42](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/core/rng.ts#L42)
 
 Returns true with the given probability (0-1).
 
@@ -45,11 +45,26 @@ Returns true with the given probability (0-1).
 
 ***
 
+### getState()
+
+> **getState**(): `number`
+
+Defined in: [apps/paracosm/src/engine/core/rng.ts:14](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/core/rng.ts#L14)
+
+Current PRNG state, as a 32-bit integer. Captured into snapshots
+ and restored via `fromState` for deterministic resume.
+
+#### Returns
+
+`number`
+
+***
+
 ### int()
 
 > **int**(`min`, `max`): `number`
 
-Defined in: [apps/paracosm/src/engine/core/rng.ts:21](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/core/rng.ts#L21)
+Defined in: [apps/paracosm/src/engine/core/rng.ts:37](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/core/rng.ts#L37)
 
 Returns an integer in [min, max] inclusive.
 
@@ -73,7 +88,7 @@ Returns an integer in [min, max] inclusive.
 
 > **next**(): `number`
 
-Defined in: [apps/paracosm/src/engine/core/rng.ts:13](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/core/rng.ts#L13)
+Defined in: [apps/paracosm/src/engine/core/rng.ts:29](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/core/rng.ts#L29)
 
 Returns a float in [0, 1).
 
@@ -87,7 +102,7 @@ Returns a float in [0, 1).
 
 > **pick**\<`T`\>(`arr`): `T`
 
-Defined in: [apps/paracosm/src/engine/core/rng.ts:31](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/core/rng.ts#L31)
+Defined in: [apps/paracosm/src/engine/core/rng.ts:47](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/core/rng.ts#L47)
 
 Picks a random element from an array.
 
@@ -113,13 +128,36 @@ readonly `T`[]
 
 > **turnSeed**(`turn`): `SeededRng`
 
-Defined in: [apps/paracosm/src/engine/core/rng.ts:36](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/core/rng.ts#L36)
+Defined in: [apps/paracosm/src/engine/core/rng.ts:52](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/core/rng.ts#L52)
 
 Derives a child RNG for a specific turn (deterministic sub-stream).
 
 #### Parameters
 
 ##### turn
+
+`number`
+
+#### Returns
+
+`SeededRng`
+
+***
+
+### fromState()
+
+> `static` **fromState**(`state`): `SeededRng`
+
+Defined in: [apps/paracosm/src/engine/core/rng.ts:22](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/core/rng.ts#L22)
+
+Construct a SeededRng positioned at a specific internal state.
+ Different from the seed-based constructor: the returned RNG
+ produces the same sequence as the source did AT THE MOMENT
+ getState() was captured.
+
+#### Parameters
+
+##### state
 
 `number`
 

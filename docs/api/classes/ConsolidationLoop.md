@@ -1,12 +1,12 @@
 # Class: ConsolidationLoop
 
-Defined in: [packages/agentos/src/memory/pipeline/consolidation/ConsolidationLoop.ts:102](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/pipeline/consolidation/ConsolidationLoop.ts#L102)
+Defined in: [packages/agentos/src/memory/pipeline/consolidation/ConsolidationLoop.ts:102](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/pipeline/consolidation/ConsolidationLoop.ts#L102)
 
 Self-improving background consolidation loop with 6 ordered steps:
 prune, merge, strengthen, derive, compact, re-index.
 
 All database operations use the async `StorageAdapter` API through
-the shared [SqliteBrain](SqliteBrain.md) connection. The `run()` method is async
+the shared [Brain](Brain.md) connection. The `run()` method is async
 to accommodate both the database calls and the LLM-backed derive step.
 
 ## Constructors
@@ -15,13 +15,13 @@ to accommodate both the database calls and the LLM-backed derive step.
 
 > **new ConsolidationLoop**(`brain`, `memoryGraph`, `options?`): `ConsolidationLoop`
 
-Defined in: [packages/agentos/src/memory/pipeline/consolidation/ConsolidationLoop.ts:115](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/pipeline/consolidation/ConsolidationLoop.ts#L115)
+Defined in: [packages/agentos/src/memory/pipeline/consolidation/ConsolidationLoop.ts:115](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/pipeline/consolidation/ConsolidationLoop.ts#L115)
 
 #### Parameters
 
 ##### brain
 
-[`SqliteBrain`](SqliteBrain.md)
+[`Brain`](Brain.md)
 
 The agent's SQLite brain database connection.
 
@@ -82,7 +82,7 @@ mutations and prunes those whose strength falls below the threshold.
 
 > **get** **isRunning**(): `boolean`
 
-Defined in: [packages/agentos/src/memory/pipeline/consolidation/ConsolidationLoop.ts:213](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/pipeline/consolidation/ConsolidationLoop.ts#L213)
+Defined in: [packages/agentos/src/memory/pipeline/consolidation/ConsolidationLoop.ts:213](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/pipeline/consolidation/ConsolidationLoop.ts#L213)
 
 Whether consolidation is currently running.
 Useful for callers to check before scheduling a new run.
@@ -97,7 +97,7 @@ Useful for callers to check before scheduling a new run.
 
 > **run**(`config?`): `Promise`\<[`MemoryConsolidationResult`](../interfaces/MemoryConsolidationResult.md)\>
 
-Defined in: [packages/agentos/src/memory/pipeline/consolidation/ConsolidationLoop.ts:152](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/pipeline/consolidation/ConsolidationLoop.ts#L152)
+Defined in: [packages/agentos/src/memory/pipeline/consolidation/ConsolidationLoop.ts:152](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/pipeline/consolidation/ConsolidationLoop.ts#L152)
 
 Run one full consolidation cycle.
 

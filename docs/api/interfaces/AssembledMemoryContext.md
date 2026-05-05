@@ -1,6 +1,6 @@
 # Interface: AssembledMemoryContext
 
-Defined in: [packages/agentos/src/memory/core/types.ts:321](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/types.ts#L321)
+Defined in: [packages/agentos/src/memory/core/types.ts:341](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L341)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/memory/core/types.ts:321](https://github.com/f
 
 > **allocation**: [`MemoryBudgetAllocation`](MemoryBudgetAllocation.md)
 
-Defined in: [packages/agentos/src/memory/core/types.ts:324](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/types.ts#L324)
+Defined in: [packages/agentos/src/memory/core/types.ts:344](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L344)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [packages/agentos/src/memory/core/types.ts:324](https://github.com/f
 
 > **contextText**: `string`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:322](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/types.ts#L322)
+Defined in: [packages/agentos/src/memory/core/types.ts:342](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L342)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: [packages/agentos/src/memory/core/types.ts:322](https://github.com/f
 
 > **includedMemoryIds**: `string`[]
 
-Defined in: [packages/agentos/src/memory/core/types.ts:325](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/types.ts#L325)
+Defined in: [packages/agentos/src/memory/core/types.ts:345](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L345)
 
 ***
 
@@ -32,4 +32,4 @@ Defined in: [packages/agentos/src/memory/core/types.ts:325](https://github.com/f
 
 > **tokensUsed**: `number`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:323](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/types.ts#L323)
+Defined in: [packages/agentos/src/memory/core/types.ts:343](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L343)

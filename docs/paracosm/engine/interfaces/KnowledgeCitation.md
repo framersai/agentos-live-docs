@@ -1,6 +1,6 @@
 # Interface: KnowledgeCitation
 
-Defined in: [apps/paracosm/src/engine/types.ts:182](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L182)
+Defined in: [apps/paracosm/src/engine/types.ts:199](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/types.ts#L199)
 
 A single research citation with optional DOI.
 
@@ -10,7 +10,7 @@ A single research citation with optional DOI.
 
 > **claim**: `string`
 
-Defined in: [apps/paracosm/src/engine/types.ts:183](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L183)
+Defined in: [apps/paracosm/src/engine/types.ts:200](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/types.ts#L200)
 
 ***
 
@@ -18,7 +18,7 @@ Defined in: [apps/paracosm/src/engine/types.ts:183](https://github.com/framersai
 
 > `optional` **doi**: `string`
 
-Defined in: [apps/paracosm/src/engine/types.ts:186](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L186)
+Defined in: [apps/paracosm/src/engine/types.ts:203](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/types.ts#L203)
 
 ***
 
@@ -26,7 +26,7 @@ Defined in: [apps/paracosm/src/engine/types.ts:186](https://github.com/framersai
 
 > **source**: `string`
 
-Defined in: [apps/paracosm/src/engine/types.ts:184](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L184)
+Defined in: [apps/paracosm/src/engine/types.ts:201](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/types.ts#L201)
 
 ***
 
@@ -34,4 +34,4 @@ Defined in: [apps/paracosm/src/engine/types.ts:184](https://github.com/framersai
 
 > **url**: `string`
 
-Defined in: [apps/paracosm/src/engine/types.ts:185](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L185)
+Defined in: [apps/paracosm/src/engine/types.ts:202](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/types.ts#L202)

@@ -1,6 +1,6 @@
 # Interface: TurnArtifact
 
-Defined in: [apps/paracosm/src/runtime/contracts.ts:86](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/contracts.ts#L86)
+Defined in: [apps/paracosm/src/runtime/contracts.ts:86](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/runtime/contracts.ts#L86)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [apps/paracosm/src/runtime/contracts.ts:86](https://github.com/frame
 
 > **commanderDecision**: [`CommanderDecision`](CommanderDecision.md)
 
-Defined in: [apps/paracosm/src/runtime/contracts.ts:91](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/contracts.ts#L91)
+Defined in: [apps/paracosm/src/runtime/contracts.ts:91](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/runtime/contracts.ts#L91)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [apps/paracosm/src/runtime/contracts.ts:91](https://github.com/frame
 
 > **crisis**: `string`
 
-Defined in: [apps/paracosm/src/runtime/contracts.ts:89](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/contracts.ts#L89)
+Defined in: [apps/paracosm/src/runtime/contracts.ts:89](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/runtime/contracts.ts#L89)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: [apps/paracosm/src/runtime/contracts.ts:89](https://github.com/frame
 
 > **departmentReports**: [`DepartmentReport`](DepartmentReport.md)[]
 
-Defined in: [apps/paracosm/src/runtime/contracts.ts:90](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/contracts.ts#L90)
+Defined in: [apps/paracosm/src/runtime/contracts.ts:90](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/runtime/contracts.ts#L90)
 
 ***
 
@@ -32,7 +32,7 @@ Defined in: [apps/paracosm/src/runtime/contracts.ts:90](https://github.com/frame
 
 > **policyEffectsApplied**: `string`[]
 
-Defined in: [apps/paracosm/src/runtime/contracts.ts:92](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/contracts.ts#L92)
+Defined in: [apps/paracosm/src/runtime/contracts.ts:92](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/runtime/contracts.ts#L92)
 
 ***
 
@@ -40,35 +40,59 @@ Defined in: [apps/paracosm/src/runtime/contracts.ts:92](https://github.com/frame
 
 > **stateSnapshotAfter**: `object`
 
-Defined in: [apps/paracosm/src/runtime/contracts.ts:93](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/contracts.ts#L93)
+Defined in: [apps/paracosm/src/runtime/contracts.ts:108](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/runtime/contracts.ts#L108)
 
-#### births
+Snapshot of the five runtime state bags at the end of the turn,
+produced by the kernel. Widened in 0.7.x from the pre-F23
+Mars-shape (flat `population`/`morale`/…) to a structural match
+of the universal schema's WorldSnapshot: `metrics` for numeric
+gauges plus optional `capacities`, `statuses`, `politics`, and
+`environment` bags populated when the scenario declares them.
+`buildRunArtifact` maps this directly onto per-timepoint
+WorldSnapshot objects without flattening.
 
-> **births**: `number`
+Back-compat: Mars + lunar scenarios still put population, morale,
+foodMonthsReserve, infrastructureModules, scienceOutput, births,
+and deaths under `metrics`, so legacy consumers reading
+`ta.stateSnapshotAfter.metrics.population` still work.
 
-#### deaths
+#### capacities?
 
-> **deaths**: `number`
+> `optional` **capacities**: `Record`\<`string`, `number`\>
 
-#### foodMonthsReserve
+Capacity constraints; optional, declared via world.capacities.
 
-> **foodMonthsReserve**: `number`
+#### environment?
 
-#### infrastructureModules
+> `optional` **environment**: `Record`\<`string`, `string` \| `number` \| `boolean`\>
 
-> **infrastructureModules**: `number`
+Environmental conditions; optional, declared via world.environment.
 
-#### morale
+#### metrics
 
-> **morale**: `number`
+> **metrics**: `Record`\<`string`, `number`\>
 
-#### population
+Numeric gauges from kernel.state.metrics (the primary bag).
 
-> **population**: `number`
+#### politics?
 
-#### scienceOutput
+> `optional` **politics**: `Record`\<`string`, `string` \| `number` \| `boolean`\>
 
-> **scienceOutput**: `number`
+Political / social variables; optional, declared via world.politics.
+
+#### statuses?
+
+> `optional` **statuses**: `Record`\<`string`, `string` \| `boolean`\>
+
+Categorical statuses; optional, declared via world.statuses.
+
+***
+
+### time
+
+> **time**: `number`
+
+Defined in: [apps/paracosm/src/runtime/contracts.ts:88](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/runtime/contracts.ts#L88)
 
 ***
 
@@ -76,12 +100,4 @@ Defined in: [apps/paracosm/src/runtime/contracts.ts:93](https://github.com/frame
 
 > **turn**: `number`
 
-Defined in: [apps/paracosm/src/runtime/contracts.ts:87](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/contracts.ts#L87)
-
-***
-
-### year
-
-> **year**: `number`
-
-Defined in: [apps/paracosm/src/runtime/contracts.ts:88](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/contracts.ts#L88)
+Defined in: [apps/paracosm/src/runtime/contracts.ts:87](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/runtime/contracts.ts#L87)

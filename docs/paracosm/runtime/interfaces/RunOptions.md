@@ -1,14 +1,118 @@
 # Interface: RunOptions
 
-Defined in: [apps/paracosm/src/runtime/orchestrator.ts:336](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/orchestrator.ts#L336)
+Defined in: [apps/paracosm/src/runtime/orchestrator.ts:355](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/runtime/orchestrator.ts#L355)
+
+## Extends
+
+- `RuntimeCredentialOptions`
 
 ## Properties
+
+### \_forkedFrom?
+
+> `optional` **\_forkedFrom**: `object`
+
+Defined in: [apps/paracosm/src/runtime/orchestrator.ts:381](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/runtime/orchestrator.ts#L381)
+
+Internal-only: `WorldModel.fork()` sets this to thread the
+`{ parentRunId, atTurn }` link onto the child run's
+`metadata.forkedFrom`. Not part of the public API; callers should
+use `WorldModel.fork()` rather than setting this directly.
+
+#### atTurn
+
+> **atTurn**: `number`
+
+#### parentRunId
+
+> **parentRunId**: `string`
+
+***
+
+### \_resumeFrom?
+
+> `optional` **\_resumeFrom**: `KernelSnapshot`
+
+Defined in: [apps/paracosm/src/runtime/orchestrator.ts:387](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/runtime/orchestrator.ts#L387)
+
+Internal-only: `WorldModel.fork()` sets this to a
+KernelSnapshot that the orchestrator restores before
+running the first turn. Not part of the public API.
+
+***
 
 ### activeDepartments?
 
 > `optional` **activeDepartments**: `string`[]
 
-Defined in: [apps/paracosm/src/runtime/orchestrator.ts:342](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/orchestrator.ts#L342)
+Defined in: [apps/paracosm/src/runtime/orchestrator.ts:361](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/runtime/orchestrator.ts#L361)
+
+***
+
+### anthropicKey?
+
+> `optional` **anthropicKey**: `string`
+
+Defined in: [apps/paracosm/src/engine/provider-credentials.ts:8](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/provider-credentials.ts#L8)
+
+Anthropic API key.
+
+#### Inherited from
+
+`RuntimeCredentialOptions.anthropicKey`
+
+***
+
+### apiKey?
+
+> `optional` **apiKey**: `string`
+
+Defined in: [apps/paracosm/src/engine/provider-credentials.ts:6](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/provider-credentials.ts#L6)
+
+OpenAI API key. Historical dashboard field name.
+
+#### Inherited from
+
+`RuntimeCredentialOptions.apiKey`
+
+***
+
+### braveKey?
+
+> `optional` **braveKey**: `string`
+
+Defined in: [apps/paracosm/src/engine/provider-credentials.ts:16](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/provider-credentials.ts#L16)
+
+#### Inherited from
+
+`RuntimeCredentialOptions.braveKey`
+
+***
+
+### captureSnapshots?
+
+> `optional` **captureSnapshots**: `boolean`
+
+Defined in: [apps/paracosm/src/runtime/orchestrator.ts:374](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/runtime/orchestrator.ts#L374)
+
+When true, the orchestrator captures a KernelSnapshot at
+the end of every turn and stashes the resulting array under
+`artifact.scenarioExtensions.kernelSnapshotsPerTurn`. Enables
+`WorldModel.forkFromArtifact()` on the returned artifact. Default
+false so normal runs stay lean; snapshots add ~100 KB per turn
+for 100-agent Mars-shape runs.
+
+***
+
+### cohereKey?
+
+> `optional` **cohereKey**: `string`
+
+Defined in: [apps/paracosm/src/engine/provider-credentials.ts:17](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/provider-credentials.ts#L17)
+
+#### Inherited from
+
+`RuntimeCredentialOptions.cohereKey`
 
 ***
 
@@ -16,7 +120,7 @@ Defined in: [apps/paracosm/src/runtime/orchestrator.ts:342](https://github.com/f
 
 > `optional` **costPreset**: [`CostPreset`](../../engine/type-aliases/CostPreset.md)
 
-Defined in: [apps/paracosm/src/runtime/orchestrator.ts:364](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/orchestrator.ts#L364)
+Defined in: [apps/paracosm/src/runtime/orchestrator.ts:405](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/runtime/orchestrator.ts#L405)
 
 Cost-vs-quality switch for model routing. Defaults to `'quality'`
 which keeps department agents on the flagship tier (gpt-5.4 /
@@ -40,7 +144,7 @@ mix and match: `{ costPreset: 'economy', models: { departments:
 
 > `optional` **customEvents**: `object`[]
 
-Defined in: [apps/paracosm/src/runtime/orchestrator.ts:345](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/orchestrator.ts#L345)
+Defined in: [apps/paracosm/src/runtime/orchestrator.ts:364](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/runtime/orchestrator.ts#L364)
 
 #### description
 
@@ -60,7 +164,7 @@ Defined in: [apps/paracosm/src/runtime/orchestrator.ts:345](https://github.com/f
 
 > `optional` **economics**: [`ResolvedEconomicsProfile`](ResolvedEconomicsProfile.md)
 
-Defined in: [apps/paracosm/src/runtime/orchestrator.ts:365](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/orchestrator.ts#L365)
+Defined in: [apps/paracosm/src/runtime/orchestrator.ts:406](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/runtime/orchestrator.ts#L406)
 
 ***
 
@@ -68,7 +172,19 @@ Defined in: [apps/paracosm/src/runtime/orchestrator.ts:365](https://github.com/f
 
 > `optional` **execution**: `Partial`\<`SimulationExecutionConfig`\>
 
-Defined in: [apps/paracosm/src/runtime/orchestrator.ts:369](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/orchestrator.ts#L369)
+Defined in: [apps/paracosm/src/runtime/orchestrator.ts:412](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/runtime/orchestrator.ts#L412)
+
+***
+
+### firecrawlKey?
+
+> `optional` **firecrawlKey**: `string`
+
+Defined in: [apps/paracosm/src/engine/provider-credentials.ts:14](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/provider-credentials.ts#L14)
+
+#### Inherited from
+
+`RuntimeCredentialOptions.firecrawlKey`
 
 ***
 
@@ -76,7 +192,70 @@ Defined in: [apps/paracosm/src/runtime/orchestrator.ts:369](https://github.com/f
 
 > `optional` **initialPopulation**: `number`
 
-Defined in: [apps/paracosm/src/runtime/orchestrator.ts:366](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/orchestrator.ts#L366)
+Defined in: [apps/paracosm/src/runtime/orchestrator.ts:407](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/runtime/orchestrator.ts#L407)
+
+***
+
+### intervention?
+
+> `optional` **intervention**: `object`
+
+Defined in: [apps/paracosm/src/runtime/orchestrator.ts:436](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/runtime/orchestrator.ts#L436)
+
+Intervention being tested on the subject. Passed through verbatim to
+`RunArtifact.intervention`. Turn-loop ignores; batch modes consume.
+
+#### adherenceProfile?
+
+> `optional` **adherenceProfile**: `object`
+
+##### adherenceProfile.expected
+
+> **expected**: `number`
+
+##### adherenceProfile.risks?
+
+> `optional` **risks**: `string`[]
+
+#### category?
+
+> `optional` **category**: `string`
+
+#### description
+
+> **description**: `string`
+
+#### duration?
+
+> `optional` **duration**: `object`
+
+##### duration.unit
+
+> **unit**: `string`
+
+##### duration.value
+
+> **value**: `number`
+
+#### id
+
+> **id**: `string`
+
+#### mechanism?
+
+> `optional` **mechanism**: `string`
+
+#### name
+
+> **name**: `string`
+
+#### scenarioExtensions?
+
+> `optional` **scenarioExtensions**: `Record`\<`string`, `unknown`\> = `ScenarioExtensionsSchema`
+
+#### targetBehaviors?
+
+> `optional` **targetBehaviors**: `string`[]
 
 ***
 
@@ -84,7 +263,7 @@ Defined in: [apps/paracosm/src/runtime/orchestrator.ts:366](https://github.com/f
 
 > `optional` **liveSearch**: `boolean`
 
-Defined in: [apps/paracosm/src/runtime/orchestrator.ts:341](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/orchestrator.ts#L341)
+Defined in: [apps/paracosm/src/runtime/orchestrator.ts:360](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/runtime/orchestrator.ts#L360)
 
 ***
 
@@ -92,7 +271,7 @@ Defined in: [apps/paracosm/src/runtime/orchestrator.ts:341](https://github.com/f
 
 > `optional` **maxTurns**: `number`
 
-Defined in: [apps/paracosm/src/runtime/orchestrator.ts:337](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/orchestrator.ts#L337)
+Defined in: [apps/paracosm/src/runtime/orchestrator.ts:356](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/runtime/orchestrator.ts#L356)
 
 ***
 
@@ -100,7 +279,7 @@ Defined in: [apps/paracosm/src/runtime/orchestrator.ts:337](https://github.com/f
 
 > `optional` **models**: `Partial`\<[`SimulationModelConfig`](../../engine/interfaces/SimulationModelConfig.md)\>
 
-Defined in: [apps/paracosm/src/runtime/orchestrator.ts:346](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/orchestrator.ts#L346)
+Defined in: [apps/paracosm/src/runtime/orchestrator.ts:365](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/runtime/orchestrator.ts#L365)
 
 ***
 
@@ -108,7 +287,7 @@ Defined in: [apps/paracosm/src/runtime/orchestrator.ts:346](https://github.com/f
 
 > `optional` **onEvent**: (`event`) => `void`
 
-Defined in: [apps/paracosm/src/runtime/orchestrator.ts:344](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/orchestrator.ts#L344)
+Defined in: [apps/paracosm/src/runtime/orchestrator.ts:363](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/runtime/orchestrator.ts#L363)
 
 #### Parameters
 
@@ -126,7 +305,7 @@ Defined in: [apps/paracosm/src/runtime/orchestrator.ts:344](https://github.com/f
 
 > `optional` **provider**: [`LlmProvider`](../../engine/type-aliases/LlmProvider.md)
 
-Defined in: [apps/paracosm/src/runtime/orchestrator.ts:343](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/orchestrator.ts#L343)
+Defined in: [apps/paracosm/src/runtime/orchestrator.ts:362](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/runtime/orchestrator.ts#L362)
 
 ***
 
@@ -134,7 +313,7 @@ Defined in: [apps/paracosm/src/runtime/orchestrator.ts:343](https://github.com/f
 
 > `optional` **scenario**: [`ScenarioPackage`](../../engine/interfaces/ScenarioPackage.md)
 
-Defined in: [apps/paracosm/src/runtime/orchestrator.ts:370](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/orchestrator.ts#L370)
+Defined in: [apps/paracosm/src/runtime/orchestrator.ts:413](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/runtime/orchestrator.ts#L413)
 
 ***
 
@@ -142,7 +321,19 @@ Defined in: [apps/paracosm/src/runtime/orchestrator.ts:370](https://github.com/f
 
 > `optional` **seed**: `number`
 
-Defined in: [apps/paracosm/src/runtime/orchestrator.ts:338](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/orchestrator.ts#L338)
+Defined in: [apps/paracosm/src/runtime/orchestrator.ts:357](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/runtime/orchestrator.ts#L357)
+
+***
+
+### serperKey?
+
+> `optional` **serperKey**: `string`
+
+Defined in: [apps/paracosm/src/engine/provider-credentials.ts:13](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/provider-credentials.ts#L13)
+
+#### Inherited from
+
+`RuntimeCredentialOptions.serperKey`
 
 ***
 
@@ -150,7 +341,7 @@ Defined in: [apps/paracosm/src/runtime/orchestrator.ts:338](https://github.com/f
 
 > `optional` **signal**: `AbortSignal`
 
-Defined in: [apps/paracosm/src/runtime/orchestrator.ts:381](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/orchestrator.ts#L381)
+Defined in: [apps/paracosm/src/runtime/orchestrator.ts:424](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/runtime/orchestrator.ts#L424)
 
 Cancellation signal. When `.aborted` flips to true, the turn loop
 short-circuits at the next turn boundary, emits a `sim_aborted`
@@ -163,11 +354,19 @@ the partial results they already accumulated in the event buffer.
 
 ***
 
+### startingEnvironment?
+
+> `optional` **startingEnvironment**: `Record`\<`string`, `string` \| `number` \| `boolean`\>
+
+Defined in: [apps/paracosm/src/runtime/orchestrator.ts:411](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/runtime/orchestrator.ts#L411)
+
+***
+
 ### startingPolitics?
 
 > `optional` **startingPolitics**: `StartingPolitics`
 
-Defined in: [apps/paracosm/src/runtime/orchestrator.ts:368](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/orchestrator.ts#L368)
+Defined in: [apps/paracosm/src/runtime/orchestrator.ts:409](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/runtime/orchestrator.ts#L409)
 
 ***
 
@@ -175,20 +374,85 @@ Defined in: [apps/paracosm/src/runtime/orchestrator.ts:368](https://github.com/f
 
 > `optional` **startingResources**: `StartingResources`
 
-Defined in: [apps/paracosm/src/runtime/orchestrator.ts:367](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/orchestrator.ts#L367)
+Defined in: [apps/paracosm/src/runtime/orchestrator.ts:408](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/runtime/orchestrator.ts#L408)
 
 ***
 
-### startYear?
+### startingStatuses?
 
-> `optional` **startYear**: `number`
+> `optional` **startingStatuses**: `Record`\<`string`, `string` \| `boolean`\>
 
-Defined in: [apps/paracosm/src/runtime/orchestrator.ts:339](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/orchestrator.ts#L339)
+Defined in: [apps/paracosm/src/runtime/orchestrator.ts:410](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/runtime/orchestrator.ts#L410)
 
 ***
 
-### yearsPerTurn?
+### startTime?
 
-> `optional` **yearsPerTurn**: `number`
+> `optional` **startTime**: `number`
 
-Defined in: [apps/paracosm/src/runtime/orchestrator.ts:340](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/orchestrator.ts#L340)
+Defined in: [apps/paracosm/src/runtime/orchestrator.ts:358](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/runtime/orchestrator.ts#L358)
+
+***
+
+### subject?
+
+> `optional` **subject**: `object`
+
+Defined in: [apps/paracosm/src/runtime/orchestrator.ts:431](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/runtime/orchestrator.ts#L431)
+
+Subject being simulated (digital-twin person, game character,
+etc.). Passed through verbatim to `RunArtifact.subject`.
+Turn-loop mode does not consume this semantically; future
+batch-trajectory executor will.
+
+#### conditions?
+
+> `optional` **conditions**: `string`[]
+
+#### id
+
+> **id**: `string`
+
+#### markers?
+
+> `optional` **markers**: `object`[]
+
+#### name
+
+> **name**: `string`
+
+#### personality?
+
+> `optional` **personality**: `Record`\<`string`, `number`\>
+
+#### profile?
+
+> `optional` **profile**: `Record`\<`string`, `unknown`\>
+
+#### scenarioExtensions?
+
+> `optional` **scenarioExtensions**: `Record`\<`string`, `unknown`\> = `ScenarioExtensionsSchema`
+
+#### signals?
+
+> `optional` **signals**: `object`[]
+
+***
+
+### tavilyKey?
+
+> `optional` **tavilyKey**: `string`
+
+Defined in: [apps/paracosm/src/engine/provider-credentials.ts:15](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/provider-credentials.ts#L15)
+
+#### Inherited from
+
+`RuntimeCredentialOptions.tavilyKey`
+
+***
+
+### timePerTurn?
+
+> `optional` **timePerTurn**: `number`
+
+Defined in: [apps/paracosm/src/runtime/orchestrator.ts:359](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/runtime/orchestrator.ts#L359)

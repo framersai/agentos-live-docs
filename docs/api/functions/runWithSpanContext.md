@@ -2,7 +2,7 @@
 
 > **runWithSpanContext**\<`T`\>(`span`, `fn`): `Promise`\<`T`\>
 
-Defined in: [packages/agentos/src/evaluation/observability/otel.ts:439](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/evaluation/observability/otel.ts#L439)
+Defined in: [packages/agentos/src/evaluation/observability/otel.ts:439](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/evaluation/observability/otel.ts#L439)
 
 ## Type Parameters
 

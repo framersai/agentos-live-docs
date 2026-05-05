@@ -1,8 +1,8 @@
 # Function: generateObject()
 
-> **generateObject**\<`T`\>(`opts`): `Promise`\<[`GenerateObjectResult`](../interfaces/GenerateObjectResult.md)\<`output`\<`T`\>\>\>
+> **generateObject**\<`T`\>(`opts`): `Promise`\<[`GenerateObjectResult`](../interfaces/GenerateObjectResult.md)\<[`output`](../@framers/namespaces/z/namespaces/core/type-aliases/output.md)\<`T`\>\>\>
 
-Defined in: [packages/agentos/src/api/generateObject.ts:371](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/generateObject.ts#L371)
+Defined in: [packages/agentos/src/api/generateObject.ts:373](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/generateObject.ts#L373)
 
 Generates a structured object by forcing the LLM to produce JSON matching
 a Zod schema.
@@ -15,7 +15,7 @@ unstructured text.
 
 ### T
 
-`T` *extends* `ZodType`\<`unknown`, `unknown`, `$ZodTypeInternals`\<`unknown`, `unknown`\>\>
+`T` *extends* [`ZodType`](../@framers/namespaces/z/interfaces/ZodType-1.md)\<`unknown`, `unknown`, [`$ZodTypeInternals`](../@framers/namespaces/z/namespaces/core/interfaces/$ZodTypeInternals-1.md)\<`unknown`, `unknown`\>\>
 
 The Zod schema type. The returned `object` field is inferred
   as `z.infer<T>`.
@@ -31,7 +31,7 @@ Generation options including the Zod schema, prompt/messages,
 
 ## Returns
 
-`Promise`\<[`GenerateObjectResult`](../interfaces/GenerateObjectResult.md)\<`output`\<`T`\>\>\>
+`Promise`\<[`GenerateObjectResult`](../interfaces/GenerateObjectResult.md)\<[`output`](../@framers/namespaces/z/namespaces/core/type-aliases/output.md)\<`T`\>\>\>
 
 A promise resolving to the validated object, raw text, usage, and metadata.
 

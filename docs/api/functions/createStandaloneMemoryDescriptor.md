@@ -2,7 +2,7 @@
 
 > **createStandaloneMemoryDescriptor**(`options?`): [`MemoryProviderDescriptor`](../type-aliases/MemoryProviderDescriptor.md)
 
-Defined in: [packages/agentos/src/memory/io/extension/StandaloneMemoryExtension.ts:107](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/io/extension/StandaloneMemoryExtension.ts#L107)
+Defined in: [packages/agentos/src/memory/io/extension/StandaloneMemoryExtension.ts:107](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/io/extension/StandaloneMemoryExtension.ts#L107)
 
 Create a `memory-provider` descriptor for the standalone `Memory` facade.
 

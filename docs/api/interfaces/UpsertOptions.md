@@ -1,6 +1,6 @@
 # Interface: UpsertOptions
 
-Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:193](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/core/vector-store/IVectorStore.ts#L193)
+Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:193](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/core/vector-store/IVectorStore.ts#L193)
 
 Options for a vector store upsert (insert or update) operation.
 
@@ -14,7 +14,7 @@ UpsertOptions
 
 > `optional` **batchSize**: `number`
 
-Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:194](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/core/vector-store/IVectorStore.ts#L194)
+Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:194](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/core/vector-store/IVectorStore.ts#L194)
 
 Preferred batch size for upserting multiple documents, if the provider supports batching.
 
@@ -24,7 +24,7 @@ Preferred batch size for upserting multiple documents, if the provider supports 
 
 > `optional` **customParams**: `Record`\<`string`, `any`\>
 
-Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:196](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/core/vector-store/IVectorStore.ts#L196)
+Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:196](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/core/vector-store/IVectorStore.ts#L196)
 
 Provider-specific parameters for the upsert operation.
 
@@ -34,6 +34,6 @@ Provider-specific parameters for the upsert operation.
 
 > `optional` **overwrite**: `boolean`
 
-Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:195](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/core/vector-store/IVectorStore.ts#L195)
+Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:195](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/core/vector-store/IVectorStore.ts#L195)
 
 Whether to overwrite existing documents with the same ID.

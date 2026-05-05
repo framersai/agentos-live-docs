@@ -2,7 +2,7 @@
 
 > **getDepartmentsForTurn**(`turn`): `string`[]
 
-Defined in: [apps/paracosm/src/runtime/departments.ts:133](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/departments.ts#L133)
+Defined in: [apps/paracosm/src/runtime/departments.ts:133](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/runtime/departments.ts#L133)
 
 ## Parameters
 

@@ -2,7 +2,7 @@
 
 > **ReducerFn** = (`existing`, `incoming`) => `unknown`
 
-Defined in: [packages/agentos/src/orchestration/ir/types.ts:582](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/ir/types.ts#L582)
+Defined in: [packages/agentos/src/orchestration/ir/types.ts:595](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/ir/types.ts#L595)
 
 Custom reducer function for a single state field.
 

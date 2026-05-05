@@ -2,7 +2,7 @@
 
 > **createGuardrailBlockedStream**(`context`, `evaluation`, `options?`): `AsyncGenerator`\<[`AgentOSResponse`](../type-aliases/AgentOSResponse.md), `void`, `undefined`\>
 
-Defined in: [packages/agentos/src/safety/guardrails/guardrailDispatcher.ts:189](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/safety/guardrails/guardrailDispatcher.ts#L189)
+Defined in: [packages/agentos/src/safety/guardrails/guardrailDispatcher.ts:189](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/safety/guardrails/guardrailDispatcher.ts#L189)
 
 Create a stream that emits a single error chunk for blocked content.
 

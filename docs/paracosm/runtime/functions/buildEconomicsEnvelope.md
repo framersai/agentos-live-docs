@@ -2,7 +2,7 @@
 
 > **buildEconomicsEnvelope**(`profile`, `input`): [`EconomicsEnvelope`](../interfaces/EconomicsEnvelope.md)
 
-Defined in: [apps/paracosm/src/runtime/economics-profile.ts:172](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/economics-profile.ts#L172)
+Defined in: [apps/paracosm/src/runtime/economics-profile.ts:172](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/runtime/economics-profile.ts#L172)
 
 ## Parameters
 

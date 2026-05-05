@@ -2,7 +2,7 @@
 
 > **ExternalToolExecutor**\<`TArgs`, `TOutput`\> = (`args`, `context`) => `Promise`\<[`ToolExecutionResult`](../interfaces/ToolExecutionResult.md)\<`TOutput`\>\>
 
-Defined in: [packages/agentos/src/api/runtime/externalToolRegistry.ts:15](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/runtime/externalToolRegistry.ts#L15)
+Defined in: [packages/agentos/src/api/runtime/externalToolRegistry.ts:15](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/runtime/externalToolRegistry.ts#L15)
 
 ## Type Parameters
 

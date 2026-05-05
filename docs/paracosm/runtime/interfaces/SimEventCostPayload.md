@@ -1,6 +1,6 @@
 # Interface: SimEventCostPayload
 
-Defined in: [apps/paracosm/src/runtime/orchestrator.ts:73](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/orchestrator.ts#L73)
+Defined in: [apps/paracosm/src/runtime/orchestrator.ts:90](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/runtime/orchestrator.ts#L90)
 
 Universal fields spread onto every emitted event's `data` payload,
 regardless of event type. `summary` is the "just works" one-liner for
@@ -15,7 +15,7 @@ read it off the returned `result.cost` instead.
 
 > `optional` **\_cost**: `unknown`
 
-Defined in: [apps/paracosm/src/runtime/orchestrator.ts:82](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/orchestrator.ts#L82)
+Defined in: [apps/paracosm/src/runtime/orchestrator.ts:99](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/runtime/orchestrator.ts#L99)
 
 ***
 
@@ -23,7 +23,7 @@ Defined in: [apps/paracosm/src/runtime/orchestrator.ts:82](https://github.com/fr
 
 > **summary**: `string`
 
-Defined in: [apps/paracosm/src/runtime/orchestrator.ts:81](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/runtime/orchestrator.ts#L81)
+Defined in: [apps/paracosm/src/runtime/orchestrator.ts:98](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/runtime/orchestrator.ts#L98)
 
 Short human-readable one-liner describing what this event represents
 (e.g. `"dust storm (natural_disaster)"` for event_start,

@@ -1,15 +1,12 @@
 # Class: SandboxedToolForge
 
-Defined in: [packages/agentos/src/emergent/SandboxedToolForge.ts:134](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/emergent/SandboxedToolForge.ts#L134)
+Defined in: [packages/agentos/src/emergent/SandboxedToolForge.ts:146](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/emergent/SandboxedToolForge.ts#L146)
 
-Runs agent-generated code in an isolated sandbox with strict resource limits.
+Runs agent-generated code in a hardened node:vm sandbox via [CodeSandbox](CodeSandbox.md).
 
-Attempts to use `isolated-vm` for true V8 isolate sandboxing. Falls back to
-Node.js `vm` module with timeout if `isolated-vm` is not installed.
-
-Resource limits:
-- Memory: configurable, default 128 MB
-- Execution time: configurable, default 5000 ms
+Runtime bounds:
+- Memory: observed as a heap delta, not preemptively capped
+- Execution time: configurable wall-clock timeout, default 5000 ms
 - Blocked APIs: eval, Function, process, require, import, child_process, fs.write*
 
 Allowlisted APIs (each requires explicit opt-in):
@@ -39,7 +36,7 @@ console.log(result.output); // 5
 
 > **new SandboxedToolForge**(`config?`): `SandboxedToolForge`
 
-Defined in: [packages/agentos/src/emergent/SandboxedToolForge.ts:153](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/emergent/SandboxedToolForge.ts#L153)
+Defined in: [packages/agentos/src/emergent/SandboxedToolForge.ts:172](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/emergent/SandboxedToolForge.ts#L172)
 
 Create a new SandboxedToolForge instance.
 
@@ -62,7 +59,7 @@ Optional configuration overrides. All fields have sensible
 
 > **execute**(`request`): `Promise`\<[`SandboxExecutionResult`](../interfaces/SandboxExecutionResult.md)\>
 
-Defined in: [packages/agentos/src/emergent/SandboxedToolForge.ts:304](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/emergent/SandboxedToolForge.ts#L304)
+Defined in: [packages/agentos/src/emergent/SandboxedToolForge.ts:324](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/emergent/SandboxedToolForge.ts#L324)
 
 Execute agent-generated code in the sandbox.
 
@@ -115,7 +112,7 @@ const result = await forge.execute({
 
 > **validateCode**(`code`, `allowlist`): `object`
 
-Defined in: [packages/agentos/src/emergent/SandboxedToolForge.ts:232](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/emergent/SandboxedToolForge.ts#L232)
+Defined in: [packages/agentos/src/emergent/SandboxedToolForge.ts:252](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/emergent/SandboxedToolForge.ts#L252)
 
 #### Parameters
 

@@ -1,6 +1,6 @@
 # Interface: EncodingWeights
 
-Defined in: [packages/agentos/src/memory/core/types.ts:166](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/types.ts#L166)
+Defined in: [packages/agentos/src/memory/core/types.ts:167](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L167)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/memory/core/types.ts:166](https://github.com/f
 
 > **cooperativeAttention**: `number`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:171](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/types.ts#L171)
+Defined in: [packages/agentos/src/memory/core/types.ts:172](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L172)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [packages/agentos/src/memory/core/types.ts:171](https://github.com/f
 
 > **emotionalSensitivity**: `number`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:169](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/types.ts#L169)
+Defined in: [packages/agentos/src/memory/core/types.ts:170](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L170)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: [packages/agentos/src/memory/core/types.ts:169](https://github.com/f
 
 > **ethicalAttention**: `number`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:172](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/types.ts#L172)
+Defined in: [packages/agentos/src/memory/core/types.ts:173](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L173)
 
 ***
 
@@ -32,7 +32,7 @@ Defined in: [packages/agentos/src/memory/core/types.ts:172](https://github.com/f
 
 > **noveltyAttention**: `number`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:167](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/types.ts#L167)
+Defined in: [packages/agentos/src/memory/core/types.ts:168](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L168)
 
 ***
 
@@ -40,7 +40,7 @@ Defined in: [packages/agentos/src/memory/core/types.ts:167](https://github.com/f
 
 > **proceduralAttention**: `number`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:168](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/types.ts#L168)
+Defined in: [packages/agentos/src/memory/core/types.ts:169](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L169)
 
 ***
 
@@ -48,4 +48,4 @@ Defined in: [packages/agentos/src/memory/core/types.ts:168](https://github.com/f
 
 > **socialAttention**: `number`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:170](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/types.ts#L170)
+Defined in: [packages/agentos/src/memory/core/types.ts:171](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L171)

@@ -2,7 +2,7 @@
 
 > **InboundMessageHandler** = (`message`, `binding`, `session`) => `void` \| `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/channels/ChannelRouter.ts:34](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/channels/ChannelRouter.ts#L34)
+Defined in: [packages/agentos/src/channels/ChannelRouter.ts:34](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/channels/ChannelRouter.ts#L34)
 
 Handler invoked when an inbound message is received and matched to a seed.
 

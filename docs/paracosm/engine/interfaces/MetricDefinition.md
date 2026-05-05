@@ -1,6 +1,6 @@
 # Interface: MetricDefinition
 
-Defined in: [apps/paracosm/src/engine/types.ts:139](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L139)
+Defined in: [apps/paracosm/src/engine/types.ts:156](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/types.ts#L156)
 
 Defines a derived metric displayed in the dashboard header.
 
@@ -10,7 +10,7 @@ Defines a derived metric displayed in the dashboard header.
 
 > **format**: `"number"` \| `"percent"` \| `"currency"` \| `"duration"`
 
-Defined in: [apps/paracosm/src/engine/types.ts:143](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L143)
+Defined in: [apps/paracosm/src/engine/types.ts:160](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/types.ts#L160)
 
 ***
 
@@ -18,7 +18,7 @@ Defined in: [apps/paracosm/src/engine/types.ts:143](https://github.com/framersai
 
 > **id**: `string`
 
-Defined in: [apps/paracosm/src/engine/types.ts:140](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L140)
+Defined in: [apps/paracosm/src/engine/types.ts:157](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/types.ts#L157)
 
 ***
 
@@ -26,7 +26,7 @@ Defined in: [apps/paracosm/src/engine/types.ts:140](https://github.com/framersai
 
 > **label**: `string`
 
-Defined in: [apps/paracosm/src/engine/types.ts:141](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L141)
+Defined in: [apps/paracosm/src/engine/types.ts:158](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/types.ts#L158)
 
 ***
 
@@ -34,4 +34,4 @@ Defined in: [apps/paracosm/src/engine/types.ts:141](https://github.com/framersai
 
 > **source**: `string`
 
-Defined in: [apps/paracosm/src/engine/types.ts:142](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L142)
+Defined in: [apps/paracosm/src/engine/types.ts:159](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/types.ts#L159)

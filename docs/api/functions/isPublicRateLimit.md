@@ -2,7 +2,7 @@
 
 > **isPublicRateLimit**(`info`): `info is RateLimitInfoPublic`
 
-Defined in: [packages/agentos/src/core/rate-limiting/types.ts:37](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/core/rate-limiting/types.ts#L37)
+Defined in: [packages/agentos/src/core/rate-limiting/types.ts:37](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/core/rate-limiting/types.ts#L37)
 
 Type guard to check if rate limit info is for public tier.
 

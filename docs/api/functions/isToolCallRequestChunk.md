@@ -2,7 +2,7 @@
 
 > **isToolCallRequestChunk**(`chunk`): `chunk is AgentOSToolCallRequestChunk`
 
-Defined in: [packages/agentos/src/api/types/AgentOSResponse.ts:254](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/api/types/AgentOSResponse.ts#L254)
+Defined in: [packages/agentos/src/api/types/AgentOSResponse.ts:254](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/types/AgentOSResponse.ts#L254)
 
 Runtime type guard for streamed tool-call request chunks.
 

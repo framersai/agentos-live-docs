@@ -1,6 +1,6 @@
 # Interface: IVectorStore
 
-Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:269](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/core/vector-store/IVectorStore.ts#L269)
+Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:269](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/core/vector-store/IVectorStore.ts#L269)
 
 ## Interface
 
@@ -17,7 +17,7 @@ Implementations will wrap specific clients (e.g., Pinecone client, Weaviate clie
 
 > **checkHealth**(): `Promise`\<\{ `details?`: `any`; `isHealthy`: `boolean`; \}\>
 
-Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:412](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/core/vector-store/IVectorStore.ts#L412)
+Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:412](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/core/vector-store/IVectorStore.ts#L412)
 
 **`Async`**
 
@@ -37,7 +37,7 @@ A promise that resolves with the health status.
 
 > `optional` **collectionExists**(`collectionName`): `Promise`\<`boolean`\>
 
-Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:402](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/core/vector-store/IVectorStore.ts#L402)
+Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:402](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/core/vector-store/IVectorStore.ts#L402)
 
 **`Async`**
 
@@ -67,7 +67,7 @@ If the check fails for reasons other than existence (e.g., connection issue).
 
 > `optional` **createCollection**(`collectionName`, `dimension`, `options?`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:378](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/core/vector-store/IVectorStore.ts#L378)
+Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:378](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/core/vector-store/IVectorStore.ts#L378)
 
 **`Async`**
 
@@ -110,7 +110,7 @@ If collection creation fails (e.g., name conflict and not overwriting, invalid p
 
 > **delete**(`collectionName`, `ids?`, `options?`): `Promise`\<[`DeleteResult`](DeleteResult.md)\>
 
-Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:361](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/core/vector-store/IVectorStore.ts#L361)
+Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:361](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/core/vector-store/IVectorStore.ts#L361)
 
 **`Async`**
 
@@ -154,7 +154,7 @@ If the delete operation fails.
 
 > `optional` **deleteCollection**(`collectionName`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:392](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/core/vector-store/IVectorStore.ts#L392)
+Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:392](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/core/vector-store/IVectorStore.ts#L392)
 
 **`Async`**
 
@@ -184,7 +184,7 @@ If collection deletion fails.
 
 > `optional` **getStats**(`collectionName?`): `Promise`\<`Record`\<`string`, `any`\>\>
 
-Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:433](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/core/vector-store/IVectorStore.ts#L433)
+Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:433](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/core/vector-store/IVectorStore.ts#L433)
 
 **`Async`**
 
@@ -216,7 +216,7 @@ If fetching statistics fails.
 
 > `optional` **hybridSearch**(`collectionName`, `queryEmbedding`, `queryText`, `options?`): `Promise`\<[`QueryResult`](QueryResult.md)\>
 
-Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:333](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/core/vector-store/IVectorStore.ts#L333)
+Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:333](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/core/vector-store/IVectorStore.ts#L333)
 
 Optional: Hybrid retrieval combining dense vector similarity with lexical search.
 
@@ -253,7 +253,7 @@ If not implemented, callers should fall back to `query()` (dense similarity).
 
 > **initialize**(`config`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:281](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/core/vector-store/IVectorStore.ts#L281)
+Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:281](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/core/vector-store/IVectorStore.ts#L281)
 
 **`Async`**
 
@@ -286,7 +286,7 @@ If initialization fails (e.g., invalid configuration, connection error, authenti
 
 > **query**(`collectionName`, `queryEmbedding`, `options?`): `Promise`\<[`QueryResult`](QueryResult.md)\>
 
-Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:310](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/core/vector-store/IVectorStore.ts#L310)
+Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:310](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/core/vector-store/IVectorStore.ts#L310)
 
 **`Async`**
 
@@ -328,7 +328,7 @@ If the query operation fails.
 
 > `optional` **scanByMetadata**(`collectionName`, `options?`): `Promise`\<`MetadataScanResult`\>
 
-Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:320](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/core/vector-store/IVectorStore.ts#L320)
+Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:320](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/core/vector-store/IVectorStore.ts#L320)
 
 Optional: Enumerates documents using metadata-only filtering without
 requiring a query embedding.
@@ -353,7 +353,7 @@ requiring a query embedding.
 
 > **shutdown**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:421](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/core/vector-store/IVectorStore.ts#L421)
+Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:421](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/core/vector-store/IVectorStore.ts#L421)
 
 **`Async`**
 
@@ -372,7 +372,7 @@ A promise that resolves when shutdown is complete.
 
 > **upsert**(`collectionName`, `documents`, `options?`): `Promise`\<[`UpsertResult`](UpsertResult.md)\>
 
-Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:294](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/core/vector-store/IVectorStore.ts#L294)
+Defined in: [packages/agentos/src/core/vector-store/IVectorStore.ts:294](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/core/vector-store/IVectorStore.ts#L294)
 
 **`Async`**
 

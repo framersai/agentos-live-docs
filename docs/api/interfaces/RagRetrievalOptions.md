@@ -1,6 +1,6 @@
 # Interface: RagRetrievalOptions
 
-Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:164](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/IRetrievalAugmentor.ts#L164)
+Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:164](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/IRetrievalAugmentor.ts#L164)
 
 Options controlling retrieval behavior.
 
@@ -10,7 +10,7 @@ Options controlling retrieval behavior.
 
 > `optional` **hyde**: `object`
 
-Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:219](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/IRetrievalAugmentor.ts#L219)
+Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:219](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/IRetrievalAugmentor.ts#L219)
 
 HyDE (Hypothetical Document Embedding) configuration.
 When enabled, generates a hypothetical answer before embedding for
@@ -46,7 +46,7 @@ Minimum threshold to step down to. Default: 0.3.
 
 > `optional` **includeAudit**: `boolean`
 
-Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:234](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/IRetrievalAugmentor.ts#L234)
+Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:234](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/IRetrievalAugmentor.ts#L234)
 
 When true, generates a RAGAuditTrail with per-operation transparency.
 
@@ -56,7 +56,7 @@ When true, generates a RAGAuditTrail with per-operation transparency.
 
 > `optional` **includeEmbeddings**: `boolean`
 
-Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:211](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/IRetrievalAugmentor.ts#L211)
+Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:211](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/IRetrievalAugmentor.ts#L211)
 
 Include chunk embeddings in the response.
 
@@ -66,7 +66,7 @@ Include chunk embeddings in the response.
 
 > `optional` **metadataFilter**: [`MetadataFilter`](../type-aliases/MetadataFilter.md)
 
-Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:172](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/IRetrievalAugmentor.ts#L172)
+Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:172](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/IRetrievalAugmentor.ts#L172)
 
 Metadata filter applied at the vector-store layer.
 
@@ -76,7 +76,7 @@ Metadata filter applied at the vector-store layer.
 
 > `optional` **policy**: [`MemoryRetrievalPolicy`](MemoryRetrievalPolicy.md)
 
-Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:236](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/IRetrievalAugmentor.ts#L236)
+Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:236](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/IRetrievalAugmentor.ts#L236)
 
 Optional shared retrieval policy overlay.
 
@@ -86,7 +86,7 @@ Optional shared retrieval policy overlay.
 
 > `optional` **queryEmbeddingModelId**: `string`
 
-Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:213](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/IRetrievalAugmentor.ts#L213)
+Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:213](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/IRetrievalAugmentor.ts#L213)
 
 Query embedding model override.
 
@@ -96,7 +96,7 @@ Query embedding model override.
 
 > `optional` **rerankerConfig**: `object`
 
-Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:194](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/IRetrievalAugmentor.ts#L194)
+Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:194](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/IRetrievalAugmentor.ts#L194)
 
 Cross-encoder reranking configuration.
 
@@ -158,7 +158,7 @@ Number of top results to return after reranking
 
 > `optional` **strategy**: `"hybrid"` \| `"similarity"` \| `"mmr"`
 
-Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:174](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/IRetrievalAugmentor.ts#L174)
+Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:174](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/IRetrievalAugmentor.ts#L174)
 
 Retrieval strategy (defaults to similarity search).
 
@@ -168,7 +168,7 @@ Retrieval strategy (defaults to similarity search).
 
 > `optional` **strategyParams**: `object`
 
-Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:176](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/IRetrievalAugmentor.ts#L176)
+Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:176](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/IRetrievalAugmentor.ts#L176)
 
 Strategy-specific parameters (MMR lambda, hybrid alpha, etc.).
 
@@ -190,7 +190,7 @@ Strategy-specific parameters (MMR lambda, hybrid alpha, etc.).
 
 > `optional` **targetDataSourceIds**: `string`[]
 
-Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:168](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/IRetrievalAugmentor.ts#L168)
+Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:168](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/IRetrievalAugmentor.ts#L168)
 
 Set of explicit data sources to query.
 
@@ -200,7 +200,7 @@ Set of explicit data sources to query.
 
 > `optional` **targetMemoryCategories**: [`RagMemoryCategory`](../enumerations/RagMemoryCategory.md)[]
 
-Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:170](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/IRetrievalAugmentor.ts#L170)
+Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:170](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/IRetrievalAugmentor.ts#L170)
 
 Memory categories to consult (maps to data sources via config).
 
@@ -210,7 +210,7 @@ Memory categories to consult (maps to data sources via config).
 
 > `optional` **tokenBudgetForContext**: `number`
 
-Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:230](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/IRetrievalAugmentor.ts#L230)
+Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:230](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/IRetrievalAugmentor.ts#L230)
 
 Advisory token/character budget for final context construction.
 
@@ -220,7 +220,7 @@ Advisory token/character budget for final context construction.
 
 > `optional` **topK**: `number`
 
-Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:166](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/IRetrievalAugmentor.ts#L166)
+Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:166](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/IRetrievalAugmentor.ts#L166)
 
 Maximum number of chunks per query.
 
@@ -230,6 +230,6 @@ Maximum number of chunks per query.
 
 > `optional` **userId**: `string`
 
-Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:232](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/rag/IRetrievalAugmentor.ts#L232)
+Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:232](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/IRetrievalAugmentor.ts#L232)
 
 Caller identity for logging/billing.

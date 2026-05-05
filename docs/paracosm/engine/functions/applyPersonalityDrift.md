@@ -1,8 +1,8 @@
 # Function: applyPersonalityDrift()
 
-> **applyPersonalityDrift**(`colonists`, `commanderHexaco`, `turnOutcome`, `yearDelta`, `turn`, `year`): `void`
+> **applyPersonalityDrift**(`colonists`, `commanderHexaco`, `turnOutcome`, `timeDelta`, `turn`, `time`): `void`
 
-Defined in: [apps/paracosm/src/engine/core/progression.ts:76](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/core/progression.ts#L76)
+Defined in: [apps/paracosm/src/engine/core/progression.ts:76](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/core/progression.ts#L76)
 
 Apply personality drift to all promoted colonists. Deterministic from inputs.
 Three forces: leader pull, role pull, outcome pull.
@@ -21,7 +21,7 @@ Three forces: leader pull, role pull, outcome pull.
 
 [`TurnOutcome`](../type-aliases/TurnOutcome.md) | `null`
 
-### yearDelta
+### timeDelta
 
 `number`
 
@@ -29,7 +29,7 @@ Three forces: leader pull, role pull, outcome pull.
 
 `number`
 
-### year
+### time
 
 `number`
 

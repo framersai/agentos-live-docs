@@ -1,6 +1,6 @@
 # Class: EventTaxonomy
 
-Defined in: [apps/paracosm/src/engine/event-taxonomy.ts:5](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/event-taxonomy.ts#L5)
+Defined in: [apps/paracosm/src/engine/event-taxonomy.ts:5](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/event-taxonomy.ts#L5)
 
 ## Constructors
 
@@ -8,7 +8,7 @@ Defined in: [apps/paracosm/src/engine/event-taxonomy.ts:5](https://github.com/fr
 
 > **new EventTaxonomy**(`definitions`): `EventTaxonomy`
 
-Defined in: [apps/paracosm/src/engine/event-taxonomy.ts:8](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/event-taxonomy.ts#L8)
+Defined in: [apps/paracosm/src/engine/event-taxonomy.ts:8](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/event-taxonomy.ts#L8)
 
 #### Parameters
 
@@ -26,7 +26,7 @@ Defined in: [apps/paracosm/src/engine/event-taxonomy.ts:8](https://github.com/fr
 
 > **all**(): [`ScenarioEventDef`](../interfaces/ScenarioEventDef.md)[]
 
-Defined in: [apps/paracosm/src/engine/event-taxonomy.ts:16](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/event-taxonomy.ts#L16)
+Defined in: [apps/paracosm/src/engine/event-taxonomy.ts:16](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/event-taxonomy.ts#L16)
 
 #### Returns
 
@@ -38,7 +38,7 @@ Defined in: [apps/paracosm/src/engine/event-taxonomy.ts:16](https://github.com/f
 
 > **get**(`id`): [`ScenarioEventDef`](../interfaces/ScenarioEventDef.md) \| `undefined`
 
-Defined in: [apps/paracosm/src/engine/event-taxonomy.ts:12](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/event-taxonomy.ts#L12)
+Defined in: [apps/paracosm/src/engine/event-taxonomy.ts:12](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/event-taxonomy.ts#L12)
 
 #### Parameters
 

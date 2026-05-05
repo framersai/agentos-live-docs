@@ -1,6 +1,6 @@
 # Interface: KnowledgeTopic
 
-Defined in: [apps/paracosm/src/engine/types.ts:190](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L190)
+Defined in: [apps/paracosm/src/engine/types.ts:207](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/types.ts#L207)
 
 A research topic with facts, counterpoints, and department-specific notes.
 
@@ -10,7 +10,7 @@ A research topic with facts, counterpoints, and department-specific notes.
 
 > **canonicalFacts**: [`KnowledgeCitation`](KnowledgeCitation.md)[]
 
-Defined in: [apps/paracosm/src/engine/types.ts:191](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L191)
+Defined in: [apps/paracosm/src/engine/types.ts:208](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/types.ts#L208)
 
 ***
 
@@ -18,7 +18,7 @@ Defined in: [apps/paracosm/src/engine/types.ts:191](https://github.com/framersai
 
 > **counterpoints**: `object`[]
 
-Defined in: [apps/paracosm/src/engine/types.ts:192](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L192)
+Defined in: [apps/paracosm/src/engine/types.ts:209](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/types.ts#L209)
 
 #### claim
 
@@ -38,4 +38,4 @@ Defined in: [apps/paracosm/src/engine/types.ts:192](https://github.com/framersai
 
 > **departmentNotes**: `Record`\<`string`, `string`\>
 
-Defined in: [apps/paracosm/src/engine/types.ts:193](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/types.ts#L193)
+Defined in: [apps/paracosm/src/engine/types.ts:210](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/types.ts#L210)

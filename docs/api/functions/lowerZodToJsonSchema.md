@@ -2,7 +2,7 @@
 
 > **lowerZodToJsonSchema**(`schema`): `Record`\<`string`, `unknown`\>
 
-Defined in: [packages/agentos/src/orchestration/compiler/SchemaLowering.ts:38](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/orchestration/compiler/SchemaLowering.ts#L38)
+Defined in: [packages/agentos/src/orchestration/compiler/SchemaLowering.ts:38](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/compiler/SchemaLowering.ts#L38)
 
 Converts a Zod schema instance to a plain JSON Schema object.
 
@@ -14,7 +14,7 @@ is clean and does not contain Zod-specific metadata.
 
 ### schema
 
-`ZodType`
+[`ZodType`](../@framers/namespaces/z/interfaces/ZodType-1.md)
 
 Any Zod schema instance.
 

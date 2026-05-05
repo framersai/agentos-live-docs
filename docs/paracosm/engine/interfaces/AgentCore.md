@@ -1,14 +1,14 @@
 # Interface: AgentCore
 
-Defined in: [apps/paracosm/src/engine/core/state.ts:39](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/core/state.ts#L39)
+Defined in: [apps/paracosm/src/engine/core/state.ts:39](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/core/state.ts#L39)
 
 ## Properties
 
-### birthYear
+### birthTime
 
-> **birthYear**: `number`
+> **birthTime**: `number`
 
-Defined in: [apps/paracosm/src/engine/core/state.ts:42](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/core/state.ts#L42)
+Defined in: [apps/paracosm/src/engine/core/state.ts:42](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/core/state.ts#L42)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [apps/paracosm/src/engine/core/state.ts:42](https://github.com/frame
 
 > **department**: `string`
 
-Defined in: [apps/paracosm/src/engine/core/state.ts:44](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/core/state.ts#L44)
+Defined in: [apps/paracosm/src/engine/core/state.ts:44](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/core/state.ts#L44)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: [apps/paracosm/src/engine/core/state.ts:44](https://github.com/frame
 
 > **id**: `string`
 
-Defined in: [apps/paracosm/src/engine/core/state.ts:40](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/core/state.ts#L40)
+Defined in: [apps/paracosm/src/engine/core/state.ts:40](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/core/state.ts#L40)
 
 ***
 
@@ -32,7 +32,7 @@ Defined in: [apps/paracosm/src/engine/core/state.ts:40](https://github.com/frame
 
 > **marsborn**: `boolean`
 
-Defined in: [apps/paracosm/src/engine/core/state.ts:43](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/core/state.ts#L43)
+Defined in: [apps/paracosm/src/engine/core/state.ts:43](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/core/state.ts#L43)
 
 ***
 
@@ -40,7 +40,7 @@ Defined in: [apps/paracosm/src/engine/core/state.ts:43](https://github.com/frame
 
 > **name**: `string`
 
-Defined in: [apps/paracosm/src/engine/core/state.ts:41](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/core/state.ts#L41)
+Defined in: [apps/paracosm/src/engine/core/state.ts:41](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/core/state.ts#L41)
 
 ***
 
@@ -48,4 +48,4 @@ Defined in: [apps/paracosm/src/engine/core/state.ts:41](https://github.com/frame
 
 > **role**: `string`
 
-Defined in: [apps/paracosm/src/engine/core/state.ts:45](https://github.com/framersai/paracosm/blob/eaaca6b88e64f96fe664d1ac64fc305b0bfc5ec9/src/engine/core/state.ts#L45)
+Defined in: [apps/paracosm/src/engine/core/state.ts:45](https://github.com/framersai/paracosm/blob/4b7d109255db6541b63aff869511eecf9500ee08/src/engine/core/state.ts#L45)

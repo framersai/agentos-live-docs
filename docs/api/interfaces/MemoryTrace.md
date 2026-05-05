@@ -1,6 +1,6 @@
 # Interface: MemoryTrace
 
-Defined in: [packages/agentos/src/memory/core/types.ts:96](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/types.ts#L96)
+Defined in: [packages/agentos/src/memory/core/types.ts:97](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L97)
 
 ## Extended by
 
@@ -12,7 +12,7 @@ Defined in: [packages/agentos/src/memory/core/types.ts:96](https://github.com/fr
 
 > **accessCount**: `number`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:126](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/types.ts#L126)
+Defined in: [packages/agentos/src/memory/core/types.ts:127](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L127)
 
 Total access count (includes non-retrieval touches).
 
@@ -22,7 +22,7 @@ Total access count (includes non-retrieval touches).
 
 > **associatedTraceIds**: `string`[]
 
-Defined in: [packages/agentos/src/memory/core/types.ts:135](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/types.ts#L135)
+Defined in: [packages/agentos/src/memory/core/types.ts:136](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L136)
 
 ***
 
@@ -30,7 +30,7 @@ Defined in: [packages/agentos/src/memory/core/types.ts:135](https://github.com/f
 
 > `optional` **consolidatedAt**: `number`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:140](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/types.ts#L140)
+Defined in: [packages/agentos/src/memory/core/types.ts:141](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L141)
 
 ***
 
@@ -38,7 +38,7 @@ Defined in: [packages/agentos/src/memory/core/types.ts:140](https://github.com/f
 
 > **content**: `string`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:103](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/types.ts#L103)
+Defined in: [packages/agentos/src/memory/core/types.ts:104](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L104)
 
 ***
 
@@ -46,7 +46,7 @@ Defined in: [packages/agentos/src/memory/core/types.ts:103](https://github.com/f
 
 > **createdAt**: `number`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:138](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/types.ts#L138)
+Defined in: [packages/agentos/src/memory/core/types.ts:139](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L139)
 
 ***
 
@@ -54,7 +54,7 @@ Defined in: [packages/agentos/src/memory/core/types.ts:138](https://github.com/f
 
 > **emotionalContext**: [`EmotionalContext`](EmotionalContext.md)
 
-Defined in: [packages/agentos/src/memory/core/types.ts:112](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/types.ts#L112)
+Defined in: [packages/agentos/src/memory/core/types.ts:113](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L113)
 
 ***
 
@@ -62,7 +62,7 @@ Defined in: [packages/agentos/src/memory/core/types.ts:112](https://github.com/f
 
 > **encodingStrength**: `number`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:116](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/types.ts#L116)
+Defined in: [packages/agentos/src/memory/core/types.ts:117](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L117)
 
 S_0: initial encoding strength, set at creation.
 
@@ -72,7 +72,7 @@ S_0: initial encoding strength, set at creation.
 
 > **entities**: `string`[]
 
-Defined in: [packages/agentos/src/memory/core/types.ts:105](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/types.ts#L105)
+Defined in: [packages/agentos/src/memory/core/types.ts:106](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L106)
 
 ***
 
@@ -80,7 +80,7 @@ Defined in: [packages/agentos/src/memory/core/types.ts:105](https://github.com/f
 
 > **id**: `string`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:97](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/types.ts#L97)
+Defined in: [packages/agentos/src/memory/core/types.ts:98](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L98)
 
 ***
 
@@ -88,7 +88,7 @@ Defined in: [packages/agentos/src/memory/core/types.ts:97](https://github.com/fr
 
 > `optional` **importance**: `number`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:118](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/types.ts#L118)
+Defined in: [packages/agentos/src/memory/core/types.ts:119](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L119)
 
 Optional normalized salience score used by some consolidation/retrieval paths.
 
@@ -98,7 +98,7 @@ Optional normalized salience score used by some consolidation/retrieval paths.
 
 > **isActive**: `boolean`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:141](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/types.ts#L141)
+Defined in: [packages/agentos/src/memory/core/types.ts:142](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L142)
 
 ***
 
@@ -106,7 +106,7 @@ Defined in: [packages/agentos/src/memory/core/types.ts:141](https://github.com/f
 
 > **lastAccessedAt**: `number`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:124](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/types.ts#L124)
+Defined in: [packages/agentos/src/memory/core/types.ts:125](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L125)
 
 Unix ms of last retrieval.
 
@@ -116,7 +116,7 @@ Unix ms of last retrieval.
 
 > `optional` **nextReinforcementAt**: `number`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:132](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/types.ts#L132)
+Defined in: [packages/agentos/src/memory/core/types.ts:133](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L133)
 
 When this memory is next due for reinforcement review.
 
@@ -126,7 +126,7 @@ When this memory is next due for reinforcement review.
 
 > **provenance**: [`MemoryProvenance`](MemoryProvenance.md)
 
-Defined in: [packages/agentos/src/memory/core/types.ts:109](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/types.ts#L109)
+Defined in: [packages/agentos/src/memory/core/types.ts:110](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L110)
 
 ***
 
@@ -134,7 +134,7 @@ Defined in: [packages/agentos/src/memory/core/types.ts:109](https://github.com/f
 
 > **reinforcementInterval**: `number`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:130](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/types.ts#L130)
+Defined in: [packages/agentos/src/memory/core/types.ts:131](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L131)
 
 Current interval (ms); doubles on each successful recall.
 
@@ -144,7 +144,7 @@ Current interval (ms); doubles on each successful recall.
 
 > **retrievalCount**: `number`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:122](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/types.ts#L122)
+Defined in: [packages/agentos/src/memory/core/types.ts:123](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L123)
 
 Number of times this trace has been successfully retrieved.
 
@@ -154,7 +154,7 @@ Number of times this trace has been successfully retrieved.
 
 > **scope**: [`MemoryScope`](../type-aliases/MemoryScope.md)
 
-Defined in: [packages/agentos/src/memory/core/types.ts:99](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/types.ts#L99)
+Defined in: [packages/agentos/src/memory/core/types.ts:100](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L100)
 
 ***
 
@@ -162,7 +162,7 @@ Defined in: [packages/agentos/src/memory/core/types.ts:99](https://github.com/fr
 
 > **scopeId**: `string`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:100](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/types.ts#L100)
+Defined in: [packages/agentos/src/memory/core/types.ts:101](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L101)
 
 ***
 
@@ -170,7 +170,7 @@ Defined in: [packages/agentos/src/memory/core/types.ts:100](https://github.com/f
 
 > **stability**: `number`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:120](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/types.ts#L120)
+Defined in: [packages/agentos/src/memory/core/types.ts:121](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L121)
 
 Time constant (ms); grows with each successful retrieval.
 
@@ -180,7 +180,7 @@ Time constant (ms); grows with each successful retrieval.
 
 > `optional` **structuredData**: `Record`\<`string`, `unknown`\>
 
-Defined in: [packages/agentos/src/memory/core/types.ts:104](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/types.ts#L104)
+Defined in: [packages/agentos/src/memory/core/types.ts:105](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L105)
 
 ***
 
@@ -188,7 +188,7 @@ Defined in: [packages/agentos/src/memory/core/types.ts:104](https://github.com/f
 
 > **tags**: `string`[]
 
-Defined in: [packages/agentos/src/memory/core/types.ts:106](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/types.ts#L106)
+Defined in: [packages/agentos/src/memory/core/types.ts:107](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L107)
 
 ***
 
@@ -196,7 +196,7 @@ Defined in: [packages/agentos/src/memory/core/types.ts:106](https://github.com/f
 
 > **type**: [`MemoryType`](../type-aliases/MemoryType.md)
 
-Defined in: [packages/agentos/src/memory/core/types.ts:98](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/types.ts#L98)
+Defined in: [packages/agentos/src/memory/core/types.ts:99](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L99)
 
 ***
 
@@ -204,4 +204,4 @@ Defined in: [packages/agentos/src/memory/core/types.ts:98](https://github.com/fr
 
 > **updatedAt**: `number`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:139](https://github.com/framersai/agentos/blob/7021709ae8e384df5464f1e2ae8b3fca40f72dbb/src/memory/core/types.ts#L139)
+Defined in: [packages/agentos/src/memory/core/types.ts:140](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L140)
