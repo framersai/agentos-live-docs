@@ -20,6 +20,44 @@ const strictDocs = process.env.AGENTOS_DOCS_STRICT !== '0';
 const paracosmSrcPath = resolve(__dirname, '../paracosm/src');
 const paracosmSrcAvailable = existsSync(paracosmSrcPath);
 
+// Fetch the GitHub star count for `framersai/agentos` at build time.
+// Doing this at build time (server-side, with a PAT) instead of letting
+// the browser hit shields.io's `/github/stars/...` endpoint avoids two
+// problems: shields.io's unauthenticated rate-limit fallback that
+// renders an "invalid" badge, and the cold-cache flicker on first
+// page-loads. The PAT comes from the GH_PAT env var (set as a repo
+// secret in CI). If the fetch fails or no PAT is available, the count
+// falls back to a hardcoded floor — the badge stays valid even when
+// GitHub is unreachable.
+const STAR_COUNT_FALLBACK = 268;
+async function fetchGithubStars(repo: string): Promise<number> {
+  const headers: Record<string, string> = {
+    Accept: 'application/vnd.github+json',
+    'User-Agent': 'agentos-live-docs-build',
+  };
+  if (process.env.GH_PAT) {
+    headers.Authorization = `Bearer ${process.env.GH_PAT}`;
+  }
+  try {
+    const res = await fetch(`https://api.github.com/repos/${repo}`, { headers });
+    if (!res.ok) {
+      console.warn(`[stars] ${repo} fetch returned ${res.status}; using fallback ${STAR_COUNT_FALLBACK}`);
+      return STAR_COUNT_FALLBACK;
+    }
+    const data = (await res.json()) as { stargazers_count?: number };
+    if (typeof data.stargazers_count !== 'number') {
+      return STAR_COUNT_FALLBACK;
+    }
+    console.log(`[stars] ${repo}: ${data.stargazers_count}`);
+    return data.stargazers_count;
+  } catch (err) {
+    console.warn(`[stars] ${repo} fetch failed: ${(err as Error).message}; using fallback`);
+    return STAR_COUNT_FALLBACK;
+  }
+}
+
+const githubStars = await fetchGithubStars('framersai/agentos');
+
 const config: Config = {
   title: 'AgentOS — Open-Source TypeScript AI Agent Runtime',
   tagline:
@@ -29,6 +67,13 @@ const config: Config = {
   baseUrl: '/',
   organizationName: 'framersai',
   projectName: 'agentos-live-docs',
+  customFields: {
+    // Resolved at build time via the GH_PAT-authenticated GitHub API call
+    // above. The landing page reads this through useDocusaurusContext()
+    // and renders a static shields.io badge with the count baked in,
+    // so visitors never trigger an unauthenticated GitHub call.
+    githubStars,
+  },
   onBrokenLinks: guidesOnly ? 'ignore' : strictDocs ? 'throw' : 'warn',
   clientModules: [
     require.resolve('./src/mermaid-zoom.js'),

@@ -35,7 +35,15 @@ function Hero() {
 
       <div className="hero-badges">
         <a href="https://github.com/framersai/agentos" className="hero-badge" target="_blank" rel="noopener noreferrer">
-          <img src="https://img.shields.io/github/stars/framersai/agentos?style=for-the-badge&logo=github&logoColor=white&label=stars&color=6366f1&labelColor=4f46e5" alt="GitHub stars" />
+          {/* Static badge with the star count baked in at build time —
+              avoids shields.io's unauthenticated rate-limit fallback
+              that intermittently rendered "invalid" on this badge.
+              The count comes from a GH_PAT-authenticated API call in
+              docusaurus.config.ts and refreshes every deploy. */}
+          <img
+            src={`https://img.shields.io/badge/stars-${(siteConfig.customFields?.githubStars as number | undefined) ?? 268}-6366f1?style=for-the-badge&logo=github&logoColor=white&labelColor=4f46e5`}
+            alt={`GitHub stars: ${(siteConfig.customFields?.githubStars as number | undefined) ?? 268}`}
+          />
         </a>
         <a href="https://www.npmjs.com/package/@framers/agentos" className="hero-badge" target="_blank" rel="noopener noreferrer">
           <img src="https://img.shields.io/npm/v/@framers/agentos?style=for-the-badge&logo=npm&logoColor=white&label=npm&color=6366f1&labelColor=4f46e5" alt="npm version" />

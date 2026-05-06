@@ -58,6 +58,10 @@ jobs:
         run: npm run build
         env:
           NODE_OPTIONS: --max-old-space-size=8192
+          # PAT used by docusaurus.config.ts to fetch the live GitHub
+          # star count for the hero badge at build time. Falls back to
+          # a hardcoded count if missing or if the call fails.
+          GH_PAT: ${{ secrets.GH_PAT }}
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
