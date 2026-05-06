@@ -19,7 +19,7 @@ Wunderland is a sister project that consumes the AgentOS extension and skill sur
 - **Natural-language agent creation**: `wunderland create "I need a research bot..."` extracts a typed config with confidence scoring.
 - **HEXACO personality modeling**: six trait axes drive system-prompt synthesis, mood adaptation, and behavioral style.
 - **5-tier prompt-injection defense**: tool outputs are wrapped as untrusted content by default; `dangerous` / `permissive` / `balanced` / `strict` / `paranoid` named tiers gate every operation.
-- **Cognitive memory pipeline**: observational memory with Ebbinghaus decay, adaptive HyDE retrieval, knowledge-graph entity extraction, multimodal RAG. Same architecture documented in the [AgentOS Memory System Overview](/MEMORY_SYSTEM_OVERVIEW), packaged with sensible defaults.
+- **Cognitive memory pipeline**: observational memory with Ebbinghaus decay, adaptive HyDE retrieval, knowledge-graph entity extraction, multimodal RAG. Same architecture documented in the [AgentOS Memory System Overview](/features/memory-system-overview), packaged with sensible defaults.
 - **Multi-provider LLM routing**: OpenAI, Anthropic, OpenRouter, Ollama natively; everything else via OpenRouter.
 - **Step-up HITL authorization**: Tier 1 autonomous, Tier 2 async review, Tier 3 synchronous human approval.
 - **88 curated skills** + **8 built-in tools** + **8 agent presets** auto-loaded from the AgentOS skills/extensions registries.
