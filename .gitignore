@@ -13,8 +13,22 @@ docs/skills/
 # TypeDoc auto-generated
 docs/api/
 
-# Internal planning workflow — never published.
+# Internal planning content — never publish (see CLAUDE.md)
+.superpowers/
 docs/superpowers/
+docs/specs/
+docs/plans/
+docs/internal/
+docs/audits/
+docs/STEP_*.md
+docs/PHASE_*.md
+docs/STAGE_*.md
+docs/SESSION_*.md
+docs/HANDOFF*.md
+docs/FINDINGS*.md
+docs/*-v[0-9]*-plan*.md
+docs/*-v[0-9]*-design*.md
+docs/*-plan-phase*.md
 
 # Environment
 .env
