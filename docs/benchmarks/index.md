@@ -24,6 +24,15 @@ This page is the canonical comparison table. Every cell links to its primary sou
 - **LongMemEval-M at full N=500, gpt-4o reader**: AgentOS at **70.2%** is competitive with the strongest published M results in the LongMemEval paper ([Wu et al. ICLR 2025, Table 3](https://arxiv.org/abs/2410.10813)). The paper's three primary GPT-4o configurations: round Top-5 65.7% (we're +4.5), session Top-5 71.4% (we're 1.2 below), round Top-10 72.0% (we're 1.8 below at the harder Top-5 retrieval budget). First open-source library above 65% on M with publicly reproducible methodology. Closest published external number is AgentBrain's 71.7% from their closed-source SaaS.
 - **15 adjacent stress-tested configurations all regress** against the 85.6% headline. Locally Pareto-optimal in the tested parameter space.
 
+:::tip Read the writeups
+
+**[How AgentOS hit 85.6% on LongMemEval-S and 70.2% on LongMemEval-M →](https://agentos.sh/en/blog/agentos-memory-sota-longmemeval)**
+Per-category cost-accuracy breakdown, the canonical-hybrid retrieval stack, and the per-category reader router that earned the +9 pp lift over the prior CharHash baseline. Includes 8 documented negative findings (Stage L Anthropic Contextual Retrieval, Stage I Mem0-v3-style entity-linking, hierarchical retrieval, etc.) that disqualified each adjacent design.
+
+**[Why LongMemEval and LOCOMO numbers don't compare across vendors →](https://agentos.sh/en/blog/memory-benchmark-transparency-audit)**
+The 12-axis methodology audit. Reader-model swaps that swing aggregate accuracy 10+ pp without changing the architecture, judge-FPR probes (LOCOMO's default `gpt-4o-mini` accepts 62.81% of intentionally wrong answers), the 6.4% LOCOMO answer-key error rate, and the Mem0-vs-Zep comparison gaming case study.
+:::
+
 ## LongMemEval-S Phase B (115K tokens, 50 sessions per haystack)
 
 Same dataset (`data/longmemeval/longmemeval_s.json`), full N=500, same `gpt-4o-2024-08-06` judge, same `gpt-4o` reader across every row.
@@ -108,7 +117,7 @@ The 62.81% FPR ceiling on LOCOMO's default `gpt-4o-mini` judge means any LOCOMO 
 | Judge-adversarial FPR probe | yes | no | no | no | no | no | no | no |
 | Cross-vendor cross-vendor table | yes | no | no | partial | partial | yes | no | no |
 
-The full audit framework is at [Memory Benchmark Transparency Audit](https://agentos.sh/en/blog/agentos-memory-sota-longmemeval). Per-case run JSONs at `seed=42` are committed under [`packages/agentos-bench/results/runs/`](https://github.com/framersai/agentos-bench/tree/master/results/runs) for every published number.
+The full audit framework is at [Memory Benchmark Transparency Audit](https://agentos.sh/en/blog/memory-benchmark-transparency-audit). Per-case run JSONs at `seed=42` are committed under [`packages/agentos-bench/results/runs/`](https://github.com/framersai/agentos-bench/tree/master/results/runs) for every published number.
 
 ## Reproducing
 
@@ -149,10 +158,9 @@ Both runs ship with per-case run JSONs at `seed=42`. The full bench leaderboard 
 
 ## Related blog posts
 
-- [70.2% on LongMemEval-M](https://agentos.sh/en/blog/agentos-memory-sota-longmemeval) — current M headline
-- [85.6% on LongMemEval-S Pareto-win](https://agentos.sh/en/blog/agentos-memory-sota-longmemeval) — current S headline
-- [Memory Benchmark Transparency Audit](https://agentos.sh/en/blog/agentos-memory-sota-longmemeval) — methodology framework
-- [Two Negative Results: Stage L + Stage I](https://agentos.sh/en/blog/agentos-memory-sota-longmemeval) — what we tested and dropped
+- [LongMemEval State of the Art (2026): AgentOS 85.6% / 70.2%](https://agentos.sh/en/blog/agentos-memory-sota-longmemeval) — both current headlines, Pareto-win decomposition, negative findings
+- [Memory Benchmark Transparency: Why LongMemEval and LOCOMO Numbers Don't Compare](https://agentos.sh/en/blog/memory-benchmark-transparency-audit) — the 12-axis methodology audit
+- [Cognitive Memory for AI Agents: Beyond RAG](https://agentos.sh/en/blog/cognitive-memory-beyond-rag) — the 8 neuroscience-backed mechanisms behind the retrieval stack
 
 ## References
 
