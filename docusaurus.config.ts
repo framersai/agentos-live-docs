@@ -56,9 +56,12 @@ async function fetchGithubStars(repo: string): Promise<number> {
   }
 }
 
-const githubStars = await fetchGithubStars('framersai/agentos');
+async function buildConfig(): Promise<Config> {
+  const githubStars = await fetchGithubStars('framersai/agentos');
+  return config(githubStars);
+}
 
-const config: Config = {
+const config = (githubStars: number): Config => ({
   title: 'AgentOS — Open-Source TypeScript AI Agent Runtime',
   tagline:
     'Open-source TypeScript runtime for autonomous AI agents — unified graph orchestration, cognitive memory, streaming guardrails, voice pipeline, 21 LLM providers.',
@@ -586,6 +589,6 @@ const config: Config = {
       theme: { light: 'neutral', dark: 'dark' },
     },
   } satisfies Preset.ThemeConfig,
-};
+});
 
-export default config;
+export default buildConfig;
