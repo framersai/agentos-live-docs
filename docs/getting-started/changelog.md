@@ -3,6 +3,36 @@ title: "Changelog"
 sidebar_position: 7
 ---
 
+## <small>0.6.14 (2026-05-05)</small>
+
+* fix: stop saying 'same crises' for paracosm — Event Director is LLM-driven, events diverge per leade ([9fe4930](https://github.com/framersai/agentos/commit/9fe4930))
+* docs(paracosm): two-world-model framing — visual vs structured + open-source-first positioning ([379c013](https://github.com/framersai/agentos/commit/379c013))
+* docs(readme): drop Paracosm-flavored 'turn six' phrasing ([514c48a](https://github.com/framersai/agentos/commit/514c48a))
+
+## <small>0.6.13 (2026-05-05)</small>
+
+* perf(routing): prefer Hermes 70B over 405B for mature tier + expose stream provider/model ([adda611](https://github.com/framersai/agentos/commit/adda611))
+
+## <small>0.6.12 (2026-05-03)</small>
+
+* fix(api): isRetryableError reads httpStatus + matches credit/quota phrases ([52ddad7](https://github.com/framersai/agentos/commit/52ddad7))
+
+## <small>0.6.11 (2026-05-03)</small>
+
+* fix(openrouter): prefix HTTP status in error message so isRetryableError catches 402/429 ([3271ba5](https://github.com/framersai/agentos/commit/3271ba5))
+
+## <small>0.6.10 (2026-05-03)</small>
+
+* fix(openrouter): default max_tokens to 4096 to avoid OR credit-reservation 402 on short prompts ([0a139a9](https://github.com/framersai/agentos/commit/0a139a9))
+
+## <small>0.6.9 (2026-05-03)</small>
+
+* fix(api): strip date suffix when remapping anthropic models to OpenRouter fallback ([6512a50](https://github.com/framersai/agentos/commit/6512a50))
+
+## <small>0.6.8 (2026-05-03)</small>
+
+* fix: route /extensions and /skills to canonical section pages ([369f418](https://github.com/framersai/agentos/commit/369f418))
+
 ## <small>0.6.7 (2026-05-03)</small>
 
 * feat(seo): expand npm metadata — homepage, repository, bugs, richer description and keywords ([860e69a](https://github.com/framersai/agentos/commit/860e69a))

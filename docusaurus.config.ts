@@ -224,9 +224,12 @@ const config: Config = {
                   {
                     id: 'paracosm',
                     entryPoints: [
-                      '../../apps/paracosm/src/engine/index.ts',
-                      '../../apps/paracosm/src/runtime/index.ts',
+                      '../../apps/paracosm/src/index.ts',
+                      '../../apps/paracosm/src/engine/core/state.ts',
                       '../../apps/paracosm/src/engine/compiler/index.ts',
+                      '../../apps/paracosm/src/engine/schema/index.ts',
+                      '../../apps/paracosm/src/runtime/swarm/index.ts',
+                      '../../apps/paracosm/src/engine/digital-twin/index.ts',
                     ],
                     tsconfig: '../../apps/paracosm/tsconfig.build.json',
                     out: 'docs/paracosm',
