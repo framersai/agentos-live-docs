@@ -33,3 +33,6 @@ docs/*-plan-phase*.md
 # Environment
 .env
 .env.local
+
+# macOS
+.DS_Store
