@@ -453,6 +453,7 @@ const config = (githubStars: number): Config => ({
           items: [
             { label: 'Getting Started', to: '/getting-started' },
             { label: 'Memory System', to: '/features/cognitive-memory' },
+            { label: 'HEXACO Personality', to: '/features/hexaco-personality' },
             { label: 'RAG & Vector Storage', to: '/features/rag-memory' },
             { label: 'Vector Scaling', to: '/features/memory-scaling' },
             { label: 'Guardrails', to: '/features/guardrails' },
