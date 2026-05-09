@@ -1093,3 +1093,60 @@ article img {
     display: none !important;
   }
 }
+
+/* -- Mermaid brand variables (paired with src/mermaid-theme.js) ----------- */
+:root {
+  --mer-bg:               #ffffff;
+  --mer-primary-fill:     #eef2ff;
+  --mer-primary-text:     #3730a3;
+  --mer-primary-border:   #6366f1;
+  --mer-secondary-fill:   #f1f5f9;
+  --mer-secondary-text:   #475569;
+  --mer-line:             #94a3b8;
+  --mer-tertiary:         #f8fafc;
+  --mer-text:             #1e293b;
+
+  --mer-input-fill:       #cffafe;
+  --mer-input-border:     #0891b2;
+  --mer-input-text:       #0e7490;
+  --mer-data-fill:        #fef3c7;
+  --mer-data-border:      #f59e0b;
+  --mer-data-text:        #92400e;
+  --mer-output-fill:      #dcfce7;
+  --mer-output-border:    #10b981;
+  --mer-output-text:      #047857;
+  --mer-warning-fill:     #fee2e2;
+  --mer-warning-border:   #f43f5e;
+  --mer-warning-text:     #9f1239;
+  --mer-external-fill:    #f3e8ff;
+  --mer-external-border:  #8b5cf6;
+  --mer-external-text:    #5b21b6;
+}
+
+[data-theme='dark'] {
+  --mer-bg:               #0f172a;
+  --mer-primary-fill:     #1e1b4b;
+  --mer-primary-text:     #c7d2fe;
+  --mer-primary-border:   #a78bfa;
+  --mer-secondary-fill:   #0b1220;
+  --mer-secondary-text:   #94a3b8;
+  --mer-line:             #475569;
+  --mer-tertiary:         #0f172a;
+  --mer-text:             #e2e8f0;
+
+  --mer-input-fill:       #083344;
+  --mer-input-border:     #22d3ee;
+  --mer-input-text:       #67e8f9;
+  --mer-data-fill:        #451a03;
+  --mer-data-border:      #fbbf24;
+  --mer-data-text:        #fde68a;
+  --mer-output-fill:      #052e16;
+  --mer-output-border:    #34d399;
+  --mer-output-text:      #86efac;
+  --mer-warning-fill:     #450a0a;
+  --mer-warning-border:   #fb7185;
+  --mer-warning-text:     #fda4af;
+  --mer-external-fill:    #2e1065;
+  --mer-external-border:  #c4b5fd;
+  --mer-external-text:    #ddd6fe;
+}

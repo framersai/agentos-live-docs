@@ -79,6 +79,7 @@ const config = (githubStars: number): Config => ({
   },
   onBrokenLinks: guidesOnly ? 'ignore' : strictDocs ? 'throw' : 'warn',
   clientModules: [
+    require.resolve('./src/mermaid-theme.js'),
     require.resolve('./src/mermaid-zoom.js'),
     require.resolve('./src/logo-scroll-to-top.js'),
   ],
@@ -587,7 +588,27 @@ const config = (githubStars: number): Config => ({
       respectPrefersColorScheme: false,
     },
     mermaid: {
-      theme: { light: 'neutral', dark: 'dark' },
+      // base + themeVariables lets us drive Mermaid colors from brand tokens.
+      // src/mermaid-theme.js (clientModule) post-processes rendered SVGs to
+      // swap brand hex values for var(--mer-*) so the diagrams follow the
+      // Docusaurus color-mode toggle without forcing a re-render.
+      theme: { light: 'base', dark: 'base' },
+      options: {
+        themeVariables: {
+          primaryColor: '#eef2ff',
+          primaryTextColor: '#3730a3',
+          primaryBorderColor: '#6366f1',
+          secondaryColor: '#f1f5f9',
+          secondaryTextColor: '#475569',
+          secondaryBorderColor: '#94a3b8',
+          tertiaryColor: '#f8fafc',
+          lineColor: '#94a3b8',
+          textColor: '#1e293b',
+          mainBkg: '#ffffff',
+          fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
+          fontSize: '13px',
+        },
+      },
     },
   } satisfies Preset.ThemeConfig,
 });
