@@ -7,7 +7,7 @@ Ask an agent "what's 2+2" and it should answer instantly. Ask it "what are the l
 
 The problem: most agents treat both queries the same way. Either they web-search everything (slow, wasteful) or they never search at all (hallucinate freely).
 
-Wunderland solves this with an LLM-as-judge classifier that runs _before_ the main LLM turn. A cheap, fast model (gpt-4o-mini, claude-haiku, or qwen2.5:3b) inspects the query and assigns a research depth tier. The agent then behaves accordingly.
+AgentOS solves this with an LLM-as-judge classifier that runs _before_ the main LLM turn. A cheap, fast model (gpt-4o-mini, claude-haiku, or qwen2.5:3b) inspects the query and assigns a research depth tier. The agent then behaves accordingly.
 
 ## Research Depth Tiers
 
@@ -61,6 +61,24 @@ Phase 2 iterates. Each iteration searches, extracts, analyzes gaps, and optional
 | `deep`     | 6                  | 50           | 25              | 20            | 9 min      |
 
 A `ResearchBudgetTracker` enforces hard caps on all dimensions. When any budget is exhausted, the engine moves to synthesis with whatever findings it has.
+
+## Verifying the Citations
+
+Phase 3 emits the synthesized report with inline citations to the sources discovered during Phase 2 — but the citations themselves still need to be checked against the source material. AgentOS ships a built-in [Citation Verification](/features/citation-verification) layer that decomposes the report into atomic claims and scores each one against the retrieved sources via cosine similarity:
+
+| Verdict        | Cosine Similarity | Meaning                                                                    |
+| -------------- | ----------------- | -------------------------------------------------------------------------- |
+| `supported`    | ≥ 0.6             | Claim semantically matches a source                                        |
+| `weak`         | 0.3 – 0.6         | Partial match, lower confidence                                            |
+| `unverifiable` | < 0.3             | No source matches; optional `fact_check` web-search fallback can recover it |
+| `contradicted` | NLI               | Source contradicts the claim                                               |
+
+Two ways to wire it in around `deep_research`:
+
+- **Automatic** — set `verifyCitations: true` on `QueryRouter`. When the route retrieves source chunks and an embedding path is active, per-claim verdicts ship back on `QueryResult.grounding`.
+- **Host-managed** — call `CitationVerifier` from `@framers/agentos` directly after synthesis, passing the report text and the extracted source content. Useful when you're orchestrating the research loop yourself outside the router.
+
+See [Citation Verification](/features/citation-verification) for the full API, NLI contradiction checks, and web-search fallback behavior.
 
 ## LLM-as-Judge Auto-Classifier
 
@@ -192,6 +210,7 @@ Setting `minDepthToInject: "moderate"` means queries classified as `quick` are a
 
 ## Related
 
+- [Citation Verification](/features/citation-verification) -- Per-claim verdict ladder over the synthesized report
 - [HTTP Streaming API](/architecture/http-streaming-api) -- SSE protocol for progress events
 - [Chat Server](/architecture/chat-server) -- HTTP API reference
 - [Tools](/architecture/tools) -- Full tool catalog

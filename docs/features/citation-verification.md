@@ -119,7 +119,24 @@ flows:
 
 - call `CitationVerifier` directly after generation
 - call the `verify_citations` tool from an agent workflow
-- wire citation verification in your own host/runtime around deep research or synthesis
+- wire it into your own host/runtime around `deep_research` synthesis (see below)
+
+### Deep Research Synthesis
+
+[Deep Research](/features/deep-research) emits a synthesized report with inline
+citations to every source it discovered during search and extraction. The
+verifier closes the loop on that report by decomposing it into atomic claims
+and scoring each against the retrieved sources — turning "the model cited it"
+into "the source actually says it."
+
+Two integration paths:
+
+- **Automatic via QueryRouter** — set `verifyCitations: true` and the router
+  attaches per-claim verdicts to `QueryResult.grounding` whenever the route
+  retrieves source chunks.
+- **Host-managed** — call `CitationVerifier.verify(report, sources)` directly
+  after `deep_research` resolves, mapping the engine's extracted source
+  content into `VerificationSource` shape.
 
 ### On-Demand (via Tool)
 
@@ -179,5 +196,5 @@ For higher quality extraction, install `@framers/agentos-ext-grounding-guard` wh
 
 - [Grounding Guard](/extensions/built-in/grounding-guard) — real-time NLI streaming verification (guardrail)
 - [Reranker Chain](/features/reranker-chain) — multi-stage result ranking before citation
-- [Deep Research](/features/deep-research) — common place to add host-managed citation verification on synthesis
+- [Deep Research](/features/deep-research) — multi-source research pipeline whose synthesized report feeds directly into the verifier
 - [Content Policy Rewriter](/extensions/built-in/content-policy-rewriter) — content filtering guardrail
