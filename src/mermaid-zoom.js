@@ -107,11 +107,14 @@ if (typeof window !== 'undefined') {
     toolbar.append(zoomOut, zoomLabel, zoomIn, resetBtn, sep.cloneNode(), closeBtn);
 
     /* ---- SVG container ---- */
+    /* Background is pinned to prefers-color-scheme (not Docusaurus data-theme)
+     * so it always matches the SVG's own @media (prefers-color-scheme) rules.
+     * Otherwise an SVG rendered in light internals can land on a dark modal
+     * (or vice-versa) when the OS scheme and the Docusaurus toggle disagree. */
     const container = document.createElement('div');
     container.id = 'mermaid-zoom-container';
     Object.assign(container.style, {
       overflow: 'hidden', borderRadius: '12px',
-      background: 'var(--ifm-background-color, #1b1b1d)',
       maxWidth: '95vw', maxHeight: 'calc(90vh - 4rem)',
       width: '100%', cursor: 'grab', position: 'relative',
     });
@@ -256,7 +259,7 @@ if (typeof window !== 'undefined') {
     }
   });
 
-  /* Cursor + hover styles for both diagram surfaces */
+  /* Cursor + hover styles for both diagram surfaces, plus the modal background */
   const style = document.createElement('style');
   style.textContent = `
     .docusaurus-mermaid-container svg,
@@ -273,6 +276,16 @@ if (typeof window !== 'undefined') {
     img[src^="data:image/svg+xml"]:hover {
       opacity: 0.88;
       box-shadow: 0 0 0 2px var(--ifm-color-primary-light, #6366f1);
+    }
+
+    /* Modal canvas background: matches the SVG's own prefers-color-scheme */
+    #mermaid-zoom-container {
+      background: #ffffff;
+    }
+    @media (prefers-color-scheme: dark) {
+      #mermaid-zoom-container {
+        background: #0f172a;
+      }
     }
   `;
   document.head.appendChild(style);
