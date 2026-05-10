@@ -304,12 +304,18 @@ const config = (githubStars: number): Config => ({
           { from: '/architecture/emergent-agency-system', to: '/features/emergent-capabilities' },
           { from: '/architecture/multi-gmi-implementation-plan', to: '/architecture/system-architecture' },
           { from: '/features/cognitive-memory-guide', to: '/features/cognitive-memory' },
-          // Cognitive memory <-> mechanisms aliases. Common variant slugs
-          // resolve to the right page even if a future restructure renames
-          // either canonical URL.
-          { from: '/features/memory-mechanisms', to: '/features/cognitive-mechanisms' },
-          { from: '/features/cognitive-memory-mechanisms', to: '/features/cognitive-memory' },
-          { from: '/features/cognitive-memory-guide-mechanisms', to: '/features/cognitive-mechanisms' },
+          // Memory section consolidation (10 pages → 5). Old URLs redirect to
+          // the merged canonical pages.
+          { from: '/features/cognitive-mechanisms', to: '/features/cognitive-memory#mechanism-implementation-reference' },
+          { from: '/features/memory-mechanisms', to: '/features/cognitive-memory#mechanism-implementation-reference' },
+          { from: '/features/cognitive-memory-mechanisms', to: '/features/cognitive-memory#mechanism-implementation-reference' },
+          { from: '/features/cognitive-memory-guide-mechanisms', to: '/features/cognitive-memory#mechanism-implementation-reference' },
+          { from: '/features/memory-architecture', to: '/features/memory-system-overview' },
+          { from: '/features/memory-architecture-overview', to: '/features/memory-system-overview' },
+          { from: '/features/memory-auto-ingest', to: '/features/memory-operations#auto-ingest-pipeline' },
+          { from: '/features/memory-tools', to: '/features/memory-operations#agent-memory-tools' },
+          { from: '/features/memory-import-export', to: '/features/memory-operations#import-and-export' },
+          { from: '/features/memory-scaling', to: '/features/sql-storage#scaling-path-sqlite--postgres--qdrant' },
           { from: '/docs/CLIENT_SIDE_STORAGE', to: '/features/client-side-storage' },
           { from: '/docs/COST_OPTIMIZATION', to: '/features/cost-optimization' },
           { from: '/docs/ECOSYSTEM', to: '/getting-started/ecosystem' },

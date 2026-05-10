@@ -665,7 +665,7 @@ Located in `memory/mechanisms/`, each mechanism is HEXACO-modulated:
 2. **Before prompt construction**: `assembleForPrompt()` retrieves and formats memory within a token budget
 3. **After response**: `MemoryObserver` feeds the response to the observer buffer for background consolidation
 
-For full details, see [Cognitive Memory](/features/cognitive-memory), [Cognitive Mechanisms](/features/cognitive-mechanisms), and [Memory Architecture](/features/memory-architecture).
+For full details, see [Cognitive Memory](/features/cognitive-memory) (theory + mechanism implementation reference) and the [Memory System Overview](/features/memory-system-overview) (composition, archive, vendor comparison).
 
 ---
 
