@@ -39,34 +39,7 @@ npm install @framers/agentos
 
 Most memory libraries retrieve on every query. AgentOS gates memory through three independent LLM-as-judge classifiers. Trivial queries skip retrieval entirely. Queries that need memory get the right architecture. The right reader handles each category.
 
-```
-                User query
-                    │
-                    ▼
-    ┌─────────────────────────────────────┐
-    │  Stage 1: QueryClassifier            │  ~$0.0001 / query
-    │  Memory needed at all?               │
-    │    T0 / none ──► answer from context, skip retrieval entirely
-    │    T1+ ──► continue to Stage 2       │
-    └─────────────────────────────────────┘
-                    │ (T1+ only)
-                    ▼
-    ┌─────────────────────────────────────┐
-    │  Stage 2: MemoryRouter               │  reuses Stage 1 classifier output
-    │  Which retrieval architecture?       │
-    │    canonical-hybrid · OM-v10 · OM-v11
-    └─────────────────────────────────────┘
-                    │
-                    ▼
-    ┌─────────────────────────────────────┐
-    │  Stage 3: ReaderRouter               │  reuses Stage 1 classifier output
-    │  Which reader tier?                  │
-    │    gpt-4o (TR/SSU) · gpt-5-mini (others)
-    └─────────────────────────────────────┘
-                    │
-                    ▼
-            Grounded answer
-```
+![AgentOS classifier-driven memory pipeline: query enters QueryClassifier (T0 short-circuits), MemoryRouter picks retrieval architecture, canonical-hybrid retrieval (BM25 + dense + RRF + Cohere rerank + 6-signal cognitive composite), ReaderRouter picks the reader model, ReadRouter picks the strategy, grounded answer returns. Background consolidation loop on the same brain.](/img/diagrams/memory-system-overview.svg)
 
 The pipeline costs **one classifier call per query** (Stages 2 and 3 reuse Stage 1 output). The T0 / no-memory gate removes embedding+rerank+reader cost on a substantial fraction of typical agent traffic (greetings, small talk, general knowledge). Per-category dispatch routes the rest to the architecture and reader best-suited to the question type.
 
