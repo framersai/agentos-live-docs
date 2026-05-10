@@ -7,11 +7,11 @@
  *
  * Features:
  * - Click any diagram to open full-screen modal
- * - Default zoom: 150%
+ * - Default zoom: 100%
  * - +/- zoom controls (10% steps, range 50%-400%)
  * - Mouse wheel zoom
  * - Pan with click-drag
- * - Reset button returns to 150%
+ * - Reset button returns to 100%
  * - Close: X button, Escape key, click backdrop
  *
  * Loaded as a Docusaurus clientModule.
@@ -21,7 +21,7 @@
 
 if (typeof window !== 'undefined') {
   let modal = null;
-  let currentZoom = 150;
+  let currentZoom = 100;
   let panX = 0;
   let panY = 0;
   let isPanning = false;
@@ -30,7 +30,7 @@ if (typeof window !== 'undefined') {
 
   const MIN_ZOOM = 50;
   const MAX_ZOOM = 400;
-  const DEFAULT_ZOOM = 150;
+  const DEFAULT_ZOOM = 100;
   const ZOOM_STEP = 10;
 
   function getModal() {
@@ -75,7 +75,7 @@ if (typeof window !== 'undefined') {
       color: '#fff', fontSize: '0.8rem', minWidth: '3.5rem',
       textAlign: 'center', fontFamily: 'monospace',
     });
-    zoomLabel.textContent = '150%';
+    zoomLabel.textContent = '100%';
 
     const zoomIn = document.createElement('button');
     zoomIn.textContent = '+';
@@ -87,7 +87,7 @@ if (typeof window !== 'undefined') {
 
     const resetBtn = document.createElement('button');
     resetBtn.textContent = 'Reset';
-    resetBtn.title = 'Reset to 150%';
+    resetBtn.title = 'Reset to 100%';
     Object.assign(resetBtn.style, { ...btnStyle, marginLeft: '0.25rem' });
     resetBtn.addEventListener('click', () => { setZoom(DEFAULT_ZOOM); panX = 0; panY = 0; applyTransform(); });
     resetBtn.addEventListener('mouseenter', () => resetBtn.style.background = 'rgba(255,255,255,0.2)');
