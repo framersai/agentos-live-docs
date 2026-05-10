@@ -3,6 +3,180 @@ title: "Changelog"
 sidebar_position: 7
 ---
 
+## 0.8.0 (2026-05-10)
+
+* feat!: drop VerifiedResponse.summary, expose formatVerifiedResponse helper ([ca9f5d1](https://github.com/framersai/agentos/commit/ca9f5d1))
+* docs: voice + SEO frontmatter on cognitive-pipeline, cognitive-mechanisms, agency-api ([c12aff6](https://github.com/framersai/agentos/commit/c12aff6))
+* docs: voice rewrite safety-primitives + hexaco SEO keywords ([4b9a980](https://github.com/framersai/agentos/commit/4b9a980))
+
+### BREAKING CHANGE
+
+* VerifiedResponse no longer includes `summary`. Replace
+`result.summary` with `formatVerifiedResponse(result)` from
+`@framers/agentos`.
+
+## <small>0.7.7 (2026-05-10)</small>
+
+* fix(docs): repair 4 stale links to deleted emergent-agency-system + COGNITIVE_MEMORY_GUIDE pages (Wa ([f49b5c7](https://github.com/framersai/agentos/commit/f49b5c7))
+* docs: convert remaining ASCII flows to themed Mermaid (emergent observability, memory data flow, vis ([fad0f1a](https://github.com/framersai/agentos/commit/fad0f1a))
+* docs: drop multi-gmi-collaboration + emergent-agency-system pages (already sidebar-hidden, content c ([41c2282](https://github.com/framersai/agentos/commit/41c2282))
+* docs: drop redundant cognitive-memory-guide; consolidate into cognitive-memory hero. fix 5 inbound l ([45882d2](https://github.com/framersai/agentos/commit/45882d2))
+* docs: GMI hero SVG embed; convert cognitive-pipeline + capability-discovery ASCII to themed Mermaid ([d12c058](https://github.com/framersai/agentos/commit/d12c058))
+* docs: surface SoulLoader across docs (publication-manifest, ARCHITECTURE, EXAMPLES, HIGH_LEVEL_API,  ([4c2a83a](https://github.com/framersai/agentos/commit/4c2a83a))
+* docs: voice rewrite + SEO frontmatter for memory-system-overview, agent-communication, planning-engi ([358123a](https://github.com/framersai/agentos/commit/358123a))
+* docs(cognitive-memory): voice polish - tighten Overview opener, sharpen Encoding/Mastra section titl ([2d91d83](https://github.com/framersai/agentos/commit/2d91d83))
+* docs(emergent-capabilities): voice rewrite of lead - McLuhan epigraph + first-person hook + footgun  ([b4991c2](https://github.com/framersai/agentos/commit/b4991c2))
+* docs(gmi): add reflective close ('what this means in practice') + fix dead link from emergent-agency ([c236a15](https://github.com/framersai/agentos/commit/c236a15))
+* docs(system-architecture): convert all 5 remaining ASCII diagrams - GMI lifecycle (Mermaid stateDiag ([8c831b7](https://github.com/framersai/agentos/commit/8c831b7))
+* docs(system-architecture): voice rewrite of lead - Maslow epigraph + scar-set narrative; tighten GMI ([451e910](https://github.com/framersai/agentos/commit/451e910))
+* seo: add meta descriptions + keywords frontmatter to system-architecture, cognitive-memory, emergent ([35d0009](https://github.com/framersai/agentos/commit/35d0009))
+* Merge branch 'master' of https://github.com/framersai/agentos ([196d3e2](https://github.com/framersai/agentos/commit/196d3e2))
+* refactor!: remove _aliases deprecation shims, canonical paths only ([f76ad47](https://github.com/framersai/agentos/commit/f76ad47))
+
+## <small>0.7.6 (2026-05-10)</small>
+
+* fix(lint): replace require() with static import in soul loader; drop unused eslint-disable directive ([3fa2311](https://github.com/framersai/agentos/commit/3fa2311))
+* docs(agent-communication): bus hero SVG; replace ASCII three-layer stack ([217877c](https://github.com/framersai/agentos/commit/217877c))
+* docs(ecosystem): convert ASCII stack to themed Mermaid ([6bdfdec](https://github.com/framersai/agentos/commit/6bdfdec))
+* docs(emergent-capabilities): forge-loop hero SVG; replace ASCII flow ([e86d805](https://github.com/framersai/agentos/commit/e86d805))
+* docs(memory): convert end-to-end 3-lane ASCII to themed Mermaid (ingest · recall · read) ([0f2e7aa](https://github.com/framersai/agentos/commit/0f2e7aa))
+* docs(memory): convert ingest pipeline to themed Mermaid; flatten 12-table grid to a clean table ([2dd286e](https://github.com/framersai/agentos/commit/2dd286e))
+* docs(memory): three-tier hero SVG; replace ASCII stack ([d958d5a](https://github.com/framersai/agentos/commit/d958d5a))
+* docs(planning-engine): hero SVG; replace ASCII stack ([9604490](https://github.com/framersai/agentos/commit/9604490))
+* docs(recursive-self-building): convert ASCII loop to themed Mermaid ([70ba126](https://github.com/framersai/agentos/commit/70ba126))
+* docs(telephony): convert ASCII media-stream pipeline to themed Mermaid ([f41bf15](https://github.com/framersai/agentos/commit/f41bf15))
+
+## <small>0.7.5 (2026-05-10)</small>
+
+* feat(personas): wire SoulLoader into agent() factory — `soul: 'path' | { content } | { path }` short ([159efe7](https://github.com/framersai/agentos/commit/159efe7))
+* docs: replace deleted blog references with docs links ([46842c1](https://github.com/framersai/agentos/commit/46842c1))
+* docs(memory): memory-system-overview hero SVG; replace 80-line ASCII flow chart ([868344f](https://github.com/framersai/agentos/commit/868344f))
+
+## <small>0.7.4 (2026-05-10)</small>
+
+* Merge branch 'master' of https://github.com/framersai/agentos ([0800773](https://github.com/framersai/agentos/commit/0800773))
+* fix(extensions): point agentos-personas registry at @framers scope ([dad2feb](https://github.com/framersai/agentos/commit/dad2feb))
+
+## <small>0.7.3 (2026-05-10)</small>
+
+* Merge branch 'master' of https://github.com/framersai/agentos ([207253e](https://github.com/framersai/agentos/commit/207253e))
+* feat(personas): add SoulLoader for SOUL.md per-agent identity files (OpenClaw / aaronjmars-soul.md c ([fa5e0aa](https://github.com/framersai/agentos/commit/fa5e0aa))
+
+## <small>0.7.2 (2026-05-10)</small>
+
+* feat(api): policy-aware fallback chain for content_policy refusals ([99131c4](https://github.com/framersai/agentos/commit/99131c4))
+
+## <small>0.7.1 (2026-05-10)</small>
+
+* fix(exports): expose ./memory/* wildcard for backward-compat deep imports ([ee250db](https://github.com/framersai/agentos/commit/ee250db))
+* docs: hoist diagrams to top of cognitive-memory, hexaco, and paracosm pages ([64d45fc](https://github.com/framersai/agentos/commit/64d45fc))
+* docs: regroup guides hierarchy into 20 sections (Concepts, Cognitive Pipeline, Personas, Tools, Capa ([b8cc09e](https://github.com/framersai/agentos/commit/b8cc09e))
+* docs: remove backward-compat hedging from public docs and JSDoc ([db7588f](https://github.com/framersai/agentos/commit/db7588f))
+* docs(architecture): system-architecture hero SVG; replace ASCII layered stack ([23ef7ad](https://github.com/framersai/agentos/commit/23ef7ad))
+
+## 0.7.0 (2026-05-09)
+
+* fix(kernel): apply codemod-driven import path fixes to 32 previously skip-worktree files ([5b019b0](https://github.com/framersai/agentos/commit/5b019b0))
+* merge: integrate origin/master 0.6.30 release ([55206de](https://github.com/framersai/agentos/commit/55206de))
+* feat!: kernel restructure into 7 parent dirs (api, core, orchestration, cognition, io, extensions, safety) ([ecd868f](https://github.com/framersai/agentos/commit/ecd868f))
+* docs: remove dead links to nonexistent extension-loading.md and skills-engine.md ([e11d2c2](https://github.com/framersai/agentos/commit/e11d2c2))
+* kernel: add 16 deprecation aliases + barrel index.ts files + new exports map ([07d4dd0](https://github.com/framersai/agentos/commit/07d4dd0))
+* kernel: add seven parent-dir READMEs as new layout scaffolding ([62e8f40](https://github.com/framersai/agentos/commit/62e8f40))
+* kernel: regroup src/ into 7 parent dirs (api, core, orchestration, cognition, io, extensions, safety ([a361b68](https://github.com/framersai/agentos/commit/a361b68))
+* scripts: add codemod-restructure for kernel reorg import rewrites ([9ce2160](https://github.com/framersai/agentos/commit/9ce2160))
+
+### BREAKING CHANGE
+
+* subpath imports under @framers/agentos/<old-name>
+have been moved to new locations under api/, core/, orchestration/,
+cognition/, io/, extensions/, or safety/. Sixteen specific legacy
+subpaths continue to work in 0.7.x via deprecation aliases that emit
+a one-shot dev-mode console warning. Migrate to the new canonical
+paths before 0.8.0 (where the aliases will be removed).
+
+## <small>0.6.30 (2026-05-09)</small>
+
+* fix(image): normalize null replicate option to undefined in editImage ([f52ebb4](https://github.com/framersai/agentos/commit/f52ebb4))
+
+## <small>0.6.29 (2026-05-09)</small>
+
+* fix(image): respect caller-pinned model on mature/private-adult routing ([00baef3](https://github.com/framersai/agentos/commit/00baef3))
+
+## <small>0.6.28 (2026-05-09)</small>
+
+* fix(memory-reflector): tighten type-classification prompt for 'remember X' inputs ([d6067e3](https://github.com/framersai/agentos/commit/d6067e3))
+* docs(memory): embed SVG diagrams in HEXACO + cognitive memory; reorder Memory sidebar by logical flo ([a9a7bb2](https://github.com/framersai/agentos/commit/a9a7bb2))
+* docs(paracosm): embed world-model split, turn-flow, and divergence SVGs ([5fc71cd](https://github.com/framersai/agentos/commit/5fc71cd))
+
+## <small>0.6.27 (2026-05-07)</small>
+
+* Merge branch 'master' of https://github.com/framersai/agentos ([052ee28](https://github.com/framersai/agentos/commit/052ee28))
+* feat(events): NodeTelemetry adds optional token usage + cost fields ([a72f20c](https://github.com/framersai/agentos/commit/a72f20c))
+
+## <small>0.6.26 (2026-05-07)</small>
+
+* feat(orchestration): plannerConfig.plan accepts pre-generated SimplePlan ([0723be6](https://github.com/framersai/agentos/commit/0723be6))
+* docs(memory): add HEXACO personality guide and surface cognitive memory guide in sidebar ([e81a05e](https://github.com/framersai/agentos/commit/e81a05e))
+* Merge branch 'master' of https://github.com/framersai/agentos ([addb645](https://github.com/framersai/agentos/commit/addb645))
+* test(orchestration): pin parallel-branch telemetry forwarding + compound-goal classifier behaviour ([b3f94dd](https://github.com/framersai/agentos/commit/b3f94dd))
+
+## <small>0.6.25 (2026-05-07)</small>
+
+* Merge branch 'master' of https://github.com/framersai/agentos ([860467b](https://github.com/framersai/agentos/commit/860467b))
+* feat(orchestration): auto-classify goals to plan templates + harden fallback ([d81d47d](https://github.com/framersai/agentos/commit/d81d47d))
+
+## <small>0.6.24 (2026-05-07)</small>
+
+* Merge branch 'master' of https://github.com/framersai/agentos ([0e93a58](https://github.com/framersai/agentos/commit/0e93a58))
+* feat(orchestration): plannerConfig.style routes YAML missions to plan templates ([49720d0](https://github.com/framersai/agentos/commit/49720d0))
+
+## <small>0.6.23 (2026-05-07)</small>
+
+* Merge branch 'master' of https://github.com/framersai/agentos ([7d3e86d](https://github.com/framersai/agentos/commit/7d3e86d))
+* feat(orchestration): per-step maxIterations on stub planner with global ceiling ([b369cd7](https://github.com/framersai/agentos/commit/b369cd7))
+
+## <small>0.6.22 (2026-05-07)</small>
+
+* feat(orchestration): per-node telemetry on node_end events ([67a5aa9](https://github.com/framersai/agentos/commit/67a5aa9))
+* Merge branch 'master' of https://github.com/framersai/agentos ([3a1df1c](https://github.com/framersai/agentos/commit/3a1df1c))
+* build: validate dist imports + fail loudly on partial-build state ([1242012](https://github.com/framersai/agentos/commit/1242012))
+
+## <small>0.6.21 (2026-05-07)</small>
+
+* Merge branch 'master' of https://github.com/framersai/agentos ([5c2e0bb](https://github.com/framersai/agentos/commit/5c2e0bb))
+* feat(orchestration): make image_search firing imperative for visual goals ([0e9d91f](https://github.com/framersai/agentos/commit/0e9d91f))
+
+## <small>0.6.20 (2026-05-07)</small>
+
+* Merge branch 'master' of https://github.com/framersai/agentos ([0089554](https://github.com/framersai/agentos/commit/0089554))
+* fix(orchestration): empty-output fallback in executeGmi when iter limit hits ([899d715](https://github.com/framersai/agentos/commit/899d715))
+
+## <small>0.6.19 (2026-05-07)</small>
+
+* Merge branch 'master' of https://github.com/framersai/agentos ([38a708e](https://github.com/framersai/agentos/commit/38a708e))
+* fix(orchestration): multi-query gather + refine-output step in stub planner ([bf90d40](https://github.com/framersai/agentos/commit/bf90d40))
+
+## <small>0.6.18 (2026-05-07)</small>
+
+* fix(orchestration): goal-aware, phase-distinct stub mission planner ([b6f4007](https://github.com/framersai/agentos/commit/b6f4007))
+* docs(memory): add high-level 'how it connects' summary near top of overview ([92b80b3](https://github.com/framersai/agentos/commit/92b80b3))
+
+## <small>0.6.17 (2026-05-06)</small>
+
+* fix(docs): register MEMORY_SYSTEM_OVERVIEW.md in publication manifest ([5bdc01f](https://github.com/framersai/agentos/commit/5bdc01f))
+* docs: register Wunderland sidebar section + add Wunderland row to README ecosystem ([705ef1a](https://github.com/framersai/agentos/commit/705ef1a))
+
+## <small>0.6.16 (2026-05-06)</small>
+
+* fix(docs): update compileScenario typedoc link path after paracosm regen ([914d202](https://github.com/framersai/agentos/commit/914d202))
+* chore: untrack 25 mars-genesis output fixtures + generalize internal-doc gitignore ([ecba5c3](https://github.com/framersai/agentos/commit/ecba5c3))
+* docs: update paracosm integration surface ([63bb531](https://github.com/framersai/agentos/commit/63bb531))
+* docs(memory): add MEMORY_SYSTEM_OVERVIEW.md study writeup ([3d2a51f](https://github.com/framersai/agentos/commit/3d2a51f))
+
+## <small>0.6.15 (2026-05-06)</small>
+
+* fix(docs): correct multi-channel cookbook imports + adapter API ([0434dd3](https://github.com/framersai/agentos/commit/0434dd3))
+
 ## <small>0.6.14 (2026-05-05)</small>
 
 * fix: stop saying 'same crises' for paracosm — Event Director is LLM-driven, events diverge per leade ([9fe4930](https://github.com/framersai/agentos/commit/9fe4930))

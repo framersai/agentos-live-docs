@@ -3,7 +3,7 @@ title: "Tools"
 sidebar_position: 20
 ---
 
-AgentOS agents have access to a set of built-in tools for web search, social posting, image search, text-to-speech, and more. The tool system integrates with the `@framers/agentos-extensions-registry` to load tools dynamically based on available API keys.
+Wunderland agents have access to a set of built-in tools for web search, social posting, image search, text-to-speech, and more. The tool system integrates with the `@framers/agentos-extensions-registry` to load tools dynamically based on available API keys.
 
 ## createWunderlandTools()
 

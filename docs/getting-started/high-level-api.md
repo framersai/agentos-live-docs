@@ -35,23 +35,20 @@ import {
 | `agent()` | Multi-turn sessions with memory | `const a = agent({ provider: 'openai' })` |
 | `agency()` | Multi-agent teams | `const team = agency({ agents: {...}, strategy: 'parallel' })` |
 
-All functions accept `provider` as a top-level key — no `'openai:gpt-4o'` colon syntax needed (though it still works for backwards compatibility).
+All functions accept `provider` as a top-level key.
 
 ## Provider Resolution
 
 ### Calling Styles
 
-AgentOS supports three styles for specifying provider and model. **Provider-first is recommended:**
+Two styles for specifying provider and model:
 
 ```ts
-// 1. Provider-first (recommended) — AgentOS picks the best default model
+// 1. Provider-first — AgentOS picks the best default model for the task
 await generateText({ provider: 'openai', prompt: '...' });
 
 // 2. Provider + explicit model — full control
 await generateText({ provider: 'anthropic', model: 'claude-sonnet-4-5-20250929', prompt: '...' });
-
-// 3. Legacy colon format — backwards compatible, still works
-await generateText({ model: 'openai:gpt-4o', prompt: '...' });
 ```
 
 ### Provider Defaults
@@ -117,7 +114,7 @@ await generateText({
 ```ts
 import { generateText } from '@framers/agentos';
 
-// Provider-first (recommended): AgentOS picks the default model for the provider.
+// Provider-first: AgentOS picks the default model for the provider.
 const { text, usage } = await generateText({
   provider: 'openai',
   prompt: 'Summarize the TCP three-way handshake in 3 bullets.',
@@ -125,9 +122,6 @@ const { text, usage } = await generateText({
 
 console.log(text);
 console.log(usage.totalTokens);
-
-// Legacy format — still supported:
-// const { text } = await generateText({ model: 'openai:gpt-4.1-mini', prompt: '...' });
 ```
 
 `generateText({ tools })` and `streamText({ tools })` now accept three useful
@@ -525,6 +519,23 @@ console.log(await session.usage());
 `agent({ tools })` accepts the same three forms as `generateText({ tools })`
 and `streamText({ tools })`: named tool maps, `ExternalToolRegistry`
 (`Record`, `Map`, or iterable), and prompt-only `ToolDefinitionForLLM[]`.
+
+### Per-agent identity via SOUL.md
+
+Pass a `soul:` option to load identity, voice, hard limits, and HEXACO scores from a markdown workspace. The runtime injects `SOUL.md` body as the FIRST system message (before `instructions`, `chainOfThought`, or skills) and parses YAML frontmatter into structured persona config.
+
+```ts
+// Workspace path — loads SOUL.md + companion files (STYLE.md, IDENTITY.md, AGENTS.md, MEMORY.md)
+agent({ provider: 'anthropic', soul: '~/.agentos/agents/aria' });
+
+// Direct file path — loads only SOUL.md
+agent({ provider: 'openai', soul: './personas/aria.soul.md' });
+
+// Inline content — for tests and ephemeral agents
+agent({ provider: 'openai', soul: { content: SOUL_MARKDOWN_STRING } });
+```
+
+The HEXACO frontmatter (`hexaco: { honestyHumility, emotionality, ... }`) flows into the same `PersonaDriftMechanism` and `PersonaOverlayManager` as inline `personality:` config. See [SOUL_FILES.md](/features/soul-files) for the full 6-file workspace spec.
 
 Runnable examples in the package source:
 

@@ -1,18 +1,13 @@
 ---
 title: "Deep Research & Query Classification"
 sidebar_position: 3
-description: "Deep research pipeline for AI agents: LLM-as-judge query classifier routes between zero retrieval, single web search, multi-source aggregation, and a full 3-phase decompose-search-synthesize loop with citations and budget caps."
-keywords: [deep research llm, ai agent research pipeline, query classification, llm-as-judge, multi-source research, agent retrieval]
 ---
-
-> "It ain't what you don't know that gets you into trouble. It's what you know for sure that just ain't so."
-> — Mark Twain (attrib.)
 
 Ask an agent "what's 2+2" and it should answer instantly. Ask it "what are the latest treatment options for drug-resistant tuberculosis" and it should go dig through medical literature, cross-reference sources, identify gaps, and come back with citations.
 
-Most agents treat both queries the same way. Either they web-search everything (slow, wasteful, a 7-second trip-to-Google tax on every reply) or they never search at all and start confidently inventing the things they don't know. The second failure mode is louder; the first burns more money.
+The problem: most agents treat both queries the same way. Either they web-search everything (slow, wasteful) or they never search at all (hallucinate freely).
 
-AgentOS gates this with an LLM-as-judge classifier that runs *before* the main LLM turn. A cheap, fast model — `gpt-4o-mini`, `claude-haiku`, or `qwen2.5:3b` — inspects the query and assigns one of four research depth tiers: `none`, `quick`, `moderate`, or `deep`. The agent behaves accordingly: zero overhead on greetings, one web call on weather, full multi-source decomposition on lung-cancer treatment options. Classification adds 200–400ms to the turn and caches per query.
+Wunderland solves this with an LLM-as-judge classifier that runs _before_ the main LLM turn. A cheap, fast model (gpt-4o-mini, claude-haiku, or qwen2.5:3b) inspects the query and assigns a research depth tier. The agent then behaves accordingly.
 
 ## Research Depth Tiers
 

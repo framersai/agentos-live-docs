@@ -1,6 +1,6 @@
 ---
 title: "Qdrant Backend"
-sidebar_position: 14
+sidebar_position: 16
 ---
 
 The Qdrant backend stores embeddings in [Qdrant](https://qdrant.tech/), a purpose-built vector database with built-in BM25 sparse vectors for hybrid search. Non-vector data (knowledge graph, document metadata) lives in a sidecar SQLite file alongside Qdrant. Qdrant is the default OSS production recommendation for AgentOS.
@@ -35,7 +35,7 @@ Port 6333 is the HTTP API; 6334 is gRPC (optional).
 3. Configure:
 
 ```typescript
-import { QdrantVectorStore } from '@framers/agentos/rag/implementations/vector_stores/QdrantVectorStore';
+import { QdrantVectorStore } from '@framers/agentos/cognition/rag/implementations/vector_stores/QdrantVectorStore';
 
 const store = new QdrantVectorStore({
   id: 'my-qdrant',

@@ -1,6 +1,8 @@
 ---
 title: "Cognitive Memory"
 sidebar_position: 3
+description: "Cognitive memory for AI agents: Ebbinghaus decay, HEXACO-modulated encoding, Baddeley working memory, ACT-R spreading activation, 8 neuroscience-grounded mechanisms. 85.6% on LongMemEval-S, 70.2% on LongMemEval-M."
+keywords: [cognitive memory ai, llm memory architecture, ebbinghaus decay, hexaco personality, baddeley working memory, longmemeval, agent memory, semantic memory, episodic memory]
 ---
 
 > **Memory benchmarks (full N=500, gpt-4o reader):** **85.6% on LongMemEval-S** at $0.0090 per correct, **+1.4 points above Mastra Observational Memory (84.23%)**. **70.2% on LongMemEval-M** on the 1.5M-token / 500-session haystack variant — the only open-source library on the public record above 65% on M with publicly reproducible methodology. Competitive with the strongest published M results in the LongMemEval paper ([Wu et al., ICLR 2025](https://arxiv.org/abs/2410.10813): round Top-5 65.7%, session Top-5 71.4%, round Top-10 72.0%). [Benchmarks](https://docs.agentos.sh/benchmarks) · [Run JSONs](https://github.com/framersai/agentos-bench/tree/master/results/runs) · [SOTA writeup](https://agentos.sh/en/blog/agentos-memory-sota-longmemeval/)
@@ -8,6 +10,8 @@ sidebar_position: 3
 :::tip See also
 [HEXACO Personality](/features/hexaco-personality) for the trait-by-trait reference covering encoding weights, working-memory capacity, prompt formatting, observer/reflector bias, and runtime self-modification.
 :::
+
+![CognitiveMemoryManager architecture: orchestrator dispatches to 8 subsystems, each backed by its substrate](/img/diagrams/cognitive-memory-architecture.svg)
 
 ---
 
@@ -27,9 +31,7 @@ The result is a memory that behaves more like a person remembering. The agent fo
 On top of the encoding/decay/retrieval substrate, the runtime ships eight optional neuroscience-grounded mechanisms — reconsolidation, retrieval-induced forgetting, involuntary recall, metacognitive feeling-of-knowing, temporal gist, schema encoding, source-confidence decay, and emotion regulation. All HEXACO-personality-modulated and individually configurable via `cognitiveMechanisms` on `CognitiveMemoryConfig`. See the [Cognitive Mechanisms Implementation Guide](/features/cognitive-mechanisms) for hook points, APIs, and testing.
 :::
 
-## Overview
-
-The Cognitive Memory System models memory as a dynamic, personality-modulated process rather than a flat key-value store:
+## What it actually does, in five lines
 
 - **Encoding** is shaped by the agent's HEXACO personality traits and current emotional state (PAD model: valence, arousal, dominance)
 - **Forgetting** follows the Ebbinghaus exponential decay curve, with retrieval-induced reinforcement via spaced repetition
@@ -37,7 +39,7 @@ The Cognitive Memory System models memory as a dynamic, personality-modulated pr
 - **Working memory** enforces Baddeley's slot-based capacity limits (7±2), modulated by traits
 - **Consolidation** runs periodically to prune weak traces, merge clusters into schemas, resolve contradictions, and feed observations back into long-term storage
 
-The system is composable. Core encoding/decay/retrieval (Batch 1) runs without any LLM calls. Advanced features (Batch 2 — observer, reflector, graph, consolidation) activate automatically when their config is provided and degrade gracefully when absent. You can run the entire stack against a local SQLite + HNSW backend, or scale it to Postgres + Neo4j without changing any callsite.
+Core encoding / decay / retrieval runs without any LLM calls. The optional Batch-2 layer (observer, reflector, graph, consolidation) activates when its config is wired in and falls through gracefully when it isn't. Same code runs over local SQLite + HNSW or against Postgres + Neo4j — no callsite changes.
 
 ### Cognitive science foundations
 
@@ -64,8 +66,6 @@ Each model below has a one-to-one analogue in the source. The point of the table
 ---
 
 ## Architecture
-
-![CognitiveMemoryManager architecture: orchestrator dispatches to 8 subsystems, each backed by its substrate](/img/diagrams/cognitive-memory-architecture.svg)
 
 **Per-turn data flow (GMI integration):**
 
@@ -133,7 +133,7 @@ Source types: `user_statement`, `agent_inference`, `tool_result`, `observation`,
 
 Source: `src/memory/core/encoding/EncodingModel.ts`
 
-Encoding determines **how strongly** a new input is committed to memory. The system combines four cognitive mechanisms:
+Encoding decides **how hard a new trace gets stamped in**. Four cognitive mechanisms compose into one strength score:
 
 ### 1. HEXACO Personality -> Encoding Weights
 
@@ -796,9 +796,9 @@ await cognitiveMemory.observe('user', userMessage, mood);
 
 ---
 
-## Comparison with Mastra
+## What's missing from flat-vector memory (vs. Mastra)
 
-The Cognitive Memory System addresses 12 limitations in Mastra's memory architecture:
+Twelve specific gaps in Mastra's memory architecture that the cognitive memory layer fills. Each row maps to a paper, a primitive, and runtime code:
 
 | # | Mastra Limitation | AgentOS Improvement |
 |---|-------------------|-------------------|
@@ -868,42 +868,43 @@ The runtime constants, formulas, weights, and design decisions in this page are 
 
 ### Cognitive science foundations
 
-- Atkinson, R. C., & Shiffrin, R. M. (1968). *Human memory: A proposed system and its control processes.* In K. W. Spence & J. T. Spence (Eds.), *The psychology of learning and motivation* (Vol. 2, pp. 89–195). Academic Press. — Multi-store memory model. [Wikipedia summary](https://en.wikipedia.org/wiki/Atkinson%E2%80%93Shiffrin_memory_model)
-- Baddeley, A. D., & Hitch, G. (1974). *Working memory.* In G. H. Bower (Ed.), *The psychology of learning and motivation* (Vol. 8, pp. 47–89). Academic Press. — Working memory model with slot-based capacity. [ScienceDirect](https://www.sciencedirect.com/science/article/pii/S0079742108604521)
-- Baddeley, A. D. (2003). *Working memory: Looking back and looking forward.* *Nature Reviews Neuroscience*, 4(10), 829–839. — Updated synthesis. [DOI](https://doi.org/10.1038/nrn1201)
-- Tulving, E. (1972). *Episodic and semantic memory.* In E. Tulving & W. Donaldson (Eds.), *Organization of memory* (pp. 381–403). Academic Press. — LTM taxonomy (episodic / semantic / procedural). [APA PsycNet](https://psycnet.apa.org/record/1973-08477-001)
-- Ebbinghaus, H. (1885). *Über das Gedächtnis: Untersuchungen zur experimentellen Psychologie* (English: *Memory: A Contribution to Experimental Psychology*, 1913 trans. Ruger & Bussenius). Duncker & Humblot. — The original forgetting curve `S(t) = S₀ · e^(-Δt / stability)`. [Project Gutenberg (1913 trans.)](https://www.gutenberg.org/files/55518/55518-h/55518-h.htm)
-- Yerkes, R. M., & Dodson, J. D. (1908). *The relation of strength of stimulus to rapidity of habit-formation.* *Journal of Comparative Neurology and Psychology*, 18(5), 459–482. — Inverted-U arousal curve. [Wiley](https://onlinelibrary.wiley.com/doi/abs/10.1002/cne.920180503)
-- Brown, R., & Kulik, J. (1977). *Flashbulb memories.* *Cognition*, 5(1), 73–99. — Flashbulb memory phenomenon. [APA PsycNet](https://psycnet.apa.org/record/1977-29748-001)
-- Bower, G. H. (1981). *Mood and memory.* *American Psychologist*, 36(2), 129–148. — Mood-congruent encoding. [APA DOI](https://doi.org/10.1037/0003-066X.36.2.129)
-- Anderson, J. R. (1983). *A spreading activation theory of memory.* *Journal of Verbal Learning and Verbal Behavior*, 22(3), 261–295. — ACT-R spreading activation. [APA PsycNet](https://psycnet.apa.org/record/1984-00248-001) · [ACT-R home](https://act-r.psy.cmu.edu/)
-- Hebb, D. O. (1949). *The Organization of Behavior: A Neuropsychological Theory.* Wiley. — "Cells that fire together, wire together." [Wikipedia summary](https://en.wikipedia.org/wiki/Organization_of_Behavior)
-- Johnson, M. K., Hashtroudi, S., & Lindsay, D. S. (1993). *Source monitoring.* *Psychological Bulletin*, 114(1), 3–28. — Source-monitoring framework underpinning the per-source decay multipliers. [APA PsycNet](https://psycnet.apa.org/record/1993-18254-001)
+- Atkinson, R. C., & Shiffrin, R. M. (1968). [*Human memory: A proposed system and its control processes.*](https://en.wikipedia.org/wiki/Atkinson%E2%80%93Shiffrin_memory_model) In K. W. Spence & J. T. Spence (Eds.), *The psychology of learning and motivation* (Vol. 2, pp. 89–195). Academic Press. — Multi-store memory model.
+- Baddeley, A. D., & Hitch, G. (1974). [*Working memory.*](https://www.sciencedirect.com/science/article/pii/S0079742108604521) In G. H. Bower (Ed.), *The psychology of learning and motivation* (Vol. 8, pp. 47–89). Academic Press. — Working memory model with slot-based capacity.
+- Baddeley, A. D. (2003). [*Working memory: Looking back and looking forward.*](https://doi.org/10.1038/nrn1201) *Nature Reviews Neuroscience*, 4(10), 829–839. — Updated synthesis.
+- Tulving, E. (1972). [*Episodic and semantic memory.*](https://psycnet.apa.org/record/1973-08477-001) In E. Tulving & W. Donaldson (Eds.), *Organization of memory* (pp. 381–403). Academic Press. — LTM taxonomy (episodic / semantic / procedural).
+- Ebbinghaus, H. (1885). [*Über das Gedächtnis: Untersuchungen zur experimentellen Psychologie*](https://www.gutenberg.org/files/55518/55518-h/55518-h.htm) (English: *Memory: A Contribution to Experimental Psychology*, 1913 trans. Ruger & Bussenius). Duncker & Humblot. — The original forgetting curve `S(t) = S₀ · e^(-Δt / stability)`.
+- Yerkes, R. M., & Dodson, J. D. (1908). [*The relation of strength of stimulus to rapidity of habit-formation.*](https://onlinelibrary.wiley.com/doi/abs/10.1002/cne.920180503) *Journal of Comparative Neurology and Psychology*, 18(5), 459–482. — Inverted-U arousal curve.
+- Brown, R., & Kulik, J. (1977). [*Flashbulb memories.*](https://psycnet.apa.org/record/1977-29748-001) *Cognition*, 5(1), 73–99. — Flashbulb memory phenomenon.
+- Bower, G. H. (1981). [*Mood and memory.*](https://doi.org/10.1037/0003-066X.36.2.129) *American Psychologist*, 36(2), 129–148. — Mood-congruent encoding.
+- Anderson, J. R. (1983). [*A spreading activation theory of memory.*](https://psycnet.apa.org/record/1984-00248-001) *Journal of Verbal Learning and Verbal Behavior*, 22(3), 261–295. — ACT-R spreading activation. See also the [ACT-R home page](https://act-r.psy.cmu.edu/).
+- Hebb, D. O. (1949). [*The Organization of Behavior: A Neuropsychological Theory.*](https://en.wikipedia.org/wiki/Organization_of_Behavior) Wiley. — "Cells that fire together, wire together."
+- Johnson, M. K., Hashtroudi, S., & Lindsay, D. S. (1993). [*Source monitoring.*](https://psycnet.apa.org/record/1993-18254-001) *Psychological Bulletin*, 114(1), 3–28. — Source-monitoring framework underpinning the per-source decay multipliers.
 
 ### Personality structure
 
-- Ashton, M. C., & Lee, K. (2007). *Empirical, theoretical, and practical advantages of the HEXACO model of personality structure.* *Personality and Social Psychology Review*, 11(2), 150–166. — HEXACO six-factor model. [SAGE Journals](https://journals.sagepub.com/doi/10.1207/S15327957PSPR0701_2)
+- Ashton, M. C., & Lee, K. (2007). [*Empirical, theoretical, and practical advantages of the HEXACO model of personality structure.*](https://journals.sagepub.com/doi/10.1207/S15327957PSPR0701_2) *Personality and Social Psychology Review*, 11(2), 150–166. — HEXACO six-factor model.
 
 ### Retrieval-augmented generation
 
-- Gao, L., Ma, X., Lin, J., & Callan, J. (2022). *Precise zero-shot dense retrieval without relevance labels.* arXiv preprint. — HyDE retrieval. [arXiv:2212.10496](https://arxiv.org/abs/2212.10496)
-- Edge, D., Trinh, H., Cheng, N., Bradley, J., Chao, A., Mody, A., Truitt, S., & Larson, J. (2024). *From local to global: A graph RAG approach to query-focused summarization.* arXiv preprint. — Microsoft GraphRAG. [arXiv:2404.16130](https://arxiv.org/abs/2404.16130)
+- Gao, L., Ma, X., Lin, J., & Callan, J. (2022). [*Precise zero-shot dense retrieval without relevance labels.*](https://arxiv.org/abs/2212.10496) arXiv:2212.10496. — HyDE retrieval (opt-in; see [HyDE Retrieval](/features/hyde-retrieval) for when it helps).
+- Lei, F., et al. (2025). [*Never come up empty: Adaptive HyDE retrieval for improving LLM developer support.*](https://arxiv.org/abs/2507.16754) arXiv:2507.16754. — Adaptive HyDE thresholding on a 3M-post Stack Overflow corpus.
+- Edge, D., Trinh, H., Cheng, N., Bradley, J., Chao, A., Mody, A., Truitt, S., & Larson, J. (2024). [*From local to global: A graph RAG approach to query-focused summarization.*](https://arxiv.org/abs/2404.16130) arXiv:2404.16130. — Microsoft GraphRAG.
 
 ### Cognitive architectures for language agents
 
-- Park, J. S., O'Brien, J. C., Cai, C. J., Morris, M. R., Liang, P., & Bernstein, M. S. (2023). *Generative agents: Interactive simulacra of human behavior.* arXiv preprint. — Smallville generative agents — the canonical "persona + memory + reflection" demo. [arXiv:2304.03442](https://arxiv.org/abs/2304.03442)
-- Sumers, T. R., Yao, S., Narasimhan, K., & Griffiths, T. L. (2023). *Cognitive architectures for language agents.* arXiv preprint. — CoALA framework that AgentOS's memory taxonomy follows. [arXiv:2309.02427](https://arxiv.org/abs/2309.02427)
+- Park, J. S., O'Brien, J. C., Cai, C. J., Morris, M. R., Liang, P., & Bernstein, M. S. (2023). [*Generative agents: Interactive simulacra of human behavior.*](https://arxiv.org/abs/2304.03442) arXiv:2304.03442. — Smallville generative agents; the canonical "persona + memory + reflection" demo.
+- Sumers, T. R., Yao, S., Narasimhan, K., & Griffiths, T. L. (2023). [*Cognitive architectures for language agents.*](https://arxiv.org/abs/2309.02427) arXiv:2309.02427. — CoALA framework that AgentOS's memory taxonomy follows.
 
 ### Benchmarks
 
-- Wu, D., Wang, J., Hu, P., et al. (2024). *LongMemEval: Benchmarking chat assistants on long-term interactive memory.* ICLR 2025. — The benchmark agentos-bench reports against. [arXiv:2410.10813](https://arxiv.org/abs/2410.10813)
+- Wu, D., Wang, J., Hu, P., et al. (2024). [*LongMemEval: Benchmarking chat assistants on long-term interactive memory.*](https://arxiv.org/abs/2410.10813) ICLR 2025. — The benchmark agentos-bench reports against.
 
 ### Implementation references
 
 Source files cited inline:
 
-- `packages/agentos/src/memory/CognitiveMemoryManager.ts` — top-level orchestrator
-- `packages/agentos/src/memory/core/decay/DecayModel.ts` — Ebbinghaus formula + spaced repetition
-- `packages/agentos/src/memory/mechanisms/defaults.ts` — eight cognitive mechanism defaults
-- `packages/agentos/src/memory/retrieval/hyde/MemoryHydeRetriever.ts` — HyDE retriever
-- `packages/agentos/src/memory/retrieval/graph/graphrag/GraphRAGEngine.ts` — GraphRAG implementation
+- [`packages/agentos/src/memory/CognitiveMemoryManager.ts`](https://github.com/framersai/agentos/blob/master/src/memory/CognitiveMemoryManager.ts) — top-level orchestrator
+- [`packages/agentos/src/memory/core/decay/DecayModel.ts`](https://github.com/framersai/agentos/blob/master/src/memory/core/decay/DecayModel.ts) — Ebbinghaus formula + spaced repetition
+- [`packages/agentos/src/memory/mechanisms/defaults.ts`](https://github.com/framersai/agentos/blob/master/src/memory/mechanisms/defaults.ts) — eight cognitive mechanism defaults
+- [`packages/agentos/src/memory/retrieval/hyde/MemoryHydeRetriever.ts`](https://github.com/framersai/agentos/blob/master/src/memory/retrieval/hyde/MemoryHydeRetriever.ts) — HyDE retriever
+- [`packages/agentos/src/memory/retrieval/graph/graphrag/GraphRAGEngine.ts`](https://github.com/framersai/agentos/blob/master/src/memory/retrieval/graph/graphrag/GraphRAGEngine.ts) — GraphRAG implementation

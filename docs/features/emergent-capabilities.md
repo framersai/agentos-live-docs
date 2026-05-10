@@ -1,11 +1,18 @@
 ---
 title: "Emergent Capabilities"
 sidebar_position: 2
+description: "Runtime tool forging for AI agents: AgentOS lets agents generate, sandbox, judge-approve, and register new Zod-typed tools mid-decision in a hardened node:vm. Multi-agent spawn_specialist included."
+keywords: [runtime tool forging, ai agent self-improvement, emergent capabilities llm, sandboxed code generation, node:vm sandbox, llm-as-judge, spawn specialist, multi-agent collaboration]
 ---
 
-Agents with `emergent: true` can forge new tools at runtime when no existing capability fits the task. The agent calls the [`forge_tool`](/api/classes/ForgeToolMetaTool) meta-tool, which builds, tests, and judge-reviews the tool before making it available. The system is implemented across three core classes: [`EmergentCapabilityEngine`](/api/classes/EmergentCapabilityEngine), [`EmergentJudge`](/api/classes/EmergentJudge), and [`EmergentToolRegistry`](/api/classes/EmergentToolRegistry).
+> "We shape our tools, and thereafter our tools shape us."
+> — John Culkin (popularizing McLuhan), 1967
 
-Important: emergent tooling is a full runtime capability. Use `new AgentOS()` or another full runtime entry point that initializes `ToolOrchestrator` with emergent support. The lightweight `agent()` helper accepts `emergent` config for compatibility, but it does not activate `forge_tool` by itself.
+The most useful tools in some of my agent runs weren't ones I shipped. They were tools the agent decided it needed and built itself, mid-decision — sandboxed, judge-approved, then promoted into the catalog so the next turn could call them by name.
+
+Agents with `emergent: true` get the [`forge_tool`](/api/classes/ForgeToolMetaTool) meta-tool. When the agent hits a task no existing capability covers, it composes a candidate (or sandboxes new code), runs declared test cases against it, sends the result through a separate LLM-as-judge that scores code safety / test correctness / determinism, and on approval registers the new tool at session tier. Three classes do the work: [`EmergentCapabilityEngine`](/api/classes/EmergentCapabilityEngine), [`EmergentJudge`](/api/classes/EmergentJudge), and [`EmergentToolRegistry`](/api/classes/EmergentToolRegistry).
+
+One footgun before you wire it up: emergent tooling is a full-runtime capability. Use `new AgentOS()` or another full runtime entry point that initializes `ToolOrchestrator` with emergent support. The lightweight `agent()` helper accepts `emergent: true` for config compatibility but won't activate `forge_tool` by itself — that's a quiet failure mode worth knowing.
 
 ## Live run: a manager spawns a specialist mid-task
 
@@ -37,34 +44,7 @@ const agent = await AgentOS.create({
 
 ## How It Works
 
-```
- Agent calls forge_tool
-        │
-        ▼
- ┌─── Build ───┐
- │ compose? → ComposableToolBuilder (chains existing tools)
- │ sandbox? → SandboxedToolForge (hardened node:vm context via CodeSandbox)
- └──────┬──────┘
-        │
-        ▼
- ┌─── Test ────┐
- │ Run test cases against the built tool
- │ Validate output matches declared schema
- └──────┬──────┘
-        │
-        ▼
- ┌─── Judge ───┐
- │ LLM-as-judge reviews code safety,
- │ test correctness, and determinism
- └──────┬──────┘
-        │
-   approved? ──No──→ Rejected (reason returned to agent)
-        │
-       Yes
-        │
-        ▼
- Registered at session tier → ready to use
-```
+![forge_tool runtime forging loop: agent calls forge_tool, the Build stage offers two creation modes (compose chains existing tools via ComposableToolBuilder; sandbox runs new code in a hardened node:vm via SandboxedToolForge), the Test stage runs declared test cases and validates output against the tool's schema, the Judge stage runs an LLM-as-judge over code safety, test correctness, and determinism, and on approval the tool is registered at the session tier — otherwise the rejection reason is returned to the agent.](/img/diagrams/emergent-capabilities-forge-loop.svg)
 
 ## Two Creation Modes
 
@@ -335,50 +315,23 @@ session ──(5+ uses, >0.8 confidence, panel approved)──→ agent ──(h
 
 The forge pipeline ships with a five-utility observability layer under `@framers/agentos/emergent` so any consumer can see live forge health without re-implementing the instrumentation. Each utility is standalone, pure, and composes with whatever telemetry the host already has.
 
-```
- forge_tool invocation
-        │
-        ▼
- ┌────────────────────────────────────────┐
- │  wrapForgeTool                         │
- │  · JSON-parse stringified schemas      │
- │  · normalize mode synonyms             │
- │  · backstop required fields            │
- │  · scope-tag every attempt             │
- └────────────┬───────────────────────────┘
-              │
-              ▼
- ┌────────────────────────────────────────┐
- │  inferSchemaFromTestCases              │
- │  · synthesize inputSchema.properties   │
- │    from testCase inputs when missing   │
- │  · same for outputSchema               │
- └────────────┬───────────────────────────┘
-              │
-              ▼
- ┌────────────────────────────────────────┐
- │  validateForgeShape (pre-judge)        │
- │  · empty schema properties → reject    │
- │  · <2 testCases → reject               │
- │  · empty-input testCases → reject      │
- │  rejection short-circuits the judge    │
- └────────────┬───────────────────────────┘
-              │
-              ▼
-     EmergentJudge (unchanged)
-              │
-              ▼
- ┌────────────────────────────────────────┐
- │  capture callback (one per attempt)    │
- │    ForgeStatsAggregator.recordAttempt  │
- │      · uniqueNames / uniqueApproved    │
- │      · uniqueTerminalRejections        │
- │      · classifyForgeRejection          │
- │        → rejectionReasons histogram    │
- └────────────┬───────────────────────────┘
-              │
-              ▼
-      snapshot()  →  host telemetry
+```mermaid
+flowchart TD
+    Inv["forge_tool invocation"]:::input
+    Wrap["wrapForgeTool<br/><i>JSON-parse · normalize modes · backstop fields · scope-tag</i>"]:::process
+    Infer["inferSchemaFromTestCases<br/><i>synthesize inputSchema/outputSchema from test inputs</i>"]:::process
+    Shape["validateForgeShape (pre-judge)<br/><i>empty props · &lt; 2 testCases · empty-input → reject</i>"]:::warning
+    Judge["EmergentJudge"]:::process
+    Capture["capture callback<br/><i>ForgeStatsAggregator · classifyForgeRejection</i>"]:::data
+    Snap["snapshot() → host telemetry"]:::output
+
+    Inv --> Wrap --> Infer --> Shape --> Judge --> Capture --> Snap
+
+    classDef input fill:#cffafe,stroke:#0891b2,color:#0e7490
+    classDef process fill:#eef2ff,stroke:#6366f1,color:#3730a3
+    classDef warning fill:#fee2e2,stroke:#f43f5e,color:#9f1239
+    classDef data fill:#fef3c7,stroke:#f59e0b,color:#92400e
+    classDef output fill:#dcfce7,stroke:#10b981,color:#047857
 ```
 
 ### API surface

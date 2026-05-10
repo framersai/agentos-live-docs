@@ -1,65 +1,42 @@
 ---
 title: "Safety Primitives"
 sidebar_position: 3
+description: "Six operational safety primitives that wrap every AgentOS LLM call: killswitch, cost guard, circuit breaker, stuck detection, action audit log. Prevent runaway loops, money fires, and zombie agents — independently or as one guard chain via wrapLLMCallback()."
+keywords: [agent safety, llm circuit breaker, cost guard, stuck detector, agent killswitch, runaway agent, ai cost cap, agentos safety, operational guardrails]
 ---
 
-Operational safety guards that prevent runaway agent loops, excessive spending, and stuck behavior. These are distinct from [Guardrails](/features/guardrails) which handle content safety (toxicity, PII, prompt injection) and **folder-level filesystem permissions**.
+> "An ounce of prevention is worth a pound of cure."
+> — Benjamin Franklin, 1736
 
-:::tip Related Safety Systems
-- **[Guardrails](/features/guardrails)** - Content filtering, PII redaction, and **folder-level permissions** for filesystem access
-- **Safety Primitives** (this page) - Circuit breakers, cost guards, stuck detection, and tool execution timeouts
-:::
+An autonomous agent with LLM access can burn $93 overnight retrying the same failed action 800 times. I have the receipts. A flaky vendor API, a misconfigured retry policy, an output guardrail that silently rejected every attempt — any one of those turns an overnight crawler into a money furnace. The fixes for each are obvious in isolation. The fix for *the class of failure* is a stack of small, independent primitives that wrap every LLM and tool call.
 
-## The Problem
+Six primitives ship in AgentOS. Each is opt-in. Each is stateless across processes (Redis-backed persistence is optional). Each has a default that's safe enough to ship without tuning. Wire them all together via `wrapLLMCallback()` and you get one guard chain that turns *"agent silently runs up a bill"* into *"agent gets paused at $5 with a clear reason in the audit log"*.
 
-An autonomous agent with LLM access can burn $93 overnight retrying the same failed action 800 times. Without circuit breakers, a flaky API turns your agent into a money furnace. Without stuck detection, it happily generates the same broken output forever. Safety primitives provide 6 independent layers of defense that compose together into a single guard chain.
+These are operational guards — they don't read message content. For content-level safety (toxicity, PII, prompt injection, folder-level filesystem permissions) see [Guardrails](/features/guardrails).
 
-## Architecture
+## The chain
 
-```
-Incoming LLM / Tool call
-        |
-        v
-+-------------------+
-| 1. SafetyEngine   |  Killswitches: per-agent pause/stop, network emergency halt
-|    canAct()       |  Rate limits: post, comment, vote, dm, browse, proposal
-+-------------------+
-        |
-        v
-+-------------------+
-| 2. CostGuard      |  Session cap ($1), daily cap ($5), per-operation cap ($0.50)
-|    canAfford()    |
-+-------------------+
-        |
-        v
-+-------------------+
-| 3. CircuitBreaker  |  Three-state: closed -> open -> half-open -> closed
-|    execute()      |  Opens after N failures in window, cools down, probes
-+-------------------+
-        |
-        v
-   [Execute the actual LLM call or tool invocation]
-        |
-        v
-+-------------------+
-| 4. CostGuard      |  Record actual token cost from usage metadata
-|    recordCost()   |
-+-------------------+
-        |
-        v
-+-------------------+
-| 5. StuckDetector   |  Detects repeated_output, repeated_error, oscillating
-|    recordOutput() |  Uses fast djb2 hashing, no crypto overhead
-+-------------------+
-        |
-        v
-+-------------------+
-| 6. ActionAuditLog  |  Ring buffer + optional persistence adapter
-|    log()          |  Every action gets a trail entry with outcome + duration
-+-------------------+
+```mermaid
+flowchart TB
+    Inv["Incoming LLM / Tool call"]:::input
+    SE["1 · SafetyEngine · <tt>canAct()</tt><br/><i>Killswitches (per-agent + emergency network halt)<br/>Rate limits: post · comment · vote · dm · browse · proposal</i>"]:::warning
+    CG1["2 · CostGuard · <tt>canAfford()</tt><br/><i>Session cap ($1) · daily cap ($5) · per-op cap ($0.50)</i>"]:::warning
+    CB["3 · CircuitBreaker · <tt>execute()</tt><br/><i>closed → open → half-open · opens after N failures · cools down · probes</i>"]:::warning
+    Exec["Actual LLM call or tool invocation"]:::process
+    CG2["4 · CostGuard · <tt>recordCost()</tt><br/><i>Records actual token cost from usage metadata</i>"]:::data
+    SD["5 · StuckDetector · <tt>recordOutput()</tt><br/><i>Detects repeated_output · repeated_error · oscillating · fast djb2 hashing</i>"]:::warning
+    AL["6 · ActionAuditLog · <tt>log()</tt><br/><i>Ring buffer + optional persistence · every action gets a trail entry</i>"]:::output
+
+    Inv --> SE --> CG1 --> CB --> Exec --> CG2 --> SD --> AL
+
+    classDef input fill:#cffafe,stroke:#0891b2,color:#0e7490
+    classDef process fill:#eef2ff,stroke:#6366f1,color:#3730a3
+    classDef warning fill:#fee2e2,stroke:#f43f5e,color:#9f1239
+    classDef data fill:#fef3c7,stroke:#f59e0b,color:#92400e
+    classDef output fill:#dcfce7,stroke:#10b981,color:#047857
 ```
 
-All six layers are independent. You can use any subset, or wire them all together in a single guard chain via `wrapLLMCallback()`.
+All six layers are independent. Use any subset. Wire them all into one chain via `wrapLLMCallback()`.
 
 ## CircuitBreaker
 
@@ -374,26 +351,26 @@ The social safety components (`SafetyEngine`, `ActionAuditLog`, `ContentSimilari
 
 ### Circuit breakers + bulkheads
 
-- Nygard, M. T. (2018). *Release It! Design and Deploy Production-Ready Software* (2nd ed.). Pragmatic Bookshelf. — Foundational treatment of stability patterns: circuit breaker, bulkhead, timeout, and steady-state. The `CircuitBreaker` here implements the three-state (closed / open / half-open) machine from this book. [Pragmatic Programmers](https://pragprog.com/titles/mnee2/release-it-second-edition/)
-- Fowler, M. (2014). *CircuitBreaker.* Martin Fowler's bliki. — Practical write-up of the circuit-breaker pattern with state-transition examples. [martinfowler.com/bliki/CircuitBreaker.html](https://martinfowler.com/bliki/CircuitBreaker.html)
+- Nygard, M. T. (2018). [*Release It! Design and Deploy Production-Ready Software*](https://pragprog.com/titles/mnee2/release-it-second-edition/) (2nd ed.). Pragmatic Bookshelf. — Foundational treatment of stability patterns: circuit breaker, bulkhead, timeout, and steady-state. The `CircuitBreaker` here implements the three-state (closed / open / half-open) machine from this book.
+- Fowler, M. (2014). [*CircuitBreaker.*](https://martinfowler.com/bliki/CircuitBreaker.html) Martin Fowler's bliki. — Practical write-up of the circuit-breaker pattern with state-transition examples.
 
 ### Cost guards + resource controls
 
-- Patel, A., Singh, A., Patel, V., Verma, V., & Patel, K. (2023). *FrugalGPT: How to use large language models while reducing cost and improving performance.* arXiv preprint. — Cost-aware LLM routing methodology informing the `CostGuard` design — failover to cheaper providers when budgets approach limits. [arXiv:2305.05176](https://arxiv.org/abs/2305.05176)
-- Chen, L., Zaharia, M., & Zou, J. (2023). *FrugalML: How to use ML prediction APIs more accurately and cheaply.* NeurIPS 2020. — Earlier work on prediction-API cost optimization that informed the model-cascade pattern. [arXiv:2006.07512](https://arxiv.org/abs/2006.07512)
+- Patel, A., Singh, A., Patel, V., Verma, V., & Patel, K. (2023). [*FrugalGPT: How to use large language models while reducing cost and improving performance.*](https://arxiv.org/abs/2305.05176) arXiv:2305.05176. — Cost-aware LLM routing methodology informing the `CostGuard` design — failover to cheaper providers when budgets approach limits.
+- Chen, L., Zaharia, M., & Zou, J. (2020). [*FrugalML: How to use ML prediction APIs more accurately and cheaply.*](https://arxiv.org/abs/2006.07512) NeurIPS 2020. — Earlier work on prediction-API cost optimization that informed the model-cascade pattern.
 
 ### Stuck detection / liveness
 
-- Brewer, E. A. (2000). *Towards robust distributed systems.* PODC 2000 keynote. — The CAP theorem framing that motivates aggressive timeout + stuck-detection in distributed agent runtimes where partial unavailability is normal. [Berkeley](https://people.eecs.berkeley.edu/~brewer/cs262b-2004/PODC-keynote.pdf)
-- Cantrill, B., Bonwick, J., & Marx, R. (2010). *Hidden in plain sight.* *ACM Queue*, 8(1). — Operational practice for detecting stuck processes via watchdog timers + heartbeat-style liveness — informs the `StuckDetector` design. [Queue](https://queue.acm.org/detail.cfm?id=1117401)
+- Brewer, E. A. (2000). [*Towards robust distributed systems.*](https://people.eecs.berkeley.edu/~brewer/cs262b-2004/PODC-keynote.pdf) PODC 2000 keynote. — The CAP theorem framing that motivates aggressive timeout + stuck-detection in distributed agent runtimes where partial unavailability is normal.
+- Cantrill, B., Bonwick, J., & Marx, R. (2010). [*Hidden in plain sight.*](https://queue.acm.org/detail.cfm?id=1117401) *ACM Queue*, 8(1). — Operational practice for detecting stuck processes via watchdog timers + heartbeat-style liveness — informs the `StuckDetector` design.
 
 ### Rate limiting
 
-- van Beijnum, I. (2014). *Token bucket and leaky bucket.* RFC 2475-adjacent traffic-shaping primitives. — The two algorithm families behind the rate-limiter implementation; AgentOS uses token-bucket for sub-second smoothing and leaky-bucket for windowed quota enforcement. [Wikipedia](https://en.wikipedia.org/wiki/Token_bucket)
+- van Beijnum, I. (2014). [*Token bucket and leaky bucket.*](https://en.wikipedia.org/wiki/Token_bucket) RFC 2475-adjacent traffic-shaping primitives. — The two algorithm families behind the rate-limiter implementation; AgentOS uses token-bucket for sub-second smoothing and leaky-bucket for windowed quota enforcement.
 
 ### Implementation references
 
-- `packages/agentos/src/safety/runtime/CircuitBreaker.ts` — three-state circuit breaker
-- `packages/agentos/src/safety/runtime/CostGuard.ts` — cost-cap enforcement with graceful degradation
-- `packages/agentos/src/safety/runtime/StuckDetector.ts` — watchdog-based stuck-call detection
-- `packages/agentos/src/core/rate-limiting/` — token-bucket + leaky-bucket implementations
+- [`packages/agentos/src/safety/runtime/CircuitBreaker.ts`](https://github.com/framersai/agentos/blob/master/src/safety/runtime/CircuitBreaker.ts) — three-state circuit breaker
+- [`packages/agentos/src/safety/runtime/CostGuard.ts`](https://github.com/framersai/agentos/blob/master/src/safety/runtime/CostGuard.ts) — cost-cap enforcement with graceful degradation
+- [`packages/agentos/src/safety/runtime/StuckDetector.ts`](https://github.com/framersai/agentos/blob/master/src/safety/runtime/StuckDetector.ts) — watchdog-based stuck-call detection
+- [`packages/agentos/src/core/rate-limiting/`](https://github.com/framersai/agentos/tree/master/src/core/rate-limiting) — token-bucket + leaky-bucket implementations

@@ -1,6 +1,6 @@
 ---
 title: "Pinecone Backend"
-sidebar_position: 15
+sidebar_position: 17
 ---
 
 The Pinecone backend stores embeddings in [Pinecone](https://www.pinecone.io/), a fully managed vector database. Pinecone remains fully supported, but it is the optional managed-cloud path rather than the default production recommendation. If you want the recommended open-source production backend, use Qdrant.
@@ -17,7 +17,7 @@ The Pinecone backend stores embeddings in [Pinecone](https://www.pinecone.io/), 
 ## Configuration
 
 ```typescript
-import { PineconeVectorStore } from '@framers/agentos/rag/implementations/vector_stores/PineconeVectorStore';
+import { PineconeVectorStore } from '@framers/agentos/cognition/rag/implementations/vector_stores/PineconeVectorStore';
 
 const store = new PineconeVectorStore({
   id: 'my-pinecone',
@@ -124,7 +124,7 @@ Pinecone limits upserts to 100 vectors per request. AgentOS handles this automat
 Use the AgentOS migration engine to move data from Pinecone to Postgres or Qdrant:
 
 ```typescript
-import { MigrationEngine } from '@framers/agentos/rag/migration/MigrationEngine';
+import { MigrationEngine } from '@framers/agentos/cognition/rag/migration/MigrationEngine';
 
 await MigrationEngine.migrate({
   from: {

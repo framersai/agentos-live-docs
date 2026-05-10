@@ -1,6 +1,7 @@
 ---
 title: "Guardrails Architecture"
-description: "AgentOS guardrails internals — input/output dispatcher, ALLOW/SANITIZE/BLOCK/FLAG verdicts, two-phase scanning, fail-open and fail-closed semantics"
+sidebar_position: 1.5
+description: 'AgentOS guardrails internals — input/output dispatcher, ALLOW/SANITIZE/BLOCK/FLAG verdicts, two-phase scanning, fail-open and fail-closed semantics'
 keywords:
   - llm guardrails
   - agent guardrails
@@ -12,14 +13,13 @@ keywords:
   - grounding guard
   - topicality
   - fail open fail closed
-sidebar_position: 1.5
 ---
 
 > *"The price of safety is eternal vigilance."* — paraphrase, often attributed to Wendell Phillips
 
 Guardrails are the part of the system that runs even when nothing is wrong. Every message in, every chunk out — checked, classified, sometimes rewritten, sometimes blocked. The dispatcher described below is what makes that cheap enough to ship: it groups input and output checks into two phases, returns one of four verdicts (ALLOW / SANITIZE / BLOCK / FLAG), and refuses to fail silently when a check itself errors.
 
-This page covers how the system works internally. If you want the recipe-style usage, jump to [Guardrails System](/features/guardrails).
+This page covers how the system works internally. If you want the recipe-style usage, see [Guardrails System](/features/guardrails).
 
 ---
 

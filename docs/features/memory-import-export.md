@@ -1,6 +1,6 @@
 ---
 title: "Memory Import/Export"
-sidebar_position: 7
+sidebar_position: 10
 description: 'Export agent memories to SQLite, JSON, Markdown, or Obsidian vaults, and import from SQLite, JSON, Markdown, Obsidian, ChatGPT exports, and CSV.'
 ---
 

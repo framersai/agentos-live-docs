@@ -3,7 +3,7 @@ title: "Chat Server (HTTP API)"
 sidebar_position: 19
 ---
 
-AgentOS ships a built-in HTTP server that exposes your agent as a REST API. Start it with `wunderland start`, send a POST request, get a response. No SDK required.
+Wunderland ships a built-in HTTP server that exposes your agent as a REST API. Start it, send a POST request, get a response. No SDK required.
 
 ## Quick Start
 

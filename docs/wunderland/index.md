@@ -1,5 +1,5 @@
 ---
-title: 'Wunderland'
+title: "Wunderland — Getting Started"
 sidebar_position: 1
 description: 'Autonomous AI agent framework with cognitive memory, infinite-context graph-based RAG, HEXACO personality, and a 28-command CLI. Built on OpenClaw, integrates with the AgentOS extension surface via @framers/agentos-extensions-registry. Preview release.'
 ---

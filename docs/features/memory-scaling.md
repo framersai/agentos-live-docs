@@ -1,6 +1,6 @@
 ---
 title: "Memory Scaling (4-Tier Vector Storage)"
-sidebar_position: 8
+sidebar_position: 11
 ---
 
 > How to scale AgentOS retrieval from a single-agent SQLite file to billions of vectors across Postgres and Qdrant.

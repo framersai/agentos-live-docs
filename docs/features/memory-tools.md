@@ -1,6 +1,6 @@
 ---
 title: "Agent Memory Tools"
-sidebar_position: 6
+sidebar_position: 9
 description: 'Reference for the 6 agent-facing memory tools (memory_add, memory_update, memory_delete, memory_merge, memory_search, memory_reflect) that let agents manage their own long-term memory.'
 ---
 

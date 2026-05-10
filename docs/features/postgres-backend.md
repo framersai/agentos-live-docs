@@ -1,6 +1,6 @@
 ---
 title: "Postgres + pgvector Backend"
-sidebar_position: 13
+sidebar_position: 15
 ---
 
 The Postgres backend stores embeddings, metadata, and full-text content in a single relational database using the [pgvector](https://github.com/pgvector/pgvector) extension. This gives you ACID transactions, hybrid search (dense vectors + BM25 in one query), and JSONB metadata filtering — all without a separate vector service.
@@ -60,7 +60,7 @@ CREATE TABLE IF NOT EXISTS "<prefix>my_collection" (
 ## Configuration
 
 ```typescript
-import { PostgresVectorStore } from '@framers/agentos/rag/implementations/vector_stores/PostgresVectorStore';
+import { PostgresVectorStore } from '@framers/agentos/cognition/rag/implementations/vector_stores/PostgresVectorStore';
 
 const store = new PostgresVectorStore({
   id: 'my-pg-store',

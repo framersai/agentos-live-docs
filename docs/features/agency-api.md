@@ -1,6 +1,7 @@
 ---
 title: "Multi-Agent Agency API"
-description: "High-level multi-agent factory for AgentOS — coordinate a roster of sub-agents under graph, sequential, parallel, or debate orchestration"
+sidebar_position: 12
+description: High-level multi-agent factory for AgentOS — coordinate a roster of sub-agents under graph, sequential, parallel, or debate orchestration
 keywords:
   - agency api
   - multi agent orchestration
@@ -13,7 +14,6 @@ keywords:
   - human in the loop
   - agency memory
   - structured zod output
-sidebar_position: 12
 ---
 
 > *"None of us is as smart as all of us."* — Ken Blanchard
