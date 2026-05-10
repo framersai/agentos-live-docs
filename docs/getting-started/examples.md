@@ -950,7 +950,7 @@ npx tsx examples/<file>.mjs
 - [CHANNELS.md](/features/channels) — channel setup
 - [SOCIAL_POSTING.md](/features/social-posting) — social media publishing
 - [HIGH_LEVEL_API.md](/getting-started/high-level-api) — `AgentOS`, helper wrappers, and runtime tool registration
-- [COGNITIVE_MEMORY_GUIDE.md](/features/cognitive-memory-guide) — memory system
+- [COGNITIVE_MEMORY.md](/features/cognitive-memory) — memory system
 - [COGNITIVE_MECHANISMS.md](/features/cognitive-mechanisms) — 8 neuroscience-backed mechanisms
 - [IMAGE_GENERATION.md](/features/image-generation) — image provider setup
 - [EVALUATION.md](/features/evaluation-guide) — testing and benchmarking

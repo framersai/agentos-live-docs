@@ -936,7 +936,7 @@ const result = await research.generate(
 );
 ```
 
-See [Multi-GMI Agency & Emergent Agent Synthesis](/architecture/emergent-agency-system) for the full worked example, runtime sequence, and tested rejection paths.
+See [Emergent Capabilities](/features/emergent-capabilities) for the full worked example of multi-GMI synthesis via `spawn_specialist`, runtime sequence, and tested rejection paths.
 
 ### Checkpoint/Restore
 
