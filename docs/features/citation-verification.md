@@ -3,11 +3,12 @@ title: "Citation Verification"
 sidebar_position: 4.5
 ---
 
-Decompose agent responses into atomic claims, verify each against sources using cosine similarity, and flag unsupported or contradicted statements.
+> "In God we trust; all others must bring data."
+> — W. Edwards Deming (attrib.)
 
-## Why Citation Verification?
+LLMs confidently cite papers that don't exist. They quote sources that turn out to be unrelated to the claim. They synthesize plausible-looking facts that the underlying retrieval never actually contained. The longer the answer, the more chances for a confident hallucination to slip past the reader.
 
-LLMs confidently generate claims that may not be grounded in the sources they retrieved. Citation verification closes the loop: after generation, each claim is checked against the actual source material to produce per-claim verdicts with confidence scores.
+`CitationVerifier` closes that loop *after* generation. Each statement in the response gets decomposed into an atomic claim, embedded against the actual source chunks the agent retrieved, scored on cosine similarity, and tagged with one of four verdicts — `supported`, `weak`, `unverifiable`, or `contradicted`. Optional NLI promotes contradictions when the source disagrees with the claim. Optional web-search fallback rescues `unverifiable` claims the model could have answered from general knowledge if it had bothered to look. The verifier is what makes a sourced answer actually sourced — not just decorated with footnotes.
 
 ## Architecture
 
