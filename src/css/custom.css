@@ -776,12 +776,28 @@ th { font-weight: 600; }
   background: rgba(99, 102, 241, 0.06);
 }
 
+/* Match highlight — punchy + on-brand. Covers autocomplete dropdown
+   (.suggestion mark), full search-page results, AND any future result
+   class. Must beat the library's default subtle indigo. */
 [data-theme='dark'] [class*="searchResult"] mark,
-[data-theme='dark'] [class*="searchResultItem"] mark {
-  background: rgba(99, 102, 241, 0.25);
-  color: var(--ao-indigo-light);
-  border-radius: 2px;
-  padding: 0 2px;
+[data-theme='dark'] [class*="searchResultItem"] mark,
+[data-theme='dark'] [class*="suggestion"] mark,
+[data-theme='dark'] [class*="dropdownMenu"] mark,
+[data-theme='dark'] [class*="hitName"] mark,
+[data-theme='dark'] [class*="hitPath"] mark,
+[data-theme='dark'] .navbar mark {
+  background: linear-gradient(
+    180deg,
+    rgba(139, 92, 246, 0.95) 0%,
+    rgba(99, 102, 241, 0.95) 100%
+  ) !important;
+  color: #ffffff !important;
+  font-weight: 700;
+  border-radius: 4px;
+  padding: 1px 4px;
+  margin: 0 1px;
+  box-shadow: 0 0 0 1px rgba(165, 180, 252, 0.4), 0 1px 4px rgba(99, 102, 241, 0.35);
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.2);
 }
 
 /* Search modal -- light mode */
@@ -807,9 +823,24 @@ th { font-weight: 600; }
 }
 
 [data-theme='light'] [class*="searchResult"] mark,
-[data-theme='light'] [class*="searchResultItem"] mark {
-  background: rgba(99, 102, 241, 0.2);
-  color: #4338ca;
+[data-theme='light'] [class*="searchResultItem"] mark,
+[data-theme='light'] [class*="suggestion"] mark,
+[data-theme='light'] [class*="dropdownMenu"] mark,
+[data-theme='light'] [class*="hitName"] mark,
+[data-theme='light'] [class*="hitPath"] mark,
+[data-theme='light'] .navbar mark {
+  background: linear-gradient(
+    180deg,
+    #818cf8 0%,
+    #6366f1 100%
+  ) !important;
+  color: #ffffff !important;
+  font-weight: 700;
+  border-radius: 4px;
+  padding: 1px 4px;
+  margin: 0 1px;
+  box-shadow: 0 0 0 1px rgba(99, 102, 241, 0.25), 0 1px 4px rgba(99, 102, 241, 0.3);
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.15);
 }
 
 /* Search backdrop overlay */
