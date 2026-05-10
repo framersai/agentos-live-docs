@@ -242,8 +242,12 @@ if (typeof window !== 'undefined') {
       return;
     }
 
-    /* Hand-crafted hero diagrams are embedded as <img src="/img/diagrams/...svg"> */
-    const img = e.target.closest('img[src*="/img/diagrams/"]');
+    /* Hand-crafted hero diagrams. In Docusaurus the markdown img loader
+     * inlines SVGs as data:image/svg+xml URIs, so the original /img/diagrams/
+     * path is gone by the time the img reaches the DOM. Match either form. */
+    const img = e.target.closest(
+      'img[src*="/img/diagrams/"], img[src^="data:image/svg+xml"]'
+    );
     if (img) {
       e.preventDefault();
       e.stopPropagation();
@@ -257,14 +261,16 @@ if (typeof window !== 'undefined') {
   style.textContent = `
     .docusaurus-mermaid-container svg,
     [class*="mermaid"] svg,
-    img[src*="/img/diagrams/"] {
+    img[src*="/img/diagrams/"],
+    img[src^="data:image/svg+xml"] {
       cursor: zoom-in;
       transition: opacity 0.15s ease, box-shadow 0.15s ease;
       border-radius: 8px;
     }
     .docusaurus-mermaid-container svg:hover,
     [class*="mermaid"] svg:hover,
-    img[src*="/img/diagrams/"]:hover {
+    img[src*="/img/diagrams/"]:hover,
+    img[src^="data:image/svg+xml"]:hover {
       opacity: 0.88;
       box-shadow: 0 0 0 2px var(--ifm-color-primary-light, #6366f1);
     }
