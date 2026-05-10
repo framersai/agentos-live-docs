@@ -5,12 +5,9 @@ description: "Per-claim citation verification for AI agents: decompose answers i
 keywords: [citation verification, llm hallucination, claim verification, atomic claims, cosine similarity, nli, grounded llm, ai source verification]
 ---
 
-> "In God we trust; all others must bring data."
-> — W. Edwards Deming (attrib.)
+LLMs hallucinate citations: they reference papers that do not exist, quote sources unrelated to the claim, or synthesize plausible facts the underlying retrieval never returned. Longer answers compound the failure rate.
 
-LLMs confidently cite papers that don't exist. They quote sources that turn out to be unrelated to the claim. They synthesize plausible-looking facts that the underlying retrieval never actually contained. The longer the answer, the more chances for a confident hallucination to slip past the reader.
-
-`CitationVerifier` closes that loop *after* generation. Each statement in the response gets decomposed into an atomic claim, embedded against the actual source chunks the agent retrieved, scored on cosine similarity, and tagged with one of four verdicts — `supported`, `weak`, `unverifiable`, or `contradicted`. Optional NLI promotes contradictions when the source disagrees with the claim. Optional web-search fallback rescues `unverifiable` claims the model could have answered from general knowledge if it had bothered to look. The verifier is what makes a sourced answer actually sourced — not just decorated with footnotes.
+`CitationVerifier` runs a post-generation check on every response. Each statement is decomposed into an atomic claim, embedded against the source chunks the agent actually retrieved, scored on cosine similarity, and tagged with one of four verdicts: `supported`, `weak`, `unverifiable`, or `contradicted`. Optional NLI promotes contradictions where the source disagrees with the claim. Optional web-search fallback rescues `unverifiable` claims that could have been answered from general knowledge. The verifier turns footnote decoration into actually sourced output.
 
 ## Architecture
 

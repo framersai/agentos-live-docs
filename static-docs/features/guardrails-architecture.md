@@ -17,11 +17,9 @@ sidebar_position: 7
 
 # Guardrails Architecture
 
-> *"The price of safety is eternal vigilance."* — paraphrase, often attributed to Wendell Phillips
+The guardrail system runs every user message and every LLM output chunk through a two-phase dispatcher. Input guardrails fire before the orchestrator sees the message; output guardrails fire on each streaming chunk before it reaches the client. Each guardrail returns one of four verdicts (`ALLOW`, `SANITIZE`, `BLOCK`, `FLAG`); the dispatcher composes the verdicts deterministically and never fails silently on internal error.
 
-Guardrails are the part of the system that runs even when nothing is wrong. Every message in, every chunk out — checked, classified, sometimes rewritten, sometimes blocked. The dispatcher described below is what makes that cheap enough to ship: it groups input and output checks into two phases, returns one of four verdicts (ALLOW / SANITIZE / BLOCK / FLAG), and refuses to fail silently when a check itself errors.
-
-This page covers how the system works internally. If you want the recipe-style usage, see [Guardrails System](/features/guardrails).
+This page documents the internals. For recipe-style usage of the shipped guardrail packs (PII, ML classifiers, topicality, code safety, grounding), see [Guardrails System](/features/guardrails).
 
 ---
 
