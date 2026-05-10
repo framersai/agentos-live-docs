@@ -357,8 +357,26 @@ html, body {
   background-color: rgba(99, 102, 241, 0.04);
 }
 
-[data-theme='dark'] .menu__link--sublist-caret::after {
-  filter: brightness(1.5) sepia(1) hue-rotate(220deg) saturate(3);
+/* Dark-mode sidebar caret — replace the default dark-grey chevron with
+   a bright indigo SVG so the collapse/expand affordance stays readable
+   against the dark surface. Default `filter:` hack still left some
+   carets near-invisible at >50% black, so override the source image. */
+[data-theme='dark'] .menu__link--sublist-caret::after,
+[data-theme='dark'] .menu__caret::before {
+  background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="%23a5b4fc" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>') 50% / 1.25rem 1.25rem no-repeat !important;
+  filter: none !important;
+  opacity: 0.95;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+[data-theme='dark'] .menu__list-item--collapsed .menu__link--sublist-caret::after,
+[data-theme='dark'] .menu__list-item--collapsed .menu__caret::before {
+  opacity: 0.75;
+}
+
+[data-theme='dark'] .menu__list-item-collapsible:hover .menu__link--sublist-caret::after,
+[data-theme='dark'] .menu__list-item-collapsible:hover .menu__caret::before {
+  opacity: 1;
 }
 
 [data-theme='dark'] .menu__link--sublist {
