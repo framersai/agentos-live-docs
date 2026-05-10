@@ -50,12 +50,18 @@ const verifier = new CitationVerifier({
 
 ### Verify Claims
 
+One source per claim, no overlap. The third claim has no matching source —
+the verifier flags it as `unverifiable` so the caller knows not to quote it
+unchecked.
+
 ```typescript
 const result = await verifier.verify(
-  "Tokyo has 14 million people. It was founded in 1457.",
+  "Tokyo is the capital of Japan. " +
+  "Tokyo proper has roughly 14 million residents. " +
+  "Tokyo hosted the 2020 Summer Olympics in 1457.",
   [
-    { content: "Tokyo proper has a population of about 14 million.", url: "https://example.com" },
-    { content: "Tokyo is the capital of Japan, established in 1603.", url: "https://example.com/history" },
+    { content: "Tokyo is the capital and seat of government of Japan.", url: "https://example.com/japan" },
+    { content: "The population of Tokyo proper is approximately 14 million.", url: "https://example.com/tokyo" },
   ]
 );
 ```
@@ -66,30 +72,43 @@ const result = await verifier.verify(
 {
   claims: [
     {
-      text: "Tokyo has 14 million people.",
+      text: "Tokyo is the capital of Japan.",
       verdict: "supported",       // matches source 0
       confidence: 0.87,           // cosine similarity
       sourceIndex: 0,
-      sourceSnippet: "Tokyo proper has a population of about 14 million.",
-      sourceRef: "https://example.com"
+      sourceSnippet: "Tokyo is the capital and seat of government of Japan.",
+      sourceRef: "https://example.com/japan",
     },
     {
-      text: "It was founded in 1457.",
-      verdict: "weak",            // partial match (source says 1603)
-      confidence: 0.45,
+      text: "Tokyo proper has roughly 14 million residents.",
+      verdict: "supported",       // matches source 1
+      confidence: 0.83,
       sourceIndex: 1,
-      sourceSnippet: "Tokyo is the capital of Japan, established in 1603."
-    }
+      sourceSnippet: "The population of Tokyo proper is approximately 14 million.",
+      sourceRef: "https://example.com/tokyo",
+    },
+    {
+      text: "Tokyo hosted the 2020 Summer Olympics in 1457.",
+      verdict: "unverifiable",    // no source covers this claim
+      confidence: 0.12,
+    },
   ],
   overallGrounded: true,          // no contradictions
-  supportedRatio: 0.5,            // 1 of 2 claims fully supported
-  totalClaims: 2,
-  supportedCount: 1,
-  weakCount: 1,
-  unverifiableCount: 0,
+  supportedRatio: 0.67,           // 2 of 3 claims fully supported
+  totalClaims: 3,
+  supportedCount: 2,
+  weakCount: 0,
+  unverifiableCount: 1,
   contradictedCount: 0,
-  summary: "1/2 claims verified (50%)"
 }
+```
+
+For a one-line human summary (`"2/3 claims verified (67%)"`), import the
+`formatVerifiedResponse` helper:
+
+```typescript
+import { formatVerifiedResponse } from '@framers/agentos';
+console.log(formatVerifiedResponse(result));
 ```
 
 ## Verdicts
