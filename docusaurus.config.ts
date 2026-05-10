@@ -303,6 +303,7 @@ const config = (githubStars: number): Config => ({
           { from: '/docs/AGENT_COMMUNICATION', to: '/features/agent-communication' },
           { from: '/architecture/emergent-agency-system', to: '/features/emergent-capabilities' },
           { from: '/architecture/multi-gmi-implementation-plan', to: '/architecture/system-architecture' },
+          { from: '/features/cognitive-memory-guide', to: '/features/cognitive-memory' },
           { from: '/docs/CLIENT_SIDE_STORAGE', to: '/features/client-side-storage' },
           { from: '/docs/COST_OPTIMIZATION', to: '/features/cost-optimization' },
           { from: '/docs/ECOSYSTEM', to: '/getting-started/ecosystem' },
