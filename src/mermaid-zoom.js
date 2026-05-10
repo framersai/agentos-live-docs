@@ -1,8 +1,12 @@
 /**
- * Global click-to-zoom viewer for all Mermaid diagrams in Docusaurus.
+ * Global click-to-zoom viewer for diagrams in Docusaurus.
+ *
+ * Catches:
+ * - Inline Mermaid SVGs rendered by @docusaurus/theme-mermaid
+ * - <img> tags pointing at /img/diagrams/*.svg (hand-crafted hero SVGs)
  *
  * Features:
- * - Click any mermaid SVG to open full-screen modal
+ * - Click any diagram to open full-screen modal
  * - Default zoom: 150%
  * - +/- zoom controls (10% steps, range 50%-400%)
  * - Mouse wheel zoom
@@ -175,7 +179,7 @@ if (typeof window !== 'undefined') {
     applyTransform();
   }
 
-  function showModal(svgElement) {
+  function showModal(node) {
     const m = getModal();
     const wrap = document.getElementById('mermaid-zoom-svg-wrap');
 
@@ -184,15 +188,20 @@ if (typeof window !== 'undefined') {
     panX = 0;
     panY = 0;
 
-    /* Clone SVG */
-    const existing = wrap.querySelector('svg');
-    if (existing) existing.remove();
+    /* Clear any prior content (svg or img) */
+    while (wrap.firstChild) wrap.removeChild(wrap.firstChild);
 
-    const clone = svgElement.cloneNode(true);
+    const clone = node.cloneNode(true);
     clone.style.width = '100%';
     clone.style.height = 'auto';
+    clone.style.display = 'block';
     clone.removeAttribute('width');
     clone.removeAttribute('height');
+    /* Drop the inline border-radius/margins that the markdown embed sets */
+    clone.style.borderRadius = '0';
+    clone.style.margin = '0';
+    /* Drag is handled by the container, not the inner element */
+    clone.style.pointerEvents = 'none';
     wrap.appendChild(clone);
 
     /* Update label */
@@ -221,27 +230,41 @@ if (typeof window !== 'undefined') {
     if (e.key === '0') { setZoom(DEFAULT_ZOOM); panX = 0; panY = 0; applyTransform(); }
   });
 
-  /* Delegated click on any mermaid SVG */
+  /* Delegated click on any mermaid SVG or hero diagram <img> */
   document.addEventListener('click', (e) => {
-    const svg = e.target.closest('.docusaurus-mermaid-container svg, [class*="mermaid"] svg');
-    if (!svg) return;
     if (e.target.closest('a')) return;
-    e.preventDefault();
-    e.stopPropagation();
-    showModal(svg);
+
+    const svg = e.target.closest('.docusaurus-mermaid-container svg, [class*="mermaid"] svg');
+    if (svg) {
+      e.preventDefault();
+      e.stopPropagation();
+      showModal(svg);
+      return;
+    }
+
+    /* Hand-crafted hero diagrams are embedded as <img src="/img/diagrams/...svg"> */
+    const img = e.target.closest('img[src*="/img/diagrams/"]');
+    if (img) {
+      e.preventDefault();
+      e.stopPropagation();
+      showModal(img);
+      return;
+    }
   });
 
-  /* Cursor + hover styles for mermaid diagrams */
+  /* Cursor + hover styles for both diagram surfaces */
   const style = document.createElement('style');
   style.textContent = `
     .docusaurus-mermaid-container svg,
-    [class*="mermaid"] svg {
+    [class*="mermaid"] svg,
+    img[src*="/img/diagrams/"] {
       cursor: zoom-in;
       transition: opacity 0.15s ease, box-shadow 0.15s ease;
       border-radius: 8px;
     }
     .docusaurus-mermaid-container svg:hover,
-    [class*="mermaid"] svg:hover {
+    [class*="mermaid"] svg:hover,
+    img[src*="/img/diagrams/"]:hover {
       opacity: 0.88;
       box-shadow: 0 0 0 2px var(--ifm-color-primary-light, #6366f1);
     }
