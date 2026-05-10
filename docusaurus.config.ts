@@ -301,6 +301,8 @@ const config = (githubStars: number): Config => ({
           // Legacy SCREAMING_CASE doc paths from before Docusaurus migration
           { from: '/docs/ARCHITECTURE', to: '/architecture/system-architecture' },
           { from: '/docs/AGENT_COMMUNICATION', to: '/features/agent-communication' },
+          { from: '/architecture/emergent-agency-system', to: '/features/emergent-capabilities' },
+          { from: '/architecture/multi-gmi-implementation-plan', to: '/architecture/system-architecture' },
           { from: '/docs/CLIENT_SIDE_STORAGE', to: '/features/client-side-storage' },
           { from: '/docs/COST_OPTIMIZATION', to: '/features/cost-optimization' },
           { from: '/docs/ECOSYSTEM', to: '/getting-started/ecosystem' },
