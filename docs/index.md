@@ -1,217 +1,69 @@
 ---
-title: 'AgentOS Documentation'
+title: 'AgentOS'
 sidebar_position: 0
 slug: /documentation
 ---
 
-# AgentOS Documentation
+# AgentOS
 
 [![npm version](https://img.shields.io/npm/v/@framers/agentos?style=flat-square&logo=npm&color=cb3837)](https://www.npmjs.com/package/@framers/agentos)
 [![CI](https://img.shields.io/github/actions/workflow/status/framersai/agentos/ci.yml?branch=master&style=flat-square&logo=github&label=CI)](https://github.com/framersai/agentos/actions/workflows/ci.yml)
 [![tests](https://img.shields.io/badge/tests-3%2C866%2B_passed-2ea043?style=flat-square&logo=vitest&logoColor=white)](https://github.com/framersai/agentos/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/gh/framersai/agentos/graph/badge.svg)](https://codecov.io/gh/framersai/agentos)
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue?style=flat-square)](https://opensource.org/licenses/Apache-2.0)
 
-Open-source TypeScript runtime for AI agents that **remember, adapt, and write their own tools**.
-
-When an agent encounters a sub-task no existing tool covers, it generates a TypeScript function with a Zod schema, sends it through an LLM judge, and on approval runs it in a hardened `node:vm` sandbox. When a multi-agent team hits a capability gap, the manager calls `spawn_specialist` and the LLM judge reviews the spec before the new agent joins the live roster.
+Open-source TypeScript runtime for the part of an agent that should outlive a single chat completion. Apache-2.0.
 
 ```bash
 npm install @framers/agentos
 ```
 
-:::info Get in touch
-**[Join the Wilds AI Discord →](https://wilds.ai/discord)** for questions, feedback, and community discussion. **[Contact the AgentOS team →](https://agentos.sh/en/contact)** for partnerships, security disclosures, and enterprise inquiries.
-:::
+Most agent SDKs treat an agent as a function call. You pass a prompt and a tool list, get a string back, close the connection — and the agent doesn't exist anymore. The next call starts a new one that happens to share a name.
+
+AgentOS is what exists between those calls. It owns a persona, a working memory, a cognitive-memory layer that decays the way human memory decays, a sentiment tracker that follows the user's mood across turns, a metaprompt executor that assembles the system prompt fresh each turn from current state, and a reasoning trace that keeps the last several hundred decision steps. When an agent encounters a task no existing tool covers, it generates a TypeScript function with a Zod schema, sends it through an LLM judge, and on approval runs it in a hardened `node:vm` sandbox — and the new tool joins the catalog for the rest of the session. When a multi-agent team hits a capability gap, the manager calls `spawn_specialist` and the LLM judge reviews the synthesized agent spec before that specialist joins the live roster.
 
 :::tip Memory benchmarks (full N=500, gpt-4o reader)
-**85.6% on LongMemEval-S** at $0.0090 per correct, **0.4 points behind [Emergence.ai](https://www.emergence.ai/blog/sota-on-longmemeval-with-rag) SOTA (86%, closed-source SaaS)** and **+1.4 points above [Mastra](https://mastra.ai) Observational Memory (84.23%)** at matched gpt-4o reader. AgentOS ships fully open-source under Apache-2.0, free to install, fork, and self-host. **70.2% on LongMemEval-M** at $0.0078 per correct on the 1.5M-token / 500-session haystack variant, the only open-source library on the public record above 65% on M with publicly reproducible methodology. Competitive with the strongest published M results in the LongMemEval paper (Wu et al., ICLR 2025: round Top-5 65.7%, session Top-5 71.4%, round Top-10 72.0%).
+**85.6% on LongMemEval-S** at $0.0090 per correct, 0.4 points behind [Emergence.ai](https://www.emergence.ai/blog/sota-on-longmemeval-with-rag)'s closed-source SaaS at 86% and +1.4 points above [Mastra](https://mastra.ai) Observational Memory (84.23%) at matched `gpt-4o` reader. AgentOS ships under [Apache-2.0](https://github.com/framersai/agentos/blob/master/LICENSE), free to install, fork, and self-host.
 
-**[Full benchmarks reference →](/benchmarks)** · **[Reproducible run JSONs →](https://github.com/framersai/agentos-bench/tree/master/results/runs)** · **[SOTA writeup →](https://agentos.sh/en/blog/agentos-memory-sota-longmemeval/)**
+**70.2% on LongMemEval-M** at $0.0078 per correct on the 1.5M-token / 500-session haystack — the only open-source library on the public record above 65% on M with publicly reproducible methodology. Competitive with the strongest published M results in the LongMemEval paper ([Wu et al., ICLR 2025](https://arxiv.org/abs/2410.10813): round Top-5 65.7%, session Top-5 71.4%, round Top-10 72.0%).
+
+**[Benchmarks reference](/benchmarks)** · **[Reproducible run JSONs](https://github.com/framersai/agentos-bench/tree/master/results/runs)** · **[SOTA writeup](https://agentos.sh/en/blog/agentos-memory-sota-longmemeval/)**
 :::
 
-:::tip Paracosm: agent swarm simulation for structured world modeling with LLMs
-**[Paracosm](https://paracosm.agentos.sh)** is an agent swarm simulation framework for structured world modeling with LLMs, built on AgentOS. Define a world as JSON, run it with HEXACO-typed leaders directing a swarm of specialists and ~100 personality-typed cells, and watch their decisions diverge into measurably different outcomes from an identical seed. Reproducible forkable simulations that cover turn-loop civ sims, batch-trajectory digital twins, and batch-point forecasts through one universal result schema. The swarm itself is first-class on the API: `RunArtifact.finalSwarm`, `paracosm/swarm` helpers, and `GET /api/v1/runs/:runId/swarm` for HTTP consumers.
+## How memory actually works
 
-**[Live Demo](https://paracosm.agentos.sh/sim)** · **[GitHub](https://github.com/framersai/paracosm)** · **[npm](https://www.npmjs.com/package/paracosm)** · **[API Reference](/paracosm)** · **[Positioning map](https://github.com/framersai/paracosm/blob/master/docs/positioning/world-model-mapping.md)**
-:::
-
-## Classifier-Driven Memory Pipeline
-
-Most memory libraries retrieve on every query. AgentOS gates memory through three independent LLM-as-judge classifiers. Trivial queries skip retrieval entirely. Queries that need memory get the right architecture. The right reader handles each category.
+Most memory libraries retrieve on every query. AgentOS gates memory through three independent LLM-as-judge classifiers. Trivial queries — greetings, small talk, general knowledge answerable from context — skip retrieval entirely. Queries that need memory get the architecture best-suited to the category. The right reader handles each question type.
 
 ![AgentOS classifier-driven memory pipeline: query enters QueryClassifier (T0 short-circuits), MemoryRouter picks retrieval architecture, canonical-hybrid retrieval (BM25 + dense + RRF + Cohere rerank + 6-signal cognitive composite), ReaderRouter picks the reader model, ReadRouter picks the strategy, grounded answer returns. Background consolidation loop on the same brain.](/img/diagrams/memory-system-overview.svg)
 
-The pipeline costs **one classifier call per query** (Stages 2 and 3 reuse Stage 1 output). The T0 / no-memory gate removes embedding+rerank+reader cost on a substantial fraction of typical agent traffic (greetings, small talk, general knowledge). Per-category dispatch routes the rest to the architecture and reader best-suited to the question type.
+| Stage | Primitive | Decision per query |
+|---|---|---|
+| 1 | `QueryClassifier` | T0/none · T1/simple · T2/moderate · T3/complex |
+| 2 | `MemoryRouter` | canonical-hybrid · observational-memory-v10 · v11 |
+| 3 | `ReaderRouter` | gpt-4o vs gpt-5-mini per category |
 
-**LongMemEval-S at full N=500 with gpt-4o reader**: AgentOS at 85.6% is +1.4 points above Mastra OM gpt-4o (84.23%). $0.0090 per correct, 3.6-second median latency. Statistically tied with EmergenceMem Internal's published 86.0% (their point estimate sits inside our 95% CI [82.4%, 88.6%]) — but EmergenceMem Internal is **closed-source SaaS at [emergence.ai/web-automation-api](https://www.emergence.ai/web-automation-api), not a library you can install**, while AgentOS ships under [Apache-2.0](https://github.com/framersai/agentos/blob/master/LICENSE) and runs locally. Beats their public-but-no-license reference repo `emergence_simple_fast` (80.6% in agentos-bench) by +5.0 points at 6.5× lower cost.
+The pipeline costs **one classifier call per query** — Stages 2 and 3 reuse Stage 1's classification. That single call buys 12× lower reader cost on most categories, +10 points on single-session-preference, and a clean abstain path for queries that don't need memory at all — which most other systems still pay full retrieval cost for. Reproducible run JSONs in [agentos-bench](https://github.com/framersai/agentos-bench).
 
-| Stage | Primitive | Source | Decision per query |
-|---|---|---|---|
-| 1 | `QueryClassifier` | [`query-router`](/features/query-routing) | T0/none vs T1/simple vs T2/moderate vs T3/complex |
-| 2 | `MemoryRouter` | [`memory-router`](/features/memory-router) | canonical-hybrid vs observational-memory-v10 vs observational-memory-v11 |
-| 3 | `ReaderRouter` | [`memory-router`](/features/read-router) (v0.5.5) | gpt-4o vs gpt-5-mini per category |
+## Where to start
 
-Reproducible run JSONs, vendor reproductions, full transparency stack: **[github.com/framersai/agentos-bench](https://github.com/framersai/agentos-bench)**.
+- [**Cognitive Memory**](/features/cognitive-memory) — why memory should forget. Eight neuroscience-grounded mechanisms. The story is the page.
+- [**GMI architecture**](/architecture/gmi) — what an agent actually is between turns. Seven layers, one LLM core.
+- [**System Architecture**](/architecture/system-architecture) — how the 26 modules compose into a runtime.
+- [**Deep Research**](/features/deep-research) — the 3-phase pipeline behind sourced answers.
+- [**Emergent Capabilities**](/features/emergent-capabilities) — runtime tool forging, judge approval, sandboxed execution.
+- [**Examples Cookbook**](/getting-started/examples) — 18 runnable examples covering agents, agencies, voice, orchestration.
+- [**TypeDoc API**](/api/) — every class, interface, and function in the runtime.
 
-## Architecture
+## Paracosm — the swarm-simulation companion
 
-```mermaid
-graph TB
-    subgraph "Public API"
-        API["generateText() · streamText() · generateImage()<br/>agent() · agency() · mission()"]
-    end
+[Paracosm](https://paracosm.agentos.sh) is an agent-swarm simulation engine built on AgentOS. Define a world as JSON, run it with HEXACO-typed leaders directing a swarm of specialists and ~100 personality-typed cells, and watch their decisions diverge into measurably different outcomes from an identical seed. Reproducible, forkable, replayable. The swarm itself is first-class on the API: `RunArtifact.finalSwarm`, `paracosm/swarm` helpers, `GET /api/v1/runs/:runId/swarm` for HTTP consumers.
 
-    subgraph "Orchestration"
-        ORC["mission() → workflow() → AgentGraph<br/>All compile to one IR · checkpointing · streaming"]
-    end
+The reference scenario ships as Mars Genesis — a 100-colonist Mars settlement running from 2035 to 2083 across six turns. Two leaders, same seed, different HEXACO profiles, different futures. Try it live.
 
-    subgraph "Intelligence"
-        GMI["GMI — 21 LLM Providers<br/>tool calling · persona overlay"]
-        GUARD["Guardrails — 5 tiers<br/>PreLLM + DualLLM + signed audit"]
-        TOOLS["Tool Orchestrator<br/>lazy loading · emergent forging"]
-    end
+**[Live demo](https://paracosm.agentos.sh/sim)** · **[GitHub](https://github.com/framersai/paracosm)** · **[npm](https://www.npmjs.com/package/paracosm)** · **[API reference](/paracosm)**
 
-    subgraph "Memory"
-        COG["Cognitive Memory — 8 mechanisms<br/>HEXACO modulation · Ebbinghaus decay"]
-        RAG["RAG — HyDE · RAPTOR · GraphRAG<br/>BM25 · vector · hybrid"]
-    end
+---
 
-    subgraph "Perception"
-        VOICE["Voice — 27 providers<br/>STT · TTS · VAD · barge-in"]
-        MEDIA["Media — images · video · music · SFX<br/>vision · document export"]
-    end
-
-    subgraph "Channels — 37 platforms"
-        CHAN["Discord · Telegram · Slack · Twitter<br/>LinkedIn · WhatsApp · +31 more"]
-    end
-
-    API --> ORC --> GMI
-    GMI --> GUARD
-    GMI --> TOOLS
-    GMI --> COG
-    GMI --> RAG
-    VOICE --> GMI
-    MEDIA --> GMI
-    CHAN --> API
-
-    style API fill:#00f5ff,stroke:#00f5ff,color:#0a0a14
-    style ORC fill:#c9a227,stroke:#c9a227,color:#0a0a14
-    style GMI fill:#10ffb0,stroke:#10ffb0,color:#0a0a14
-    style GUARD fill:#ff4444,stroke:#ff4444,color:#fff
-    style COG fill:#8b5cf6,stroke:#8b5cf6,color:#fff
-    style RAG fill:#4facfe,stroke:#4facfe,color:#0a0a14
-    style VOICE fill:#e040fb,stroke:#e040fb,color:#0a0a14
-```
-
-## Quick Navigation
-
-### Start Here
-
-- [High-Level API](/getting-started/high-level-api) — `generateText()`, `streamText()`, `generateImage()`, and `agent()`
-- [Examples Cookbook](/getting-started/examples) — 18 runnable examples (agents, agencies, voice, orchestration)
-- [TypeDoc API](/api/) — Generated API reference for the full runtime
-
-### Getting Started
-
-- [Documentation Index](/getting-started/documentation-index) — Installation and quick start
-- [High-Level API](/getting-started/high-level-api) — `generateText()`, `streamText()`, `generateImage()`, and `agent()`
-- [Ecosystem](/getting-started/ecosystem) — Related packages and resources
-- [Releasing](/getting-started/releasing) — Version history and release process
-
-### Architecture & Core
-
-- [System Architecture](/architecture/system-architecture) — System design and core internals
-- [Runtime Status Matrix](/architecture/runtime-status-matrix) — Shipped vs partial vs planned runtime surfaces
-- [Platform Support](/architecture/platform-support) — Supported environments
-- [Tool Calling & Lazy Loading](/architecture/tool-calling-and-loading) — Extension loading, schema-on-demand, and descriptor IDs
-- [Observability (OpenTelemetry)](/architecture/observability) — Traces, metrics, and OTEL-compatible logging (opt-in)
-- [Logging (Pino + OpenTelemetry)](/architecture/logging) — Structured logs, trace correlation, and OTEL LogRecord export (opt-in)
-
-### Planning & Orchestration
-
-- [Cognitive Pipeline](/features/cognitive-pipeline) — Smart per-message orchestration: LLM-as-judge picks ingest / recall / read strategy per query
-- [Unified Orchestration Layer](/features/unified-orchestration) — One runtime, three authoring APIs
-- [AgentGraph](/features/agent-graph) — Explicit graph builder with node/edge control
-- [workflow() DSL](/features/workflow-dsl) — Deterministic DAG pipelines
-- [mission() API](/features/mission-api) — Goal-first orchestration
-- [Checkpointing](/features/checkpointing) — Resume, replay, and forking
-- [Planning Engine](/features/planning-engine) — Multi-step task planning
-- [Human-in-the-Loop](/features/human-in-the-loop) — Approval workflows
-- [Agent Communication](/features/agent-communication) — Inter-agent messaging
-- [Multi-Agent Agency API](/features/agency-api) — agency(), strategies (sequential, parallel, graph, hierarchical), dependsOn
-
-### Safety & Security
-
-- [Guardrails](/features/guardrails) — Content filtering, PII redaction, and folder-level filesystem permissions
-- [Creating Custom Guardrails](/features/creating-guardrails) — Building and composing guardrail pipelines
-- [Safety Primitives](/features/safety-primitives) — Circuit breakers, cost guards, stuck detection, and tool execution guards
-- [Provenance & Immutability](/features/provenance-immutability) — Signed event ledger, soft-delete tombstones, revision history, and autonomy guard
-- [Immutable Agents](/features/immutable-agents) — Toolset pinning, secret rotation, and soft-forget memory patterns
-
-### Memory & Storage
-
-- [Cognitive Memory](/features/cognitive-memory) — Personality-modulated memory, retrieval, and consolidation
-- [Working Memory](/features/working-memory) — Markdown notes and Baddeley slot-model working memory
-- [Memory Router](/features/memory-router) — Recall-stage smart orchestration (LLM-as-judge picks recall architecture per query). New in 0.2.13: `EntityRetrievalRanker` recall-stage primitive (Mem0-v3-style entity-overlap re-rank). New in 0.3.0+ (post-2026-04-26 ablations): `RetrievalConfigRouter` primitive — per-query retrieval-config dispatch among `(canonical, hyde, topk50, topk50-mult5, hyde-topk50, hyde-topk50-mult5)`, calibrated from LongMemEval-M Phase A N=54 ablation matrix (per-category-oracle ceiling 70.4% on M vs static combined 57.4%; +13 pp lift via per-query LLM-as-judge dispatch).
-- [Ingest Router](/features/ingest-router) — Input-stage smart orchestration (per-content storage strategy). New in 0.2.12 / 0.2.13: `SummarizedIngestExecutor` (Anthropic Contextual Retrieval recipe), `RawChunksIngestExecutor`, `SkipIngestExecutor`, `EntityExtractor`, `EntityLinkingIngestExecutor` (Mem0-v3-style fact-graph ingest).
-- [Read Router](/features/read-router) — Read-stage smart orchestration (per-query reader strategy)
-- [Adaptive Memory Router](/features/adaptive-memory-router) — Self-calibrating router for non-LongMemEval workloads
-- [Brain Storage](/features/sql-storage) — Universal SQLite + Postgres backbone (new in 0.3.0). `Brain.openSqlite(path)` / `Brain.openPostgres(connStr, { brainId })`. Multi-tenant via `brain_id` discriminator. Portable export via `Brain.exportToSqlite(path)`.
-- [RAG Memory](/features/rag-memory) — Vector storage and retrieval
-- [Multimodal RAG](/features/multimodal-rag) — Image and audio embeddings
-- [SQL Storage](/features/sql-storage) — Database adapters
-- [Client-Side Storage](/features/client-side-storage) — Browser and local persistence
-
-### Capabilities & AI
-
-- [Capability Discovery](/features/capability-discovery) — Tiered semantic discovery (~90% token reduction)
-- [Turn Planner](/api/classes/AgentOSTurnPlanner) — Per-turn execution policy, tool selection, and discovery integration
-- [Emergent Capabilities](/features/emergent-capabilities) — Runtime tool creation, self-improvement tools, sandboxed execution, and LLM-as-judge verification
-- [HEXACO Personality](/features/cognitive-memory) — 6-trait personality model, persona overlays, runtime mutation
-- [Deep Research](/features/deep-research) — Multi-source research pipeline with query classification
-- [Structured Output](/features/structured-output) — JSON schema validation
-- [Evaluation Framework](/features/evaluation-framework) — Testing and benchmarks
-- [Cost Optimization](/features/cost-optimization) — Token usage and caching
-
-### Paracosm: agent swarm simulation for structured world modeling with LLMs
-
-- [Paracosm API Reference](/paracosm): TypeDoc API for the simulation engine
-- [Live Demo](https://paracosm.agentos.sh/sim): Run Mars Genesis in your browser
-- [GitHub](https://github.com/framersai/paracosm): Source code and scenario examples
-- [npm](https://www.npmjs.com/package/paracosm): `npm install paracosm`
-- [Landing Page](https://paracosm.agentos.sh): Overview, architecture, and FAQ
-- [Positioning map](https://github.com/framersai/paracosm/blob/master/docs/positioning/world-model-mapping.md): Where paracosm sits in the world-model landscape
-
-### Advanced
-
-- [Recursive Self-Building](/features/recursive-self-building) — Self-modifying agent patterns
-- [Agency Collaboration](/features/agency-collaboration) — Multi-agent coordination
-
-### Voice & IVR
-
-- [Voice Pipeline](/features/voice-pipeline) — End-to-end voice conversation architecture, VAD, barge-in, and turn detection
-- [Speech Providers](/features/speech-providers) — Full catalog of STT, TTS, VAD, and wake-word providers
-- [Telephony Providers](/features/telephony-providers) — Twilio, Telnyx, Plivo webhook setup and call management
-
-### Skills
-
-- [Skills Overview](/skills) — SKILL.md format, loading, and semantic discovery integration
-- [Skills Format](/skills/skill-format) — Authoring SKILL.md files
-- [@framers/agentos-skills](/skills/agentos-skills) — Curated SKILL.md content package
-- [Skills Registry](/skills/agentos-skills-registry) — Browsing and installing curated skills
-
-### Extensions
-
-- [Extensions Overview](/extensions) — Available extensions catalog
-- [How Extensions Work](/extensions/how-extensions-work) — Loading and lifecycle
-- [Extension Architecture](/extensions/extension-architecture) — Building custom extensions
-- [Auto-Loading](/extensions/auto-loading) — Automatic extension discovery
-- [Extension Standards (RFC)](/extensions/extension-standards) — Interface contracts and versioning
-- **Safety**: [PII Redaction](/extensions/built-in/pii-redaction), [Code Safety](/extensions/built-in/code-safety), [Grounding Guard](/extensions/built-in/grounding-guard), [ML Classifiers](/extensions/built-in/ml-classifiers), [Topicality](/extensions/built-in/topicality)
-- **Research**: [Web Search](/extensions/built-in/web-search), [Web Browser](/extensions/built-in/web-browser), [News Search](/extensions/built-in/news-search)
-- **Media**: [Voice Synthesis](/extensions/built-in/voice-synthesis), [Image Search](/extensions/built-in/image-search), [Giphy](/extensions/built-in/giphy)
-- **Integrations**: [Auth](/extensions/built-in/auth), [Telegram](/extensions/built-in/telegram), [CLI Executor](/extensions/built-in/cli-executor)
-
-### API Reference
-
-- [TypeDoc API](/api/) — Auto-generated API documentation
+:::info Talk to us
+**[Wilds AI Discord](https://wilds.ai/discord)** for questions, feedback, community. **[Contact AgentOS](https://agentos.sh/en/contact)** for partnerships, security disclosures, enterprise inquiries.
+:::
