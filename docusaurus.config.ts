@@ -333,7 +333,7 @@ const config = (githubStars: number): Config => ({
           { from: '/blog/2025/11/10/announcing-agentos', to: 'https://agentos.sh/en/blog/announcing-agentos' },
           { from: '/blog/2025/11/15/adaptive-vs-emergent', to: 'https://agentos.sh/en/blog/adaptive-vs-emergent' },
           { from: '/blog/2026/02/20/agentos-vs-langgraph-vs-crewai', to: 'https://agentos.sh/en/blog/agentos-vs-langgraph-vs-crewai' },
-          { from: '/blog/2026/03/31/cognitive-memory-beyond-rag', to: 'https://agentos.sh/en/blog/cognitive-memory-beyond-rag' },
+          { from: '/blog/2026/03/31/cognitive-memory-beyond-rag', to: '/features/cognitive-memory' },
           // Engineering deep dives (13 posts), redirected to agentos.sh blog
           // index until each is ported. The original slugs stay reserved
           // for the eventual port (we'll point each line directly at

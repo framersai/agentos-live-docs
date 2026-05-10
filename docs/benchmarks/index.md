@@ -160,7 +160,7 @@ Both runs ship with per-case run JSONs at `seed=42`. The full bench leaderboard 
 
 - [LongMemEval State of the Art (2026): AgentOS 85.6% / 70.2%](https://agentos.sh/en/blog/agentos-memory-sota-longmemeval) — both current headlines, Pareto-win decomposition, negative findings
 - [Memory Benchmark Transparency: Why LongMemEval and LOCOMO Numbers Don't Compare](https://agentos.sh/en/blog/memory-benchmark-transparency-audit) — the 12-axis methodology audit
-- [Cognitive Memory for AI Agents: Beyond RAG](https://agentos.sh/en/blog/cognitive-memory-beyond-rag) — the 8 neuroscience-backed mechanisms behind the retrieval stack
+- [Cognitive Memory architecture (docs)](/features/cognitive-memory) — the 8 neuroscience-backed mechanisms behind the retrieval stack
 
 ## References
 
