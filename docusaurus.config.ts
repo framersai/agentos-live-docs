@@ -316,6 +316,11 @@ const config = (githubStars: number): Config => ({
           { from: '/features/memory-tools', to: '/features/memory-operations#agent-memory-tools' },
           { from: '/features/memory-import-export', to: '/features/memory-operations#import-and-export' },
           { from: '/features/memory-scaling', to: '/features/sql-storage#scaling-path-sqlite--postgres--qdrant' },
+          // RAG section consolidation (7 pages → 5). Deep Research and
+          // Reranker Chain merged into RAG Memory Configuration.
+          { from: '/features/deep-research', to: '/features/rag-memory#query-classification' },
+          { from: '/features/reranker-chain', to: '/features/rag-memory#reranker-chain' },
+          { from: '/features/query-classification', to: '/features/rag-memory#query-classification' },
           { from: '/docs/CLIENT_SIDE_STORAGE', to: '/features/client-side-storage' },
           { from: '/docs/COST_OPTIMIZATION', to: '/features/cost-optimization' },
           { from: '/docs/ECOSYSTEM', to: '/getting-started/ecosystem' },

@@ -142,7 +142,7 @@ flows:
 
 ### Deep Research Synthesis
 
-[Deep Research](/features/deep-research) emits a synthesized report with inline
+[Deep Research](/features/rag-memory#query-classification) emits a synthesized report with inline
 citations to every source it discovered during search and extraction. The
 verifier closes the loop on that report by decomposing it into atomic claims
 and scoring each against the retrieved sources — turning "the model cited it"
@@ -214,6 +214,6 @@ For higher quality extraction, install `@framers/agentos-ext-grounding-guard` wh
 ## Related Features
 
 - [Grounding Guard](/extensions/built-in/grounding-guard) — real-time NLI streaming verification (guardrail)
-- [Reranker Chain](/features/reranker-chain) — multi-stage result ranking before citation
-- [Deep Research](/features/deep-research) — multi-source research pipeline whose synthesized report feeds directly into the verifier
+- [Reranker Chain](/features/rag-memory#reranker-chain) — multi-stage result ranking before citation
+- [Deep Research](/features/rag-memory#query-classification) — multi-source research pipeline whose synthesized report feeds directly into the verifier
 - [Content Policy Rewriter](/extensions/built-in/content-policy-rewriter) — content filtering guardrail

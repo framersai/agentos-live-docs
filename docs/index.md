@@ -55,7 +55,7 @@ The pipeline costs **one classifier call per query** — Stages 2 and 3 reuse St
 - [**Cognitive Memory**](/features/cognitive-memory) — why memory should forget. Eight neuroscience-grounded mechanisms, primary-source citations, the consolidation loop. The story is the page.
 - [**GMI architecture**](/architecture/gmi) — what an agent actually is between turns. Seven layers around an LLM core.
 - [**System Architecture**](/architecture/system-architecture) — how the 26 modules compose into a runtime.
-- [**Deep Research**](/features/deep-research) — the 3-phase pipeline behind sourced answers.
+- [**Deep Research**](/features/rag-memory#query-classification) — the 3-phase pipeline behind sourced answers.
 - [**Emergent Capabilities**](/features/emergent-capabilities) — runtime tool forging, judge approval, sandboxed execution.
 - [**Examples Cookbook**](/getting-started/examples) — 18 runnable examples covering agents, agencies, voice, orchestration.
 - [**TypeDoc API**](/api/) — every class, interface, function in the runtime.
