@@ -1,6 +1,8 @@
 ---
 title: "Deep Research & Query Classification"
 sidebar_position: 3
+description: "Deep research pipeline for AI agents: LLM-as-judge query classifier routes between zero retrieval, single web search, multi-source aggregation, and a full 3-phase decompose-search-synthesize loop with citations and budget caps."
+keywords: [deep research llm, ai agent research pipeline, query classification, llm-as-judge, multi-source research, agent retrieval]
 ---
 
 > "It ain't what you don't know that gets you into trouble. It's what you know for sure that just ain't so."

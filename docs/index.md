@@ -2,6 +2,8 @@
 title: 'AgentOS'
 sidebar_position: 0
 slug: /documentation
+description: "AgentOS — open-source TypeScript AI agent runtime with cognitive memory (85.6% LongMemEval-S, 70.2% LongMemEval-M), HEXACO personality modulation, runtime tool forging, 21 LLM providers. Apache-2.0."
+keywords: [agentos, typescript ai agent framework, ai agent runtime, cognitive memory, hexaco personality, longmemeval, runtime tool forging, open source agent sdk]
 ---
 
 # AgentOS

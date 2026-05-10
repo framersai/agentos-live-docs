@@ -1,6 +1,8 @@
 ---
 title: "Citation Verification"
 sidebar_position: 4.5
+description: "Per-claim citation verification for AI agents: decompose answers into atomic claims, embed against retrieved sources, verdict ladder (supported/weak/unverifiable/contradicted) with optional NLI contradiction check and web-search fallback."
+keywords: [citation verification, llm hallucination, claim verification, atomic claims, cosine similarity, nli, grounded llm, ai source verification]
 ---
 
 > "In God we trust; all others must bring data."
