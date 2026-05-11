@@ -3,6 +3,19 @@ title: "Changelog"
 sidebar_position: 7
 ---
 
+## <small>0.9.3 (2026-05-11)</small>
+
+* feat(agent): add verifyCitations config + grounding on GenerateTextResult ([c08e89fe4afdb9e8d72b8ac238e32160b3f6f956](https://github.com/framersai/agentos/commit/c08e89fe4afdb9e8d72b8ac238e32160b3f6f956))
+
+## <small>0.9.2 (2026-05-11)</small>
+
+* fix: address CodeRabbit findings on recent agents/ work ([9584a73fa5b3326ecb17c05665eadfa16ad4adae](https://github.com/framersai/agentos/commit/9584a73fa5b3326ecb17c05665eadfa16ad4adae))
+
+## <small>0.9.1 (2026-05-10)</small>
+
+* feat(badges): auto-update tests badge from a JSON endpoint ([037ffdace138906c58eacf302d48a97f29c5a107](https://github.com/framersai/agentos/commit/037ffdace138906c58eacf302d48a97f29c5a107))
+* docs: RAG section consolidation 7→05 - fold reranker-chain + deep-research into rag-memory; update manifest ([41769a5ce4e6aafffb206f51e1c261257bec50f3](https://github.com/framersai/agentos/commit/41769a5ce4e6aafffb206f51e1c261257bec50f3))
+
 ## 0.9.0 (2026-05-10)
 
 * fix(docs-sidebar): generate category-index links for sections without an index doc — makes breadcrumbs clickable ([80681ae4f856a3b20fac220cdc32a85eed25f42c](https://github.com/framersai/agentos/commit/80681ae4f856a3b20fac220cdc32a85eed25f42c))

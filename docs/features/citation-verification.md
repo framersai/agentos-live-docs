@@ -7,7 +7,35 @@ keywords: [citation verification, llm hallucination, claim verification, atomic 
 
 LLMs hallucinate citations: they reference papers that do not exist, quote sources unrelated to the claim, or synthesize plausible facts the underlying retrieval never returned. Longer answers compound the failure rate.
 
-`CitationVerifier` runs a post-generation check on every response. Each statement is decomposed into an atomic claim, embedded against the source chunks the agent actually retrieved, scored on cosine similarity, and tagged with one of four verdicts: `supported`, `weak`, `unverifiable`, or `contradicted`. Optional NLI promotes contradictions where the source disagrees with the claim. Optional web-search fallback rescues `unverifiable` claims that could have been answered from general knowledge. The verifier turns footnote decoration into actually sourced output.
+AgentOS attaches per-claim verdicts to every generation behind a single flag. Each statement gets decomposed into an atomic claim, embedded against the sources the agent retrieved, scored on cosine similarity, and tagged with one of four verdicts: `supported`, `weak`, `unverifiable`, or `contradicted`. Optional NLI promotes contradictions where the source disagrees with the claim. Optional web-search fallback rescues `unverifiable` claims that could have been answered from general knowledge.
+
+## The one-flag path
+
+For most use cases you never touch the verifier directly. Configure `verifyCitations` on the agent and the per-claim verdicts land on `result.grounding` automatically:
+
+```typescript
+import { agent } from '@framers/agentos';
+
+const docsAgent = agent({
+  model: 'openai:gpt-4o',
+  verifyCitations: {
+    embedFn:  (texts) => embeddingManager.embedBatch(texts),
+    retrieve: (query) => retriever.search(query),
+  },
+});
+
+const result = await docsAgent.generate('How do I configure a guardrail?');
+
+console.log(result.text);
+console.log(result.grounding?.overallGrounded);   // single boolean — safe to ship?
+for (const claim of result.grounding?.claims ?? []) {
+  if (claim.verdict !== 'supported') console.warn(claim);
+}
+```
+
+The agent retrieves sources for each user input, generates the response, and runs `CitationVerifier` over the text+sources pair on the way out. Same flag works on `QueryRouter` (`verifyCitations: true` there reuses the router's existing retrieval and embedding paths).
+
+Reach for `CitationVerifier` directly only when you already own both sides — generated text in one place and source chunks in another — and want to run scoring without an agent in the loop.
 
 ## Architecture
 
