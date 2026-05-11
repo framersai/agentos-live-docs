@@ -446,7 +446,7 @@ const config = (githubStars: number): Config => ({
   ],
 
   themeConfig: {
-    image: 'img/og-image.png',
+    image: 'img/og-image-v2.png',
     announcementBar: {
       id: 'longmemeval-sm-2026-04-30',
       content:
