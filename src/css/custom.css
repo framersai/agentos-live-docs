@@ -894,6 +894,67 @@ th { font-weight: 600; }
 
 .docusaurus-mermaid-container { margin: 1.5rem 0; }
 
+/* Mermaid sequence-diagram CSS classes are styled by an inline <style>
+   block Mermaid injects into each SVG — the JS post-processor only touches
+   element attributes (style/fill/stroke), so these need explicit overrides
+   for dark mode to keep arrow labels + lines visible. Same for flowchart
+   edge labels and class diagrams that render text via <text> + class. */
+[data-theme='dark'] .docusaurus-mermaid-container .messageText,
+[data-theme='dark'] .docusaurus-mermaid-container .labelText,
+[data-theme='dark'] .docusaurus-mermaid-container .loopText,
+[data-theme='dark'] .docusaurus-mermaid-container .loopText > tspan,
+[data-theme='dark'] .docusaurus-mermaid-container .noteText,
+[data-theme='dark'] .docusaurus-mermaid-container .noteText > tspan,
+[data-theme='dark'] .docusaurus-mermaid-container .actor-box text,
+[data-theme='dark'] .docusaurus-mermaid-container text.actor,
+[data-theme='dark'] .docusaurus-mermaid-container .actorLine,
+[data-theme='dark'] .docusaurus-mermaid-container .edgeLabel,
+[data-theme='dark'] .docusaurus-mermaid-container .edgeLabel rect,
+[data-theme='dark'] .docusaurus-mermaid-container .label text,
+[data-theme='dark'] .docusaurus-mermaid-container .nodeLabel,
+[data-theme='dark'] .docusaurus-mermaid-container .cluster-label text {
+  fill: #e2e8f0 !important;
+  color: #e2e8f0 !important;
+}
+
+[data-theme='dark'] .docusaurus-mermaid-container .messageLine0,
+[data-theme='dark'] .docusaurus-mermaid-container .messageLine1,
+[data-theme='dark'] .docusaurus-mermaid-container line.messageLine0,
+[data-theme='dark'] .docusaurus-mermaid-container line.messageLine1,
+[data-theme='dark'] .docusaurus-mermaid-container .actor-line {
+  stroke: rgba(165, 180, 252, 0.55) !important;
+}
+
+[data-theme='dark'] .docusaurus-mermaid-container .messageLine0 ~ defs marker path,
+[data-theme='dark'] .docusaurus-mermaid-container defs marker path,
+[data-theme='dark'] .docusaurus-mermaid-container marker path,
+[data-theme='dark'] .docusaurus-mermaid-container #arrowhead path {
+  fill: rgba(165, 180, 252, 0.7) !important;
+  stroke: rgba(165, 180, 252, 0.7) !important;
+}
+
+/* Edge-label background bubble (the white rect behind flowchart edge labels)
+   gets a translucent dark fill so it doesn't punch a white hole. */
+[data-theme='dark'] .docusaurus-mermaid-container .edgeLabel rect,
+[data-theme='dark'] .docusaurus-mermaid-container .edgeLabel .label-container,
+[data-theme='dark'] .docusaurus-mermaid-container .labelBkg,
+[data-theme='dark'] .docusaurus-mermaid-container rect.labelBkg {
+  fill: rgba(15, 23, 42, 0.75) !important;
+  background: transparent !important;
+}
+
+[data-theme='dark'] .docusaurus-mermaid-container .edgeLabel foreignObject div {
+  background-color: rgba(15, 23, 42, 0.75) !important;
+  color: #e2e8f0 !important;
+}
+
+/* Note backgrounds in sequence diagrams */
+[data-theme='dark'] .docusaurus-mermaid-container .note,
+[data-theme='dark'] .docusaurus-mermaid-container rect.note {
+  fill: rgba(99, 102, 241, 0.15) !important;
+  stroke: rgba(165, 180, 252, 0.4) !important;
+}
+
 /* -- Scrollbar (Webkit) --------------------------------------------------- */
 [data-theme='dark'] ::-webkit-scrollbar { width: 6px; height: 6px; }
 [data-theme='dark'] ::-webkit-scrollbar-track { background: var(--ao-void); }
