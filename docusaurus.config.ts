@@ -476,7 +476,7 @@ const config = (githubStars: number): Config => ({
             { label: 'Memory System', to: '/features/cognitive-memory' },
             { label: 'HEXACO Personality', to: '/features/hexaco-personality' },
             { label: 'RAG & Vector Storage', to: '/features/rag-memory' },
-            { label: 'Vector Scaling', to: '/features/memory-scaling' },
+            { label: 'Vector Scaling', to: '/features/sql-storage' },
             { label: 'Guardrails', to: '/features/guardrails' },
             { label: 'Voice Pipeline', to: '/features/voice-pipeline' },
             { label: 'Extensions', to: '/extensions' },

@@ -583,7 +583,7 @@ const features = [
     title: 'Deep Research Agents',
     description:
       'mission() API with Tree of Thought planning, multi-source search, grounding verification, and human-in-the-loop review. 3 autonomy modes, 5 provider strategies, and dynamic graph expansion.',
-    link: '/features/deep-research',
+    link: '/features/rag-memory#query-classification',
   },
   {
     title: 'Emergent Capabilities',
