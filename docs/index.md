@@ -14,19 +14,19 @@ keywords: [agentos, typescript ai agent framework, ai agent runtime, cognitive m
 [![codecov](https://codecov.io/gh/framersai/agentos/graph/badge.svg)](https://codecov.io/gh/framersai/agentos)
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue?style=flat-square)](https://opensource.org/licenses/Apache-2.0)
 
-Open-source TypeScript runtime for AI agents that remember, adapt, and write their own tools. Apache-2.0.
+AgentOS is an open-source TypeScript runtime for AI agents that remember, adapt, and write their own tools. Apache-2.0.
 
 ```bash
 npm install @framers/agentos
 ```
 
-Most agent memory libraries embed every message, store the vectors, and return whatever is closest in cosine space at retrieval time. The pattern holds for a few thousand turns. Past that scale, undifferentiated retrieval treats every recorded experience as equally available, trustworthy, and relevant. Long contexts get worse, not better. Costs climb. Older noise crowds the model.
+The runtime carries the parts of an agent that should outlive a single chat completion. Persistent [cognitive memory](/features/cognitive-memory) with eight neuroscience-grounded mechanisms (Ebbinghaus decay, retrieval-induced forgetting, reconsolidation, source-confidence decay, schema encoding, temporal gist, metacognitive feeling-of-knowing, involuntary recall) — each grounded in primary cognitive-science literature, each opt-in. Optional [HEXACO personality](/features/hexaco-personality) vectors that modulate encoding strength, working-memory capacity, and prompt formatting per trait. [Six multi-agent orchestration strategies](/features/agency-api) (sequential, parallel, debate, graph, hierarchical, adaptive). [Two-phase streaming guardrails](/features/guardrails-architecture). A [voice pipeline](/features/voice-pipeline) with VAD, barge-in, and streaming STT/TTS. One dispatch interface across 21 LLM providers.
 
-AgentOS encodes the parts of a memory system that should outlive a single completion into the runtime itself. Encoding strength is set per-trace and modulated by the agent's HEXACO personality and the emotional intensity of the source event ([Brown & Kulik, 1977](https://psycnet.apa.org/record/1977-29748-001) on flashbulb memories; [Yerkes & Dodson, 1908](https://onlinelibrary.wiley.com/doi/abs/10.1002/cne.920180503) on the inverted-U arousal curve). Strength decays exponentially with time on the [Ebbinghaus forgetting curve](https://en.wikipedia.org/wiki/Forgetting_curve), accelerated by interference from new similar memories and slowed by successful retrieval. Working memory is bounded by [Baddeley's slot model](https://www.sciencedirect.com/science/article/pii/S1364661303002479) of seven-plus-or-minus-two, modulated by traits. Retrieval composites six signals: vector similarity, current strength, recency, emotional congruence with the agent's mood, graph spreading-activation in the [ACT-R](https://act-r.psy.cmu.edu/) tradition, and importance.
+Agents with `emergent: true` can write tools mid-decision. When the runtime encounters a sub-task no existing capability covers, it generates a TypeScript function with a [Zod](https://zod.dev/) schema, routes it through a separate LLM-as-judge that scores code safety, test correctness, and determinism, and on approval executes it in a hardened `node:vm` sandbox. The forged tool joins the session catalog; promotion to a `SKILL.md` makes it persist across processes. Multi-agent teams that hit a capability gap call `spawn_specialist` and the judge reviews the synthesized agent spec before the specialist joins the live roster.
 
-When an agent encounters a task no existing tool covers, the runtime generates a TypeScript function with a Zod schema, routes it through a separate LLM judge, and on approval executes it in a hardened `node:vm` sandbox. The forged tool joins the catalog for the rest of the session and can be promoted into a `SKILL.md` skill picked up by the next process at startup. Multi-agent teams that hit a capability gap call `spawn_specialist`; the judge reviews the synthesized agent spec before the specialist joins the live roster.
+[100+ first-party extensions](https://www.npmjs.com/package/@framers/agentos-extensions) (channel adapters, tool packs, guardrail packs) and [88 curated `SKILL.md` skills](https://www.npmjs.com/package/@framers/agentos-skills) auto-discover at startup through their respective registries — no manual registration. The same surface that auto-loaded skills join is the surface runtime-forged tools graduate into.
 
-The benchmarks below measure this design against alternative memory libraries at the same `gpt-4o` answer model.
+The benchmarks below measure this runtime against alternative memory libraries at the same `gpt-4o` answer model.
 
 :::tip Memory benchmarks (full N=500, gpt-4o reader)
 **85.6% on LongMemEval-S** at $0.0090 per correct, 0.4 points behind [Emergence.ai](https://www.emergence.ai/blog/sota-on-longmemeval-with-rag)'s **closed-source SaaS** at 86% and +1.4 points above [Mastra](https://mastra.ai) Observational Memory (84.23%) at matched `gpt-4o` reader. AgentOS ships under [Apache-2.0](https://github.com/framersai/agentos/blob/master/LICENSE), free to install, fork, and self-host.
@@ -38,7 +38,7 @@ The benchmarks below measure this design against alternative memory libraries at
 
 ## How recall works
 
-Most memory libraries retrieve on every query. AgentOS gates memory through three independent LLM-as-judge classifiers. Trivial queries — greetings, small talk, general knowledge answerable from context — skip retrieval entirely. Queries that need memory get the architecture best-suited to the category. The right reader handles each question type.
+AgentOS gates memory through three independent LLM-as-judge classifiers that share one classification pass. Trivial queries — greetings, small talk, general knowledge answerable from context — skip retrieval entirely. Queries that need memory get the retrieval architecture best-suited to the category. The right reader model handles each question type.
 
 ![AgentOS classifier-driven memory pipeline: query enters QueryClassifier (T0 short-circuits), MemoryRouter picks retrieval architecture, canonical-hybrid retrieval (BM25 + dense + RRF + Cohere rerank + 6-signal cognitive composite), ReaderRouter picks the reader model, ReadRouter picks the strategy, grounded answer returns. Background consolidation loop on the same brain.](/img/diagrams/memory-system-overview.svg)
 
