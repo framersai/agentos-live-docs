@@ -186,6 +186,6 @@ All models lazy-load on first use. Nothing is loaded until a guardrail actually 
 
 ### Implementation references
 
-- `packages/agentos/src/safety/guardrails/` — `IGuardrailService`, `ParallelGuardrailDispatcher`, `GuardrailAction`
-- `packages/agentos-extensions/registry/curated/safety/` — six built-in packs: `pii-redaction`, `ml-classifiers`, `topicality`, `code-safety`, `grounding-guard`, `content-policy-rewriter`
-- `packages/agentos/src/safety/runtime/` — `CircuitBreaker`, `CostGuard`, `StuckDetector` (the runtime safety supervisor primitives that compose with the guardrail layer)
+- [`packages/agentos/src/safety/guardrails/`](https://github.com/framersai/agentos/tree/master/src/safety/guardrails) — `IGuardrailService`, `ParallelGuardrailDispatcher`, `GuardrailAction`
+- [`packages/agentos-extensions/registry/curated/safety/`](https://github.com/framersai/agentos-extensions/tree/master/registry/curated/safety) — six built-in packs: `pii-redaction`, `ml-classifiers`, `topicality`, `code-safety`, `grounding-guard`, `content-policy-rewriter`
+- [`packages/agentos/src/safety/runtime/`](https://github.com/framersai/agentos/tree/master/src/safety/runtime) — `CircuitBreaker`, `CostGuard`, `StuckDetector` (the runtime safety supervisor primitives that compose with the guardrail layer)

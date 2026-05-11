@@ -75,11 +75,14 @@ const verifier = new CitationVerifier({
 
 ### Verify Claims
 
-One source per claim, no overlap. The third claim has no matching source —
-the verifier flags it as `unverifiable` so the caller knows not to quote it
-unchecked.
+`verify()` accepts the input in two shapes — pick whichever matches what you already have on the calling side.
+
+**Pattern A — pass raw LLM text and let the verifier decompose:**
 
 ```typescript
+// Use this when the input is one block of LLM-generated prose and you
+// want the verifier to handle decomposition (LLM-driven if you've
+// configured `extractClaims`, otherwise built-in sentence splitting).
 const result = await verifier.verify(
   "Tokyo is the capital of Japan. " +
   "Tokyo proper has roughly 14 million residents. " +
@@ -89,6 +92,35 @@ const result = await verifier.verify(
     { content: "The population of Tokyo proper is approximately 14 million.", url: "https://example.com/tokyo" },
   ]
 );
+```
+
+**Pattern B — pass a pre-decomposed claim array directly:**
+
+```typescript
+// Use this when you've already extracted the claims yourself (your own
+// parser, an NER step, a user-edited list, etc.) and want each item
+// scored as-is without any further decomposition. The verifier preserves
+// caller-provided order in result.claims.
+const claims = [
+  "Tokyo is the capital of Japan.",
+  "Tokyo proper has roughly 14 million residents.",
+  "Tokyo hosted the 2020 Summer Olympics in 1457.",
+];
+
+const result = await verifier.verify(claims, [
+  { content: "Tokyo is the capital and seat of government of Japan.", url: "https://example.com/japan" },
+  { content: "The population of Tokyo proper is approximately 14 million.", url: "https://example.com/tokyo" },
+]);
+```
+
+**Or inspect the extracted claims before verifying:**
+
+```typescript
+// extractClaims() exposes the same decomposition Pattern A uses
+// internally, so you can filter or edit the claim list before scoring.
+const claims = await verifier.extractClaims(llmGeneratedText);
+const filtered = claims.filter((c) => c.length > 20);  // skip stubs
+const result = await verifier.verify(filtered, sources);
 ```
 
 ### VerifiedResponse
