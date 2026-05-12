@@ -1,6 +1,7 @@
 ---
 title: "ML Content Classifiers"
 sidebar_position: 17.1
+displayed_sidebar: guideSidebar
 ---
 
 Streaming ML content safety classification using BERT-family models with sliding-window chunk-based evaluation. Detects toxicity, prompt injection, and jailbreak attempts in real-time during LLM streaming.

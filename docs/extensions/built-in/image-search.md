@@ -1,6 +1,7 @@
 ---
 title: "Image Search"
 sidebar_position: 8
+displayed_sidebar: guideSidebar
 ---
 
 Unified stock photo search across Pexels, Unsplash, and Pixabay with automatic provider fallback.

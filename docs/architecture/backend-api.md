@@ -1,6 +1,7 @@
 ---
 title: "Backend API"
 sidebar_position: 16
+displayed_sidebar: guideSidebar
 ---
 
 ﻿# Backend API Reference

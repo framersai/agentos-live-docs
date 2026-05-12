@@ -1,6 +1,7 @@
 ---
 title: "Examples Cookbook"
 sidebar_position: 4
+displayed_sidebar: guideSidebar
 ---
 
 > Complete, runnable code snippets for common AgentOS patterns.
@@ -143,7 +144,7 @@ console.log(report.text);
 
 ## 3. Content Pipeline
 
-Review loop with social posting on approval. The high-level path is `agency({ strategy: 'sequential' })` — each agent's output feeds the next, with `hitl` gating the human-approval step. Use this when every step is an LLM/GMI call. Reach for the lower-level `workflow()` DSL only when you need explicit graph control, branches, or non-LLM tool steps wired into the same graph (see [workflow() DSL](/features/workflow-dsl) for that path).
+Review loop with social posting on approval. The high-level path is `agency({ strategy: 'sequential' })` — each agent's output feeds the next, with `hitl` gating the human-approval step. Use this when every step is an LLM/GMI call. Reach for the lower-level `workflow()` DSL only when you need explicit graph control, branches, or non-LLM tool steps wired into the same graph (see [workflow() DSL](/features/workflow-dsl) for that path). For the full `hitl` surface (5 triggers, 6 handler factories, judge + fallback), see the [Human-in-the-Loop guide](/features/human-in-the-loop).
 
 ```typescript
 import { agency } from '@framers/agentos';

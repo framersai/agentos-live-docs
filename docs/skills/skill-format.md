@@ -1,6 +1,7 @@
 ---
 title: "Skills (SKILL.md)"
 sidebar_position: 2
+displayed_sidebar: guideSidebar
 ---
 
 AgentOS supports **skills**: modular prompt modules defined by a `SKILL.md` file.

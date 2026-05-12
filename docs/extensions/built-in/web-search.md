@@ -1,6 +1,7 @@
 ---
 title: "Web Search"
 sidebar_position: 1
+displayed_sidebar: guideSidebar
 ---
 
 Professional web search, research aggregation, and fact-checking for AgentOS agents.

@@ -1,6 +1,7 @@
 ---
 title: "Telegram Bot (Comms)"
 sidebar_position: 11
+displayed_sidebar: guideSidebar
 ---
 
 Telegram Bot API communication tools for AgentOS agents.

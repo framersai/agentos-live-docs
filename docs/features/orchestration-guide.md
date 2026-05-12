@@ -1,6 +1,7 @@
 ---
 title: "Orchestration Guide"
 sidebar_position: 1
+displayed_sidebar: guideSidebar
 ---
 
 Hands-on walkthrough of AgentOS orchestration — from single-node graphs to multi-agent missions with voice, memory, and checkpointing.

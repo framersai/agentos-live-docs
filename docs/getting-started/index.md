@@ -1,6 +1,7 @@
 ---
 title: "Getting Started Guide"
 sidebar_position: 2
+displayed_sidebar: guideSidebar
 ---
 
 > Your fastest path from zero to a running AI agent — one line, three lines, or five, depending on how much you need.

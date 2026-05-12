@@ -1,6 +1,7 @@
 ---
 title: "Telephony Providers"
 sidebar_position: 3
+displayed_sidebar: guideSidebar
 ---
 
 A real phone call has stricter latency budgets than any chat surface. Twilio's docs say "audio gaps over 200ms feel unnatural"; in practice anything over 400ms gets users hanging up. The voice path through AgentOS is built around that constraint: the [voice pipeline](/features/voice-pipeline) runs end-to-end at low enough latency to feel like a conversation, and the telephony layer extends that into the PSTN by speaking the same streaming protocol — incoming caller audio is decoded to Float32 frames for VAD/STT, outbound TTS audio is re-encoded to mu-law on the way back to the phone, all through a full-duplex WebSocket. The provider is interchangeable.

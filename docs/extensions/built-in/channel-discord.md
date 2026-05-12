@@ -1,6 +1,7 @@
 ---
 title: "Channel: Discord"
 sidebar_position: 12
+displayed_sidebar: guideSidebar
 ---
 
 Bidirectional Discord messaging for AgentOS via `discord.js`.

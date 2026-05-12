@@ -1,6 +1,7 @@
 ---
 title: "Extension Architecture"
 sidebar_position: 3
+displayed_sidebar: guideSidebar
 ---
 
 AgentOS extensions are **runtime code** loaded into the platform via an `ExtensionManifest`.

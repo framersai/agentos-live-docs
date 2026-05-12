@@ -1,6 +1,7 @@
 ---
 title: "Planning Engine"
 sidebar_position: 7
+displayed_sidebar: guideSidebar
 description: "PlanningEngine — multi-step task planning for AgentOS agents. ReAct, Tree-of-Thoughts, Least-to-Most decomposition, Reflexion self-correction, autonomous loops, checkpoint/rollback, agency distribution across GMIs."
 keywords: [agent planning engine, react planning, tree of thoughts, llm task decomposition, least to most prompting, reflexion, autonomous agent loop, multi-step ai planning, agentos orchestration]
 ---

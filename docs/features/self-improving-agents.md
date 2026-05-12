@@ -1,6 +1,7 @@
 ---
 title: "Self-Improving Agents"
 sidebar_position: 6.5
+displayed_sidebar: guideSidebar
 ---
 
 AgentOS includes a bounded self-improvement system that lets agents adapt their personality, manage their own skills, compose workflows, and evaluate their own performance at runtime. All capabilities are opt-in and constrained by configurable limits to prevent runaway self-modification.

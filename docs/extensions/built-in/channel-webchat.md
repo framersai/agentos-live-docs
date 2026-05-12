@@ -1,6 +1,7 @@
 ---
 title: "Channel: WebChat"
 sidebar_position: 16
+displayed_sidebar: guideSidebar
 ---
 
 Lightweight web chat channel adapter for AgentOS.

@@ -1,6 +1,7 @@
 ---
 title: "Citation Verifier"
 sidebar_position: 16.1
+displayed_sidebar: guideSidebar
 ---
 
 > Citation verification is a first-class feature in `@framers/agentos`.

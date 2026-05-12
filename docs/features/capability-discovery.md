@@ -1,6 +1,7 @@
 ---
 title: "Capability Discovery"
 sidebar_position: 1
+displayed_sidebar: guideSidebar
 ---
 
 :::tip See also

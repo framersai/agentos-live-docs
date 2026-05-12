@@ -1,6 +1,7 @@
 ---
 title: "Checkpointing and Time-Travel"
 sidebar_position: 6
+displayed_sidebar: guideSidebar
 ---
 
 The AgentOS Unified Orchestration Layer has built-in support for checkpoints, resume after failure, and time-travel debugging via the `ICheckpointStore` interface.

@@ -1,6 +1,7 @@
 ---
 title: "CLI Subprocess Bridge"
 sidebar_position: 5
+displayed_sidebar: guideSidebar
 ---
 
 > Deep dive into the CLIRegistry and CLISubprocessBridge subsystem. For the full system overview, see [System Architecture](./system-architecture.md).

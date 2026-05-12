@@ -1,6 +1,7 @@
 ---
 title: "Self-Hosted Registries"
 sidebar_position: 7
+displayed_sidebar: guideSidebar
 ---
 
 AgentOS supports loading extensions and personas from self-hosted registries. Point to your own GitHub repos, git servers, or file systems.

@@ -1,6 +1,7 @@
 ---
 title: "Vision Pipeline (OCR & Image Understanding)"
 sidebar_position: 3
+displayed_sidebar: guideSidebar
 ---
 
 > A 3-tier progressive enhancement pipeline for extracting text, understanding images, and generating visual embeddings.

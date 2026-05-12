@@ -1,6 +1,7 @@
 ---
 title: "High-Level API"
 sidebar_position: 3
+displayed_sidebar: guideSidebar
 ---
 
 Everything is one import. Pick the function that fits your task:

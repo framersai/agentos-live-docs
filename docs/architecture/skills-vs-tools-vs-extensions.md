@@ -1,6 +1,7 @@
 ---
 title: "Skills vs Tools vs Extensions"
 sidebar_position: 8.5
+displayed_sidebar: guideSidebar
 description: "Which capability system to reach for when. The decision is rarely ambiguous if you know what each one actually owns — this page is a verified-against-the-source map of the three."
 ---
 

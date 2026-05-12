@@ -1,6 +1,7 @@
 ---
 title: "Trulia Search"
 sidebar_position: 16.4
+displayed_sidebar: guideSidebar
 ---
 
 Search real estate properties on Trulia by location, price, bedrooms, and property type.

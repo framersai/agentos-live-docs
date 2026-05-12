@@ -1,6 +1,7 @@
 ---
 title: "AgentGraph"
 sidebar_position: 5
+displayed_sidebar: guideSidebar
 ---
 
 When `workflow()` is too rigid and `mission()` is too far ahead of where the runtime currently plans, the answer is `AgentGraph` — explicit node and edge construction with cycles, conditional routing, subgraph composition, and the discovery and personality edges that don't exist in any other open agent framework. It compiles to the same [`CompiledExecutionGraph`](https://github.com/framersai/agentos/blob/master/src/orchestration/compiler/CompiledExecutionGraph.ts) IR as the higher-level builders, but it gets you full control over the topology before compilation.

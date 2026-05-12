@@ -1,6 +1,7 @@
 ---
 title: "Platform Strategy"
 sidebar_position: 18
+displayed_sidebar: guideSidebar
 ---
 
 ## Executive Summary

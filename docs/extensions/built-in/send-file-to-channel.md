@@ -1,6 +1,7 @@
 ---
 title: "Send File to Channel"
 sidebar_position: 16.3
+displayed_sidebar: guideSidebar
 ---
 
 Send a local file to the user via the current chat channel (Telegram, WhatsApp, Discord, Slack).

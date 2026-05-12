@@ -1,6 +1,7 @@
 ---
 title: "Document Export"
 sidebar_position: 13.6
+displayed_sidebar: guideSidebar
 ---
 
 The `@framers/agentos-ext-document-export` extension generates professional documents from structured content. It follows the standard AgentOS extension pack pattern (`createExtensionPack()` factory) and provides two ITool implementations.

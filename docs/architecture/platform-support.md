@@ -1,6 +1,7 @@
 ---
 title: "Platform Support"
 sidebar_position: 2
+displayed_sidebar: guideSidebar
 ---
 
 AgentOS integrates with the SQL Storage Adapter as its primary persistence interface. This enables a single codebase to run across Cloud (PostgreSQL), Desktop (Electron with better-sqlite3), Mobile (Capacitor SQLite), and Browser/Edge (sql.js fallback).

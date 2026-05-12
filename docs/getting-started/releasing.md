@@ -1,6 +1,7 @@
 ---
 title: "Releasing"
 sidebar_position: 6
+displayed_sidebar: guideSidebar
 ---
 
 > Last updated: 2026-02-09

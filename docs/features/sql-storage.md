@@ -1,6 +1,7 @@
 ---
 title: "Storage & Scaling"
 sidebar_position: 12
+displayed_sidebar: guideSidebar
 description: Storage adapter quickstart + four-tier scaling path (SQLite → HNSW sidecar → Postgres+pgvector → Qdrant). Covers `@framers/sql-storage-adapter` (better-sqlite3, sql.js, Postgres, Supabase, Capacitor, IndexedDB), cloud backups, and migrations across billions of vectors.
 keywords:
   - agentos sql storage

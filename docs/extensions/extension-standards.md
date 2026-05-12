@@ -1,6 +1,7 @@
 ---
 title: "Extension Standards (RFC)"
 sidebar_position: 5
+displayed_sidebar: guideSidebar
 ---
 
 ## Status

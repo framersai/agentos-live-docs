@@ -1,6 +1,7 @@
 ---
 title: "CLI Registry"
 sidebar_position: 5
+displayed_sidebar: guideSidebar
 ---
 
 The CLI Registry is AgentOS's auto-discovery system for installed command-line tools. It scans the user's PATH for known binaries, detects versions, and exposes results to providers, extensions, and the capability discovery engine.

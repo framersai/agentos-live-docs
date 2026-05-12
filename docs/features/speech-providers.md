@@ -1,6 +1,7 @@
 ---
 title: "Speech Providers"
 sidebar_position: 2
+displayed_sidebar: guideSidebar
 ---
 
 This document describes the provider resolver system in `packages/agentos/src/speech/`, which auto-discovers and manages speech-to-text (STT), text-to-speech (TTS), voice activity detection (VAD), and wake-word providers.

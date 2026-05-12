@@ -1,6 +1,7 @@
 ---
 title: "Content Policy Rewriter"
 sidebar_position: 17.5
+displayed_sidebar: guideSidebar
 ---
 
 Opt-in content policy guardrail for AgentOS — detects violations in agent output and either blocks or rewrites them to compliant versions via LLM judge.

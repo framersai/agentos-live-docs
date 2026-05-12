@@ -1,6 +1,7 @@
 ---
 title: "Releasing"
 sidebar_position: 9
+displayed_sidebar: guideSidebar
 ---
 
 This repository uses [Changesets](https://github.com/changesets/changesets) for versioning and npm publishing. Each extension package is versioned independently.

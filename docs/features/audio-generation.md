@@ -1,6 +1,7 @@
 ---
 title: "Audio Generation"
 sidebar_position: 4
+displayed_sidebar: guideSidebar
 ---
 
 AgentOS provides provider-agnostic APIs for generating music and sound effects from text prompts. Two high-level functions cover the full audio generation pipeline:

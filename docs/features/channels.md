@@ -1,6 +1,7 @@
 ---
 title: "Channels"
 sidebar_position: 1
+displayed_sidebar: guideSidebar
 ---
 
 The agents people actually use don't live in one window. A useful research assistant gets pinged on Slack during the workday, on Telegram on the weekend, and over email when someone forwards a thread for it to summarise. Each platform has its own ergonomics, its own rate limits, its own message-shape quirks, its own auth model. The work of integrating each one is real, and writing it once per agent is the thing that stops most projects at "demo on Discord."

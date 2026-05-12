@@ -1,6 +1,7 @@
 ---
 title: "Safety Primitives"
 sidebar_position: 3
+displayed_sidebar: guideSidebar
 description: "Six operational safety primitives that wrap every AgentOS LLM call: killswitch, cost guard, circuit breaker, stuck detection, action audit log. Prevent runaway loops, money fires, and zombie agents — independently or as one guard chain via wrapLLMCallback()."
 keywords: [agent safety, llm circuit breaker, cost guard, stuck detector, agent killswitch, runaway agent, ai cost cap, agentos safety, operational guardrails]
 ---

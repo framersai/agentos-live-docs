@@ -1,6 +1,7 @@
 ---
 title: "Changelog"
 sidebar_position: 7
+displayed_sidebar: guideSidebar
 ---
 
 ## <small>0.9.4 (2026-05-11)</small>

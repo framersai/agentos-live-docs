@@ -1,6 +1,7 @@
 ---
 title: "How Extensions Work"
 sidebar_position: 2
+displayed_sidebar: guideSidebar
 ---
 
 AgentOS extensions are **runtime code** packaged as “extension packs”. Packs can add:

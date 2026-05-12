@@ -1,6 +1,7 @@
 ---
 title: "Provider Preferences"
 sidebar_position: 5
+displayed_sidebar: guideSidebar
 ---
 
 The `ProviderPreferences` system gives callers fine-grained control over which media providers are used and in what order. It applies to image generation, video generation, and audio generation (music and SFX separately).

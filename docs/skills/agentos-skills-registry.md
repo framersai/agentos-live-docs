@@ -1,6 +1,7 @@
 ---
 title: "@framers/agentos-skills-registry"
 sidebar_position: 4
+displayed_sidebar: guideSidebar
 ---
 
 

@@ -1,6 +1,7 @@
 ---
 title: "CLI Providers"
 sidebar_position: 13
+displayed_sidebar: guideSidebar
 ---
 
 AgentOS supports using locally-installed CLI tools as LLM providers. This allows users to leverage their existing subscriptions (Anthropic Max, Google AI Pro/Ultra, OpenAI ChatGPT Plus/Pro) without separate API keys.

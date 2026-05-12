@@ -1,6 +1,7 @@
 ---
 title: "Migration Guide"
 sidebar_position: 8
+displayed_sidebar: guideSidebar
 ---
 
 ## Current State

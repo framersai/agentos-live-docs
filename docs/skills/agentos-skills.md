@@ -1,6 +1,7 @@
 ---
 title: "@framers/agentos-skills"
 sidebar_position: 3
+displayed_sidebar: guideSidebar
 ---
 
 

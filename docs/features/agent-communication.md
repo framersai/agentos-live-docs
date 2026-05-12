@@ -1,6 +1,7 @@
 ---
 title: "Agent Communication"
 sidebar_position: 4
+displayed_sidebar: guideSidebar
 description: "AgentCommunicationBus — structured messaging between AgentOS GMIs in a multi-agent agency. Point-to-point, broadcast, request/response, pub/sub, handoff, threading. Three layers: Message Router → Subscription Manager → Delivery Manager with retry, ACK, and audit."
 keywords: [agent communication bus, multi-agent messaging, pub/sub agents, agent handoff, multi-agent collaboration, agent runtime messaging, agentos agency]
 ---

@@ -1,6 +1,7 @@
 ---
 title: "Image Generation"
 sidebar_position: 1
+displayed_sidebar: guideSidebar
 ---
 
 > Generate images from text prompts across 5 providers with a single unified API.

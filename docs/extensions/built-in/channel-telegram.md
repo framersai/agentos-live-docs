@@ -1,6 +1,7 @@
 ---
 title: "Channel: Telegram"
 sidebar_position: 14
+displayed_sidebar: guideSidebar
 ---
 
 Bidirectional Telegram messaging for AgentOS via `grammY`.

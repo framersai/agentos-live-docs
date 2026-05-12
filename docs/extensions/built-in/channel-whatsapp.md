@@ -1,6 +1,7 @@
 ---
 title: "Channel: WhatsApp"
 sidebar_position: 15
+displayed_sidebar: guideSidebar
 ---
 
 Bidirectional WhatsApp messaging for AgentOS via Baileys.

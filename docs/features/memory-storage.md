@@ -1,6 +1,7 @@
 ---
 title: "SQLite Brain Storage"
 sidebar_position: 14
+displayed_sidebar: guideSidebar
 description: 'Single brain.sqlite per agent — 12-table schema, WAL mode, FTS5 hybrid search, embedding BLOBs, and backup strategies.'
 ---
 

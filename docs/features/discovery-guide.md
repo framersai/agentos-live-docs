@@ -1,6 +1,7 @@
 ---
 title: "Capability Discovery Guide"
 sidebar_position: 10
+displayed_sidebar: guideSidebar
 ---
 
 > Replace static tool dumps with per-turn semantic retrieval — ~90% token reduction while improving accuracy.

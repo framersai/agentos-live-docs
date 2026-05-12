@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 640" width="1100" height="640">
+  <defs>
+    <linearGradient id="hitl-brand" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#6366f1" />
+      <stop offset="50%" stop-color="#8b5cf6" />
+      <stop offset="100%" stop-color="#ec4899" />
+    </linearGradient>
+    <style>
+      .lane-bg { fill: rgba(99, 102, 241, 0.04); stroke: rgba(99, 102, 241, 0.22); stroke-width: 1; }
+      .card    { fill: rgba(255, 255, 255, 0.5); stroke: #6366f1; stroke-width: 1.5; }
+      .trigger { fill: rgba(236, 72, 153, 0.06); stroke: #ec4899; stroke-width: 1; }
+      .handler { fill: rgba(139, 92, 246, 0.08); stroke: #8b5cf6; stroke-width: 1.25; }
+      .runtime { fill: rgba(6, 182, 212, 0.06); stroke: #06b6d4; stroke-width: 1.25; }
+      .arrow   { stroke: #6366f1; stroke-width: 1.5; fill: none; }
+      .arrow-soft { stroke: rgba(99, 102, 241, 0.45); stroke-width: 1; fill: none; stroke-dasharray: 4 3; }
+      .h1 { font: 700 18px Inter, system-ui, sans-serif; fill: #1e1b4b; }
+      .h2 { font: 600 13px Inter, system-ui, sans-serif; fill: #3730a3; }
+      .h3 { font: 600 11px Inter, system-ui, sans-serif; fill: #5b21b6; letter-spacing: 0.04em; text-transform: uppercase; }
+      .b  { font: 500 11px Inter, system-ui, sans-serif; fill: #1e293b; }
+      .m  { font: 11px 'JetBrains Mono', ui-monospace, monospace; fill: #4338ca; }
+      .lbl{ font: 600 10px Inter, system-ui, sans-serif; fill: #475569; letter-spacing: 0.08em; text-transform: uppercase; }
+      @media (prefers-color-scheme: dark) {
+        .lane-bg { fill: rgba(99, 102, 241, 0.06); stroke: rgba(165, 180, 252, 0.25); }
+        .card    { fill: rgba(30, 27, 75, 0.55); stroke: #a5b4fc; }
+        .trigger { fill: rgba(244, 114, 182, 0.10); stroke: #f9a8d4; }
+        .handler { fill: rgba(167, 139, 250, 0.12); stroke: #c4b5fd; }
+        .runtime { fill: rgba(34, 211, 238, 0.10); stroke: #67e8f9; }
+        .arrow   { stroke: #a5b4fc; }
+        .arrow-soft { stroke: rgba(165, 180, 252, 0.4); }
+        .h1 { fill: #f5f3ff; }
+        .h2 { fill: #c7d2fe; }
+        .h3 { fill: #c4b5fd; }
+        .b  { fill: #e2e8f0; }
+        .m  { fill: #a5b4fc; }
+        .lbl{ fill: #94a3b8; }
+      }
+    </style>
+    <marker id="arrowhead" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#6366f1" />
+    </marker>
+    <marker id="arrowhead-soft" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#a5b4fc" />
+    </marker>
+  </defs>
+
+  <!-- Title strip -->
+  <text x="40" y="38" class="h1">Human-in-the-Loop · Three integration surfaces, one decision contract</text>
+  <line x1="40" y1="52" x2="1060" y2="52" stroke="url(#hitl-brand)" stroke-width="2" />
+
+  <!-- LANE 1: Agency / Agent declarative HITL -->
+  <rect x="40" y="74" width="320" height="408" rx="12" class="lane-bg" />
+  <text x="56" y="100" class="h3">Lane 1 · Agency / Agent</text>
+  <text x="56" y="118" class="h2">HitlConfig (declarative)</text>
+
+  <rect x="56" y="132" width="288" height="60" rx="8" class="card" />
+  <text x="70" y="152" class="b">agency({ hitl: { approvals, handler, ... } })</text>
+  <text x="70" y="170" class="m">src/api/types.ts:205</text>
+  <text x="70" y="184" class="lbl">Public config interface</text>
+
+  <text x="56" y="216" class="h3">Five opt-in approval triggers</text>
+  <rect x="56" y="226" width="288" height="22" rx="5" class="trigger" />
+  <text x="68" y="241" class="b"><tspan font-weight="600">beforeTool</tspan> — gate listed tool names</text>
+  <rect x="56" y="252" width="288" height="22" rx="5" class="trigger" />
+  <text x="68" y="267" class="b"><tspan font-weight="600">beforeAgent</tspan> — gate listed agent names</text>
+  <rect x="56" y="278" width="288" height="22" rx="5" class="trigger" />
+  <text x="68" y="293" class="b"><tspan font-weight="600">beforeEmergent</tspan> — gate spawn_specialist</text>
+  <rect x="56" y="304" width="288" height="22" rx="5" class="trigger" />
+  <text x="68" y="319" class="b"><tspan font-weight="600">beforeReturn</tspan> — gate final answer</text>
+  <rect x="56" y="330" width="288" height="22" rx="5" class="trigger" />
+  <text x="68" y="345" class="b"><tspan font-weight="600">beforeStrategyOverride</tspan> — gate runtime swap</text>
+
+  <text x="56" y="378" class="h3">Six handler factories</text>
+  <rect x="56" y="388" width="288" height="86" rx="8" class="handler" />
+  <text x="70" y="408" class="m">hitl.cli()</text>
+  <text x="70" y="424" class="m">hitl.autoApprove() · hitl.autoReject(reason?)</text>
+  <text x="70" y="440" class="m">hitl.webhook(url)</text>
+  <text x="70" y="456" class="m">hitl.slack({ channel, token })</text>
+  <text x="70" y="470" class="m">hitl.llmJudge({ criteria, fallback, ... })</text>
+
+  <!-- LANE 2: Workflow / AgentGraph human node -->
+  <rect x="384" y="74" width="332" height="408" rx="12" class="lane-bg" />
+  <text x="400" y="100" class="h3">Lane 2 · Workflow / Graph</text>
+  <text x="400" y="118" class="h2">human step / node</text>
+
+  <rect x="400" y="132" width="300" height="60" rx="8" class="card" />
+  <text x="414" y="152" class="b">workflow().step({ human: { prompt, ... } })</text>
+  <text x="414" y="170" class="m">src/orchestration/builders/WorkflowBuilder.ts</text>
+  <text x="414" y="184" class="lbl">Typed DAG node, suspends + resumes</text>
+
+  <text x="400" y="216" class="h3">Three resolution modes</text>
+  <rect x="400" y="226" width="300" height="24" rx="5" class="trigger" />
+  <text x="412" y="242" class="b">autoAccept — non-interactive bypass</text>
+  <rect x="400" y="254" width="300" height="24" rx="5" class="trigger" />
+  <text x="412" y="270" class="b">autoReject — dry-run / read-only</text>
+  <rect x="400" y="282" width="300" height="24" rx="5" class="trigger" />
+  <text x="412" y="298" class="b">judge — LLM verdict + human fallback</text>
+
+  <text x="400" y="334" class="h3">Effect classification</text>
+  <rect x="400" y="344" width="300" height="38" rx="6" class="handler" />
+  <text x="414" y="362" class="m">effectClass: 'pure' | 'read' | 'write'</text>
+  <text x="414" y="376" class="m">                 | 'external' | 'human'</text>
+
+  <text x="400" y="408" class="h3">Suspend / resume protocol</text>
+  <rect x="400" y="418" width="300" height="56" rx="6" class="card" />
+  <text x="414" y="436" class="b">1 — Runtime hits human node</text>
+  <text x="414" y="450" class="b">2 — Graph state checkpointed</text>
+  <text x="414" y="464" class="b">3 — Host resumes with decision payload</text>
+
+  <!-- LANE 3: Runtime manager -->
+  <rect x="740" y="74" width="320" height="408" rx="12" class="lane-bg" />
+  <text x="756" y="100" class="h3">Lane 3 · Runtime</text>
+  <text x="756" y="118" class="h2">HumanInteractionManager</text>
+
+  <rect x="756" y="132" width="288" height="60" rx="8" class="card" />
+  <text x="770" y="152" class="b">IHumanInteractionManager</text>
+  <text x="770" y="170" class="m">src/orchestration/hitl/IHumanInteractionManager.ts</text>
+  <text x="770" y="184" class="lbl">Severity-aware approval surface</text>
+
+  <text x="756" y="216" class="h3">PendingAction</text>
+  <rect x="756" y="226" width="288" height="86" rx="6" class="runtime" />
+  <text x="770" y="244" class="b">actionId · description · category</text>
+  <text x="770" y="260" class="m">severity: 'low' | 'medium' | 'high' | 'critical'</text>
+  <text x="770" y="276" class="b">reversible · potentialConsequences</text>
+  <text x="770" y="292" class="b">estimatedCost · alternatives</text>
+  <text x="770" y="306" class="b">requestedAt · timeoutMs</text>
+
+  <text x="756" y="338" class="h3">Four interaction modes</text>
+  <rect x="756" y="348" width="288" height="20" rx="4" class="handler" />
+  <text x="770" y="362" class="b">requestApproval(PendingAction)</text>
+  <rect x="756" y="372" width="288" height="20" rx="4" class="handler" />
+  <text x="770" y="386" class="b">requestClarification(...)</text>
+  <rect x="756" y="396" width="288" height="20" rx="4" class="handler" />
+  <text x="770" y="410" class="b">requestEdit(DraftOutput)</text>
+  <rect x="756" y="420" width="288" height="20" rx="4" class="handler" />
+  <text x="770" y="434" class="b">escalate(EscalationContext)</text>
+
+  <text x="756" y="464" class="lbl">Escalation reasons: low_confidence · safety_concern · …</text>
+
+  <!-- Common decision contract at bottom -->
+  <rect x="40" y="502" width="1020" height="118" rx="12" class="lane-bg" />
+  <text x="56" y="528" class="h3">Common decision contract</text>
+  <text x="56" y="546" class="h2">ApprovalRequest → handler → ApprovalDecision → guardrail veto → action</text>
+
+  <rect x="56" y="558" width="240" height="50" rx="6" class="card" />
+  <text x="68" y="576" class="b">ApprovalRequest</text>
+  <text x="68" y="592" class="m">id · type · agent · action · details</text>
+
+  <rect x="316" y="558" width="220" height="50" rx="6" class="handler" />
+  <text x="328" y="576" class="b">Your handler runs</text>
+  <text x="328" y="592" class="m">timeoutMs + onTimeout policy</text>
+
+  <rect x="556" y="558" width="220" height="50" rx="6" class="card" />
+  <text x="568" y="576" class="b">ApprovalDecision</text>
+  <text x="568" y="592" class="m">approved · reason · modifications</text>
+
+  <rect x="796" y="558" width="244" height="50" rx="6" class="trigger" />
+  <text x="808" y="576" class="b">guardrailOverride (post-approval)</text>
+  <text x="808" y="592" class="m">postApprovalGuardrails veto a yes</text>
+
+  <!-- Arrows -->
+  <path d="M 296 588 L 314 588" class="arrow" marker-end="url(#arrowhead)" />
+  <path d="M 536 588 L 554 588" class="arrow" marker-end="url(#arrowhead)" />
+  <path d="M 776 588 L 794 588" class="arrow" marker-end="url(#arrowhead)" />
+
+  <!-- Lane → bottom flow lines (soft) -->
+  <path d="M 200 482 Q 200 495 200 502" class="arrow-soft" marker-end="url(#arrowhead-soft)" />
+  <path d="M 550 482 Q 550 495 550 502" class="arrow-soft" marker-end="url(#arrowhead-soft)" />
+  <path d="M 900 482 Q 900 495 900 502" class="arrow-soft" marker-end="url(#arrowhead-soft)" />
+</svg>

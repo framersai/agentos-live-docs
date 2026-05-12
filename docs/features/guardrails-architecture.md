@@ -1,6 +1,7 @@
 ---
 title: "Guardrails Architecture"
 sidebar_position: 1.5
+displayed_sidebar: guideSidebar
 description: 'AgentOS guardrails internals — input/output dispatcher, ALLOW/SANITIZE/BLOCK/FLAG verdicts, two-phase scanning, fail-open and fail-closed semantics'
 keywords:
   - llm guardrails

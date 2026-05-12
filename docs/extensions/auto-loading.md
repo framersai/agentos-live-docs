@@ -1,6 +1,7 @@
 ---
 title: "Auto-Loading Extensions"
 sidebar_position: 4
+displayed_sidebar: guideSidebar
 ---
 
 AgentOS loads extensions from an explicit `extensionManifest`. There is no hidden “plugin marketplace” behavior in core (no background npm installs, no hot-reload, no implicit caching).

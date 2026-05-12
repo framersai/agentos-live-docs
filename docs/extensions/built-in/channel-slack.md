@@ -1,6 +1,7 @@
 ---
 title: "Channel: Slack"
 sidebar_position: 13
+displayed_sidebar: guideSidebar
 ---
 
 Bidirectional Slack messaging for AgentOS via `@slack/bolt`.

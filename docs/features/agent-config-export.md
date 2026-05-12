@@ -1,6 +1,7 @@
 ---
 title: "Agent Config Export & Import"
 sidebar_position: 9
+displayed_sidebar: guideSidebar
 ---
 
 > Round-trip agent configurations between environments via the

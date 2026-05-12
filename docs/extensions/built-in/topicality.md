@@ -1,6 +1,7 @@
 ---
 title: "Topicality"
 sidebar_position: 17.2
+displayed_sidebar: guideSidebar
 ---
 
 Embedding-based topic enforcement with allowed/forbidden topic boundaries and session-aware drift detection via exponential moving average tracking.

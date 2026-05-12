@@ -101,9 +101,15 @@ function injectFrontmatter(content, title, position) {
   // Strip leading h1 if it matches the title (Docusaurus uses frontmatter title)
   const withoutH1 = stripped.replace(/^#\s+.*\n+/, '');
 
+  // Pin the guide sidebar to every published guide page so the left nav
+  // rail always renders — even when the page is marked `sidebar: false`
+  // in publication-manifest.cjs (i.e. excluded from sidebars.js). Without
+  // this, Docusaurus renders unlisted pages full-width with no sidebar at
+  // all, which breaks layout consistency across the site.
   const frontmatterBody = [
     `title: "${title}"`,
     `sidebar_position: ${position}`,
+    `displayed_sidebar: guideSidebar`,
     ...preservedSeoLines,
   ].join('\n');
 

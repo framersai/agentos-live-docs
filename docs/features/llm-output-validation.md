@@ -1,6 +1,7 @@
 ---
 title: "LLM Output Validation"
 sidebar_position: 1.5
+displayed_sidebar: guideSidebar
 ---
 
 > Zod-based validation, retry with error feedback, centralized JSON extraction, and provider-native structured output — a shared utility layer that eliminates silent parse failures from every LLM call site.

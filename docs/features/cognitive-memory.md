@@ -1,6 +1,7 @@
 ---
 title: "Cognitive Memory"
 sidebar_position: 3
+displayed_sidebar: guideSidebar
 description: "Cognitive memory for AI agents: Ebbinghaus decay, HEXACO-modulated encoding, Baddeley working memory, ACT-R spreading activation, 8 neuroscience-grounded mechanisms. 85.6% on LongMemEval-S, 70.2% on LongMemEval-M."
 keywords: [cognitive memory ai, llm memory architecture, ebbinghaus decay, hexaco personality, baddeley working memory, longmemeval, agent memory, semantic memory, episodic memory]
 ---

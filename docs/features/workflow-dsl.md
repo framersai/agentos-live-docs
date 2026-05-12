@@ -1,6 +1,7 @@
 ---
 title: "workflow() DSL"
 sidebar_position: 4
+displayed_sidebar: guideSidebar
 ---
 
 The right way to ship a multi-step agent is rarely the most flexible way. A graph that can loop and replan is great when you don't know what shape the work takes; it's overkill — and harder to operate — when you do know. `workflow()` exists for the second case. You declare the steps in the order they run, the compiler builds the execution graph, and a static cycle check rejects anything that would loop. The output is the same [`CompiledExecutionGraph`](https://github.com/framersai/agentos/blob/master/src/orchestration/compiler/CompiledExecutionGraph.ts) the cyclic builders produce, so you can swap a `workflow()` for an `AgentGraph` later without re-architecting the runtime around it.

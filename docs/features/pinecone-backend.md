@@ -1,6 +1,7 @@
 ---
 title: "Pinecone Backend"
 sidebar_position: 17
+displayed_sidebar: guideSidebar
 ---
 
 The Pinecone backend stores embeddings in [Pinecone](https://www.pinecone.io/), a fully managed vector database. Pinecone remains fully supported, but it is the optional managed-cloud path rather than the default production recommendation. If you want the recommended open-source production backend, use Qdrant.

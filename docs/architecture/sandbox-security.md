@@ -1,6 +1,7 @@
 ---
 title: "Sandbox Security"
 sidebar_position: 4
+displayed_sidebar: guideSidebar
 description: 'How AgentOS isolates code execution: the two-gate pipeline (static pattern matching + runtime isolation), what the defaults actually enforce, and what they only nominally suggest.'
 ---
 

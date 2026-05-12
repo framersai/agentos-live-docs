@@ -1,6 +1,7 @@
 ---
 title: "Ecosystem"
 sidebar_position: 5
+displayed_sidebar: guideSidebar
 ---
 
 > Related repositories, packages, and resources for building with AgentOS.

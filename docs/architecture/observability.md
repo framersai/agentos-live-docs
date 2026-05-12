@@ -1,6 +1,7 @@
 ---
 title: "Observability (OpenTelemetry)"
 sidebar_position: 9
+displayed_sidebar: guideSidebar
 ---
 
 You can't operate an agent runtime in production without observability, and the cost of bolting it on after the fact is paid in incidents you can't reproduce. AgentOS treats spans, metrics, and log correlation as first-class concerns — but it does not own the OpenTelemetry SDK lifecycle. The SDK is an application-level concern: your host owns exporters, sampling, and context propagation, because the right answer for a CLI process is different from the right answer for a long-running server is different from the right answer for an edge worker.

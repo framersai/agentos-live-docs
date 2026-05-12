@@ -1,6 +1,7 @@
 ---
 title: "CLI Executor"
 sidebar_position: 4
+displayed_sidebar: guideSidebar
 ---
 
 Execute shell commands, run scripts, and manage files for AgentOS agents. This is one of the two fundamental primitives (along with Web Browser) that enables recursive self-building agent capabilities.

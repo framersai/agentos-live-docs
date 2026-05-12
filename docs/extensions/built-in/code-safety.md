@@ -1,6 +1,7 @@
 ---
 title: "Code Safety"
 sidebar_position: 17.3
+displayed_sidebar: guideSidebar
 ---
 
 Regex-based OWASP Top 10 code safety scanning for LLM-generated code. Detects insecure patterns in streaming markdown output and tool call arguments using language-aware rule sets. Pure regex -- no models, no dependencies, less than 1ms per scan.

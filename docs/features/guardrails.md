@@ -1,6 +1,7 @@
 ---
 title: "Guardrails"
 sidebar_position: 1
+displayed_sidebar: guideSidebar
 ---
 
 :::tip See also

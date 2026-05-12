@@ -1,6 +1,7 @@
 ---
 title: "Query Router"
 sidebar_position: 4
+displayed_sidebar: guideSidebar
 ---
 
 > **Live run**: see the QueryRouter initialize a 1,720-chunk corpus across 50 topics and 333 sources on the [agentos.sh demo gallery](https://agentos.sh/#live-demo). Source: [`examples/query-router.mjs`](https://github.com/framersai/agentos/blob/master/examples/query-router.mjs).

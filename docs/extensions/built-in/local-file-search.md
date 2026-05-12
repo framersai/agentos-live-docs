@@ -1,6 +1,7 @@
 ---
 title: "Local File Search"
 sidebar_position: 16.2
+displayed_sidebar: guideSidebar
 ---
 
 Search for files on the local filesystem by fuzzy name matching.

@@ -1,6 +1,7 @@
 ---
 title: "Working Memory"
 sidebar_position: 6
+displayed_sidebar: guideSidebar
 ---
 
 > A human-readable `.md` file that persists across conversations — inspired by Mastra's agent notepad pattern. Complements the Baddeley cognitive working memory with durable, editable state.

@@ -1,6 +1,7 @@
 ---
 title: "Telegram"
 sidebar_position: 10
+displayed_sidebar: guideSidebar
 ---
 
 Professional Telegram Bot API integration for AgentOS agents.

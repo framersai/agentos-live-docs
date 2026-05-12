@@ -1,6 +1,7 @@
 ---
 title: "Document Ingestion"
 sidebar_position: 6
+displayed_sidebar: guideSidebar
 description: 'Ingest PDFs, DOCX, HTML, Markdown, CSV, JSON, YAML, text, and URLs into the agent memory system with configurable chunking and multimodal image extraction.'
 ---
 

@@ -1,6 +1,7 @@
 ---
 title: "LLM Providers"
 sidebar_position: 12
+displayed_sidebar: guideSidebar
 ---
 
 The cost of a model going down today does not save you when it goes down tomorrow. The right question for any production agent runtime is not *which provider* — it is *what happens when this provider isn't available*. Provider outages happen. Rate limits hit at the worst moment. A model deprecates. A region throttles. A subscription lapses. None of these stop being true because the agent is mid-conversation.

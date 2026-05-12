@@ -1,6 +1,7 @@
 ---
 title: "Zip Files"
 sidebar_position: 16.5
+displayed_sidebar: guideSidebar
 ---
 
 Create zip archives from local files for sharing via chat channels.

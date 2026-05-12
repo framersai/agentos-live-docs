@@ -1,6 +1,7 @@
 ---
 title: "Multi-Agent Agency API"
 sidebar_position: 12
+displayed_sidebar: guideSidebar
 description: High-level multi-agent factory for AgentOS — coordinate a roster of sub-agents under graph, sequential, parallel, or debate orchestration
 keywords:
   - agency api
@@ -24,7 +25,7 @@ single `Agent`-compatible interface so callers can swap a single agent for an
 entire team without changing call sites.
 
 Implemented features: strategy orchestration, session history, aggregate
-usage/cost tracking, resource controls, HITL, guardrail evaluation, structured
+usage/cost tracking, resource controls, [HITL](/features/human-in-the-loop), guardrail evaluation, structured
 Zod output, RAG context injection (v1 placeholder), `listen()` for voice
 WebSocket transport, `connect()` for channel adapters, and real per-agent
 streaming events on the sequential strategy.

@@ -1,6 +1,7 @@
 ---
 title: "Voice Synthesis"
 sidebar_position: 9
+displayed_sidebar: guideSidebar
 ---
 
 Voice input/output tools for AgentOS:

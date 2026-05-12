@@ -1,6 +1,7 @@
 ---
 title: "mission() API"
 sidebar_position: 3
+displayed_sidebar: guideSidebar
 ---
 
 > **Live run**: see `mission()` generate a step plan (gmi + tool steps) and return final artifacts with confidence in [the agentos.sh demo gallery](https://agentos.sh/#live-demo). Source: [`examples/mission-api.mjs`](https://github.com/framersai/agentos/blob/master/examples/mission-api.mjs).

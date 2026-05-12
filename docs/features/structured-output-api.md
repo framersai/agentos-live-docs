@@ -1,6 +1,7 @@
 ---
 title: "Structured Output API (generateObject / streamObject)"
 sidebar_position: 5
+displayed_sidebar: guideSidebar
 ---
 
 > Type-safe structured generation with Zod schemas, partial streaming, and automatic retry logic.

@@ -1,6 +1,7 @@
 ---
 title: "Grounding Guard"
 sidebar_position: 17.4
+displayed_sidebar: guideSidebar
 ---
 
 RAG-grounded hallucination detection using a hybrid NLI cross-encoder and LLM-as-judge pipeline. Verifies that claims in LLM output are faithful to retrieved source documents.

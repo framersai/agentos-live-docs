@@ -1,6 +1,7 @@
 ---
 title: "Self-Improving Memory"
 sidebar_position: 6
+displayed_sidebar: guideSidebar
 description: 'The ConsolidationLoop runs 6 maintenance steps (prune, merge, strengthen, derive, compact, reindex), feedback signals detect used/ignored traces, and observation compression distills conversations into long-term knowledge.'
 ---
 

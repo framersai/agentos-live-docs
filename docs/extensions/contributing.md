@@ -1,6 +1,7 @@
 ---
 title: "Contributing"
 sidebar_position: 6
+displayed_sidebar: guideSidebar
 ---
 
 Thank you for your interest in contributing to the AgentOS Extensions ecosystem!
