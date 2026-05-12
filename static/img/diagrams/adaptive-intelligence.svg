@@ -89,7 +89,7 @@
   <text x="56" y="268" class="b">Periodic self-regulation</text>
   <rect x="56" y="280" width="308" height="54" rx="6" class="trigger" />
   <text x="68" y="298" class="b">{ type: 'turn_interval',</text>
-  <text x="68" y="314" class="b">&nbsp;&nbsp;intervalTurns: 5 }</text>
+  <text x="68" y="314" class="b">&#160;&#160;intervalTurns: 5 }</text>
   <text x="68" y="326" class="lbl">Counter increments each turn</text>
 
   <rect x="56" y="346" width="308" height="92" rx="6" class="handler" />
@@ -105,7 +105,7 @@
   <text x="408" y="268" class="b">SentimentTracker-driven</text>
   <rect x="408" y="280" width="308" height="54" rx="6" class="trigger" />
   <text x="420" y="298" class="b">{ type: 'event_based',</text>
-  <text x="420" y="314" class="b">&nbsp;&nbsp;eventName: 'frustration_detected' }</text>
+  <text x="420" y="314" class="b">&#160;&#160;eventName: 'frustration_detected' }</text>
   <text x="420" y="326" class="lbl">Fires only on pending GMIEvent</text>
 
   <rect x="408" y="346" width="308" height="92" rx="6" class="handler" />
