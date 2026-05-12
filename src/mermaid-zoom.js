@@ -274,8 +274,87 @@ if (typeof window !== 'undefined') {
     [class*="mermaid"] svg:hover,
     img[src*="/img/diagrams/"]:hover,
     img[src^="data:image/svg+xml"]:hover {
-      opacity: 0.88;
+      opacity: 0.92;
       box-shadow: 0 0 0 2px var(--ifm-color-primary-light, #6366f1);
+    }
+
+    /* Zoom-hint wrapper. The script wraps every diagram img/svg in this
+     * container on init so we can render a persistent corner badge that
+     * says the image is interactive. The badge is pointer-events: none
+     * so clicks fall through to the delegated zoom handler. */
+    .mer-zoom-wrap {
+      position: relative;
+      display: inline-block;
+      max-width: 100%;
+      line-height: 0;
+    }
+    .mer-zoom-wrap > img,
+    .mer-zoom-wrap > svg {
+      display: block;
+      max-width: 100%;
+      height: auto;
+    }
+    .mer-zoom-badge {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.3rem 0.55rem;
+      font-size: 11px;
+      font-weight: 600;
+      line-height: 1;
+      color: #ffffff;
+      background: rgba(15, 23, 42, 0.78);
+      backdrop-filter: blur(4px);
+      border-radius: 6px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+      pointer-events: none;
+      user-select: none;
+      letter-spacing: 0.02em;
+      opacity: 0.85;
+      transition: opacity 0.15s ease, transform 0.15s ease;
+    }
+    .mer-zoom-wrap:hover .mer-zoom-badge {
+      opacity: 1;
+      transform: scale(1.04);
+    }
+    [data-theme='light'] .mer-zoom-badge {
+      background: rgba(99, 102, 241, 0.92);
+    }
+
+    /* Mermaid containers get the same hint via ::after pseudo. The container
+     * already has position: relative from Docusaurus theme styles. */
+    .docusaurus-mermaid-container[data-mer-zoom-hint] {
+      position: relative;
+    }
+    .docusaurus-mermaid-container[data-mer-zoom-hint]::after {
+      content: '⊕ Click to expand';
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      padding: 0.3rem 0.55rem;
+      font-size: 11px;
+      font-weight: 600;
+      line-height: 1;
+      color: #ffffff;
+      background: rgba(15, 23, 42, 0.78);
+      backdrop-filter: blur(4px);
+      border-radius: 6px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+      pointer-events: none;
+      user-select: none;
+      letter-spacing: 0.02em;
+      opacity: 0.85;
+      transition: opacity 0.15s ease, transform 0.15s ease;
+    }
+    .docusaurus-mermaid-container[data-mer-zoom-hint]:hover::after {
+      opacity: 1;
+      transform: scale(1.04);
+    }
+    [data-theme='light'] .docusaurus-mermaid-container[data-mer-zoom-hint]::after {
+      background: rgba(99, 102, 241, 0.92);
     }
 
     /* Modal canvas background: matches the SVG's own prefers-color-scheme */
@@ -289,4 +368,59 @@ if (typeof window !== 'undefined') {
     }
   `;
   document.head.appendChild(style);
+
+  /* Wrap each diagram image in a relative container with a persistent
+   * "Click to expand" badge. The badge can't live as a sibling alone
+   * because the img sits inside a markdown <p>, and CSS can't position
+   * an arbitrary element relative to an inline img. So we wrap.
+   *
+   * Mermaid SVGs are skipped here — they already live inside
+   * .docusaurus-mermaid-container which has its own layout assumptions;
+   * the corner badge for those is rendered via ::after on the container
+   * in mermaid-theme.js styles (see below). */
+  function wrapDiagrams() {
+    const candidates = document.querySelectorAll(
+      'img[src*="/img/diagrams/"]:not([data-mer-wrapped]), ' +
+      'img[src^="data:image/svg+xml"]:not([data-mer-wrapped])'
+    );
+    candidates.forEach((node) => {
+      if (node.dataset && node.dataset.merWrapped) return;
+      /* Skip if already inside a wrap (defensive against double-mount). */
+      if (node.parentElement && node.parentElement.classList.contains('mer-zoom-wrap')) {
+        node.dataset.merWrapped = '1';
+        return;
+      }
+      const wrap = document.createElement('span');
+      wrap.className = 'mer-zoom-wrap';
+      node.parentNode.insertBefore(wrap, node);
+      wrap.appendChild(node);
+      const badge = document.createElement('span');
+      badge.className = 'mer-zoom-badge';
+      badge.setAttribute('aria-hidden', 'true');
+      badge.innerHTML = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-1px"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>Click to expand';
+      wrap.appendChild(badge);
+      node.dataset.merWrapped = '1';
+    });
+    /* Mermaid containers: add a corner badge via class flip so the existing
+     * container layout stays intact. The CSS adds the badge with ::after. */
+    document.querySelectorAll('.docusaurus-mermaid-container:not([data-mer-zoom-hint])').forEach((c) => {
+      c.dataset.merZoomHint = '1';
+    });
+  }
+
+  if (document.readyState !== 'loading') {
+    wrapDiagrams();
+  } else {
+    document.addEventListener('DOMContentLoaded', wrapDiagrams);
+  }
+  /* Catch images that mount after first paint (lazy-rendered docs pages,
+   * client-side route transitions, Mermaid re-renders). */
+  const wrapObserver = new MutationObserver(() => wrapDiagrams());
+  if (typeof document !== 'undefined' && document.body) {
+    wrapObserver.observe(document.body, { childList: true, subtree: true });
+  } else {
+    document.addEventListener('DOMContentLoaded', () => {
+      wrapObserver.observe(document.body, { childList: true, subtree: true });
+    });
+  }
 }

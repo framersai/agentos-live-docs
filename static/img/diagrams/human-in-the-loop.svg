@@ -114,28 +114,30 @@
 
   <rect x="756" y="132" width="288" height="60" rx="8" class="card" />
   <text x="770" y="152" class="b">IHumanInteractionManager</text>
-  <text x="770" y="170" class="m">src/orchestration/hitl/IHumanInteractionManager.ts</text>
+  <text x="770" y="170" class="m">src/orchestration/hitl/</text>
   <text x="770" y="184" class="lbl">Severity-aware approval surface</text>
 
   <text x="756" y="216" class="h3">PendingAction</text>
-  <rect x="756" y="226" width="288" height="86" rx="6" class="runtime" />
+  <rect x="756" y="226" width="288" height="100" rx="6" class="runtime" />
   <text x="770" y="244" class="b">actionId · description · category</text>
-  <text x="770" y="260" class="m">severity: 'low' | 'medium' | 'high' | 'critical'</text>
-  <text x="770" y="276" class="b">reversible · potentialConsequences</text>
-  <text x="770" y="292" class="b">estimatedCost · alternatives</text>
-  <text x="770" y="306" class="b">requestedAt · timeoutMs</text>
+  <text x="770" y="260" class="m">severity:</text>
+  <text x="770" y="274" class="m">  'low' | 'medium' | 'high' | 'critical'</text>
+  <text x="770" y="290" class="b">reversible · potentialConsequences</text>
+  <text x="770" y="304" class="b">estimatedCost · alternatives</text>
+  <text x="770" y="318" class="b">requestedAt · timeoutMs</text>
 
-  <text x="756" y="338" class="h3">Four interaction modes</text>
-  <rect x="756" y="348" width="288" height="20" rx="4" class="handler" />
-  <text x="770" y="362" class="b">requestApproval(PendingAction)</text>
-  <rect x="756" y="372" width="288" height="20" rx="4" class="handler" />
-  <text x="770" y="386" class="b">requestClarification(...)</text>
-  <rect x="756" y="396" width="288" height="20" rx="4" class="handler" />
-  <text x="770" y="410" class="b">requestEdit(DraftOutput)</text>
-  <rect x="756" y="420" width="288" height="20" rx="4" class="handler" />
-  <text x="770" y="434" class="b">escalate(EscalationContext)</text>
+  <text x="756" y="346" class="h3">Four interaction modes</text>
+  <rect x="756" y="356" width="288" height="20" rx="4" class="handler" />
+  <text x="770" y="370" class="b">requestApproval(PendingAction)</text>
+  <rect x="756" y="380" width="288" height="20" rx="4" class="handler" />
+  <text x="770" y="394" class="b">requestClarification(...)</text>
+  <rect x="756" y="404" width="288" height="20" rx="4" class="handler" />
+  <text x="770" y="418" class="b">requestEdit(DraftOutput)</text>
+  <rect x="756" y="428" width="288" height="20" rx="4" class="handler" />
+  <text x="770" y="442" class="b">escalate(EscalationContext)</text>
 
-  <text x="756" y="464" class="lbl">Escalation reasons: low_confidence · safety_concern · …</text>
+  <text x="756" y="466" class="lbl">Escalation reasons:</text>
+  <text x="756" y="478" class="lbl">low_confidence · safety_concern · …</text>
 
   <!-- Common decision contract at bottom -->
   <rect x="40" y="502" width="1020" height="118" rx="12" class="lane-bg" />
