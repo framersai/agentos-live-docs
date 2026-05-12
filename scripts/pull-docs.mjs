@@ -154,22 +154,18 @@ function syncManagedFile(destPath, content) {
   }
 }
 
-// Helper: generate a stub doc so sidebars.js doesn't break on missing sources
+// Helper: when a manifest source can't be resolved (e.g. it lives in a
+// repo outside the agentos-live-docs CI checkout), DROP the destination
+// instead of writing a placeholder page. The previous behaviour wrote a
+// stub that pointed at the monorepo — public docs must not link there.
+// If a manifest entry can't resolve, the right fix is to either vendor
+// the file under apps/agentos-live-docs/vendored-docs/ or remove the
+// manifest entry, not to ship a placeholder.
 function writeStub(destPath, title, position, srcHint) {
-  syncManagedFile(
-    destPath,
-    `---
-title: "${title}"
-sidebar_position: ${position}
----
-
-# ${title}
-
-> This page is sourced from the monorepo and is not available in this build.
-> See the [source file](https://github.com/manicinc/voice-chat-assistant) for full content.
-`
-  );
-  console.warn(`  STUB (not found): ${srcHint}`);
+  if (existsSync(destPath)) {
+    rmSync(destPath, { force: true });
+  }
+  console.warn(`  DROPPED (source not resolvable in this build): ${srcHint}`);
   skipped++;
 }
 
