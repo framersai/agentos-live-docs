@@ -887,7 +887,7 @@ event: reply
 data: {"type":"REPLY","reply":"## CRISPR Gene Editing Safety Concerns\n\n..."}
 ```
 
-See the [HTTP Streaming API](/architecture/http-streaming-api) guide for the full SSE protocol.
+See [Streaming Semantics](/architecture/streaming-semantics) for the full SSE protocol.
 
 ### Configuration
 
@@ -937,7 +937,5 @@ Setting `minDepthToInject: "moderate"` means queries classified as `quick` are a
 
 ### Related
 
-- [HTTP Streaming API](/architecture/http-streaming-api) -- SSE protocol for progress events
-- [Chat Server](/architecture/chat-server) -- HTTP API reference
-- [Tools](/architecture/tools) -- Full tool catalog
-- [Browser Automation](/features/browser-automation) -- Content extraction behind the scenes
+- [Streaming Semantics](/architecture/streaming-semantics) -- SSE protocol for progress events
+- [Tool Calling & Lazy Loading](/architecture/tool-calling-and-loading) -- Full tool catalog and registration
