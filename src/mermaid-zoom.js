@@ -107,10 +107,12 @@ if (typeof window !== 'undefined') {
     toolbar.append(zoomOut, zoomLabel, zoomIn, resetBtn, sep.cloneNode(), closeBtn);
 
     /* ---- SVG container ---- */
-    /* Background is pinned to prefers-color-scheme (not Docusaurus data-theme)
-     * so it always matches the SVG's own @media (prefers-color-scheme) rules.
-     * Otherwise an SVG rendered in light internals can land on a dark modal
-     * (or vice-versa) when the OS scheme and the Docusaurus toggle disagree. */
+    /* Background follows Docusaurus' data-theme (applied in showModal via
+     * applyThemeToModal). We also set color-scheme so inlined SVGs that use
+     * @media (prefers-color-scheme) inside their own <style> blocks resolve
+     * against this property rather than the OS preference. The combination
+     * keeps modal background and SVG render mode aligned even when the OS
+     * scheme and the Docusaurus toggle disagree. */
     const container = document.createElement('div');
     container.id = 'mermaid-zoom-container';
     Object.assign(container.style, {
@@ -182,6 +184,23 @@ if (typeof window !== 'undefined') {
     applyTransform();
   }
 
+  /* Apply Docusaurus theme to the modal container + svgWrap so the modal
+   * background matches the page UI and any inlined SVG resolves its own
+   * @media (prefers-color-scheme) queries against the modal's color-scheme,
+   * not against the OS preference. This is what fixes the
+   * "light modal · dark-rendered SVG" mismatch when the user toggles
+   * Docusaurus' dark theme while the OS is set to light (or vice-versa). */
+  function applyThemeToModal() {
+    const container = document.getElementById('mermaid-zoom-container');
+    const svgWrap = document.getElementById('mermaid-zoom-svg-wrap');
+    if (!container) return;
+    const dsTheme = document.documentElement.getAttribute('data-theme') || 'light';
+    const isDark = dsTheme === 'dark';
+    container.style.background = isDark ? '#0f172a' : '#ffffff';
+    container.style.colorScheme = isDark ? 'dark' : 'light';
+    if (svgWrap) svgWrap.style.colorScheme = isDark ? 'dark' : 'light';
+  }
+
   function showModal(node) {
     const m = getModal();
     const wrap = document.getElementById('mermaid-zoom-svg-wrap');
@@ -194,18 +213,69 @@ if (typeof window !== 'undefined') {
     /* Clear any prior content (svg or img) */
     while (wrap.firstChild) wrap.removeChild(wrap.firstChild);
 
-    const clone = node.cloneNode(true);
-    clone.style.width = '100%';
-    clone.style.height = 'auto';
-    clone.style.display = 'block';
-    clone.removeAttribute('width');
-    clone.removeAttribute('height');
-    /* Drop the inline border-radius/margins that the markdown embed sets */
-    clone.style.borderRadius = '0';
-    clone.style.margin = '0';
-    /* Drag is handled by the container, not the inner element */
-    clone.style.pointerEvents = 'none';
-    wrap.appendChild(clone);
+    /* Match modal background + color-scheme to Docusaurus theme. */
+    applyThemeToModal();
+
+    /* For <img> sources we fetch and inline the SVG so its @media queries
+     * resolve against the modal's color-scheme (which we just set above)
+     * instead of the OS preference. Browsers loading SVG via <img> use the
+     * OS color-scheme regardless of document context, so a user with OS=dark
+     * and Docusaurus=light would otherwise see dark-mode SVG colors on a
+     * light modal — the unreadable result the user reported. Inlining means
+     * the SVG's internal @media (prefers-color-scheme) now follows the
+     * modal's color-scheme CSS property and produces matching contrast. */
+    if (node.tagName === 'IMG' && node.src) {
+      /* Show a placeholder clone immediately so the modal isn't empty
+       * during the fetch round-trip. The inline replacement happens once
+       * the SVG body arrives. */
+      const placeholder = node.cloneNode(true);
+      placeholder.style.width = '100%';
+      placeholder.style.height = 'auto';
+      placeholder.style.display = 'block';
+      placeholder.removeAttribute('width');
+      placeholder.removeAttribute('height');
+      placeholder.style.borderRadius = '0';
+      placeholder.style.margin = '0';
+      placeholder.style.pointerEvents = 'none';
+      placeholder.style.opacity = '0.4';
+      wrap.appendChild(placeholder);
+
+      fetch(node.src)
+        .then((r) => (r.ok ? r.text() : Promise.reject(r.status)))
+        .then((svgText) => {
+          /* Same-origin SVG only — security guard on parsed content. */
+          const parser = new DOMParser();
+          const doc = parser.parseFromString(svgText, 'image/svg+xml');
+          const svgEl = doc.querySelector('svg');
+          if (!svgEl) return;
+          svgEl.style.width = '100%';
+          svgEl.style.height = 'auto';
+          svgEl.style.display = 'block';
+          svgEl.removeAttribute('width');
+          svgEl.removeAttribute('height');
+          svgEl.style.pointerEvents = 'none';
+          /* Swap placeholder for inlined SVG. */
+          while (wrap.firstChild) wrap.removeChild(wrap.firstChild);
+          wrap.appendChild(svgEl);
+        })
+        .catch(() => {
+          /* Fetch failed (likely CORS) — keep the placeholder, restore
+           * full opacity so the user still sees something. */
+          placeholder.style.opacity = '1';
+        });
+    } else {
+      /* Mermaid SVG already lives in the document — clone it as before. */
+      const clone = node.cloneNode(true);
+      clone.style.width = '100%';
+      clone.style.height = 'auto';
+      clone.style.display = 'block';
+      clone.removeAttribute('width');
+      clone.removeAttribute('height');
+      clone.style.borderRadius = '0';
+      clone.style.margin = '0';
+      clone.style.pointerEvents = 'none';
+      wrap.appendChild(clone);
+    }
 
     /* Update label */
     const label = document.getElementById('mermaid-zoom-label');
@@ -363,14 +433,14 @@ if (typeof window !== 'undefined') {
       background: rgba(99, 102, 241, 0.92);
     }
 
-    /* Modal canvas background: matches the SVG's own prefers-color-scheme */
+    /* Modal canvas background: fallback only. The actual background is set
+     * via JS in applyThemeToModal() based on Docusaurus' data-theme so the
+     * modal matches the page UI regardless of OS prefers-color-scheme. */
     #mermaid-zoom-container {
       background: #ffffff;
     }
-    @media (prefers-color-scheme: dark) {
-      #mermaid-zoom-container {
-        background: #0f172a;
-      }
+    [data-theme='dark'] #mermaid-zoom-container {
+      background: #0f172a;
     }
   `;
   document.head.appendChild(style);
