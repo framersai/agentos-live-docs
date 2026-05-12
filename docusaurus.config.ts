@@ -478,6 +478,7 @@ const config = (githubStars: number): Config => ({
             { label: 'RAG & Vector Storage', to: '/features/rag-memory' },
             { label: 'Vector Scaling', to: '/features/sql-storage' },
             { label: 'Guardrails', to: '/features/guardrails' },
+            { label: 'Human-in-the-Loop (HITL)', to: '/features/human-in-the-loop' },
             { label: 'Voice Pipeline', to: '/features/voice-pipeline' },
             { label: 'Extensions', to: '/extensions' },
             { label: 'Skills', to: '/skills' },

@@ -948,6 +948,51 @@ th { font-weight: 600; }
   color: #e2e8f0 !important;
 }
 
+/* Default-style flowchart nodes (no classDef) render with a hard white
+   fill (`#FFFFFF` or `white`) and a dark text color baked into Mermaid's
+   base theme. In dark mode the JS post-processor can miss these when the
+   fill is set via inline rgb() or keyword instead of hex. Catch every
+   case via attribute + value match. */
+[data-theme='dark'] .docusaurus-mermaid-container .node rect[fill="#FFFFFF" i],
+[data-theme='dark'] .docusaurus-mermaid-container .node rect[fill="white" i],
+[data-theme='dark'] .docusaurus-mermaid-container .node circle[fill="#FFFFFF" i],
+[data-theme='dark'] .docusaurus-mermaid-container .node circle[fill="white" i],
+[data-theme='dark'] .docusaurus-mermaid-container .node polygon[fill="#FFFFFF" i],
+[data-theme='dark'] .docusaurus-mermaid-container .node polygon[fill="white" i],
+[data-theme='dark'] .docusaurus-mermaid-container .node ellipse[fill="#FFFFFF" i],
+[data-theme='dark'] .docusaurus-mermaid-container .node ellipse[fill="white" i],
+[data-theme='dark'] .docusaurus-mermaid-container .node path[fill="#FFFFFF" i],
+[data-theme='dark'] .docusaurus-mermaid-container .node path[fill="white" i] {
+  fill: rgba(30, 41, 59, 0.85) !important;
+  stroke: rgba(165, 180, 252, 0.5) !important;
+}
+
+/* foreignObject node labels (Mermaid 10+) render labels via HTML divs.
+   Their default color is a hardcoded dark slate; force light in dark mode. */
+[data-theme='dark'] .docusaurus-mermaid-container .node foreignObject,
+[data-theme='dark'] .docusaurus-mermaid-container .node foreignObject div,
+[data-theme='dark'] .docusaurus-mermaid-container .node foreignObject span,
+[data-theme='dark'] .docusaurus-mermaid-container .node foreignObject p {
+  color: #e2e8f0 !important;
+  background: transparent !important;
+}
+
+/* Default flowchart node stroke (border) — without this the borders
+   inherit a light grey that vanishes on dark. */
+[data-theme='dark'] .docusaurus-mermaid-container .node rect:not([fill]),
+[data-theme='dark'] .docusaurus-mermaid-container .node .basic.label-container {
+  stroke: rgba(165, 180, 252, 0.5) !important;
+}
+
+/* Cluster (subgraph) backgrounds — older diagrams use white subgraph fills
+   that swallow nested content in dark mode. */
+[data-theme='dark'] .docusaurus-mermaid-container .cluster rect[fill="#FFFFFF" i],
+[data-theme='dark'] .docusaurus-mermaid-container .cluster rect[fill="white" i],
+[data-theme='dark'] .docusaurus-mermaid-container .cluster rect:not([fill]) {
+  fill: rgba(15, 23, 42, 0.45) !important;
+  stroke: rgba(99, 102, 241, 0.35) !important;
+}
+
 /* Note backgrounds in sequence diagrams */
 [data-theme='dark'] .docusaurus-mermaid-container .note,
 [data-theme='dark'] .docusaurus-mermaid-container rect.note {

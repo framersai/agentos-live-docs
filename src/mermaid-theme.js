@@ -47,6 +47,13 @@ if (typeof window !== 'undefined') {
     '#f3e8ff': '--mer-external-fill',
     '#8b5cf6': '--mer-external-border',
     '#5b21b6': '--mer-external-text',
+    // Hardcoded accent colors emitted by `classDef` directives in older
+    // diagrams. Map to existing brand vars so dark mode flips them.
+    '#0041ff': '--mer-primary-border', // accent class — bright blue
+    '#1c1c28': '--mer-text',            // dark-card fill used by some diagrams
+    '#f2f2fa': '--mer-bg',              // light text on dark cards
+    '#c9a227': '--mer-data-border',     // gold accent
+    '#00f5ff': '--mer-input-border',    // cyan accent
   };
 
   const HEX_RE = new RegExp(
@@ -81,6 +88,20 @@ if (typeof window !== 'undefined') {
           const varName = FILL_MAP[key];
           if (varName) el.setAttribute(attr, `var(${varName})`);
         });
+      });
+      // Mermaid `classDef` directives are emitted as CSS rules inside an
+      // inline `<style>` element on each rendered SVG. Walk those rules and
+      // rewrite the same hex constants so class-based styling also flips
+      // between light and dark mode.
+      svg.querySelectorAll('style').forEach((styleEl) => {
+        const css = styleEl.textContent;
+        if (!css) return;
+        const next = css.replace(HEX_RE, (m) => {
+          const key = m.toLowerCase();
+          const varName = FILL_MAP[key];
+          return varName ? `var(${varName})` : m;
+        });
+        if (next !== css) styleEl.textContent = next;
       });
     });
   }
