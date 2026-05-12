@@ -475,6 +475,7 @@ const config = (githubStars: number): Config => ({
             { label: 'Getting Started', to: '/getting-started' },
             { label: 'Memory System', to: '/features/cognitive-memory' },
             { label: 'HEXACO Personality', to: '/features/hexaco-personality' },
+            { label: 'Adaptive Prompt Intelligence', to: '/features/adaptive-prompt-intelligence' },
             { label: 'RAG & Vector Storage', to: '/features/rag-memory' },
             { label: 'Vector Scaling', to: '/features/sql-storage' },
             { label: 'Guardrails', to: '/features/guardrails' },
