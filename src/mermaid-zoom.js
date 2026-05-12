@@ -245,11 +245,15 @@ if (typeof window !== 'undefined') {
       return;
     }
 
-    /* Hand-crafted hero diagrams. In Docusaurus the markdown img loader
-     * inlines SVGs as data:image/svg+xml URIs, so the original /img/diagrams/
-     * path is gone by the time the img reaches the DOM. Match either form. */
+    /* Hand-crafted hero diagrams. Docusaurus' markdown img loader either
+     * inlines small SVGs as data:image/svg+xml URIs OR copies the file
+     * to /assets/images/<name>-<hash>.svg via webpack, so the original
+     * /img/diagrams/ path is gone by the time the img reaches the DOM.
+     * Match all three forms. */
     const img = e.target.closest(
-      'img[src*="/img/diagrams/"], img[src^="data:image/svg+xml"]'
+      'img[src*="/img/diagrams/"], ' +
+      'img[src^="data:image/svg+xml"], ' +
+      'img[src*="/assets/images/"][src$=".svg"]'
     );
     if (img) {
       e.preventDefault();
@@ -265,7 +269,8 @@ if (typeof window !== 'undefined') {
     .docusaurus-mermaid-container svg,
     [class*="mermaid"] svg,
     img[src*="/img/diagrams/"],
-    img[src^="data:image/svg+xml"] {
+    img[src^="data:image/svg+xml"],
+    img[src*="/assets/images/"][src$=".svg"] {
       cursor: zoom-in;
       transition: opacity 0.15s ease, box-shadow 0.15s ease;
       border-radius: 8px;
@@ -273,7 +278,8 @@ if (typeof window !== 'undefined') {
     .docusaurus-mermaid-container svg:hover,
     [class*="mermaid"] svg:hover,
     img[src*="/img/diagrams/"]:hover,
-    img[src^="data:image/svg+xml"]:hover {
+    img[src^="data:image/svg+xml"]:hover,
+    img[src*="/assets/images/"][src$=".svg"]:hover {
       opacity: 0.92;
       box-shadow: 0 0 0 2px var(--ifm-color-primary-light, #6366f1);
     }
@@ -381,7 +387,8 @@ if (typeof window !== 'undefined') {
   function wrapDiagrams() {
     const candidates = document.querySelectorAll(
       'img[src*="/img/diagrams/"]:not([data-mer-wrapped]), ' +
-      'img[src^="data:image/svg+xml"]:not([data-mer-wrapped])'
+      'img[src^="data:image/svg+xml"]:not([data-mer-wrapped]), ' +
+      'img[src*="/assets/images/"][src$=".svg"]:not([data-mer-wrapped])'
     );
     candidates.forEach((node) => {
       if (node.dataset && node.dataset.merWrapped) return;
