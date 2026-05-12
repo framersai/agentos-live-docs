@@ -20,7 +20,7 @@ AgentOS skills are split into three public layers, each in its own GitHub reposi
 ## Start Here
 
 - Use [Skills (SKILL.md)](/skills/skill-format) to author and structure skills.
-- Use [`@framers/agentos-skills`](/skills/agentos-skills) when you need the curated content pack.
+- Use [`@framers/agentos-skills`](https://github.com/framersai/agentos-skills) when you need the curated content pack.
 - Use [`@framers/agentos-skills-registry`](/skills/agentos-skills-registry) when you need catalog search, lazy loading, or factories.
 
 ## Skills vs Extensions
