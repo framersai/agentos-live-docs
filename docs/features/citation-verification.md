@@ -10,6 +10,8 @@ LLMs hallucinate citations: they reference papers that do not exist, quote sourc
 
 AgentOS attaches per-claim verdicts to every generation behind a single flag. Each statement gets decomposed into an atomic claim, embedded against the sources the agent retrieved, scored on cosine similarity, and tagged with one of four verdicts: `supported`, `weak`, `unverifiable`, or `contradicted`. Optional NLI promotes contradictions where the source disagrees with the claim. Optional web-search fallback rescues `unverifiable` claims that could have been answered from general knowledge.
 
+The full implementation lives in [`packages/agentos/src/cognition/rag/citation/`](https://github.com/framersai/agentos/tree/master/src/cognition/rag/citation). The runtime ships [`CitationVerifier`](https://github.com/framersai/agentos/blob/master/src/cognition/rag/citation/CitationVerifier.ts), the [`VerifiedResponse`](https://github.com/framersai/agentos/blob/master/src/cognition/rag/citation/types.ts) and [`VerificationSource`](https://github.com/framersai/agentos/blob/master/src/cognition/rag/citation/types.ts) types, and the [`formatVerifiedResponse`](https://github.com/framersai/agentos/blob/master/src/cognition/rag/citation/format.ts) helper.
+
 ## The one-flag path
 
 For most use cases you never touch the verifier directly. Configure `verifyCitations` on the agent and the per-claim verdicts land on `result.grounding` automatically:
@@ -34,7 +36,7 @@ for (const claim of result.grounding?.claims ?? []) {
 }
 ```
 
-The agent retrieves sources for each user input, generates the response, and runs `CitationVerifier` over the text+sources pair on the way out. Same flag works on `QueryRouter` (`verifyCitations: true` there reuses the router's existing retrieval and embedding paths).
+The agent retrieves sources for each user input, generates the response, and runs [`CitationVerifier`](https://github.com/framersai/agentos/blob/master/src/cognition/rag/citation/CitationVerifier.ts) over the text+sources pair on the way out. Same flag works on [`QueryRouter`](https://github.com/framersai/agentos/blob/master/src/orchestration/pipeline/query/QueryRouter.ts) (`verifyCitations: true` there reuses the router's existing retrieval and embedding paths).
 
 Reach for `CitationVerifier` directly only when you already own both sides — generated text in one place and source chunks in another — and want to run scoring without an agent in the loop.
 
@@ -42,18 +44,26 @@ Reach for `CitationVerifier` directly only when you already own both sides — g
 
 ```
 Agent generates response with sources
-  → ClaimExtractor: split into atomic claims
-  → Batch embed: claims[] + sources[] (one API call)
-  → Cosine similarity matrix: claims × sources
+  → ClaimExtractor: split into atomic claims         (grounding-guard ext)
+  → Batch embed: claims[] + sources[] (one API call) (your embedFn)
+  → Cosine similarity matrix: claims × sources       (CitationVerifier)
   → Per-claim verdict: supported / weak / unverifiable / contradicted
-  → Optional: NLI contradiction check
-  → Optional: web search fallback for unverifiable claims
-  → VerifiedResponse with per-claim verdicts
+  → Optional: NLI contradiction check                (grounding-guard nliFn)
+  → Optional: web search fallback (verify_citations) (citation-verifier ext)
+  → VerifiedResponse with per-claim verdicts         (citation/types.ts)
 ```
+
+Each step maps to a real source surface:
+
+- [`ClaimExtractor`](https://github.com/framersai/agentos-ext-grounding-guard/blob/master/src/ClaimExtractor.ts) ships in the [`@framers/agentos-ext-grounding-guard`](https://github.com/framersai/agentos-ext-grounding-guard) package.
+- [`CitationVerifier`](https://github.com/framersai/agentos/blob/master/src/cognition/rag/citation/CitationVerifier.ts) owns the similarity scoring and aggregation.
+- The [`verify_citations` tool](https://github.com/framersai/agentos-extensions/blob/master/registry/curated/research/citation-verifier/src/VerifyCitationsTool.ts) and its [`fact_check` companion](https://github.com/framersai/agentos-extensions/blob/master/registry/curated/research/web-search/src/tools/factCheck.ts) live in the extensions registry.
 
 ## Core API
 
 ### CitationVerifier
+
+Source: [`packages/agentos/src/cognition/rag/citation/CitationVerifier.ts`](https://github.com/framersai/agentos/blob/master/src/cognition/rag/citation/CitationVerifier.ts).
 
 ```typescript
 import { CitationVerifier } from '@framers/agentos';
@@ -126,6 +136,8 @@ const result = await verifier.verify(filtered, sources);
 
 ### VerifiedResponse
 
+Source: [`packages/agentos/src/cognition/rag/citation/types.ts`](https://github.com/framersai/agentos/blob/master/src/cognition/rag/citation/types.ts).
+
 ```typescript
 {
   claims: [
@@ -162,7 +174,7 @@ const result = await verifier.verify(filtered, sources);
 ```
 
 For a one-line human summary (`"2/3 claims verified (67%)"`), import the
-`formatVerifiedResponse` helper:
+[`formatVerifiedResponse`](https://github.com/framersai/agentos/blob/master/src/cognition/rag/citation/format.ts) helper:
 
 ```typescript
 import { formatVerifiedResponse } from '@framers/agentos';
@@ -182,7 +194,7 @@ console.log(formatVerifiedResponse(result));
 
 ### QueryRouter Integration
 
-The default `QueryRouter` runtime can now trigger `CitationVerifier`
+The default [`QueryRouter`](https://github.com/framersai/agentos/blob/master/src/orchestration/pipeline/query/QueryRouter.ts) runtime can now trigger `CitationVerifier`
 automatically when `verifyCitations: true` is set.
 
 Verification runs only when both of these conditions are true:
@@ -197,8 +209,8 @@ verification gracefully.
 Outside QueryRouter, you can still use the verifier directly in host-managed
 flows:
 
-- call `CitationVerifier` directly after generation
-- call the `verify_citations` tool from an agent workflow
+- call [`CitationVerifier`](https://github.com/framersai/agentos/blob/master/src/cognition/rag/citation/CitationVerifier.ts) directly after generation
+- call the [`verify_citations` tool](https://github.com/framersai/agentos-extensions/blob/master/registry/curated/research/citation-verifier/src/VerifyCitationsTool.ts) from an agent workflow
 - wire it into your own host/runtime around `deep_research` synthesis (see below)
 
 ### Deep Research Synthesis
@@ -216,11 +228,11 @@ Two integration paths:
   retrieves source chunks.
 - **Host-managed** — call `CitationVerifier.verify(report, sources)` directly
   after `deep_research` resolves, mapping the engine's extracted source
-  content into `VerificationSource` shape.
+  content into the [`VerificationSource`](https://github.com/framersai/agentos/blob/master/src/cognition/rag/citation/types.ts) shape.
 
 ### On-Demand (via Tool)
 
-Agents can call `verify_citations` explicitly:
+Agents can call [`verify_citations`](https://github.com/framersai/agentos-extensions/blob/master/registry/curated/research/citation-verifier/src/VerifyCitationsTool.ts) explicitly:
 
 ```typescript
 verify_citations({
@@ -234,7 +246,7 @@ verify_citations({
 
 ### Via Skill
 
-The `fact-grounding` skill instructs the agent to:
+The [`fact-grounding` skill](https://github.com/framersai/agentos-skills/blob/master/registry/curated/fact-grounding/SKILL.md) instructs the agent to:
 1. Verify key factual claims before presenting to the user
 2. Mark unverified claims with "[unverified]"
 3. Cite sources inline: "According to [Source Title]..."
@@ -242,7 +254,7 @@ The `fact-grounding` skill instructs the agent to:
 
 ## Web Fallback
 
-When `webFallback: true`, unverifiable claims are checked via the `fact_check` tool (web search):
+When `webFallback: true`, unverifiable claims are checked via the [`fact_check` tool](https://github.com/framersai/agentos-extensions/blob/master/registry/curated/research/web-search/src/tools/factCheck.ts) (web search):
 
 ```
 Claim: "Mars has two moons"
@@ -263,7 +275,7 @@ Claims are extracted using sentence splitting by default:
 3. Filter: remove questions, hedging ("I think..."), meta-text ("Let me know...")
 4. Keep claims longer than 15 characters
 
-For higher quality extraction, install `@framers/agentos-ext-grounding-guard` which provides LLM-based claim decomposition that handles complex sentences with multiple assertions.
+For higher quality extraction, install [`@framers/agentos-ext-grounding-guard`](https://github.com/framersai/agentos-ext-grounding-guard) — its [`ClaimExtractor`](https://github.com/framersai/agentos-ext-grounding-guard/blob/master/src/ClaimExtractor.ts) provides LLM-based claim decomposition that handles complex sentences with multiple assertions.
 
 ## Performance
 
@@ -271,6 +283,21 @@ For higher quality extraction, install `@framers/agentos-ext-grounding-guard` wh
 - **Compute**: Cosine similarity matrix is O(claims × sources) — sub-millisecond for typical sizes
 - **Total overhead**: ~50ms for 5 claims × 5 sources (excluding embedding latency)
 - **No LLM calls** unless NLI or web fallback is triggered
+
+## Source Files
+
+| Symbol | Repo | Path |
+|---|---|---|
+| [`CitationVerifier`](https://github.com/framersai/agentos/blob/master/src/cognition/rag/citation/CitationVerifier.ts) | `framersai/agentos` | `src/cognition/rag/citation/CitationVerifier.ts` |
+| [`VerifiedResponse`, `VerificationSource`, `ClaimVerdict`](https://github.com/framersai/agentos/blob/master/src/cognition/rag/citation/types.ts) (types) | `framersai/agentos` | `src/cognition/rag/citation/types.ts` |
+| [`formatVerifiedResponse`](https://github.com/framersai/agentos/blob/master/src/cognition/rag/citation/format.ts) | `framersai/agentos` | `src/cognition/rag/citation/format.ts` |
+| [Citation tree (re-exports)](https://github.com/framersai/agentos/tree/master/src/cognition/rag/citation) | `framersai/agentos` | `src/cognition/rag/citation/` |
+| [`QueryRouter`](https://github.com/framersai/agentos/blob/master/src/orchestration/pipeline/query/QueryRouter.ts) | `framersai/agentos` | `src/orchestration/pipeline/query/QueryRouter.ts` |
+| [`ClaimExtractor`](https://github.com/framersai/agentos-ext-grounding-guard/blob/master/src/ClaimExtractor.ts) | `framersai/agentos-ext-grounding-guard` | `src/ClaimExtractor.ts` |
+| [Grounding Guard package root](https://github.com/framersai/agentos-ext-grounding-guard) | `framersai/agentos-ext-grounding-guard` | (root) |
+| [`verify_citations` tool (`VerifyCitationsTool`)](https://github.com/framersai/agentos-extensions/blob/master/registry/curated/research/citation-verifier/src/VerifyCitationsTool.ts) | `framersai/agentos-extensions` | `registry/curated/research/citation-verifier/src/VerifyCitationsTool.ts` |
+| [`fact_check` tool](https://github.com/framersai/agentos-extensions/blob/master/registry/curated/research/web-search/src/tools/factCheck.ts) | `framersai/agentos-extensions` | `registry/curated/research/web-search/src/tools/factCheck.ts` |
+| [`fact-grounding` skill (`SKILL.md`)](https://github.com/framersai/agentos-skills/blob/master/registry/curated/fact-grounding/SKILL.md) | `framersai/agentos-skills` | `registry/curated/fact-grounding/SKILL.md` |
 
 ## Related Features
 
