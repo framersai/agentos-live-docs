@@ -5,11 +5,11 @@ sidebar_position: 30
 
 # Provider Preferences
 
-The `ProviderPreferences` system gives callers fine-grained control over which media providers are used and in what order. It applies to image generation, video generation, and audio generation (music and SFX separately).
+The [`ProviderPreferences`](https://github.com/framersai/agentos/blob/master/src/io/media/ProviderPreferences.ts) system gives callers fine-grained control over which media providers are used and in what order. It applies to image generation, video generation, and audio generation (music and SFX separately).
 
 ## Core types
 
-### `MediaProviderPreference`
+### [`MediaProviderPreference`](https://github.com/framersai/agentos/blob/master/src/io/media/ProviderPreferences.ts)
 
 Per-modality provider preference configuration:
 
@@ -195,6 +195,6 @@ const prefs: MediaProviderPreference = {
 2. `resolveProviderOrder()` filters and reorders based on `preferred` and `blocked`.
 3. If `weights` are present, `selectWeightedProvider()` picks the primary.
 4. The primary provider is initialised; remaining providers become fallbacks.
-5. If the primary fails, `FallbackVideoProxy` / `FallbackAudioProxy` transparently retries on the next provider in the chain.
+5. If the primary fails, [`FallbackVideoProxy`](https://github.com/framersai/agentos/blob/master/src/io/media/video/FallbackVideoProxy.ts) / [`FallbackAudioProxy`](https://github.com/framersai/agentos/blob/master/src/io/media/audio/FallbackAudioProxy.ts) transparently retries on the next provider in the chain.
 
 This design is stateless and side-effect-free, so it integrates cleanly with any subsystem.

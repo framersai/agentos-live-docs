@@ -5,7 +5,7 @@ sidebar_position: 32
 
 # GitHub Integration
 
-The `@framers/agentos-ext-github` extension provides 26 GitHub tools that give agents full programmatic access to repositories, issues, pull requests, files, branches, releases, and CI/CD workflows. It also includes a `GitHubRepoIndexer` for RAG-ready codebase ingestion.
+The `@framers/agentos-ext-github` extension provides 26 GitHub tools that give agents full programmatic access to repositories, issues, pull requests, files, branches, releases, and CI/CD workflows. It also includes a [`GitHubRepoIndexer`](https://github.com/framersai/agentos-extensions/blob/master/registry/curated/integrations/github/src/GitHubRepoIndexer.ts) for RAG-ready codebase ingestion.
 
 ## Installation
 
@@ -96,7 +96,7 @@ The extension resolves a GitHub token in priority order:
 
 ## GitHubRepoIndexer
 
-The `GitHubRepoIndexer` walks a repository tree, extracts documentation and source files, splits them by markdown headings, and returns structured `IndexedChunk` arrays suitable for vector-store ingestion.
+The `GitHubRepoIndexer` walks a repository tree, extracts documentation and source files, splits them by markdown headings, and returns structured [`IndexedChunk`](https://github.com/framersai/agentos-extensions/blob/master/registry/curated/integrations/github/src/GitHubRepoIndexer.ts) arrays suitable for vector-store ingestion.
 
 ```typescript
 import { GitHubRepoIndexer } from '@framers/agentos-ext-github';
@@ -133,7 +133,7 @@ interface IndexedChunk {
 }
 ```
 
-### `IndexResult`
+### [`IndexResult`](https://github.com/framersai/agentos-extensions/blob/master/registry/curated/integrations/github/src/GitHubRepoIndexer.ts)
 
 ```typescript
 interface IndexResult {
@@ -258,4 +258,4 @@ const pack = createExtensionPack({
 // pack.onActivate() initialises the GitHubService
 ```
 
-All 26 tools share a single `GitHubService` instance that handles authentication, rate limiting, and request batching.
+All 26 tools share a single [`GitHubService`](https://github.com/framersai/agentos-extensions/blob/master/registry/curated/integrations/github/src/GitHubService.ts) instance that handles authentication, rate limiting, and request batching.

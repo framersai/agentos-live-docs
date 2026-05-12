@@ -11,7 +11,7 @@ AgentOS provides provider-agnostic APIs for generating music and sound effects f
 | `generateMusic()` | Full-length musical compositions from text prompts |
 | `generateSFX()` | Short sound effects from text descriptions |
 
-Both APIs support automatic provider detection, fallback chains via `FallbackAudioProxy`, progress callbacks, and per-call provider preference overrides.
+Both APIs support automatic provider detection, fallback chains via [`FallbackAudioProxy`](https://github.com/framersai/agentos/blob/master/src/io/media/audio/FallbackAudioProxy.ts), progress callbacks, and per-call provider preference overrides.
 
 ## Providers
 
@@ -68,7 +68,7 @@ const result = await generateMusic({
 });
 ```
 
-### `GenerateMusicOptions`
+### [`GenerateMusicOptions`](https://github.com/framersai/agentos/blob/master/src/api/generateMusic.ts)
 
 | Option | Type | Description |
 |---|---|---|
@@ -77,12 +77,12 @@ const result = await generateMusic({
 | `model` | `string` | Model override within the provider |
 | `durationSec` | `number` | Desired output duration in seconds |
 | `negativePrompt` | `string` | Musical elements to avoid |
-| `outputFormat` | `AudioOutputFormat` | `"mp3"` / `"wav"` / `"flac"` / `"ogg"` / `"aac"` |
+| `outputFormat` | [`AudioOutputFormat`](https://github.com/framersai/agentos/blob/master/src/io/media/audio/types.ts) | `"mp3"` / `"wav"` / `"flac"` / `"ogg"` / `"aac"` |
 | `seed` | `number` | Seed for reproducible generation |
 | `timeoutMs` | `number` | Maximum wait time in milliseconds |
 | `n` | `number` | Number of clips to generate (default: 1) |
-| `onProgress` | `(event) => void` | Progress callback with `AudioProgressEvent` |
-| `providerPreferences` | `MediaProviderPreference` | Reorder or filter the fallback chain |
+| `onProgress` | `(event) => void` | Progress callback with [`AudioProgressEvent`](https://github.com/framersai/agentos/blob/master/src/io/media/audio/types.ts) |
+| `providerPreferences` | [`MediaProviderPreference`](https://github.com/framersai/agentos/blob/master/src/io/media/ProviderPreferences.ts) | Reorder or filter the fallback chain |
 | `apiKey` | `string` | Override the API key |
 
 ## `generateSFX()`
@@ -99,7 +99,7 @@ const result = await generateSFX({
 console.log(result.audio[0].url);
 ```
 
-### `GenerateSFXOptions`
+### [`GenerateSFXOptions`](https://github.com/framersai/agentos/blob/master/src/api/generateSFX.ts)
 
 | Option | Type | Description |
 |---|---|---|
@@ -129,7 +129,7 @@ interface GenerateMusicResult {
 }
 ```
 
-Each `GeneratedAudio` object contains:
+Each [`GeneratedAudio`](https://github.com/framersai/agentos/blob/master/src/io/media/audio/types.ts) object contains:
 
 ```typescript
 interface GeneratedAudio {

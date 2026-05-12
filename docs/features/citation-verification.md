@@ -38,7 +38,7 @@ for (const claim of result.grounding?.claims ?? []) {
 
 The agent retrieves sources for each user input, generates the response, and runs [`CitationVerifier`](https://github.com/framersai/agentos/blob/master/src/cognition/rag/citation/CitationVerifier.ts) over the text+sources pair on the way out. Same flag works on [`QueryRouter`](https://github.com/framersai/agentos/blob/master/src/orchestration/pipeline/query/QueryRouter.ts) (`verifyCitations: true` there reuses the router's existing retrieval and embedding paths).
 
-Reach for `CitationVerifier` directly only when you already own both sides — generated text in one place and source chunks in another — and want to run scoring without an agent in the loop.
+Reach for [`CitationVerifier`](https://github.com/framersai/agentos/blob/master/src/cognition/rag/citation/CitationVerifier.ts) directly only when you already own both sides — generated text in one place and source chunks in another — and want to run scoring without an agent in the loop.
 
 ## Architecture
 

@@ -235,7 +235,7 @@ const pack = createCodeSafetyGuardrail({
 
 ## Custom Rules
 
-Add custom rules using the `ICodeSafetyRule` interface:
+Add custom rules using the [`ICodeSafetyRule`](https://github.com/framersai/agentos-guardrails/blob/master/src/code-safety/types.ts) interface:
 
 ```typescript
 interface ICodeSafetyRule {
@@ -272,7 +272,7 @@ const pack = createCodeSafetyGuardrail({
 
 ## Configuration
 
-### `CodeSafetyPackOptions`
+### [`CodeSafetyPackOptions`](https://github.com/framersai/agentos-guardrails/blob/master/src/code-safety/types.ts)
 
 | Option                | Type                                   | Default                                                                  | Description                                                               |
 | --------------------- | -------------------------------------- | ------------------------------------------------------------------------ | ------------------------------------------------------------------------- |

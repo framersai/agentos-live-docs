@@ -32,7 +32,7 @@ graph TD
   E --> F[LLM Behavior]
 ```
 
-## Loading Skills With `SkillRegistry`
+## Loading Skills With [`SkillRegistry`](https://github.com/framersai/agentos/blob/master/src/cognition/skills/SkillRegistry.ts)
 
 Use `SkillRegistry` to load skills from one or more directories and compile them into a single prompt snapshot:
 
@@ -101,7 +101,7 @@ sequenceDiagram
 
 Beyond lazy loading, skills are fully indexed by the **Capability Discovery Engine** (`@framers/agentos/discovery`). This provides semantic search across all capabilities -- tools, skills, extensions, and channels -- using embedding similarity and graph re-ranking.
 
-Skills become `CapabilityDescriptor` entries with `kind: 'skill'` and are indexed alongside tools. The discovery engine’s graph tracks relationships between skills and their required tools (e.g., `skill:web-search` -> `DEPENDS_ON` -> `tool:web_search`), so searching for either surfaces both.
+Skills become [`CapabilityDescriptor`](https://github.com/framersai/agentos/blob/master/src/cognition/discovery/types.ts) entries with `kind: 'skill'` and are indexed alongside tools. The discovery engine’s graph tracks relationships between skills and their required tools (e.g., `skill:web-search` -> `DEPENDS_ON` -> `tool:web_search`), so searching for either surfaces both.
 
 **Skills vs extensions in discovery**: Skills are prompt-level modules (`SKILL.md`) that teach _when_ and _how_ to use tools. Extensions are runtime code (tools, guardrails, workflows) that provide callable actions. Both feed into the same discovery index, but you don’t need a skill for every tool -- many tools work fine with just their schema. Skills add value when a tool needs behavioral guidelines beyond its name and parameters.
 

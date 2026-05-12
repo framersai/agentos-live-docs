@@ -6,7 +6,7 @@ description: "PlanningEngine — multi-step task planning for AgentOS agents. Re
 keywords: [agent planning engine, react planning, tree of thoughts, llm task decomposition, least to most prompting, reflexion, autonomous agent loop, multi-step ai planning, agentos orchestration]
 ---
 
-`PlanningEngine` is the multi-step task orchestrator for AgentOS agents. A single LLM call answers a single question; a multi-step task (research across sources, draft, critique, revise) requires goal-state retention across turns, step-by-step decomposition, intermediate result inspection, and conditional advance/backtrack logic. `PlanningEngine` provides that loop.
+[`PlanningEngine`](https://github.com/framersai/agentos/blob/master/src/orchestration/planner/PlanningEngine.ts) is the multi-step task orchestrator for AgentOS agents. A single LLM call answers a single question; a multi-step task (research across sources, draft, critique, revise) requires goal-state retention across turns, step-by-step decomposition, intermediate result inspection, and conditional advance/backtrack logic. `PlanningEngine` provides that loop.
 
 Three collaborators compose into the engine: a **Plan Generator** that converts a goal into a multi-step plan (ReAct or Tree-of-Thoughts), a **Task Decomposer** that further decomposes steps when needed (Least-to-Most prompting), and a **Self-Reflector** that critiques results after execution and proposes revisions (Reflexion). The **Execution Engine** runs steps, checkpoints state, rolls back on failure, and ships an autonomous-loop variant that replans and retries until a budget cap is reached. Three external systems are addressable from the engine: the LLM Provider Manager, the tool catalog, and the RAG system.
 
