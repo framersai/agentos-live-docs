@@ -269,7 +269,42 @@ function InstallTabs() {
 /* ------------------------------------------------------------------ */
 
 const quickStartCode = {
-  Multimodal: `import { generateText, streamText, generateImage, agent } from '@framers/agentos';
+  'Multimodal RAG': `import { Memory } from '@framers/agentos';
+import { MultimodalIndexer } from '@framers/agentos/cognition/rag';
+import fs from 'fs';
+
+// One brain backs everything — text, PDFs, images, audio.
+const brain = await Memory.createSqlite({ path: './brain.sqlite' });
+
+// Text + documents flow through the standard ingest path.
+// Loaders auto-detect PDF / DOCX / MD / HTML / CSV / JSON / XML.
+await brain.ingest('./reports/q4-earnings.pdf');
+await brain.ingest('./notes/');                       // recurse a folder
+
+// Images and audio go through MultimodalIndexer. It captions images
+// via a vision provider, transcribes audio via STT, and indexes the
+// derived text into the same vector store as everything else.
+const indexer = new MultimodalIndexer({
+  embeddingManager: brain.embeddingManager,
+  vectorStore: brain.vectorStore,
+  visionProvider: { provider: 'openai', model: 'gpt-4o-mini' },
+  sttProvider:    { provider: 'openai', model: 'whisper-1' },
+});
+
+await indexer.indexImage({ image: fs.readFileSync('./figures/revenue-chart.png') });
+await indexer.indexAudio({ audio: fs.readFileSync('./calls/sales-q4.wav'), language: 'en' });
+
+// One text query, every modality searched. Hits arrive ranked with
+// modality + derived text so you can cite the underlying asset.
+const hits = await indexer.search('Q4 revenue growth drivers');
+for (const hit of hits) {
+  console.log(\`[\${hit.modality}] \${hit.text.slice(0, 80)}…  (\${hit.score.toFixed(2)})\`);
+  // => [image]    "Bar chart showing 23% YoY growth in cloud…  (0.91)"
+  // => [audio]    "…we hit $4.2B in cloud services…           (0.87)"
+  // => [document] "Revenue grew 23% to $4.2B driven by…       (0.84)"
+}`,
+
+  'Media Generation': `import { generateText, streamText, generateImage, agent } from '@framers/agentos';
 
 // Text — just set the provider, AgentOS picks the model
 const { text } = await generateText({ provider: 'openai', prompt: 'Explain QUIC.' });
