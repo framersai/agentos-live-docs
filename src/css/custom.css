@@ -95,6 +95,52 @@ h2 { font-weight: 700; }
 
 .navbar__logo img { vertical-align: middle; }
 
+/* -- Navbar logo size ------------------------------------------------------
+ * Larger than Docusaurus default so the brand reads cleanly. height: 52px
+ * is set inline in docusaurus.config.ts; this rule ensures the <img>
+ * inside scales with it (Docusaurus injects an inline height attr on the
+ * img but max-height keeps it bound). */
+.navbar__logo,
+.navbar__logo img {
+  height: 52px;
+  max-height: 52px;
+  width: auto;
+}
+
+/* -- Navbar single-line layout --------------------------------------------
+ * Default Docusaurus lets navbar items wrap to a second row when they don't
+ * fit horizontally. We never want that — the brand + dropdowns + utility
+ * icons stay on one line at every viewport above the mobile hamburger
+ * breakpoint (996px). Below 996px the mobile rules elsewhere in this file
+ * already collapse the menu into the drawer.
+ *
+ * `min-width: 0` on the children lets flex shrink them rather than
+ * forcing the parent to overflow horizontally. */
+.navbar__inner {
+  flex-wrap: nowrap !important;
+}
+.navbar__items,
+.navbar__items--left,
+.navbar__items--right {
+  flex-wrap: nowrap !important;
+  min-width: 0;
+}
+/* When space is tight, tighten the gap between nav items rather than
+ * wrap to a second line. The default 1rem gap is what causes wrapping
+ * on mid-width screens (~1000–1200px). */
+@media (max-width: 1280px) and (min-width: 997px) {
+  .navbar__items--left {
+    gap: 0.4rem !important;
+  }
+  .navbar__items--right {
+    gap: 0.35rem !important;
+  }
+  .navbar__link {
+    padding: 0.35rem 0.55rem !important;
+    font-size: 0.92rem !important;
+  }
+}
+
 /* -- Global: prevent horizontal scroll ------------------------------------ */
 html, body {
   overflow-x: hidden !important;

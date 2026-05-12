@@ -462,8 +462,8 @@ const config = (githubStars: number): Config => ({
         src: 'img/logo-light.svg',
         srcDark: 'img/logo-dark.svg',
         href: '/',
-        height: '36px',
-        style: { marginRight: '0.5rem' },
+        height: '52px',
+        style: { marginRight: '0.75rem' },
       },
       items: [
         {
