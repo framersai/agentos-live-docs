@@ -1,0 +1,334 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 760" width="1200" height="760" role="img" aria-labelledby="sa-title sa-desc" font-family="Inter, system-ui, -apple-system, sans-serif">
+  <title id="sa-title">AgentOS System Architecture</title>
+  <desc id="sa-desc">Seven-layer architecture from top to bottom: API Surface (generateText, streamText, agent, agency), Cognitive Substrate (GMI coordinator with persona overlay, sentiment tracker, metaprompt executor), Memory and RAG (working memory, episodic, semantic, 8 cognitive mechanisms, HyDE, GraphRAG, 7 vector backends), Tools and Capabilities (orchestrator, extensions, skills, capability discovery, emergent tool forging), Guardrails (5-tier security, PII redaction, ML classifiers, grounding guard, HITL), Orchestration (workflow, mission, AgentGraph, checkpointing), and I/O and Providers (voice pipeline, channel adapters, media generation, 21 LLM providers).</desc>
+
+  <defs>
+    <!-- Brand gradient (indigo → violet → pink) used for title strip + connectors -->
+    <linearGradient id="sa-brand" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#6366f1" />
+      <stop offset="50%" stop-color="#8b5cf6" />
+      <stop offset="100%" stop-color="#ec4899" />
+    </linearGradient>
+
+    <!-- Per-layer left-edge accent gradients. Each fades horizontally from
+         the layer's accent color to transparent so the colour reads as a
+         glow rather than a hard stripe. -->
+    <linearGradient id="sa-edge-1" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#ec4899" stop-opacity="0.55" />
+      <stop offset="100%" stop-color="#ec4899" stop-opacity="0" />
+    </linearGradient>
+    <linearGradient id="sa-edge-2" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#a78bfa" stop-opacity="0.55" />
+      <stop offset="100%" stop-color="#a78bfa" stop-opacity="0" />
+    </linearGradient>
+    <linearGradient id="sa-edge-3" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#06b6d4" stop-opacity="0.55" />
+      <stop offset="100%" stop-color="#06b6d4" stop-opacity="0" />
+    </linearGradient>
+    <linearGradient id="sa-edge-4" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#10b981" stop-opacity="0.55" />
+      <stop offset="100%" stop-color="#10b981" stop-opacity="0" />
+    </linearGradient>
+    <linearGradient id="sa-edge-5" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#f43f5e" stop-opacity="0.55" />
+      <stop offset="100%" stop-color="#f43f5e" stop-opacity="0" />
+    </linearGradient>
+    <linearGradient id="sa-edge-6" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#f59e0b" stop-opacity="0.55" />
+      <stop offset="100%" stop-color="#f59e0b" stop-opacity="0" />
+    </linearGradient>
+    <linearGradient id="sa-edge-7" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#8b5cf6" stop-opacity="0.55" />
+      <stop offset="100%" stop-color="#8b5cf6" stop-opacity="0" />
+    </linearGradient>
+
+    <!-- Subtle background grid + glow filters -->
+    <filter id="sa-soft-glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="3" result="b" />
+      <feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge>
+    </filter>
+
+    <pattern id="sa-grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(99,102,241,0.04)" stroke-width="1" />
+    </pattern>
+
+    <marker id="sa-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#8b5cf6" />
+    </marker>
+
+    <style><![CDATA[
+      /* ── Page-level type ─────────────────────────────────────────────── */
+      .h1   { font: 700 22px Inter, system-ui, sans-serif; fill: #0f172a; letter-spacing: -0.01em; }
+      .h2   { font: 500 13px Inter, system-ui, sans-serif; fill: #475569; }
+
+      /* ── Layer card ──────────────────────────────────────────────────── */
+      .card        { fill: rgba(255, 255, 255, 0.82); stroke: rgba(99, 102, 241, 0.18); stroke-width: 1; }
+      .num         { font: 800 16px Inter, system-ui, sans-serif; fill: #ffffff; }
+      .layer-title { font: 700 14px Inter, system-ui, sans-serif; fill: #0f172a; }
+      .layer-sub   { font: 500 11px Inter, system-ui, sans-serif; fill: #475569; }
+      .lbl         { font: 600 9px Inter, system-ui, sans-serif; fill: #64748b; letter-spacing: 0.1em; text-transform: uppercase; }
+
+      /* ── Component pill (inside a layer card) ────────────────────────── */
+      .pill        { fill: rgba(99, 102, 241, 0.06); stroke: rgba(99, 102, 241, 0.28); stroke-width: 1; }
+      .pill-text   { font: 500 10.5px 'JetBrains Mono', ui-monospace, monospace; fill: #1e293b; }
+      .pill-emph   { fill: rgba(139, 92, 246, 0.10); stroke: rgba(139, 92, 246, 0.4); }
+      .pill-emph-t { font: 600 10.5px 'JetBrains Mono', ui-monospace, monospace; fill: #5b21b6; }
+
+      /* ── Connector ribbon & flow ─────────────────────────────────────── */
+      .conn        { stroke: url(#sa-brand); stroke-width: 1.5; fill: none; stroke-dasharray: 5 4; opacity: 0.55; }
+      .conn-soft   { stroke: rgba(139, 92, 246, 0.35); stroke-width: 1; fill: none; stroke-dasharray: 3 3; }
+
+      /* ── Per-layer disc colors ───────────────────────────────────────── */
+      .disc-1 { fill: #ec4899; }
+      .disc-2 { fill: #a78bfa; }
+      .disc-3 { fill: #06b6d4; }
+      .disc-4 { fill: #10b981; }
+      .disc-5 { fill: #f43f5e; }
+      .disc-6 { fill: #f59e0b; }
+      .disc-7 { fill: #8b5cf6; }
+
+      /* ── Dark mode adaptation ────────────────────────────────────────── */
+      @media (prefers-color-scheme: dark) {
+        .h1          { fill: #f5f3ff; }
+        .h2          { fill: #c7d2fe; }
+        .card        { fill: rgba(15, 23, 42, 0.7); stroke: rgba(165, 180, 252, 0.22); }
+        .layer-title { fill: #f1f5f9; }
+        .layer-sub   { fill: #cbd5e1; }
+        .lbl         { fill: #94a3b8; }
+        .pill        { fill: rgba(99, 102, 241, 0.14); stroke: rgba(165, 180, 252, 0.4); }
+        .pill-text   { fill: #e2e8f0; }
+        .pill-emph   { fill: rgba(139, 92, 246, 0.22); stroke: rgba(196, 181, 253, 0.55); }
+        .pill-emph-t { fill: #d8b4fe; }
+        .conn-soft   { stroke: rgba(165, 180, 252, 0.45); }
+      }
+      [data-theme='dark'] .h1          { fill: #f5f3ff; }
+      [data-theme='dark'] .h2          { fill: #c7d2fe; }
+      [data-theme='dark'] .card        { fill: rgba(15, 23, 42, 0.7); stroke: rgba(165, 180, 252, 0.22); }
+      [data-theme='dark'] .layer-title { fill: #f1f5f9; }
+      [data-theme='dark'] .layer-sub   { fill: #cbd5e1; }
+      [data-theme='dark'] .lbl         { fill: #94a3b8; }
+      [data-theme='dark'] .pill        { fill: rgba(99, 102, 241, 0.14); stroke: rgba(165, 180, 252, 0.4); }
+      [data-theme='dark'] .pill-text   { fill: #e2e8f0; }
+      [data-theme='dark'] .pill-emph   { fill: rgba(139, 92, 246, 0.22); stroke: rgba(196, 181, 253, 0.55); }
+      [data-theme='dark'] .pill-emph-t { fill: #d8b4fe; }
+      [data-theme='dark'] .conn-soft   { stroke: rgba(165, 180, 252, 0.45); }
+    ]]></style>
+  </defs>
+
+  <!-- Ambient grid background -->
+  <rect x="0" y="0" width="1200" height="760" fill="url(#sa-grid)" />
+
+  <!-- Title strip -->
+  <text x="40" y="40" class="h1">AgentOS · System architecture</text>
+  <text x="40" y="60" class="h2">Seven cooperating layers · API surface at the top, channels and providers at the floor · cognition + memory in the middle</text>
+  <line x1="40" y1="74" x2="1160" y2="74" stroke="url(#sa-brand)" stroke-width="2" />
+
+  <!-- ════════════════════════════════════════════════════════════════════
+       Right-side flow ribbon — connects every layer top-to-bottom, drawn
+       behind the cards so it reads as ambient data flow.
+       ════════════════════════════════════════════════════════════════════ -->
+  <path d="M 1140 110 Q 1170 380 1140 740" class="conn" />
+
+  <!-- ════════════════════════════════════════════════════════════════════
+       LAYER 1 · API Surface (pink)
+       ════════════════════════════════════════════════════════════════════ -->
+  <g transform="translate(40, 92)">
+    <rect width="1100" height="86" rx="14" class="card" />
+    <rect width="6" height="86" rx="3" fill="#ec4899" />
+    <rect x="6" width="160" height="86" fill="url(#sa-edge-1)" />
+    <circle cx="38" cy="43" r="18" class="disc-1" filter="url(#sa-soft-glow)" />
+    <text x="38" y="48" text-anchor="middle" class="num">1</text>
+    <text x="70" y="32" class="layer-title">API surface</text>
+    <text x="70" y="48" class="layer-sub">High-level helpers — pure functions for one-shot calls, factories for stateful agents</text>
+    <text x="70" y="70" class="lbl">Caller-facing</text>
+    <!-- Component pills -->
+    <g transform="translate(320, 22)">
+      <g><rect width="120" height="22" rx="6" class="pill-emph" /><text x="60" y="15" text-anchor="middle" class="pill-emph-t">generateText()</text></g>
+      <g transform="translate(130, 0)"><rect width="120" height="22" rx="6" class="pill-emph" /><text x="60" y="15" text-anchor="middle" class="pill-emph-t">streamText()</text></g>
+      <g transform="translate(260, 0)"><rect width="120" height="22" rx="6" class="pill-emph" /><text x="60" y="15" text-anchor="middle" class="pill-emph-t">generateObject()</text></g>
+      <g transform="translate(390, 0)"><rect width="120" height="22" rx="6" class="pill-emph" /><text x="60" y="15" text-anchor="middle" class="pill-emph-t">generateImage()</text></g>
+      <g transform="translate(520, 0)"><rect width="80" height="22" rx="6" class="pill-emph" /><text x="40" y="15" text-anchor="middle" class="pill-emph-t">agent()</text></g>
+      <g transform="translate(610, 0)"><rect width="80" height="22" rx="6" class="pill-emph" /><text x="40" y="15" text-anchor="middle" class="pill-emph-t">agency()</text></g>
+      <g transform="translate(700, 0)"><rect width="80" height="22" rx="6" class="pill-emph" /><text x="40" y="15" text-anchor="middle" class="pill-emph-t">mission()</text></g>
+    </g>
+    <g transform="translate(320, 50)">
+      <g><rect width="180" height="22" rx="6" class="pill" /><text x="90" y="15" text-anchor="middle" class="pill-text">prompt assembly · sessions</text></g>
+      <g transform="translate(190, 0)"><rect width="170" height="22" rx="6" class="pill" /><text x="85" y="15" text-anchor="middle" class="pill-text">hooks · personality shaping</text></g>
+      <g transform="translate(370, 0)"><rect width="200" height="22" rx="6" class="pill" /><text x="100" y="15" text-anchor="middle" class="pill-text">usage ledger forwarding</text></g>
+    </g>
+  </g>
+
+  <!-- ════════════════════════════════════════════════════════════════════
+       LAYER 2 · Cognitive Substrate (violet)
+       ════════════════════════════════════════════════════════════════════ -->
+  <g transform="translate(40, 188)">
+    <rect width="1100" height="86" rx="14" class="card" />
+    <rect width="6" height="86" rx="3" fill="#a78bfa" />
+    <rect x="6" width="160" height="86" fill="url(#sa-edge-2)" />
+    <circle cx="38" cy="43" r="18" class="disc-2" filter="url(#sa-soft-glow)" />
+    <text x="38" y="48" text-anchor="middle" class="num">2</text>
+    <text x="70" y="32" class="layer-title">Cognitive substrate (GMI)</text>
+    <text x="70" y="48" class="layer-sub">Per-agent coordinator that owns persona, mood, working state, and the per-turn reasoning trace</text>
+    <text x="70" y="70" class="lbl">Per-agent state</text>
+    <g transform="translate(320, 22)">
+      <g><rect width="160" height="22" rx="6" class="pill-emph" /><text x="80" y="15" text-anchor="middle" class="pill-emph-t">GMI coordinator</text></g>
+      <g transform="translate(170, 0)"><rect width="180" height="22" rx="6" class="pill-emph" /><text x="90" y="15" text-anchor="middle" class="pill-emph-t">PersonaOverlayManager</text></g>
+      <g transform="translate(360, 0)"><rect width="160" height="22" rx="6" class="pill-emph" /><text x="80" y="15" text-anchor="middle" class="pill-emph-t">SentimentTracker</text></g>
+      <g transform="translate(530, 0)"><rect width="170" height="22" rx="6" class="pill-emph" /><text x="85" y="15" text-anchor="middle" class="pill-emph-t">MetapromptExecutor</text></g>
+    </g>
+    <g transform="translate(320, 50)">
+      <g><rect width="170" height="22" rx="6" class="pill" /><text x="85" y="15" text-anchor="middle" class="pill-text">HEXACO 6-trait shaping</text></g>
+      <g transform="translate(180, 0)"><rect width="180" height="22" rx="6" class="pill" /><text x="90" y="15" text-anchor="middle" class="pill-text">3-trigger metaprompt loop</text></g>
+      <g transform="translate(370, 0)"><rect width="170" height="22" rx="6" class="pill" /><text x="85" y="15" text-anchor="middle" class="pill-text">reasoning trace buffer</text></g>
+    </g>
+  </g>
+
+  <!-- ════════════════════════════════════════════════════════════════════
+       LAYER 3 · Memory + RAG (cyan)
+       ════════════════════════════════════════════════════════════════════ -->
+  <g transform="translate(40, 284)">
+    <rect width="1100" height="104" rx="14" class="card" />
+    <rect width="6" height="104" rx="3" fill="#06b6d4" />
+    <rect x="6" width="160" height="104" fill="url(#sa-edge-3)" />
+    <circle cx="38" cy="52" r="18" class="disc-3" filter="url(#sa-soft-glow)" />
+    <text x="38" y="57" text-anchor="middle" class="num">3</text>
+    <text x="70" y="32" class="layer-title">Memory + RAG pipeline</text>
+    <text x="70" y="48" class="layer-sub">4-tier memory with 8 cognitive mechanisms · HyDE + GraphRAG retrieval · 7 vector backends · 70.2% LongMemEval-M</text>
+    <text x="70" y="88" class="lbl">Cognitive memory</text>
+    <g transform="translate(320, 22)">
+      <g><rect width="100" height="22" rx="6" class="pill-emph" /><text x="50" y="15" text-anchor="middle" class="pill-emph-t">working</text></g>
+      <g transform="translate(110, 0)"><rect width="100" height="22" rx="6" class="pill-emph" /><text x="50" y="15" text-anchor="middle" class="pill-emph-t">episodic</text></g>
+      <g transform="translate(220, 0)"><rect width="100" height="22" rx="6" class="pill-emph" /><text x="50" y="15" text-anchor="middle" class="pill-emph-t">semantic</text></g>
+      <g transform="translate(330, 0)"><rect width="120" height="22" rx="6" class="pill-emph" /><text x="60" y="15" text-anchor="middle" class="pill-emph-t">observational</text></g>
+      <g transform="translate(460, 0)"><rect width="220" height="22" rx="6" class="pill-emph" /><text x="110" y="15" text-anchor="middle" class="pill-emph-t">8 cognitive mechanisms</text></g>
+    </g>
+    <g transform="translate(320, 50)">
+      <g><rect width="110" height="22" rx="6" class="pill" /><text x="55" y="15" text-anchor="middle" class="pill-text">Ebbinghaus</text></g>
+      <g transform="translate(120, 0)"><rect width="110" height="22" rx="6" class="pill" /><text x="55" y="15" text-anchor="middle" class="pill-text">reconsolidation</text></g>
+      <g transform="translate(240, 0)"><rect width="100" height="22" rx="6" class="pill" /><text x="50" y="15" text-anchor="middle" class="pill-text">RIF · FOK</text></g>
+      <g transform="translate(350, 0)"><rect width="100" height="22" rx="6" class="pill" /><text x="50" y="15" text-anchor="middle" class="pill-text">HyDE</text></g>
+      <g transform="translate(460, 0)"><rect width="100" height="22" rx="6" class="pill" /><text x="50" y="15" text-anchor="middle" class="pill-text">GraphRAG</text></g>
+      <g transform="translate(570, 0)"><rect width="100" height="22" rx="6" class="pill" /><text x="50" y="15" text-anchor="middle" class="pill-text">rerank</text></g>
+    </g>
+    <g transform="translate(320, 78)">
+      <text x="0" y="16" class="lbl">Vector backends</text>
+      <g transform="translate(106, 0)"><rect width="60" height="22" rx="6" class="pill" /><text x="30" y="15" text-anchor="middle" class="pill-text">SQLite</text></g>
+      <g transform="translate(176, 0)"><rect width="60" height="22" rx="6" class="pill" /><text x="30" y="15" text-anchor="middle" class="pill-text">HNSW</text></g>
+      <g transform="translate(246, 0)"><rect width="70" height="22" rx="6" class="pill" /><text x="35" y="15" text-anchor="middle" class="pill-text">Postgres</text></g>
+      <g transform="translate(326, 0)"><rect width="60" height="22" rx="6" class="pill" /><text x="30" y="15" text-anchor="middle" class="pill-text">Qdrant</text></g>
+      <g transform="translate(396, 0)"><rect width="70" height="22" rx="6" class="pill" /><text x="35" y="15" text-anchor="middle" class="pill-text">Pinecone</text></g>
+      <g transform="translate(476, 0)"><rect width="60" height="22" rx="6" class="pill" /><text x="30" y="15" text-anchor="middle" class="pill-text">Neo4j</text></g>
+      <g transform="translate(546, 0)"><rect width="80" height="22" rx="6" class="pill" /><text x="40" y="15" text-anchor="middle" class="pill-text">Supabase</text></g>
+    </g>
+  </g>
+
+  <!-- ════════════════════════════════════════════════════════════════════
+       LAYER 4 · Tools + Capabilities (emerald)
+       ════════════════════════════════════════════════════════════════════ -->
+  <g transform="translate(40, 398)">
+    <rect width="1100" height="86" rx="14" class="card" />
+    <rect width="6" height="86" rx="3" fill="#10b981" />
+    <rect x="6" width="160" height="86" fill="url(#sa-edge-4)" />
+    <circle cx="38" cy="43" r="18" class="disc-4" filter="url(#sa-soft-glow)" />
+    <text x="38" y="48" text-anchor="middle" class="num">4</text>
+    <text x="70" y="32" class="layer-title">Tools, skills, extensions</text>
+    <text x="70" y="48" class="layer-sub">100+ extension packs · 88 curated SKILL.md modules · runtime tool forging with judge-gated approval</text>
+    <text x="70" y="70" class="lbl">Capability surface</text>
+    <g transform="translate(320, 22)">
+      <g><rect width="140" height="22" rx="6" class="pill-emph" /><text x="70" y="15" text-anchor="middle" class="pill-emph-t">ToolOrchestrator</text></g>
+      <g transform="translate(150, 0)"><rect width="140" height="22" rx="6" class="pill-emph" /><text x="70" y="15" text-anchor="middle" class="pill-emph-t">ExtensionRegistry</text></g>
+      <g transform="translate(300, 0)"><rect width="120" height="22" rx="6" class="pill-emph" /><text x="60" y="15" text-anchor="middle" class="pill-emph-t">SkillRegistry</text></g>
+      <g transform="translate(430, 0)"><rect width="180" height="22" rx="6" class="pill-emph" /><text x="90" y="15" text-anchor="middle" class="pill-emph-t">CapabilityDiscovery</text></g>
+      <g transform="translate(620, 0)"><rect width="170" height="22" rx="6" class="pill-emph" /><text x="85" y="15" text-anchor="middle" class="pill-emph-t">ForgeToolMetaTool</text></g>
+    </g>
+    <g transform="translate(320, 50)">
+      <g><rect width="160" height="22" rx="6" class="pill" /><text x="80" y="15" text-anchor="middle" class="pill-text">100+ extension packs</text></g>
+      <g transform="translate(170, 0)"><rect width="170" height="22" rx="6" class="pill" /><text x="85" y="15" text-anchor="middle" class="pill-text">88 curated SKILL.md</text></g>
+      <g transform="translate(350, 0)"><rect width="200" height="22" rx="6" class="pill" /><text x="100" y="15" text-anchor="middle" class="pill-text">3-tier semantic discovery</text></g>
+      <g transform="translate(560, 0)"><rect width="170" height="22" rx="6" class="pill" /><text x="85" y="15" text-anchor="middle" class="pill-text">node:vm sandbox forge</text></g>
+    </g>
+  </g>
+
+  <!-- ════════════════════════════════════════════════════════════════════
+       LAYER 5 · Guardrails (rose)
+       ════════════════════════════════════════════════════════════════════ -->
+  <g transform="translate(40, 494)">
+    <rect width="1100" height="86" rx="14" class="card" />
+    <rect width="6" height="86" rx="3" fill="#f43f5e" />
+    <rect x="6" width="160" height="86" fill="url(#sa-edge-5)" />
+    <circle cx="38" cy="43" r="18" class="disc-5" filter="url(#sa-soft-glow)" />
+    <text x="38" y="48" text-anchor="middle" class="num">5</text>
+    <text x="70" y="32" class="layer-title">Guardrails + HITL</text>
+    <text x="70" y="48" class="layer-sub">Two-phase dispatcher · 4-tier PII redaction · ONNX classifiers · NLI grounding · 5 approval triggers</text>
+    <text x="70" y="70" class="lbl">Safety + approval</text>
+    <g transform="translate(320, 22)">
+      <g><rect width="160" height="22" rx="6" class="pill-emph" /><text x="80" y="15" text-anchor="middle" class="pill-emph-t">GuardrailDispatcher</text></g>
+      <g transform="translate(170, 0)"><rect width="140" height="22" rx="6" class="pill-emph" /><text x="70" y="15" text-anchor="middle" class="pill-emph-t">PII redaction</text></g>
+      <g transform="translate(320, 0)"><rect width="150" height="22" rx="6" class="pill-emph" /><text x="75" y="15" text-anchor="middle" class="pill-emph-t">ML classifiers</text></g>
+      <g transform="translate(480, 0)"><rect width="160" height="22" rx="6" class="pill-emph" /><text x="80" y="15" text-anchor="middle" class="pill-emph-t">Grounding Guard</text></g>
+      <g transform="translate(650, 0)"><rect width="140" height="22" rx="6" class="pill-emph" /><text x="70" y="15" text-anchor="middle" class="pill-emph-t">HumanInteract</text></g>
+    </g>
+    <g transform="translate(320, 50)">
+      <g><rect width="170" height="22" rx="6" class="pill" /><text x="85" y="15" text-anchor="middle" class="pill-text">regex · NER · LLM judge</text></g>
+      <g transform="translate(180, 0)"><rect width="170" height="22" rx="6" class="pill" /><text x="85" y="15" text-anchor="middle" class="pill-text">toxicity · prompt-injection</text></g>
+      <g transform="translate(360, 0)"><rect width="160" height="22" rx="6" class="pill" /><text x="80" y="15" text-anchor="middle" class="pill-text">NLI hallucination</text></g>
+      <g transform="translate(530, 0)"><rect width="200" height="22" rx="6" class="pill" /><text x="100" y="15" text-anchor="middle" class="pill-text">cli · webhook · slack · judge</text></g>
+    </g>
+  </g>
+
+  <!-- ════════════════════════════════════════════════════════════════════
+       LAYER 6 · Orchestration (amber)
+       ════════════════════════════════════════════════════════════════════ -->
+  <g transform="translate(40, 590)">
+    <rect width="1100" height="86" rx="14" class="card" />
+    <rect width="6" height="86" rx="3" fill="#f59e0b" />
+    <rect x="6" width="160" height="86" fill="url(#sa-edge-6)" />
+    <circle cx="38" cy="43" r="18" class="disc-6" filter="url(#sa-soft-glow)" />
+    <text x="38" y="48" text-anchor="middle" class="num">6</text>
+    <text x="70" y="32" class="layer-title">Orchestration</text>
+    <text x="70" y="48" class="layer-sub">3 authoring APIs compile to one IR · graph runtime executes every plan · checkpoint + resume across nodes</text>
+    <text x="70" y="70" class="lbl">Multi-agent flow</text>
+    <g transform="translate(320, 22)">
+      <g><rect width="120" height="22" rx="6" class="pill-emph" /><text x="60" y="15" text-anchor="middle" class="pill-emph-t">workflow()</text></g>
+      <g transform="translate(130, 0)"><rect width="110" height="22" rx="6" class="pill-emph" /><text x="55" y="15" text-anchor="middle" class="pill-emph-t">mission()</text></g>
+      <g transform="translate(250, 0)"><rect width="140" height="22" rx="6" class="pill-emph" /><text x="70" y="15" text-anchor="middle" class="pill-emph-t">AgentGraph</text></g>
+      <g transform="translate(400, 0)"><rect width="170" height="22" rx="6" class="pill-emph" /><text x="85" y="15" text-anchor="middle" class="pill-emph-t">CompiledExecutionGraph</text></g>
+      <g transform="translate(580, 0)"><rect width="160" height="22" rx="6" class="pill-emph" /><text x="80" y="15" text-anchor="middle" class="pill-emph-t">CheckpointStore</text></g>
+    </g>
+    <g transform="translate(320, 50)">
+      <g><rect width="200" height="22" rx="6" class="pill" /><text x="100" y="15" text-anchor="middle" class="pill-text">6 strategies (parallel · debate · …)</text></g>
+      <g transform="translate(210, 0)"><rect width="170" height="22" rx="6" class="pill" /><text x="85" y="15" text-anchor="middle" class="pill-text">Tree-of-Thought planner</text></g>
+      <g transform="translate(390, 0)"><rect width="200" height="22" rx="6" class="pill" /><text x="100" y="15" text-anchor="middle" class="pill-text">resume + time-travel debug</text></g>
+    </g>
+  </g>
+
+  <!-- ════════════════════════════════════════════════════════════════════
+       LAYER 7 · I/O + Providers (violet)
+       ════════════════════════════════════════════════════════════════════ -->
+  <g transform="translate(40, 686)">
+    <rect width="1100" height="62" rx="14" class="card" />
+    <rect width="6" height="62" rx="3" fill="#8b5cf6" />
+    <rect x="6" width="160" height="62" fill="url(#sa-edge-7)" />
+    <circle cx="38" cy="31" r="18" class="disc-7" filter="url(#sa-soft-glow)" />
+    <text x="38" y="36" text-anchor="middle" class="num">7</text>
+    <text x="70" y="22" class="layer-title">I/O + providers</text>
+    <text x="70" y="38" class="layer-sub">Voice pipeline · channel adapters · media generation · 21 LLM providers with fallback chains</text>
+    <text x="70" y="54" class="lbl">External surface</text>
+    <g transform="translate(320, 18)">
+      <g><rect width="120" height="22" rx="6" class="pill-emph" /><text x="60" y="15" text-anchor="middle" class="pill-emph-t">Voice (STT · TTS)</text></g>
+      <g transform="translate(130, 0)"><rect width="160" height="22" rx="6" class="pill-emph" /><text x="80" y="15" text-anchor="middle" class="pill-emph-t">Channels</text></g>
+      <g transform="translate(300, 0)"><rect width="180" height="22" rx="6" class="pill-emph" /><text x="90" y="15" text-anchor="middle" class="pill-emph-t">Media (img · video · music)</text></g>
+      <g transform="translate(490, 0)"><rect width="160" height="22" rx="6" class="pill-emph" /><text x="80" y="15" text-anchor="middle" class="pill-emph-t">21 LLM providers</text></g>
+      <g transform="translate(660, 0)"><rect width="170" height="22" rx="6" class="pill-emph" /><text x="85" y="15" text-anchor="middle" class="pill-emph-t">OpenRouter fanout</text></g>
+    </g>
+  </g>
+
+  <!-- Soft connectors between adjacent layers (visual rhythm) -->
+  <path d="M 600 178 L 600 188" class="conn-soft" marker-end="url(#sa-arrow)" />
+  <path d="M 600 274 L 600 284" class="conn-soft" marker-end="url(#sa-arrow)" />
+  <path d="M 600 388 L 600 398" class="conn-soft" marker-end="url(#sa-arrow)" />
+  <path d="M 600 484 L 600 494" class="conn-soft" marker-end="url(#sa-arrow)" />
+  <path d="M 600 580 L 600 590" class="conn-soft" marker-end="url(#sa-arrow)" />
+  <path d="M 600 676 L 600 686" class="conn-soft" marker-end="url(#sa-arrow)" />
+</svg>
