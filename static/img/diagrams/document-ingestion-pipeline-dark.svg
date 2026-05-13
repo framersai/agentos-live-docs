@@ -4,31 +4,32 @@
 
   <defs>
     <style>
-      .bg { fill: #ffffff; }
-      .text { fill: #1e293b; font-size: 12px; }
-      .title { fill: #0f172a; font-size: 17px; font-weight: 700; }
-      .heading { fill: #0f172a; font-size: 13px; font-weight: 700; }
-      .small { fill: #475569; font-size: 11px; }
-      .micro { fill: #64748b; font-size: 10px; }
-      .lane-label { fill: #64748b; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; }
-      .lane-track { fill: none; stroke: #e2e8f0; stroke-width: 1; stroke-dasharray: 4 4; }
+      .bg { fill: #0f172a; }
+      .text { fill: #e2e8f0; }
+      .title { fill: #f1f5f9; }
+      .heading { fill: #f1f5f9; }
+      .small { fill: #94a3b8; }
+      .micro { fill: #64748b; }
+      .lane-label { fill: #94a3b8; }
+      .lane-track { stroke: #334155; }
       .source { fill: #ffffff; stroke: #0891b2; stroke-width: 2; }
-      .registry { fill: #ede9fe; stroke: #7c3aed; stroke-width: 2; }
+      .registry { fill: #1e1b4b; stroke: #a78bfa; }
       .loader { fill: #ffffff; stroke: #cbd5e1; stroke-width: 1.25; }
       .loader-pdf { fill: #ffffff; stroke: #f43f5e; stroke-width: 1.5; }
       .chunker { fill: #ffffff; stroke: #f59e0b; stroke-width: 2; }
       .store { fill: #ffffff; stroke: #10b981; stroke-width: 2; }
       .index { fill: #ffffff; stroke: #6366f1; stroke-width: 2; }
-      .multimodal { fill: #f8fafc; stroke: #14b8a6; stroke-width: 1.5; stroke-dasharray: 4 3; }
-      .arrow-line { stroke: #94a3b8; stroke-width: 1.5; fill: none; }
-      .arrow-thin { stroke: #cbd5e1; stroke-width: 1; fill: none; }
+      .multimodal { fill: #0b1220; stroke: #14b8a6; }
+      .arrow-line { stroke: #475569; }
+      .arrow-thin { stroke: #334155; }
       .arrow-side { stroke: #14b8a6; stroke-width: 1.25; fill: none; stroke-dasharray: 4 3; }
-      .arrow-head { fill: #94a3b8; }
-      .arrow-head-thin { fill: #cbd5e1; }
+      .arrow-head { fill: #475569; }
+      .arrow-head-thin { fill: #334155; }
       .arrow-head-side { fill: #14b8a6; }
-      .hook-tag { fill: #fef3c7; stroke: #d97706; stroke-width: 1; }
-      .hook-tag-text { fill: #92400e; font-size: 9px; font-weight: 700; letter-spacing: 0.04em; }
-          </style>
+      .hook-tag { fill: #422006; stroke: #d97706; }
+      .hook-tag-text { fill: #fbbf24; }
+                .source, .loader, .loader-pdf, .chunker, .store, .index { fill: #0f172a; }
+    </style>
     <marker id="ing-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
       <path d="M 0 0 L 10 5 L 0 10 z" class="arrow-head"/>
     </marker>

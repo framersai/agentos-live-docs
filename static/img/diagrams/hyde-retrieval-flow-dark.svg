@@ -4,33 +4,34 @@
 
   <defs>
     <style>
-      .bg { fill: #ffffff; }
-      .text { fill: #1e293b; font-size: 12px; }
-      .title { fill: #0f172a; font-size: 17px; font-weight: 700; }
-      .heading { fill: #0f172a; font-size: 13px; font-weight: 700; }
-      .small { fill: #475569; font-size: 11px; }
-      .micro { fill: #64748b; font-size: 10px; }
-      .lane-label { fill: #64748b; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; }
-      .lane-track { fill: none; stroke: #e2e8f0; stroke-width: 1; stroke-dasharray: 4 4; }
+      .bg { fill: #0f172a; }
+      .text { fill: #e2e8f0; }
+      .title { fill: #f1f5f9; }
+      .heading { fill: #f1f5f9; }
+      .small { fill: #94a3b8; }
+      .micro { fill: #64748b; }
+      .lane-label { fill: #94a3b8; }
+      .lane-track { stroke: #334155; }
       .stage { fill: #ffffff; stroke: #cbd5e1; stroke-width: 1.5; }
       .stage-llm { fill: #ffffff; stroke: #8b5cf6; stroke-width: 2; }
       .stage-embed { fill: #ffffff; stroke: #10b981; stroke-width: 2; }
       .stage-query { fill: #ffffff; stroke: #f59e0b; stroke-width: 2; }
       .stage-store { fill: #ffffff; stroke: #0891b2; stroke-width: 2; }
       .stage-result { fill: #ffffff; stroke: #6366f1; stroke-width: 2; }
-      .space-bg { fill: #f8fafc; stroke: #cbd5e1; stroke-width: 1; }
+      .space-bg { fill: #0b1220; stroke: #334155; }
       .dot-query { fill: #f59e0b; }
       .dot-doc { fill: #0891b2; }
       .dot-hyde { fill: #8b5cf6; }
       .gap-line-far { stroke: #f43f5e; stroke-width: 1.5; stroke-dasharray: 4 2; }
       .gap-line-near { stroke: #10b981; stroke-width: 1.5; stroke-dasharray: 4 2; }
-      .arrow-line { stroke: #94a3b8; stroke-width: 1.5; fill: none; }
-      .arrow-head { fill: #94a3b8; }
-      .bench-good { fill: #d1fae5; stroke: #10b981; stroke-width: 1.5; }
-      .bench-bad { fill: #fecaca; stroke: #f43f5e; stroke-width: 1.5; }
-      .bench-good-text { fill: #065f46; font-size: 11px; font-weight: 700; }
-      .bench-bad-text { fill: #991b1b; font-size: 11px; font-weight: 700; }
-          </style>
+      .arrow-line { stroke: #475569; }
+      .arrow-head { fill: #475569; }
+      .bench-good { fill: #064e3b; }
+      .bench-bad { fill: #450a0a; }
+      .bench-good-text { fill: #6ee7b7; }
+      .bench-bad-text { fill: #fca5a5; }
+                .stage, .stage-llm, .stage-embed, .stage-query, .stage-store, .stage-result { fill: #0f172a; }
+    </style>
     <marker id="hyde-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
       <path d="M 0 0 L 10 5 L 0 10 z" class="arrow-head"/>
     </marker>

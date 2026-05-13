@@ -4,28 +4,29 @@
 
   <defs>
     <style>
-      .bg { fill: #ffffff; }
-      .text { fill: #1e293b; font-size: 12px; }
-      .title { fill: #0f172a; font-size: 17px; font-weight: 700; }
-      .heading { fill: #0f172a; font-size: 13px; font-weight: 700; }
-      .small { fill: #475569; font-size: 11px; }
-      .micro { fill: #64748b; font-size: 10px; }
-      .mono { fill: #475569; font-size: 11px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
-      .lane-label { fill: #64748b; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; }
+      .bg { fill: #0f172a; }
+      .text { fill: #e2e8f0; }
+      .title { fill: #f1f5f9; }
+      .heading { fill: #f1f5f9; }
+      .small { fill: #94a3b8; }
+      .micro { fill: #64748b; }
+      .mono { fill: #94a3b8; }
+      .lane-label { fill: #94a3b8; }
       .file-req { fill: #ffffff; stroke: #f43f5e; stroke-width: 2; }
       .file-opt { fill: #ffffff; stroke: #cbd5e1; stroke-width: 1.5; stroke-dasharray: 3 3; }
-      .runtime { fill: #ede9fe; stroke: #7c3aed; stroke-width: 2; }
+      .runtime { fill: #1e1b4b; stroke: #a78bfa; }
       .output-struct { fill: #ffffff; stroke: #10b981; stroke-width: 1.5; }
       .output-prose { fill: #ffffff; stroke: #f59e0b; stroke-width: 1.5; }
-      .envelope { fill: #f8fafc; stroke: #475569; stroke-width: 1.5; stroke-dasharray: 4 2; }
-      .tree-line { stroke: #cbd5e1; stroke-width: 1; fill: none; }
-      .arrow-line { stroke: #94a3b8; stroke-width: 1.25; fill: none; }
-      .arrow-head { fill: #94a3b8; }
-      .badge-req { fill: #fecaca; }
-      .badge-req-text { fill: #991b1b; font-size: 9px; font-weight: 700; letter-spacing: 0.04em; }
-      .badge-opt { fill: #e0e7ff; }
-      .badge-opt-text { fill: #3730a3; font-size: 9px; font-weight: 700; letter-spacing: 0.04em; }
-          </style>
+      .envelope { fill: #0b1220; stroke: #94a3b8; }
+      .tree-line { stroke: #334155; }
+      .arrow-line { stroke: #475569; }
+      .arrow-head { fill: #475569; }
+      .badge-req { fill: #450a0a; }
+      .badge-req-text { fill: #fca5a5; }
+      .badge-opt { fill: #1e1b4b; }
+      .badge-opt-text { fill: #a78bfa; }
+                .file-req, .file-opt, .output-struct, .output-prose { fill: #0f172a; }
+    </style>
     <marker id="soul-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
       <path d="M 0 0 L 10 5 L 0 10 z" class="arrow-head"/>
     </marker>
