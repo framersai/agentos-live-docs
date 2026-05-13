@@ -3,6 +3,7 @@ import Link from '@docusaurus/Link';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import Layout from '@theme/Layout';
 import CodeBlock from '@theme/CodeBlock';
+import DiagramImg from '@site/src/components/DiagramImg';
 
 /* ------------------------------------------------------------------ */
 /*  Hero                                                               */
@@ -586,7 +587,7 @@ function ArchitectureDiagram() {
         Seven cooperating layers. API surface at the top, channels and providers at the floor, cognition and memory in the middle. Click to zoom.
       </p>
       <div style={{ overflow: 'auto' }}>
-        <img
+        <DiagramImg
           src="/img/diagrams/system-architecture.svg"
           alt="AgentOS layered architecture: 7 cooperating layers from API surface (generateText, streamText, agent, agency, mission) through cognitive substrate (GMI coordinator, PersonaOverlayManager, SentimentTracker, MetapromptExecutor), memory and RAG pipeline (working / episodic / semantic / observational memory, 8 cognitive mechanisms, HyDE, GraphRAG, 7 vector backends), tools and capabilities (ToolOrchestrator, 100+ extension packs, 88 SKILL.md modules, CapabilityDiscovery, ForgeToolMetaTool), guardrails and HITL (GuardrailDispatcher, 4-tier PII redaction, ML classifiers, Grounding Guard, HumanInteract), orchestration (workflow, mission, AgentGraph, CompiledExecutionGraph, CheckpointStore), down to I/O and providers (voice pipeline, channels, media generation, 21 LLM providers, OpenRouter fanout)."
           style={{ width: '100%', height: 'auto', display: 'block', borderRadius: '12px' }}
