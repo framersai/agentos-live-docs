@@ -254,6 +254,32 @@ if (typeof window !== 'undefined') {
           svgEl.removeAttribute('width');
           svgEl.removeAttribute('height');
           svgEl.style.pointerEvents = 'none';
+
+          /* Force the inlined SVG into the same theme as the Docusaurus
+           * page, regardless of the user's OS prefers-color-scheme.
+           *
+           * 1. Set data-theme on the SVG root so its CSS rules of the form
+           *    [data-theme='dark'] .h1 { ... } activate. The SVG's
+           *    stylesheet already has these rules — they sit at higher
+           *    specificity than the base + @media rules so they win when
+           *    both match.
+           *
+           * 2. Strip the @media (prefers-color-scheme: ...) blocks from
+           *    every <style> tag inside the SVG so the OS preference can't
+           *    override our explicit theme choice. Without this step, an
+           *    OS=dark user on a Docusaurus=light page would still see
+           *    dark-mode SVG colors (light text on light modal bg). */
+          const dsTheme = document.documentElement.getAttribute('data-theme') || 'light';
+          svgEl.setAttribute('data-theme', dsTheme);
+          svgEl.querySelectorAll('style').forEach((styleEl) => {
+            const css = styleEl.textContent || '';
+            const stripped = css.replace(
+              /@media\s*\(\s*prefers-color-scheme:[^)]*\)\s*\{[^@]*?\}\s*\}/g,
+              ''
+            );
+            if (stripped !== css) styleEl.textContent = stripped;
+          });
+
           /* Swap placeholder for inlined SVG. */
           while (wrap.firstChild) wrap.removeChild(wrap.firstChild);
           wrap.appendChild(svgEl);
