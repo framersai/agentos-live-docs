@@ -4,13 +4,13 @@
 
   <defs>
     <style>
-      .bg { fill: #ffffff; }
-      .heading      { fill: #0f172a; font-size: 18px; font-weight: 700; }
-      .subtitle     { fill: #475569; font-size: 12px; }
-      .layer-card   { fill: #ffffff; stroke-width: 1.75; }
+      .bg { fill: #0f172a; }
+      .heading { fill: #f1f5f9; }
+      .subtitle { fill: #94a3b8; }
+      .layer-card { fill: #0f172a; }
       .layer-num    { font-size: 13px; font-weight: 800; }
-      .layer-title  { fill: #0f172a; font-size: 14px; font-weight: 700; }
-      .layer-text   { fill: #475569; font-size: 11px; }
+      .layer-title { fill: #f1f5f9; }
+      .layer-text { fill: #94a3b8; }
       .acc-1 { stroke: #ec4899; }
       .acc-2 { stroke: #f59e0b; }
       .acc-3 { stroke: #10b981; }

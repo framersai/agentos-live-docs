@@ -25,6 +25,7 @@ const DIAGRAM_PATTERN = /^\/img\/diagrams\/([^./]+)\.svg$/
  * `static/img/diagrams/`.
  */
 const THEMED_DIAGRAMS = new Set<string>([
+  // Hero diagrams shipped with paired light/dark variants from the start.
   'rag-memory-pipeline',
   'agent-graph-topology',
   'soul-files-anatomy',
@@ -32,6 +33,26 @@ const THEMED_DIAGRAMS = new Set<string>([
   'hyde-retrieval-flow',
   'multimodal-rag-fanout',
   'document-ingestion-pipeline',
+  // Pre-existing diagrams retrofitted from a single @media-based SVG into
+  // paired light/dark files. Update this list when you add a new diagram
+  // under `static/img/diagrams/` with a matching `-dark.svg` sibling.
+  'adaptive-intelligence',
+  'agent-communication-bus',
+  'cognitive-memory-architecture',
+  'emergent-capabilities-forge-loop',
+  'gmi-architecture',
+  'hexaco-encoding-weights',
+  'hexaco-propagation',
+  'hexaco-radar',
+  'human-in-the-loop',
+  'memory-architecture-layers',
+  'memory-system-overview',
+  'paracosm-divergence',
+  'paracosm-turn-flow',
+  'paracosm-world-model-split',
+  'planning-engine',
+  'system-architecture',
+  'system-architecture-layers',
 ])
 
 type Props = React.ImgHTMLAttributes<HTMLImageElement>

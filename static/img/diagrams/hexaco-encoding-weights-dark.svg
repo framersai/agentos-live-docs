@@ -4,18 +4,18 @@
 
   <defs>
     <style>
-      .bg { fill: #ffffff; }
-      .axis { stroke: #475569; stroke-width: 1.5; fill: none; }
-      .grid { stroke: #cbd5e1; stroke-width: 1; stroke-dasharray: 2 3; opacity: 0.6; }
-      .tick { fill: #64748b; font-size: 11px; }
-      .axis-label { fill: #475569; font-size: 13px; font-weight: 600; }
-      .heading { fill: #0f172a; font-size: 15px; font-weight: 700; }
+      .bg { fill: #0f172a; }
+      .axis { stroke: #94a3b8; }
+      .grid { stroke: #334155; }
+      .tick { fill: #94a3b8; }
+      .axis-label { fill: #cbd5e1; }
+      .heading { fill: #f1f5f9; }
       .ramp-oc { stroke: #7c3aed; stroke-width: 3; fill: none; }
       .ramp-hexa { stroke: #f59e0b; stroke-width: 3; fill: none; }
       .ramp-oc-label { fill: #7c3aed; font-size: 13px; font-weight: 600; }
       .ramp-hexa-label { fill: #f59e0b; font-size: 13px; font-weight: 600; }
-      .formula { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; fill: #475569; }
-      .note { fill: #475569; font-size: 12px; }
+      .formula { fill: #94a3b8; }
+      .note { fill: #cbd5e1; }
           </style>
   </defs>
 

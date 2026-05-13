@@ -4,32 +4,32 @@
 
   <defs>
     <style>
-      .bg { fill: #ffffff; }
-      .heading      { fill: #0f172a; font-size: 18px; font-weight: 700; }
-      .subtitle     { fill: #475569; font-size: 12px; }
+      .bg { fill: #0f172a; }
+      .heading { fill: #f1f5f9; }
+      .subtitle { fill: #94a3b8; }
       .ring-label   { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
-      .core-text    { font-size: 12px; font-weight: 800; fill: #92400e; letter-spacing: 0.05em; }
-      .core-tag     { font-size: 9px; fill: #92400e; }
-      .legend-title { fill: #0f172a; font-size: 13px; font-weight: 700; }
-      .legend-text  { fill: #475569; font-size: 11px; }
-      .legend-tag   { fill: #64748b; font-size: 10px; font-style: italic; }
+      .core-text { fill: #fde68a; }
+      .core-tag { fill: #fde68a; }
+      .legend-title { fill: #f1f5f9; }
+      .legend-text { fill: #cbd5e1; }
+      .legend-tag { fill: #94a3b8; }
 
       /* Light defaults */
-      .ring-channels      { fill: none; stroke: #60a5fa; stroke-width: 28; opacity: 0.32; }
-      .ring-guardrails    { fill: none; stroke: #f59e0b; stroke-width: 26; opacity: 0.32; }
-      .ring-tools         { fill: none; stroke: #34d399; stroke-width: 24; opacity: 0.32; }
-      .ring-orchestration { fill: none; stroke: #a78bfa; stroke-width: 22; opacity: 0.34; }
-      .ring-memory        { fill: none; stroke: #22d3ee; stroke-width: 20; opacity: 0.34; }
-      .ring-personality   { fill: none; stroke: #f472b6; stroke-width: 18; opacity: 0.34; }
+      .ring-channels { opacity: 0.42; }
+      .ring-guardrails { opacity: 0.42; }
+      .ring-tools { opacity: 0.42; }
+      .ring-orchestration { opacity: 0.44; }
+      .ring-memory { opacity: 0.44; }
+      .ring-personality { opacity: 0.44; }
       .core-glow          { fill: #fbbf24; opacity: 0.18; }
       .core-fill          { fill: #fbbf24; opacity: 0.7; }
 
-      .label-channels      { fill: #1d4ed8; }
-      .label-guardrails    { fill: #b45309; }
-      .label-tools         { fill: #047857; }
-      .label-orchestration { fill: #6d28d9; }
-      .label-memory        { fill: #0e7490; }
-      .label-personality   { fill: #be185d; }
+      .label-channels { fill: #93c5fd; }
+      .label-guardrails { fill: #fcd34d; }
+      .label-tools { fill: #6ee7b7; }
+      .label-orchestration { fill: #c4b5fd; }
+      .label-memory { fill: #67e8f9; }
+      .label-personality { fill: #f9a8d4; }
 
       .swatch-channels      { fill: #60a5fa; }
       .swatch-guardrails    { fill: #f59e0b; }

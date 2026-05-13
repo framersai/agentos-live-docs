@@ -7,21 +7,21 @@
       <stop offset="100%" stop-color="#ec4899" />
     </linearGradient>
     <style>
-      .bg { fill: #ffffff; }
-      .lane-bg { fill: rgba(99, 102, 241, 0.04); stroke: rgba(99, 102, 241, 0.22); stroke-width: 1; }
-      .card    { fill: rgba(255, 255, 255, 0.5); stroke: #6366f1; stroke-width: 1.5; }
-      .trigger { fill: rgba(236, 72, 153, 0.07); stroke: #ec4899; stroke-width: 1; }
-      .handler { fill: rgba(139, 92, 246, 0.09); stroke: #8b5cf6; stroke-width: 1.25; }
-      .state   { fill: rgba(6, 182, 212, 0.07); stroke: #06b6d4; stroke-width: 1.25; }
-      .turn    { fill: rgba(16, 185, 129, 0.08); stroke: #10b981; stroke-width: 1.25; }
-      .arrow      { stroke: #6366f1; stroke-width: 1.5; fill: none; }
-      .arrow-soft { stroke: rgba(99, 102, 241, 0.45); stroke-width: 1; fill: none; stroke-dasharray: 4 3; }
-      .h1 { font: 700 18px Inter, system-ui, sans-serif; fill: #1e1b4b; }
-      .h2 { font: 600 13px Inter, system-ui, sans-serif; fill: #3730a3; }
-      .h3 { font: 600 11px Inter, system-ui, sans-serif; fill: #5b21b6; letter-spacing: 0.04em; text-transform: uppercase; }
-      .b  { font: 500 11px Inter, system-ui, sans-serif; fill: #1e293b; }
-      .m  { font: 11px 'JetBrains Mono', ui-monospace, monospace; fill: #4338ca; }
-      .lbl{ font: 600 10px Inter, system-ui, sans-serif; fill: #475569; letter-spacing: 0.08em; text-transform: uppercase; }
+      .bg { fill: #0f172a; }
+      .lane-bg { fill: rgba(99, 102, 241, 0.06); stroke: rgba(165, 180, 252, 0.25); }
+      .card { fill: rgba(30, 27, 75, 0.55); stroke: #a5b4fc; }
+      .trigger { fill: rgba(244, 114, 182, 0.10); stroke: #f9a8d4; }
+      .handler { fill: rgba(167, 139, 250, 0.12); stroke: #c4b5fd; }
+      .state { fill: rgba(34, 211, 238, 0.10); stroke: #67e8f9; }
+      .turn { fill: rgba(52, 211, 153, 0.10); stroke: #6ee7b7; }
+      .arrow { stroke: #a5b4fc; }
+      .arrow-soft { stroke: rgba(165, 180, 252, 0.4); }
+      .h1 { fill: #f5f3ff; }
+      .h2 { fill: #c7d2fe; }
+      .h3 { fill: #c4b5fd; }
+      .b { fill: #e2e8f0; }
+      .m { fill: #a5b4fc; }
+      .lbl { fill: #94a3b8; }
           </style>
     <marker id="ai-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
       <path d="M 0 0 L 10 5 L 0 10 z" fill="#6366f1" />
