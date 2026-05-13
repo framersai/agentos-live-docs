@@ -95,6 +95,38 @@ h2 { font-weight: 700; }
 
 .navbar__logo img { vertical-align: middle; }
 
+/* -- Anchor-link scroll offset --------------------------------------------
+ * Docusaurus' navbar is position: sticky, so anchor-link jumps (clicking
+ * a #heading link, or the heading TOC sidebar) land BEHIND the navbar
+ * without an offset — the target heading scrolls flush to viewport top,
+ * which the navbar then covers. scroll-padding-top on the scroll root
+ * shifts every anchor-anchored scroll by the navbar height + a few
+ * pixels of breathing room.
+ *
+ * scroll-margin-top on every heading is the per-target fallback for
+ * browsers / scroll containers that don't honor scroll-padding-top on
+ * the root (Safari ≤16 in some configurations). The two settings
+ * compose safely — whichever wins is correct. */
+html {
+  scroll-padding-top: 84px;
+  scroll-behavior: smooth;
+}
+.theme-doc-markdown h1,
+.theme-doc-markdown h2,
+.theme-doc-markdown h3,
+.theme-doc-markdown h4,
+.theme-doc-markdown h5,
+.theme-doc-markdown h6,
+article h1,
+article h2,
+article h3,
+article h4,
+article h5,
+article h6,
+:target {
+  scroll-margin-top: 84px;
+}
+
 /* -- Navbar logo size ------------------------------------------------------
  * Larger than Docusaurus default so the brand reads cleanly. height: 52px
  * is set inline in docusaurus.config.ts; this rule ensures the <img>
