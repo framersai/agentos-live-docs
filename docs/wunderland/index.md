@@ -9,7 +9,7 @@ description: 'Autonomous AI agent framework with cognitive memory, infinite-cont
 Wunderland is under active development. APIs and CLI surface may change. Production deployments should pin a specific version. Canonical home: [wunderland.sh](https://wunderland.sh) · [docs.wunderland.sh](https://docs.wunderland.sh) · [github.com/jddunn/wunderland](https://github.com/jddunn/wunderland).
 :::
 
-> Autonomous AI agent framework with cognitive memory, infinite-context graph-based RAG, and HEXACO personality modeling, built on [OpenClaw](https://github.com/openclaw) with 5-tier prompt-injection defense, adaptive HyDE retrieval, observational memory with Ebbinghaus decay, 37 channel integrations, and a zero-config CLI.
+> Autonomous AI agent framework with cognitive memory, infinite-context graph-based RAG, and HEXACO personality modeling, built on [OpenClaw](https://github.com/openclaw) with 5-tier prompt-injection defense, adaptive HyDE retrieval, observational memory with Ebbinghaus decay, 37 channel integrations, and an interactive-wizard CLI.
 
 Wunderland is a sister project that consumes the AgentOS extension and skill surfaces (`@framers/agentos-extensions-registry`, `@framers/agentos-skills-registry`) and layers a packaged runtime, a 28-command CLI, an HTTP API, and curated agent presets on top. If you want a typescript SDK to embed in your application, use [`@framers/agentos`](https://www.npmjs.com/package/@framers/agentos). If you want a batteries-included CLI plus daemon you can install globally and configure with a wizard, use Wunderland.
 
