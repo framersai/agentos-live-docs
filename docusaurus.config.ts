@@ -82,6 +82,7 @@ const config = (githubStars: number): Config => ({
     require.resolve('./src/mermaid-theme.js'),
     require.resolve('./src/mermaid-zoom.js'),
     require.resolve('./src/logo-scroll-to-top.js'),
+    require.resolve('./src/scroll-top-on-navigate.js'),
   ],
   trailingSlash: false,
 
