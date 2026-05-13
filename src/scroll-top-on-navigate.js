@@ -20,6 +20,32 @@
  * leave it alone so the browser/CSS scroll-padding-top handles it.
  */
 
+/**
+ * Escape-to-close handler for the mobile hamburger drawer.
+ *
+ * Docusaurus' navbar-sidebar opens when the user taps `.navbar__toggle`.
+ * The body gets `class="navbar-sidebar--show"` while it's open. There's
+ * no built-in keyboard close — only the X button or tapping the
+ * backdrop. Adding Escape as a third close path is the standard mobile
+ * pattern users expect.
+ *
+ * We attach once on module load (typeof window guard for SSR) and let
+ * it run for the lifetime of the page. The handler reads the body
+ * class and synthesises a click on the toggle button when both
+ * conditions match (Escape pressed + drawer visible).
+ */
+if (typeof window !== 'undefined') {
+  document.addEventListener('keydown', (event) => {
+    if (event.key !== 'Escape') return;
+    if (!document.body.classList.contains('navbar-sidebar--show')) return;
+    const toggle = document.querySelector('.navbar__toggle');
+    if (toggle instanceof HTMLElement) {
+      event.preventDefault();
+      toggle.click();
+    }
+  });
+}
+
 export function onRouteDidUpdate({ location, previousLocation }) {
   if (typeof window === 'undefined') return;
 
