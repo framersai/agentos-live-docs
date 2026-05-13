@@ -157,19 +157,31 @@ article h6,
   flex-wrap: nowrap !important;
   min-width: 0;
 }
+/* white-space: nowrap on the link itself prevents two-word labels
+ * like "API Reference" from wrapping internally to two lines when the
+ * column is narrow. The container's flex-wrap: nowrap stops the OUTER
+ * row from wrapping; this stops the INNER text from wrapping. Both are
+ * needed — the screenshot showed only "API Reference" wrapping while
+ * every other link sat on one line, because the container wasn't the
+ * problem on that link, the text was. */
+.navbar__link,
+.navbar__item,
+.navbar__brand {
+  white-space: nowrap !important;
+}
 /* When space is tight, tighten the gap between nav items rather than
  * wrap to a second line. The default 1rem gap is what causes wrapping
- * on mid-width screens (~1000–1200px). */
+ * on mid-width screens (~1000–1280px). */
 @media (max-width: 1280px) and (min-width: 997px) {
   .navbar__items--left {
-    gap: 0.4rem !important;
+    gap: 0.3rem !important;
   }
   .navbar__items--right {
-    gap: 0.35rem !important;
+    gap: 0.3rem !important;
   }
   .navbar__link {
-    padding: 0.35rem 0.55rem !important;
-    font-size: 0.92rem !important;
+    padding: 0.35rem 0.5rem !important;
+    font-size: 0.9rem !important;
   }
 }
 

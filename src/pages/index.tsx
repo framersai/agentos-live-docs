@@ -268,41 +268,6 @@ function InstallTabs() {
 /* ------------------------------------------------------------------ */
 
 const quickStartCode = {
-  'Streaming': `import { streamText, agent } from '@framers/agentos';
-
-// streamText() — raw streaming completion. Yields token deltas as they arrive.
-// Backpressure-safe; you can break out of the loop and the upstream HTTP
-// request aborts cleanly.
-const { textStream, text, usage } = streamText({
-  provider: 'openai',
-  model: 'gpt-4o',
-  prompt: 'Explain how QUIC differs from TCP at the wire level.',
-});
-for await (const delta of textStream) {
-  process.stdout.write(delta);
-}
-console.log(\`\\n\\nTotal tokens: \${(await usage).totalTokens}\`);
-
-// Streaming on an agent session — same async-iterable shape, but reasoning,
-// tool-call, and memory-update events ride alongside the text deltas so a UI
-// can render each one as it happens.
-const support = agent({
-  provider: 'openai',
-  instructions: 'You are a senior platform engineer.',
-  memory: { enabled: true, cognitive: true },
-});
-const session = support.session('user-42');
-
-for await (const chunk of session.stream('Why is gRPC slow over satellite?')) {
-  switch (chunk.type) {
-    case 'TEXT_DELTA':           process.stdout.write(chunk.delta);          break;
-    case 'TOOL_CALL_REQUEST':    console.log('\\n[tool]', chunk.toolName);    break;
-    case 'REASONING_STATE':      console.log('\\n[reasoning]', chunk.state);  break;
-    case 'MEMORY_FORMED':        console.log('\\n[memory]', chunk.traceId);   break;
-    case 'FINAL_RESPONSE_MARKER':                                            break;
-  }
-}`,
-
   'HEXACO Agent': `import { agent } from '@framers/agentos';
 
 // Personality is six 0-1 trait values. The runtime appends a trait-derived
@@ -346,6 +311,41 @@ console.log(reply.text);
 console.log(session.messages());
 const usage = await session.usage();
 console.log(\`Total tokens: \${usage.totalTokens}\`);`,
+
+  'Streaming': `import { streamText, agent } from '@framers/agentos';
+
+// streamText() — raw streaming completion. Yields token deltas as they arrive.
+// Backpressure-safe; you can break out of the loop and the upstream HTTP
+// request aborts cleanly.
+const { textStream, text, usage } = streamText({
+  provider: 'openai',
+  model: 'gpt-4o',
+  prompt: 'Explain how QUIC differs from TCP at the wire level.',
+});
+for await (const delta of textStream) {
+  process.stdout.write(delta);
+}
+console.log(\`\\n\\nTotal tokens: \${(await usage).totalTokens}\`);
+
+// Streaming on an agent session — same async-iterable shape, but reasoning,
+// tool-call, and memory-update events ride alongside the text deltas so a UI
+// can render each one as it happens.
+const support = agent({
+  provider: 'openai',
+  instructions: 'You are a senior platform engineer.',
+  memory: { enabled: true, cognitive: true },
+});
+const session = support.session('user-42');
+
+for await (const chunk of session.stream('Why is gRPC slow over satellite?')) {
+  switch (chunk.type) {
+    case 'TEXT_DELTA':           process.stdout.write(chunk.delta);          break;
+    case 'TOOL_CALL_REQUEST':    console.log('\\n[tool]', chunk.toolName);    break;
+    case 'REASONING_STATE':      console.log('\\n[reasoning]', chunk.state);  break;
+    case 'MEMORY_FORMED':        console.log('\\n[memory]', chunk.traceId);   break;
+    case 'FINAL_RESPONSE_MARKER':                                            break;
+  }
+}`,
 
   'Multimodal RAG': `import { Memory } from '@framers/agentos';
 import { MultimodalIndexer } from '@framers/agentos/cognition/rag';
