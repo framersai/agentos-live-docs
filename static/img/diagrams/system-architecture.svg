@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1680 1380" width="1680" height="1380" role="img" aria-labelledby="sa-title sa-desc" font-family="Inter, system-ui, -apple-system, sans-serif">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1680 1440" width="1680" height="1440" role="img" aria-labelledby="sa-title sa-desc" font-family="Inter, system-ui, -apple-system, sans-serif">
   <title id="sa-title">AgentOS System Architecture</title>
   <desc id="sa-desc">Seven-layer architecture: API Surface, Cognitive Substrate (GMI), Memory + RAG (4-tier memory, 8 cognitive mechanisms, HyDE, GraphRAG, 7 vector backends), Tools and Capabilities, Guardrails and HITL, Orchestration, and I/O and Providers.</desc>
 
@@ -95,7 +95,7 @@
   </defs>
 
   <!-- Ambient background -->
-  <rect x="0" y="0" width="1680" height="1380" fill="url(#sa-dots)" />
+  <rect x="0" y="0" width="1680" height="1440" fill="url(#sa-dots)" />
   <circle cx="220" cy="240" r="400" fill="url(#sa-orb-1)" />
   <circle cx="1480" cy="1140" r="420" fill="url(#sa-orb-2)" />
 
@@ -105,8 +105,8 @@
   <line x1="60" y1="114" x2="1620" y2="114" stroke="url(#sa-brand)" stroke-width="2.5" />
 
   <!-- Right-edge flow ribbon -->
-  <path d="M 1636 160 Q 1672 680 1636 1330" stroke="url(#sa-flow)" stroke-width="3" fill="none" filter="url(#sa-ribbon-glow)" />
-  <path d="M 1636 160 Q 1672 680 1636 1330" stroke="url(#sa-flow)" stroke-width="1.8" fill="none" />
+  <path d="M 1636 160 Q 1672 720 1636 1390" stroke="url(#sa-flow)" stroke-width="3" fill="none" filter="url(#sa-ribbon-glow)" />
+  <path d="M 1636 160 Q 1672 720 1636 1390" stroke="url(#sa-flow)" stroke-width="1.8" fill="none" />
 
   <!--
     Layer y-coordinates (recomputed for breathing room):
@@ -122,9 +122,9 @@
 
   <!-- ════════ LAYER 1 · API surface ════════ -->
   <g transform="translate(60, 150)">
-    <rect width="1560" height="140" rx="18" class="card" />
-    <rect width="9" height="140" rx="4" fill="#ec4899" />
-    <rect x="9" width="240" height="140" fill="url(#sa-edge-1)" />
+    <rect width="1560" height="156" rx="18" class="card" />
+    <rect width="9" height="156" rx="4" fill="#ec4899" />
+    <rect x="9" width="240" height="156" fill="url(#sa-edge-1)" />
     <circle cx="52" cy="70" r="24" class="disc-1" filter="url(#sa-disc-glow)" />
     <text x="52" y="77" text-anchor="middle" class="num">1</text>
     <text x="92" y="48" class="layer-title">API surface</text>
@@ -149,9 +149,9 @@
 
   <!-- ════════ LAYER 2 · Cognitive substrate ════════ -->
   <g transform="translate(60, 304)">
-    <rect width="1560" height="140" rx="18" class="card" />
-    <rect width="9" height="140" rx="4" fill="#a78bfa" />
-    <rect x="9" width="240" height="140" fill="url(#sa-edge-2)" />
+    <rect width="1560" height="156" rx="18" class="card" />
+    <rect width="9" height="156" rx="4" fill="#a78bfa" />
+    <rect x="9" width="240" height="156" fill="url(#sa-edge-2)" />
     <circle cx="52" cy="70" r="24" class="disc-2" filter="url(#sa-disc-glow)" />
     <text x="52" y="77" text-anchor="middle" class="num">2</text>
     <text x="92" y="48" class="layer-title">Cognitive substrate (GMI)</text>
@@ -173,9 +173,9 @@
 
   <!-- ════════ LAYER 3 · Memory + RAG (h=290, three sub-rows with 56px row pitch) ════════ -->
   <g transform="translate(60, 458)">
-    <rect width="1560" height="290" rx="18" class="card" />
-    <rect width="9" height="290" rx="4" fill="#06b6d4" />
-    <rect x="9" width="240" height="290" fill="url(#sa-edge-3)" />
+    <rect width="1560" height="380" rx="18" class="card" />
+    <rect width="9" height="380" rx="4" fill="#06b6d4" />
+    <rect x="9" width="240" height="380" fill="url(#sa-edge-3)" />
     <circle cx="52" cy="70" r="24" class="disc-3" filter="url(#sa-disc-glow)" />
     <text x="52" y="77" text-anchor="middle" class="num">3</text>
     <text x="92" y="48" class="layer-title">Memory + RAG pipeline</text>
@@ -183,8 +183,8 @@
     <text x="92" y="108" class="lbl">Cognitive memory</text>
 
     <!-- Sub-row A: Memory tiers (y center ≈ 152) -->
-    <text x="92" y="158" class="lbl-row">Memory tiers</text>
-    <g transform="translate(280, 140)">
+    <text x="92" y="170" class="lbl-row">Memory tiers</text>
+    <g transform="translate(280, 152)">
       <g><rect width="130" height="34" rx="10" class="pill-emph" /><text x="65" y="22" text-anchor="middle" class="pill-emph-t">working</text></g>
       <g transform="translate(142, 0)"><rect width="130" height="34" rx="10" class="pill-emph" /><text x="65" y="22" text-anchor="middle" class="pill-emph-t">episodic</text></g>
       <g transform="translate(284, 0)"><rect width="130" height="34" rx="10" class="pill-emph" /><text x="65" y="22" text-anchor="middle" class="pill-emph-t">semantic</text></g>
@@ -193,8 +193,8 @@
     </g>
 
     <!-- Sub-row B: Retrieval (y center ≈ 208) -->
-    <text x="92" y="214" class="lbl-row">Retrieval</text>
-    <g transform="translate(280, 196)">
+    <text x="92" y="242" class="lbl-row">Retrieval</text>
+    <g transform="translate(280, 224)">
       <g><rect width="140" height="34" rx="10" class="pill" /><text x="70" y="22" text-anchor="middle" class="pill-text">Ebbinghaus</text></g>
       <g transform="translate(152, 0)"><rect width="170" height="34" rx="10" class="pill" /><text x="85" y="22" text-anchor="middle" class="pill-text">reconsolidation</text></g>
       <g transform="translate(334, 0)"><rect width="130" height="34" rx="10" class="pill" /><text x="65" y="22" text-anchor="middle" class="pill-text">RIF · FOK</text></g>
@@ -204,8 +204,8 @@
     </g>
 
     <!-- Sub-row C: Vector backends (y center ≈ 264) -->
-    <text x="92" y="270" class="lbl-row">Vector backends</text>
-    <g transform="translate(280, 252)">
+    <text x="92" y="314" class="lbl-row">Vector backends</text>
+    <g transform="translate(280, 296)">
       <g><rect width="110" height="34" rx="10" class="pill" /><text x="55" y="22" text-anchor="middle" class="pill-text">SQLite</text></g>
       <g transform="translate(122, 0)"><rect width="110" height="34" rx="10" class="pill" /><text x="55" y="22" text-anchor="middle" class="pill-text">HNSW</text></g>
       <g transform="translate(244, 0)"><rect width="120" height="34" rx="10" class="pill" /><text x="60" y="22" text-anchor="middle" class="pill-text">Postgres</text></g>
@@ -217,10 +217,10 @@
   </g>
 
   <!-- ════════ LAYER 4 · Tools, skills, extensions ════════ -->
-  <g transform="translate(60, 762)">
-    <rect width="1560" height="140" rx="18" class="card" />
-    <rect width="9" height="140" rx="4" fill="#10b981" />
-    <rect x="9" width="240" height="140" fill="url(#sa-edge-4)" />
+  <g transform="translate(60, 822)">
+    <rect width="1560" height="156" rx="18" class="card" />
+    <rect width="9" height="156" rx="4" fill="#10b981" />
+    <rect x="9" width="240" height="156" fill="url(#sa-edge-4)" />
     <circle cx="52" cy="70" r="24" class="disc-4" filter="url(#sa-disc-glow)" />
     <text x="52" y="77" text-anchor="middle" class="num">4</text>
     <text x="92" y="48" class="layer-title">Tools, skills, extensions</text>
@@ -243,10 +243,10 @@
   </g>
 
   <!-- ════════ LAYER 5 · Guardrails + HITL ════════ -->
-  <g transform="translate(60, 916)">
-    <rect width="1560" height="140" rx="18" class="card" />
-    <rect width="9" height="140" rx="4" fill="#f43f5e" />
-    <rect x="9" width="240" height="140" fill="url(#sa-edge-5)" />
+  <g transform="translate(60, 976)">
+    <rect width="1560" height="156" rx="18" class="card" />
+    <rect width="9" height="156" rx="4" fill="#f43f5e" />
+    <rect x="9" width="240" height="156" fill="url(#sa-edge-5)" />
     <circle cx="52" cy="70" r="24" class="disc-5" filter="url(#sa-disc-glow)" />
     <text x="52" y="77" text-anchor="middle" class="num">5</text>
     <text x="92" y="48" class="layer-title">Guardrails + HITL</text>
@@ -269,10 +269,10 @@
   </g>
 
   <!-- ════════ LAYER 6 · Orchestration ════════ -->
-  <g transform="translate(60, 1070)">
-    <rect width="1560" height="140" rx="18" class="card" />
-    <rect width="9" height="140" rx="4" fill="#f59e0b" />
-    <rect x="9" width="240" height="140" fill="url(#sa-edge-6)" />
+  <g transform="translate(60, 1130)">
+    <rect width="1560" height="156" rx="18" class="card" />
+    <rect width="9" height="156" rx="4" fill="#f59e0b" />
+    <rect x="9" width="240" height="156" fill="url(#sa-edge-6)" />
     <circle cx="52" cy="70" r="24" class="disc-6" filter="url(#sa-disc-glow)" />
     <text x="52" y="77" text-anchor="middle" class="num">6</text>
     <text x="92" y="48" class="layer-title">Orchestration</text>
@@ -294,10 +294,10 @@
   </g>
 
   <!-- ════════ LAYER 7 · I/O + providers ════════ -->
-  <g transform="translate(60, 1224)">
-    <rect width="1560" height="140" rx="18" class="card" />
-    <rect width="9" height="140" rx="4" fill="#8b5cf6" />
-    <rect x="9" width="240" height="140" fill="url(#sa-edge-7)" />
+  <g transform="translate(60, 1284)">
+    <rect width="1560" height="156" rx="18" class="card" />
+    <rect width="9" height="156" rx="4" fill="#8b5cf6" />
+    <rect x="9" width="240" height="156" fill="url(#sa-edge-7)" />
     <circle cx="52" cy="70" r="24" class="disc-7" filter="url(#sa-disc-glow)" />
     <text x="52" y="77" text-anchor="middle" class="num">7</text>
     <text x="92" y="48" class="layer-title">I/O + providers</text>
@@ -321,8 +321,8 @@
   <!-- Inter-layer arrow connectors -->
   <path d="M 840 290 L 840 304" class="layer-conn" marker-end="url(#sa-arrow)" />
   <path d="M 840 444 L 840 458" class="layer-conn" marker-end="url(#sa-arrow)" />
-  <path d="M 840 748 L 840 762" class="layer-conn" marker-end="url(#sa-arrow)" />
-  <path d="M 840 902 L 840 916" class="layer-conn" marker-end="url(#sa-arrow)" />
-  <path d="M 840 1056 L 840 1070" class="layer-conn" marker-end="url(#sa-arrow)" />
-  <path d="M 840 1210 L 840 1224" class="layer-conn" marker-end="url(#sa-arrow)" />
+  <path d="M 840 808 L 840 822" class="layer-conn" marker-end="url(#sa-arrow)" />
+  <path d="M 840 962 L 840 976" class="layer-conn" marker-end="url(#sa-arrow)" />
+  <path d="M 840 1116 L 840 1130" class="layer-conn" marker-end="url(#sa-arrow)" />
+  <path d="M 840 1270 L 840 1284" class="layer-conn" marker-end="url(#sa-arrow)" />
 </svg>
