@@ -15,6 +15,11 @@ import useBaseUrl from '@docusaurus/useBaseUrl'
  * single-variant SVGs (which rely on their own internal
  * `@media (prefers-color-scheme: dark)` rules) are unaffected by the
  * swizzle.
+ *
+ * **Accessibility:** MDX authors should always provide descriptive alt
+ * text for diagram images. An empty alt makes the image decorative, which
+ * is rarely what we want for an architectural diagram. In development a
+ * warning is logged when `alt` is missing or empty.
  */
 
 const DIAGRAM_PATTERN = /^\/img\/diagrams\/([^./]+)\.svg$/
@@ -58,7 +63,16 @@ const THEMED_DIAGRAMS = new Set<string>([
 type Props = React.ImgHTMLAttributes<HTMLImageElement>
 
 export default function DiagramImg(props: Props) {
-  const { src, alt, title, ...rest } = props
+  const { src, alt, title, className, ...rest } = props
+
+  if (process.env.NODE_ENV !== 'production' && (alt == null || alt === '')) {
+    // eslint-disable-next-line no-console
+    console.warn(
+      `[DiagramImg] missing alt text for ${src ?? '(unknown src)'}; add descriptive alt in the MDX source.`,
+    )
+  }
+
+  const mergedClassName = ['docDiagram', className].filter(Boolean).join(' ')
 
   if (typeof src === 'string') {
     const match = src.match(DIAGRAM_PATTERN)
@@ -67,13 +81,14 @@ export default function DiagramImg(props: Props) {
       if (THEMED_DIAGRAMS.has(name)) {
         return (
           <ThemedImage
+            {...rest}
             alt={alt ?? ''}
             title={title}
             sources={{
               light: useBaseUrl(`/img/diagrams/${name}.svg`),
               dark: useBaseUrl(`/img/diagrams/${name}-dark.svg`),
             }}
-            className="docDiagram"
+            className={mergedClassName}
           />
         )
       }
@@ -81,5 +96,5 @@ export default function DiagramImg(props: Props) {
   }
 
   // eslint-disable-next-line jsx-a11y/alt-text
-  return <img src={src} alt={alt} title={title} {...rest} />
+  return <img {...rest} src={src} alt={alt} title={title} className={className} />
 }
