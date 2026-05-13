@@ -12,6 +12,8 @@ AgentOS attaches per-claim verdicts to every generation behind a single flag. Ea
 
 The full implementation lives in [`packages/agentos/src/cognition/rag/citation/`](https://github.com/framersai/agentos/tree/master/src/cognition/rag/citation). The runtime ships [`CitationVerifier`](https://github.com/framersai/agentos/blob/master/src/cognition/rag/citation/CitationVerifier.ts), the [`VerifiedResponse`](https://github.com/framersai/agentos/blob/master/src/cognition/rag/citation/types.ts) and [`VerificationSource`](https://github.com/framersai/agentos/blob/master/src/cognition/rag/citation/types.ts) types, and the [`formatVerifiedResponse`](https://github.com/framersai/agentos/blob/master/src/cognition/rag/citation/format.ts) helper.
 
+![Citation verification flow: a generated answer has its claims extracted; each claim is matched against retrieved chunks and scored by an NLI judge; verdicts (ENTAILED, NEUTRAL, CONTRADICTED) are stamped on the verified answer with citation markers, and contradictions get flagged for revision](/img/diagrams/citation-verification-flow.svg)
+
 ## The one-flag path
 
 For most use cases you never touch the verifier directly. Configure `verifyCitations` on the agent and the per-claim verdicts land on `result.grounding` automatically:

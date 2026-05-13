@@ -1,0 +1,156 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 620" role="img" aria-labelledby="agent-graph-title agent-graph-desc" font-family="ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif">
+  <title id="agent-graph-title">AgentOS AgentGraph topology</title>
+  <desc id="agent-graph-desc">A directed graph diagram showing the AgentGraph primitive. Six node types are color-coded: gmi (violet), tool (cyan), router (amber), guardrail (rose), human (teal), and subgraph (indigo). A START sentinel feeds into a research gmi node; that branches to a router which conditionally routes either to a tool node or to a guardrail node; the guardrail can loop back to research (cycle) or proceed to a human-in-the-loop node; the human approves to a subgraph node that terminates at END. The compile target is shown as an inset: AgentGraph compiles to the same CompiledExecutionGraph IR as workflow() and mission(), but with explicit topology control. A legend strip at the bottom labels each node type.</desc>
+
+  <defs>
+    <style>
+      .text { fill: #1e293b; font-size: 12px; }
+      .title { fill: #0f172a; font-size: 17px; font-weight: 700; }
+      .heading { fill: #0f172a; font-size: 13px; font-weight: 700; }
+      .small { fill: #475569; font-size: 11px; }
+      .micro { fill: #64748b; font-size: 10px; }
+      .lane-label { fill: #64748b; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; }
+      .sentinel { fill: #f8fafc; stroke: #475569; stroke-width: 1.5; }
+      .node-gmi { fill: #ffffff; stroke: #8b5cf6; stroke-width: 2; }
+      .node-tool { fill: #ffffff; stroke: #0891b2; stroke-width: 2; }
+      .node-router { fill: #ffffff; stroke: #f59e0b; stroke-width: 2; }
+      .node-guardrail { fill: #ffffff; stroke: #f43f5e; stroke-width: 2; }
+      .node-human { fill: #ffffff; stroke: #14b8a6; stroke-width: 2; }
+      .node-subgraph { fill: #ffffff; stroke: #6366f1; stroke-width: 2; }
+      .edge { stroke: #94a3b8; stroke-width: 1.5; fill: none; }
+      .edge-cond { stroke: #94a3b8; stroke-width: 1.5; fill: none; stroke-dasharray: 5 3; }
+      .edge-cycle { stroke: #f43f5e; stroke-width: 1.5; fill: none; stroke-dasharray: 3 3; }
+      .arrow-head { fill: #94a3b8; }
+      .arrow-head-cycle { fill: #f43f5e; }
+      .edge-label { fill: #475569; font-size: 10px; font-weight: 600; }
+      .ir-box { fill: #ede9fe; stroke: #7c3aed; stroke-width: 1.5; }
+      .legend-swatch { stroke-width: 2; fill: #ffffff; }
+      @media (prefers-color-scheme: dark) {
+        .text { fill: #e2e8f0; }
+        .title { fill: #f1f5f9; }
+        .heading { fill: #f1f5f9; }
+        .small { fill: #94a3b8; }
+        .micro { fill: #64748b; }
+        .lane-label { fill: #94a3b8; }
+        .sentinel { fill: #0f172a; stroke: #94a3b8; }
+        .node-gmi, .node-tool, .node-router, .node-guardrail, .node-human, .node-subgraph { fill: #0f172a; }
+        .edge { stroke: #475569; }
+        .edge-cond { stroke: #475569; }
+        .arrow-head { fill: #475569; }
+        .edge-label { fill: #94a3b8; }
+        .ir-box { fill: #1e1b4b; stroke: #a78bfa; }
+        .legend-swatch { fill: #0f172a; }
+      }
+    </style>
+    <marker id="ag-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" class="arrow-head"/>
+    </marker>
+    <marker id="ag-arrow-cycle" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" class="arrow-head-cycle"/>
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="480" y="32" class="title" text-anchor="middle">AgentGraph Topology</text>
+  <text x="480" y="52" class="small" text-anchor="middle">Explicit nodes and edges · cycles · conditional routing · subgraph composition</text>
+
+  <!-- START sentinel -->
+  <circle cx="80" cy="180" r="22" class="sentinel"/>
+  <text x="80" y="184" class="heading" text-anchor="middle">START</text>
+
+  <!-- Research gmi node -->
+  <rect x="160" y="148" width="160" height="64" rx="10" class="node-gmi"/>
+  <text x="240" y="172" class="heading" text-anchor="middle">research</text>
+  <text x="240" y="190" class="small" text-anchor="middle">gmiNode · ReAct loop</text>
+  <text x="240" y="204" class="micro" text-anchor="middle">discovery + memory · max 5 iter</text>
+
+  <!-- Router node -->
+  <rect x="380" y="148" width="160" height="64" rx="10" class="node-router"/>
+  <text x="460" y="172" class="heading" text-anchor="middle">route</text>
+  <text x="460" y="190" class="small" text-anchor="middle">routerNode · cond fan-out</text>
+  <text x="460" y="204" class="micro" text-anchor="middle">picks branch from state</text>
+
+  <!-- Tool branch (top) -->
+  <rect x="600" y="92" width="160" height="64" rx="10" class="node-tool"/>
+  <text x="680" y="116" class="heading" text-anchor="middle">web_search</text>
+  <text x="680" y="134" class="small" text-anchor="middle">toolNode · external API</text>
+  <text x="680" y="148" class="micro" text-anchor="middle">Zod-validated I/O</text>
+
+  <!-- Guardrail branch (bottom) -->
+  <rect x="600" y="204" width="160" height="64" rx="10" class="node-guardrail"/>
+  <text x="680" y="228" class="heading" text-anchor="middle">safety_check</text>
+  <text x="680" y="246" class="small" text-anchor="middle">guardrailNode · classifier</text>
+  <text x="680" y="260" class="micro" text-anchor="middle">block · sanitize · refer</text>
+
+  <!-- Human node -->
+  <rect x="600" y="316" width="160" height="64" rx="10" class="node-human"/>
+  <text x="680" y="340" class="heading" text-anchor="middle">approve</text>
+  <text x="680" y="358" class="small" text-anchor="middle">humanNode · HITL</text>
+  <text x="680" y="372" class="micro" text-anchor="middle">pause · review · resume</text>
+
+  <!-- Subgraph node -->
+  <rect x="800" y="148" width="140" height="64" rx="10" class="node-subgraph"/>
+  <text x="870" y="172" class="heading" text-anchor="middle">finalize</text>
+  <text x="870" y="190" class="small" text-anchor="middle">subgraphNode</text>
+  <text x="870" y="204" class="micro" text-anchor="middle">composed graph</text>
+
+  <!-- END sentinel -->
+  <circle cx="870" cy="280" r="22" class="sentinel"/>
+  <text x="870" y="284" class="heading" text-anchor="middle">END</text>
+
+  <!-- Edges -->
+  <!-- START → research -->
+  <path class="edge" d="M 102,180 L 160,180" marker-end="url(#ag-arrow)"/>
+  <!-- research → route -->
+  <path class="edge" d="M 320,180 L 380,180" marker-end="url(#ag-arrow)"/>
+  <!-- route → web_search (conditional, upper) -->
+  <path class="edge-cond" d="M 540,170 Q 575,170 575,140 L 600,124" marker-end="url(#ag-arrow)"/>
+  <text x="555" y="148" class="edge-label">need_sources</text>
+  <!-- route → safety_check (conditional, lower) -->
+  <path class="edge-cond" d="M 540,200 Q 575,200 575,230 L 600,236" marker-end="url(#ag-arrow)"/>
+  <text x="555" y="218" class="edge-label">need_check</text>
+  <!-- web_search → finalize -->
+  <path class="edge" d="M 760,124 Q 795,124 795,160 L 800,160" marker-end="url(#ag-arrow)"/>
+  <!-- safety_check → approve -->
+  <path class="edge" d="M 680,268 L 680,316" marker-end="url(#ag-arrow)"/>
+  <!-- safety_check → research (CYCLE) -->
+  <path class="edge-cycle" d="M 600,250 Q 480,290 380,200 Q 340,170 320,170" marker-end="url(#ag-arrow-cycle)"/>
+  <text x="430" y="285" class="edge-label" style="fill:#f43f5e">retry_with_context (cycle)</text>
+  <!-- approve → finalize -->
+  <path class="edge" d="M 760,348 Q 870,348 870,212" marker-end="url(#ag-arrow)"/>
+  <text x="810" y="335" class="edge-label">approved</text>
+  <!-- finalize → END -->
+  <path class="edge" d="M 870,212 L 870,258" marker-end="url(#ag-arrow)"/>
+
+  <!-- ============ COMPILE TARGET INSET ============ -->
+  <text x="40" y="430" class="lane-label">COMPILES TO</text>
+  <rect x="60" y="448" width="840" height="86" rx="10" class="ir-box"/>
+  <text x="480" y="475" class="heading" text-anchor="middle">CompiledExecutionGraph IR</text>
+  <text x="480" y="495" class="small" text-anchor="middle">Same intermediate representation that workflow() and mission() compile to.</text>
+  <text x="480" y="513" class="micro" text-anchor="middle">Runtime executes: tool · router · guardrail · human directly. gmi · extension · subgraph require runtime bridge.</text>
+  <text x="480" y="527" class="micro" text-anchor="middle">Reducers merge parallel branches · checkpoints persist by policy · memory consistency: snapshot or live</text>
+
+  <!-- ============ LEGEND ============ -->
+  <text x="40" y="566" class="lane-label">NODE TYPES</text>
+  <!-- gmi -->
+  <rect x="60" y="578" width="20" height="20" rx="4" class="legend-swatch node-gmi"/>
+  <text x="88" y="592" class="small">gmi · LLM call</text>
+  <!-- tool -->
+  <rect x="190" y="578" width="20" height="20" rx="4" class="legend-swatch node-tool"/>
+  <text x="218" y="592" class="small">tool · external API</text>
+  <!-- router -->
+  <rect x="340" y="578" width="20" height="20" rx="4" class="legend-swatch node-router"/>
+  <text x="368" y="592" class="small">router · conditional</text>
+  <!-- guardrail -->
+  <rect x="490" y="578" width="20" height="20" rx="4" class="legend-swatch node-guardrail"/>
+  <text x="518" y="592" class="small">guardrail · safety</text>
+  <!-- human -->
+  <rect x="630" y="578" width="20" height="20" rx="4" class="legend-swatch node-human"/>
+  <text x="658" y="592" class="small">human · HITL</text>
+  <!-- subgraph -->
+  <rect x="750" y="578" width="20" height="20" rx="4" class="legend-swatch node-subgraph"/>
+  <text x="778" y="592" class="small">subgraph · composed</text>
+
+  <!-- Footer -->
+  <text x="480" y="612" class="micro" text-anchor="middle">Edge legend: solid = unconditional · dashed = conditional · dashed red = cycle (memory-driven retry / refine)</text>
+</svg>

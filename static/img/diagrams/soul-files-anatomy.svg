@@ -1,0 +1,166 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 620" role="img" aria-labelledby="soul-files-title soul-files-desc" font-family="ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif">
+  <title id="soul-files-title">AgentOS Soul Files anatomy</title>
+  <desc id="soul-files-desc">An anatomy diagram of the 6-file Soul workspace. On the left, a directory tree shows the workspace layout under ~/.agentos/agents/&lt;agent-id&gt;/. The six files (SOUL.md required, STYLE / IDENTITY / AGENTS / MEMORY / examples optional) feed into a central runtime-load step. The right side splits SOUL.md into two output lanes: structured YAML frontmatter fields (HEXACO traits, voice provider, default mood, hard limits) that map to IPersonaDefinition, and prose body that becomes the system message prelude. A bottom band shows what each file contributes to the final agent identity.</desc>
+
+  <defs>
+    <style>
+      .text { fill: #1e293b; font-size: 12px; }
+      .title { fill: #0f172a; font-size: 17px; font-weight: 700; }
+      .heading { fill: #0f172a; font-size: 13px; font-weight: 700; }
+      .small { fill: #475569; font-size: 11px; }
+      .micro { fill: #64748b; font-size: 10px; }
+      .mono { fill: #475569; font-size: 11px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+      .lane-label { fill: #64748b; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; }
+      .file-req { fill: #ffffff; stroke: #f43f5e; stroke-width: 2; }
+      .file-opt { fill: #ffffff; stroke: #cbd5e1; stroke-width: 1.5; stroke-dasharray: 3 3; }
+      .runtime { fill: #ede9fe; stroke: #7c3aed; stroke-width: 2; }
+      .output-struct { fill: #ffffff; stroke: #10b981; stroke-width: 1.5; }
+      .output-prose { fill: #ffffff; stroke: #f59e0b; stroke-width: 1.5; }
+      .envelope { fill: #f8fafc; stroke: #475569; stroke-width: 1.5; stroke-dasharray: 4 2; }
+      .tree-line { stroke: #cbd5e1; stroke-width: 1; fill: none; }
+      .arrow-line { stroke: #94a3b8; stroke-width: 1.25; fill: none; }
+      .arrow-head { fill: #94a3b8; }
+      .badge-req { fill: #fecaca; }
+      .badge-req-text { fill: #991b1b; font-size: 9px; font-weight: 700; letter-spacing: 0.04em; }
+      .badge-opt { fill: #e0e7ff; }
+      .badge-opt-text { fill: #3730a3; font-size: 9px; font-weight: 700; letter-spacing: 0.04em; }
+      @media (prefers-color-scheme: dark) {
+        .text { fill: #e2e8f0; }
+        .title { fill: #f1f5f9; }
+        .heading { fill: #f1f5f9; }
+        .small { fill: #94a3b8; }
+        .micro { fill: #64748b; }
+        .mono { fill: #94a3b8; }
+        .lane-label { fill: #94a3b8; }
+        .file-req, .file-opt, .output-struct, .output-prose { fill: #0f172a; }
+        .runtime { fill: #1e1b4b; stroke: #a78bfa; }
+        .envelope { fill: #0b1220; stroke: #94a3b8; }
+        .tree-line { stroke: #334155; }
+        .arrow-line { stroke: #475569; }
+        .arrow-head { fill: #475569; }
+        .badge-req { fill: #450a0a; }
+        .badge-req-text { fill: #fca5a5; }
+        .badge-opt { fill: #1e1b4b; }
+        .badge-opt-text { fill: #a78bfa; }
+      }
+    </style>
+    <marker id="soul-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" class="arrow-head"/>
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="480" y="32" class="title" text-anchor="middle">Anatomy of a Soul File Workspace</text>
+  <text x="480" y="52" class="small" text-anchor="middle">Markdown-based agent identity · YAML frontmatter for structured fields · prose body as system prelude</text>
+
+  <!-- ============ LEFT: WORKSPACE TREE ============ -->
+  <text x="40" y="90" class="lane-label">WORKSPACE</text>
+  <text x="40" y="110" class="mono">~/.agentos/agents/&lt;agent-id&gt;/</text>
+
+  <!-- 6 file cards arranged vertically -->
+  <!-- SOUL.md (required) -->
+  <rect x="40" y="130" width="240" height="44" rx="6" class="file-req"/>
+  <text x="60" y="150" class="heading">SOUL.md</text>
+  <text x="60" y="166" class="small">identity · values · tone · hard limits</text>
+  <rect x="220" y="138" width="50" height="14" rx="3" class="badge-req"/>
+  <text x="245" y="148" class="badge-req-text" text-anchor="middle">REQUIRED</text>
+
+  <!-- STYLE.md -->
+  <rect x="40" y="184" width="240" height="40" rx="6" class="file-opt"/>
+  <text x="60" y="202" class="heading">STYLE.md</text>
+  <text x="60" y="216" class="small">voice · vocabulary · register</text>
+
+  <!-- IDENTITY.md -->
+  <rect x="40" y="234" width="240" height="40" rx="6" class="file-opt"/>
+  <text x="60" y="252" class="heading">IDENTITY.md</text>
+  <text x="60" y="266" class="small">display card · name · avatar</text>
+
+  <!-- AGENTS.md -->
+  <rect x="40" y="284" width="240" height="40" rx="6" class="file-opt"/>
+  <text x="60" y="302" class="heading">AGENTS.md</text>
+  <text x="60" y="316" class="small">procedural rules · workflows</text>
+
+  <!-- MEMORY.md -->
+  <rect x="40" y="334" width="240" height="40" rx="6" class="file-opt"/>
+  <text x="60" y="352" class="heading">MEMORY.md</text>
+  <text x="60" y="366" class="small">long-term facts · daily logs</text>
+
+  <!-- examples/ -->
+  <rect x="40" y="384" width="240" height="40" rx="6" class="file-opt"/>
+  <text x="60" y="402" class="heading">examples/</text>
+  <text x="60" y="416" class="small">good-outputs.md · bad-outputs.md</text>
+
+  <!-- Opt badge -->
+  <rect x="220" y="192" width="50" height="14" rx="3" class="badge-opt"/>
+  <text x="245" y="202" class="badge-opt-text" text-anchor="middle">OPTIONAL</text>
+
+  <!-- ============ MIDDLE: RUNTIME LOAD ============ -->
+  <rect x="340" y="220" width="200" height="120" rx="10" class="runtime"/>
+  <text x="440" y="250" class="heading" text-anchor="middle">Runtime Load</text>
+  <text x="440" y="270" class="small" text-anchor="middle">Persona loader walks</text>
+  <text x="440" y="286" class="small" text-anchor="middle">the workspace at boot</text>
+  <text x="440" y="306" class="micro" text-anchor="middle">parse YAML · scan body · merge files</text>
+  <text x="440" y="322" class="micro" text-anchor="middle">cache to per-agent state</text>
+
+  <!-- Arrows from files into runtime -->
+  <path class="arrow-line" d="M 280,152 Q 310,180 340,250" marker-end="url(#soul-arrow)"/>
+  <path class="arrow-line" d="M 280,204 Q 310,220 340,260" marker-end="url(#soul-arrow)"/>
+  <path class="arrow-line" d="M 280,254 L 340,280" marker-end="url(#soul-arrow)"/>
+  <path class="arrow-line" d="M 280,304 L 340,295" marker-end="url(#soul-arrow)"/>
+  <path class="arrow-line" d="M 280,354 Q 310,330 340,310" marker-end="url(#soul-arrow)"/>
+  <path class="arrow-line" d="M 280,404 Q 310,370 340,325" marker-end="url(#soul-arrow)"/>
+
+  <!-- ============ RIGHT: TWO OUTPUT LANES ============ -->
+  <text x="600" y="90" class="lane-label">STRUCTURED → IPersonaDefinition</text>
+  <rect x="600" y="100" width="320" height="170" rx="8" class="output-struct"/>
+  <text x="620" y="124" class="heading">YAML Frontmatter</text>
+  <text x="620" y="146" class="mono">hexaco:</text>
+  <text x="620" y="162" class="micro">  H 0.85 · E 0.55 · X 0.70 · A 0.85 · C 0.90 · O 0.65</text>
+  <text x="620" y="182" class="mono">voice:</text>
+  <text x="620" y="198" class="micro">  provider · voiceId · prosody hints</text>
+  <text x="620" y="218" class="mono">defaultMood, allowedMoods:</text>
+  <text x="620" y="234" class="micro">  PAD-tagged mood transitions</text>
+  <text x="620" y="254" class="mono">hardLimits:</text>
+  <text x="620" y="266" class="micro">  enforced as content-policy guardrails</text>
+
+  <text x="600" y="295" class="lane-label">PROSE → System Prelude</text>
+  <rect x="600" y="305" width="320" height="120" rx="8" class="output-prose"/>
+  <text x="620" y="328" class="heading">Markdown Body</text>
+  <text x="620" y="350" class="small">## Who You Are</text>
+  <text x="620" y="368" class="small">## Tone</text>
+  <text x="620" y="386" class="small">## How You Help</text>
+  <text x="620" y="404" class="micro">injected as the first system message · per-turn</text>
+  <text x="620" y="418" class="micro">drives in-context grounding alongside HEXACO</text>
+
+  <!-- Runtime → outputs -->
+  <path class="arrow-line" d="M 540,260 L 600,180" marker-end="url(#soul-arrow)"/>
+  <path class="arrow-line" d="M 540,300 L 600,360" marker-end="url(#soul-arrow)"/>
+
+  <!-- ============ BOTTOM: CONSOLIDATED ENVELOPE ============ -->
+  <text x="40" y="465" class="lane-label">RESOLVED AGENT IDENTITY (per turn)</text>
+  <rect x="40" y="478" width="880" height="100" rx="10" class="envelope"/>
+
+  <!-- Inner sections -->
+  <rect x="60" y="498" width="200" height="64" rx="6" fill="none" stroke-dasharray="2 2" stroke="#94a3b8"/>
+  <text x="160" y="518" class="heading" text-anchor="middle">Persona Card</text>
+  <text x="160" y="536" class="small" text-anchor="middle">HEXACO + voice + mood</text>
+  <text x="160" y="552" class="micro" text-anchor="middle">drives encoding + style</text>
+
+  <rect x="280" y="498" width="200" height="64" rx="6" fill="none" stroke-dasharray="2 2" stroke="#94a3b8"/>
+  <text x="380" y="518" class="heading" text-anchor="middle">Behavioral Rules</text>
+  <text x="380" y="536" class="small" text-anchor="middle">AGENTS.md procedures</text>
+  <text x="380" y="552" class="micro" text-anchor="middle">hard limits as guardrails</text>
+
+  <rect x="500" y="498" width="200" height="64" rx="6" fill="none" stroke-dasharray="2 2" stroke="#94a3b8"/>
+  <text x="600" y="518" class="heading" text-anchor="middle">Persistent Memory</text>
+  <text x="600" y="536" class="small" text-anchor="middle">MEMORY.md + daily logs</text>
+  <text x="600" y="552" class="micro" text-anchor="middle">warm-start every session</text>
+
+  <rect x="720" y="498" width="180" height="64" rx="6" fill="none" stroke-dasharray="2 2" stroke="#94a3b8"/>
+  <text x="810" y="518" class="heading" text-anchor="middle">Output Calibration</text>
+  <text x="810" y="536" class="small" text-anchor="middle">examples/ pairs</text>
+  <text x="810" y="552" class="micro" text-anchor="middle">good vs bad templates</text>
+
+  <!-- Footer -->
+  <text x="480" y="602" class="micro" text-anchor="middle">Personality lives in SOUL.md · procedures in AGENTS.md · don't mix them. Memory auto-writes daily logs to memory/YYYY-MM-DD.md.</text>
+</svg>

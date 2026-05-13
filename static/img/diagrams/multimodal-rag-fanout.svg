@@ -1,0 +1,172 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 620" role="img" aria-labelledby="mm-rag-title mm-rag-desc" font-family="ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif">
+  <title id="mm-rag-title">AgentOS multimodal RAG fan-out</title>
+  <desc id="mm-rag-desc">A multimodal retrieval pipeline diagram. Three input lanes — text query, image query, and audio query — fan into a derivation stage where non-text inputs become text representations: images via captioning or OCR, audio via transcription, documents via text extraction. The derived text is indexed and retrieved through the standard text-first RAG pipeline. A parallel optional sidecar shows modality-native embeddings: image-to-image via CLIP-style encoders and audio-to-audio via audio encoders, both feeding native vector collections. The retrievalMode toggle at the bottom selects auto, text, native, or hybrid fusion. Results are grouped by asset id with optional binary payload return.</desc>
+
+  <defs>
+    <style>
+      .text { fill: #1e293b; font-size: 12px; }
+      .title { fill: #0f172a; font-size: 17px; font-weight: 700; }
+      .heading { fill: #0f172a; font-size: 13px; font-weight: 700; }
+      .small { fill: #475569; font-size: 11px; }
+      .micro { fill: #64748b; font-size: 10px; }
+      .lane-label { fill: #64748b; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; }
+      .lane-track { fill: none; stroke: #e2e8f0; stroke-width: 1; stroke-dasharray: 4 4; }
+      .input-text { fill: #ffffff; stroke: #f59e0b; stroke-width: 2; }
+      .input-img { fill: #ffffff; stroke: #ec4899; stroke-width: 2; }
+      .input-aud { fill: #ffffff; stroke: #14b8a6; stroke-width: 2; }
+      .input-doc { fill: #ffffff; stroke: #6366f1; stroke-width: 2; }
+      .deriver { fill: #ffffff; stroke: #8b5cf6; stroke-width: 1.5; }
+      .rag-pipeline { fill: #ede9fe; stroke: #7c3aed; stroke-width: 2; }
+      .native-side { fill: #f8fafc; stroke: #cbd5e1; stroke-width: 1.5; stroke-dasharray: 4 3; }
+      .group-box { fill: #ffffff; stroke: #10b981; stroke-width: 2; }
+      .mode-toggle { fill: #ffffff; stroke: #475569; stroke-width: 1.5; }
+      .arrow-line { stroke: #94a3b8; stroke-width: 1.5; fill: none; }
+      .arrow-thin { stroke: #cbd5e1; stroke-width: 1; fill: none; stroke-dasharray: 3 2; }
+      .arrow-head { fill: #94a3b8; }
+      .arrow-head-thin { fill: #cbd5e1; }
+      .opt-tag { fill: #fef3c7; stroke: #d97706; stroke-width: 1; }
+      .opt-tag-text { fill: #92400e; font-size: 9px; font-weight: 700; letter-spacing: 0.04em; }
+      @media (prefers-color-scheme: dark) {
+        .text { fill: #e2e8f0; }
+        .title { fill: #f1f5f9; }
+        .heading { fill: #f1f5f9; }
+        .small { fill: #94a3b8; }
+        .micro { fill: #64748b; }
+        .lane-label { fill: #94a3b8; }
+        .lane-track { stroke: #334155; }
+        .input-text, .input-img, .input-aud, .input-doc, .deriver, .group-box, .mode-toggle { fill: #0f172a; }
+        .rag-pipeline { fill: #1e1b4b; stroke: #a78bfa; }
+        .native-side { fill: #0b1220; stroke: #475569; }
+        .arrow-line { stroke: #475569; }
+        .arrow-thin { stroke: #334155; }
+        .arrow-head { fill: #475569; }
+        .arrow-head-thin { fill: #334155; }
+        .opt-tag { fill: #422006; stroke: #d97706; }
+        .opt-tag-text { fill: #fbbf24; }
+      }
+    </style>
+    <marker id="mm-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" class="arrow-head"/>
+    </marker>
+    <marker id="mm-arrow-thin" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" class="arrow-head-thin"/>
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="480" y="32" class="title" text-anchor="middle">Multimodal RAG: Text-First with Native Sidecar</text>
+  <text x="480" y="52" class="small" text-anchor="middle">Derived text is the canonical retrieval surface · modality-native embeddings are an optional accelerator</text>
+
+  <!-- ============ INPUT LANES ============ -->
+  <text x="40" y="90" class="lane-label">INPUT MODALITIES</text>
+  <line x1="40" y1="98" x2="920" y2="98" class="lane-track"/>
+
+  <!-- Text -->
+  <rect x="40" y="110" width="200" height="56" rx="8" class="input-text"/>
+  <text x="140" y="132" class="heading" text-anchor="middle">Text Query</text>
+  <text x="140" y="150" class="small" text-anchor="middle">user message · system prompt</text>
+  <text x="140" y="162" class="micro" text-anchor="middle">no derivation needed</text>
+
+  <!-- Image -->
+  <rect x="260" y="110" width="200" height="56" rx="8" class="input-img"/>
+  <text x="360" y="132" class="heading" text-anchor="middle">Image Query</text>
+  <text x="360" y="150" class="small" text-anchor="middle">PNG · JPG · WEBP · uploaded asset</text>
+  <text x="360" y="162" class="micro" text-anchor="middle">multipart upload via router</text>
+
+  <!-- Audio -->
+  <rect x="480" y="110" width="200" height="56" rx="8" class="input-aud"/>
+  <text x="580" y="132" class="heading" text-anchor="middle">Audio Query</text>
+  <text x="580" y="150" class="small" text-anchor="middle">WAV · MP3 · M4A · OGG</text>
+  <text x="580" y="162" class="micro" text-anchor="middle">streamed or batch</text>
+
+  <!-- Document -->
+  <rect x="700" y="110" width="200" height="56" rx="8" class="input-doc"/>
+  <text x="800" y="132" class="heading" text-anchor="middle">Document Asset</text>
+  <text x="800" y="150" class="small" text-anchor="middle">PDF · DOCX · HTML</text>
+  <text x="800" y="162" class="micro" text-anchor="middle">first-class media asset</text>
+
+  <!-- ============ DERIVATION LANE ============ -->
+  <text x="40" y="200" class="lane-label">TEXT DERIVATION</text>
+  <line x1="40" y1="208" x2="920" y2="208" class="lane-track"/>
+
+  <rect x="40" y="220" width="200" height="64" rx="8" class="deriver"/>
+  <text x="140" y="242" class="heading" text-anchor="middle">(pass-through)</text>
+  <text x="140" y="260" class="small" text-anchor="middle">text is already text</text>
+  <text x="140" y="274" class="micro" text-anchor="middle">tokenize for embedding</text>
+
+  <rect x="260" y="220" width="200" height="64" rx="8" class="deriver"/>
+  <text x="360" y="242" class="heading" text-anchor="middle">Captioner + OCR</text>
+  <text x="360" y="260" class="small" text-anchor="middle">vision LLM caption</text>
+  <text x="360" y="274" class="micro" text-anchor="middle">+ text extraction</text>
+
+  <rect x="480" y="220" width="200" height="64" rx="8" class="deriver"/>
+  <text x="580" y="242" class="heading" text-anchor="middle">Transcriber</text>
+  <text x="580" y="260" class="small" text-anchor="middle">Whisper · provider STT</text>
+  <text x="580" y="274" class="micro" text-anchor="middle">timestamps preserved</text>
+
+  <rect x="700" y="220" width="200" height="64" rx="8" class="deriver"/>
+  <text x="800" y="242" class="heading" text-anchor="middle">Parser + Chunker</text>
+  <text x="800" y="260" class="small" text-anchor="middle">PDF · DOCX · HTML loaders</text>
+  <text x="800" y="274" class="micro" text-anchor="middle">extract → split → embed</text>
+
+  <!-- Input → Derivation arrows -->
+  <path class="arrow-line" d="M 140,166 L 140,220" marker-end="url(#mm-arrow)"/>
+  <path class="arrow-line" d="M 360,166 L 360,220" marker-end="url(#mm-arrow)"/>
+  <path class="arrow-line" d="M 580,166 L 580,220" marker-end="url(#mm-arrow)"/>
+  <path class="arrow-line" d="M 800,166 L 800,220" marker-end="url(#mm-arrow)"/>
+
+  <!-- ============ MIDDLE: TEXT-FIRST RAG PIPELINE ============ -->
+  <text x="40" y="312" class="lane-label">TEXT-FIRST RAG PIPELINE (canonical)</text>
+  <rect x="40" y="324" width="700" height="76" rx="10" class="rag-pipeline"/>
+  <text x="390" y="348" class="heading" text-anchor="middle">EmbeddingManager → VectorStoreManager → RetrievalAugmentor</text>
+  <text x="390" y="368" class="small" text-anchor="middle">Hybrid dense + sparse · RRF fusion · optional Cohere rerank · GraphRAG · MultimodalIndexer.indexText()</text>
+  <text x="390" y="384" class="micro" text-anchor="middle">Same retrieval pipeline that powers all text RAG · derived text becomes a normal RAG document</text>
+
+  <!-- All 4 derivers → rag pipeline -->
+  <path class="arrow-line" d="M 140,284 L 140,324" marker-end="url(#mm-arrow)"/>
+  <path class="arrow-line" d="M 360,284 L 360,324" marker-end="url(#mm-arrow)"/>
+  <path class="arrow-line" d="M 580,284 L 580,324" marker-end="url(#mm-arrow)"/>
+  <path class="arrow-line" d="M 800,284 Q 800,310 760,320" marker-end="url(#mm-arrow)"/>
+
+  <!-- ============ RIGHT: NATIVE EMBEDDINGS SIDECAR ============ -->
+  <rect x="760" y="324" width="160" height="76" rx="10" class="native-side"/>
+  <text x="840" y="346" class="heading" text-anchor="middle">Native Sidecar</text>
+  <text x="840" y="362" class="small" text-anchor="middle">image-to-image</text>
+  <text x="840" y="376" class="small" text-anchor="middle">audio-to-audio</text>
+  <text x="840" y="390" class="micro" text-anchor="middle">vector collection: *_img · *_aud</text>
+  <rect x="785" y="306" width="55" height="14" rx="3" class="opt-tag"/>
+  <text x="812.5" y="316" class="opt-tag-text" text-anchor="middle">OPTIONAL</text>
+
+  <!-- Image and audio derivers → native sidecar (dotted) -->
+  <path class="arrow-thin" d="M 360,284 Q 460,300 760,340" marker-end="url(#mm-arrow-thin)"/>
+  <path class="arrow-thin" d="M 580,284 Q 670,300 760,360" marker-end="url(#mm-arrow-thin)"/>
+
+  <!-- ============ RETRIEVAL MODE TOGGLE ============ -->
+  <text x="40" y="430" class="lane-label">RETRIEVAL MODE · retrievalMode contract</text>
+  <line x1="40" y1="438" x2="920" y2="438" class="lane-track"/>
+
+  <rect x="40" y="450" width="200" height="44" rx="8" class="mode-toggle"/>
+  <text x="140" y="468" class="heading" text-anchor="middle">auto (default)</text>
+  <text x="140" y="484" class="micro" text-anchor="middle">text-first + native when available</text>
+
+  <rect x="260" y="450" width="200" height="44" rx="8" class="mode-toggle"/>
+  <text x="360" y="468" class="heading" text-anchor="middle">text</text>
+  <text x="360" y="484" class="micro" text-anchor="middle">derived text only · fastest</text>
+
+  <rect x="480" y="450" width="200" height="44" rx="8" class="mode-toggle"/>
+  <text x="580" y="468" class="heading" text-anchor="middle">native</text>
+  <text x="580" y="484" class="micro" text-anchor="middle">modality embeddings only</text>
+
+  <rect x="700" y="450" width="200" height="44" rx="8" class="mode-toggle"/>
+  <text x="800" y="468" class="heading" text-anchor="middle">hybrid</text>
+  <text x="800" y="484" class="micro" text-anchor="middle">fuse text + native</text>
+
+  <!-- ============ RESULT GROUPING ============ -->
+  <text x="40" y="520" class="lane-label">RESULTS</text>
+  <rect x="40" y="532" width="880" height="50" rx="10" class="group-box"/>
+  <text x="480" y="555" class="heading" text-anchor="middle">Group by assetId · merge text + native ranks · attach metadata</text>
+  <text x="480" y="572" class="small" text-anchor="middle">Optional bytes payload · modality tag preserved on every retrieved chunk · GraphRAG entity links optional</text>
+
+  <!-- Footer -->
+  <text x="480" y="605" class="micro" text-anchor="middle">Today's truth: UnifiedRetriever still treats multimodal source as non-text-only. Document/PDF text retrieves through standard RAG collections via MultimodalIndexer.indexText().</text>
+</svg>

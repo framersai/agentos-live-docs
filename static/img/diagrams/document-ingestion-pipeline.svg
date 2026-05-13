@@ -1,0 +1,209 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 620" role="img" aria-labelledby="ingest-title ingest-desc" font-family="ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif">
+  <title id="ingest-title">AgentOS document ingestion pipeline</title>
+  <desc id="ingest-desc">A document-ingestion pipeline diagram. Sources at the top — file, directory with glob filters, URL — feed into a LoaderRegistry that auto-detects format and dispatches to one of nine specialized loaders: PDF (3-tier extraction with PyPDF2, OCR fallback, and Docling for high fidelity), DOCX, HTML, Markdown, plain text, CSV, JSON, YAML, and URL fetcher. Output flows into a ChunkingEngine that offers four chunking strategies: fixed-window, recursive character split, hierarchical heading-based, and semantic. Chunks are then written to the Brain (SQLite) and indexed into FTS5 plus the knowledge graph. A side branch shows the MultimodalAggregator for image captioning during PDF and DOCX ingestion. Each stage exposes plug-in slots for custom loaders, cleaners, chunkers, and metadata enrichers.</desc>
+
+  <defs>
+    <style>
+      .text { fill: #1e293b; font-size: 12px; }
+      .title { fill: #0f172a; font-size: 17px; font-weight: 700; }
+      .heading { fill: #0f172a; font-size: 13px; font-weight: 700; }
+      .small { fill: #475569; font-size: 11px; }
+      .micro { fill: #64748b; font-size: 10px; }
+      .lane-label { fill: #64748b; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; }
+      .lane-track { fill: none; stroke: #e2e8f0; stroke-width: 1; stroke-dasharray: 4 4; }
+      .source { fill: #ffffff; stroke: #0891b2; stroke-width: 2; }
+      .registry { fill: #ede9fe; stroke: #7c3aed; stroke-width: 2; }
+      .loader { fill: #ffffff; stroke: #cbd5e1; stroke-width: 1.25; }
+      .loader-pdf { fill: #ffffff; stroke: #f43f5e; stroke-width: 1.5; }
+      .chunker { fill: #ffffff; stroke: #f59e0b; stroke-width: 2; }
+      .store { fill: #ffffff; stroke: #10b981; stroke-width: 2; }
+      .index { fill: #ffffff; stroke: #6366f1; stroke-width: 2; }
+      .multimodal { fill: #f8fafc; stroke: #14b8a6; stroke-width: 1.5; stroke-dasharray: 4 3; }
+      .arrow-line { stroke: #94a3b8; stroke-width: 1.5; fill: none; }
+      .arrow-thin { stroke: #cbd5e1; stroke-width: 1; fill: none; }
+      .arrow-side { stroke: #14b8a6; stroke-width: 1.25; fill: none; stroke-dasharray: 4 3; }
+      .arrow-head { fill: #94a3b8; }
+      .arrow-head-thin { fill: #cbd5e1; }
+      .arrow-head-side { fill: #14b8a6; }
+      .hook-tag { fill: #fef3c7; stroke: #d97706; stroke-width: 1; }
+      .hook-tag-text { fill: #92400e; font-size: 9px; font-weight: 700; letter-spacing: 0.04em; }
+      @media (prefers-color-scheme: dark) {
+        .text { fill: #e2e8f0; }
+        .title { fill: #f1f5f9; }
+        .heading { fill: #f1f5f9; }
+        .small { fill: #94a3b8; }
+        .micro { fill: #64748b; }
+        .lane-label { fill: #94a3b8; }
+        .lane-track { stroke: #334155; }
+        .source, .loader, .loader-pdf, .chunker, .store, .index { fill: #0f172a; }
+        .registry { fill: #1e1b4b; stroke: #a78bfa; }
+        .multimodal { fill: #0b1220; stroke: #14b8a6; }
+        .arrow-line { stroke: #475569; }
+        .arrow-thin { stroke: #334155; }
+        .arrow-head { fill: #475569; }
+        .arrow-head-thin { fill: #334155; }
+        .hook-tag { fill: #422006; stroke: #d97706; }
+        .hook-tag-text { fill: #fbbf24; }
+      }
+    </style>
+    <marker id="ing-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" class="arrow-head"/>
+    </marker>
+    <marker id="ing-arrow-thin" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" class="arrow-head-thin"/>
+    </marker>
+    <marker id="ing-arrow-side" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" class="arrow-head-side"/>
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="480" y="32" class="title" text-anchor="middle">Document Ingestion Pipeline</text>
+  <text x="480" y="52" class="small" text-anchor="middle">Format-aware loaders · configurable chunking · indexed for search and graph</text>
+
+  <!-- ============ SOURCES ============ -->
+  <text x="40" y="90" class="lane-label">SOURCES</text>
+  <line x1="40" y1="98" x2="920" y2="98" class="lane-track"/>
+
+  <rect x="100" y="110" width="200" height="50" rx="8" class="source"/>
+  <text x="200" y="130" class="heading" text-anchor="middle">File</text>
+  <text x="200" y="148" class="micro" text-anchor="middle">single path · auto-detect</text>
+
+  <rect x="380" y="110" width="200" height="50" rx="8" class="source"/>
+  <text x="480" y="130" class="heading" text-anchor="middle">Directory</text>
+  <text x="480" y="148" class="micro" text-anchor="middle">recursive · include/exclude globs</text>
+
+  <rect x="660" y="110" width="200" height="50" rx="8" class="source"/>
+  <text x="760" y="130" class="heading" text-anchor="middle">URL</text>
+  <text x="760" y="148" class="micro" text-anchor="middle">http(s) fetch · routes by mime</text>
+
+  <!-- ============ LOADER REGISTRY ============ -->
+  <rect x="200" y="190" width="560" height="50" rx="10" class="registry"/>
+  <text x="480" y="212" class="heading" text-anchor="middle">LoaderRegistry</text>
+  <text x="480" y="228" class="small" text-anchor="middle">Format detection · Docling/OCR override when present</text>
+
+  <!-- Source → Registry arrows -->
+  <path class="arrow-line" d="M 200,160 L 300,190" marker-end="url(#ing-arrow)"/>
+  <path class="arrow-line" d="M 480,160 L 480,190" marker-end="url(#ing-arrow)"/>
+  <path class="arrow-line" d="M 760,160 L 660,190" marker-end="url(#ing-arrow)"/>
+
+  <!-- ============ LOADERS ROW ============ -->
+  <text x="40" y="268" class="lane-label">FORMAT LOADERS</text>
+  <line x1="40" y1="276" x2="920" y2="276" class="lane-track"/>
+
+  <!-- 9 loaders, 100x52 each, x: 40, 142, 244, 346, 448, 550, 652, 754, 856 -->
+  <rect x="40" y="290" width="92" height="60" rx="6" class="loader-pdf"/>
+  <text x="86" y="308" class="heading" text-anchor="middle">PDF</text>
+  <text x="86" y="324" class="micro" text-anchor="middle">3-tier extract</text>
+  <text x="86" y="336" class="micro" text-anchor="middle">PyPDF · OCR · Docling</text>
+
+  <rect x="142" y="290" width="92" height="60" rx="6" class="loader"/>
+  <text x="188" y="308" class="heading" text-anchor="middle">DOCX</text>
+  <text x="188" y="324" class="micro" text-anchor="middle">native or</text>
+  <text x="188" y="336" class="micro" text-anchor="middle">Docling</text>
+
+  <rect x="244" y="290" width="92" height="60" rx="6" class="loader"/>
+  <text x="290" y="308" class="heading" text-anchor="middle">HTML</text>
+  <text x="290" y="324" class="micro" text-anchor="middle">strip scripts</text>
+  <text x="290" y="336" class="micro" text-anchor="middle">+ styles</text>
+
+  <rect x="346" y="290" width="92" height="60" rx="6" class="loader"/>
+  <text x="392" y="308" class="heading" text-anchor="middle">Markdown</text>
+  <text x="392" y="324" class="micro" text-anchor="middle">heading-aware</text>
+  <text x="392" y="336" class="micro" text-anchor="middle">structure</text>
+
+  <rect x="448" y="290" width="92" height="60" rx="6" class="loader"/>
+  <text x="494" y="308" class="heading" text-anchor="middle">Text</text>
+  <text x="494" y="324" class="micro" text-anchor="middle">.txt</text>
+  <text x="494" y="336" class="micro" text-anchor="middle">pass-through</text>
+
+  <rect x="550" y="290" width="92" height="60" rx="6" class="loader"/>
+  <text x="596" y="308" class="heading" text-anchor="middle">CSV</text>
+  <text x="596" y="324" class="micro" text-anchor="middle">row → trace</text>
+  <text x="596" y="336" class="micro" text-anchor="middle">or chunk</text>
+
+  <rect x="652" y="290" width="92" height="60" rx="6" class="loader"/>
+  <text x="698" y="308" class="heading" text-anchor="middle">JSON</text>
+  <text x="698" y="324" class="micro" text-anchor="middle">strings</text>
+  <text x="698" y="336" class="micro" text-anchor="middle">recursive</text>
+
+  <rect x="754" y="290" width="92" height="60" rx="6" class="loader"/>
+  <text x="800" y="308" class="heading" text-anchor="middle">YAML</text>
+  <text x="800" y="324" class="micro" text-anchor="middle">→ JSON</text>
+  <text x="800" y="336" class="micro" text-anchor="middle">extract</text>
+
+  <rect x="856" y="290" width="64" height="60" rx="6" class="loader"/>
+  <text x="888" y="308" class="heading" text-anchor="middle">URL</text>
+  <text x="888" y="324" class="micro" text-anchor="middle">fetch</text>
+  <text x="888" y="336" class="micro" text-anchor="middle">+ route</text>
+
+  <!-- Registry → loaders fan-out -->
+  <path class="arrow-thin" d="M 240,240 L 86,290" marker-end="url(#ing-arrow-thin)"/>
+  <path class="arrow-thin" d="M 280,240 L 188,290" marker-end="url(#ing-arrow-thin)"/>
+  <path class="arrow-thin" d="M 340,240 L 290,290" marker-end="url(#ing-arrow-thin)"/>
+  <path class="arrow-thin" d="M 400,240 L 392,290" marker-end="url(#ing-arrow-thin)"/>
+  <path class="arrow-thin" d="M 480,240 L 494,290" marker-end="url(#ing-arrow-thin)"/>
+  <path class="arrow-thin" d="M 560,240 L 596,290" marker-end="url(#ing-arrow-thin)"/>
+  <path class="arrow-thin" d="M 620,240 L 698,290" marker-end="url(#ing-arrow-thin)"/>
+  <path class="arrow-thin" d="M 680,240 L 800,290" marker-end="url(#ing-arrow-thin)"/>
+  <path class="arrow-thin" d="M 720,240 L 888,290" marker-end="url(#ing-arrow-thin)"/>
+
+  <!-- ============ CHUNKING ENGINE ============ -->
+  <text x="40" y="380" class="lane-label">CHUNKING ENGINE · 4 strategies</text>
+  <line x1="40" y1="388" x2="920" y2="388" class="lane-track"/>
+
+  <rect x="40" y="400" width="200" height="60" rx="8" class="chunker"/>
+  <text x="140" y="420" class="heading" text-anchor="middle">Fixed Window</text>
+  <text x="140" y="436" class="small" text-anchor="middle">N tokens · overlap K</text>
+  <text x="140" y="450" class="micro" text-anchor="middle">simplest · uniform</text>
+
+  <rect x="260" y="400" width="200" height="60" rx="8" class="chunker"/>
+  <text x="360" y="420" class="heading" text-anchor="middle">Recursive Split</text>
+  <text x="360" y="436" class="small" text-anchor="middle">paragraph → sentence</text>
+  <text x="360" y="450" class="micro" text-anchor="middle">default · preserves prose</text>
+
+  <rect x="480" y="400" width="200" height="60" rx="8" class="chunker"/>
+  <text x="580" y="420" class="heading" text-anchor="middle">Hierarchical</text>
+  <text x="580" y="436" class="small" text-anchor="middle">heading-aware tree</text>
+  <text x="580" y="450" class="micro" text-anchor="middle">best for markdown</text>
+
+  <rect x="700" y="400" width="200" height="60" rx="8" class="chunker"/>
+  <text x="800" y="420" class="heading" text-anchor="middle">Semantic</text>
+  <text x="800" y="436" class="small" text-anchor="middle">embedding-driven split</text>
+  <text x="800" y="450" class="micro" text-anchor="middle">slowest · highest coherence</text>
+
+  <!-- Loaders → Chunkers (single arrow per loader cluster) -->
+  <path class="arrow-line" d="M 480,350 L 480,400" marker-end="url(#ing-arrow)"/>
+
+  <!-- ============ STORE + INDEX ============ -->
+  <text x="40" y="488" class="lane-label">STORE + INDEX</text>
+  <line x1="40" y1="496" x2="920" y2="496" class="lane-track"/>
+
+  <rect x="40" y="510" width="280" height="64" rx="8" class="store"/>
+  <text x="180" y="532" class="heading" text-anchor="middle">Brain (SQLite)</text>
+  <text x="180" y="550" class="small" text-anchor="middle">documents + chunks + traces tables</text>
+  <text x="180" y="566" class="micro" text-anchor="middle">writes are atomic per file · audit log</text>
+
+  <rect x="340" y="510" width="280" height="64" rx="8" class="index"/>
+  <text x="480" y="532" class="heading" text-anchor="middle">FTS5 Index</text>
+  <text x="480" y="550" class="small" text-anchor="middle">SQLite full-text · BM25 ranking</text>
+  <text x="480" y="566" class="micro" text-anchor="middle">tokenized at write · queryable instantly</text>
+
+  <rect x="640" y="510" width="280" height="64" rx="8" class="index"/>
+  <text x="780" y="532" class="heading" text-anchor="middle">Knowledge Graph</text>
+  <text x="780" y="550" class="small" text-anchor="middle">entity + relation extraction</text>
+  <text x="780" y="566" class="micro" text-anchor="middle">drives GraphRAG retrieval</text>
+
+  <!-- Chunker → Stores -->
+  <path class="arrow-line" d="M 140,460 L 180,510" marker-end="url(#ing-arrow)"/>
+  <path class="arrow-line" d="M 360,460 L 410,510" marker-end="url(#ing-arrow)"/>
+  <path class="arrow-line" d="M 580,460 L 550,510" marker-end="url(#ing-arrow)"/>
+  <path class="arrow-line" d="M 800,460 L 780,510" marker-end="url(#ing-arrow)"/>
+
+  <!-- ============ MULTIMODAL SIDE BRANCH ============ -->
+  <rect x="40" y="600" width="880" height="0" rx="8" class="multimodal"/>
+
+  <!-- Footer -->
+  <text x="480" y="595" class="micro" text-anchor="middle">PDF and DOCX loaders also route extracted images through MultimodalAggregator for vision-LLM captioning · captions become chunks in the same pipeline.</text>
+  <text x="480" y="612" class="micro" text-anchor="middle">Every stage exposes plug-in hooks: custom loaders, cleaners, chunkers, metadata enrichers · register via Memory.config or ExtensionPack.</text>
+</svg>

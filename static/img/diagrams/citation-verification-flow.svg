@@ -1,0 +1,186 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 600" role="img" aria-labelledby="cite-verify-title cite-verify-desc" font-family="ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif">
+  <title id="cite-verify-title">AgentOS citation verification flow</title>
+  <desc id="cite-verify-desc">A claim-verification pipeline. A generated answer on the left has three highlighted spans (claim 1, claim 2, claim 3). Each claim flows through a citation-mapping step that links it to retrieved chunks, then through an NLI judge that classifies the relationship as ENTAILED, NEUTRAL, or CONTRADICTED. The verified answer on the right shows each claim annotated with the verdict and citation marker. Claim 1 entails the source. Claim 2 is neutral (no support found). Claim 3 contradicts the source and is flagged for revision. A legend strip at the bottom explains the three verdict states and the configurable confidence threshold.</desc>
+
+  <defs>
+    <style>
+      .text { fill: #1e293b; font-size: 12px; }
+      .title { fill: #0f172a; font-size: 17px; font-weight: 700; }
+      .heading { fill: #0f172a; font-size: 13px; font-weight: 700; }
+      .small { fill: #475569; font-size: 11px; }
+      .micro { fill: #64748b; font-size: 10px; }
+      .lane-label { fill: #64748b; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; }
+      .stage { fill: #ffffff; stroke: #cbd5e1; stroke-width: 1.5; }
+      .answer-bg { fill: #f8fafc; stroke: #cbd5e1; stroke-width: 1.5; }
+      .claim-1 { fill: #d1fae5; stroke: #10b981; stroke-width: 1; }
+      .claim-2 { fill: #fef3c7; stroke: #f59e0b; stroke-width: 1; }
+      .claim-3 { fill: #fecaca; stroke: #f43f5e; stroke-width: 1; }
+      .chunk { fill: #ffffff; stroke: #94a3b8; stroke-width: 1; stroke-dasharray: 3 2; }
+      .nli-judge { fill: #ede9fe; stroke: #7c3aed; stroke-width: 1.5; }
+      .verdict-pass { fill: #d1fae5; stroke: #10b981; stroke-width: 1.5; }
+      .verdict-neutral { fill: #fef3c7; stroke: #f59e0b; stroke-width: 1.5; }
+      .verdict-fail { fill: #fecaca; stroke: #f43f5e; stroke-width: 1.5; }
+      .verdict-text-pass { fill: #065f46; font-size: 11px; font-weight: 700; }
+      .verdict-text-neutral { fill: #92400e; font-size: 11px; font-weight: 700; }
+      .verdict-text-fail { fill: #991b1b; font-size: 11px; font-weight: 700; }
+      .arrow-line { stroke: #94a3b8; stroke-width: 1.25; fill: none; }
+      .arrow-thin { stroke: #cbd5e1; stroke-width: 1; fill: none; stroke-dasharray: 3 2; }
+      .arrow-head { fill: #94a3b8; }
+      .arrow-head-thin { fill: #cbd5e1; }
+      @media (prefers-color-scheme: dark) {
+        .text { fill: #e2e8f0; }
+        .title { fill: #f1f5f9; }
+        .heading { fill: #f1f5f9; }
+        .small { fill: #94a3b8; }
+        .micro { fill: #64748b; }
+        .lane-label { fill: #94a3b8; }
+        .stage, .answer-bg { fill: #0f172a; stroke: #475569; }
+        .chunk { fill: #0b1220; stroke: #475569; }
+        .claim-1 { fill: #064e3b; stroke: #10b981; }
+        .claim-2 { fill: #422006; stroke: #f59e0b; }
+        .claim-3 { fill: #450a0a; stroke: #f43f5e; }
+        .nli-judge { fill: #1e1b4b; stroke: #a78bfa; }
+        .verdict-pass { fill: #064e3b; }
+        .verdict-neutral { fill: #422006; }
+        .verdict-fail { fill: #450a0a; }
+        .verdict-text-pass { fill: #6ee7b7; }
+        .verdict-text-neutral { fill: #fcd34d; }
+        .verdict-text-fail { fill: #fca5a5; }
+        .arrow-line { stroke: #475569; }
+        .arrow-thin { stroke: #334155; }
+        .arrow-head { fill: #475569; }
+        .arrow-head-thin { fill: #334155; }
+      }
+    </style>
+    <marker id="cv-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" class="arrow-head"/>
+    </marker>
+    <marker id="cv-arrow-thin" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" class="arrow-head-thin"/>
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="480" y="32" class="title" text-anchor="middle">Citation Verification Flow</text>
+  <text x="480" y="52" class="small" text-anchor="middle">Generated answer → claim extraction → NLI judge → verdict-annotated output</text>
+
+  <!-- ============ LEFT: GENERATED ANSWER ============ -->
+  <text x="40" y="86" class="lane-label">GENERATED ANSWER</text>
+  <rect x="40" y="100" width="240" height="200" rx="8" class="answer-bg"/>
+
+  <!-- Answer prose with highlighted claim spans -->
+  <text x="55" y="125" class="small">The drug-resistant strain</text>
+  <rect x="55" y="132" width="210" height="22" rx="3" class="claim-1"/>
+  <text x="60" y="148" class="small">responds to bedaquiline + linezolid</text>
+
+  <text x="55" y="176" class="small">in a 6-month regimen.</text>
+
+  <rect x="55" y="186" width="210" height="22" rx="3" class="claim-2"/>
+  <text x="60" y="202" class="small">Cure rates reach 95% in trials.</text>
+
+  <text x="55" y="226" class="small">Side effects include hepatic</text>
+  <rect x="55" y="232" width="210" height="22" rx="3" class="claim-3"/>
+  <text x="60" y="248" class="small">toxicity in fewer than 1% of cases.</text>
+
+  <text x="55" y="277" class="micro">3 verifiable claims extracted</text>
+
+  <!-- ============ MIDDLE: VERIFICATION LANES ============ -->
+  <text x="320" y="86" class="lane-label">CLAIM</text>
+  <text x="500" y="86" class="lane-label">RETRIEVED CHUNKS</text>
+  <text x="720" y="86" class="lane-label">NLI JUDGE</text>
+
+  <!-- Lane 1: Claim 1 (ENTAILED) -->
+  <rect x="320" y="100" width="160" height="40" rx="6" class="claim-1"/>
+  <text x="400" y="118" class="heading" text-anchor="middle">Claim 1</text>
+  <text x="400" y="132" class="micro" text-anchor="middle">"bedaquiline + linezolid · 6mo"</text>
+
+  <rect x="500" y="100" width="160" height="40" rx="6" class="chunk"/>
+  <text x="580" y="116" class="micro" text-anchor="middle">[WHO 2023 BPaL regimen]</text>
+  <text x="580" y="130" class="micro" text-anchor="middle">"BPaL 6-month treatment"</text>
+
+  <rect x="680" y="100" width="80" height="40" rx="6" class="nli-judge"/>
+  <text x="720" y="118" class="micro" text-anchor="middle">DeBERTa-v3</text>
+  <text x="720" y="132" class="micro" text-anchor="middle">NLI</text>
+
+  <rect x="780" y="105" width="120" height="30" rx="6" class="verdict-pass"/>
+  <text x="840" y="124" class="verdict-text-pass" text-anchor="middle">✓ ENTAILED · 0.94</text>
+
+  <!-- Lane 2: Claim 2 (NEUTRAL) -->
+  <rect x="320" y="170" width="160" height="40" rx="6" class="claim-2"/>
+  <text x="400" y="188" class="heading" text-anchor="middle">Claim 2</text>
+  <text x="400" y="202" class="micro" text-anchor="middle">"95% cure rate"</text>
+
+  <rect x="500" y="170" width="160" height="40" rx="6" class="chunk"/>
+  <text x="580" y="186" class="micro" text-anchor="middle">[NEJM efficacy paper]</text>
+  <text x="580" y="200" class="micro" text-anchor="middle">"efficacy data omitted"</text>
+
+  <rect x="680" y="170" width="80" height="40" rx="6" class="nli-judge"/>
+  <text x="720" y="188" class="micro" text-anchor="middle">DeBERTa-v3</text>
+  <text x="720" y="202" class="micro" text-anchor="middle">NLI</text>
+
+  <rect x="780" y="175" width="120" height="30" rx="6" class="verdict-neutral"/>
+  <text x="840" y="194" class="verdict-text-neutral" text-anchor="middle">⚠ NEUTRAL · 0.62</text>
+
+  <!-- Lane 3: Claim 3 (CONTRADICTED) -->
+  <rect x="320" y="240" width="160" height="40" rx="6" class="claim-3"/>
+  <text x="400" y="258" class="heading" text-anchor="middle">Claim 3</text>
+  <text x="400" y="272" class="micro" text-anchor="middle">"hepatic toxicity &lt; 1%"</text>
+
+  <rect x="500" y="240" width="160" height="40" rx="6" class="chunk"/>
+  <text x="580" y="256" class="micro" text-anchor="middle">[CDC safety profile]</text>
+  <text x="580" y="270" class="micro" text-anchor="middle">"hepatic events: 8-12%"</text>
+
+  <rect x="680" y="240" width="80" height="40" rx="6" class="nli-judge"/>
+  <text x="720" y="258" class="micro" text-anchor="middle">DeBERTa-v3</text>
+  <text x="720" y="272" class="micro" text-anchor="middle">NLI</text>
+
+  <rect x="780" y="245" width="120" height="30" rx="6" class="verdict-fail"/>
+  <text x="840" y="264" class="verdict-text-fail" text-anchor="middle">✗ CONTRADICTED · 0.91</text>
+
+  <!-- Arrows from answer claims to lanes -->
+  <path class="arrow-line" d="M 280,143 L 320,120" marker-end="url(#cv-arrow)"/>
+  <path class="arrow-line" d="M 280,197 L 320,190" marker-end="url(#cv-arrow)"/>
+  <path class="arrow-line" d="M 280,243 L 320,260" marker-end="url(#cv-arrow)"/>
+
+  <!-- Claim → Chunks → NLI → Verdict arrows -->
+  <path class="arrow-thin" d="M 480,120 L 500,120" marker-end="url(#cv-arrow-thin)"/>
+  <path class="arrow-thin" d="M 660,120 L 680,120" marker-end="url(#cv-arrow-thin)"/>
+  <path class="arrow-line" d="M 760,120 L 780,120" marker-end="url(#cv-arrow)"/>
+
+  <path class="arrow-thin" d="M 480,190 L 500,190" marker-end="url(#cv-arrow-thin)"/>
+  <path class="arrow-thin" d="M 660,190 L 680,190" marker-end="url(#cv-arrow-thin)"/>
+  <path class="arrow-line" d="M 760,190 L 780,190" marker-end="url(#cv-arrow)"/>
+
+  <path class="arrow-thin" d="M 480,260 L 500,260" marker-end="url(#cv-arrow-thin)"/>
+  <path class="arrow-thin" d="M 660,260 L 680,260" marker-end="url(#cv-arrow-thin)"/>
+  <path class="arrow-line" d="M 760,260 L 780,260" marker-end="url(#cv-arrow)"/>
+
+  <!-- ============ BOTTOM: VERDICT-ANNOTATED OUTPUT ============ -->
+  <text x="40" y="335" class="lane-label">VERIFIED ANSWER (with citation markers)</text>
+  <rect x="40" y="350" width="880" height="170" rx="8" class="answer-bg"/>
+
+  <!-- Annotated answer lines -->
+  <text x="55" y="377" class="small">The drug-resistant strain</text>
+  <rect x="55" y="384" width="380" height="22" rx="3" class="claim-1"/>
+  <text x="60" y="400" class="small">responds to bedaquiline + linezolid in a 6-month regimen.</text>
+  <text x="440" y="400" class="verdict-text-pass">✓ [1] WHO 2023</text>
+
+  <rect x="55" y="420" width="280" height="22" rx="3" class="claim-2"/>
+  <text x="60" y="436" class="small">Cure rates reach 95% in trials.</text>
+  <text x="340" y="436" class="verdict-text-neutral">⚠ unverified — no supporting source</text>
+
+  <text x="55" y="462" class="small">Side effects include hepatic toxicity in</text>
+  <rect x="55" y="468" width="320" height="22" rx="3" class="claim-3"/>
+  <text x="60" y="484" class="small">fewer than 1% of cases.</text>
+  <text x="380" y="484" class="verdict-text-fail">✗ contradicted by [2] CDC · revise</text>
+
+  <text x="55" y="510" class="micro">2 of 3 claims passed verification at threshold 0.7 · 1 contradiction blocks return without HITL approval</text>
+
+  <!-- ============ LEGEND ============ -->
+  <text x="40" y="552" class="lane-label">VERDICTS</text>
+  <rect x="60" y="566" width="14" height="14" rx="3" class="verdict-pass"/>
+  <text x="82" y="577" class="small">ENTAILED · NLI confidence ≥ threshold, claim supported by retrieved chunk</text>
+
+  <rect x="60" y="584" width="14" height="14" rx="3" class="verdict-neutral"/>
+  <text x="82" y="595" class="small">NEUTRAL · no chunk entails or contradicts; flagged as unsupported, surfaces a warning</text>
+</svg>

@@ -1,0 +1,162 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 600" role="img" aria-labelledby="hyde-title hyde-desc" font-family="ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif">
+  <title id="hyde-title">HyDE retrieval flow</title>
+  <desc id="hyde-desc">A side-by-side comparison of standard vector retrieval versus HyDE retrieval. The top lane shows standard retrieval: a query is embedded directly, then matched against documents. A small inset shows the embedding-space distance between a question and its answer-style document is large because questions and answers live in different regions of the space. The bottom lane shows HyDE retrieval: the query is first sent to an LLM to generate a hypothetical answer, then the hypothesis is embedded, and the embedding matches better against actual answer-style documents. The right side shows benchmark results: on LongMemEval-S (single-session) HyDE hurts by 1.9 points; on LongMemEval-M (multi-session, 1.5 million token haystack) HyDE helps by 1 point. The footer captures the rule of thumb: HyDE is opt-in, useful when the haystack is too large for direct retrieval.</desc>
+
+  <defs>
+    <style>
+      .text { fill: #1e293b; font-size: 12px; }
+      .title { fill: #0f172a; font-size: 17px; font-weight: 700; }
+      .heading { fill: #0f172a; font-size: 13px; font-weight: 700; }
+      .small { fill: #475569; font-size: 11px; }
+      .micro { fill: #64748b; font-size: 10px; }
+      .lane-label { fill: #64748b; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; }
+      .lane-track { fill: none; stroke: #e2e8f0; stroke-width: 1; stroke-dasharray: 4 4; }
+      .stage { fill: #ffffff; stroke: #cbd5e1; stroke-width: 1.5; }
+      .stage-llm { fill: #ffffff; stroke: #8b5cf6; stroke-width: 2; }
+      .stage-embed { fill: #ffffff; stroke: #10b981; stroke-width: 2; }
+      .stage-query { fill: #ffffff; stroke: #f59e0b; stroke-width: 2; }
+      .stage-store { fill: #ffffff; stroke: #0891b2; stroke-width: 2; }
+      .stage-result { fill: #ffffff; stroke: #6366f1; stroke-width: 2; }
+      .space-bg { fill: #f8fafc; stroke: #cbd5e1; stroke-width: 1; }
+      .dot-query { fill: #f59e0b; }
+      .dot-doc { fill: #0891b2; }
+      .dot-hyde { fill: #8b5cf6; }
+      .gap-line-far { stroke: #f43f5e; stroke-width: 1.5; stroke-dasharray: 4 2; }
+      .gap-line-near { stroke: #10b981; stroke-width: 1.5; stroke-dasharray: 4 2; }
+      .arrow-line { stroke: #94a3b8; stroke-width: 1.5; fill: none; }
+      .arrow-head { fill: #94a3b8; }
+      .bench-good { fill: #d1fae5; stroke: #10b981; stroke-width: 1.5; }
+      .bench-bad { fill: #fecaca; stroke: #f43f5e; stroke-width: 1.5; }
+      .bench-good-text { fill: #065f46; font-size: 11px; font-weight: 700; }
+      .bench-bad-text { fill: #991b1b; font-size: 11px; font-weight: 700; }
+      @media (prefers-color-scheme: dark) {
+        .text { fill: #e2e8f0; }
+        .title { fill: #f1f5f9; }
+        .heading { fill: #f1f5f9; }
+        .small { fill: #94a3b8; }
+        .micro { fill: #64748b; }
+        .lane-label { fill: #94a3b8; }
+        .lane-track { stroke: #334155; }
+        .stage, .stage-llm, .stage-embed, .stage-query, .stage-store, .stage-result { fill: #0f172a; }
+        .space-bg { fill: #0b1220; stroke: #334155; }
+        .arrow-line { stroke: #475569; }
+        .arrow-head { fill: #475569; }
+        .bench-good { fill: #064e3b; }
+        .bench-bad { fill: #450a0a; }
+        .bench-good-text { fill: #6ee7b7; }
+        .bench-bad-text { fill: #fca5a5; }
+      }
+    </style>
+    <marker id="hyde-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" class="arrow-head"/>
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="480" y="32" class="title" text-anchor="middle">HyDE Retrieval: Question vs Hypothetical-Answer Embedding</text>
+  <text x="480" y="52" class="small" text-anchor="middle">Bridge the embedding-space gap between questions and answer-style documents</text>
+
+  <!-- ============ TOP LANE: STANDARD ============ -->
+  <text x="40" y="90" class="lane-label">STANDARD RETRIEVAL</text>
+  <line x1="40" y1="98" x2="640" y2="98" class="lane-track"/>
+
+  <rect x="40" y="110" width="120" height="60" rx="8" class="stage-query"/>
+  <text x="100" y="132" class="heading" text-anchor="middle">Query</text>
+  <text x="100" y="150" class="small" text-anchor="middle">"What causes</text>
+  <text x="100" y="164" class="small" text-anchor="middle">memory leaks?"</text>
+
+  <rect x="200" y="110" width="120" height="60" rx="8" class="stage-embed"/>
+  <text x="260" y="132" class="heading" text-anchor="middle">Embed</text>
+  <text x="260" y="150" class="small" text-anchor="middle">embed(query)</text>
+  <text x="260" y="164" class="micro" text-anchor="middle">single call</text>
+
+  <rect x="360" y="110" width="120" height="60" rx="8" class="stage-store"/>
+  <text x="420" y="132" class="heading" text-anchor="middle">Vector Search</text>
+  <text x="420" y="150" class="small" text-anchor="middle">cosine top-K</text>
+  <text x="420" y="164" class="micro" text-anchor="middle">against docs</text>
+
+  <rect x="520" y="110" width="120" height="60" rx="8" class="stage-result"/>
+  <text x="580" y="132" class="heading" text-anchor="middle">Results</text>
+  <text x="580" y="150" class="small" text-anchor="middle">may miss</text>
+  <text x="580" y="164" class="micro" text-anchor="middle">style mismatch</text>
+
+  <path class="arrow-line" d="M 160,140 L 200,140" marker-end="url(#hyde-arrow)"/>
+  <path class="arrow-line" d="M 320,140 L 360,140" marker-end="url(#hyde-arrow)"/>
+  <path class="arrow-line" d="M 480,140 L 520,140" marker-end="url(#hyde-arrow)"/>
+
+  <!-- Embedding space inset (top) -->
+  <text x="680" y="90" class="lane-label">EMBEDDING SPACE</text>
+  <rect x="680" y="100" width="240" height="80" rx="8" class="space-bg"/>
+  <circle cx="730" cy="140" r="8" class="dot-query"/>
+  <text x="730" y="160" class="micro" text-anchor="middle">question</text>
+  <circle cx="870" cy="140" r="8" class="dot-doc"/>
+  <text x="870" y="160" class="micro" text-anchor="middle">document</text>
+  <line x1="738" y1="140" x2="862" y2="140" class="gap-line-far"/>
+  <text x="800" y="135" class="micro" text-anchor="middle" style="fill:#f43f5e;font-weight:700">far apart</text>
+
+  <!-- ============ DIVIDER ============ -->
+  <line x1="40" y1="210" x2="920" y2="210" class="lane-track"/>
+
+  <!-- ============ BOTTOM LANE: HYDE ============ -->
+  <text x="40" y="240" class="lane-label">HyDE RETRIEVAL</text>
+  <line x1="40" y1="248" x2="640" y2="248" class="lane-track"/>
+
+  <rect x="40" y="260" width="120" height="60" rx="8" class="stage-query"/>
+  <text x="100" y="282" class="heading" text-anchor="middle">Query</text>
+  <text x="100" y="300" class="small" text-anchor="middle">"What causes</text>
+  <text x="100" y="314" class="small" text-anchor="middle">memory leaks?"</text>
+
+  <rect x="200" y="260" width="120" height="60" rx="8" class="stage-llm"/>
+  <text x="260" y="282" class="heading" text-anchor="middle">LLM</text>
+  <text x="260" y="300" class="small" text-anchor="middle">hypothesize</text>
+  <text x="260" y="314" class="micro" text-anchor="middle">+ extra call</text>
+
+  <rect x="360" y="260" width="120" height="60" rx="8" class="stage-embed"/>
+  <text x="420" y="282" class="heading" text-anchor="middle">Embed</text>
+  <text x="420" y="300" class="small" text-anchor="middle">embed(hyp)</text>
+  <text x="420" y="314" class="micro" text-anchor="middle">answer-shaped</text>
+
+  <rect x="520" y="260" width="120" height="60" rx="8" class="stage-store"/>
+  <text x="580" y="282" class="heading" text-anchor="middle">Vector Search</text>
+  <text x="580" y="300" class="small" text-anchor="middle">cosine top-K</text>
+  <text x="580" y="314" class="micro" text-anchor="middle">higher recall</text>
+
+  <path class="arrow-line" d="M 160,290 L 200,290" marker-end="url(#hyde-arrow)"/>
+  <path class="arrow-line" d="M 320,290 L 360,290" marker-end="url(#hyde-arrow)"/>
+  <path class="arrow-line" d="M 480,290 L 520,290" marker-end="url(#hyde-arrow)"/>
+
+  <!-- Embedding space inset (bottom) -->
+  <text x="680" y="240" class="lane-label">EMBEDDING SPACE</text>
+  <rect x="680" y="250" width="240" height="80" rx="8" class="space-bg"/>
+  <circle cx="730" cy="290" r="8" class="dot-query"/>
+  <text x="730" y="310" class="micro" text-anchor="middle">question</text>
+  <circle cx="810" cy="290" r="8" class="dot-hyde"/>
+  <text x="810" y="310" class="micro" text-anchor="middle">hypothesis</text>
+  <circle cx="870" cy="290" r="8" class="dot-doc"/>
+  <text x="870" y="310" class="micro" text-anchor="middle">document</text>
+  <line x1="818" y1="290" x2="862" y2="290" class="gap-line-near"/>
+  <text x="840" y="285" class="micro" text-anchor="middle" style="fill:#10b981;font-weight:700">close</text>
+
+  <!-- ============ BOTTOM: BENCHMARK DELTA ============ -->
+  <text x="40" y="370" class="lane-label">BENCHMARK DELTA · agentos-bench LongMemEval N=500</text>
+  <line x1="40" y1="378" x2="920" y2="378" class="lane-track"/>
+
+  <!-- LongMemEval-S (HyDE hurts) -->
+  <rect x="60" y="395" width="400" height="100" rx="10" class="bench-bad"/>
+  <text x="260" y="421" class="heading" text-anchor="middle">LongMemEval-S · 115K tokens · 50 sessions</text>
+  <text x="260" y="445" class="bench-bad-text" text-anchor="middle">HyDE OFF: 85.6% · HyDE ON: 83.3%</text>
+  <text x="260" y="463" class="bench-bad-text" text-anchor="middle">Δ −1.9 points · HyDE HURTS at this scale</text>
+  <text x="260" y="481" class="micro" text-anchor="middle">Single-session haystack rewards precision · hypothesis-induced drift moves the embedding away from the exact answer span</text>
+
+  <!-- LongMemEval-M (HyDE helps) -->
+  <rect x="500" y="395" width="400" height="100" rx="10" class="bench-good"/>
+  <text x="700" y="421" class="heading" text-anchor="middle">LongMemEval-M · 1.5M tokens · 500 sessions</text>
+  <text x="700" y="445" class="bench-good-text" text-anchor="middle">HyDE OFF: 69.2% · HyDE ON: 70.2%</text>
+  <text x="700" y="463" class="bench-good-text" text-anchor="middle">Δ +1.0 point · HyDE HELPS at scale</text>
+  <text x="700" y="481" class="micro" text-anchor="middle">Multi-hop synthesis across a 1.5M-token haystack benefits from answer-shaped embeddings · vocabulary mismatch dominates noise</text>
+
+  <!-- Footer -->
+  <text x="480" y="535" class="micro" text-anchor="middle">HyDE is opt-in (enabled: false by default). Turn on when haystack is too big for direct retrieval and you need multi-hop recall.</text>
+  <text x="480" y="555" class="micro" text-anchor="middle">Leave off for single-session and tight-latency paths. Configure via ragConfig.hyde.enabled · adaptiveThreshold · maxHypothesisTokens.</text>
+  <text x="480" y="585" class="micro" text-anchor="middle" font-style="italic">Reference: Gao et al. (2022) arXiv:2212.10496 · Lei et al. (2025) arXiv:2507.16754 (adaptive HyDE)</text>
+</svg>
