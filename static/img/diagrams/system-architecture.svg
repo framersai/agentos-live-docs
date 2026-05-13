@@ -128,10 +128,10 @@
     <circle cx="52" cy="70" r="24" class="disc-1" filter="url(#sa-disc-glow)" />
     <text x="52" y="77" text-anchor="middle" class="num">1</text>
     <text x="92" y="48" class="layer-title">API surface</text>
-    <text x="92" y="74" class="layer-sub">High-level helpers for one-shot calls + stateful agent factories</text>
+    <text x="92" y="74" class="layer-sub">High-level helpers · one-shot calls · stateful agents</text>
     <text x="92" y="108" class="lbl">Caller-facing</text>
 
-    <g transform="translate(440, 26)">
+    <g transform="translate(500, 26)">
       <g><rect width="140" height="34" rx="10" class="pill-emph" /><text x="70" y="22" text-anchor="middle" class="pill-emph-t">generateText()</text></g>
       <g transform="translate(152, 0)"><rect width="130" height="34" rx="10" class="pill-emph" /><text x="65" y="22" text-anchor="middle" class="pill-emph-t">streamText()</text></g>
       <g transform="translate(294, 0)"><rect width="160" height="34" rx="10" class="pill-emph" /><text x="80" y="22" text-anchor="middle" class="pill-emph-t">generateObject()</text></g>
@@ -140,7 +140,7 @@
       <g transform="translate(742, 0)"><rect width="104" height="34" rx="10" class="pill-emph" /><text x="52" y="22" text-anchor="middle" class="pill-emph-t">agency()</text></g>
       <g transform="translate(858, 0)"><rect width="110" height="34" rx="10" class="pill-emph" /><text x="55" y="22" text-anchor="middle" class="pill-emph-t">mission()</text></g>
     </g>
-    <g transform="translate(440, 76)">
+    <g transform="translate(500, 76)">
       <g><rect width="240" height="34" rx="10" class="pill" /><text x="120" y="22" text-anchor="middle" class="pill-text">prompt assembly · sessions</text></g>
       <g transform="translate(252, 0)"><rect width="250" height="34" rx="10" class="pill" /><text x="125" y="22" text-anchor="middle" class="pill-text">hooks · personality shaping</text></g>
       <g transform="translate(514, 0)"><rect width="230" height="34" rx="10" class="pill" /><text x="115" y="22" text-anchor="middle" class="pill-text">usage ledger forwarding</text></g>
@@ -155,16 +155,16 @@
     <circle cx="52" cy="70" r="24" class="disc-2" filter="url(#sa-disc-glow)" />
     <text x="52" y="77" text-anchor="middle" class="num">2</text>
     <text x="92" y="48" class="layer-title">Cognitive substrate (GMI)</text>
-    <text x="92" y="74" class="layer-sub">Per-agent coordinator: persona, mood, working state, reasoning trace</text>
+    <text x="92" y="74" class="layer-sub">Per-agent coordinator · persona, mood, state, reasoning trace</text>
     <text x="92" y="108" class="lbl">Per-agent state</text>
 
-    <g transform="translate(440, 26)">
+    <g transform="translate(500, 26)">
       <g><rect width="200" height="34" rx="10" class="pill-emph" /><text x="100" y="22" text-anchor="middle" class="pill-emph-t">GMI coordinator</text></g>
       <g transform="translate(212, 0)"><rect width="240" height="34" rx="10" class="pill-emph" /><text x="120" y="22" text-anchor="middle" class="pill-emph-t">PersonaOverlayManager</text></g>
       <g transform="translate(464, 0)"><rect width="200" height="34" rx="10" class="pill-emph" /><text x="100" y="22" text-anchor="middle" class="pill-emph-t">SentimentTracker</text></g>
       <g transform="translate(676, 0)"><rect width="220" height="34" rx="10" class="pill-emph" /><text x="110" y="22" text-anchor="middle" class="pill-emph-t">MetapromptExecutor</text></g>
     </g>
-    <g transform="translate(440, 76)">
+    <g transform="translate(500, 76)">
       <g><rect width="240" height="34" rx="10" class="pill" /><text x="120" y="22" text-anchor="middle" class="pill-text">HEXACO 6-trait shaping</text></g>
       <g transform="translate(252, 0)"><rect width="270" height="34" rx="10" class="pill" /><text x="135" y="22" text-anchor="middle" class="pill-text">3-trigger metaprompt loop</text></g>
       <g transform="translate(534, 0)"><rect width="240" height="34" rx="10" class="pill" /><text x="120" y="22" text-anchor="middle" class="pill-text">reasoning trace buffer</text></g>
@@ -179,7 +179,7 @@
     <circle cx="52" cy="70" r="24" class="disc-3" filter="url(#sa-disc-glow)" />
     <text x="52" y="77" text-anchor="middle" class="num">3</text>
     <text x="92" y="48" class="layer-title">Memory + RAG pipeline</text>
-    <text x="92" y="74" class="layer-sub">4-tier cognitive memory · HyDE + GraphRAG · 70.2% LongMemEval-M</text>
+    <text x="92" y="74" class="layer-sub">4-tier memory · HyDE + GraphRAG · 70.2% LongMemEval-M</text>
     <text x="92" y="108" class="lbl">Cognitive memory</text>
 
     <!-- Sub-row A: Memory tiers (y center ≈ 152) -->
@@ -224,17 +224,17 @@
     <circle cx="52" cy="70" r="24" class="disc-4" filter="url(#sa-disc-glow)" />
     <text x="52" y="77" text-anchor="middle" class="num">4</text>
     <text x="92" y="48" class="layer-title">Tools, skills, extensions</text>
-    <text x="92" y="74" class="layer-sub">100+ packs · 88 SKILL.md · judge-gated runtime tool forging</text>
+    <text x="92" y="74" class="layer-sub">100+ packs · 88 SKILL.md · judge-gated runtime forging</text>
     <text x="92" y="108" class="lbl">Capability surface</text>
 
-    <g transform="translate(440, 26)">
+    <g transform="translate(500, 26)">
       <g><rect width="200" height="34" rx="10" class="pill-emph" /><text x="100" y="22" text-anchor="middle" class="pill-emph-t">ToolOrchestrator</text></g>
       <g transform="translate(212, 0)"><rect width="200" height="34" rx="10" class="pill-emph" /><text x="100" y="22" text-anchor="middle" class="pill-emph-t">ExtensionRegistry</text></g>
       <g transform="translate(424, 0)"><rect width="170" height="34" rx="10" class="pill-emph" /><text x="85" y="22" text-anchor="middle" class="pill-emph-t">SkillRegistry</text></g>
       <g transform="translate(606, 0)"><rect width="220" height="34" rx="10" class="pill-emph" /><text x="110" y="22" text-anchor="middle" class="pill-emph-t">CapabilityDiscovery</text></g>
       <g transform="translate(838, 0)"><rect width="200" height="34" rx="10" class="pill-emph" /><text x="100" y="22" text-anchor="middle" class="pill-emph-t">ForgeToolMetaTool</text></g>
     </g>
-    <g transform="translate(440, 76)">
+    <g transform="translate(500, 76)">
       <g><rect width="220" height="34" rx="10" class="pill" /><text x="110" y="22" text-anchor="middle" class="pill-text">100+ extension packs</text></g>
       <g transform="translate(232, 0)"><rect width="220" height="34" rx="10" class="pill" /><text x="110" y="22" text-anchor="middle" class="pill-text">88 curated SKILL.md</text></g>
       <g transform="translate(464, 0)"><rect width="260" height="34" rx="10" class="pill" /><text x="130" y="22" text-anchor="middle" class="pill-text">3-tier semantic discovery</text></g>
@@ -250,17 +250,17 @@
     <circle cx="52" cy="70" r="24" class="disc-5" filter="url(#sa-disc-glow)" />
     <text x="52" y="77" text-anchor="middle" class="num">5</text>
     <text x="92" y="48" class="layer-title">Guardrails + HITL</text>
-    <text x="92" y="74" class="layer-sub">PII redaction · ML classifiers · NLI grounding · 5 approval triggers</text>
+    <text x="92" y="74" class="layer-sub">PII · ML classifiers · NLI grounding · 5 approval triggers</text>
     <text x="92" y="108" class="lbl">Safety + approval</text>
 
-    <g transform="translate(440, 26)">
+    <g transform="translate(500, 26)">
       <g><rect width="220" height="34" rx="10" class="pill-emph" /><text x="110" y="22" text-anchor="middle" class="pill-emph-t">GuardrailDispatcher</text></g>
       <g transform="translate(232, 0)"><rect width="170" height="34" rx="10" class="pill-emph" /><text x="85" y="22" text-anchor="middle" class="pill-emph-t">PII redaction</text></g>
       <g transform="translate(414, 0)"><rect width="180" height="34" rx="10" class="pill-emph" /><text x="90" y="22" text-anchor="middle" class="pill-emph-t">ML classifiers</text></g>
       <g transform="translate(606, 0)"><rect width="200" height="34" rx="10" class="pill-emph" /><text x="100" y="22" text-anchor="middle" class="pill-emph-t">Grounding Guard</text></g>
       <g transform="translate(818, 0)"><rect width="180" height="34" rx="10" class="pill-emph" /><text x="90" y="22" text-anchor="middle" class="pill-emph-t">HumanInteract</text></g>
     </g>
-    <g transform="translate(440, 76)">
+    <g transform="translate(500, 76)">
       <g><rect width="240" height="34" rx="10" class="pill" /><text x="120" y="22" text-anchor="middle" class="pill-text">regex · NER · LLM judge</text></g>
       <g transform="translate(252, 0)"><rect width="260" height="34" rx="10" class="pill" /><text x="130" y="22" text-anchor="middle" class="pill-text">toxicity · prompt-injection</text></g>
       <g transform="translate(524, 0)"><rect width="220" height="34" rx="10" class="pill" /><text x="110" y="22" text-anchor="middle" class="pill-text">NLI hallucination</text></g>
@@ -276,17 +276,17 @@
     <circle cx="52" cy="70" r="24" class="disc-6" filter="url(#sa-disc-glow)" />
     <text x="52" y="77" text-anchor="middle" class="num">6</text>
     <text x="92" y="48" class="layer-title">Orchestration</text>
-    <text x="92" y="74" class="layer-sub">3 authoring APIs → 1 IR · graph runtime · checkpoint + resume</text>
+    <text x="92" y="74" class="layer-sub">3 authoring APIs → 1 IR · graph runtime · checkpoint</text>
     <text x="92" y="108" class="lbl">Multi-agent flow</text>
 
-    <g transform="translate(440, 26)">
+    <g transform="translate(500, 26)">
       <g><rect width="150" height="34" rx="10" class="pill-emph" /><text x="75" y="22" text-anchor="middle" class="pill-emph-t">workflow()</text></g>
       <g transform="translate(162, 0)"><rect width="140" height="34" rx="10" class="pill-emph" /><text x="70" y="22" text-anchor="middle" class="pill-emph-t">mission()</text></g>
       <g transform="translate(314, 0)"><rect width="170" height="34" rx="10" class="pill-emph" /><text x="85" y="22" text-anchor="middle" class="pill-emph-t">AgentGraph</text></g>
       <g transform="translate(496, 0)"><rect width="250" height="34" rx="10" class="pill-emph" /><text x="125" y="22" text-anchor="middle" class="pill-emph-t">CompiledExecutionGraph</text></g>
       <g transform="translate(758, 0)"><rect width="200" height="34" rx="10" class="pill-emph" /><text x="100" y="22" text-anchor="middle" class="pill-emph-t">CheckpointStore</text></g>
     </g>
-    <g transform="translate(440, 76)">
+    <g transform="translate(500, 76)">
       <g><rect width="310" height="34" rx="10" class="pill" /><text x="155" y="22" text-anchor="middle" class="pill-text">6 strategies · parallel · debate · …</text></g>
       <g transform="translate(322, 0)"><rect width="260" height="34" rx="10" class="pill" /><text x="130" y="22" text-anchor="middle" class="pill-text">Tree-of-Thought planner</text></g>
       <g transform="translate(594, 0)"><rect width="280" height="34" rx="10" class="pill" /><text x="140" y="22" text-anchor="middle" class="pill-text">resume + time-travel debug</text></g>
@@ -301,17 +301,17 @@
     <circle cx="52" cy="70" r="24" class="disc-7" filter="url(#sa-disc-glow)" />
     <text x="52" y="77" text-anchor="middle" class="num">7</text>
     <text x="92" y="48" class="layer-title">I/O + providers</text>
-    <text x="92" y="74" class="layer-sub">Voice · channels · media · 21 LLM providers with fallback chains</text>
+    <text x="92" y="74" class="layer-sub">Voice · channels · media · 21 LLM providers</text>
     <text x="92" y="108" class="lbl">External surface</text>
 
-    <g transform="translate(440, 26)">
+    <g transform="translate(500, 26)">
       <g><rect width="200" height="34" rx="10" class="pill-emph" /><text x="100" y="22" text-anchor="middle" class="pill-emph-t">Voice (STT · TTS)</text></g>
       <g transform="translate(212, 0)"><rect width="150" height="34" rx="10" class="pill-emph" /><text x="75" y="22" text-anchor="middle" class="pill-emph-t">Channels</text></g>
       <g transform="translate(374, 0)"><rect width="270" height="34" rx="10" class="pill-emph" /><text x="135" y="22" text-anchor="middle" class="pill-emph-t">Media (img · video · music)</text></g>
       <g transform="translate(656, 0)"><rect width="200" height="34" rx="10" class="pill-emph" /><text x="100" y="22" text-anchor="middle" class="pill-emph-t">21 LLM providers</text></g>
       <g transform="translate(868, 0)"><rect width="200" height="34" rx="10" class="pill-emph" /><text x="100" y="22" text-anchor="middle" class="pill-emph-t">OpenRouter fanout</text></g>
     </g>
-    <g transform="translate(440, 76)">
+    <g transform="translate(500, 76)">
       <g><rect width="310" height="34" rx="10" class="pill" /><text x="155" y="22" text-anchor="middle" class="pill-text">VAD · barge-in · endpoint detection</text></g>
       <g transform="translate(322, 0)"><rect width="310" height="34" rx="10" class="pill" /><text x="155" y="22" text-anchor="middle" class="pill-text">Discord · Slack · Telegram · Twilio</text></g>
       <g transform="translate(644, 0)"><rect width="320" height="34" rx="10" class="pill" /><text x="160" y="22" text-anchor="middle" class="pill-text">Stability · Runway · Suno · ElevenLabs</text></g>
