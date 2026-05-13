@@ -48,6 +48,7 @@
     </marker>
 
     <style><![CDATA[
+      .bg { fill: #0f172a; }
       .h1 { fill: #f5f3ff; }
       .h2 { fill: #c7d2fe; }
       .card { fill: rgba(15, 23, 42, 0.65); stroke: rgba(165, 180, 252, 0.22); }
@@ -77,8 +78,7 @@
       [data-theme='dark'] .pill-emph   { fill: rgba(139, 92, 246, 0.3); stroke: rgba(196, 181, 253, 0.7); }
       [data-theme='dark'] .pill-emph-t { fill: #d8b4fe; }
       [data-theme='dark'] .layer-conn  { stroke: rgba(165, 180, 252, 0.6); }
-    ]]>      .bg { fill: #0f172a; }
-    </style>
+    ]]></style>
   </defs>
 
   <rect class="bg" x="0" y="0" width="1680" height="1440"/>

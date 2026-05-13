@@ -48,6 +48,7 @@
     </marker>
 
     <style><![CDATA[
+      .bg   { fill: #ffffff; }
       .h1   { font: 700 32px Inter, system-ui, sans-serif; fill: #0f172a; letter-spacing: -0.015em; }
       .h2   { font: 500 16px Inter, system-ui, sans-serif; fill: #475569; }
       .card        { fill: rgba(255, 255, 255, 0.92); stroke: rgba(99, 102, 241, 0.22); stroke-width: 1.2; }
