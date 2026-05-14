@@ -87,8 +87,26 @@ const THEMED_DIAGRAMS = new Set<string>([
 
 type Props = React.ImgHTMLAttributes<HTMLImageElement>
 
+/**
+ * Strip CSS properties from an inline `style` object that would interfere
+ * with `<ThemedImage>`'s light/dark swap (which keys off `display: none`).
+ *
+ * `<ThemedImage>` spreads inline `style` onto both the light and dark
+ * `<img>` elements, and inline styles beat Docusaurus's
+ * `[data-theme] .themed-image--light/dark { display: none }` rules on
+ * specificity. A caller that passes `style={{ display: 'block' }}` ends
+ * up forcing both variants visible at once, stacking them vertically.
+ */
+function safeImgStyle(style: React.CSSProperties | undefined): React.CSSProperties | undefined {
+  if (!style) return style
+  if (!('display' in style)) return style
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { display, ...rest } = style
+  return rest
+}
+
 export default function DiagramImg(props: Props) {
-  const { src, alt, title, className, ...rest } = props
+  const { src, alt, title, className, style, ...rest } = props
 
   // Resolve diagram metadata before any hook call so the hook count stays
   // stable across all renders (themed, non-themed, missing src).
@@ -129,6 +147,7 @@ export default function DiagramImg(props: Props) {
   const inner = isThemed ? (
     <ThemedImage
       {...rest}
+      style={safeImgStyle(style)}
       alt={alt ?? ''}
       title={title}
       sources={{ light: lightUrl, dark: darkUrl }}
@@ -136,7 +155,7 @@ export default function DiagramImg(props: Props) {
     />
   ) : (
     // eslint-disable-next-line jsx-a11y/alt-text
-    <img {...rest} src={src} alt={alt} title={title} className={className} />
+    <img {...rest} style={style} src={src} alt={alt} title={title} className={className} />
   )
 
   if (!isDiagramSrc(typeof src === 'string' ? src : undefined)) {

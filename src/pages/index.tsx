@@ -590,7 +590,7 @@ function ArchitectureDiagram() {
         <DiagramImg
           src="/img/diagrams/system-architecture.svg"
           alt="AgentOS layered architecture: 7 cooperating layers from API surface (generateText, streamText, agent, agency, mission) through cognitive substrate (GMI coordinator, PersonaOverlayManager, SentimentTracker, MetapromptExecutor), memory and RAG pipeline (working / episodic / semantic / observational memory, 8 cognitive mechanisms, HyDE, GraphRAG, 7 vector backends), tools and capabilities (ToolOrchestrator, 100+ extension packs, 88 SKILL.md modules, CapabilityDiscovery, ForgeToolMetaTool), guardrails and HITL (GuardrailDispatcher, 4-tier PII redaction, ML classifiers, Grounding Guard, HumanInteract), orchestration (workflow, mission, AgentGraph, CompiledExecutionGraph, CheckpointStore), down to I/O and providers (voice pipeline, channels, media generation, 21 LLM providers, OpenRouter fanout)."
-          style={{ width: '100%', height: 'auto', display: 'block', borderRadius: '12px' }}
+          style={{ width: '100%', height: 'auto', borderRadius: '12px' }}
         />
       </div>
       <p style={{ textAlign: 'center', marginTop: '0.75rem' }}>
