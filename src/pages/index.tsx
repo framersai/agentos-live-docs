@@ -313,6 +313,45 @@ console.log(session.messages());
 const usage = await session.usage();
 console.log(\`Total tokens: \${usage.totalTokens}\`);`,
 
+  'Agency': `import { agency } from '@framers/agentos';
+
+// Agency composes a team of GMI brains. Each agent in the roster has its
+// own cognition, memory, persona, tools. The agency layer adds three
+// things on top: an orchestration strategy that routes outputs between
+// brains, shared coordination primitives (memory, RAG, communication
+// bus), and a team-wide coordination shell (HITL, guardrails, controls).
+const team = agency({
+  provider: 'openai',
+  model: 'gpt-4o',
+  strategy: 'graph',                        // sequential | parallel | debate | review-loop | hierarchical | graph
+  memory: { shared: true },                 // cognitive memory shared across brains
+  rag: { vectorStore: 'in-memory', topK: 5 }, // shared retrieval corpus
+  agents: {
+    researcher: {
+      instructions: 'Find authoritative sources on the topic.',
+    },
+    writer: {
+      instructions: 'Write polished prose from the research.',
+      dependsOn: ['researcher'],            // runs after researcher
+    },
+    reviewer: {
+      instructions: 'Check accuracy and tone.',
+      dependsOn: ['writer'],
+    },
+  },
+});
+
+// Same .generate() interface as a single agent — drop-in swap anywhere
+// you called agent().generate(). The roster becomes one composable unit.
+const { text, agentCalls } = await team.generate(
+  'Write a briefing on QUIC vs TCP for game networking.'
+);
+console.log(text);
+console.log(agentCalls);                    // trace of which agent did what
+
+// Six strategies in total. memory: { shared: true } scopes to this
+// generate() call. See /features/agency-api for the full reference.`,
+
   'Streaming': `import { streamText, agent } from '@framers/agentos';
 
 // streamText() — raw streaming completion. Yields token deltas as they arrive.
