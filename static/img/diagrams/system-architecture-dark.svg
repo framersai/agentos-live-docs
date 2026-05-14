@@ -20,16 +20,16 @@
       <stop offset="100%" stop-color="#8b5cf6" stop-opacity="0.9" />
     </linearGradient>
 
-    <linearGradient id="sa-edge-1" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#ec4899" stop-opacity="0.9" /><stop offset="100%" stop-color="#ec4899" stop-opacity="0" /></linearGradient>
-    <linearGradient id="sa-edge-2" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#a78bfa" stop-opacity="0.9" /><stop offset="100%" stop-color="#a78bfa" stop-opacity="0" /></linearGradient>
-    <linearGradient id="sa-edge-3" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#06b6d4" stop-opacity="0.9" /><stop offset="100%" stop-color="#06b6d4" stop-opacity="0" /></linearGradient>
-    <linearGradient id="sa-edge-4" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#10b981" stop-opacity="0.9" /><stop offset="100%" stop-color="#10b981" stop-opacity="0" /></linearGradient>
-    <linearGradient id="sa-edge-5" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#f43f5e" stop-opacity="0.9" /><stop offset="100%" stop-color="#f43f5e" stop-opacity="0" /></linearGradient>
-    <linearGradient id="sa-edge-6" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#f59e0b" stop-opacity="0.9" /><stop offset="100%" stop-color="#f59e0b" stop-opacity="0" /></linearGradient>
-    <linearGradient id="sa-edge-7" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#8b5cf6" stop-opacity="0.9" /><stop offset="100%" stop-color="#8b5cf6" stop-opacity="0" /></linearGradient>
+    <linearGradient id="sa-edge-1" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#ec4899" stop-opacity="1" /><stop offset="100%" stop-color="#ec4899" stop-opacity="0.32" /></linearGradient>
+    <linearGradient id="sa-edge-2" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#a78bfa" stop-opacity="1" /><stop offset="100%" stop-color="#a78bfa" stop-opacity="0.32" /></linearGradient>
+    <linearGradient id="sa-edge-3" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#06b6d4" stop-opacity="1" /><stop offset="100%" stop-color="#06b6d4" stop-opacity="0.32" /></linearGradient>
+    <linearGradient id="sa-edge-4" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#10b981" stop-opacity="1" /><stop offset="100%" stop-color="#10b981" stop-opacity="0.32" /></linearGradient>
+    <linearGradient id="sa-edge-5" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#f43f5e" stop-opacity="1" /><stop offset="100%" stop-color="#f43f5e" stop-opacity="0.32" /></linearGradient>
+    <linearGradient id="sa-edge-6" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#f59e0b" stop-opacity="1" /><stop offset="100%" stop-color="#f59e0b" stop-opacity="0.32" /></linearGradient>
+    <linearGradient id="sa-edge-7" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#8b5cf6" stop-opacity="1" /><stop offset="100%" stop-color="#8b5cf6" stop-opacity="0.32" /></linearGradient>
 
-    <radialGradient id="sa-orb-1" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#6366f1" stop-opacity="0.25" /><stop offset="100%" stop-color="#6366f1" stop-opacity="0" /></radialGradient>
-    <radialGradient id="sa-orb-2" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#ec4899" stop-opacity="0.22" /><stop offset="100%" stop-color="#ec4899" stop-opacity="0" /></radialGradient>
+    <radialGradient id="sa-orb-1" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#6366f1" stop-opacity="0.35" /><stop offset="100%" stop-color="#6366f1" stop-opacity="0" /></radialGradient>
+    <radialGradient id="sa-orb-2" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#ec4899" stop-opacity="0.32" /><stop offset="100%" stop-color="#ec4899" stop-opacity="0" /></radialGradient>
 
     <pattern id="sa-dots" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
       <circle cx="20" cy="20" r="0.9" fill="rgba(99,102,241,0.18)" />
@@ -51,7 +51,7 @@
       .bg { fill: #0f172a; }
       .h1 { fill: #f5f3ff; }
       .h2 { fill: #c7d2fe; }
-      .card { fill: rgba(15, 23, 42, 0.65); stroke: rgba(165, 180, 252, 0.22); }
+      .card { fill: rgba(30, 41, 59, 0.78); stroke: rgba(165, 180, 252, 0.28); }
       .num         { font: 800 22px Inter, system-ui, sans-serif; fill: #ffffff; }
       .layer-title { fill: #f1f5f9; }
       .layer-sub { fill: #cbd5e1; }
