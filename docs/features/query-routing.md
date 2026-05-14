@@ -1,5 +1,5 @@
 ---
-title: "Query Router"
+title: "Query Router (Stage 1: Memory-or-Not Gate)"
 sidebar_position: 4
 displayed_sidebar: guideSidebar
 ---

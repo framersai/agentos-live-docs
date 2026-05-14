@@ -1,5 +1,5 @@
 ---
-title: "Memory Router (Recall-Stage Smart Orchestration)"
+title: "Memory Router (Stage 2: Recall-Stage Smart Orchestration)"
 sidebar_position: 4.1
 displayed_sidebar: guideSidebar
 ---

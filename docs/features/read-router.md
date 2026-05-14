@@ -1,5 +1,5 @@
 ---
-title: "Read Stage Routing (Read Strategy + Reader Model Dispatch)"
+title: "Read Router (Stage 3: Reader Strategy + Model Dispatch)"
 sidebar_position: 4.3
 displayed_sidebar: guideSidebar
 ---
