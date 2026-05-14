@@ -471,54 +471,31 @@ if (typeof window !== 'undefined') {
   `;
   document.head.appendChild(style);
 
-  /* Wrap each diagram image in a relative container with a persistent
-   * "Click to expand" badge. The badge can't live as a sibling alone
-   * because the img sits inside a markdown <p>, and CSS can't position
-   * an arbitrary element relative to an inline img. So we wrap.
+  /* Mermaid containers: add a corner badge via class flip so the existing
+   * container layout stays intact. The CSS adds the badge with ::after.
    *
-   * Mermaid SVGs are skipped here — they already live inside
-   * .docusaurus-mermaid-container which has its own layout assumptions;
-   * the corner badge for those is rendered via ::after on the container
-   * in mermaid-theme.js styles (see below). */
-  function wrapDiagrams() {
-    const candidates = document.querySelectorAll(
-      'img[src*="/img/diagrams/"]:not([data-mer-wrapped]), ' +
-      'img[src^="data:image/svg+xml"]:not([data-mer-wrapped]), ' +
-      'img[src*="/assets/images/"][src$=".svg"]:not([data-mer-wrapped])'
-    );
-    candidates.forEach((node) => {
-      if (node.dataset && node.dataset.merWrapped) return;
-      /* Skip if already inside a wrap (defensive against double-mount). */
-      if (node.parentElement && node.parentElement.classList.contains('mer-zoom-wrap')) {
-        node.dataset.merWrapped = '1';
-        return;
-      }
-      const wrap = document.createElement('span');
-      wrap.className = 'mer-zoom-wrap';
-      node.parentNode.insertBefore(wrap, node);
-      wrap.appendChild(node);
-      const badge = document.createElement('span');
-      badge.className = 'mer-zoom-badge';
-      badge.setAttribute('aria-hidden', 'true');
-      badge.innerHTML = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-1px"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>Click to expand';
-      wrap.appendChild(badge);
-      node.dataset.merWrapped = '1';
-    });
-    /* Mermaid containers: add a corner badge via class flip so the existing
-     * container layout stays intact. The CSS adds the badge with ::after. */
+   * Diagram <img> tags are NOT wrapped here anymore. Imperatively inserting
+   * a parent <span> around React-owned <img> nodes caused React reconciliation
+   * to throw `Failed to execute 'removeChild' on 'Node'` on subsequent
+   * renders (route change, theme toggle, hydration) — surfacing as React
+   * errors #418 and #423 in the prod console. The wrap + badge now ship
+   * from inside the React-owned DiagramImg component
+   * (`src/components/DiagramImg/index.tsx`), so the tree stays consistent
+   * with React's vDOM. */
+  function tagMermaidContainers() {
     document.querySelectorAll('.docusaurus-mermaid-container:not([data-mer-zoom-hint])').forEach((c) => {
       c.dataset.merZoomHint = '1';
     });
   }
 
   if (document.readyState !== 'loading') {
-    wrapDiagrams();
+    tagMermaidContainers();
   } else {
-    document.addEventListener('DOMContentLoaded', wrapDiagrams);
+    document.addEventListener('DOMContentLoaded', tagMermaidContainers);
   }
-  /* Catch images that mount after first paint (lazy-rendered docs pages,
-   * client-side route transitions, Mermaid re-renders). */
-  const wrapObserver = new MutationObserver(() => wrapDiagrams());
+  /* Mermaid SVGs render client-side after page mount, so re-scan when
+   * the DOM changes. Attribute-only mutation — never reparents nodes. */
+  const wrapObserver = new MutationObserver(() => tagMermaidContainers());
   if (typeof document !== 'undefined' && document.body) {
     wrapObserver.observe(document.body, { childList: true, subtree: true });
   } else {

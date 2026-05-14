@@ -30,6 +30,24 @@ import useBaseUrl from '@docusaurus/useBaseUrl'
  */
 
 const DIAGRAM_PATTERN = /^\/img\/diagrams\/([^./]+)\.svg$/
+const WEBPACK_ASSET_SVG = /\/assets\/images\/[^/]+\.svg$/
+const INLINE_SVG_PREFIX = 'data:image/svg+xml'
+
+/**
+ * Whether this img should be treated as a clickable diagram (wrapped with
+ * the zoom badge). Docusaurus's webpack img loader can serve the same
+ * source file as a public-static path (`/img/diagrams/foo.svg`), a
+ * webpack-copied hashed asset (`/assets/images/foo-abcd.svg`), or an
+ * inlined data URI when the SVG is small enough — wrap all three so the
+ * badge is consistent regardless of which form the build emitted.
+ */
+function isDiagramSrc(src: string | undefined): boolean {
+  if (typeof src !== 'string') return false
+  if (DIAGRAM_PATTERN.test(src)) return true
+  if (WEBPACK_ASSET_SVG.test(src)) return true
+  if (src.startsWith(INLINE_SVG_PREFIX)) return true
+  return false
+}
 
 /**
  * Diagrams that ship both `<name>.svg` and `<name>-dark.svg` variants.
@@ -94,18 +112,43 @@ export default function DiagramImg(props: Props) {
 
   const mergedClassName = ['docDiagram', className].filter(Boolean).join(' ')
 
-  if (isThemed) {
-    return (
-      <ThemedImage
-        {...rest}
-        alt={alt ?? ''}
-        title={title}
-        sources={{ light: lightUrl, dark: darkUrl }}
-        className={mergedClassName}
-      />
-    )
+  // Render the "Click to expand" badge as part of the React tree rather than
+  // reparenting the img into a client-injected wrapper element. The earlier
+  // approach in `src/mermaid-zoom.js` (`wrapDiagrams()`) inserted a
+  // `<span class="mer-zoom-wrap">` around every diagram img imperatively,
+  // which moved a React-owned `<img>` out from under its markdown `<p>`.
+  // On the next reconciliation (route change, theme toggle, hydration)
+  // React tried to remove the img from the `<p>` and threw
+  // `Failed to execute 'removeChild' on 'Node'`, surfacing as React errors
+  // #418 / #423 in the prod console.
+  //
+  // Keeping the wrap inside the component means React owns every node and
+  // reconciliation stays consistent. Click-to-zoom in `mermaid-zoom.js`
+  // still works because the delegated click handler targets the img by
+  // src selector regardless of where it sits in the tree.
+  const inner = isThemed ? (
+    <ThemedImage
+      {...rest}
+      alt={alt ?? ''}
+      title={title}
+      sources={{ light: lightUrl, dark: darkUrl }}
+      className={mergedClassName}
+    />
+  ) : (
+    // eslint-disable-next-line jsx-a11y/alt-text
+    <img {...rest} src={src} alt={alt} title={title} className={className} />
+  )
+
+  if (!isDiagramSrc(typeof src === 'string' ? src : undefined)) {
+    return inner
   }
 
-  // eslint-disable-next-line jsx-a11y/alt-text
-  return <img {...rest} src={src} alt={alt} title={title} className={className} />
+  return (
+    <span className="mer-zoom-wrap">
+      {inner}
+      <span className="mer-zoom-badge" aria-hidden="true">
+        ⊕ Click to expand
+      </span>
+    </span>
+  )
 }
