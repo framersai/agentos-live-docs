@@ -16,6 +16,13 @@ import useBaseUrl from '@docusaurus/useBaseUrl'
  * `@media (prefers-color-scheme: dark)` rules) are unaffected by the
  * swizzle.
  *
+ * **Rules of Hooks:** `useBaseUrl` is called unconditionally at the top of
+ * the component so the hook count is stable across every src this component
+ * may render (themed diagram, non-themed image, no src). Conditional hook
+ * calls previously caused a hydration mismatch (React errors #418, #423)
+ * because the swizzled `img` runs through this component for every image
+ * on the site.
+ *
  * **Accessibility:** MDX authors should always provide descriptive alt
  * text for diagram images. An empty alt makes the image decorative, which
  * is rarely what we want for an architectural diagram. In development a
@@ -65,6 +72,19 @@ type Props = React.ImgHTMLAttributes<HTMLImageElement>
 export default function DiagramImg(props: Props) {
   const { src, alt, title, className, ...rest } = props
 
+  // Resolve diagram metadata before any hook call so the hook count stays
+  // stable across all renders (themed, non-themed, missing src).
+  const match = typeof src === 'string' ? src.match(DIAGRAM_PATTERN) : null
+  const name = match ? match[1] : null
+  const isThemed = name != null && THEMED_DIAGRAMS.has(name)
+
+  // Always call useBaseUrl, even for non-themed images, so the hook order
+  // doesn't change. The results are only consumed in the themed branch.
+  // Use a stable placeholder path when there's no diagram name to keep
+  // the hook input deterministic across renders.
+  const lightUrl = useBaseUrl(`/img/diagrams/${name ?? '__noop'}.svg`)
+  const darkUrl = useBaseUrl(`/img/diagrams/${name ?? '__noop'}-dark.svg`)
+
   if (process.env.NODE_ENV !== 'production' && (alt == null || alt === '')) {
     // eslint-disable-next-line no-console
     console.warn(
@@ -74,25 +94,16 @@ export default function DiagramImg(props: Props) {
 
   const mergedClassName = ['docDiagram', className].filter(Boolean).join(' ')
 
-  if (typeof src === 'string') {
-    const match = src.match(DIAGRAM_PATTERN)
-    if (match) {
-      const name = match[1]
-      if (THEMED_DIAGRAMS.has(name)) {
-        return (
-          <ThemedImage
-            {...rest}
-            alt={alt ?? ''}
-            title={title}
-            sources={{
-              light: useBaseUrl(`/img/diagrams/${name}.svg`),
-              dark: useBaseUrl(`/img/diagrams/${name}-dark.svg`),
-            }}
-            className={mergedClassName}
-          />
-        )
-      }
-    }
+  if (isThemed) {
+    return (
+      <ThemedImage
+        {...rest}
+        alt={alt ?? ''}
+        title={title}
+        sources={{ light: lightUrl, dark: darkUrl }}
+        className={mergedClassName}
+      />
+    )
   }
 
   // eslint-disable-next-line jsx-a11y/alt-text
