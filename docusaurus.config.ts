@@ -483,6 +483,7 @@ const config = (githubStars: number): Config => ({
             { label: 'Human-in-the-Loop (HITL)', to: '/features/human-in-the-loop' },
             { label: 'PII Redaction & PHI Scrubbing', to: '/features/pii-redaction' },
             { label: 'Voice Pipeline', to: '/features/voice-pipeline' },
+            { label: 'Agency API', to: '/features/agency-api' },
             { label: 'Extensions', to: '/extensions' },
             { label: 'Skills', to: '/skills' },
             { label: 'Paracosm', to: '/features/paracosm' },
