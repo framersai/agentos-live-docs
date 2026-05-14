@@ -5,19 +5,19 @@
   <defs>
     <style>
       .bg { fill: #0f172a; }
-      .axis { stroke: #475569; }
-      .grid { stroke: #334155; }
-      .axis-label { fill: #cbd5e1; }
-      .tick { fill: #64748b; }
-      .legend-text { fill: #cbd5e1; }
-      .heading { fill: #f1f5f9; }
+      .axis { stroke: #475569; stroke-width: 1; fill: none; opacity: 0.6; }
+      .grid { stroke: #334155; stroke-width: 1; fill: none; opacity: 0.45; }
+      .axis-label { fill: #cbd5e1; font-size: 13px; font-weight: 600; text-anchor: middle; }
+      .tick { fill: #64748b; font-size: 10px; text-anchor: middle; }
+      .legend-text { fill: #cbd5e1; font-size: 13px; font-weight: 500; }
+      .heading { fill: #f1f5f9; font-size: 14px; font-weight: 700; }
       .persona-a { fill: #7c3aed; fill-opacity: 0.18; stroke: #7c3aed; stroke-width: 2; }
       .persona-a-dot { fill: #7c3aed; }
       .persona-b { fill: #0891b2; fill-opacity: 0.18; stroke: #0891b2; stroke-width: 2; }
       .persona-b-dot { fill: #0891b2; }
       .persona-c { fill: #f59e0b; fill-opacity: 0.18; stroke: #f59e0b; stroke-width: 2; }
       .persona-c-dot { fill: #f59e0b; }
-          </style>
+    </style>
   </defs>
 
   <rect class="bg" x="0" y="0" width="760" height="480"/>

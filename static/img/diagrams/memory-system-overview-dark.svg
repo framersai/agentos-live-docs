@@ -5,30 +5,30 @@
   <defs>
     <style>
       .bg { fill: #0f172a; }
-      .heading { fill: #f1f5f9; }
-      .subtitle { fill: #94a3b8; }
-      .stage-title { fill: #f1f5f9; }
-      .stage-text { fill: #94a3b8; }
-      .stage-tag { fill: #64748b; }
-      .lane-label   { fill: #64748b; font-size: 11px; font-weight: 600; letter-spacing: 0.05em; }
-      .stage { fill: #0f172a; }
-      .pill { fill: #0b1220; stroke: #475569; }
-      .pill-text { fill: #f1f5f9; }
-      .substrate { fill: #0b1220; stroke: #475569; }
-      .container { fill: #0b1220; stroke: #475569; }
-      .arrow-line { stroke: #475569; }
+      .heading { fill: #f1f5f9; font-size: 18px; font-weight: 700; }
+      .subtitle { fill: #94a3b8; font-size: 12px; }
+      .stage-title { fill: #f1f5f9; font-size: 14px; font-weight: 700; }
+      .stage-text { fill: #94a3b8; font-size: 11px; }
+      .stage-tag { fill: #64748b; font-size: 10px; font-style: italic; }
+      .lane-label { fill: #64748b; font-size: 11px; font-weight: 600; letter-spacing: 0.05em; }
+      .stage { fill: #0f172a; stroke-width: 2; }
+      .pill { fill: #0b1220; stroke: #475569; stroke-width: 1.5; }
+      .pill-text { fill: #f1f5f9; font-size: 12px; font-weight: 600; }
+      .substrate { fill: #0b1220; stroke: #475569; stroke-width: 1; stroke-dasharray: 4 4; }
+      .container { fill: #0b1220; stroke: #475569; stroke-width: 1.25; }
+      .arrow-line { stroke: #475569; stroke-width: 1.5; fill: none; }
       .arrow-head { fill: #475569; }
-      .acc-input    { stroke: #0891b2; }
+      .acc-input { stroke: #0891b2; }
       .acc-classify { stroke: #ec4899; }
-      .acc-route    { stroke: #f59e0b; }
+      .acc-route { stroke: #f59e0b; }
       .acc-retrieve { stroke: #6366f1; }
-      .acc-rerank   { stroke: #8b5cf6; }
-      .acc-score    { stroke: #14b8a6; }
-      .acc-reader   { stroke: #10b981; }
+      .acc-rerank { stroke: #8b5cf6; }
+      .acc-score { stroke: #14b8a6; }
+      .acc-reader { stroke: #10b981; }
       .acc-strategy { stroke: #14b8a6; }
-      .acc-output   { stroke: #f43f5e; }
-      .code { fill: #94a3b8; }
-          </style>
+      .acc-output { stroke: #f43f5e; }
+      .code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 10px; fill: #94a3b8; }
+    </style>
     <marker id="memsys-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
       <path d="M 0 0 L 10 5 L 0 10 z" class="arrow-head"/>
     </marker>

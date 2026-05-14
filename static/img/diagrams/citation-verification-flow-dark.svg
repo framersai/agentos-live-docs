@@ -5,30 +5,30 @@
   <defs>
     <style>
       .bg { fill: #0f172a; }
-      .text { fill: #e2e8f0; }
-      .title { fill: #f1f5f9; }
-      .heading { fill: #f1f5f9; }
-      .small { fill: #94a3b8; }
-      .micro { fill: #64748b; }
-      .lane-label { fill: #94a3b8; }
+      .text { fill: #e2e8f0; font-size: 12px; }
+      .title { fill: #f1f5f9; font-size: 17px; font-weight: 700; }
+      .heading { fill: #f1f5f9; font-size: 13px; font-weight: 700; }
+      .small { fill: #94a3b8; font-size: 11px; }
+      .micro { fill: #64748b; font-size: 10px; }
+      .lane-label { fill: #94a3b8; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; }
       .stage { fill: #ffffff; stroke: #cbd5e1; stroke-width: 1.5; }
       .answer-bg { fill: #f8fafc; stroke: #cbd5e1; stroke-width: 1.5; }
-      .claim-1 { fill: #064e3b; stroke: #10b981; }
-      .claim-2 { fill: #422006; stroke: #f59e0b; }
-      .claim-3 { fill: #450a0a; stroke: #f43f5e; }
-      .chunk { fill: #0b1220; stroke: #475569; }
-      .nli-judge { fill: #1e1b4b; stroke: #a78bfa; }
-      .verdict-pass { fill: #064e3b; }
-      .verdict-neutral { fill: #422006; }
-      .verdict-fail { fill: #450a0a; }
-      .verdict-text-pass { fill: #6ee7b7; }
-      .verdict-text-neutral { fill: #fcd34d; }
-      .verdict-text-fail { fill: #fca5a5; }
-      .arrow-line { stroke: #475569; }
-      .arrow-thin { stroke: #334155; }
+      .claim-1 { fill: #064e3b; stroke: #10b981; stroke-width: 1; }
+      .claim-2 { fill: #422006; stroke: #f59e0b; stroke-width: 1; }
+      .claim-3 { fill: #450a0a; stroke: #f43f5e; stroke-width: 1; }
+      .chunk { fill: #0b1220; stroke: #475569; stroke-width: 1; stroke-dasharray: 3 2; }
+      .nli-judge { fill: #1e1b4b; stroke: #a78bfa; stroke-width: 1.5; }
+      .verdict-pass { fill: #064e3b; stroke: #10b981; stroke-width: 1.5; }
+      .verdict-neutral { fill: #422006; stroke: #f59e0b; stroke-width: 1.5; }
+      .verdict-fail { fill: #450a0a; stroke: #f43f5e; stroke-width: 1.5; }
+      .verdict-text-pass { fill: #6ee7b7; font-size: 11px; font-weight: 700; }
+      .verdict-text-neutral { fill: #fcd34d; font-size: 11px; font-weight: 700; }
+      .verdict-text-fail { fill: #fca5a5; font-size: 11px; font-weight: 700; }
+      .arrow-line { stroke: #475569; stroke-width: 1.25; fill: none; }
+      .arrow-thin { stroke: #334155; stroke-width: 1; fill: none; stroke-dasharray: 3 2; }
       .arrow-head { fill: #475569; }
       .arrow-head-thin { fill: #334155; }
-                .stage, .answer-bg { fill: #0f172a; stroke: #475569; }
+      .stage, .answer-bg { fill: #0f172a; stroke: #475569; }
     </style>
     <marker id="cv-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
       <path d="M 0 0 L 10 5 L 0 10 z" class="arrow-head"/>

@@ -5,32 +5,32 @@
   <defs>
     <style>
       .bg { fill: #0f172a; }
-      .heading { fill: #f1f5f9; }
-      .subtitle { fill: #94a3b8; }
-      .stage-title { fill: #f1f5f9; }
-      .stage-text { fill: #94a3b8; }
-      .stage-tag { fill: #64748b; }
-      .stage { fill: #0f172a; }
-      .pill { fill: #0b1220; stroke: #475569; }
-      .pill-text { fill: #f1f5f9; }
-      .pill-success { fill: #052e16; stroke: #34d399; }
-      .pill-success-text { fill: #86efac; }
-      .pill-error { fill: #450a0a; stroke: #fb7185; }
-      .pill-error-text { fill: #fda4af; }
-      .arrow-line { stroke: #475569; }
+      .heading { fill: #f1f5f9; font-size: 18px; font-weight: 700; }
+      .subtitle { fill: #94a3b8; font-size: 12px; }
+      .stage-title { fill: #f1f5f9; font-size: 14px; font-weight: 700; }
+      .stage-text { fill: #94a3b8; font-size: 11px; }
+      .stage-tag { fill: #64748b; font-size: 10px; font-style: italic; }
+      .stage { fill: #0f172a; stroke-width: 2; }
+      .pill { fill: #0b1220; stroke: #475569; stroke-width: 1.5; }
+      .pill-text { fill: #f1f5f9; font-size: 12px; font-weight: 600; }
+      .pill-success { fill: #052e16; stroke: #34d399; stroke-width: 1.5; }
+      .pill-success-text { fill: #86efac; font-size: 12px; font-weight: 600; }
+      .pill-error { fill: #450a0a; stroke: #fb7185; stroke-width: 1.5; }
+      .pill-error-text { fill: #fda4af; font-size: 12px; font-weight: 600; }
+      .arrow-line { stroke: #475569; stroke-width: 1.5; fill: none; }
       .arrow-head { fill: #475569; }
-      .branch-yes   { stroke: #10b981; stroke-width: 1.75; fill: none; }
+      .branch-yes { stroke: #10b981; stroke-width: 1.75; fill: none; }
       .branch-yes-head { fill: #10b981; }
-      .branch-no    { stroke: #f43f5e; stroke-width: 1.75; fill: none; }
+      .branch-no { stroke: #f43f5e; stroke-width: 1.75; fill: none; }
       .branch-no-head { fill: #f43f5e; }
       .branch-label { font-size: 11px; font-weight: 700; }
-      .acc-input    { stroke: #0891b2; }
-      .acc-build    { stroke: #6366f1; }
-      .acc-test     { stroke: #f59e0b; }
-      .acc-judge    { stroke: #ec4899; }
-      .acc-decision { fill: #1e1b4b; stroke: #a78bfa; }
-      .code         { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
-          </style>
+      .acc-input { stroke: #0891b2; }
+      .acc-build { stroke: #6366f1; }
+      .acc-test { stroke: #f59e0b; }
+      .acc-judge { stroke: #ec4899; }
+      .acc-decision { fill: #1e1b4b; stroke: #a78bfa; stroke-width: 2; }
+      .code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+    </style>
     <marker id="forge-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
       <path d="M 0 0 L 10 5 L 0 10 z" class="arrow-head"/>
     </marker>

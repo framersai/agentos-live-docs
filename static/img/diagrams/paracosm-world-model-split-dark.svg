@@ -5,23 +5,23 @@
   <defs>
     <style>
       .bg { fill: #0f172a; }
-      .text { fill: #e2e8f0; }
-      .title { fill: #f1f5f9; }
-      .panel-title { fill: #f1f5f9; }
-      .small { fill: #94a3b8; }
-      .tag { fill: #64748b; }
-      .examples { fill: #94a3b8; }
-      .code { fill: #94a3b8; }
-      .input-card { fill: #0f172a; stroke: #475569; }
-      .visual-process { fill: #2a0e14; stroke: #f87171; }
-      .structured-process { fill: #1e1b4b; stroke: #a78bfa; }
-      .visual-output { fill: #2a0e14; stroke: #f87171; }
-      .structured-output { fill: #1e1b4b; stroke: #a78bfa; }
+      .text { fill: #e2e8f0; font-size: 13px; }
+      .title { fill: #f1f5f9; font-size: 18px; font-weight: 700; }
+      .panel-title { fill: #f1f5f9; font-size: 15px; font-weight: 700; }
+      .small { fill: #94a3b8; font-size: 12px; }
+      .tag { fill: #64748b; font-size: 11px; font-style: italic; }
+      .examples { fill: #94a3b8; font-size: 11px; }
+      .code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11px; fill: #94a3b8; }
+      .input-card { fill: #0f172a; stroke: #475569; stroke-width: 1.5; }
+      .visual-process { fill: #2a0e14; stroke: #f87171; stroke-width: 2; }
+      .structured-process { fill: #1e1b4b; stroke: #a78bfa; stroke-width: 2; }
+      .visual-output { fill: #2a0e14; stroke: #f87171; stroke-width: 1.5; }
+      .structured-output { fill: #1e1b4b; stroke: #a78bfa; stroke-width: 1.5; }
       .divider { stroke: #cbd5e1; stroke-width: 1; stroke-dasharray: 4 4; }
-      .arrow { stroke: #475569; }
+      .arrow { stroke: #475569; stroke-width: 1.5; fill: none; }
       .arrow-head { fill: #475569; }
       .pixel-bar { fill: #f43f5e; opacity: 0.6; }
-          </style>
+    </style>
     <marker id="wm-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
       <path d="M 0 0 L 10 5 L 0 10 z" class="arrow-head"/>
     </marker>

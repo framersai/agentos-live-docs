@@ -5,20 +5,20 @@
   <defs>
     <style>
       .bg { fill: #0f172a; }
-      .text { fill: #e2e8f0; }
-      .title { fill: #f1f5f9; }
-      .heading { fill: #f1f5f9; }
-      .small { fill: #94a3b8; }
-      .micro { fill: #64748b; }
-      .lane-label { fill: #94a3b8; }
-      .lane-track { stroke: #334155; }
-      .stage { fill: #0f172a; stroke: #475569; }
-      .stage-thin { fill: #0f172a; stroke: #475569; }
-      .store { fill: #0b1220; stroke: #334155; }
-      .assembly { fill: #1e1b4b; stroke: #a78bfa; }
-      .arrow-line { stroke: #475569; }
-      .arrow-thin { stroke: #334155; }
-      .arrow-fan { stroke: #475569; }
+      .text { fill: #e2e8f0; font-size: 12px; }
+      .title { fill: #f1f5f9; font-size: 17px; font-weight: 700; }
+      .heading { fill: #f1f5f9; font-size: 13px; font-weight: 700; }
+      .small { fill: #94a3b8; font-size: 11px; }
+      .micro { fill: #64748b; font-size: 10px; }
+      .lane-label { fill: #94a3b8; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; }
+      .lane-track { fill: none; stroke: #334155; stroke-width: 1; stroke-dasharray: 4 4; }
+      .stage { fill: #0f172a; stroke: #475569; stroke-width: 1.5; }
+      .stage-thin { fill: #0f172a; stroke: #475569; stroke-width: 1.25; }
+      .store { fill: #0b1220; stroke: #334155; stroke-width: 1.25; }
+      .assembly { fill: #1e1b4b; stroke: #a78bfa; stroke-width: 1.5; }
+      .arrow-line { stroke: #475569; stroke-width: 1.5; fill: none; }
+      .arrow-thin { stroke: #334155; stroke-width: 1; fill: none; }
+      .arrow-fan { stroke: #475569; stroke-width: 1.25; fill: none; }
       .arrow-head { fill: #475569; }
       .arrow-head-thin { fill: #334155; }
       .accent-ingest { stroke: #7c3aed; }
@@ -31,9 +31,9 @@
       .accent-rerank { stroke: #f43f5e; }
       .accent-topk { stroke: #10b981; }
       .accent-query { stroke: #8b5cf6; }
-      .opt-tag { fill: #422006; stroke: #d97706; }
-      .opt-tag-text { fill: #fbbf24; }
-          </style>
+      .opt-tag { fill: #422006; stroke: #d97706; stroke-width: 1; }
+      .opt-tag-text { fill: #fbbf24; font-size: 9px; font-weight: 700; letter-spacing: 0.04em; }
+    </style>
     <marker id="rag-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
       <path d="M 0 0 L 10 5 L 0 10 z" class="arrow-head"/>
     </marker>
