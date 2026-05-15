@@ -44,7 +44,7 @@ import { z } from 'zod';
 import { streamObject } from '@framers/agentos';
 
 const result = streamObject({
-  model: 'openai:gpt-4o',
+  provider: 'openai', model: 'gpt-4o',
   schema: z.object({ name: z.string(), hobbies: z.array(z.string()) }),
   prompt: 'Create a profile for a fictional character.',
 });

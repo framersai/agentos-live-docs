@@ -12,7 +12,7 @@ the same rules as [generateText](../functions/generateText.md): supply `provider
 
 ```ts
 const opts: EmbedTextOptions = {
-  model: 'openai:text-embedding-3-small',
+  provider: 'openai', model: 'text-embedding-3-small',
   input: ['Hello world', 'Goodbye world'],
   dimensions: 256,
 };

@@ -51,7 +51,7 @@ import { z } from 'zod';
 import { generateObject } from '@framers/agentos';
 
 const { object } = await generateObject({
-  model: 'openai:gpt-4o',
+  provider: 'openai', model: 'gpt-4o',
   schema: z.object({ name: z.string(), age: z.number() }),
   prompt: 'Extract: "John is 30 years old"',
 });

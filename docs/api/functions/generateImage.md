@@ -27,7 +27,7 @@ A promise resolving to the generation result with image data and metadata.
 
 ```ts
 const result = await generateImage({
-  model: 'openai:dall-e-3',
+  provider: 'openai', model: 'dall-e-3',
   prompt: 'A photorealistic red panda sitting on a moonlit rooftop.',
   size: '1024x1024',
 });

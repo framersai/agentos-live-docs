@@ -32,7 +32,7 @@ A promise that resolves to the final text, token usage, tool call log, and finis
 
 ```ts
 const result = await generateText({
-  model: 'openai:gpt-4o',
+  provider: 'openai', model: 'gpt-4o',
   prompt: 'Summarise the history of the Roman Empire in two sentences.',
 });
 console.log(result.text);

@@ -27,7 +27,7 @@ A [StreamTextResult](../interfaces/StreamTextResult.md) with async iterables and
 ## Example
 
 ```ts
-const { textStream } = streamText({ model: 'openai:gpt-4o', prompt: 'Tell me a joke.' });
+const { textStream } = streamText({ provider: 'openai', model: 'gpt-4o', prompt: 'Tell me a joke.' });
 for await (const chunk of textStream) {
   process.stdout.write(chunk);
 }

@@ -8,7 +8,7 @@ The result returned by [embedText](../functions/embedText.md).
 
 ```ts
 const { embeddings, usage } = await embedText({
-  model: 'openai:text-embedding-3-small',
+  provider: 'openai', model: 'text-embedding-3-small',
   input: ['Hello', 'World'],
 });
 console.log(embeddings.length); // 2

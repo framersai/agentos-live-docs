@@ -22,7 +22,7 @@ For most use cases you never touch the verifier directly. Configure `verifyCitat
 import { agent } from '@framers/agentos';
 
 const docsAgent = agent({
-  model: 'openai:gpt-4o',
+  provider: 'openai', model: 'gpt-4o',
   verifyCitations: {
     embedFn:  (texts) => embeddingManager.embedBatch(texts),
     retrieve: (query) => retriever.search(query),

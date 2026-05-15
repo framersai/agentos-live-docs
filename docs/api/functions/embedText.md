@@ -44,14 +44,14 @@ import { embedText } from '@framers/agentos';
 
 // Single input
 const { embeddings } = await embedText({
-  model: 'openai:text-embedding-3-small',
+  provider: 'openai', model: 'text-embedding-3-small',
   input: 'Hello world',
 });
 console.log(embeddings[0].length); // 1536
 
 // Batch with reduced dimensions
 const batch = await embedText({
-  model: 'openai:text-embedding-3-small',
+  provider: 'openai', model: 'text-embedding-3-small',
   input: ['Hello', 'World'],
   dimensions: 256,
 });

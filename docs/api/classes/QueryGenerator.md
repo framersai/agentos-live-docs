@@ -12,7 +12,7 @@ synthesis, then delegates to [generateText](../functions/generateText.md) for th
 
 ```typescript
 const gen = new QueryGenerator({
-  model: 'openai:gpt-4.1-mini',
+  provider: 'openai', model: 'gpt-4.1-mini',
   modelDeep: 'openai:gpt-4.1',
   provider: 'openai',
 });
