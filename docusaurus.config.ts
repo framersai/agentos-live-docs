@@ -260,6 +260,9 @@ const config = (githubStars: number): Config => ({
               // Avoid pulling in the package README (it contains links that don't
               // resolve inside Docusaurus and duplicates the Guides section).
               readme: 'none',
+              categorizeByGroup: false,
+              categoryOrder: ['Core', '*'],
+              defaultCategory: 'Other',
               sidebar: {
                 autoConfiguration: true,
                 pretty: true,

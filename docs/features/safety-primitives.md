@@ -2,8 +2,8 @@
 title: "Safety Primitives"
 sidebar_position: 3
 displayed_sidebar: guideSidebar
-description: "Six operational safety primitives that wrap every AgentOS LLM call: killswitch, cost guard, circuit breaker, stuck detection, action audit log. Prevent runaway loops, money fires, and zombie agents — independently or as one guard chain via wrapLLMCallback()."
-keywords: [agent safety, llm circuit breaker, cost guard, stuck detector, agent killswitch, runaway agent, ai cost cap, agentos safety, operational guardrails]
+description: "Seven operational safety primitives that wrap every AgentOS LLM call: killswitch, cost guard, circuit breaker, provider health registry, stuck detection, action audit log. Prevent runaway loops, money fires, and zombie agents — independently or as one guard chain via wrapLLMCallback()."
+keywords: [agent safety, llm circuit breaker, provider health, llm fallback router, status-aware breaker, cost guard, stuck detector, agent killswitch, runaway agent, ai cost cap, agentos safety, operational guardrails]
 ---
 
 Autonomous agents with LLM access can incur unbounded cost when a vendor API flakes, a retry policy misfires, or an output guardrail silently rejects every attempt. AgentOS ships six small, independent primitives that wrap every LLM and tool call to bound the failure modes that cause runaway spend, stuck loops, and zombie agents.
@@ -79,6 +79,68 @@ try {
 const stats = breaker.getStats();
 // { name: 'openai-api', state: 'closed', failureCount: 0, totalTripped: 0, ... }
 ```
+
+## LLMProviderHealthRegistry
+
+A status-aware, process-lifetime memory of LLM provider health, keyed by `providerId`. Wired into [`generateText`](https://github.com/framersai/agentos/blob/master/src/api/generateText.ts) and [`streamText`](https://github.com/framersai/agentos/blob/master/src/api/streamText.ts) so that the next caller doesn't pay a full TLS round-trip to rediscover a provider that just returned `402 Insufficient Credits` or `401 Invalid API key`.
+
+The plain `CircuitBreaker` above uses a single failure-threshold + cooldown pair per instance — fine for one-off operations. The router needs **per-error-class** behavior: open immediately on a payment / auth failure, but require a streak before tripping on a 429 or 5xx. This is what the registry adds.
+
+| Error class                | Threshold | Cooldown |
+| -------------------------- | --------- | -------- |
+| 402 insufficient credits   | 1 fail    | 5 min    |
+| 401, 403 auth/forbidden    | 1 fail    | 30 min   |
+| 429 rate limit             | 3 fails   | 30 s     |
+| 5xx + unclassifiable       | 5 fails   | 60 s     |
+
+The 5-minute window on 402 reflects operational reality — credits might get topped up while a batch job is in flight. 30 minutes on 401/403 is longer because those failures usually require an env change + redeploy. 429 cooldowns are intentionally short because rate limits typically lift in a single billing interval.
+
+### How the router uses it
+
+1. **Before the primary call**, `generateText` consults `globalLLMProviderHealth.isOpen(resolvedProviderId)`. If the breaker is open, it throws a synthetic `LLMProviderCircuitOpenError` with `httpStatus: 503` — the existing `isRetryableError` check recognizes this and routes the call into the fallback chain. No network round-trip, no TLS handshake, no waste.
+2. **On a real provider error** (anything caught in the outer try/catch), the registry's `recordFailure(providerId, error)` classifies the error by HTTP status and increments the streak (or trips immediately for 401/402/403).
+3. **On success**, `recordSuccess(providerId)` resets the streak counter so a future transient failure starts fresh. Crucially, a single success does NOT shorten an already-open cooldown — the breaker is open because we want to stop probing for a window.
+4. **In the fallback chain loop**, every fallback entry is checked against `isOpen()` before its attempt. A dead chain entry is skipped instantly, so the loop walks to the first healthy provider with O(N) constant-time checks rather than O(N) network calls.
+
+### Error classification
+
+The registry reads HTTP status from three sources, in order:
+
+1. `[NNN] ...` prefix in `error.message` — the shape `OpenRouterProvider` decorates its errors with so downstream regex-based routing can find them.
+2. `error.statusCode` numeric property — `OpenRouterProviderError` sets this explicitly.
+3. `error.status` numeric property — the Anthropic / OpenAI SDK shape.
+
+If none of those resolves, the error is treated as the conservative transient class (5-failure threshold, 60 s cooldown). Better to under-protect on a one-off network blip than lock out a healthy provider.
+
+### Usage
+
+```typescript
+import { globalLLMProviderHealth } from '@framers/agentos';
+
+// Read state for an admin / diagnostics endpoint
+const stats = globalLLMProviderHealth.getStats('openrouter');
+if (stats?.state === 'open') {
+  console.log(
+    `OpenRouter circuit open; ${stats.cooldownRemainingMs}ms until close. ` +
+    `Last status: ${stats.lastStatusCode}, total trips: ${stats.totalTrips}`,
+  );
+}
+
+// Manually reset after a credit top-up (so the next call probes immediately)
+globalLLMProviderHealth.reset('openrouter');
+
+// Construct a private registry for a test
+import { LLMProviderHealthRegistry } from '@framers/agentos';
+const isolated = new LLMProviderHealthRegistry();
+isolated.recordFailure('mock-provider', new Error('[402] Test'));
+expect(isolated.isOpen('mock-provider')).toBe(true);
+```
+
+### Why a singleton
+
+Provider health is process-wide state. Two concurrent `generateText` calls inside the same Node process see the same OpenRouter — if one just discovered it's at 402, the other shouldn't redo the discovery. The `globalLLMProviderHealth` singleton is the natural granularity. Tests construct their own `LLMProviderHealthRegistry` instances to keep state isolated.
+
+The registry is **ephemeral by design** — it lives in memory and resets on server restart. Persistent provider-health tracking would add complexity (Redis, write-through cache invalidation) for a problem the in-process singleton already solves for the dominant case: a long-running batch job hammering a degraded provider.
 
 ## ActionDeduplicator
 
