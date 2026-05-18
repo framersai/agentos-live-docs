@@ -62,9 +62,9 @@ async function buildConfig(): Promise<Config> {
 }
 
 const config = (githubStars: number): Config => ({
-  title: 'AgentOS — Open-Source TypeScript AI Agent Runtime',
+  title: 'AgentOS Docs · Guides, API Reference, Recipes',
   tagline:
-    'Open-source TypeScript runtime for autonomous AI agents — unified graph orchestration, cognitive memory, streaming guardrails, voice pipeline, 21 LLM providers.',
+    'AgentOS documentation: getting started guides, full API reference, runtime recipes, extension catalog, and benchmark results for the open-source TypeScript AI agent runtime.',
   favicon: 'img/favicon.ico',
   url: 'https://docs.agentos.sh',
   baseUrl: '/',
