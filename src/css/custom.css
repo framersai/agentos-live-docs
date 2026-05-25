@@ -1002,7 +1002,13 @@ th { font-weight: 600; }
 [data-theme='dark'] .docusaurus-mermaid-container .edgeLabel rect,
 [data-theme='dark'] .docusaurus-mermaid-container .label text,
 [data-theme='dark'] .docusaurus-mermaid-container .nodeLabel,
-[data-theme='dark'] .docusaurus-mermaid-container .cluster-label text {
+[data-theme='dark'] .docusaurus-mermaid-container .nodeLabel p,
+[data-theme='dark'] .docusaurus-mermaid-container .cluster-label text,
+[data-theme='dark'] .docusaurus-mermaid-container .cluster-label span,
+[data-theme='dark'] .docusaurus-mermaid-container .cluster-label foreignObject p,
+[data-theme='dark'] .docusaurus-mermaid-container .cluster text,
+[data-theme='dark'] .docusaurus-mermaid-container .cluster span,
+[data-theme='dark'] .docusaurus-mermaid-container .flowchartTitleText {
   fill: #e2e8f0 !important;
   color: #e2e8f0 !important;
 }
@@ -1018,7 +1024,9 @@ th { font-weight: 600; }
 [data-theme='dark'] .docusaurus-mermaid-container .messageLine0 ~ defs marker path,
 [data-theme='dark'] .docusaurus-mermaid-container defs marker path,
 [data-theme='dark'] .docusaurus-mermaid-container marker path,
-[data-theme='dark'] .docusaurus-mermaid-container #arrowhead path {
+[data-theme='dark'] .docusaurus-mermaid-container #arrowhead path,
+[data-theme='dark'] .docusaurus-mermaid-container .arrowheadPath,
+[data-theme='dark'] .docusaurus-mermaid-container .arrowMarkerPath {
   fill: rgba(165, 180, 252, 0.7) !important;
   stroke: rgba(165, 180, 252, 0.7) !important;
 }
@@ -1067,10 +1075,25 @@ th { font-weight: 600; }
   background: transparent !important;
 }
 
-/* Default flowchart node stroke (border) — without this the borders
-   inherit a light grey that vanishes on dark. */
+/* Default flowchart node fill + border. Mermaid 11 emits the shape element
+   WITHOUT a `fill` attribute — the white fill comes from the inline <style>
+   block the renderer injects into the SVG (`#mermaid-svg-XXX .node rect,
+   .node polygon, .node circle, ... { fill: #ffffff }`). The
+   `mermaid-theme.js` patcher normally rewrites that hex to `var(--mer-bg)`,
+   but on the first 1–3 SVGs of a page the style block is injected AFTER
+   the patcher's first pass, so this CSS is the guaranteed fallback.
+   Covers every shape Mermaid emits for default nodes: rect (boxes),
+   polygon (diamonds, hexagons, parallelograms), circle, ellipse, path
+   (rounded edges) — each with no fill attr OR with an explicit
+   `fill="#FFFFFF"`/`fill="white"`. */
 [data-theme='dark'] .docusaurus-mermaid-container .node rect:not([fill]),
-[data-theme='dark'] .docusaurus-mermaid-container .node .basic.label-container {
+[data-theme='dark'] .docusaurus-mermaid-container .node polygon:not([fill]),
+[data-theme='dark'] .docusaurus-mermaid-container .node circle:not([fill]),
+[data-theme='dark'] .docusaurus-mermaid-container .node ellipse:not([fill]),
+[data-theme='dark'] .docusaurus-mermaid-container .node path:not([fill]),
+[data-theme='dark'] .docusaurus-mermaid-container .node .basic.label-container,
+[data-theme='dark'] .docusaurus-mermaid-container .node rect.basic.label-container {
+  fill: rgba(30, 41, 59, 0.85) !important;
   stroke: rgba(165, 180, 252, 0.5) !important;
 }
 

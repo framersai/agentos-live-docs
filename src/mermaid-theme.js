@@ -54,6 +54,13 @@ if (typeof window !== 'undefined') {
     '#f2f2fa': '--mer-bg',              // light text on dark cards
     '#c9a227': '--mer-data-border',     // gold accent
     '#00f5ff': '--mer-input-border',    // cyan accent
+    // Mermaid 11 base-theme defaults that aren't covered by themeVariables.
+    // Mermaid computes these internally from primaryTextColor / textColor
+    // and emits them in the inline <style> block for cluster labels,
+    // arrowhead paths, and error text. Without these mappings the
+    // patcher leaves them as near-black, which is invisible in dark mode.
+    '#070503': '--mer-text',            // cluster-label text/span, error text
+    '#0b0b0b': '--mer-line',            // arrowheadPath fill
   };
 
   const HEX_RE = new RegExp(
@@ -63,44 +70,56 @@ if (typeof window !== 'undefined') {
     'gi',
   );
 
+  function rewriteHex(str) {
+    return str.replace(HEX_RE, (m) => {
+      const key = m.toLowerCase();
+      const varName = FILL_MAP[key];
+      return varName ? `var(${varName})` : m;
+    });
+  }
+
   function patchSvgs() {
     const svgs = document.querySelectorAll(
       '.docusaurus-mermaid-container svg, [id^="mermaid-"]',
     );
     svgs.forEach((svg) => {
-      if (svg.hasAttribute('data-mer-patched')) return;
-      svg.setAttribute('data-mer-patched', '1');
-      svg.querySelectorAll('[style]').forEach((el) => {
-        const style = el.getAttribute('style');
-        if (!style) return;
-        const next = style.replace(HEX_RE, (m) => {
-          const key = m.toLowerCase();
-          const varName = FILL_MAP[key];
-          return varName ? `var(${varName})` : m;
+      // Gate attribute-level rewrites per-SVG. These walk the element tree
+      // once and only need to run once per SVG (attrs don't change after
+      // Mermaid finishes mounting).
+      if (!svg.hasAttribute('data-mer-attr-patched')) {
+        svg.setAttribute('data-mer-attr-patched', '1');
+        // Keep the legacy attribute too so any external code or tests that
+        // look for `data-mer-patched` continue to work.
+        svg.setAttribute('data-mer-patched', '1');
+        svg.querySelectorAll('[style]').forEach((el) => {
+          const style = el.getAttribute('style');
+          if (!style) return;
+          const next = rewriteHex(style);
+          if (next !== style) el.setAttribute('style', next);
         });
-        if (next !== style) el.setAttribute('style', next);
-      });
-      svg.querySelectorAll('[fill], [stroke]').forEach((el) => {
-        ['fill', 'stroke'].forEach((attr) => {
-          const v = el.getAttribute(attr);
-          if (!v) return;
-          const key = v.toLowerCase();
-          const varName = FILL_MAP[key];
-          if (varName) el.setAttribute(attr, `var(${varName})`);
+        svg.querySelectorAll('[fill], [stroke]').forEach((el) => {
+          ['fill', 'stroke'].forEach((attr) => {
+            const v = el.getAttribute(attr);
+            if (!v) return;
+            const key = v.toLowerCase();
+            const varName = FILL_MAP[key];
+            if (varName) el.setAttribute(attr, `var(${varName})`);
+          });
         });
-      });
-      // Mermaid `classDef` directives are emitted as CSS rules inside an
-      // inline `<style>` element on each rendered SVG. Walk those rules and
-      // rewrite the same hex constants so class-based styling also flips
-      // between light and dark mode.
-      svg.querySelectorAll('style').forEach((styleEl) => {
+      }
+      // Gate inner <style> rewrites PER-ELEMENT, not per-SVG. Mermaid 11
+      // mounts the root <svg> first and injects the inline <style> block
+      // afterwards on the next animation frame. Marking the SVG as patched
+      // on first visit caused the style block to be skipped permanently
+      // for whichever SVGs were observed in that early window, leaving
+      // their hex colors un-swapped and the diagram unreadable in dark
+      // mode. Per-style gating lets the MutationObserver pick up the
+      // late-injected style block on a subsequent tick.
+      svg.querySelectorAll('style:not([data-mer-style-patched])').forEach((styleEl) => {
+        styleEl.setAttribute('data-mer-style-patched', '1');
         const css = styleEl.textContent;
         if (!css) return;
-        const next = css.replace(HEX_RE, (m) => {
-          const key = m.toLowerCase();
-          const varName = FILL_MAP[key];
-          return varName ? `var(${varName})` : m;
-        });
+        const next = rewriteHex(css);
         if (next !== css) styleEl.textContent = next;
       });
     });
