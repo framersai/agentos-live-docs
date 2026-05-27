@@ -223,6 +223,98 @@ function ContactCTAs() {
 }
 
 /* ------------------------------------------------------------------ */
+/*  Forge Demo (animated webp, png fallback)                          */
+/* ------------------------------------------------------------------ */
+
+/**
+ * Animated demo of runtime tool forging. Mirrors the ForgeDemoSection on
+ * agentos.sh. Server-rendered, zero client JS: the only dynamic element
+ * is the animated WebP/PNG, both lazy-loaded so neither blocks first paint.
+ *
+ * Asset trail:
+ *  - WebP (~1.9 MB animated, lossless from the source GIF). Modern browsers.
+ *  - PNG fallback (~660 KB static frame). Same scenario, climactic frame.
+ */
+function ForgeDemoSection() {
+  return (
+    <section style={{ padding: '2rem 2rem 1rem', maxWidth: '1100px', margin: '0 auto' }}>
+      <header style={{ textAlign: 'center', marginBottom: '1rem' }}>
+        <p
+          style={{
+            fontSize: '0.75rem',
+            fontWeight: 700,
+            letterSpacing: '0.18em',
+            textTransform: 'uppercase',
+            color: 'var(--ifm-color-primary)',
+            marginBottom: '0.5rem',
+          }}
+        >
+          Runtime tool forging
+        </p>
+        <h2 style={{ fontSize: '1.65rem', margin: '0 0 0.5rem' }}>
+          Watch a tool get forged at runtime
+        </h2>
+        <p style={{ fontSize: '0.95rem', opacity: 0.75, maxWidth: '720px', margin: '0 auto' }}>
+          Three HEXACO-distinct agents collaborate on a code review. When their static toolkit
+          can&apos;t cover the task, the manager calls <code>spawn_specialist</code>, an LLM judge
+          approves the spec, and all three invoke the forged tool on the next turn.
+        </p>
+      </header>
+      <figure
+        style={{
+          margin: 0,
+          borderRadius: '12px',
+          overflow: 'hidden',
+          border: '1px solid var(--ifm-color-emphasis-300)',
+          boxShadow: '0 20px 40px rgba(99, 102, 241, 0.1)',
+        }}
+      >
+        <picture>
+          <source srcSet="/img/demos/agentos-forge-demo.webp" type="image/webp" />
+          <img
+            src="/img/demos/agentos-emergent-demo.png"
+            alt="Three AgentOS agents with distinct HEXACO personalities collaborate on a code review, forge a new tool at runtime, the LLM judge approves the spec, and all three invoke it on the next turn."
+            width={1600}
+            height={920}
+            loading="lazy"
+            decoding="async"
+            style={{ width: '100%', height: 'auto', display: 'block' }}
+          />
+        </picture>
+        <figcaption
+          style={{
+            padding: '0.65rem 1rem',
+            fontSize: '0.8rem',
+            opacity: 0.75,
+            display: 'flex',
+            justifyContent: 'space-between',
+            flexWrap: 'wrap',
+            gap: '0.5rem',
+            background: 'var(--ifm-background-surface-color)',
+          }}
+        >
+          <span>
+            Captured from <code>node examples/emergent-hierarchical-spawning.mjs</code>
+          </span>
+          <a
+            href="https://github.com/framersai/agentos/blob/master/examples/emergent-hierarchical-spawning.mjs"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            View source on GitHub &rarr;
+          </a>
+        </figcaption>
+      </figure>
+      <p style={{ textAlign: 'center', marginTop: '0.75rem' }}>
+        <Link to="/features/emergent-capabilities" style={{ fontSize: '0.9rem' }}>
+          How emergent capabilities work &rarr;
+        </Link>
+      </p>
+    </section>
+  );
+}
+
+/* ------------------------------------------------------------------ */
 /*  Install Tabs                                                       */
 /* ------------------------------------------------------------------ */
 
@@ -771,6 +863,7 @@ export default function Home(): React.JSX.Element {
     <Layout description="AgentOS \u2014 open-source TypeScript runtime for autonomous AI agents with unified graph orchestration, cognitive memory, streaming guardrails, and voice pipeline.">
       <Hero />
       <ContactCTAs />
+      <ForgeDemoSection />
       <InstallTabs />
       <QuickStartTabs />
       <ArchitectureDiagram />
