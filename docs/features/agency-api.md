@@ -197,8 +197,8 @@ console.log(result.text);
 ```
 
 Set `OPENAI_API_KEY` (or another provider's key) and the agency auto-detects
-the provider.  Pass `provider: 'openai', model: 'gpt-4o'` or `provider: 'anthropic'` to
-control the model explicitly.
+the provider.  Pass `provider: 'openai', model: 'gpt-4o'` (or any other
+provider/model pair) to control the model explicitly.
 
 ---
 

@@ -4,6 +4,87 @@ sidebar_position: 7
 displayed_sidebar: guideSidebar
 ---
 
+## <small>0.9.19 (2026-05-21)</small>
+
+* test(voice): use AudioFrame.timestamp (not timestampMs) in STT regression test ([dd7752f35df767d3f7287f46b941cda7d4c8d0b5](https://github.com/framersai/agentos/commit/dd7752f35df767d3f7287f46b941cda7d4c8d0b5))
+* fix(voice): elevenlabs chunked STT multipart field name=audio → name=file ([4061bfb53c4b06e48a2887acea6e044e8a25f6a2](https://github.com/framersai/agentos/commit/4061bfb53c4b06e48a2887acea6e044e8a25f6a2))
+
+## <small>0.9.18 (2026-05-18)</small>
+
+* fix(voice): bound batch TTS synthesize fetches with AbortSignal ([80b51fb4cbba7e39fb07c415488688fd2d193cac](https://github.com/framersai/agentos/commit/80b51fb4cbba7e39fb07c415488688fd2d193cac))
+
+## <small>0.9.17 (2026-05-18)</small>
+
+* fix(lock): refresh pnpm-lock for sql-storage-adapter@0.6.6 + extensions-registry@0.18.2 ([a0ef7b20841889351ac688a3e97cb6168fd2096d](https://github.com/framersai/agentos/commit/a0ef7b20841889351ac688a3e97cb6168fd2096d))
+* build: add prepare script that builds dist if missing ([7a313a41585c6c2dd18a7ad8cd82bfe2a0bb5dff](https://github.com/framersai/agentos/commit/7a313a41585c6c2dd18a7ad8cd82bfe2a0bb5dff))
+* chore(deps): bump @framers/sql-storage-adapter to ^0.6.6 + extensions-registry devDep to ^0.18.2 ([56eba590fb4affcbd306a0d1f9b592db6800c0be](https://github.com/framersai/agentos/commit/56eba590fb4affcbd306a0d1f9b592db6800c0be))
+
+## <small>0.9.16 (2026-05-17)</small>
+
+* fix: move @framers/sql-storage-adapter from peer to dependencies ([7fb0c46de25fc9f03e824c9bf6b2662efbc7d4be](https://github.com/framersai/agentos/commit/7fb0c46de25fc9f03e824c9bf6b2662efbc7d4be))
+* fix(lockfile): regen for sql-storage-adapter dep move, drop devDeps duplicate ([94007e752bff55d4841a62323843a9f308603a72](https://github.com/framersai/agentos/commit/94007e752bff55d4841a62323843a9f308603a72))
+* docs(readme): add 'Tuning generation knobs' section to API Surfaces ([5c1e68e6e82e7e2a17c3c19da6f5b21135956354](https://github.com/framersai/agentos/commit/5c1e68e6e82e7e2a17c3c19da6f5b21135956354))
+
+## <small>0.9.15 (2026-05-17)</small>
+
+* Merge branch 'master' of https://github.com/framersai/agentos ([328881df233b7e4fdb33e5d57893efa69fa32d46](https://github.com/framersai/agentos/commit/328881df233b7e4fdb33e5d57893efa69fa32d46))
+* docs(agent-options): expand maxTokens TSDoc with provider defaults + examples ([24bb87fd198f7be605b74c8a0731aa420c67ae97](https://github.com/framersai/agentos/commit/24bb87fd198f7be605b74c8a0731aa420c67ae97))
+* fix(anthropic-provider): bump defaultMaxTokens 4096 -> 16000 ([184c471b8e56fa4a4a9fb6e7992d34654eba637a](https://github.com/framersai/agentos/commit/184c471b8e56fa4a4a9fb6e7992d34654eba637a))
+
+## <small>0.9.14 (2026-05-17)</small>
+
+* fix(imports): add .js extension to 2 CodeRabbit-flagged ESM imports ([baf933a01ed7807db132cc3c1ed19bb857f52b68](https://github.com/framersai/agentos/commit/baf933a01ed7807db132cc3c1ed19bb857f52b68))
+
+## <small>0.9.13 (2026-05-17)</small>
+
+* fix(providers): lift @ts-nocheck on Gemini + OpenRouter ([1511241dd383f8c6247eca4e5774dbab41270a16](https://github.com/framersai/agentos/commit/1511241dd383f8c6247eca4e5774dbab41270a16))
+* refactor: drop 9 unused re-export shim files ([6924032267e51416c634c5b1d4618faad02e5196](https://github.com/framersai/agentos/commit/6924032267e51416c634c5b1d4618faad02e5196))
+* refactor: route in-package imports through canonical paths ([f87d0e2d11b24026bcc9bb01e3a134594fc9d517](https://github.com/framersai/agentos/commit/f87d0e2d11b24026bcc9bb01e3a134594fc9d517))
+* refactor: use relative paths for in-package utils imports ([cafdf732e4318e67512fb2c2a55579b38b254e02](https://github.com/framersai/agentos/commit/cafdf732e4318e67512fb2c2a55579b38b254e02))
+* docs: lead examples with explicit provider + model, drop legacy framing ([c4bb9ffc654353d57f889b6753029a680e30b0a1](https://github.com/framersai/agentos/commit/c4bb9ffc654353d57f889b6753029a680e30b0a1))
+* docs(readme): clarify provider default vs pin-to-override comment ([4cba6e749e4fb03fbfdc5561a0b0b870c4229ceb](https://github.com/framersai/agentos/commit/4cba6e749e4fb03fbfdc5561a0b0b870c4229ceb))
+
+## <small>0.9.12 (2026-05-15)</small>
+
+* fix(tests): align agentos fixtures with current interfaces ([01c3f8164e9b8529f3b16a89adf77cf7aca6535f](https://github.com/framersai/agentos/commit/01c3f8164e9b8529f3b16a89adf77cf7aca6535f))
+
+## <small>0.9.11 (2026-05-15)</small>
+
+* docs(api): tag agent, agency, AgentOS with @category Core ([70914f594d391cbc8d31e037095c2353299fcd6c](https://github.com/framersai/agentos/commit/70914f594d391cbc8d31e037095c2353299fcd6c))
+* docs(readme): inline default-model comments per provider; fix honesty field name ([88412eec732906e9b695ff60243fabcfb8d9b9fa](https://github.com/framersai/agentos/commit/88412eec732906e9b695ff60243fabcfb8d9b9fa))
+* docs(safety): document LLMProviderHealthRegistry in SAFETY_PRIMITIVES + linter scrub ([c8d152125f2b07291298a03bfe8ff6a01e604094](https://github.com/framersai/agentos/commit/c8d152125f2b07291298a03bfe8ff6a01e604094))
+* Merge branch 'master' of https://github.com/framersai/agentos ([c0b7ab01c5b4a5a80f08c21313a1b88caee753d6](https://github.com/framersai/agentos/commit/c0b7ab01c5b4a5a80f08c21313a1b88caee753d6))
+* feat(safety): LLMProviderHealthRegistry with status-aware circuit breaker for the fallback router ([f3d2f30662fcc9b999dbdd75dc72a0cd654afcac](https://github.com/framersai/agentos/commit/f3d2f30662fcc9b999dbdd75dc72a0cd654afcac))
+
+## <small>0.9.10 (2026-05-14)</small>
+
+* fix(memory): add perspectiveSource to ICognitiveMemoryManager.encode interface ([4d6c4f0d4c47484ccbeefafc2a757afba2dbbee2](https://github.com/framersai/agentos/commit/4d6c4f0d4c47484ccbeefafc2a757afba2dbbee2))
+* fix(memory): persist contradictedBy through vector-store upsert ([e6e38d6f0ea0f57a86f2dd0ff4d97124e67e8993](https://github.com/framersai/agentos/commit/e6e38d6f0ea0f57a86f2dd0ff4d97124e67e8993))
+* fix(memory): populate contradictedBy + verificationCount + lastVerifiedAt ([c18846fb18afb4b0cec2e00a91395877c07f04e5](https://github.com/framersai/agentos/commit/c18846fb18afb4b0cec2e00a91395877c07f04e5))
+* fix(memory): wire perspectiveSourceEventId/Hash through encode + remember ([f6c112918bff22b6bedb2691696e8d0f7fe23276](https://github.com/framersai/agentos/commit/f6c112918bff22b6bedb2691696e8d0f7fe23276))
+* fix(rag): thread retrieved chunks from GMI through to output guardrails ([1ab8f7e5e1ed1fe9bcedf09e5518b2ecb27dc251](https://github.com/framersai/agentos/commit/1ab8f7e5e1ed1fe9bcedf09e5518b2ecb27dc251))
+* test: unit tests for agency provenance, scope filter, trust policy ([adc2983410ff198ddffc2404ab5d5aa6e6bbaefe](https://github.com/framersai/agentos/commit/adc2983410ff198ddffc2404ab5d5aa6e6bbaefe))
+* feat(agency): wire agency({ provenance }) to an in-memory event trail ([88e2b82ddc5af9543d0df1fa4095639a2d897224](https://github.com/framersai/agentos/commit/88e2b82ddc5af9543d0df1fa4095639a2d897224))
+* feat(memory): expand MemorySourceType with enterprise-grade sources ([28c7f006bc71698a9fd3277e7b5fecd2a8763a12](https://github.com/framersai/agentos/commit/28c7f006bc71698a9fd3277e7b5fecd2a8763a12))
+* feat(memory): MemoryTrustPolicy gates retrieval by source-type capability ([1fce3ed4053684bb24789914339870ad6fa68941](https://github.com/framersai/agentos/commit/1fce3ed4053684bb24789914339870ad6fa68941))
+* feat(rag): add tenant/ACL/classification/lifecycle scope to RAG ([ff63662f521626942c78aa90589bd847e1d14f16](https://github.com/framersai/agentos/commit/ff63662f521626942c78aa90589bd847e1d14f16))
+* feat(rag): auto-wire CitationVerifier from RetrievalAugmentor ([fd3f6efda9260351d4a27baca66c7aee0f8ec0a8](https://github.com/framersai/agentos/commit/fd3f6efda9260351d4a27baca66c7aee0f8ec0a8))
+* feat(rag): export ClaimVerdictKind as the canonical verdict vocabulary ([ce882cbb3a10a9e89d9d00018f4a8a38242ebf99](https://github.com/framersai/agentos/commit/ce882cbb3a10a9e89d9d00018f4a8a38242ebf99))
+* docs(agency): add Mental Model section with multi-brain architecture diagram ([0b5763ec2561a4c18672ea0cfe8d4a90fbe0963b](https://github.com/framersai/agentos/commit/0b5763ec2561a4c18672ea0cfe8d4a90fbe0963b))
+* docs(agency): emphasize per-call scope of memory: { shared: true } ([d0667991315400e8c81e86b3ceb1847ecf7c0898](https://github.com/framersai/agentos/commit/d0667991315400e8c81e86b3ceb1847ecf7c0898))
+* docs(arch): wire new system-architecture.svg into ARCHITECTURE.md + add layer→section mapping ([3245fb9822f7925b2a9e64e14be561e0bcd1047b](https://github.com/framersai/agentos/commit/3245fb9822f7925b2a9e64e14be561e0bcd1047b))
+* docs(diagrams): add hero SVG references on 5 feature pages ([021d8bca620fd3ca459df95ac9f8aae482ce527d](https://github.com/framersai/agentos/commit/021d8bca620fd3ca459df95ac9f8aae482ce527d))
+* docs(examples): add Agency with Shared Memory + RAG as example 15 (renumber 16, 17) ([b31f784a4fcfd867b7d71c33c6b7f39712b160f8](https://github.com/framersai/agentos/commit/b31f784a4fcfd867b7d71c33c6b7f39712b160f8))
+* docs(llm-providers): drop LLM-tone philosophical opener ([9e7ac7f03d176bbd758ee16ce867eefc2013be24](https://github.com/framersai/agentos/commit/9e7ac7f03d176bbd758ee16ce867eefc2013be24))
+* docs(rag-memory): add pipeline diagram ([6d821b36b232465d6de9543351405ff6863c50ec](https://github.com/framersai/agentos/commit/6d821b36b232465d6de9543351405ff6863c50ec))
+* docs(rag): drop strawman intro in query classification section ([be2ff8c109c42fe9ec6f88036ac5e8602aba11e8](https://github.com/framersai/agentos/commit/be2ff8c109c42fe9ec6f88036ac5e8602aba11e8))
+* docs(sidebar): label cognitive pipeline stages 1/2/3 consistently ([7b3c7c08e08e9b9bc5f95f2bf4f9489cd4557e89](https://github.com/framersai/agentos/commit/7b3c7c08e08e9b9bc5f95f2bf4f9489cd4557e89))
+* docs(streaming-semantics): drop backcompat hedge in intro ([d6ee4df0439e0a6efe2a6e0dd14751486fc3bb73](https://github.com/framersai/agentos/commit/d6ee4df0439e0a6efe2a6e0dd14751486fc3bb73))
+* examples: add agency-shared-memory.mjs (multi-agent with shared cognitive memory + RAG) ([dafb7f98d55a314aac87d11d1f097b8eecfa021c](https://github.com/framersai/agentos/commit/dafb7f98d55a314aac87d11d1f097b8eecfa021c))
+* examples: add single-agent-briefing.mjs as baseline before agency ([49678003177e08027f562f421411a2403b4250a0](https://github.com/framersai/agentos/commit/49678003177e08027f562f421411a2403b4250a0))
+* chore: add pnpm lockfile ([bfb043e7daec7668ea36e0501611258b36a92d80](https://github.com/framersai/agentos/commit/bfb043e7daec7668ea36e0501611258b36a92d80))
+* chore: refresh pnpm lockfile against ^0.6.5 sql-storage-adapter spec ([00710da1c57e3e3d5caab98cc9bff22c18202131](https://github.com/framersai/agentos/commit/00710da1c57e3e3d5caab98cc9bff22c18202131))
+
 ## <small>0.9.9 (2026-05-12)</small>
 
 * fix(docs): repair 4 dangling links + remove WIP-toned status disclaimers ([30dcb95a342c34010001c220706c2a59ff8de091](https://github.com/framersai/agentos/commit/30dcb95a342c34010001c220706c2a59ff8de091))
