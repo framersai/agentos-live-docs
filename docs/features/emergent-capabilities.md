@@ -12,9 +12,20 @@ Emergent tooling requires a full runtime entry point. Use `new AgentOS()` or ano
 
 ## Live run: a manager spawns a specialist mid-task
 
-![AgentOS spawning a security_audit_specialist agent at runtime, side-by-side with the source code](/img/demos/agentos-emergent-demo.png)
+<figure>
+  <picture>
+    <source srcSet="/img/demos/agentos-forge-demo.webp" type="image/webp" />
+    <img
+      src="/img/demos/agentos-emergent-demo.png"
+      alt="AgentOS spawning a security_audit_specialist agent at runtime, side-by-side with the source code"
+      loading="lazy"
+      decoding="async"
+    />
+  </picture>
+  <figcaption>Captured from <code>node examples/emergent-hierarchical-spawning.mjs</code>. The <code>[FORGE]</code> line in the right panel is the moment <code>security_audit_specialist</code> registers.</figcaption>
+</figure>
 
-The image above is captured from a real run of [`examples/emergent-hierarchical-spawning.mjs`](https://github.com/framersai/agentos/blob/master/examples/emergent-hierarchical-spawning.mjs). The team starts with `researcher` + `writer`; the prompt asks for a security audit of sandbox isolation primitives, which neither static agent covers. The manager calls `spawn_specialist`, [`EmergentAgentJudge`](/api/classes/EmergentAgentJudge) approves the synthesised config, and `security_audit_specialist` joins the live roster. The `[FORGE]` line in the right panel is the moment that happens.
+The capture above runs [`examples/emergent-hierarchical-spawning.mjs`](https://github.com/framersai/agentos/blob/master/examples/emergent-hierarchical-spawning.mjs). The team starts with `researcher` + `writer`; the prompt asks for a security audit of sandbox isolation primitives, which neither static agent covers. The manager calls `spawn_specialist`, [`EmergentAgentJudge`](/api/classes/EmergentAgentJudge) approves the synthesised config, and `security_audit_specialist` joins the live roster.
 
 Reproduce locally:
 
