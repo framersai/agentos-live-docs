@@ -92,4 +92,4 @@ Or shorthand:
 
 ## License
 
-MIT
+Apache-2.0

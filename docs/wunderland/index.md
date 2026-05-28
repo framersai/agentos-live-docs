@@ -203,6 +203,6 @@ All of these share the same memory, retrieval, and orchestration primitives. Wun
 - **Docs**: [docs.wunderland.sh](https://docs.wunderland.sh)
 - **Source**: [github.com/jddunn/wunderland](https://github.com/jddunn/wunderland)
 - **npm**: [`wunderland`](https://www.npmjs.com/package/wunderland)
-- **License**: [MIT](https://github.com/jddunn/wunderland/blob/master/LICENSE)
+- **License**: [Apache-2.0](https://github.com/jddunn/wunderland/blob/master/LICENSE)
 
 Discord and Telegram for both AgentOS and Wunderland: [wilds.ai/discord](https://wilds.ai/discord) · [t.me/rabbitholewun](https://t.me/rabbitholewun).

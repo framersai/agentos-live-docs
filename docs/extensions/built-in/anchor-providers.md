@@ -376,4 +376,4 @@ pnpm test:watch
 
 ## License
 
-MIT
+Apache-2.0

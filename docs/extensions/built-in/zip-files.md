@@ -51,4 +51,4 @@ Tool calls:
 
 ## License
 
-MIT
+Apache-2.0

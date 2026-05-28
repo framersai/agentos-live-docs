@@ -404,4 +404,4 @@ Together, an intelligent agent can:
 
 ## License
 
-MIT © Frame.dev
+Apache-2.0 © Frame.dev

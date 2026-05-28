@@ -65,4 +65,4 @@ At least one key is needed for results. Without either, the tool returns empty l
 
 ## License
 
-MIT
+Apache-2.0

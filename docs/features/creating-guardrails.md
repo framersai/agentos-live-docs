@@ -725,7 +725,7 @@ Declare `@framers/agentos` as a **peer dependency** so your pack works with any 
     "typescript": "^5.5.0",
     "vitest": "^1.6.0"
   },
-  "license": "MIT"
+  "license": "Apache-2.0"
 }
 ```
 
@@ -804,7 +804,7 @@ Declare the pack metadata for the extension registry.
   "version": "0.1.0",
   "description": "My custom guardrail for AgentOS",
   "author": "Your Name",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "category": "safety",
   "tags": ["guardrail", "content-filter", "safety"],
   "entryPoint": "./dist/index.js"
