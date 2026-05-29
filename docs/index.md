@@ -2,7 +2,7 @@
 title: 'AgentOS'
 sidebar_position: 0
 slug: /documentation
-description: "AgentOS — open-source TypeScript AI agent runtime with cognitive memory (85.6% LongMemEval-S, 70.2% LongMemEval-M), HEXACO personality modulation, runtime tool forging, 21 LLM providers. Apache-2.0."
+description: "AgentOS — open-source TypeScript AI agent runtime with cognitive memory (85.6% LongMemEval-S, 70.2% LongMemEval-M), HEXACO personality modulation, runtime tool forging, 11 LLM providers. Apache-2.0."
 keywords: [agentos, typescript ai agent framework, ai agent runtime, cognitive memory, hexaco personality, longmemeval, runtime tool forging, open source agent sdk]
 ---
 
@@ -20,7 +20,7 @@ AgentOS is an open-source TypeScript runtime for AI agents that remember, adapt,
 npm install @framers/agentos
 ```
 
-The runtime carries the parts of an agent that should outlive a single chat completion. Persistent [cognitive memory](/features/cognitive-memory) with eight neuroscience-grounded mechanisms (Ebbinghaus decay, retrieval-induced forgetting, reconsolidation, source-confidence decay, schema encoding, temporal gist, metacognitive feeling-of-knowing, involuntary recall) — each grounded in primary cognitive-science literature, each opt-in. Optional [HEXACO personality](/features/hexaco-personality) vectors that modulate encoding strength, working-memory capacity, and prompt formatting per trait. [Six multi-agent orchestration strategies](/features/agency-api) (sequential, parallel, debate, graph, hierarchical, adaptive). [Two-phase streaming guardrails](/features/guardrails-architecture). A [voice pipeline](/features/voice-pipeline) with VAD, barge-in, and streaming STT/TTS. One dispatch interface across 21 LLM providers.
+The runtime carries the parts of an agent that should outlive a single chat completion. Persistent [cognitive memory](/features/cognitive-memory) with eight neuroscience-grounded mechanisms (Ebbinghaus decay, retrieval-induced forgetting, reconsolidation, source-confidence decay, schema encoding, temporal gist, metacognitive feeling-of-knowing, involuntary recall) — each grounded in primary cognitive-science literature, each opt-in. Optional [HEXACO personality](/features/hexaco-personality) vectors that modulate encoding strength, working-memory capacity, and prompt formatting per trait. [Six multi-agent orchestration strategies](/features/agency-api) (sequential, parallel, debate, graph, hierarchical, adaptive). [Two-phase streaming guardrails](/features/guardrails-architecture). A [voice pipeline](/features/voice-pipeline) with VAD, barge-in, and streaming STT/TTS. One dispatch interface across 11 LLM providers.
 
 Agents with `emergent: true` can write tools mid-decision. When the runtime encounters a sub-task no existing capability covers, it generates a TypeScript function with a [Zod](https://zod.dev/) schema, routes it through a separate LLM-as-judge that scores code safety, test correctness, and determinism, and on approval executes it in a hardened `node:vm` sandbox. The forged tool joins the session catalog; promotion to a `SKILL.md` makes it persist across processes. Multi-agent teams that hit a capability gap call `spawn_specialist` and the judge reviews the synthesized agent spec before the specialist joins the live roster.
 
