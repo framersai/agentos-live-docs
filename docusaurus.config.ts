@@ -163,7 +163,7 @@ const config = (githubStars: number): Config => ({
     },
     {
       tagName: 'meta',
-      attributes: { name: 'author', content: 'Manic Agency LLC — https://manic.agency' },
+      attributes: { name: 'author', content: 'Frame — https://frame.dev' },
     },
     {
       tagName: 'script',
@@ -177,8 +177,8 @@ const config = (githubStars: number): Config => ({
           'Official documentation for AgentOS — open-source TypeScript AI agent framework.',
         publisher: {
           '@type': 'Organization',
-          name: 'Manic Agency LLC',
-          url: 'https://manic.agency',
+          name: 'Frame',
+          url: 'https://frame.dev',
           sameAs: [
             'https://frame.dev',
             'https://github.com/framersai',
@@ -639,7 +639,6 @@ const config = (githubStars: number): Config => ({
         {
           title: 'Ecosystem',
           items: [
-            { label: 'Manic Agency', href: 'https://manic.agency' },
             { label: 'Frame.dev', href: 'https://frame.dev' },
             { label: 'AgentOS', href: 'https://agentos.sh/en' },
             { label: 'Wilds.ai', href: 'https://wilds.ai' },
@@ -666,7 +665,7 @@ const config = (githubStars: number): Config => ({
           ],
         },
       ],
-      copyright: `Copyright \u00A9 ${new Date().getFullYear()} <a href="https://manic.agency" target="_blank" rel="noopener noreferrer" style="color: #00C896;">Manic Agency LLC</a>. Open source under Apache 2.0.`,
+      copyright: `Copyright \u00A9 ${new Date().getFullYear()} <a href="https://frame.dev" target="_blank" rel="noopener noreferrer" style="color: #00C896;">Framers Lab, Inc.</a>. Open source under Apache 2.0.`,
     },
     prism: {
       theme: prismThemes.github,
