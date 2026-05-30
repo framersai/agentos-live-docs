@@ -87,6 +87,27 @@ const config = (githubStars: number): Config => ({
   trailingSlash: false,
 
   headTags: [
+    // Google Fonts, moved out of the render-blocking @import that used to sit
+    // in src/css/custom.css. preconnect warms the DNS + TCP + TLS handshake to
+    // both font origins; the direct stylesheet <link> then fetches the font
+    // CSS in parallel with the page's own CSS instead of waterfalling behind
+    // it. Same families (Inter, JetBrains Mono), weights, and display=swap, so
+    // text rendering is unchanged — just paints sooner.
+    {
+      tagName: 'link',
+      attributes: { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
+    },
+    {
+      tagName: 'link',
+      attributes: { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: 'anonymous' },
+    },
+    {
+      tagName: 'link',
+      attributes: {
+        rel: 'stylesheet',
+        href: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap',
+      },
+    },
     {
       tagName: 'link',
       attributes: {
@@ -249,6 +270,13 @@ const config = (githubStars: number): Config => ({
   plugins: [
     // Lightweight search manifest for agentos.sh marketing-site DocSearch
     ...(!disableSearchManifest ? ['./plugins/search-manifest.js'] : []),
+    // Mark the auto-generated TypeDoc reference trees (/api, /paracosm) as
+    // `noindex, follow` at build time. Combined with their removal from the
+    // sitemap (see presets.sitemap.ignorePatterns), this moves ~1,970 thin
+    // member pages out of Search Console's "Crawled/Discovered — currently
+    // not indexed" buckets and into the intentional "Excluded by noindex"
+    // state, while the /api and /paracosm landing pages stay indexable.
+    './plugins/inject-noindex.js',
     ...(!guidesOnly
       ? [
           [
@@ -378,6 +406,28 @@ const config = (githubStars: number): Config => ({
           // Blog index + listing pages.
           { from: '/blog', to: 'https://agentos.sh/en/blog' },
           { from: '/blog/archive', to: 'https://agentos.sh/en/blog' },
+          // 404 cleanup (2026-05-29): deleted/consolidated doc paths that
+          // Google Search Console reported as "Not found (404)". Every target
+          // was verified live (HTTP 200) before adding. Architecture pages
+          // that were merged into the system-architecture overview, plus a
+          // handful renamed to clearer slugs.
+          { from: '/architecture/backend-api', to: '/architecture/system-architecture' },
+          { from: '/architecture/chat-server', to: '/architecture/system-architecture' },
+          { from: '/architecture/cli-subprocess', to: '/architecture/system-architecture' },
+          { from: '/architecture/runtime-status-matrix', to: '/architecture/system-architecture' },
+          { from: '/architecture/http-streaming-api', to: '/architecture/streaming-semantics' },
+          { from: '/architecture/extension-loading', to: '/extensions/auto-loading' },
+          { from: '/architecture/sandbox-security', to: '/features/safety-primitives' },
+          { from: '/architecture/skills-engine', to: '/skills' },
+          { from: '/architecture/tool-permissions', to: '/architecture/tool-calling-and-loading' },
+          { from: '/architecture/tools', to: '/architecture/tool-calling-and-loading' },
+          { from: '/extensions/built-in/tip-ingestion', to: '/extensions' },
+          { from: '/features/browser-automation', to: '/extensions/built-in/web-browser' },
+          { from: '/features/turn-planner', to: '/features/planning-engine' },
+          { from: '/features/skills', to: '/skills' },
+          // Internal spec accidentally published pre-migration; redirect the
+          // stale indexed URL to the public page covering the same material.
+          { from: '/superpowers/specs/2026-04-14-skills-vs-tools-vs-extensions-design', to: '/architecture/skills-vs-tools-vs-extensions' },
         ],
         createRedirects(existingPath: string) {
           // Redirect old /docs/ prefixed guide paths to root (docs are now at /),
@@ -435,13 +485,25 @@ const config = (githubStars: number): Config => ({
             '/404',
             '/search',
             '/search/**',
-            // TypeDoc emits a full page tree for every re-exported namespace
-            // — most usefully `z` (zod), which contributes ~1350 URLs to the
-            // sitemap (~40% of total, all auto-generated cross-references).
-            // Google rate-limits indexing on sites that look noisy. Filter
-            // the namespace tree out so the real API surface ranks.
-            '/api/*/namespaces/**',
-            '/api/@framers/namespaces/**',
+            // Auto-generated TypeDoc reference: ~1,970 thin member pages
+            // (interfaces, classes, functions, type-aliases, variables, enums,
+            // and the re-exported `z`/zod namespace tree). At ~93% of the
+            // route table they made the site read as low-value and Google
+            // declined to index them ("Discovered/Crawled — currently not
+            // indexed"). Kept out of the sitemap so crawl budget lands on the
+            // authored guides, and noindexed at build time by
+            // plugins/inject-noindex.js so the already-discovered ones
+            // reclassify cleanly. These globs do NOT match the bare `/api` and
+            // `/paracosm` landing routes, so those stay in the sitemap as the
+            // indexable hubs. (Paracosm also ships its own site at
+            // paracosm.agentos.sh, so the copies here are partly cross-site
+            // duplicates.)
+            '/api/**',
+            '/paracosm/**',
+            // Docusaurus auto-generated category index pages are thin link
+            // lists, not content — they were surfacing as Soft 404 /
+            // crawled-not-indexed. Reachable via the sidebar; excluded here.
+            '/category/**',
           ],
           filename: 'sitemap.xml',
         },
