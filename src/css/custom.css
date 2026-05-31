@@ -12,7 +12,14 @@
  */
 
 /* -- Google Fonts --------------------------------------------------------- */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+/* Loaded via <link rel="preconnect"> + <link rel="stylesheet"> in
+   docusaurus.config.ts (headTags), NOT via @import here. A CSS @import is
+   render-blocking and serialized: the browser only discovers it after this
+   stylesheet downloads and parses, adding a font-fetch waterfall that delays
+   first text paint. The head <link> issues the request immediately, in
+   parallel, against a connection already warmed by preconnect. Same families
+   (Inter, JetBrains Mono), same weights, same display=swap — rendering is
+   visually identical, just earlier. */
 
 /* -- Light mode (default) ------------------------------------------------- */
 :root {

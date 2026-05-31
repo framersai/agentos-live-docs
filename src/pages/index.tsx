@@ -269,8 +269,26 @@ function ForgeDemoSection() {
           boxShadow: '0 20px 40px rgba(99, 102, 241, 0.1)',
         }}
       >
-        <picture>
-          <source srcSet="/img/demos/agentos-forge-demo.webp" type="image/webp" />
+        {/* Was a 1.93 MB lossless animated WebP. Re-encoded to a 742 KB H.264
+            MP4 (visually identical at this size) and served as an autoplaying,
+            looping, muted, inline <video>. preload="none" keeps it from
+            loading until it scrolls into view, so it no longer competes for
+            bandwidth during initial page load. Same 1600x920 box, same styles;
+            the static PNG is the poster + the <img> fallback for any browser
+            without <video>/H.264. */}
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          preload="none"
+          poster="/img/demos/agentos-emergent-demo.png"
+          width={1600}
+          height={920}
+          aria-label="Three AgentOS agents with distinct HEXACO personalities collaborate on a code review, forge a new tool at runtime, the LLM judge approves the spec, and all three invoke it on the next turn."
+          style={{ width: '100%', height: 'auto', display: 'block' }}
+        >
+          <source src="/img/demos/agentos-forge-demo.mp4" type="video/mp4" />
           <img
             src="/img/demos/agentos-emergent-demo.png"
             alt="Three AgentOS agents with distinct HEXACO personalities collaborate on a code review, forge a new tool at runtime, the LLM judge approves the spec, and all three invoke it on the next turn."
@@ -280,7 +298,7 @@ function ForgeDemoSection() {
             decoding="async"
             style={{ width: '100%', height: 'auto', display: 'block' }}
           />
-        </picture>
+        </video>
         <figcaption
           style={{
             padding: '0.65rem 1rem',
