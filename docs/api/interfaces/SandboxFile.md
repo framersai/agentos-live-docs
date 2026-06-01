@@ -1,6 +1,6 @@
 # Interface: SandboxFile
 
-Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:73](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/sandbox/executor/ICodeSandbox.ts#L73)
+Defined in: [packages/agentos/src/safety/sandbox/executor/ICodeSandbox.ts:73](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/safety/sandbox/executor/ICodeSandbox.ts#L73)
 
 Input files to provide to the sandbox.
 
@@ -10,7 +10,7 @@ Input files to provide to the sandbox.
 
 > **content**: `string`
 
-Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:77](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/sandbox/executor/ICodeSandbox.ts#L77)
+Defined in: [packages/agentos/src/safety/sandbox/executor/ICodeSandbox.ts:77](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/safety/sandbox/executor/ICodeSandbox.ts#L77)
 
 File content
 
@@ -20,7 +20,7 @@ File content
 
 > `optional` **encoding**: `"base64"` \| `"utf8"` \| `"binary"`
 
-Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:79](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/sandbox/executor/ICodeSandbox.ts#L79)
+Defined in: [packages/agentos/src/safety/sandbox/executor/ICodeSandbox.ts:79](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/safety/sandbox/executor/ICodeSandbox.ts#L79)
 
 File encoding
 
@@ -30,6 +30,6 @@ File encoding
 
 > **path**: `string`
 
-Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:75](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/sandbox/executor/ICodeSandbox.ts#L75)
+Defined in: [packages/agentos/src/safety/sandbox/executor/ICodeSandbox.ts:75](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/safety/sandbox/executor/ICodeSandbox.ts#L75)
 
 File path relative to working directory

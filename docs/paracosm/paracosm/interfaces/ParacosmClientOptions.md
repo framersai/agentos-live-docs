@@ -1,6 +1,6 @@
 # Interface: ParacosmClientOptions
 
-Defined in: [apps/paracosm/src/runtime/client.ts:37](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/runtime/client.ts#L37)
+Defined in: [apps/paracosm/src/runtime/client.ts:37](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/client.ts#L37)
 
 Options passed to `createParacosmClient`. Every field is optional and composes with env-var reads.
 
@@ -10,7 +10,7 @@ Options passed to `createParacosmClient`. Every field is optional and composes w
 
 > `optional` **compilerModel**: `string`
 
-Defined in: [apps/paracosm/src/runtime/client.ts:72](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/runtime/client.ts#L72)
+Defined in: [apps/paracosm/src/runtime/client.ts:72](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/client.ts#L72)
 
 Model to use for compile-time LLM calls. Env fallback:
 `PARACOSM_COMPILER_MODEL`. If omitted the compiler picks a
@@ -23,7 +23,7 @@ Anthropic).
 
 > `optional` **compilerProvider**: `LlmProvider`
 
-Defined in: [apps/paracosm/src/runtime/client.ts:65](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/runtime/client.ts#L65)
+Defined in: [apps/paracosm/src/runtime/client.ts:65](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/client.ts#L65)
 
 Provider to use for compile-time LLM calls in `client.compileScenario`.
 Defaults to `provider` when unset so most users only configure one
@@ -35,7 +35,7 @@ provider. Env fallback: `PARACOSM_COMPILER_PROVIDER`.
 
 > `optional` **costPreset**: `CostPreset`
 
-Defined in: [apps/paracosm/src/runtime/client.ts:48](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/runtime/client.ts#L48)
+Defined in: [apps/paracosm/src/runtime/client.ts:48](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/client.ts#L48)
 
 Default cost preset. Env fallback: `PARACOSM_COST_PRESET=quality`
 or `=economy`.
@@ -46,7 +46,7 @@ or `=economy`.
 
 > `optional` **models**: `Partial`\<[`SimulationModelConfig`](SimulationModelConfig.md)\>
 
-Defined in: [apps/paracosm/src/runtime/client.ts:59](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/runtime/client.ts#L59)
+Defined in: [apps/paracosm/src/runtime/client.ts:59](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/client.ts#L59)
 
 Per-role model pins. Env fallbacks:
   PARACOSM_MODEL_COMMANDER, PARACOSM_MODEL_DEPARTMENTS,
@@ -63,7 +63,7 @@ preset as before.
 
 > `optional` **provider**: `LlmProvider`
 
-Defined in: [apps/paracosm/src/runtime/client.ts:43](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/runtime/client.ts#L43)
+Defined in: [apps/paracosm/src/runtime/client.ts:43](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/client.ts#L43)
 
 Default provider for `runSimulation` / `runBatch`. Env fallback:
 `PARACOSM_PROVIDER=openai` or `=anthropic`. Per-call `opts.provider`

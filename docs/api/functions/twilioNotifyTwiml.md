@@ -2,7 +2,7 @@
 
 > **twilioNotifyTwiml**(`text`, `voice?`): `string`
 
-Defined in: [packages/agentos/src/channels/telephony/twiml.ts:82](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/channels/telephony/twiml.ts#L82)
+Defined in: [packages/agentos/src/io/channels/telephony/twiml.ts:82](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/io/channels/telephony/twiml.ts#L82)
 
 Generate TwiML for Twilio notify mode -- synthesise `text` over the call then hang up.
 

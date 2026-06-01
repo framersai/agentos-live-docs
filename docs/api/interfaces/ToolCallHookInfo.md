@@ -1,6 +1,6 @@
 # Interface: ToolCallHookInfo
 
-Defined in: [packages/agentos/src/api/generateText.ts:463](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/generateText.ts#L463)
+Defined in: [packages/agentos/src/api/generateText.ts:517](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/generateText.ts#L517)
 
 Info about a tool call before execution.
 Hooks may return a modified copy or `null` to skip execution.
@@ -11,7 +11,7 @@ Hooks may return a modified copy or `null` to skip execution.
 
 > **args**: `Record`\<`string`, `unknown`\>
 
-Defined in: [packages/agentos/src/api/generateText.ts:467](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/generateText.ts#L467)
+Defined in: [packages/agentos/src/api/generateText.ts:521](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/generateText.ts#L521)
 
 Parsed arguments.
 
@@ -21,7 +21,7 @@ Parsed arguments.
 
 > **id**: `string`
 
-Defined in: [packages/agentos/src/api/generateText.ts:469](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/generateText.ts#L469)
+Defined in: [packages/agentos/src/api/generateText.ts:523](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/generateText.ts#L523)
 
 Tool call ID from the LLM.
 
@@ -31,7 +31,7 @@ Tool call ID from the LLM.
 
 > **name**: `string`
 
-Defined in: [packages/agentos/src/api/generateText.ts:465](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/generateText.ts#L465)
+Defined in: [packages/agentos/src/api/generateText.ts:519](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/generateText.ts#L519)
 
 Tool name.
 
@@ -41,6 +41,6 @@ Tool name.
 
 > **step**: `number`
 
-Defined in: [packages/agentos/src/api/generateText.ts:471](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/generateText.ts#L471)
+Defined in: [packages/agentos/src/api/generateText.ts:525](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/generateText.ts#L525)
 
 Current agentic step index.

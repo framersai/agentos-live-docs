@@ -1,6 +1,6 @@
 # Class: TypedSpreadingActivation
 
-Defined in: [packages/agentos/src/memory/retrieval/typed-network/TypedSpreadingActivation.ts:71](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/typed-network/TypedSpreadingActivation.ts#L71)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/typed-network/TypedSpreadingActivation.ts:71](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/typed-network/TypedSpreadingActivation.ts#L71)
 
 Spreading-activation primitive over a typed network. Constructed
 once per pipeline; safe to share across queries (all per-call state
@@ -12,7 +12,7 @@ lives in the local activation map).
 
 > **new TypedSpreadingActivation**(`options`): `TypedSpreadingActivation`
 
-Defined in: [packages/agentos/src/memory/retrieval/typed-network/TypedSpreadingActivation.ts:75](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/typed-network/TypedSpreadingActivation.ts#L75)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/typed-network/TypedSpreadingActivation.ts:75](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/typed-network/TypedSpreadingActivation.ts#L75)
 
 #### Parameters
 
@@ -30,7 +30,7 @@ Defined in: [packages/agentos/src/memory/retrieval/typed-network/TypedSpreadingA
 
 > **spread**(`store`, `seedIds`, `options`): `Map`\<`string`, `number`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/typed-network/TypedSpreadingActivation.ts:93](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/typed-network/TypedSpreadingActivation.ts#L93)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/typed-network/TypedSpreadingActivation.ts:93](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/typed-network/TypedSpreadingActivation.ts#L93)
 
 Run spreading activation from a set of seed fact IDs. Returns a
 map from fact ID to activation level, including the seeds (at

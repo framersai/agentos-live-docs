@@ -1,6 +1,6 @@
 # Interface: VerifiedResponse
 
-Defined in: [packages/agentos/src/rag/citation/types.ts:28](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/citation/types.ts#L28)
+Defined in: [packages/agentos/src/cognition/rag/citation/types.ts:45](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/citation/types.ts#L45)
 
 Aggregated verification result for a text.
 
@@ -10,7 +10,7 @@ Aggregated verification result for a text.
 
 > **claims**: [`ClaimVerdict`](ClaimVerdict.md)[]
 
-Defined in: [packages/agentos/src/rag/citation/types.ts:30](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/citation/types.ts#L30)
+Defined in: [packages/agentos/src/cognition/rag/citation/types.ts:47](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/citation/types.ts#L47)
 
 Per-claim verification results.
 
@@ -20,7 +20,7 @@ Per-claim verification results.
 
 > **contradictedCount**: `number`
 
-Defined in: [packages/agentos/src/rag/citation/types.ts:39](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/citation/types.ts#L39)
+Defined in: [packages/agentos/src/cognition/rag/citation/types.ts:56](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/citation/types.ts#L56)
 
 ***
 
@@ -28,19 +28,9 @@ Defined in: [packages/agentos/src/rag/citation/types.ts:39](https://github.com/f
 
 > **overallGrounded**: `boolean`
 
-Defined in: [packages/agentos/src/rag/citation/types.ts:32](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/citation/types.ts#L32)
+Defined in: [packages/agentos/src/cognition/rag/citation/types.ts:49](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/citation/types.ts#L49)
 
 True if no claims are contradicted.
-
-***
-
-### summary
-
-> **summary**: `string`
-
-Defined in: [packages/agentos/src/rag/citation/types.ts:43](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/citation/types.ts#L43)
-
-Human-readable summary.
 
 ***
 
@@ -48,7 +38,7 @@ Human-readable summary.
 
 > **supportedCount**: `number`
 
-Defined in: [packages/agentos/src/rag/citation/types.ts:38](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/citation/types.ts#L38)
+Defined in: [packages/agentos/src/cognition/rag/citation/types.ts:55](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/citation/types.ts#L55)
 
 Counts by verdict type.
 
@@ -58,7 +48,7 @@ Counts by verdict type.
 
 > **supportedRatio**: `number`
 
-Defined in: [packages/agentos/src/rag/citation/types.ts:34](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/citation/types.ts#L34)
+Defined in: [packages/agentos/src/cognition/rag/citation/types.ts:51](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/citation/types.ts#L51)
 
 Ratio of supported claims to total (0-1).
 
@@ -68,7 +58,7 @@ Ratio of supported claims to total (0-1).
 
 > **totalClaims**: `number`
 
-Defined in: [packages/agentos/src/rag/citation/types.ts:36](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/citation/types.ts#L36)
+Defined in: [packages/agentos/src/cognition/rag/citation/types.ts:53](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/citation/types.ts#L53)
 
 Total claims extracted.
 
@@ -78,7 +68,7 @@ Total claims extracted.
 
 > **unverifiableCount**: `number`
 
-Defined in: [packages/agentos/src/rag/citation/types.ts:40](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/citation/types.ts#L40)
+Defined in: [packages/agentos/src/cognition/rag/citation/types.ts:57](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/citation/types.ts#L57)
 
 ***
 
@@ -86,4 +76,4 @@ Defined in: [packages/agentos/src/rag/citation/types.ts:40](https://github.com/f
 
 > **weakCount**: `number`
 
-Defined in: [packages/agentos/src/rag/citation/types.ts:41](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/citation/types.ts#L41)
+Defined in: [packages/agentos/src/cognition/rag/citation/types.ts:58](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/citation/types.ts#L58)

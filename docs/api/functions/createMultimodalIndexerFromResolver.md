@@ -2,7 +2,7 @@
 
 > **createMultimodalIndexerFromResolver**(`opts`): [`MultimodalIndexer`](../classes/MultimodalIndexer.md)
 
-Defined in: [packages/agentos/src/rag/multimodal/createMultimodalIndexerFromResolver.ts:190](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/multimodal/createMultimodalIndexerFromResolver.ts#L190)
+Defined in: [packages/agentos/src/cognition/rag/multimodal/createMultimodalIndexerFromResolver.ts:190](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/multimodal/createMultimodalIndexerFromResolver.ts#L190)
 
 Create a [MultimodalIndexer](../classes/MultimodalIndexer.md) that reuses providers from the
 voice pipeline's `SpeechProviderResolver` and an optional

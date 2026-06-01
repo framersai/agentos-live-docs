@@ -62,4 +62,4 @@ Cross-check a claim across sources.
 
 ## License
 
-Apache-2.0 © Frame.dev
+MIT © Frame.dev

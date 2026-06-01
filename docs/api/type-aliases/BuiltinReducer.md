@@ -2,7 +2,7 @@
 
 > **BuiltinReducer** = `"concat"` \| `"merge"` \| `"max"` \| `"min"` \| `"avg"` \| `"sum"` \| `"last"` \| `"first"` \| `"longest"`
 
-Defined in: [packages/agentos/src/orchestration/ir/types.ts:586](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/ir/types.ts#L586)
+Defined in: [packages/agentos/src/orchestration/ir/types.ts:586](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/ir/types.ts#L586)
 
 Named built-in reducer strategies for `GraphState.scratch` and `GraphState.artifacts` fields.
 

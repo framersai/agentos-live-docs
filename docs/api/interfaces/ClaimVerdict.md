@@ -1,6 +1,6 @@
 # Interface: ClaimVerdict
 
-Defined in: [packages/agentos/src/rag/citation/types.ts:10](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/citation/types.ts#L10)
+Defined in: [packages/agentos/src/cognition/rag/citation/types.ts:27](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/citation/types.ts#L27)
 
 Verdict for a single verified claim.
 
@@ -10,7 +10,7 @@ Verdict for a single verified claim.
 
 > **confidence**: `number`
 
-Defined in: [packages/agentos/src/rag/citation/types.ts:16](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/citation/types.ts#L16)
+Defined in: [packages/agentos/src/cognition/rag/citation/types.ts:33](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/citation/types.ts#L33)
 
 Cosine similarity to best-matching source (0-1).
 
@@ -20,7 +20,7 @@ Cosine similarity to best-matching source (0-1).
 
 > `optional` **sourceIndex**: `number`
 
-Defined in: [packages/agentos/src/rag/citation/types.ts:18](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/citation/types.ts#L18)
+Defined in: [packages/agentos/src/cognition/rag/citation/types.ts:35](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/citation/types.ts#L35)
 
 Index of the best-matching source in the input array.
 
@@ -30,7 +30,7 @@ Index of the best-matching source in the input array.
 
 > `optional` **sourceRef**: `string`
 
-Defined in: [packages/agentos/src/rag/citation/types.ts:22](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/citation/types.ts#L22)
+Defined in: [packages/agentos/src/cognition/rag/citation/types.ts:39](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/citation/types.ts#L39)
 
 Source URL or file path.
 
@@ -40,7 +40,7 @@ Source URL or file path.
 
 > `optional` **sourceSnippet**: `string`
 
-Defined in: [packages/agentos/src/rag/citation/types.ts:20](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/citation/types.ts#L20)
+Defined in: [packages/agentos/src/cognition/rag/citation/types.ts:37](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/citation/types.ts#L37)
 
 The matching source fragment (truncated to 200 chars).
 
@@ -50,7 +50,7 @@ The matching source fragment (truncated to 200 chars).
 
 > **text**: `string`
 
-Defined in: [packages/agentos/src/rag/citation/types.ts:12](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/citation/types.ts#L12)
+Defined in: [packages/agentos/src/cognition/rag/citation/types.ts:29](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/citation/types.ts#L29)
 
 The atomic claim text.
 
@@ -58,9 +58,9 @@ The atomic claim text.
 
 ### verdict
 
-> **verdict**: `"supported"` \| `"contradicted"` \| `"unverifiable"` \| `"weak"`
+> **verdict**: [`ClaimVerdictKind`](../type-aliases/ClaimVerdictKind.md)
 
-Defined in: [packages/agentos/src/rag/citation/types.ts:14](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/citation/types.ts#L14)
+Defined in: [packages/agentos/src/cognition/rag/citation/types.ts:31](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/citation/types.ts#L31)
 
 Verification verdict.
 
@@ -70,6 +70,6 @@ Verification verdict.
 
 > `optional` **webVerified**: `boolean`
 
-Defined in: [packages/agentos/src/rag/citation/types.ts:24](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/citation/types.ts#L24)
+Defined in: [packages/agentos/src/cognition/rag/citation/types.ts:41](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/citation/types.ts#L41)
 
 True if this claim was verified via web search fallback.

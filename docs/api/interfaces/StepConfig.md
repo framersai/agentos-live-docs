@@ -1,6 +1,6 @@
 # Interface: StepConfig
 
-Defined in: [packages/agentos/src/orchestration/builders/WorkflowBuilder.ts:77](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/builders/WorkflowBuilder.ts#L77)
+Defined in: [packages/agentos/src/orchestration/builders/WorkflowBuilder.ts:77](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/builders/WorkflowBuilder.ts#L77)
 
 Configuration for a single workflow step node.
 
@@ -13,7 +13,7 @@ to specify the execution strategy.  All remaining fields are optional policies.
 
 > `optional` **discovery**: [`DiscoveryPolicy`](DiscoveryPolicy.md)
 
-Defined in: [packages/agentos/src/orchestration/builders/WorkflowBuilder.ts:100](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/builders/WorkflowBuilder.ts#L100)
+Defined in: [packages/agentos/src/orchestration/builders/WorkflowBuilder.ts:100](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/builders/WorkflowBuilder.ts#L100)
 
 Capability discovery policy applied before execution.
 
@@ -23,7 +23,7 @@ Capability discovery policy applied before execution.
 
 > `optional` **effectClass**: `"external"` \| `"human"` \| `"pure"` \| `"read"` \| `"write"`
 
-Defined in: [packages/agentos/src/orchestration/builders/WorkflowBuilder.ts:116](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/builders/WorkflowBuilder.ts#L116)
+Defined in: [packages/agentos/src/orchestration/builders/WorkflowBuilder.ts:116](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/builders/WorkflowBuilder.ts#L116)
 
 Side-effect classification used by the runtime for scheduling decisions.
 
@@ -33,7 +33,7 @@ Side-effect classification used by the runtime for scheduling decisions.
 
 > `optional` **extension**: `object`
 
-Defined in: [packages/agentos/src/orchestration/builders/WorkflowBuilder.ts:94](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/builders/WorkflowBuilder.ts#L94)
+Defined in: [packages/agentos/src/orchestration/builders/WorkflowBuilder.ts:94](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/builders/WorkflowBuilder.ts#L94)
 
 Call a method on a registered extension.
 
@@ -51,7 +51,7 @@ Call a method on a registered extension.
 
 > `optional` **gmi**: `object`
 
-Defined in: [packages/agentos/src/orchestration/builders/WorkflowBuilder.ts:84](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/builders/WorkflowBuilder.ts#L84)
+Defined in: [packages/agentos/src/orchestration/builders/WorkflowBuilder.ts:84](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/builders/WorkflowBuilder.ts#L84)
 
 General Model Invocation config. `executionMode` is always overridden to
 `'single_turn'` inside a workflow to keep execution deterministic.
@@ -78,7 +78,7 @@ Hard cap on LLM output tokens for this step.
 
 > `optional` **guardrails**: [`GuardrailPolicy`](GuardrailPolicy.md)
 
-Defined in: [packages/agentos/src/orchestration/builders/WorkflowBuilder.ts:102](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/builders/WorkflowBuilder.ts#L102)
+Defined in: [packages/agentos/src/orchestration/builders/WorkflowBuilder.ts:102](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/builders/WorkflowBuilder.ts#L102)
 
 Declarative guardrail policy applied to input and/or output.
 
@@ -88,7 +88,7 @@ Declarative guardrail policy applied to input and/or output.
 
 > `optional` **human**: `object`
 
-Defined in: [packages/agentos/src/orchestration/builders/WorkflowBuilder.ts:92](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/builders/WorkflowBuilder.ts#L92)
+Defined in: [packages/agentos/src/orchestration/builders/WorkflowBuilder.ts:92](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/builders/WorkflowBuilder.ts#L92)
 
 Human-in-the-loop step; suspends the run until a human provides a response.
 
@@ -102,7 +102,7 @@ Human-in-the-loop step; suspends the run until a human provides a response.
 
 > `optional` **memory**: [`MemoryPolicy`](MemoryPolicy.md)
 
-Defined in: [packages/agentos/src/orchestration/builders/WorkflowBuilder.ts:98](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/builders/WorkflowBuilder.ts#L98)
+Defined in: [packages/agentos/src/orchestration/builders/WorkflowBuilder.ts:98](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/builders/WorkflowBuilder.ts#L98)
 
 Memory read/write policy for this step.
 
@@ -112,7 +112,7 @@ Memory read/write policy for this step.
 
 > `optional` **onFailure**: `"abort"` \| `"skip"` \| `"retry"`
 
-Defined in: [packages/agentos/src/orchestration/builders/WorkflowBuilder.ts:106](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/builders/WorkflowBuilder.ts#L106)
+Defined in: [packages/agentos/src/orchestration/builders/WorkflowBuilder.ts:106](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/builders/WorkflowBuilder.ts#L106)
 
 What to do when the step fails.
 
@@ -122,7 +122,7 @@ What to do when the step fails.
 
 > `optional` **outputAs**: `string`
 
-Defined in: [packages/agentos/src/orchestration/builders/WorkflowBuilder.ts:126](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/builders/WorkflowBuilder.ts#L126)
+Defined in: [packages/agentos/src/orchestration/builders/WorkflowBuilder.ts:126](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/builders/WorkflowBuilder.ts#L126)
 
 Optional artifact key name. When set, this step's successful `output`
 is promoted into `state.artifacts[outputAs]` (the value returned from
@@ -138,7 +138,7 @@ when `.returns(z.object({ publishedTo: z.array(z.string()) }))`.
 
 > `optional` **requiresApproval**: `boolean`
 
-Defined in: [packages/agentos/src/orchestration/builders/WorkflowBuilder.ts:104](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/builders/WorkflowBuilder.ts#L104)
+Defined in: [packages/agentos/src/orchestration/builders/WorkflowBuilder.ts:104](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/builders/WorkflowBuilder.ts#L104)
 
 When `true`, execution suspends and waits for human approval before proceeding.
 
@@ -148,7 +148,7 @@ When `true`, execution suspends and waits for human approval before proceeding.
 
 > `optional` **retryPolicy**: `object`
 
-Defined in: [packages/agentos/src/orchestration/builders/WorkflowBuilder.ts:108](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/builders/WorkflowBuilder.ts#L108)
+Defined in: [packages/agentos/src/orchestration/builders/WorkflowBuilder.ts:108](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/builders/WorkflowBuilder.ts#L108)
 
 Automatic retry configuration. Only used when `onFailure` is `'retry'`.
 
@@ -170,7 +170,7 @@ Automatic retry configuration. Only used when `onFailure` is `'retry'`.
 
 > `optional` **subgraph**: [`CompiledExecutionGraph`](CompiledExecutionGraph.md)
 
-Defined in: [packages/agentos/src/orchestration/builders/WorkflowBuilder.ts:96](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/builders/WorkflowBuilder.ts#L96)
+Defined in: [packages/agentos/src/orchestration/builders/WorkflowBuilder.ts:96](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/builders/WorkflowBuilder.ts#L96)
 
 Delegate to a previously compiled sub-workflow or agent graph.
 
@@ -180,7 +180,7 @@ Delegate to a previously compiled sub-workflow or agent graph.
 
 > `optional` **timeout**: `number`
 
-Defined in: [packages/agentos/src/orchestration/builders/WorkflowBuilder.ts:114](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/builders/WorkflowBuilder.ts#L114)
+Defined in: [packages/agentos/src/orchestration/builders/WorkflowBuilder.ts:114](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/builders/WorkflowBuilder.ts#L114)
 
 Maximum wall-clock execution time in milliseconds.
 
@@ -190,7 +190,7 @@ Maximum wall-clock execution time in milliseconds.
 
 > `optional` **tool**: `string`
 
-Defined in: [packages/agentos/src/orchestration/builders/WorkflowBuilder.ts:79](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/builders/WorkflowBuilder.ts#L79)
+Defined in: [packages/agentos/src/orchestration/builders/WorkflowBuilder.ts:79](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/builders/WorkflowBuilder.ts#L79)
 
 Name of a registered `ITool` to invoke.
 
@@ -200,7 +200,7 @@ Name of a registered `ITool` to invoke.
 
 > `optional` **voice**: [`VoiceNodeConfig`](VoiceNodeConfig.md)
 
-Defined in: [packages/agentos/src/orchestration/builders/WorkflowBuilder.ts:133](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/builders/WorkflowBuilder.ts#L133)
+Defined in: [packages/agentos/src/orchestration/builders/WorkflowBuilder.ts:133](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/builders/WorkflowBuilder.ts#L133)
 
 Voice pipeline node configuration.
 When provided alongside `executorConfig.type: 'voice'`, these settings are

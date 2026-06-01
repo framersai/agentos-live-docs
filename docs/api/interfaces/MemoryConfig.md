@@ -1,6 +1,6 @@
 # Interface: MemoryConfig
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:200](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/io/facade/types.ts#L200)
+Defined in: [packages/agentos/src/cognition/memory/io/facade/types.ts:200](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/io/facade/types.ts#L200)
 
 Top-level configuration object for the Memory facade.
 
@@ -14,7 +14,7 @@ with graph + self-improvement enabled.
 
 > `optional` **connectionString**: `string`
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:227](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/io/facade/types.ts#L227)
+Defined in: [packages/agentos/src/cognition/memory/io/facade/types.ts:227](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/io/facade/types.ts#L227)
 
 Postgres connection string. Required when store='postgres'.
 
@@ -30,7 +30,7 @@ Postgres connection string. Required when store='postgres'.
 
 > `optional` **consolidation**: [`ExtendedConsolidationConfig`](ExtendedConsolidationConfig.md)
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:280](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/io/facade/types.ts#L280)
+Defined in: [packages/agentos/src/cognition/memory/io/facade/types.ts:280](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/io/facade/types.ts#L280)
 
 Consolidation schedule and thresholds.
 
@@ -40,7 +40,7 @@ Consolidation schedule and thresholds.
 
 > `optional` **decay**: `boolean`
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:277](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/io/facade/types.ts#L277)
+Defined in: [packages/agentos/src/cognition/memory/io/facade/types.ts:277](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/io/facade/types.ts#L277)
 
 Whether memory traces lose strength over time following an Ebbinghaus
 forgetting-curve model.
@@ -57,7 +57,7 @@ true
 
 > `optional` **embed**: (`text`) => `Promise`\<`number`[]\>
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:256](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/io/facade/types.ts#L256)
+Defined in: [packages/agentos/src/cognition/memory/io/facade/types.ts:256](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/io/facade/types.ts#L256)
 
 Optional embedding function for generating vectors at remember/recall time.
 When provided, enables HNSW vector search in recall() and stores embeddings
@@ -90,7 +90,7 @@ const mem = await Memory.createSqlite({
 
 > `optional` **embeddings**: [`EmbeddingConfig`](EmbeddingConfig.md)
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:239](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/io/facade/types.ts#L239)
+Defined in: [packages/agentos/src/cognition/memory/io/facade/types.ts:239](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/io/facade/types.ts#L239)
 
 Embedding model configuration (provider name + optional model).
 
@@ -100,7 +100,7 @@ Embedding model configuration (provider name + optional model).
 
 > `optional` **graph**: `boolean`
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:263](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/io/facade/types.ts#L263)
+Defined in: [packages/agentos/src/cognition/memory/io/facade/types.ts:263](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/io/facade/types.ts#L263)
 
 Whether to build and maintain a knowledge graph alongside the vector store.
 When enabled, entity co-occurrence and semantic edges are tracked.
@@ -117,7 +117,7 @@ false
 
 > `optional` **ingestion**: [`IngestionConfig`](IngestionConfig.md)
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:283](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/io/facade/types.ts#L283)
+Defined in: [packages/agentos/src/cognition/memory/io/facade/types.ts:283](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/io/facade/types.ts#L283)
 
 Document ingestion settings applied to all `ingest()` calls by default.
 
@@ -127,7 +127,7 @@ Document ingestion settings applied to all `ingest()` calls by default.
 
 > `optional` **path**: `string`
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:221](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/io/facade/types.ts#L221)
+Defined in: [packages/agentos/src/cognition/memory/io/facade/types.ts:221](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/io/facade/types.ts#L221)
 
 File-system path for stores that require one (e.g. SQLite db file).
 Ignored by in-memory and remote stores.
@@ -144,7 +144,7 @@ Ignored by in-memory and remote stores.
 
 > `optional` **qdrantApiKey**: `string`
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:236](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/io/facade/types.ts#L236)
+Defined in: [packages/agentos/src/cognition/memory/io/facade/types.ts:236](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/io/facade/types.ts#L236)
 
 Qdrant API key for cloud instances. Optional.
 
@@ -154,7 +154,7 @@ Qdrant API key for cloud instances. Optional.
 
 > `optional` **qdrantUrl**: `string`
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:233](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/io/facade/types.ts#L233)
+Defined in: [packages/agentos/src/cognition/memory/io/facade/types.ts:233](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/io/facade/types.ts#L233)
 
 Qdrant base URL. Required when store='qdrant'.
 
@@ -170,7 +170,7 @@ Qdrant base URL. Required when store='qdrant'.
 
 > `optional` **selfImprove**: `boolean`
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:270](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/io/facade/types.ts#L270)
+Defined in: [packages/agentos/src/cognition/memory/io/facade/types.ts:270](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/io/facade/types.ts#L270)
 
 Whether the agent may autonomously refine and restructure its own memories
 (write new insight traces, prune contradictions, merge redundancies).
@@ -187,7 +187,7 @@ false
 
 > `optional` **store**: `"memory"` \| `"postgres"` \| `"qdrant"` \| `"sqlite"` \| `"neo4j"` \| `"hnsw"`
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:214](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/io/facade/types.ts#L214)
+Defined in: [packages/agentos/src/cognition/memory/io/facade/types.ts:214](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/io/facade/types.ts#L214)
 
 Persistence backend for memory traces.
 

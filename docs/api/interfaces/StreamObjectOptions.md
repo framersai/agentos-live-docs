@@ -1,6 +1,6 @@
 # Interface: StreamObjectOptions\<T\>
 
-Defined in: [packages/agentos/src/api/streamObject.ts:49](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/streamObject.ts#L49)
+Defined in: [packages/agentos/src/api/streamObject.ts:49](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/streamObject.ts#L49)
 
 Options for a [streamObject](../functions/streamObject.md) call.
 
@@ -30,7 +30,7 @@ The Zod schema type defining the expected output shape.
 
 > `optional` **apiKey**: `string`
 
-Defined in: [packages/agentos/src/api/streamObject.ts:108](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/streamObject.ts#L108)
+Defined in: [packages/agentos/src/api/streamObject.ts:109](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/streamObject.ts#L109)
 
 Override the API key.
 
@@ -40,7 +40,7 @@ Override the API key.
 
 > `optional` **baseUrl**: `string`
 
-Defined in: [packages/agentos/src/api/streamObject.ts:111](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/streamObject.ts#L111)
+Defined in: [packages/agentos/src/api/streamObject.ts:112](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/streamObject.ts#L112)
 
 Override the provider base URL.
 
@@ -50,7 +50,7 @@ Override the provider base URL.
 
 > `optional` **maxRetries**: `number`
 
-Defined in: [packages/agentos/src/api/streamObject.ts:105](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/streamObject.ts#L105)
+Defined in: [packages/agentos/src/api/streamObject.ts:106](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/streamObject.ts#L106)
 
 Number of retries on validation failure.
 Unlike [generateObject](../functions/generateObject.md), streaming retries are not currently supported
@@ -69,7 +69,7 @@ is unused; validation errors on the final object throw immediately.
 
 > `optional` **maxTokens**: `number`
 
-Defined in: [packages/agentos/src/api/streamObject.ts:95](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/streamObject.ts#L95)
+Defined in: [packages/agentos/src/api/streamObject.ts:96](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/streamObject.ts#L96)
 
 Hard cap on output tokens.
 
@@ -79,7 +79,7 @@ Hard cap on output tokens.
 
 > `optional` **messages**: [`Message`](Message.md)[]
 
-Defined in: [packages/agentos/src/api/streamObject.ts:89](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/streamObject.ts#L89)
+Defined in: [packages/agentos/src/api/streamObject.ts:90](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/streamObject.ts#L90)
 
 Full conversation history.
 
@@ -89,14 +89,15 @@ Full conversation history.
 
 > `optional` **model**: `string`
 
-Defined in: [packages/agentos/src/api/streamObject.ts:63](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/streamObject.ts#L63)
+Defined in: [packages/agentos/src/api/streamObject.ts:64](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/streamObject.ts#L64)
 
-Model identifier. Accepts `"provider:model"` or plain model name with `provider`.
+Model identifier. Prefer the plain model name with `provider` set;
+the combined `"provider:model"` string is also accepted.
 
 #### Example
 
 ```ts
-`"openai:gpt-4o"`, `"gpt-4o-mini"`
+`"gpt-4o"` (with `provider: 'openai'`), `"gpt-4o-mini"`
 ```
 
 ***
@@ -105,7 +106,7 @@ Model identifier. Accepts `"provider:model"` or plain model name with `provider`
 
 > `optional` **prompt**: `string`
 
-Defined in: [packages/agentos/src/api/streamObject.ts:83](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/streamObject.ts#L83)
+Defined in: [packages/agentos/src/api/streamObject.ts:84](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/streamObject.ts#L84)
 
 User prompt.
 
@@ -115,7 +116,7 @@ User prompt.
 
 > `optional` **provider**: `string`
 
-Defined in: [packages/agentos/src/api/streamObject.ts:56](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/streamObject.ts#L56)
+Defined in: [packages/agentos/src/api/streamObject.ts:56](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/streamObject.ts#L56)
 
 Provider name. When supplied without `model`, the default text model for
 the provider is resolved automatically.
@@ -132,7 +133,7 @@ the provider is resolved automatically.
 
 > **schema**: `T`
 
-Defined in: [packages/agentos/src/api/streamObject.ts:66](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/streamObject.ts#L66)
+Defined in: [packages/agentos/src/api/streamObject.ts:67](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/streamObject.ts#L67)
 
 Zod schema defining the expected output shape.
 
@@ -142,7 +143,7 @@ Zod schema defining the expected output shape.
 
 > `optional` **schemaDescription**: `string`
 
-Defined in: [packages/agentos/src/api/streamObject.ts:80](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/streamObject.ts#L80)
+Defined in: [packages/agentos/src/api/streamObject.ts:81](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/streamObject.ts#L81)
 
 Description of the schema, injected into the system prompt.
 
@@ -158,7 +159,7 @@ Description of the schema, injected into the system prompt.
 
 > `optional` **schemaName**: `string`
 
-Defined in: [packages/agentos/src/api/streamObject.ts:73](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/streamObject.ts#L73)
+Defined in: [packages/agentos/src/api/streamObject.ts:74](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/streamObject.ts#L74)
 
 Human-readable name for the schema, injected into the system prompt.
 
@@ -174,7 +175,7 @@ Human-readable name for the schema, injected into the system prompt.
 
 > `optional` **system**: `string`
 
-Defined in: [packages/agentos/src/api/streamObject.ts:86](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/streamObject.ts#L86)
+Defined in: [packages/agentos/src/api/streamObject.ts:87](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/streamObject.ts#L87)
 
 System prompt. Schema instructions are appended automatically.
 
@@ -184,6 +185,6 @@ System prompt. Schema instructions are appended automatically.
 
 > `optional` **temperature**: `number`
 
-Defined in: [packages/agentos/src/api/streamObject.ts:92](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/streamObject.ts#L92)
+Defined in: [packages/agentos/src/api/streamObject.ts:93](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/streamObject.ts#L93)
 
 Sampling temperature forwarded to the provider.

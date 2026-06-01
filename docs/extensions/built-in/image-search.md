@@ -36,4 +36,4 @@ Auto mode tries providers in order: Pexels -> Unsplash -> Pixabay.
 
 ## License
 
-Apache-2.0 - Frame.dev
+MIT - Frame.dev

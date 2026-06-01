@@ -2,7 +2,7 @@
 
 > **parseModelString**(`model`): `ParsedModel`
 
-Defined in: [packages/agentos/src/api/model.ts:77](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/model.ts#L77)
+Defined in: [packages/agentos/src/api/model.ts:77](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/model.ts#L77)
 
 Splits a `provider:model` string into its constituent parts.
 

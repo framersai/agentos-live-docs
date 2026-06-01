@@ -2,7 +2,7 @@
 
 > **setProviderPriority**(`providers?`): `void`
 
-Defined in: [packages/agentos/src/api/runtime/provider-priority.ts:42](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/runtime/provider-priority.ts#L42)
+Defined in: [packages/agentos/src/api/runtime/provider-priority.ts:42](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/runtime/provider-priority.ts#L42)
 
 Set a custom provider priority order for auto-detection. The first
 provider in the list whose env var (or CLI binary) is available will

@@ -1,6 +1,6 @@
 # Class: SqlMemoryGraph
 
-Defined in: [packages/agentos/src/memory/retrieval/store/SqlMemoryGraph.ts:114](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/store/SqlMemoryGraph.ts#L114)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/store/SqlMemoryGraph.ts:114](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/store/SqlMemoryGraph.ts#L114)
 
 SQLite-backed implementation of [IMemoryGraph](../interfaces/IMemoryGraph.md).
 
@@ -29,7 +29,7 @@ const activated = await graph.spreadingActivation(['mem-1']);
 
 > **new SqlMemoryGraph**(`brain`): `SqlMemoryGraph`
 
-Defined in: [packages/agentos/src/memory/retrieval/store/SqlMemoryGraph.ts:143](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/store/SqlMemoryGraph.ts#L143)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/store/SqlMemoryGraph.ts:143](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/store/SqlMemoryGraph.ts#L143)
 
 #### Parameters
 
@@ -51,7 +51,7 @@ The shared Brain connection for this agent.
 
 > **addEdge**(`edge`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/store/SqlMemoryGraph.ts:314](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/store/SqlMemoryGraph.ts#L314)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/store/SqlMemoryGraph.ts:314](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/store/SqlMemoryGraph.ts#L314)
 
 Add a directed edge between two memory nodes.
 
@@ -82,7 +82,7 @@ Edge descriptor including type, weight, and timestamp.
 
 > **addNode**(`memoryId`, `metadata`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/store/SqlMemoryGraph.ts:225](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/store/SqlMemoryGraph.ts#L225)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/store/SqlMemoryGraph.ts:225](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/store/SqlMemoryGraph.ts#L225)
 
 Add a memory node to the graph.
 
@@ -118,7 +118,7 @@ Structural metadata describing the memory.
 
 > **clear**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/store/SqlMemoryGraph.ts:749](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/store/SqlMemoryGraph.ts#L749)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/store/SqlMemoryGraph.ts:749](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/store/SqlMemoryGraph.ts#L749)
 
 Remove all nodes and edges from the graph (both in-memory and SQLite).
 
@@ -139,7 +139,7 @@ administrative resets only.
 
 > **detectClusters**(`minSize?`): `Promise`\<[`MemoryCluster`](../interfaces/MemoryCluster.md)[]\>
 
-Defined in: [packages/agentos/src/memory/retrieval/store/SqlMemoryGraph.ts:611](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/store/SqlMemoryGraph.ts#L611)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/store/SqlMemoryGraph.ts:611](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/store/SqlMemoryGraph.ts#L611)
 
 Detect connected components (clusters) in the memory graph.
 
@@ -184,7 +184,7 @@ Array of [MemoryCluster](../interfaces/MemoryCluster.md) objects.
 
 > **edgeCount**(): `number`
 
-Defined in: [packages/agentos/src/memory/retrieval/store/SqlMemoryGraph.ts:739](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/store/SqlMemoryGraph.ts#L739)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/store/SqlMemoryGraph.ts:739](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/store/SqlMemoryGraph.ts#L739)
 
 Return the number of edges currently in the graph.
 O(1) — backed by the in-memory Map size.
@@ -203,7 +203,7 @@ O(1) — backed by the in-memory Map size.
 
 > **getConflicts**(`memoryId`): [`MemoryEdge`](../interfaces/MemoryEdge.md)[]
 
-Defined in: [packages/agentos/src/memory/retrieval/store/SqlMemoryGraph.ts:586](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/store/SqlMemoryGraph.ts#L586)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/store/SqlMemoryGraph.ts:586](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/store/SqlMemoryGraph.ts#L586)
 
 Return all CONTRADICTS edges incident to a given memory node.
 
@@ -235,7 +235,7 @@ Array of CONTRADICTS edges (may be empty).
 
 > **getEdges**(`memoryId`, `type?`): [`MemoryEdge`](../interfaces/MemoryEdge.md)[]
 
-Defined in: [packages/agentos/src/memory/retrieval/store/SqlMemoryGraph.ts:345](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/store/SqlMemoryGraph.ts#L345)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/store/SqlMemoryGraph.ts:345](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/store/SqlMemoryGraph.ts#L345)
 
 Retrieve all edges incident to a memory node.
 
@@ -275,7 +275,7 @@ Array of matching [MemoryEdge](../interfaces/MemoryEdge.md) objects.
 
 > **hasNode**(`memoryId`): `boolean`
 
-Defined in: [packages/agentos/src/memory/retrieval/store/SqlMemoryGraph.ts:296](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/store/SqlMemoryGraph.ts#L296)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/store/SqlMemoryGraph.ts:296](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/store/SqlMemoryGraph.ts#L296)
 
 Check whether a node exists in the graph.
 
@@ -305,7 +305,7 @@ ID to check.
 
 > **initialize**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/store/SqlMemoryGraph.ts:155](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/store/SqlMemoryGraph.ts#L155)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/store/SqlMemoryGraph.ts:155](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/store/SqlMemoryGraph.ts#L155)
 
 Hydrate the in-memory node and edge caches from the SQLite database.
 
@@ -326,7 +326,7 @@ Must be called once before any other method. Safe to call multiple times
 
 > **nodeCount**(): `number`
 
-Defined in: [packages/agentos/src/memory/retrieval/store/SqlMemoryGraph.ts:731](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/store/SqlMemoryGraph.ts#L731)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/store/SqlMemoryGraph.ts:731](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/store/SqlMemoryGraph.ts#L731)
 
 Return the number of nodes currently in the graph.
 O(1) — backed by the in-memory Map size.
@@ -345,7 +345,7 @@ O(1) — backed by the in-memory Map size.
 
 > **recordCoActivation**(`memoryIds`, `learningRate?`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/store/SqlMemoryGraph.ts:534](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/store/SqlMemoryGraph.ts#L534)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/store/SqlMemoryGraph.ts:534](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/store/SqlMemoryGraph.ts#L534)
 
 Record that a set of memories were activated together (Hebbian learning).
 
@@ -393,7 +393,7 @@ Weight increment per co-activation event.
 
 > **removeEdge**(`sourceId`, `targetId`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/store/SqlMemoryGraph.ts:363](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/store/SqlMemoryGraph.ts#L363)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/store/SqlMemoryGraph.ts:363](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/store/SqlMemoryGraph.ts#L363)
 
 Remove a directed edge from the graph.
 
@@ -425,7 +425,7 @@ Target node ID.
 
 > **removeNode**(`memoryId`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/store/SqlMemoryGraph.ts:259](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/store/SqlMemoryGraph.ts#L259)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/store/SqlMemoryGraph.ts:259](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/store/SqlMemoryGraph.ts#L259)
 
 Remove a node and all its incident edges from the graph.
 
@@ -454,7 +454,7 @@ ID of the node to remove.
 
 > **shutdown**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/store/SqlMemoryGraph.ts:207](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/store/SqlMemoryGraph.ts#L207)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/store/SqlMemoryGraph.ts:207](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/store/SqlMemoryGraph.ts#L207)
 
 Shut down the memory graph.
 
@@ -475,7 +475,7 @@ Provided for interface compliance and forward compatibility.
 
 > **spreadingActivation**(`seedIds`, `config?`): `Promise`\<[`ActivatedNode`](../interfaces/ActivatedNode.md)[]\>
 
-Defined in: [packages/agentos/src/memory/retrieval/store/SqlMemoryGraph.ts:397](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/store/SqlMemoryGraph.ts#L397)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/store/SqlMemoryGraph.ts:397](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/store/SqlMemoryGraph.ts#L397)
 
 Run spreading activation from a set of seed nodes.
 

@@ -1,6 +1,6 @@
 # Interface: VectorStoreManagerHealthReport
 
-Defined in: [packages/agentos/src/core/vector-store/IVectorStoreManager.ts:25](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/core/vector-store/IVectorStoreManager.ts#L25)
+Defined in: [packages/agentos/src/core/vector-store/IVectorStoreManager.ts:25](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/core/vector-store/IVectorStoreManager.ts#L25)
 
 Represents the health status of managed vector store providers.
 
@@ -14,7 +14,7 @@ VectorStoreManagerHealthReport
 
 > **isOverallHealthy**: `boolean`
 
-Defined in: [packages/agentos/src/core/vector-store/IVectorStoreManager.ts:26](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/core/vector-store/IVectorStoreManager.ts#L26)
+Defined in: [packages/agentos/src/core/vector-store/IVectorStoreManager.ts:26](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/core/vector-store/IVectorStoreManager.ts#L26)
 
 True if all critical providers are healthy or if the manager itself is operational.
 
@@ -24,7 +24,7 @@ True if all critical providers are healthy or if the manager itself is operation
 
 > `optional` **managerDetails**: `any`
 
-Defined in: [packages/agentos/src/core/vector-store/IVectorStoreManager.ts:28](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/core/vector-store/IVectorStoreManager.ts#L28)
+Defined in: [packages/agentos/src/core/vector-store/IVectorStoreManager.ts:28](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/core/vector-store/IVectorStoreManager.ts#L28)
 
 Additional details about the manager's operational status.
 
@@ -34,6 +34,6 @@ Additional details about the manager's operational status.
 
 > `optional` **providerStatus**: `Record`\<`string`, \{ `details?`: `any`; `isHealthy`: `boolean`; \}\>
 
-Defined in: [packages/agentos/src/core/vector-store/IVectorStoreManager.ts:27](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/core/vector-store/IVectorStoreManager.ts#L27)
+Defined in: [packages/agentos/src/core/vector-store/IVectorStoreManager.ts:27](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/core/vector-store/IVectorStoreManager.ts#L27)
 
 An object detailing the health status of each individual managed provider, keyed by provider ID.

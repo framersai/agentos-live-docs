@@ -1,6 +1,6 @@
 # Interface: MemoryProvenance
 
-Defined in: [packages/agentos/src/memory/core/types.ts:45](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L45)
+Defined in: [packages/agentos/src/cognition/memory/core/types.ts:67](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/types.ts#L67)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/memory/core/types.ts:45](https://github.com/fr
 
 > **confidence**: `number`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:52](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L52)
+Defined in: [packages/agentos/src/cognition/memory/core/types.ts:74](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/types.ts#L74)
 
 0-1 confidence we have in this memory's accuracy.
 
@@ -18,7 +18,7 @@ Defined in: [packages/agentos/src/memory/core/types.ts:52](https://github.com/fr
 
 > `optional` **contradictedBy**: `string`[]
 
-Defined in: [packages/agentos/src/memory/core/types.ts:57](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L57)
+Defined in: [packages/agentos/src/cognition/memory/core/types.ts:79](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/types.ts#L79)
 
 IDs of other traces that contradict this one.
 
@@ -28,7 +28,7 @@ IDs of other traces that contradict this one.
 
 > `optional` **lastVerifiedAt**: `number`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:55](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L55)
+Defined in: [packages/agentos/src/cognition/memory/core/types.ts:77](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/types.ts#L77)
 
 ***
 
@@ -36,7 +36,7 @@ Defined in: [packages/agentos/src/memory/core/types.ts:55](https://github.com/fr
 
 > `optional` **sourceId**: `string`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:48](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L48)
+Defined in: [packages/agentos/src/cognition/memory/core/types.ts:70](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/types.ts#L70)
 
 Back-reference to originating conversation, tool call, etc.
 
@@ -46,7 +46,7 @@ Back-reference to originating conversation, tool call, etc.
 
 > **sourceTimestamp**: `number`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:50](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L50)
+Defined in: [packages/agentos/src/cognition/memory/core/types.ts:72](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/types.ts#L72)
 
 Timestamp of the original source information.
 
@@ -56,7 +56,7 @@ Timestamp of the original source information.
 
 > **sourceType**: [`MemorySourceType`](../type-aliases/MemorySourceType.md)
 
-Defined in: [packages/agentos/src/memory/core/types.ts:46](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L46)
+Defined in: [packages/agentos/src/cognition/memory/core/types.ts:68](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/types.ts#L68)
 
 ***
 
@@ -64,6 +64,6 @@ Defined in: [packages/agentos/src/memory/core/types.ts:46](https://github.com/fr
 
 > **verificationCount**: `number`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:54](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L54)
+Defined in: [packages/agentos/src/cognition/memory/core/types.ts:76](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/types.ts#L76)
 
 How many times this memory has been externally confirmed.

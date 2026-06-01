@@ -1,6 +1,6 @@
 # Interface: SqlTaskOutcomeTelemetryStoreConfig
 
-Defined in: [packages/agentos/src/orchestration/turn-planner/SqlTaskOutcomeTelemetryStore.ts:12](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/turn-planner/SqlTaskOutcomeTelemetryStore.ts#L12)
+Defined in: [packages/agentos/src/orchestration/turn-planner/SqlTaskOutcomeTelemetryStore.ts:19](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/turn-planner/SqlTaskOutcomeTelemetryStore.ts#L19)
 
 ## Extends
 
@@ -114,7 +114,7 @@ Suppress fallback chain logs (adapter not-found warnings). Default: false.
 
 > `optional` **tableName**: `string`
 
-Defined in: [packages/agentos/src/orchestration/turn-planner/SqlTaskOutcomeTelemetryStore.ts:17](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/turn-planner/SqlTaskOutcomeTelemetryStore.ts#L17)
+Defined in: [packages/agentos/src/orchestration/turn-planner/SqlTaskOutcomeTelemetryStore.ts:24](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/turn-planner/SqlTaskOutcomeTelemetryStore.ts#L24)
 
 SQL table used for persisted KPI windows.
 Default: `agentos_task_outcome_kpi_windows`

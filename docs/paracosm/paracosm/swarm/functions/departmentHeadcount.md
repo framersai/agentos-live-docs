@@ -2,7 +2,7 @@
 
 > **departmentHeadcount**(`swarm`): `Record`\<`string`, `number`\>
 
-Defined in: [apps/paracosm/src/runtime/swarm/index.ts:107](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/runtime/swarm/index.ts#L107)
+Defined in: [apps/paracosm/src/runtime/swarm/index.ts:107](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/swarm/index.ts#L107)
 
 Histogram of agents per department for the alive population. Useful
 for org-chart staffing snapshots and capacity planning.

@@ -1,6 +1,6 @@
 # Class: FactStore
 
-Defined in: [packages/agentos/src/memory/retrieval/fact-graph/FactStore.ts:22](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/fact-graph/FactStore.ts#L22)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/fact-graph/FactStore.ts:22](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/fact-graph/FactStore.ts#L22)
 
 ## Constructors
 
@@ -18,7 +18,7 @@ Defined in: [packages/agentos/src/memory/retrieval/fact-graph/FactStore.ts:22](h
 
 > **getAllTimeOrdered**(`scope`, `scopeId`, `subject`): [`Fact`](../interfaces/Fact.md)[]
 
-Defined in: [packages/agentos/src/memory/retrieval/fact-graph/FactStore.ts:90](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/fact-graph/FactStore.ts#L90)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/fact-graph/FactStore.ts:90](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/fact-graph/FactStore.ts#L90)
 
 Return ALL facts for a subject (across predicates), time-sorted
 ascending. Used for temporal queries where history matters.
@@ -47,7 +47,7 @@ ascending. Used for temporal queries where history matters.
 
 > **getLatest**(`scope`, `scopeId`, `subject`, `predicate`): [`Fact`](../interfaces/Fact.md) \| `null`
 
-Defined in: [packages/agentos/src/memory/retrieval/fact-graph/FactStore.ts:67](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/fact-graph/FactStore.ts#L67)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/fact-graph/FactStore.ts:67](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/fact-graph/FactStore.ts#L67)
 
 Return the latest fact for (subject, predicate) or null. Supports
 un-canonicalized subject input (canonicalized internally). Returns
@@ -81,7 +81,7 @@ null for predicates outside the closed schema.
 
 > **upsert**(`scope`, `scopeId`, `facts`): `void`
 
-Defined in: [packages/agentos/src/memory/retrieval/fact-graph/FactStore.ts:41](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/fact-graph/FactStore.ts#L41)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/fact-graph/FactStore.ts:41](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/fact-graph/FactStore.ts#L41)
 
 Insert facts. Facts with predicates outside the closed schema are
 silently dropped (matches the `FactExtractor` contract). Subjects

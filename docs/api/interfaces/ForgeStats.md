@@ -1,6 +1,6 @@
 # Interface: ForgeStats
 
-Defined in: [packages/agentos/src/emergent/ForgeStatsAggregator.ts:19](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/emergent/ForgeStatsAggregator.ts#L19)
+Defined in: [packages/agentos/src/cognition/emergent/ForgeStatsAggregator.ts:19](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/emergent/ForgeStatsAggregator.ts#L19)
 
 Per-run forge reliability rollup snapshot.
 
@@ -10,7 +10,7 @@ Per-run forge reliability rollup snapshot.
 
 > **approved**: `number`
 
-Defined in: [packages/agentos/src/emergent/ForgeStatsAggregator.ts:23](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/emergent/ForgeStatsAggregator.ts#L23)
+Defined in: [packages/agentos/src/cognition/emergent/ForgeStatsAggregator.ts:23](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/emergent/ForgeStatsAggregator.ts#L23)
 
 Attempts the judge approved.
 
@@ -20,7 +20,7 @@ Attempts the judge approved.
 
 > **approvedConfidenceSum**: `number`
 
-Defined in: [packages/agentos/src/emergent/ForgeStatsAggregator.ts:27](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/emergent/ForgeStatsAggregator.ts#L27)
+Defined in: [packages/agentos/src/cognition/emergent/ForgeStatsAggregator.ts:27](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/emergent/ForgeStatsAggregator.ts#L27)
 
 Sum of confidence across approved attempts. Divide by `approved` for avg.
 
@@ -30,7 +30,7 @@ Sum of confidence across approved attempts. Divide by `approved` for avg.
 
 > **attempts**: `number`
 
-Defined in: [packages/agentos/src/emergent/ForgeStatsAggregator.ts:21](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/emergent/ForgeStatsAggregator.ts#L21)
+Defined in: [packages/agentos/src/cognition/emergent/ForgeStatsAggregator.ts:21](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/emergent/ForgeStatsAggregator.ts#L21)
 
 Total forge attempts (approved + rejected combined).
 
@@ -40,7 +40,7 @@ Total forge attempts (approved + rejected combined).
 
 > **rejected**: `number`
 
-Defined in: [packages/agentos/src/emergent/ForgeStatsAggregator.ts:25](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/emergent/ForgeStatsAggregator.ts#L25)
+Defined in: [packages/agentos/src/cognition/emergent/ForgeStatsAggregator.ts:25](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/emergent/ForgeStatsAggregator.ts#L25)
 
 Attempts the judge or shape validator rejected.
 
@@ -50,7 +50,7 @@ Attempts the judge or shape validator rejected.
 
 > **rejectionReasons**: `Record`\<[`ForgeRejectionCategory`](../type-aliases/ForgeRejectionCategory.md), `number`\>
 
-Defined in: [packages/agentos/src/emergent/ForgeStatsAggregator.ts:45](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/emergent/ForgeStatsAggregator.ts#L45)
+Defined in: [packages/agentos/src/cognition/emergent/ForgeStatsAggregator.ts:45](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/emergent/ForgeStatsAggregator.ts#L45)
 
 Histogram of rejection reasons, classified via
 [classifyForgeRejection](../functions/classifyForgeRejection.md). Keys match [ForgeRejectionCategory](../type-aliases/ForgeRejectionCategory.md).
@@ -61,7 +61,7 @@ Histogram of rejection reasons, classified via
 
 > **uniqueApproved**: `number`
 
-Defined in: [packages/agentos/src/emergent/ForgeStatsAggregator.ts:34](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/emergent/ForgeStatsAggregator.ts#L34)
+Defined in: [packages/agentos/src/cognition/emergent/ForgeStatsAggregator.ts:34](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/emergent/ForgeStatsAggregator.ts#L34)
 
 Count of unique tool names that landed approved at least once this run.
 
@@ -71,7 +71,7 @@ Count of unique tool names that landed approved at least once this run.
 
 > **uniqueNames**: `number`
 
-Defined in: [packages/agentos/src/emergent/ForgeStatsAggregator.ts:32](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/emergent/ForgeStatsAggregator.ts#L32)
+Defined in: [packages/agentos/src/cognition/emergent/ForgeStatsAggregator.ts:32](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/emergent/ForgeStatsAggregator.ts#L32)
 
 Count of unique tool names seen this run (union of approved + rejected).
 A tool rejected then re-forged under the same name counts once.
@@ -82,7 +82,7 @@ A tool rejected then re-forged under the same name counts once.
 
 > **uniqueTerminalRejections**: `number`
 
-Defined in: [packages/agentos/src/emergent/ForgeStatsAggregator.ts:40](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/emergent/ForgeStatsAggregator.ts#L40)
+Defined in: [packages/agentos/src/cognition/emergent/ForgeStatsAggregator.ts:40](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/emergent/ForgeStatsAggregator.ts#L40)
 
 Count of unique tool names that were ONLY rejected (never approved)
 this run. The retry loop did not recover these. Actionable signal

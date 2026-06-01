@@ -1,6 +1,6 @@
 # Interface: TranslationResult
 
-Defined in: [packages/agentos/src/nlp/language/interfaces.ts:87](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/nlp/language/interfaces.ts#L87)
+Defined in: [packages/agentos/src/cognition/nlp/language/interfaces.ts:87](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/nlp/language/interfaces.ts#L87)
 
 Result of a translation operation.
 
@@ -10,7 +10,7 @@ Result of a translation operation.
 
 > **output**: `string`
 
-Defined in: [packages/agentos/src/nlp/language/interfaces.ts:88](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/nlp/language/interfaces.ts#L88)
+Defined in: [packages/agentos/src/cognition/nlp/language/interfaces.ts:88](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/nlp/language/interfaces.ts#L88)
 
 ***
 
@@ -18,7 +18,7 @@ Defined in: [packages/agentos/src/nlp/language/interfaces.ts:88](https://github.
 
 > **providerId**: `string`
 
-Defined in: [packages/agentos/src/nlp/language/interfaces.ts:89](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/nlp/language/interfaces.ts#L89)
+Defined in: [packages/agentos/src/cognition/nlp/language/interfaces.ts:89](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/nlp/language/interfaces.ts#L89)
 
 ***
 
@@ -26,7 +26,7 @@ Defined in: [packages/agentos/src/nlp/language/interfaces.ts:89](https://github.
 
 > `optional` **providerMetadata**: `Record`\<`string`, `unknown`\>
 
-Defined in: [packages/agentos/src/nlp/language/interfaces.ts:93](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/nlp/language/interfaces.ts#L93)
+Defined in: [packages/agentos/src/cognition/nlp/language/interfaces.ts:93](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/nlp/language/interfaces.ts#L93)
 
 Raw provider timing or token usage.
 
@@ -36,7 +36,7 @@ Raw provider timing or token usage.
 
 > **sourceLanguage**: `string`
 
-Defined in: [packages/agentos/src/nlp/language/interfaces.ts:90](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/nlp/language/interfaces.ts#L90)
+Defined in: [packages/agentos/src/cognition/nlp/language/interfaces.ts:90](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/nlp/language/interfaces.ts#L90)
 
 ***
 
@@ -44,4 +44,4 @@ Defined in: [packages/agentos/src/nlp/language/interfaces.ts:90](https://github.
 
 > **targetLanguage**: `string`
 
-Defined in: [packages/agentos/src/nlp/language/interfaces.ts:91](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/nlp/language/interfaces.ts#L91)
+Defined in: [packages/agentos/src/cognition/nlp/language/interfaces.ts:91](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/nlp/language/interfaces.ts#L91)

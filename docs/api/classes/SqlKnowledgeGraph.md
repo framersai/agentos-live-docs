@@ -1,6 +1,6 @@
 # Class: SqlKnowledgeGraph
 
-Defined in: [packages/agentos/src/memory/retrieval/store/SqlKnowledgeGraph.ts:174](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/store/SqlKnowledgeGraph.ts#L174)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/store/SqlKnowledgeGraph.ts:174](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/store/SqlKnowledgeGraph.ts#L174)
 
 Persistent knowledge graph backed by SQLite via Brain.
 
@@ -35,7 +35,7 @@ const entity = await graph.upsertEntity({
 
 > **new SqlKnowledgeGraph**(`brain`): `SqlKnowledgeGraph`
 
-Defined in: [packages/agentos/src/memory/retrieval/store/SqlKnowledgeGraph.ts:182](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/store/SqlKnowledgeGraph.ts#L182)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/store/SqlKnowledgeGraph.ts:182](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/store/SqlKnowledgeGraph.ts#L182)
 
 #### Parameters
 
@@ -56,7 +56,7 @@ A Brain instance whose async StorageAdapter methods
 
 > **clear**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/store/SqlKnowledgeGraph.ts:1301](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/store/SqlKnowledgeGraph.ts#L1301)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/store/SqlKnowledgeGraph.ts:1301](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/store/SqlKnowledgeGraph.ts#L1301)
 
 Delete all rows from knowledge_nodes and knowledge_edges.
 Wipes the knowledge graph completely.
@@ -75,7 +75,7 @@ Wipes the knowledge graph completely.
 
 > **decayMemories**(`decayFactor?`): `Promise`\<`number`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/store/SqlKnowledgeGraph.ts:1205](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/store/SqlKnowledgeGraph.ts#L1205)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/store/SqlKnowledgeGraph.ts:1205](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/store/SqlKnowledgeGraph.ts#L1205)
 
 Decay the confidence of all memory-type nodes by a multiplicative factor.
 
@@ -106,7 +106,7 @@ The number of memory nodes whose confidence was reduced.
 
 > **deleteEntity**(`id`): `Promise`\<`boolean`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/store/SqlKnowledgeGraph.ts:365](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/store/SqlKnowledgeGraph.ts#L365)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/store/SqlKnowledgeGraph.ts:365](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/store/SqlKnowledgeGraph.ts#L365)
 
 Delete an entity and all its associated relations (incoming and outgoing).
 Returns `true` if the entity existed and was deleted.
@@ -131,7 +131,7 @@ Returns `true` if the entity existed and was deleted.
 
 > **deleteRelation**(`id`): `Promise`\<`boolean`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/store/SqlKnowledgeGraph.ts:495](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/store/SqlKnowledgeGraph.ts#L495)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/store/SqlKnowledgeGraph.ts:495](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/store/SqlKnowledgeGraph.ts#L495)
 
 Delete a single relation by its ID.
 Returns `true` if the relation existed and was deleted.
@@ -156,7 +156,7 @@ Returns `true` if the relation existed and was deleted.
 
 > **extractFromText**(`_text`, `_options?`): `Promise`\<\{ `entities`: [`KnowledgeEntity`](../interfaces/KnowledgeEntity.md)[]; `relations`: [`KnowledgeRelation`](../interfaces/KnowledgeRelation.md)[]; \}\>
 
-Defined in: [packages/agentos/src/memory/retrieval/store/SqlKnowledgeGraph.ts:1130](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/store/SqlKnowledgeGraph.ts#L1130)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/store/SqlKnowledgeGraph.ts:1130](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/store/SqlKnowledgeGraph.ts#L1130)
 
 Extract entities and relations from text.
 
@@ -197,7 +197,7 @@ Always — extraction requires an LLM.
 
 > **findPath**(`sourceId`, `targetId`, `maxDepth?`): `Promise`\<`object`[] \| `null`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/store/SqlKnowledgeGraph.ts:862](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/store/SqlKnowledgeGraph.ts#L862)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/store/SqlKnowledgeGraph.ts:862](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/store/SqlKnowledgeGraph.ts#L862)
 
 Find the shortest path between two entities using a bidirectional BFS
 implemented via a recursive CTE.
@@ -233,7 +233,7 @@ target, or `null` if no path exists within `maxDepth` hops.
 
 > **getEntity**(`id`): `Promise`\<[`KnowledgeEntity`](../interfaces/KnowledgeEntity.md) \| `undefined`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/store/SqlKnowledgeGraph.ts:281](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/store/SqlKnowledgeGraph.ts#L281)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/store/SqlKnowledgeGraph.ts:281](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/store/SqlKnowledgeGraph.ts#L281)
 
 Retrieve a single entity by its ID.
 Returns `undefined` if the entity does not exist.
@@ -258,7 +258,7 @@ Returns `undefined` if the entity does not exist.
 
 > **getMemory**(`id`): `Promise`\<[`EpisodicMemory`](../interfaces/EpisodicMemory.md) \| `undefined`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/store/SqlKnowledgeGraph.ts:591](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/store/SqlKnowledgeGraph.ts#L591)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/store/SqlKnowledgeGraph.ts:591](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/store/SqlKnowledgeGraph.ts#L591)
 
 Get an episodic memory by ID.
 
@@ -285,7 +285,7 @@ then unpacks the memory-specific fields from the `properties` JSON.
 
 > **getNeighborhood**(`entityId`, `depth?`): `Promise`\<\{ `entities`: [`KnowledgeEntity`](../interfaces/KnowledgeEntity.md)[]; `relations`: [`KnowledgeRelation`](../interfaces/KnowledgeRelation.md)[]; \}\>
 
-Defined in: [packages/agentos/src/memory/retrieval/store/SqlKnowledgeGraph.ts:943](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/store/SqlKnowledgeGraph.ts#L943)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/store/SqlKnowledgeGraph.ts:943](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/store/SqlKnowledgeGraph.ts#L943)
 
 Get the neighbourhood of an entity — all entities and relations within
 `depth` hops.
@@ -318,7 +318,7 @@ Maximum number of hops (default 1).
 
 > **getRelations**(`entityId`, `options?`): `Promise`\<[`KnowledgeRelation`](../interfaces/KnowledgeRelation.md)[]\>
 
-Defined in: [packages/agentos/src/memory/retrieval/store/SqlKnowledgeGraph.ts:459](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/store/SqlKnowledgeGraph.ts#L459)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/store/SqlKnowledgeGraph.ts:459](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/store/SqlKnowledgeGraph.ts#L459)
 
 Get all relations for a given entity.
 
@@ -356,7 +356,7 @@ Optional filters: direction ('outgoing'|'incoming'|'both'), types.
 
 > **getStats**(): `Promise`\<[`KnowledgeGraphStats`](../interfaces/KnowledgeGraphStats.md)\>
 
-Defined in: [packages/agentos/src/memory/retrieval/store/SqlKnowledgeGraph.ts:1224](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/store/SqlKnowledgeGraph.ts#L1224)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/store/SqlKnowledgeGraph.ts:1224](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/store/SqlKnowledgeGraph.ts#L1224)
 
 Get aggregate statistics about the knowledge graph.
 
@@ -377,7 +377,7 @@ average confidence, and oldest/newest entry timestamps.
 
 > **initialize**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/store/SqlKnowledgeGraph.ts:196](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/store/SqlKnowledgeGraph.ts#L196)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/store/SqlKnowledgeGraph.ts:196](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/store/SqlKnowledgeGraph.ts#L196)
 
 Initialize the knowledge graph.
 
@@ -398,7 +398,7 @@ effectively a no-op. Provided to satisfy the IKnowledgeGraph contract.
 
 > **mergeEntities**(`entityIds`, `primaryId`): `Promise`\<[`KnowledgeEntity`](../interfaces/KnowledgeEntity.md)\>
 
-Defined in: [packages/agentos/src/memory/retrieval/store/SqlKnowledgeGraph.ts:1152](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/store/SqlKnowledgeGraph.ts#L1152)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/store/SqlKnowledgeGraph.ts:1152](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/store/SqlKnowledgeGraph.ts#L1152)
 
 Merge multiple entities into one primary entity.
 
@@ -433,7 +433,7 @@ The ID that survives the merge.
 
 > **queryEntities**(`options?`): `Promise`\<[`KnowledgeEntity`](../interfaces/KnowledgeEntity.md)[]\>
 
-Defined in: [packages/agentos/src/memory/retrieval/store/SqlKnowledgeGraph.ts:297](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/store/SqlKnowledgeGraph.ts#L297)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/store/SqlKnowledgeGraph.ts:297](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/store/SqlKnowledgeGraph.ts#L297)
 
 Query entities with optional filters.
 
@@ -460,7 +460,7 @@ full-text search, pagination (limit/offset), and time ranges.
 
 > **queryMemories**(`options?`): `Promise`\<[`EpisodicMemory`](../interfaces/EpisodicMemory.md)[]\>
 
-Defined in: [packages/agentos/src/memory/retrieval/store/SqlKnowledgeGraph.ts:607](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/store/SqlKnowledgeGraph.ts#L607)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/store/SqlKnowledgeGraph.ts:607](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/store/SqlKnowledgeGraph.ts#L607)
 
 Query episodic memories with optional filters.
 
@@ -513,7 +513,7 @@ time range, and result limit.
 
 > **recallMemories**(`query`, `topK?`): `Promise`\<[`EpisodicMemory`](../interfaces/EpisodicMemory.md)[]\>
 
-Defined in: [packages/agentos/src/memory/retrieval/store/SqlKnowledgeGraph.ts:665](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/store/SqlKnowledgeGraph.ts#L665)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/store/SqlKnowledgeGraph.ts:665](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/store/SqlKnowledgeGraph.ts#L665)
 
 Recall relevant memories via keyword search against summaries.
 
@@ -547,7 +547,7 @@ Full semantic (embedding-based) recall requires the Memory facade.
 
 > **recordMemory**(`memory`): `Promise`\<[`EpisodicMemory`](../interfaces/EpisodicMemory.md)\>
 
-Defined in: [packages/agentos/src/memory/retrieval/store/SqlKnowledgeGraph.ts:513](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/store/SqlKnowledgeGraph.ts#L513)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/store/SqlKnowledgeGraph.ts:513](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/store/SqlKnowledgeGraph.ts#L513)
 
 Record an episodic memory.
 
@@ -574,7 +574,7 @@ memory-specific fields are packed into the `properties` JSON column.
 
 > **semanticSearch**(`options`): `Promise`\<[`SemanticSearchResult`](../interfaces/SemanticSearchResult.md)[]\>
 
-Defined in: [packages/agentos/src/memory/retrieval/store/SqlKnowledgeGraph.ts:1007](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/store/SqlKnowledgeGraph.ts#L1007)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/store/SqlKnowledgeGraph.ts:1007](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/store/SqlKnowledgeGraph.ts#L1007)
 
 Semantic search across entities and/or memories.
 
@@ -606,7 +606,7 @@ returned. For full text-to-embedding semantic search, use the Memory facade.
 
 > **traverse**(`startEntityId`, `options?`): `Promise`\<[`TraversalResult`](../interfaces/TraversalResult.md)\>
 
-Defined in: [packages/agentos/src/memory/retrieval/store/SqlKnowledgeGraph.ts:718](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/store/SqlKnowledgeGraph.ts#L718)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/store/SqlKnowledgeGraph.ts:718](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/store/SqlKnowledgeGraph.ts#L718)
 
 Traverse the graph from a starting entity using BFS.
 
@@ -641,7 +641,7 @@ Optional: maxDepth, relationTypes, direction, minWeight, maxNodes.
 
 > **upsertEntity**(`entity`): `Promise`\<[`KnowledgeEntity`](../interfaces/KnowledgeEntity.md)\>
 
-Defined in: [packages/agentos/src/memory/retrieval/store/SqlKnowledgeGraph.ts:215](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/store/SqlKnowledgeGraph.ts#L215)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/store/SqlKnowledgeGraph.ts:215](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/store/SqlKnowledgeGraph.ts#L215)
 
 Insert or update a knowledge entity.
 
@@ -672,7 +672,7 @@ with user-supplied properties.
 
 > **upsertRelation**(`relation`): `Promise`\<[`KnowledgeRelation`](../interfaces/KnowledgeRelation.md)\>
 
-Defined in: [packages/agentos/src/memory/retrieval/store/SqlKnowledgeGraph.ts:394](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/store/SqlKnowledgeGraph.ts#L394)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/store/SqlKnowledgeGraph.ts:394](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/store/SqlKnowledgeGraph.ts#L394)
 
 Insert or update a knowledge relation (edge).
 

@@ -1,6 +1,6 @@
 # Class: LlmFeatureDetector
 
-Defined in: [packages/agentos/src/memory/core/encoding/ContentFeatureDetector.ts:132](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/encoding/ContentFeatureDetector.ts#L132)
+Defined in: [packages/agentos/src/cognition/memory/core/encoding/ContentFeatureDetector.ts:132](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/encoding/ContentFeatureDetector.ts#L132)
 
 ## Implements
 
@@ -12,7 +12,7 @@ Defined in: [packages/agentos/src/memory/core/encoding/ContentFeatureDetector.ts
 
 > **new LlmFeatureDetector**(`llmInvoker`): `LlmFeatureDetector`
 
-Defined in: [packages/agentos/src/memory/core/encoding/ContentFeatureDetector.ts:133](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/encoding/ContentFeatureDetector.ts#L133)
+Defined in: [packages/agentos/src/cognition/memory/core/encoding/ContentFeatureDetector.ts:133](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/encoding/ContentFeatureDetector.ts#L133)
 
 #### Parameters
 
@@ -30,7 +30,7 @@ Defined in: [packages/agentos/src/memory/core/encoding/ContentFeatureDetector.ts
 
 > **detect**(`text`): `Promise`\<[`ContentFeatures`](../interfaces/ContentFeatures.md)\>
 
-Defined in: [packages/agentos/src/memory/core/encoding/ContentFeatureDetector.ts:137](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/encoding/ContentFeatureDetector.ts#L137)
+Defined in: [packages/agentos/src/cognition/memory/core/encoding/ContentFeatureDetector.ts:137](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/encoding/ContentFeatureDetector.ts#L137)
 
 #### Parameters
 

@@ -1,6 +1,6 @@
 # Class: UnifiedRetriever
 
-Defined in: [packages/agentos/src/rag/unified/UnifiedRetriever.ts:263](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/unified/UnifiedRetriever.ts#L263)
+Defined in: [packages/agentos/src/cognition/rag/unified/UnifiedRetriever.ts:262](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/unified/UnifiedRetriever.ts#L262)
 
 Unified retrieval orchestrator that executes a [RetrievalPlan](../interfaces/RetrievalPlan.md)
 across ALL available sources in parallel, merges results via RRF,
@@ -18,8 +18,7 @@ vector results from being returned.
 ## Example
 
 ```typescript
-import { UnifiedRetriever } from '@framers/agentos/rag/unified';
-import { buildDefaultPlan } from '@framers/agentos/rag/unified/types';
+import { UnifiedRetriever, buildDefaultPlan } from '@framers/agentos/cognition/rag';
 
 const retriever = new UnifiedRetriever({
   hybridSearcher,
@@ -51,7 +50,7 @@ console.log(`Found ${result.chunks.length} chunks from ${Object.keys(result.sour
 
 > **new UnifiedRetriever**(`deps`): `UnifiedRetriever`
 
-Defined in: [packages/agentos/src/rag/unified/UnifiedRetriever.ts:299](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/unified/UnifiedRetriever.ts#L299)
+Defined in: [packages/agentos/src/cognition/rag/unified/UnifiedRetriever.ts:298](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/unified/UnifiedRetriever.ts#L298)
 
 Creates a new UnifiedRetriever.
 
@@ -981,7 +980,7 @@ v0.1.26
 
 > **retrieve**(`query`, `plan`, `topK?`): `Promise`\<[`UnifiedRetrievalResult`](../interfaces/UnifiedRetrievalResult.md)\>
 
-Defined in: [packages/agentos/src/rag/unified/UnifiedRetriever.ts:342](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/unified/UnifiedRetriever.ts#L342)
+Defined in: [packages/agentos/src/cognition/rag/unified/UnifiedRetriever.ts:341](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/unified/UnifiedRetriever.ts#L341)
 
 Execute a retrieval plan across all enabled sources.
 
@@ -1041,7 +1040,7 @@ for (const chunk of result.chunks) {
 
 > **retrieveWithPolicy**(`query`, `policyInput?`): `Promise`\<[`UnifiedRetrievalResult`](../interfaces/UnifiedRetrievalResult.md)\>
 
-Defined in: [packages/agentos/src/rag/unified/UnifiedRetriever.ts:433](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/unified/UnifiedRetriever.ts#L433)
+Defined in: [packages/agentos/src/cognition/rag/unified/UnifiedRetriever.ts:432](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/unified/UnifiedRetriever.ts#L432)
 
 #### Parameters
 

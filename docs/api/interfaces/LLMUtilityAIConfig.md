@@ -1,6 +1,6 @@
 # Interface: LLMUtilityAIConfig
 
-Defined in: [packages/agentos/src/nlp/ai\_utilities/LLMUtilityAI.ts:48](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/nlp/ai_utilities/LLMUtilityAI.ts#L48)
+Defined in: [packages/agentos/src/cognition/nlp/ai\_utilities/LLMUtilityAI.ts:48](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/nlp/ai_utilities/LLMUtilityAI.ts#L48)
 
 Base configuration for any IUtilityAI implementation.
 
@@ -14,7 +14,7 @@ Base configuration for any IUtilityAI implementation.
 
 > `optional` **classificationModelId**: `string`
 
-Defined in: [packages/agentos/src/nlp/ai\_utilities/LLMUtilityAI.ts:55](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/nlp/ai_utilities/LLMUtilityAI.ts#L55)
+Defined in: [packages/agentos/src/cognition/nlp/ai\_utilities/LLMUtilityAI.ts:55](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/nlp/ai_utilities/LLMUtilityAI.ts#L55)
 
 ***
 
@@ -22,7 +22,7 @@ Defined in: [packages/agentos/src/nlp/ai\_utilities/LLMUtilityAI.ts:55](https://
 
 > `optional` **defaultLanguage**: `string`
 
-Defined in: [packages/agentos/src/nlp/ai\_utilities/IUtilityAI.ts:21](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/nlp/ai_utilities/IUtilityAI.ts#L21)
+Defined in: [packages/agentos/src/cognition/nlp/ai\_utilities/IUtilityAI.ts:21](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/nlp/ai_utilities/IUtilityAI.ts#L21)
 
 Default language for processing if not specified in method options (e.g., 'en', 'es'). BCP-47 format preferred.
 
@@ -36,7 +36,7 @@ Default language for processing if not specified in method options (e.g., 'en', 
 
 > `optional` **defaultModelId**: `string`
 
-Defined in: [packages/agentos/src/nlp/ai\_utilities/LLMUtilityAI.ts:50](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/nlp/ai_utilities/LLMUtilityAI.ts#L50)
+Defined in: [packages/agentos/src/cognition/nlp/ai\_utilities/LLMUtilityAI.ts:50](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/nlp/ai_utilities/LLMUtilityAI.ts#L50)
 
 ***
 
@@ -44,7 +44,7 @@ Defined in: [packages/agentos/src/nlp/ai\_utilities/LLMUtilityAI.ts:50](https://
 
 > `optional` **defaultProviderId**: `string`
 
-Defined in: [packages/agentos/src/nlp/ai\_utilities/LLMUtilityAI.ts:51](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/nlp/ai_utilities/LLMUtilityAI.ts#L51)
+Defined in: [packages/agentos/src/cognition/nlp/ai\_utilities/LLMUtilityAI.ts:51](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/nlp/ai_utilities/LLMUtilityAI.ts#L51)
 
 ***
 
@@ -52,7 +52,7 @@ Defined in: [packages/agentos/src/nlp/ai\_utilities/LLMUtilityAI.ts:51](https://
 
 > `optional` **jsonFixerModelId**: `string`
 
-Defined in: [packages/agentos/src/nlp/ai\_utilities/LLMUtilityAI.ts:59](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/nlp/ai_utilities/LLMUtilityAI.ts#L59)
+Defined in: [packages/agentos/src/cognition/nlp/ai\_utilities/LLMUtilityAI.ts:59](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/nlp/ai_utilities/LLMUtilityAI.ts#L59)
 
 ***
 
@@ -60,7 +60,7 @@ Defined in: [packages/agentos/src/nlp/ai\_utilities/LLMUtilityAI.ts:59](https://
 
 > `optional` **keywordModelId**: `string`
 
-Defined in: [packages/agentos/src/nlp/ai\_utilities/LLMUtilityAI.ts:56](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/nlp/ai_utilities/LLMUtilityAI.ts#L56)
+Defined in: [packages/agentos/src/cognition/nlp/ai\_utilities/LLMUtilityAI.ts:56](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/nlp/ai_utilities/LLMUtilityAI.ts#L56)
 
 ***
 
@@ -68,7 +68,7 @@ Defined in: [packages/agentos/src/nlp/ai\_utilities/LLMUtilityAI.ts:56](https://
 
 > `optional` **languageDetectionModelId**: `string`
 
-Defined in: [packages/agentos/src/nlp/ai\_utilities/LLMUtilityAI.ts:58](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/nlp/ai_utilities/LLMUtilityAI.ts#L58)
+Defined in: [packages/agentos/src/cognition/nlp/ai\_utilities/LLMUtilityAI.ts:58](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/nlp/ai_utilities/LLMUtilityAI.ts#L58)
 
 ***
 
@@ -76,7 +76,7 @@ Defined in: [packages/agentos/src/nlp/ai\_utilities/LLMUtilityAI.ts:58](https://
 
 > **llmProviderManager**: [`AIModelProviderManager`](../classes/AIModelProviderManager.md)
 
-Defined in: [packages/agentos/src/nlp/ai\_utilities/LLMUtilityAI.ts:49](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/nlp/ai_utilities/LLMUtilityAI.ts#L49)
+Defined in: [packages/agentos/src/cognition/nlp/ai\_utilities/LLMUtilityAI.ts:49](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/nlp/ai_utilities/LLMUtilityAI.ts#L49)
 
 ***
 
@@ -84,7 +84,7 @@ Defined in: [packages/agentos/src/nlp/ai\_utilities/LLMUtilityAI.ts:49](https://
 
 > `optional` **readabilityEstimationModelId**: `string`
 
-Defined in: [packages/agentos/src/nlp/ai\_utilities/LLMUtilityAI.ts:62](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/nlp/ai_utilities/LLMUtilityAI.ts#L62)
+Defined in: [packages/agentos/src/cognition/nlp/ai\_utilities/LLMUtilityAI.ts:62](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/nlp/ai_utilities/LLMUtilityAI.ts#L62)
 
 ***
 
@@ -92,7 +92,7 @@ Defined in: [packages/agentos/src/nlp/ai\_utilities/LLMUtilityAI.ts:62](https://
 
 > `optional` **resourcePath**: `string`
 
-Defined in: [packages/agentos/src/nlp/ai\_utilities/IUtilityAI.ts:23](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/nlp/ai_utilities/IUtilityAI.ts#L23)
+Defined in: [packages/agentos/src/cognition/nlp/ai\_utilities/IUtilityAI.ts:23](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/nlp/ai_utilities/IUtilityAI.ts#L23)
 
 Path to a directory containing resource files (e.g., stop word lists, lexicons, trained models for statistical utilities).
 
@@ -106,7 +106,7 @@ Path to a directory containing resource files (e.g., stop word lists, lexicons, 
 
 > `optional` **semanticSimilarityModelId**: `string`
 
-Defined in: [packages/agentos/src/nlp/ai\_utilities/LLMUtilityAI.ts:60](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/nlp/ai_utilities/LLMUtilityAI.ts#L60)
+Defined in: [packages/agentos/src/cognition/nlp/ai\_utilities/LLMUtilityAI.ts:60](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/nlp/ai_utilities/LLMUtilityAI.ts#L60)
 
 ***
 
@@ -114,7 +114,7 @@ Defined in: [packages/agentos/src/nlp/ai\_utilities/LLMUtilityAI.ts:60](https://
 
 > `optional` **sentimentModelId**: `string`
 
-Defined in: [packages/agentos/src/nlp/ai\_utilities/LLMUtilityAI.ts:57](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/nlp/ai_utilities/LLMUtilityAI.ts#L57)
+Defined in: [packages/agentos/src/cognition/nlp/ai\_utilities/LLMUtilityAI.ts:57](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/nlp/ai_utilities/LLMUtilityAI.ts#L57)
 
 ***
 
@@ -122,7 +122,7 @@ Defined in: [packages/agentos/src/nlp/ai\_utilities/LLMUtilityAI.ts:57](https://
 
 > `optional` **summarizationModelId**: `string`
 
-Defined in: [packages/agentos/src/nlp/ai\_utilities/LLMUtilityAI.ts:54](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/nlp/ai_utilities/LLMUtilityAI.ts#L54)
+Defined in: [packages/agentos/src/cognition/nlp/ai\_utilities/LLMUtilityAI.ts:54](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/nlp/ai_utilities/LLMUtilityAI.ts#L54)
 
 ***
 
@@ -130,7 +130,7 @@ Defined in: [packages/agentos/src/nlp/ai\_utilities/LLMUtilityAI.ts:54](https://
 
 > `optional` **textNormalizationModelId**: `string`
 
-Defined in: [packages/agentos/src/nlp/ai\_utilities/LLMUtilityAI.ts:61](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/nlp/ai_utilities/LLMUtilityAI.ts#L61)
+Defined in: [packages/agentos/src/cognition/nlp/ai\_utilities/LLMUtilityAI.ts:61](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/nlp/ai_utilities/LLMUtilityAI.ts#L61)
 
 ***
 
@@ -138,7 +138,7 @@ Defined in: [packages/agentos/src/nlp/ai\_utilities/LLMUtilityAI.ts:61](https://
 
 > `optional` **utilityId**: `string`
 
-Defined in: [packages/agentos/src/nlp/ai\_utilities/IUtilityAI.ts:19](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/nlp/ai_utilities/IUtilityAI.ts#L19)
+Defined in: [packages/agentos/src/cognition/nlp/ai\_utilities/IUtilityAI.ts:19](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/nlp/ai_utilities/IUtilityAI.ts#L19)
 
 Unique identifier for this specific utility AI service instance.
 

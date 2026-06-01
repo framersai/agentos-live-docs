@@ -1,6 +1,6 @@
 # Class: SessionRetriever
 
-Defined in: [packages/agentos/src/memory/retrieval/session/SessionRetriever.ts:124](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/session/SessionRetriever.ts#L124)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/session/SessionRetriever.ts:124](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/session/SessionRetriever.ts#L124)
 
 Two-stage hierarchical retriever.
 
@@ -29,7 +29,7 @@ const result = await retriever.retrieve(
 
 > **new SessionRetriever**(`opts`): `SessionRetriever`
 
-Defined in: [packages/agentos/src/memory/retrieval/session/SessionRetriever.ts:129](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/session/SessionRetriever.ts#L129)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/session/SessionRetriever.ts:129](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/session/SessionRetriever.ts#L129)
 
 #### Parameters
 
@@ -47,7 +47,7 @@ Defined in: [packages/agentos/src/memory/retrieval/session/SessionRetriever.ts:1
 
 > **retrieve**(`query`, `mood`, `scope`, `options?`): `Promise`\<[`CognitiveRetrievalResult`](../interfaces/CognitiveRetrievalResult.md)\>
 
-Defined in: [packages/agentos/src/memory/retrieval/session/SessionRetriever.ts:148](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/session/SessionRetriever.ts#L148)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/session/SessionRetriever.ts:148](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/session/SessionRetriever.ts#L148)
 
 Two-stage retrieve. Returns a `CognitiveRetrievalResult`
 compatible with the existing `CognitiveMemoryManager.retrieve`

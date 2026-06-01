@@ -1,6 +1,6 @@
 # Class: ReplicateFaceEmbeddingService
 
-Defined in: [packages/agentos/src/media/images/face/ReplicateFaceEmbeddingService.ts:61](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/media/images/face/ReplicateFaceEmbeddingService.ts#L61)
+Defined in: [packages/agentos/src/io/media/images/face/ReplicateFaceEmbeddingService.ts:61](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/io/media/images/face/ReplicateFaceEmbeddingService.ts#L61)
 
 Extracts face embeddings via the Replicate API using InsightFace.
 
@@ -17,7 +17,7 @@ prediction completes, then parses the embedding vector from the response.
 
 > **new ReplicateFaceEmbeddingService**(`config`): `ReplicateFaceEmbeddingService`
 
-Defined in: [packages/agentos/src/media/images/face/ReplicateFaceEmbeddingService.ts:66](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/media/images/face/ReplicateFaceEmbeddingService.ts#L66)
+Defined in: [packages/agentos/src/io/media/images/face/ReplicateFaceEmbeddingService.ts:66](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/io/media/images/face/ReplicateFaceEmbeddingService.ts#L66)
 
 #### Parameters
 
@@ -35,7 +35,7 @@ Defined in: [packages/agentos/src/media/images/face/ReplicateFaceEmbeddingServic
 
 > **compareFaces**(`a`, `b`, `threshold?`): `FaceComparisonResult`
 
-Defined in: [packages/agentos/src/media/images/face/ReplicateFaceEmbeddingService.ts:168](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/media/images/face/ReplicateFaceEmbeddingService.ts#L168)
+Defined in: [packages/agentos/src/io/media/images/face/ReplicateFaceEmbeddingService.ts:168](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/io/media/images/face/ReplicateFaceEmbeddingService.ts#L168)
 
 Compare two face embedding vectors using cosine similarity.
 
@@ -75,7 +75,7 @@ Comparison result with similarity score and match flag.
 
 > **extractEmbedding**(`imageUrl`): `Promise`\<[`FaceEmbedding`](../interfaces/FaceEmbedding.md)\>
 
-Defined in: [packages/agentos/src/media/images/face/ReplicateFaceEmbeddingService.ts:81](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/media/images/face/ReplicateFaceEmbeddingService.ts#L81)
+Defined in: [packages/agentos/src/io/media/images/face/ReplicateFaceEmbeddingService.ts:81](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/io/media/images/face/ReplicateFaceEmbeddingService.ts#L81)
 
 Extract a face embedding from an image.
 

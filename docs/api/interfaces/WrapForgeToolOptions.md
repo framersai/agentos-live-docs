@@ -1,6 +1,6 @@
 # Interface: WrapForgeToolOptions
 
-Defined in: [packages/agentos/src/emergent/wrapForgeTool.ts:70](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/emergent/wrapForgeTool.ts#L70)
+Defined in: [packages/agentos/src/cognition/emergent/wrapForgeTool.ts:70](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/emergent/wrapForgeTool.ts#L70)
 
 Options for [wrapForgeTool](../functions/wrapForgeTool.md).
 
@@ -10,7 +10,7 @@ Options for [wrapForgeTool](../functions/wrapForgeTool.md).
 
 > **agentId**: `string`
 
-Defined in: [packages/agentos/src/emergent/wrapForgeTool.ts:74](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/emergent/wrapForgeTool.ts#L74)
+Defined in: [packages/agentos/src/cognition/emergent/wrapForgeTool.ts:74](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/emergent/wrapForgeTool.ts#L74)
 
 GMI / agent id patched onto the tool execution context.
 
@@ -20,7 +20,7 @@ GMI / agent id patched onto the tool execution context.
 
 > **capture**: (`record`) => `void`
 
-Defined in: [packages/agentos/src/emergent/wrapForgeTool.ts:78](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/emergent/wrapForgeTool.ts#L78)
+Defined in: [packages/agentos/src/cognition/emergent/wrapForgeTool.ts:78](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/emergent/wrapForgeTool.ts#L78)
 
 Required capture sink. Every attempt (valid or not) is recorded.
 
@@ -40,7 +40,7 @@ Required capture sink. Every attempt (valid or not) is recorded.
 
 > `optional` **log**: (`event`) => `void`
 
-Defined in: [packages/agentos/src/emergent/wrapForgeTool.ts:89](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/emergent/wrapForgeTool.ts#L89)
+Defined in: [packages/agentos/src/cognition/emergent/wrapForgeTool.ts:89](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/emergent/wrapForgeTool.ts#L89)
 
 Optional log callback for lifecycle visibility. When undefined,
 no log events are emitted (quiet mode).
@@ -61,7 +61,7 @@ no log events are emitted (quiet mode).
 
 > **raw**: [`ForgeToolMetaTool`](../classes/ForgeToolMetaTool.md)
 
-Defined in: [packages/agentos/src/emergent/wrapForgeTool.ts:72](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/emergent/wrapForgeTool.ts#L72)
+Defined in: [packages/agentos/src/cognition/emergent/wrapForgeTool.ts:72](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/emergent/wrapForgeTool.ts#L72)
 
 The raw ForgeToolMetaTool instance from EmergentCapabilityEngine.
 
@@ -71,7 +71,7 @@ The raw ForgeToolMetaTool instance from EmergentCapabilityEngine.
 
 > `optional` **scope**: `string`
 
-Defined in: [packages/agentos/src/emergent/wrapForgeTool.ts:84](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/emergent/wrapForgeTool.ts#L84)
+Defined in: [packages/agentos/src/cognition/emergent/wrapForgeTool.ts:84](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/emergent/wrapForgeTool.ts#L84)
 
 Optional scope label propagated onto every CapturedForge. Use for
 semantic grouping when multiple callers share a wrapper (dept
@@ -83,6 +83,6 @@ name, channel id, agent role, etc.).
 
 > **sessionId**: `string`
 
-Defined in: [packages/agentos/src/emergent/wrapForgeTool.ts:76](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/emergent/wrapForgeTool.ts#L76)
+Defined in: [packages/agentos/src/cognition/emergent/wrapForgeTool.ts:76](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/emergent/wrapForgeTool.ts#L76)
 
 Session id patched onto the tool execution context under sessionData.

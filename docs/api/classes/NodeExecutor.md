@@ -1,6 +1,6 @@
 # Class: NodeExecutor
 
-Defined in: [packages/agentos/src/orchestration/runtime/NodeExecutor.ts:188](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/runtime/NodeExecutor.ts#L188)
+Defined in: [packages/agentos/src/orchestration/runtime/NodeExecutor.ts:194](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/runtime/NodeExecutor.ts#L194)
 
 Stateless executor that dispatches a `GraphNode` to the appropriate handler.
 
@@ -22,7 +22,7 @@ if (!result.success) console.error(result.error);
 
 > **new NodeExecutor**(`deps`): `NodeExecutor`
 
-Defined in: [packages/agentos/src/orchestration/runtime/NodeExecutor.ts:193](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/runtime/NodeExecutor.ts#L193)
+Defined in: [packages/agentos/src/orchestration/runtime/NodeExecutor.ts:199](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/runtime/NodeExecutor.ts#L199)
 
 #### Parameters
 
@@ -43,7 +43,7 @@ External service adapters. All fields are optional; missing services
 
 > **execute**(`node`, `state`): `Promise`\<[`NodeExecutionResult`](../interfaces/NodeExecutionResult.md)\>
 
-Defined in: [packages/agentos/src/orchestration/runtime/NodeExecutor.ts:214](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/runtime/NodeExecutor.ts#L214)
+Defined in: [packages/agentos/src/orchestration/runtime/NodeExecutor.ts:220](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/runtime/NodeExecutor.ts#L220)
 
 Execute `node` against the provided `state`, optionally racing against a timeout.
 

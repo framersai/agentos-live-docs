@@ -1,6 +1,6 @@
 # Interface: TopicEntry
 
-Defined in: [packages/agentos/src/query-router/types.ts:1239](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/query-router/types.ts#L1239)
+Defined in: [packages/agentos/src/orchestration/pipeline/query/types.ts:1252](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/pipeline/query/types.ts#L1252)
 
 A topic extracted from a query or document for routing and filtering.
 Used by the [TopicExtractor](../classes/TopicExtractor.md) to guide retrieval strategy.
@@ -11,7 +11,7 @@ Used by the [TopicExtractor](../classes/TopicExtractor.md) to guide retrieval st
 
 > **name**: `string`
 
-Defined in: [packages/agentos/src/query-router/types.ts:1241](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/query-router/types.ts#L1241)
+Defined in: [packages/agentos/src/orchestration/pipeline/query/types.ts:1254](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/pipeline/query/types.ts#L1254)
 
 The topic name or phrase (e.g., "authentication", "database migrations").
 
@@ -21,7 +21,7 @@ The topic name or phrase (e.g., "authentication", "database migrations").
 
 > **source**: `string`
 
-Defined in: [packages/agentos/src/query-router/types.ts:1247](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/query-router/types.ts#L1247)
+Defined in: [packages/agentos/src/orchestration/pipeline/query/types.ts:1260](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/pipeline/query/types.ts#L1260)
 
 Where this topic was derived from.
 

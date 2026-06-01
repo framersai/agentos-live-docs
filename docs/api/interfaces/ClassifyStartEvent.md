@@ -1,6 +1,6 @@
 # Interface: ClassifyStartEvent
 
-Defined in: [packages/agentos/src/query-router/types.ts:866](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/query-router/types.ts#L866)
+Defined in: [packages/agentos/src/orchestration/pipeline/query/types.ts:879](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/pipeline/query/types.ts#L879)
 
 Emitted when query classification begins.
 
@@ -10,7 +10,7 @@ Emitted when query classification begins.
 
 > **query**: `string`
 
-Defined in: [packages/agentos/src/query-router/types.ts:869](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/query-router/types.ts#L869)
+Defined in: [packages/agentos/src/orchestration/pipeline/query/types.ts:882](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/pipeline/query/types.ts#L882)
 
 The raw user query being classified.
 
@@ -20,7 +20,7 @@ The raw user query being classified.
 
 > **timestamp**: `number`
 
-Defined in: [packages/agentos/src/query-router/types.ts:871](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/query-router/types.ts#L871)
+Defined in: [packages/agentos/src/orchestration/pipeline/query/types.ts:884](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/pipeline/query/types.ts#L884)
 
 Timestamp when classification started.
 
@@ -30,4 +30,4 @@ Timestamp when classification started.
 
 > **type**: `"classify:start"`
 
-Defined in: [packages/agentos/src/query-router/types.ts:867](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/query-router/types.ts#L867)
+Defined in: [packages/agentos/src/orchestration/pipeline/query/types.ts:880](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/pipeline/query/types.ts#L880)

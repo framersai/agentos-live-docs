@@ -1,6 +1,6 @@
 # Interface: GenerateObjectResult\<T\>
 
-Defined in: [packages/agentos/src/api/generateObject.ts:179](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/generateObject.ts#L179)
+Defined in: [packages/agentos/src/api/generateObject.ts:229](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/generateObject.ts#L229)
 
 The completed result returned by [generateObject](../functions/generateObject.md).
 
@@ -18,7 +18,7 @@ The inferred type from the Zod schema, representing the validated object.
 
 > **finishReason**: `string`
 
-Defined in: [packages/agentos/src/api/generateObject.ts:193](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/generateObject.ts#L193)
+Defined in: [packages/agentos/src/api/generateObject.ts:243](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/generateObject.ts#L243)
 
 Reason the model stopped generating on the final successful attempt.
 Mirrors the finish reasons from [generateText](../functions/generateText.md).
@@ -29,7 +29,7 @@ Mirrors the finish reasons from [generateText](../functions/generateText.md).
 
 > **model**: `string`
 
-Defined in: [packages/agentos/src/api/generateObject.ts:199](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/generateObject.ts#L199)
+Defined in: [packages/agentos/src/api/generateObject.ts:249](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/generateObject.ts#L249)
 
 Resolved model identifier used for the run.
 
@@ -39,7 +39,7 @@ Resolved model identifier used for the run.
 
 > **object**: `T`
 
-Defined in: [packages/agentos/src/api/generateObject.ts:181](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/generateObject.ts#L181)
+Defined in: [packages/agentos/src/api/generateObject.ts:231](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/generateObject.ts#L231)
 
 The parsed, Zod-validated object matching the provided schema.
 
@@ -49,7 +49,7 @@ The parsed, Zod-validated object matching the provided schema.
 
 > **provider**: `string`
 
-Defined in: [packages/agentos/src/api/generateObject.ts:196](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/generateObject.ts#L196)
+Defined in: [packages/agentos/src/api/generateObject.ts:246](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/generateObject.ts#L246)
 
 Provider identifier used for the run.
 
@@ -59,7 +59,7 @@ Provider identifier used for the run.
 
 > **text**: `string`
 
-Defined in: [packages/agentos/src/api/generateObject.ts:184](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/generateObject.ts#L184)
+Defined in: [packages/agentos/src/api/generateObject.ts:234](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/generateObject.ts#L234)
 
 The raw LLM output text before parsing.
 
@@ -69,6 +69,6 @@ The raw LLM output text before parsing.
 
 > **usage**: [`TokenUsage`](TokenUsage.md)
 
-Defined in: [packages/agentos/src/api/generateObject.ts:187](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/generateObject.ts#L187)
+Defined in: [packages/agentos/src/api/generateObject.ts:237](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/generateObject.ts#L237)
 
 Aggregated token usage across all attempts (including retries).

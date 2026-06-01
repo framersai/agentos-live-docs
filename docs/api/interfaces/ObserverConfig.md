@@ -1,6 +1,6 @@
 # Interface: ObserverConfig
 
-Defined in: [packages/agentos/src/memory/core/config.ts:63](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/config.ts#L63)
+Defined in: [packages/agentos/src/cognition/memory/core/config.ts:63](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/config.ts#L63)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/memory/core/config.ts:63](https://github.com/f
 
 > **activationThresholdTokens**: `number`
 
-Defined in: [packages/agentos/src/memory/core/config.ts:65](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/config.ts#L65)
+Defined in: [packages/agentos/src/cognition/memory/core/config.ts:65](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/config.ts#L65)
 
 Token threshold before observer activates.
 
@@ -24,7 +24,7 @@ Token threshold before observer activates.
 
 > `optional` **llmInvoker**: (`systemPrompt`, `userPrompt`) => `Promise`\<`string`\>
 
-Defined in: [packages/agentos/src/memory/core/config.ts:69](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/config.ts#L69)
+Defined in: [packages/agentos/src/cognition/memory/core/config.ts:69](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/config.ts#L69)
 
 LLM invoker function.
 
@@ -48,6 +48,6 @@ LLM invoker function.
 
 > `optional` **modelId**: `string`
 
-Defined in: [packages/agentos/src/memory/core/config.ts:67](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/config.ts#L67)
+Defined in: [packages/agentos/src/cognition/memory/core/config.ts:67](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/config.ts#L67)
 
 LLM model ID for observation extraction (per-persona).

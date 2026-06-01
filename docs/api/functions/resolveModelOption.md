@@ -2,7 +2,7 @@
 
 > **resolveModelOption**(`opts`, `task?`): `ParsedModel`
 
-Defined in: [packages/agentos/src/api/model.ts:270](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/model.ts#L270)
+Defined in: [packages/agentos/src/api/model.ts:274](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/model.ts#L274)
 
 Resolves a `{ providerId, modelId }` pair from flexible caller-supplied options.
 

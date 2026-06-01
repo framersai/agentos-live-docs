@@ -44,7 +44,7 @@ Thank you for your interest in contributing to the AgentOS Extensions ecosystem!
    - Use TypeScript with strict mode
    - Implement the ITool interface correctly
    - Include comprehensive tests (>80% coverage)
-   - Apache-2.0 license
+   - MIT license
 
 ### Package Naming
 
@@ -160,4 +160,4 @@ See [RELEASING.md](/getting-started/releasing) for the full publishing workflow.
 
 ## License
 
-By contributing, you agree that your contributions will be licensed under the Apache-2.0 License.
+By contributing, you agree that your contributions will be licensed under the MIT License.

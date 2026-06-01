@@ -23,7 +23,7 @@ interface MediaProviderPreference {
 }
 ```
 
-### `ProviderPreferences`
+### [`ProviderPreferences`](https://github.com/framersai/agentos/blob/master/src/io/media/ProviderPreferences.ts)
 
 Top-level preferences grouped by media modality:
 

@@ -2,7 +2,7 @@
 
 > **InboundPolicy** = `"disabled"` \| `"allowlist"` \| `"pairing"` \| `"open"`
 
-Defined in: [packages/agentos/src/channels/telephony/types.ts:165](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/channels/telephony/types.ts#L165)
+Defined in: [packages/agentos/src/io/channels/telephony/types.ts:165](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/io/channels/telephony/types.ts#L165)
 
 Inbound call policy -- how the agent handles incoming calls.
 - `disabled`: Reject all inbound calls.

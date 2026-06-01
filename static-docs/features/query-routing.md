@@ -26,7 +26,7 @@ AgentOS includes a [`QueryRouter`](https://github.com/framersai/agentos/blob/mas
 - Default path: `route()` classifies the query, then dispatches retrieval through the legacy [`QueryDispatcher`](https://github.com/framersai/agentos/blob/master/src/orchestration/pipeline/query/QueryDispatcher.ts).
 - Opt-in path: if a host calls `setUnifiedRetriever(...)`, `route()` switches to plan-aware retrieval through [`UnifiedRetriever`](https://github.com/framersai/agentos/blob/master/src/cognition/rag/unified/UnifiedRetriever.ts).
 
-This matters because `UnifiedRetriever` is implemented and usable today, but it is not the default QueryRouter/runtime retrieval path yet.
+This matters because [`UnifiedRetriever`](https://github.com/framersai/agentos/blob/master/src/cognition/rag/unified/UnifiedRetriever.ts) is implemented and usable today, but it is not the default QueryRouter/runtime retrieval path yet.
 
 ## Current Limitations
 

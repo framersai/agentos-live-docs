@@ -1,6 +1,6 @@
 # Class: FactExtractor
 
-Defined in: [packages/agentos/src/memory/retrieval/fact-graph/FactExtractor.ts:57](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/fact-graph/FactExtractor.ts#L57)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/fact-graph/FactExtractor.ts:57](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/fact-graph/FactExtractor.ts#L57)
 
 ## Constructors
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/memory/retrieval/fact-graph/FactExtractor.ts:5
 
 > **new FactExtractor**(`opts`): `FactExtractor`
 
-Defined in: [packages/agentos/src/memory/retrieval/fact-graph/FactExtractor.ts:64](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/fact-graph/FactExtractor.ts#L64)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/fact-graph/FactExtractor.ts:64](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/fact-graph/FactExtractor.ts#L64)
 
 #### Parameters
 
@@ -26,7 +26,7 @@ Defined in: [packages/agentos/src/memory/retrieval/fact-graph/FactExtractor.ts:6
 
 > **extract**(`session`): `Promise`\<[`Fact`](../interfaces/Fact.md)[]\>
 
-Defined in: [packages/agentos/src/memory/retrieval/fact-graph/FactExtractor.ts:70](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/fact-graph/FactExtractor.ts#L70)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/fact-graph/FactExtractor.ts:70](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/fact-graph/FactExtractor.ts#L70)
 
 #### Parameters
 

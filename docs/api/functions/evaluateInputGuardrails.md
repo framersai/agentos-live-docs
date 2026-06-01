@@ -2,7 +2,7 @@
 
 > **evaluateInputGuardrails**(`service`, `input`, `context`): `Promise`\<[`GuardrailInputOutcome`](../interfaces/GuardrailInputOutcome.md)\>
 
-Defined in: [packages/agentos/src/safety/guardrails/guardrailDispatcher.ts:156](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/safety/guardrails/guardrailDispatcher.ts#L156)
+Defined in: [packages/agentos/src/safety/guardrails/guardrailDispatcher.ts:156](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/safety/guardrails/guardrailDispatcher.ts#L156)
 
 Evaluate user input through all registered guardrails.
 

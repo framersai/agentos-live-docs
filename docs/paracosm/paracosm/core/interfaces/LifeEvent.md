@@ -1,6 +1,6 @@
 # Interface: LifeEvent
 
-Defined in: [apps/paracosm/src/engine/core/state.ts:41](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/engine/core/state.ts#L41)
+Defined in: [apps/paracosm/src/engine/core/state.ts:41](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/state.ts#L41)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [apps/paracosm/src/engine/core/state.ts:41](https://github.com/frame
 
 > **event**: `string`
 
-Defined in: [apps/paracosm/src/engine/core/state.ts:43](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/engine/core/state.ts#L43)
+Defined in: [apps/paracosm/src/engine/core/state.ts:43](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/state.ts#L43)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [apps/paracosm/src/engine/core/state.ts:43](https://github.com/frame
 
 > **source**: `string`
 
-Defined in: [apps/paracosm/src/engine/core/state.ts:44](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/engine/core/state.ts#L44)
+Defined in: [apps/paracosm/src/engine/core/state.ts:44](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/state.ts#L44)
 
 ***
 
@@ -24,4 +24,4 @@ Defined in: [apps/paracosm/src/engine/core/state.ts:44](https://github.com/frame
 
 > **time**: `number`
 
-Defined in: [apps/paracosm/src/engine/core/state.ts:42](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/engine/core/state.ts#L42)
+Defined in: [apps/paracosm/src/engine/core/state.ts:42](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/state.ts#L42)

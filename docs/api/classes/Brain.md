@@ -1,6 +1,6 @@
 # Class: Brain
 
-Defined in: [packages/agentos/src/memory/retrieval/store/Brain.ts:409](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/store/Brain.ts#L409)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/store/Brain.ts:409](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/store/Brain.ts#L409)
 
 Unified cross-platform connection manager for a single agent's persistent brain.
 
@@ -34,7 +34,7 @@ receive the `Brain` instance and call its async proxy methods
 
 > **get** **adapter**(): `StorageAdapter`
 
-Defined in: [packages/agentos/src/memory/retrieval/store/Brain.ts:664](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/store/Brain.ts#L664)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/store/Brain.ts:664](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/store/Brain.ts#L664)
 
 Expose the raw storage adapter for advanced usage.
 
@@ -53,7 +53,7 @@ Primarily used by SqliteExporter (VACUUM INTO) and SqliteImporter
 
 > **get** **brainId**(): `string`
 
-Defined in: [packages/agentos/src/memory/retrieval/store/Brain.ts:456](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/store/Brain.ts#L456)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/store/Brain.ts:456](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/store/Brain.ts#L456)
 
 Brain identifier scoping every query through this Brain instance.
 Subsystems (KnowledgeGraph, MemoryGraph, ConsolidationLoop) read this
@@ -71,7 +71,7 @@ to inject `brain_id` into their own SQL.
 
 > **get** **features**(): `StorageFeatures`
 
-Defined in: [packages/agentos/src/memory/retrieval/store/Brain.ts:673](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/store/Brain.ts#L673)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/store/Brain.ts:673](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/store/Brain.ts#L673)
 
 Platform-aware feature bundle (dialect, FTS, BLOB codec, exporter).
 Consumers use this to generate cross-platform SQL instead of hardcoding
@@ -87,7 +87,7 @@ SQLite-specific syntax.
 
 > **all**\<`T`\>(`sql`, `params?`): `Promise`\<`T`[]\>
 
-Defined in: [packages/agentos/src/memory/retrieval/store/Brain.ts:632](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/store/Brain.ts#L632)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/store/Brain.ts:632](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/store/Brain.ts#L632)
 
 Retrieve all rows matching the statement.
 
@@ -123,7 +123,7 @@ Array of matching rows (empty array if none).
 
 > **checkEmbeddingCompat**(`dimensions`): `Promise`\<`boolean`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/store/Brain.ts:812](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/store/Brain.ts#L812)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/store/Brain.ts:812](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/store/Brain.ts#L812)
 
 Check whether a given embedding dimension is compatible with this brain.
 
@@ -154,7 +154,7 @@ The embedding vector length to check (e.g. 1536 for OpenAI ada-002).
 
 > **close**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/store/Brain.ts:1036](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/store/Brain.ts#L1036)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/store/Brain.ts:1036](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/store/Brain.ts#L1036)
 
 Close the database connection.
 
@@ -172,7 +172,7 @@ an unconsumed WAL file.
 
 > **exec**(`sql`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/store/Brain.ts:641](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/store/Brain.ts#L641)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/store/Brain.ts:641](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/store/Brain.ts#L641)
 
 Execute a script containing multiple SQL statements.
 
@@ -194,7 +194,7 @@ SQL script (semicolon-delimited statements).
 
 > **exportToSqlite**(`targetPath`): `Promise`\<\{ `bytesWritten`: `number`; \}\>
 
-Defined in: [packages/agentos/src/memory/retrieval/store/Brain.ts:844](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/store/Brain.ts#L844)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/store/Brain.ts:844](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/store/Brain.ts#L844)
 
 Materialize this brain to a portable SQLite file at `targetPath`.
 
@@ -228,7 +228,7 @@ Bytes written to the destination file.
 
 > **get**\<`T`\>(`sql`, `params?`): `Promise`\<`T` \| `null`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/store/Brain.ts:621](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/store/Brain.ts#L621)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/store/Brain.ts:621](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/store/Brain.ts#L621)
 
 Retrieve a single row (or null if none found).
 
@@ -264,7 +264,7 @@ First matching row or null.
 
 > **getMeta**(`key`): `Promise`\<`string` \| `undefined`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/store/Brain.ts:769](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/store/Brain.ts#L769)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/store/Brain.ts:769](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/store/Brain.ts#L769)
 
 Read a value from the `brain_meta` key-value store.
 
@@ -288,7 +288,7 @@ The stored string value, or `undefined` if the key does not exist.
 
 > **importFromSqlite**(`sourcePath`, `opts?`): `Promise`\<\{ `tablesImported`: `Record`\<`string`, `number`\>; \}\>
 
-Defined in: [packages/agentos/src/memory/retrieval/store/Brain.ts:901](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/store/Brain.ts#L901)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/store/Brain.ts:901](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/store/Brain.ts#L901)
 
 Load a portable SQLite file into this Brain's adapter.
 
@@ -332,7 +332,7 @@ Counts of rows imported per table.
 
 > **run**(`sql`, `params?`): `Promise`\<`StorageRunResult`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/store/Brain.ts:610](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/store/Brain.ts#L610)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/store/Brain.ts:610](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/store/Brain.ts#L610)
 
 Execute a mutation statement (INSERT, UPDATE, DELETE).
 
@@ -362,7 +362,7 @@ Metadata about affected rows.
 
 > **setMeta**(`key`, `value`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/store/Brain.ts:787](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/store/Brain.ts#L787)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/store/Brain.ts:787](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/store/Brain.ts#L787)
 
 Upsert a value into the `brain_meta` key-value store.
 
@@ -393,7 +393,7 @@ The string value to store.
 
 > **transaction**\<`T`\>(`fn`): `Promise`\<`T`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/store/Brain.ts:654](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/store/Brain.ts#L654)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/store/Brain.ts:654](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/store/Brain.ts#L654)
 
 Execute a callback within a database transaction.
 
@@ -426,7 +426,7 @@ Result of the callback.
 
 > `static` **openPostgres**(`connectionString`, `opts`): `Promise`\<`Brain`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/store/Brain.ts:511](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/store/Brain.ts#L511)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/store/Brain.ts:511](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/store/Brain.ts#L511)
 
 Open a Brain backed by PostgreSQL. Requires the `pg` npm package and
 a reachable Postgres instance.
@@ -464,7 +464,7 @@ pg connection pool size. Defaults to 10.
 
 > `static` **openSqlite**(`path`, `opts?`): `Promise`\<`Brain`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/store/Brain.ts:486](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/store/Brain.ts#L486)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/store/Brain.ts:486](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/store/Brain.ts#L486)
 
 Open a Brain backed by SQLite. Tries adapters in order:
 better-sqlite3 (Node native) -> sql.js (WASM) -> indexeddb (browser).
@@ -504,7 +504,7 @@ A fully initialised `Brain` instance with the v2 schema.
 
 > `static` **openWithAdapter**(`adapter`, `opts?`): `Promise`\<`Brain`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/store/Brain.ts:557](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/store/Brain.ts#L557)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/store/Brain.ts:557](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/store/Brain.ts#L557)
 
 Open a Brain with a pre-resolved StorageAdapter. Use when sharing an
 adapter across subsystems (e.g., wilds-ai foundation pool + brain) or

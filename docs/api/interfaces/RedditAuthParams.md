@@ -1,6 +1,6 @@
 # Interface: RedditAuthParams
 
-Defined in: [packages/agentos/src/channels/adapters/RedditChannelAdapter.ts:48](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/channels/adapters/RedditChannelAdapter.ts#L48)
+Defined in: [packages/agentos/src/io/channels/adapters/RedditChannelAdapter.ts:48](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/io/channels/adapters/RedditChannelAdapter.ts#L48)
 
 Platform-specific authentication parameters for Reddit.
 
@@ -18,7 +18,7 @@ Platform-specific authentication parameters for Reddit.
 
 > **clientSecret**: `string`
 
-Defined in: [packages/agentos/src/channels/adapters/RedditChannelAdapter.ts:50](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/channels/adapters/RedditChannelAdapter.ts#L50)
+Defined in: [packages/agentos/src/io/channels/adapters/RedditChannelAdapter.ts:50](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/io/channels/adapters/RedditChannelAdapter.ts#L50)
 
 OAuth2 client secret.
 
@@ -28,7 +28,7 @@ OAuth2 client secret.
 
 > **password**: `string`
 
-Defined in: [packages/agentos/src/channels/adapters/RedditChannelAdapter.ts:54](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/channels/adapters/RedditChannelAdapter.ts#L54)
+Defined in: [packages/agentos/src/io/channels/adapters/RedditChannelAdapter.ts:54](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/io/channels/adapters/RedditChannelAdapter.ts#L54)
 
 Reddit account password for the bot.
 
@@ -38,7 +38,7 @@ Reddit account password for the bot.
 
 > **userAgent**: `string`
 
-Defined in: [packages/agentos/src/channels/adapters/RedditChannelAdapter.ts:56](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/channels/adapters/RedditChannelAdapter.ts#L56)
+Defined in: [packages/agentos/src/io/channels/adapters/RedditChannelAdapter.ts:56](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/io/channels/adapters/RedditChannelAdapter.ts#L56)
 
 User-Agent string (required by Reddit API TOS).
 
@@ -48,6 +48,6 @@ User-Agent string (required by Reddit API TOS).
 
 > **username**: `string`
 
-Defined in: [packages/agentos/src/channels/adapters/RedditChannelAdapter.ts:52](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/channels/adapters/RedditChannelAdapter.ts#L52)
+Defined in: [packages/agentos/src/io/channels/adapters/RedditChannelAdapter.ts:52](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/io/channels/adapters/RedditChannelAdapter.ts#L52)
 
 Reddit account username for the bot.

@@ -1,6 +1,6 @@
 # Interface: EditImageOptions
 
-Defined in: [packages/agentos/src/api/editImage.ts:47](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/editImage.ts#L47)
+Defined in: [packages/agentos/src/api/editImage.ts:47](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/editImage.ts#L47)
 
 Options for an [editImage](../functions/editImage.md) call.
 
@@ -22,7 +22,7 @@ const result = await editImage({
 
 > `optional` **apiKey**: `string`
 
-Defined in: [packages/agentos/src/api/editImage.ts:91](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/editImage.ts#L91)
+Defined in: [packages/agentos/src/api/editImage.ts:92](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/editImage.ts#L92)
 
 Override the provider API key instead of reading from env vars.
 
@@ -32,7 +32,7 @@ Override the provider API key instead of reading from env vars.
 
 > `optional` **baseUrl**: `string`
 
-Defined in: [packages/agentos/src/api/editImage.ts:93](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/editImage.ts#L93)
+Defined in: [packages/agentos/src/api/editImage.ts:94](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/editImage.ts#L94)
 
 Override the provider base URL.
 
@@ -42,7 +42,7 @@ Override the provider base URL.
 
 > `optional` **capabilities**: `string`[]
 
-Defined in: [packages/agentos/src/api/editImage.ts:118](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/editImage.ts#L118)
+Defined in: [packages/agentos/src/api/editImage.ts:119](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/editImage.ts#L119)
 
 Required provider capabilities for mature/private-adult routing.
 Drives UncensoredModelCatalog filtering so callers can ask
@@ -56,7 +56,7 @@ Ignored for safe/standard tiers.
 
 > **image**: `string` \| `Buffer`
 
-Defined in: [packages/agentos/src/api/editImage.ts:62](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/editImage.ts#L62)
+Defined in: [packages/agentos/src/api/editImage.ts:63](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/editImage.ts#L63)
 
 Source image as a base64 data URL, raw base64 string, `Buffer`,
 local file path, or HTTP/HTTPS URL.
@@ -67,7 +67,7 @@ local file path, or HTTP/HTTPS URL.
 
 > `optional` **mask**: `string` \| `Buffer`
 
-Defined in: [packages/agentos/src/api/editImage.ts:69](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/editImage.ts#L69)
+Defined in: [packages/agentos/src/api/editImage.ts:70](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/editImage.ts#L70)
 
 Optional mask for inpainting.  White pixels mark regions to be edited;
 black pixels mark regions to keep.  Accepts the same formats as `image`.
@@ -78,7 +78,7 @@ black pixels mark regions to keep.  Accepts the same formats as `image`.
 
 > `optional` **mode**: [`ImageEditMode`](../type-aliases/ImageEditMode.md)
 
-Defined in: [packages/agentos/src/api/editImage.ts:76](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/editImage.ts#L76)
+Defined in: [packages/agentos/src/api/editImage.ts:77](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/editImage.ts#L77)
 
 Edit mode.
 - `'img2img'` (default) — prompt-guided transformation.
@@ -91,14 +91,15 @@ Edit mode.
 
 > `optional` **model**: `string`
 
-Defined in: [packages/agentos/src/api/editImage.ts:57](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/editImage.ts#L57)
+Defined in: [packages/agentos/src/api/editImage.ts:58](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/editImage.ts#L58)
 
-Model in `provider:model` format (legacy) or plain model name when `provider` is set.
+Model identifier. Prefer the plain model name with `provider` set;
+the combined `"provider:model"` string is also accepted.
 
 #### Example
 
 ```ts
-`"openai:gpt-image-1"`, `"stability:sd3-medium"`
+`"gpt-image-1"` (with `provider: 'openai'`), `"sd3-medium"`
 ```
 
 ***
@@ -107,7 +108,7 @@ Model in `provider:model` format (legacy) or plain model name when `provider` is
 
 > `optional` **n**: `number`
 
-Defined in: [packages/agentos/src/api/editImage.ts:89](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/editImage.ts#L89)
+Defined in: [packages/agentos/src/api/editImage.ts:90](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/editImage.ts#L90)
 
 Number of output images.
 
@@ -117,7 +118,7 @@ Number of output images.
 
 > `optional` **negativePrompt**: `string`
 
-Defined in: [packages/agentos/src/api/editImage.ts:83](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/editImage.ts#L83)
+Defined in: [packages/agentos/src/api/editImage.ts:84](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/editImage.ts#L84)
 
 Negative prompt describing content to avoid.
 
@@ -127,7 +128,7 @@ Negative prompt describing content to avoid.
 
 > `optional` **policyTier**: `"safe"` \| `"standard"` \| `"mature"` \| `"private-adult"`
 
-Defined in: [packages/agentos/src/api/editImage.ts:110](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/editImage.ts#L110)
+Defined in: [packages/agentos/src/api/editImage.ts:111](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/editImage.ts#L111)
 
 Content policy tier. When `'mature'` or `'private-adult'`, the edit is
 rerouted through [PolicyAwareImageRouter](../classes/PolicyAwareImageRouter.md) to pick an uncensored
@@ -146,7 +147,7 @@ existing censored path intact.
 
 > **prompt**: `string`
 
-Defined in: [packages/agentos/src/api/editImage.ts:64](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/editImage.ts#L64)
+Defined in: [packages/agentos/src/api/editImage.ts:65](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/editImage.ts#L65)
 
 Text prompt describing the desired changes.
 
@@ -156,7 +157,7 @@ Text prompt describing the desired changes.
 
 > `optional` **provider**: `string`
 
-Defined in: [packages/agentos/src/api/editImage.ts:52](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/editImage.ts#L52)
+Defined in: [packages/agentos/src/api/editImage.ts:52](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/editImage.ts#L52)
 
 Provider name (e.g. `"openai"`, `"stability"`, `"stable-diffusion-local"`).
 When omitted, auto-detection via env vars is attempted.
@@ -167,7 +168,7 @@ When omitted, auto-detection via env vars is attempted.
 
 > `optional` **providerOptions**: `Record`\<`string`, `unknown`\> \| [`ImageProviderOptionBag`](ImageProviderOptionBag.md)
 
-Defined in: [packages/agentos/src/api/editImage.ts:95](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/editImage.ts#L95)
+Defined in: [packages/agentos/src/api/editImage.ts:96](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/editImage.ts#L96)
 
 Arbitrary provider-specific options.
 
@@ -177,7 +178,7 @@ Arbitrary provider-specific options.
 
 > `optional` **seed**: `number`
 
-Defined in: [packages/agentos/src/api/editImage.ts:87](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/editImage.ts#L87)
+Defined in: [packages/agentos/src/api/editImage.ts:88](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/editImage.ts#L88)
 
 Seed for reproducibility (provider-dependent support).
 
@@ -187,7 +188,7 @@ Seed for reproducibility (provider-dependent support).
 
 > `optional` **size**: `string`
 
-Defined in: [packages/agentos/src/api/editImage.ts:85](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/editImage.ts#L85)
+Defined in: [packages/agentos/src/api/editImage.ts:86](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/editImage.ts#L86)
 
 Output size (e.g. `"1024x1024"`).
 
@@ -197,7 +198,7 @@ Output size (e.g. `"1024x1024"`).
 
 > `optional` **strength**: `number`
 
-Defined in: [packages/agentos/src/api/editImage.ts:81](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/editImage.ts#L81)
+Defined in: [packages/agentos/src/api/editImage.ts:82](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/editImage.ts#L82)
 
 How much to deviate from the source image.
 `0` = identical, `1` = completely new.  Default `0.75`.
@@ -208,6 +209,6 @@ How much to deviate from the source image.
 
 > `optional` **usageLedger**: [`AgentOSUsageLedgerOptions`](AgentOSUsageLedgerOptions.md)
 
-Defined in: [packages/agentos/src/api/editImage.ts:97](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/editImage.ts#L97)
+Defined in: [packages/agentos/src/api/editImage.ts:98](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/editImage.ts#L98)
 
 Optional usage ledger configuration.

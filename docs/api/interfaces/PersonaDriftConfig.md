@@ -1,6 +1,6 @@
 # Interface: PersonaDriftConfig
 
-Defined in: [packages/agentos/src/memory/mechanisms/PersonaDriftMechanism.ts:25](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/mechanisms/PersonaDriftMechanism.ts#L25)
+Defined in: [packages/agentos/src/cognition/memory/mechanisms/PersonaDriftMechanism.ts:25](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/mechanisms/PersonaDriftMechanism.ts#L25)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/memory/mechanisms/PersonaDriftMechanism.ts:25]
 
 > **analysisInterval**: `number`
 
-Defined in: [packages/agentos/src/memory/mechanisms/PersonaDriftMechanism.ts:28](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/mechanisms/PersonaDriftMechanism.ts#L28)
+Defined in: [packages/agentos/src/cognition/memory/mechanisms/PersonaDriftMechanism.ts:28](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/mechanisms/PersonaDriftMechanism.ts#L28)
 
 Consolidation cycles between drift analyses (default: 5).
 
@@ -18,7 +18,7 @@ Consolidation cycles between drift analyses (default: 5).
 
 > **emotionalWeighting**: `boolean`
 
-Defined in: [packages/agentos/src/memory/mechanisms/PersonaDriftMechanism.ts:34](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/mechanisms/PersonaDriftMechanism.ts#L34)
+Defined in: [packages/agentos/src/cognition/memory/mechanisms/PersonaDriftMechanism.ts:34](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/mechanisms/PersonaDriftMechanism.ts#L34)
 
 Weight high-arousal memories more heavily in pattern detection.
 
@@ -28,7 +28,7 @@ Weight high-arousal memories more heavily in pattern detection.
 
 > **enabled**: `boolean`
 
-Defined in: [packages/agentos/src/memory/mechanisms/PersonaDriftMechanism.ts:26](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/mechanisms/PersonaDriftMechanism.ts#L26)
+Defined in: [packages/agentos/src/cognition/memory/mechanisms/PersonaDriftMechanism.ts:26](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/mechanisms/PersonaDriftMechanism.ts#L26)
 
 ***
 
@@ -36,7 +36,7 @@ Defined in: [packages/agentos/src/memory/mechanisms/PersonaDriftMechanism.ts:26]
 
 > **maxDeltaPerCycle**: `number`
 
-Defined in: [packages/agentos/src/memory/mechanisms/PersonaDriftMechanism.ts:32](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/mechanisms/PersonaDriftMechanism.ts#L32)
+Defined in: [packages/agentos/src/cognition/memory/mechanisms/PersonaDriftMechanism.ts:32](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/mechanisms/PersonaDriftMechanism.ts#L32)
 
 Maximum absolute trait change per analysis cycle (default: 0.05).
 
@@ -46,6 +46,6 @@ Maximum absolute trait change per analysis cycle (default: 0.05).
 
 > **minTracesForAnalysis**: `number`
 
-Defined in: [packages/agentos/src/memory/mechanisms/PersonaDriftMechanism.ts:30](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/mechanisms/PersonaDriftMechanism.ts#L30)
+Defined in: [packages/agentos/src/cognition/memory/mechanisms/PersonaDriftMechanism.ts:30](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/mechanisms/PersonaDriftMechanism.ts#L30)
 
 Minimum episodic traces since last analysis to trigger (default: 10).

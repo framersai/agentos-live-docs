@@ -2,7 +2,7 @@
 
 > **materializeEmergentToolFromPackage**(`manifest`, `options`): [`EmergentTool`](../interfaces/EmergentTool.md)
 
-Defined in: [packages/agentos/src/emergent/ToolPackage.ts:195](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/emergent/ToolPackage.ts#L195)
+Defined in: [packages/agentos/src/cognition/emergent/ToolPackage.ts:195](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/emergent/ToolPackage.ts#L195)
 
 ## Parameters
 

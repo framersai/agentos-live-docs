@@ -2,7 +2,7 @@
 
 > **resolveRegistryForKind**(`kind`, `config`): [`RegistrySource`](../interfaces/RegistrySource.md) \| `null`
 
-Defined in: [packages/agentos/src/extensions/RegistryConfig.ts:139](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/extensions/RegistryConfig.ts#L139)
+Defined in: [packages/agentos/src/extensions/RegistryConfig.ts:139](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/extensions/RegistryConfig.ts#L139)
 
 Resolve registry source for a given extension kind
 

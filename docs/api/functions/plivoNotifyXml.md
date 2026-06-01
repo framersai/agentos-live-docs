@@ -2,7 +2,7 @@
 
 > **plivoNotifyXml**(`text`, `voice?`): `string`
 
-Defined in: [packages/agentos/src/channels/telephony/twiml.ts:155](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/channels/telephony/twiml.ts#L155)
+Defined in: [packages/agentos/src/io/channels/telephony/twiml.ts:155](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/io/channels/telephony/twiml.ts#L155)
 
 Generate Plivo speak + hangup XML.
 

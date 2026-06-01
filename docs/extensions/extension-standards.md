@@ -35,7 +35,7 @@ voice-chat-assistant/
 ### External Repository
 Repository: `github.com/framersai/agentos-extensions`
 - Community-driven with PR review process
-- Apache-2.0 licensed
+- MIT licensed
 - Automated CI/CD for publishing to npm
 
 ## Extension Package Structure
@@ -57,7 +57,7 @@ packages/ext-{name}/
 │   └── basic.ts           # usage examples
 ├── package.json
 ├── tsconfig.json
-├── LICENSE                # Apache-2.0 required
+├── LICENSE                # MIT required
 └── manifest.json          # extension metadata
 ```
 
@@ -79,7 +79,7 @@ packages/ext-{name}/
     "email": "email@example.com",
     "url": "https://github.com/username"
   },
-  "license": "Apache-2.0",
+  "license": "MIT",
   "keywords": ["search", "web", "research"],
   "agentosVersion": "^2.0.0",
   "categories": ["productivity", "research"],
@@ -474,7 +474,7 @@ GitHub Actions workflow for:
 - [ ] Includes comprehensive tests (>80% coverage)
 - [ ] Documentation is complete
 - [ ] No security vulnerabilities
-- [ ] Apache-2.0 licensed
+- [ ] MIT licensed
 - [ ] Semantic versioning
 
 ### Extension Categories

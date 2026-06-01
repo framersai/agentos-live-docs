@@ -1,6 +1,6 @@
 # Interface: BM25Stats
 
-Defined in: [packages/agentos/src/rag/search/BM25Index.ts:95](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/search/BM25Index.ts#L95)
+Defined in: [packages/agentos/src/cognition/rag/search/BM25Index.ts:95](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/search/BM25Index.ts#L95)
 
 Index statistics for monitoring and debugging.
 
@@ -14,7 +14,7 @@ BM25Stats
 
 > **avgDocLength**: `number`
 
-Defined in: [packages/agentos/src/rag/search/BM25Index.ts:101](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/search/BM25Index.ts#L101)
+Defined in: [packages/agentos/src/cognition/rag/search/BM25Index.ts:101](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/search/BM25Index.ts#L101)
 
 Average document length in tokens.
 
@@ -24,7 +24,7 @@ Average document length in tokens.
 
 > **documentCount**: `number`
 
-Defined in: [packages/agentos/src/rag/search/BM25Index.ts:97](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/search/BM25Index.ts#L97)
+Defined in: [packages/agentos/src/cognition/rag/search/BM25Index.ts:97](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/search/BM25Index.ts#L97)
 
 Total documents in the index.
 
@@ -34,6 +34,6 @@ Total documents in the index.
 
 > **termCount**: `number`
 
-Defined in: [packages/agentos/src/rag/search/BM25Index.ts:99](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/search/BM25Index.ts#L99)
+Defined in: [packages/agentos/src/cognition/rag/search/BM25Index.ts:99](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/search/BM25Index.ts#L99)
 
 Total unique terms across all documents.

@@ -1,6 +1,6 @@
 # Interface: SpeechSessionStateChangedEvent
 
-Defined in: [packages/agentos/src/speech/types.ts:289](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/speech/types.ts#L289)
+Defined in: [packages/agentos/src/io/speech/types.ts:289](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/io/speech/types.ts#L289)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/speech/types.ts:289](https://github.com/framer
 
 > **current**: [`SpeechSessionState`](../type-aliases/SpeechSessionState.md)
 
-Defined in: [packages/agentos/src/speech/types.ts:291](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/speech/types.ts#L291)
+Defined in: [packages/agentos/src/io/speech/types.ts:291](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/io/speech/types.ts#L291)
 
 ***
 
@@ -16,4 +16,4 @@ Defined in: [packages/agentos/src/speech/types.ts:291](https://github.com/framer
 
 > **previous**: [`SpeechSessionState`](../type-aliases/SpeechSessionState.md)
 
-Defined in: [packages/agentos/src/speech/types.ts:290](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/speech/types.ts#L290)
+Defined in: [packages/agentos/src/io/speech/types.ts:290](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/io/speech/types.ts#L290)

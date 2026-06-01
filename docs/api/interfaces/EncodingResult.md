@@ -1,6 +1,6 @@
 # Interface: EncodingResult
 
-Defined in: [packages/agentos/src/memory/core/types.ts:180](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L180)
+Defined in: [packages/agentos/src/cognition/memory/core/types.ts:383](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/types.ts#L383)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/memory/core/types.ts:180](https://github.com/f
 
 > **importance**: `number`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:183](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L183)
+Defined in: [packages/agentos/src/cognition/memory/core/types.ts:386](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/types.ts#L386)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [packages/agentos/src/memory/core/types.ts:183](https://github.com/f
 
 > **initialStrength**: `number`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:181](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L181)
+Defined in: [packages/agentos/src/cognition/memory/core/types.ts:384](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/types.ts#L384)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: [packages/agentos/src/memory/core/types.ts:181](https://github.com/f
 
 > **isFlashbulb**: `boolean`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:184](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L184)
+Defined in: [packages/agentos/src/cognition/memory/core/types.ts:387](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/types.ts#L387)
 
 ***
 
@@ -32,4 +32,4 @@ Defined in: [packages/agentos/src/memory/core/types.ts:184](https://github.com/f
 
 > **stability**: `number`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:182](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L182)
+Defined in: [packages/agentos/src/cognition/memory/core/types.ts:385](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/types.ts#L385)

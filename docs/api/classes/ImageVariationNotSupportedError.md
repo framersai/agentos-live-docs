@@ -1,6 +1,6 @@
 # Class: ImageVariationNotSupportedError
 
-Defined in: [packages/agentos/src/media/images/ImageOperationError.ts:60](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/media/images/ImageOperationError.ts#L60)
+Defined in: [packages/agentos/src/io/media/images/ImageOperationError.ts:60](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/io/media/images/ImageOperationError.ts#L60)
 
 Thrown when a variation operation is requested from a provider that does
 not implement `variateImage`.
@@ -19,7 +19,7 @@ not implement `variateImage`.
 
 > **new ImageVariationNotSupportedError**(`providerId`): `ImageVariationNotSupportedError`
 
-Defined in: [packages/agentos/src/media/images/ImageOperationError.ts:64](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/media/images/ImageOperationError.ts#L64)
+Defined in: [packages/agentos/src/io/media/images/ImageOperationError.ts:64](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/io/media/images/ImageOperationError.ts#L64)
 
 #### Parameters
 
@@ -65,7 +65,7 @@ Defined in: node\_modules/.pnpm/typescript@5.6.3/node\_modules/typescript/lib/li
 
 > `readonly` **providerId**: `string`
 
-Defined in: [packages/agentos/src/media/images/ImageOperationError.ts:62](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/media/images/ImageOperationError.ts#L62)
+Defined in: [packages/agentos/src/io/media/images/ImageOperationError.ts:62](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/io/media/images/ImageOperationError.ts#L62)
 
 The provider that was asked to produce variations.
 

@@ -1,6 +1,6 @@
 # Interface: BM25Config
 
-Defined in: [packages/agentos/src/rag/search/BM25Index.ts:73](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/search/BM25Index.ts#L73)
+Defined in: [packages/agentos/src/cognition/rag/search/BM25Index.ts:73](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/search/BM25Index.ts#L73)
 
 Configuration options for the BM25 index.
 
@@ -14,7 +14,7 @@ BM25Config
 
 > `optional` **b**: `number`
 
-Defined in: [packages/agentos/src/rag/search/BM25Index.ts:77](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/search/BM25Index.ts#L77)
+Defined in: [packages/agentos/src/cognition/rag/search/BM25Index.ts:77](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/search/BM25Index.ts#L77)
 
 Document length normalization factor.
   0 = no normalization, 1 = full normalization. Range: 0-1.
@@ -25,7 +25,7 @@ Document length normalization factor.
 
 > `optional` **k1**: `number`
 
-Defined in: [packages/agentos/src/rag/search/BM25Index.ts:75](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/search/BM25Index.ts#L75)
+Defined in: [packages/agentos/src/cognition/rag/search/BM25Index.ts:75](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/search/BM25Index.ts#L75)
 
 Term saturation parameter. Higher values increase
   the influence of term frequency. Range: 1.2-2.0 typical.
@@ -36,7 +36,7 @@ Term saturation parameter. Higher values increase
 
 > `optional` **pipeline**: `TextProcessingPipeline`
 
-Defined in: [packages/agentos/src/rag/search/BM25Index.ts:84](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/search/BM25Index.ts#L84)
+Defined in: [packages/agentos/src/cognition/rag/search/BM25Index.ts:84](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/search/BM25Index.ts#L84)
 
 Optional text processing pipeline for tokenization.
 When provided, replaces the built-in regex tokenizer with configurable

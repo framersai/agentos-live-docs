@@ -2,7 +2,7 @@
 
 > **evaluateCrossAgentGuardrails**(`guardrails`, `crossAgentContext`, `guardrailContext`, `chunk`): `Promise`\<[`CrossAgentEvaluationResult`](../interfaces/CrossAgentEvaluationResult.md)\>
 
-Defined in: [packages/agentos/src/safety/guardrails/crossAgentGuardrailDispatcher.ts:91](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/safety/guardrails/crossAgentGuardrailDispatcher.ts#L91)
+Defined in: [packages/agentos/src/safety/guardrails/crossAgentGuardrailDispatcher.ts:91](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/safety/guardrails/crossAgentGuardrailDispatcher.ts#L91)
 
 Evaluate a chunk through all applicable cross-agent guardrails.
 

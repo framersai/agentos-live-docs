@@ -1,6 +1,6 @@
 # Interface: VerificationSource
 
-Defined in: [packages/agentos/src/rag/citation/types.ts:47](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/citation/types.ts#L47)
+Defined in: [packages/agentos/src/cognition/rag/citation/types.ts:62](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/citation/types.ts#L62)
 
 A source document for verification.
 
@@ -10,7 +10,7 @@ A source document for verification.
 
 > **content**: `string`
 
-Defined in: [packages/agentos/src/rag/citation/types.ts:49](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/citation/types.ts#L49)
+Defined in: [packages/agentos/src/cognition/rag/citation/types.ts:64](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/citation/types.ts#L64)
 
 Source text content.
 
@@ -20,7 +20,7 @@ Source text content.
 
 > `optional` **title**: `string`
 
-Defined in: [packages/agentos/src/rag/citation/types.ts:51](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/citation/types.ts#L51)
+Defined in: [packages/agentos/src/cognition/rag/citation/types.ts:66](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/citation/types.ts#L66)
 
 Source title or heading.
 
@@ -30,6 +30,6 @@ Source title or heading.
 
 > `optional` **url**: `string`
 
-Defined in: [packages/agentos/src/rag/citation/types.ts:53](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/citation/types.ts#L53)
+Defined in: [packages/agentos/src/cognition/rag/citation/types.ts:68](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/citation/types.ts#L68)
 
 Source URL or file path.

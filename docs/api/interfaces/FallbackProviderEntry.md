@@ -1,6 +1,6 @@
 # Interface: FallbackProviderEntry
 
-Defined in: [packages/agentos/src/api/generateText.ts:181](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/generateText.ts#L181)
+Defined in: [packages/agentos/src/api/generateText.ts:203](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/generateText.ts#L203)
 
 A fallback provider entry specifying an alternative provider (and optionally
 model) to try when the primary provider fails with a retryable error.
@@ -15,7 +15,7 @@ model) to try when the primary provider fails with a retryable error.
 
 > `optional` **model**: `string`
 
-Defined in: [packages/agentos/src/api/generateText.ts:185](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/generateText.ts#L185)
+Defined in: [packages/agentos/src/api/generateText.ts:207](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/generateText.ts#L207)
 
 Model identifier override. When omitted, the provider's default text model is used.
 
@@ -25,6 +25,6 @@ Model identifier override. When omitted, the provider's default text model is us
 
 > **provider**: `string`
 
-Defined in: [packages/agentos/src/api/generateText.ts:183](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/generateText.ts#L183)
+Defined in: [packages/agentos/src/api/generateText.ts:205](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/generateText.ts#L205)
 
 Provider identifier (e.g. `"openai"`, `"anthropic"`, `"openrouter"`).

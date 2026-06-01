@@ -1,6 +1,6 @@
 # Enumeration: WorkflowStatus
 
-Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:7](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/workflows/WorkflowTypes.ts#L7)
+Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:7](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/workflows/WorkflowTypes.ts#L7)
 
 High-level lifecycle states for a workflow instance.
 
@@ -10,7 +10,7 @@ High-level lifecycle states for a workflow instance.
 
 > **AWAITING\_INPUT**: `"awaiting_input"`
 
-Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:10](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/workflows/WorkflowTypes.ts#L10)
+Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:10](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/workflows/WorkflowTypes.ts#L10)
 
 ***
 
@@ -18,7 +18,7 @@ Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:10](h
 
 > **CANCELLED**: `"cancelled"`
 
-Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:13](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/workflows/WorkflowTypes.ts#L13)
+Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:13](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/workflows/WorkflowTypes.ts#L13)
 
 ***
 
@@ -26,7 +26,7 @@ Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:13](h
 
 > **COMPLETED**: `"completed"`
 
-Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:12](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/workflows/WorkflowTypes.ts#L12)
+Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:12](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/workflows/WorkflowTypes.ts#L12)
 
 ***
 
@@ -34,7 +34,7 @@ Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:12](h
 
 > **ERRORED**: `"errored"`
 
-Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:11](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/workflows/WorkflowTypes.ts#L11)
+Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:11](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/workflows/WorkflowTypes.ts#L11)
 
 ***
 
@@ -42,7 +42,7 @@ Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:11](h
 
 > **PENDING**: `"pending"`
 
-Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:8](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/workflows/WorkflowTypes.ts#L8)
+Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:8](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/workflows/WorkflowTypes.ts#L8)
 
 ***
 
@@ -50,4 +50,4 @@ Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:8](ht
 
 > **RUNNING**: `"running"`
 
-Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:9](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/workflows/WorkflowTypes.ts#L9)
+Defined in: [packages/agentos/src/orchestration/workflows/WorkflowTypes.ts:9](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/workflows/WorkflowTypes.ts#L9)

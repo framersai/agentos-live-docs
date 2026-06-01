@@ -1,6 +1,6 @@
 # Interface: CognitiveMemoryPersonaConfig
 
-Defined in: [packages/agentos/src/memory/core/config.ts:208](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/config.ts#L208)
+Defined in: [packages/agentos/src/cognition/memory/core/config.ts:208](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/config.ts#L208)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/memory/core/config.ts:208](https://github.com/
 
 > `optional` **decay**: `Partial`\<[`DecayConfig`](DecayConfig.md)\>
 
-Defined in: [packages/agentos/src/memory/core/config.ts:218](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/config.ts#L218)
+Defined in: [packages/agentos/src/cognition/memory/core/config.ts:218](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/config.ts#L218)
 
 Decay config overrides.
 
@@ -18,7 +18,7 @@ Decay config overrides.
 
 > `optional` **encoding**: `Partial`\<[`EncodingConfig`](EncodingConfig.md)\>
 
-Defined in: [packages/agentos/src/memory/core/config.ts:216](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/config.ts#L216)
+Defined in: [packages/agentos/src/cognition/memory/core/config.ts:216](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/config.ts#L216)
 
 Encoding config overrides.
 
@@ -28,7 +28,7 @@ Encoding config overrides.
 
 > `optional` **featureDetectionStrategy**: `"hybrid"` \| `"llm"` \| `"keyword"`
 
-Defined in: [packages/agentos/src/memory/core/config.ts:210](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/config.ts#L210)
+Defined in: [packages/agentos/src/cognition/memory/core/config.ts:210](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/config.ts#L210)
 
 Feature detection strategy.
 
@@ -44,7 +44,7 @@ Feature detection strategy.
 
 > `optional` **graph**: `Partial`\<[`MemoryGraphConfig`](MemoryGraphConfig.md)\>
 
-Defined in: [packages/agentos/src/memory/core/config.ts:224](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/config.ts#L224)
+Defined in: [packages/agentos/src/cognition/memory/core/config.ts:224](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/config.ts#L224)
 
 Memory graph config (Batch 2).
 
@@ -54,7 +54,7 @@ Memory graph config (Batch 2).
 
 > `optional` **infiniteContext**: `Partial`\<[`InfiniteContextConfig`](InfiniteContextConfig.md)\>
 
-Defined in: [packages/agentos/src/memory/core/config.ts:226](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/config.ts#L226)
+Defined in: [packages/agentos/src/cognition/memory/core/config.ts:226](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/config.ts#L226)
 
 Infinite context config (Batch 3).
 
@@ -64,7 +64,7 @@ Infinite context config (Batch 3).
 
 > `optional` **observer**: `Partial`\<[`ObserverConfig`](ObserverConfig.md)\>
 
-Defined in: [packages/agentos/src/memory/core/config.ts:220](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/config.ts#L220)
+Defined in: [packages/agentos/src/cognition/memory/core/config.ts:220](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/config.ts#L220)
 
 Observer config (Batch 2).
 
@@ -74,7 +74,7 @@ Observer config (Batch 2).
 
 > `optional` **reflector**: `Partial`\<[`ReflectorConfig`](ReflectorConfig.md)\>
 
-Defined in: [packages/agentos/src/memory/core/config.ts:222](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/config.ts#L222)
+Defined in: [packages/agentos/src/cognition/memory/core/config.ts:222](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/config.ts#L222)
 
 Reflector config (Batch 2).
 
@@ -84,7 +84,7 @@ Reflector config (Batch 2).
 
 > `optional` **tokenBudget**: `Partial`\<[`MemoryBudgetAllocation`](MemoryBudgetAllocation.md)\>
 
-Defined in: [packages/agentos/src/memory/core/config.ts:214](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/config.ts#L214)
+Defined in: [packages/agentos/src/cognition/memory/core/config.ts:214](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/config.ts#L214)
 
 Token budget allocation percentages override.
 
@@ -94,6 +94,6 @@ Token budget allocation percentages override.
 
 > `optional` **workingMemoryCapacity**: `number`
 
-Defined in: [packages/agentos/src/memory/core/config.ts:212](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/config.ts#L212)
+Defined in: [packages/agentos/src/cognition/memory/core/config.ts:212](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/config.ts#L212)
 
 Working memory slot capacity override.

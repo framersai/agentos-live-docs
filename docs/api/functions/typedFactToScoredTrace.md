@@ -2,7 +2,7 @@
 
 > **typedFactToScoredTrace**(`fact`, `activation`, `scope`): [`ScoredMemoryTrace`](../interfaces/ScoredMemoryTrace.md)
 
-Defined in: [packages/agentos/src/memory/retrieval/typed-network/TypedNetworkRetriever.ts:160](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/typed-network/TypedNetworkRetriever.ts#L160)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/typed-network/TypedNetworkRetriever.ts:160](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/typed-network/TypedNetworkRetriever.ts#L160)
 
 Convert a [TypedFact](../interfaces/TypedFact.md) into a [ScoredMemoryTrace](../interfaces/ScoredMemoryTrace.md) for
 the bench's downstream reader pipeline. Renders the bank label

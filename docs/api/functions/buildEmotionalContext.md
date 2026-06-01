@@ -2,7 +2,7 @@
 
 > **buildEmotionalContext**(`currentMood`, `gmiMood`, `contentSentiment?`): [`EmotionalContext`](../interfaces/EmotionalContext.md)
 
-Defined in: [packages/agentos/src/memory/core/encoding/EncodingModel.ts:145](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/encoding/EncodingModel.ts#L145)
+Defined in: [packages/agentos/src/cognition/memory/core/encoding/EncodingModel.ts:145](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/encoding/EncodingModel.ts#L145)
 
 Create the EmotionalContext snapshot for a memory trace.
 Blends content sentiment with current mood (70/30 split).

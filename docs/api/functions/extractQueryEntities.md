@@ -2,7 +2,7 @@
 
 > **extractQueryEntities**(`text`): `string`[]
 
-Defined in: [packages/agentos/src/memory/retrieval/typed-network/TypedNetworkRetriever.ts:47](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/typed-network/TypedNetworkRetriever.ts#L47)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/typed-network/TypedNetworkRetriever.ts:47](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/typed-network/TypedNetworkRetriever.ts#L47)
 
 Extract candidate entity strings from a query. Matches the
 Mem0-v3-style regex extractor used at ingest time so query and

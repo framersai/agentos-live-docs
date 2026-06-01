@@ -2,7 +2,7 @@
 
 > **imageToBuffer**(`input`): `Promise`\<`Buffer`\>
 
-Defined in: [packages/agentos/src/media/images/imageToBuffer.ts:41](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/media/images/imageToBuffer.ts#L41)
+Defined in: [packages/agentos/src/io/media/images/imageToBuffer.ts:41](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/io/media/images/imageToBuffer.ts#L41)
 
 Converts an image input from any of the supported formats into a `Buffer`.
 

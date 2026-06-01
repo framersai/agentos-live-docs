@@ -1,6 +1,6 @@
 # Interface: RetrieveStartEvent
 
-Defined in: [packages/agentos/src/query-router/types.ts:901](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/query-router/types.ts#L901)
+Defined in: [packages/agentos/src/orchestration/pipeline/query/types.ts:914](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/pipeline/query/types.ts#L914)
 
 Emitted when the retrieval phase begins.
 
@@ -10,7 +10,7 @@ Emitted when the retrieval phase begins.
 
 > **tier**: [`QueryTier`](../type-aliases/QueryTier.md)
 
-Defined in: [packages/agentos/src/query-router/types.ts:904](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/query-router/types.ts#L904)
+Defined in: [packages/agentos/src/orchestration/pipeline/query/types.ts:917](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/pipeline/query/types.ts#L917)
 
 The assigned tier driving retrieval strategy.
 
@@ -20,7 +20,7 @@ The assigned tier driving retrieval strategy.
 
 > **timestamp**: `number`
 
-Defined in: [packages/agentos/src/query-router/types.ts:906](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/query-router/types.ts#L906)
+Defined in: [packages/agentos/src/orchestration/pipeline/query/types.ts:919](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/pipeline/query/types.ts#L919)
 
 Timestamp when retrieval started.
 
@@ -30,4 +30,4 @@ Timestamp when retrieval started.
 
 > **type**: `"retrieve:start"`
 
-Defined in: [packages/agentos/src/query-router/types.ts:902](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/query-router/types.ts#L902)
+Defined in: [packages/agentos/src/orchestration/pipeline/query/types.ts:915](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/pipeline/query/types.ts#L915)

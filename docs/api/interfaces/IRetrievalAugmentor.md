@@ -1,6 +1,6 @@
 # Interface: IRetrievalAugmentor
 
-Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:255](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/IRetrievalAugmentor.ts#L255)
+Defined in: [packages/agentos/src/cognition/rag/IRetrievalAugmentor.ts:340](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/IRetrievalAugmentor.ts#L340)
 
 Primary contract for the Retrieval Augmentor implementation.
 
@@ -10,7 +10,7 @@ Primary contract for the Retrieval Augmentor implementation.
 
 > `readonly` **augmenterId**: `string`
 
-Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:256](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/IRetrievalAugmentor.ts#L256)
+Defined in: [packages/agentos/src/cognition/rag/IRetrievalAugmentor.ts:341](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/IRetrievalAugmentor.ts#L341)
 
 ## Methods
 
@@ -18,7 +18,7 @@ Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:256](https://github
 
 > **checkHealth**(): `Promise`\<\{ `details?`: `Record`\<`string`, `unknown`\>; `isHealthy`: `boolean`; \}\>
 
-Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:285](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/IRetrievalAugmentor.ts#L285)
+Defined in: [packages/agentos/src/cognition/rag/IRetrievalAugmentor.ts:379](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/IRetrievalAugmentor.ts#L379)
 
 #### Returns
 
@@ -30,7 +30,7 @@ Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:285](https://github
 
 > **deleteDocuments**(`documentIds`, `dataSourceId?`, `options?`): `Promise`\<\{ `errors?`: `object`[]; `failureCount`: `number`; `successCount`: `number`; \}\>
 
-Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:274](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/IRetrievalAugmentor.ts#L274)
+Defined in: [packages/agentos/src/cognition/rag/IRetrievalAugmentor.ts:368](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/IRetrievalAugmentor.ts#L368)
 
 #### Parameters
 
@@ -54,11 +54,35 @@ Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:274](https://github
 
 ***
 
+### embedTexts()
+
+> **embedTexts**(`texts`): `Promise`\<`number`[][]\>
+
+Defined in: [packages/agentos/src/cognition/rag/IRetrievalAugmentor.ts:366](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/IRetrievalAugmentor.ts#L366)
+
+Batch-embed a list of texts using the same embedding model the augmentor
+uses for retrieval. Exposed so consumers (e.g. [CitationVerifier](../classes/CitationVerifier.md)
+via the agent-level `verifyCitations: { retrievalAugmentor }` shortcut)
+can share a single embedding pipeline rather than wiring an embedder
+twice with potentially-divergent model configs.
+
+#### Parameters
+
+##### texts
+
+`string`[]
+
+#### Returns
+
+`Promise`\<`number`[][]\>
+
+***
+
 ### ingestDocuments()
 
 > **ingestDocuments**(`documents`, `options?`): `Promise`\<[`RagIngestionResult`](RagIngestionResult.md)\>
 
-Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:264](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/IRetrievalAugmentor.ts#L264)
+Defined in: [packages/agentos/src/cognition/rag/IRetrievalAugmentor.ts:349](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/IRetrievalAugmentor.ts#L349)
 
 #### Parameters
 
@@ -80,7 +104,7 @@ Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:264](https://github
 
 > **initialize**(`config`, `embeddingManager`, `vectorStoreManager`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:258](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/IRetrievalAugmentor.ts#L258)
+Defined in: [packages/agentos/src/cognition/rag/IRetrievalAugmentor.ts:343](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/IRetrievalAugmentor.ts#L343)
 
 #### Parameters
 
@@ -106,7 +130,7 @@ Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:258](https://github
 
 > **retrieveContext**(`queryText`, `options?`): `Promise`\<[`RagRetrievalResult`](RagRetrievalResult.md)\>
 
-Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:269](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/IRetrievalAugmentor.ts#L269)
+Defined in: [packages/agentos/src/cognition/rag/IRetrievalAugmentor.ts:354](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/IRetrievalAugmentor.ts#L354)
 
 #### Parameters
 
@@ -128,7 +152,7 @@ Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:269](https://github
 
 > **shutdown**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:287](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/IRetrievalAugmentor.ts#L287)
+Defined in: [packages/agentos/src/cognition/rag/IRetrievalAugmentor.ts:381](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/IRetrievalAugmentor.ts#L381)
 
 #### Returns
 
@@ -140,7 +164,7 @@ Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:287](https://github
 
 > **updateDocuments**(`documents`, `options?`): `Promise`\<[`RagIngestionResult`](RagIngestionResult.md)\>
 
-Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:280](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/IRetrievalAugmentor.ts#L280)
+Defined in: [packages/agentos/src/cognition/rag/IRetrievalAugmentor.ts:374](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/IRetrievalAugmentor.ts#L374)
 
 #### Parameters
 

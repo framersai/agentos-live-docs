@@ -1,6 +1,6 @@
 # Interface: SkillConfig
 
-Defined in: [packages/agentos/src/skills/types.ts:282](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/skills/types.ts#L282)
+Defined in: [packages/agentos/src/cognition/skills/types.ts:282](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/skills/types.ts#L282)
 
 Per-skill configuration.
 
@@ -10,7 +10,7 @@ Per-skill configuration.
 
 > `optional` **apiKey**: `string`
 
-Defined in: [packages/agentos/src/skills/types.ts:287](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/skills/types.ts#L287)
+Defined in: [packages/agentos/src/cognition/skills/types.ts:287](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/skills/types.ts#L287)
 
 API key for the skill
 
@@ -20,7 +20,7 @@ API key for the skill
 
 > `optional` **config**: `Record`\<`string`, `unknown`\>
 
-Defined in: [packages/agentos/src/skills/types.ts:293](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/skills/types.ts#L293)
+Defined in: [packages/agentos/src/cognition/skills/types.ts:293](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/skills/types.ts#L293)
 
 Additional configuration
 
@@ -30,7 +30,7 @@ Additional configuration
 
 > `optional` **enabled**: `boolean`
 
-Defined in: [packages/agentos/src/skills/types.ts:284](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/skills/types.ts#L284)
+Defined in: [packages/agentos/src/cognition/skills/types.ts:284](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/skills/types.ts#L284)
 
 Whether the skill is enabled
 
@@ -40,6 +40,6 @@ Whether the skill is enabled
 
 > `optional` **env**: `Record`\<`string`, `string`\>
 
-Defined in: [packages/agentos/src/skills/types.ts:290](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/skills/types.ts#L290)
+Defined in: [packages/agentos/src/cognition/skills/types.ts:290](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/skills/types.ts#L290)
 
 Environment variable overrides

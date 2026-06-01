@@ -1,6 +1,6 @@
 # Class: ConsolidationPipeline
 
-Defined in: [packages/agentos/src/memory/pipeline/consolidation/ConsolidationPipeline.ts:85](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/pipeline/consolidation/ConsolidationPipeline.ts#L85)
+Defined in: [packages/agentos/src/cognition/memory/pipeline/consolidation/ConsolidationPipeline.ts:92](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/pipeline/consolidation/ConsolidationPipeline.ts#L92)
 
 ## Constructors
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/memory/pipeline/consolidation/ConsolidationPip
 
 > **new ConsolidationPipeline**(`config`): `ConsolidationPipeline`
 
-Defined in: [packages/agentos/src/memory/pipeline/consolidation/ConsolidationPipeline.ts:92](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/pipeline/consolidation/ConsolidationPipeline.ts#L92)
+Defined in: [packages/agentos/src/cognition/memory/pipeline/consolidation/ConsolidationPipeline.ts:99](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/pipeline/consolidation/ConsolidationPipeline.ts#L99)
 
 #### Parameters
 
@@ -26,7 +26,7 @@ Defined in: [packages/agentos/src/memory/pipeline/consolidation/ConsolidationPip
 
 > **getLastRunAt**(): `number`
 
-Defined in: [packages/agentos/src/memory/pipeline/consolidation/ConsolidationPipeline.ts:208](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/pipeline/consolidation/ConsolidationPipeline.ts#L208)
+Defined in: [packages/agentos/src/cognition/memory/pipeline/consolidation/ConsolidationPipeline.ts:215](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/pipeline/consolidation/ConsolidationPipeline.ts#L215)
 
 Get timestamp of last consolidation run.
 
@@ -40,7 +40,7 @@ Get timestamp of last consolidation run.
 
 > **run**(): `Promise`\<[`ConsolidationResult`](../interfaces/ConsolidationResult.md)\>
 
-Defined in: [packages/agentos/src/memory/pipeline/consolidation/ConsolidationPipeline.ts:136](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/pipeline/consolidation/ConsolidationPipeline.ts#L136)
+Defined in: [packages/agentos/src/cognition/memory/pipeline/consolidation/ConsolidationPipeline.ts:143](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/pipeline/consolidation/ConsolidationPipeline.ts#L143)
 
 Run a single consolidation cycle.
 
@@ -54,7 +54,7 @@ Run a single consolidation cycle.
 
 > **start**(): `void`
 
-Defined in: [packages/agentos/src/memory/pipeline/consolidation/ConsolidationPipeline.ts:112](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/pipeline/consolidation/ConsolidationPipeline.ts#L112)
+Defined in: [packages/agentos/src/cognition/memory/pipeline/consolidation/ConsolidationPipeline.ts:119](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/pipeline/consolidation/ConsolidationPipeline.ts#L119)
 
 Start the periodic consolidation timer.
 
@@ -76,7 +76,7 @@ directly or trigger it via [CognitiveMemoryManager.runConsolidation](CognitiveMe
 
 > **stop**(): `void`
 
-Defined in: [packages/agentos/src/memory/pipeline/consolidation/ConsolidationPipeline.ts:126](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/pipeline/consolidation/ConsolidationPipeline.ts#L126)
+Defined in: [packages/agentos/src/cognition/memory/pipeline/consolidation/ConsolidationPipeline.ts:133](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/pipeline/consolidation/ConsolidationPipeline.ts#L133)
 
 Stop the periodic consolidation timer.
 

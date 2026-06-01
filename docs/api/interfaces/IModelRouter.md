@@ -1,6 +1,6 @@
 # Interface: IModelRouter
 
-Defined in: [packages/agentos/src/core/llm/routing/IModelRouter.ts:117](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/core/llm/routing/IModelRouter.ts#L117)
+Defined in: [packages/agentos/src/core/llm/routing/IModelRouter.ts:117](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/core/llm/routing/IModelRouter.ts#L117)
 
 Interface for the Model Router.
 Implementations are responsible for selecting an appropriate AI model and provider
@@ -12,7 +12,7 @@ based on the given parameters and context.
 
 > `readonly` **routerId**: `string`
 
-Defined in: [packages/agentos/src/core/llm/routing/IModelRouter.ts:119](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/core/llm/routing/IModelRouter.ts#L119)
+Defined in: [packages/agentos/src/core/llm/routing/IModelRouter.ts:119](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/core/llm/routing/IModelRouter.ts#L119)
 
 A unique identifier for this specific router implementation.
 
@@ -22,7 +22,7 @@ A unique identifier for this specific router implementation.
 
 > **initialize**(`config`, `providerManager`, `promptEngine?`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/core/llm/routing/IModelRouter.ts:133](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/core/llm/routing/IModelRouter.ts#L133)
+Defined in: [packages/agentos/src/core/llm/routing/IModelRouter.ts:133](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/core/llm/routing/IModelRouter.ts#L133)
 
 **`Async`**
 
@@ -66,7 +66,7 @@ If initialization fails (e.g., invalid configuration).
 
 > **selectModel**(`params`, `availableModels?`): `Promise`\<[`ModelRouteResult`](ModelRouteResult.md) \| `null`\>
 
-Defined in: [packages/agentos/src/core/llm/routing/IModelRouter.ts:150](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/core/llm/routing/IModelRouter.ts#L150)
+Defined in: [packages/agentos/src/core/llm/routing/IModelRouter.ts:150](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/core/llm/routing/IModelRouter.ts#L150)
 
 **`Async`**
 

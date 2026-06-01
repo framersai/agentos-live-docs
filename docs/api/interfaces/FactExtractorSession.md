@@ -1,6 +1,6 @@
 # Interface: FactExtractorSession
 
-Defined in: [packages/agentos/src/memory/retrieval/fact-graph/FactExtractor.ts:20](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/fact-graph/FactExtractor.ts#L20)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/fact-graph/FactExtractor.ts:20](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/fact-graph/FactExtractor.ts#L20)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/memory/retrieval/fact-graph/FactExtractor.ts:2
 
 > **date**: `string`
 
-Defined in: [packages/agentos/src/memory/retrieval/fact-graph/FactExtractor.ts:23](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/fact-graph/FactExtractor.ts#L23)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/fact-graph/FactExtractor.ts:23](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/fact-graph/FactExtractor.ts#L23)
 
 ISO date — used as the fact timestamp.
 
@@ -18,7 +18,7 @@ ISO date — used as the fact timestamp.
 
 > **sessionId**: `string`
 
-Defined in: [packages/agentos/src/memory/retrieval/fact-graph/FactExtractor.ts:21](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/fact-graph/FactExtractor.ts#L21)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/fact-graph/FactExtractor.ts:21](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/fact-graph/FactExtractor.ts#L21)
 
 ***
 
@@ -26,4 +26,4 @@ Defined in: [packages/agentos/src/memory/retrieval/fact-graph/FactExtractor.ts:2
 
 > **turns**: readonly `object`[]
 
-Defined in: [packages/agentos/src/memory/retrieval/fact-graph/FactExtractor.ts:24](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/fact-graph/FactExtractor.ts#L24)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/fact-graph/FactExtractor.ts:24](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/fact-graph/FactExtractor.ts#L24)

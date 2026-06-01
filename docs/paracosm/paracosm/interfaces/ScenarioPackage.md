@@ -1,6 +1,6 @@
 # Interface: ScenarioPackage
 
-Defined in: [apps/paracosm/src/engine/types.ts:415](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/engine/types.ts#L415)
+Defined in: [apps/paracosm/src/engine/types.ts:423](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/types.ts#L423)
 
 The top-level contract for a Paracosm scenario.
 Defines everything the engine needs to run a closed-state, turn-based
@@ -22,7 +22,7 @@ const myScenario: ScenarioPackage = { ... };
 
 > **departments**: `DepartmentDefinition`[]
 
-Defined in: [apps/paracosm/src/engine/types.ts:428](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/engine/types.ts#L428)
+Defined in: [apps/paracosm/src/engine/types.ts:443](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/types.ts#L443)
 
 ***
 
@@ -30,7 +30,7 @@ Defined in: [apps/paracosm/src/engine/types.ts:428](https://github.com/framersai
 
 > **effects**: `EffectDefinition`[]
 
-Defined in: [apps/paracosm/src/engine/types.ts:431](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/engine/types.ts#L431)
+Defined in: [apps/paracosm/src/engine/types.ts:446](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/types.ts#L446)
 
 ***
 
@@ -38,7 +38,7 @@ Defined in: [apps/paracosm/src/engine/types.ts:431](https://github.com/framersai
 
 > **engineArchetype**: `"closed_turn_based_settlement"`
 
-Defined in: [apps/paracosm/src/engine/types.ts:421](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/engine/types.ts#L421)
+Defined in: [apps/paracosm/src/engine/types.ts:436](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/types.ts#L436)
 
 Engine archetype this scenario targets
 
@@ -48,7 +48,7 @@ Engine archetype this scenario targets
 
 > **events**: `EventDefinition`[]
 
-Defined in: [apps/paracosm/src/engine/types.ts:430](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/engine/types.ts#L430)
+Defined in: [apps/paracosm/src/engine/types.ts:445](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/types.ts#L445)
 
 ***
 
@@ -56,7 +56,7 @@ Defined in: [apps/paracosm/src/engine/types.ts:430](https://github.com/framersai
 
 > **hooks**: `ScenarioHooks`
 
-Defined in: [apps/paracosm/src/engine/types.ts:436](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/engine/types.ts#L436)
+Defined in: [apps/paracosm/src/engine/types.ts:451](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/types.ts#L451)
 
 ***
 
@@ -64,7 +64,7 @@ Defined in: [apps/paracosm/src/engine/types.ts:436](https://github.com/framersai
 
 > **id**: `string`
 
-Defined in: [apps/paracosm/src/engine/types.ts:417](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/engine/types.ts#L417)
+Defined in: [apps/paracosm/src/engine/types.ts:425](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/types.ts#L425)
 
 Unique scenario identifier (e.g., "mars-genesis", "lunar-outpost")
 
@@ -74,7 +74,7 @@ Unique scenario identifier (e.g., "mars-genesis", "lunar-outpost")
 
 > **knowledge**: `KnowledgeBundle`
 
-Defined in: [apps/paracosm/src/engine/types.ts:433](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/engine/types.ts#L433)
+Defined in: [apps/paracosm/src/engine/types.ts:448](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/types.ts#L448)
 
 ***
 
@@ -82,7 +82,7 @@ Defined in: [apps/paracosm/src/engine/types.ts:433](https://github.com/framersai
 
 > **labels**: `ScenarioLabels`
 
-Defined in: [apps/paracosm/src/engine/types.ts:423](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/engine/types.ts#L423)
+Defined in: [apps/paracosm/src/engine/types.ts:438](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/types.ts#L438)
 
 ***
 
@@ -90,7 +90,7 @@ Defined in: [apps/paracosm/src/engine/types.ts:423](https://github.com/framersai
 
 > **metrics**: `MetricDefinition`[]
 
-Defined in: [apps/paracosm/src/engine/types.ts:429](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/engine/types.ts#L429)
+Defined in: [apps/paracosm/src/engine/types.ts:444](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/types.ts#L444)
 
 ***
 
@@ -98,7 +98,7 @@ Defined in: [apps/paracosm/src/engine/types.ts:429](https://github.com/framersai
 
 > **policies**: `ScenarioPolicies`
 
-Defined in: [apps/paracosm/src/engine/types.ts:434](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/engine/types.ts#L434)
+Defined in: [apps/paracosm/src/engine/types.ts:449](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/types.ts#L449)
 
 ***
 
@@ -106,7 +106,7 @@ Defined in: [apps/paracosm/src/engine/types.ts:434](https://github.com/framersai
 
 > **presets**: `ScenarioPreset`[]
 
-Defined in: [apps/paracosm/src/engine/types.ts:435](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/engine/types.ts#L435)
+Defined in: [apps/paracosm/src/engine/types.ts:450](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/types.ts#L450)
 
 ***
 
@@ -114,7 +114,20 @@ Defined in: [apps/paracosm/src/engine/types.ts:435](https://github.com/framersai
 
 > **setup**: `ScenarioSetupSchema`
 
-Defined in: [apps/paracosm/src/engine/types.ts:425](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/engine/types.ts#L425)
+Defined in: [apps/paracosm/src/engine/types.ts:440](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/types.ts#L440)
+
+***
+
+### sourceUrl?
+
+> `optional` **sourceUrl**: `string`
+
+Defined in: [apps/paracosm/src/engine/types.ts:432](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/types.ts#L432)
+
+Optional permalink to the scenario JSON in the public repo (e.g.
+https://github.com/framersai/paracosm/blob/master/scenarios/mars.json).
+Surfaced in the dashboard so users can read or fork the scenario
+source from the settings panel without leaving the app.
 
 ***
 
@@ -122,7 +135,7 @@ Defined in: [apps/paracosm/src/engine/types.ts:425](https://github.com/framersai
 
 > **theme**: `ScenarioTheme`
 
-Defined in: [apps/paracosm/src/engine/types.ts:424](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/engine/types.ts#L424)
+Defined in: [apps/paracosm/src/engine/types.ts:439](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/types.ts#L439)
 
 ***
 
@@ -130,7 +143,7 @@ Defined in: [apps/paracosm/src/engine/types.ts:424](https://github.com/framersai
 
 > **ui**: `ScenarioUiDefinition`
 
-Defined in: [apps/paracosm/src/engine/types.ts:432](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/engine/types.ts#L432)
+Defined in: [apps/paracosm/src/engine/types.ts:447](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/types.ts#L447)
 
 ***
 
@@ -138,7 +151,7 @@ Defined in: [apps/paracosm/src/engine/types.ts:432](https://github.com/framersai
 
 > **version**: `string`
 
-Defined in: [apps/paracosm/src/engine/types.ts:419](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/engine/types.ts#L419)
+Defined in: [apps/paracosm/src/engine/types.ts:434](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/types.ts#L434)
 
 Semantic version of this scenario definition
 
@@ -148,4 +161,4 @@ Semantic version of this scenario definition
 
 > **world**: `ScenarioWorldSchema`
 
-Defined in: [apps/paracosm/src/engine/types.ts:426](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/engine/types.ts#L426)
+Defined in: [apps/paracosm/src/engine/types.ts:441](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/types.ts#L441)

@@ -1,6 +1,6 @@
 # Interface: ITypedExtractionLLM
 
-Defined in: [packages/agentos/src/memory/retrieval/typed-network/TypedNetworkObserver.ts:54](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/typed-network/TypedNetworkObserver.ts#L54)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/typed-network/TypedNetworkObserver.ts:54](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/typed-network/TypedNetworkObserver.ts#L54)
 
 Provider-agnostic LLM interface for the extractor. Matches the
 shape used elsewhere in agentos for classifier / observer LLM
@@ -14,7 +14,7 @@ models, or test mocks.
 
 > **invoke**(`args`): `Promise`\<`string`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/typed-network/TypedNetworkObserver.ts:55](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/typed-network/TypedNetworkObserver.ts#L55)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/typed-network/TypedNetworkObserver.ts:55](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/typed-network/TypedNetworkObserver.ts#L55)
 
 #### Parameters
 

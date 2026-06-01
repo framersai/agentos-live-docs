@@ -1,6 +1,6 @@
 # Interface: IngestionConfig
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:136](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/io/facade/types.ts#L136)
+Defined in: [packages/agentos/src/cognition/memory/io/facade/types.ts:136](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/io/facade/types.ts#L136)
 
 Controls how documents are split into chunks before being stored and indexed.
 
@@ -10,7 +10,7 @@ Controls how documents are split into chunks before being stored and indexed.
 
 > `optional` **chunkOverlap**: `number`
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:158](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/io/facade/types.ts#L158)
+Defined in: [packages/agentos/src/cognition/memory/io/facade/types.ts:158](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/io/facade/types.ts#L158)
 
 Overlap between consecutive chunks in tokens/characters.
 Prevents context loss at chunk boundaries.
@@ -27,7 +27,7 @@ Prevents context loss at chunk boundaries.
 
 > `optional` **chunkSize**: `number`
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:151](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/io/facade/types.ts#L151)
+Defined in: [packages/agentos/src/cognition/memory/io/facade/types.ts:151](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/io/facade/types.ts#L151)
 
 Target token/character count for each chunk.
 
@@ -43,7 +43,7 @@ Target token/character count for each chunk.
 
 > `optional` **chunkStrategy**: `"fixed"` \| `"semantic"` \| `"hierarchical"` \| `"layout"`
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:145](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/io/facade/types.ts#L145)
+Defined in: [packages/agentos/src/cognition/memory/io/facade/types.ts:145](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/io/facade/types.ts#L145)
 
 Strategy for splitting a document into indexable chunks.
 - `'fixed'`       – split at a fixed token/character count.
@@ -63,7 +63,7 @@ Strategy for splitting a document into indexable chunks.
 
 > `optional` **doclingEnabled**: `boolean`
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:179](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/io/facade/types.ts#L179)
+Defined in: [packages/agentos/src/cognition/memory/io/facade/types.ts:179](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/io/facade/types.ts#L179)
 
 Whether to use the Docling library for high-fidelity PDF/DOCX parsing.
 When `false`, a simpler text-extraction path is used.
@@ -80,7 +80,7 @@ false
 
 > `optional` **extractImages**: `boolean`
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:165](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/io/facade/types.ts#L165)
+Defined in: [packages/agentos/src/cognition/memory/io/facade/types.ts:165](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/io/facade/types.ts#L165)
 
 Whether to extract embedded images from documents (PDF, DOCX, etc.).
 Extracted images are stored as `ExtractedImage` objects.
@@ -97,7 +97,7 @@ false
 
 > `optional` **ocrEnabled**: `boolean`
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:172](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/io/facade/types.ts#L172)
+Defined in: [packages/agentos/src/cognition/memory/io/facade/types.ts:172](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/io/facade/types.ts#L172)
 
 Whether to run Optical Character Recognition on extracted images.
 Requires `extractImages: true`.
@@ -114,7 +114,7 @@ false
 
 > `optional` **visionLlm**: `string`
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:186](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/io/facade/types.ts#L186)
+Defined in: [packages/agentos/src/cognition/memory/io/facade/types.ts:186](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/io/facade/types.ts#L186)
 
 Vision-capable LLM model identifier used to caption extracted images.
 Only consulted when `extractImages: true`.

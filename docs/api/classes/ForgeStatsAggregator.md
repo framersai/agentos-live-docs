@@ -1,6 +1,6 @@
 # Class: ForgeStatsAggregator
 
-Defined in: [packages/agentos/src/emergent/ForgeStatsAggregator.ts:82](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/emergent/ForgeStatsAggregator.ts#L82)
+Defined in: [packages/agentos/src/cognition/emergent/ForgeStatsAggregator.ts:82](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/emergent/ForgeStatsAggregator.ts#L82)
 
 Aggregator for forge outcomes across a single run. No dependency on
 the cost tracker or any consumer-specific types — consumers compose
@@ -27,7 +27,7 @@ consumer ships to clients.
 
 > **recordAttempt**(`approved`, `confidence`, `toolName?`, `errorReason?`): `void`
 
-Defined in: [packages/agentos/src/emergent/ForgeStatsAggregator.ts:102](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/emergent/ForgeStatsAggregator.ts#L102)
+Defined in: [packages/agentos/src/cognition/emergent/ForgeStatsAggregator.ts:102](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/emergent/ForgeStatsAggregator.ts#L102)
 
 Record one forge attempt's outcome.
 
@@ -74,7 +74,7 @@ Optional rejection-reason string. On a rejected
 
 > **reset**(): `void`
 
-Defined in: [packages/agentos/src/emergent/ForgeStatsAggregator.ts:138](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/emergent/ForgeStatsAggregator.ts#L138)
+Defined in: [packages/agentos/src/cognition/emergent/ForgeStatsAggregator.ts:138](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/emergent/ForgeStatsAggregator.ts#L138)
 
 Clear all accumulated state. Useful when the aggregator is reused
 across multiple runs in one process.
@@ -89,7 +89,7 @@ across multiple runs in one process.
 
 > **snapshot**(): [`ForgeStats`](../interfaces/ForgeStats.md)
 
-Defined in: [packages/agentos/src/emergent/ForgeStatsAggregator.ts:127](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/emergent/ForgeStatsAggregator.ts#L127)
+Defined in: [packages/agentos/src/cognition/emergent/ForgeStatsAggregator.ts:127](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/emergent/ForgeStatsAggregator.ts#L127)
 
 Build a plain-object snapshot of current stats. Safe to JSON-serialize
 and ship to clients. Returns a shallow copy so callers can mutate

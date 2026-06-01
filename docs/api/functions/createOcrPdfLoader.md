@@ -2,7 +2,7 @@
 
 > **createOcrPdfLoader**(): [`IDocumentLoader`](../interfaces/IDocumentLoader.md) \| `null`
 
-Defined in: [packages/agentos/src/memory/io/ingestion/OcrPdfLoader.ts:161](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/io/ingestion/OcrPdfLoader.ts#L161)
+Defined in: [packages/agentos/src/cognition/memory/io/ingestion/OcrPdfLoader.ts:161](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/io/ingestion/OcrPdfLoader.ts#L161)
 
 Checks whether `tesseract.js` is available in the current environment and,
 if so, returns a new OCR PDF loader instance; otherwise returns `null`.

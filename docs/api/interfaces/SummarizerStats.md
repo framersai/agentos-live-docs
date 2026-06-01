@@ -1,6 +1,6 @@
 # Interface: SummarizerStats
 
-Defined in: [packages/agentos/src/memory/ingest/SessionSummarizer.ts:114](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/ingest/SessionSummarizer.ts#L114)
+Defined in: [packages/agentos/src/cognition/memory/ingest/SessionSummarizer.ts:114](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/ingest/SessionSummarizer.ts#L114)
 
 Summary cache stats for diagnostics / budget tracking.
 
@@ -10,7 +10,7 @@ Summary cache stats for diagnostics / budget tracking.
 
 > **hits**: `number`
 
-Defined in: [packages/agentos/src/memory/ingest/SessionSummarizer.ts:115](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/ingest/SessionSummarizer.ts#L115)
+Defined in: [packages/agentos/src/cognition/memory/ingest/SessionSummarizer.ts:115](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/ingest/SessionSummarizer.ts#L115)
 
 ***
 
@@ -18,7 +18,7 @@ Defined in: [packages/agentos/src/memory/ingest/SessionSummarizer.ts:115](https:
 
 > **misses**: `number`
 
-Defined in: [packages/agentos/src/memory/ingest/SessionSummarizer.ts:116](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/ingest/SessionSummarizer.ts#L116)
+Defined in: [packages/agentos/src/cognition/memory/ingest/SessionSummarizer.ts:116](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/ingest/SessionSummarizer.ts#L116)
 
 ***
 
@@ -26,7 +26,7 @@ Defined in: [packages/agentos/src/memory/ingest/SessionSummarizer.ts:116](https:
 
 > **tokensIn**: `number`
 
-Defined in: [packages/agentos/src/memory/ingest/SessionSummarizer.ts:119](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/ingest/SessionSummarizer.ts#L119)
+Defined in: [packages/agentos/src/cognition/memory/ingest/SessionSummarizer.ts:119](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/ingest/SessionSummarizer.ts#L119)
 
 Total tokens consumed on uncached LLM calls.
 
@@ -36,7 +36,7 @@ Total tokens consumed on uncached LLM calls.
 
 > **tokensOut**: `number`
 
-Defined in: [packages/agentos/src/memory/ingest/SessionSummarizer.ts:120](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/ingest/SessionSummarizer.ts#L120)
+Defined in: [packages/agentos/src/cognition/memory/ingest/SessionSummarizer.ts:120](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/ingest/SessionSummarizer.ts#L120)
 
 ***
 
@@ -44,4 +44,4 @@ Defined in: [packages/agentos/src/memory/ingest/SessionSummarizer.ts:120](https:
 
 > **writes**: `number`
 
-Defined in: [packages/agentos/src/memory/ingest/SessionSummarizer.ts:117](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/ingest/SessionSummarizer.ts#L117)
+Defined in: [packages/agentos/src/cognition/memory/ingest/SessionSummarizer.ts:117](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/ingest/SessionSummarizer.ts#L117)

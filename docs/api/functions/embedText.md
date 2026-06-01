@@ -2,7 +2,7 @@
 
 > **embedText**(`opts`): `Promise`\<[`EmbedTextResult`](../interfaces/EmbedTextResult.md)\>
 
-Defined in: [packages/agentos/src/api/embedText.ts:299](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/embedText.ts#L299)
+Defined in: [packages/agentos/src/api/embedText.ts:305](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/embedText.ts#L305)
 
 Generates embedding vectors for one or more text inputs using a
 provider-agnostic `provider:model` string.
@@ -44,14 +44,16 @@ import { embedText } from '@framers/agentos';
 
 // Single input
 const { embeddings } = await embedText({
-  provider: 'openai', model: 'text-embedding-3-small',
+  provider: 'openai',
+  model: 'text-embedding-3-small',
   input: 'Hello world',
 });
 console.log(embeddings[0].length); // 1536
 
 // Batch with reduced dimensions
 const batch = await embedText({
-  provider: 'openai', model: 'text-embedding-3-small',
+  provider: 'openai',
+  model: 'text-embedding-3-small',
   input: ['Hello', 'World'],
   dimensions: 256,
 });

@@ -2,6 +2,6 @@
 
 > `const` **SKILL\_COMMAND\_FALLBACK**: `"skill"` = `'skill'`
 
-Defined in: [packages/agentos/src/skills/types.ts:321](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/skills/types.ts#L321)
+Defined in: [packages/agentos/src/cognition/skills/types.ts:321](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/skills/types.ts#L321)
 
 Fallback command name

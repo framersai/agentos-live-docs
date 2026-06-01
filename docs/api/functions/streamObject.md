@@ -2,7 +2,7 @@
 
 > **streamObject**\<`T`\>(`opts`): [`StreamObjectResult`](../interfaces/StreamObjectResult.md)\<[`output`](../@framers/namespaces/z/namespaces/core/type-aliases/output.md)\<`T`\>\>
 
-Defined in: [packages/agentos/src/api/streamObject.ts:344](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/streamObject.ts#L344)
+Defined in: [packages/agentos/src/api/streamObject.ts:346](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/streamObject.ts#L346)
 
 Streams a structured object by incrementally parsing JSON as the LLM
 produces tokens, then validates the final result against a Zod schema.
@@ -44,7 +44,8 @@ import { z } from 'zod';
 import { streamObject } from '@framers/agentos';
 
 const result = streamObject({
-  provider: 'openai', model: 'gpt-4o',
+  provider: 'openai',
+  model: 'gpt-4o',
   schema: z.object({ name: z.string(), hobbies: z.array(z.string()) }),
   prompt: 'Create a profile for a fictional character.',
 });

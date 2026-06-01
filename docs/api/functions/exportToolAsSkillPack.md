@@ -2,7 +2,7 @@
 
 > **exportToolAsSkillPack**(`tool`, `outputDir`): `Promise`\<\{ `capabilityPath`: `string`; `skillPath`: `string`; \}\>
 
-Defined in: [packages/agentos/src/emergent/SkillExporter.ts:376](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/emergent/SkillExporter.ts#L376)
+Defined in: [packages/agentos/src/cognition/emergent/SkillExporter.ts:376](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/emergent/SkillExporter.ts#L376)
 
 Exports an emergent tool as a full skill pack (SKILL.md + CAPABILITY.yaml).
 

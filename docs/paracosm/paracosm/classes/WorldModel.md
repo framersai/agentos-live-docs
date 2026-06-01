@@ -1,6 +1,6 @@
 # Class: WorldModel
 
-Defined in: [apps/paracosm/src/runtime/world-model/index.ts:206](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/runtime/world-model/index.ts#L206)
+Defined in: [apps/paracosm/src/runtime/world-model/index.ts:206](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/world-model/index.ts#L206)
 
 A compiled, runnable world. Wraps a [ScenarioPackage](../interfaces/ScenarioPackage.md) with
 convenience methods for simulating single leaders or running a batch.
@@ -50,7 +50,7 @@ const artifact = await wm.simulate({ actor: leader, maxTurns: 8 });
 
 > `readonly` **scenario**: [`ScenarioPackage`](../interfaces/ScenarioPackage.md)
 
-Defined in: [apps/paracosm/src/runtime/world-model/index.ts:211](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/runtime/world-model/index.ts#L211)
+Defined in: [apps/paracosm/src/runtime/world-model/index.ts:211](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/world-model/index.ts#L211)
 
 The underlying compiled scenario. Exposed so callers can reuse the
 same compiled package across custom integrations.
@@ -61,7 +61,7 @@ same compiled package across custom integrations.
 
 > **batch**(`options`): `Promise`\<`BatchManifest`\>
 
-Defined in: [apps/paracosm/src/runtime/world-model/index.ts:459](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/runtime/world-model/index.ts#L459)
+Defined in: [apps/paracosm/src/runtime/world-model/index.ts:459](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/world-model/index.ts#L459)
 
 Run N leaders through this world in parallel via runBatch.
 `scenarios` is fixed to `[this.scenario]`; supply `leaders`, `turns`,
@@ -86,7 +86,7 @@ runBatch directly with an explicit `scenarios` array.
 
 > **fork**(`snapshot`, `opts?`): `Promise`\<`WorldModel`\>
 
-Defined in: [apps/paracosm/src/runtime/world-model/index.ts:556](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/runtime/world-model/index.ts#L556)
+Defined in: [apps/paracosm/src/runtime/world-model/index.ts:556](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/world-model/index.ts#L556)
 
 Construct a new WorldModel positioned at the snapshot's turn. The
 new WorldModel has no prior run of its own; calling `.simulate()`
@@ -126,7 +126,7 @@ Error when `snapshot.kernel.scenarioId !== this.scenario.id`.
 
 > **forkFromArtifact**(`artifact`, `atTurn`, `opts?`): `Promise`\<`WorldModel`\>
 
-Defined in: [apps/paracosm/src/runtime/world-model/index.ts:590](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/runtime/world-model/index.ts#L590)
+Defined in: [apps/paracosm/src/runtime/world-model/index.ts:590](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/world-model/index.ts#L590)
 
 Convenience: pulls the kernel snapshot at `atTurn` from
 `artifact.scenarioExtensions.kernelSnapshotsPerTurn` (populated
@@ -558,7 +558,7 @@ Error when the artifact has no embedded per-turn
 
 > **intervene**(`opts`): `Promise`\<\{ `aborted?`: `boolean`; `assumptions?`: `string`[]; `citations?`: `object`[]; `cost?`: \{ `breakdown?`: `Record`\<`string`, `number`\>; `cachedReadTokens?`: `number`; `cacheSavingsUSD?`: `number`; `inputTokens?`: `number`; `llmCalls?`: `number`; `outputTokens?`: `number`; `totalUSD`: `number`; \}; `decisions?`: `object`[]; `disclaimer?`: `string`; `finalState?`: \{ `capacities?`: `Record`\<`string`, `number`\>; `environment?`: `Record`\<`string`, `string` \| `number` \| `boolean`\>; `metrics`: `Record`\<`string`, `number`\>; `politics?`: `Record`\<`string`, `string` \| `number` \| `boolean`\>; `scenarioExtensions?`: `Record`\<`string`, `unknown`\>; `statuses?`: `Record`\<`string`, `string` \| `boolean`\>; \}; `finalSwarm?`: \{ `agents`: `object`[]; `births?`: `number`; `deaths?`: `number`; `morale?`: `number`; `population`: `number`; `scenarioExtensions?`: `Record`\<`string`, `unknown`\>; `time`: `number`; `turn`: `number`; \}; `fingerprint?`: `Record`\<`string`, `string` \| `number`\>; `forgedTools?`: `object`[]; `intervention?`: \{ `adherenceProfile?`: \{ `expected`: `number`; `risks?`: `string`[]; \}; `category?`: `string`; `description`: `string`; `duration?`: \{ `unit`: `string`; `value`: `number`; \}; `id`: `string`; `mechanism?`: `string`; `name`: `string`; `scenarioExtensions?`: `Record`\<`string`, `unknown`\>; `targetBehaviors?`: `string`[]; \}; `leveragePoints?`: `string`[]; `metadata`: \{ `completedAt?`: `string`; `forkedFrom?`: \{ `atTurn`: `number`; `parentRunId`: `string`; \}; `mode`: `"turn-loop"` \| `"batch-trajectory"` \| `"batch-point"`; `runId`: `string`; `scenario`: \{ `id`: `string`; `name`: `string`; `version?`: `string`; \}; `scenarioExtensions?`: `Record`\<`string`, `unknown`\>; `seed?`: `number`; `startedAt`: `string`; \}; `overview?`: `string`; `providerError?`: \{ `actionUrl?`: `string`; `kind`: `"unknown"` \| `"auth"` \| `"quota"` \| `"rate_limit"` \| `"network"`; `message`: `string`; `provider`: `string`; \} \| `null`; `riskFlags?`: `object`[]; `scenarioExtensions?`: `Record`\<`string`, `unknown`\>; `specialistNotes?`: `object`[]; `subject?`: \{ `conditions?`: `string`[]; `id`: `string`; `markers?`: `object`[]; `name`: `string`; `personality?`: `Record`\<`string`, `number`\>; `profile?`: `Record`\<`string`, `unknown`\>; `scenarioExtensions?`: `Record`\<`string`, `unknown`\>; `signals?`: `object`[]; \}; `trajectory?`: \{ `points?`: `object`[]; `timepoints?`: `object`[]; `timeUnit`: \{ `plural`: `string`; `singular`: `string`; \}; \}; \}\>
 
-Defined in: [apps/paracosm/src/runtime/world-model/index.ts:447](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/runtime/world-model/index.ts#L447)
+Defined in: [apps/paracosm/src/runtime/world-model/index.ts:447](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/world-model/index.ts#L447)
 
 Simulate an intervention applied to a subject within this world.
 
@@ -604,7 +604,7 @@ console.log(artifact.subject, artifact.intervention);
 
 > **quickstart**(`options?`): `Promise`\<[`WorldModelQuickstartResult`](../interfaces/WorldModelQuickstartResult.md)\>
 
-Defined in: [apps/paracosm/src/runtime/world-model/index.ts:484](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/runtime/world-model/index.ts#L484)
+Defined in: [apps/paracosm/src/runtime/world-model/index.ts:484](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/world-model/index.ts#L484)
 
 Quickstart: generate N contextual HEXACO leaders for this world and
 run them in parallel against the same seed. Leaders are produced by
@@ -640,7 +640,7 @@ artifacts.forEach((a, i) => console.log(actors[i].name, a.fingerprint));
 
 > **replay**(`artifact`): `Promise`\<[`WorldModelReplayResult`](../interfaces/WorldModelReplayResult.md)\>
 
-Defined in: [apps/paracosm/src/runtime/world-model/index.ts:638](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/runtime/world-model/index.ts#L638)
+Defined in: [apps/paracosm/src/runtime/world-model/index.ts:638](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/world-model/index.ts#L638)
 
 Re-execute the kernel transitions captured in `artifact` and report
 whether today's kernel produces the same snapshots. The audit
@@ -1078,7 +1078,7 @@ WorldModelReplayError when preconditions fail.
 
 > **simulate**(`opts`): `Promise`\<\{ `aborted?`: `boolean`; `assumptions?`: `string`[]; `citations?`: `object`[]; `cost?`: \{ `breakdown?`: `Record`\<`string`, `number`\>; `cachedReadTokens?`: `number`; `cacheSavingsUSD?`: `number`; `inputTokens?`: `number`; `llmCalls?`: `number`; `outputTokens?`: `number`; `totalUSD`: `number`; \}; `decisions?`: `object`[]; `disclaimer?`: `string`; `finalState?`: \{ `capacities?`: `Record`\<`string`, `number`\>; `environment?`: `Record`\<`string`, `string` \| `number` \| `boolean`\>; `metrics`: `Record`\<`string`, `number`\>; `politics?`: `Record`\<`string`, `string` \| `number` \| `boolean`\>; `scenarioExtensions?`: `Record`\<`string`, `unknown`\>; `statuses?`: `Record`\<`string`, `string` \| `boolean`\>; \}; `finalSwarm?`: \{ `agents`: `object`[]; `births?`: `number`; `deaths?`: `number`; `morale?`: `number`; `population`: `number`; `scenarioExtensions?`: `Record`\<`string`, `unknown`\>; `time`: `number`; `turn`: `number`; \}; `fingerprint?`: `Record`\<`string`, `string` \| `number`\>; `forgedTools?`: `object`[]; `intervention?`: \{ `adherenceProfile?`: \{ `expected`: `number`; `risks?`: `string`[]; \}; `category?`: `string`; `description`: `string`; `duration?`: \{ `unit`: `string`; `value`: `number`; \}; `id`: `string`; `mechanism?`: `string`; `name`: `string`; `scenarioExtensions?`: `Record`\<`string`, `unknown`\>; `targetBehaviors?`: `string`[]; \}; `leveragePoints?`: `string`[]; `metadata`: \{ `completedAt?`: `string`; `forkedFrom?`: \{ `atTurn`: `number`; `parentRunId`: `string`; \}; `mode`: `"turn-loop"` \| `"batch-trajectory"` \| `"batch-point"`; `runId`: `string`; `scenario`: \{ `id`: `string`; `name`: `string`; `version?`: `string`; \}; `scenarioExtensions?`: `Record`\<`string`, `unknown`\>; `seed?`: `number`; `startedAt`: `string`; \}; `overview?`: `string`; `providerError?`: \{ `actionUrl?`: `string`; `kind`: `"unknown"` \| `"auth"` \| `"quota"` \| `"rate_limit"` \| `"network"`; `message`: `string`; `provider`: `string`; \} \| `null`; `riskFlags?`: `object`[]; `scenarioExtensions?`: `Record`\<`string`, `unknown`\>; `specialistNotes?`: `object`[]; `subject?`: \{ `conditions?`: `string`[]; `id`: `string`; `markers?`: `object`[]; `name`: `string`; `personality?`: `Record`\<`string`, `number`\>; `profile?`: `Record`\<`string`, `unknown`\>; `scenarioExtensions?`: `Record`\<`string`, `unknown`\>; `signals?`: `object`[]; \}; `trajectory?`: \{ `points?`: `object`[]; `timepoints?`: `object`[]; `timeUnit`: \{ `plural`: `string`; `singular`: `string`; \}; \}; \}\>
 
-Defined in: [apps/paracosm/src/runtime/world-model/index.ts:376](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/runtime/world-model/index.ts#L376)
+Defined in: [apps/paracosm/src/runtime/world-model/index.ts:376](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/world-model/index.ts#L376)
 
 Run a single simulation through this world with the given leader.
 Delegates to runSimulation with `scenario` pinned to this
@@ -1112,7 +1112,7 @@ WorldModel does not double-apply.
 
 > **snapshot**(): [`WorldModelSnapshot`](../interfaces/WorldModelSnapshot.md)
 
-Defined in: [apps/paracosm/src/runtime/world-model/index.ts:524](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/runtime/world-model/index.ts#L524)
+Defined in: [apps/paracosm/src/runtime/world-model/index.ts:524](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/world-model/index.ts#L524)
 
 Capture a [WorldModelSnapshot](../interfaces/WorldModelSnapshot.md) of the state at the end of
 this WorldModel's most recent `simulate()` call. Requires
@@ -1137,7 +1137,7 @@ Error when this WorldModel has never run simulate(), or
 
 > `static` **fromJson**(`worldJson`, `options?`): `Promise`\<`WorldModel`\>
 
-Defined in: [apps/paracosm/src/runtime/world-model/index.ts:257](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/runtime/world-model/index.ts#L257)
+Defined in: [apps/paracosm/src/runtime/world-model/index.ts:257](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/world-model/index.ts#L257)
 
 Compile a raw scenario JSON into a runnable WorldModel.
 
@@ -1165,7 +1165,7 @@ supported.
 
 > `static` **fromPrompt**(`seed`, `options?`): `Promise`\<`WorldModel`\>
 
-Defined in: [apps/paracosm/src/runtime/world-model/index.ts:295](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/runtime/world-model/index.ts#L295)
+Defined in: [apps/paracosm/src/runtime/world-model/index.ts:295](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/world-model/index.ts#L295)
 
 Compile a world model from prompt, brief, or document text (with an
 optional domain hint and source URL). Delegates to
@@ -1206,7 +1206,7 @@ const result = await wm.quickstart({ actorCount: 3 });
 
 > `static` **fromScenario**(`scenario`): `WorldModel`
 
-Defined in: [apps/paracosm/src/runtime/world-model/index.ts:272](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/runtime/world-model/index.ts#L272)
+Defined in: [apps/paracosm/src/runtime/world-model/index.ts:272](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/world-model/index.ts#L272)
 
 Wrap an already-compiled [ScenarioPackage](../interfaces/ScenarioPackage.md) (e.g. `marsScenario`,
 `lunarScenario`, or any cached result of a prior `compileScenario`
@@ -1230,7 +1230,7 @@ Pure construction, no I/O.
 
 > `static` **swarm**(`artifact`): \{ `agents`: `object`[]; `births?`: `number`; `deaths?`: `number`; `morale?`: `number`; `population`: `number`; `scenarioExtensions?`: `Record`\<`string`, `unknown`\>; `time`: `number`; `turn`: `number`; \} \| `undefined`
 
-Defined in: [apps/paracosm/src/runtime/world-model/index.ts:328](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/runtime/world-model/index.ts#L328)
+Defined in: [apps/paracosm/src/runtime/world-model/index.ts:328](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/world-model/index.ts#L328)
 
 Final agent-swarm snapshot from a [RunArtifact](../type-aliases/RunArtifact.md), or `undefined`
 if the run did not produce one (e.g., batch-point modes that bypass
@@ -1707,7 +1707,7 @@ if (swarm) {
 
 > `static` **swarmByDepartment**(`artifact`): `Record`\<`string`, [`SwarmAgent`](../schema/type-aliases/SwarmAgent.md)[]\>
 
-Defined in: [apps/paracosm/src/runtime/world-model/index.ts:341](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/runtime/world-model/index.ts#L341)
+Defined in: [apps/paracosm/src/runtime/world-model/index.ts:341](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/world-model/index.ts#L341)
 
 Group the swarm by department. Returns a map keyed by department
 label; values are the (alive + dead) agents in that department,
@@ -2128,7 +2128,7 @@ Rich labeled snapshots with narrative + score; good for timepoint cards.
 
 > `static` **swarmFamilyTree**(`artifact`): `Record`\<`string`, `string`[]\>
 
-Defined in: [apps/paracosm/src/runtime/world-model/index.ts:355](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/runtime/world-model/index.ts#L355)
+Defined in: [apps/paracosm/src/runtime/world-model/index.ts:355](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/world-model/index.ts#L355)
 
 Build a family-tree adjacency map from the swarm: parent agentId →
 list of direct-descendant agentIds. Edge direction is parent→child;

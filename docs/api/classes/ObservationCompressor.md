@@ -1,6 +1,6 @@
 # Class: ObservationCompressor
 
-Defined in: [packages/agentos/src/memory/pipeline/observation/ObservationCompressor.ts:122](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/pipeline/observation/ObservationCompressor.ts#L122)
+Defined in: [packages/agentos/src/cognition/memory/pipeline/observation/ObservationCompressor.ts:122](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/pipeline/observation/ObservationCompressor.ts#L122)
 
 LLM-based compressor that takes a batch of [ObservationNote](../interfaces/ObservationNote.md) objects
 and produces denser [CompressedObservation](../interfaces/CompressedObservation.md) summaries.
@@ -16,7 +16,7 @@ and a human-friendly relative time label.
 
 > **new ObservationCompressor**(`llmInvoker`, `traits?`): `ObservationCompressor`
 
-Defined in: [packages/agentos/src/memory/pipeline/observation/ObservationCompressor.ts:127](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/pipeline/observation/ObservationCompressor.ts#L127)
+Defined in: [packages/agentos/src/cognition/memory/pipeline/observation/ObservationCompressor.ts:127](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/pipeline/observation/ObservationCompressor.ts#L127)
 
 #### Parameters
 
@@ -42,7 +42,7 @@ Optional HEXACO personality traits for bias-aware compression.
 
 > **compress**(`notes`): `Promise`\<[`CompressedObservation`](../interfaces/CompressedObservation.md)[]\>
 
-Defined in: [packages/agentos/src/memory/pipeline/observation/ObservationCompressor.ts:144](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/pipeline/observation/ObservationCompressor.ts#L144)
+Defined in: [packages/agentos/src/cognition/memory/pipeline/observation/ObservationCompressor.ts:144](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/pipeline/observation/ObservationCompressor.ts#L144)
 
 Compress a batch of observation notes into denser summaries.
 

@@ -1,6 +1,6 @@
 # Interface: StartListeningInput
 
-Defined in: [packages/agentos/src/channels/telephony/IVoiceCallProvider.ts:76](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/channels/telephony/IVoiceCallProvider.ts#L76)
+Defined in: [packages/agentos/src/io/channels/telephony/IVoiceCallProvider.ts:76](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/io/channels/telephony/IVoiceCallProvider.ts#L76)
 
 Parameters for starting STT listening on a call.
 
@@ -10,7 +10,7 @@ Parameters for starting STT listening on a call.
 
 > `optional` **language**: `string`
 
-Defined in: [packages/agentos/src/channels/telephony/IVoiceCallProvider.ts:80](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/channels/telephony/IVoiceCallProvider.ts#L80)
+Defined in: [packages/agentos/src/io/channels/telephony/IVoiceCallProvider.ts:80](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/io/channels/telephony/IVoiceCallProvider.ts#L80)
 
 Language hint.
 
@@ -20,6 +20,6 @@ Language hint.
 
 > **providerCallId**: `string`
 
-Defined in: [packages/agentos/src/channels/telephony/IVoiceCallProvider.ts:78](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/channels/telephony/IVoiceCallProvider.ts#L78)
+Defined in: [packages/agentos/src/io/channels/telephony/IVoiceCallProvider.ts:78](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/io/channels/telephony/IVoiceCallProvider.ts#L78)
 
 Provider-assigned call ID.

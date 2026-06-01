@@ -2,7 +2,7 @@
 
 > **agent**(`opts`): [`Agent`](../interfaces/Agent.md)
 
-Defined in: [packages/agentos/src/api/agent.ts:479](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/agent.ts#L479)
+Defined in: [packages/agentos/src/api/agent.ts:640](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/agent.ts#L640)
 
 Creates a lightweight stateful agent backed by in-memory session storage.
 

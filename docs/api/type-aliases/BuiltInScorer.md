@@ -2,6 +2,6 @@
 
 > **BuiltInScorer** = `"exact_match"` \| `"contains"` \| `"levenshtein"` \| `"semantic_similarity"` \| `"bleu"` \| `"rouge"` \| `"llm_judge"`
 
-Defined in: [packages/agentos/src/evaluation/IEvaluator.ts:229](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/evaluation/IEvaluator.ts#L229)
+Defined in: [packages/agentos/src/safety/evaluation/IEvaluator.ts:229](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/safety/evaluation/IEvaluator.ts#L229)
 
 Built-in scorer names.

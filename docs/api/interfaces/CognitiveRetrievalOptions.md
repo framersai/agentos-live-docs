@@ -1,6 +1,6 @@
 # Interface: CognitiveRetrievalOptions
 
-Defined in: [packages/agentos/src/memory/core/types.ts:191](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L191)
+Defined in: [packages/agentos/src/cognition/memory/core/types.ts:394](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/types.ts#L394)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/memory/core/types.ts:191](https://github.com/f
 
 > `optional` **entities**: `string`[]
 
-Defined in: [packages/agentos/src/memory/core/types.ts:196](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L196)
+Defined in: [packages/agentos/src/cognition/memory/core/types.ts:399](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/types.ts#L399)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [packages/agentos/src/memory/core/types.ts:196](https://github.com/f
 
 > `optional` **hyde**: `boolean`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:215](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L215)
+Defined in: [packages/agentos/src/cognition/memory/core/types.ts:426](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/types.ts#L426)
 
 Enable HyDE (Hypothetical Document Embedding) for memory retrieval.
 
@@ -41,7 +41,7 @@ false
 
 > `optional` **minConfidence**: `number`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:197](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L197)
+Defined in: [packages/agentos/src/cognition/memory/core/types.ts:400](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/types.ts#L400)
 
 ***
 
@@ -49,7 +49,7 @@ Defined in: [packages/agentos/src/memory/core/types.ts:197](https://github.com/f
 
 > `optional` **neutralMood**: `boolean`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:200](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L200)
+Defined in: [packages/agentos/src/cognition/memory/core/types.ts:411](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/types.ts#L411)
 
 If true, skip emotional congruence bias (useful for factual lookups).
 
@@ -59,7 +59,7 @@ If true, skip emotional congruence bias (useful for factual lookups).
 
 > `optional` **policy**: [`MemoryRetrievalPolicy`](MemoryRetrievalPolicy.md)
 
-Defined in: [packages/agentos/src/memory/core/types.ts:217](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L217)
+Defined in: [packages/agentos/src/cognition/memory/core/types.ts:428](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/types.ts#L428)
 
 Shared retrieval profile and confidence policy.
 
@@ -69,7 +69,7 @@ Shared retrieval profile and confidence policy.
 
 > `optional` **scopes**: `object`[]
 
-Defined in: [packages/agentos/src/memory/core/types.ts:194](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L194)
+Defined in: [packages/agentos/src/cognition/memory/core/types.ts:397](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/types.ts#L397)
 
 #### scope
 
@@ -85,7 +85,7 @@ Defined in: [packages/agentos/src/memory/core/types.ts:194](https://github.com/f
 
 > `optional` **scoringWeights**: `Partial`\<[`ScoringWeights`](ScoringWeights.md)\>
 
-Defined in: [packages/agentos/src/memory/core/types.ts:225](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L225)
+Defined in: [packages/agentos/src/cognition/memory/core/types.ts:436](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/types.ts#L436)
 
 Override the 6-signal retrieval weights for this call. Missing
 keys fall back to [DEFAULT\_SCORING\_WEIGHTS](../variables/DEFAULT_SCORING_WEIGHTS.md). Useful for
@@ -99,7 +99,7 @@ without mutating global defaults.
 
 > `optional` **tags**: `string`[]
 
-Defined in: [packages/agentos/src/memory/core/types.ts:195](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L195)
+Defined in: [packages/agentos/src/cognition/memory/core/types.ts:398](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/types.ts#L398)
 
 ***
 
@@ -107,7 +107,7 @@ Defined in: [packages/agentos/src/memory/core/types.ts:195](https://github.com/f
 
 > `optional` **timeRange**: `object`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:198](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L198)
+Defined in: [packages/agentos/src/cognition/memory/core/types.ts:409](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/types.ts#L409)
 
 #### after?
 
@@ -123,7 +123,7 @@ Defined in: [packages/agentos/src/memory/core/types.ts:198](https://github.com/f
 
 > `optional` **topK**: `number`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:192](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L192)
+Defined in: [packages/agentos/src/cognition/memory/core/types.ts:395](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/types.ts#L395)
 
 ***
 
@@ -131,4 +131,18 @@ Defined in: [packages/agentos/src/memory/core/types.ts:192](https://github.com/f
 
 > `optional` **types**: [`MemoryType`](../type-aliases/MemoryType.md)[]
 
-Defined in: [packages/agentos/src/memory/core/types.ts:193](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L193)
+Defined in: [packages/agentos/src/cognition/memory/core/types.ts:396](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/types.ts#L396)
+
+***
+
+### usableFor?
+
+> `optional` **usableFor**: [`TrustCapability`](../type-aliases/TrustCapability.md) \| [`TrustCapability`](../type-aliases/TrustCapability.md)[]
+
+Defined in: [packages/agentos/src/cognition/memory/core/types.ts:408](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/types.ts#L408)
+
+Restrict results to traces whose trust policy permits the listed
+capabilities. Pass a single capability or an array (AND semantics: a
+trace must permit every requested capability). Applies the same
+staleness check as [canUseFor](../functions/canUseFor.md) when the policy declares
+`requiresReverificationAfterMs`.

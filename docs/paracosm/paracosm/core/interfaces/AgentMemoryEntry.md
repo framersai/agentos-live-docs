@@ -1,6 +1,6 @@
 # Interface: AgentMemoryEntry
 
-Defined in: [apps/paracosm/src/engine/core/state.ts:91](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/engine/core/state.ts#L91)
+Defined in: [apps/paracosm/src/engine/core/state.ts:96](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/state.ts#L96)
 
 A single memory entry from a agent's persistent memory.
 
@@ -10,7 +10,7 @@ A single memory entry from a agent's persistent memory.
 
 > **category**: `string`
 
-Defined in: [apps/paracosm/src/engine/core/state.ts:101](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/engine/core/state.ts#L101)
+Defined in: [apps/paracosm/src/engine/core/state.ts:106](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/state.ts#L106)
 
 Category of event that created this memory
 
@@ -20,7 +20,7 @@ Category of event that created this memory
 
 > **content**: `string`
 
-Defined in: [apps/paracosm/src/engine/core/state.ts:97](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/engine/core/state.ts#L97)
+Defined in: [apps/paracosm/src/engine/core/state.ts:102](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/state.ts#L102)
 
 What the agent remembers (1-2 sentences)
 
@@ -30,7 +30,7 @@ What the agent remembers (1-2 sentences)
 
 > **salience**: `number`
 
-Defined in: [apps/paracosm/src/engine/core/state.ts:103](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/engine/core/state.ts#L103)
+Defined in: [apps/paracosm/src/engine/core/state.ts:108](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/state.ts#L108)
 
 Salience score 0-1 (higher = more likely to be recalled in future prompts)
 
@@ -40,7 +40,7 @@ Salience score 0-1 (higher = more likely to be recalled in future prompts)
 
 > **time**: `number`
 
-Defined in: [apps/paracosm/src/engine/core/state.ts:95](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/engine/core/state.ts#L95)
+Defined in: [apps/paracosm/src/engine/core/state.ts:100](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/state.ts#L100)
 
 Simulated time (year/hour/quarter/tick per scenario's timeUnitNoun)
 
@@ -50,7 +50,7 @@ Simulated time (year/hour/quarter/tick per scenario's timeUnitNoun)
 
 > **turn**: `number`
 
-Defined in: [apps/paracosm/src/engine/core/state.ts:93](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/engine/core/state.ts#L93)
+Defined in: [apps/paracosm/src/engine/core/state.ts:98](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/state.ts#L98)
 
 Turn when this memory was formed
 
@@ -60,6 +60,6 @@ Turn when this memory was formed
 
 > **valence**: `"positive"` \| `"negative"` \| `"neutral"`
 
-Defined in: [apps/paracosm/src/engine/core/state.ts:99](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/engine/core/state.ts#L99)
+Defined in: [apps/paracosm/src/engine/core/state.ts:104](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/state.ts#L104)
 
 Emotional valence of the memory

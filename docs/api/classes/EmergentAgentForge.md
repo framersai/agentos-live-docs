@@ -1,6 +1,6 @@
 # Class: EmergentAgentForge
 
-Defined in: [packages/agentos/src/emergent/EmergentAgentForge.ts:67](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/emergent/EmergentAgentForge.ts#L67)
+Defined in: [packages/agentos/src/cognition/emergent/EmergentAgentForge.ts:67](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/emergent/EmergentAgentForge.ts#L67)
 
 Synthesizes BaseAgentConfig instances from manager-supplied specs.
 
@@ -14,7 +14,7 @@ cheap and deterministic given the same spec + defaults.
 
 > **new EmergentAgentForge**(`defaults`): `EmergentAgentForge`
 
-Defined in: [packages/agentos/src/emergent/EmergentAgentForge.ts:70](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/emergent/EmergentAgentForge.ts#L70)
+Defined in: [packages/agentos/src/cognition/emergent/EmergentAgentForge.ts:70](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/emergent/EmergentAgentForge.ts#L70)
 
 #### Parameters
 
@@ -32,7 +32,7 @@ Defined in: [packages/agentos/src/emergent/EmergentAgentForge.ts:70](https://git
 
 > **forge**(`spec`, `inheritedConfig?`): `Promise`\<[`ForgeResult`](../type-aliases/ForgeResult.md)\>
 
-Defined in: [packages/agentos/src/emergent/EmergentAgentForge.ts:88](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/emergent/EmergentAgentForge.ts#L88)
+Defined in: [packages/agentos/src/cognition/emergent/EmergentAgentForge.ts:88](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/emergent/EmergentAgentForge.ts#L88)
 
 Forge a new BaseAgentConfig from the supplied spec.
 

@@ -2,7 +2,7 @@
 
 > **buildFallbackChain**(`excludeProvider?`): [`FallbackProviderEntry`](../interfaces/FallbackProviderEntry.md)[]
 
-Defined in: [packages/agentos/src/api/generateText.ts:686](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/generateText.ts#L686)
+Defined in: [packages/agentos/src/api/generateText.ts:840](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/generateText.ts#L840)
 
 Auto-discovers available LLM providers from well-known environment variables
 and builds an ordered fallback chain.
@@ -34,7 +34,7 @@ An array of `{ provider, model? }` entries ready for use as
 ## Example
 
 ```ts
-// Primary is anthropic — build fallback chain from remaining providers
+// Primary is anthropic: build fallback chain from remaining providers
 const chain = buildFallbackChain('anthropic');
 // => [{ provider: 'openai', model: 'gpt-4o-mini' }, { provider: 'openrouter' }, ...]
 ```

@@ -196,7 +196,7 @@ console.log(formatVerifiedResponse(result));
 
 ### QueryRouter Integration
 
-The default [`QueryRouter`](https://github.com/framersai/agentos/blob/master/src/orchestration/pipeline/query/QueryRouter.ts) runtime can now trigger `CitationVerifier`
+The default [`QueryRouter`](https://github.com/framersai/agentos/blob/master/src/orchestration/pipeline/query/QueryRouter.ts) runtime can now trigger [`CitationVerifier`](https://github.com/framersai/agentos/blob/master/src/cognition/rag/citation/CitationVerifier.ts)
 automatically when `verifyCitations: true` is set.
 
 Verification runs only when both of these conditions are true:

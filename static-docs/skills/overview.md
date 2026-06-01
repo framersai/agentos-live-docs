@@ -34,7 +34,7 @@ graph TD
 
 ## Loading Skills With [`SkillRegistry`](https://github.com/framersai/agentos/blob/master/src/cognition/skills/SkillRegistry.ts)
 
-Use `SkillRegistry` to load skills from one or more directories and compile them into a single prompt snapshot:
+Use [`SkillRegistry`](https://github.com/framersai/agentos/blob/master/src/cognition/skills/SkillRegistry.ts) to load skills from one or more directories and compile them into a single prompt snapshot:
 
 ```ts
 import { SkillRegistry } from '@framers/agentos/skills';

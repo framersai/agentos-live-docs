@@ -2,7 +2,7 @@
 
 > **autoDetectProvider**(`task?`): `string` \| `undefined`
 
-Defined in: [packages/agentos/src/api/runtime/provider-defaults.ts:171](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/runtime/provider-defaults.ts#L171)
+Defined in: [packages/agentos/src/api/runtime/provider-defaults.ts:171](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/runtime/provider-defaults.ts#L171)
 
 Auto-detects the active provider by scanning well-known environment variables
 and CLI binaries in priority order.

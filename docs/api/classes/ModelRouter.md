@@ -1,6 +1,6 @@
 # Class: ModelRouter
 
-Defined in: [packages/agentos/src/core/llm/routing/ModelRouter.ts:151](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/core/llm/routing/ModelRouter.ts#L151)
+Defined in: [packages/agentos/src/core/llm/routing/ModelRouter.ts:151](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/core/llm/routing/ModelRouter.ts#L151)
 
 ## Implements
 
@@ -18,7 +18,7 @@ flexible and extensible through declarative rules and custom condition evaluator
 
 > **new ModelRouter**(): `ModelRouter`
 
-Defined in: [packages/agentos/src/core/llm/routing/ModelRouter.ts:162](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/core/llm/routing/ModelRouter.ts#L162)
+Defined in: [packages/agentos/src/core/llm/routing/ModelRouter.ts:162](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/core/llm/routing/ModelRouter.ts#L162)
 
 Constructs a ModelRouter instance.
 The router must be initialized via `initialize()` before use.
@@ -33,7 +33,7 @@ The router must be initialized via `initialize()` before use.
 
 > `readonly` **routerId**: `"rule_based_router_v1.1"` = `'rule_based_router_v1.1'`
 
-Defined in: [packages/agentos/src/core/llm/routing/ModelRouter.ts:153](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/core/llm/routing/ModelRouter.ts#L153)
+Defined in: [packages/agentos/src/core/llm/routing/ModelRouter.ts:153](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/core/llm/routing/ModelRouter.ts#L153)
 
 A unique identifier for this specific router implementation.
 
@@ -47,7 +47,7 @@ A unique identifier for this specific router implementation.
 
 > **initialize**(`config`, `providerManager`, `_promptEngine?`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/core/llm/routing/ModelRouter.ts:179](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/core/llm/routing/ModelRouter.ts#L179)
+Defined in: [packages/agentos/src/core/llm/routing/ModelRouter.ts:179](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/core/llm/routing/ModelRouter.ts#L179)
 
 **`Async`**
 
@@ -95,7 +95,7 @@ If initialization fails (e.g., invalid configuration).
 
 > **selectModel**(`params`, `availableModels?`): `Promise`\<[`ModelRouteResult`](../interfaces/ModelRouteResult.md) \| `null`\>
 
-Defined in: [packages/agentos/src/core/llm/routing/ModelRouter.ts:216](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/core/llm/routing/ModelRouter.ts#L216)
+Defined in: [packages/agentos/src/core/llm/routing/ModelRouter.ts:216](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/core/llm/routing/ModelRouter.ts#L216)
 
 **`Async`**
 

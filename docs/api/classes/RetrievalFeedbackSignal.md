@@ -1,6 +1,6 @@
 # Class: RetrievalFeedbackSignal
 
-Defined in: [packages/agentos/src/memory/retrieval/feedback/RetrievalFeedbackSignal.ts:112](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/feedback/RetrievalFeedbackSignal.ts#L112)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/feedback/RetrievalFeedbackSignal.ts:112](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/feedback/RetrievalFeedbackSignal.ts#L112)
 
 Detects which injected memory traces were used vs ignored by the LLM,
 persists those signals to the `retrieval_feedback` table, and applies a
@@ -20,7 +20,7 @@ best-effort trace-strength update in `memory_traces`.
 
 > **new RetrievalFeedbackSignal**(`brain`, `similarityFn?`): `RetrievalFeedbackSignal`
 
-Defined in: [packages/agentos/src/memory/retrieval/feedback/RetrievalFeedbackSignal.ts:120](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/feedback/RetrievalFeedbackSignal.ts#L120)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/feedback/RetrievalFeedbackSignal.ts:120](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/feedback/RetrievalFeedbackSignal.ts#L120)
 
 #### Parameters
 
@@ -49,7 +49,7 @@ Optional semantic similarity function for higher-fidelity detection.
 
 > **detect**(`injectedTraces`, `response`, `context?`): `Promise`\<[`RetrievalFeedback`](../interfaces/RetrievalFeedback.md)[]\>
 
-Defined in: [packages/agentos/src/memory/retrieval/feedback/RetrievalFeedbackSignal.ts:148](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/feedback/RetrievalFeedbackSignal.ts#L148)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/feedback/RetrievalFeedbackSignal.ts:148](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/feedback/RetrievalFeedbackSignal.ts#L148)
 
 Detect which of the injected traces were referenced in `response`, persist
 the signals to `retrieval_feedback`, update the corresponding
@@ -96,7 +96,7 @@ Array of `RetrievalFeedback` events, one per injected trace.
 
 > **getHistory**(`traceId`, `limit?`): `Promise`\<[`RetrievalFeedback`](../interfaces/RetrievalFeedback.md)[]\>
 
-Defined in: [packages/agentos/src/memory/retrieval/feedback/RetrievalFeedbackSignal.ts:258](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/feedback/RetrievalFeedbackSignal.ts#L258)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/feedback/RetrievalFeedbackSignal.ts:258](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/feedback/RetrievalFeedbackSignal.ts#L258)
 
 Retrieve the feedback history for a single trace, ordered by most-recent
 first.
@@ -127,7 +127,7 @@ Array of `RetrievalFeedback` events, most-recent first.
 
 > **getStats**(`traceId`): `Promise`\<\{ `ignored`: `number`; `used`: `number`; \}\>
 
-Defined in: [packages/agentos/src/memory/retrieval/feedback/RetrievalFeedbackSignal.ts:285](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/feedback/RetrievalFeedbackSignal.ts#L285)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/feedback/RetrievalFeedbackSignal.ts:285](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/feedback/RetrievalFeedbackSignal.ts#L285)
 
 Return aggregate counts of `'used'` and `'ignored'` signals for a trace.
 

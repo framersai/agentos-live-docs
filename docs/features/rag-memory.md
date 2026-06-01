@@ -14,7 +14,7 @@ AgentOS provides three levels of memory API:
 
 `Memory.create()` currently supports the SQLite-backed standalone memory facade at runtime. Postgres, Qdrant, Pinecone, and other backends are available through the lower-level RAG/vector-store layer.
 
-Runtime truth: `ragConfig` and the standard AgentOS bootstrap still create the classic `RetrievalAugmentor` path. `UnifiedRetriever` exists as an opt-in orchestration layer for hosts that explicitly wire it in.
+Runtime truth: `ragConfig` and the standard AgentOS bootstrap still create the classic [`RetrievalAugmentor`](https://github.com/framersai/agentos/blob/master/src/cognition/rag/RetrievalAugmentor.ts) path. [`UnifiedRetriever`](https://github.com/framersai/agentos/blob/master/src/cognition/rag/unified/UnifiedRetriever.ts) exists as an opt-in orchestration layer for hosts that explicitly wire it in.
 
 ![AgentOS RAG memory pipeline: ingestion lane feeds five swappable storage backends; retrieval lane runs hybrid dense plus sparse search, RRF fusion, optional Cohere rerank, and Top-K context into prompt assembly](/img/diagrams/rag-memory-pipeline.svg)
 
@@ -76,7 +76,7 @@ const agentos = await AgentOS.create({
 ```
 
 `manageLifecycle` is optional. Leave it unset when your app owns the
-`Memory` instance and closes it outside `AgentOS`.
+`Memory` instance and closes it outside [`AgentOS`](https://github.com/framersai/agentos/blob/master/src/api/AgentOS.ts).
 
 `memoryTools` only registers the tool pack. It does not automatically make the
 same `Memory` instance the prompt-time `longTermMemoryRetriever` or
@@ -149,7 +149,7 @@ const rawManager = cognitive.raw;
 const rawMemory = memory.rawMemory;
 ```
 
-Use `Memory` directly for most local-first or ingestion-heavy workloads. Use `AgentMemory` when you want a compatibility facade across both backends, or when you specifically need cognitive-only APIs such as `observe()`, `getContext()`, or `remind()`.
+Use `Memory` directly for most local-first or ingestion-heavy workloads. Use [`AgentMemory`](https://github.com/framersai/agentos/blob/master/src/cognition/memory/AgentMemory.ts) when you want a compatibility facade across both backends, or when you specifically need cognitive-only APIs such as `observe()`, `getContext()`, or `remind()`.
 
 ## Observational Memory
 
@@ -211,12 +211,12 @@ In persona JSON, the observer/reflector activate automatically when `memoryConfi
 
 The concrete RAG APIs live under `@framers/agentos/cognition/rag`:
 
-- **`EmbeddingManager`** — Text → vector embeddings (OpenAI, Ollama, custom providers)
-- **`VectorStoreManager`** — HNSW/InMemory vector storage with similarity search
+- **[`EmbeddingManager`](https://github.com/framersai/agentos/blob/master/src/cognition/rag/EmbeddingManager.ts)** — Text → vector embeddings (OpenAI, Ollama, custom providers)
+- **[`VectorStoreManager`](https://github.com/framersai/agentos/blob/master/src/cognition/rag/VectorStoreManager.ts)** — HNSW/InMemory vector storage with similarity search
 - **`RetrievalAugmentor`** — Default runtime RAG pipeline for embedding + search + context assembly
 - **`UnifiedRetriever`** — Opt-in plan-aware orchestration across multiple retrieval sources
 - **[`HydeRetriever`](https://github.com/framersai/agentos/blob/master/src/cognition/rag/HydeRetriever.ts)** — Hypothetical Document Embedding for better recall (generates pseudo-answers before searching)
-- **`GraphRAGEngine`** — TypeScript-native graph-based RAG with knowledge graph traversal
+- **[`GraphRAGEngine`](https://github.com/framersai/agentos/blob/master/src/cognition/memory/retrieval/graph/graphrag/GraphRAGEngine.ts)** — TypeScript-native graph-based RAG with knowledge graph traversal
 
 For most standalone and local-first use cases, prefer `Memory`. Use `AgentMemory` when you need the compatibility layer or the cognitive observer/reflector APIs.
 
@@ -488,7 +488,7 @@ If you want “true” large-scale vector DB behavior (tens of millions of vecto
 
 ### Qdrant Provider (Remote or Self-Hosted)
 
-`QdrantVectorStore` lets you point AgentOS at a Qdrant instance (local Docker or managed cloud) without changing any higher-level RAG code.
+[`QdrantVectorStore`](https://github.com/framersai/agentos/blob/master/src/cognition/rag/vector_stores/QdrantVectorStore.ts) lets you point AgentOS at a Qdrant instance (local Docker or managed cloud) without changing any higher-level RAG code.
 
 Example `VectorStoreManager` provider config:
 
@@ -703,7 +703,7 @@ const results = await service.rerankChain('quantum computing', chunks, [
 
 ### Memory retrieval reranking
 
-The reranker chain integrates with the [Cognitive Memory System](/features/cognitive-memory). When a `RerankerService` is passed to `CognitiveMemoryManager` via the `rerankerService` config field, it runs a neural reranking pass after the cognitive scoring pipeline:
+The reranker chain integrates with the [Cognitive Memory System](/features/cognitive-memory). When a [`RerankerService`](https://github.com/framersai/agentos/blob/master/src/cognition/rag/reranking/RerankerService.ts) is passed to [`CognitiveMemoryManager`](https://github.com/framersai/agentos/blob/master/src/cognition/memory/CognitiveMemoryManager.ts) via the `rerankerService` config field, it runs a neural reranking pass after the cognitive scoring pipeline:
 
 ```typescript
 import { CognitiveMemoryManager } from '@framers/agentos/memory';
@@ -939,3 +939,4 @@ Setting `minDepthToInject: "moderate"` means queries classified as `quick` are a
 
 - [Streaming Semantics](/architecture/streaming-semantics) -- SSE protocol for progress events
 - [Tool Calling & Lazy Loading](/architecture/tool-calling-and-loading) -- Full tool catalog and registration
+- [Incremental Vector Ingestion](/features/incremental-vector-ingestion): content-hash caching to keep a flat vector collection in sync

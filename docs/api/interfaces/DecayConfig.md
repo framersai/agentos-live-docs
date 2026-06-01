@@ -1,6 +1,6 @@
 # Interface: DecayConfig
 
-Defined in: [packages/agentos/src/memory/core/config.ts:54](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/config.ts#L54)
+Defined in: [packages/agentos/src/cognition/memory/core/config.ts:54](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/config.ts#L54)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/memory/core/config.ts:54](https://github.com/f
 
 > **interferenceThreshold**: `number`
 
-Defined in: [packages/agentos/src/memory/core/config.ts:60](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/config.ts#L60)
+Defined in: [packages/agentos/src/cognition/memory/core/config.ts:60](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/config.ts#L60)
 
 Cosine similarity threshold for interference detection.
 
@@ -24,7 +24,7 @@ Cosine similarity threshold for interference detection.
 
 > **pruningThreshold**: `number`
 
-Defined in: [packages/agentos/src/memory/core/config.ts:56](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/config.ts#L56)
+Defined in: [packages/agentos/src/cognition/memory/core/config.ts:56](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/config.ts#L56)
 
 Minimum strength before a trace is soft-deleted.
 
@@ -40,7 +40,7 @@ Minimum strength before a trace is soft-deleted.
 
 > **recencyHalfLifeMs**: `number`
 
-Defined in: [packages/agentos/src/memory/core/config.ts:58](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/config.ts#L58)
+Defined in: [packages/agentos/src/cognition/memory/core/config.ts:58](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/config.ts#L58)
 
 Half-life for recency boost (ms).
 

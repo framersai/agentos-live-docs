@@ -1,6 +1,6 @@
 # Interface: ApprovalDecision
 
-Defined in: [packages/agentos/src/api/types.ts:672](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/types.ts#L672)
+Defined in: [packages/agentos/src/api/types.ts:684](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/types.ts#L684)
 
 The resolved decision returned by `HitlConfig.handler`.
 
@@ -10,7 +10,7 @@ The resolved decision returned by `HitlConfig.handler`.
 
 > **approved**: `boolean`
 
-Defined in: [packages/agentos/src/api/types.ts:674](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/types.ts#L674)
+Defined in: [packages/agentos/src/api/types.ts:686](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/types.ts#L686)
 
 Whether the action was approved.
 
@@ -20,7 +20,7 @@ Whether the action was approved.
 
 > `optional` **modifications**: `object`
 
-Defined in: [packages/agentos/src/api/types.ts:682](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/types.ts#L682)
+Defined in: [packages/agentos/src/api/types.ts:694](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/types.ts#L694)
 
 Optional in-line modifications the approver wishes to apply.
 The orchestrator merges these on top of the original action before
@@ -50,6 +50,6 @@ Overridden tool arguments.
 
 > `optional` **reason**: `string`
 
-Defined in: [packages/agentos/src/api/types.ts:676](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/types.ts#L676)
+Defined in: [packages/agentos/src/api/types.ts:688](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/types.ts#L688)
 
 Optional human-provided rationale for the decision.

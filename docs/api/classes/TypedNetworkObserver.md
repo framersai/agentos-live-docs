@@ -1,6 +1,6 @@
 # Class: TypedNetworkObserver
 
-Defined in: [packages/agentos/src/memory/retrieval/typed-network/TypedNetworkObserver.ts:94](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/typed-network/TypedNetworkObserver.ts#L94)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/typed-network/TypedNetworkObserver.ts:94](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/typed-network/TypedNetworkObserver.ts#L94)
 
 The 6-step extractor. Stateless aside from its constructor options;
 safe to share across concurrent extractions.
@@ -11,7 +11,7 @@ safe to share across concurrent extractions.
 
 > **new TypedNetworkObserver**(`options`): `TypedNetworkObserver`
 
-Defined in: [packages/agentos/src/memory/retrieval/typed-network/TypedNetworkObserver.ts:100](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/typed-network/TypedNetworkObserver.ts#L100)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/typed-network/TypedNetworkObserver.ts:100](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/typed-network/TypedNetworkObserver.ts#L100)
 
 #### Parameters
 
@@ -29,7 +29,7 @@ Defined in: [packages/agentos/src/memory/retrieval/typed-network/TypedNetworkObs
 
 > **extract**(`sessionText`, `sessionId`): `Promise`\<[`TypedFact`](../interfaces/TypedFact.md)[]\>
 
-Defined in: [packages/agentos/src/memory/retrieval/typed-network/TypedNetworkObserver.ts:126](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/typed-network/TypedNetworkObserver.ts#L126)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/typed-network/TypedNetworkObserver.ts:126](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/typed-network/TypedNetworkObserver.ts#L126)
 
 Extract typed facts from a conversation block.
 

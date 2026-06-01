@@ -2,7 +2,7 @@
 
 > **executePendingExternalToolCalls**(`agentos`, `pendingRequest`, `options?`): `Promise`\<[`AgentOSToolResultInput`](../interfaces/AgentOSToolResultInput.md)[]\>
 
-Defined in: [packages/agentos/src/api/runtime/resumeExternalToolRequestWithRegisteredTools.ts:236](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/runtime/resumeExternalToolRequestWithRegisteredTools.ts#L236)
+Defined in: [packages/agentos/src/api/runtime/resumeExternalToolRequestWithRegisteredTools.ts:236](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/runtime/resumeExternalToolRequestWithRegisteredTools.ts#L236)
 
 Executes all tool calls from a persisted external-tool pause, in order,
 through AgentOS's registered tool registry.

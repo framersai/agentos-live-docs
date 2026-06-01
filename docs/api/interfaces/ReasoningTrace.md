@@ -1,6 +1,6 @@
 # Interface: ReasoningTrace
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:401](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/cognitive_substrate/IGMI.ts#L401)
+Defined in: [packages/agentos/src/cognition/substrate/IGMI.ts:415](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/substrate/IGMI.ts#L415)
 
 The complete reasoning trace for a GMI instance or a specific turn.
 
@@ -14,7 +14,7 @@ ReasoningTrace
 
 > `optional` **conversationId**: `string`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:406](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/cognitive_substrate/IGMI.ts#L406)
+Defined in: [packages/agentos/src/cognition/substrate/IGMI.ts:420](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/substrate/IGMI.ts#L420)
 
 ***
 
@@ -22,7 +22,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:406](https://gith
 
 > **entries**: [`ReasoningTraceEntry`](ReasoningTraceEntry.md)[]
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:408](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/cognitive_substrate/IGMI.ts#L408)
+Defined in: [packages/agentos/src/cognition/substrate/IGMI.ts:422](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/substrate/IGMI.ts#L422)
 
 ***
 
@@ -30,7 +30,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:408](https://gith
 
 > **gmiId**: `string`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:402](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/cognitive_substrate/IGMI.ts#L402)
+Defined in: [packages/agentos/src/cognition/substrate/IGMI.ts:416](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/substrate/IGMI.ts#L416)
 
 ***
 
@@ -38,7 +38,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:402](https://gith
 
 > `optional` **organizationId**: `string`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:407](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/cognitive_substrate/IGMI.ts#L407)
+Defined in: [packages/agentos/src/cognition/substrate/IGMI.ts:421](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/substrate/IGMI.ts#L421)
 
 ***
 
@@ -46,7 +46,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:407](https://gith
 
 > **personaId**: `string`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:403](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/cognitive_substrate/IGMI.ts#L403)
+Defined in: [packages/agentos/src/cognition/substrate/IGMI.ts:417](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/substrate/IGMI.ts#L417)
 
 ***
 
@@ -54,7 +54,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:403](https://gith
 
 > `optional` **sessionId**: `string`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:405](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/cognitive_substrate/IGMI.ts#L405)
+Defined in: [packages/agentos/src/cognition/substrate/IGMI.ts:419](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/substrate/IGMI.ts#L419)
 
 ***
 
@@ -62,4 +62,4 @@ Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:405](https://gith
 
 > `optional` **turnId**: `string`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:404](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/cognitive_substrate/IGMI.ts#L404)
+Defined in: [packages/agentos/src/cognition/substrate/IGMI.ts:418](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/substrate/IGMI.ts#L418)

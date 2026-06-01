@@ -1,6 +1,6 @@
 # Interface: StopListeningInput
 
-Defined in: [packages/agentos/src/channels/telephony/IVoiceCallProvider.ts:84](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/channels/telephony/IVoiceCallProvider.ts#L84)
+Defined in: [packages/agentos/src/io/channels/telephony/IVoiceCallProvider.ts:84](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/io/channels/telephony/IVoiceCallProvider.ts#L84)
 
 Parameters for stopping STT listening on a call.
 
@@ -10,6 +10,6 @@ Parameters for stopping STT listening on a call.
 
 > **providerCallId**: `string`
 
-Defined in: [packages/agentos/src/channels/telephony/IVoiceCallProvider.ts:86](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/channels/telephony/IVoiceCallProvider.ts#L86)
+Defined in: [packages/agentos/src/io/channels/telephony/IVoiceCallProvider.ts:86](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/io/channels/telephony/IVoiceCallProvider.ts#L86)
 
 Provider-assigned call ID.

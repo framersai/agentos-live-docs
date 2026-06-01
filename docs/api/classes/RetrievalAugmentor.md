@@ -1,6 +1,6 @@
 # Class: RetrievalAugmentor
 
-Defined in: [packages/agentos/src/rag/RetrievalAugmentor.ts:60](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/RetrievalAugmentor.ts#L60)
+Defined in: [packages/agentos/src/cognition/rag/RetrievalAugmentor.ts:61](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/RetrievalAugmentor.ts#L61)
 
 ## Implements
 
@@ -16,7 +16,7 @@ Orchestrates the RAG pipeline including ingestion, retrieval, and document manag
 
 > **new RetrievalAugmentor**(): `RetrievalAugmentor`
 
-Defined in: [packages/agentos/src/rag/RetrievalAugmentor.ts:88](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/RetrievalAugmentor.ts#L88)
+Defined in: [packages/agentos/src/cognition/rag/RetrievalAugmentor.ts:89](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/RetrievalAugmentor.ts#L89)
 
 Constructs a RetrievalAugmentor instance.
 It is not operational until `initialize` is successfully called.
@@ -31,7 +31,7 @@ It is not operational until `initialize` is successfully called.
 
 > `readonly` **augmenterId**: `string`
 
-Defined in: [packages/agentos/src/rag/RetrievalAugmentor.ts:61](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/RetrievalAugmentor.ts#L61)
+Defined in: [packages/agentos/src/cognition/rag/RetrievalAugmentor.ts:62](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/RetrievalAugmentor.ts#L62)
 
 #### Implementation of
 
@@ -43,7 +43,7 @@ Defined in: [packages/agentos/src/rag/RetrievalAugmentor.ts:61](https://github.c
 
 > **checkHealth**(): `Promise`\<\{ `details?`: `Record`\<`string`, `unknown`\>; `isHealthy`: `boolean`; \}\>
 
-Defined in: [packages/agentos/src/rag/RetrievalAugmentor.ts:1308](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/RetrievalAugmentor.ts#L1308)
+Defined in: [packages/agentos/src/cognition/rag/RetrievalAugmentor.ts:1370](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/RetrievalAugmentor.ts#L1370)
 
 #### Returns
 
@@ -61,7 +61,7 @@ Defined in: [packages/agentos/src/rag/RetrievalAugmentor.ts:1308](https://github
 
 > **deleteDocuments**(`documentIds`, `dataSourceId?`, `options?`): `Promise`\<\{ `errors?`: `object`[]; `failureCount`: `number`; `successCount`: `number`; \}\>
 
-Defined in: [packages/agentos/src/rag/RetrievalAugmentor.ts:1166](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/RetrievalAugmentor.ts#L1166)
+Defined in: [packages/agentos/src/cognition/rag/RetrievalAugmentor.ts:1228](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/RetrievalAugmentor.ts#L1228)
 
 #### Parameters
 
@@ -91,11 +91,38 @@ Defined in: [packages/agentos/src/rag/RetrievalAugmentor.ts:1166](https://github
 
 ***
 
+### embedTexts()
+
+> **embedTexts**(`texts`): `Promise`\<`number`[][]\>
+
+Defined in: [packages/agentos/src/cognition/rag/RetrievalAugmentor.ts:766](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/RetrievalAugmentor.ts#L766)
+
+Batch-embed arbitrary texts with the augmentor's embedding pipeline.
+Exposed so consumers (e.g. `CitationVerifier` wired through the agent's
+`verifyCitations: { retrievalAugmentor }` shortcut) can share the same
+embedder rather than configuring a second one with a different model.
+
+#### Parameters
+
+##### texts
+
+`string`[]
+
+#### Returns
+
+`Promise`\<`number`[][]\>
+
+#### Implementation of
+
+[`IRetrievalAugmentor`](../interfaces/IRetrievalAugmentor.md).[`embedTexts`](../interfaces/IRetrievalAugmentor.md#embedtexts)
+
+***
+
 ### ingestDocuments()
 
 > **ingestDocuments**(`documents`, `options?`): `Promise`\<[`RagIngestionResult`](../interfaces/RagIngestionResult.md)\>
 
-Defined in: [packages/agentos/src/rag/RetrievalAugmentor.ts:311](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/RetrievalAugmentor.ts#L311)
+Defined in: [packages/agentos/src/cognition/rag/RetrievalAugmentor.ts:312](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/RetrievalAugmentor.ts#L312)
 
 #### Parameters
 
@@ -123,7 +150,7 @@ Defined in: [packages/agentos/src/rag/RetrievalAugmentor.ts:311](https://github.
 
 > **initialize**(`config`, `embeddingManager`, `vectorStoreManager`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/rag/RetrievalAugmentor.ts:95](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/RetrievalAugmentor.ts#L95)
+Defined in: [packages/agentos/src/cognition/rag/RetrievalAugmentor.ts:96](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/RetrievalAugmentor.ts#L96)
 
 #### Parameters
 
@@ -155,7 +182,7 @@ Defined in: [packages/agentos/src/rag/RetrievalAugmentor.ts:95](https://github.c
 
 > **registerRerankerProvider**(`provider`): `void`
 
-Defined in: [packages/agentos/src/rag/RetrievalAugmentor.ts:221](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/RetrievalAugmentor.ts#L221)
+Defined in: [packages/agentos/src/cognition/rag/RetrievalAugmentor.ts:222](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/RetrievalAugmentor.ts#L222)
 
 Register a reranker provider with the RerankerService.
 
@@ -181,7 +208,7 @@ If RerankerService is not configured
 #### Example
 
 ```typescript
-import { CohereReranker, LocalCrossEncoderReranker } from '@framers/agentos/rag/reranking';
+import { CohereReranker, LocalCrossEncoderReranker } from '@framers/agentos/cognition/rag/reranking';
 
 // After initialization
 augmentor.registerRerankerProvider(new CohereReranker({
@@ -201,7 +228,7 @@ augmentor.registerRerankerProvider(new LocalCrossEncoderReranker({
 
 > **retrieveContext**(`queryText`, `options?`): `Promise`\<[`RagRetrievalResult`](../interfaces/RagRetrievalResult.md)\>
 
-Defined in: [packages/agentos/src/rag/RetrievalAugmentor.ts:748](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/RetrievalAugmentor.ts#L748)
+Defined in: [packages/agentos/src/cognition/rag/RetrievalAugmentor.ts:773](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/RetrievalAugmentor.ts#L773)
 
 #### Parameters
 
@@ -217,8 +244,6 @@ Defined in: [packages/agentos/src/rag/RetrievalAugmentor.ts:748](https://github.
 
 `Promise`\<[`RagRetrievalResult`](../interfaces/RagRetrievalResult.md)\>
 
-#### Inherit Doc
-
 #### Implementation of
 
 [`IRetrievalAugmentor`](../interfaces/IRetrievalAugmentor.md).[`retrieveContext`](../interfaces/IRetrievalAugmentor.md#retrievecontext)
@@ -229,7 +254,7 @@ Defined in: [packages/agentos/src/rag/RetrievalAugmentor.ts:748](https://github.
 
 > **setHydeLlmCaller**(`llmCaller`): `void`
 
-Defined in: [packages/agentos/src/rag/RetrievalAugmentor.ts:265](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/RetrievalAugmentor.ts#L265)
+Defined in: [packages/agentos/src/cognition/rag/RetrievalAugmentor.ts:266](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/RetrievalAugmentor.ts#L266)
 
 Register an LLM caller for HyDE hypothesis generation.
 
@@ -279,7 +304,7 @@ augmentor.setHydeLlmCaller(async (systemPrompt, userPrompt) => {
 
 > **shutdown**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/rag/RetrievalAugmentor.ts:1337](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/RetrievalAugmentor.ts#L1337)
+Defined in: [packages/agentos/src/cognition/rag/RetrievalAugmentor.ts:1399](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/RetrievalAugmentor.ts#L1399)
 
 #### Returns
 
@@ -297,7 +322,7 @@ Defined in: [packages/agentos/src/rag/RetrievalAugmentor.ts:1337](https://github
 
 > **updateDocuments**(`documents`, `options?`): `Promise`\<[`RagIngestionResult`](../interfaces/RagIngestionResult.md)\>
 
-Defined in: [packages/agentos/src/rag/RetrievalAugmentor.ts:1283](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/RetrievalAugmentor.ts#L1283)
+Defined in: [packages/agentos/src/cognition/rag/RetrievalAugmentor.ts:1345](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/RetrievalAugmentor.ts#L1345)
 
 #### Parameters
 

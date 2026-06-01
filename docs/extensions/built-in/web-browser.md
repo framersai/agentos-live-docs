@@ -159,6 +159,6 @@ This extension requires Chrome/Chromium to be installed on the system. It uses `
 
 ## License
 
-Apache-2.0 © Frame.dev
+MIT © Frame.dev
 
 

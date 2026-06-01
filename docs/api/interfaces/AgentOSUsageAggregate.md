@@ -1,6 +1,6 @@
 # Interface: AgentOSUsageAggregate
 
-Defined in: [packages/agentos/src/api/runtime/usageLedger.ts:43](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/runtime/usageLedger.ts#L43)
+Defined in: [packages/agentos/src/api/runtime/usageLedger.ts:43](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/runtime/usageLedger.ts#L43)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/api/runtime/usageLedger.ts:43](https://github.
 
 > **calls**: `number`
 
-Defined in: [packages/agentos/src/api/runtime/usageLedger.ts:50](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/runtime/usageLedger.ts#L50)
+Defined in: [packages/agentos/src/api/runtime/usageLedger.ts:50](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/runtime/usageLedger.ts#L50)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [packages/agentos/src/api/runtime/usageLedger.ts:50](https://github.
 
 > **completionTokens**: `number`
 
-Defined in: [packages/agentos/src/api/runtime/usageLedger.ts:47](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/runtime/usageLedger.ts#L47)
+Defined in: [packages/agentos/src/api/runtime/usageLedger.ts:47](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/runtime/usageLedger.ts#L47)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: [packages/agentos/src/api/runtime/usageLedger.ts:47](https://github.
 
 > **costUSD**: `number`
 
-Defined in: [packages/agentos/src/api/runtime/usageLedger.ts:49](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/runtime/usageLedger.ts#L49)
+Defined in: [packages/agentos/src/api/runtime/usageLedger.ts:49](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/runtime/usageLedger.ts#L49)
 
 ***
 
@@ -32,7 +32,7 @@ Defined in: [packages/agentos/src/api/runtime/usageLedger.ts:49](https://github.
 
 > `optional` **personaId**: `string`
 
-Defined in: [packages/agentos/src/api/runtime/usageLedger.ts:45](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/runtime/usageLedger.ts#L45)
+Defined in: [packages/agentos/src/api/runtime/usageLedger.ts:45](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/runtime/usageLedger.ts#L45)
 
 ***
 
@@ -40,7 +40,7 @@ Defined in: [packages/agentos/src/api/runtime/usageLedger.ts:45](https://github.
 
 > **promptTokens**: `number`
 
-Defined in: [packages/agentos/src/api/runtime/usageLedger.ts:46](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/runtime/usageLedger.ts#L46)
+Defined in: [packages/agentos/src/api/runtime/usageLedger.ts:46](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/runtime/usageLedger.ts#L46)
 
 ***
 
@@ -48,7 +48,7 @@ Defined in: [packages/agentos/src/api/runtime/usageLedger.ts:46](https://github.
 
 > `optional` **sessionId**: `string`
 
-Defined in: [packages/agentos/src/api/runtime/usageLedger.ts:44](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/runtime/usageLedger.ts#L44)
+Defined in: [packages/agentos/src/api/runtime/usageLedger.ts:44](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/runtime/usageLedger.ts#L44)
 
 ***
 
@@ -56,4 +56,4 @@ Defined in: [packages/agentos/src/api/runtime/usageLedger.ts:44](https://github.
 
 > **totalTokens**: `number`
 
-Defined in: [packages/agentos/src/api/runtime/usageLedger.ts:48](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/runtime/usageLedger.ts#L48)
+Defined in: [packages/agentos/src/api/runtime/usageLedger.ts:48](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/runtime/usageLedger.ts#L48)

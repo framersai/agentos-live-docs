@@ -1,6 +1,6 @@
 # Interface: PendingExternalToolHandlerContext
 
-Defined in: [packages/agentos/src/api/runtime/resumeExternalToolRequestWithRegisteredTools.ts:89](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/runtime/resumeExternalToolRequestWithRegisteredTools.ts#L89)
+Defined in: [packages/agentos/src/api/runtime/resumeExternalToolRequestWithRegisteredTools.ts:89](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/runtime/resumeExternalToolRequestWithRegisteredTools.ts#L89)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/api/runtime/resumeExternalToolRequestWithRegis
 
 > **agentos**: `Pick`\<`IAgentOS`, `"getToolOrchestrator"`\>
 
-Defined in: [packages/agentos/src/api/runtime/resumeExternalToolRequestWithRegisteredTools.ts:90](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/runtime/resumeExternalToolRequestWithRegisteredTools.ts#L90)
+Defined in: [packages/agentos/src/api/runtime/resumeExternalToolRequestWithRegisteredTools.ts:90](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/runtime/resumeExternalToolRequestWithRegisteredTools.ts#L90)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [packages/agentos/src/api/runtime/resumeExternalToolRequestWithRegis
 
 > **pendingRequest**: [`AgentOSPendingExternalToolRequest`](AgentOSPendingExternalToolRequest.md)
 
-Defined in: [packages/agentos/src/api/runtime/resumeExternalToolRequestWithRegisteredTools.ts:91](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/runtime/resumeExternalToolRequestWithRegisteredTools.ts#L91)
+Defined in: [packages/agentos/src/api/runtime/resumeExternalToolRequestWithRegisteredTools.ts:91](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/runtime/resumeExternalToolRequestWithRegisteredTools.ts#L91)
 
 ***
 
@@ -24,4 +24,4 @@ Defined in: [packages/agentos/src/api/runtime/resumeExternalToolRequestWithRegis
 
 > **toolCall**: [`ToolCallRequest`](ToolCallRequest.md)
 
-Defined in: [packages/agentos/src/api/runtime/resumeExternalToolRequestWithRegisteredTools.ts:92](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/runtime/resumeExternalToolRequestWithRegisteredTools.ts#L92)
+Defined in: [packages/agentos/src/api/runtime/resumeExternalToolRequestWithRegisteredTools.ts:92](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/runtime/resumeExternalToolRequestWithRegisteredTools.ts#L92)

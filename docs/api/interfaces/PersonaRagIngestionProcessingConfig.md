@@ -1,6 +1,6 @@
 # Interface: PersonaRagIngestionProcessingConfig
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:161](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/cognitive_substrate/personas/IPersonaDefinition.ts#L161)
+Defined in: [packages/agentos/src/cognition/substrate/personas/IPersonaDefinition.ts:161](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/substrate/personas/IPersonaDefinition.ts#L161)
 
 Configuration for RAG ingestion processing.
 
@@ -14,7 +14,7 @@ PersonaRagIngestionProcessingConfig
 
 > `optional` **keywordExtraction**: `object`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:169](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/cognitive_substrate/personas/IPersonaDefinition.ts#L169)
+Defined in: [packages/agentos/src/cognition/substrate/personas/IPersonaDefinition.ts:169](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/substrate/personas/IPersonaDefinition.ts#L169)
 
 #### enabled
 
@@ -30,7 +30,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefiniti
 
 > `optional` **summarization**: `object`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/personas/IPersonaDefinition.ts:162](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/cognitive_substrate/personas/IPersonaDefinition.ts#L162)
+Defined in: [packages/agentos/src/cognition/substrate/personas/IPersonaDefinition.ts:162](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/substrate/personas/IPersonaDefinition.ts#L162)
 
 #### enabled
 

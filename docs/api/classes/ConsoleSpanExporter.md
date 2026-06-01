@@ -1,6 +1,6 @@
 # Class: ConsoleSpanExporter
 
-Defined in: [packages/agentos/src/evaluation/observability/Tracer.ts:140](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/evaluation/observability/Tracer.ts#L140)
+Defined in: [packages/agentos/src/safety/evaluation/observability/Tracer.ts:140](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/safety/evaluation/observability/Tracer.ts#L140)
 
 Simple console exporter for development.
 
@@ -14,7 +14,7 @@ Simple console exporter for development.
 
 > **new ConsoleSpanExporter**(`prefix?`): `ConsoleSpanExporter`
 
-Defined in: [packages/agentos/src/evaluation/observability/Tracer.ts:143](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/evaluation/observability/Tracer.ts#L143)
+Defined in: [packages/agentos/src/safety/evaluation/observability/Tracer.ts:143](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/safety/evaluation/observability/Tracer.ts#L143)
 
 #### Parameters
 
@@ -32,7 +32,7 @@ Defined in: [packages/agentos/src/evaluation/observability/Tracer.ts:143](https:
 
 > **export**(`spans`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/evaluation/observability/Tracer.ts:147](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/evaluation/observability/Tracer.ts#L147)
+Defined in: [packages/agentos/src/safety/evaluation/observability/Tracer.ts:147](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/safety/evaluation/observability/Tracer.ts#L147)
 
 Exports spans to a backend.
 
@@ -58,7 +58,7 @@ Spans to export
 
 > **shutdown**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/evaluation/observability/Tracer.ts:166](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/evaluation/observability/Tracer.ts#L166)
+Defined in: [packages/agentos/src/safety/evaluation/observability/Tracer.ts:166](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/safety/evaluation/observability/Tracer.ts#L166)
 
 Shuts down the exporter.
 

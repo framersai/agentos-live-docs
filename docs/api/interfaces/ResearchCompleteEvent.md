@@ -1,6 +1,6 @@
 # Interface: ResearchCompleteEvent
 
-Defined in: [packages/agentos/src/query-router/types.ts:1005](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/query-router/types.ts#L1005)
+Defined in: [packages/agentos/src/orchestration/pipeline/query/types.ts:1018](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/pipeline/query/types.ts#L1018)
 
 Emitted when deep research completes.
 
@@ -10,7 +10,7 @@ Emitted when deep research completes.
 
 > **durationMs**: `number`
 
-Defined in: [packages/agentos/src/query-router/types.ts:1012](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/query-router/types.ts#L1012)
+Defined in: [packages/agentos/src/orchestration/pipeline/query/types.ts:1025](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/pipeline/query/types.ts#L1025)
 
 Duration of the research phase in milliseconds.
 
@@ -20,7 +20,7 @@ Duration of the research phase in milliseconds.
 
 > **iterationsUsed**: `number`
 
-Defined in: [packages/agentos/src/query-router/types.ts:1008](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/query-router/types.ts#L1008)
+Defined in: [packages/agentos/src/orchestration/pipeline/query/types.ts:1021](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/pipeline/query/types.ts#L1021)
 
 Total number of research iterations performed.
 
@@ -30,7 +30,7 @@ Total number of research iterations performed.
 
 > **timestamp**: `number`
 
-Defined in: [packages/agentos/src/query-router/types.ts:1014](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/query-router/types.ts#L1014)
+Defined in: [packages/agentos/src/orchestration/pipeline/query/types.ts:1027](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/pipeline/query/types.ts#L1027)
 
 Timestamp when research completed.
 
@@ -40,7 +40,7 @@ Timestamp when research completed.
 
 > **totalChunks**: `number`
 
-Defined in: [packages/agentos/src/query-router/types.ts:1010](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/query-router/types.ts#L1010)
+Defined in: [packages/agentos/src/orchestration/pipeline/query/types.ts:1023](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/pipeline/query/types.ts#L1023)
 
 Total chunks gathered across all iterations.
 
@@ -50,4 +50,4 @@ Total chunks gathered across all iterations.
 
 > **type**: `"research:complete"`
 
-Defined in: [packages/agentos/src/query-router/types.ts:1006](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/query-router/types.ts#L1006)
+Defined in: [packages/agentos/src/orchestration/pipeline/query/types.ts:1019](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/pipeline/query/types.ts#L1019)

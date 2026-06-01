@@ -95,7 +95,7 @@ The extension resolves a GitHub token in priority order:
 
 ## GitHubRepoIndexer
 
-The `GitHubRepoIndexer` walks a repository tree, extracts documentation and source files, splits them by markdown headings, and returns structured [`IndexedChunk`](https://github.com/framersai/agentos-extensions/blob/master/registry/curated/integrations/github/src/GitHubRepoIndexer.ts) arrays suitable for vector-store ingestion.
+The [`GitHubRepoIndexer`](https://github.com/framersai/agentos-extensions/blob/master/registry/curated/integrations/github/src/GitHubRepoIndexer.ts) walks a repository tree, extracts documentation and source files, splits them by markdown headings, and returns structured [`IndexedChunk`](https://github.com/framersai/agentos-extensions/blob/master/registry/curated/integrations/github/src/GitHubRepoIndexer.ts) arrays suitable for vector-store ingestion.
 
 ```typescript
 import { GitHubRepoIndexer } from '@framers/agentos-ext-github';
@@ -122,7 +122,7 @@ The indexer ships with a default list of ecosystem repositories that are indexed
 - `framersai/agentos-live-docs`
 - `jddunn/wunderland-live-docs`
 
-### `IndexedChunk`
+### [`IndexedChunk`](https://github.com/framersai/agentos-extensions/blob/master/registry/curated/integrations/github/src/GitHubRepoIndexer.ts)
 
 ```typescript
 interface IndexedChunk {

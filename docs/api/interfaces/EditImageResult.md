@@ -1,6 +1,6 @@
 # Interface: EditImageResult
 
-Defined in: [packages/agentos/src/api/editImage.ts:124](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/editImage.ts#L124)
+Defined in: [packages/agentos/src/api/editImage.ts:125](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/editImage.ts#L125)
 
 Result returned by [editImage](../functions/editImage.md).
 
@@ -10,7 +10,7 @@ Result returned by [editImage](../functions/editImage.md).
 
 > **images**: [`GeneratedImage`](GeneratedImage.md)[]
 
-Defined in: [packages/agentos/src/api/editImage.ts:126](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/editImage.ts#L126)
+Defined in: [packages/agentos/src/api/editImage.ts:127](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/editImage.ts#L127)
 
 Array of edited image objects containing URLs or base64 data.
 
@@ -20,7 +20,7 @@ Array of edited image objects containing URLs or base64 data.
 
 > **model**: `string`
 
-Defined in: [packages/agentos/src/api/editImage.ts:130](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/editImage.ts#L130)
+Defined in: [packages/agentos/src/api/editImage.ts:131](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/editImage.ts#L131)
 
 Model identifier.
 
@@ -30,7 +30,7 @@ Model identifier.
 
 > **provider**: `string`
 
-Defined in: [packages/agentos/src/api/editImage.ts:128](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/editImage.ts#L128)
+Defined in: [packages/agentos/src/api/editImage.ts:129](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/editImage.ts#L129)
 
 Provider identifier.
 
@@ -40,7 +40,7 @@ Provider identifier.
 
 > **usage**: `object`
 
-Defined in: [packages/agentos/src/api/editImage.ts:132](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/editImage.ts#L132)
+Defined in: [packages/agentos/src/api/editImage.ts:133](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/editImage.ts#L133)
 
 Token/credit usage reported by the provider, when available.
 

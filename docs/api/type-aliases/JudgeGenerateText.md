@@ -2,7 +2,7 @@
 
 > **JudgeGenerateText** = (`model`, `prompt`) => `Promise`\<`string`\>
 
-Defined in: [packages/agentos/src/emergent/EmergentAgentJudge.ts:20](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/emergent/EmergentAgentJudge.ts#L20)
+Defined in: [packages/agentos/src/cognition/emergent/EmergentAgentJudge.ts:20](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/emergent/EmergentAgentJudge.ts#L20)
 
 Minimal generateText signature the judge needs.
 

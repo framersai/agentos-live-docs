@@ -1,6 +1,6 @@
 # Interface: LongTermMemoryPolicyInput
 
-Defined in: [packages/agentos/src/core/conversation/LongTermMemoryPolicy.ts:22](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/core/conversation/LongTermMemoryPolicy.ts#L22)
+Defined in: [packages/agentos/src/core/conversation/LongTermMemoryPolicy.ts:22](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/core/conversation/LongTermMemoryPolicy.ts#L22)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/core/conversation/LongTermMemoryPolicy.ts:22](
 
 > `optional` **allowedCategories**: [`RollingSummaryMemoryCategory`](../type-aliases/RollingSummaryMemoryCategory.md)[]
 
-Defined in: [packages/agentos/src/core/conversation/LongTermMemoryPolicy.ts:51](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/core/conversation/LongTermMemoryPolicy.ts#L51)
+Defined in: [packages/agentos/src/core/conversation/LongTermMemoryPolicy.ts:51](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/core/conversation/LongTermMemoryPolicy.ts#L51)
 
 Optional allowlist of `memory_json` categories to persist as atomic docs.
 - `null` / `undefined`: persist all categories supported by the sink
@@ -20,7 +20,7 @@ Optional allowlist of `memory_json` categories to persist as atomic docs.
 
 > `optional` **enabled**: `boolean`
 
-Defined in: [packages/agentos/src/core/conversation/LongTermMemoryPolicy.ts:30](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/core/conversation/LongTermMemoryPolicy.ts#L30)
+Defined in: [packages/agentos/src/core/conversation/LongTermMemoryPolicy.ts:30](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/core/conversation/LongTermMemoryPolicy.ts#L30)
 
 Master switch for persisting long-term memory (e.g., to RAG / knowledge graph).
 
@@ -34,7 +34,7 @@ Notes:
 
 > `optional` **retrieval**: [`MemoryRetrievalPolicy`](MemoryRetrievalPolicy.md) \| `null`
 
-Defined in: [packages/agentos/src/core/conversation/LongTermMemoryPolicy.ts:53](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/core/conversation/LongTermMemoryPolicy.ts#L53)
+Defined in: [packages/agentos/src/core/conversation/LongTermMemoryPolicy.ts:53](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/core/conversation/LongTermMemoryPolicy.ts#L53)
 
 Optional retrieval policy override for prompt-time long-term recall.
 
@@ -44,7 +44,7 @@ Optional retrieval policy override for prompt-time long-term recall.
 
 > `optional` **scopes**: `Partial`\<`Record`\<[`LongTermMemoryScope`](../type-aliases/LongTermMemoryScope.md), `boolean`\>\>
 
-Defined in: [packages/agentos/src/core/conversation/LongTermMemoryPolicy.ts:38](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/core/conversation/LongTermMemoryPolicy.ts#L38)
+Defined in: [packages/agentos/src/core/conversation/LongTermMemoryPolicy.ts:38](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/core/conversation/LongTermMemoryPolicy.ts#L38)
 
 Enabled scopes for persistence. Unspecified scopes inherit prior/default values.
 
@@ -58,7 +58,7 @@ Defaults are conservative:
 
 > `optional` **shareWithOrganization**: `boolean`
 
-Defined in: [packages/agentos/src/core/conversation/LongTermMemoryPolicy.ts:43](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/core/conversation/LongTermMemoryPolicy.ts#L43)
+Defined in: [packages/agentos/src/core/conversation/LongTermMemoryPolicy.ts:43](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/core/conversation/LongTermMemoryPolicy.ts#L43)
 
 Explicit opt-in required to write to organization-scoped memory.
 Even when `scopes.organization=true`, implementations should gate on this flag.
@@ -69,6 +69,6 @@ Even when `scopes.organization=true`, implementations should gate on this flag.
 
 > `optional` **storeAtomicDocs**: `boolean`
 
-Defined in: [packages/agentos/src/core/conversation/LongTermMemoryPolicy.ts:45](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/core/conversation/LongTermMemoryPolicy.ts#L45)
+Defined in: [packages/agentos/src/core/conversation/LongTermMemoryPolicy.ts:45](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/core/conversation/LongTermMemoryPolicy.ts#L45)
 
 Whether to create atomic per-item memory docs from `memory_json` (recommended).

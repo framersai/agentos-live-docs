@@ -1,6 +1,6 @@
 # Interface: ExtensionPackContext
 
-Defined in: [packages/agentos/src/extensions/manifest.ts:45](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/extensions/manifest.ts#L45)
+Defined in: [packages/agentos/src/extensions/manifest.ts:45](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/extensions/manifest.ts#L45)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/extensions/manifest.ts:45](https://github.com/
 
 > `optional` **getSecret**: (`secretId`) => `string` \| `undefined`
 
-Defined in: [packages/agentos/src/extensions/manifest.ts:50](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/extensions/manifest.ts#L50)
+Defined in: [packages/agentos/src/extensions/manifest.ts:50](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/extensions/manifest.ts#L50)
 
 #### Parameters
 
@@ -26,7 +26,7 @@ Defined in: [packages/agentos/src/extensions/manifest.ts:50](https://github.com/
 
 > `optional` **logger**: [`ILogger`](ILogger.md)
 
-Defined in: [packages/agentos/src/extensions/manifest.ts:49](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/extensions/manifest.ts#L49)
+Defined in: [packages/agentos/src/extensions/manifest.ts:49](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/extensions/manifest.ts#L49)
 
 ***
 
@@ -34,7 +34,7 @@ Defined in: [packages/agentos/src/extensions/manifest.ts:49](https://github.com/
 
 > `optional` **manifestEntry**: [`ExtensionPackManifestEntry`](../type-aliases/ExtensionPackManifestEntry.md)
 
-Defined in: [packages/agentos/src/extensions/manifest.ts:46](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/extensions/manifest.ts#L46)
+Defined in: [packages/agentos/src/extensions/manifest.ts:46](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/extensions/manifest.ts#L46)
 
 ***
 
@@ -42,7 +42,7 @@ Defined in: [packages/agentos/src/extensions/manifest.ts:46](https://github.com/
 
 > `optional` **options**: `Record`\<`string`, `unknown`\>
 
-Defined in: [packages/agentos/src/extensions/manifest.ts:48](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/extensions/manifest.ts#L48)
+Defined in: [packages/agentos/src/extensions/manifest.ts:48](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/extensions/manifest.ts#L48)
 
 ***
 
@@ -50,7 +50,7 @@ Defined in: [packages/agentos/src/extensions/manifest.ts:48](https://github.com/
 
 > `optional` **services**: [`ISharedServiceRegistry`](ISharedServiceRegistry.md)
 
-Defined in: [packages/agentos/src/extensions/manifest.ts:51](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/extensions/manifest.ts#L51)
+Defined in: [packages/agentos/src/extensions/manifest.ts:51](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/extensions/manifest.ts#L51)
 
 ***
 
@@ -58,4 +58,4 @@ Defined in: [packages/agentos/src/extensions/manifest.ts:51](https://github.com/
 
 > `optional` **source**: [`ExtensionSourceMetadata`](ExtensionSourceMetadata.md)
 
-Defined in: [packages/agentos/src/extensions/manifest.ts:47](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/extensions/manifest.ts#L47)
+Defined in: [packages/agentos/src/extensions/manifest.ts:47](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/extensions/manifest.ts#L47)

@@ -1,6 +1,6 @@
 # Interface: KeyPersonnel
 
-Defined in: [apps/paracosm/src/engine/core/agent-generator.ts:54](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/engine/core/agent-generator.ts#L54)
+Defined in: [apps/paracosm/src/engine/core/agent-generator.ts:54](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/agent-generator.ts#L54)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [apps/paracosm/src/engine/core/agent-generator.ts:54](https://github
 
 > **age**: `number`
 
-Defined in: [apps/paracosm/src/engine/core/agent-generator.ts:59](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/engine/core/agent-generator.ts#L59)
+Defined in: [apps/paracosm/src/engine/core/agent-generator.ts:59](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/agent-generator.ts#L59)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [apps/paracosm/src/engine/core/agent-generator.ts:59](https://github
 
 > **department**: `string`
 
-Defined in: [apps/paracosm/src/engine/core/agent-generator.ts:56](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/engine/core/agent-generator.ts#L56)
+Defined in: [apps/paracosm/src/engine/core/agent-generator.ts:56](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/agent-generator.ts#L56)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: [apps/paracosm/src/engine/core/agent-generator.ts:56](https://github
 
 > **featured**: `boolean`
 
-Defined in: [apps/paracosm/src/engine/core/agent-generator.ts:60](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/engine/core/agent-generator.ts#L60)
+Defined in: [apps/paracosm/src/engine/core/agent-generator.ts:60](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/agent-generator.ts#L60)
 
 ***
 
@@ -32,7 +32,7 @@ Defined in: [apps/paracosm/src/engine/core/agent-generator.ts:60](https://github
 
 > **name**: `string`
 
-Defined in: [apps/paracosm/src/engine/core/agent-generator.ts:55](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/engine/core/agent-generator.ts#L55)
+Defined in: [apps/paracosm/src/engine/core/agent-generator.ts:55](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/agent-generator.ts#L55)
 
 ***
 
@@ -40,7 +40,7 @@ Defined in: [apps/paracosm/src/engine/core/agent-generator.ts:55](https://github
 
 > **role**: `string`
 
-Defined in: [apps/paracosm/src/engine/core/agent-generator.ts:57](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/engine/core/agent-generator.ts#L57)
+Defined in: [apps/paracosm/src/engine/core/agent-generator.ts:57](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/agent-generator.ts#L57)
 
 ***
 
@@ -48,4 +48,4 @@ Defined in: [apps/paracosm/src/engine/core/agent-generator.ts:57](https://github
 
 > **specialization**: `string`
 
-Defined in: [apps/paracosm/src/engine/core/agent-generator.ts:58](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/engine/core/agent-generator.ts#L58)
+Defined in: [apps/paracosm/src/engine/core/agent-generator.ts:58](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/agent-generator.ts#L58)

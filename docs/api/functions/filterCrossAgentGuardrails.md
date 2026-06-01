@@ -2,7 +2,7 @@
 
 > **filterCrossAgentGuardrails**(`services`): [`ICrossAgentGuardrailService`](../interfaces/ICrossAgentGuardrailService.md)[]
 
-Defined in: [packages/agentos/src/safety/guardrails/crossAgentGuardrailDispatcher.ts:298](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/safety/guardrails/crossAgentGuardrailDispatcher.ts#L298)
+Defined in: [packages/agentos/src/safety/guardrails/crossAgentGuardrailDispatcher.ts:298](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/safety/guardrails/crossAgentGuardrailDispatcher.ts#L298)
 
 Extract cross-agent guardrails from a mixed array of guardrail services.
 

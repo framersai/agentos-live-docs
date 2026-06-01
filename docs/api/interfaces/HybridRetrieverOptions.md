@@ -1,6 +1,6 @@
 # Interface: HybridRetrieverOptions
 
-Defined in: [packages/agentos/src/memory/retrieval/hybrid/HybridRetriever.ts:63](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/hybrid/HybridRetriever.ts#L63)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/hybrid/HybridRetriever.ts:63](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/hybrid/HybridRetriever.ts#L63)
 
 Options for constructing a [HybridRetriever](../classes/HybridRetriever.md).
 
@@ -10,7 +10,7 @@ Options for constructing a [HybridRetriever](../classes/HybridRetriever.md).
 
 > `optional` **bm25Config**: [`BM25Config`](BM25Config.md)
 
-Defined in: [packages/agentos/src/memory/retrieval/hybrid/HybridRetriever.ts:66](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/hybrid/HybridRetriever.ts#L66)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/hybrid/HybridRetriever.ts:66](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/hybrid/HybridRetriever.ts#L66)
 
 BM25 config (k1, b, optional tokenizer). Defaults match BM25Index.
 
@@ -20,7 +20,7 @@ BM25 config (k1, b, optional tokenizer). Defaults match BM25Index.
 
 > `optional` **defaultDenseWeight**: `number`
 
-Defined in: [packages/agentos/src/memory/retrieval/hybrid/HybridRetriever.ts:94](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/hybrid/HybridRetriever.ts#L94)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/hybrid/HybridRetriever.ts:94](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/hybrid/HybridRetriever.ts#L94)
 
 Default dense weight in RRF.
 
@@ -36,7 +36,7 @@ Default dense weight in RRF.
 
 > `optional` **defaultRrfK**: `number`
 
-Defined in: [packages/agentos/src/memory/retrieval/hybrid/HybridRetriever.ts:98](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/hybrid/HybridRetriever.ts#L98)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/hybrid/HybridRetriever.ts:98](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/hybrid/HybridRetriever.ts#L98)
 
 Default RRF constant.
 
@@ -52,7 +52,7 @@ Default RRF constant.
 
 > `optional` **defaultSparseWeight**: `number`
 
-Defined in: [packages/agentos/src/memory/retrieval/hybrid/HybridRetriever.ts:96](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/hybrid/HybridRetriever.ts#L96)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/hybrid/HybridRetriever.ts:96](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/hybrid/HybridRetriever.ts#L96)
 
 Default sparse weight in RRF.
 
@@ -68,7 +68,7 @@ Default sparse weight in RRF.
 
 > `optional` **factGraphQueryClassifier**: `FactGraphQueryClassifier`
 
-Defined in: [packages/agentos/src/memory/retrieval/hybrid/HybridRetriever.ts:117](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/hybrid/HybridRetriever.ts#L117)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/hybrid/HybridRetriever.ts:117](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/hybrid/HybridRetriever.ts#L117)
 
 Step-9: optional query classifier. Given the user's query, returns
 `(subject, predicate)` pairs to look up in the [factStore](#factstore),
@@ -82,7 +82,7 @@ subject are prepended, not just the latest). When absent and
 
 > `optional` **factStore**: [`FactStore`](../classes/FactStore.md)
 
-Defined in: [packages/agentos/src/memory/retrieval/hybrid/HybridRetriever.ts:109](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/hybrid/HybridRetriever.ts#L109)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/hybrid/HybridRetriever.ts:109](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/hybrid/HybridRetriever.ts#L109)
 
 Step-9: optional [FactStore](../classes/FactStore.md) of `(subject, predicate) → Fact[]`
 tuples extracted at session-ingest time. When present AND the query
@@ -99,7 +99,7 @@ paraphrased them away.
 
 > `optional` **hydeRetriever**: [`HydeRetriever`](../classes/HydeRetriever.md)
 
-Defined in: [packages/agentos/src/memory/retrieval/hybrid/HybridRetriever.ts:82](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/hybrid/HybridRetriever.ts#L82)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/hybrid/HybridRetriever.ts:82](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/hybrid/HybridRetriever.ts#L82)
 
 Optional HyDE retriever for query expansion (Step 4). When set,
 each `retrieve()` call generates a hypothesis and uses it as the
@@ -115,7 +115,7 @@ to the raw query without aborting retrieval.
 
 > **memoryStore**: [`MemoryStore`](../classes/MemoryStore.md)
 
-Defined in: [packages/agentos/src/memory/retrieval/hybrid/HybridRetriever.ts:64](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/hybrid/HybridRetriever.ts#L64)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/hybrid/HybridRetriever.ts:64](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/hybrid/HybridRetriever.ts#L64)
 
 ***
 
@@ -123,7 +123,7 @@ Defined in: [packages/agentos/src/memory/retrieval/hybrid/HybridRetriever.ts:64]
 
 > `optional` **rerankerService**: `RerankerService`
 
-Defined in: [packages/agentos/src/memory/retrieval/hybrid/HybridRetriever.ts:72](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/hybrid/HybridRetriever.ts#L72)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/hybrid/HybridRetriever.ts:72](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/hybrid/HybridRetriever.ts#L72)
 
 Optional neural reranker. When provided, the merged pool is
 reranked before truncation. Passing the same reranker the
@@ -135,7 +135,7 @@ baseline uses is the matched-ablation path.
 
 > `optional` **splitAmbiguousThreshold**: `number`
 
-Defined in: [packages/agentos/src/memory/retrieval/hybrid/HybridRetriever.ts:92](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/hybrid/HybridRetriever.ts#L92)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/hybrid/HybridRetriever.ts:92](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/hybrid/HybridRetriever.ts#L92)
 
 Step-6: enable split-on-ambiguous rerank refinement. When set to a
 value in (0, 1], the bottom fraction of traces by first-pass

@@ -1,6 +1,6 @@
 # Class: LLMUtilityAI
 
-Defined in: [packages/agentos/src/nlp/ai\_utilities/LLMUtilityAI.ts:65](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/nlp/ai_utilities/LLMUtilityAI.ts#L65)
+Defined in: [packages/agentos/src/cognition/nlp/ai\_utilities/LLMUtilityAI.ts:65](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/nlp/ai_utilities/LLMUtilityAI.ts#L65)
 
 ## Interface
 
@@ -18,7 +18,7 @@ Defines the contract for a comprehensive Utility AI service.
 
 > **new LLMUtilityAI**(`utilityId?`): `LLMUtilityAI`
 
-Defined in: [packages/agentos/src/nlp/ai\_utilities/LLMUtilityAI.ts:72](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/nlp/ai_utilities/LLMUtilityAI.ts#L72)
+Defined in: [packages/agentos/src/cognition/nlp/ai\_utilities/LLMUtilityAI.ts:72](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/nlp/ai_utilities/LLMUtilityAI.ts#L72)
 
 #### Parameters
 
@@ -36,7 +36,7 @@ Defined in: [packages/agentos/src/nlp/ai\_utilities/LLMUtilityAI.ts:72](https://
 
 > `readonly` **utilityId**: `string`
 
-Defined in: [packages/agentos/src/nlp/ai\_utilities/LLMUtilityAI.ts:66](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/nlp/ai_utilities/LLMUtilityAI.ts#L66)
+Defined in: [packages/agentos/src/cognition/nlp/ai\_utilities/LLMUtilityAI.ts:66](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/nlp/ai_utilities/LLMUtilityAI.ts#L66)
 
 #### Implementation of
 
@@ -48,7 +48,7 @@ Defined in: [packages/agentos/src/nlp/ai\_utilities/LLMUtilityAI.ts:66](https://
 
 > **analyzeSentiment**(`text`, `options?`): `Promise`\<[`SentimentResult`](../interfaces/SentimentResult.md)\>
 
-Defined in: [packages/agentos/src/nlp/ai\_utilities/LLMUtilityAI.ts:309](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/nlp/ai_utilities/LLMUtilityAI.ts#L309)
+Defined in: [packages/agentos/src/cognition/nlp/ai\_utilities/LLMUtilityAI.ts:309](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/nlp/ai_utilities/LLMUtilityAI.ts#L309)
 
 #### Parameters
 
@@ -74,7 +74,7 @@ Defined in: [packages/agentos/src/nlp/ai\_utilities/LLMUtilityAI.ts:309](https:/
 
 > **calculateReadability**(`text`, `options`): `Promise`\<[`ReadabilityResult`](../interfaces/ReadabilityResult.md)\>
 
-Defined in: [packages/agentos/src/nlp/ai\_utilities/LLMUtilityAI.ts:465](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/nlp/ai_utilities/LLMUtilityAI.ts#L465)
+Defined in: [packages/agentos/src/cognition/nlp/ai\_utilities/LLMUtilityAI.ts:465](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/nlp/ai_utilities/LLMUtilityAI.ts#L465)
 
 #### Parameters
 
@@ -100,7 +100,7 @@ Defined in: [packages/agentos/src/nlp/ai\_utilities/LLMUtilityAI.ts:465](https:/
 
 > **calculateSimilarity**(`text1`, `text2`, `options?`): `Promise`\<`number`\>
 
-Defined in: [packages/agentos/src/nlp/ai\_utilities/LLMUtilityAI.ts:395](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/nlp/ai_utilities/LLMUtilityAI.ts#L395)
+Defined in: [packages/agentos/src/cognition/nlp/ai\_utilities/LLMUtilityAI.ts:395](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/nlp/ai_utilities/LLMUtilityAI.ts#L395)
 
 #### Parameters
 
@@ -130,7 +130,7 @@ Defined in: [packages/agentos/src/nlp/ai\_utilities/LLMUtilityAI.ts:395](https:/
 
 > **checkHealth**(): `Promise`\<\{ `dependencies?`: `object`[]; `details?`: `any`; `isHealthy`: `boolean`; \}\>
 
-Defined in: [packages/agentos/src/nlp/ai\_utilities/LLMUtilityAI.ts:590](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/nlp/ai_utilities/LLMUtilityAI.ts#L590)
+Defined in: [packages/agentos/src/cognition/nlp/ai\_utilities/LLMUtilityAI.ts:590](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/nlp/ai_utilities/LLMUtilityAI.ts#L590)
 
 #### Returns
 
@@ -146,7 +146,7 @@ Defined in: [packages/agentos/src/nlp/ai\_utilities/LLMUtilityAI.ts:590](https:/
 
 > **classifyText**(`textToClassify`, `options`): `Promise`\<`ClassificationResult`\>
 
-Defined in: [packages/agentos/src/nlp/ai\_utilities/LLMUtilityAI.ts:257](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/nlp/ai_utilities/LLMUtilityAI.ts#L257)
+Defined in: [packages/agentos/src/cognition/nlp/ai\_utilities/LLMUtilityAI.ts:257](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/nlp/ai_utilities/LLMUtilityAI.ts#L257)
 
 #### Parameters
 
@@ -172,7 +172,7 @@ Defined in: [packages/agentos/src/nlp/ai\_utilities/LLMUtilityAI.ts:257](https:/
 
 > **detectLanguage**(`text`, `options?`): `Promise`\<[`LanguageDetectionResult`](../interfaces/LanguageDetectionResult.md)[]\>
 
-Defined in: [packages/agentos/src/nlp/ai\_utilities/LLMUtilityAI.ts:337](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/nlp/ai_utilities/LLMUtilityAI.ts#L337)
+Defined in: [packages/agentos/src/cognition/nlp/ai\_utilities/LLMUtilityAI.ts:337](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/nlp/ai_utilities/LLMUtilityAI.ts#L337)
 
 #### Parameters
 
@@ -198,7 +198,7 @@ Defined in: [packages/agentos/src/nlp/ai\_utilities/LLMUtilityAI.ts:337](https:/
 
 > **extractKeywords**(`textToAnalyze`, `options?`): `Promise`\<`string`[]\>
 
-Defined in: [packages/agentos/src/nlp/ai\_utilities/LLMUtilityAI.ts:287](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/nlp/ai_utilities/LLMUtilityAI.ts#L287)
+Defined in: [packages/agentos/src/cognition/nlp/ai\_utilities/LLMUtilityAI.ts:287](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/nlp/ai_utilities/LLMUtilityAI.ts#L287)
 
 #### Parameters
 
@@ -224,7 +224,7 @@ Defined in: [packages/agentos/src/nlp/ai\_utilities/LLMUtilityAI.ts:287](https:/
 
 > **generateNGrams**(`tokens`, `options`): `Promise`\<`Record`\<`number`, `string`[][]\>\>
 
-Defined in: [packages/agentos/src/nlp/ai\_utilities/LLMUtilityAI.ts:445](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/nlp/ai_utilities/LLMUtilityAI.ts#L445)
+Defined in: [packages/agentos/src/cognition/nlp/ai\_utilities/LLMUtilityAI.ts:445](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/nlp/ai_utilities/LLMUtilityAI.ts#L445)
 
 #### Parameters
 
@@ -250,7 +250,7 @@ Defined in: [packages/agentos/src/nlp/ai\_utilities/LLMUtilityAI.ts:445](https:/
 
 > **initialize**(`config`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/nlp/ai\_utilities/LLMUtilityAI.ts:77](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/nlp/ai_utilities/LLMUtilityAI.ts#L77)
+Defined in: [packages/agentos/src/cognition/nlp/ai\_utilities/LLMUtilityAI.ts:77](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/nlp/ai_utilities/LLMUtilityAI.ts#L77)
 
 #### Parameters
 
@@ -272,7 +272,7 @@ Defined in: [packages/agentos/src/nlp/ai\_utilities/LLMUtilityAI.ts:77](https://
 
 > **loadTrainedModel**(): `Promise`\<\{ `message?`: `string`; `success`: `boolean`; \}\>
 
-Defined in: [packages/agentos/src/nlp/ai\_utilities/LLMUtilityAI.ts:618](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/nlp/ai_utilities/LLMUtilityAI.ts#L618)
+Defined in: [packages/agentos/src/cognition/nlp/ai\_utilities/LLMUtilityAI.ts:618](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/nlp/ai_utilities/LLMUtilityAI.ts#L618)
 
 #### Returns
 
@@ -288,7 +288,7 @@ Defined in: [packages/agentos/src/nlp/ai\_utilities/LLMUtilityAI.ts:618](https:/
 
 > **normalizeText**(`text`, `options?`): `Promise`\<`string`\>
 
-Defined in: [packages/agentos/src/nlp/ai\_utilities/LLMUtilityAI.ts:421](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/nlp/ai_utilities/LLMUtilityAI.ts#L421)
+Defined in: [packages/agentos/src/cognition/nlp/ai\_utilities/LLMUtilityAI.ts:421](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/nlp/ai_utilities/LLMUtilityAI.ts#L421)
 
 #### Parameters
 
@@ -314,7 +314,7 @@ Defined in: [packages/agentos/src/nlp/ai\_utilities/LLMUtilityAI.ts:421](https:/
 
 > **parseJsonSafe**\<`T`\>(`jsonString`, `options?`): `Promise`\<`T` \| `null`\>
 
-Defined in: [packages/agentos/src/nlp/ai\_utilities/LLMUtilityAI.ts:204](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/nlp/ai_utilities/LLMUtilityAI.ts#L204)
+Defined in: [packages/agentos/src/cognition/nlp/ai\_utilities/LLMUtilityAI.ts:204](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/nlp/ai_utilities/LLMUtilityAI.ts#L204)
 
 Safely parses a string that is expected to be JSON, potentially using an LLM to fix common issues.
 
@@ -356,7 +356,7 @@ The parsed object, or null if parsing and fixing fail.
 
 > **saveTrainedModel**(): `Promise`\<\{ `message?`: `string`; `pathOrStoreId?`: `string`; `success`: `boolean`; \}\>
 
-Defined in: [packages/agentos/src/nlp/ai\_utilities/LLMUtilityAI.ts:615](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/nlp/ai_utilities/LLMUtilityAI.ts#L615)
+Defined in: [packages/agentos/src/cognition/nlp/ai\_utilities/LLMUtilityAI.ts:615](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/nlp/ai_utilities/LLMUtilityAI.ts#L615)
 
 #### Returns
 
@@ -372,7 +372,7 @@ Defined in: [packages/agentos/src/nlp/ai\_utilities/LLMUtilityAI.ts:615](https:/
 
 > **shutdown**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/nlp/ai\_utilities/LLMUtilityAI.ts:622](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/nlp/ai_utilities/LLMUtilityAI.ts#L622)
+Defined in: [packages/agentos/src/cognition/nlp/ai\_utilities/LLMUtilityAI.ts:622](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/nlp/ai_utilities/LLMUtilityAI.ts#L622)
 
 #### Returns
 
@@ -388,7 +388,7 @@ Defined in: [packages/agentos/src/nlp/ai\_utilities/LLMUtilityAI.ts:622](https:/
 
 > **stemTokens**(`tokens`, `_options?`): `Promise`\<`string`[]\>
 
-Defined in: [packages/agentos/src/nlp/ai\_utilities/LLMUtilityAI.ts:389](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/nlp/ai_utilities/LLMUtilityAI.ts#L389)
+Defined in: [packages/agentos/src/cognition/nlp/ai\_utilities/LLMUtilityAI.ts:389](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/nlp/ai_utilities/LLMUtilityAI.ts#L389)
 
 #### Parameters
 
@@ -414,7 +414,7 @@ Defined in: [packages/agentos/src/nlp/ai\_utilities/LLMUtilityAI.ts:389](https:/
 
 > **summarize**(`textToSummarize`, `options?`): `Promise`\<`string`\>
 
-Defined in: [packages/agentos/src/nlp/ai\_utilities/LLMUtilityAI.ts:177](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/nlp/ai_utilities/LLMUtilityAI.ts#L177)
+Defined in: [packages/agentos/src/cognition/nlp/ai\_utilities/LLMUtilityAI.ts:177](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/nlp/ai_utilities/LLMUtilityAI.ts#L177)
 
 #### Parameters
 
@@ -440,7 +440,7 @@ Defined in: [packages/agentos/src/nlp/ai\_utilities/LLMUtilityAI.ts:177](https:/
 
 > **summarizeConversationHistory**(`messages`, `targetTokenCount`, `modelInfo`, `preserveImportantMessages?`): `Promise`\<\{ `finalTokenCount`: `number`; `messagesSummarized`: `number`; `originalTokenCount`: `number`; `summaryMessages`: `ConversationMessage`[]; \}\>
 
-Defined in: [packages/agentos/src/nlp/ai\_utilities/LLMUtilityAI.ts:516](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/nlp/ai_utilities/LLMUtilityAI.ts#L516)
+Defined in: [packages/agentos/src/cognition/nlp/ai\_utilities/LLMUtilityAI.ts:516](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/nlp/ai_utilities/LLMUtilityAI.ts#L516)
 
 Summarizes conversation history to fit within token constraints, attempting to preserve key information.
 
@@ -487,7 +487,7 @@ and metadata about the summarization.
 
 > **summarizeRAGContext**(`context`, `targetTokenCount`, `modelInfo`, `preserveSourceAttribution?`): `Promise`\<\{ `finalTokenCount`: `number`; `originalTokenCount`: `number`; `preservedSources?`: `string`[]; `summary`: `string`; \}\>
 
-Defined in: [packages/agentos/src/nlp/ai\_utilities/LLMUtilityAI.ts:561](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/nlp/ai_utilities/LLMUtilityAI.ts#L561)
+Defined in: [packages/agentos/src/cognition/nlp/ai\_utilities/LLMUtilityAI.ts:561](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/nlp/ai_utilities/LLMUtilityAI.ts#L561)
 
 Summarizes retrieved RAG context to fit token limits, ideally preserving source attribution if possible.
 
@@ -533,7 +533,7 @@ The summarized text and metadata.
 
 > **tokenize**(`text`, `options?`): `Promise`\<`string`[]\>
 
-Defined in: [packages/agentos/src/nlp/ai\_utilities/LLMUtilityAI.ts:360](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/nlp/ai_utilities/LLMUtilityAI.ts#L360)
+Defined in: [packages/agentos/src/cognition/nlp/ai\_utilities/LLMUtilityAI.ts:360](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/nlp/ai_utilities/LLMUtilityAI.ts#L360)
 
 #### Parameters
 
@@ -559,7 +559,7 @@ Defined in: [packages/agentos/src/nlp/ai\_utilities/LLMUtilityAI.ts:360](https:/
 
 > **trainModel**(): `Promise`\<\{ `message?`: `string`; `modelId?`: `string`; `success`: `boolean`; \}\>
 
-Defined in: [packages/agentos/src/nlp/ai\_utilities/LLMUtilityAI.ts:612](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/nlp/ai_utilities/LLMUtilityAI.ts#L612)
+Defined in: [packages/agentos/src/cognition/nlp/ai\_utilities/LLMUtilityAI.ts:612](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/nlp/ai_utilities/LLMUtilityAI.ts#L612)
 
 #### Returns
 

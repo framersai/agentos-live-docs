@@ -1,6 +1,6 @@
 # Interface: AgencyStreamResult
 
-Defined in: [packages/agentos/src/api/types.ts:1026](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/types.ts#L1026)
+Defined in: [packages/agentos/src/api/types.ts:1038](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/types.ts#L1038)
 
 Public stream result returned by `agency().stream(...)`.
 
@@ -39,7 +39,7 @@ console.log(await stream.text);
 
 > **agentCalls**: `Promise`\<[`AgentCallRecord`](AgentCallRecord.md)[]\>
 
-Defined in: [packages/agentos/src/api/types.ts:1048](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/types.ts#L1048)
+Defined in: [packages/agentos/src/api/types.ts:1060](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/types.ts#L1060)
 
 Final per-agent execution ledger for the streamed run.
 
@@ -49,7 +49,7 @@ Final per-agent execution ledger for the streamed run.
 
 > **finalTextStream**: `AsyncIterable`\<`string`\>
 
-Defined in: [packages/agentos/src/api/types.ts:1060](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/types.ts#L1060)
+Defined in: [packages/agentos/src/api/types.ts:1072](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/types.ts#L1072)
 
 Finalized approved-only text stream.
 
@@ -62,7 +62,7 @@ For most runs it emits a single finalized chunk.
 
 > **fullStream**: `AsyncIterable`\<[`AgencyStreamPart`](../type-aliases/AgencyStreamPart.md)\>
 
-Defined in: [packages/agentos/src/api/types.ts:1035](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/types.ts#L1035)
+Defined in: [packages/agentos/src/api/types.ts:1047](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/types.ts#L1047)
 
 Structured live + finalized event stream.
 
@@ -75,7 +75,7 @@ This includes raw text/tool/lifecycle events and also the finalized
 
 > **parsed**: `Promise`\<`unknown`\>
 
-Defined in: [packages/agentos/src/api/types.ts:1053](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/types.ts#L1053)
+Defined in: [packages/agentos/src/api/types.ts:1065](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/types.ts#L1065)
 
 Final structured payload; resolves to `undefined` when structured output
 was not configured for the run.
@@ -86,7 +86,7 @@ was not configured for the run.
 
 > **text**: `Promise`\<`string`\>
 
-Defined in: [packages/agentos/src/api/types.ts:1037](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/types.ts#L1037)
+Defined in: [packages/agentos/src/api/types.ts:1049](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/types.ts#L1049)
 
 Finalized scalar text after guardrails, HITL, and parsing hooks.
 
@@ -96,7 +96,7 @@ Finalized scalar text after guardrails, HITL, and parsing hooks.
 
 > **textStream**: `AsyncIterable`\<`string`\>
 
-Defined in: [packages/agentos/src/api/types.ts:1028](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/types.ts#L1028)
+Defined in: [packages/agentos/src/api/types.ts:1040](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/types.ts#L1040)
 
 Raw live text chunks from the underlying strategy.
 
@@ -106,6 +106,6 @@ Raw live text chunks from the underlying strategy.
 
 > **usage**: `Promise`\<\{ `cacheCreationTokens?`: `number`; `cacheReadTokens?`: `number`; `completionTokens`: `number`; `costUSD?`: `number`; `promptTokens`: `number`; `totalTokens`: `number`; \}\>
 
-Defined in: [packages/agentos/src/api/types.ts:1039](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/types.ts#L1039)
+Defined in: [packages/agentos/src/api/types.ts:1051](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/types.ts#L1051)
 
 Final aggregate usage for the streamed run.

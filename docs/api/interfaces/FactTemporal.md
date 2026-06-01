@@ -1,6 +1,6 @@
 # Interface: FactTemporal
 
-Defined in: [packages/agentos/src/memory/retrieval/typed-network/types.ts:75](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/typed-network/types.ts#L75)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/typed-network/types.ts:75](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/typed-network/types.ts#L75)
 
 Temporal envelope per Hindsight Eq. 1 fields τs, τe, τm. ISO 8601
 strings; missing `start` / `end` indicates an instant rather than an
@@ -13,7 +13,7 @@ which the fact was authored.
 
 > `optional` **end**: `string`
 
-Defined in: [packages/agentos/src/memory/retrieval/typed-network/types.ts:79](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/typed-network/types.ts#L79)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/typed-network/types.ts:79](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/typed-network/types.ts#L79)
 
 Interval end (inclusive). ISO 8601. Optional for instant facts.
 
@@ -23,7 +23,7 @@ Interval end (inclusive). ISO 8601. Optional for instant facts.
 
 > **mention**: `string`
 
-Defined in: [packages/agentos/src/memory/retrieval/typed-network/types.ts:81](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/typed-network/types.ts#L81)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/typed-network/types.ts:81](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/typed-network/types.ts#L81)
 
 Mention timestamp — when the fact was first authored. ISO 8601.
 
@@ -33,6 +33,6 @@ Mention timestamp — when the fact was first authored. ISO 8601.
 
 > `optional` **start**: `string`
 
-Defined in: [packages/agentos/src/memory/retrieval/typed-network/types.ts:77](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/typed-network/types.ts#L77)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/typed-network/types.ts:77](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/typed-network/types.ts#L77)
 
 Interval start (inclusive). ISO 8601. Optional for instant facts.

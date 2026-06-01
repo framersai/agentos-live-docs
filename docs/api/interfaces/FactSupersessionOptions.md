@@ -1,6 +1,6 @@
 # Interface: FactSupersessionOptions
 
-Defined in: [packages/agentos/src/memory/retrieval/fact-supersession/FactSupersession.ts:38](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/fact-supersession/FactSupersession.ts#L38)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/fact-supersession/FactSupersession.ts:38](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/fact-supersession/FactSupersession.ts#L38)
 
 Options for constructing a [FactSupersession](../classes/FactSupersession.md).
 
@@ -10,7 +10,7 @@ Options for constructing a [FactSupersession](../classes/FactSupersession.md).
 
 > **llmInvoker**: `LlmInvoker`
 
-Defined in: [packages/agentos/src/memory/retrieval/fact-supersession/FactSupersession.ts:40](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/fact-supersession/FactSupersession.ts#L40)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/fact-supersession/FactSupersession.ts:40](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/fact-supersession/FactSupersession.ts#L40)
 
 LLM invoker used for the supersession pass.
 
@@ -20,7 +20,7 @@ LLM invoker used for the supersession pass.
 
 > `optional` **maxTraces**: `number`
 
-Defined in: [packages/agentos/src/memory/retrieval/fact-supersession/FactSupersession.ts:42](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/fact-supersession/FactSupersession.ts#L42)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/fact-supersession/FactSupersession.ts:42](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/fact-supersession/FactSupersession.ts#L42)
 
 Max traces to send to the LLM.
 
@@ -36,7 +36,7 @@ Max traces to send to the LLM.
 
 > `optional` **timeoutMs**: `number`
 
-Defined in: [packages/agentos/src/memory/retrieval/fact-supersession/FactSupersession.ts:44](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/fact-supersession/FactSupersession.ts#L44)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/fact-supersession/FactSupersession.ts:44](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/fact-supersession/FactSupersession.ts#L44)
 
 Max wall-clock ms before timeout fallback.
 

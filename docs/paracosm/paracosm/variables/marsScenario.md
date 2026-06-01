@@ -2,6 +2,8 @@
 
 > `const` **marsScenario**: [`ScenarioPackage`](../interfaces/ScenarioPackage.md)
 
-Defined in: [apps/paracosm/src/engine/mars/index.ts:21](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/engine/mars/index.ts#L21)
+Defined in: [apps/paracosm/src/engine/scenarios/index.ts:92](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/scenarios/index.ts#L92)
 
-Mars Genesis scenario: 100-colonist Mars colony over 50 simulated years.
+Mars Genesis: 100-colonist Mars colony over 48 simulated years.
+Per-agent radiation accumulation + bone density decay run via the
+`mars-radiation-bone` physics module.

@@ -1,6 +1,6 @@
 # Class: StatisticalUtilityAI
 
-Defined in: [packages/agentos/src/nlp/ai\_utilities/StatisticalUtilityAI.ts:89](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/nlp/ai_utilities/StatisticalUtilityAI.ts#L89)
+Defined in: [packages/agentos/src/cognition/nlp/ai\_utilities/StatisticalUtilityAI.ts:89](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/nlp/ai_utilities/StatisticalUtilityAI.ts#L89)
 
 ## Interface
 
@@ -17,7 +17,7 @@ Defines the contract for a comprehensive Utility AI service.
 
 > **new StatisticalUtilityAI**(`utilityId?`): `StatisticalUtilityAI`
 
-Defined in: [packages/agentos/src/nlp/ai\_utilities/StatisticalUtilityAI.ts:135](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/nlp/ai_utilities/StatisticalUtilityAI.ts#L135)
+Defined in: [packages/agentos/src/cognition/nlp/ai\_utilities/StatisticalUtilityAI.ts:135](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/nlp/ai_utilities/StatisticalUtilityAI.ts#L135)
 
 #### Parameters
 
@@ -35,7 +35,7 @@ Defined in: [packages/agentos/src/nlp/ai\_utilities/StatisticalUtilityAI.ts:135]
 
 > `readonly` **utilityId**: `string`
 
-Defined in: [packages/agentos/src/nlp/ai\_utilities/StatisticalUtilityAI.ts:90](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/nlp/ai_utilities/StatisticalUtilityAI.ts#L90)
+Defined in: [packages/agentos/src/cognition/nlp/ai\_utilities/StatisticalUtilityAI.ts:90](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/nlp/ai_utilities/StatisticalUtilityAI.ts#L90)
 
 #### Implementation of
 
@@ -47,7 +47,7 @@ Defined in: [packages/agentos/src/nlp/ai\_utilities/StatisticalUtilityAI.ts:90](
 
 > **analyzeSentiment**(`text`, `options?`): `Promise`\<[`SentimentResult`](../interfaces/SentimentResult.md)\>
 
-Defined in: [packages/agentos/src/nlp/ai\_utilities/StatisticalUtilityAI.ts:460](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/nlp/ai_utilities/StatisticalUtilityAI.ts#L460)
+Defined in: [packages/agentos/src/cognition/nlp/ai\_utilities/StatisticalUtilityAI.ts:460](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/nlp/ai_utilities/StatisticalUtilityAI.ts#L460)
 
 #### Parameters
 
@@ -73,7 +73,7 @@ Defined in: [packages/agentos/src/nlp/ai\_utilities/StatisticalUtilityAI.ts:460]
 
 > **calculateReadability**(`text`, `options`): `Promise`\<[`ReadabilityResult`](../interfaces/ReadabilityResult.md)\>
 
-Defined in: [packages/agentos/src/nlp/ai\_utilities/StatisticalUtilityAI.ts:607](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/nlp/ai_utilities/StatisticalUtilityAI.ts#L607)
+Defined in: [packages/agentos/src/cognition/nlp/ai\_utilities/StatisticalUtilityAI.ts:607](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/nlp/ai_utilities/StatisticalUtilityAI.ts#L607)
 
 #### Parameters
 
@@ -99,7 +99,7 @@ Defined in: [packages/agentos/src/nlp/ai\_utilities/StatisticalUtilityAI.ts:607]
 
 > **calculateSimilarity**(`text1`, `text2`, `options?`): `Promise`\<`number`\>
 
-Defined in: [packages/agentos/src/nlp/ai\_utilities/StatisticalUtilityAI.ts:392](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/nlp/ai_utilities/StatisticalUtilityAI.ts#L392)
+Defined in: [packages/agentos/src/cognition/nlp/ai\_utilities/StatisticalUtilityAI.ts:392](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/nlp/ai_utilities/StatisticalUtilityAI.ts#L392)
 
 #### Parameters
 
@@ -129,7 +129,7 @@ Defined in: [packages/agentos/src/nlp/ai\_utilities/StatisticalUtilityAI.ts:392]
 
 > **checkHealth**(): `Promise`\<\{ `dependencies?`: `object`[]; `details?`: `any`; `isHealthy`: `boolean`; \}\>
 
-Defined in: [packages/agentos/src/nlp/ai\_utilities/StatisticalUtilityAI.ts:664](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/nlp/ai_utilities/StatisticalUtilityAI.ts#L664)
+Defined in: [packages/agentos/src/cognition/nlp/ai\_utilities/StatisticalUtilityAI.ts:664](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/nlp/ai_utilities/StatisticalUtilityAI.ts#L664)
 
 #### Returns
 
@@ -145,7 +145,7 @@ Defined in: [packages/agentos/src/nlp/ai\_utilities/StatisticalUtilityAI.ts:664]
 
 > **classifyText**(`textToClassify`, `options`): `Promise`\<`ClassificationResult`\>
 
-Defined in: [packages/agentos/src/nlp/ai\_utilities/StatisticalUtilityAI.ts:290](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/nlp/ai_utilities/StatisticalUtilityAI.ts#L290)
+Defined in: [packages/agentos/src/cognition/nlp/ai\_utilities/StatisticalUtilityAI.ts:290](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/nlp/ai_utilities/StatisticalUtilityAI.ts#L290)
 
 #### Parameters
 
@@ -171,7 +171,7 @@ Defined in: [packages/agentos/src/nlp/ai\_utilities/StatisticalUtilityAI.ts:290]
 
 > **detectLanguage**(`text`, `options?`): `Promise`\<[`LanguageDetectionResult`](../interfaces/LanguageDetectionResult.md)[]\>
 
-Defined in: [packages/agentos/src/nlp/ai\_utilities/StatisticalUtilityAI.ts:521](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/nlp/ai_utilities/StatisticalUtilityAI.ts#L521)
+Defined in: [packages/agentos/src/cognition/nlp/ai\_utilities/StatisticalUtilityAI.ts:521](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/nlp/ai_utilities/StatisticalUtilityAI.ts#L521)
 
 Detect the language of a text string using trigram frequency analysis.
 
@@ -215,7 +215,7 @@ Ranked array of `{ language, confidence }` where `language` is
 
 > **extractKeywords**(`textToAnalyze`, `options?`): `Promise`\<`string`[]\>
 
-Defined in: [packages/agentos/src/nlp/ai\_utilities/StatisticalUtilityAI.ts:355](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/nlp/ai_utilities/StatisticalUtilityAI.ts#L355)
+Defined in: [packages/agentos/src/cognition/nlp/ai\_utilities/StatisticalUtilityAI.ts:355](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/nlp/ai_utilities/StatisticalUtilityAI.ts#L355)
 
 #### Parameters
 
@@ -241,7 +241,7 @@ Defined in: [packages/agentos/src/nlp/ai\_utilities/StatisticalUtilityAI.ts:355]
 
 > **generateNGrams**(`tokens`, `options`): `Promise`\<`Record`\<`number`, `string`[][]\>\>
 
-Defined in: [packages/agentos/src/nlp/ai\_utilities/StatisticalUtilityAI.ts:586](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/nlp/ai_utilities/StatisticalUtilityAI.ts#L586)
+Defined in: [packages/agentos/src/cognition/nlp/ai\_utilities/StatisticalUtilityAI.ts:586](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/nlp/ai_utilities/StatisticalUtilityAI.ts#L586)
 
 #### Parameters
 
@@ -267,7 +267,7 @@ Defined in: [packages/agentos/src/nlp/ai\_utilities/StatisticalUtilityAI.ts:586]
 
 > **initialize**(`config`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/nlp/ai\_utilities/StatisticalUtilityAI.ts:147](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/nlp/ai_utilities/StatisticalUtilityAI.ts#L147)
+Defined in: [packages/agentos/src/cognition/nlp/ai\_utilities/StatisticalUtilityAI.ts:147](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/nlp/ai_utilities/StatisticalUtilityAI.ts#L147)
 
 #### Parameters
 
@@ -289,7 +289,7 @@ Defined in: [packages/agentos/src/nlp/ai\_utilities/StatisticalUtilityAI.ts:147]
 
 > **loadTrainedModel**(`modelId`, `modelType?`, `storagePath?`): `Promise`\<\{ `message?`: `string`; `success`: `boolean`; \}\>
 
-Defined in: [packages/agentos/src/nlp/ai\_utilities/StatisticalUtilityAI.ts:744](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/nlp/ai_utilities/StatisticalUtilityAI.ts#L744)
+Defined in: [packages/agentos/src/cognition/nlp/ai\_utilities/StatisticalUtilityAI.ts:744](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/nlp/ai_utilities/StatisticalUtilityAI.ts#L744)
 
 #### Parameters
 
@@ -319,7 +319,7 @@ Defined in: [packages/agentos/src/nlp/ai\_utilities/StatisticalUtilityAI.ts:744]
 
 > **normalizeText**(`text`, `options?`): `Promise`\<`string`\>
 
-Defined in: [packages/agentos/src/nlp/ai\_utilities/StatisticalUtilityAI.ts:542](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/nlp/ai_utilities/StatisticalUtilityAI.ts#L542)
+Defined in: [packages/agentos/src/cognition/nlp/ai\_utilities/StatisticalUtilityAI.ts:542](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/nlp/ai_utilities/StatisticalUtilityAI.ts#L542)
 
 #### Parameters
 
@@ -345,7 +345,7 @@ Defined in: [packages/agentos/src/nlp/ai\_utilities/StatisticalUtilityAI.ts:542]
 
 > **parseJsonSafe**\<`T`\>(`jsonString`, `options?`): `Promise`\<`T` \| `null`\>
 
-Defined in: [packages/agentos/src/nlp/ai\_utilities/StatisticalUtilityAI.ts:787](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/nlp/ai_utilities/StatisticalUtilityAI.ts#L787)
+Defined in: [packages/agentos/src/cognition/nlp/ai\_utilities/StatisticalUtilityAI.ts:787](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/nlp/ai_utilities/StatisticalUtilityAI.ts#L787)
 
 Safely parses a string that is expected to be JSON, potentially using an LLM to fix common issues.
 
@@ -387,7 +387,7 @@ The parsed object, or null if parsing and fixing fail.
 
 > **saveTrainedModel**(`modelId`, `modelType?`, `storagePath?`): `Promise`\<\{ `message?`: `string`; `pathOrStoreId?`: `string`; `success`: `boolean`; \}\>
 
-Defined in: [packages/agentos/src/nlp/ai\_utilities/StatisticalUtilityAI.ts:716](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/nlp/ai_utilities/StatisticalUtilityAI.ts#L716)
+Defined in: [packages/agentos/src/cognition/nlp/ai\_utilities/StatisticalUtilityAI.ts:716](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/nlp/ai_utilities/StatisticalUtilityAI.ts#L716)
 
 #### Parameters
 
@@ -417,7 +417,7 @@ Defined in: [packages/agentos/src/nlp/ai\_utilities/StatisticalUtilityAI.ts:716]
 
 > **shutdown**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/nlp/ai\_utilities/StatisticalUtilityAI.ts:803](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/nlp/ai_utilities/StatisticalUtilityAI.ts#L803)
+Defined in: [packages/agentos/src/cognition/nlp/ai\_utilities/StatisticalUtilityAI.ts:803](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/nlp/ai_utilities/StatisticalUtilityAI.ts#L803)
 
 #### Returns
 
@@ -433,7 +433,7 @@ Defined in: [packages/agentos/src/nlp/ai\_utilities/StatisticalUtilityAI.ts:803]
 
 > **stemTokens**(`tokens`, `options?`): `Promise`\<`string`[]\>
 
-Defined in: [packages/agentos/src/nlp/ai\_utilities/StatisticalUtilityAI.ts:386](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/nlp/ai_utilities/StatisticalUtilityAI.ts#L386)
+Defined in: [packages/agentos/src/cognition/nlp/ai\_utilities/StatisticalUtilityAI.ts:386](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/nlp/ai_utilities/StatisticalUtilityAI.ts#L386)
 
 #### Parameters
 
@@ -459,7 +459,7 @@ Defined in: [packages/agentos/src/nlp/ai\_utilities/StatisticalUtilityAI.ts:386]
 
 > **summarize**(`textToSummarize`, `options?`): `Promise`\<`string`\>
 
-Defined in: [packages/agentos/src/nlp/ai\_utilities/StatisticalUtilityAI.ts:263](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/nlp/ai_utilities/StatisticalUtilityAI.ts#L263)
+Defined in: [packages/agentos/src/cognition/nlp/ai\_utilities/StatisticalUtilityAI.ts:263](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/nlp/ai_utilities/StatisticalUtilityAI.ts#L263)
 
 #### Parameters
 
@@ -485,7 +485,7 @@ Defined in: [packages/agentos/src/nlp/ai\_utilities/StatisticalUtilityAI.ts:263]
 
 > **tokenize**(`text`, `options?`): `Promise`\<`string`[]\>
 
-Defined in: [packages/agentos/src/nlp/ai\_utilities/StatisticalUtilityAI.ts:368](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/nlp/ai_utilities/StatisticalUtilityAI.ts#L368)
+Defined in: [packages/agentos/src/cognition/nlp/ai\_utilities/StatisticalUtilityAI.ts:368](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/nlp/ai_utilities/StatisticalUtilityAI.ts#L368)
 
 #### Parameters
 
@@ -511,7 +511,7 @@ Defined in: [packages/agentos/src/nlp/ai\_utilities/StatisticalUtilityAI.ts:368]
 
 > **trainModel**(`trainingData`, `modelType`, `trainingOptions?`): `Promise`\<\{ `message?`: `string`; `modelId?`: `string`; `success`: `boolean`; \}\>
 
-Defined in: [packages/agentos/src/nlp/ai\_utilities/StatisticalUtilityAI.ts:680](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/nlp/ai_utilities/StatisticalUtilityAI.ts#L680)
+Defined in: [packages/agentos/src/cognition/nlp/ai\_utilities/StatisticalUtilityAI.ts:680](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/nlp/ai_utilities/StatisticalUtilityAI.ts#L680)
 
 #### Parameters
 

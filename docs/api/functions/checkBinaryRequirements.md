@@ -2,7 +2,7 @@
 
 > **checkBinaryRequirements**(`entry`, `hasBin`): `object`
 
-Defined in: [packages/agentos/src/skills/SkillLoader.ts:326](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/skills/SkillLoader.ts#L326)
+Defined in: [packages/agentos/src/cognition/skills/SkillLoader.ts:326](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/skills/SkillLoader.ts#L326)
 
 Check if all binary requirements for a skill are met.
 

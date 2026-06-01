@@ -2,7 +2,7 @@
 
 > **traitsToHexaco**(`traits`): [`HexacoProfile`](../core/interfaces/HexacoProfile.md)
 
-Defined in: [apps/paracosm/src/engine/trait-models/normalize-leader.ts:147](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/engine/trait-models/normalize-leader.ts#L147)
+Defined in: [apps/paracosm/src/engine/traits/normalize-leader.ts:147](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/traits/normalize-leader.ts#L147)
 
 Inverse of `hexacoToTraits`: when an artifact carries a
 non-HEXACO `traitProfile` but a consumer wants a HexacoProfile-

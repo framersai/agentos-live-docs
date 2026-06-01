@@ -1,6 +1,6 @@
 # Interface: MultimodalSearchResult
 
-Defined in: [packages/agentos/src/rag/multimodal/types.ts:254](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/multimodal/types.ts#L254)
+Defined in: [packages/agentos/src/cognition/rag/multimodal/types.ts:254](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/multimodal/types.ts#L254)
 
 A single result from a multimodal search query.
 
@@ -14,7 +14,7 @@ it appropriately.
 
 > **content**: `string`
 
-Defined in: [packages/agentos/src/rag/multimodal/types.ts:264](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/multimodal/types.ts#L264)
+Defined in: [packages/agentos/src/cognition/rag/multimodal/types.ts:264](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/multimodal/types.ts#L264)
 
 The text content that was embedded and matched.
 For images: the vision LLM description.
@@ -27,7 +27,7 @@ For text: the original text chunk.
 
 > **id**: `string`
 
-Defined in: [packages/agentos/src/rag/multimodal/types.ts:256](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/multimodal/types.ts#L256)
+Defined in: [packages/agentos/src/cognition/rag/multimodal/types.ts:256](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/multimodal/types.ts#L256)
 
 Unique document ID in the vector store.
 
@@ -37,7 +37,7 @@ Unique document ID in the vector store.
 
 > `optional` **metadata**: `Record`\<`string`, `unknown`\>
 
-Defined in: [packages/agentos/src/rag/multimodal/types.ts:283](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/multimodal/types.ts#L283)
+Defined in: [packages/agentos/src/cognition/rag/multimodal/types.ts:283](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/multimodal/types.ts#L283)
 
 Any metadata attached during indexing.
 May include source URLs, file names, timestamps, etc.
@@ -48,7 +48,7 @@ May include source URLs, file names, timestamps, etc.
 
 > **modality**: [`ContentModality`](../type-aliases/ContentModality.md)
 
-Defined in: [packages/agentos/src/rag/multimodal/types.ts:277](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/multimodal/types.ts#L277)
+Defined in: [packages/agentos/src/cognition/rag/multimodal/types.ts:277](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/multimodal/types.ts#L277)
 
 The content modality of this result.
 Indicates whether the match came from text, image description,
@@ -60,7 +60,7 @@ or audio transcript.
 
 > **score**: `number`
 
-Defined in: [packages/agentos/src/rag/multimodal/types.ts:270](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/multimodal/types.ts#L270)
+Defined in: [packages/agentos/src/cognition/rag/multimodal/types.ts:270](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/multimodal/types.ts#L270)
 
 Cosine similarity score between the query and this result.
 Higher is more relevant (typically 0.0 to 1.0).

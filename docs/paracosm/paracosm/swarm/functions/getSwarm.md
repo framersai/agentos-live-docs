@@ -2,7 +2,7 @@
 
 > **getSwarm**(`artifact`): \{ `agents`: `object`[]; `births?`: `number`; `deaths?`: `number`; `morale?`: `number`; `population`: `number`; `scenarioExtensions?`: `Record`\<`string`, `unknown`\>; `time`: `number`; `turn`: `number`; \} \| `undefined`
 
-Defined in: [apps/paracosm/src/runtime/swarm/index.ts:32](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/runtime/swarm/index.ts#L32)
+Defined in: [apps/paracosm/src/runtime/swarm/index.ts:32](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/swarm/index.ts#L32)
 
 Final swarm snapshot from a run, or `undefined` when the run did not
 produce one (e.g., `batch-point` mode that skipped the turn loop).

@@ -1,6 +1,6 @@
 # Class: TypedNetworkStore
 
-Defined in: [packages/agentos/src/memory/retrieval/typed-network/TypedNetworkStore.ts:32](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/typed-network/TypedNetworkStore.ts#L32)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/typed-network/TypedNetworkStore.ts:32](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/typed-network/TypedNetworkStore.ts#L32)
 
 In-memory 4-bank store. Holds facts indexed by ID + per-bank ID set
 + outgoing-edge map. Constructed empty; populate via [addFact](#addfact)
@@ -12,7 +12,7 @@ and [addEdge](#addedge).
 
 > **new TypedNetworkStore**(): `TypedNetworkStore`
 
-Defined in: [packages/agentos/src/memory/retrieval/typed-network/TypedNetworkStore.ts:42](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/typed-network/TypedNetworkStore.ts#L42)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/typed-network/TypedNetworkStore.ts:42](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/typed-network/TypedNetworkStore.ts#L42)
 
 Construct an empty store with one entry per bank in
 [BANK\_IDS](../variables/BANK_IDS.md). Pre-allocating avoids null-checks in the
@@ -28,7 +28,7 @@ insertion path.
 
 > **addEdge**(`edge`): `void`
 
-Defined in: [packages/agentos/src/memory/retrieval/typed-network/TypedNetworkStore.ts:88](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/typed-network/TypedNetworkStore.ts#L88)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/typed-network/TypedNetworkStore.ts:88](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/typed-network/TypedNetworkStore.ts#L88)
 
 Insert a typed edge. Stores both the forward edge (`from → to`)
 and a paired reverse edge (`to → from`) so spreading activation
@@ -52,7 +52,7 @@ bidirectional by construction.
 
 > **addFact**(`fact`): `void`
 
-Defined in: [packages/agentos/src/memory/retrieval/typed-network/TypedNetworkStore.ts:53](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/typed-network/TypedNetworkStore.ts#L53)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/typed-network/TypedNetworkStore.ts:53](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/typed-network/TypedNetworkStore.ts#L53)
 
 Insert a fact. Routes into `fact.bank` by membership in the
 appropriate `banks[bank]` set. Re-inserting the same ID overwrites
@@ -74,7 +74,7 @@ the prior fact and leaves bank membership unchanged.
 
 > **getBank**(`bank`): `Set`\<`string`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/typed-network/TypedNetworkStore.ts:69](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/typed-network/TypedNetworkStore.ts#L69)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/typed-network/TypedNetworkStore.ts:69](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/typed-network/TypedNetworkStore.ts#L69)
 
 Return the set of fact IDs in a given bank. Live reference — do
 not mutate the returned `Set` directly.
@@ -95,7 +95,7 @@ not mutate the returned `Set` directly.
 
 > **getEdges**(`factId`): [`TypedEdge`](../interfaces/TypedEdge.md)[]
 
-Defined in: [packages/agentos/src/memory/retrieval/typed-network/TypedNetworkStore.ts:102](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/typed-network/TypedNetworkStore.ts#L102)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/typed-network/TypedNetworkStore.ts:102](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/typed-network/TypedNetworkStore.ts#L102)
 
 Outgoing edges from a fact. Empty array if the fact has no
 outgoing edges or is unknown.
@@ -116,7 +116,7 @@ outgoing edges or is unknown.
 
 > **getFact**(`id`): [`TypedFact`](../interfaces/TypedFact.md) \| `undefined`
 
-Defined in: [packages/agentos/src/memory/retrieval/typed-network/TypedNetworkStore.ts:61](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/typed-network/TypedNetworkStore.ts#L61)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/typed-network/TypedNetworkStore.ts:61](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/typed-network/TypedNetworkStore.ts#L61)
 
 Lookup a fact by ID. Returns `undefined` if not present.
 
@@ -136,7 +136,7 @@ Lookup a fact by ID. Returns `undefined` if not present.
 
 > **iterateFacts**(): `IterableIterator`\<[`TypedFact`](../interfaces/TypedFact.md)\>
 
-Defined in: [packages/agentos/src/memory/retrieval/typed-network/TypedNetworkStore.ts:110](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/typed-network/TypedNetworkStore.ts#L110)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/typed-network/TypedNetworkStore.ts:110](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/typed-network/TypedNetworkStore.ts#L110)
 
 Iterate every fact in the store. Useful for export and
 persistence.
@@ -151,7 +151,7 @@ persistence.
 
 > **size**(): `number`
 
-Defined in: [packages/agentos/src/memory/retrieval/typed-network/TypedNetworkStore.ts:77](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/typed-network/TypedNetworkStore.ts#L77)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/typed-network/TypedNetworkStore.ts:77](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/typed-network/TypedNetworkStore.ts#L77)
 
 Total fact count across all banks. Useful for debugging /
 consolidation pruning thresholds.

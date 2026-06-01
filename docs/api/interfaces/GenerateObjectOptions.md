@@ -1,6 +1,6 @@
 # Interface: GenerateObjectOptions\<T\>
 
-Defined in: [packages/agentos/src/api/generateObject.ts:86](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/generateObject.ts#L86)
+Defined in: [packages/agentos/src/api/generateObject.ts:117](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/generateObject.ts#L117)
 
 Options for a [generateObject](../functions/generateObject.md) call.
 
@@ -30,7 +30,7 @@ The Zod schema type that defines the expected output shape.
 
 > `optional` **apiKey**: `string`
 
-Defined in: [packages/agentos/src/api/generateObject.ts:156](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/generateObject.ts#L156)
+Defined in: [packages/agentos/src/api/generateObject.ts:188](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/generateObject.ts#L188)
 
 Override the API key instead of reading from environment variables.
 
@@ -40,7 +40,7 @@ Override the API key instead of reading from environment variables.
 
 > `optional` **baseUrl**: `string`
 
-Defined in: [packages/agentos/src/api/generateObject.ts:159](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/generateObject.ts#L159)
+Defined in: [packages/agentos/src/api/generateObject.ts:191](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/generateObject.ts#L191)
 
 Override the provider base URL (useful for local proxies or Ollama).
 
@@ -50,7 +50,7 @@ Override the provider base URL (useful for local proxies or Ollama).
 
 > `optional` **fallbackProviders**: [`FallbackProviderEntry`](FallbackProviderEntry.md)[]
 
-Defined in: [packages/agentos/src/api/generateObject.ts:166](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/generateObject.ts#L166)
+Defined in: [packages/agentos/src/api/generateObject.ts:198](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/generateObject.ts#L198)
 
 Ordered fallback providers tried when the primary fails with a retryable
 error. When undefined, auto-built from env keys. Pass `[]` to disable.
@@ -65,7 +65,7 @@ import('./generateText.js').GenerateTextOptions.fallbackProviders
 
 > `optional` **maxRetries**: `number`
 
-Defined in: [packages/agentos/src/api/generateObject.ts:153](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/generateObject.ts#L153)
+Defined in: [packages/agentos/src/api/generateObject.ts:185](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/generateObject.ts#L185)
 
 Number of times to retry when JSON parsing or Zod validation fails.
 Each retry appends the error details to the conversation so the model
@@ -83,7 +83,7 @@ can self-correct.
 
 > `optional` **maxTokens**: `number`
 
-Defined in: [packages/agentos/src/api/generateObject.ts:144](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/generateObject.ts#L144)
+Defined in: [packages/agentos/src/api/generateObject.ts:176](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/generateObject.ts#L176)
 
 Hard cap on output tokens.
 
@@ -93,7 +93,7 @@ Hard cap on output tokens.
 
 > `optional` **messages**: [`Message`](Message.md)[]
 
-Defined in: [packages/agentos/src/api/generateObject.ts:138](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/generateObject.ts#L138)
+Defined in: [packages/agentos/src/api/generateObject.ts:170](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/generateObject.ts#L170)
 
 Full conversation history.
 
@@ -103,14 +103,15 @@ Full conversation history.
 
 > `optional` **model**: `string`
 
-Defined in: [packages/agentos/src/api/generateObject.ts:100](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/generateObject.ts#L100)
+Defined in: [packages/agentos/src/api/generateObject.ts:132](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/generateObject.ts#L132)
 
-Model identifier. Accepts `"provider:model"` or plain model name with `provider`.
+Model identifier. Prefer the plain model name with `provider` set;
+the combined `"provider:model"` string is also accepted.
 
 #### Example
 
 ```ts
-`"openai:gpt-4o"`, `"gpt-4o-mini"`
+`"gpt-4o"` (with `provider: 'openai'`), `"gpt-4o-mini"`
 ```
 
 ***
@@ -119,7 +120,7 @@ Model identifier. Accepts `"provider:model"` or plain model name with `provider`
 
 > `optional` **onFallback**: (`error`, `fallbackProvider`) => `void`
 
-Defined in: [packages/agentos/src/api/generateObject.ts:171](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/generateObject.ts#L171)
+Defined in: [packages/agentos/src/api/generateObject.ts:203](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/generateObject.ts#L203)
 
 Called when a fallback provider is about to be tried.
 
@@ -139,11 +140,34 @@ Called when a fallback provider is about to be tried.
 
 ***
 
+### policyTier?
+
+> `optional` **policyTier**: `"safe"` \| `"standard"` \| `"mature"` \| `"private-adult"`
+
+Defined in: [packages/agentos/src/api/generateObject.ts:221](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/generateObject.ts#L221)
+
+Caller's intended content policy tier. Forwarded to
+import('./generateText.js').GenerateTextOptions.policyTier
+so structured-output callers get the same policy-aware fallback
+behavior as plain text callers — mature/private-adult requests
+auto-route refusals to an uncensored OpenRouter model instead of
+hard-failing on a content_policy_violation.
+
+Particularly relevant here because OpenAI's strict structured-
+output mode (`response_format: json_schema`) is the most
+aggressively-moderated path on the platform; a NSFW story
+extraction tagged with `policyTier: 'mature'` will pre-empt the
+422 by routing to Hermes 3 (which honors the looser
+`json_object` mode that [generateObject](../functions/generateObject.md) falls back to for
+non-OpenAI providers).
+
+***
+
 ### prompt?
 
 > `optional` **prompt**: `string`
 
-Defined in: [packages/agentos/src/api/generateObject.ts:122](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/generateObject.ts#L122)
+Defined in: [packages/agentos/src/api/generateObject.ts:154](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/generateObject.ts#L154)
 
 User prompt. Convenience alternative to building a `messages` array.
 
@@ -153,7 +177,7 @@ User prompt. Convenience alternative to building a `messages` array.
 
 > `optional` **provider**: `string`
 
-Defined in: [packages/agentos/src/api/generateObject.ts:93](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/generateObject.ts#L93)
+Defined in: [packages/agentos/src/api/generateObject.ts:124](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/generateObject.ts#L124)
 
 Provider name. When supplied without `model`, the default text model for
 the provider is resolved automatically.
@@ -170,7 +194,7 @@ the provider is resolved automatically.
 
 > **schema**: `T`
 
-Defined in: [packages/agentos/src/api/generateObject.ts:103](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/generateObject.ts#L103)
+Defined in: [packages/agentos/src/api/generateObject.ts:135](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/generateObject.ts#L135)
 
 Zod schema defining the expected output shape.
 
@@ -180,7 +204,7 @@ Zod schema defining the expected output shape.
 
 > `optional` **schemaDescription**: `string`
 
-Defined in: [packages/agentos/src/api/generateObject.ts:119](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/generateObject.ts#L119)
+Defined in: [packages/agentos/src/api/generateObject.ts:151](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/generateObject.ts#L151)
 
 Description of the schema, injected into the system prompt alongside
 the JSON Schema definition.
@@ -197,7 +221,7 @@ the JSON Schema definition.
 
 > `optional` **schemaName**: `string`
 
-Defined in: [packages/agentos/src/api/generateObject.ts:111](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/generateObject.ts#L111)
+Defined in: [packages/agentos/src/api/generateObject.ts:143](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/generateObject.ts#L143)
 
 Human-readable name for the schema, injected into the system prompt to
 give the model context about what it is generating.
@@ -214,7 +238,7 @@ give the model context about what it is generating.
 
 > `optional` **system**: `string` \| [`SystemContentBlock`](SystemContentBlock.md)[]
 
-Defined in: [packages/agentos/src/api/generateObject.ts:135](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/generateObject.ts#L135)
+Defined in: [packages/agentos/src/api/generateObject.ts:167](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/generateObject.ts#L167)
 
 System prompt. The schema extraction instructions are appended to this,
 so any custom system context is preserved.
@@ -232,6 +256,6 @@ the per-call schema vary freely.
 
 > `optional` **temperature**: `number`
 
-Defined in: [packages/agentos/src/api/generateObject.ts:141](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/generateObject.ts#L141)
+Defined in: [packages/agentos/src/api/generateObject.ts:173](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/generateObject.ts#L173)
 
 Sampling temperature forwarded to the provider (0-2 for most providers).

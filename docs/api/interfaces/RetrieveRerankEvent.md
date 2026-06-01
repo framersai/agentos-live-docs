@@ -1,6 +1,6 @@
 # Interface: RetrieveRerankEvent
 
-Defined in: [packages/agentos/src/query-router/types.ts:938](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/query-router/types.ts#L938)
+Defined in: [packages/agentos/src/orchestration/pipeline/query/types.ts:951](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/pipeline/query/types.ts#L951)
 
 Emitted when reranking of retrieved chunks completes.
 
@@ -10,7 +10,7 @@ Emitted when reranking of retrieved chunks completes.
 
 > **durationMs**: `number`
 
-Defined in: [packages/agentos/src/query-router/types.ts:945](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/query-router/types.ts#L945)
+Defined in: [packages/agentos/src/orchestration/pipeline/query/types.ts:958](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/pipeline/query/types.ts#L958)
 
 Duration of reranking in milliseconds.
 
@@ -20,7 +20,7 @@ Duration of reranking in milliseconds.
 
 > **inputCount**: `number`
 
-Defined in: [packages/agentos/src/query-router/types.ts:941](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/query-router/types.ts#L941)
+Defined in: [packages/agentos/src/orchestration/pipeline/query/types.ts:954](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/pipeline/query/types.ts#L954)
 
 Number of chunks before reranking.
 
@@ -30,7 +30,7 @@ Number of chunks before reranking.
 
 > **outputCount**: `number`
 
-Defined in: [packages/agentos/src/query-router/types.ts:943](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/query-router/types.ts#L943)
+Defined in: [packages/agentos/src/orchestration/pipeline/query/types.ts:956](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/pipeline/query/types.ts#L956)
 
 Number of chunks after reranking (may be fewer due to threshold filtering).
 
@@ -40,7 +40,7 @@ Number of chunks after reranking (may be fewer due to threshold filtering).
 
 > **timestamp**: `number`
 
-Defined in: [packages/agentos/src/query-router/types.ts:947](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/query-router/types.ts#L947)
+Defined in: [packages/agentos/src/orchestration/pipeline/query/types.ts:960](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/pipeline/query/types.ts#L960)
 
 Timestamp of the event.
 
@@ -50,4 +50,4 @@ Timestamp of the event.
 
 > **type**: `"retrieve:rerank"`
 
-Defined in: [packages/agentos/src/query-router/types.ts:939](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/query-router/types.ts#L939)
+Defined in: [packages/agentos/src/orchestration/pipeline/query/types.ts:952](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/pipeline/query/types.ts#L952)

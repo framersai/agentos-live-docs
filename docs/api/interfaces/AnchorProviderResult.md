@@ -1,6 +1,6 @@
 # Interface: AnchorProviderResult
 
-Defined in: [packages/agentos/src/provenance/types.ts:85](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/provenance/types.ts#L85)
+Defined in: [packages/agentos/src/safety/provenance/types.ts:85](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/safety/provenance/types.ts#L85)
 
 Result returned by an AnchorProvider after external publishing.
 
@@ -10,7 +10,7 @@ Result returned by an AnchorProvider after external publishing.
 
 > `optional` **error**: `string`
 
-Defined in: [packages/agentos/src/provenance/types.ts:95](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/provenance/types.ts#L95)
+Defined in: [packages/agentos/src/safety/provenance/types.ts:95](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/safety/provenance/types.ts#L95)
 
 Error message if success is false.
 
@@ -20,7 +20,7 @@ Error message if success is false.
 
 > `optional` **externalRef**: `string`
 
-Defined in: [packages/agentos/src/provenance/types.ts:91](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/provenance/types.ts#L91)
+Defined in: [packages/agentos/src/safety/provenance/types.ts:91](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/safety/provenance/types.ts#L91)
 
 External reference string (CID, UUID, tx hash, URL, etc.).
 
@@ -30,7 +30,7 @@ External reference string (CID, UUID, tx hash, URL, etc.).
 
 > `optional` **metadata**: `Record`\<`string`, `unknown`\>
 
-Defined in: [packages/agentos/src/provenance/types.ts:93](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/provenance/types.ts#L93)
+Defined in: [packages/agentos/src/safety/provenance/types.ts:93](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/safety/provenance/types.ts#L93)
 
 Provider-specific metadata (e.g., block number, log index).
 
@@ -40,7 +40,7 @@ Provider-specific metadata (e.g., block number, log index).
 
 > **providerId**: `string`
 
-Defined in: [packages/agentos/src/provenance/types.ts:87](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/provenance/types.ts#L87)
+Defined in: [packages/agentos/src/safety/provenance/types.ts:87](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/safety/provenance/types.ts#L87)
 
 Provider identifier (e.g., 'rekor', 'worm-snapshot').
 
@@ -50,7 +50,7 @@ Provider identifier (e.g., 'rekor', 'worm-snapshot').
 
 > `optional` **publishedAt**: `string`
 
-Defined in: [packages/agentos/src/provenance/types.ts:97](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/provenance/types.ts#L97)
+Defined in: [packages/agentos/src/safety/provenance/types.ts:97](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/safety/provenance/types.ts#L97)
 
 ISO 8601 timestamp of when the external publish completed.
 
@@ -60,6 +60,6 @@ ISO 8601 timestamp of when the external publish completed.
 
 > **success**: `boolean`
 
-Defined in: [packages/agentos/src/provenance/types.ts:89](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/provenance/types.ts#L89)
+Defined in: [packages/agentos/src/safety/provenance/types.ts:89](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/safety/provenance/types.ts#L89)
 
 Whether the external publishing succeeded.

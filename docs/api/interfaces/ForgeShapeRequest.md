@@ -1,6 +1,6 @@
 # Interface: ForgeShapeRequest
 
-Defined in: [packages/agentos/src/emergent/ForgeShapeValidator.ts:19](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/emergent/ForgeShapeValidator.ts#L19)
+Defined in: [packages/agentos/src/cognition/emergent/ForgeShapeValidator.ts:19](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/emergent/ForgeShapeValidator.ts#L19)
 
 Minimal forge request shape the validator needs. Accepts `unknown`
 for the schema fields so callers can pass raw LLM output without
@@ -12,7 +12,7 @@ pre-shaping.
 
 > `optional` **inputSchema**: `unknown`
 
-Defined in: [packages/agentos/src/emergent/ForgeShapeValidator.ts:20](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/emergent/ForgeShapeValidator.ts#L20)
+Defined in: [packages/agentos/src/cognition/emergent/ForgeShapeValidator.ts:20](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/emergent/ForgeShapeValidator.ts#L20)
 
 ***
 
@@ -20,7 +20,7 @@ Defined in: [packages/agentos/src/emergent/ForgeShapeValidator.ts:20](https://gi
 
 > `optional` **outputSchema**: `unknown`
 
-Defined in: [packages/agentos/src/emergent/ForgeShapeValidator.ts:21](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/emergent/ForgeShapeValidator.ts#L21)
+Defined in: [packages/agentos/src/cognition/emergent/ForgeShapeValidator.ts:21](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/emergent/ForgeShapeValidator.ts#L21)
 
 ***
 
@@ -28,4 +28,4 @@ Defined in: [packages/agentos/src/emergent/ForgeShapeValidator.ts:21](https://gi
 
 > `optional` **testCases**: `unknown`
 
-Defined in: [packages/agentos/src/emergent/ForgeShapeValidator.ts:22](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/emergent/ForgeShapeValidator.ts#L22)
+Defined in: [packages/agentos/src/cognition/emergent/ForgeShapeValidator.ts:22](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/emergent/ForgeShapeValidator.ts#L22)

@@ -1,6 +1,6 @@
 # Interface: SkillCommandSpec
 
-Defined in: [packages/agentos/src/skills/types.ts:150](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/skills/types.ts#L150)
+Defined in: [packages/agentos/src/cognition/skills/types.ts:150](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/skills/types.ts#L150)
 
 Command specification for a skill.
 
@@ -10,7 +10,7 @@ Command specification for a skill.
 
 > **description**: `string`
 
-Defined in: [packages/agentos/src/skills/types.ts:158](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/skills/types.ts#L158)
+Defined in: [packages/agentos/src/cognition/skills/types.ts:158](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/skills/types.ts#L158)
 
 Command description
 
@@ -20,7 +20,7 @@ Command description
 
 > `optional` **dispatch**: [`SkillCommandDispatch`](SkillCommandDispatch.md)
 
-Defined in: [packages/agentos/src/skills/types.ts:161](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/skills/types.ts#L161)
+Defined in: [packages/agentos/src/cognition/skills/types.ts:161](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/skills/types.ts#L161)
 
 Optional dispatch behavior
 
@@ -30,7 +30,7 @@ Optional dispatch behavior
 
 > **name**: `string`
 
-Defined in: [packages/agentos/src/skills/types.ts:152](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/skills/types.ts#L152)
+Defined in: [packages/agentos/src/cognition/skills/types.ts:152](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/skills/types.ts#L152)
 
 Command name (e.g., "/github")
 
@@ -40,6 +40,6 @@ Command name (e.g., "/github")
 
 > **skillName**: `string`
 
-Defined in: [packages/agentos/src/skills/types.ts:155](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/skills/types.ts#L155)
+Defined in: [packages/agentos/src/cognition/skills/types.ts:155](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/skills/types.ts#L155)
 
 Parent skill name

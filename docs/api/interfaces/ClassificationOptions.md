@@ -1,6 +1,6 @@
 # Interface: ClassificationOptions
 
-Defined in: [packages/agentos/src/nlp/ai\_utilities/IUtilityAI.ts:40](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/nlp/ai_utilities/IUtilityAI.ts#L40)
+Defined in: [packages/agentos/src/cognition/nlp/ai\_utilities/IUtilityAI.ts:40](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/nlp/ai_utilities/IUtilityAI.ts#L40)
 
 Options for text classification.
 
@@ -10,7 +10,7 @@ Options for text classification.
 
 > **candidateClasses**: `string`[]
 
-Defined in: [packages/agentos/src/nlp/ai\_utilities/IUtilityAI.ts:41](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/nlp/ai_utilities/IUtilityAI.ts#L41)
+Defined in: [packages/agentos/src/cognition/nlp/ai\_utilities/IUtilityAI.ts:41](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/nlp/ai_utilities/IUtilityAI.ts#L41)
 
 ***
 
@@ -18,7 +18,7 @@ Defined in: [packages/agentos/src/nlp/ai\_utilities/IUtilityAI.ts:41](https://gi
 
 > `optional` **language**: `string`
 
-Defined in: [packages/agentos/src/nlp/ai\_utilities/IUtilityAI.ts:47](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/nlp/ai_utilities/IUtilityAI.ts#L47)
+Defined in: [packages/agentos/src/cognition/nlp/ai\_utilities/IUtilityAI.ts:47](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/nlp/ai_utilities/IUtilityAI.ts#L47)
 
 ***
 
@@ -26,7 +26,7 @@ Defined in: [packages/agentos/src/nlp/ai\_utilities/IUtilityAI.ts:47](https://gi
 
 > `optional` **method**: `string`
 
-Defined in: [packages/agentos/src/nlp/ai\_utilities/IUtilityAI.ts:43](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/nlp/ai_utilities/IUtilityAI.ts#L43)
+Defined in: [packages/agentos/src/cognition/nlp/ai\_utilities/IUtilityAI.ts:43](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/nlp/ai_utilities/IUtilityAI.ts#L43)
 
 ***
 
@@ -34,7 +34,7 @@ Defined in: [packages/agentos/src/nlp/ai\_utilities/IUtilityAI.ts:43](https://gi
 
 > `optional` **methodOptions**: `Record`\<`string`, `any`\>
 
-Defined in: [packages/agentos/src/nlp/ai\_utilities/IUtilityAI.ts:46](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/nlp/ai_utilities/IUtilityAI.ts#L46)
+Defined in: [packages/agentos/src/cognition/nlp/ai\_utilities/IUtilityAI.ts:46](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/nlp/ai_utilities/IUtilityAI.ts#L46)
 
 ***
 
@@ -42,7 +42,7 @@ Defined in: [packages/agentos/src/nlp/ai\_utilities/IUtilityAI.ts:46](https://gi
 
 > `optional` **modelId**: `string`
 
-Defined in: [packages/agentos/src/nlp/ai\_utilities/IUtilityAI.ts:44](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/nlp/ai_utilities/IUtilityAI.ts#L44)
+Defined in: [packages/agentos/src/cognition/nlp/ai\_utilities/IUtilityAI.ts:44](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/nlp/ai_utilities/IUtilityAI.ts#L44)
 
 ***
 
@@ -50,7 +50,7 @@ Defined in: [packages/agentos/src/nlp/ai\_utilities/IUtilityAI.ts:44](https://gi
 
 > `optional` **multiLabel**: `boolean`
 
-Defined in: [packages/agentos/src/nlp/ai\_utilities/IUtilityAI.ts:42](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/nlp/ai_utilities/IUtilityAI.ts#L42)
+Defined in: [packages/agentos/src/cognition/nlp/ai\_utilities/IUtilityAI.ts:42](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/nlp/ai_utilities/IUtilityAI.ts#L42)
 
 ***
 
@@ -58,4 +58,4 @@ Defined in: [packages/agentos/src/nlp/ai\_utilities/IUtilityAI.ts:42](https://gi
 
 > `optional` **providerId**: `string`
 
-Defined in: [packages/agentos/src/nlp/ai\_utilities/IUtilityAI.ts:45](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/nlp/ai_utilities/IUtilityAI.ts#L45)
+Defined in: [packages/agentos/src/cognition/nlp/ai\_utilities/IUtilityAI.ts:45](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/nlp/ai_utilities/IUtilityAI.ts#L45)

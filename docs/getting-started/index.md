@@ -100,7 +100,7 @@ const { text } = await generateText({ prompt: 'hello' });
 // then to a local ollama server. Providers not in the list are skipped.
 ```
 
-Throws if you list an unknown provider id (typo guard). Pass an empty array to disable auto-detection entirely (callers must then supply a provider inline or via `setDefaultProvider`). Call `clearProviderPriority()` (or `setProviderPriority(undefined)`) to revert to the default order.
+Throws if you list an unknown provider id (typo guard). Pass an empty array to disable auto-detection entirely (callers must then supply a provider inline or via [`setDefaultProvider`](https://github.com/framersai/agentos/blob/master/src/api/runtime/global-default.ts)). Call `clearProviderPriority()` (or `setProviderPriority(undefined)`) to revert to the default order.
 
 ### Environment variables
 
@@ -185,7 +185,7 @@ flowchart LR
 ```
 
 - **Agent** — the runtime loop. Receives input, calls the LLM, executes tool calls, retrieves memory, returns a response. `agent()` and `agency()` are the two factories that build one.
-- **LLM** — the language model. AgentOS routes through 21 provider adapters; the agent does not care which one you pick.
+- **LLM** — the language model. AgentOS routes through 11 provider adapters; the agent does not care which one you pick.
 - **Memory** — what survives across turns and sessions. Working memory (short-term scratchpad) plus cognitive memory (episodic, semantic, procedural traces with Ebbinghaus decay, retrieval-induced forgetting, and reconsolidation).
 - **Tools** — functions the agent can invoke when the LLM decides it needs one. Pre-registered tools work the same way runtime-generated tools do once approved by the LLM judge.
 
@@ -203,7 +203,7 @@ Personality vectors, multimodal RAG, streaming guardrails, channel adapters, and
 
 ## Provider Configuration
 
-Every entry point (`generateText`, `streamText`, `generateObject`, `agent`, `agency`, etc.) accepts the same three provider fields:
+Every entry point (`generateText`, [`streamText`](https://github.com/framersai/agentos/blob/master/src/api/streamText.ts), `generateObject`, [`agent`](https://github.com/framersai/agentos/blob/master/src/api/agent.ts), [`agency`](https://github.com/framersai/agentos/blob/master/src/api/agency.ts), etc.) accepts the same three provider fields:
 
 | Field | Required? | Default | Notes |
 |---|---|---|---|
@@ -428,6 +428,6 @@ Usage: { inputTokens: 312, outputTokens: 487, totalTokens: 799, estimatedCost: 0
 | Token-efficient capability discovery              | [DISCOVERY.md](/features/discovery-guide)               |
 | Image generation across 5 providers               | [IMAGE_GENERATION.md](/features/image-generation) |
 | Practical cookbook examples                       | [EXAMPLES.md](/getting-started/examples)                 |
-| Runtime-configured tools and full `AgentOS` setup | [HIGH_LEVEL_API.md](/getting-started/high-level-api)     |
+| Runtime-configured tools and full [`AgentOS`](https://github.com/framersai/agentos/blob/master/src/api/AgentOS.ts) setup | [HIGH_LEVEL_API.md](/getting-started/high-level-api)     |
 | Full API hierarchy                                | [AGENCY_API.md](/features/agency-api)             |
 | Architecture overview                             | [ARCHITECTURE.md](/architecture/system-architecture)         |

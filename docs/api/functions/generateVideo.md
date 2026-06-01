@@ -2,7 +2,7 @@
 
 > **generateVideo**(`opts`): `Promise`\<[`GenerateVideoResult`](../interfaces/GenerateVideoResult.md)\>
 
-Defined in: [packages/agentos/src/api/generateVideo.ts:324](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/generateVideo.ts#L324)
+Defined in: [packages/agentos/src/api/generateVideo.ts:324](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/generateVideo.ts#L324)
 
 Generates a video using a provider-agnostic interface.
 

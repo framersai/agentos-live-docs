@@ -1,6 +1,6 @@
 # Interface: GMIOutputChunk
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:270](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/cognitive_substrate/IGMI.ts#L270)
+Defined in: [packages/agentos/src/cognition/substrate/IGMI.ts:277](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/substrate/IGMI.ts#L277)
 
 Represents a chunk of output streamed from the GMI during turn processing.
 
@@ -14,7 +14,7 @@ GMIOutputChunk
 
 > `optional` **chunkId**: `string`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:273](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/cognitive_substrate/IGMI.ts#L273)
+Defined in: [packages/agentos/src/cognition/substrate/IGMI.ts:280](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/substrate/IGMI.ts#L280)
 
 ***
 
@@ -22,7 +22,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:273](https://gith
 
 > **content**: `any`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:272](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/cognitive_substrate/IGMI.ts#L272)
+Defined in: [packages/agentos/src/cognition/substrate/IGMI.ts:279](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/substrate/IGMI.ts#L279)
 
 ***
 
@@ -30,7 +30,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:272](https://gith
 
 > `optional` **errorDetails**: `any`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:279](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/cognitive_substrate/IGMI.ts#L279)
+Defined in: [packages/agentos/src/cognition/substrate/IGMI.ts:286](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/substrate/IGMI.ts#L286)
 
 ***
 
@@ -38,7 +38,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:279](https://gith
 
 > `optional` **finishReason**: `string`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:277](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/cognitive_substrate/IGMI.ts#L277)
+Defined in: [packages/agentos/src/cognition/substrate/IGMI.ts:284](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/substrate/IGMI.ts#L284)
 
 ***
 
@@ -46,7 +46,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:277](https://gith
 
 > **interactionId**: `string`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:274](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/cognitive_substrate/IGMI.ts#L274)
+Defined in: [packages/agentos/src/cognition/substrate/IGMI.ts:281](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/substrate/IGMI.ts#L281)
 
 ***
 
@@ -54,7 +54,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:274](https://gith
 
 > `optional` **isFinal**: `boolean`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:276](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/cognitive_substrate/IGMI.ts#L276)
+Defined in: [packages/agentos/src/cognition/substrate/IGMI.ts:283](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/substrate/IGMI.ts#L283)
 
 ***
 
@@ -62,7 +62,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:276](https://gith
 
 > `optional` **metadata**: `Record`\<`string`, `any`\>
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:280](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/cognitive_substrate/IGMI.ts#L280)
+Defined in: [packages/agentos/src/cognition/substrate/IGMI.ts:287](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/substrate/IGMI.ts#L287)
 
 ***
 
@@ -70,7 +70,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:280](https://gith
 
 > **timestamp**: `Date`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:275](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/cognitive_substrate/IGMI.ts#L275)
+Defined in: [packages/agentos/src/cognition/substrate/IGMI.ts:282](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/substrate/IGMI.ts#L282)
 
 ***
 
@@ -78,7 +78,7 @@ Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:275](https://gith
 
 > **type**: [`GMIOutputChunkType`](../enumerations/GMIOutputChunkType.md)
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:271](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/cognitive_substrate/IGMI.ts#L271)
+Defined in: [packages/agentos/src/cognition/substrate/IGMI.ts:278](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/substrate/IGMI.ts#L278)
 
 ***
 
@@ -86,4 +86,4 @@ Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:271](https://gith
 
 > `optional` **usage**: `ModelUsage`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:278](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/cognitive_substrate/IGMI.ts#L278)
+Defined in: [packages/agentos/src/cognition/substrate/IGMI.ts:285](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/substrate/IGMI.ts#L285)

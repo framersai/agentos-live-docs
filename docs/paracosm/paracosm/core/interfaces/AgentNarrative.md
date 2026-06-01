@@ -1,6 +1,6 @@
 # Interface: AgentNarrative
 
-Defined in: [apps/paracosm/src/engine/core/state.ts:85](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/engine/core/state.ts#L85)
+Defined in: [apps/paracosm/src/engine/core/state.ts:90](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/state.ts#L90)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [apps/paracosm/src/engine/core/state.ts:85](https://github.com/frame
 
 > **featured**: `boolean`
 
-Defined in: [apps/paracosm/src/engine/core/state.ts:87](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/engine/core/state.ts#L87)
+Defined in: [apps/paracosm/src/engine/core/state.ts:92](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/state.ts#L92)
 
 ***
 
@@ -16,4 +16,4 @@ Defined in: [apps/paracosm/src/engine/core/state.ts:87](https://github.com/frame
 
 > **lifeEvents**: [`LifeEvent`](LifeEvent.md)[]
 
-Defined in: [apps/paracosm/src/engine/core/state.ts:86](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/engine/core/state.ts#L86)
+Defined in: [apps/paracosm/src/engine/core/state.ts:91](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/state.ts#L91)

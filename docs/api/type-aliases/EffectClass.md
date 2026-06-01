@@ -2,7 +2,7 @@
 
 > **EffectClass** = `"pure"` \| `"read"` \| `"write"` \| `"external"` \| `"human"`
 
-Defined in: [packages/agentos/src/orchestration/ir/types.ts:47](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/ir/types.ts#L47)
+Defined in: [packages/agentos/src/orchestration/ir/types.ts:47](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/ir/types.ts#L47)
 
 Broad classification of the side-effects a node may produce.
 Used by the runtime for scheduling, parallelism gating, and audit logging.

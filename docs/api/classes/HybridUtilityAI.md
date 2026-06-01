@@ -1,6 +1,6 @@
 # Class: HybridUtilityAI
 
-Defined in: [packages/agentos/src/nlp/ai\_utilities/HybridUtilityAI.ts:46](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/nlp/ai_utilities/HybridUtilityAI.ts#L46)
+Defined in: [packages/agentos/src/cognition/nlp/ai\_utilities/HybridUtilityAI.ts:46](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/nlp/ai_utilities/HybridUtilityAI.ts#L46)
 
 Routes each utility method to the most appropriate backend:
 - **LLM**: summarization, classification, keyword extraction, JSON repair
@@ -19,7 +19,7 @@ If the preferred backend is unavailable, falls back to the other.
 
 > **new HybridUtilityAI**(`config`): `HybridUtilityAI`
 
-Defined in: [packages/agentos/src/nlp/ai\_utilities/HybridUtilityAI.ts:51](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/nlp/ai_utilities/HybridUtilityAI.ts#L51)
+Defined in: [packages/agentos/src/cognition/nlp/ai\_utilities/HybridUtilityAI.ts:51](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/nlp/ai_utilities/HybridUtilityAI.ts#L51)
 
 #### Parameters
 
@@ -37,7 +37,7 @@ Defined in: [packages/agentos/src/nlp/ai\_utilities/HybridUtilityAI.ts:51](https
 
 > `readonly` **utilityId**: `string`
 
-Defined in: [packages/agentos/src/nlp/ai\_utilities/HybridUtilityAI.ts:47](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/nlp/ai_utilities/HybridUtilityAI.ts#L47)
+Defined in: [packages/agentos/src/cognition/nlp/ai\_utilities/HybridUtilityAI.ts:47](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/nlp/ai_utilities/HybridUtilityAI.ts#L47)
 
 #### Implementation of
 
@@ -49,7 +49,7 @@ Defined in: [packages/agentos/src/nlp/ai\_utilities/HybridUtilityAI.ts:47](https
 
 > **analyzeSentiment**(`text`, `options?`): `Promise`\<[`SentimentResult`](../interfaces/SentimentResult.md)\>
 
-Defined in: [packages/agentos/src/nlp/ai\_utilities/HybridUtilityAI.ts:129](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/nlp/ai_utilities/HybridUtilityAI.ts#L129)
+Defined in: [packages/agentos/src/cognition/nlp/ai\_utilities/HybridUtilityAI.ts:129](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/nlp/ai_utilities/HybridUtilityAI.ts#L129)
 
 #### Parameters
 
@@ -75,7 +75,7 @@ Defined in: [packages/agentos/src/nlp/ai\_utilities/HybridUtilityAI.ts:129](http
 
 > **calculateReadability**(`text`, `options`): `Promise`\<[`ReadabilityResult`](../interfaces/ReadabilityResult.md)\>
 
-Defined in: [packages/agentos/src/nlp/ai\_utilities/HybridUtilityAI.ts:119](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/nlp/ai_utilities/HybridUtilityAI.ts#L119)
+Defined in: [packages/agentos/src/cognition/nlp/ai\_utilities/HybridUtilityAI.ts:119](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/nlp/ai_utilities/HybridUtilityAI.ts#L119)
 
 #### Parameters
 
@@ -101,7 +101,7 @@ Defined in: [packages/agentos/src/nlp/ai\_utilities/HybridUtilityAI.ts:119](http
 
 > **calculateSimilarity**(`text1`, `text2`, `options?`): `Promise`\<`number`\>
 
-Defined in: [packages/agentos/src/nlp/ai\_utilities/HybridUtilityAI.ts:123](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/nlp/ai_utilities/HybridUtilityAI.ts#L123)
+Defined in: [packages/agentos/src/cognition/nlp/ai\_utilities/HybridUtilityAI.ts:123](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/nlp/ai_utilities/HybridUtilityAI.ts#L123)
 
 #### Parameters
 
@@ -131,7 +131,7 @@ Defined in: [packages/agentos/src/nlp/ai\_utilities/HybridUtilityAI.ts:123](http
 
 > **checkHealth**(): `Promise`\<\{ `dependencies?`: `object`[]; `details?`: `any`; `isHealthy`: `boolean`; \}\>
 
-Defined in: [packages/agentos/src/nlp/ai\_utilities/HybridUtilityAI.ts:139](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/nlp/ai_utilities/HybridUtilityAI.ts#L139)
+Defined in: [packages/agentos/src/cognition/nlp/ai\_utilities/HybridUtilityAI.ts:139](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/nlp/ai_utilities/HybridUtilityAI.ts#L139)
 
 #### Returns
 
@@ -147,7 +147,7 @@ Defined in: [packages/agentos/src/nlp/ai\_utilities/HybridUtilityAI.ts:139](http
 
 > **classifyText**(`textToClassify`, `options`): `Promise`\<`ClassificationResult`\>
 
-Defined in: [packages/agentos/src/nlp/ai\_utilities/HybridUtilityAI.ts:81](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/nlp/ai_utilities/HybridUtilityAI.ts#L81)
+Defined in: [packages/agentos/src/cognition/nlp/ai\_utilities/HybridUtilityAI.ts:81](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/nlp/ai_utilities/HybridUtilityAI.ts#L81)
 
 #### Parameters
 
@@ -173,7 +173,7 @@ Defined in: [packages/agentos/src/nlp/ai\_utilities/HybridUtilityAI.ts:81](https
 
 > **detectLanguage**(`text`, `options?`): `Promise`\<[`LanguageDetectionResult`](../interfaces/LanguageDetectionResult.md)[]\>
 
-Defined in: [packages/agentos/src/nlp/ai\_utilities/HybridUtilityAI.ts:133](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/nlp/ai_utilities/HybridUtilityAI.ts#L133)
+Defined in: [packages/agentos/src/cognition/nlp/ai\_utilities/HybridUtilityAI.ts:133](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/nlp/ai_utilities/HybridUtilityAI.ts#L133)
 
 #### Parameters
 
@@ -199,7 +199,7 @@ Defined in: [packages/agentos/src/nlp/ai\_utilities/HybridUtilityAI.ts:133](http
 
 > **extractKeywords**(`textToAnalyze`, `options?`): `Promise`\<`string`[]\>
 
-Defined in: [packages/agentos/src/nlp/ai\_utilities/HybridUtilityAI.ts:85](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/nlp/ai_utilities/HybridUtilityAI.ts#L85)
+Defined in: [packages/agentos/src/cognition/nlp/ai\_utilities/HybridUtilityAI.ts:85](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/nlp/ai_utilities/HybridUtilityAI.ts#L85)
 
 #### Parameters
 
@@ -225,7 +225,7 @@ Defined in: [packages/agentos/src/nlp/ai\_utilities/HybridUtilityAI.ts:85](https
 
 > **generateNGrams**(`tokens`, `options`): `Promise`\<`Record`\<`number`, `string`[][]\>\>
 
-Defined in: [packages/agentos/src/nlp/ai\_utilities/HybridUtilityAI.ts:115](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/nlp/ai_utilities/HybridUtilityAI.ts#L115)
+Defined in: [packages/agentos/src/cognition/nlp/ai\_utilities/HybridUtilityAI.ts:115](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/nlp/ai_utilities/HybridUtilityAI.ts#L115)
 
 #### Parameters
 
@@ -251,7 +251,7 @@ Defined in: [packages/agentos/src/nlp/ai\_utilities/HybridUtilityAI.ts:115](http
 
 > **initialize**(`config`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/nlp/ai\_utilities/HybridUtilityAI.ts:60](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/nlp/ai_utilities/HybridUtilityAI.ts#L60)
+Defined in: [packages/agentos/src/cognition/nlp/ai\_utilities/HybridUtilityAI.ts:60](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/nlp/ai_utilities/HybridUtilityAI.ts#L60)
 
 #### Parameters
 
@@ -273,7 +273,7 @@ Defined in: [packages/agentos/src/nlp/ai\_utilities/HybridUtilityAI.ts:60](https
 
 > **normalizeText**(`text`, `options?`): `Promise`\<`string`\>
 
-Defined in: [packages/agentos/src/nlp/ai\_utilities/HybridUtilityAI.ts:111](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/nlp/ai_utilities/HybridUtilityAI.ts#L111)
+Defined in: [packages/agentos/src/cognition/nlp/ai\_utilities/HybridUtilityAI.ts:111](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/nlp/ai_utilities/HybridUtilityAI.ts#L111)
 
 #### Parameters
 
@@ -299,7 +299,7 @@ Defined in: [packages/agentos/src/nlp/ai\_utilities/HybridUtilityAI.ts:111](http
 
 > **parseJsonSafe**\<`T`\>(`jsonString`, `options?`): `Promise`\<`T` \| `null`\>
 
-Defined in: [packages/agentos/src/nlp/ai\_utilities/HybridUtilityAI.ts:89](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/nlp/ai_utilities/HybridUtilityAI.ts#L89)
+Defined in: [packages/agentos/src/cognition/nlp/ai\_utilities/HybridUtilityAI.ts:89](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/nlp/ai_utilities/HybridUtilityAI.ts#L89)
 
 Safely parses a string that is expected to be JSON, potentially using an LLM to fix common issues.
 
@@ -341,7 +341,7 @@ The parsed object, or null if parsing and fixing fail.
 
 > **shutdown**(): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/nlp/ai\_utilities/HybridUtilityAI.ts:163](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/nlp/ai_utilities/HybridUtilityAI.ts#L163)
+Defined in: [packages/agentos/src/cognition/nlp/ai\_utilities/HybridUtilityAI.ts:163](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/nlp/ai_utilities/HybridUtilityAI.ts#L163)
 
 #### Returns
 
@@ -357,7 +357,7 @@ Defined in: [packages/agentos/src/nlp/ai\_utilities/HybridUtilityAI.ts:163](http
 
 > **stemTokens**(`tokens`, `options?`): `Promise`\<`string`[]\>
 
-Defined in: [packages/agentos/src/nlp/ai\_utilities/HybridUtilityAI.ts:107](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/nlp/ai_utilities/HybridUtilityAI.ts#L107)
+Defined in: [packages/agentos/src/cognition/nlp/ai\_utilities/HybridUtilityAI.ts:107](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/nlp/ai_utilities/HybridUtilityAI.ts#L107)
 
 #### Parameters
 
@@ -383,7 +383,7 @@ Defined in: [packages/agentos/src/nlp/ai\_utilities/HybridUtilityAI.ts:107](http
 
 > **summarize**(`textToSummarize`, `options?`): `Promise`\<`string`\>
 
-Defined in: [packages/agentos/src/nlp/ai\_utilities/HybridUtilityAI.ts:77](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/nlp/ai_utilities/HybridUtilityAI.ts#L77)
+Defined in: [packages/agentos/src/cognition/nlp/ai\_utilities/HybridUtilityAI.ts:77](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/nlp/ai_utilities/HybridUtilityAI.ts#L77)
 
 #### Parameters
 
@@ -409,7 +409,7 @@ Defined in: [packages/agentos/src/nlp/ai\_utilities/HybridUtilityAI.ts:77](https
 
 > **tokenize**(`text`, `options?`): `Promise`\<`string`[]\>
 
-Defined in: [packages/agentos/src/nlp/ai\_utilities/HybridUtilityAI.ts:103](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/nlp/ai_utilities/HybridUtilityAI.ts#L103)
+Defined in: [packages/agentos/src/cognition/nlp/ai\_utilities/HybridUtilityAI.ts:103](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/nlp/ai_utilities/HybridUtilityAI.ts#L103)
 
 #### Parameters
 

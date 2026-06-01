@@ -2,7 +2,7 @@
 
 > **importAgent**(`exportConfig`): `Agent`
 
-Defined in: [packages/agentos/src/api/agentExport.ts:90](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/agentExport.ts#L90)
+Defined in: [packages/agentos/src/api/agentExport.ts:90](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/agentExport.ts#L90)
 
 Imports an agent from an [AgentExportConfig](../interfaces/AgentExportConfig.md) object.
 

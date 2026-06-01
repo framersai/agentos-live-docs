@@ -28,4 +28,4 @@ Set `NEWSAPI_API_KEY` environment variable or pass via options.
 
 ## License
 
-Apache-2.0 - Frame.dev
+MIT - Frame.dev

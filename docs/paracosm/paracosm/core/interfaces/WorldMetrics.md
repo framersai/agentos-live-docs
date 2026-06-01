@@ -1,6 +1,6 @@
 # Interface: WorldMetrics
 
-Defined in: [apps/paracosm/src/engine/core/state.ts:140](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/engine/core/state.ts#L140)
+Defined in: [apps/paracosm/src/engine/core/state.ts:145](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/state.ts#L145)
 
 Universal settlement metrics shared by every scenario. Fields below the
 `population` and `morale` core are common but optional — a non-Mars
@@ -22,7 +22,7 @@ Scenario-defined metrics beyond the universal set.
 
 > **foodMonthsReserve**: `number`
 
-Defined in: [apps/paracosm/src/engine/core/state.ts:146](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/engine/core/state.ts#L146)
+Defined in: [apps/paracosm/src/engine/core/state.ts:151](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/state.ts#L151)
 
 Months of food reserve at current consumption.
 
@@ -32,7 +32,7 @@ Months of food reserve at current consumption.
 
 > **infrastructureModules**: `number`
 
-Defined in: [apps/paracosm/src/engine/core/state.ts:156](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/engine/core/state.ts#L156)
+Defined in: [apps/paracosm/src/engine/core/state.ts:161](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/state.ts#L161)
 
 Infrastructure modules / building units.
 
@@ -42,7 +42,7 @@ Infrastructure modules / building units.
 
 > **lifeSupportCapacity**: `number`
 
-Defined in: [apps/paracosm/src/engine/core/state.ts:154](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/engine/core/state.ts#L154)
+Defined in: [apps/paracosm/src/engine/core/state.ts:159](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/state.ts#L159)
 
 Life support headroom (max sustainable population).
 
@@ -52,7 +52,7 @@ Life support headroom (max sustainable population).
 
 > **morale**: `number`
 
-Defined in: [apps/paracosm/src/engine/core/state.ts:144](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/engine/core/state.ts#L144)
+Defined in: [apps/paracosm/src/engine/core/state.ts:149](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/state.ts#L149)
 
 Aggregate morale, 0..1.
 
@@ -62,7 +62,7 @@ Aggregate morale, 0..1.
 
 > **population**: `number`
 
-Defined in: [apps/paracosm/src/engine/core/state.ts:142](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/engine/core/state.ts#L142)
+Defined in: [apps/paracosm/src/engine/core/state.ts:147](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/state.ts#L147)
 
 Alive headcount.
 
@@ -72,7 +72,7 @@ Alive headcount.
 
 > **powerKw**: `number`
 
-Defined in: [apps/paracosm/src/engine/core/state.ts:148](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/engine/core/state.ts#L148)
+Defined in: [apps/paracosm/src/engine/core/state.ts:153](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/state.ts#L153)
 
 Generated power capacity, kW.
 
@@ -82,7 +82,7 @@ Generated power capacity, kW.
 
 > **pressurizedVolumeM3**: `number`
 
-Defined in: [apps/paracosm/src/engine/core/state.ts:152](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/engine/core/state.ts#L152)
+Defined in: [apps/paracosm/src/engine/core/state.ts:157](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/state.ts#L157)
 
 Sealed habitable volume, m³ — Mars/Lunar/space-specific, optional in others.
 
@@ -92,7 +92,7 @@ Sealed habitable volume, m³ — Mars/Lunar/space-specific, optional in others.
 
 > **scienceOutput**: `number`
 
-Defined in: [apps/paracosm/src/engine/core/state.ts:158](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/engine/core/state.ts#L158)
+Defined in: [apps/paracosm/src/engine/core/state.ts:163](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/state.ts#L163)
 
 Science / research output index.
 
@@ -102,6 +102,6 @@ Science / research output index.
 
 > **waterLitersPerDay**: `number`
 
-Defined in: [apps/paracosm/src/engine/core/state.ts:150](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/engine/core/state.ts#L150)
+Defined in: [apps/paracosm/src/engine/core/state.ts:155](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/state.ts#L155)
 
 Daily water budget, liters.

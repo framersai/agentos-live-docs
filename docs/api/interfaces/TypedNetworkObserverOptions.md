@@ -1,6 +1,6 @@
 # Interface: TypedNetworkObserverOptions
 
-Defined in: [packages/agentos/src/memory/retrieval/typed-network/TypedNetworkObserver.ts:66](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/typed-network/TypedNetworkObserver.ts#L66)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/typed-network/TypedNetworkObserver.ts:66](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/typed-network/TypedNetworkObserver.ts#L66)
 
 Construction options for the observer.
 
@@ -10,7 +10,7 @@ Construction options for the observer.
 
 > **llm**: [`ITypedExtractionLLM`](ITypedExtractionLLM.md)
 
-Defined in: [packages/agentos/src/memory/retrieval/typed-network/TypedNetworkObserver.ts:68](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/typed-network/TypedNetworkObserver.ts#L68)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/typed-network/TypedNetworkObserver.ts:68](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/typed-network/TypedNetworkObserver.ts#L68)
 
 LLM adapter implementing the 6-step extraction call.
 
@@ -20,7 +20,7 @@ LLM adapter implementing the 6-step extraction call.
 
 > `optional` **maxTokens**: `number`
 
-Defined in: [packages/agentos/src/memory/retrieval/typed-network/TypedNetworkObserver.ts:70](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/typed-network/TypedNetworkObserver.ts#L70)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/typed-network/TypedNetworkObserver.ts:70](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/typed-network/TypedNetworkObserver.ts#L70)
 
 Max output tokens. Default 4096 (Hindsight extractions are typically 50-200 facts × ~30 tokens each).
 
@@ -30,7 +30,7 @@ Max output tokens. Default 4096 (Hindsight extractions are typically 50-200 fact
 
 > `optional` **temperature**: `number`
 
-Defined in: [packages/agentos/src/memory/retrieval/typed-network/TypedNetworkObserver.ts:72](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/typed-network/TypedNetworkObserver.ts#L72)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/typed-network/TypedNetworkObserver.ts:72](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/typed-network/TypedNetworkObserver.ts#L72)
 
 Temperature. Default 0 for deterministic extraction.
 
@@ -40,7 +40,7 @@ Temperature. Default 0 for deterministic extraction.
 
 > `optional` **timeoutMs**: `number`
 
-Defined in: [packages/agentos/src/memory/retrieval/typed-network/TypedNetworkObserver.ts:80](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/typed-network/TypedNetworkObserver.ts#L80)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/typed-network/TypedNetworkObserver.ts:80](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/typed-network/TypedNetworkObserver.ts#L80)
 
 Per-attempt request timeout in milliseconds. When the underlying
 `llm.invoke()` does not resolve within this window the attempt is

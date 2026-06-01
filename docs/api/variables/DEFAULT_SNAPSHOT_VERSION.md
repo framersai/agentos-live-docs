@@ -2,6 +2,6 @@
 
 > `const` **DEFAULT\_SNAPSHOT\_VERSION**: `1` = `1`
 
-Defined in: [packages/agentos/src/skills/types.ts:327](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/skills/types.ts#L327)
+Defined in: [packages/agentos/src/cognition/skills/types.ts:327](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/skills/types.ts#L327)
 
 Default snapshot version

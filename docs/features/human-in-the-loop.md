@@ -99,7 +99,7 @@ handler: hitl.autoReject('dry-run mode — no side effects permitted');
 
 ### `hitl.webhook(url)`
 
-POSTs the `ApprovalRequest` as JSON to your endpoint and reads back an `ApprovalDecision`. Non-2xx is treated as rejection with the status code as the reason. Use this when you have an in-house approval service.
+POSTs the [`ApprovalRequest`](https://github.com/framersai/agentos/blob/master/src/api/types.ts) as JSON to your endpoint and reads back an [`ApprovalDecision`](https://github.com/framersai/agentos/blob/master/src/api/types.ts). Non-2xx is treated as rejection with the status code as the reason. Use this when you have an in-house approval service.
 
 ```typescript
 handler: hitl.webhook('https://approvals.example.com/decide');
@@ -455,10 +455,10 @@ For agencies that already use the higher-level `agency({ hitl: { approvals: { be
 ## See also
 
 - [Guardrails Usage](/features/guardrails) — the post-approval guardrail safety net.
-- [Agency API](/features/agency-api) — full `agency()` reference, including the `HitlConfig` field.
+- [Agency API](/features/agency-api) — full `agency()` reference, including the [`HitlConfig`](https://github.com/framersai/agentos/blob/master/src/api/types.ts) field.
 - [`workflow()` DSL](/features/workflow-dsl) — typed-graph authoring with `human` steps.
 - [Emergent Capabilities](/features/emergent-capabilities) — how `beforeEmergent` gates `spawn_specialist`.
 - [Streaming Semantics](/architecture/streaming-semantics) — how `beforeReturn` interacts with the streaming surfaces.
 - [`src/api/hitl.ts`](https://github.com/framersai/agentos/blob/master/src/api/hitl.ts) — source for the six handler factories.
 - [`src/api/types.ts`](https://github.com/framersai/agentos/blob/master/src/api/types.ts) — `HitlConfig`, `ApprovalRequest`, `ApprovalDecision`.
-- [`src/orchestration/hitl/`](https://github.com/framersai/agentos/tree/master/src/orchestration/hitl) — runtime `HumanInteractionManager`.
+- [`src/orchestration/hitl/`](https://github.com/framersai/agentos/tree/master/src/orchestration/hitl) — runtime [`HumanInteractionManager`](https://github.com/framersai/agentos/blob/master/src/orchestration/hitl/HumanInteractionManager.ts).

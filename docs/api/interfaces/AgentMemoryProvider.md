@@ -1,6 +1,6 @@
 # Interface: AgentMemoryProvider
 
-Defined in: [packages/agentos/src/api/agent.ts:57](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/agent.ts#L57)
+Defined in: [packages/agentos/src/api/agent.ts:60](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/agent.ts#L60)
 
 Provider hook interface consumed by `agent()` for memory integration.
 
@@ -20,7 +20,7 @@ all invoke the hooks when the provider is present.
 
 > `optional` **getContext**: (`text`, `opts?`) => `Promise`\<\{ `contextText?`: `string`; \} \| `null`\>
 
-Defined in: [packages/agentos/src/api/agent.ts:67](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/agent.ts#L67)
+Defined in: [packages/agentos/src/api/agent.ts:70](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/agent.ts#L70)
 
 Retrieve a memory context block to prepend to the system prompt.
 
@@ -54,7 +54,7 @@ An object whose `contextText` (when present) is injected as a
 
 > `optional` **observe**: (`role`, `text`) => `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/api/agent.ts:82](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/agent.ts#L82)
+Defined in: [packages/agentos/src/api/agent.ts:85](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/agent.ts#L85)
 
 Record an observation of a turn exchange.
 

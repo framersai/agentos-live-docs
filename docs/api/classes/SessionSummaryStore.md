@@ -1,6 +1,6 @@
 # Class: SessionSummaryStore
 
-Defined in: [packages/agentos/src/memory/retrieval/session/SessionSummaryStore.ts:99](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/session/SessionSummaryStore.ts#L99)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/session/SessionSummaryStore.ts:99](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/session/SessionSummaryStore.ts#L99)
 
 Dedicated vector store wrapper for session-level summaries.
 
@@ -23,7 +23,7 @@ const hits = await store.querySessions('rescue dog adoption', {
 
 > **new SessionSummaryStore**(`opts`): `SessionSummaryStore`
 
-Defined in: [packages/agentos/src/memory/retrieval/session/SessionSummaryStore.ts:104](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/session/SessionSummaryStore.ts#L104)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/session/SessionSummaryStore.ts:104](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/session/SessionSummaryStore.ts#L104)
 
 #### Parameters
 
@@ -41,7 +41,7 @@ Defined in: [packages/agentos/src/memory/retrieval/session/SessionSummaryStore.t
 
 > **indexSession**(`input`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/memory/retrieval/session/SessionSummaryStore.ts:115](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/session/SessionSummaryStore.ts#L115)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/session/SessionSummaryStore.ts:115](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/session/SessionSummaryStore.ts#L115)
 
 Embed the summary and upsert into the scope-specific collection.
 Upsert is idempotent: re-indexing the same `sessionId` replaces
@@ -63,7 +63,7 @@ the prior vector rather than appending a duplicate.
 
 > **querySessions**(`query`, `options`): `Promise`\<[`QueriedSession`](../interfaces/QueriedSession.md)[]\>
 
-Defined in: [packages/agentos/src/memory/retrieval/session/SessionSummaryStore.ts:142](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/session/SessionSummaryStore.ts#L142)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/session/SessionSummaryStore.ts:142](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/session/SessionSummaryStore.ts#L142)
 
 Embed the query and return the top-K sessions for the given
 scope, ordered by descending similarity. Returns `[]` when the

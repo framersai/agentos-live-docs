@@ -2,7 +2,7 @@
 
 > **generateMusic**(`opts`): `Promise`\<[`GenerateMusicResult`](../interfaces/GenerateMusicResult.md)\>
 
-Defined in: [packages/agentos/src/api/generateMusic.ts:314](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/generateMusic.ts#L314)
+Defined in: [packages/agentos/src/api/generateMusic.ts:314](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/generateMusic.ts#L314)
 
 Generates music using a provider-agnostic interface.
 

@@ -1,6 +1,6 @@
 # Interface: MemoryBudgetAllocation
 
-Defined in: [packages/agentos/src/memory/core/types.ts:331](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L331)
+Defined in: [packages/agentos/src/cognition/memory/core/types.ts:542](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/types.ts#L542)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/memory/core/types.ts:331](https://github.com/f
 
 > **graphAssociations**: `number`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:336](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L336)
+Defined in: [packages/agentos/src/cognition/memory/core/types.ts:547](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/types.ts#L547)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [packages/agentos/src/memory/core/types.ts:336](https://github.com/f
 
 > **observationNotes**: `number`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:337](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L337)
+Defined in: [packages/agentos/src/cognition/memory/core/types.ts:548](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/types.ts#L548)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: [packages/agentos/src/memory/core/types.ts:337](https://github.com/f
 
 > **persistentMemory**: `number`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:338](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L338)
+Defined in: [packages/agentos/src/cognition/memory/core/types.ts:549](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/types.ts#L549)
 
 ***
 
@@ -32,7 +32,7 @@ Defined in: [packages/agentos/src/memory/core/types.ts:338](https://github.com/f
 
 > **prospectiveAlerts**: `number`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:335](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L335)
+Defined in: [packages/agentos/src/cognition/memory/core/types.ts:546](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/types.ts#L546)
 
 ***
 
@@ -40,7 +40,7 @@ Defined in: [packages/agentos/src/memory/core/types.ts:335](https://github.com/f
 
 > **recentEpisodic**: `number`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:334](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L334)
+Defined in: [packages/agentos/src/cognition/memory/core/types.ts:545](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/types.ts#L545)
 
 ***
 
@@ -48,7 +48,7 @@ Defined in: [packages/agentos/src/memory/core/types.ts:334](https://github.com/f
 
 > **semanticRecall**: `number`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:333](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L333)
+Defined in: [packages/agentos/src/cognition/memory/core/types.ts:544](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/types.ts#L544)
 
 ***
 
@@ -56,4 +56,4 @@ Defined in: [packages/agentos/src/memory/core/types.ts:333](https://github.com/f
 
 > **workingMemory**: `number`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:332](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L332)
+Defined in: [packages/agentos/src/cognition/memory/core/types.ts:543](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/types.ts#L543)

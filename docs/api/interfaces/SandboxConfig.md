@@ -1,6 +1,6 @@
 # Interface: SandboxConfig
 
-Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:32](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/sandbox/executor/ICodeSandbox.ts#L32)
+Defined in: [packages/agentos/src/safety/sandbox/executor/ICodeSandbox.ts:32](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/safety/sandbox/executor/ICodeSandbox.ts#L32)
 
 Configuration for the sandbox environment.
 
@@ -10,7 +10,7 @@ Configuration for the sandbox environment.
 
 > `optional` **allowedPaths**: `string`[]
 
-Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:48](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/sandbox/executor/ICodeSandbox.ts#L48)
+Defined in: [packages/agentos/src/safety/sandbox/executor/ICodeSandbox.ts:48](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/safety/sandbox/executor/ICodeSandbox.ts#L48)
 
 Allowed filesystem paths (if allowFilesystem is true)
 
@@ -20,7 +20,7 @@ Allowed filesystem paths (if allowFilesystem is true)
 
 > `optional` **allowFilesystem**: `boolean`
 
-Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:46](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/sandbox/executor/ICodeSandbox.ts#L46)
+Defined in: [packages/agentos/src/safety/sandbox/executor/ICodeSandbox.ts:46](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/safety/sandbox/executor/ICodeSandbox.ts#L46)
 
 Whether to allow filesystem access
 
@@ -30,7 +30,7 @@ Whether to allow filesystem access
 
 > `optional` **allowNetwork**: `boolean`
 
-Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:44](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/sandbox/executor/ICodeSandbox.ts#L44)
+Defined in: [packages/agentos/src/safety/sandbox/executor/ICodeSandbox.ts:44](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/safety/sandbox/executor/ICodeSandbox.ts#L44)
 
 Whether to allow network access
 
@@ -40,7 +40,7 @@ Whether to allow network access
 
 > `optional` **blockedModules**: `string`[]
 
-Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:50](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/sandbox/executor/ICodeSandbox.ts#L50)
+Defined in: [packages/agentos/src/safety/sandbox/executor/ICodeSandbox.ts:50](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/safety/sandbox/executor/ICodeSandbox.ts#L50)
 
 Blocked imports/modules
 
@@ -50,7 +50,7 @@ Blocked imports/modules
 
 > `optional` **envVars**: `Record`\<`string`, `string`\>
 
-Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:40](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/sandbox/executor/ICodeSandbox.ts#L40)
+Defined in: [packages/agentos/src/safety/sandbox/executor/ICodeSandbox.ts:40](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/safety/sandbox/executor/ICodeSandbox.ts#L40)
 
 Environment variables to inject
 
@@ -60,7 +60,7 @@ Environment variables to inject
 
 > `optional` **extraGlobals**: `Record`\<`string`, `unknown`\>
 
-Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:67](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/sandbox/executor/ICodeSandbox.ts#L67)
+Defined in: [packages/agentos/src/safety/sandbox/executor/ICodeSandbox.ts:67](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/safety/sandbox/executor/ICodeSandbox.ts#L67)
 
 Extra global bindings to inject into the sandbox context alongside the
 hardened defaults. Use this when a higher-level wrapper (such as
@@ -81,7 +81,7 @@ so callers cannot accidentally undo the sandbox's hardenings:
 
 > `optional` **maxCpuTimeMs**: `number`
 
-Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:52](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/sandbox/executor/ICodeSandbox.ts#L52)
+Defined in: [packages/agentos/src/safety/sandbox/executor/ICodeSandbox.ts:52](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/safety/sandbox/executor/ICodeSandbox.ts#L52)
 
 Maximum CPU time in milliseconds
 
@@ -91,7 +91,7 @@ Maximum CPU time in milliseconds
 
 > `optional` **maxMemoryBytes**: `number`
 
-Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:36](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/sandbox/executor/ICodeSandbox.ts#L36)
+Defined in: [packages/agentos/src/safety/sandbox/executor/ICodeSandbox.ts:36](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/safety/sandbox/executor/ICodeSandbox.ts#L36)
 
 Maximum memory in bytes
 
@@ -101,7 +101,7 @@ Maximum memory in bytes
 
 > `optional` **maxOutputBytes**: `number`
 
-Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:38](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/sandbox/executor/ICodeSandbox.ts#L38)
+Defined in: [packages/agentos/src/safety/sandbox/executor/ICodeSandbox.ts:38](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/safety/sandbox/executor/ICodeSandbox.ts#L38)
 
 Maximum output size in bytes
 
@@ -111,7 +111,7 @@ Maximum output size in bytes
 
 > `optional` **timeoutMs**: `number`
 
-Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:34](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/sandbox/executor/ICodeSandbox.ts#L34)
+Defined in: [packages/agentos/src/safety/sandbox/executor/ICodeSandbox.ts:34](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/safety/sandbox/executor/ICodeSandbox.ts#L34)
 
 Maximum execution time in milliseconds
 
@@ -121,6 +121,6 @@ Maximum execution time in milliseconds
 
 > `optional` **workingDir**: `string`
 
-Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:42](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/sandbox/executor/ICodeSandbox.ts#L42)
+Defined in: [packages/agentos/src/safety/sandbox/executor/ICodeSandbox.ts:42](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/safety/sandbox/executor/ICodeSandbox.ts#L42)
 
 Working directory for execution

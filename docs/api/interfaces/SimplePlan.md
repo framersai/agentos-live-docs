@@ -1,6 +1,6 @@
 # Interface: SimplePlan
 
-Defined in: [packages/agentos/src/orchestration/compiler/MissionCompiler.ts:116](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/compiler/MissionCompiler.ts#L116)
+Defined in: [packages/agentos/src/orchestration/compiler/MissionCompiler.ts:142](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/compiler/MissionCompiler.ts#L142)
 
 Minimal plan structure produced by the current stub planner. Each step maps
 1-to-1 to a `GraphNode` in the compiled IR.
@@ -11,7 +11,7 @@ Minimal plan structure produced by the current stub planner. Each step maps
 
 > **steps**: `object`[]
 
-Defined in: [packages/agentos/src/orchestration/compiler/MissionCompiler.ts:117](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/compiler/MissionCompiler.ts#L117)
+Defined in: [packages/agentos/src/orchestration/compiler/MissionCompiler.ts:143](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/compiler/MissionCompiler.ts#L143)
 
 #### action
 
@@ -34,6 +34,16 @@ Human-readable description injected as the node's instructions or prompt.
 > **id**: `string`
 
 Unique step id; becomes the compiled `GraphNode.id`.
+
+#### maxIterations?
+
+> `optional` **maxIterations**: `number`
+
+Optional per-step override for `gmiNode.maxInternalIterations`. Allows
+the planner to give phases that need many tool calls (e.g. gather) a
+larger iteration budget than reasoning-only phases (process, deliver,
+refine), instead of forcing a single global value across the whole
+plan. Falls back to `plannerConfig.maxIterationsPerNode` when unset.
 
 #### phase
 

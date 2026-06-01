@@ -1,6 +1,6 @@
 # Interface: GenerationHookContext
 
-Defined in: [packages/agentos/src/api/generateText.ts:427](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/generateText.ts#L427)
+Defined in: [packages/agentos/src/api/generateText.ts:481](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/generateText.ts#L481)
 
 Context available to pre-generation hooks.
 Hooks may return a modified copy to transform the generation input.
@@ -11,7 +11,7 @@ Hooks may return a modified copy to transform the generation input.
 
 > **messages**: [`Message`](Message.md)[]
 
-Defined in: [packages/agentos/src/api/generateText.ts:429](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/generateText.ts#L429)
+Defined in: [packages/agentos/src/api/generateText.ts:483](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/generateText.ts#L483)
 
 Current messages array (system + conversation + user).
 
@@ -21,7 +21,7 @@ Current messages array (system + conversation + user).
 
 > **model**: `string`
 
-Defined in: [packages/agentos/src/api/generateText.ts:435](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/generateText.ts#L435)
+Defined in: [packages/agentos/src/api/generateText.ts:489](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/generateText.ts#L489)
 
 Resolved model ID.
 
@@ -31,7 +31,7 @@ Resolved model ID.
 
 > **prompt**: `string` \| `undefined`
 
-Defined in: [packages/agentos/src/api/generateText.ts:441](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/generateText.ts#L441)
+Defined in: [packages/agentos/src/api/generateText.ts:495](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/generateText.ts#L495)
 
 The original user prompt (from opts.prompt).
 
@@ -41,7 +41,7 @@ The original user prompt (from opts.prompt).
 
 > **provider**: `string`
 
-Defined in: [packages/agentos/src/api/generateText.ts:437](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/generateText.ts#L437)
+Defined in: [packages/agentos/src/api/generateText.ts:491](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/generateText.ts#L491)
 
 Resolved provider ID.
 
@@ -51,7 +51,7 @@ Resolved provider ID.
 
 > **step**: `number`
 
-Defined in: [packages/agentos/src/api/generateText.ts:439](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/generateText.ts#L439)
+Defined in: [packages/agentos/src/api/generateText.ts:493](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/generateText.ts#L493)
 
 Current agentic step index (0-based).
 
@@ -61,9 +61,9 @@ Current agentic step index (0-based).
 
 > **system**: `string` \| [`SystemContentBlock`](SystemContentBlock.md)[] \| `undefined`
 
-Defined in: [packages/agentos/src/api/generateText.ts:431](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/generateText.ts#L431)
+Defined in: [packages/agentos/src/api/generateText.ts:485](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/generateText.ts#L485)
 
-System prompt — plain string or structured blocks with cache breakpoints.
+System prompt: plain string or structured blocks with cache breakpoints.
 
 ***
 
@@ -71,6 +71,6 @@ System prompt — plain string or structured blocks with cache breakpoints.
 
 > **tools**: [`ITool`](ITool.md)\<`any`, `any`\>[]
 
-Defined in: [packages/agentos/src/api/generateText.ts:433](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/generateText.ts#L433)
+Defined in: [packages/agentos/src/api/generateText.ts:487](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/generateText.ts#L487)
 
 Tool definitions available for this step.

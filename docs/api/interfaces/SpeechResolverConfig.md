@@ -1,6 +1,6 @@
 # Interface: SpeechResolverConfig
 
-Defined in: [packages/agentos/src/speech/types.ts:202](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/speech/types.ts#L202)
+Defined in: [packages/agentos/src/io/speech/types.ts:202](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/io/speech/types.ts#L202)
 
 Configuration for the speech provider resolver.
 
@@ -10,7 +10,7 @@ Configuration for the speech provider resolver.
 
 > `optional` **stt**: `object`
 
-Defined in: [packages/agentos/src/speech/types.ts:203](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/speech/types.ts#L203)
+Defined in: [packages/agentos/src/io/speech/types.ts:203](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/io/speech/types.ts#L203)
 
 #### fallback?
 
@@ -26,7 +26,7 @@ Defined in: [packages/agentos/src/speech/types.ts:203](https://github.com/framer
 
 > `optional` **tts**: `object`
 
-Defined in: [packages/agentos/src/speech/types.ts:207](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/speech/types.ts#L207)
+Defined in: [packages/agentos/src/io/speech/types.ts:207](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/io/speech/types.ts#L207)
 
 #### fallback?
 
@@ -46,7 +46,7 @@ Defined in: [packages/agentos/src/speech/types.ts:207](https://github.com/framer
 
 > `optional` **wakeWord**: `object`
 
-Defined in: [packages/agentos/src/speech/types.ts:212](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/speech/types.ts#L212)
+Defined in: [packages/agentos/src/io/speech/types.ts:212](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/io/speech/types.ts#L212)
 
 #### keywords?
 

@@ -1,6 +1,6 @@
 # Interface: RetrievalPlan
 
-Defined in: [packages/agentos/src/rag/unified/types.ts:55](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/unified/types.ts#L55)
+Defined in: [packages/agentos/src/cognition/rag/unified/types.ts:55](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/unified/types.ts#L55)
 
 Structured retrieval plan produced by the query classifier.
 
@@ -39,7 +39,7 @@ buildDefaultPlan for creating sensible defaults per strategy level
 
 > **confidence**: `number`
 
-Defined in: [packages/agentos/src/rag/unified/types.ts:155](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/unified/types.ts#L155)
+Defined in: [packages/agentos/src/cognition/rag/unified/types.ts:155](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/unified/types.ts#L155)
 
 Confidence score from the classifier (0 to 1).
 
@@ -52,7 +52,7 @@ Low confidence may trigger plan escalation in the router.
 
 > **deepResearch**: `boolean`
 
-Defined in: [packages/agentos/src/rag/unified/types.ts:147](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/unified/types.ts#L147)
+Defined in: [packages/agentos/src/cognition/rag/unified/types.ts:147](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/unified/types.ts#L147)
 
 Whether deep research mode is enabled.
 
@@ -66,7 +66,7 @@ strategy.
 
 > **graphConfig**: [`GraphTraversalConfig`](GraphTraversalConfig.md)
 
-Defined in: [packages/agentos/src/rag/unified/types.ts:127](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/unified/types.ts#L127)
+Defined in: [packages/agentos/src/cognition/rag/unified/types.ts:127](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/unified/types.ts#L127)
 
 Graph traversal configuration for GraphRAG source.
 
@@ -79,7 +79,7 @@ starting from seed chunks discovered by vector/BM25 search.
 
 > **hyde**: `object`
 
-Defined in: [packages/agentos/src/rag/unified/types.ts:84](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/unified/types.ts#L84)
+Defined in: [packages/agentos/src/cognition/rag/unified/types.ts:84](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/unified/types.ts#L84)
 
 HyDE (Hypothetical Document Embedding) configuration.
 
@@ -115,7 +115,7 @@ HydeRetriever
 
 > **memoryTypes**: [`MemoryTypeFilter`](../type-aliases/MemoryTypeFilter.md)[]
 
-Defined in: [packages/agentos/src/rag/unified/types.ts:103](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/unified/types.ts#L103)
+Defined in: [packages/agentos/src/cognition/rag/unified/types.ts:103](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/unified/types.ts#L103)
 
 Which cognitive memory types to consult.
 
@@ -130,7 +130,7 @@ Which cognitive memory types to consult.
 
 > **modalities**: [`ModalityFilter`](../type-aliases/ModalityFilter.md)[]
 
-Defined in: [packages/agentos/src/rag/unified/types.ts:111](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/unified/types.ts#L111)
+Defined in: [packages/agentos/src/cognition/rag/unified/types.ts:111](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/unified/types.ts#L111)
 
 Which content modalities to search in multimodal index.
 
@@ -143,7 +143,7 @@ non-text modalities are handled by the multimodal indexer.
 
 > **raptorLayers**: `number`[]
 
-Defined in: [packages/agentos/src/rag/unified/types.ts:138](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/unified/types.ts#L138)
+Defined in: [packages/agentos/src/cognition/rag/unified/types.ts:138](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/unified/types.ts#L138)
 
 Which RAPTOR tree layers to search.
 
@@ -159,7 +159,7 @@ An empty array searches all layers (default RAPTOR behaviour).
 
 > **reasoning**: `string`
 
-Defined in: [packages/agentos/src/rag/unified/types.ts:161](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/unified/types.ts#L161)
+Defined in: [packages/agentos/src/cognition/rag/unified/types.ts:161](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/unified/types.ts#L161)
 
 Human-readable reasoning from the classifier explaining why
 this plan was selected.
@@ -170,7 +170,7 @@ this plan was selected.
 
 > **sources**: [`RetrievalPlanSources`](RetrievalPlanSources.md)
 
-Defined in: [packages/agentos/src/rag/unified/types.ts:74](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/unified/types.ts#L74)
+Defined in: [packages/agentos/src/cognition/rag/unified/types.ts:74](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/unified/types.ts#L74)
 
 Which retrieval sources to query.
 
@@ -184,7 +184,7 @@ available at runtime regardless of these flags.
 
 > **strategy**: `RetrievalStrategy`
 
-Defined in: [packages/agentos/src/rag/unified/types.ts:65](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/unified/types.ts#L65)
+Defined in: [packages/agentos/src/cognition/rag/unified/types.ts:65](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/unified/types.ts#L65)
 
 Base retrieval strategy (determines overall pipeline depth).
 
@@ -200,7 +200,7 @@ Maps to the existing strategy tier system but carries richer config.
 
 > **temporal**: [`TemporalConfig`](TemporalConfig.md)
 
-Defined in: [packages/agentos/src/rag/unified/types.ts:119](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/unified/types.ts#L119)
+Defined in: [packages/agentos/src/cognition/rag/unified/types.ts:119](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/unified/types.ts#L119)
 
 Temporal preferences for result ordering and filtering.
 

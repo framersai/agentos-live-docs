@@ -1,6 +1,6 @@
 # Class: ObsidianExporter
 
-Defined in: [packages/agentos/src/memory/io/ObsidianExporter.ts:63](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/io/ObsidianExporter.ts#L63)
+Defined in: [packages/agentos/src/cognition/memory/io/ObsidianExporter.ts:63](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/io/ObsidianExporter.ts#L63)
 
 Exports memory traces as an Obsidian-compatible Markdown vault.
 
@@ -20,7 +20,7 @@ await exporter.export('/path/to/obsidian-vault');
 
 > **new ObsidianExporter**(`brain`): `ObsidianExporter`
 
-Defined in: [packages/agentos/src/memory/io/MarkdownExporter.ts:67](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/io/MarkdownExporter.ts#L67)
+Defined in: [packages/agentos/src/cognition/memory/io/MarkdownExporter.ts:67](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/io/MarkdownExporter.ts#L67)
 
 #### Parameters
 
@@ -44,7 +44,7 @@ The `Brain` instance to read from.
 
 > `protected` `readonly` **brain**: [`Brain`](Brain.md)
 
-Defined in: [packages/agentos/src/memory/io/MarkdownExporter.ts:67](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/io/MarkdownExporter.ts#L67)
+Defined in: [packages/agentos/src/cognition/memory/io/MarkdownExporter.ts:67](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/io/MarkdownExporter.ts#L67)
 
 The `Brain` instance to read from.
 
@@ -58,7 +58,7 @@ The `Brain` instance to read from.
 
 > `protected` **buildFileContent**(`trace`): `string`
 
-Defined in: [packages/agentos/src/memory/io/ObsidianExporter.ts:107](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/io/ObsidianExporter.ts#L107)
+Defined in: [packages/agentos/src/cognition/memory/io/ObsidianExporter.ts:107](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/io/ObsidianExporter.ts#L107)
 
 Build Obsidian-flavoured Markdown for a trace.
 
@@ -91,7 +91,7 @@ Full Markdown file content with front-matter.
 
 > **export**(`outputDir`, `options?`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/memory/io/ObsidianExporter.ts:86](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/io/ObsidianExporter.ts#L86)
+Defined in: [packages/agentos/src/cognition/memory/io/ObsidianExporter.ts:86](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/io/ObsidianExporter.ts#L86)
 
 Export all memory traces as Obsidian-flavoured `.md` files.
 
@@ -127,7 +127,7 @@ Optional export configuration.
 
 > `protected` **traceRelativePath**(`trace`): `string`
 
-Defined in: [packages/agentos/src/memory/io/MarkdownExporter.ts:130](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/io/MarkdownExporter.ts#L130)
+Defined in: [packages/agentos/src/cognition/memory/io/MarkdownExporter.ts:130](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/io/MarkdownExporter.ts#L130)
 
 Determine the relative file path for a trace within the output directory.
 

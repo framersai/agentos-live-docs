@@ -2,6 +2,6 @@
 
 > **LifecycleAction** = `"ALLOW_ACTION"` \| `"PREVENT_ACTION"` \| `"DELETE"` \| `"ARCHIVE"` \| `"SUMMARIZE_AND_DELETE"` \| `"SUMMARIZE_AND_ARCHIVE"` \| `"RETAIN_FOR_DURATION"` \| `"MARK_AS_CRITICAL"` \| `"NO_ACTION_TAKEN"` \| `"ACKNOWLEDGE_NOTIFICATION"`
 
-Defined in: [packages/agentos/src/cognitive\_substrate/IGMI.ts:435](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/cognitive_substrate/IGMI.ts#L435)
+Defined in: [packages/agentos/src/cognition/substrate/IGMI.ts:449](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/substrate/IGMI.ts#L449)
 
 Defines the possible actions a GMI can take or that can be proposed/taken regarding a memory item.

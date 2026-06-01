@@ -2,7 +2,7 @@
 
 > **generateObject**\<`T`\>(`opts`): `Promise`\<[`GenerateObjectResult`](../interfaces/GenerateObjectResult.md)\<[`output`](../@framers/namespaces/z/namespaces/core/type-aliases/output.md)\<`T`\>\>\>
 
-Defined in: [packages/agentos/src/api/generateObject.ts:373](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/generateObject.ts#L373)
+Defined in: [packages/agentos/src/api/generateObject.ts:424](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/generateObject.ts#L424)
 
 Generates a structured object by forcing the LLM to produce JSON matching
 a Zod schema.
@@ -51,7 +51,8 @@ import { z } from 'zod';
 import { generateObject } from '@framers/agentos';
 
 const { object } = await generateObject({
-  provider: 'openai', model: 'gpt-4o',
+  provider: 'openai',
+  model: 'gpt-4o',
   schema: z.object({ name: z.string(), age: z.number() }),
   prompt: 'Extract: "John is 30 years old"',
 });

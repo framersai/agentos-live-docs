@@ -1,6 +1,6 @@
 # Interface: RouteCompleteEvent
 
-Defined in: [packages/agentos/src/query-router/types.ts:1046](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/query-router/types.ts#L1046)
+Defined in: [packages/agentos/src/orchestration/pipeline/query/types.ts:1059](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/pipeline/query/types.ts#L1059)
 
 Emitted when the entire query routing pipeline completes.
 
@@ -10,7 +10,7 @@ Emitted when the entire query routing pipeline completes.
 
 > **durationMs**: `number`
 
-Defined in: [packages/agentos/src/query-router/types.ts:1051](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/query-router/types.ts#L1051)
+Defined in: [packages/agentos/src/orchestration/pipeline/query/types.ts:1064](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/pipeline/query/types.ts#L1064)
 
 Total duration of the entire pipeline in milliseconds.
 
@@ -20,7 +20,7 @@ Total duration of the entire pipeline in milliseconds.
 
 > **result**: [`QueryRouterResult`](QueryRouterResult.md)
 
-Defined in: [packages/agentos/src/query-router/types.ts:1049](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/query-router/types.ts#L1049)
+Defined in: [packages/agentos/src/orchestration/pipeline/query/types.ts:1062](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/pipeline/query/types.ts#L1062)
 
 The final query result.
 
@@ -30,7 +30,7 @@ The final query result.
 
 > **timestamp**: `number`
 
-Defined in: [packages/agentos/src/query-router/types.ts:1053](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/query-router/types.ts#L1053)
+Defined in: [packages/agentos/src/orchestration/pipeline/query/types.ts:1066](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/pipeline/query/types.ts#L1066)
 
 Timestamp when routing completed.
 
@@ -40,4 +40,4 @@ Timestamp when routing completed.
 
 > **type**: `"route:complete"`
 
-Defined in: [packages/agentos/src/query-router/types.ts:1047](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/query-router/types.ts#L1047)
+Defined in: [packages/agentos/src/orchestration/pipeline/query/types.ts:1060](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/pipeline/query/types.ts#L1060)

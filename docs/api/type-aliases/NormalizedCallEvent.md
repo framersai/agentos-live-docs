@@ -2,7 +2,7 @@
 
 > **NormalizedCallEvent** = [`NormalizedCallRinging`](../interfaces/NormalizedCallRinging.md) \| [`NormalizedCallAnswered`](../interfaces/NormalizedCallAnswered.md) \| [`NormalizedCallCompleted`](../interfaces/NormalizedCallCompleted.md) \| [`NormalizedCallFailed`](../interfaces/NormalizedCallFailed.md) \| [`NormalizedCallBusy`](../interfaces/NormalizedCallBusy.md) \| [`NormalizedCallNoAnswer`](../interfaces/NormalizedCallNoAnswer.md) \| [`NormalizedCallVoicemail`](../interfaces/NormalizedCallVoicemail.md) \| [`NormalizedCallHangupUser`](../interfaces/NormalizedCallHangupUser.md) \| [`NormalizedCallError`](../interfaces/NormalizedCallError.md) \| [`NormalizedTranscript`](../interfaces/NormalizedTranscript.md) \| [`NormalizedSpeechStart`](../interfaces/NormalizedSpeechStart.md) \| [`NormalizedMediaStreamConnected`](../interfaces/NormalizedMediaStreamConnected.md) \| [`NormalizedDtmfReceived`](../interfaces/NormalizedDtmfReceived.md)
 
-Defined in: [packages/agentos/src/channels/telephony/types.ts:243](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/channels/telephony/types.ts#L243)
+Defined in: [packages/agentos/src/io/channels/telephony/types.ts:243](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/io/channels/telephony/types.ts#L243)
 
 Normalized webhook event from any telephony provider.
 

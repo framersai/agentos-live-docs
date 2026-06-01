@@ -1,6 +1,6 @@
 # Interface: ToolCallRecord
 
-Defined in: [packages/agentos/src/api/generateText.ts:76](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/generateText.ts#L76)
+Defined in: [packages/agentos/src/api/generateText.ts:98](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/generateText.ts#L98)
 
 Record of a single tool invocation performed during a [generateText](../functions/generateText.md) call.
 One record is appended per tool call, regardless of whether the call succeeded.
@@ -11,7 +11,7 @@ One record is appended per tool call, regardless of whether the call succeeded.
 
 > **args**: `unknown`
 
-Defined in: [packages/agentos/src/api/generateText.ts:80](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/generateText.ts#L80)
+Defined in: [packages/agentos/src/api/generateText.ts:102](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/generateText.ts#L102)
 
 Parsed arguments supplied by the model.
 
@@ -21,7 +21,7 @@ Parsed arguments supplied by the model.
 
 > `optional` **error**: `string`
 
-Defined in: [packages/agentos/src/api/generateText.ts:84](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/generateText.ts#L84)
+Defined in: [packages/agentos/src/api/generateText.ts:106](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/generateText.ts#L106)
 
 Error message when the tool threw or returned a failure result.
 
@@ -31,7 +31,7 @@ Error message when the tool threw or returned a failure result.
 
 > **name**: `string`
 
-Defined in: [packages/agentos/src/api/generateText.ts:78](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/generateText.ts#L78)
+Defined in: [packages/agentos/src/api/generateText.ts:100](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/generateText.ts#L100)
 
 Name of the tool as registered in the `tools` map.
 
@@ -41,6 +41,6 @@ Name of the tool as registered in the `tools` map.
 
 > `optional` **result**: `unknown`
 
-Defined in: [packages/agentos/src/api/generateText.ts:82](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/generateText.ts#L82)
+Defined in: [packages/agentos/src/api/generateText.ts:104](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/generateText.ts#L104)
 
 Return value from the tool's `execute` function (present on success).

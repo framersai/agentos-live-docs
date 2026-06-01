@@ -1,6 +1,6 @@
 # Interface: GenerateSFXResult
 
-Defined in: [packages/agentos/src/api/generateSFX.ts:274](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/generateSFX.ts#L274)
+Defined in: [packages/agentos/src/api/generateSFX.ts:274](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/generateSFX.ts#L274)
 
 The result returned by [generateSFX](../functions/generateSFX.md).
 
@@ -12,7 +12,7 @@ Wraps the core [AudioResult](AudioResult.md) with a simpler, AI-SDK-style shape.
 
 > **audio**: [`GeneratedAudio`](GeneratedAudio.md)[]
 
-Defined in: [packages/agentos/src/api/generateSFX.ts:282](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/generateSFX.ts#L282)
+Defined in: [packages/agentos/src/api/generateSFX.ts:282](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/generateSFX.ts#L282)
 
 Array of generated audio objects containing URLs or base64 data.
 
@@ -22,7 +22,7 @@ Array of generated audio objects containing URLs or base64 data.
 
 > **created**: `number`
 
-Defined in: [packages/agentos/src/api/generateSFX.ts:280](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/generateSFX.ts#L280)
+Defined in: [packages/agentos/src/api/generateSFX.ts:280](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/generateSFX.ts#L280)
 
 Unix timestamp (seconds) when the audio was created.
 
@@ -32,7 +32,7 @@ Unix timestamp (seconds) when the audio was created.
 
 > **model**: `string`
 
-Defined in: [packages/agentos/src/api/generateSFX.ts:276](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/generateSFX.ts#L276)
+Defined in: [packages/agentos/src/api/generateSFX.ts:276](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/generateSFX.ts#L276)
 
 Model identifier reported by the provider.
 
@@ -42,7 +42,7 @@ Model identifier reported by the provider.
 
 > **provider**: `string`
 
-Defined in: [packages/agentos/src/api/generateSFX.ts:278](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/generateSFX.ts#L278)
+Defined in: [packages/agentos/src/api/generateSFX.ts:278](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/generateSFX.ts#L278)
 
 Provider identifier (e.g. `"elevenlabs-sfx"`, `"stable-audio"`).
 
@@ -52,6 +52,6 @@ Provider identifier (e.g. `"elevenlabs-sfx"`, `"stable-audio"`).
 
 > `optional` **usage**: [`AudioProviderUsage`](AudioProviderUsage.md)
 
-Defined in: [packages/agentos/src/api/generateSFX.ts:284](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/generateSFX.ts#L284)
+Defined in: [packages/agentos/src/api/generateSFX.ts:284](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/generateSFX.ts#L284)
 
 Usage / billing information, if available.

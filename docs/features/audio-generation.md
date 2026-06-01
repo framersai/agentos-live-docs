@@ -36,7 +36,7 @@ Both APIs support automatic provider detection, fallback chains via [`FallbackAu
 | **Fal** | `FAL_API_KEY` | `fal-audio` | Various SFX models |
 | **AudioGen Local** | (none) | `audiogen-local` | Local via HuggingFace Transformers.js |
 
-Provider resolution follows priority order (top of table = highest priority). When multiple providers are configured, a `FallbackAudioProxy` wraps the chain for automatic failover.
+Provider resolution follows priority order (top of table = highest priority). When multiple providers are configured, a [`FallbackAudioProxy`](https://github.com/framersai/agentos/blob/master/src/io/media/audio/FallbackAudioProxy.ts) wraps the chain for automatic failover.
 
 ## `generateMusic()`
 
@@ -107,12 +107,12 @@ console.log(result.audio[0].url);
 | `provider` | `string` | Provider ID (`"elevenlabs-sfx"`, `"stable-audio"`, etc.) |
 | `model` | `string` | Model override within the provider |
 | `durationSec` | `number` | Desired output duration (SFX: typically 1-15s) |
-| `outputFormat` | `AudioOutputFormat` | `"mp3"` / `"wav"` / `"flac"` / `"ogg"` / `"aac"` |
+| `outputFormat` | [`AudioOutputFormat`](https://github.com/framersai/agentos/blob/master/src/io/media/audio/types.ts) | `"mp3"` / `"wav"` / `"flac"` / `"ogg"` / `"aac"` |
 | `seed` | `number` | Seed for reproducible generation |
 | `timeoutMs` | `number` | Maximum wait time in milliseconds |
 | `n` | `number` | Number of clips to generate (default: 1) |
-| `onProgress` | `(event) => void` | Progress callback with `AudioProgressEvent` |
-| `providerPreferences` | `MediaProviderPreference` | Reorder or filter the fallback chain |
+| `onProgress` | `(event) => void` | Progress callback with [`AudioProgressEvent`](https://github.com/framersai/agentos/blob/master/src/io/media/audio/types.ts) |
+| `providerPreferences` | [`MediaProviderPreference`](https://github.com/framersai/agentos/blob/master/src/io/media/ProviderPreferences.ts) | Reorder or filter the fallback chain |
 | `apiKey` | `string` | Override the API key |
 
 ## Result types

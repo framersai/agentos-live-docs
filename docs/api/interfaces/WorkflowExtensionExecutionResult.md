@@ -1,6 +1,6 @@
 # Interface: WorkflowExtensionExecutionResult
 
-Defined in: [packages/agentos/src/extensions/types.ts:207](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/extensions/types.ts#L207)
+Defined in: [packages/agentos/src/extensions/types.ts:207](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/extensions/types.ts#L207)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/extensions/types.ts:207](https://github.com/fr
 
 > `optional` **metadata**: `Record`\<`string`, `unknown`\>
 
-Defined in: [packages/agentos/src/extensions/types.ts:210](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/extensions/types.ts#L210)
+Defined in: [packages/agentos/src/extensions/types.ts:210](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/extensions/types.ts#L210)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [packages/agentos/src/extensions/types.ts:210](https://github.com/fr
 
 > `optional` **output**: `unknown`
 
-Defined in: [packages/agentos/src/extensions/types.ts:208](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/extensions/types.ts#L208)
+Defined in: [packages/agentos/src/extensions/types.ts:208](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/extensions/types.ts#L208)
 
 ***
 
@@ -24,4 +24,4 @@ Defined in: [packages/agentos/src/extensions/types.ts:208](https://github.com/fr
 
 > `optional` **status**: [`WorkflowTaskStatus`](../enumerations/WorkflowTaskStatus.md)
 
-Defined in: [packages/agentos/src/extensions/types.ts:209](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/extensions/types.ts#L209)
+Defined in: [packages/agentos/src/extensions/types.ts:209](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/extensions/types.ts#L209)

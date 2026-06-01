@@ -1,6 +1,6 @@
 # Class: HybridRetriever
 
-Defined in: [packages/agentos/src/memory/retrieval/hybrid/HybridRetriever.ts:158](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/hybrid/HybridRetriever.ts#L158)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/hybrid/HybridRetriever.ts:158](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/hybrid/HybridRetriever.ts#L158)
 
 Hybrid BM25 + dense retriever.
 
@@ -25,7 +25,7 @@ const result = await hybrid.retrieve(
 
 > **new HybridRetriever**(`opts`): `HybridRetriever`
 
-Defined in: [packages/agentos/src/memory/retrieval/hybrid/HybridRetriever.ts:171](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/hybrid/HybridRetriever.ts#L171)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/hybrid/HybridRetriever.ts:171](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/hybrid/HybridRetriever.ts#L171)
 
 #### Parameters
 
@@ -43,7 +43,7 @@ Defined in: [packages/agentos/src/memory/retrieval/hybrid/HybridRetriever.ts:171
 
 > `readonly` **bm25**: [`BM25Index`](BM25Index.md)
 
-Defined in: [packages/agentos/src/memory/retrieval/hybrid/HybridRetriever.ts:159](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/hybrid/HybridRetriever.ts#L159)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/hybrid/HybridRetriever.ts:159](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/hybrid/HybridRetriever.ts#L159)
 
 ## Methods
 
@@ -51,7 +51,7 @@ Defined in: [packages/agentos/src/memory/retrieval/hybrid/HybridRetriever.ts:159
 
 > **retrieve**(`query`, `mood`, `scope`, `options?`): `Promise`\<[`CognitiveRetrievalResult`](../interfaces/CognitiveRetrievalResult.md)\>
 
-Defined in: [packages/agentos/src/memory/retrieval/hybrid/HybridRetriever.ts:185](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/hybrid/HybridRetriever.ts#L185)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/hybrid/HybridRetriever.ts:185](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/hybrid/HybridRetriever.ts#L185)
 
 #### Parameters
 

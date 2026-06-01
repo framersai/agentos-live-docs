@@ -1,6 +1,6 @@
 # Class: ChatGptImporter
 
-Defined in: [packages/agentos/src/memory/io/ChatGptImporter.ts:94](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/io/ChatGptImporter.ts#L94)
+Defined in: [packages/agentos/src/cognition/memory/io/ChatGptImporter.ts:94](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/io/ChatGptImporter.ts#L94)
 
 Imports a ChatGPT `conversations.json` export into a `Brain`.
 
@@ -16,7 +16,7 @@ const result = await importer.import('/path/to/conversations.json');
 
 > **new ChatGptImporter**(`brain`): `ChatGptImporter`
 
-Defined in: [packages/agentos/src/memory/io/ChatGptImporter.ts:98](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/io/ChatGptImporter.ts#L98)
+Defined in: [packages/agentos/src/cognition/memory/io/ChatGptImporter.ts:98](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/io/ChatGptImporter.ts#L98)
 
 #### Parameters
 
@@ -36,7 +36,7 @@ The target `Brain` to import into.
 
 > **import**(`sourcePath`, `options?`): `Promise`\<[`ImportResult`](../interfaces/ImportResult.md)\>
 
-Defined in: [packages/agentos/src/memory/io/ChatGptImporter.ts:111](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/io/ChatGptImporter.ts#L111)
+Defined in: [packages/agentos/src/cognition/memory/io/ChatGptImporter.ts:111](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/io/ChatGptImporter.ts#L111)
 
 Parse `conversations.json` and import all conversations and message pairs.
 

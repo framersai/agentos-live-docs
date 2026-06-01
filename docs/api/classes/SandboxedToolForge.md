@@ -1,6 +1,6 @@
 # Class: SandboxedToolForge
 
-Defined in: [packages/agentos/src/emergent/SandboxedToolForge.ts:146](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/emergent/SandboxedToolForge.ts#L146)
+Defined in: [packages/agentos/src/cognition/emergent/SandboxedToolForge.ts:146](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/emergent/SandboxedToolForge.ts#L146)
 
 Runs agent-generated code in a hardened node:vm sandbox via [CodeSandbox](CodeSandbox.md).
 
@@ -36,7 +36,7 @@ console.log(result.output); // 5
 
 > **new SandboxedToolForge**(`config?`): `SandboxedToolForge`
 
-Defined in: [packages/agentos/src/emergent/SandboxedToolForge.ts:172](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/emergent/SandboxedToolForge.ts#L172)
+Defined in: [packages/agentos/src/cognition/emergent/SandboxedToolForge.ts:172](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/emergent/SandboxedToolForge.ts#L172)
 
 Create a new SandboxedToolForge instance.
 
@@ -59,7 +59,7 @@ Optional configuration overrides. All fields have sensible
 
 > **execute**(`request`): `Promise`\<[`SandboxExecutionResult`](../interfaces/SandboxExecutionResult.md)\>
 
-Defined in: [packages/agentos/src/emergent/SandboxedToolForge.ts:324](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/emergent/SandboxedToolForge.ts#L324)
+Defined in: [packages/agentos/src/cognition/emergent/SandboxedToolForge.ts:324](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/emergent/SandboxedToolForge.ts#L324)
 
 Execute agent-generated code in the sandbox.
 
@@ -112,7 +112,7 @@ const result = await forge.execute({
 
 > **validateCode**(`code`, `allowlist`): `object`
 
-Defined in: [packages/agentos/src/emergent/SandboxedToolForge.ts:252](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/emergent/SandboxedToolForge.ts#L252)
+Defined in: [packages/agentos/src/cognition/emergent/SandboxedToolForge.ts:252](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/emergent/SandboxedToolForge.ts#L252)
 
 #### Parameters
 

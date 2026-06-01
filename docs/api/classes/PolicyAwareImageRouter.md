@@ -1,6 +1,6 @@
 # Class: PolicyAwareImageRouter
 
-Defined in: [packages/agentos/src/media/images/PolicyAwareImageRouter.ts:59](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/media/images/PolicyAwareImageRouter.ts#L59)
+Defined in: [packages/agentos/src/io/media/images/PolicyAwareImageRouter.ts:59](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/io/media/images/PolicyAwareImageRouter.ts#L59)
 
 Policy-aware image provider router. Selects the preferred image generation
 provider and model based on the session's content policy tier.
@@ -11,7 +11,7 @@ provider and model based on the session's content policy tier.
 
 > **new PolicyAwareImageRouter**(`catalog`): `PolicyAwareImageRouter`
 
-Defined in: [packages/agentos/src/media/images/PolicyAwareImageRouter.ts:65](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/media/images/PolicyAwareImageRouter.ts#L65)
+Defined in: [packages/agentos/src/io/media/images/PolicyAwareImageRouter.ts:65](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/io/media/images/PolicyAwareImageRouter.ts#L65)
 
 #### Parameters
 
@@ -31,7 +31,7 @@ Uncensored model catalog for mature/private-adult lookup.
 
 > **getPreferredProvider**(`policyTier`, `capabilities?`): [`ImageProviderPreference`](../interfaces/ImageProviderPreference.md) \| `null`
 
-Defined in: [packages/agentos/src/media/images/PolicyAwareImageRouter.ts:76](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/media/images/PolicyAwareImageRouter.ts#L76)
+Defined in: [packages/agentos/src/io/media/images/PolicyAwareImageRouter.ts:76](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/io/media/images/PolicyAwareImageRouter.ts#L76)
 
 Get the preferred image provider and model for a given policy tier.
 
@@ -61,7 +61,7 @@ Provider preference, or null for safe/standard tiers.
 
 > **getProviderChain**(`policyTier`, `capabilities?`): `string`[]
 
-Defined in: [packages/agentos/src/media/images/PolicyAwareImageRouter.ts:113](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/media/images/PolicyAwareImageRouter.ts#L113)
+Defined in: [packages/agentos/src/io/media/images/PolicyAwareImageRouter.ts:113](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/io/media/images/PolicyAwareImageRouter.ts#L113)
 
 Get the ordered provider chain for a given policy tier,
 optionally filtered by required capabilities.

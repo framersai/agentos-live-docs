@@ -1,6 +1,6 @@
 # Interface: PromotionRecord
 
-Defined in: [apps/paracosm/src/engine/core/state.ts:26](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/engine/core/state.ts#L26)
+Defined in: [apps/paracosm/src/engine/core/state.ts:26](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/state.ts#L26)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [apps/paracosm/src/engine/core/state.ts:26](https://github.com/frame
 
 > **department**: `string`
 
-Defined in: [apps/paracosm/src/engine/core/state.ts:27](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/engine/core/state.ts#L27)
+Defined in: [apps/paracosm/src/engine/core/state.ts:27](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/state.ts#L27)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [apps/paracosm/src/engine/core/state.ts:27](https://github.com/frame
 
 > **promotedBy**: `string`
 
-Defined in: [apps/paracosm/src/engine/core/state.ts:30](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/engine/core/state.ts#L30)
+Defined in: [apps/paracosm/src/engine/core/state.ts:30](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/state.ts#L30)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: [apps/paracosm/src/engine/core/state.ts:30](https://github.com/frame
 
 > **role**: `string`
 
-Defined in: [apps/paracosm/src/engine/core/state.ts:28](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/engine/core/state.ts#L28)
+Defined in: [apps/paracosm/src/engine/core/state.ts:28](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/state.ts#L28)
 
 ***
 
@@ -32,4 +32,4 @@ Defined in: [apps/paracosm/src/engine/core/state.ts:28](https://github.com/frame
 
 > **turnPromoted**: `number`
 
-Defined in: [apps/paracosm/src/engine/core/state.ts:29](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/engine/core/state.ts#L29)
+Defined in: [apps/paracosm/src/engine/core/state.ts:29](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/state.ts#L29)

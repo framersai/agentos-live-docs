@@ -1,6 +1,6 @@
 # Interface: AssembledMemoryContext
 
-Defined in: [packages/agentos/src/memory/core/types.ts:341](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L341)
+Defined in: [packages/agentos/src/cognition/memory/core/types.ts:552](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/types.ts#L552)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/memory/core/types.ts:341](https://github.com/f
 
 > **allocation**: [`MemoryBudgetAllocation`](MemoryBudgetAllocation.md)
 
-Defined in: [packages/agentos/src/memory/core/types.ts:344](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L344)
+Defined in: [packages/agentos/src/cognition/memory/core/types.ts:555](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/types.ts#L555)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [packages/agentos/src/memory/core/types.ts:344](https://github.com/f
 
 > **contextText**: `string`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:342](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L342)
+Defined in: [packages/agentos/src/cognition/memory/core/types.ts:553](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/types.ts#L553)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: [packages/agentos/src/memory/core/types.ts:342](https://github.com/f
 
 > **includedMemoryIds**: `string`[]
 
-Defined in: [packages/agentos/src/memory/core/types.ts:345](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L345)
+Defined in: [packages/agentos/src/cognition/memory/core/types.ts:556](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/types.ts#L556)
 
 ***
 
@@ -32,4 +32,4 @@ Defined in: [packages/agentos/src/memory/core/types.ts:345](https://github.com/f
 
 > **tokensUsed**: `number`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:343](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L343)
+Defined in: [packages/agentos/src/cognition/memory/core/types.ts:554](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/types.ts#L554)

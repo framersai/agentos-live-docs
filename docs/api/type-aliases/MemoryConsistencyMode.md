@@ -2,7 +2,7 @@
 
 > **MemoryConsistencyMode** = `"live"` \| `"snapshot"` \| `"journaled"`
 
-Defined in: [packages/agentos/src/orchestration/ir/types.ts:87](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/ir/types.ts#L87)
+Defined in: [packages/agentos/src/orchestration/ir/types.ts:87](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/ir/types.ts#L87)
 
 How the runtime handles in-flight memory reads/writes relative to concurrent graph branches.
 

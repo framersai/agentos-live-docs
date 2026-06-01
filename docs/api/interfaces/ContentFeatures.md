@@ -1,6 +1,6 @@
 # Interface: ContentFeatures
 
-Defined in: [packages/agentos/src/memory/core/types.ts:81](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L81)
+Defined in: [packages/agentos/src/cognition/memory/core/types.ts:274](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/types.ts#L274)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/memory/core/types.ts:81](https://github.com/fr
 
 > **hasContradiction**: `boolean`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:88](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L88)
+Defined in: [packages/agentos/src/cognition/memory/core/types.ts:281](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/types.ts#L281)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [packages/agentos/src/memory/core/types.ts:88](https://github.com/fr
 
 > **hasCooperation**: `boolean`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:86](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L86)
+Defined in: [packages/agentos/src/cognition/memory/core/types.ts:279](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/types.ts#L279)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: [packages/agentos/src/memory/core/types.ts:86](https://github.com/fr
 
 > **hasEmotion**: `boolean`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:84](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L84)
+Defined in: [packages/agentos/src/cognition/memory/core/types.ts:277](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/types.ts#L277)
 
 ***
 
@@ -32,7 +32,7 @@ Defined in: [packages/agentos/src/memory/core/types.ts:84](https://github.com/fr
 
 > **hasEthicalContent**: `boolean`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:87](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L87)
+Defined in: [packages/agentos/src/cognition/memory/core/types.ts:280](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/types.ts#L280)
 
 ***
 
@@ -40,7 +40,7 @@ Defined in: [packages/agentos/src/memory/core/types.ts:87](https://github.com/fr
 
 > **hasNovelty**: `boolean`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:82](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L82)
+Defined in: [packages/agentos/src/cognition/memory/core/types.ts:275](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/types.ts#L275)
 
 ***
 
@@ -48,7 +48,7 @@ Defined in: [packages/agentos/src/memory/core/types.ts:82](https://github.com/fr
 
 > **hasProcedure**: `boolean`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:83](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L83)
+Defined in: [packages/agentos/src/cognition/memory/core/types.ts:276](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/types.ts#L276)
 
 ***
 
@@ -56,7 +56,7 @@ Defined in: [packages/agentos/src/memory/core/types.ts:83](https://github.com/fr
 
 > **hasSocialContent**: `boolean`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:85](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L85)
+Defined in: [packages/agentos/src/cognition/memory/core/types.ts:278](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/types.ts#L278)
 
 ***
 
@@ -64,6 +64,6 @@ Defined in: [packages/agentos/src/memory/core/types.ts:85](https://github.com/fr
 
 > **topicRelevance**: `number`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:90](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L90)
+Defined in: [packages/agentos/src/cognition/memory/core/types.ts:283](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/types.ts#L283)
 
 0-1 relevance to current task / active goal.

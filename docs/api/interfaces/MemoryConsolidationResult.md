@@ -1,6 +1,6 @@
 # Interface: MemoryConsolidationResult
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:553](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/io/facade/types.ts#L553)
+Defined in: [packages/agentos/src/cognition/memory/io/facade/types.ts:553](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/io/facade/types.ts#L553)
 
 Statistics returned after a consolidation cycle completes.
 
@@ -10,7 +10,7 @@ Statistics returned after a consolidation cycle completes.
 
 > **compacted**: `number`
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:572](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/io/facade/types.ts#L572)
+Defined in: [packages/agentos/src/cognition/memory/io/facade/types.ts:572](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/io/facade/types.ts#L572)
 
 Number of traces compacted (archived to long-term store).
 
@@ -20,7 +20,7 @@ Number of traces compacted (archived to long-term store).
 
 > **derived**: `number`
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:567](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/io/facade/types.ts#L567)
+Defined in: [packages/agentos/src/cognition/memory/io/facade/types.ts:567](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/io/facade/types.ts#L567)
 
 Number of new insight traces derived from clusters.
 
@@ -30,7 +30,7 @@ Number of new insight traces derived from clusters.
 
 > **durationMs**: `number`
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:577](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/io/facade/types.ts#L577)
+Defined in: [packages/agentos/src/cognition/memory/io/facade/types.ts:577](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/io/facade/types.ts#L577)
 
 Wall-clock time the consolidation cycle took in milliseconds.
 
@@ -40,7 +40,7 @@ Wall-clock time the consolidation cycle took in milliseconds.
 
 > **merged**: `number`
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:562](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/io/facade/types.ts#L562)
+Defined in: [packages/agentos/src/cognition/memory/io/facade/types.ts:562](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/io/facade/types.ts#L562)
 
 Number of trace pairs merged into single traces.
 
@@ -50,7 +50,7 @@ Number of trace pairs merged into single traces.
 
 > `optional` **personalityDecayed**: `number`
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:588](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/io/facade/types.ts#L588)
+Defined in: [packages/agentos/src/cognition/memory/io/facade/types.ts:588](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/io/facade/types.ts#L588)
 
 Number of personality mutations affected by decay during this cycle.
 
@@ -71,6 +71,6 @@ Zero when the store is absent or no mutations were touched.
 
 > **pruned**: `number`
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:557](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/io/facade/types.ts#L557)
+Defined in: [packages/agentos/src/cognition/memory/io/facade/types.ts:557](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/io/facade/types.ts#L557)
 
 Number of traces pruned (below strength threshold).

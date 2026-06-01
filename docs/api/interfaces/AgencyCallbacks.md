@@ -1,6 +1,6 @@
 # Interface: AgencyCallbacks
 
-Defined in: [packages/agentos/src/api/types.ts:887](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/types.ts#L887)
+Defined in: [packages/agentos/src/api/types.ts:899](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/types.ts#L899)
 
 Event callbacks registered on `BaseAgentConfig.on`.
 All handlers are fire-and-forget (return `void`); errors thrown inside them
@@ -12,7 +12,7 @@ are swallowed to prevent disrupting the main run.
 
 > `optional` **agentEnd**: (`e`) => `void`
 
-Defined in: [packages/agentos/src/api/types.ts:891](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/types.ts#L891)
+Defined in: [packages/agentos/src/api/types.ts:903](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/types.ts#L903)
 
 Called after an agent produces its final output.
 
@@ -32,7 +32,7 @@ Called after an agent produces its final output.
 
 > `optional` **agentStart**: (`e`) => `void`
 
-Defined in: [packages/agentos/src/api/types.ts:889](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/types.ts#L889)
+Defined in: [packages/agentos/src/api/types.ts:901](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/types.ts#L901)
 
 Called immediately before an agent starts.
 
@@ -52,7 +52,7 @@ Called immediately before an agent starts.
 
 > `optional` **approvalDecided**: (`e`) => `void`
 
-Defined in: [packages/agentos/src/api/types.ts:907](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/types.ts#L907)
+Defined in: [packages/agentos/src/api/types.ts:919](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/types.ts#L919)
 
 Called after an approval decision is resolved.
 
@@ -72,7 +72,7 @@ Called after an approval decision is resolved.
 
 > `optional` **approvalRequested**: (`e`) => `void`
 
-Defined in: [packages/agentos/src/api/types.ts:905](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/types.ts#L905)
+Defined in: [packages/agentos/src/api/types.ts:917](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/types.ts#L917)
 
 Called when an approval request is raised.
 
@@ -92,7 +92,7 @@ Called when an approval request is raised.
 
 > `optional` **emergentForge**: (`e`) => `void`
 
-Defined in: [packages/agentos/src/api/types.ts:899](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/types.ts#L899)
+Defined in: [packages/agentos/src/api/types.ts:911](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/types.ts#L911)
 
 Called when the emergent subsystem forges a new agent.
 
@@ -112,7 +112,7 @@ Called when the emergent subsystem forges a new agent.
 
 > `optional` **error**: (`e`) => `void`
 
-Defined in: [packages/agentos/src/api/types.ts:897](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/types.ts#L897)
+Defined in: [packages/agentos/src/api/types.ts:909](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/types.ts#L909)
 
 Called when an unhandled error occurs inside an agent.
 
@@ -142,7 +142,7 @@ Called when an unhandled error occurs inside an agent.
 
 > `optional` **guardrailHitlOverride**: (`e`) => `void`
 
-Defined in: [packages/agentos/src/api/types.ts:913](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/types.ts#L913)
+Defined in: [packages/agentos/src/api/types.ts:925](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/types.ts#L925)
 
 Called when a post-approval guardrail overrides an HITL approval.
 Fires after a tool call was approved but a guardrail detected a
@@ -164,7 +164,7 @@ destructive pattern and vetoed the execution.
 
 > `optional` **guardrailResult**: (`e`) => `void`
 
-Defined in: [packages/agentos/src/api/types.ts:901](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/types.ts#L901)
+Defined in: [packages/agentos/src/api/types.ts:913](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/types.ts#L913)
 
 Called after a guardrail evaluates an input or output.
 
@@ -184,7 +184,7 @@ Called after a guardrail evaluates an input or output.
 
 > `optional` **handoff**: (`e`) => `void`
 
-Defined in: [packages/agentos/src/api/types.ts:893](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/types.ts#L893)
+Defined in: [packages/agentos/src/api/types.ts:905](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/types.ts#L905)
 
 Called when control is handed off between agents.
 
@@ -204,7 +204,7 @@ Called when control is handed off between agents.
 
 > `optional` **limitReached**: (`e`) => `void`
 
-Defined in: [packages/agentos/src/api/types.ts:903](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/types.ts#L903)
+Defined in: [packages/agentos/src/api/types.ts:915](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/types.ts#L915)
 
 Called when a resource limit is reached.
 
@@ -224,7 +224,7 @@ Called when a resource limit is reached.
 
 > `optional` **toolCall**: (`e`) => `void`
 
-Defined in: [packages/agentos/src/api/types.ts:895](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/types.ts#L895)
+Defined in: [packages/agentos/src/api/types.ts:907](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/types.ts#L907)
 
 Called when an agent invokes a tool.
 

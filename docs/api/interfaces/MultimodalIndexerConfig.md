@@ -1,6 +1,6 @@
 # Interface: MultimodalIndexerConfig
 
-Defined in: [packages/agentos/src/rag/multimodal/types.ts:370](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/multimodal/types.ts#L370)
+Defined in: [packages/agentos/src/cognition/rag/multimodal/types.ts:370](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/multimodal/types.ts#L370)
 
 Configuration for the [MultimodalIndexer](../classes/MultimodalIndexer.md).
 
@@ -19,7 +19,7 @@ const config: MultimodalIndexerConfig = {
 
 > `optional` **defaultCollection**: `string`
 
-Defined in: [packages/agentos/src/rag/multimodal/types.ts:375](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/multimodal/types.ts#L375)
+Defined in: [packages/agentos/src/cognition/rag/multimodal/types.ts:375](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/multimodal/types.ts#L375)
 
 Default vector store collection name for indexed content.
 
@@ -35,7 +35,7 @@ Default vector store collection name for indexed content.
 
 > `optional` **imageDescriptionPrompt**: `string`
 
-Defined in: [packages/agentos/src/rag/multimodal/types.ts:381](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/multimodal/types.ts#L381)
+Defined in: [packages/agentos/src/cognition/rag/multimodal/types.ts:381](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/multimodal/types.ts#L381)
 
 Custom prompt template for the vision LLM when describing images.
 If omitted, a sensible default prompt is used.

@@ -2,7 +2,7 @@
 
 > **extractJson**(`rawText`): `string` \| `null`
 
-Defined in: [packages/agentos/src/core/validation/extractJson.ts:35](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/core/validation/extractJson.ts#L35)
+Defined in: [packages/agentos/src/safety/validation/extractJson.ts:35](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/safety/validation/extractJson.ts#L35)
 
 Extract JSON from raw LLM output text.
 

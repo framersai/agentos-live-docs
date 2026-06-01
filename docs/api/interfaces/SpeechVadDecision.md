@@ -1,6 +1,6 @@
 # Interface: SpeechVadDecision
 
-Defined in: [packages/agentos/src/speech/types.ts:155](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/speech/types.ts#L155)
+Defined in: [packages/agentos/src/io/speech/types.ts:155](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/io/speech/types.ts#L155)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/speech/types.ts:155](https://github.com/framer
 
 > `optional` **confidence**: `number`
 
-Defined in: [packages/agentos/src/speech/types.ts:157](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/speech/types.ts#L157)
+Defined in: [packages/agentos/src/io/speech/types.ts:157](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/io/speech/types.ts#L157)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [packages/agentos/src/speech/types.ts:157](https://github.com/framer
 
 > **isSpeech**: `boolean`
 
-Defined in: [packages/agentos/src/speech/types.ts:156](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/speech/types.ts#L156)
+Defined in: [packages/agentos/src/io/speech/types.ts:156](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/io/speech/types.ts#L156)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: [packages/agentos/src/speech/types.ts:156](https://github.com/framer
 
 > `optional` **profile**: [`NoiseProfile`](NoiseProfile.md) \| `null`
 
-Defined in: [packages/agentos/src/speech/types.ts:159](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/speech/types.ts#L159)
+Defined in: [packages/agentos/src/io/speech/types.ts:159](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/io/speech/types.ts#L159)
 
 ***
 
@@ -32,4 +32,4 @@ Defined in: [packages/agentos/src/speech/types.ts:159](https://github.com/framer
 
 > `optional` **result**: [`VADResult`](VADResult.md)
 
-Defined in: [packages/agentos/src/speech/types.ts:158](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/speech/types.ts#L158)
+Defined in: [packages/agentos/src/io/speech/types.ts:158](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/io/speech/types.ts#L158)

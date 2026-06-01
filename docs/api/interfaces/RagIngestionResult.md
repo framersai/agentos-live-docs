@@ -1,6 +1,6 @@
 # Interface: RagIngestionResult
 
-Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:118](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/IRetrievalAugmentor.ts#L118)
+Defined in: [packages/agentos/src/cognition/rag/IRetrievalAugmentor.ts:170](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/IRetrievalAugmentor.ts#L170)
 
 Result of an ingestion attempt.
 
@@ -10,7 +10,7 @@ Result of an ingestion attempt.
 
 > `optional` **effectiveDataSourceIds**: `string`[]
 
-Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:124](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/IRetrievalAugmentor.ts#L124)
+Defined in: [packages/agentos/src/cognition/rag/IRetrievalAugmentor.ts:176](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/IRetrievalAugmentor.ts#L176)
 
 ***
 
@@ -18,7 +18,7 @@ Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:124](https://github
 
 > `optional` **errors**: `object`[]
 
-Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:122](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/IRetrievalAugmentor.ts#L122)
+Defined in: [packages/agentos/src/cognition/rag/IRetrievalAugmentor.ts:174](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/IRetrievalAugmentor.ts#L174)
 
 #### chunkId?
 
@@ -42,7 +42,7 @@ Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:122](https://github
 
 > **failedCount**: `number`
 
-Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:120](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/IRetrievalAugmentor.ts#L120)
+Defined in: [packages/agentos/src/cognition/rag/IRetrievalAugmentor.ts:172](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/IRetrievalAugmentor.ts#L172)
 
 ***
 
@@ -50,7 +50,7 @@ Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:120](https://github
 
 > `optional` **ingestedIds**: `string`[]
 
-Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:121](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/IRetrievalAugmentor.ts#L121)
+Defined in: [packages/agentos/src/cognition/rag/IRetrievalAugmentor.ts:173](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/IRetrievalAugmentor.ts#L173)
 
 ***
 
@@ -58,7 +58,7 @@ Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:121](https://github
 
 > `optional` **jobId**: `string`
 
-Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:123](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/IRetrievalAugmentor.ts#L123)
+Defined in: [packages/agentos/src/cognition/rag/IRetrievalAugmentor.ts:175](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/IRetrievalAugmentor.ts#L175)
 
 ***
 
@@ -66,4 +66,4 @@ Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:123](https://github
 
 > **processedCount**: `number`
 
-Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:119](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/IRetrievalAugmentor.ts#L119)
+Defined in: [packages/agentos/src/cognition/rag/IRetrievalAugmentor.ts:171](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/IRetrievalAugmentor.ts#L171)

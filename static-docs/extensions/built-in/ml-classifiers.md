@@ -350,7 +350,7 @@ Agent: I'll check this user comment for safety before posting.
 | SlidingWindowBuffer state            | ~1KB per stream | First TEXT_DELTA          |
 | **Total (all 3 models, 10 streams)** | **~98MB**       | --                        |
 
-All models are lazy-loaded. If only toxicity is enabled, memory cost is ~33MB. Models are shared across extensions via `ISharedServiceRegistry` -- if another extension uses the same model, zero additional memory.
+All models are lazy-loaded. If only toxicity is enabled, memory cost is ~33MB. Models are shared across extensions via [`ISharedServiceRegistry`](https://github.com/framersai/agentos/blob/master/src/extensions/ISharedServiceRegistry.ts) -- if another extension uses the same model, zero additional memory.
 
 ---
 

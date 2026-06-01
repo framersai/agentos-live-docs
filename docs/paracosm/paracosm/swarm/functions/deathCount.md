@@ -2,7 +2,7 @@
 
 > **deathCount**(`swarm`): `number`
 
-Defined in: [apps/paracosm/src/runtime/swarm/index.ts:83](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/runtime/swarm/index.ts#L83)
+Defined in: [apps/paracosm/src/runtime/swarm/index.ts:83](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/swarm/index.ts#L83)
 
 Number of dead agents at snapshot time. Counts every agent ever
 present in the run, not just deaths-this-turn (use `swarm.deaths`

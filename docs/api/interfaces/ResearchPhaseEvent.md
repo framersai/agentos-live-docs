@@ -1,6 +1,6 @@
 # Interface: ResearchPhaseEvent
 
-Defined in: [packages/agentos/src/query-router/types.ts:990](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/query-router/types.ts#L990)
+Defined in: [packages/agentos/src/orchestration/pipeline/query/types.ts:1003](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/pipeline/query/types.ts#L1003)
 
 Emitted after each iteration of the research loop.
 
@@ -10,7 +10,7 @@ Emitted after each iteration of the research loop.
 
 > **iteration**: `number`
 
-Defined in: [packages/agentos/src/query-router/types.ts:993](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/query-router/types.ts#L993)
+Defined in: [packages/agentos/src/orchestration/pipeline/query/types.ts:1006](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/pipeline/query/types.ts#L1006)
 
 Current iteration number (1-based).
 
@@ -20,7 +20,7 @@ Current iteration number (1-based).
 
 > **newChunksFound**: `number`
 
-Defined in: [packages/agentos/src/query-router/types.ts:997](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/query-router/types.ts#L997)
+Defined in: [packages/agentos/src/orchestration/pipeline/query/types.ts:1010](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/pipeline/query/types.ts#L1010)
 
 Number of new chunks discovered in this iteration.
 
@@ -30,7 +30,7 @@ Number of new chunks discovered in this iteration.
 
 > **timestamp**: `number`
 
-Defined in: [packages/agentos/src/query-router/types.ts:999](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/query-router/types.ts#L999)
+Defined in: [packages/agentos/src/orchestration/pipeline/query/types.ts:1012](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/pipeline/query/types.ts#L1012)
 
 Timestamp of the event.
 
@@ -40,7 +40,7 @@ Timestamp of the event.
 
 > **totalIterations**: `number`
 
-Defined in: [packages/agentos/src/query-router/types.ts:995](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/query-router/types.ts#L995)
+Defined in: [packages/agentos/src/orchestration/pipeline/query/types.ts:1008](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/pipeline/query/types.ts#L1008)
 
 Total configured iterations.
 
@@ -50,4 +50,4 @@ Total configured iterations.
 
 > **type**: `"research:phase"`
 
-Defined in: [packages/agentos/src/query-router/types.ts:991](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/query-router/types.ts#L991)
+Defined in: [packages/agentos/src/orchestration/pipeline/query/types.ts:1004](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/pipeline/query/types.ts#L1004)

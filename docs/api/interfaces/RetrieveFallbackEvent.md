@@ -1,6 +1,6 @@
 # Interface: RetrieveFallbackEvent
 
-Defined in: [packages/agentos/src/query-router/types.ts:964](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/query-router/types.ts#L964)
+Defined in: [packages/agentos/src/orchestration/pipeline/query/types.ts:977](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/pipeline/query/types.ts#L977)
 
 Emitted when a retrieval fallback strategy is activated.
 
@@ -10,7 +10,7 @@ Emitted when a retrieval fallback strategy is activated.
 
 > **reason**: `string`
 
-Defined in: [packages/agentos/src/query-router/types.ts:969](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/query-router/types.ts#L969)
+Defined in: [packages/agentos/src/orchestration/pipeline/query/types.ts:982](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/pipeline/query/types.ts#L982)
 
 Reason the fallback was triggered.
 
@@ -20,7 +20,7 @@ Reason the fallback was triggered.
 
 > **strategy**: `string`
 
-Defined in: [packages/agentos/src/query-router/types.ts:967](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/query-router/types.ts#L967)
+Defined in: [packages/agentos/src/orchestration/pipeline/query/types.ts:980](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/pipeline/query/types.ts#L980)
 
 Name of the fallback strategy activated (e.g., 'keyword-fallback').
 
@@ -30,7 +30,7 @@ Name of the fallback strategy activated (e.g., 'keyword-fallback').
 
 > **timestamp**: `number`
 
-Defined in: [packages/agentos/src/query-router/types.ts:971](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/query-router/types.ts#L971)
+Defined in: [packages/agentos/src/orchestration/pipeline/query/types.ts:984](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/pipeline/query/types.ts#L984)
 
 Timestamp of the event.
 
@@ -40,4 +40,4 @@ Timestamp of the event.
 
 > **type**: `"retrieve:fallback"`
 
-Defined in: [packages/agentos/src/query-router/types.ts:965](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/query-router/types.ts#L965)
+Defined in: [packages/agentos/src/orchestration/pipeline/query/types.ts:978](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/pipeline/query/types.ts#L978)

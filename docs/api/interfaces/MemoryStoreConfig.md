@@ -1,6 +1,6 @@
 # Interface: MemoryStoreConfig
 
-Defined in: [packages/agentos/src/memory/retrieval/store/MemoryStore.ts:54](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/store/MemoryStore.ts#L54)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/store/MemoryStore.ts:54](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/store/MemoryStore.ts#L54)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/memory/retrieval/store/MemoryStore.ts:54](http
 
 > **collectionPrefix**: `string`
 
-Defined in: [packages/agentos/src/memory/retrieval/store/MemoryStore.ts:59](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/store/MemoryStore.ts#L59)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/store/MemoryStore.ts:59](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/store/MemoryStore.ts#L59)
 
 Collection name prefix.
 
@@ -24,7 +24,7 @@ Collection name prefix.
 
 > `optional` **decayConfig**: [`DecayConfig`](DecayConfig.md)
 
-Defined in: [packages/agentos/src/memory/retrieval/store/MemoryStore.ts:62](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/store/MemoryStore.ts#L62)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/store/MemoryStore.ts:62](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/store/MemoryStore.ts#L62)
 
 ***
 
@@ -32,7 +32,7 @@ Defined in: [packages/agentos/src/memory/retrieval/store/MemoryStore.ts:62](http
 
 > `optional` **embeddingDimension**: `number`
 
-Defined in: [packages/agentos/src/memory/retrieval/store/MemoryStore.ts:61](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/store/MemoryStore.ts#L61)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/store/MemoryStore.ts:61](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/store/MemoryStore.ts#L61)
 
 Embedding dimension (auto-detected if possible).
 
@@ -42,7 +42,7 @@ Embedding dimension (auto-detected if possible).
 
 > **embeddingManager**: [`IEmbeddingManager`](IEmbeddingManager.md)
 
-Defined in: [packages/agentos/src/memory/retrieval/store/MemoryStore.ts:56](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/store/MemoryStore.ts#L56)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/store/MemoryStore.ts:56](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/store/MemoryStore.ts#L56)
 
 ***
 
@@ -50,7 +50,7 @@ Defined in: [packages/agentos/src/memory/retrieval/store/MemoryStore.ts:56](http
 
 > `optional` **enableGraphActivation**: `boolean`
 
-Defined in: [packages/agentos/src/memory/retrieval/store/MemoryStore.ts:76](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/store/MemoryStore.ts#L76)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/store/MemoryStore.ts:76](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/store/MemoryStore.ts#L76)
 
 Step 13: enable graph activation. When true, `store` upserts entity
 nodes and `co_occurs` edges at ingest (from `trace.entities`), and
@@ -66,7 +66,7 @@ candidates.
 
 > **knowledgeGraph**: [`IKnowledgeGraph`](IKnowledgeGraph.md)
 
-Defined in: [packages/agentos/src/memory/retrieval/store/MemoryStore.ts:57](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/store/MemoryStore.ts#L57)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/store/MemoryStore.ts:57](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/store/MemoryStore.ts#L57)
 
 ***
 
@@ -74,7 +74,7 @@ Defined in: [packages/agentos/src/memory/retrieval/store/MemoryStore.ts:57](http
 
 > `optional` **mechanismsEngine**: [`CognitiveMechanismsEngine`](../classes/CognitiveMechanismsEngine.md)
 
-Defined in: [packages/agentos/src/memory/retrieval/store/MemoryStore.ts:64](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/store/MemoryStore.ts#L64)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/store/MemoryStore.ts:64](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/store/MemoryStore.ts#L64)
 
 Optional cognitive mechanisms engine for retrieval-time hooks.
 
@@ -84,7 +84,7 @@ Optional cognitive mechanisms engine for retrieval-time hooks.
 
 > `optional` **moodProvider**: () => [`PADState`](PADState.md)
 
-Defined in: [packages/agentos/src/memory/retrieval/store/MemoryStore.ts:66](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/store/MemoryStore.ts#L66)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/store/MemoryStore.ts:66](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/store/MemoryStore.ts#L66)
 
 Optional mood provider for reconsolidation drift during recordAccess.
 
@@ -98,4 +98,4 @@ Optional mood provider for reconsolidation drift during recordAccess.
 
 > **vectorStore**: [`IVectorStore`](IVectorStore.md)
 
-Defined in: [packages/agentos/src/memory/retrieval/store/MemoryStore.ts:55](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/store/MemoryStore.ts#L55)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/store/MemoryStore.ts:55](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/store/MemoryStore.ts#L55)

@@ -2,7 +2,7 @@
 
 > **rankByTemporalOverlap**(`facts`, `queryTimestamp`): [`TypedFact`](../interfaces/TypedFact.md)[]
 
-Defined in: [packages/agentos/src/memory/retrieval/typed-network/TemporalIntervalOverlap.ts:38](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/typed-network/TemporalIntervalOverlap.ts#L38)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/typed-network/TemporalIntervalOverlap.ts:38](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/typed-network/TemporalIntervalOverlap.ts#L38)
 
 Rank an array of typed facts by their temporal proximity to a query
 timestamp. Facts whose `(start, end)` interval contains the query

@@ -2,7 +2,7 @@
 
 > **voiceNode**(`id`, `config`): [`VoiceNodeBuilder`](../classes/VoiceNodeBuilder.md)
 
-Defined in: [packages/agentos/src/orchestration/builders/VoiceNodeBuilder.ts:72](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/builders/VoiceNodeBuilder.ts#L72)
+Defined in: [packages/agentos/src/orchestration/builders/VoiceNodeBuilder.ts:72](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/builders/VoiceNodeBuilder.ts#L72)
 
 Create a new [VoiceNodeBuilder](../classes/VoiceNodeBuilder.md) for a voice pipeline graph node.
 

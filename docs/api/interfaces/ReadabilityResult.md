@@ -1,6 +1,6 @@
 # Interface: ReadabilityResult
 
-Defined in: [packages/agentos/src/nlp/ai\_utilities/IUtilityAI.ts:156](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/nlp/ai_utilities/IUtilityAI.ts#L156)
+Defined in: [packages/agentos/src/cognition/nlp/ai\_utilities/IUtilityAI.ts:156](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/nlp/ai_utilities/IUtilityAI.ts#L156)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/nlp/ai\_utilities/IUtilityAI.ts:156](https://g
 
 > `optional` **gradeLevel**: `string`
 
-Defined in: [packages/agentos/src/nlp/ai\_utilities/IUtilityAI.ts:159](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/nlp/ai_utilities/IUtilityAI.ts#L159)
+Defined in: [packages/agentos/src/cognition/nlp/ai\_utilities/IUtilityAI.ts:159](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/nlp/ai_utilities/IUtilityAI.ts#L159)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [packages/agentos/src/nlp/ai\_utilities/IUtilityAI.ts:159](https://g
 
 > `optional` **interpretation**: `string`
 
-Defined in: [packages/agentos/src/nlp/ai\_utilities/IUtilityAI.ts:158](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/nlp/ai_utilities/IUtilityAI.ts#L158)
+Defined in: [packages/agentos/src/cognition/nlp/ai\_utilities/IUtilityAI.ts:158](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/nlp/ai_utilities/IUtilityAI.ts#L158)
 
 ***
 
@@ -24,4 +24,4 @@ Defined in: [packages/agentos/src/nlp/ai\_utilities/IUtilityAI.ts:158](https://g
 
 > **score**: `number`
 
-Defined in: [packages/agentos/src/nlp/ai\_utilities/IUtilityAI.ts:157](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/nlp/ai_utilities/IUtilityAI.ts#L157)
+Defined in: [packages/agentos/src/cognition/nlp/ai\_utilities/IUtilityAI.ts:157](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/nlp/ai_utilities/IUtilityAI.ts#L157)

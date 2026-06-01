@@ -30,7 +30,7 @@ If an existing pack already covers your need, prefer configuring it over writing
 
 ### The contract at a glance
 
-Every guardrail implements the `IGuardrailService` interface. Both methods are optional -- implement only what you need.
+Every guardrail implements the [`IGuardrailService`](https://github.com/framersai/agentos/blob/master/src/safety/guardrails/IGuardrailService.ts) interface. Both methods are optional -- implement only what you need.
 
 ```typescript
 interface IGuardrailService {
@@ -725,7 +725,7 @@ Declare `@framers/agentos` as a **peer dependency** so your pack works with any 
     "typescript": "^5.5.0",
     "vitest": "^1.6.0"
   },
-  "license": "Apache-2.0"
+  "license": "MIT"
 }
 ```
 
@@ -804,7 +804,7 @@ Declare the pack metadata for the extension registry.
   "version": "0.1.0",
   "description": "My custom guardrail for AgentOS",
   "author": "Your Name",
-  "license": "Apache-2.0",
+  "license": "MIT",
   "category": "safety",
   "tags": ["guardrail", "content-filter", "safety"],
   "entryPoint": "./dist/index.js"

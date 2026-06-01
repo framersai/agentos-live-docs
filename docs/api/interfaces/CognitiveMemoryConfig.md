@@ -1,6 +1,6 @@
 # Interface: CognitiveMemoryConfig
 
-Defined in: [packages/agentos/src/memory/core/config.ts:233](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/config.ts#L233)
+Defined in: [packages/agentos/src/cognition/memory/core/config.ts:233](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/config.ts#L233)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/memory/core/config.ts:233](https://github.com/
 
 > **agentId**: `string`
 
-Defined in: [packages/agentos/src/memory/core/config.ts:241](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/config.ts#L241)
+Defined in: [packages/agentos/src/cognition/memory/core/config.ts:241](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/config.ts#L241)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [packages/agentos/src/memory/core/config.ts:241](https://github.com/
 
 > `optional` **archive**: `IMemoryArchive`
 
-Defined in: [packages/agentos/src/memory/core/config.ts:344](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/config.ts#L344)
+Defined in: [packages/agentos/src/cognition/memory/core/config.ts:344](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/config.ts#L344)
 
 Optional memory archive for write-ahead verbatim preservation.
 
@@ -40,7 +40,7 @@ IMemoryArchive — the archive contract
 
 > `optional` **brain**: [`Brain`](../classes/Brain.md)
 
-Defined in: [packages/agentos/src/memory/core/config.ts:316](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/config.ts#L316)
+Defined in: [packages/agentos/src/cognition/memory/core/config.ts:316](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/config.ts#L316)
 
 Optional Brain instance for durable persistence.
 
@@ -68,7 +68,7 @@ undefined (in-memory only)
 
 > `optional` **cognitiveMechanisms**: [`CognitiveMechanismsConfig`](CognitiveMechanismsConfig.md)
 
-Defined in: [packages/agentos/src/memory/core/config.ts:276](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/config.ts#L276)
+Defined in: [packages/agentos/src/cognition/memory/core/config.ts:276](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/config.ts#L276)
 
 Optional per-mechanism cognitive science extensions (reconsolidation, RIF, FOK, etc.).
 
@@ -78,7 +78,7 @@ Optional per-mechanism cognitive science extensions (reconsolidation, RIF, FOK, 
 
 > `optional` **collectionPrefix**: `string`
 
-Defined in: [packages/agentos/src/memory/core/config.ts:286](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/config.ts#L286)
+Defined in: [packages/agentos/src/cognition/memory/core/config.ts:286](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/config.ts#L286)
 
 #### Default
 
@@ -92,7 +92,7 @@ Defined in: [packages/agentos/src/memory/core/config.ts:286](https://github.com/
 
 > `optional` **consolidation**: `Partial`\<[`ConsolidationConfig`](ConsolidationConfig.md)\>
 
-Defined in: [packages/agentos/src/memory/core/config.ts:263](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/config.ts#L263)
+Defined in: [packages/agentos/src/cognition/memory/core/config.ts:263](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/config.ts#L263)
 
 ***
 
@@ -100,7 +100,7 @@ Defined in: [packages/agentos/src/memory/core/config.ts:263](https://github.com/
 
 > `optional` **decay**: `Partial`\<[`DecayConfig`](DecayConfig.md)\>
 
-Defined in: [packages/agentos/src/memory/core/config.ts:254](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/config.ts#L254)
+Defined in: [packages/agentos/src/cognition/memory/core/config.ts:254](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/config.ts#L254)
 
 ***
 
@@ -108,7 +108,7 @@ Defined in: [packages/agentos/src/memory/core/config.ts:254](https://github.com/
 
 > **embeddingManager**: [`IEmbeddingManager`](IEmbeddingManager.md)
 
-Defined in: [packages/agentos/src/memory/core/config.ts:238](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/config.ts#L238)
+Defined in: [packages/agentos/src/cognition/memory/core/config.ts:238](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/config.ts#L238)
 
 ***
 
@@ -116,7 +116,7 @@ Defined in: [packages/agentos/src/memory/core/config.ts:238](https://github.com/
 
 > `optional` **enableGraphActivation**: `boolean`
 
-Defined in: [packages/agentos/src/memory/core/config.ts:299](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/config.ts#L299)
+Defined in: [packages/agentos/src/cognition/memory/core/config.ts:299](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/config.ts#L299)
 
 Step 13: enable graph activation. Propagates to
 `MemoryStoreConfig.enableGraphActivation`. When true, the internal
@@ -138,7 +138,7 @@ false
 
 > `optional` **encoding**: `Partial`\<[`EncodingConfig`](EncodingConfig.md)\>
 
-Defined in: [packages/agentos/src/memory/core/config.ts:253](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/config.ts#L253)
+Defined in: [packages/agentos/src/cognition/memory/core/config.ts:253](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/config.ts#L253)
 
 ***
 
@@ -146,7 +146,7 @@ Defined in: [packages/agentos/src/memory/core/config.ts:253](https://github.com/
 
 > `optional` **featureDetectionLlmInvoker**: (`systemPrompt`, `userPrompt`) => `Promise`\<`string`\>
 
-Defined in: [packages/agentos/src/memory/core/config.ts:250](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/config.ts#L250)
+Defined in: [packages/agentos/src/cognition/memory/core/config.ts:250](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/config.ts#L250)
 
 Required when strategy is 'llm' or 'hybrid'.
 
@@ -170,7 +170,7 @@ Required when strategy is 'llm' or 'hybrid'.
 
 > **featureDetectionStrategy**: `"hybrid"` \| `"llm"` \| `"keyword"`
 
-Defined in: [packages/agentos/src/memory/core/config.ts:248](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/config.ts#L248)
+Defined in: [packages/agentos/src/cognition/memory/core/config.ts:248](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/config.ts#L248)
 
 #### Default
 
@@ -184,7 +184,7 @@ Defined in: [packages/agentos/src/memory/core/config.ts:248](https://github.com/
 
 > `optional` **graph**: `Partial`\<[`MemoryGraphConfig`](MemoryGraphConfig.md)\>
 
-Defined in: [packages/agentos/src/memory/core/config.ts:262](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/config.ts#L262)
+Defined in: [packages/agentos/src/cognition/memory/core/config.ts:262](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/config.ts#L262)
 
 ***
 
@@ -192,7 +192,7 @@ Defined in: [packages/agentos/src/memory/core/config.ts:262](https://github.com/
 
 > `optional` **infiniteContext**: `Partial`\<[`InfiniteContextConfig`](InfiniteContextConfig.md)\>
 
-Defined in: [packages/agentos/src/memory/core/config.ts:280](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/config.ts#L280)
+Defined in: [packages/agentos/src/cognition/memory/core/config.ts:280](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/config.ts#L280)
 
 Infinite context window config. Enables transparent compaction for forever conversations.
 
@@ -202,7 +202,7 @@ Infinite context window config. Enables transparent compaction for forever conve
 
 > **knowledgeGraph**: [`IKnowledgeGraph`](IKnowledgeGraph.md)
 
-Defined in: [packages/agentos/src/memory/core/config.ts:236](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/config.ts#L236)
+Defined in: [packages/agentos/src/cognition/memory/core/config.ts:236](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/config.ts#L236)
 
 ***
 
@@ -210,7 +210,7 @@ Defined in: [packages/agentos/src/memory/core/config.ts:236](https://github.com/
 
 > `optional` **maxContextTokens**: `number`
 
-Defined in: [packages/agentos/src/memory/core/config.ts:282](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/config.ts#L282)
+Defined in: [packages/agentos/src/cognition/memory/core/config.ts:282](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/config.ts#L282)
 
 Max context window size in tokens (required for infinite context).
 
@@ -220,7 +220,7 @@ Max context window size in tokens (required for infinite context).
 
 > **moodProvider**: () => [`PADState`](PADState.md)
 
-Defined in: [packages/agentos/src/memory/core/config.ts:244](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/config.ts#L244)
+Defined in: [packages/agentos/src/cognition/memory/core/config.ts:244](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/config.ts#L244)
 
 Callback to get current mood from MoodEngine or similar.
 
@@ -234,7 +234,7 @@ Callback to get current mood from MoodEngine or similar.
 
 > `optional` **observer**: `Partial`\<[`ObserverConfig`](ObserverConfig.md)\>
 
-Defined in: [packages/agentos/src/memory/core/config.ts:260](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/config.ts#L260)
+Defined in: [packages/agentos/src/cognition/memory/core/config.ts:260](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/config.ts#L260)
 
 ***
 
@@ -242,7 +242,7 @@ Defined in: [packages/agentos/src/memory/core/config.ts:260](https://github.com/
 
 > `optional` **persistentMemory**: `PersistentMemorySource`
 
-Defined in: [packages/agentos/src/memory/core/config.ts:272](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/config.ts#L272)
+Defined in: [packages/agentos/src/cognition/memory/core/config.ts:272](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/config.ts#L272)
 
 Optional persistent markdown memory source injected into every prompt.
 
@@ -256,7 +256,7 @@ state such as profile notes, preferences, and identity anchors.
 
 > `optional` **reflector**: `Partial`\<[`ReflectorConfig`](ReflectorConfig.md)\>
 
-Defined in: [packages/agentos/src/memory/core/config.ts:261](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/config.ts#L261)
+Defined in: [packages/agentos/src/cognition/memory/core/config.ts:261](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/config.ts#L261)
 
 ***
 
@@ -264,7 +264,7 @@ Defined in: [packages/agentos/src/memory/core/config.ts:261](https://github.com/
 
 > `optional` **rerankerService**: `RerankerService`
 
-Defined in: [packages/agentos/src/memory/core/config.ts:332](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/config.ts#L332)
+Defined in: [packages/agentos/src/cognition/memory/core/config.ts:332](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/config.ts#L332)
 
 Optional reranker service for post-retrieval quality improvement.
 
@@ -289,7 +289,7 @@ undefined (no reranking)
 
 > `optional` **tokenBudget**: `Partial`\<[`MemoryBudgetAllocation`](MemoryBudgetAllocation.md)\>
 
-Defined in: [packages/agentos/src/memory/core/config.ts:257](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/config.ts#L257)
+Defined in: [packages/agentos/src/cognition/memory/core/config.ts:257](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/config.ts#L257)
 
 ***
 
@@ -297,7 +297,7 @@ Defined in: [packages/agentos/src/memory/core/config.ts:257](https://github.com/
 
 > **traits**: [`HexacoTraits`](HexacoTraits.md)
 
-Defined in: [packages/agentos/src/memory/core/config.ts:242](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/config.ts#L242)
+Defined in: [packages/agentos/src/cognition/memory/core/config.ts:242](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/config.ts#L242)
 
 ***
 
@@ -305,7 +305,7 @@ Defined in: [packages/agentos/src/memory/core/config.ts:242](https://github.com/
 
 > `optional` **typedNetwork**: `TypedNetworkRuntimeConfig`
 
-Defined in: [packages/agentos/src/memory/core/config.ts:362](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/config.ts#L362)
+Defined in: [packages/agentos/src/cognition/memory/core/config.ts:362](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/config.ts#L362)
 
 Stage E: optional Hindsight 4-network typed observer wiring.
 
@@ -335,7 +335,7 @@ undefined (Stage E disabled, zero-cost no-op)
 
 > **vectorStore**: [`IVectorStore`](IVectorStore.md)
 
-Defined in: [packages/agentos/src/memory/core/config.ts:237](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/config.ts#L237)
+Defined in: [packages/agentos/src/cognition/memory/core/config.ts:237](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/config.ts#L237)
 
 ***
 
@@ -343,7 +343,7 @@ Defined in: [packages/agentos/src/memory/core/config.ts:237](https://github.com/
 
 > **workingMemory**: `IWorkingMemory`
 
-Defined in: [packages/agentos/src/memory/core/config.ts:235](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/config.ts#L235)
+Defined in: [packages/agentos/src/cognition/memory/core/config.ts:235](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/config.ts#L235)
 
 ***
 
@@ -351,7 +351,7 @@ Defined in: [packages/agentos/src/memory/core/config.ts:235](https://github.com/
 
 > `optional` **workingMemoryCapacity**: `number`
 
-Defined in: [packages/agentos/src/memory/core/config.ts:256](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/config.ts#L256)
+Defined in: [packages/agentos/src/cognition/memory/core/config.ts:256](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/config.ts#L256)
 
 #### Default
 

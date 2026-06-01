@@ -1,6 +1,6 @@
 # Class: StructuredOutputError
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:825](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/structured/output/IStructuredOutputManager.ts#L825)
+Defined in: [packages/agentos/src/api/structured/output/IStructuredOutputManager.ts:825](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/structured/output/IStructuredOutputManager.ts#L825)
 
 Error thrown when structured output generation fails.
 
@@ -14,7 +14,7 @@ Error thrown when structured output generation fails.
 
 > **new StructuredOutputError**(`message`, `validationErrors`, `rawOutput`, `retryCount`, `strategy`): `StructuredOutputError`
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:838](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/structured/output/IStructuredOutputManager.ts#L838)
+Defined in: [packages/agentos/src/api/structured/output/IStructuredOutputManager.ts:838](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/structured/output/IStructuredOutputManager.ts#L838)
 
 #### Parameters
 
@@ -76,7 +76,7 @@ Defined in: node\_modules/.pnpm/typescript@5.6.3/node\_modules/typescript/lib/li
 
 > `readonly` **rawOutput**: `string`
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:830](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/structured/output/IStructuredOutputManager.ts#L830)
+Defined in: [packages/agentos/src/api/structured/output/IStructuredOutputManager.ts:830](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/structured/output/IStructuredOutputManager.ts#L830)
 
 Raw output that failed validation
 
@@ -86,7 +86,7 @@ Raw output that failed validation
 
 > `readonly` **retryCount**: `number`
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:833](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/structured/output/IStructuredOutputManager.ts#L833)
+Defined in: [packages/agentos/src/api/structured/output/IStructuredOutputManager.ts:833](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/structured/output/IStructuredOutputManager.ts#L833)
 
 Number of retries attempted
 
@@ -108,7 +108,7 @@ Defined in: node\_modules/.pnpm/typescript@5.6.3/node\_modules/typescript/lib/li
 
 > `readonly` **strategy**: [`StructuredOutputStrategy`](../type-aliases/StructuredOutputStrategy.md)
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:836](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/structured/output/IStructuredOutputManager.ts#L836)
+Defined in: [packages/agentos/src/api/structured/output/IStructuredOutputManager.ts:836](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/structured/output/IStructuredOutputManager.ts#L836)
 
 Strategy that was used
 
@@ -118,7 +118,7 @@ Strategy that was used
 
 > `readonly` **validationErrors**: [`ValidationIssue`](../interfaces/ValidationIssue.md)[]
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:827](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/structured/output/IStructuredOutputManager.ts#L827)
+Defined in: [packages/agentos/src/api/structured/output/IStructuredOutputManager.ts:827](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/structured/output/IStructuredOutputManager.ts#L827)
 
 Validation issues that caused the failure
 
@@ -150,7 +150,7 @@ not capture any frames.
 
 > **toPlainObject**(): `Record`\<`string`, `unknown`\>
 
-Defined in: [packages/agentos/src/structured/output/IStructuredOutputManager.ts:856](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/structured/output/IStructuredOutputManager.ts#L856)
+Defined in: [packages/agentos/src/api/structured/output/IStructuredOutputManager.ts:856](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/structured/output/IStructuredOutputManager.ts#L856)
 
 Converts error to a plain object for serialization.
 

@@ -2,7 +2,7 @@
 
 > **createProvenanceHooks**(`config`, `ledger?`, `revisionManager?`, `tombstoneManager?`): `StorageHooks`
 
-Defined in: [packages/agentos/src/provenance/enforcement/ProvenanceStorageHooks.ts:167](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/provenance/enforcement/ProvenanceStorageHooks.ts#L167)
+Defined in: [packages/agentos/src/safety/provenance/enforcement/ProvenanceStorageHooks.ts:167](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/safety/provenance/enforcement/ProvenanceStorageHooks.ts#L167)
 
 Create StorageHooks that enforce provenance policies.
 

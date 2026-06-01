@@ -1,6 +1,6 @@
 # Interface: TelegramAuthParams
 
-Defined in: [packages/agentos/src/channels/adapters/TelegramChannelAdapter.ts:43](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/channels/adapters/TelegramChannelAdapter.ts#L43)
+Defined in: [packages/agentos/src/io/channels/adapters/TelegramChannelAdapter.ts:43](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/io/channels/adapters/TelegramChannelAdapter.ts#L43)
 
 Platform-specific parameters for Telegram connections.
 
@@ -18,7 +18,7 @@ Platform-specific parameters for Telegram connections.
 
 > `optional` **botToken**: `string`
 
-Defined in: [packages/agentos/src/channels/adapters/TelegramChannelAdapter.ts:45](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/channels/adapters/TelegramChannelAdapter.ts#L45)
+Defined in: [packages/agentos/src/io/channels/adapters/TelegramChannelAdapter.ts:45](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/io/channels/adapters/TelegramChannelAdapter.ts#L45)
 
 Bot token from BotFather. If provided, overrides credential.
 
@@ -28,7 +28,7 @@ Bot token from BotFather. If provided, overrides credential.
 
 > `optional` **webhookSecret**: `string`
 
-Defined in: [packages/agentos/src/channels/adapters/TelegramChannelAdapter.ts:49](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/channels/adapters/TelegramChannelAdapter.ts#L49)
+Defined in: [packages/agentos/src/io/channels/adapters/TelegramChannelAdapter.ts:49](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/io/channels/adapters/TelegramChannelAdapter.ts#L49)
 
 Webhook secret token for verifying incoming updates.
 
@@ -38,6 +38,6 @@ Webhook secret token for verifying incoming updates.
 
 > `optional` **webhookUrl**: `string`
 
-Defined in: [packages/agentos/src/channels/adapters/TelegramChannelAdapter.ts:47](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/channels/adapters/TelegramChannelAdapter.ts#L47)
+Defined in: [packages/agentos/src/io/channels/adapters/TelegramChannelAdapter.ts:47](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/io/channels/adapters/TelegramChannelAdapter.ts#L47)
 
 Webhook URL. If not provided, long polling is used.

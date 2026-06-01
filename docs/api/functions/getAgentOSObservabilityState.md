@@ -2,7 +2,7 @@
 
 > **getAgentOSObservabilityState**(): [`AgentOSObservabilityState`](../type-aliases/AgentOSObservabilityState.md)
 
-Defined in: [packages/agentos/src/evaluation/observability/otel.ts:212](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/evaluation/observability/otel.ts#L212)
+Defined in: [packages/agentos/src/safety/evaluation/observability/otel.ts:212](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/safety/evaluation/observability/otel.ts#L212)
 
 ## Returns
 

@@ -1,6 +1,6 @@
 # Interface: AgentSocial
 
-Defined in: [apps/paracosm/src/engine/core/state.ts:78](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/engine/core/state.ts#L78)
+Defined in: [apps/paracosm/src/engine/core/state.ts:83](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/state.ts#L83)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [apps/paracosm/src/engine/core/state.ts:78](https://github.com/frame
 
 > **childrenIds**: `string`[]
 
-Defined in: [apps/paracosm/src/engine/core/state.ts:80](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/engine/core/state.ts#L80)
+Defined in: [apps/paracosm/src/engine/core/state.ts:85](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/state.ts#L85)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [apps/paracosm/src/engine/core/state.ts:80](https://github.com/frame
 
 > **earthContacts**: `number`
 
-Defined in: [apps/paracosm/src/engine/core/state.ts:82](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/engine/core/state.ts#L82)
+Defined in: [apps/paracosm/src/engine/core/state.ts:87](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/state.ts#L87)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: [apps/paracosm/src/engine/core/state.ts:82](https://github.com/frame
 
 > **friendIds**: `string`[]
 
-Defined in: [apps/paracosm/src/engine/core/state.ts:81](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/engine/core/state.ts#L81)
+Defined in: [apps/paracosm/src/engine/core/state.ts:86](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/state.ts#L86)
 
 ***
 
@@ -32,4 +32,4 @@ Defined in: [apps/paracosm/src/engine/core/state.ts:81](https://github.com/frame
 
 > `optional` **partnerId**: `string`
 
-Defined in: [apps/paracosm/src/engine/core/state.ts:79](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/engine/core/state.ts#L79)
+Defined in: [apps/paracosm/src/engine/core/state.ts:84](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/state.ts#L84)

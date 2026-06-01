@@ -1,6 +1,6 @@
 # Interface: AgentCallRecord
 
-Defined in: [packages/agentos/src/api/types.ts:700](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/types.ts#L700)
+Defined in: [packages/agentos/src/api/types.ts:712](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/types.ts#L712)
 
 A complete record of a single agent invocation within an agency run.
 Appended to `GenerateTextResult.agentCalls` and surfaced in `ApprovalRequest.context`.
@@ -11,7 +11,7 @@ Appended to `GenerateTextResult.agentCalls` and surfaced in `ApprovalRequest.con
 
 > **agent**: `string`
 
-Defined in: [packages/agentos/src/api/types.ts:702](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/types.ts#L702)
+Defined in: [packages/agentos/src/api/types.ts:714](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/types.ts#L714)
 
 Name of the agent that was invoked.
 
@@ -21,7 +21,7 @@ Name of the agent that was invoked.
 
 > **durationMs**: `number`
 
-Defined in: [packages/agentos/src/api/types.ts:746](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/types.ts#L746)
+Defined in: [packages/agentos/src/api/types.ts:758](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/types.ts#L758)
 
 Wall-clock milliseconds for this agent call.
 
@@ -31,7 +31,7 @@ Wall-clock milliseconds for this agent call.
 
 > `optional` **emergent**: `boolean`
 
-Defined in: [packages/agentos/src/api/types.ts:748](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/types.ts#L748)
+Defined in: [packages/agentos/src/api/types.ts:760](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/types.ts#L760)
 
 Whether this agent was synthesised at runtime by the emergent subsystem.
 
@@ -41,7 +41,7 @@ Whether this agent was synthesised at runtime by the emergent subsystem.
 
 > `optional` **guardrailResults**: `object`[]
 
-Defined in: [packages/agentos/src/api/types.ts:719](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/types.ts#L719)
+Defined in: [packages/agentos/src/api/types.ts:731](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/types.ts#L731)
 
 Guardrail evaluation results for this agent call.
 
@@ -69,7 +69,7 @@ Whether the guardrail check passed.
 
 > **input**: `string`
 
-Defined in: [packages/agentos/src/api/types.ts:704](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/types.ts#L704)
+Defined in: [packages/agentos/src/api/types.ts:716](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/types.ts#L716)
 
 Input prompt or message sent to the agent.
 
@@ -79,7 +79,7 @@ Input prompt or message sent to the agent.
 
 > **output**: `string`
 
-Defined in: [packages/agentos/src/api/types.ts:706](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/types.ts#L706)
+Defined in: [packages/agentos/src/api/types.ts:718](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/types.ts#L718)
 
 Final text output produced by the agent.
 
@@ -89,7 +89,7 @@ Final text output produced by the agent.
 
 > **toolCalls**: `object`[]
 
-Defined in: [packages/agentos/src/api/types.ts:708](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/types.ts#L708)
+Defined in: [packages/agentos/src/api/types.ts:720](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/types.ts#L720)
 
 Ordered list of tool invocations made during this call.
 
@@ -123,7 +123,7 @@ Return value from the tool (present on success).
 
 > **usage**: `object`
 
-Defined in: [packages/agentos/src/api/types.ts:728](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/types.ts#L728)
+Defined in: [packages/agentos/src/api/types.ts:740](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/types.ts#L740)
 
 Token usage for this individual agent call.
 

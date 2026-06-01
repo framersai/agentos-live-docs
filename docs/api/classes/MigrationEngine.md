@@ -1,6 +1,6 @@
 # Class: MigrationEngine
 
-Defined in: [packages/agentos/src/rag/migration/MigrationEngine.ts:33](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/migration/MigrationEngine.ts#L33)
+Defined in: [packages/agentos/src/cognition/rag/migration/MigrationEngine.ts:33](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/migration/MigrationEngine.ts#L33)
 
 ## Constructors
 
@@ -18,7 +18,7 @@ Defined in: [packages/agentos/src/rag/migration/MigrationEngine.ts:33](https://g
 
 > `static` **migrate**(`options`): `Promise`\<[`MigrationResult`](../interfaces/MigrationResult.md)\>
 
-Defined in: [packages/agentos/src/rag/migration/MigrationEngine.ts:47](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/migration/MigrationEngine.ts#L47)
+Defined in: [packages/agentos/src/cognition/rag/migration/MigrationEngine.ts:47](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/migration/MigrationEngine.ts#L47)
 
 Migrate data between any two backends.
 

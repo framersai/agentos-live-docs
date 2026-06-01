@@ -1,6 +1,6 @@
 # Class: JsonImporter
 
-Defined in: [packages/agentos/src/memory/io/JsonImporter.ts:159](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/io/JsonImporter.ts#L159)
+Defined in: [packages/agentos/src/cognition/memory/io/JsonImporter.ts:159](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/io/JsonImporter.ts#L159)
 
 Imports a `JsonExporter`-compatible JSON file into a `Brain`.
 
@@ -17,7 +17,7 @@ console.log(result.imported, result.skipped, result.errors);
 
 > **new JsonImporter**(`brain`): `JsonImporter`
 
-Defined in: [packages/agentos/src/memory/io/JsonImporter.ts:163](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/io/JsonImporter.ts#L163)
+Defined in: [packages/agentos/src/cognition/memory/io/JsonImporter.ts:163](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/io/JsonImporter.ts#L163)
 
 #### Parameters
 
@@ -37,7 +37,7 @@ The target `Brain` to import into.
 
 > **import**(`sourcePath`, `options?`): `Promise`\<[`ImportResult`](../interfaces/ImportResult.md)\>
 
-Defined in: [packages/agentos/src/memory/io/JsonImporter.ts:185](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/io/JsonImporter.ts#L185)
+Defined in: [packages/agentos/src/cognition/memory/io/JsonImporter.ts:185](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/io/JsonImporter.ts#L185)
 
 Read and merge a JSON export file into the target brain.
 
@@ -75,7 +75,7 @@ Absolute path to the JSON file to import.
 
 > **importFromString**(`jsonContent`, `options?`): `Promise`\<[`ImportResult`](../interfaces/ImportResult.md)\>
 
-Defined in: [packages/agentos/src/memory/io/JsonImporter.ts:207](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/io/JsonImporter.ts#L207)
+Defined in: [packages/agentos/src/cognition/memory/io/JsonImporter.ts:207](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/io/JsonImporter.ts#L207)
 
 Import a JSON string directly into the target brain without filesystem access.
 

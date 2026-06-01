@@ -1,6 +1,6 @@
 # Class: ObservationReflector
 
-Defined in: [packages/agentos/src/memory/pipeline/observation/ObservationReflector.ts:105](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/pipeline/observation/ObservationReflector.ts#L105)
+Defined in: [packages/agentos/src/cognition/memory/pipeline/observation/ObservationReflector.ts:105](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/pipeline/observation/ObservationReflector.ts#L105)
 
 Condenses compressed observations into higher-level reflections.
 
@@ -15,7 +15,7 @@ or goal.
 
 > **new ObservationReflector**(`llmInvoker`): `ObservationReflector`
 
-Defined in: [packages/agentos/src/memory/pipeline/observation/ObservationReflector.ts:109](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/pipeline/observation/ObservationReflector.ts#L109)
+Defined in: [packages/agentos/src/cognition/memory/pipeline/observation/ObservationReflector.ts:109](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/pipeline/observation/ObservationReflector.ts#L109)
 
 #### Parameters
 
@@ -35,7 +35,7 @@ Function that calls an LLM with (system, user) prompts.
 
 > **reflect**(`observations`): `Promise`\<[`Reflection`](../interfaces/Reflection.md)[]\>
 
-Defined in: [packages/agentos/src/memory/pipeline/observation/ObservationReflector.ts:119](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/pipeline/observation/ObservationReflector.ts#L119)
+Defined in: [packages/agentos/src/cognition/memory/pipeline/observation/ObservationReflector.ts:119](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/pipeline/observation/ObservationReflector.ts#L119)
 
 Reflect on compressed observations to extract higher-level patterns.
 

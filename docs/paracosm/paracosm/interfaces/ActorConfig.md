@@ -1,6 +1,6 @@
 # Interface: ActorConfig
 
-Defined in: [apps/paracosm/src/engine/types.ts:350](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/engine/types.ts#L350)
+Defined in: [apps/paracosm/src/engine/types.ts:358](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/types.ts#L358)
 
 Configuration for a simulation actor — the swappable decision-making
 entity that runs each parallel counterfactual. Was `ActorConfig` in
@@ -17,7 +17,7 @@ type alias so 0.7.x callers compile unchanged. Drop in 1.0.
 
 > **archetype**: `string`
 
-Defined in: [apps/paracosm/src/engine/types.ts:352](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/engine/types.ts#L352)
+Defined in: [apps/paracosm/src/engine/types.ts:360](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/types.ts#L360)
 
 ***
 
@@ -25,7 +25,7 @@ Defined in: [apps/paracosm/src/engine/types.ts:352](https://github.com/framersai
 
 > `optional` **hexaco**: [`HexacoProfile`](../core/interfaces/HexacoProfile.md)
 
-Defined in: [apps/paracosm/src/engine/types.ts:369](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/engine/types.ts#L369)
+Defined in: [apps/paracosm/src/engine/types.ts:377](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/types.ts#L377)
 
 Six-axis HEXACO personality profile. Optional in v0.9: callers
 supplying `traitProfile` (e.g. ai-agent leaders) can omit this.
@@ -40,7 +40,7 @@ drift; `hexaco` is preserved on the artifact for legacy display.
 
 > **instructions**: `string`
 
-Defined in: [apps/paracosm/src/engine/types.ts:378](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/engine/types.ts#L378)
+Defined in: [apps/paracosm/src/engine/types.ts:386](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/types.ts#L386)
 
 ***
 
@@ -48,7 +48,7 @@ Defined in: [apps/paracosm/src/engine/types.ts:378](https://github.com/framersai
 
 > **name**: `string`
 
-Defined in: [apps/paracosm/src/engine/types.ts:351](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/engine/types.ts#L351)
+Defined in: [apps/paracosm/src/engine/types.ts:359](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/types.ts#L359)
 
 ***
 
@@ -56,7 +56,7 @@ Defined in: [apps/paracosm/src/engine/types.ts:351](https://github.com/framersai
 
 > `optional` **traitProfile**: [`TraitProfile`](TraitProfile.md)
 
-Defined in: [apps/paracosm/src/engine/types.ts:377](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/engine/types.ts#L377)
+Defined in: [apps/paracosm/src/engine/types.ts:385](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/types.ts#L385)
 
 Pluggable trait profile naming a registered TraitModel and its
 per-axis values. When set, this overrides the legacy `hexaco`
@@ -70,7 +70,7 @@ omitted, the runtime synthesizes a profile from `hexaco` with
 
 > **unit**: `string`
 
-Defined in: [apps/paracosm/src/engine/types.ts:360](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/engine/types.ts#L360)
+Defined in: [apps/paracosm/src/engine/types.ts:368](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/types.ts#L368)
 
 The organizational unit / faction / org / team this leader
 commands (e.g. "Station Alpha", "Engineering Org", "Player Faction").

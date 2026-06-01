@@ -1,6 +1,6 @@
 # Interface: HexacoProfile
 
-Defined in: [apps/paracosm/src/engine/core/state.ts:12](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/engine/core/state.ts#L12)
+Defined in: [apps/paracosm/src/engine/core/state.ts:12](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/state.ts#L12)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [apps/paracosm/src/engine/core/state.ts:12](https://github.com/frame
 
 > **agreeableness**: `number`
 
-Defined in: [apps/paracosm/src/engine/core/state.ts:16](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/engine/core/state.ts#L16)
+Defined in: [apps/paracosm/src/engine/core/state.ts:16](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/state.ts#L16)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [apps/paracosm/src/engine/core/state.ts:16](https://github.com/frame
 
 > **conscientiousness**: `number`
 
-Defined in: [apps/paracosm/src/engine/core/state.ts:14](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/engine/core/state.ts#L14)
+Defined in: [apps/paracosm/src/engine/core/state.ts:14](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/state.ts#L14)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: [apps/paracosm/src/engine/core/state.ts:14](https://github.com/frame
 
 > **emotionality**: `number`
 
-Defined in: [apps/paracosm/src/engine/core/state.ts:17](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/engine/core/state.ts#L17)
+Defined in: [apps/paracosm/src/engine/core/state.ts:17](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/state.ts#L17)
 
 ***
 
@@ -32,7 +32,7 @@ Defined in: [apps/paracosm/src/engine/core/state.ts:17](https://github.com/frame
 
 > **extraversion**: `number`
 
-Defined in: [apps/paracosm/src/engine/core/state.ts:15](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/engine/core/state.ts#L15)
+Defined in: [apps/paracosm/src/engine/core/state.ts:15](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/state.ts#L15)
 
 ***
 
@@ -40,7 +40,7 @@ Defined in: [apps/paracosm/src/engine/core/state.ts:15](https://github.com/frame
 
 > **honestyHumility**: `number`
 
-Defined in: [apps/paracosm/src/engine/core/state.ts:18](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/engine/core/state.ts#L18)
+Defined in: [apps/paracosm/src/engine/core/state.ts:18](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/state.ts#L18)
 
 ***
 
@@ -48,4 +48,4 @@ Defined in: [apps/paracosm/src/engine/core/state.ts:18](https://github.com/frame
 
 > **openness**: `number`
 
-Defined in: [apps/paracosm/src/engine/core/state.ts:13](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/engine/core/state.ts#L13)
+Defined in: [apps/paracosm/src/engine/core/state.ts:13](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/state.ts#L13)

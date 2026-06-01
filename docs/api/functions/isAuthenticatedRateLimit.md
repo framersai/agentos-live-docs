@@ -2,7 +2,7 @@
 
 > **isAuthenticatedRateLimit**(`info`): `info is RateLimitInfoAuthenticated`
 
-Defined in: [packages/agentos/src/core/rate-limiting/types.ts:44](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/core/rate-limiting/types.ts#L44)
+Defined in: [packages/agentos/src/core/rate-limiting/types.ts:44](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/core/rate-limiting/types.ts#L44)
 
 Type guard to check if rate limit info is for authenticated tier.
 

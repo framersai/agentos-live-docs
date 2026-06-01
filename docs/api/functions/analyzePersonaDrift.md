@@ -2,7 +2,7 @@
 
 > **analyzePersonaDrift**(`traces`, `currentTraits`, `config`, `relationshipDeltas?`): [`PersonalityDriftProposal`](../interfaces/PersonalityDriftProposal.md)[]
 
-Defined in: [packages/agentos/src/memory/mechanisms/PersonaDriftMechanism.ts:75](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/mechanisms/PersonaDriftMechanism.ts#L75)
+Defined in: [packages/agentos/src/cognition/memory/mechanisms/PersonaDriftMechanism.ts:75](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/mechanisms/PersonaDriftMechanism.ts#L75)
 
 Analyze accumulated memory traces and relationship deltas to propose
 HEXACO personality mutations. Heuristic mode — no LLM calls.

@@ -1,6 +1,6 @@
 # Interface: AgentOSTurnPlanningConfig
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:300](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/AgentOS.ts#L300)
+Defined in: [packages/agentos/src/api/AgentOS.ts:300](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/AgentOS.ts#L300)
 
 ## Extends
 
@@ -12,7 +12,7 @@ Defined in: [packages/agentos/src/api/AgentOS.ts:300](https://github.com/framers
 
 > `optional` **allowRequestOverrides**: `boolean`
 
-Defined in: [packages/agentos/src/orchestration/turn-planner/TurnPlanner.ts:44](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/turn-planner/TurnPlanner.ts#L44)
+Defined in: [packages/agentos/src/orchestration/turn-planner/TurnPlanner.ts:44](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/turn-planner/TurnPlanner.ts#L44)
 
 #### Inherited from
 
@@ -24,7 +24,7 @@ Defined in: [packages/agentos/src/orchestration/turn-planner/TurnPlanner.ts:44](
 
 > `optional` **defaultToolFailureMode**: [`ToolFailureMode`](../type-aliases/ToolFailureMode.md)
 
-Defined in: [packages/agentos/src/orchestration/turn-planner/TurnPlanner.ts:43](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/turn-planner/TurnPlanner.ts#L43)
+Defined in: [packages/agentos/src/orchestration/turn-planner/TurnPlanner.ts:43](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/turn-planner/TurnPlanner.ts#L43)
 
 #### Inherited from
 
@@ -36,7 +36,7 @@ Defined in: [packages/agentos/src/orchestration/turn-planner/TurnPlanner.ts:43](
 
 > `optional` **discovery**: [`TurnPlannerDiscoveryConfig`](TurnPlannerDiscoveryConfig.md) & `object`
 
-Defined in: [packages/agentos/src/api/AgentOS.ts:301](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/AgentOS.ts#L301)
+Defined in: [packages/agentos/src/api/AgentOS.ts:301](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/AgentOS.ts#L301)
 
 #### Type Declaration
 
@@ -94,7 +94,7 @@ Optional explicit capability sources to merge with runtime-derived sources.
 
 > `optional` **enabled**: `boolean`
 
-Defined in: [packages/agentos/src/orchestration/turn-planner/TurnPlanner.ts:42](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/turn-planner/TurnPlanner.ts#L42)
+Defined in: [packages/agentos/src/orchestration/turn-planner/TurnPlanner.ts:42](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/turn-planner/TurnPlanner.ts#L42)
 
 #### Inherited from
 

@@ -1,6 +1,6 @@
 # Interface: AgentOSLongTermMemoryRecallConfig
 
-Defined in: [packages/agentos/src/api/types/OrchestratorConfig.ts:41](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/types/OrchestratorConfig.ts#L41)
+Defined in: [packages/agentos/src/api/types/OrchestratorConfig.ts:41](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/types/OrchestratorConfig.ts#L41)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/api/types/OrchestratorConfig.ts:41](https://gi
 
 > `optional` **cadenceTurns**: `number`
 
-Defined in: [packages/agentos/src/api/types/OrchestratorConfig.ts:43](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/types/OrchestratorConfig.ts#L43)
+Defined in: [packages/agentos/src/api/types/OrchestratorConfig.ts:43](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/types/OrchestratorConfig.ts#L43)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [packages/agentos/src/api/types/OrchestratorConfig.ts:43](https://gi
 
 > `optional` **forceOnCompaction**: `boolean`
 
-Defined in: [packages/agentos/src/api/types/OrchestratorConfig.ts:44](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/types/OrchestratorConfig.ts#L44)
+Defined in: [packages/agentos/src/api/types/OrchestratorConfig.ts:44](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/types/OrchestratorConfig.ts#L44)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: [packages/agentos/src/api/types/OrchestratorConfig.ts:44](https://gi
 
 > `optional` **maxContextChars**: `number`
 
-Defined in: [packages/agentos/src/api/types/OrchestratorConfig.ts:45](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/types/OrchestratorConfig.ts#L45)
+Defined in: [packages/agentos/src/api/types/OrchestratorConfig.ts:45](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/types/OrchestratorConfig.ts#L45)
 
 ***
 
@@ -32,7 +32,7 @@ Defined in: [packages/agentos/src/api/types/OrchestratorConfig.ts:45](https://gi
 
 > `optional` **profile**: [`LongTermMemoryRecallProfile`](../type-aliases/LongTermMemoryRecallProfile.md)
 
-Defined in: [packages/agentos/src/api/types/OrchestratorConfig.ts:42](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/types/OrchestratorConfig.ts#L42)
+Defined in: [packages/agentos/src/api/types/OrchestratorConfig.ts:42](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/types/OrchestratorConfig.ts#L42)
 
 ***
 
@@ -40,4 +40,4 @@ Defined in: [packages/agentos/src/api/types/OrchestratorConfig.ts:42](https://gi
 
 > `optional` **topKByScope**: `Partial`\<`Record`\<`"user"` \| `"persona"` \| `"organization"`, `number`\>\>
 
-Defined in: [packages/agentos/src/api/types/OrchestratorConfig.ts:46](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/types/OrchestratorConfig.ts#L46)
+Defined in: [packages/agentos/src/api/types/OrchestratorConfig.ts:46](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/types/OrchestratorConfig.ts#L46)

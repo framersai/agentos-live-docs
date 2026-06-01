@@ -1,6 +1,6 @@
 # Class: SessionSummarizer
 
-Defined in: [packages/agentos/src/memory/ingest/SessionSummarizer.ts:155](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/ingest/SessionSummarizer.ts#L155)
+Defined in: [packages/agentos/src/cognition/memory/ingest/SessionSummarizer.ts:155](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/ingest/SessionSummarizer.ts#L155)
 
 LLM-backed session summarizer with a persistent on-disk cache.
 
@@ -26,7 +26,7 @@ const summary = await summarizer.summarize('conv-26-session-3', sessionText);
 
 > **new SessionSummarizer**(`opts`): `SessionSummarizer`
 
-Defined in: [packages/agentos/src/memory/ingest/SessionSummarizer.ts:169](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/ingest/SessionSummarizer.ts#L169)
+Defined in: [packages/agentos/src/cognition/memory/ingest/SessionSummarizer.ts:169](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/ingest/SessionSummarizer.ts#L169)
 
 #### Parameters
 
@@ -44,7 +44,7 @@ Defined in: [packages/agentos/src/memory/ingest/SessionSummarizer.ts:169](https:
 
 > `readonly` **stats**: [`SummarizerStats`](../interfaces/SummarizerStats.md)
 
-Defined in: [packages/agentos/src/memory/ingest/SessionSummarizer.ts:157](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/ingest/SessionSummarizer.ts#L157)
+Defined in: [packages/agentos/src/cognition/memory/ingest/SessionSummarizer.ts:157](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/ingest/SessionSummarizer.ts#L157)
 
 Running stats for diagnostics.
 
@@ -54,7 +54,7 @@ Running stats for diagnostics.
 
 > **computeCacheKey**(`sessionText`): `string`
 
-Defined in: [packages/agentos/src/memory/ingest/SessionSummarizer.ts:240](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/ingest/SessionSummarizer.ts#L240)
+Defined in: [packages/agentos/src/cognition/memory/ingest/SessionSummarizer.ts:240](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/ingest/SessionSummarizer.ts#L240)
 
 Build the SHA-256 cache key from session content + model + template.
 Exposed for tests; callers should use [summarize](#summarize).
@@ -75,7 +75,7 @@ Exposed for tests; callers should use [summarize](#summarize).
 
 > **getTemplateVersion**(): `string`
 
-Defined in: [packages/agentos/src/memory/ingest/SessionSummarizer.ts:251](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/ingest/SessionSummarizer.ts#L251)
+Defined in: [packages/agentos/src/cognition/memory/ingest/SessionSummarizer.ts:251](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/ingest/SessionSummarizer.ts#L251)
 
 Expose the resolved template version — useful for cache-key fingerprints in other layers.
 
@@ -89,7 +89,7 @@ Expose the resolved template version — useful for cache-key fingerprints in ot
 
 > **summarize**(`_sessionKey`, `sessionText`): `Promise`\<`string`\>
 
-Defined in: [packages/agentos/src/memory/ingest/SessionSummarizer.ts:183](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/ingest/SessionSummarizer.ts#L183)
+Defined in: [packages/agentos/src/cognition/memory/ingest/SessionSummarizer.ts:183](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/ingest/SessionSummarizer.ts#L183)
 
 Summarize a single session. Returns cached result if available,
 otherwise calls the LLM and writes to cache.

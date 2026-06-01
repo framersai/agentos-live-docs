@@ -1,6 +1,6 @@
 # Interface: ActorRun
 
-Defined in: [apps/paracosm/src/api/types.ts:80](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/api/types.ts#L80)
+Defined in: [apps/paracosm/src/api/types.ts:80](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/api/types.ts#L80)
 
 One actor + its artifact, zipped together. Returned by `runMany` and
 also exposed on `wm.quickstart` results so call sites can iterate
@@ -13,7 +13,7 @@ arrays.
 
 > **actor**: [`ActorConfig`](ActorConfig.md)
 
-Defined in: [apps/paracosm/src/api/types.ts:81](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/api/types.ts#L81)
+Defined in: [apps/paracosm/src/api/types.ts:81](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/api/types.ts#L81)
 
 ***
 
@@ -21,7 +21,7 @@ Defined in: [apps/paracosm/src/api/types.ts:81](https://github.com/framersai/par
 
 > **artifact**: `object`
 
-Defined in: [apps/paracosm/src/api/types.ts:82](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/api/types.ts#L82)
+Defined in: [apps/paracosm/src/api/types.ts:82](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/api/types.ts#L82)
 
 #### aborted?
 

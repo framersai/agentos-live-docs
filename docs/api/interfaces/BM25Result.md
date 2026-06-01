@@ -1,6 +1,6 @@
 # Interface: BM25Result
 
-Defined in: [packages/agentos/src/rag/search/BM25Index.ts:55](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/search/BM25Index.ts#L55)
+Defined in: [packages/agentos/src/cognition/rag/search/BM25Index.ts:55](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/search/BM25Index.ts#L55)
 
 A single BM25 search result with relevance score.
 
@@ -14,7 +14,7 @@ BM25Result
 
 > **id**: `string`
 
-Defined in: [packages/agentos/src/rag/search/BM25Index.ts:57](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/search/BM25Index.ts#L57)
+Defined in: [packages/agentos/src/cognition/rag/search/BM25Index.ts:57](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/search/BM25Index.ts#L57)
 
 Document identifier.
 
@@ -24,7 +24,7 @@ Document identifier.
 
 > `optional` **metadata**: `Record`\<`string`, `unknown`\>
 
-Defined in: [packages/agentos/src/rag/search/BM25Index.ts:61](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/search/BM25Index.ts#L61)
+Defined in: [packages/agentos/src/cognition/rag/search/BM25Index.ts:61](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/search/BM25Index.ts#L61)
 
 Document metadata if available.
 
@@ -34,6 +34,6 @@ Document metadata if available.
 
 > **score**: `number`
 
-Defined in: [packages/agentos/src/rag/search/BM25Index.ts:59](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/search/BM25Index.ts#L59)
+Defined in: [packages/agentos/src/cognition/rag/search/BM25Index.ts:59](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/search/BM25Index.ts#L59)
 
 BM25 relevance score (higher = more relevant).

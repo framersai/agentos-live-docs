@@ -1,6 +1,6 @@
 # Interface: ModelRouteResult
 
-Defined in: [packages/agentos/src/core/llm/routing/IModelRouter.ts:92](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/core/llm/routing/IModelRouter.ts#L92)
+Defined in: [packages/agentos/src/core/llm/routing/IModelRouter.ts:92](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/core/llm/routing/IModelRouter.ts#L92)
 
 The result of a model routing decision.
 It specifies the selected provider, model, and provides reasoning for the choice.
@@ -11,7 +11,7 @@ It specifies the selected provider, model, and provides reasoning for the choice
 
 > **confidence**: `number`
 
-Defined in: [packages/agentos/src/core/llm/routing/IModelRouter.ts:105](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/core/llm/routing/IModelRouter.ts#L105)
+Defined in: [packages/agentos/src/core/llm/routing/IModelRouter.ts:105](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/core/llm/routing/IModelRouter.ts#L105)
 
 A confidence score (0.0 to 1.0) indicating the router's certainty in this selection.
 Higher values mean higher confidence.
@@ -22,7 +22,7 @@ Higher values mean higher confidence.
 
 > `optional` **estimatedCostTier**: `string`
 
-Defined in: [packages/agentos/src/core/llm/routing/IModelRouter.ts:107](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/core/llm/routing/IModelRouter.ts#L107)
+Defined in: [packages/agentos/src/core/llm/routing/IModelRouter.ts:107](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/core/llm/routing/IModelRouter.ts#L107)
 
 An optional classification of the estimated cost tier for this model (e.g., "low", "medium", "high").
 
@@ -32,7 +32,7 @@ An optional classification of the estimated cost tier for this model (e.g., "low
 
 > `optional` **metadata**: `Record`\<`string`, `any`\>
 
-Defined in: [packages/agentos/src/core/llm/routing/IModelRouter.ts:109](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/core/llm/routing/IModelRouter.ts#L109)
+Defined in: [packages/agentos/src/core/llm/routing/IModelRouter.ts:109](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/core/llm/routing/IModelRouter.ts#L109)
 
 Any additional metadata related to the routing decision (e.g., matched rule ID, performance estimates).
 
@@ -42,7 +42,7 @@ Any additional metadata related to the routing decision (e.g., matched rule ID, 
 
 > **modelId**: `string`
 
-Defined in: [packages/agentos/src/core/llm/routing/IModelRouter.ts:96](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/core/llm/routing/IModelRouter.ts#L96)
+Defined in: [packages/agentos/src/core/llm/routing/IModelRouter.ts:96](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/core/llm/routing/IModelRouter.ts#L96)
 
 The ID of the selected model on the chosen provider.
 
@@ -52,7 +52,7 @@ The ID of the selected model on the chosen provider.
 
 > **modelInfo**: `ModelInfo`
 
-Defined in: [packages/agentos/src/core/llm/routing/IModelRouter.ts:98](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/core/llm/routing/IModelRouter.ts#L98)
+Defined in: [packages/agentos/src/core/llm/routing/IModelRouter.ts:98](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/core/llm/routing/IModelRouter.ts#L98)
 
 Detailed information about the selected model.
 
@@ -62,7 +62,7 @@ Detailed information about the selected model.
 
 > **provider**: `IProvider`
 
-Defined in: [packages/agentos/src/core/llm/routing/IModelRouter.ts:94](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/core/llm/routing/IModelRouter.ts#L94)
+Defined in: [packages/agentos/src/core/llm/routing/IModelRouter.ts:94](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/core/llm/routing/IModelRouter.ts#L94)
 
 The selected AI model provider instance.
 
@@ -72,6 +72,6 @@ The selected AI model provider instance.
 
 > **reasoning**: `string`
 
-Defined in: [packages/agentos/src/core/llm/routing/IModelRouter.ts:100](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/core/llm/routing/IModelRouter.ts#L100)
+Defined in: [packages/agentos/src/core/llm/routing/IModelRouter.ts:100](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/core/llm/routing/IModelRouter.ts#L100)
 
 A human-readable explanation of why this model and provider were chosen.

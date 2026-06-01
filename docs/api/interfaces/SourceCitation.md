@@ -1,6 +1,6 @@
 # Interface: SourceCitation
 
-Defined in: [packages/agentos/src/query-router/types.ts:195](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/query-router/types.ts#L195)
+Defined in: [packages/agentos/src/orchestration/pipeline/query/types.ts:195](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/pipeline/query/types.ts#L195)
 
 A citation referencing a source used in generating the final answer.
 
@@ -10,7 +10,7 @@ A citation referencing a source used in generating the final answer.
 
 > **heading**: `string`
 
-Defined in: [packages/agentos/src/query-router/types.ts:200](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/query-router/types.ts#L200)
+Defined in: [packages/agentos/src/orchestration/pipeline/query/types.ts:200](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/pipeline/query/types.ts#L200)
 
 Section heading within the source, if applicable.
 
@@ -20,7 +20,7 @@ Section heading within the source, if applicable.
 
 > **matchType**: `"vector"` \| `"graph"` \| `"research"`
 
-Defined in: [packages/agentos/src/query-router/types.ts:212](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/query-router/types.ts#L212)
+Defined in: [packages/agentos/src/orchestration/pipeline/query/types.ts:212](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/pipeline/query/types.ts#L212)
 
 Which retrieval method produced the cited source.
 
@@ -34,7 +34,7 @@ RetrievedChunk.matchType
 
 > **path**: `string`
 
-Defined in: [packages/agentos/src/query-router/types.ts:197](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/query-router/types.ts#L197)
+Defined in: [packages/agentos/src/orchestration/pipeline/query/types.ts:197](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/pipeline/query/types.ts#L197)
 
 File path or document path of the cited source.
 
@@ -44,7 +44,7 @@ File path or document path of the cited source.
 
 > **relevanceScore**: `number`
 
-Defined in: [packages/agentos/src/query-router/types.ts:206](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/query-router/types.ts#L206)
+Defined in: [packages/agentos/src/orchestration/pipeline/query/types.ts:206](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/pipeline/query/types.ts#L206)
 
 Relevance score of the cited source (0 to 1).
 Inherited from the highest-scoring chunk from this source.

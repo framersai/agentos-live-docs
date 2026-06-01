@@ -1,6 +1,6 @@
 # Interface: SpeechSessionSynthesisCompletedEvent
 
-Defined in: [packages/agentos/src/speech/types.ts:323](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/speech/types.ts#L323)
+Defined in: [packages/agentos/src/io/speech/types.ts:323](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/io/speech/types.ts#L323)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/speech/types.ts:323](https://github.com/framer
 
 > **result**: [`SpeechSynthesisResult`](SpeechSynthesisResult.md)
 
-Defined in: [packages/agentos/src/speech/types.ts:325](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/speech/types.ts#L325)
+Defined in: [packages/agentos/src/io/speech/types.ts:325](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/io/speech/types.ts#L325)
 
 ***
 
@@ -16,4 +16,4 @@ Defined in: [packages/agentos/src/speech/types.ts:325](https://github.com/framer
 
 > **text**: `string`
 
-Defined in: [packages/agentos/src/speech/types.ts:324](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/speech/types.ts#L324)
+Defined in: [packages/agentos/src/io/speech/types.ts:324](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/io/speech/types.ts#L324)

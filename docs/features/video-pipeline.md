@@ -180,7 +180,7 @@ Each [`SceneBoundary`](https://github.com/framersai/agentos/blob/master/src/io/v
 
 ## Types reference
 
-### `VideoAspectRatio`
+### [`VideoAspectRatio`](https://github.com/framersai/agentos/blob/master/src/io/media/video/types.ts)
 
 ```typescript
 type VideoAspectRatio = '1:1' | '16:9' | '9:16' | '4:3' | '3:4' | '21:9' | (string & {});
@@ -192,7 +192,7 @@ type VideoAspectRatio = '1:1' | '16:9' | '9:16' | '4:3' | '3:4' | '21:9' | (stri
 type VideoOutputFormat = 'mp4' | 'webm' | 'gif';
 ```
 
-### `VideoProgressEvent`
+### [`VideoProgressEvent`](https://github.com/framersai/agentos/blob/master/src/io/media/video/types.ts)
 
 ```typescript
 interface VideoProgressEvent {

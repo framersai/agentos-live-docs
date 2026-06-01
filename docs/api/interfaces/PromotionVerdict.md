@@ -1,6 +1,6 @@
 # Interface: PromotionVerdict
 
-Defined in: [packages/agentos/src/emergent/types.ts:302](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/emergent/types.ts#L302)
+Defined in: [packages/agentos/src/cognition/emergent/types.ts:302](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/emergent/types.ts#L302)
 
 Verdict produced by the multi-reviewer panel before a tool is promoted
 to a higher [ToolTier](../type-aliases/ToolTier.md).
@@ -14,7 +14,7 @@ Both must approve for `approved` to be `true`.
 
 > **approved**: `boolean`
 
-Defined in: [packages/agentos/src/emergent/types.ts:307](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/emergent/types.ts#L307)
+Defined in: [packages/agentos/src/cognition/emergent/types.ts:307](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/emergent/types.ts#L307)
 
 Whether both reviewers approved the promotion.
 `false` means the tool remains at its current tier.
@@ -25,7 +25,7 @@ Whether both reviewers approved the promotion.
 
 > **confidence**: `number`
 
-Defined in: [packages/agentos/src/emergent/types.ts:339](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/emergent/types.ts#L339)
+Defined in: [packages/agentos/src/cognition/emergent/types.ts:339](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/emergent/types.ts#L339)
 
 Combined confidence score derived from both reviewer confidences.
 Typically the minimum or harmonic mean of the two sub-scores.
@@ -36,7 +36,7 @@ Typically the minimum or harmonic mean of the two sub-scores.
 
 > **correctnessReviewer**: `object`
 
-Defined in: [packages/agentos/src/emergent/types.ts:326](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/emergent/types.ts#L326)
+Defined in: [packages/agentos/src/cognition/emergent/types.ts:326](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/emergent/types.ts#L326)
 
 Correctness review sub-verdict from the correctness-focused reviewer model.
 Mirrors the shape of a partial [CreationVerdict](CreationVerdict.md): `{ approved, confidence, reasoning }`.
@@ -65,7 +65,7 @@ Correctness reviewer's reasoning text.
 
 > **safetyAuditor**: `object`
 
-Defined in: [packages/agentos/src/emergent/types.ts:313](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/emergent/types.ts#L313)
+Defined in: [packages/agentos/src/cognition/emergent/types.ts:313](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/emergent/types.ts#L313)
 
 Safety audit sub-verdict from the safety-focused reviewer model.
 Mirrors the shape of a partial [CreationVerdict](CreationVerdict.md): `{ approved, confidence, reasoning }`.

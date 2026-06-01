@@ -4,7 +4,33 @@ const typedocSidebar = {
   items: [
     {
       type: "category",
-      label: "Namespaces",
+      label: "Core",
+      items: [
+        {
+          type: "doc",
+          id: "api/classes/AgentOS",
+          label: "AgentOS"
+        },
+        {
+          type: "doc",
+          id: "api/interfaces/Agent",
+          label: "Agent"
+        },
+        {
+          type: "doc",
+          id: "api/functions/agency",
+          label: "agency"
+        },
+        {
+          type: "doc",
+          id: "api/functions/agent",
+          label: "agent"
+        }
+      ]
+    },
+    {
+      type: "category",
+      label: "Other",
       items: [
         {
           type: "category",
@@ -6879,13 +6905,7 @@ const typedocSidebar = {
             type: "doc",
             id: "api/@framers/namespaces/z/index"
           }
-        }
-      ]
-    },
-    {
-      type: "category",
-      label: "Enumerations",
-      items: [
+        },
         {
           type: "doc",
           id: "api/enumerations/AgentOSResponseChunkType",
@@ -6940,13 +6960,7 @@ const typedocSidebar = {
           type: "doc",
           id: "api/enumerations/WorkflowTaskStatus",
           label: "WorkflowTaskStatus"
-        }
-      ]
-    },
-    {
-      type: "category",
-      label: "Classes",
-      items: [
+        },
         {
           type: "doc",
           id: "api/classes/ActionDeduplicator",
@@ -6991,11 +7005,6 @@ const typedocSidebar = {
           type: "doc",
           id: "api/classes/AgentMemory",
           label: "AgentMemory"
-        },
-        {
-          type: "doc",
-          id: "api/classes/AgentOS",
-          label: "AgentOS"
         },
         {
           type: "doc",
@@ -7854,6 +7863,11 @@ const typedocSidebar = {
         },
         {
           type: "doc",
+          id: "api/classes/PostgresVectorStore",
+          label: "PostgresVectorStore"
+        },
+        {
+          type: "doc",
           id: "api/classes/PromptEngineError",
           label: "PromptEngineError"
         },
@@ -8281,13 +8295,7 @@ const typedocSidebar = {
           type: "doc",
           id: "api/classes/WorkflowEngine",
           label: "WorkflowEngine"
-        }
-      ]
-    },
-    {
-      type: "category",
-      label: "Interfaces",
-      items: [
+        },
         {
           type: "doc",
           id: "api/interfaces/ActionDeduplicatorConfig",
@@ -8402,11 +8410,6 @@ const typedocSidebar = {
           type: "doc",
           id: "api/interfaces/AgencyUpsertArgs",
           label: "AgencyUpsertArgs"
-        },
-        {
-          type: "doc",
-          id: "api/interfaces/Agent",
-          label: "Agent"
         },
         {
           type: "doc",
@@ -10900,6 +10903,11 @@ const typedocSidebar = {
         },
         {
           type: "doc",
+          id: "api/interfaces/MemoryTrustPolicy",
+          label: "MemoryTrustPolicy"
+        },
+        {
+          type: "doc",
           id: "api/interfaces/MemoryView",
           label: "MemoryView"
         },
@@ -11057,6 +11065,11 @@ const typedocSidebar = {
           type: "doc",
           id: "api/interfaces/NodeProviderAssignment",
           label: "NodeProviderAssignment"
+        },
+        {
+          type: "doc",
+          id: "api/interfaces/NodeTelemetry",
+          label: "NodeTelemetry"
         },
         {
           type: "doc",
@@ -11440,6 +11453,11 @@ const typedocSidebar = {
         },
         {
           type: "doc",
+          id: "api/interfaces/PostgresVectorStoreConfig",
+          label: "PostgresVectorStoreConfig"
+        },
+        {
+          type: "doc",
           id: "api/interfaces/PricingInfo",
           label: "PricingInfo"
         },
@@ -11612,6 +11630,11 @@ const typedocSidebar = {
           type: "doc",
           id: "api/interfaces/RagRetrievalResult",
           label: "RagRetrievalResult"
+        },
+        {
+          type: "doc",
+          id: "api/interfaces/RagRetrievalScope",
+          label: "RagRetrievalScope"
         },
         {
           type: "doc",
@@ -13222,13 +13245,7 @@ const typedocSidebar = {
           type: "doc",
           id: "api/interfaces/WriteResult",
           label: "WriteResult"
-        }
-      ]
-    },
-    {
-      type: "category",
-      label: "Type Aliases",
-      items: [
+        },
         {
           type: "doc",
           id: "api/type-aliases/ActionSeverity",
@@ -13408,6 +13425,11 @@ const typedocSidebar = {
           type: "doc",
           id: "api/type-aliases/CircuitState",
           label: "CircuitState"
+        },
+        {
+          type: "doc",
+          id: "api/type-aliases/ClaimVerdictKind",
+          label: "ClaimVerdictKind"
         },
         {
           type: "doc",
@@ -14271,6 +14293,11 @@ const typedocSidebar = {
         },
         {
           type: "doc",
+          id: "api/type-aliases/TrustCapability",
+          label: "TrustCapability"
+        },
+        {
+          type: "doc",
           id: "api/type-aliases/TtsProviderDescriptor",
           label: "TtsProviderDescriptor"
         },
@@ -14373,13 +14400,7 @@ const typedocSidebar = {
           type: "doc",
           id: "api/type-aliases/WorkflowTaskExecutorType",
           label: "WorkflowTaskExecutorType"
-        }
-      ]
-    },
-    {
-      type: "category",
-      label: "Variables",
-      items: [
+        },
         {
           type: "doc",
           id: "api/variables/AGENTOS_PENDING_EXTERNAL_TOOL_REQUEST_METADATA_KEY",
@@ -14489,6 +14510,11 @@ const typedocSidebar = {
           type: "doc",
           id: "api/variables/DEFAULT_THRESHOLDS",
           label: "DEFAULT_THRESHOLDS"
+        },
+        {
+          type: "doc",
+          id: "api/variables/DEFAULT_TRUST_POLICY_BY_SOURCE",
+          label: "DEFAULT_TRUST_POLICY_BY_SOURCE"
         },
         {
           type: "doc",
@@ -14709,13 +14735,7 @@ const typedocSidebar = {
           type: "doc",
           id: "api/variables/TypedExtractionSchema",
           label: "TypedExtractionSchema"
-        }
-      ]
-    },
-    {
-      type: "category",
-      label: "Functions",
-      items: [
+        },
         {
           type: "doc",
           id: "api/functions/adaptTools",
@@ -14725,16 +14745,6 @@ const typedocSidebar = {
           type: "doc",
           id: "api/functions/adaptToolsToMap",
           label: "adaptToolsToMap"
-        },
-        {
-          type: "doc",
-          id: "api/functions/agency",
-          label: "agency"
-        },
-        {
-          type: "doc",
-          id: "api/functions/agent",
-          label: "agent"
         },
         {
           type: "doc",
@@ -14813,6 +14823,11 @@ const typedocSidebar = {
         },
         {
           type: "doc",
+          id: "api/functions/buildPolicyAwareFallbackChain",
+          label: "buildPolicyAwareFallbackChain"
+        },
+        {
+          type: "doc",
           id: "api/functions/buildRegisteredExternalToolExecutionContext",
           label: "buildRegisteredExternalToolExecutionContext"
         },
@@ -14845,6 +14860,11 @@ const typedocSidebar = {
           type: "doc",
           id: "api/functions/canonicalizeSubject",
           label: "canonicalizeSubject"
+        },
+        {
+          type: "doc",
+          id: "api/functions/canUseFor",
+          label: "canUseFor"
         },
         {
           type: "doc",
@@ -15223,6 +15243,11 @@ const typedocSidebar = {
         },
         {
           type: "doc",
+          id: "api/functions/formatVerifiedResponse",
+          label: "formatVerifiedResponse"
+        },
+        {
+          type: "doc",
           id: "api/functions/fourWayRrf",
           label: "fourWayRrf"
         },
@@ -15435,6 +15460,11 @@ const typedocSidebar = {
           type: "doc",
           id: "api/functions/isBankId",
           label: "isBankId"
+        },
+        {
+          type: "doc",
+          id: "api/functions/isContentPolicyRefusal",
+          label: "isContentPolicyRefusal"
         },
         {
           type: "doc",

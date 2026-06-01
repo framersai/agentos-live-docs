@@ -2,7 +2,7 @@
 
 > **createImageProvider**(`providerId`): [`IImageProvider`](../interfaces/IImageProvider.md)
 
-Defined in: [packages/agentos/src/media/images/index.ts:58](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/media/images/index.ts#L58)
+Defined in: [packages/agentos/src/io/media/images/index.ts:58](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/io/media/images/index.ts#L58)
 
 ## Parameters
 

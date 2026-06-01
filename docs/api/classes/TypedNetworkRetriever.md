@@ -1,6 +1,6 @@
 # Class: TypedNetworkRetriever
 
-Defined in: [packages/agentos/src/memory/retrieval/typed-network/TypedNetworkRetriever.ts:89](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/typed-network/TypedNetworkRetriever.ts#L89)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/typed-network/TypedNetworkRetriever.ts:89](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/typed-network/TypedNetworkRetriever.ts#L89)
 
 Adapter that produces canonical-shaped retrieval results from the
 typed-network store. Plugs into the bench's existing reader
@@ -12,7 +12,7 @@ pipeline without requiring changes to downstream code.
 
 > **new TypedNetworkRetriever**(`opts`): `TypedNetworkRetriever`
 
-Defined in: [packages/agentos/src/memory/retrieval/typed-network/TypedNetworkRetriever.ts:95](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/typed-network/TypedNetworkRetriever.ts#L95)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/typed-network/TypedNetworkRetriever.ts:95](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/typed-network/TypedNetworkRetriever.ts#L95)
 
 #### Parameters
 
@@ -30,7 +30,7 @@ Defined in: [packages/agentos/src/memory/retrieval/typed-network/TypedNetworkRet
 
 > **retrieve**(`query`, `options`): `Promise`\<[`ScoredMemoryTrace`](../interfaces/ScoredMemoryTrace.md)[]\>
 
-Defined in: [packages/agentos/src/memory/retrieval/typed-network/TypedNetworkRetriever.ts:109](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/typed-network/TypedNetworkRetriever.ts#L109)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/typed-network/TypedNetworkRetriever.ts:109](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/typed-network/TypedNetworkRetriever.ts#L109)
 
 Retrieve top-K typed facts for the query, formatted as
 [ScoredMemoryTrace](../interfaces/ScoredMemoryTrace.md)s. Returns an empty array when no

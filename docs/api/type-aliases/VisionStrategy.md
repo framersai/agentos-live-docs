@@ -2,7 +2,7 @@
 
 > **VisionStrategy** = `"progressive"` \| `"local-only"` \| `"cloud-only"` \| `"parallel"`
 
-Defined in: [packages/agentos/src/vision/types.ts:41](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/vision/types.ts#L41)
+Defined in: [packages/agentos/src/io/vision/types.ts:41](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/io/vision/types.ts#L41)
 
 Strategy for how vision tiers are combined during processing.
 

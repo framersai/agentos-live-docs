@@ -1,6 +1,6 @@
 # Class: FactSupersession
 
-Defined in: [packages/agentos/src/memory/retrieval/fact-supersession/FactSupersession.ts:94](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/fact-supersession/FactSupersession.ts#L94)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/fact-supersession/FactSupersession.ts:94](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/fact-supersession/FactSupersession.ts#L94)
 
 Post-retrieval fact supersession filter.
 
@@ -20,7 +20,7 @@ const result = await fs.resolve({ traces: retrieval.retrieved, query: caseQuery 
 
 > **new FactSupersession**(`opts`): `FactSupersession`
 
-Defined in: [packages/agentos/src/memory/retrieval/fact-supersession/FactSupersession.ts:99](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/fact-supersession/FactSupersession.ts#L99)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/fact-supersession/FactSupersession.ts:99](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/fact-supersession/FactSupersession.ts#L99)
 
 #### Parameters
 
@@ -38,7 +38,7 @@ Defined in: [packages/agentos/src/memory/retrieval/fact-supersession/FactSuperse
 
 > **resolve**(`input`): `Promise`\<[`FactSupersessionResult`](../interfaces/FactSupersessionResult.md)\>
 
-Defined in: [packages/agentos/src/memory/retrieval/fact-supersession/FactSupersession.ts:105](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/fact-supersession/FactSupersession.ts#L105)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/fact-supersession/FactSupersession.ts:105](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/fact-supersession/FactSupersession.ts#L105)
 
 #### Parameters
 

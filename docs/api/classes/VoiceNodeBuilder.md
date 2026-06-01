@@ -1,6 +1,6 @@
 # Class: VoiceNodeBuilder
 
-Defined in: [packages/agentos/src/orchestration/builders/VoiceNodeBuilder.ts:99](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/builders/VoiceNodeBuilder.ts#L99)
+Defined in: [packages/agentos/src/orchestration/builders/VoiceNodeBuilder.ts:99](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/builders/VoiceNodeBuilder.ts#L99)
 
 Fluent DSL builder for voice graph nodes.
 
@@ -28,7 +28,7 @@ See `VoiceNodeExecutor` for the runtime that resolves exit reasons and edge rout
 
 > **new VoiceNodeBuilder**(`id`, `config`): `VoiceNodeBuilder`
 
-Defined in: [packages/agentos/src/orchestration/builders/VoiceNodeBuilder.ts:119](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/builders/VoiceNodeBuilder.ts#L119)
+Defined in: [packages/agentos/src/orchestration/builders/VoiceNodeBuilder.ts:119](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/builders/VoiceNodeBuilder.ts#L119)
 
 Creates a new VoiceNodeBuilder.
 
@@ -59,7 +59,7 @@ Node identifier; exposed as a readonly property for
 
 > `readonly` **id**: `string`
 
-Defined in: [packages/agentos/src/orchestration/builders/VoiceNodeBuilder.ts:121](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/builders/VoiceNodeBuilder.ts#L121)
+Defined in: [packages/agentos/src/orchestration/builders/VoiceNodeBuilder.ts:121](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/builders/VoiceNodeBuilder.ts#L121)
 
 The node id assigned at construction time.
 
@@ -69,7 +69,7 @@ The node id assigned at construction time.
 
 > **build**(): [`GraphNode`](../interfaces/GraphNode.md)
 
-Defined in: [packages/agentos/src/orchestration/builders/VoiceNodeBuilder.ts:195](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/builders/VoiceNodeBuilder.ts#L195)
+Defined in: [packages/agentos/src/orchestration/builders/VoiceNodeBuilder.ts:195](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/builders/VoiceNodeBuilder.ts#L195)
 
 Produce a `GraphNode` IR object from the accumulated builder state.
 
@@ -107,7 +107,7 @@ console.log(node.edges.completed);  // 'process'
 
 > **on**(`exitReason`, `target`): `this`
 
-Defined in: [packages/agentos/src/orchestration/builders/VoiceNodeBuilder.ts:160](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/builders/VoiceNodeBuilder.ts#L160)
+Defined in: [packages/agentos/src/orchestration/builders/VoiceNodeBuilder.ts:160](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/builders/VoiceNodeBuilder.ts#L160)
 
 Register an exit-reason -> target-node route.
 

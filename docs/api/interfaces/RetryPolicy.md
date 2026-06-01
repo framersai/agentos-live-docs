@@ -1,6 +1,6 @@
 # Interface: RetryPolicy
 
-Defined in: [packages/agentos/src/orchestration/ir/types.ts:269](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/ir/types.ts#L269)
+Defined in: [packages/agentos/src/orchestration/ir/types.ts:269](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/ir/types.ts#L269)
 
 Governs automatic retry behaviour for transient node failures.
 
@@ -10,7 +10,7 @@ Governs automatic retry behaviour for transient node failures.
 
 > **backoff**: `"exponential"` \| `"linear"` \| `"fixed"`
 
-Defined in: [packages/agentos/src/orchestration/ir/types.ts:271](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/ir/types.ts#L271)
+Defined in: [packages/agentos/src/orchestration/ir/types.ts:271](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/ir/types.ts#L271)
 
 Wait time growth strategy between attempts.
 
@@ -20,7 +20,7 @@ Wait time growth strategy between attempts.
 
 > **backoffMs**: `number`
 
-Defined in: [packages/agentos/src/orchestration/ir/types.ts:272](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/ir/types.ts#L272)
+Defined in: [packages/agentos/src/orchestration/ir/types.ts:272](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/ir/types.ts#L272)
 
 Base wait duration in milliseconds.
 
@@ -30,7 +30,7 @@ Base wait duration in milliseconds.
 
 > **maxAttempts**: `number`
 
-Defined in: [packages/agentos/src/orchestration/ir/types.ts:270](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/ir/types.ts#L270)
+Defined in: [packages/agentos/src/orchestration/ir/types.ts:270](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/ir/types.ts#L270)
 
 Total number of attempts (including the first).
 
@@ -40,7 +40,7 @@ Total number of attempts (including the first).
 
 > `optional` **retryOn**: `string`[]
 
-Defined in: [packages/agentos/src/orchestration/ir/types.ts:273](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/ir/types.ts#L273)
+Defined in: [packages/agentos/src/orchestration/ir/types.ts:273](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/ir/types.ts#L273)
 
 Optional allowlist of error codes/names that trigger retry.
                         When absent, all errors are retried up to `maxAttempts`.

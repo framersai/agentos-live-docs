@@ -2,7 +2,7 @@
 
 > **VideoResolution** = `"480p"` \| `"720p"` \| `"1080p"`
 
-Defined in: [packages/agentos/src/media/video/types.ts:239](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/media/video/types.ts#L239)
+Defined in: [packages/agentos/src/io/media/video/types.ts:239](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/io/media/video/types.ts#L239)
 
 Output resolution for generated or analyzed video.
 

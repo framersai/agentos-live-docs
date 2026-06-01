@@ -1,6 +1,6 @@
 # Interface: TurnEvent
 
-Defined in: [apps/paracosm/src/engine/core/state.ts:203](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/engine/core/state.ts#L203)
+Defined in: [apps/paracosm/src/engine/core/state.ts:208](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/state.ts#L208)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [apps/paracosm/src/engine/core/state.ts:203](https://github.com/fram
 
 > `optional` **agentId**: `string`
 
-Defined in: [apps/paracosm/src/engine/core/state.ts:208](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/engine/core/state.ts#L208)
+Defined in: [apps/paracosm/src/engine/core/state.ts:213](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/state.ts#L213)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [apps/paracosm/src/engine/core/state.ts:208](https://github.com/fram
 
 > `optional` **cause**: `string`
 
-Defined in: [apps/paracosm/src/engine/core/state.ts:213](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/engine/core/state.ts#L213)
+Defined in: [apps/paracosm/src/engine/core/state.ts:218](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/state.ts#L218)
 
 For death events: the specific cause (natural causes, radiation
  cancer, starvation, despair, fatal fracture, accident: X). Lets
@@ -29,7 +29,7 @@ For death events: the specific cause (natural causes, radiation
 
 > `optional` **data**: `Record`\<`string`, `unknown`\>
 
-Defined in: [apps/paracosm/src/engine/core/state.ts:214](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/engine/core/state.ts#L214)
+Defined in: [apps/paracosm/src/engine/core/state.ts:219](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/state.ts#L219)
 
 ***
 
@@ -37,7 +37,7 @@ Defined in: [apps/paracosm/src/engine/core/state.ts:214](https://github.com/fram
 
 > **description**: `string`
 
-Defined in: [apps/paracosm/src/engine/core/state.ts:207](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/engine/core/state.ts#L207)
+Defined in: [apps/paracosm/src/engine/core/state.ts:212](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/state.ts#L212)
 
 ***
 
@@ -45,7 +45,7 @@ Defined in: [apps/paracosm/src/engine/core/state.ts:207](https://github.com/fram
 
 > **time**: `number`
 
-Defined in: [apps/paracosm/src/engine/core/state.ts:205](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/engine/core/state.ts#L205)
+Defined in: [apps/paracosm/src/engine/core/state.ts:210](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/state.ts#L210)
 
 ***
 
@@ -53,7 +53,7 @@ Defined in: [apps/paracosm/src/engine/core/state.ts:205](https://github.com/fram
 
 > **turn**: `number`
 
-Defined in: [apps/paracosm/src/engine/core/state.ts:204](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/engine/core/state.ts#L204)
+Defined in: [apps/paracosm/src/engine/core/state.ts:209](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/state.ts#L209)
 
 ***
 
@@ -61,4 +61,4 @@ Defined in: [apps/paracosm/src/engine/core/state.ts:204](https://github.com/fram
 
 > **type**: `"crisis"` \| `"decision"` \| `"birth"` \| `"death"` \| `"promotion"` \| `"relationship"` \| `"tool_forge"` \| `"system"`
 
-Defined in: [apps/paracosm/src/engine/core/state.ts:206](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/engine/core/state.ts#L206)
+Defined in: [apps/paracosm/src/engine/core/state.ts:211](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/state.ts#L211)

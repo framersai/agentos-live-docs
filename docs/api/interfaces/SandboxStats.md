@@ -1,6 +1,6 @@
 # Interface: SandboxStats
 
-Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:167](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/sandbox/executor/ICodeSandbox.ts#L167)
+Defined in: [packages/agentos/src/safety/sandbox/executor/ICodeSandbox.ts:167](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/safety/sandbox/executor/ICodeSandbox.ts#L167)
 
 Statistics about sandbox usage.
 
@@ -10,7 +10,7 @@ Statistics about sandbox usage.
 
 > **avgDurationMs**: `number`
 
-Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:179](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/sandbox/executor/ICodeSandbox.ts#L179)
+Defined in: [packages/agentos/src/safety/sandbox/executor/ICodeSandbox.ts:179](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/safety/sandbox/executor/ICodeSandbox.ts#L179)
 
 Average execution time
 
@@ -20,7 +20,7 @@ Average execution time
 
 > **avgMemoryBytes**: `number`
 
-Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:181](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/sandbox/executor/ICodeSandbox.ts#L181)
+Defined in: [packages/agentos/src/safety/sandbox/executor/ICodeSandbox.ts:181](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/safety/sandbox/executor/ICodeSandbox.ts#L181)
 
 Average memory usage
 
@@ -30,7 +30,7 @@ Average memory usage
 
 > **byLanguage**: `Record`\<[`SandboxLanguage`](../type-aliases/SandboxLanguage.md), `number`\>
 
-Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:183](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/sandbox/executor/ICodeSandbox.ts#L183)
+Defined in: [packages/agentos/src/safety/sandbox/executor/ICodeSandbox.ts:183](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/safety/sandbox/executor/ICodeSandbox.ts#L183)
 
 Executions by language
 
@@ -40,7 +40,7 @@ Executions by language
 
 > **failedExecutions**: `number`
 
-Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:173](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/sandbox/executor/ICodeSandbox.ts#L173)
+Defined in: [packages/agentos/src/safety/sandbox/executor/ICodeSandbox.ts:173](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/safety/sandbox/executor/ICodeSandbox.ts#L173)
 
 Failed executions
 
@@ -50,7 +50,7 @@ Failed executions
 
 > **killedExecutions**: `number`
 
-Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:177](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/sandbox/executor/ICodeSandbox.ts#L177)
+Defined in: [packages/agentos/src/safety/sandbox/executor/ICodeSandbox.ts:177](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/safety/sandbox/executor/ICodeSandbox.ts#L177)
 
 Killed executions
 
@@ -60,7 +60,7 @@ Killed executions
 
 > **securityEventsCount**: `number`
 
-Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:185](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/sandbox/executor/ICodeSandbox.ts#L185)
+Defined in: [packages/agentos/src/safety/sandbox/executor/ICodeSandbox.ts:185](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/safety/sandbox/executor/ICodeSandbox.ts#L185)
 
 Security events count
 
@@ -70,7 +70,7 @@ Security events count
 
 > **successfulExecutions**: `number`
 
-Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:171](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/sandbox/executor/ICodeSandbox.ts#L171)
+Defined in: [packages/agentos/src/safety/sandbox/executor/ICodeSandbox.ts:171](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/safety/sandbox/executor/ICodeSandbox.ts#L171)
 
 Successful executions
 
@@ -80,7 +80,7 @@ Successful executions
 
 > **timedOutExecutions**: `number`
 
-Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:175](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/sandbox/executor/ICodeSandbox.ts#L175)
+Defined in: [packages/agentos/src/safety/sandbox/executor/ICodeSandbox.ts:175](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/safety/sandbox/executor/ICodeSandbox.ts#L175)
 
 Timed out executions
 
@@ -90,6 +90,6 @@ Timed out executions
 
 > **totalExecutions**: `number`
 
-Defined in: [packages/agentos/src/sandbox/executor/ICodeSandbox.ts:169](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/sandbox/executor/ICodeSandbox.ts#L169)
+Defined in: [packages/agentos/src/safety/sandbox/executor/ICodeSandbox.ts:169](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/safety/sandbox/executor/ICodeSandbox.ts#L169)
 
 Total executions

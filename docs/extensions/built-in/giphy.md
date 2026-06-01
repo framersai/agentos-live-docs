@@ -45,4 +45,4 @@ npm install && npm run build && npm test
 
 ## License
 
-Apache-2.0 - Frame.dev
+MIT - Frame.dev

@@ -2,7 +2,7 @@
 
 > **generateText**(`opts`): `Promise`\<[`GenerateTextResult`](../interfaces/GenerateTextResult.md)\>
 
-Defined in: [packages/agentos/src/api/generateText.ts:752](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/generateText.ts#L752)
+Defined in: [packages/agentos/src/api/generateText.ts:993](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/generateText.ts#L993)
 
 Stateless text generation with optional multi-step tool calling.
 
@@ -32,7 +32,8 @@ A promise that resolves to the final text, token usage, tool call log, and finis
 
 ```ts
 const result = await generateText({
-  provider: 'openai', model: 'gpt-4o',
+  provider: 'openai',
+  model: 'gpt-4o',
   prompt: 'Summarise the history of the Roman Empire in two sentences.',
 });
 console.log(result.text);

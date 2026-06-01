@@ -1,6 +1,6 @@
 # Interface: RecallResult
 
-Defined in: [packages/agentos/src/memory/AgentMemory.ts:71](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/AgentMemory.ts#L71)
+Defined in: [packages/agentos/src/cognition/memory/AgentMemory.ts:72](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/AgentMemory.ts#L72)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/memory/AgentMemory.ts:71](https://github.com/f
 
 > **diagnostics**: `object`
 
-Defined in: [packages/agentos/src/memory/AgentMemory.ts:77](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/AgentMemory.ts#L77)
+Defined in: [packages/agentos/src/cognition/memory/AgentMemory.ts:78](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/AgentMemory.ts#L78)
 
 Retrieval diagnostics.
 
@@ -160,7 +160,7 @@ retrieval paths.
 
 > **memories**: [`ScoredMemoryTrace`](ScoredMemoryTrace.md)[]
 
-Defined in: [packages/agentos/src/memory/AgentMemory.ts:73](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/AgentMemory.ts#L73)
+Defined in: [packages/agentos/src/cognition/memory/AgentMemory.ts:74](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/AgentMemory.ts#L74)
 
 Relevant memory traces sorted by relevance.
 
@@ -170,6 +170,6 @@ Relevant memory traces sorted by relevance.
 
 > **partial**: [`PartiallyRetrievedTrace`](PartiallyRetrievedTrace.md)[]
 
-Defined in: [packages/agentos/src/memory/AgentMemory.ts:75](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/AgentMemory.ts#L75)
+Defined in: [packages/agentos/src/cognition/memory/AgentMemory.ts:76](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/AgentMemory.ts#L76)
 
 Partially retrieved traces (tip-of-the-tongue).

@@ -2,6 +2,6 @@
 
 > **ProviderStrategyName** = `"best"` \| `"cheapest"` \| `"balanced"` \| `"explicit"` \| `"mixed"`
 
-Defined in: [packages/agentos/src/orchestration/planning/types.ts:56](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/planning/types.ts#L56)
+Defined in: [packages/agentos/src/orchestration/planning/types.ts:56](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/planning/types.ts#L56)
 
 Strategy name for provider-to-node assignment.

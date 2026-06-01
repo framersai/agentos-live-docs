@@ -2,7 +2,7 @@
 
 > **clearProviderPriority**(): `void`
 
-Defined in: [packages/agentos/src/api/runtime/provider-priority.ts:66](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/runtime/provider-priority.ts#L66)
+Defined in: [packages/agentos/src/api/runtime/provider-priority.ts:66](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/runtime/provider-priority.ts#L66)
 
 Reset to the default auto-detect priority order.
 

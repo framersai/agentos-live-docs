@@ -87,4 +87,4 @@ Deepgram, and local runtimes behind the same API shape.
 
 ## License
 
-Apache-2.0 - Frame.dev
+MIT - Frame.dev

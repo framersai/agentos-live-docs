@@ -1,6 +1,6 @@
 # Class: MissionBuilder
 
-Defined in: [packages/agentos/src/orchestration/builders/MissionBuilder.ts:68](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/builders/MissionBuilder.ts#L68)
+Defined in: [packages/agentos/src/orchestration/builders/MissionBuilder.ts:68](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/builders/MissionBuilder.ts#L68)
 
 Fluent builder that collects mission configuration and validates it at `.compile()` time.
 
@@ -13,7 +13,7 @@ All setter methods return `this` for chaining.  No compilation work is performed
 
 > **new MissionBuilder**(`name`): `MissionBuilder`
 
-Defined in: [packages/agentos/src/orchestration/builders/MissionBuilder.ts:101](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/builders/MissionBuilder.ts#L101)
+Defined in: [packages/agentos/src/orchestration/builders/MissionBuilder.ts:101](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/builders/MissionBuilder.ts#L101)
 
 #### Parameters
 
@@ -33,7 +33,7 @@ Display name for this mission; passed through to the compiled graph.
 
 > **anchor**(`id`, `node`, `constraints`): `this`
 
-Defined in: [packages/agentos/src/orchestration/builders/MissionBuilder.ts:191](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/builders/MissionBuilder.ts#L191)
+Defined in: [packages/agentos/src/orchestration/builders/MissionBuilder.ts:191](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/builders/MissionBuilder.ts#L191)
 
 Declare an anchor node that will be spliced into the execution order.
 
@@ -96,7 +96,7 @@ When `true` the compiler will throw if the anchor cannot be placed.
 
 > **autonomy**(`mode`): `this`
 
-Defined in: [packages/agentos/src/orchestration/builders/MissionBuilder.ts:213](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/builders/MissionBuilder.ts#L213)
+Defined in: [packages/agentos/src/orchestration/builders/MissionBuilder.ts:213](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/builders/MissionBuilder.ts#L213)
 
 Set the autonomy mode for this mission.
 
@@ -122,7 +122,7 @@ Autonomy mode.
 
 > **branches**(`count`): `this`
 
-Defined in: [packages/agentos/src/orchestration/builders/MissionBuilder.ts:264](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/builders/MissionBuilder.ts#L264)
+Defined in: [packages/agentos/src/orchestration/builders/MissionBuilder.ts:264](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/builders/MissionBuilder.ts#L264)
 
 Set the number of Tree of Thought branches to explore during planning.
 
@@ -144,7 +144,7 @@ Branch count (default: 3, max: 3 for linear/parallel/hierarchical).
 
 > **compile**(`options?`): [`CompiledMission`](CompiledMission.md)
 
-Defined in: [packages/agentos/src/orchestration/builders/MissionBuilder.ts:310](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/builders/MissionBuilder.ts#L310)
+Defined in: [packages/agentos/src/orchestration/builders/MissionBuilder.ts:310](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/builders/MissionBuilder.ts#L310)
 
 Validate configuration and compile this mission into a `CompiledMission`.
 
@@ -187,7 +187,7 @@ When required builder fields are missing.
 
 > **costCap**(`amount`): `this`
 
-Defined in: [packages/agentos/src/orchestration/builders/MissionBuilder.ts:244](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/builders/MissionBuilder.ts#L244)
+Defined in: [packages/agentos/src/orchestration/builders/MissionBuilder.ts:244](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/builders/MissionBuilder.ts#L244)
 
 Set the maximum cost in USD before execution pauses for approval.
 
@@ -209,7 +209,7 @@ Cost cap in USD.
 
 > **executionModel**(`model`): `this`
 
-Defined in: [packages/agentos/src/orchestration/builders/MissionBuilder.ts:290](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/builders/MissionBuilder.ts#L290)
+Defined in: [packages/agentos/src/orchestration/builders/MissionBuilder.ts:290](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/builders/MissionBuilder.ts#L290)
 
 Set the default model used for agent node execution.
 
@@ -234,7 +234,7 @@ Model identifier string (e.g., 'gpt-5.4').
 
 > **goal**(`template`): `this`
 
-Defined in: [packages/agentos/src/orchestration/builders/MissionBuilder.ts:133](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/builders/MissionBuilder.ts#L133)
+Defined in: [packages/agentos/src/orchestration/builders/MissionBuilder.ts:133](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/builders/MissionBuilder.ts#L133)
 
 Set the goal template for this mission.
 
@@ -263,7 +263,7 @@ Goal prompt template string.
 
 > **input**(`schema`): `this`
 
-Defined in: [packages/agentos/src/orchestration/builders/MissionBuilder.ts:116](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/builders/MissionBuilder.ts#L116)
+Defined in: [packages/agentos/src/orchestration/builders/MissionBuilder.ts:116](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/builders/MissionBuilder.ts#L116)
 
 Declare the input schema for this mission.
 
@@ -289,7 +289,7 @@ Zod or JSON-Schema object describing the expected input payload.
 
 > **maxAgents**(`count`): `this`
 
-Defined in: [packages/agentos/src/orchestration/builders/MissionBuilder.ts:254](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/builders/MissionBuilder.ts#L254)
+Defined in: [packages/agentos/src/orchestration/builders/MissionBuilder.ts:254](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/builders/MissionBuilder.ts#L254)
 
 Set the maximum number of concurrent agents.
 
@@ -311,7 +311,7 @@ Agent count cap.
 
 > **planner**(`config`): `this`
 
-Defined in: [packages/agentos/src/orchestration/builders/MissionBuilder.ts:161](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/builders/MissionBuilder.ts#L161)
+Defined in: [packages/agentos/src/orchestration/builders/MissionBuilder.ts:161](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/builders/MissionBuilder.ts#L161)
 
 Configure planner hints recorded on the mission config.
 
@@ -346,11 +346,41 @@ Hard cap on the total number of plan steps the planner may emit.
 When `true`, `gmi` nodes are configured to issue multiple tool calls per turn.
 Forwarded to `gmiNode` as `parallelTools`.
 
+###### plan?
+
+[`SimplePlan`](../interfaces/SimplePlan.md)
+
+Pre-generated plan that bypasses both `style` template selection and
+the goal classifier. When set, the compiler validates the plan shape
+(non-empty, unique step ids, known actions, valid phases) and uses
+the steps directly to build the graph. Intended for callers that
+generate plans externally — e.g. wunderland's opt-in
+`planner.style: 'llm'` mode that asks an LLM to decompose the goal
+into steps at YAML compile time.
+
+Validation is intentionally strict: invalid plans throw at compile
+time rather than producing a partially-correct graph that fails
+mid-execution.
+
 ###### strategy
 
 `string`
 
 Routing/planning strategy identifier (e.g. `'linear'`, `'react'`, `'tree-of-thought'`).
+
+###### style?
+
+`"research"` \| `"creative"` \| `"qa"`
+
+Optional plan-template selector. Picks which fixed stub template the
+compiler emits. Defaults to `'research'` (gather → process → deliver →
+refine) which matches the prior behaviour. Other values:
+- `'qa'`       — short Q&A plan (research-quick → answer)
+- `'creative'` — brainstorm → develop-concept → produce-artifact → polish
+
+The real `PlanningEngine` (Task 16+) will deprecate this in favour of
+goal-driven plan generation; until then `style` lets users opt into a
+less research-shaped graph for non-research goals.
 
 #### Returns
 
@@ -362,7 +392,7 @@ Routing/planning strategy identifier (e.g. `'linear'`, `'react'`, `'tree-of-thou
 
 > **plannerModel**(`model`): `this`
 
-Defined in: [packages/agentos/src/orchestration/builders/MissionBuilder.ts:277](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/builders/MissionBuilder.ts#L277)
+Defined in: [packages/agentos/src/orchestration/builders/MissionBuilder.ts:277](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/builders/MissionBuilder.ts#L277)
 
 Set the model used for Tree of Thought planning phases.
 
@@ -387,7 +417,7 @@ Model identifier string (e.g., 'claude-opus-4-6').
 
 > **policy**(`config`): `this`
 
-Defined in: [packages/agentos/src/orchestration/builders/MissionBuilder.ts:175](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/builders/MissionBuilder.ts#L175)
+Defined in: [packages/agentos/src/orchestration/builders/MissionBuilder.ts:175](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/builders/MissionBuilder.ts#L175)
 
 Apply mission-level policy overrides.
 
@@ -461,7 +491,7 @@ Guardrail identifiers applied as output guardrails on every node.
 
 > **providerStrategy**(`strategy`, `options?`): `this`
 
-Defined in: [packages/agentos/src/orchestration/builders/MissionBuilder.ts:224](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/builders/MissionBuilder.ts#L224)
+Defined in: [packages/agentos/src/orchestration/builders/MissionBuilder.ts:224](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/builders/MissionBuilder.ts#L224)
 
 Set the provider assignment strategy for this mission.
 
@@ -495,7 +525,7 @@ Optional explicit assignments and fallback strategy.
 
 > **returns**(`schema`): `this`
 
-Defined in: [packages/agentos/src/orchestration/builders/MissionBuilder.ts:146](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/builders/MissionBuilder.ts#L146)
+Defined in: [packages/agentos/src/orchestration/builders/MissionBuilder.ts:146](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/builders/MissionBuilder.ts#L146)
 
 Declare the output (return) schema for this mission.
 

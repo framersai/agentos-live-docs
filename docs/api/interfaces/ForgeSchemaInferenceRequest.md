@@ -1,6 +1,6 @@
 # Interface: ForgeSchemaInferenceRequest
 
-Defined in: [packages/agentos/src/emergent/ForgeSchemaInference.ts:21](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/emergent/ForgeSchemaInference.ts#L21)
+Defined in: [packages/agentos/src/cognition/emergent/ForgeSchemaInference.ts:21](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/emergent/ForgeSchemaInference.ts#L21)
 
 Request fragment carrying the three fields we may mutate.
 
@@ -10,7 +10,7 @@ Request fragment carrying the three fields we may mutate.
 
 > `optional` **inputSchema**: `unknown`
 
-Defined in: [packages/agentos/src/emergent/ForgeSchemaInference.ts:22](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/emergent/ForgeSchemaInference.ts#L22)
+Defined in: [packages/agentos/src/cognition/emergent/ForgeSchemaInference.ts:22](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/emergent/ForgeSchemaInference.ts#L22)
 
 ***
 
@@ -18,7 +18,7 @@ Defined in: [packages/agentos/src/emergent/ForgeSchemaInference.ts:22](https://g
 
 > `optional` **outputSchema**: `unknown`
 
-Defined in: [packages/agentos/src/emergent/ForgeSchemaInference.ts:23](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/emergent/ForgeSchemaInference.ts#L23)
+Defined in: [packages/agentos/src/cognition/emergent/ForgeSchemaInference.ts:23](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/emergent/ForgeSchemaInference.ts#L23)
 
 ***
 
@@ -26,4 +26,4 @@ Defined in: [packages/agentos/src/emergent/ForgeSchemaInference.ts:23](https://g
 
 > `optional` **testCases**: `unknown`
 
-Defined in: [packages/agentos/src/emergent/ForgeSchemaInference.ts:24](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/emergent/ForgeSchemaInference.ts#L24)
+Defined in: [packages/agentos/src/cognition/emergent/ForgeSchemaInference.ts:24](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/emergent/ForgeSchemaInference.ts#L24)

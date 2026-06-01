@@ -1,6 +1,6 @@
 # Interface: SessionRetrieverOptions
 
-Defined in: [packages/agentos/src/memory/retrieval/session/SessionRetriever.ts:77](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/session/SessionRetriever.ts#L77)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/session/SessionRetriever.ts:77](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/session/SessionRetriever.ts#L77)
 
 Options for constructing a [SessionRetriever](../classes/SessionRetriever.md).
 
@@ -10,7 +10,7 @@ Options for constructing a [SessionRetriever](../classes/SessionRetriever.md).
 
 > `optional` **defaultChunksPerSession**: `number`
 
-Defined in: [packages/agentos/src/memory/retrieval/session/SessionRetriever.ts:86](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/session/SessionRetriever.ts#L86)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/session/SessionRetriever.ts:86](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/session/SessionRetriever.ts#L86)
 
 Default M (chunks per session in Stage 2).
 
@@ -26,7 +26,7 @@ Default M (chunks per session in Stage 2).
 
 > `optional` **defaultTopSessions**: `number`
 
-Defined in: [packages/agentos/src/memory/retrieval/session/SessionRetriever.ts:84](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/session/SessionRetriever.ts#L84)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/session/SessionRetriever.ts:84](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/session/SessionRetriever.ts#L84)
 
 Default K (sessions to select in Stage 1).
 
@@ -42,7 +42,7 @@ Default K (sessions to select in Stage 1).
 
 > **embeddingManager**: [`IEmbeddingManager`](IEmbeddingManager.md)
 
-Defined in: [packages/agentos/src/memory/retrieval/session/SessionRetriever.ts:80](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/session/SessionRetriever.ts#L80)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/session/SessionRetriever.ts:80](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/session/SessionRetriever.ts#L80)
 
 ***
 
@@ -50,7 +50,7 @@ Defined in: [packages/agentos/src/memory/retrieval/session/SessionRetriever.ts:8
 
 > **memoryStore**: [`MemoryStore`](../classes/MemoryStore.md)
 
-Defined in: [packages/agentos/src/memory/retrieval/session/SessionRetriever.ts:79](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/session/SessionRetriever.ts#L79)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/session/SessionRetriever.ts:79](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/session/SessionRetriever.ts#L79)
 
 ***
 
@@ -58,7 +58,7 @@ Defined in: [packages/agentos/src/memory/retrieval/session/SessionRetriever.ts:7
 
 > `optional` **rerankerService**: `RerankerService`
 
-Defined in: [packages/agentos/src/memory/retrieval/session/SessionRetriever.ts:82](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/session/SessionRetriever.ts#L82)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/session/SessionRetriever.ts:82](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/session/SessionRetriever.ts#L82)
 
 Optional reranker. When provided, the merged chunk pool is reranked before truncation.
 
@@ -68,4 +68,4 @@ Optional reranker. When provided, the merged chunk pool is reranked before trunc
 
 > **summaryStore**: [`SessionSummaryStore`](../classes/SessionSummaryStore.md)
 
-Defined in: [packages/agentos/src/memory/retrieval/session/SessionRetriever.ts:78](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/session/SessionRetriever.ts#L78)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/session/SessionRetriever.ts:78](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/session/SessionRetriever.ts#L78)

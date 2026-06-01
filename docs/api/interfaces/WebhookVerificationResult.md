@@ -1,6 +1,6 @@
 # Interface: WebhookVerificationResult
 
-Defined in: [packages/agentos/src/channels/telephony/types.ts:411](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/channels/telephony/types.ts#L411)
+Defined in: [packages/agentos/src/io/channels/telephony/types.ts:411](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/io/channels/telephony/types.ts#L411)
 
 Result of webhook signature verification.
 
@@ -10,7 +10,7 @@ Result of webhook signature verification.
 
 > `optional` **error**: `string`
 
-Defined in: [packages/agentos/src/channels/telephony/types.ts:415](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/channels/telephony/types.ts#L415)
+Defined in: [packages/agentos/src/io/channels/telephony/types.ts:415](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/io/channels/telephony/types.ts#L415)
 
 Error message if verification failed.
 
@@ -20,6 +20,6 @@ Error message if verification failed.
 
 > **valid**: `boolean`
 
-Defined in: [packages/agentos/src/channels/telephony/types.ts:413](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/channels/telephony/types.ts#L413)
+Defined in: [packages/agentos/src/io/channels/telephony/types.ts:413](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/io/channels/telephony/types.ts#L413)
 
 Whether the webhook signature is valid.

@@ -2,7 +2,7 @@
 
 > **DeepPartial**\<`T`\> = `T` *extends* `object` ? `{ [K in keyof T]?: DeepPartial<T[K]> }` : `T`
 
-Defined in: [packages/agentos/src/api/streamObject.ts:31](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/streamObject.ts#L31)
+Defined in: [packages/agentos/src/api/streamObject.ts:31](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/streamObject.ts#L31)
 
 Recursively makes every property in `T` optional, including nested objects.
 Used to type the partial objects yielded by `StreamObjectResult.partialObjectStream`

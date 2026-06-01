@@ -1,6 +1,6 @@
 # Interface: ClassifyCompleteEvent
 
-Defined in: [packages/agentos/src/query-router/types.ts:877](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/query-router/types.ts#L877)
+Defined in: [packages/agentos/src/orchestration/pipeline/query/types.ts:890](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/pipeline/query/types.ts#L890)
 
 Emitted when query classification completes successfully.
 
@@ -10,7 +10,7 @@ Emitted when query classification completes successfully.
 
 > **durationMs**: `number`
 
-Defined in: [packages/agentos/src/query-router/types.ts:882](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/query-router/types.ts#L882)
+Defined in: [packages/agentos/src/orchestration/pipeline/query/types.ts:895](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/pipeline/query/types.ts#L895)
 
 Duration of classification in milliseconds.
 
@@ -20,7 +20,7 @@ Duration of classification in milliseconds.
 
 > **result**: [`ClassificationResult`](ClassificationResult.md)
 
-Defined in: [packages/agentos/src/query-router/types.ts:880](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/query-router/types.ts#L880)
+Defined in: [packages/agentos/src/orchestration/pipeline/query/types.ts:893](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/pipeline/query/types.ts#L893)
 
 The classification result.
 
@@ -30,7 +30,7 @@ The classification result.
 
 > **timestamp**: `number`
 
-Defined in: [packages/agentos/src/query-router/types.ts:884](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/query-router/types.ts#L884)
+Defined in: [packages/agentos/src/orchestration/pipeline/query/types.ts:897](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/pipeline/query/types.ts#L897)
 
 Timestamp when classification completed.
 
@@ -40,4 +40,4 @@ Timestamp when classification completed.
 
 > **type**: `"classify:complete"`
 
-Defined in: [packages/agentos/src/query-router/types.ts:878](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/query-router/types.ts#L878)
+Defined in: [packages/agentos/src/orchestration/pipeline/query/types.ts:891](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/pipeline/query/types.ts#L891)

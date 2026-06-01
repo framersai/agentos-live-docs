@@ -1,6 +1,6 @@
 # Class: MissionCompiler
 
-Defined in: [packages/agentos/src/orchestration/compiler/MissionCompiler.ts:159](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/compiler/MissionCompiler.ts#L159)
+Defined in: [packages/agentos/src/orchestration/compiler/MissionCompiler.ts:193](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/compiler/MissionCompiler.ts#L193)
 
 Static compiler that transforms a `MissionConfig` into a `CompiledExecutionGraph`.
 
@@ -32,11 +32,53 @@ const ir = MissionCompiler.compile({
 
 ## Methods
 
+### classifyGoal()
+
+> `static` **classifyGoal**(`goalTemplate`): `"research"` \| `"creative"` \| `"qa"`
+
+Defined in: [packages/agentos/src/orchestration/compiler/MissionCompiler.ts:433](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/compiler/MissionCompiler.ts#L433)
+
+Auto-classify a goal template into the most appropriate plan template.
+Used when `plannerConfig.style` is not set explicitly. Pure keyword/regex
+matching — no LLM call. Returns `'research'` for ambiguous or empty
+goals to preserve the prior default behaviour.
+
+Detection rules:
+  - `qa`       — question-shaped goals starting with "what is", "why does",
+                 "how do I", "explain", "define", or short trailing-?
+                 questions where a research+refine pipeline is overkill.
+  - `creative` — artifact-producing goals starting with "write a",
+                 "compose", "draft a", "design a", "imagine".
+  - `research` — everything else (default).
+
+The classifier is intentionally **prefix-only** — matching creative
+verbs anywhere in the goal would misclassify research-shaped phrasing
+like "Research how to write a tagline" or "Find articles about
+composing music" as creative. Compound goals like "Research X and
+write a poem about it" therefore fall through to research; authors
+with compound goals should set `plannerConfig.style` explicitly.
+
+Public so callers can ask the classifier directly without compiling a
+mission, and so tests can exercise the matrix of goal patterns without
+round-tripping through the whole compile() pipeline.
+
+#### Parameters
+
+##### goalTemplate
+
+`string`
+
+#### Returns
+
+`"research"` \| `"creative"` \| `"qa"`
+
+***
+
 ### compile()
 
 > `static` **compile**(`config`): [`CompiledExecutionGraph`](../interfaces/CompiledExecutionGraph.md)
 
-Defined in: [packages/agentos/src/orchestration/compiler/MissionCompiler.ts:175](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/compiler/MissionCompiler.ts#L175)
+Defined in: [packages/agentos/src/orchestration/compiler/MissionCompiler.ts:209](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/compiler/MissionCompiler.ts#L209)
 
 Compile a mission config into a `CompiledExecutionGraph`.
 

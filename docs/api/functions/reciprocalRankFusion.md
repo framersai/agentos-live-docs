@@ -2,7 +2,7 @@
 
 > **reciprocalRankFusion**(`denseRanked`, `sparseRanked`, `options?`): [`RRFResult`](../interfaces/RRFResult.md)[]
 
-Defined in: [packages/agentos/src/memory/retrieval/hybrid/reciprocalRankFusion.ts:90](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/hybrid/reciprocalRankFusion.ts#L90)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/hybrid/reciprocalRankFusion.ts:90](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/hybrid/reciprocalRankFusion.ts#L90)
 
 Merge two ranked retrieval results via Reciprocal Rank Fusion.
 

@@ -2,7 +2,7 @@
 
 > **generateImage**(`opts`): `Promise`\<[`GenerateImageResult`](../interfaces/GenerateImageResult.md)\>
 
-Defined in: [packages/agentos/src/api/generateImage.ts:266](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/generateImage.ts#L266)
+Defined in: [packages/agentos/src/api/generateImage.ts:269](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/generateImage.ts#L269)
 
 Generates one or more images using a provider-agnostic `provider:model` string.
 
@@ -27,7 +27,8 @@ A promise resolving to the generation result with image data and metadata.
 
 ```ts
 const result = await generateImage({
-  provider: 'openai', model: 'dall-e-3',
+  provider: 'openai',
+  model: 'dall-e-3',
   prompt: 'A photorealistic red panda sitting on a moonlit rooftop.',
   size: '1024x1024',
 });

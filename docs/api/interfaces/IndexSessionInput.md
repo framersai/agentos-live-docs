@@ -1,6 +1,6 @@
 # Interface: IndexSessionInput
 
-Defined in: [packages/agentos/src/memory/retrieval/session/SessionSummaryStore.ts:65](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/session/SessionSummaryStore.ts#L65)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/session/SessionSummaryStore.ts:65](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/session/SessionSummaryStore.ts#L65)
 
 Input for [SessionSummaryStore.indexSession](../classes/SessionSummaryStore.md#indexsession).
 
@@ -10,7 +10,7 @@ Input for [SessionSummaryStore.indexSession](../classes/SessionSummaryStore.md#i
 
 > **scope**: [`MemoryScope`](../type-aliases/MemoryScope.md)
 
-Defined in: [packages/agentos/src/memory/retrieval/session/SessionSummaryStore.ts:66](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/session/SessionSummaryStore.ts#L66)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/session/SessionSummaryStore.ts:66](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/session/SessionSummaryStore.ts#L66)
 
 ***
 
@@ -18,7 +18,7 @@ Defined in: [packages/agentos/src/memory/retrieval/session/SessionSummaryStore.t
 
 > **scopeId**: `string`
 
-Defined in: [packages/agentos/src/memory/retrieval/session/SessionSummaryStore.ts:67](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/session/SessionSummaryStore.ts#L67)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/session/SessionSummaryStore.ts:67](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/session/SessionSummaryStore.ts#L67)
 
 ***
 
@@ -26,7 +26,7 @@ Defined in: [packages/agentos/src/memory/retrieval/session/SessionSummaryStore.t
 
 > `optional` **sessionDate**: `string`
 
-Defined in: [packages/agentos/src/memory/retrieval/session/SessionSummaryStore.ts:72](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/session/SessionSummaryStore.ts#L72)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/session/SessionSummaryStore.ts:72](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/session/SessionSummaryStore.ts#L72)
 
 Optional ISO date for the session. Stored for future temporal filtering.
 
@@ -36,7 +36,7 @@ Optional ISO date for the session. Stored for future temporal filtering.
 
 > **sessionId**: `string`
 
-Defined in: [packages/agentos/src/memory/retrieval/session/SessionSummaryStore.ts:68](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/session/SessionSummaryStore.ts#L68)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/session/SessionSummaryStore.ts:68](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/session/SessionSummaryStore.ts#L68)
 
 ***
 
@@ -44,6 +44,6 @@ Defined in: [packages/agentos/src/memory/retrieval/session/SessionSummaryStore.t
 
 > **summary**: `string`
 
-Defined in: [packages/agentos/src/memory/retrieval/session/SessionSummaryStore.ts:70](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/session/SessionSummaryStore.ts#L70)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/session/SessionSummaryStore.ts:70](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/session/SessionSummaryStore.ts#L70)
 
 The summary text produced by `SessionSummarizer`. Must be non-empty.

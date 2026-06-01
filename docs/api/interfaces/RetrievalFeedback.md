@@ -1,6 +1,6 @@
 # Interface: RetrievalFeedback
 
-Defined in: [packages/agentos/src/memory/retrieval/feedback/RetrievalFeedbackSignal.ts:55](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/feedback/RetrievalFeedbackSignal.ts#L55)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/feedback/RetrievalFeedbackSignal.ts:55](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/feedback/RetrievalFeedbackSignal.ts#L55)
 
 A single retrieval feedback event for one memory trace.
 
@@ -18,7 +18,7 @@ feedback time.  Stored in the `query` column of `retrieval_feedback`.
 
 > `optional` **context**: `string`
 
-Defined in: [packages/agentos/src/memory/retrieval/feedback/RetrievalFeedbackSignal.ts:61](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/feedback/RetrievalFeedbackSignal.ts#L61)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/feedback/RetrievalFeedbackSignal.ts:61](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/feedback/RetrievalFeedbackSignal.ts#L61)
 
 Optional contextual string (e.g. the original user query).
 
@@ -28,7 +28,7 @@ Optional contextual string (e.g. the original user query).
 
 > **signal**: `"used"` \| `"ignored"`
 
-Defined in: [packages/agentos/src/memory/retrieval/feedback/RetrievalFeedbackSignal.ts:59](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/feedback/RetrievalFeedbackSignal.ts#L59)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/feedback/RetrievalFeedbackSignal.ts:59](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/feedback/RetrievalFeedbackSignal.ts#L59)
 
 Whether the trace was referenced by the LLM response.
 
@@ -38,7 +38,7 @@ Whether the trace was referenced by the LLM response.
 
 > **timestamp**: `number`
 
-Defined in: [packages/agentos/src/memory/retrieval/feedback/RetrievalFeedbackSignal.ts:63](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/feedback/RetrievalFeedbackSignal.ts#L63)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/feedback/RetrievalFeedbackSignal.ts:63](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/feedback/RetrievalFeedbackSignal.ts#L63)
 
 Unix ms timestamp when the feedback was recorded.
 
@@ -48,6 +48,6 @@ Unix ms timestamp when the feedback was recorded.
 
 > **traceId**: `string`
 
-Defined in: [packages/agentos/src/memory/retrieval/feedback/RetrievalFeedbackSignal.ts:57](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/feedback/RetrievalFeedbackSignal.ts#L57)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/feedback/RetrievalFeedbackSignal.ts:57](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/feedback/RetrievalFeedbackSignal.ts#L57)
 
 The ID of the memory trace this feedback relates to.

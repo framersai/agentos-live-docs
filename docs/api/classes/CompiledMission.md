@@ -1,6 +1,6 @@
 # Class: CompiledMission
 
-Defined in: [packages/agentos/src/orchestration/builders/MissionBuilder.ts:368](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/builders/MissionBuilder.ts#L368)
+Defined in: [packages/agentos/src/orchestration/builders/MissionBuilder.ts:368](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/builders/MissionBuilder.ts#L368)
 
 Execution wrapper for a compiled mission.
 
@@ -15,7 +15,7 @@ for many invocations.
 
 > **new CompiledMission**(`config`, `checkpointStore`, `deps?`): `CompiledMission`
 
-Defined in: [packages/agentos/src/orchestration/builders/MissionBuilder.ts:375](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/builders/MissionBuilder.ts#L375)
+Defined in: [packages/agentos/src/orchestration/builders/MissionBuilder.ts:375](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/builders/MissionBuilder.ts#L375)
 
 #### Parameters
 
@@ -48,7 +48,7 @@ Optional runtime executors forwarded to `NodeExecutor`.
 
 > **explain**(`_input`): `Promise`\<\{ `ir`: [`CompiledExecutionGraph`](../interfaces/CompiledExecutionGraph.md); `steps`: `any`[]; \}\>
 
-Defined in: [packages/agentos/src/orchestration/builders/MissionBuilder.ts:469](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/builders/MissionBuilder.ts#L469)
+Defined in: [packages/agentos/src/orchestration/builders/MissionBuilder.ts:469](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/builders/MissionBuilder.ts#L469)
 
 Return a human-readable execution plan without actually running the mission.
 
@@ -76,7 +76,7 @@ An object containing:
 
 > **inspect**(`_runId`): `Promise`\<`unknown`\>
 
-Defined in: [packages/agentos/src/orchestration/builders/MissionBuilder.ts:450](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/builders/MissionBuilder.ts#L450)
+Defined in: [packages/agentos/src/orchestration/builders/MissionBuilder.ts:450](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/builders/MissionBuilder.ts#L450)
 
 Retrieve a diagnostic snapshot of a completed or in-progress run.
 
@@ -100,7 +100,7 @@ A `RunInspection`-shaped object (stub — full implementation in Task 17+).
 
 > **invoke**(`input`): `Promise`\<`unknown`\>
 
-Defined in: [packages/agentos/src/orchestration/builders/MissionBuilder.ts:414](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/builders/MissionBuilder.ts#L414)
+Defined in: [packages/agentos/src/orchestration/builders/MissionBuilder.ts:414](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/builders/MissionBuilder.ts#L414)
 
 Execute the mission to completion and return the final artifacts.
 
@@ -124,7 +124,7 @@ The final `GraphState.artifacts` value once all nodes have completed.
 
 > **resume**(`checkpointId`, `_patch?`): `Promise`\<`unknown`\>
 
-Defined in: [packages/agentos/src/orchestration/builders/MissionBuilder.ts:439](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/builders/MissionBuilder.ts#L439)
+Defined in: [packages/agentos/src/orchestration/builders/MissionBuilder.ts:439](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/builders/MissionBuilder.ts#L439)
 
 Resume a previously interrupted run from its latest checkpoint.
 
@@ -154,7 +154,7 @@ The final `GraphState.artifacts` value once execution completes.
 
 > **stream**(`input`): `AsyncIterable`\<[`GraphEvent`](../type-aliases/GraphEvent.md)\>
 
-Defined in: [packages/agentos/src/orchestration/builders/MissionBuilder.ts:427](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/builders/MissionBuilder.ts#L427)
+Defined in: [packages/agentos/src/orchestration/builders/MissionBuilder.ts:427](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/builders/MissionBuilder.ts#L427)
 
 Execute the mission while yielding `GraphEvent` values at each step.
 
@@ -182,7 +182,7 @@ Input payload conforming to the mission's `inputSchema`.
 
 > **toIR**(): [`CompiledExecutionGraph`](../interfaces/CompiledExecutionGraph.md)
 
-Defined in: [packages/agentos/src/orchestration/builders/MissionBuilder.ts:498](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/builders/MissionBuilder.ts#L498)
+Defined in: [packages/agentos/src/orchestration/builders/MissionBuilder.ts:498](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/builders/MissionBuilder.ts#L498)
 
 Alias of `toWorkflow()` — returns the compiled `CompiledExecutionGraph` IR.
 
@@ -198,7 +198,7 @@ The compiled IR.
 
 > **toWorkflow**(): [`CompiledExecutionGraph`](../interfaces/CompiledExecutionGraph.md)
 
-Defined in: [packages/agentos/src/orchestration/builders/MissionBuilder.ts:489](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/builders/MissionBuilder.ts#L489)
+Defined in: [packages/agentos/src/orchestration/builders/MissionBuilder.ts:489](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/builders/MissionBuilder.ts#L489)
 
 Export the compiled plan as a static `CompiledExecutionGraph`.
 

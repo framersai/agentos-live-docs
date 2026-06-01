@@ -1,6 +1,6 @@
 # Interface: IUsageLedgerPersistence
 
-Defined in: [packages/agentos/src/core/utils/usage/UsageLedger.ts:48](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/core/utils/usage/UsageLedger.ts#L48)
+Defined in: [packages/agentos/src/core/utils/usage/UsageLedger.ts:48](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/core/utils/usage/UsageLedger.ts#L48)
 
 Persistence adapter contract enabling storage engines.
 
@@ -10,7 +10,7 @@ Persistence adapter contract enabling storage engines.
 
 > **loadAll**(): `Promise`\<`UsageBucket`[]\>
 
-Defined in: [packages/agentos/src/core/utils/usage/UsageLedger.ts:50](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/core/utils/usage/UsageLedger.ts#L50)
+Defined in: [packages/agentos/src/core/utils/usage/UsageLedger.ts:50](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/core/utils/usage/UsageLedger.ts#L50)
 
 #### Returns
 
@@ -22,7 +22,7 @@ Defined in: [packages/agentos/src/core/utils/usage/UsageLedger.ts:50](https://gi
 
 > **save**(`bucket`): `Promise`\<`void`\>
 
-Defined in: [packages/agentos/src/core/utils/usage/UsageLedger.ts:49](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/core/utils/usage/UsageLedger.ts#L49)
+Defined in: [packages/agentos/src/core/utils/usage/UsageLedger.ts:49](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/core/utils/usage/UsageLedger.ts#L49)
 
 #### Parameters
 

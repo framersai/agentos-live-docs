@@ -1,6 +1,6 @@
 # Interface: SpreadingActivationConfig
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/IMemoryGraph.ts:54](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/graph/IMemoryGraph.ts#L54)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/graph/IMemoryGraph.ts:54](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/graph/IMemoryGraph.ts#L54)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/memory/retrieval/graph/IMemoryGraph.ts:54](htt
 
 > `optional` **activationThreshold**: `number`
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/IMemoryGraph.ts:60](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/graph/IMemoryGraph.ts#L60)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/graph/IMemoryGraph.ts:60](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/graph/IMemoryGraph.ts#L60)
 
 Minimum activation to continue spreading.
 
@@ -24,7 +24,7 @@ Minimum activation to continue spreading.
 
 > `optional` **decayPerHop**: `number`
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/IMemoryGraph.ts:58](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/graph/IMemoryGraph.ts#L58)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/graph/IMemoryGraph.ts:58](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/graph/IMemoryGraph.ts#L58)
 
 Activation decay per hop (multiplied each step).
 
@@ -40,7 +40,7 @@ Activation decay per hop (multiplied each step).
 
 > `optional` **maxDepth**: `number`
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/IMemoryGraph.ts:56](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/graph/IMemoryGraph.ts#L56)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/graph/IMemoryGraph.ts:56](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/graph/IMemoryGraph.ts#L56)
 
 Maximum hops from seed nodes.
 
@@ -56,7 +56,7 @@ Maximum hops from seed nodes.
 
 > `optional` **maxResults**: `number`
 
-Defined in: [packages/agentos/src/memory/retrieval/graph/IMemoryGraph.ts:62](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/retrieval/graph/IMemoryGraph.ts#L62)
+Defined in: [packages/agentos/src/cognition/memory/retrieval/graph/IMemoryGraph.ts:62](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/retrieval/graph/IMemoryGraph.ts#L62)
 
 Maximum activated nodes to return.
 

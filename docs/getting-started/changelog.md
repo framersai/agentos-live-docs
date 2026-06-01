@@ -4,6 +4,64 @@ sidebar_position: 7
 displayed_sidebar: guideSidebar
 ---
 
+## <small>0.9.29 (2026-05-30)</small>
+
+* Merge branch 'master' of https://github.com/framersai/agentos ([8b54850223cbd04fd478254b56d25993ec943d2f](https://github.com/framersai/agentos/commit/8b54850223cbd04fd478254b56d25993ec943d2f))
+* fix(anthropic): rotate API key per retry + mark exhausted on 429 ([abf80a61f4bf42cc7ade30469b8d76bb2eef87ad](https://github.com/framersai/agentos/commit/abf80a61f4bf42cc7ade30469b8d76bb2eef87ad))
+
+## <small>0.9.28 (2026-05-30)</small>
+
+* feat(api): forward tool_choice; hard-timeout guard for Anthropic requests; fix pg vector index names ([24941073a02d6c4edf22c136056bb4b25c99f076](https://github.com/framersai/agentos/commit/24941073a02d6c4edf22c136056bb4b25c99f076))
+
+## <small>0.9.27 (2026-05-30)</small>
+
+* fix(tools): non-null provider assertion in streamText shim loop ([09d031ace322b4868f933b77621f31829f1885e4](https://github.com/framersai/agentos/commit/09d031ace322b4868f933b77621f31829f1885e4))
+* feat(tools): buffered prompt-emulated tool loop ([49184f6fc60219e6f34b8858c7f42c56d9761e42](https://github.com/framersai/agentos/commit/49184f6fc60219e6f34b8858c7f42c56d9761e42))
+* feat(tools): prompt-emulated tool schema renderer ([590f74f8ebdebf1e1a0e32314b8875d036a46082](https://github.com/framersai/agentos/commit/590f74f8ebdebf1e1a0e32314b8875d036a46082))
+* feat(tools): prompt-emulated tool-call parser ([fd030fac877c09ac838933b986aab3e2dac5fa3a](https://github.com/framersai/agentos/commit/fd030fac877c09ac838933b986aab3e2dac5fa3a))
+* feat(tools): streamText auto reactive fallback for tool-incapable models ([6dd2c58b1234e4133737f73f79a7b0a2424d428b](https://github.com/framersai/agentos/commit/6dd2c58b1234e4133737f73f79a7b0a2424d428b))
+* feat(tools): tool-emulation activation + response formatter ([db2fb17a87cd0bbdea6ec309f88b26ac3c3f7de1](https://github.com/framersai/agentos/commit/db2fb17a87cd0bbdea6ec309f88b26ac3c3f7de1))
+* feat(tools): toolMode prompt shim in streamText (buffer hops, replay final) ([6c96ff689f4bec0fa1d59b7cf4415070a82be4c4](https://github.com/framersai/agentos/commit/6c96ff689f4bec0fa1d59b7cf4415070a82be4c4))
+* feat(tools): toolMode shim path in generateText (prompt + auto reactive fallback) ([2c7935876a54b5653ac1badc597a87defd28210d](https://github.com/framersai/agentos/commit/2c7935876a54b5653ac1badc597a87defd28210d))
+
+## <small>0.9.26 (2026-05-30)</small>
+
+* fix(api): re-export setGlobalLlmObserver from package main ([9036539f19dffa37154cb71cf91acd91b8ced3ad](https://github.com/framersai/agentos/commit/9036539f19dffa37154cb71cf91acd91b8ced3ad))
+* test: repair relative imports for relocated colocated tests; drop dead tsconfig test globs ([01b4e276e7b3668feec10e5c2cb564b44fb94e19](https://github.com/framersai/agentos/commit/01b4e276e7b3668feec10e5c2cb564b44fb94e19))
+
+## <small>0.9.25 (2026-05-29)</small>
+
+* feat(api): global LLM usage observer hook ([53fe0fcfdcdbc4fb9d424a805db86ffaba602115](https://github.com/framersai/agentos/commit/53fe0fcfdcdbc4fb9d424a805db86ffaba602115))
+
+## <small>0.9.24 (2026-05-29)</small>
+
+* feat(voice-graph): speak-only TTS delivery + injectable orchestrator/session ([3bf2831854ecbffb6c15aade115965501520e6bb](https://github.com/framersai/agentos/commit/3bf2831854ecbffb6c15aade115965501520e6bb))
+* Correct LLM provider count to 11 across README, docs, corpus, and tests ([1e0c2f82cd2e479972444ecd39ca68e8f482ad91](https://github.com/framersai/agentos/commit/1e0c2f82cd2e479972444ecd39ca68e8f482ad91))
+* Correct LLM provider count to 11 in architecture alt text ([63ed327fe991cbf5fe1e01bca76416a3aaa76167](https://github.com/framersai/agentos/commit/63ed327fe991cbf5fe1e01bca76416a3aaa76167))
+* Rewrite README hero and fix LLM provider count to 11 ([5024065f1be17885edd02d2003cff15d51485535](https://github.com/framersai/agentos/commit/5024065f1be17885edd02d2003cff15d51485535))
+
+## <small>0.9.23 (2026-05-28)</small>
+
+* fix(generateObject): route through buildResponseFormat for anthropic + gemini ([143d5117cc550c058eef4244b8e8c077c771a52c](https://github.com/framersai/agentos/commit/143d5117cc550c058eef4244b8e8c077c771a52c))
+
+## <small>0.9.22 (2026-05-28)</small>
+
+* fix(graphrag): use ON CONFLICT instead of INSERT OR REPLACE so Postgres adapters can persist ([4bb7186dc385fcd9671769ef4e0e7a2be1a060ee](https://github.com/framersai/agentos/commit/4bb7186dc385fcd9671769ef4e0e7a2be1a060ee))
+* docs(memory): sync multimodal-rag + working-memory updates ([b847096d91ff28d174bbf4c172fe565834257236](https://github.com/framersai/agentos/commit/b847096d91ff28d174bbf4c172fe565834257236))
+
+## <small>0.9.21 (2026-05-27)</small>
+
+* feat(rag): export PostgresVectorStore from cognition/rag public surface ([f55db21ccb2fc05134c086d12b15af8de4f7ae24](https://github.com/framersai/agentos/commit/f55db21ccb2fc05134c086d12b15af8de4f7ae24))
+* docs(readme): add forge demo hero (gif + webp fallback) ([2146cfe985426cfb1997b8b47707109422527c1c](https://github.com/framersai/agentos/commit/2146cfe985426cfb1997b8b47707109422527c1c))
+* docs(readme): trim filler tail on forge demo caption ([7273b59cde46a46d66151ea840fbf3c5aee1b1c0](https://github.com/framersai/agentos/commit/7273b59cde46a46d66151ea840fbf3c5aee1b1c0))
+* rag: add fetchByIds to IVectorStore + PostgresVectorStore; hydrate sparse-only HybridSearcher winners ([1ab0da74bfd3c71b3763b41615e394dd10af9adb](https://github.com/framersai/agentos/commit/1ab0da74bfd3c71b3763b41615e394dd10af9adb))
+* Merge branch 'master' of https://github.com/framersai/agentos ([775e73921dfe04efbbbd8601c04d3ac70d542edd](https://github.com/framersai/agentos/commit/775e73921dfe04efbbbd8601c04d3ac70d542edd))
+* rotate Discord invite and route hardcoded URLs through wilds.ai/discord ([7b13f2b1cb235f76c991e04b4fa593ea71acd331](https://github.com/framersai/agentos/commit/7b13f2b1cb235f76c991e04b4fa593ea71acd331))
+
+## <small>0.9.20 (2026-05-22)</small>
+
+* fix(generateText): match 'credit balance' billing message in isRetryableError ([6060864a393103bf4d6709ab5a0df9467b3bb293](https://github.com/framersai/agentos/commit/6060864a393103bf4d6709ab5a0df9467b3bb293))
+
 ## <small>0.9.19 (2026-05-21)</small>
 
 * test(voice): use AudioFrame.timestamp (not timestampMs) in STT regression test ([dd7752f35df767d3f7287f46b941cda7d4c8d0b5](https://github.com/framersai/agentos/commit/dd7752f35df767d3f7287f46b941cda7d4c8d0b5))

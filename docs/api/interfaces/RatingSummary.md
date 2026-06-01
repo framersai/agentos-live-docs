@@ -1,6 +1,6 @@
 # Interface: RatingSummary
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:154](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/marketplace/store/IMarketplace.ts#L154)
+Defined in: [packages/agentos/src/cognition/marketplace/store/IMarketplace.ts:154](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/marketplace/store/IMarketplace.ts#L154)
 
 Rating summary
 
@@ -10,7 +10,7 @@ Rating summary
 
 > **average**: `number`
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:156](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/marketplace/store/IMarketplace.ts#L156)
+Defined in: [packages/agentos/src/cognition/marketplace/store/IMarketplace.ts:156](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/marketplace/store/IMarketplace.ts#L156)
 
 Average rating (1-5)
 
@@ -20,7 +20,7 @@ Average rating (1-5)
 
 > **count**: `number`
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:158](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/marketplace/store/IMarketplace.ts#L158)
+Defined in: [packages/agentos/src/cognition/marketplace/store/IMarketplace.ts:158](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/marketplace/store/IMarketplace.ts#L158)
 
 Total number of ratings
 
@@ -30,7 +30,7 @@ Total number of ratings
 
 > **distribution**: `object`
 
-Defined in: [packages/agentos/src/marketplace/store/IMarketplace.ts:160](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/marketplace/store/IMarketplace.ts#L160)
+Defined in: [packages/agentos/src/cognition/marketplace/store/IMarketplace.ts:160](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/marketplace/store/IMarketplace.ts#L160)
 
 Distribution by star count
 

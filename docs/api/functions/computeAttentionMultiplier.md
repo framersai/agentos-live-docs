@@ -2,7 +2,7 @@
 
 > **computeAttentionMultiplier**(`weights`, `features`): `number`
 
-Defined in: [packages/agentos/src/memory/core/encoding/EncodingModel.ts:81](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/encoding/EncodingModel.ts#L81)
+Defined in: [packages/agentos/src/cognition/memory/core/encoding/EncodingModel.ts:81](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/encoding/EncodingModel.ts#L81)
 
 Compute a composite attention multiplier from content features weighted
 by personality-derived encoding weights.

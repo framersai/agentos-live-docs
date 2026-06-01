@@ -318,4 +318,4 @@ const result = await tool.execute({
 
 ## License
 
-Apache-2.0 - See LICENSE file
+MIT - See LICENSE file

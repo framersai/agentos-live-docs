@@ -1,6 +1,6 @@
 # Interface: RegisterAdapterOptions
 
-Defined in: [packages/agentos/src/channels/ChannelRouter.ts:43](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/channels/ChannelRouter.ts#L43)
+Defined in: [packages/agentos/src/io/channels/ChannelRouter.ts:43](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/io/channels/ChannelRouter.ts#L43)
 
 Options for registering an adapter with the router.
 
@@ -10,6 +10,6 @@ Options for registering an adapter with the router.
 
 > `optional` **platformKey**: `string`
 
-Defined in: [packages/agentos/src/channels/ChannelRouter.ts:45](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/channels/ChannelRouter.ts#L45)
+Defined in: [packages/agentos/src/io/channels/ChannelRouter.ts:45](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/io/channels/ChannelRouter.ts#L45)
 
 Override the platform key (defaults to adapter.platform).

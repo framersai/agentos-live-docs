@@ -1,6 +1,6 @@
 # Interface: GraphExpansionRequest
 
-Defined in: [packages/agentos/src/orchestration/runtime/GraphRuntime.ts:69](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/runtime/GraphRuntime.ts#L69)
+Defined in: [packages/agentos/src/orchestration/runtime/GraphRuntime.ts:69](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/runtime/GraphRuntime.ts#L69)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/orchestration/runtime/GraphRuntime.ts:69](http
 
 > `optional` **patch**: [`MissionGraphPatch`](MissionGraphPatch.md)
 
-Defined in: [packages/agentos/src/orchestration/runtime/GraphRuntime.ts:73](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/runtime/GraphRuntime.ts#L73)
+Defined in: [packages/agentos/src/orchestration/runtime/GraphRuntime.ts:73](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/runtime/GraphRuntime.ts#L73)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [packages/agentos/src/orchestration/runtime/GraphRuntime.ts:73](http
 
 > **reason**: `string`
 
-Defined in: [packages/agentos/src/orchestration/runtime/GraphRuntime.ts:71](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/runtime/GraphRuntime.ts#L71)
+Defined in: [packages/agentos/src/orchestration/runtime/GraphRuntime.ts:71](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/runtime/GraphRuntime.ts#L71)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: [packages/agentos/src/orchestration/runtime/GraphRuntime.ts:71](http
 
 > **request**: `unknown`
 
-Defined in: [packages/agentos/src/orchestration/runtime/GraphRuntime.ts:72](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/runtime/GraphRuntime.ts#L72)
+Defined in: [packages/agentos/src/orchestration/runtime/GraphRuntime.ts:72](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/runtime/GraphRuntime.ts#L72)
 
 ***
 
@@ -32,4 +32,4 @@ Defined in: [packages/agentos/src/orchestration/runtime/GraphRuntime.ts:72](http
 
 > **trigger**: [`MissionExpansionTrigger`](../type-aliases/MissionExpansionTrigger.md)
 
-Defined in: [packages/agentos/src/orchestration/runtime/GraphRuntime.ts:70](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/runtime/GraphRuntime.ts#L70)
+Defined in: [packages/agentos/src/orchestration/runtime/GraphRuntime.ts:70](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/runtime/GraphRuntime.ts#L70)

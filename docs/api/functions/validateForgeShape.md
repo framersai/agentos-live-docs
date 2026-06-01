@@ -2,7 +2,7 @@
 
 > **validateForgeShape**(`req`): `string`[]
 
-Defined in: [packages/agentos/src/emergent/ForgeShapeValidator.ts:42](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/emergent/ForgeShapeValidator.ts#L42)
+Defined in: [packages/agentos/src/cognition/emergent/ForgeShapeValidator.ts:42](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/emergent/ForgeShapeValidator.ts#L42)
 
 Validate a forge request's shape against the rules that dominate
 cheap-tier failures. Every violation is reported at once (no

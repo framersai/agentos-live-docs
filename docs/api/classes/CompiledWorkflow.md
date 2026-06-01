@@ -1,6 +1,6 @@
 # Class: CompiledWorkflow
 
-Defined in: [packages/agentos/src/orchestration/builders/WorkflowBuilder.ts:692](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/builders/WorkflowBuilder.ts#L692)
+Defined in: [packages/agentos/src/orchestration/builders/WorkflowBuilder.ts:692](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/builders/WorkflowBuilder.ts#L692)
 
 An execution-ready workflow produced by `WorkflowBuilder.compile()`.
 
@@ -17,7 +17,7 @@ three execution modes as the raw runtime:
 
 > **new CompiledWorkflow**(`ir`, `checkpointStore`, `deps?`): `CompiledWorkflow`
 
-Defined in: [packages/agentos/src/orchestration/builders/WorkflowBuilder.ts:704](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/builders/WorkflowBuilder.ts#L704)
+Defined in: [packages/agentos/src/orchestration/builders/WorkflowBuilder.ts:704](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/builders/WorkflowBuilder.ts#L704)
 
 #### Parameters
 
@@ -52,7 +52,7 @@ Optional runtime executors forwarded to `NodeExecutor`.
 
 > **invoke**(`input`): `Promise`\<`unknown`\>
 
-Defined in: [packages/agentos/src/orchestration/builders/WorkflowBuilder.ts:721](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/builders/WorkflowBuilder.ts#L721)
+Defined in: [packages/agentos/src/orchestration/builders/WorkflowBuilder.ts:721](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/builders/WorkflowBuilder.ts#L721)
 
 Execute the workflow to completion and return the final `artifacts` payload.
 
@@ -76,7 +76,7 @@ The `GraphState.artifacts` value after all nodes complete.
 
 > **resume**(`checkpointId`): `Promise`\<`unknown`\>
 
-Defined in: [packages/agentos/src/orchestration/builders/WorkflowBuilder.ts:741](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/builders/WorkflowBuilder.ts#L741)
+Defined in: [packages/agentos/src/orchestration/builders/WorkflowBuilder.ts:741](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/builders/WorkflowBuilder.ts#L741)
 
 Resume a previously interrupted workflow run from its latest checkpoint.
 
@@ -100,7 +100,7 @@ The final `GraphState.artifacts` value after resumption completes.
 
 > **stream**(`input`): `AsyncIterable`\<[`GraphEvent`](../type-aliases/GraphEvent.md)\>
 
-Defined in: [packages/agentos/src/orchestration/builders/WorkflowBuilder.ts:731](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/builders/WorkflowBuilder.ts#L731)
+Defined in: [packages/agentos/src/orchestration/builders/WorkflowBuilder.ts:731](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/builders/WorkflowBuilder.ts#L731)
 
 Execute the workflow while yielding `GraphEvent` values at each step boundary.
 
@@ -126,7 +126,7 @@ Runtime events in causal order.
 
 > **toIR**(): [`CompiledExecutionGraph`](../interfaces/CompiledExecutionGraph.md)
 
-Defined in: [packages/agentos/src/orchestration/builders/WorkflowBuilder.ts:750](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/builders/WorkflowBuilder.ts#L750)
+Defined in: [packages/agentos/src/orchestration/builders/WorkflowBuilder.ts:750](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/builders/WorkflowBuilder.ts#L750)
 
 Expose the compiled IR for inspection, serialisation, or subgraph composition.
 

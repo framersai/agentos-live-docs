@@ -1,6 +1,6 @@
 # Interface: RagIngestionOptions
 
-Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:57](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/IRetrievalAugmentor.ts#L57)
+Defined in: [packages/agentos/src/cognition/rag/IRetrievalAugmentor.ts:88](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/IRetrievalAugmentor.ts#L88)
 
 Chunking options and ingestion-time overrides.
 
@@ -10,7 +10,7 @@ Chunking options and ingestion-time overrides.
 
 > `optional` **batchSize**: `number`
 
-Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:90](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/IRetrievalAugmentor.ts#L90)
+Defined in: [packages/agentos/src/cognition/rag/IRetrievalAugmentor.ts:121](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/IRetrievalAugmentor.ts#L121)
 
 Batch size for large ingestion jobs.
 
@@ -20,7 +20,7 @@ Batch size for large ingestion jobs.
 
 > `optional` **chunkingStrategy**: `object`
 
-Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:74](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/IRetrievalAugmentor.ts#L74)
+Defined in: [packages/agentos/src/cognition/rag/IRetrievalAugmentor.ts:105](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/IRetrievalAugmentor.ts#L105)
 
 Chunking configuration.  `strategySpecificParams` allows pluggable implementations to carry
 provider-specific hints without widening the base interface each time.
@@ -47,7 +47,7 @@ provider-specific hints without widening the base interface each time.
 
 > `optional` **duplicateHandling**: `"error"` \| `"overwrite"` \| `"skip"`
 
-Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:69](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/IRetrievalAugmentor.ts#L69)
+Defined in: [packages/agentos/src/cognition/rag/IRetrievalAugmentor.ts:100](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/IRetrievalAugmentor.ts#L100)
 
 Behavior when a document ID already exists.
 - `overwrite`: replace the existing document/chunks (default).
@@ -60,7 +60,7 @@ Behavior when a document ID already exists.
 
 > `optional` **embeddingModelId**: `string`
 
-Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:84](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/IRetrievalAugmentor.ts#L84)
+Defined in: [packages/agentos/src/cognition/rag/IRetrievalAugmentor.ts:115](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/IRetrievalAugmentor.ts#L115)
 
 Embedding model identifier used when generating embeddings for this ingestion request.
 When omitted the augmentor consults the service config / category defaults.
@@ -71,7 +71,7 @@ When omitted the augmentor consults the service config / category defaults.
 
 > `optional` **personaId**: `string`
 
-Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:88](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/IRetrievalAugmentor.ts#L88)
+Defined in: [packages/agentos/src/cognition/rag/IRetrievalAugmentor.ts:119](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/IRetrievalAugmentor.ts#L119)
 
 Optional persona identifier for personalization.
 
@@ -81,7 +81,7 @@ Optional persona identifier for personalization.
 
 > `optional` **processAsync**: `boolean`
 
-Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:92](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/IRetrievalAugmentor.ts#L92)
+Defined in: [packages/agentos/src/cognition/rag/IRetrievalAugmentor.ts:123](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/IRetrievalAugmentor.ts#L123)
 
 Whether to schedule ingestion asynchronously (future enhancement hook).
 
@@ -91,7 +91,7 @@ Whether to schedule ingestion asynchronously (future enhancement hook).
 
 > `optional` **targetDataSourceId**: `string`
 
-Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:62](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/IRetrievalAugmentor.ts#L62)
+Defined in: [packages/agentos/src/cognition/rag/IRetrievalAugmentor.ts:93](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/IRetrievalAugmentor.ts#L93)
 
 Explicit target data source ID.  If omitted, the augmentor falls back to the document-specified
 `dataSourceId`, category behavior defaults, or system defaults.
@@ -102,6 +102,6 @@ Explicit target data source ID.  If omitted, the augmentor falls back to the doc
 
 > `optional` **userId**: `string`
 
-Defined in: [packages/agentos/src/rag/IRetrievalAugmentor.ts:86](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/IRetrievalAugmentor.ts#L86)
+Defined in: [packages/agentos/src/cognition/rag/IRetrievalAugmentor.ts:117](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/IRetrievalAugmentor.ts#L117)
 
 Optional user identifier for auditing and personalization.

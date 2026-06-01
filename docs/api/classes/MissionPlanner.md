@@ -1,6 +1,6 @@
 # Class: MissionPlanner
 
-Defined in: [packages/agentos/src/orchestration/planning/MissionPlanner.ts:65](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/planning/MissionPlanner.ts#L65)
+Defined in: [packages/agentos/src/orchestration/planning/MissionPlanner.ts:65](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/planning/MissionPlanner.ts#L65)
 
 Tree of Thought mission planner.
 
@@ -14,7 +14,7 @@ compiling to `CompiledExecutionGraph`.
 
 > **new MissionPlanner**(`config`): `MissionPlanner`
 
-Defined in: [packages/agentos/src/orchestration/planning/MissionPlanner.ts:73](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/planning/MissionPlanner.ts#L73)
+Defined in: [packages/agentos/src/orchestration/planning/MissionPlanner.ts:73](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/planning/MissionPlanner.ts#L73)
 
 #### Parameters
 
@@ -32,7 +32,7 @@ Defined in: [packages/agentos/src/orchestration/planning/MissionPlanner.ts:73](h
 
 > **plan**(`goal`, `context`, `onEvent?`): `Promise`\<[`PlanResult`](../interfaces/PlanResult.md)\>
 
-Defined in: [packages/agentos/src/orchestration/planning/MissionPlanner.ts:88](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/planning/MissionPlanner.ts#L88)
+Defined in: [packages/agentos/src/orchestration/planning/MissionPlanner.ts:88](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/planning/MissionPlanner.ts#L88)
 
 Run the full planning pipeline: explore → evaluate → refine.
 

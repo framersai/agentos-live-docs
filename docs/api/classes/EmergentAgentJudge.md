@@ -1,6 +1,6 @@
 # Class: EmergentAgentJudge
 
-Defined in: [packages/agentos/src/emergent/EmergentAgentJudge.ts:90](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/emergent/EmergentAgentJudge.ts#L90)
+Defined in: [packages/agentos/src/cognition/emergent/EmergentAgentJudge.ts:90](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/emergent/EmergentAgentJudge.ts#L90)
 
 Strict LLM-as-judge gate for synthesized agent specs.
 
@@ -27,7 +27,7 @@ if (!verdict.approved) {
 
 > **new EmergentAgentJudge**(`config`): `EmergentAgentJudge`
 
-Defined in: [packages/agentos/src/emergent/EmergentAgentJudge.ts:93](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/emergent/EmergentAgentJudge.ts#L93)
+Defined in: [packages/agentos/src/cognition/emergent/EmergentAgentJudge.ts:93](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/emergent/EmergentAgentJudge.ts#L93)
 
 #### Parameters
 
@@ -45,7 +45,7 @@ Defined in: [packages/agentos/src/emergent/EmergentAgentJudge.ts:93](https://git
 
 > **reviewAgent**(`spec`): `Promise`\<[`AgentVerdict`](../interfaces/AgentVerdict.md)\>
 
-Defined in: [packages/agentos/src/emergent/EmergentAgentJudge.ts:102](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/emergent/EmergentAgentJudge.ts#L102)
+Defined in: [packages/agentos/src/cognition/emergent/EmergentAgentJudge.ts:102](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/emergent/EmergentAgentJudge.ts#L102)
 
 Evaluate an agent spec. Never throws — all failure paths return a
 structured rejection so the caller can surface a clean error to the

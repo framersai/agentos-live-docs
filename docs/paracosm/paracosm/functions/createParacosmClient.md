@@ -2,7 +2,7 @@
 
 > **createParacosmClient**(`options?`): [`ParacosmClient`](../interfaces/ParacosmClient.md)
 
-Defined in: [apps/paracosm/src/runtime/client.ts:186](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/runtime/client.ts#L186)
+Defined in: [apps/paracosm/src/runtime/client.ts:186](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/client.ts#L186)
 
 Create a Paracosm client with pinned defaults. Env vars are read once
 at construction; subsequent `process.env` mutations won't retrigger.

@@ -1,6 +1,6 @@
 # Interface: IVisionProvider
 
-Defined in: [packages/agentos/src/rag/multimodal/types.ts:313](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/multimodal/types.ts#L313)
+Defined in: [packages/agentos/src/cognition/rag/multimodal/types.ts:313](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/multimodal/types.ts#L313)
 
 Minimal interface for a vision LLM that can describe images.
 
@@ -31,7 +31,7 @@ const visionProvider: IVisionProvider = {
 
 > **describeImage**(`image`): `Promise`\<`string`\>
 
-Defined in: [packages/agentos/src/rag/multimodal/types.ts:320](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/multimodal/types.ts#L320)
+Defined in: [packages/agentos/src/cognition/rag/multimodal/types.ts:320](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/multimodal/types.ts#L320)
 
 Generate a text description of the provided image.
 

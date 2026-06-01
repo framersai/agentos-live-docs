@@ -2,4 +2,4 @@
 
 > `const` **DEFAULT\_PERSONA\_DRIFT\_CONFIG**: [`PersonaDriftConfig`](../interfaces/PersonaDriftConfig.md)
 
-Defined in: [packages/agentos/src/memory/mechanisms/PersonaDriftMechanism.ts:37](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/mechanisms/PersonaDriftMechanism.ts#L37)
+Defined in: [packages/agentos/src/cognition/memory/mechanisms/PersonaDriftMechanism.ts:37](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/mechanisms/PersonaDriftMechanism.ts#L37)

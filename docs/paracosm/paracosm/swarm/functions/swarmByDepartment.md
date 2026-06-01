@@ -2,7 +2,7 @@
 
 > **swarmByDepartment**(`artifact`): `Record`\<`string`, [`SwarmAgent`](../../schema/type-aliases/SwarmAgent.md)[]\>
 
-Defined in: [apps/paracosm/src/runtime/swarm/index.ts:41](https://github.com/framersai/paracosm/blob/902b79ee37e51444458d39152e6844a2c10a050e/src/runtime/swarm/index.ts#L41)
+Defined in: [apps/paracosm/src/runtime/swarm/index.ts:41](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/swarm/index.ts#L41)
 
 Group the swarm by department. Keys are department labels; values are
 the agents in insertion order from the snapshot. Returns `{}` when

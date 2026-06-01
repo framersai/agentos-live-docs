@@ -2,7 +2,7 @@
 
 > **buildSplitCallers**(`plannerOptions`, `executionOptions?`): `Promise`\<\{ `executionCaller`: (`system`, `user`) => `Promise`\<`string`\>; `executionModel`: `string`; `plannerCaller`: (`system`, `user`) => `Promise`\<`string`\>; `plannerModel`: `string`; \}\>
 
-Defined in: [packages/agentos/src/orchestration/planning/buildLlmCaller.ts:139](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/planning/buildLlmCaller.ts#L139)
+Defined in: [packages/agentos/src/orchestration/planning/buildLlmCaller.ts:139](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/planning/buildLlmCaller.ts#L139)
 
 Build separate planner and execution callers with potentially different providers.
 

@@ -2,7 +2,7 @@
 
 > **runPostApprovalGuardrails**(`toolName`, `args`, `guardrailIds`, `callbacks?`): `Promise`\<[`GuardrailHitlOverrideResult`](../interfaces/GuardrailHitlOverrideResult.md)\>
 
-Defined in: [packages/agentos/src/api/agency.ts:1510](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/agency.ts#L1510)
+Defined in: [packages/agentos/src/api/agency.ts:1547](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/agency.ts#L1547)
 
 Runs post-approval guardrails against tool call arguments to catch
 destructive actions that slipped past the HITL handler.

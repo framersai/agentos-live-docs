@@ -1,6 +1,6 @@
 # Interface: CognitiveRetrievalResult
 
-Defined in: [packages/agentos/src/memory/core/types.ts:249](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L249)
+Defined in: [packages/agentos/src/cognition/memory/core/types.ts:460](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/types.ts#L460)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/memory/core/types.ts:249](https://github.com/f
 
 > **diagnostics**: `object`
 
-Defined in: [packages/agentos/src/memory/core/types.ts:252](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L252)
+Defined in: [packages/agentos/src/cognition/memory/core/types.ts:463](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/types.ts#L463)
 
 #### candidatesScanned
 
@@ -158,7 +158,7 @@ retrieval paths.
 
 > **partiallyRetrieved**: [`PartiallyRetrievedTrace`](PartiallyRetrievedTrace.md)[]
 
-Defined in: [packages/agentos/src/memory/core/types.ts:251](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L251)
+Defined in: [packages/agentos/src/cognition/memory/core/types.ts:462](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/types.ts#L462)
 
 ***
 
@@ -166,4 +166,4 @@ Defined in: [packages/agentos/src/memory/core/types.ts:251](https://github.com/f
 
 > **retrieved**: [`ScoredMemoryTrace`](ScoredMemoryTrace.md)[]
 
-Defined in: [packages/agentos/src/memory/core/types.ts:250](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/core/types.ts#L250)
+Defined in: [packages/agentos/src/cognition/memory/core/types.ts:461](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/core/types.ts#L461)

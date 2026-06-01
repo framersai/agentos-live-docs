@@ -1,6 +1,6 @@
 # Interface: MemoryRetrievalPolicy
 
-Defined in: [packages/agentos/src/rag/unified/policy.ts:6](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/unified/policy.ts#L6)
+Defined in: [packages/agentos/src/cognition/rag/unified/policy.ts:6](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/unified/policy.ts#L6)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [packages/agentos/src/rag/unified/policy.ts:6](https://github.com/fr
 
 > `optional` **adaptive**: `boolean`
 
-Defined in: [packages/agentos/src/rag/unified/policy.ts:8](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/unified/policy.ts#L8)
+Defined in: [packages/agentos/src/cognition/rag/unified/policy.ts:8](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/unified/policy.ts#L8)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [packages/agentos/src/rag/unified/policy.ts:8](https://github.com/fr
 
 > `optional` **candidateMultiplier**: `number`
 
-Defined in: [packages/agentos/src/rag/unified/policy.ts:10](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/unified/policy.ts#L10)
+Defined in: [packages/agentos/src/cognition/rag/unified/policy.ts:10](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/unified/policy.ts#L10)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: [packages/agentos/src/rag/unified/policy.ts:10](https://github.com/f
 
 > `optional` **contextBudgetChars**: `number`
 
-Defined in: [packages/agentos/src/rag/unified/policy.ts:12](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/unified/policy.ts#L12)
+Defined in: [packages/agentos/src/cognition/rag/unified/policy.ts:12](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/unified/policy.ts#L12)
 
 ***
 
@@ -32,7 +32,7 @@ Defined in: [packages/agentos/src/rag/unified/policy.ts:12](https://github.com/f
 
 > `optional` **graphExpansion**: `boolean`
 
-Defined in: [packages/agentos/src/rag/unified/policy.ts:15](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/unified/policy.ts#L15)
+Defined in: [packages/agentos/src/cognition/rag/unified/policy.ts:15](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/unified/policy.ts#L15)
 
 ***
 
@@ -40,7 +40,7 @@ Defined in: [packages/agentos/src/rag/unified/policy.ts:15](https://github.com/f
 
 > `optional` **hyde**: `"never"` \| `"adaptive"` \| `"always"`
 
-Defined in: [packages/agentos/src/rag/unified/policy.ts:14](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/unified/policy.ts#L14)
+Defined in: [packages/agentos/src/cognition/rag/unified/policy.ts:14](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/unified/policy.ts#L14)
 
 ***
 
@@ -48,7 +48,7 @@ Defined in: [packages/agentos/src/rag/unified/policy.ts:14](https://github.com/f
 
 > `optional` **minScore**: `number`
 
-Defined in: [packages/agentos/src/rag/unified/policy.ts:11](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/unified/policy.ts#L11)
+Defined in: [packages/agentos/src/cognition/rag/unified/policy.ts:11](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/unified/policy.ts#L11)
 
 ***
 
@@ -56,7 +56,7 @@ Defined in: [packages/agentos/src/rag/unified/policy.ts:11](https://github.com/f
 
 > `optional` **profile**: [`MemoryRetrievalProfile`](../type-aliases/MemoryRetrievalProfile.md)
 
-Defined in: [packages/agentos/src/rag/unified/policy.ts:7](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/unified/policy.ts#L7)
+Defined in: [packages/agentos/src/cognition/rag/unified/policy.ts:7](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/unified/policy.ts#L7)
 
 ***
 
@@ -64,7 +64,7 @@ Defined in: [packages/agentos/src/rag/unified/policy.ts:7](https://github.com/fr
 
 > `optional` **reranker**: `"never"` \| `"adaptive"` \| `"always"`
 
-Defined in: [packages/agentos/src/rag/unified/policy.ts:13](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/unified/policy.ts#L13)
+Defined in: [packages/agentos/src/cognition/rag/unified/policy.ts:13](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/unified/policy.ts#L13)
 
 ***
 
@@ -72,4 +72,4 @@ Defined in: [packages/agentos/src/rag/unified/policy.ts:13](https://github.com/f
 
 > `optional` **topK**: `number`
 
-Defined in: [packages/agentos/src/rag/unified/policy.ts:9](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/rag/unified/policy.ts#L9)
+Defined in: [packages/agentos/src/cognition/rag/unified/policy.ts:9](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/rag/unified/policy.ts#L9)

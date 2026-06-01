@@ -1,6 +1,6 @@
 # Interface: CompiledExecutionGraph
 
-Defined in: [packages/agentos/src/orchestration/ir/types.ts:677](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/ir/types.ts#L677)
+Defined in: [packages/agentos/src/orchestration/ir/types.ts:677](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/ir/types.ts#L677)
 
 The fully compiled, execution-ready representation of an agent graph.
 
@@ -14,7 +14,7 @@ interprets authoring-API-specific constructs — it operates exclusively on this
 
 > **checkpointPolicy**: `"none"` \| `"every_node"` \| `"explicit"`
 
-Defined in: [packages/agentos/src/orchestration/ir/types.ts:705](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/ir/types.ts#L705)
+Defined in: [packages/agentos/src/orchestration/ir/types.ts:705](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/ir/types.ts#L705)
 
 Graph-wide default checkpoint persistence policy.
 Per-node `GraphNode.checkpoint` settings override this default.
@@ -29,7 +29,7 @@ Per-node `GraphNode.checkpoint` settings override this default.
 
 > **edges**: [`GraphEdge`](GraphEdge.md)[]
 
-Defined in: [packages/agentos/src/orchestration/ir/types.ts:685](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/ir/types.ts#L685)
+Defined in: [packages/agentos/src/orchestration/ir/types.ts:685](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/ir/types.ts#L685)
 
 All directed edges, including static entry/exit edges from/to `START`/`END`.
 
@@ -39,7 +39,7 @@ All directed edges, including static entry/exit edges from/to `START`/`END`.
 
 > **id**: `string`
 
-Defined in: [packages/agentos/src/orchestration/ir/types.ts:679](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/ir/types.ts#L679)
+Defined in: [packages/agentos/src/orchestration/ir/types.ts:679](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/ir/types.ts#L679)
 
 Stable, globally unique graph identifier (slug or UUIDv4).
 
@@ -49,7 +49,7 @@ Stable, globally unique graph identifier (slug or UUIDv4).
 
 > **memoryConsistency**: [`MemoryConsistencyMode`](../type-aliases/MemoryConsistencyMode.md)
 
-Defined in: [packages/agentos/src/orchestration/ir/types.ts:707](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/ir/types.ts#L707)
+Defined in: [packages/agentos/src/orchestration/ir/types.ts:707](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/ir/types.ts#L707)
 
 Graph-wide memory consistency mode; may be overridden per-node via `MemoryPolicy.consistency`.
 
@@ -59,7 +59,7 @@ Graph-wide memory consistency mode; may be overridden per-node via `MemoryPolicy
 
 > **name**: `string`
 
-Defined in: [packages/agentos/src/orchestration/ir/types.ts:681](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/ir/types.ts#L681)
+Defined in: [packages/agentos/src/orchestration/ir/types.ts:681](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/ir/types.ts#L681)
 
 Human-readable display name.
 
@@ -69,7 +69,7 @@ Human-readable display name.
 
 > **nodes**: [`GraphNode`](GraphNode.md)[]
 
-Defined in: [packages/agentos/src/orchestration/ir/types.ts:683](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/ir/types.ts#L683)
+Defined in: [packages/agentos/src/orchestration/ir/types.ts:683](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/ir/types.ts#L683)
 
 All vertices, including any `START`/`END` bridge nodes inserted by the compiler.
 
@@ -79,7 +79,7 @@ All vertices, including any `START`/`END` bridge nodes inserted by the compiler.
 
 > **reducers**: [`StateReducers`](StateReducers.md)
 
-Defined in: [packages/agentos/src/orchestration/ir/types.ts:696](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/ir/types.ts#L696)
+Defined in: [packages/agentos/src/orchestration/ir/types.ts:696](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/ir/types.ts#L696)
 
 Field-level reducer configuration applied after each node completes.
 
@@ -89,7 +89,7 @@ Field-level reducer configuration applied after each node completes.
 
 > **stateSchema**: `object`
 
-Defined in: [packages/agentos/src/orchestration/ir/types.ts:690](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/ir/types.ts#L690)
+Defined in: [packages/agentos/src/orchestration/ir/types.ts:690](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/ir/types.ts#L690)
 
 JSON-Schema-compatible schema declarations for the three `GraphState` generics.
 Used by the runtime for validation and by tooling for type generation.

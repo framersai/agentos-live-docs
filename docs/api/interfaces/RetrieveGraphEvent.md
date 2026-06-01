@@ -1,6 +1,6 @@
 # Interface: RetrieveGraphEvent
 
-Defined in: [packages/agentos/src/query-router/types.ts:925](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/query-router/types.ts#L925)
+Defined in: [packages/agentos/src/orchestration/pipeline/query/types.ts:938](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/pipeline/query/types.ts#L938)
 
 Emitted when graph traversal results are available.
 
@@ -10,7 +10,7 @@ Emitted when graph traversal results are available.
 
 > **durationMs**: `number`
 
-Defined in: [packages/agentos/src/query-router/types.ts:930](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/query-router/types.ts#L930)
+Defined in: [packages/agentos/src/orchestration/pipeline/query/types.ts:943](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/pipeline/query/types.ts#L943)
 
 Duration of graph retrieval in milliseconds.
 
@@ -20,7 +20,7 @@ Duration of graph retrieval in milliseconds.
 
 > **entityCount**: `number`
 
-Defined in: [packages/agentos/src/query-router/types.ts:928](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/query-router/types.ts#L928)
+Defined in: [packages/agentos/src/orchestration/pipeline/query/types.ts:941](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/pipeline/query/types.ts#L941)
 
 Number of entities discovered via graph traversal.
 
@@ -30,7 +30,7 @@ Number of entities discovered via graph traversal.
 
 > **timestamp**: `number`
 
-Defined in: [packages/agentos/src/query-router/types.ts:932](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/query-router/types.ts#L932)
+Defined in: [packages/agentos/src/orchestration/pipeline/query/types.ts:945](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/pipeline/query/types.ts#L945)
 
 Timestamp of the event.
 
@@ -40,4 +40,4 @@ Timestamp of the event.
 
 > **type**: `"retrieve:graph"`
 
-Defined in: [packages/agentos/src/query-router/types.ts:926](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/query-router/types.ts#L926)
+Defined in: [packages/agentos/src/orchestration/pipeline/query/types.ts:939](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/pipeline/query/types.ts#L939)

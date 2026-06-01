@@ -1,6 +1,6 @@
 # Interface: LoadedDocument
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:796](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/io/facade/types.ts#L796)
+Defined in: [packages/agentos/src/cognition/memory/io/facade/types.ts:796](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/io/facade/types.ts#L796)
 
 The parsed representation of a document returned by `Memory.load()`.
 Contains full text, optional chunks, and any extracted images/tables.
@@ -11,7 +11,7 @@ Contains full text, optional chunks, and any extracted images/tables.
 
 > `optional` **chunks**: [`DocumentChunk`](DocumentChunk.md)[]
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:810](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/io/facade/types.ts#L810)
+Defined in: [packages/agentos/src/cognition/memory/io/facade/types.ts:810](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/io/facade/types.ts#L810)
 
 Pre-chunked segments, present when chunking was requested during load.
 
@@ -21,7 +21,7 @@ Pre-chunked segments, present when chunking was requested during load.
 
 > **content**: `string`
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:800](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/io/facade/types.ts#L800)
+Defined in: [packages/agentos/src/cognition/memory/io/facade/types.ts:800](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/io/facade/types.ts#L800)
 
 Full extracted text content of the document.
 
@@ -31,7 +31,7 @@ Full extracted text content of the document.
 
 > **format**: `string`
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:827](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/io/facade/types.ts#L827)
+Defined in: [packages/agentos/src/cognition/memory/io/facade/types.ts:827](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/io/facade/types.ts#L827)
 
 The format that was detected or used to parse the document.
 
@@ -47,7 +47,7 @@ The format that was detected or used to parse the document.
 
 > `optional` **images**: [`ExtractedImage`](ExtractedImage.md)[]
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:816](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/io/facade/types.ts#L816)
+Defined in: [packages/agentos/src/cognition/memory/io/facade/types.ts:816](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/io/facade/types.ts#L816)
 
 Images extracted from the document.
 Populated only when `IngestionConfig.extractImages` is `true`.
@@ -58,7 +58,7 @@ Populated only when `IngestionConfig.extractImages` is `true`.
 
 > **metadata**: [`DocumentMetadata`](DocumentMetadata.md)
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:805](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/io/facade/types.ts#L805)
+Defined in: [packages/agentos/src/cognition/memory/io/facade/types.ts:805](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/io/facade/types.ts#L805)
 
 Document-level metadata (title, author, page count, etc.).
 
@@ -68,6 +68,6 @@ Document-level metadata (title, author, page count, etc.).
 
 > `optional` **tables**: [`ExtractedTable`](ExtractedTable.md)[]
 
-Defined in: [packages/agentos/src/memory/io/facade/types.ts:821](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/memory/io/facade/types.ts#L821)
+Defined in: [packages/agentos/src/cognition/memory/io/facade/types.ts:821](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/cognition/memory/io/facade/types.ts#L821)
 
 Structured tables extracted from the document.

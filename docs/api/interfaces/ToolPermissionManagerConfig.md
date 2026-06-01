@@ -1,6 +1,6 @@
 # Interface: ToolPermissionManagerConfig
 
-Defined in: [packages/agentos/src/core/tools/permissions/IToolPermissionManager.ts:97](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/core/tools/permissions/IToolPermissionManager.ts#L97)
+Defined in: [packages/agentos/src/core/tools/permissions/IToolPermissionManager.ts:97](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/core/tools/permissions/IToolPermissionManager.ts#L97)
 
 Configuration options for the `ToolPermissionManager`.
 This allows administrators to fine-tune how tool permissions are evaluated and enforced.
@@ -31,7 +31,7 @@ toolToSubscriptionFeatures: {
 
 > `optional` **logToolCalls**: `boolean`
 
-Defined in: [packages/agentos/src/core/tools/permissions/IToolPermissionManager.ts:100](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/core/tools/permissions/IToolPermissionManager.ts#L100)
+Defined in: [packages/agentos/src/core/tools/permissions/IToolPermissionManager.ts:100](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/core/tools/permissions/IToolPermissionManager.ts#L100)
 
 If true, detailed information about permission checks for tool calls will be logged. Defaults to false.
 
@@ -41,7 +41,7 @@ If true, detailed information about permission checks for tool calls will be log
 
 > `optional` **strictCapabilityChecking**: `boolean`
 
-Defined in: [packages/agentos/src/core/tools/permissions/IToolPermissionManager.ts:98](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/core/tools/permissions/IToolPermissionManager.ts#L98)
+Defined in: [packages/agentos/src/core/tools/permissions/IToolPermissionManager.ts:98](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/core/tools/permissions/IToolPermissionManager.ts#L98)
 
 If `true` (default), the Persona must possess *all*
 capabilities listed in the `tool.requiredCapabilities` array. If `false`, this check might be bypassed
@@ -53,7 +53,7 @@ or handled with more leniency (though generally not recommended for tools access
 
 > `optional` **toolToSubscriptionFeatures**: `Record`\<`string`, [`FeatureFlag`](FeatureFlag.md)[]\>
 
-Defined in: [packages/agentos/src/core/tools/permissions/IToolPermissionManager.ts:99](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/core/tools/permissions/IToolPermissionManager.ts#L99)
+Defined in: [packages/agentos/src/core/tools/permissions/IToolPermissionManager.ts:99](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/core/tools/permissions/IToolPermissionManager.ts#L99)
 
 Optional. A mapping where keys are
 tool IDs (`ITool.id`) or tool names (`ITool.name`), and values are arrays of `FeatureFlag` objects (or their string identifiers).

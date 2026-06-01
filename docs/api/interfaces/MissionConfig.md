@@ -1,6 +1,6 @@
 # Interface: MissionConfig
 
-Defined in: [packages/agentos/src/orchestration/compiler/MissionCompiler.ts:34](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/compiler/MissionCompiler.ts#L34)
+Defined in: [packages/agentos/src/orchestration/compiler/MissionCompiler.ts:34](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/compiler/MissionCompiler.ts#L34)
 
 Top-level configuration object consumed by `MissionCompiler.compile()`.
 Produced internally by `MissionBuilder.compile()`.
@@ -11,7 +11,7 @@ Produced internally by `MissionBuilder.compile()`.
 
 > **anchors**: `object`[]
 
-Defined in: [packages/agentos/src/orchestration/compiler/MissionCompiler.ts:80](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/compiler/MissionCompiler.ts#L80)
+Defined in: [packages/agentos/src/orchestration/compiler/MissionCompiler.ts:106](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/compiler/MissionCompiler.ts#L106)
 
 Declarative anchor nodes that must be spliced into the execution order at specific phases.
 Anchors allow callers to inject pre-built `GraphNode` objects (e.g. specialised tools or
@@ -68,7 +68,7 @@ Pre-built `GraphNode` to splice in. The compiler overwrites `node.id` with `anch
 
 > **goalTemplate**: `string`
 
-Defined in: [packages/agentos/src/orchestration/compiler/MissionCompiler.ts:43](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/compiler/MissionCompiler.ts#L43)
+Defined in: [packages/agentos/src/orchestration/compiler/MissionCompiler.ts:43](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/compiler/MissionCompiler.ts#L43)
 
 Goal prompt template. Supports `{{variable}}` placeholders (e.g. `{{topic}}`).
 The current stub compiler passes it through to generated reasoning nodes.
@@ -79,7 +79,7 @@ The current stub compiler passes it through to generated reasoning nodes.
 
 > **inputSchema**: `any`
 
-Defined in: [packages/agentos/src/orchestration/compiler/MissionCompiler.ts:38](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/compiler/MissionCompiler.ts#L38)
+Defined in: [packages/agentos/src/orchestration/compiler/MissionCompiler.ts:38](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/compiler/MissionCompiler.ts#L38)
 
 Zod schema (or plain JSON-Schema object) describing the mission's input payload.
 
@@ -89,7 +89,7 @@ Zod schema (or plain JSON-Schema object) describing the mission's input payload.
 
 > **name**: `string`
 
-Defined in: [packages/agentos/src/orchestration/compiler/MissionCompiler.ts:36](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/compiler/MissionCompiler.ts#L36)
+Defined in: [packages/agentos/src/orchestration/compiler/MissionCompiler.ts:36](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/compiler/MissionCompiler.ts#L36)
 
 Human-readable mission name; becomes the compiled graph's display name.
 
@@ -99,7 +99,7 @@ Human-readable mission name; becomes the compiled graph's display name.
 
 > **plannerConfig**: `object`
 
-Defined in: [packages/agentos/src/orchestration/compiler/MissionCompiler.ts:47](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/compiler/MissionCompiler.ts#L47)
+Defined in: [packages/agentos/src/orchestration/compiler/MissionCompiler.ts:47](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/compiler/MissionCompiler.ts#L47)
 
 Planner configuration controlling step generation and execution budgets.
 
@@ -123,11 +123,41 @@ Hard cap on the total number of plan steps the planner may emit.
 When `true`, `gmi` nodes are configured to issue multiple tool calls per turn.
 Forwarded to `gmiNode` as `parallelTools`.
 
+#### plan?
+
+> `optional` **plan**: [`SimplePlan`](SimplePlan.md)
+
+Pre-generated plan that bypasses both `style` template selection and
+the goal classifier. When set, the compiler validates the plan shape
+(non-empty, unique step ids, known actions, valid phases) and uses
+the steps directly to build the graph. Intended for callers that
+generate plans externally — e.g. wunderland's opt-in
+`planner.style: 'llm'` mode that asks an LLM to decompose the goal
+into steps at YAML compile time.
+
+Validation is intentionally strict: invalid plans throw at compile
+time rather than producing a partially-correct graph that fails
+mid-execution.
+
 #### strategy
 
 > **strategy**: `string`
 
 Routing/planning strategy identifier (e.g. `'linear'`, `'react'`, `'tree-of-thought'`).
+
+#### style?
+
+> `optional` **style**: `"research"` \| `"creative"` \| `"qa"`
+
+Optional plan-template selector. Picks which fixed stub template the
+compiler emits. Defaults to `'research'` (gather → process → deliver →
+refine) which matches the prior behaviour. Other values:
+- `'qa'`       — short Q&A plan (research-quick → answer)
+- `'creative'` — brainstorm → develop-concept → produce-artifact → polish
+
+The real `PlanningEngine` (Task 16+) will deprecate this in favour of
+goal-driven plan generation; until then `style` lets users opt into a
+less research-shaped graph for non-research goals.
 
 ***
 
@@ -135,7 +165,7 @@ Routing/planning strategy identifier (e.g. `'linear'`, `'react'`, `'tree-of-thou
 
 > `optional` **policyConfig**: `object`
 
-Defined in: [packages/agentos/src/orchestration/compiler/MissionCompiler.ts:68](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/compiler/MissionCompiler.ts#L68)
+Defined in: [packages/agentos/src/orchestration/compiler/MissionCompiler.ts:94](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/compiler/MissionCompiler.ts#L94)
 
 Optional mission-level policy overrides.
 When set, they are applied to all compiled nodes unless a node already declares
@@ -197,6 +227,6 @@ Guardrail identifiers applied as output guardrails on every node.
 
 > **returnsSchema**: `any`
 
-Defined in: [packages/agentos/src/orchestration/compiler/MissionCompiler.ts:45](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/orchestration/compiler/MissionCompiler.ts#L45)
+Defined in: [packages/agentos/src/orchestration/compiler/MissionCompiler.ts:45](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/compiler/MissionCompiler.ts#L45)
 
 Zod schema (or plain JSON-Schema object) describing the mission's output artifacts.

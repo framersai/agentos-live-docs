@@ -1,6 +1,6 @@
 # Interface: AgentOSResumeExternalToolRequestOptions
 
-Defined in: [packages/agentos/src/api/types/AgentOSExternalToolRequest.ts:23](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/types/AgentOSExternalToolRequest.ts#L23)
+Defined in: [packages/agentos/src/api/types/AgentOSExternalToolRequest.ts:23](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/types/AgentOSExternalToolRequest.ts#L23)
 
 Optional runtime-only data needed when resuming a persisted external tool
 pause after the original AgentOS process is gone.
@@ -15,7 +15,7 @@ pause after the original AgentOS process is gone.
 
 > `optional` **organizationId**: `string`
 
-Defined in: [packages/agentos/src/api/types/AgentOSExternalToolRequest.ts:34](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/types/AgentOSExternalToolRequest.ts#L34)
+Defined in: [packages/agentos/src/api/types/AgentOSExternalToolRequest.ts:34](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/types/AgentOSExternalToolRequest.ts#L34)
 
 Trusted request-scoped organization context to re-apply after restart.
 
@@ -29,7 +29,7 @@ the resumed turn needs organization-scoped memory or routing.
 
 > `optional` **preferredModelId**: `string`
 
-Defined in: [packages/agentos/src/api/types/AgentOSExternalToolRequest.ts:25](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/types/AgentOSExternalToolRequest.ts#L25)
+Defined in: [packages/agentos/src/api/types/AgentOSExternalToolRequest.ts:25](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/types/AgentOSExternalToolRequest.ts#L25)
 
 ***
 
@@ -37,7 +37,7 @@ Defined in: [packages/agentos/src/api/types/AgentOSExternalToolRequest.ts:25](ht
 
 > `optional` **preferredProviderId**: `string`
 
-Defined in: [packages/agentos/src/api/types/AgentOSExternalToolRequest.ts:26](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/types/AgentOSExternalToolRequest.ts#L26)
+Defined in: [packages/agentos/src/api/types/AgentOSExternalToolRequest.ts:26](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/types/AgentOSExternalToolRequest.ts#L26)
 
 ***
 
@@ -45,4 +45,4 @@ Defined in: [packages/agentos/src/api/types/AgentOSExternalToolRequest.ts:26](ht
 
 > `optional` **userApiKeys**: `Record`\<`string`, `string`\>
 
-Defined in: [packages/agentos/src/api/types/AgentOSExternalToolRequest.ts:24](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/api/types/AgentOSExternalToolRequest.ts#L24)
+Defined in: [packages/agentos/src/api/types/AgentOSExternalToolRequest.ts:24](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/api/types/AgentOSExternalToolRequest.ts#L24)

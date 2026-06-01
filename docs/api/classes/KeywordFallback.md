@@ -1,6 +1,6 @@
 # Class: KeywordFallback
 
-Defined in: [packages/agentos/src/query-router/KeywordFallback.ts:51](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/query-router/KeywordFallback.ts#L51)
+Defined in: [packages/agentos/src/orchestration/pipeline/query/KeywordFallback.ts:51](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/pipeline/query/KeywordFallback.ts#L51)
 
 Simple keyword-matching search over a corpus of chunks.
 
@@ -23,7 +23,7 @@ const results = fallback.search('authentication tokens', 5);
 
 > **new KeywordFallback**(`chunks`): `KeywordFallback`
 
-Defined in: [packages/agentos/src/query-router/KeywordFallback.ts:59](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/query-router/KeywordFallback.ts#L59)
+Defined in: [packages/agentos/src/orchestration/pipeline/query/KeywordFallback.ts:59](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/pipeline/query/KeywordFallback.ts#L59)
 
 Creates a new KeywordFallback instance.
 
@@ -45,7 +45,7 @@ The corpus chunks to search over.
 
 > **search**(`query`, `topK?`): [`RetrievedChunk`](../interfaces/RetrievedChunk.md)[]
 
-Defined in: [packages/agentos/src/query-router/KeywordFallback.ts:77](https://github.com/framersai/agentos/blob/369f4181e3a31735ff56401807893a6801760447/src/query-router/KeywordFallback.ts#L77)
+Defined in: [packages/agentos/src/orchestration/pipeline/query/KeywordFallback.ts:77](https://github.com/framersai/agentos/blob/63ed327fe991cbf5fe1e01bca76416a3aaa76167/src/orchestration/pipeline/query/KeywordFallback.ts#L77)
 
 Searches the corpus for chunks matching the given query keywords.
 
