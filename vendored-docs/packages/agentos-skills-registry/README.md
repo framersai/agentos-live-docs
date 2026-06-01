@@ -1,6 +1,6 @@
 # @framers/agentos-skills-registry
 
-Curated skills registry for [AgentOS](https://github.com/framersai/agentos) — 88 SKILL.md prompt modules, typed catalog, and lazy-loading factories.
+Curated skills registry for [AgentOS](https://github.com/framerslab/agentos) — 88 SKILL.md prompt modules, typed catalog, and lazy-loading factories.
 
 [![npm](https://img.shields.io/npm/v/@framers/agentos-skills-registry?logo=npm&color=cb3837)](https://www.npmjs.com/package/@framers/agentos-skills-registry)
 

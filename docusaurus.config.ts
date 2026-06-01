@@ -181,7 +181,7 @@ const config = (githubStars: number): Config => ({
           url: 'https://frame.dev',
           sameAs: [
             'https://frame.dev',
-            'https://github.com/framersai',
+            'https://github.com/framerslab',
             'https://www.npmjs.com/package/@framers/agentos',
             'https://wilds.ai/discord',
             'https://wilds.ai',
@@ -215,7 +215,7 @@ const config = (githubStars: number): Config => ({
         offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
         url: 'https://agentos.sh/en',
         downloadUrl: 'https://www.npmjs.com/package/@framers/agentos',
-        codeRepository: 'https://github.com/framersai/agentos',
+        codeRepository: 'https://github.com/framerslab/agentos',
       }),
     },
     // Microsoft Clarity. Same project ID as agentos.sh main site so
@@ -457,7 +457,7 @@ const config = (githubStars: number): Config => ({
           routeBasePath: '/',
           sidebarPath: './sidebars.js',
           exclude: guidesOnly ? ['api/**', 'paracosm/**'] : [],
-          editUrl: 'https://github.com/framersai/agentos-live-docs/tree/master/docs/',
+          editUrl: 'https://github.com/framerslab/agentos-live-docs/tree/master/docs/',
         },
         // Blog plugin disabled: the canonical AgentOS blog is at
         // agentos.sh/en/blog (Track G consolidation, 2026-04-30). Old
@@ -604,7 +604,7 @@ const config = (githubStars: number): Config => ({
           className: 'navbar-collapse-md',
         },
         {
-          href: 'https://github.com/framersai/agentos',
+          href: 'https://github.com/framerslab/agentos',
           label: 'GitHub',
           position: 'right' as const,
           className: 'header-github-link',
@@ -648,7 +648,7 @@ const config = (githubStars: number): Config => ({
         {
           title: 'Community',
           items: [
-            { label: 'GitHub', href: 'https://github.com/framersai/agentos' },
+            { label: 'GitHub', href: 'https://github.com/framerslab/agentos' },
             { label: 'Discord', href: 'https://wilds.ai/discord' },
             { label: 'Twitter', href: 'https://x.com/rabbitholewun' },
             { label: 'LinkedIn', href: 'https://www.linkedin.com/company/framerslab' },

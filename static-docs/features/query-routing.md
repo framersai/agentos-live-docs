@@ -5,7 +5,7 @@ sidebar_position: 29
 
 # Query Router
 
-AgentOS includes a [`QueryRouter`](https://github.com/framersai/agentos/blob/master/src/orchestration/pipeline/query/QueryRouter.ts) that turns one user question into a three-stage pipeline:
+AgentOS includes a [`QueryRouter`](https://github.com/framerslab/agentos/blob/master/src/orchestration/pipeline/query/QueryRouter.ts) that turns one user question into a three-stage pipeline:
 
 1. classify the query into tier `0` through `3`
 2. retrieve the right amount of context
@@ -23,10 +23,10 @@ AgentOS includes a [`QueryRouter`](https://github.com/framersai/agentos/blob/mas
 
 ## Execution Paths
 
-- Default path: `route()` classifies the query, then dispatches retrieval through the legacy [`QueryDispatcher`](https://github.com/framersai/agentos/blob/master/src/orchestration/pipeline/query/QueryDispatcher.ts).
-- Opt-in path: if a host calls `setUnifiedRetriever(...)`, `route()` switches to plan-aware retrieval through [`UnifiedRetriever`](https://github.com/framersai/agentos/blob/master/src/cognition/rag/unified/UnifiedRetriever.ts).
+- Default path: `route()` classifies the query, then dispatches retrieval through the legacy [`QueryDispatcher`](https://github.com/framerslab/agentos/blob/master/src/orchestration/pipeline/query/QueryDispatcher.ts).
+- Opt-in path: if a host calls `setUnifiedRetriever(...)`, `route()` switches to plan-aware retrieval through [`UnifiedRetriever`](https://github.com/framerslab/agentos/blob/master/src/cognition/rag/unified/UnifiedRetriever.ts).
 
-This matters because [`UnifiedRetriever`](https://github.com/framersai/agentos/blob/master/src/cognition/rag/unified/UnifiedRetriever.ts) is implemented and usable today, but it is not the default QueryRouter/runtime retrieval path yet.
+This matters because [`UnifiedRetriever`](https://github.com/framerslab/agentos/blob/master/src/cognition/rag/unified/UnifiedRetriever.ts) is implemented and usable today, but it is not the default QueryRouter/runtime retrieval path yet.
 
 ## Current Limitations
 
@@ -90,7 +90,7 @@ These are recommendations only. Hosts decide whether to activate or load them.
 ## Caching And Grounding
 
 - `cacheResults` controls an in-memory cache of completed `route()` results. QueryRouter clears that cache when indexed corpus chunks change and when retrieval-planning dependencies such as `UnifiedRetriever` or the capability-discovery engine are swapped.
-- `verifyCitations` enables post-generation [`CitationVerifier`](https://github.com/framersai/agentos/blob/master/src/cognition/rag/citation/CitationVerifier.ts) runs against the retrieved chunks for a route. When verification runs successfully, the result is attached to `QueryResult.grounding`; if embeddings are unavailable or no chunks were retrieved, verification is skipped gracefully.
+- `verifyCitations` enables post-generation [`CitationVerifier`](https://github.com/framerslab/agentos/blob/master/src/cognition/rag/citation/CitationVerifier.ts) runs against the retrieved chunks for a route. When verification runs successfully, the result is attached to `QueryResult.grounding`; if embeddings are unavailable or no chunks were retrieved, verification is skipped gracefully.
 
 ## Config Notes
 

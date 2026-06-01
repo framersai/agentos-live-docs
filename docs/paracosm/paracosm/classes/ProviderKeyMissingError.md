@@ -1,6 +1,6 @@
 # Class: ProviderKeyMissingError
 
-Defined in: [apps/paracosm/src/engine/provider/resolver.ts:46](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/provider/resolver.ts#L46)
+Defined in: [apps/paracosm/src/engine/provider/resolver.ts:46](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/provider/resolver.ts#L46)
 
 Thrown when no supported provider has an API key in the environment.
 Carries structured detail so callers (dashboard, CLI, tests) can branch
@@ -16,7 +16,7 @@ on it without string-matching the message.
 
 > **new ProviderKeyMissingError**(`requested`, `tried`): `ProviderKeyMissingError`
 
-Defined in: [apps/paracosm/src/engine/provider/resolver.ts:50](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/provider/resolver.ts#L50)
+Defined in: [apps/paracosm/src/engine/provider/resolver.ts:50](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/provider/resolver.ts#L50)
 
 #### Parameters
 
@@ -54,7 +54,7 @@ Defined in: node\_modules/.pnpm/typescript@5.6.3/node\_modules/typescript/lib/li
 
 > `readonly` **code**: `"PARACOSM_PROVIDER_KEY_MISSING"` = `'PARACOSM_PROVIDER_KEY_MISSING'`
 
-Defined in: [apps/paracosm/src/engine/provider/resolver.ts:47](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/provider/resolver.ts#L47)
+Defined in: [apps/paracosm/src/engine/provider/resolver.ts:47](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/provider/resolver.ts#L47)
 
 ***
 
@@ -86,7 +86,7 @@ Defined in: node\_modules/.pnpm/typescript@5.6.3/node\_modules/typescript/lib/li
 
 > `readonly` **requested**: `LlmProvider`
 
-Defined in: [apps/paracosm/src/engine/provider/resolver.ts:48](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/provider/resolver.ts#L48)
+Defined in: [apps/paracosm/src/engine/provider/resolver.ts:48](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/provider/resolver.ts#L48)
 
 ***
 
@@ -106,7 +106,7 @@ Defined in: node\_modules/.pnpm/typescript@5.6.3/node\_modules/typescript/lib/li
 
 > `readonly` **tried**: `LlmProvider`[]
 
-Defined in: [apps/paracosm/src/engine/provider/resolver.ts:49](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/provider/resolver.ts#L49)
+Defined in: [apps/paracosm/src/engine/provider/resolver.ts:49](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/provider/resolver.ts#L49)
 
 ***
 

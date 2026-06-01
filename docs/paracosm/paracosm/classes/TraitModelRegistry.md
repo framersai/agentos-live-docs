@@ -1,6 +1,6 @@
 # Class: TraitModelRegistry
 
-Defined in: [apps/paracosm/src/engine/traits/index.ts:154](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/traits/index.ts#L154)
+Defined in: [apps/paracosm/src/engine/traits/index.ts:154](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/traits/index.ts#L154)
 
 In-memory map of TraitModel by id. The runtime singleton lives at
 `traitModelRegistry`; tests and isolated callers can construct
@@ -22,7 +22,7 @@ their own via `new TraitModelRegistry()`.
 
 > **get**(`modelId`): `TraitModel` \| `undefined`
 
-Defined in: [apps/paracosm/src/engine/traits/index.ts:173](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/traits/index.ts#L173)
+Defined in: [apps/paracosm/src/engine/traits/index.ts:173](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/traits/index.ts#L173)
 
 Return the model or `undefined` if not registered.
 
@@ -42,7 +42,7 @@ Return the model or `undefined` if not registered.
 
 > **list**(): `TraitModel`[]
 
-Defined in: [apps/paracosm/src/engine/traits/index.ts:185](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/traits/index.ts#L185)
+Defined in: [apps/paracosm/src/engine/traits/index.ts:185](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/traits/index.ts#L185)
 
 All registered models in registration order.
 
@@ -56,7 +56,7 @@ All registered models in registration order.
 
 > **register**(`model`): `void`
 
-Defined in: [apps/paracosm/src/engine/traits/index.ts:161](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/traits/index.ts#L161)
+Defined in: [apps/paracosm/src/engine/traits/index.ts:161](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/traits/index.ts#L161)
 
 Register a model. Throws if a model with the same id is already
 registered (registration-time-only; no live re-binding).
@@ -77,7 +77,7 @@ registered (registration-time-only; no live re-binding).
 
 > **require**(`modelId`): `TraitModel`
 
-Defined in: [apps/paracosm/src/engine/traits/index.ts:178](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/traits/index.ts#L178)
+Defined in: [apps/paracosm/src/engine/traits/index.ts:178](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/traits/index.ts#L178)
 
 Return the model or throw `UnknownTraitModelError`.
 

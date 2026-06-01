@@ -2,7 +2,7 @@
 
 > `const` **SimulationModeSchema**: `ZodEnum`\<\{ `batch-point`: `"batch-point"`; `batch-trajectory`: `"batch-trajectory"`; `turn-loop`: `"turn-loop"`; \}\>
 
-Defined in: [apps/paracosm/src/engine/schema/primitives.ts:87](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/schema/primitives.ts#L87)
+Defined in: [apps/paracosm/src/engine/schema/primitives.ts:87](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/schema/primitives.ts#L87)
 
 Simulation modes. Discriminator for [RunArtifactSchema](RunArtifactSchema.md).
 

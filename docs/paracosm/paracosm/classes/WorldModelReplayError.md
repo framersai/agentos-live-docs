@@ -1,6 +1,6 @@
 # Class: WorldModelReplayError
 
-Defined in: [apps/paracosm/src/runtime/orchestrator/index.ts:2180](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/orchestrator/index.ts#L2180)
+Defined in: [apps/paracosm/src/runtime/orchestrator/index.ts:2180](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/orchestrator/index.ts#L2180)
 
 Thrown by replaySimulation when the input artifact lacks the
 preconditions for deterministic replay (missing per-turn kernel
@@ -16,7 +16,7 @@ snapshots, missing recorded decisions, or a scenario id mismatch).
 
 > **new WorldModelReplayError**(`message`): `WorldModelReplayError`
 
-Defined in: [apps/paracosm/src/runtime/orchestrator/index.ts:2181](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/orchestrator/index.ts#L2181)
+Defined in: [apps/paracosm/src/runtime/orchestrator/index.ts:2181](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/orchestrator/index.ts#L2181)
 
 #### Parameters
 

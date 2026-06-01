@@ -1,5 +1,5 @@
 {
-  "name": "@framersai/agentos-live-docs",
+  "name": "@framers/agentos-live-docs",
   "version": "1.0.0",
   "private": true,
   "scripts": {
@@ -61,7 +61,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/framersai/agentos-live-docs"
+    "url": "https://github.com/framerslab/agentos-live-docs"
   },
   "license": "MIT"
 }

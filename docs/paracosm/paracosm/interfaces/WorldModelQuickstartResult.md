@@ -1,6 +1,6 @@
 # Interface: WorldModelQuickstartResult
 
-Defined in: [apps/paracosm/src/runtime/world-model/index.ts:93](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/world-model/index.ts#L93)
+Defined in: [apps/paracosm/src/runtime/world-model/index.ts:93](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/world-model/index.ts#L93)
 
 Shape returned by [WorldModel.quickstart](../classes/WorldModel.md#quickstart).
 
@@ -10,7 +10,7 @@ Shape returned by [WorldModel.quickstart](../classes/WorldModel.md#quickstart).
 
 > **actors**: [`ActorConfig`](ActorConfig.md)[]
 
-Defined in: [apps/paracosm/src/runtime/world-model/index.ts:97](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/world-model/index.ts#L97)
+Defined in: [apps/paracosm/src/runtime/world-model/index.ts:97](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/world-model/index.ts#L97)
 
 The actors the LLM generated for this run.
 
@@ -20,7 +20,7 @@ The actors the LLM generated for this run.
 
 > **artifacts**: `object`[]
 
-Defined in: [apps/paracosm/src/runtime/world-model/index.ts:99](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/world-model/index.ts#L99)
+Defined in: [apps/paracosm/src/runtime/world-model/index.ts:99](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/world-model/index.ts#L99)
 
 One [RunArtifact](../type-aliases/RunArtifact.md) per actor, in the same order as `actors`.
 
@@ -427,7 +427,7 @@ Rich labeled snapshots with narrative + score; good for timepoint cards.
 
 > **runs**: [`ActorRun`](ActorRun.md)[]
 
-Defined in: [apps/paracosm/src/runtime/world-model/index.ts:103](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/world-model/index.ts#L103)
+Defined in: [apps/paracosm/src/runtime/world-model/index.ts:103](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/world-model/index.ts#L103)
 
 Actor + artifact zipped together. Equivalent to
 `actors.map((a, i) => ({ actor: a, artifact: artifacts[i] }))`.
@@ -439,6 +439,6 @@ Easier to iterate via `runs.forEach(({ actor, artifact }) => ...)`.
 
 > **scenario**: [`ScenarioPackage`](ScenarioPackage.md)
 
-Defined in: [apps/paracosm/src/runtime/world-model/index.ts:95](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/world-model/index.ts#L95)
+Defined in: [apps/paracosm/src/runtime/world-model/index.ts:95](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/world-model/index.ts#L95)
 
 The scenario the quickstart ran against.

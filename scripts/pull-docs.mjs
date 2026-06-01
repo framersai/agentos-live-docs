@@ -19,7 +19,7 @@ const ROOT = resolve(__dirname, '..');
 const DOCS_OUT = resolve(ROOT, 'docs');
 
 const MONO_ROOT = resolve(ROOT, '../..');
-const EXTENSIONS_GITHUB_REPO = 'https://github.com/framersai/agentos-extensions';
+const EXTENSIONS_GITHUB_REPO = 'https://github.com/framerslab/agentos-extensions';
 const require = createRequire(import.meta.url);
 const {
   publicationManifest,
@@ -220,7 +220,7 @@ sidebar_position: ${position}
 
 # ${title}
 
-Documentation coming soon. See the [extension source](https://github.com/framersai/agentos-extensions/tree/master/registry/curated/${curatedDir}) for usage details.
+Documentation coming soon. See the [extension source](https://github.com/framerslab/agentos-extensions/tree/master/registry/curated/${curatedDir}) for usage details.
 `,
       );
       console.warn(`  STUB (no README): ${curatedDir}`);

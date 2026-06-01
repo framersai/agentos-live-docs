@@ -1,6 +1,6 @@
 # Interface: SimulationState
 
-Defined in: [apps/paracosm/src/engine/core/state.ts:222](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/state.ts#L222)
+Defined in: [apps/paracosm/src/engine/core/state.ts:222](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/state.ts#L222)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [apps/paracosm/src/engine/core/state.ts:222](https://github.com/fram
 
 > **agents**: [`Agent`](Agent.md)[]
 
-Defined in: [apps/paracosm/src/engine/core/state.ts:234](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/state.ts#L234)
+Defined in: [apps/paracosm/src/engine/core/state.ts:234](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/state.ts#L234)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [apps/paracosm/src/engine/core/state.ts:234](https://github.com/fram
 
 > **environment**: `Record`\<`string`, `number` \| `string` \| `boolean`\>
 
-Defined in: [apps/paracosm/src/engine/core/state.ts:249](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/state.ts#L249)
+Defined in: [apps/paracosm/src/engine/core/state.ts:249](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/state.ts#L249)
 
 Environment conditions from `world.environment` declarations
 (external context: market growth pct, radiation, depth, etc.).
@@ -29,7 +29,7 @@ the scenario declares no environment fields).
 
 > **eventLog**: [`TurnEvent`](TurnEvent.md)[]
 
-Defined in: [apps/paracosm/src/engine/core/state.ts:250](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/state.ts#L250)
+Defined in: [apps/paracosm/src/engine/core/state.ts:250](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/state.ts#L250)
 
 ***
 
@@ -37,7 +37,7 @@ Defined in: [apps/paracosm/src/engine/core/state.ts:250](https://github.com/fram
 
 > **metadata**: [`SimulationMetadata`](SimulationMetadata.md)
 
-Defined in: [apps/paracosm/src/engine/core/state.ts:223](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/state.ts#L223)
+Defined in: [apps/paracosm/src/engine/core/state.ts:223](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/state.ts#L223)
 
 ***
 
@@ -45,7 +45,7 @@ Defined in: [apps/paracosm/src/engine/core/state.ts:223](https://github.com/fram
 
 > **metrics**: [`WorldMetrics`](WorldMetrics.md)
 
-Defined in: [apps/paracosm/src/engine/core/state.ts:233](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/state.ts#L233)
+Defined in: [apps/paracosm/src/engine/core/state.ts:233](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/state.ts#L233)
 
 Numerical world state. The `WorldMetrics` fields below
 (`population`, `morale`, `foodMonthsReserve`, `powerKw`, etc.) are
@@ -61,7 +61,7 @@ universal schema.
 
 > **politics**: [`WorldPolitics`](WorldPolitics.md)
 
-Defined in: [apps/paracosm/src/engine/core/state.ts:235](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/state.ts#L235)
+Defined in: [apps/paracosm/src/engine/core/state.ts:235](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/state.ts#L235)
 
 ***
 
@@ -69,7 +69,7 @@ Defined in: [apps/paracosm/src/engine/core/state.ts:235](https://github.com/fram
 
 > **statuses**: `Record`\<`string`, `string` \| `boolean`\>
 
-Defined in: [apps/paracosm/src/engine/core/state.ts:242](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/state.ts#L242)
+Defined in: [apps/paracosm/src/engine/core/state.ts:242](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/state.ts#L242)
 
 Categorical state from `world.statuses` declarations
 (governance state, faction alignment, funding round, etc.).

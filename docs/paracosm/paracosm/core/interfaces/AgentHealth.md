@@ -1,6 +1,6 @@
 # Interface: AgentHealth
 
-Defined in: [apps/paracosm/src/engine/core/state.ts:56](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/state.ts#L56)
+Defined in: [apps/paracosm/src/engine/core/state.ts:56](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/state.ts#L56)
 
 ## Indexable
 
@@ -14,7 +14,7 @@ Scenario-defined health fields beyond the standard set
 
 > **alive**: `boolean`
 
-Defined in: [apps/paracosm/src/engine/core/state.ts:57](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/state.ts#L57)
+Defined in: [apps/paracosm/src/engine/core/state.ts:57](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/state.ts#L57)
 
 ***
 
@@ -22,7 +22,7 @@ Defined in: [apps/paracosm/src/engine/core/state.ts:57](https://github.com/frame
 
 > `optional` **boneDensityBase**: `number`
 
-Defined in: [apps/paracosm/src/engine/core/state.ts:68](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/state.ts#L68)
+Defined in: [apps/paracosm/src/engine/core/state.ts:68](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/state.ts#L68)
 
 Immutable starting bone density, captured on first progression
  tick so the decay curve targets a stable baseline rather than
@@ -35,7 +35,7 @@ Immutable starting bone density, captured on first progression
 
 > `optional` **boneDensityPct**: `number`
 
-Defined in: [apps/paracosm/src/engine/core/state.ts:63](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/state.ts#L63)
+Defined in: [apps/paracosm/src/engine/core/state.ts:63](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/state.ts#L63)
 
 Bone density percentage (scenario-specific, used by Mars/Lunar)
 
@@ -45,7 +45,7 @@ Bone density percentage (scenario-specific, used by Mars/Lunar)
 
 > **conditions**: `string`[]
 
-Defined in: [apps/paracosm/src/engine/core/state.ts:61](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/state.ts#L61)
+Defined in: [apps/paracosm/src/engine/core/state.ts:61](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/state.ts#L61)
 
 ***
 
@@ -53,7 +53,7 @@ Defined in: [apps/paracosm/src/engine/core/state.ts:61](https://github.com/frame
 
 > `optional` **cumulativeRadiationMsv**: `number`
 
-Defined in: [apps/paracosm/src/engine/core/state.ts:70](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/state.ts#L70)
+Defined in: [apps/paracosm/src/engine/core/state.ts:70](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/state.ts#L70)
 
 Cumulative radiation exposure in millisieverts (scenario-specific, used by Mars/Lunar)
 
@@ -63,7 +63,7 @@ Cumulative radiation exposure in millisieverts (scenario-specific, used by Mars/
 
 > `optional` **deathCause**: `string`
 
-Defined in: [apps/paracosm/src/engine/core/state.ts:59](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/state.ts#L59)
+Defined in: [apps/paracosm/src/engine/core/state.ts:59](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/state.ts#L59)
 
 ***
 
@@ -71,7 +71,7 @@ Defined in: [apps/paracosm/src/engine/core/state.ts:59](https://github.com/frame
 
 > `optional` **deathTime**: `number`
 
-Defined in: [apps/paracosm/src/engine/core/state.ts:58](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/state.ts#L58)
+Defined in: [apps/paracosm/src/engine/core/state.ts:58](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/state.ts#L58)
 
 ***
 
@@ -79,4 +79,4 @@ Defined in: [apps/paracosm/src/engine/core/state.ts:58](https://github.com/frame
 
 > **psychScore**: `number`
 
-Defined in: [apps/paracosm/src/engine/core/state.ts:60](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/state.ts#L60)
+Defined in: [apps/paracosm/src/engine/core/state.ts:60](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/state.ts#L60)

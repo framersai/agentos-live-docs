@@ -1,6 +1,6 @@
 # Interface: ForgedToolRecord
 
-Defined in: [apps/paracosm/src/cli/types.ts:25](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/cli/types.ts#L25)
+Defined in: [apps/paracosm/src/cli/types.ts:25](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/cli/types.ts#L25)
 
 ## Properties
 
@@ -8,7 +8,7 @@ Defined in: [apps/paracosm/src/cli/types.ts:25](https://github.com/framersai/par
 
 > **confidence**: `number`
 
-Defined in: [apps/paracosm/src/cli/types.ts:29](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/cli/types.ts#L29)
+Defined in: [apps/paracosm/src/cli/types.ts:29](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/cli/types.ts#L29)
 
 ***
 
@@ -16,7 +16,7 @@ Defined in: [apps/paracosm/src/cli/types.ts:29](https://github.com/framersai/par
 
 > **description**: `string`
 
-Defined in: [apps/paracosm/src/cli/types.ts:28](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/cli/types.ts#L28)
+Defined in: [apps/paracosm/src/cli/types.ts:28](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/cli/types.ts#L28)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: [apps/paracosm/src/cli/types.ts:28](https://github.com/framersai/par
 
 > **judgeVerdict**: `"approved"` \| `"rejected"`
 
-Defined in: [apps/paracosm/src/cli/types.ts:30](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/cli/types.ts#L30)
+Defined in: [apps/paracosm/src/cli/types.ts:30](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/cli/types.ts#L30)
 
 ***
 
@@ -32,7 +32,7 @@ Defined in: [apps/paracosm/src/cli/types.ts:30](https://github.com/framersai/par
 
 > **mode**: `"compose"` \| `"sandbox"`
 
-Defined in: [apps/paracosm/src/cli/types.ts:27](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/cli/types.ts#L27)
+Defined in: [apps/paracosm/src/cli/types.ts:27](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/cli/types.ts#L27)
 
 ***
 
@@ -40,4 +40,4 @@ Defined in: [apps/paracosm/src/cli/types.ts:27](https://github.com/framersai/par
 
 > **name**: `string`
 
-Defined in: [apps/paracosm/src/cli/types.ts:26](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/cli/types.ts#L26)
+Defined in: [apps/paracosm/src/cli/types.ts:26](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/cli/types.ts#L26)

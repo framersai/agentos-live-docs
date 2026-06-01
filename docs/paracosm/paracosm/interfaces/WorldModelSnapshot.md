@@ -1,6 +1,6 @@
 # Interface: WorldModelSnapshot
 
-Defined in: [apps/paracosm/src/runtime/world-model/index.ts:115](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/world-model/index.ts#L115)
+Defined in: [apps/paracosm/src/runtime/world-model/index.ts:115](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/world-model/index.ts#L115)
 
 Serializable bundle that captures everything needed to reconstruct
 an equivalent [WorldModel](../classes/WorldModel.md) at a specific turn. Round-trips
@@ -16,7 +16,7 @@ was created with `captureSnapshots: true`).
 
 > **kernel**: `KernelSnapshot`
 
-Defined in: [apps/paracosm/src/runtime/world-model/index.ts:119](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/world-model/index.ts#L119)
+Defined in: [apps/paracosm/src/runtime/world-model/index.ts:119](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/world-model/index.ts#L119)
 
 Kernel state at capture time.
 
@@ -26,7 +26,7 @@ Kernel state at capture time.
 
 > `optional` **parentRunId**: `string`
 
-Defined in: [apps/paracosm/src/runtime/world-model/index.ts:123](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/world-model/index.ts#L123)
+Defined in: [apps/paracosm/src/runtime/world-model/index.ts:123](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/world-model/index.ts#L123)
 
 Run-id the snapshot was captured from, when available. Threaded
  into `RunArtifact.metadata.forkedFrom.parentRunId` on the child
@@ -38,6 +38,6 @@ Run-id the snapshot was captured from, when available. Threaded
 
 > **snapshotVersion**: `1`
 
-Defined in: [apps/paracosm/src/runtime/world-model/index.ts:117](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/world-model/index.ts#L117)
+Defined in: [apps/paracosm/src/runtime/world-model/index.ts:117](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/world-model/index.ts#L117)
 
 Format discriminator; bumped when the shape changes.

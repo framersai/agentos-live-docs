@@ -1,9 +1,9 @@
 import { basename } from 'node:path';
 
-const AGENTOS_BLOB_BASE = 'https://github.com/framersai/agentos/blob/master/';
+const AGENTOS_BLOB_BASE = 'https://github.com/framerslab/agentos/blob/master/';
 const MONOREPO_BLOB_BASE = 'https://github.com/manicinc/voice-chat-assistant/blob/master/';
 const EXTENSIONS_CURATED_TREE_BASE =
-  'https://github.com/framersai/agentos-extensions/tree/master/registry/curated/';
+  'https://github.com/framerslab/agentos-extensions/tree/master/registry/curated/';
 
 function normalizeDocKey(value) {
   return basename(String(value || ''))

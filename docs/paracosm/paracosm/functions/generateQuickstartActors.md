@@ -2,7 +2,7 @@
 
 > **generateQuickstartActors**(`scenario`, `count`, `opts?`): `Promise`\<[`ActorConfig`](../interfaces/ActorConfig.md)[]\>
 
-Defined in: [apps/paracosm/src/runtime/world-model/index.ts:724](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/world-model/index.ts#L724)
+Defined in: [apps/paracosm/src/runtime/world-model/index.ts:724](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/world-model/index.ts#L724)
 
 **`Internal`**
 

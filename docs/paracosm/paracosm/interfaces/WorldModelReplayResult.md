@@ -1,6 +1,6 @@
 # Interface: WorldModelReplayResult
 
-Defined in: [apps/paracosm/src/runtime/world-model/index.ts:144](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/world-model/index.ts#L144)
+Defined in: [apps/paracosm/src/runtime/world-model/index.ts:144](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/world-model/index.ts#L144)
 
 Shape returned by [WorldModel.replay](../classes/WorldModel.md#replay). `matches=true` iff the
 fresh kernel snapshots produced by re-execution byte-equal the input
@@ -19,7 +19,7 @@ the input verbatim.
 
 > **artifact**: `object`
 
-Defined in: [apps/paracosm/src/runtime/world-model/index.ts:145](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/world-model/index.ts#L145)
+Defined in: [apps/paracosm/src/runtime/world-model/index.ts:145](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/world-model/index.ts#L145)
 
 #### aborted?
 
@@ -424,7 +424,7 @@ Rich labeled snapshots with narrative + score; good for timepoint cards.
 
 > **divergence**: `string`
 
-Defined in: [apps/paracosm/src/runtime/world-model/index.ts:147](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/world-model/index.ts#L147)
+Defined in: [apps/paracosm/src/runtime/world-model/index.ts:147](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/world-model/index.ts#L147)
 
 ***
 
@@ -432,4 +432,4 @@ Defined in: [apps/paracosm/src/runtime/world-model/index.ts:147](https://github.
 
 > **matches**: `boolean`
 
-Defined in: [apps/paracosm/src/runtime/world-model/index.ts:146](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/world-model/index.ts#L146)
+Defined in: [apps/paracosm/src/runtime/world-model/index.ts:146](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/world-model/index.ts#L146)

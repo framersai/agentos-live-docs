@@ -1,6 +1,6 @@
 # Class: SimulationKernel
 
-Defined in: [apps/paracosm/src/engine/core/kernel.ts:93](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/kernel.ts#L93)
+Defined in: [apps/paracosm/src/engine/core/kernel.ts:93](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/kernel.ts#L93)
 
 ## Constructors
 
@@ -8,7 +8,7 @@ Defined in: [apps/paracosm/src/engine/core/kernel.ts:93](https://github.com/fram
 
 > **new SimulationKernel**(`seed`, `leaderId`, `keyPersonnel`, `init?`): `SimulationKernel`
 
-Defined in: [apps/paracosm/src/engine/core/kernel.ts:97](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/kernel.ts#L97)
+Defined in: [apps/paracosm/src/engine/core/kernel.ts:97](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/kernel.ts#L97)
 
 #### Parameters
 
@@ -38,7 +38,7 @@ Defined in: [apps/paracosm/src/engine/core/kernel.ts:97](https://github.com/fram
 
 > **advanceTurn**(`nextTurn`, `nextTime`, `progressionHook?`): [`SimulationState`](../interfaces/SimulationState.md)
 
-Defined in: [apps/paracosm/src/engine/core/kernel.ts:293](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/kernel.ts#L293)
+Defined in: [apps/paracosm/src/engine/core/kernel.ts:293](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/kernel.ts#L293)
 
 Advance to the next turn. Runs between-turn progression.
 
@@ -66,7 +66,7 @@ Advance to the next turn. Runs between-turn progression.
 
 > **applyAgentUpdates**(`updates`): `void`
 
-Defined in: [apps/paracosm/src/engine/core/kernel.ts:400](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/kernel.ts#L400)
+Defined in: [apps/paracosm/src/engine/core/kernel.ts:400](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/kernel.ts#L400)
 
 Apply featured colonist updates from department reports.
 
@@ -86,7 +86,7 @@ Apply featured colonist updates from department reports.
 
 > **applyDrift**(`commanderHexaco`, `outcome`, `timeDelta`): `void`
 
-Defined in: [apps/paracosm/src/engine/core/kernel.ts:392](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/kernel.ts#L392)
+Defined in: [apps/paracosm/src/engine/core/kernel.ts:392](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/kernel.ts#L392)
 
 Apply personality drift to all promoted colonists.
 
@@ -114,7 +114,7 @@ Apply personality drift to all promoted colonists.
 
 > **applyPolicy**(`effect`): `void`
 
-Defined in: [apps/paracosm/src/engine/core/kernel.ts:257](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/kernel.ts#L257)
+Defined in: [apps/paracosm/src/engine/core/kernel.ts:257](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/kernel.ts#L257)
 
 Apply a policy effect from the commander's decision.
 
@@ -134,7 +134,7 @@ Apply a policy effect from the commander's decision.
 
 > **applyPoliticsDeltas**(`deltas`, `events?`): `void`
 
-Defined in: [apps/paracosm/src/engine/core/kernel.ts:379](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/kernel.ts#L379)
+Defined in: [apps/paracosm/src/engine/core/kernel.ts:379](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/kernel.ts#L379)
 
 Apply additive deltas to world politics.
 
@@ -158,7 +158,7 @@ Apply additive deltas to world politics.
 
 > **applySystemDeltas**(`deltas`, `events?`): `void`
 
-Defined in: [apps/paracosm/src/engine/core/kernel.ts:362](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/kernel.ts#L362)
+Defined in: [apps/paracosm/src/engine/core/kernel.ts:362](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/kernel.ts#L362)
 
 Apply additive deltas to world systems (not absolute values).
 
@@ -182,7 +182,7 @@ Apply additive deltas to world systems (not absolute values).
 
 > **export**(): [`SimulationState`](../interfaces/SimulationState.md)
 
-Defined in: [apps/paracosm/src/engine/core/kernel.ts:431](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/kernel.ts#L431)
+Defined in: [apps/paracosm/src/engine/core/kernel.ts:431](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/kernel.ts#L431)
 
 #### Returns
 
@@ -194,7 +194,7 @@ Defined in: [apps/paracosm/src/engine/core/kernel.ts:431](https://github.com/fra
 
 > **getAliveAgents**(): [`Agent`](../interfaces/Agent.md)[]
 
-Defined in: [apps/paracosm/src/engine/core/kernel.ts:237](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/kernel.ts#L237)
+Defined in: [apps/paracosm/src/engine/core/kernel.ts:237](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/kernel.ts#L237)
 
 #### Returns
 
@@ -206,7 +206,7 @@ Defined in: [apps/paracosm/src/engine/core/kernel.ts:237](https://github.com/fra
 
 > **getAliveCount**(): `number`
 
-Defined in: [apps/paracosm/src/engine/core/kernel.ts:241](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/kernel.ts#L241)
+Defined in: [apps/paracosm/src/engine/core/kernel.ts:241](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/kernel.ts#L241)
 
 #### Returns
 
@@ -218,7 +218,7 @@ Defined in: [apps/paracosm/src/engine/core/kernel.ts:241](https://github.com/fra
 
 > **getCandidates**(`dept`, `topN?`): [`Agent`](../interfaces/Agent.md)[]
 
-Defined in: [apps/paracosm/src/engine/core/kernel.ts:323](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/kernel.ts#L323)
+Defined in: [apps/paracosm/src/engine/core/kernel.ts:323](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/kernel.ts#L323)
 
 Get top N candidates for a department role, scored by trait fit.
 
@@ -242,7 +242,7 @@ Get top N candidates for a department role, scored by trait fit.
 
 > **getDepartmentSummary**(`dept`): `object`
 
-Defined in: [apps/paracosm/src/engine/core/kernel.ts:245](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/kernel.ts#L245)
+Defined in: [apps/paracosm/src/engine/core/kernel.ts:245](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/kernel.ts#L245)
 
 #### Parameters
 
@@ -276,7 +276,7 @@ Defined in: [apps/paracosm/src/engine/core/kernel.ts:245](https://github.com/fra
 
 > **getFeaturedAgents**(): [`Agent`](../interfaces/Agent.md)[]
 
-Defined in: [apps/paracosm/src/engine/core/kernel.ts:233](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/kernel.ts#L233)
+Defined in: [apps/paracosm/src/engine/core/kernel.ts:233](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/kernel.ts#L233)
 
 #### Returns
 
@@ -288,7 +288,7 @@ Defined in: [apps/paracosm/src/engine/core/kernel.ts:233](https://github.com/fra
 
 > **getState**(): [`SimulationState`](../interfaces/SimulationState.md)
 
-Defined in: [apps/paracosm/src/engine/core/kernel.ts:162](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/kernel.ts#L162)
+Defined in: [apps/paracosm/src/engine/core/kernel.ts:162](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/kernel.ts#L162)
 
 #### Returns
 
@@ -300,7 +300,7 @@ Defined in: [apps/paracosm/src/engine/core/kernel.ts:162](https://github.com/fra
 
 > **promoteAgent**(`agentId`, `dept`, `role`, `promotedBy`): `void`
 
-Defined in: [apps/paracosm/src/engine/core/kernel.ts:338](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/kernel.ts#L338)
+Defined in: [apps/paracosm/src/engine/core/kernel.ts:338](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/kernel.ts#L338)
 
 Promote a colonist to a department head role.
 
@@ -332,7 +332,7 @@ Promote a colonist to a department head role.
 
 > **toSnapshot**(`scenarioId`): `KernelSnapshot`
 
-Defined in: [apps/paracosm/src/engine/core/kernel.ts:175](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/kernel.ts#L175)
+Defined in: [apps/paracosm/src/engine/core/kernel.ts:175](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/kernel.ts#L175)
 
 Capture a KernelSnapshot bundle. The returned object is
 plain JSON-safe data: `JSON.stringify(snap)` + `JSON.parse` +
@@ -360,7 +360,7 @@ Scenario id the snapshot is being taken
 
 > `static` **fromSnapshot**(`snap`, `expectedScenarioId`): `SimulationKernel`
 
-Defined in: [apps/paracosm/src/engine/core/kernel.ts:202](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/kernel.ts#L202)
+Defined in: [apps/paracosm/src/engine/core/kernel.ts:202](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/core/kernel.ts#L202)
 
 Reverse of [SimulationKernel.toSnapshot](#tosnapshot). Constructs a
 fresh kernel positioned at the snapshot's turn, with simulation

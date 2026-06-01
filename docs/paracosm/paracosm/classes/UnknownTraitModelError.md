@@ -1,6 +1,6 @@
 # Class: UnknownTraitModelError
 
-Defined in: [apps/paracosm/src/engine/traits/index.ts:131](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/traits/index.ts#L131)
+Defined in: [apps/paracosm/src/engine/traits/index.ts:131](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/traits/index.ts#L131)
 
 Thrown when a TraitProfile references an unregistered modelId.
 
@@ -14,7 +14,7 @@ Thrown when a TraitProfile references an unregistered modelId.
 
 > **new UnknownTraitModelError**(`modelId`, `registered`): `UnknownTraitModelError`
 
-Defined in: [apps/paracosm/src/engine/traits/index.ts:135](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/traits/index.ts#L135)
+Defined in: [apps/paracosm/src/engine/traits/index.ts:135](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/traits/index.ts#L135)
 
 #### Parameters
 
@@ -64,7 +64,7 @@ Defined in: node\_modules/.pnpm/typescript@5.6.3/node\_modules/typescript/lib/li
 
 > `readonly` **modelId**: `string`
 
-Defined in: [apps/paracosm/src/engine/traits/index.ts:132](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/traits/index.ts#L132)
+Defined in: [apps/paracosm/src/engine/traits/index.ts:132](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/traits/index.ts#L132)
 
 ***
 
@@ -84,7 +84,7 @@ Defined in: node\_modules/.pnpm/typescript@5.6.3/node\_modules/typescript/lib/li
 
 > `readonly` **registered**: readonly `string`[]
 
-Defined in: [apps/paracosm/src/engine/traits/index.ts:133](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/traits/index.ts#L133)
+Defined in: [apps/paracosm/src/engine/traits/index.ts:133](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/traits/index.ts#L133)
 
 ***
 

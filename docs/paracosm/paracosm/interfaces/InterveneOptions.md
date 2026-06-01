@@ -1,6 +1,6 @@
 # Interface: InterveneOptions
 
-Defined in: [apps/paracosm/src/api/types.ts:122](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/api/types.ts#L122)
+Defined in: [apps/paracosm/src/api/types.ts:122](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/api/types.ts#L122)
 
 Options-bag for `wm.intervene`. Adds subject + intervention to
 SimulateOptions. Replaces the v0.8 `simulateIntervention(subject,
@@ -16,7 +16,7 @@ intervention, leader, opts)` 4-positional form.
 
 > `optional` **\_forkedFrom**: `object`
 
-Defined in: [apps/paracosm/src/runtime/orchestrator/index.ts:381](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/orchestrator/index.ts#L381)
+Defined in: [apps/paracosm/src/runtime/orchestrator/index.ts:381](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/orchestrator/index.ts#L381)
 
 Internal-only: `WorldModel.fork()` sets this to thread the
 `{ parentRunId, atTurn }` link onto the child run's
@@ -41,7 +41,7 @@ use `WorldModel.fork()` rather than setting this directly.
 
 > `optional` **\_resumeFrom**: `KernelSnapshot`
 
-Defined in: [apps/paracosm/src/runtime/orchestrator/index.ts:387](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/orchestrator/index.ts#L387)
+Defined in: [apps/paracosm/src/runtime/orchestrator/index.ts:387](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/orchestrator/index.ts#L387)
 
 Internal-only: `WorldModel.fork()` sets this to a
 KernelSnapshot that the orchestrator restores before
@@ -57,7 +57,7 @@ running the first turn. Not part of the public API.
 
 > `optional` **activeDepartments**: `string`[]
 
-Defined in: [apps/paracosm/src/runtime/orchestrator/index.ts:361](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/orchestrator/index.ts#L361)
+Defined in: [apps/paracosm/src/runtime/orchestrator/index.ts:361](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/orchestrator/index.ts#L361)
 
 #### Inherited from
 
@@ -69,7 +69,7 @@ Defined in: [apps/paracosm/src/runtime/orchestrator/index.ts:361](https://github
 
 > **actor**: [`ActorConfig`](ActorConfig.md)
 
-Defined in: [apps/paracosm/src/api/types.ts:110](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/api/types.ts#L110)
+Defined in: [apps/paracosm/src/api/types.ts:110](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/api/types.ts#L110)
 
 The actor whose decisions drive the simulation.
 
@@ -83,7 +83,7 @@ The actor whose decisions drive the simulation.
 
 > `optional` **anthropicKey**: `string`
 
-Defined in: [apps/paracosm/src/engine/provider/credentials.ts:8](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/provider/credentials.ts#L8)
+Defined in: [apps/paracosm/src/engine/provider/credentials.ts:8](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/provider/credentials.ts#L8)
 
 Anthropic API key.
 
@@ -97,7 +97,7 @@ Anthropic API key.
 
 > `optional` **apiKey**: `string`
 
-Defined in: [apps/paracosm/src/engine/provider/credentials.ts:6](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/provider/credentials.ts#L6)
+Defined in: [apps/paracosm/src/engine/provider/credentials.ts:6](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/provider/credentials.ts#L6)
 
 OpenAI API key. Historical dashboard field name.
 
@@ -111,7 +111,7 @@ OpenAI API key. Historical dashboard field name.
 
 > `optional` **braveKey**: `string`
 
-Defined in: [apps/paracosm/src/engine/provider/credentials.ts:16](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/provider/credentials.ts#L16)
+Defined in: [apps/paracosm/src/engine/provider/credentials.ts:16](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/provider/credentials.ts#L16)
 
 #### Inherited from
 
@@ -123,7 +123,7 @@ Defined in: [apps/paracosm/src/engine/provider/credentials.ts:16](https://github
 
 > `optional` **captureSnapshots**: `boolean`
 
-Defined in: [apps/paracosm/src/runtime/orchestrator/index.ts:374](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/orchestrator/index.ts#L374)
+Defined in: [apps/paracosm/src/runtime/orchestrator/index.ts:374](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/orchestrator/index.ts#L374)
 
 When true, the orchestrator captures a KernelSnapshot at
 the end of every turn and stashes the resulting array under
@@ -142,7 +142,7 @@ for 100-agent Mars-shape runs.
 
 > `optional` **cohereKey**: `string`
 
-Defined in: [apps/paracosm/src/engine/provider/credentials.ts:17](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/provider/credentials.ts#L17)
+Defined in: [apps/paracosm/src/engine/provider/credentials.ts:17](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/provider/credentials.ts#L17)
 
 #### Inherited from
 
@@ -154,7 +154,7 @@ Defined in: [apps/paracosm/src/engine/provider/credentials.ts:17](https://github
 
 > `optional` **costPreset**: `CostPreset`
 
-Defined in: [apps/paracosm/src/runtime/orchestrator/index.ts:405](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/orchestrator/index.ts#L405)
+Defined in: [apps/paracosm/src/runtime/orchestrator/index.ts:405](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/orchestrator/index.ts#L405)
 
 Cost-vs-quality switch for model routing. Defaults to `'quality'`
 which keeps department agents on the flagship tier (gpt-5.4 /
@@ -182,7 +182,7 @@ mix and match: `{ costPreset: 'economy', models: { departments:
 
 > `optional` **customEvents**: `object`[]
 
-Defined in: [apps/paracosm/src/runtime/orchestrator/index.ts:364](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/orchestrator/index.ts#L364)
+Defined in: [apps/paracosm/src/runtime/orchestrator/index.ts:364](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/orchestrator/index.ts#L364)
 
 #### description
 
@@ -206,7 +206,7 @@ Defined in: [apps/paracosm/src/runtime/orchestrator/index.ts:364](https://github
 
 > `optional` **economics**: `ResolvedEconomicsProfile`
 
-Defined in: [apps/paracosm/src/runtime/orchestrator/index.ts:406](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/orchestrator/index.ts#L406)
+Defined in: [apps/paracosm/src/runtime/orchestrator/index.ts:406](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/orchestrator/index.ts#L406)
 
 #### Inherited from
 
@@ -218,7 +218,7 @@ Defined in: [apps/paracosm/src/runtime/orchestrator/index.ts:406](https://github
 
 > `optional` **execution**: `Partial`\<`SimulationExecutionConfig`\>
 
-Defined in: [apps/paracosm/src/runtime/orchestrator/index.ts:412](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/orchestrator/index.ts#L412)
+Defined in: [apps/paracosm/src/runtime/orchestrator/index.ts:412](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/orchestrator/index.ts#L412)
 
 #### Inherited from
 
@@ -230,7 +230,7 @@ Defined in: [apps/paracosm/src/runtime/orchestrator/index.ts:412](https://github
 
 > `optional` **firecrawlKey**: `string`
 
-Defined in: [apps/paracosm/src/engine/provider/credentials.ts:14](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/provider/credentials.ts#L14)
+Defined in: [apps/paracosm/src/engine/provider/credentials.ts:14](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/provider/credentials.ts#L14)
 
 #### Inherited from
 
@@ -242,7 +242,7 @@ Defined in: [apps/paracosm/src/engine/provider/credentials.ts:14](https://github
 
 > `optional` **initialPopulation**: `number`
 
-Defined in: [apps/paracosm/src/runtime/orchestrator/index.ts:407](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/orchestrator/index.ts#L407)
+Defined in: [apps/paracosm/src/runtime/orchestrator/index.ts:407](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/orchestrator/index.ts#L407)
 
 #### Inherited from
 
@@ -254,7 +254,7 @@ Defined in: [apps/paracosm/src/runtime/orchestrator/index.ts:407](https://github
 
 > **intervention**: `object`
 
-Defined in: [apps/paracosm/src/api/types.ts:124](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/api/types.ts#L124)
+Defined in: [apps/paracosm/src/api/types.ts:124](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/api/types.ts#L124)
 
 Intervention being tested on the subject. Passed through verbatim to
 `RunArtifact.intervention`. Turn-loop ignores; batch modes consume.
@@ -321,7 +321,7 @@ Intervention being tested on the subject. Passed through verbatim to
 
 > `optional` **keyPersonnel**: [`KeyPersonnel`](KeyPersonnel.md)[]
 
-Defined in: [apps/paracosm/src/api/types.ts:112](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/api/types.ts#L112)
+Defined in: [apps/paracosm/src/api/types.ts:112](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/api/types.ts#L112)
 
 Optional supporting cast for context retrieval. Default [].
 
@@ -335,7 +335,7 @@ Optional supporting cast for context retrieval. Default [].
 
 > `optional` **liveSearch**: `boolean`
 
-Defined in: [apps/paracosm/src/runtime/orchestrator/index.ts:360](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/orchestrator/index.ts#L360)
+Defined in: [apps/paracosm/src/runtime/orchestrator/index.ts:360](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/orchestrator/index.ts#L360)
 
 #### Inherited from
 
@@ -347,7 +347,7 @@ Defined in: [apps/paracosm/src/runtime/orchestrator/index.ts:360](https://github
 
 > `optional` **maxTurns**: `number`
 
-Defined in: [apps/paracosm/src/runtime/orchestrator/index.ts:356](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/orchestrator/index.ts#L356)
+Defined in: [apps/paracosm/src/runtime/orchestrator/index.ts:356](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/orchestrator/index.ts#L356)
 
 #### Inherited from
 
@@ -359,7 +359,7 @@ Defined in: [apps/paracosm/src/runtime/orchestrator/index.ts:356](https://github
 
 > `optional` **models**: `Partial`\<[`SimulationModelConfig`](SimulationModelConfig.md)\>
 
-Defined in: [apps/paracosm/src/runtime/orchestrator/index.ts:365](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/orchestrator/index.ts#L365)
+Defined in: [apps/paracosm/src/runtime/orchestrator/index.ts:365](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/orchestrator/index.ts#L365)
 
 #### Inherited from
 
@@ -371,7 +371,7 @@ Defined in: [apps/paracosm/src/runtime/orchestrator/index.ts:365](https://github
 
 > `optional` **onEvent**: (`event`) => `void`
 
-Defined in: [apps/paracosm/src/runtime/orchestrator/index.ts:363](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/orchestrator/index.ts#L363)
+Defined in: [apps/paracosm/src/runtime/orchestrator/index.ts:363](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/orchestrator/index.ts#L363)
 
 #### Parameters
 
@@ -393,7 +393,7 @@ Defined in: [apps/paracosm/src/runtime/orchestrator/index.ts:363](https://github
 
 > `optional` **provider**: `LlmProvider`
 
-Defined in: [apps/paracosm/src/runtime/orchestrator/index.ts:362](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/orchestrator/index.ts#L362)
+Defined in: [apps/paracosm/src/runtime/orchestrator/index.ts:362](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/orchestrator/index.ts#L362)
 
 #### Inherited from
 
@@ -405,7 +405,7 @@ Defined in: [apps/paracosm/src/runtime/orchestrator/index.ts:362](https://github
 
 > `optional` **scenario**: [`ScenarioPackage`](ScenarioPackage.md)
 
-Defined in: [apps/paracosm/src/runtime/orchestrator/index.ts:413](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/orchestrator/index.ts#L413)
+Defined in: [apps/paracosm/src/runtime/orchestrator/index.ts:413](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/orchestrator/index.ts#L413)
 
 #### Inherited from
 
@@ -417,7 +417,7 @@ Defined in: [apps/paracosm/src/runtime/orchestrator/index.ts:413](https://github
 
 > `optional` **seed**: `number`
 
-Defined in: [apps/paracosm/src/runtime/orchestrator/index.ts:357](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/orchestrator/index.ts#L357)
+Defined in: [apps/paracosm/src/runtime/orchestrator/index.ts:357](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/orchestrator/index.ts#L357)
 
 #### Inherited from
 
@@ -429,7 +429,7 @@ Defined in: [apps/paracosm/src/runtime/orchestrator/index.ts:357](https://github
 
 > `optional` **serperKey**: `string`
 
-Defined in: [apps/paracosm/src/engine/provider/credentials.ts:13](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/provider/credentials.ts#L13)
+Defined in: [apps/paracosm/src/engine/provider/credentials.ts:13](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/provider/credentials.ts#L13)
 
 #### Inherited from
 
@@ -441,7 +441,7 @@ Defined in: [apps/paracosm/src/engine/provider/credentials.ts:13](https://github
 
 > `optional` **signal**: `AbortSignal`
 
-Defined in: [apps/paracosm/src/runtime/orchestrator/index.ts:424](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/orchestrator/index.ts#L424)
+Defined in: [apps/paracosm/src/runtime/orchestrator/index.ts:424](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/orchestrator/index.ts#L424)
 
 Cancellation signal. When `.aborted` flips to true, the turn loop
 short-circuits at the next turn boundary, emits a `sim_aborted`
@@ -462,7 +462,7 @@ the partial results they already accumulated in the event buffer.
 
 > `optional` **startingEnvironment**: `Record`\<`string`, `string` \| `number` \| `boolean`\>
 
-Defined in: [apps/paracosm/src/runtime/orchestrator/index.ts:411](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/orchestrator/index.ts#L411)
+Defined in: [apps/paracosm/src/runtime/orchestrator/index.ts:411](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/orchestrator/index.ts#L411)
 
 #### Inherited from
 
@@ -474,7 +474,7 @@ Defined in: [apps/paracosm/src/runtime/orchestrator/index.ts:411](https://github
 
 > `optional` **startingPolitics**: `StartingPolitics`
 
-Defined in: [apps/paracosm/src/runtime/orchestrator/index.ts:409](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/orchestrator/index.ts#L409)
+Defined in: [apps/paracosm/src/runtime/orchestrator/index.ts:409](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/orchestrator/index.ts#L409)
 
 #### Inherited from
 
@@ -486,7 +486,7 @@ Defined in: [apps/paracosm/src/runtime/orchestrator/index.ts:409](https://github
 
 > `optional` **startingResources**: `StartingResources`
 
-Defined in: [apps/paracosm/src/runtime/orchestrator/index.ts:408](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/orchestrator/index.ts#L408)
+Defined in: [apps/paracosm/src/runtime/orchestrator/index.ts:408](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/orchestrator/index.ts#L408)
 
 #### Inherited from
 
@@ -498,7 +498,7 @@ Defined in: [apps/paracosm/src/runtime/orchestrator/index.ts:408](https://github
 
 > `optional` **startingStatuses**: `Record`\<`string`, `string` \| `boolean`\>
 
-Defined in: [apps/paracosm/src/runtime/orchestrator/index.ts:410](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/orchestrator/index.ts#L410)
+Defined in: [apps/paracosm/src/runtime/orchestrator/index.ts:410](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/orchestrator/index.ts#L410)
 
 #### Inherited from
 
@@ -510,7 +510,7 @@ Defined in: [apps/paracosm/src/runtime/orchestrator/index.ts:410](https://github
 
 > `optional` **startTime**: `number`
 
-Defined in: [apps/paracosm/src/runtime/orchestrator/index.ts:358](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/orchestrator/index.ts#L358)
+Defined in: [apps/paracosm/src/runtime/orchestrator/index.ts:358](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/orchestrator/index.ts#L358)
 
 #### Inherited from
 
@@ -522,7 +522,7 @@ Defined in: [apps/paracosm/src/runtime/orchestrator/index.ts:358](https://github
 
 > **subject**: `object`
 
-Defined in: [apps/paracosm/src/api/types.ts:123](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/api/types.ts#L123)
+Defined in: [apps/paracosm/src/api/types.ts:123](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/api/types.ts#L123)
 
 Subject being simulated (digital-twin person, game character,
 etc.). Passed through verbatim to `RunArtifact.subject`.
@@ -571,7 +571,7 @@ batch-trajectory executor will.
 
 > `optional` **tavilyKey**: `string`
 
-Defined in: [apps/paracosm/src/engine/provider/credentials.ts:15](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/provider/credentials.ts#L15)
+Defined in: [apps/paracosm/src/engine/provider/credentials.ts:15](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/engine/provider/credentials.ts#L15)
 
 #### Inherited from
 
@@ -583,7 +583,7 @@ Defined in: [apps/paracosm/src/engine/provider/credentials.ts:15](https://github
 
 > `optional` **timePerTurn**: `number`
 
-Defined in: [apps/paracosm/src/runtime/orchestrator/index.ts:359](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/orchestrator/index.ts#L359)
+Defined in: [apps/paracosm/src/runtime/orchestrator/index.ts:359](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/orchestrator/index.ts#L359)
 
 #### Inherited from
 

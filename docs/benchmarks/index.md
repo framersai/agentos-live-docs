@@ -44,11 +44,11 @@ Same dataset (`data/longmemeval/longmemeval_s.json`), full N=500, same `gpt-4o-2
 | **🚀 AgentOS canonical-hybrid + reader-router (Apache-2.0)** | **85.6%** | **$0.0090** | **3,558 ms** | [85.6% Pareto-win post](https://agentos.sh/en/blog/agentos-memory-sota-longmemeval) |
 | Mastra OM gpt-4o (gemini-flash observer) | 84.23% | not published | not published | [mastra.ai](https://mastra.ai/research/observational-memory) |
 | Supermemory gpt-4o | 81.6% | not published | not published | [supermemory.ai](https://supermemory.ai/research/) |
-| EmergenceMem Simple Fast (no-license public repo, rerun in agentos-bench) | 80.6% | $0.0586 | 3,703 ms | [vendor reproduction adapter](https://github.com/framersai/agentos-bench/blob/master/vendors/emergence-simple-fast/) |
+| EmergenceMem Simple Fast (no-license public repo, rerun in agentos-bench) | 80.6% | $0.0586 | 3,703 ms | [vendor reproduction adapter](https://github.com/framerslab/agentos-bench/blob/master/vendors/emergence-simple-fast/) |
 | Zep self-reported | 71.2% | not published | 632 ms p95 search | [getzep.com](https://blog.getzep.com/state-of-the-art-agent-memory/) |
 | Zep independently reproduced | 63.8% | not published | not published | [arXiv:2512.13564](https://arxiv.org/abs/2512.13564) |
 
-**+1.4 points above Mastra OM gpt-4o (84.23%).** AgentOS at 85.6% is the highest published number from a permissively licensed memory framework that anyone can install, fork, and embed in commercial products without a SaaS contract. EmergenceMem Internal posts 86.0% (0.4 above us, statistically tied — their point estimate sits inside our [82.4%, 88.6%] CI), but **EmergenceMem Internal is closed-source SaaS at [emergence.ai/web-automation-api](https://www.emergence.ai/web-automation-api) — it is not a library you can install, fork, self-host, or audit**. Their public reference repo `emergence_simple_fast` ships with **no LICENSE file** (default copyright applies; publicly readable but not legally redistributable). AgentOS ships the full architecture under [Apache-2.0](https://github.com/framersai/agentos/blob/master/LICENSE) — install, fork, redistribute, embed in commercial products without restriction or fee. AgentOS p50 latency 3,558 ms vs EmergenceMem's published median 5,650 ms (1.6× faster on the median).
+**+1.4 points above Mastra OM gpt-4o (84.23%).** AgentOS at 85.6% is the highest published number from a permissively licensed memory framework that anyone can install, fork, and embed in commercial products without a SaaS contract. EmergenceMem Internal posts 86.0% (0.4 above us, statistically tied — their point estimate sits inside our [82.4%, 88.6%] CI), but **EmergenceMem Internal is closed-source SaaS at [emergence.ai/web-automation-api](https://www.emergence.ai/web-automation-api) — it is not a library you can install, fork, self-host, or audit**. Their public reference repo `emergence_simple_fast` ships with **no LICENSE file** (default copyright applies; publicly readable but not legally redistributable). AgentOS ships the full architecture under [Apache-2.0](https://github.com/framerslab/agentos/blob/master/LICENSE) — install, fork, redistribute, embed in commercial products without restriction or fee. AgentOS p50 latency 3,558 ms vs EmergenceMem's published median 5,650 ms (1.6× faster on the median).
 
 **Cost at scale**: $0.0090 per memory-grounded answer = $9 per 1,000 RAG calls. A chatbot averaging 5 RAG calls per conversation across 1,000 conversations costs ~$45.
 
@@ -118,14 +118,14 @@ The 62.81% FPR ceiling on LOCOMO's default `gpt-4o-mini` judge means any LOCOMO 
 | Judge-adversarial FPR probe | yes | no | no | no | no | no | no | no |
 | Cross-vendor cross-vendor table | yes | no | no | partial | partial | yes | no | no |
 
-The full audit framework is at [Memory Benchmark Transparency Audit](https://agentos.sh/en/blog/memory-benchmark-transparency-audit). Per-case run JSONs at `seed=42` are committed under [`packages/agentos-bench/results/runs/`](https://github.com/framersai/agentos-bench/tree/master/results/runs) for every published number.
+The full audit framework is at [Memory Benchmark Transparency Audit](https://agentos.sh/en/blog/memory-benchmark-transparency-audit). Per-case run JSONs at `seed=42` are committed under [`packages/agentos-bench/results/runs/`](https://github.com/framerslab/agentos-bench/tree/master/results/runs) for every published number.
 
 ## Reproducing
 
 The 85.6% LongMemEval-S headline:
 
 ```bash
-git clone https://github.com/framersai/agentos-bench
+git clone https://github.com/framerslab/agentos-bench
 cd agentos-bench
 pnpm install && pnpm build
 
@@ -155,7 +155,7 @@ NODE_OPTIONS="--max-old-space-size=8192" pnpm exec tsx src/cli.ts run longmemeva
   --bootstrap-resamples 10000
 ```
 
-Both runs ship with per-case run JSONs at `seed=42`. The full bench leaderboard is at [packages/agentos-bench/results/LEADERBOARD.md](https://github.com/framersai/agentos-bench/blob/master/results/LEADERBOARD.md).
+Both runs ship with per-case run JSONs at `seed=42`. The full bench leaderboard is at [packages/agentos-bench/results/LEADERBOARD.md](https://github.com/framerslab/agentos-bench/blob/master/results/LEADERBOARD.md).
 
 ## Related blog posts
 

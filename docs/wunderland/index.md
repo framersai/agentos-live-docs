@@ -188,10 +188,10 @@ The 5 named security tiers (`dangerous`, `permissive`, `balanced`, `strict`, `pa
 | Want | Use |
 |---|---|
 | Embed a typescript SDK in your app | [`@framers/agentos`](https://www.npmjs.com/package/@framers/agentos) |
-| Visual debugger / dashboard | [AgentOS Workbench](https://github.com/framersai/agentos-workbench) |
+| Visual debugger / dashboard | [AgentOS Workbench](https://github.com/framerslab/agentos-workbench) |
 | Batteries-included CLI + daemon | [`wunderland`](https://www.npmjs.com/package/wunderland) (this) |
 | Structured world simulation engine | [`paracosm`](https://www.npmjs.com/package/paracosm) |
-| Public benchmarks harness | [`@framers/agentos-bench`](https://github.com/framersai/agentos-bench) |
+| Public benchmarks harness | [`@framers/agentos-bench`](https://github.com/framerslab/agentos-bench) |
 
 All of these share the same memory, retrieval, and orchestration primitives. Wunderland adds the operator surface (CLI, daemon, dashboard, presets, security tiers, audit ledger) without forking the substrate.
 

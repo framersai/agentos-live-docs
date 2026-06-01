@@ -2,7 +2,7 @@
 
 > **moodHistogram**(`swarm`): `Record`\<`string`, `number`\>
 
-Defined in: [apps/paracosm/src/runtime/swarm/index.ts:92](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/swarm/index.ts#L92)
+Defined in: [apps/paracosm/src/runtime/swarm/index.ts:92](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/runtime/swarm/index.ts#L92)
 
 Histogram of mood labels across alive agents — `{ focused: 12,
 anxious: 5, ... }`. Excludes dead agents (they don't have a current

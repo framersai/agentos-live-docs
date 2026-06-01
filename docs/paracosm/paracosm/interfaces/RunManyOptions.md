@@ -1,6 +1,6 @@
 # Interface: RunManyOptions
 
-Defined in: [apps/paracosm/src/api/types.ts:67](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/api/types.ts#L67)
+Defined in: [apps/paracosm/src/api/types.ts:67](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/api/types.ts#L67)
 
 Options accepted by `runMany(prompt, opts)`. Extends `RunOptions` with
 parallel-run params.
@@ -15,7 +15,7 @@ parallel-run params.
 
 > `optional` **cacheDir**: `string`
 
-Defined in: [apps/paracosm/src/api/types.ts:58](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/api/types.ts#L58)
+Defined in: [apps/paracosm/src/api/types.ts:58](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/api/types.ts#L58)
 
 Compiler cache directory. Reused across multiple runs in `runMany`.
 
@@ -29,7 +29,7 @@ Compiler cache directory. Reused across multiple runs in `runMany`.
 
 > `optional` **captureSnapshots**: `boolean`
 
-Defined in: [apps/paracosm/src/api/types.ts:44](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/api/types.ts#L44)
+Defined in: [apps/paracosm/src/api/types.ts:44](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/api/types.ts#L44)
 
 Whether to embed kernel snapshots so the result is fork-eligible. Default true.
 
@@ -43,7 +43,7 @@ Whether to embed kernel snapshots so the result is fork-eligible. Default true.
 
 > `optional` **costPreset**: `"quality"` \| `"economy"`
 
-Defined in: [apps/paracosm/src/api/types.ts:48](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/api/types.ts#L48)
+Defined in: [apps/paracosm/src/api/types.ts:48](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/api/types.ts#L48)
 
 Cost preset. Default 'quality'.
 
@@ -57,7 +57,7 @@ Cost preset. Default 'quality'.
 
 > `optional` **count**: `number`
 
-Defined in: [apps/paracosm/src/api/types.ts:69](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/api/types.ts#L69)
+Defined in: [apps/paracosm/src/api/types.ts:69](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/api/types.ts#L69)
 
 How many actors to generate + run in parallel. Default 3, range 2..6.
 
@@ -67,7 +67,7 @@ How many actors to generate + run in parallel. Default 3, range 2..6.
 
 > `optional` **customEvents**: [`CustomEvent`](CustomEvent.md)[]
 
-Defined in: [apps/paracosm/src/api/types.ts:52](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/api/types.ts#L52)
+Defined in: [apps/paracosm/src/api/types.ts:52](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/api/types.ts#L52)
 
 Custom events to inject during the run.
 
@@ -81,7 +81,7 @@ Custom events to inject during the run.
 
 > `optional` **maxTurns**: `number`
 
-Defined in: [apps/paracosm/src/api/types.ts:42](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/api/types.ts#L42)
+Defined in: [apps/paracosm/src/api/types.ts:42](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/api/types.ts#L42)
 
 Hard cap on turns. Default: scenario's `setup.defaultTurns`.
 
@@ -95,7 +95,7 @@ Hard cap on turns. Default: scenario's `setup.defaultTurns`.
 
 > `optional` **models**: [`SimulationModelConfig`](SimulationModelConfig.md)
 
-Defined in: [apps/paracosm/src/api/types.ts:50](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/api/types.ts#L50)
+Defined in: [apps/paracosm/src/api/types.ts:50](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/api/types.ts#L50)
 
 Per-role model overrides.
 
@@ -109,7 +109,7 @@ Per-role model overrides.
 
 > `optional` **onEvent**: (`e`) => `void`
 
-Defined in: [apps/paracosm/src/api/types.ts:56](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/api/types.ts#L56)
+Defined in: [apps/paracosm/src/api/types.ts:56](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/api/types.ts#L56)
 
 Stream-event callback (forge attempts, decisions, errors).
 
@@ -133,7 +133,7 @@ Stream-event callback (forge attempts, decisions, errors).
 
 > `optional` **provider**: `"openai"` \| `"anthropic"`
 
-Defined in: [apps/paracosm/src/api/types.ts:46](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/api/types.ts#L46)
+Defined in: [apps/paracosm/src/api/types.ts:46](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/api/types.ts#L46)
 
 LLM provider for the simulation. Default 'anthropic'.
 
@@ -147,7 +147,7 @@ LLM provider for the simulation. Default 'anthropic'.
 
 > `optional` **seed**: `number`
 
-Defined in: [apps/paracosm/src/api/types.ts:40](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/api/types.ts#L40)
+Defined in: [apps/paracosm/src/api/types.ts:40](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/api/types.ts#L40)
 
 Per-run seed. Default: scenario's `setup.defaultSeed` else 42.
 
@@ -161,7 +161,7 @@ Per-run seed. Default: scenario's `setup.defaultSeed` else 42.
 
 > `optional` **signal**: `AbortSignal`
 
-Defined in: [apps/paracosm/src/api/types.ts:54](https://github.com/framersai/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/api/types.ts#L54)
+Defined in: [apps/paracosm/src/api/types.ts:54](https://github.com/framerslab/paracosm/blob/8887b389ebb1029adcd45226dfa95c344c2100ba/src/api/types.ts#L54)
 
 Cancel the run early.
 

@@ -34,7 +34,7 @@ function Hero() {
       <p className="hero-agentos__subtitle">{siteConfig.tagline}</p>
 
       <div className="hero-badges">
-        <a href="https://github.com/framersai/agentos" className="hero-badge" target="_blank" rel="noopener noreferrer">
+        <a href="https://github.com/framerslab/agentos" className="hero-badge" target="_blank" rel="noopener noreferrer">
           {/* Static badge with the star count baked in at build time —
               avoids shields.io's unauthenticated rate-limit fallback
               that intermittently rendered "invalid" on this badge.
@@ -315,7 +315,7 @@ function ForgeDemoSection() {
             Captured from <code>node examples/emergent-hierarchical-spawning.mjs</code>
           </span>
           <a
-            href="https://github.com/framersai/agentos/blob/master/examples/emergent-hierarchical-spawning.mjs"
+            href="https://github.com/framerslab/agentos/blob/master/examples/emergent-hierarchical-spawning.mjs"
             target="_blank"
             rel="noopener noreferrer"
           >
