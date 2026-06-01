@@ -651,7 +651,7 @@ const config = (githubStars: number): Config => ({
             { label: 'GitHub', href: 'https://github.com/framersai/agentos' },
             { label: 'Discord', href: 'https://wilds.ai/discord' },
             { label: 'Twitter', href: 'https://x.com/rabbitholewun' },
-            { label: 'LinkedIn', href: 'https://www.linkedin.com/company/manicinc' },
+            { label: 'LinkedIn', href: 'https://www.linkedin.com/company/framerslab' },
             { label: 'npm', href: 'https://www.npmjs.com/package/@framers/agentos' },
           ],
         },
