@@ -49,7 +49,7 @@ test('rewriteMarkdownLinks rewrites repo source links to public GitHub blob URLs
 
   assert.equal(
     output,
-    'Read [AgentOS.ts](https://github.com/framersai/agentos/blob/master/src/api/AgentOS.ts#L14-L34) and [types](https://github.com/framersai/agentos/blob/master/src/api/types.ts).',
+    'Read [AgentOS.ts](https://github.com/framerslab/agentos/blob/master/src/api/AgentOS.ts#L14-L34) and [types](https://github.com/framerslab/agentos/blob/master/src/api/types.ts).',
   );
 });
 
@@ -60,7 +60,7 @@ test('rewriteMarkdownLinks strips legacy /docs prefixes and rewrites examples', 
 
   assert.equal(
     output,
-    'See [Guardrails](/features/guardrails), [API](/api), and [Example](https://github.com/framersai/agentos/blob/master/examples/high-level-api.mjs).',
+    'See [Guardrails](/features/guardrails), [API](/api), and [Example](https://github.com/framerslab/agentos/blob/master/examples/high-level-api.mjs).',
   );
 });
 
@@ -76,7 +76,7 @@ test('rewriteMarkdownLinks falls back unknown curated registry links to GitHub',
 
   assert.equal(
     output,
-    'Browse [Deep Research](https://github.com/framersai/agentos-extensions/tree/master/registry/curated/research/deep-research) and [Web Search](/extensions/built-in/web-search).',
+    'Browse [Deep Research](https://github.com/framerslab/agentos-extensions/tree/master/registry/curated/research/deep-research) and [Web Search](/extensions/built-in/web-search).',
   );
 });
 

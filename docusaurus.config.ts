@@ -20,7 +20,7 @@ const strictDocs = process.env.AGENTOS_DOCS_STRICT !== '0';
 const paracosmSrcPath = resolve(__dirname, '../paracosm/src');
 const paracosmSrcAvailable = existsSync(paracosmSrcPath);
 
-// Fetch the GitHub star count for `framersai/agentos` at build time.
+// Fetch the GitHub star count for `framerslab/agentos` at build time.
 // Doing this at build time (server-side, with a PAT) instead of letting
 // the browser hit shields.io's `/github/stars/...` endpoint avoids two
 // problems: shields.io's unauthenticated rate-limit fallback that
@@ -57,7 +57,7 @@ async function fetchGithubStars(repo: string): Promise<number> {
 }
 
 async function buildConfig(): Promise<Config> {
-  const githubStars = await fetchGithubStars('framersai/agentos');
+  const githubStars = await fetchGithubStars('framerslab/agentos');
   return config(githubStars);
 }
 
@@ -68,7 +68,7 @@ const config = (githubStars: number): Config => ({
   favicon: 'img/favicon.ico',
   url: 'https://docs.agentos.sh',
   baseUrl: '/',
-  organizationName: 'framersai',
+  organizationName: 'framerslab',
   projectName: 'agentos-live-docs',
   customFields: {
     // Resolved at build time via the GH_PAT-authenticated GitHub API call

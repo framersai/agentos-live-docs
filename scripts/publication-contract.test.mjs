@@ -189,7 +189,7 @@ test('publication verification scripts are wired into the docs packages', () => 
   );
   assert.equal(
     agentosPackage.scripts['docs:verify'],
-    'node scripts/build-publication-inventory.mjs && pnpm --dir ../../ --filter @framersai/agentos-live-docs run verify:publication && npx vitest run src/api/runtime/__tests__/docs-alignment.test.ts',
+    'node scripts/build-publication-inventory.mjs && pnpm --dir ../../ --filter @framers/agentos-live-docs run verify:publication && npx vitest run src/api/runtime/__tests__/docs-alignment.test.ts',
   );
   assert.match(docusaurusConfig, /AGENTOS_DOCS_GUIDES_ONLY/);
   assert.match(docusaurusConfig, /exclude:\s*guidesOnly\s*\?\s*\['api\/\*\*',\s*'paracosm\/\*\*'\]\s*:\s*\[\]/);

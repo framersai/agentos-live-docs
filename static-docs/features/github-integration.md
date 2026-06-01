@@ -104,7 +104,7 @@ import { GitHubRepoIndexer } from '@framers/agentos-ext-github';
 const indexer = new GitHubRepoIndexer(githubService);
 
 // Index a single repository
-const result = await indexer.indexRepo({ owner: 'framersai', repo: 'agentos' });
+const result = await indexer.indexRepo({ owner: 'framerslab', repo: 'agentos' });
 console.log(`${result.chunks.length} chunks from ${result.filesScanned} files`);
 
 // Index the ecosystem (default repos)
@@ -118,16 +118,16 @@ for (const r of results) {
 
 The indexer ships with a default list of ecosystem repositories that are indexed automatically when `indexEcosystem()` is called without arguments:
 
-- `framersai/agentos`
+- `framerslab/agentos`
 - `jddunn/wunderland`
-- `framersai/agentos-live-docs`
+- `framerslab/agentos-live-docs`
 - `jddunn/wunderland-live-docs`
 
 ### [`IndexedChunk`](https://github.com/framerslab/agentos-extensions/blob/master/registry/curated/integrations/github/src/GitHubRepoIndexer.ts)
 
 ```typescript
 interface IndexedChunk {
-  heading: string;     // e.g. "github:framersai/agentos:README.md#Installation"
+  heading: string;     // e.g. "github:framerslab/agentos:README.md#Installation"
   content: string;     // Chunk text content, ready for embedding
   sourcePath: string;  // Source path within the repo
 }
@@ -154,21 +154,21 @@ An agent can review a pull request end-to-end by chaining tools:
 ```typescript
 // 1. List open PRs
 const prs = await agent.callTool('github_pr_list', {
-  owner: 'framersai',
+  owner: 'framerslab',
   repo: 'agentos',
   state: 'open',
 });
 
 // 2. Get the diff for the first PR
 const diff = await agent.callTool('github_pr_diff', {
-  owner: 'framersai',
+  owner: 'framerslab',
   repo: 'agentos',
   number: prs[0].number,
 });
 
 // 3. Submit a review
 await agent.callTool('github_pr_review', {
-  owner: 'framersai',
+  owner: 'framerslab',
   repo: 'agentos',
   number: prs[0].number,
   event: 'COMMENT',
@@ -183,7 +183,7 @@ An agent can explore a repository's structure and content:
 ```typescript
 // Read a specific file
 const readme = await agent.callTool('github_file_read', {
-  owner: 'framersai',
+  owner: 'framerslab',
   repo: 'agentos',
   path: 'README.md',
 });
@@ -196,7 +196,7 @@ const results = await agent.callTool('github_search', {
 
 // Index repository content for RAG retrieval
 await agent.callTool('github_repo_index', {
-  owner: 'framersai',
+  owner: 'framerslab',
   repo: 'agentos',
 });
 ```
@@ -206,7 +206,7 @@ await agent.callTool('github_repo_index', {
 ```typescript
 // Create an issue
 await agent.callTool('github_issue_create', {
-  owner: 'framersai',
+  owner: 'framerslab',
   repo: 'agentos',
   title: 'Add WebM output support to video pipeline',
   body: 'The video pipeline currently only supports MP4 output...',
@@ -215,7 +215,7 @@ await agent.callTool('github_issue_create', {
 
 // Update issue state
 await agent.callTool('github_issue_update', {
-  owner: 'framersai',
+  owner: 'framerslab',
   repo: 'agentos',
   number: 42,
   state: 'closed',
@@ -227,14 +227,14 @@ await agent.callTool('github_issue_update', {
 ```typescript
 // List recent workflow runs
 const runs = await agent.callTool('github_actions_list', {
-  owner: 'framersai',
+  owner: 'framerslab',
   repo: 'agentos',
   workflow_id: 'ci.yml',
 });
 
 // Trigger a workflow
 await agent.callTool('github_actions_trigger', {
-  owner: 'framersai',
+  owner: 'framerslab',
   repo: 'agentos',
   workflow_id: 'release.yml',
   ref: 'master',
