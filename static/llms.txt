@@ -52,7 +52,7 @@ This site hosts guides, API reference, architecture docs, and tutorials for buil
 
 - [Wilds.ai](https://wilds.ai) — AI game worlds powered by AgentOS
 - [Frame.dev](https://frame.dev) — Developer tools
-- [Manic Agency](https://manic.agency) — The company behind AgentOS
+- [Framers Lab, Inc.](https://frame.dev) — The company behind AgentOS
 
 ## Policy
 
